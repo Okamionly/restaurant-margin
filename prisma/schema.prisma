@@ -639,33 +639,40 @@ model MenuCalendar {
   @@map("menu_calendar")
 }
 
-// invoice_sequences
+// ── Invoice Sequence — numerotation FR-conforme (art. 242 nonies A CGI) ──
+// Une ligne par (prefix, annee) — ex: key="FAC-2026", lastNumber=42
+// Transaction Prisma garantit l'atomicite (pas de doublon en concurrence)
+// JAMAIS supprimer ou modifier ces lignes (obligation legale 10 ans)
 model InvoiceSequence {
   id         Int      @id @default(autoincrement())
-  key        String   @unique
-  prefix     String
+  key        String   @unique  // ex: "FAC-2026", "AVO-2026"
+  prefix     String            // FAC | AVO | PRF
   year       Int
   lastNumber Int      @default(0)
   updatedAt  DateTime @updatedAt
+
   @@index([prefix, year])
   @@map("invoice_sequences")
 }
 
-// ai_usage_logs
+// ── AI Usage Log — instrumentation cout Anthropic par appel ──
+// Permet de calculer gross margin reelle (cout IA variable / user actif)
+// Alimentee par le middleware logAiUsage() dans api/utils/aiLogger.ts
 model AiUsageLog {
   id           Int      @id @default(autoincrement())
-  userId       Int?
-  restaurantId Int?
-  action       String
-  model        String   @default("claude-haiku-4-5")
-  tokensIn     Int      @default(0)
-  tokensOut    Int      @default(0)
-  costUsd      Float    @default(0)
-  costEur      Float    @default(0)
-  durationMs   Int?
+  userId       Int?     // null si appel non-authentifie (ex: calcul public)
+  restaurantId Int?     // null si non applicable
+  action       String   // ex: "recipe_suggestion", "food_cost_analysis", "voice_command"
+  model        String   @default("claude-haiku-4-5") // modele utilise
+  tokensIn     Int      @default(0)  // prompt tokens
+  tokensOut    Int      @default(0)  // completion tokens
+  costUsd      Float    @default(0)  // cout USD (calcule depuis tokens)
+  costEur      Float    @default(0)  // cout EUR (converti au taux du moment)
+  durationMs   Int?     // duree de l'appel en ms
   success      Boolean  @default(true)
-  errorCode    String?
+  errorCode    String?  // code erreur si success=false
   createdAt    DateTime @default(now())
+
   @@index([userId, createdAt])
   @@index([action, createdAt])
   @@index([createdAt])

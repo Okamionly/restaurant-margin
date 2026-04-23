@@ -19,6 +19,8 @@ vi.mock('@prisma/client', () => {
   return { PrismaClient };
 });
 
+// ── Unit Divisor (core of food cost math) ─────────────────────────────────────
+
 describe('getUnitDivisor — converts ingredient quantities to bulk unit', () => {
   it('returns 1000 for grams (price stored per kg)', async () => {
     const { getUnitDivisor } = await import('../api/utils/unitConversion');
@@ -68,15 +70,19 @@ describe('getUnitDivisor — converts ingredient quantities to bulk unit', () =>
   });
 });
 
+// ── Food cost calculation (formula: costPerPortion = quantity * pricePerUnit / divisor) ──
+
 describe('Food cost calculation formula', () => {
-  it('calculates ingredient cost for beef at 15e/kg, 200g portion', async () => {
+  it('calculates ingredient cost for beef at 15€/kg, 200g portion', async () => {
     const { getUnitDivisor } = await import('../api/utils/unitConversion');
+    // 200g * 15€/kg / 1000 = 3.00€
     const cost = (200 * 15) / getUnitDivisor('g');
     expect(cost).toBeCloseTo(3.0, 2);
   });
 
-  it('calculates ingredient cost for olive oil at 8e/L, 5cl portion', async () => {
+  it('calculates ingredient cost for olive oil at 8€/L, 5cl portion', async () => {
     const { getUnitDivisor } = await import('../api/utils/unitConversion');
+    // 5cl * 8€/L / 100 = 0.40€
     const cost = (5 * 8) / getUnitDivisor('cl');
     expect(cost).toBeCloseTo(0.4, 2);
   });
@@ -85,7 +91,7 @@ describe('Food cost calculation formula', () => {
     const totalIngredientCost = 3.5;
     const sellingPrice = 14.0;
     const foodCostPercent = (totalIngredientCost / sellingPrice) * 100;
-    expect(foodCostPercent).toBeCloseTo(25, 0);
+    expect(foodCostPercent).toBeCloseTo(25, 0); // 25%
   });
 
   it('computes gross margin from food cost %', () => {
@@ -94,6 +100,8 @@ describe('Food cost calculation formula', () => {
     expect(grossMargin).toBe(75);
   });
 });
+
+// ── Input validation (validatePrice / validatePositiveNumber) ─────────────────
 
 describe('validatePrice — guards numeric inputs', () => {
   it('accepts valid price', async () => {

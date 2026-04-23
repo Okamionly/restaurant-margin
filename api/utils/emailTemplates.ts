@@ -313,88 +313,51 @@ ${footer('Devis g&eacute;n&eacute;r&eacute; via RestauMargin &mdash; www.restaum
   return wrapper(content);
 }
 
-// ---------- Template C : Bienvenue v2 (enriched) ----------
+// ---------- Template C : Bienvenue ----------
 
 export function buildWelcomeEmail(data: WelcomeEmailData): string {
   const dashboardUrl = data.dashboardUrl || 'https://www.restaumargin.fr/dashboard';
-  const calendlyUrl = 'https://calendly.com/restaumargin/demo-15min';
-  const loomVideoUrl = 'https://www.restaumargin.fr/dashboard';
-  const loomThumbnailUrl = 'https://www.restaumargin.fr/og-image.png';
 
-  const checklistItem = (num: number, title: string, desc: string) => `
-    <tr>
-      <td style="padding:10px 0;border-bottom:1px solid ${BORDER};vertical-align:top;">
-        <table width="100%" cellspacing="0" cellpadding="0"><tr>
-          <td style="width:28px;vertical-align:top;padding-top:2px;">
-            <div style="width:22px;height:22px;border-radius:50%;background:${BG_LIGHT};border:2px solid ${BORDER};text-align:center;line-height:18px;font-size:11px;font-weight:bold;color:${MUTED};">${num}</div>
-          </td>
-          <td style="padding-left:12px;">
-            <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 2px;">${title}</p>
-            <p style="color:${MUTED};font-size:12px;margin:0;line-height:1.5;">${desc}</p>
-          </td>
-        </tr></table>
-      </td>
-    </tr>`;
+  const step = (icon: string, num: number, title: string, desc: string) => `
+    <td style="width:33%;text-align:center;vertical-align:top;padding:10px;">
+      <div style="background:${BG_LIGHT};border-radius:12px;padding:20px 12px;">
+        <div style="font-size:32px;margin-bottom:8px;">${icon}</div>
+        <div style="background:${TEAL};color:white;width:24px;height:24px;border-radius:50%;display:inline-block;line-height:24px;font-size:13px;font-weight:bold;margin-bottom:8px;">${num}</div>
+        <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 4px;">${title}</p>
+        <p style="color:${MUTED};font-size:12px;margin:0;">${desc}</p>
+      </div>
+    </td>`;
 
   const content = `
 ${header('RestauMargin', 'Bienvenue !')}
 
-<tr><td style="padding:30px 25px 16px;">
-  <p style="font-size:19px;color:${DARK};margin:0;font-weight:700;">Bonjour ${esc(data.userName)},</p>
-  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.7;">
-    Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">14&nbsp;jours</strong> est activ&eacute;.
-    Voici tout ce que vous devez savoir pour d&eacute;marrer.
+<tr><td style="padding:30px 25px 10px;">
+  <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
+  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
+    Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">14 jours</strong> est activ&eacute;.
+    Voici comment d&eacute;marrer en 3 &eacute;tapes simples :
   </p>
 </td></tr>
 
-<tr><td style="padding:0 25px 20px;">
-  <a href="${loomVideoUrl}" style="display:block;text-decoration:none;border-radius:10px;overflow:hidden;border:1px solid ${BORDER};">
-    <img src="${loomThumbnailUrl}" alt="D&eacute;mo RestauMargin 90 secondes" width="550" style="width:100%;max-width:550px;display:block;" />
-  </a>
-  <p style="color:${MUTED};font-size:12px;text-align:center;margin:8px 0 0;">
-    &#9654;&nbsp;Tour du produit &mdash; 90 secondes (vid&eacute;o Loom)
-  </p>
+<tr><td style="padding:10px 15px;">
+  <table width="100%" cellspacing="0" cellpadding="0"><tr>
+    ${step('&#127869;', 1, 'Ajoutez vos ingr&eacute;dients', 'Importez votre inventaire ou ajoutez-les un par un')}
+    ${step('&#129489;&#8205;&#127859;', 2, 'Cr&eacute;ez vos fiches techniques', 'L\'IA vous aide &agrave; les g&eacute;n&eacute;rer')}
+    ${step('&#128200;', 3, 'Analysez vos marges', 'Food cost, rentabilit&eacute;, optimisations')}
+  </tr></table>
 </td></tr>
 
-<tr><td style="padding:0 25px 20px;">
-  <p style="color:${DARK};font-size:15px;font-weight:700;margin:0 0 12px;">Votre checklist d&rsquo;activation :</p>
-  <table width="100%" cellspacing="0" cellpadding="0">
-    ${checklistItem(1, 'V&eacute;rifiez votre email', 'Cliquez le lien re&ccedil;u pour valider votre compte')}
-    ${checklistItem(2, 'Configurez votre restaurant', 'Type de cuisine, couverts, budget')}
-    ${checklistItem(3, 'Ajoutez 5 ingr&eacute;dients', 'Vos 5 ingr&eacute;dients les plus utilis&eacute;s')}
-    ${checklistItem(4, 'Cr&eacute;ez votre premi&egrave;re fiche technique', "L'IA la g&eacute;n&egrave;re en 30 secondes")}
-    ${checklistItem(5, 'Consultez votre food cost', 'Premi&egrave;re marge calcul&eacute;e automatiquement')}
-    ${checklistItem(6, 'Invitez un membre de l&rsquo;&eacute;quipe', 'Chef ou manager peut aussi se connecter')}
-  </table>
-</td></tr>
-
-<tr><td style="padding:0 25px 16px;text-align:center;">
+<tr><td style="padding:25px;text-align:center;">
   <a href="${dashboardUrl}" style="display:inline-block;background:linear-gradient(135deg,${TEAL},${TEAL_LIGHT});color:white;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
-    D&eacute;marrer maintenant &#8594;
+    Commencer maintenant &#8594;
   </a>
-</td></tr>
-
-<tr><td style="padding:0 25px 20px;">
-  <div style="background:#f0fdfa;border:1px solid #99f6e4;border-radius:10px;padding:18px 20px;">
-    <p style="color:${TEAL};font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 6px;">D&eacute;mo personnalis&eacute;e offerte</p>
-    <p style="color:#0f766e;font-size:14px;margin:0 0 14px;line-height:1.6;">
-      R&eacute;servez 15&nbsp;min avec Youssef pour un tour adapt&eacute; &agrave; votre restaurant.
-      Food cost, fiches techniques et quick wins pour vos marges.
-    </p>
-    <div style="text-align:center;">
-      <a href="${calendlyUrl}" style="display:inline-block;background:${TEAL};color:white;padding:11px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
-        R&eacute;server ma d&eacute;mo gratuite &#8594;
-      </a>
-    </div>
-  </div>
 </td></tr>
 
 <tr><td style="padding:0 25px 15px;">
-  <div style="background:${BG_LIGHT};border-radius:8px;padding:14px 16px;">
-    <p style="color:${MUTED};font-size:13px;margin:0;line-height:1.6;">
-      Une question ? R&eacute;pondez directement &agrave; cet email ou &eacute;crivez-nous &agrave;
-      <a href="mailto:contact@restaumargin.fr" style="color:${TEAL};text-decoration:none;font-weight:600;">contact@restaumargin.fr</a>
-      &mdash; r&eacute;ponse sous 24h.
+  <div style="background:${BG_LIGHT};border-radius:8px;padding:16px;text-align:center;">
+    <p style="color:${MUTED};font-size:13px;margin:0;">
+      Une question ? R&eacute;pondez directement &agrave; cet email ou contactez-nous &agrave;
+      <a href="mailto:contact@restaumargin.fr" style="color:${TEAL};text-decoration:none;">contact@restaumargin.fr</a>
     </p>
   </div>
 </td></tr>
@@ -836,7 +799,7 @@ ${header('RestauMargin', 'Votre essai a expir&eacute;')}
 <tr><td style="padding:30px 25px 10px;">
   <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
   <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
-    Votre essai gratuit de 7 jours est termin&eacute;. Votre compte est d&eacute;sactiv&eacute;,
+    Votre essai gratuit de 14 jours est termin&eacute;. Votre compte est d&eacute;sactiv&eacute;,
     mais <strong style="color:${DARK};">vos donn&eacute;es sont conserv&eacute;es 30 jours</strong>.
   </p>
 </td></tr>
@@ -1386,7 +1349,7 @@ export function buildCampaignEmail(restaurant: CampaignRestaurant, cuisineType?:
     </td></tr>
     <tr><td align="center" style="padding:14px 0 0;">
       <p style="color:#6b7280;font-family:'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;margin:0;line-height:1.6;">
-        7 jours gratuits &bull; Sans carte bancaire &bull; Annulation libre
+        14 jours gratuits &bull; Sans carte bancaire &bull; Annulation libre
       </p>
     </td></tr>
     <tr><td align="center" style="padding:6px 0 0;">
@@ -1467,4 +1430,292 @@ export function buildCampaignEmail(restaurant: CampaignRestaurant, cuisineType?:
 </html>`;
 
   return { subject: cuisine.subject, html };
+}
+
+// ============================================================
+// DUNNING SEQUENCE — Relance paiement echoue
+// Wiring : webhook invoice.payment_failed -> J+1, retry J+3, final J+7
+// Idempotency : verifier que l'email n'a pas deja ete envoye pour cet invoiceId
+// ============================================================
+
+export interface DunningEmailData {
+  userName: string;
+  userEmail: string;
+  plan: 'pro' | 'business';
+  amountEur: number;          // montant en euros (ex: 29 ou 79)
+  invoiceId: string;          // Stripe invoice ID pour idempotency
+  invoiceUrl?: string;        // lien Stripe hosted invoice
+  updatePaymentUrl?: string;  // lien Customer Portal pour maj CB
+  nextRetryDate?: string;     // date du prochain retry Stripe (YYYY-MM-DD)
+  gracePeriodEndsAt?: string; // date de suspension si non-regle (YYYY-MM-DD)
+}
+
+const DUNNING_COLORS = {
+  amber: '#f59e0b',
+  rose: '#ef4444',
+  dark: '#111111',
+  muted: '#6b7280',
+  bg: '#fffbeb',
+  border: '#fde68a',
+};
+
+function dunningWrapper(content: string, urgency: 'warning' | 'urgent' | 'final'): string {
+  const bgMap = { warning: '#fffbeb', urgent: '#fff7ed', final: '#fef2f2' };
+  const borderColorMap = { warning: '#fbbf24', urgent: '#fb923c', final: '#f87171' };
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RestauMargin — Paiement</title>
+</head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:'Segoe UI',Arial,sans-serif;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f1f5f9;">
+  <tr><td align="center" style="padding:24px 12px;">
+    <table role="presentation" width="600" cellspacing="0" cellpadding="0"
+      style="max-width:600px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;
+             box-shadow:0 4px 24px rgba(0,0,0,0.08);border-top:4px solid ${borderColorMap[urgency]};">
+      ${content}
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>`;
+}
+
+function dunningHeader(title: string, emoji: string): string {
+  return `
+<tr><td style="padding:28px 30px 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td style="vertical-align:middle;">
+        <span style="font-size:22px;">${emoji}</span>
+        <span style="font-family:'Segoe UI',Arial,sans-serif;font-size:18px;font-weight:700;
+               color:#111111;vertical-align:middle;margin-left:8px;">RestauMargin</span>
+      </td>
+    </tr>
+  </table>
+</td></tr>
+<tr><td style="padding:20px 30px 0;">
+  <h1 style="font-family:'Segoe UI',Arial,sans-serif;font-size:22px;font-weight:700;
+             color:#111111;margin:0;line-height:1.3;">${title}</h1>
+</td></tr>`;
+}
+
+function dunningPaymentBlock(data: DunningEmailData): string {
+  const planLabel = data.plan === 'pro' ? 'Pro' : 'Business';
+  return `
+<tr><td style="padding:16px 30px 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
+    style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;">
+    <tr><td style="padding:16px 18px;">
+      <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;font-size:13px;
+               color:#92400e;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">
+        Paiement en echec
+      </p>
+      <p style="margin:6px 0 0;font-family:'Segoe UI',Arial,sans-serif;font-size:20px;
+               font-weight:700;color:#111111;">
+        ${data.amountEur.toFixed(2)}&nbsp;&euro; — Abonnement ${planLabel}
+      </p>
+      ${data.invoiceId ? `<p style="margin:4px 0 0;font-family:'Segoe UI',Arial,sans-serif;font-size:12px;color:#6b7280;">
+        Ref. facture : ${data.invoiceId}
+      </p>` : ''}
+    </td></tr>
+  </table>
+</td></tr>`;
+}
+
+function dunningCTA(updateUrl: string, invoiceUrl?: string): string {
+  return `
+<tr><td style="padding:24px 30px 0;">
+  <table role="presentation" cellspacing="0" cellpadding="0" width="100%">
+    <tr><td>
+      <a href="${updateUrl}"
+        style="display:inline-block;padding:14px 36px;background:#111111;color:#ffffff;
+               text-decoration:none;border-radius:10px;font-weight:700;font-size:15px;
+               font-family:'Segoe UI',Arial,sans-serif;">
+        Mettre a jour ma carte &rarr;
+      </a>
+    </td></tr>
+    ${invoiceUrl ? `<tr><td style="padding-top:10px;">
+      <a href="${invoiceUrl}"
+        style="font-family:'Segoe UI',Arial,sans-serif;font-size:13px;color:#6b7280;text-decoration:underline;">
+        Voir la facture en ligne
+      </a>
+    </td></tr>` : ''}
+  </table>
+</td></tr>`;
+}
+
+function dunningFooter(unsubEmail: string): string {
+  return `
+<tr><td style="padding:24px 30px;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:13px;color:#6b7280;margin:0;line-height:1.6;">
+    Cet email concerne votre abonnement RestauMargin. Si vous avez deja mis a jour votre moyen de paiement,
+    ignorez ce message.<br><br>
+    En cas de question : <a href="mailto:contact@restaumargin.fr" style="color:#0d9488;">contact@restaumargin.fr</a>
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:11px;color:#9ca3af;margin:12px 0 0;">
+    &copy; 2026 RestauMargin &mdash; Montpellier, France
+    &nbsp;|&nbsp;
+    <a href="https://www.restaumargin.fr/billing" style="color:#9ca3af;text-decoration:underline;">
+      Gerer mon abonnement
+    </a>
+  </p>
+</td></tr>`;
+}
+
+// ── J+1 : Avertissement initial, ton empathique ──
+export function buildDunningJ1Email(data: DunningEmailData): string {
+  const updateUrl = data.updatePaymentUrl ?? 'https://www.restaumargin.fr/billing';
+  const retryMsg = data.nextRetryDate
+    ? `Stripe effectuera un second essai de paiement le <strong>${data.nextRetryDate}</strong>.`
+    : 'Stripe effectuera un second essai automatiquement dans 2 jours.';
+
+  const html = dunningWrapper(`
+${dunningHeader('Probleme de paiement sur votre abonnement', '&#128205;')}
+
+<tr><td style="padding:16px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#111111;line-height:1.7;margin:0;">
+    Bonjour ${data.userName},
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    Le paiement de votre abonnement RestauMargin n'a pas pu etre preleve. Cela arrive parfois
+    (carte expiree, plafond atteint, authentification 3D Secure manquante).
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    ${retryMsg} Pour eviter toute interruption de service, veuillez verifier votre moyen de paiement.
+  </p>
+</td></tr>
+
+${dunningPaymentBlock(data)}
+
+${dunningCTA(updateUrl, data.invoiceUrl)}
+
+<tr><td style="padding:20px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:0;">
+    Votre acces reste actif pendant la periode de regularisation. Nous comptons sur vous !
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    L'equipe RestauMargin
+  </p>
+</td></tr>
+
+${dunningFooter(data.userEmail)}
+`, 'warning');
+
+  return html;
+}
+
+// ── J+3 : Urgence moderee, ton direct ──
+export function buildDunningJ3Email(data: DunningEmailData): string {
+  const updateUrl = data.updatePaymentUrl ?? 'https://www.restaumargin.fr/billing';
+  const suspendMsg = data.gracePeriodEndsAt
+    ? `Votre acces sera suspendu le <strong>${data.gracePeriodEndsAt}</strong> si le paiement n'est pas regularise.`
+    : 'Votre acces sera suspendu dans les prochains jours si le paiement n\'est pas regularise.';
+
+  const html = dunningWrapper(`
+${dunningHeader('2eme avertissement — Paiement toujours en attente', '&#9888;&#65039;')}
+
+<tr><td style="padding:16px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#111111;line-height:1.7;margin:0;">
+    Bonjour ${data.userName},
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    Malgre notre premier message, le paiement de votre abonnement RestauMargin reste en echec.
+    ${suspendMsg}
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    En cas de suspension, vous perdrez l'acces a :
+  </p>
+  <ul style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:2;
+             margin:8px 0 0;padding-left:20px;">
+    <li>Le calcul de marges et food cost en temps reel</li>
+    <li>La gestion de vos recettes et ingredients</li>
+    <li>L'assistant IA et les suggestions d'optimisation</li>
+    <li>Les commandes fournisseurs et le suivi des stocks</li>
+  </ul>
+</td></tr>
+
+${dunningPaymentBlock(data)}
+
+${dunningCTA(updateUrl, data.invoiceUrl)}
+
+<tr><td style="padding:20px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:0;">
+    Pour toute question sur votre paiement, repondez directement a cet email.
+    Nous sommes la pour vous aider.
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    L'equipe RestauMargin
+  </p>
+</td></tr>
+
+${dunningFooter(data.userEmail)}
+`, 'urgent');
+
+  return html;
+}
+
+// ── J+7 : Derniere chance, ton ferme ──
+export function buildDunningJ7Email(data: DunningEmailData): string {
+  const updateUrl = data.updatePaymentUrl ?? 'https://www.restaumargin.fr/billing';
+
+  const html = dunningWrapper(`
+${dunningHeader('Dernier avertissement — Suspension imminente', '&#128680;')}
+
+<tr><td style="padding:16px 30px 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
+    style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;">
+    <tr><td style="padding:14px 18px;">
+      <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;font-size:14px;
+               font-weight:700;color:#991b1b;">
+        &#9888; Votre acces RestauMargin va etre suspendu aujourd'hui
+      </p>
+    </td></tr>
+  </table>
+</td></tr>
+
+<tr><td style="padding:16px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#111111;line-height:1.7;margin:0;">
+    Bonjour ${data.userName},
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    Malgre nos deux precedents messages, le paiement de votre abonnement n'a pas ete regularise.
+    Stripe a effectue plusieurs tentatives de prelevement sans succes.
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    <strong>C'est votre derniere opportunite</strong> de regulariser votre situation avant la suspension
+    automatique de votre compte.
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    Toutes vos donnees (recettes, ingredients, fournisseurs, historique) seront conservees pendant
+    30 jours apres la suspension. Vous pourrez reactiver votre compte a tout moment.
+  </p>
+</td></tr>
+
+${dunningPaymentBlock(data)}
+
+${dunningCTA(updateUrl, data.invoiceUrl)}
+
+<tr><td style="padding:16px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:0;">
+    Si vous souhaitez resilier definitivement votre abonnement, vous pouvez le faire depuis
+    <a href="${updateUrl}" style="color:#0d9488;text-decoration:underline;">votre espace de facturation</a>.
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    Pour tout probleme technique ou question de facturation, contactez-nous :
+    <a href="mailto:contact@restaumargin.fr" style="color:#0d9488;text-decoration:underline;">
+      contact@restaumargin.fr
+    </a>
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    L'equipe RestauMargin
+  </p>
+</td></tr>
+
+${dunningFooter(data.userEmail)}
+`, 'final');
+
+  return html;
 }

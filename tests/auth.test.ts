@@ -86,6 +86,7 @@ describe('authMiddleware — JWT validation', () => {
 
   it('rejects expired JWT', async () => {
     const { authMiddleware } = await import('../api/middleware');
+    // Sign with negative expiry to get an already-expired token
     const token = jwt.sign({ userId: 1, email: 'x@x.com', role: 'owner' }, TEST_SECRET, { expiresIn: -1 });
     const req = makeReq(token);
     const res = makeRes();

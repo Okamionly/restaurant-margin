@@ -12,7 +12,6 @@ import mercurialeRoutes from './routes/mercuriale';
 import exportRoutes from './routes/export';
 import referralsRoutes from './routes/referrals';
 import adminRoutes from './routes/admin';
-import npsRoutes from './routes/nps';
 import stripeRoutes, { stripeWebhookHandler } from './routes/stripe';
 import { getUnitDivisor } from './utils/unitConversion';
 import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit } from './middleware';
@@ -33,7 +32,7 @@ app.use(cors({
   credentials: true,
 }));
 // ── Stripe Webhook (must be before express.json() for raw body) ──
-// Handler extracted to api/routes/stripe.ts (CWE-345 fix included)
+// Handler is in api/routes/stripe.ts — includes CWE-345 fix (no JSON.parse fallback)
 app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), stripeWebhookHandler);
 
 app.use(express.json());

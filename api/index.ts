@@ -12,6 +12,7 @@ import mercurialeRoutes from './routes/mercuriale';
 import exportRoutes from './routes/export';
 import referralsRoutes from './routes/referrals';
 import adminRoutes from './routes/admin';
+import npsRoutes from './routes/nps';
 import { getUnitDivisor } from './utils/unitConversion';
 import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit } from './middleware';
 import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail, buildTrialExpiringEmail, buildTrialLastDayEmail, buildTrialExpiredEmail } from './utils/emailTemplates';
@@ -697,24 +698,24 @@ app.get('/api/cron/trial-expiry', async (req: any, res) => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    // J+5: trial ends in 2 days
+    // J+12: trial ends in 2 days
     const in2Days = new Date(today);
     in2Days.setDate(in2Days.getDate() + 2);
     const in2DaysEnd = new Date(in2Days);
     in2DaysEnd.setDate(in2DaysEnd.getDate() + 1);
 
-    // J+6: trial ends in 1 day (tomorrow)
+    // J+13: trial ends in 1 day (tomorrow)
     const in1Day = new Date(today);
     in1Day.setDate(in1Day.getDate() + 1);
     const in1DayEnd = new Date(in1Day);
     in1DayEnd.setDate(in1DayEnd.getDate() + 1);
 
-    // J+7: trial ends today
+    // J+14: trial ends today
     const todayEnd = new Date(today);
     todayEnd.setDate(todayEnd.getDate() + 1);
 
     // Find users for each category
-    const [usersJ5, usersJ6, usersJ7] = await Promise.all([
+    const [usersJ12, usersJ13, usersJ14] = await Promise.all([
       prisma.user.findMany({
         where: { trialEndsAt: { gte: in2Days, lt: in2DaysEnd }, plan: 'basic' },
         select: { id: true, email: true, name: true },
@@ -733,8 +734,8 @@ app.get('/api/cron/trial-expiry', async (req: any, res) => {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const results: string[] = [];
 
-    // J+5: 2 days left
-    for (const u of usersJ5) {
+    // J+12: 2 days left
+    for (const u of usersJ12) {
       try {
         // Count user data via their restaurants
         const membership = await prisma.restaurantMember.findFirst({ where: { userId: u.id }, select: { restaurantId: true } });
@@ -752,14 +753,14 @@ app.get('/api/cron/trial-expiry', async (req: any, res) => {
           subject: 'Votre essai se termine dans 2 jours',
           html: buildTrialExpiringEmail({ userName: u.name, daysLeft: 2, recipesCount, ingredientsCount }),
         });
-        results.push(`J+5: ${u.email}`);
+        results.push(`J+12: ${u.email}`);
       } catch (err: any) {
-        results.push(`J+5 FAIL: ${u.email} - ${err.message}`);
+        results.push(`J+12 FAIL: ${u.email} - ${err.message}`);
       }
     }
 
-    // J+6: 1 day left (last day)
-    for (const u of usersJ6) {
+    // J+13: 1 day left (last day)
+    for (const u of usersJ13) {
       try {
         const membership = await prisma.restaurantMember.findFirst({ where: { userId: u.id }, select: { restaurantId: true } });
         let recipesCount = 0, ingredientsCount = 0;
@@ -776,14 +777,14 @@ app.get('/api/cron/trial-expiry', async (req: any, res) => {
           subject: 'Dernier jour d\'essai — ne perdez pas vos donnees',
           html: buildTrialLastDayEmail({ userName: u.name, recipesCount, ingredientsCount }),
         });
-        results.push(`J+6: ${u.email}`);
+        results.push(`J+13: ${u.email}`);
       } catch (err: any) {
-        results.push(`J+6 FAIL: ${u.email} - ${err.message}`);
+        results.push(`J+13 FAIL: ${u.email} - ${err.message}`);
       }
     }
 
-    // J+7: expired today
-    for (const u of usersJ7) {
+    // J+14: expired today
+    for (const u of usersJ14) {
       try {
         await resend.emails.send({
           from: 'RestauMargin <contact@restaumargin.fr>',
@@ -791,15 +792,15 @@ app.get('/api/cron/trial-expiry', async (req: any, res) => {
           subject: 'Votre essai est termine — Passez au Pro',
           html: buildTrialExpiredEmail({ userName: u.name }),
         });
-        results.push(`J+7: ${u.email}`);
+        results.push(`J+14: ${u.email}`);
       } catch (err: any) {
-        results.push(`J+7 FAIL: ${u.email} - ${err.message}`);
+        results.push(`J+14 FAIL: ${u.email} - ${err.message}`);
       }
     }
 
     res.json({
       status: 'done',
-      sent: { j5: usersJ5.length, j6: usersJ6.length, j7: usersJ7.length },
+      sent: { j12: usersJ12.length, j13: usersJ13.length, j14: usersJ14.length },
       details: results,
       timestamp: new Date().toISOString(),
     });
@@ -816,6 +817,7 @@ app.use('/api/mercuriale', mercurialeRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/referrals', referralsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/nps', npsRoutes);
 
 // ── Activation codes (kept at /api/activation/* for backward compat) ──
 function generateActivationCode(): string {

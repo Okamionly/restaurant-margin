@@ -313,51 +313,95 @@ ${footer('Devis g&eacute;n&eacute;r&eacute; via RestauMargin &mdash; www.restaum
   return wrapper(content);
 }
 
-// ---------- Template C : Bienvenue ----------
+// ---------- Template C : Bienvenue v2 ----------
 
 export function buildWelcomeEmail(data: WelcomeEmailData): string {
   const dashboardUrl = data.dashboardUrl || 'https://www.restaumargin.fr/dashboard';
+  const calendlyUrl = 'https://calendly.com/restaumargin/demo-15min';
+  const loomVideoUrl = 'https://www.restaumargin.fr/dashboard';
+  const loomThumbnailUrl = 'https://www.restaumargin.fr/og-image.png';
 
-  const step = (icon: string, num: number, title: string, desc: string) => `
-    <td style="width:33%;text-align:center;vertical-align:top;padding:10px;">
-      <div style="background:${BG_LIGHT};border-radius:12px;padding:20px 12px;">
-        <div style="font-size:32px;margin-bottom:8px;">${icon}</div>
-        <div style="background:${TEAL};color:white;width:24px;height:24px;border-radius:50%;display:inline-block;line-height:24px;font-size:13px;font-weight:bold;margin-bottom:8px;">${num}</div>
-        <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 4px;">${title}</p>
-        <p style="color:${MUTED};font-size:12px;margin:0;">${desc}</p>
-      </div>
-    </td>`;
+  const checklistItem = (num: number, title: string, desc: string) => `
+    <tr>
+      <td style="padding:10px 0;border-bottom:1px solid ${BORDER};vertical-align:top;">
+        <table width="100%" cellspacing="0" cellpadding="0"><tr>
+          <td style="width:28px;vertical-align:top;padding-top:2px;">
+            <div style="width:22px;height:22px;border-radius:50%;background:${BG_LIGHT};border:2px solid ${BORDER};text-align:center;line-height:18px;font-size:11px;font-weight:bold;color:${MUTED};">${num}</div>
+          </td>
+          <td style="padding-left:12px;">
+            <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 2px;">${title}</p>
+            <p style="color:${MUTED};font-size:12px;margin:0;line-height:1.5;">${desc}</p>
+          </td>
+        </tr></table>
+      </td>
+    </tr>`;
 
   const content = `
 ${header('RestauMargin', 'Bienvenue !')}
 
+<<<<<<< HEAD
+<tr><td style="padding:30px 25px 16px;">
+  <p style="font-size:19px;color:${DARK};margin:0;font-weight:700;">Bonjour ${esc(data.userName)},</p>
+  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.7;">
+    Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">14&nbsp;jours</strong> est activ&eacute;.
+=======
 <tr><td style="padding:30px 25px 10px;">
   <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
   <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
     Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">14 jours</strong> est activ&eacute;.
     Voici comment d&eacute;marrer en 3 &eacute;tapes simples :
+>>>>>>> origin/main
   </p>
 </td></tr>
 
-<tr><td style="padding:10px 15px;">
-  <table width="100%" cellspacing="0" cellpadding="0"><tr>
-    ${step('&#127869;', 1, 'Ajoutez vos ingr&eacute;dients', 'Importez votre inventaire ou ajoutez-les un par un')}
-    ${step('&#129489;&#8205;&#127859;', 2, 'Cr&eacute;ez vos fiches techniques', 'L\'IA vous aide &agrave; les g&eacute;n&eacute;rer')}
-    ${step('&#128200;', 3, 'Analysez vos marges', 'Food cost, rentabilit&eacute;, optimisations')}
-  </tr></table>
+<tr><td style="padding:0 25px 20px;">
+  <a href="${loomVideoUrl}" style="display:block;text-decoration:none;border-radius:10px;overflow:hidden;border:1px solid ${BORDER};">
+    <img src="${loomThumbnailUrl}" alt="D&eacute;mo RestauMargin 90 secondes" width="550" style="width:100%;max-width:550px;display:block;" />
+  </a>
+  <p style="color:${MUTED};font-size:12px;text-align:center;margin:8px 0 0;">
+    &#9654;&nbsp;Tour du produit &mdash; 90 secondes (vid&eacute;o Loom)
+  </p>
 </td></tr>
 
-<tr><td style="padding:25px;text-align:center;">
+<tr><td style="padding:0 25px 20px;">
+  <p style="color:${DARK};font-size:15px;font-weight:700;margin:0 0 12px;">Votre checklist d&rsquo;activation :</p>
+  <table width="100%" cellspacing="0" cellpadding="0">
+    ${checklistItem(1, 'V&eacute;rifiez votre email', 'Cliquez le lien re&ccedil;u pour valider votre compte')}
+    ${checklistItem(2, 'Configurez votre restaurant', 'Type de cuisine, couverts, budget')}
+    ${checklistItem(3, 'Ajoutez 5 ingr&eacute;dients', 'Vos 5 ingr&eacute;dients les plus utilis&eacute;s')}
+    ${checklistItem(4, 'Cr&eacute;ez votre premi&egrave;re fiche technique', "L'IA la g&eacute;n&egrave;re en 30 secondes")}
+    ${checklistItem(5, 'Consultez votre food cost', 'Premi&egrave;re marge calcul&eacute;e automatiquement')}
+    ${checklistItem(6, 'Invitez un membre de l&rsquo;&eacute;quipe', 'Chef ou manager peut aussi se connecter')}
+  </table>
+</td></tr>
+
+<tr><td style="padding:0 25px 16px;text-align:center;">
   <a href="${dashboardUrl}" style="display:inline-block;background:linear-gradient(135deg,${TEAL},${TEAL_LIGHT});color:white;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
-    Commencer maintenant &#8594;
+    D&eacute;marrer maintenant &#8594;
   </a>
 </td></tr>
 
+<tr><td style="padding:0 25px 20px;">
+  <div style="background:#f0fdfa;border:1px solid #99f6e4;border-radius:10px;padding:18px 20px;">
+    <p style="color:${TEAL};font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 6px;">D&eacute;mo personnalis&eacute;e offerte</p>
+    <p style="color:#0f766e;font-size:14px;margin:0 0 14px;line-height:1.6;">
+      R&eacute;servez 15&nbsp;min avec Youssef pour un tour adapt&eacute; &agrave; votre restaurant.
+      Food cost, fiches techniques et quick wins pour vos marges.
+    </p>
+    <div style="text-align:center;">
+      <a href="${calendlyUrl}" style="display:inline-block;background:${TEAL};color:white;padding:11px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
+        R&eacute;server ma d&eacute;mo gratuite &#8594;
+      </a>
+    </div>
+  </div>
+</td></tr>
+
 <tr><td style="padding:0 25px 15px;">
-  <div style="background:${BG_LIGHT};border-radius:8px;padding:16px;text-align:center;">
-    <p style="color:${MUTED};font-size:13px;margin:0;">
-      Une question ? R&eacute;pondez directement &agrave; cet email ou contactez-nous &agrave;
-      <a href="mailto:contact@restaumargin.fr" style="color:${TEAL};text-decoration:none;">contact@restaumargin.fr</a>
+  <div style="background:${BG_LIGHT};border-radius:8px;padding:14px 16px;">
+    <p style="color:${MUTED};font-size:13px;margin:0;line-height:1.6;">
+      Une question ? R&eacute;pondez directement &agrave; cet email ou &eacute;crivez-nous &agrave;
+      <a href="mailto:contact@restaumargin.fr" style="color:${TEAL};text-decoration:none;font-weight:600;">contact@restaumargin.fr</a>
+      &mdash; r&eacute;ponse sous 24h.
     </p>
   </div>
 </td></tr>

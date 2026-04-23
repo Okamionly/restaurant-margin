@@ -192,7 +192,7 @@ export default function BlogIndex() {
             Prêt à optimiser votre restaurant ?
           </h3>
           <p className="text-white/70 mb-8 max-w-xl mx-auto">
-            Essayez RestauMargin gratuitement pendant 7 jours. Calculez vos marges, gerez vos fiches
+            Essayez RestauMargin gratuitement pendant 14 jours. Calculez vos marges, gerez vos fiches
             techniques et optimisez vos food cost automatiquement.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -200,7 +200,7 @@ export default function BlogIndex() {
               to="/login"
               className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-full transition-colors"
             >
-              Essai gratuit 7 jours
+              Essai gratuit 14 jours
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link

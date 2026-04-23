@@ -213,7 +213,7 @@ export default function APropos() {
             'Station de pesée connectée — compatible toute balance Bluetooth',
             'IA intégrée — suggestions, analyses, commandes automatisées',
             'Fiches techniques — grammages, allergènes, HACCP, traçabilité',
-            'Sans engagement — essai gratuit 7 jours, annulation simple',
+            'Sans engagement — essai gratuit 14 jours, annulation simple',
           ].map((feature) => (
             <div key={feature} className="flex items-start gap-3">
               <CheckCircle2 className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
@@ -264,14 +264,14 @@ export default function APropos() {
           </h3>
           <p className="text-white/70 mb-8 max-w-xl mx-auto">
             Rejoignez les restaurateurs qui utilisent RestauMargin pour optimiser leur rentabilité
-            au quotidien. Essai gratuit 7 jours, sans engagement.
+            au quotidien. Essai gratuit 14 jours, sans engagement.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/login"
               className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-full transition-colors"
             >
-              Essai gratuit 7 jours
+              Essai gratuit 14 jours
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link

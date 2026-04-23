@@ -125,6 +125,7 @@ const EmailMarketing = lazyRetry(() => import('./pages/EmailMarketing'));
 const BlogGaspillage = lazyRetry(() => import('./pages/BlogGaspillage'));
 const BlogHACCP = lazyRetry(() => import('./pages/BlogHACCP'));
 const BlogFicheTechnique = lazyRetry(() => import('./pages/BlogFicheTechnique'));
+const HelpPage = lazyRetry(() => import('./pages/Help'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -364,6 +365,7 @@ function AppLayout() {
         { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },
         { to: '/menu', icon: BookOpen, label: 'La Carte' },
         { to: '/qr-menu', icon: QrCode, label: 'Menu QR Code' },
+        { to: '/aide', icon: BookOpen, label: "Centre d'aide" },
       ],
     },
     {
@@ -886,6 +888,7 @@ function AppLayout() {
               <Route path="/reactivation" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><TrialReactivate /></Suspense>} />
               <Route path="/admin/metrics" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AdminMetrics /></Suspense>} />
               <Route path="/email-marketing" element={<EmailMarketing />} />
+              <Route path="/aide" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><HelpPage /></Suspense>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

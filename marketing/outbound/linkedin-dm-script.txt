@@ -1,59 +1,85 @@
-==============================================================
-LINKEDIN DM SCRIPT - RestauMargin
-Cible : gerants / chefs proprietaires / directeurs restauration
-Sequence : Connexion -> Message 1 -> Message 2 (J+5) -> Message 3 (J+12)
-==============================================================
+SCRIPT LINKEDIN DM — RESTAURATEURS
+Compte emetteur : Youssef Guessoussi (fondateur RestauMargin)
+Outil : Sales Navigator (filtre : restaurant owner / gerant de restaurant / chef proprietaire, France)
 
-NOTE DE CONNEXION (300 caracteres max)
--------------------------------------------------------------
-Bonjour {{PRENOM}}, je travaille sur un outil de pilotage des marges pour les restos independants. Votre parcours m'interesse - j'aurais une question rapide si vous acceptez la connexion.
+=============================================================
+NOTE DE CONNEXION (300 chars max)
+=============================================================
 
-MESSAGE 1 - Apres connexion acceptee
--------------------------------------------------------------
+Bonjour {{PRENOM}}, je developpe RestauMargin — un outil de gestion des marges pour restaurateurs independants. Votre parcours m'a interesse. Je serais ravi d'echanger. Bonne journee, Youssef
+
+---
+
+=============================================================
+MESSAGE 1 — APRES ACCEPTATION (J+1)
+=============================================================
+
 Bonjour {{PRENOM}},
 
-Merci d'avoir accepte !
+Merci d'avoir accepte ma demande.
 
-Youssef, fondateur de RestauMargin - logiciel de calcul de marge et food cost pour restaurants independants.
+Je construis RestauMargin avec un seul objectif : permettre aux restaurateurs independants de maitriser leur food cost sans passer des heures sur des tableurs.
 
-Une question directe : le food cost de vos plats est-il calcule en temps reel dans votre etablissement, ou c'est un chiffre global mensuel ?
+Pas de question de pitch pour l'instant — juste une curiosite : comment vous gerez aujourd'hui le suivi de vos marges et de vos couts de revient ?
 
-On a constate que 80% des restos independants connaissent leur cout matiere global, mais pas le detail par recette - et c'est la que se jouent 3-5 points de marge.
+Youssef
 
-Pas de pitch - juste curieux de savoir comment vous fonctionnez.
+---
 
-(VARIANTE CHEFS ETOILES : "vos fiches techniques sont-elles recalculees automatiquement quand les prix fournisseurs changent, ou c'est un process manuel ?")
+=============================================================
+MESSAGE 2 — SI PAS DE REPONSE (J+4)
+=============================================================
 
-MESSAGE 2 - J+5 si pas de reponse
--------------------------------------------------------------
-Bonjour {{PRENOM}},
+{{PRENOM}}, je me permets de relancer.
 
-Je relance une seule fois.
+Une question simple : est-ce que vous connaissez le food cost reel de vos 3 plats les plus vendus en ce moment ?
 
-J'ai publie un guide gratuit sur les marges par type de restaurant :
-https://www.restaumargin.fr/guide-marge/[TYPE_RESTAURANT]
+Chez 70% des restaurateurs que j'ai rencontres, la reponse est "approximativement". RestauMargin le calcule precisement, avec les variations de prix fournisseur en temps reel.
 
-Si vous voulez qu'on en parle, je suis disponible pour 15 minutes.
+Si c'est un sujet qui vous parle, je peux vous montrer en 15 minutes : https://calendly.com/restaumargin/demo
 
-[TYPE_RESTAURANT] = pizzeria | brasserie | bistro | food-truck | restaurant-gastronomique
+---
 
-MESSAGE 3 - J+12 (optionnel)
--------------------------------------------------------------
-Dernier message - promis !
+=============================================================
+MESSAGE 3 — SI REPONSE POSITIVE
+=============================================================
 
-Si le sujet revient :
-https://www.restaumargin.fr (14j sans CB)
+Super, merci pour votre reponse.
 
-==============================================================
-PROFILS A CIBLER (Sales Navigator)
-- Intitule : "gerant restaurant", "chef proprietaire", "directeur F&B"
-- Secteur : Restaurants et restauration
-- Zone : Montpellier (34) -> Lyon (69) -> Paris (75)
-- Taille : 1-50 employes
+Je vous propose un appel de 20 minutes cette semaine pour vous montrer concritement comment ca fonctionne avec votre type d'etablissement.
 
-CONTENU ORGANIQUE (2x/semaine depuis compte Youssef)
-- "Ce que j'ai appris en analysant les marges de 150 restaurants"
-- "Pourquoi votre plat du jour vous coute peut-etre 5 EUR de plus que vous pensez"
-- "J'ai quitte mon CDI pour creer un logiciel de marge resto - voici ou j'en suis"
-Format : 5 lignes max avant "Voir plus", premier hook + chiffre
-==============================================================
+Creneaux disponibles ici : https://calendly.com/restaumargin/demo
+
+A bientot,
+Youssef
+
+---
+
+=============================================================
+CIBLAGE SALES NAVIGATOR
+=============================================================
+
+Filtres recommandes :
+- Titre : "gerant", "chef proprietaire", "directeur restaurant", "restaurateur"
+- Secteur : Restaurants / Food and Beverage
+- Pays : France
+- Taille entreprise : 1-50 employes
+- Exclure : chaines (McDo, Quick, etc.) — cibler independants uniquement
+
+Objectif : 20 connexions/jour max (limite LinkedIn sans risque blocage)
+Taux de reponse cible message 1 : 15-25% (LinkedIn > email a froid)
+
+---
+
+=============================================================
+CONTENU ORGANIQUE — POSTS RECOMMANDES (2x/semaine)
+=============================================================
+
+Format qui performent chez les fondateurs SaaS restauration :
+1. "Ce que j'ai appris en parlant a 50 restaurateurs" (liste 5 points)
+2. Avant/apres : screenshot food cost avant et apres RestauMargin (avec permission)
+3. "Le calcul que personne ne fait en restaurant" (accroche curiosite)
+4. Coulisses produit : nouveau feature en video 60 secondes
+5. Temoignage client en citation (screenshot message WhatsApp floutant le nom)
+
+Hashtags : #restauration #foodcost #gerantrestaurant #gastronomie #entrepreneuriat

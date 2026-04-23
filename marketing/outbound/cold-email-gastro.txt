@@ -1,58 +1,95 @@
-==============================================================
-COLD EMAIL - RESTAURANT GASTRONOMIQUE / BISTRONOMIQUE
-Sequence : J+0 / J+3 / J+7 / J+14
-From : youssef@restaumargin.fr
-Ton : plus premium, axe sur precision et pilotage
-==============================================================
+SEQUENCE COLD EMAIL — RESTAURANT GASTRONOMIQUE / FINE DINING
+Expediteur : youssef@restaumargin.fr
+Variables : {{PRENOM}} {{NOM_RESTAURANT}} {{VILLE}}
 
-ETAPE 1 - J+0 : INTRO
--------------------------------------------------------------
-OBJET A : "Pilotage des couts matiere - {{NOM_RESTAURANT}}"
-OBJET B : "{{PRENOM}}, une question sur vos fiches techniques"
+NOTE STRATEGIQUE :
+- Ton premium, moins commercial que les autres sequences
+- Ne jamais mentionner le prix dans le J+0 (signal low-end)
+- Focus sur precision, maitrise, donnees — pas sur "economies"
+- La Station Balance est l'angle d'accroche principal (rigueur des grammages)
+
+=============================================================
+EMAIL J+0
+=============================================================
+
+Objet A : Maitrise des grammages en cuisine gastronomique — un outil
+Objet B : {{NOM_RESTAURANT}} — fiches techniques et precision des couts
+
+---
 
 Bonjour {{PRENOM}},
 
-Je me permets de vous contacter directement - Youssef, fondateur de RestauMargin.
+En cuisine gastronomique, l'ecart entre la fiche technique et ce qui sort en assiette peut atteindre 10-15% sur les proteines nobles. Pas par negligence — par manque d'outil de mesure integre au flux de travail.
 
-En gastronomie, la precision des fiches techniques separe souvent un 28% de food cost d'un 35%. Pourtant, beaucoup de cuisines haut de gamme fonctionnent encore sur estimation.
+RestauMargin integre une Station Balance (tablette + balance Bluetooth Tefal Food Studio) directement dans la cuisine. Chaque ingredient pese recalcule le cout de la recette en temps reel. Les chefs de partie voient l'impact de chaque gramme supplementaire sur la marge du plat.
 
-RestauMargin calcule le food cost exact de chaque mise en place, ingredient par ingredient, avec prise en compte des pertes au parage et de la variation des prix fournisseurs en temps reel.
+Ce n'est pas un outil de "reduction des couts" — c'est un outil de maitrise et de precision.
 
-Comment gerez-vous aujourd'hui le suivi des couts quand vous changez de carte ? C'est souvent la que les pertes sont les plus invisibles.
+Je serais heureux de vous montrer comment ca fonctionne, si c'est un sujet d'interet pour {{NOM_RESTAURANT}}.
 
-20 minutes d'echange si le sujet vous parle :
-https://calendly.com/[VOTRE_LIEN]/20min
+Youssef Guessoussi
+Fondateur — RestauMargin
+https://www.restaumargin.fr
 
-Youssef
+---
 
--------------------------------------------------------------
-ETAPE 2 - J+3 : STATION BALANCE
--------------------------------------------------------------
-RestauMargin integre une balance Bluetooth pour peser les ingredients en cuisine et valider que les fiches techniques sont respectees en production - particulierement utile pour la portion control en gastronomie.
+=============================================================
+EMAIL J+5
+=============================================================
 
-Guide gastronomique (gratuit) :
-https://www.restaumargin.fr/guide-marge/restaurant-gastronomique
+Objet : Rapport hebdomadaire food cost — ce que voient les grands groupes
 
--------------------------------------------------------------
-ETAPE 3 - J+7 : DIFFERENCIATEUR TECHNIQUE
--------------------------------------------------------------
-Ce qui differencie RestauMargin pour les cuisines gastronomiques :
-1. Balance Bluetooth : pesee en temps reel, marge affichee pendant la prep
-2. IA vocale : "Ajoute 200g de beurre noisette" - la fiche se met a jour sans toucher l'ecran
-3. Scanner factures : photo d'une livraison Metro, prix mis a jour dans toutes les recettes
+---
 
-Essai 14j sans CB : https://www.restaumargin.fr
+{{PRENOM}},
 
--------------------------------------------------------------
-ETAPE 4 - J+14 : LAST CHANCE
--------------------------------------------------------------
-Dernier message.
-https://www.restaumargin.fr si le sujet revient sur la table.
+Les groupes de restauration gastronomique (3 etablissements ou plus) utilisent RestauMargin principalement pour le rapport hebdomadaire consolide.
+
+Chaque lundi matin : food cost par etablissement, alertes sur les deviations > 2 points, comparaison avec la semaine precedente. Tout en un seul document, sans extraction manuelle de donnees.
+
+Pour un chef proprietaire qui gere plusieurs maisons, c'est la visibilite qu'on avait auparavant seulement avec un DAF.
+
+Si cela correspond a votre organisation, une demonstration prend 20 minutes : https://www.restaumargin.fr/demo
 
 Youssef
 
-==============================================================
-NOTE GASTRO : Ne pas mentionner "29 EUR" au premier email (ancrage bas).
-Mentionner Station Balance des J+0 (differenciateur premium).
-VARIABLES : {{PRENOM}} {{NOM_RESTAURANT}} {{VILLE}}
-==============================================================
+---
+
+=============================================================
+EMAIL J+10
+=============================================================
+
+Objet : HACCP et tracabilite — conformite sans friction
+
+---
+
+{{PRENOM}},
+
+Un point souvent sous-estime en restauration gastronomique : la tracabilite HACCP.
+
+RestauMargin genere automatiquement les fiches de temperatures, les cahiers de nettoyage et les enregistrements HACCP — horodates, exportables, conformes aux normes en vigueur.
+
+Pour les etablissements avec des inspections frequentes (guides, certifications, grandes surfaces), ca supprime une source de stress operationnel.
+
+Youssef — youssef@restaumargin.fr
+
+---
+
+=============================================================
+EMAIL J+14
+=============================================================
+
+Objet : {{NOM_RESTAURANT}} — je clos de mon cote
+
+---
+
+{{PRENOM}},
+
+Je ne veux pas alourdir votre boite mail.
+
+Si la gestion des marges et la maitrise des couts de production est un sujet que vous traitez differemment (en interne, avec un autre outil, ou pas du tout pour l'instant), c'est tout a fait valable.
+
+Si vous souhaitez qu'on en parle a un autre moment, n'hesitez pas a me recontacter directement : youssef@restaumargin.fr
+
+Bonne continuation,
+Youssef

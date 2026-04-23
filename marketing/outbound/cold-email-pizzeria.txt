@@ -1,79 +1,109 @@
-==============================================================
-COLD EMAIL - PIZZERIA / FAST-FOOD PIZZA
-Sequence : J+0 (intro) / J+3 (relance) / J+7 (valeur) / J+14 (last chance)
-From : youssef@restaumargin.fr (TOUJOURS le fondateur, pas contact@)
-==============================================================
+SEQUENCE COLD EMAIL — PIZZERIA / RESTAURANT PIZZA
+Expediteur : youssef@restaumargin.fr
+Variables : {{PRENOM}} {{NOM_RESTAURANT}} {{VILLE}}
+Outil envoi : Resend + queue JS (scripts/agents/email-sequence.ts)
 
-ETAPE 1 - J+0 : INTRO
--------------------------------------------------------------
-OBJET A : "{{PRENOM}}, quel est votre food cost sur la Margherita ?"
-OBJET B : "Pizzeria {{NOM_RESTAURANT}} - 3 points de marge en 30 jours"
-OBJET C : "Question rapide sur vos marges, {{PRENOM}}"
+=============================================================
+EMAIL J+0 — PREMIERE PRISE DE CONTACT
+=============================================================
 
-Bonjour {{PRENOM}},
+Objet A : {{PRENOM}}, combien vous coutent vraiment vos pizzas ?
+Objet B : Food cost pizzeria {{VILLE}} — un calcul qui surprend toujours
 
-Je me presente : Youssef, fondateur de RestauMargin.
-
-Je cartographie les pizzerias independantes de {{VILLE}} qui pourraient beneficier d'un outil de calcul de marge automatique.
-
-Une question directe : connaissez-vous precisement votre food cost sur vos 5 pizzas les plus vendues ? Pas une estimation - le chiffre exact au centime.
-
-La plupart des pizzaioli me donnent "entre 28 et 33%". Avec RestauMargin, c'est 26.4% sur la Margherita et 31.7% sur la 4 fromages - l'IA calcule ingredient par ingredient, en temps reel.
-
-14 jours d'essai sans carte bancaire :
-https://www.restaumargin.fr/login?mode=register
-
-Youssef
-Fondateur RestauMargin
-[VOTRE_TELEPHONE]
-
--------------------------------------------------------------
-ETAPE 2 - J+3 : RELANCE (si pas de reponse)
--------------------------------------------------------------
-OBJET : "Re : {{OBJET_J0}}"
+---
 
 Bonjour {{PRENOM}},
 
-La semaine derniere, un pizzaiolo de Lyon a decouvert avec RestauMargin que sa pizza vegetarienne avait un food cost reel de 38% (pas 29% comme il estimait). Il a ajuste la recette en 10 minutes. 3 points de marge recuperes.
+Je me demande si vous avez deja calcule le food cost reel de votre pizza Margherita.
 
-C'est le genre de chose qu'on ne voit pas sans outil.
+Pas le prix des ingredients a la louche — le vrai food cost, en tenant compte des pertes, des variations de prix fournisseur et du coefficient multiplicateur.
 
-Si vous avez 10 minutes, je vous propose une demo en visio - vous entrez vos 3 pizzas et on calcule vos vraies marges en live.
+La plupart des pizzaiolos que j'ai rencontres sont entre 28% et 40%. Ecart qui peut representer 3 000 a 8 000 EUR de marge perdue par mois sur un etablissement de 60 couverts.
 
-https://calendly.com/[VOTRE_LIEN]/15min
+RestauMargin calcule ca en 2 minutes pour chaque plat de votre carte.
+
+Est-ce que ca vous dirait qu'on regarde ensemble les chiffres de {{NOM_RESTAURANT}} ?
+
+Youssef
+Fondateur, RestauMargin
+https://www.restaumargin.fr
+
+---
+
+=============================================================
+EMAIL J+3 — RELANCE AVEC PREUVE SOCIALE
+=============================================================
+
+Objet A : Re: Food cost {{NOM_RESTAURANT}} — un exemple concret
+Objet B : Une pizzeria a Lyon a reduit son food cost de 7 points en 3 semaines
+
+---
+
+{{PRENOM}},
+
+Je n'ai pas eu de nouvelles, donc j'imagine que vous etes dans le rush.
+
+Un exemple rapide : une pizzeria independante a Lyon utilisait RestauMargin depuis 3 semaines. Elle a decouvert que sa pizza 4 fromages avait un food cost de 41% (bien au-dessus des 30-33% cibles pour une pizza). Cause : le prix de la mozzarella avait monte de 15% chez le fournisseur, non repercute sur la carte.
+
+En ajustant 2 recettes et en renegociant avec un fournisseur concurrent, elle est passee a 34%. Ca represente +1 400 EUR de marge par mois.
+
+Votre essai gratuit 14 jours (sans carte bancaire) est disponible ici :
+https://www.restaumargin.fr/pricing
 
 Youssef
 
--------------------------------------------------------------
-ETAPE 3 - J+7 : VALEUR (guide offert)
--------------------------------------------------------------
-OBJET : "Le guide marge pizzeria (offert, sans inscription)"
+---
 
-Bonjour {{PRENOM}},
+=============================================================
+EMAIL J+7 — ANGLE MATERIEL / MOAT
+=============================================================
 
-Pas de pitch - juste un guide pour les pizzerias independantes :
-https://www.restaumargin.fr/guide-marge/pizzeria
+Objet : {{PRENOM}}, la balance Bluetooth qui change tout pour les pizzas
 
-Food cost cible par type de pizza, prix plancher, 3 erreurs qui font perdre 2-4 points de marge.
+---
+
+{{PRENOM}},
+
+Les pizzaiolos qui utilisent RestauMargin aprecient surtout un detail pratique : la Station Balance.
+
+C'est une tablette fixee sur le plan de travail avec une balance Bluetooth integree. Quand vous pesez vos ingredients, le food cost se recalcule en temps reel. Plus besoin de noter, plus d'erreurs.
+
+Pour une pizzeria : chaque gramme de mozzarella ou de jambon de parme pese reellement impacte votre marge. L'ecart entre ce qu'une recette prevoit et ce que le cuisinier met peut atteindre 15-20% sur les garnitures couteux.
+
+La Station Balance est incluse dans le plan Business (79 EUR/mois).
+
+Demo disponible ici : https://www.restaumargin.fr/demo
 
 Youssef
 
--------------------------------------------------------------
-ETAPE 4 - J+14 : LAST CHANCE
--------------------------------------------------------------
-OBJET : "Derniere fois que je vous ecris, {{PRENOM}}"
+---
 
-Bonjour {{PRENOM}},
+=============================================================
+EMAIL J+14 — LAST CHANCE
+=============================================================
 
-C'est mon dernier email.
+Objet A : Dernier message de ma part, {{PRENOM}}
+Objet B : RestauMargin — je ferme votre dossier sauf si...
 
-Si vous voulez tester quand vous aurez du temps :
-https://www.restaumargin.fr (essai 14j, sans CB)
+---
 
-Belle continuation,
+{{PRENOM}},
+
+Je ne vais pas continuer a vous contacter si ce n'est pas le bon moment.
+
+Une seule question avant de clore : est-ce que la gestion des marges de {{NOM_RESTAURANT}} est un sujet sur lequel vous travaillez en ce moment, ou est-ce reporte a plus tard ?
+
+Si c'est reporte, pas de probleme — je reviendrai dans 2-3 mois.
+Si c'est un sujet actuel et que vous manquez juste de temps, on peut faire un appel de 15 minutes : https://calendly.com/restaumargin/demo
+
 Youssef
+youssef@restaumargin.fr
 
-==============================================================
-VARIABLES : {{PRENOM}} {{NOM_RESTAURANT}} {{VILLE}} {{OBJET_J0}}
-DELIVERABILITE : max 50 emails/jour les 2 premieres semaines, SPF/DKIM verifie
-==============================================================
+---
+
+NOTES DELIVRABILITE :
+- Attendre 3 jours minimum entre chaque email
+- Ne jamais envoyer vendredi soir ni samedi (fermeture weekend)
+- Meilleur creneaux : mardi-jeudi 9h30-11h ou 14h-16h
+- Taux de reponse cible : J+0 = 3-5%, J+3 = 2-3%, J+7 = 1-2%, J+14 = 0.5-1%
+- Stop condition : premier email de reponse -> sortir de la sequence

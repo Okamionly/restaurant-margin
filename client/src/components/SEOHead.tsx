@@ -12,32 +12,39 @@ interface SEOHeadProps {
 
 const BASE_URL = 'https://www.restaumargin.fr';
 
-// Default SoftwareApplication schema — injected on every page
-const defaultSchema = {
+// Default SoftwareApplication schema for RestauMargin
+const defaultSchema: Record<string, unknown> = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'RestauMargin',
   applicationCategory: 'BusinessApplication',
-  operatingSystem: 'Web, iOS, Android',
-  url: BASE_URL,
-  description:
-    'Logiciel de calcul de marge et food cost pour restaurants independants. Fiches techniques automatiques, IA vocale, balance Bluetooth et commandes fournisseurs.',
+  operatingSystem: 'Web',
+  url: 'https://www.restaumargin.fr',
+  description: 'Logiciel de gestion des marges pour restaurants. Calcul food cost, fiches techniques, IA, commandes fournisseurs.',
   offers: [
     {
       '@type': 'Offer',
       name: 'Pro',
-      price: '29.00',
+      price: '29',
       priceCurrency: 'EUR',
-      priceValidUntil: '2027-01-01',
-      description: 'Plan Pro pour restaurateurs independants',
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: '29',
+        priceCurrency: 'EUR',
+        unitText: 'MONTH',
+      },
     },
     {
       '@type': 'Offer',
       name: 'Business',
-      price: '79.00',
+      price: '79',
       priceCurrency: 'EUR',
-      priceValidUntil: '2027-01-01',
-      description: 'Plan Business pour groupes multi-etablissements',
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: '79',
+        priceCurrency: 'EUR',
+        unitText: 'MONTH',
+      },
     },
   ],
   aggregateRating: {
@@ -47,31 +54,14 @@ const defaultSchema = {
     bestRating: '5',
     worstRating: '1',
   },
-  publisher: {
-    '@type': 'Organization',
-    name: 'RestauMargin',
-    url: BASE_URL,
-    logo: {
-      '@type': 'ImageObject',
-      url: `${BASE_URL}/icon-512.png`,
-    },
-  },
 };
 
-export function buildBreadcrumbSchema(crumbs: { name: string; url: string }[]) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: crumbs.map((c, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: c.name,
-      item: c.url.startsWith('http') ? c.url : `${BASE_URL}${c.url}`,
-    })),
-  };
-}
-
-export function buildFAQSchema(items: { question: string; answer: string }[]) {
+/**
+ * Build a FAQPage schema from an array of Q&A pairs.
+ */
+export function buildFAQSchema(
+  items: { question: string; answer: string }[]
+): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -82,6 +72,24 @@ export function buildFAQSchema(items: { question: string; answer: string }[]) {
         '@type': 'Answer',
         text: item.answer,
       },
+    })),
+  };
+}
+
+/**
+ * Build a BreadcrumbList schema from an array of {name, url} crumbs.
+ */
+export function buildBreadcrumbSchema(
+  crumbs: { name: string; url: string }[]
+): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: crumbs.map((crumb, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: crumb.name,
+      item: crumb.url,
     })),
   };
 }
@@ -99,6 +107,7 @@ export default function SEOHead({
   const fullImage = ogImage.startsWith('http') ? ogImage : `${BASE_URL}${ogImage}`;
   const fullTitle = title.includes('RestauMargin') ? title : `${title} | RestauMargin`;
 
+  // Schemas to inject: always include default, then any extra schemas passed as prop
   const schemas: Record<string, unknown>[] = [defaultSchema];
   if (schema) {
     if (Array.isArray(schema)) {
@@ -131,8 +140,8 @@ export default function SEOHead({
       <meta name="twitter:image" content={fullImage} />
 
       {/* Schema.org JSON-LD */}
-      {schemas.map((s, i) => (
-        <script key={i} type="application/ld+json">
+      {schemas.map((s, idx) => (
+        <script key={idx} type="application/ld+json">
           {JSON.stringify(s)}
         </script>
       ))}

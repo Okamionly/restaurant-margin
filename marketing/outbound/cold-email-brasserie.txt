@@ -1,53 +1,88 @@
-==============================================================
-COLD EMAIL - BRASSERIE / BISTRO TRADITIONNEL
-Sequence : J+0 / J+3 / J+7 / J+14
-From : youssef@restaumargin.fr
-==============================================================
+SEQUENCE COLD EMAIL — BRASSERIE / BISTROT
+Expediteur : youssef@restaumargin.fr
+Variables : {{PRENOM}} {{NOM_RESTAURANT}} {{VILLE}}
 
-ETAPE 1 - J+0 : INTRO
--------------------------------------------------------------
-OBJET A : "{{PRENOM}}, combien vous coute votre plat du jour ?"
-OBJET B : "Brasserie {{NOM_RESTAURANT}} - pilotage des marges"
-OBJET C : "Question pour {{PRENOM}} - food cost brasserie"
+=============================================================
+EMAIL J+0
+=============================================================
+
+Objet A : {{PRENOM}}, votre food cost en salle vs. votre food cost reel
+Objet B : Brasserie {{VILLE}} — le calcul que personne ne fait
+
+---
 
 Bonjour {{PRENOM}},
 
-Youssef, fondateur de RestauMargin. Je prospecte les brasseries independantes de {{VILLE}} - une question directe :
+Les brasseries ont souvent un menu etendu — c'est leur force et leur point faible en meme temps.
 
-Pilotez-vous vos marges plat par plat, ou globalement en fin de mois ?
+Un menu de 30 plats avec 30 food costs differents, des prix fournisseurs qui varient chaque semaine, et une carte qui ne change pas assez vite : c'est la recette des marges qui s'erodent sans qu'on le voit.
 
-La majorite des brasseries connaissent leur cout matiere global (33-38%), mais pas le detail par plat. La blanquette de veau peut plomber la marge depuis des mois sans qu'on s'en apercoive.
+RestauMargin detecte ces glissements automatiquement. Quand le prix de votre entrecote monte de 8% chez le boucher, l'alerte arrive le jour meme — pas dans 3 mois lors du bilan.
 
-RestauMargin calcule le food cost exact de chaque plat en temps reel - IA + balance Bluetooth.
+Essai gratuit 14 jours ici : https://www.restaumargin.fr/pricing
 
-14 jours d'essai sans carte bancaire :
-https://www.restaumargin.fr/login?mode=register
+Youssef — RestauMargin
+
+---
+
+=============================================================
+EMAIL J+3
+=============================================================
+
+Objet : Plat le plus vendu != plat le plus rentable (exemple brasserie)
+
+---
+
+{{PRENOM}},
+
+Un chiffre qui revient souvent chez nos utilisateurs brasserie : leur plat le plus commande est rarement leur plat le plus rentable.
+
+La matrice BCG du Menu Engineering de RestauMargin classe vos plats en 4 quadrants : Etoiles (populaires + rentables), Vaches a lait (populaires peu rentables), Enigmes, Poids morts.
+
+En 10 minutes vous savez quels plats retirer, lesquels mettre en avant et lesquels repriser.
+
+Demo interactive : https://www.restaumargin.fr/demo
 
 Youssef
-[VOTRE_TELEPHONE]
 
--------------------------------------------------------------
-ETAPE 2 - J+3 : RELANCE
--------------------------------------------------------------
-Un bistrot parisien a decouvert que son entrecote frites (24 EUR) avait un food cost de 41% au lieu de 29% estime. Le prix du boeuf avait augmente de 12% chez son fournisseur. Il a revu le prix a 26 EUR. Marge retrouvee.
+---
 
-Ce genre de derive se detecte en 10 secondes avec les alertes fournisseurs RestauMargin.
+=============================================================
+EMAIL J+7
+=============================================================
 
-Demo en 15 min ? https://calendly.com/[VOTRE_LIEN]/15min
+Objet : {{NOM_RESTAURANT}} — est-ce que le HACCP vous prend du temps ?
 
--------------------------------------------------------------
-ETAPE 3 - J+7 : GUIDE BRASSERIE
--------------------------------------------------------------
-Guide marge brasserie (gratuit, sans inscription) :
-https://www.restaumargin.fr/guide-marge/brasserie
-Food cost cible par categorie, carte rentable, 4 indicateurs a surveiller.
+---
 
--------------------------------------------------------------
-ETAPE 4 - J+14 : LAST CHANCE
--------------------------------------------------------------
-Dernier message - promis.
-https://www.restaumargin.fr (14j gratuits, sans CB)
+{{PRENOM}},
 
-==============================================================
-VARIABLES : {{PRENOM}} {{NOM_RESTAURANT}} {{VILLE}}
-==============================================================
+RestauMargin inclut aussi le HACCP digital : temperatures frigos, cahier de nettoyage, fiches conformite.
+
+Au lieu de remplir des formulaires papier le matin, tout se fait sur tablette en 3 minutes. Les donnees sont horodatees et exportables pour les inspections.
+
+Pour une brasserie avec un grand volume de service, c'est 20-30 min/jour recuperees.
+
+https://www.restaumargin.fr/pricing — essai 14j sans CB.
+
+Youssef
+
+---
+
+=============================================================
+EMAIL J+14
+=============================================================
+
+Objet : Dernier email, {{PRENOM}}
+
+---
+
+{{PRENOM}},
+
+Dernier message de ma part.
+
+Si RestauMargin peut vous aider, je suis joignable ici : youssef@restaumargin.fr ou en appel 15min : https://calendly.com/restaumargin/demo
+
+Sinon, bonne continuation a {{NOM_RESTAURANT}}.
+
+Youssef

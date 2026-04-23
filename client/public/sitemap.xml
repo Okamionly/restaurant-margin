@@ -4,7 +4,7 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
           http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-  <!-- PAGES PRINCIPALES -->
+  <!-- Pages principales -->
   <url>
     <loc>https://www.restaumargin.fr/</loc>
     <lastmod>2026-04-23</lastmod>
@@ -25,32 +25,12 @@
   </url>
   <url>
     <loc>https://www.restaumargin.fr/login</loc>
-    <lastmod>2026-04-14</lastmod>
+    <lastmod>2026-04-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
-  <!-- PAGES MARKETING -->
-  <url>
-    <loc>https://www.restaumargin.fr/a-propos</loc>
-    <lastmod>2026-04-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.restaumargin.fr/temoignages</loc>
-    <lastmod>2026-04-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.restaumargin.fr/station-produit</loc>
-    <lastmod>2026-04-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- BLOG -->
+  <!-- Blog -->
   <url>
     <loc>https://www.restaumargin.fr/blog</loc>
     <lastmod>2026-04-23</lastmod>
@@ -61,13 +41,13 @@
     <loc>https://www.restaumargin.fr/blog/calcul-marge-restaurant</loc>
     <lastmod>2026-04-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/blog/reduire-food-cost</loc>
     <lastmod>2026-04-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/blog/coefficient-multiplicateur</loc>
@@ -97,10 +77,24 @@
     <loc>https://www.restaumargin.fr/blog/fiche-technique-restaurant</loc>
     <lastmod>2026-04-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
 
-  <!-- GUIDES PROGRAMMATIC SEO -->
+  <!-- Pages marketing -->
+  <url>
+    <loc>https://www.restaumargin.fr/a-propos</loc>
+    <lastmod>2026-04-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/temoignages</loc>
+    <lastmod>2026-04-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Guides par type de restaurant (programmatic SEO) -->
   <url>
     <loc>https://www.restaumargin.fr/guide-marge/pizzeria</loc>
     <lastmod>2026-04-23</lastmod>
@@ -132,7 +126,7 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- OUTILS PUBLICS (SEO bottom-funnel) -->
+  <!-- Outils publics -->
   <url>
     <loc>https://www.restaumargin.fr/outils/calculateur-food-cost</loc>
     <lastmod>2026-04-23</lastmod>
@@ -143,33 +137,40 @@
     <loc>https://www.restaumargin.fr/outils/generateur-qr-menu</loc>
     <lastmod>2026-04-23</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Station produit -->
+  <url>
+    <loc>https://www.restaumargin.fr/station-produit</loc>
+    <lastmod>2026-04-23</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <!-- PAGES LEGALES -->
+  <!-- Pages legales -->
   <url>
     <loc>https://www.restaumargin.fr/mentions-legales</loc>
-    <lastmod>2026-04-14</lastmod>
+    <lastmod>2026-04-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/cgv</loc>
-    <lastmod>2026-04-14</lastmod>
+    <lastmod>2026-04-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/cgu</loc>
-    <lastmod>2026-04-14</lastmod>
+    <lastmod>2026-04-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/politique-confidentialite</loc>
-    <lastmod>2026-04-14</lastmod>
+    <lastmod>2026-04-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-
 </urlset>

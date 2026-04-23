@@ -638,3 +638,36 @@ model MenuCalendar {
   @@index([restaurantId, date])
   @@map("menu_calendar")
 }
+
+// invoice_sequences
+model InvoiceSequence {
+  id         Int      @id @default(autoincrement())
+  key        String   @unique
+  prefix     String
+  year       Int
+  lastNumber Int      @default(0)
+  updatedAt  DateTime @updatedAt
+  @@index([prefix, year])
+  @@map("invoice_sequences")
+}
+
+// ai_usage_logs
+model AiUsageLog {
+  id           Int      @id @default(autoincrement())
+  userId       Int?
+  restaurantId Int?
+  action       String
+  model        String   @default("claude-haiku-4-5")
+  tokensIn     Int      @default(0)
+  tokensOut    Int      @default(0)
+  costUsd      Float    @default(0)
+  costEur      Float    @default(0)
+  durationMs   Int?
+  success      Boolean  @default(true)
+  errorCode    String?
+  createdAt    DateTime @default(now())
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
+  @@index([createdAt])
+  @@map("ai_usage_logs")
+}

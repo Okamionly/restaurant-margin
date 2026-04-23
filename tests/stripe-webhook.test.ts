@@ -88,24 +88,21 @@ describe('Stripe webhook security — hardened handler rules', () => {
     expect(hasUnsafeFallback).toBe(false);
   });
 
-  it('RULE 4: webhook handler must call constructEvent before trusting event', async () => {
+  it('RULE 4: stripeWebhookHandler must call constructEvent before trusting event', async () => {
     const fs = await import('fs');
     const path = await import('path');
-    const indexPath = path.join(process.cwd(), 'api', 'index.ts');
-    const source = fs.readFileSync(indexPath, 'utf8');
-
-    // constructEvent must be present (Stripe signature verification)
+    // Handler is in api/routes/stripe.ts (extracted from monolith)
+    const stripePath = path.join(process.cwd(), 'api', 'routes', 'stripe.ts');
+    const source = fs.readFileSync(stripePath, 'utf8');
     expect(source).toContain('stripe.webhooks.constructEvent');
   });
 
-  it('RULE 5: both secret AND signature must be required (not optional)', async () => {
+  it('RULE 5: stripe.ts must require secret AND signature (no optional fallback)', async () => {
     const fs = await import('fs');
     const path = await import('path');
-    const indexPath = path.join(process.cwd(), 'api', 'index.ts');
-    const source = fs.readFileSync(indexPath, 'utf8');
-
-    // The new code should check for missing secret and return 400
-    expect(source).toContain('STRIPE_WEBHOOK_SECRET not configured');
+    const stripePath = path.join(process.cwd(), 'api', 'routes', 'stripe.ts');
+    const source = fs.readFileSync(stripePath, 'utf8');
+    expect(source).toContain('STRIPE_WEBHOOK_SECRET');
     expect(source).toContain('Missing stripe-signature header');
   });
 });

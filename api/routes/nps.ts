@@ -4,13 +4,9 @@
  * POST /api/nps — save an NPS response from an authenticated user
  * GET  /api/nps  — list all NPS responses (admin only)
  *
-<<<<<<< HEAD
- * DB migration SQL to run on Supabase:
-=======
  * DB: nps_responses table (see migration SQL below)
  *
  * Migration SQL to run on Supabase:
->>>>>>> origin/main
  * ─────────────────────────────────────────────────────────────────
  * CREATE TABLE IF NOT EXISTS nps_responses (
  *   id          SERIAL PRIMARY KEY,
@@ -47,26 +43,16 @@ router.post('/', authMiddleware, async (req: any, res) => {
 
     const scoreNum = Number(score);
     if (isNaN(scoreNum) || scoreNum < 0 || scoreNum > 10) {
-<<<<<<< HEAD
-      return res.status(400).json({ error: 'score doit etre entre 0 et 10' });
-    }
-
-    // Check for existing submission
-=======
       return res.status(400).json({ error: 'score doit être entre 0 et 10' });
     }
 
     // Prevent duplicate submissions (one per user)
->>>>>>> origin/main
     const existing = await prisma.$queryRaw`
       SELECT id FROM nps_responses WHERE user_id = ${req.user.userId} LIMIT 1
     ` as any[];
 
     if (existing.length > 0) {
-<<<<<<< HEAD
-=======
       // Accept but respond gracefully — user can update their score
->>>>>>> origin/main
       await prisma.$executeRaw`
         UPDATE nps_responses
         SET score = ${scoreNum}, comment = ${comment || null}, created_at = NOW()
@@ -115,12 +101,8 @@ router.get('/', authMiddleware, async (req: any, res) => {
       LIMIT 500
     ` as any[];
 
-<<<<<<< HEAD
-    const scores = responses.map((r: any) => Number(r.score));
-=======
     // Compute summary
-    const scores = responses.map((r: any) => r.score);
->>>>>>> origin/main
+    const scores = responses.map((r: any) => Number(r.score));
     const promoters = scores.filter((s: number) => s >= 9).length;
     const detractors = scores.filter((s: number) => s <= 6).length;
     const total = scores.length;

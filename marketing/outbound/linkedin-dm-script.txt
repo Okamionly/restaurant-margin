@@ -1,0 +1,85 @@
+SCRIPT LINKEDIN DM — RESTAURATEURS
+Compte emetteur : Youssef Guessoussi (fondateur RestauMargin)
+Outil : Sales Navigator (filtre : restaurant owner / gerant de restaurant / chef proprietaire, France)
+
+=============================================================
+NOTE DE CONNEXION (300 chars max)
+=============================================================
+
+Bonjour {{PRENOM}}, je developpe RestauMargin — un outil de gestion des marges pour restaurateurs independants. Votre parcours m'a interesse. Je serais ravi d'echanger. Bonne journee, Youssef
+
+---
+
+=============================================================
+MESSAGE 1 — APRES ACCEPTATION (J+1)
+=============================================================
+
+Bonjour {{PRENOM}},
+
+Merci d'avoir accepte ma demande.
+
+Je construis RestauMargin avec un seul objectif : permettre aux restaurateurs independants de maitriser leur food cost sans passer des heures sur des tableurs.
+
+Pas de question de pitch pour l'instant — juste une curiosite : comment vous gerez aujourd'hui le suivi de vos marges et de vos couts de revient ?
+
+Youssef
+
+---
+
+=============================================================
+MESSAGE 2 — SI PAS DE REPONSE (J+4)
+=============================================================
+
+{{PRENOM}}, je me permets de relancer.
+
+Une question simple : est-ce que vous connaissez le food cost reel de vos 3 plats les plus vendus en ce moment ?
+
+Chez 70% des restaurateurs que j'ai rencontres, la reponse est "approximativement". RestauMargin le calcule precisement, avec les variations de prix fournisseur en temps reel.
+
+Si c'est un sujet qui vous parle, je peux vous montrer en 15 minutes : https://calendly.com/restaumargin/demo
+
+---
+
+=============================================================
+MESSAGE 3 — SI REPONSE POSITIVE
+=============================================================
+
+Super, merci pour votre reponse.
+
+Je vous propose un appel de 20 minutes cette semaine pour vous montrer concritement comment ca fonctionne avec votre type d'etablissement.
+
+Creneaux disponibles ici : https://calendly.com/restaumargin/demo
+
+A bientot,
+Youssef
+
+---
+
+=============================================================
+CIBLAGE SALES NAVIGATOR
+=============================================================
+
+Filtres recommandes :
+- Titre : "gerant", "chef proprietaire", "directeur restaurant", "restaurateur"
+- Secteur : Restaurants / Food and Beverage
+- Pays : France
+- Taille entreprise : 1-50 employes
+- Exclure : chaines (McDo, Quick, etc.) — cibler independants uniquement
+
+Objectif : 20 connexions/jour max (limite LinkedIn sans risque blocage)
+Taux de reponse cible message 1 : 15-25% (LinkedIn > email a froid)
+
+---
+
+=============================================================
+CONTENU ORGANIQUE — POSTS RECOMMANDES (2x/semaine)
+=============================================================
+
+Format qui performent chez les fondateurs SaaS restauration :
+1. "Ce que j'ai appris en parlant a 50 restaurateurs" (liste 5 points)
+2. Avant/apres : screenshot food cost avant et apres RestauMargin (avec permission)
+3. "Le calcul que personne ne fait en restaurant" (accroche curiosite)
+4. Coulisses produit : nouveau feature en video 60 secondes
+5. Temoignage client en citation (screenshot message WhatsApp floutant le nom)
+
+Hashtags : #restauration #foodcost #gerantrestaurant #gastronomie #entrepreneuriat

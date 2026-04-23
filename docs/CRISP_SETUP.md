@@ -2,91 +2,92 @@
 
 ## Contexte
 
-Le widget Crisp est deja installe sur l'app RestauMargin (voir `FloatingActionBubble.tsx` et `HelpButton.tsx`).
-Ce guide configure le **bot Crisp** pour deflectionner 30 a 40 % des conversations entrantes.
+Le widget Crisp est déjà installé sur l'app RestauMargin (voir `FloatingActionBubble.tsx` et `HelpButton.tsx`).
+Ce guide configure le **bot Crisp** pour déflectionner 30 à 40 % des conversations entrantes via réponses automatiques.
 
-**Cible : reponse bot < 2 secondes, taux de resolution sans humain > 30 %.**
-
----
-
-## 1. Prerequis
-
-- Acces admin au dashboard Crisp : https://app.crisp.chat
-- Plan Crisp Pro (requis pour le bot et les scenarios)
-- Website ID RestauMargin (recuperable dans Settings > Website Settings)
+**Cible : réponse bot < 2 secondes, taux de résolution sans humain > 30 %.**
 
 ---
 
-## 2. Creer les scenarios bot
+## 1. Prérequis
+
+- Accès admin au dashboard Crisp : https://app.crisp.chat
+- Plan Crisp Pro (requis pour le bot et les scénarios)
+- Website ID RestauMargin (récupérable dans Settings > Website Settings)
+
+---
+
+## 2. Créer les scénarios bot
 
 Dans Crisp Dashboard, aller dans **Chatbox > Bot > Create a new scenario**.
 
-### Scenario A — Accueil automatique (trigger : nouvelle conversation)
+### Scénario A — Accueil automatique (déclencheur : nouvelle conversation)
 
-**Trigger :** `conversation:opened` — **Delai :** 5 secondes
+**Trigger :** `conversation:opened`
+**Délai :** 5 secondes
 
 ```
 Message 1 (bot) :
 "Bonjour ! Je suis l'assistant RestauMargin.
 Comment puis-je vous aider ?"
 
-Boutons proposes :
+Boutons proposés :
   [1] Je ne peux pas me connecter
   [2] Question sur les fiches techniques
-  [3] Probleme de facturation ou d'abonnement
+  [3] Problème de facturation ou d'abonnement
   [4] Autre question
 ```
 
 ---
 
-### Scenario B — Connexion/mot de passe
+### Scénario B — Connexion/mot de passe
 
-**Trigger :** bouton [1] ou message contient : "connexion", "mot de passe", "login"
+**Trigger :** bouton [1] de scénario A ou message contient : "connexion", "mot de passe", "login"
 
 ```
 Message (bot) :
 "Je peux vous aider avec votre connexion.
 
-Si vous avez oublie votre mot de passe :
+Si vous avez oublié votre mot de passe :
 1. Allez sur restaumargin.fr/login
-2. Cliquez sur 'Mot de passe oublie'
-3. Entrez votre email et verifiez vos spams
+2. Cliquez sur 'Mot de passe oublié'
+3. Entrez votre email et vérifiez vos spams
 
-Le lien de reinitialisation est valable 1 heure.
+Le lien de réinitialisation est valable 1 heure.
 
-Cela a resolu votre probleme ?"
+Cela a résolu votre problème ?"
 
 Boutons :
-  [Oui, merci]  -> Scenario Satisfaction
-  [Non, j'ai encore besoin d'aide]  -> Transfert vers humain
+  [Oui, merci]  → Scénario Satisfaction
+  [Non, j'ai encore besoin d'aide]  → Transfert vers humain
 ```
 
 ---
 
-### Scenario C — Fiches techniques
+### Scénario C — Fiches techniques
 
 **Trigger :** bouton [2] ou message contient : "fiche", "recette", "food cost", "marge"
 
 ```
 Message (bot) :
-"Pour les fiches techniques, voici les reponses rapides :
+"Pour les fiches techniques, voici les réponses rapides :
 
--> Pour creer une fiche : Menu > Fiches techniques > + Nouvelle fiche
--> Le food cost s'affiche automatiquement apres ajout des ingredients
--> L'IA peut generer une recette depuis le nom du plat
+→ Pour créer une fiche : Menu > Fiches techniques > + Nouvelle fiche
+→ Le food cost s'affiche automatiquement après ajout des ingrédients
+→ L'IA peut générer une recette depuis le nom du plat
 
 Consultez notre centre d'aide : restaumargin.fr/aide
 
-Voulez-vous parler a quelqu'un ?"
+Voulez-vous parler à quelqu'un ?"
 
 Boutons :
-  [Oui, je veux parler a l'equipe]  -> Transfert
-  [Non, merci c'est bon]  -> Scenario Satisfaction
+  [Oui, je veux parler à l'équipe]  → Transfert
+  [Non, merci c'est bon]  → Scénario Satisfaction
 ```
 
 ---
 
-### Scenario D — Facturation
+### Scénario D — Facturation
 
 **Trigger :** bouton [3] ou message contient : "paiement", "abonnement", "facture", "Stripe"
 
@@ -94,35 +95,37 @@ Boutons :
 Message (bot) :
 "Pour tout ce qui concerne votre abonnement :
 
--> Gerez votre abonnement : restaumargin.fr/abonnement
--> Le portail Stripe vous permet de mettre a jour votre CB et telecharger vos factures
--> En cas de probleme de paiement, un email automatique vous est envoye avec un lien
+→ Gérez votre abonnement : restaumargin.fr/abonnement
+→ Le portail Stripe vous permet de mettre à jour votre CB et télécharger vos factures
+→ En cas de problème de paiement, un email automatique vous est envoyé avec un lien de régularisation
 
-Si votre acces est bloque apres paiement, repondez ici — regle sous 2h."
+Si votre accès est bloqué après paiement, répondez ici — nous réglons ça en moins de 2h."
 
 Boutons :
-  [J'ai encore un probleme]  -> Transfert vers humain
-  [C'est bon, merci]  -> Scenario Satisfaction
+  [J'ai encore un problème]  → Transfert vers humain
+  [C'est bon, merci]  → Scénario Satisfaction
 ```
 
 ---
 
-### Scenario E — Satisfaction et fermeture
+### Scénario E — Satisfaction et fermeture
 
 **Trigger :** bouton "Oui, merci" / "Non, merci c'est bon"
 
 ```
 Message (bot) :
-"Parfait ! N'hesitez pas a revenir si vous avez d'autres questions.
+"Parfait ! N'hésitez pas à revenir si vous avez d'autres questions.
 
-Sur 5 etoiles, comment noteriez-vous cette interaction ?"
+Petite question : sur 5 étoiles, comment noteriez-vous cette interaction ?"
 
-Rating : 1 a 5 etoiles (CSAT automatique dans Crisp Analytics)
+Rating : ★ ★ ★ ★ ★ (CSAT)
+
+Note : Le score est automatiquement remonté dans Crisp Analytics.
 ```
 
 ---
 
-### Scenario F — Hors horaires (hors lundi-vendredi 9h-18h)
+### Scénario F — Hors horaires (lundi-vendredi 9h-18h)
 
 **Trigger :** conversation ouverte hors des heures de bureau
 
@@ -130,9 +133,9 @@ Rating : 1 a 5 etoiles (CSAT automatique dans Crisp Analytics)
 Message (bot) :
 "Bonjour ! Vous nous contactez en dehors de nos heures d'ouverture (lun-ven, 9h-18h).
 
-Notre equipe vous repondra des demain matin, avant 10h.
+Notre équipe vous répondra dès demain matin, avant 10h.
 
-En attendant, notre centre d'aide repond peut-etre a votre question :
+En attendant, notre centre d'aide répond peut-être à votre question :
 restaumargin.fr/aide"
 ```
 
@@ -140,28 +143,33 @@ restaumargin.fr/aide"
 
 ## 3. Tags et routage
 
+Configurer les tags suivants dans Crisp pour filtrage et métriques :
+
 | Tag | Usage |
 |---|---|
-| `mot-de-passe` | Problemes de connexion |
+| `mot-de-passe` | Problèmes de connexion |
 | `facturation` | Questions Stripe/abonnement |
 | `onboarding` | Nouveaux users (< 7 jours) |
-| `bug` | Probleme technique remonte |
+| `bug` | Problème technique remonté |
 | `churning` | User exprime frustration ou intention de partir |
 
-**Detection `churning` — mots-cles a surveiller :**
+Pour détecter `churning` automatiquement, configurer un trigger sur les mots-clés :
 "annuler", "pas satisfait", "ca ne marche pas", "trop cher", "je pars"
 
-**Action sur tag `churning` :** notification Slack/email immediate a l'equipe.
+**Action sur tag `churning` :** notif Slack/email immédiate à l'équipe.
 
 ---
 
-## 4. Integration code (deja fait)
+## 4. Intégration Crisp dans le code (déjà fait)
 
-Le widget est initialise dans `client/src/components/FloatingActionBubble.tsx`.
+Le widget est initialisé dans `client/src/components/FloatingActionBubble.tsx`.
 
-Pour ouvrir Crisp depuis n'importe quel composant (ex: page d'erreur) :
+Pour ouvrir la chat box programmatically depuis n'importe quel composant :
 
 ```typescript
+// Ouvre Crisp depuis le code (ex: bouton "Besoin d'aide ?" sur page d'erreur)
+declare global { interface Window { $crisp?: any[] } }
+
 function openCrispChat(prepopulatedMessage?: string) {
   if (window.$crisp) {
     window.$crisp.push(['do', 'chat:open']);
@@ -177,37 +185,43 @@ openCrispChat("J'ai une erreur sur la page Fiches techniques");
 
 ---
 
-## 5. SLA a afficher dans l'app
+## 5. SLA à afficher dans l'app
+
+Configurer dans Crisp Settings > Availability :
 
 - **Heures de bureau** : lun-ven 9h-18h (CET)
-- **Temps de reponse affiche** : "Repond sous quelques heures"
-- **Hors bureau** : "Repond le prochain jour ouvre"
+- **Temps de réponse affiché** : "Répond sous quelques heures"
+- **Hors bureau** : "Répond le prochain jour ouvré"
 
-Le centre d'aide `/aide` affiche deja : "Reponse humaine sous 24h en semaine".
+Afficher aussi dans la page `/aide` (déjà fait : "Réponse humaine sous 24h en semaine").
 
 ---
 
-## 6. Metriques mensuelles a suivre
+## 6. Métriques à suivre
 
-| Metrique | Cible |
+Rapport mensuel à extraire depuis Crisp Analytics :
+
+| Métrique | Cible |
 |---|---|
-| Conversations resolues par bot | > 30 % |
+| Conversations résolues par bot | > 30 % |
 | CSAT moyen | > 4/5 |
-| Temps 1ere reponse humain | < 2h en heures de bureau |
+| Temps de première réponse humain | < 2h en heures de bureau |
+| Conversations par semaine | tracker la croissance |
 | Top motifs (tags) | identifier les docs manquantes |
 
 ---
 
 ## 7. Checklist d'activation
 
-- [ ] Creer compte Crisp Pro
-- [ ] Verifier que le Website ID correspond a la prod
-- [ ] Creer les 6 scenarios decrits ci-dessus
+- [ ] Créer compte Crisp Pro (si pas encore fait)
+- [ ] Vérifier que le Website ID correspond à la prod (pas le staging)
+- [ ] Créer les 6 scénarios décrits ci-dessus
 - [ ] Configurer les horaires de bureau
-- [ ] Tester chaque scenario avec un compte test
+- [ ] Tester chaque scénario avec un compte test
 - [ ] Configurer le tag `churning` avec alerting Slack
 - [ ] Activer le CSAT automatique post-conversation
+- [ ] Vérifier que les métriques remontent dans Analytics
 
 ---
 
-Derniere mise a jour : 2026-04-23 — CCO RestauMargin
+Dernière mise à jour : 2026-04-23 — CCO RestauMargin

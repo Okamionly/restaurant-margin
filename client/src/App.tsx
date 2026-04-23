@@ -127,7 +127,10 @@ const EmailMarketing = lazyRetry(() => import('./pages/EmailMarketing'));
 const BlogGaspillage = lazyRetry(() => import('./pages/BlogGaspillage'));
 const BlogHACCP = lazyRetry(() => import('./pages/BlogHACCP'));
 const BlogFicheTechnique = lazyRetry(() => import('./pages/BlogFicheTechnique'));
+<<<<<<< HEAD
 const Careers = lazyRetry(() => import('./pages/Careers'));
+=======
+>>>>>>> origin/main
 const HelpPage = lazyRetry(() => import('./pages/Help'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {

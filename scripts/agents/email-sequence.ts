@@ -9,8 +9,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 // ── Config ──────────────────────────────────────────────────
-const RESEND_API_KEY = 're_7ubbQbFa_GVBfFkYLpW3ga9DQUdT35rAD';
-const FROM_ADDRESS = 'RestauMargin <contact@restaumargin.fr>';
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+if (!RESEND_API_KEY) {
+  console.error('[email-sequence] ERREUR : variable RESEND_API_KEY manquante. Ajoutez-la dans .env ou dans les variables Vercel.');
+  process.exit(1);
+}
+const FROM_ADDRESS = 'RestauMargin <youssef@restaumargin.fr>';
 const RATE_LIMIT_MS = 1200; // 1 email per 1.2 seconds
 
 const DATA_DIR = path.resolve(__dirname, '..', '..', 'data');

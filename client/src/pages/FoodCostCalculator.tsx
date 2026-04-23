@@ -150,7 +150,7 @@ export default function FoodCostCalculator() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link to="/landing" className="flex items-center gap-2 text-[#000000] font-bold text-lg">
             <ChefHat className="w-7 h-7 text-[#000000]" />
-            <span style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>RestauMargin</span>
+            <span>RestauMargin</span>
           </Link>
           <Link
             to="/login?mode=register"
@@ -168,7 +168,7 @@ export default function FoodCostCalculator() {
         </div>
         <h1
           className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#000000] leading-tight max-w-3xl mx-auto"
-          style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
+         
         >
           Calculateur de Food Cost Restaurant
         </h1>
@@ -184,7 +184,7 @@ export default function FoodCostCalculator() {
             1. INTERACTIVE CALCULATOR — Ingredients
         ══════════════════════════════════════════════ */}
         <section className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-4 sm:p-6 mb-6">
-          <h2 className="text-lg font-bold text-[#000000] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#000000] mb-4 font-satoshi">
             Ingredients de la recette
           </h2>
 
@@ -272,7 +272,7 @@ export default function FoodCostCalculator() {
 
         {/* ── Portions & prix de vente ── */}
         <section className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-4 sm:p-6 mb-6">
-          <h2 className="text-lg font-bold text-[#000000] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#000000] mb-4 font-satoshi">
             Portions & prix de vente
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -310,7 +310,7 @@ export default function FoodCostCalculator() {
             RESULTS: KPI Cards + Circular Gauge
         ══════════════════════════════════════════════ */}
         <section className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-4 sm:p-6 mb-6">
-          <h2 className="text-lg font-bold text-[#000000] mb-5" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#000000] mb-5 font-satoshi">
             Resultats
           </h2>
 
@@ -371,7 +371,7 @@ export default function FoodCostCalculator() {
         ══════════════════════════════════════════════ */}
         <section className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-4 sm:p-6 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
-            <h2 className="text-lg font-bold text-[#000000]" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+            <h2 className="text-lg font-bold text-[#000000] font-satoshi">
               Benchmark par type de cuisine
             </h2>
             <select
@@ -443,7 +443,7 @@ export default function FoodCostCalculator() {
             4. PROFIT SIMULATOR
         ══════════════════════════════════════════════ */}
         <section className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-4 sm:p-6 mb-6">
-          <h2 className="text-lg font-bold text-[#000000] mb-5" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#000000] mb-5 font-satoshi">
             Simulateur de profit mensuel
           </h2>
 
@@ -535,7 +535,7 @@ export default function FoodCostCalculator() {
             SEO Explainer (kept + improved)
         ══════════════════════════════════════════════ */}
         <section className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-4 sm:p-6 mb-6">
-          <h2 className="text-lg font-bold text-[#000000] mb-3" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#000000] mb-3 font-satoshi">
             Comment calculer le food cost ?
           </h2>
           <div className="text-[#666666] text-sm leading-relaxed space-y-3">
@@ -561,7 +561,7 @@ export default function FoodCostCalculator() {
             6. SEO FAQ — Accordion
         ══════════════════════════════════════════════ */}
         <section className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-4 sm:p-6 mb-6">
-          <h2 className="text-lg font-bold text-[#000000] mb-5" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#000000] mb-5 font-satoshi">
             <HelpCircle className="w-5 h-5 inline mr-2" />
             Questions frequentes sur le food cost
           </h2>
@@ -609,7 +609,7 @@ export default function FoodCostCalculator() {
         <section className="rounded-2xl border border-[#e5e5e5] bg-[#fafafa] p-6 sm:p-10 text-center">
           <h2
             className="text-xl sm:text-2xl font-extrabold text-[#000000] mb-3"
-            style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
+           
           >
             Fatigue de calculer a la main ?
           </h2>

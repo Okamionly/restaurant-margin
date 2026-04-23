@@ -1396,8 +1396,8 @@ export default function HACCP() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <h4 className="text-red-300 font-bold text-sm">{alert.message}</h4>
-                    <button onClick={() => dismissAlert(alert.id)} className="text-red-400/60 hover:text-red-300 transition-colors flex-shrink-0">
-                      <XCircle className="w-5 h-5" />
+                    <button onClick={() => dismissAlert(alert.id)} aria-label="Ignorer cette alerte" className="text-red-400/60 hover:text-red-300 transition-colors flex-shrink-0">
+                      <XCircle className="w-5 h-5" aria-hidden="true" />
                     </button>
                   </div>
                   <div className="mt-1.5 bg-red-900/30 rounded-xl px-3 py-2">
@@ -1605,14 +1605,14 @@ export default function HACCP() {
                 Vue hebdomadaire
               </h3>
               <div className="flex items-center gap-2">
-                <button onClick={() => setWeekOffset(o => o - 1)} className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-                  <ChevronLeft className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                <button onClick={() => setWeekOffset(o => o - 1)} aria-label="Semaine precedente" className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                  <ChevronLeft className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" aria-hidden="true" />
                 </button>
-                <button onClick={() => setWeekOffset(0)} className="px-3 py-1 rounded-lg text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                <button onClick={() => setWeekOffset(0)} aria-label="Revenir a aujourd'hui" className="px-3 py-1 rounded-lg text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
                   Aujourd'hui
                 </button>
-                <button onClick={() => setWeekOffset(o => o + 1)} className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-                  <ChevronRight className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                <button onClick={() => setWeekOffset(o => o + 1)} aria-label="Semaine suivante" className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                  <ChevronRight className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" aria-hidden="true" />
                 </button>
               </div>
             </div>

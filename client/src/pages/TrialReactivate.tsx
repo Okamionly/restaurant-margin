@@ -108,7 +108,7 @@ export default function TrialReactivate() {
         </div>
         <h1
           className="text-4xl sm:text-5xl md:text-6xl font-black text-[#111111] mb-6 leading-tight"
-          style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
+         
         >
           {user?.name ? `${user.name}, ` : ''}on vous offre <span className="text-teal-600">-30%</span><br />
           pour revenir
@@ -221,7 +221,7 @@ export default function TrialReactivate() {
       <section className="py-16 px-4 sm:px-6 max-w-4xl mx-auto bg-[#f8fafb] rounded-3xl my-8">
         <h2
           className="text-2xl sm:text-3xl font-bold text-[#111111] mb-8 text-center"
-          style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
+         
         >
           Ce que vous ratez depuis la fin de votre essai
         </h2>
@@ -244,7 +244,7 @@ export default function TrialReactivate() {
       <section className="py-16 px-4 sm:px-6 max-w-3xl mx-auto">
         <h2
           className="text-2xl sm:text-3xl font-bold text-[#111111] mb-8 text-center"
-          style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
+         
         >
           Questions frequentes
         </h2>

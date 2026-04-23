@@ -51,7 +51,7 @@ export default function BlogFicheTechnique() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
-            <span style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>RestauMargin</span>
+            <span>RestauMargin</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link

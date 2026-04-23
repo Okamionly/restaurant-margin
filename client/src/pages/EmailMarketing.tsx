@@ -405,7 +405,7 @@ export default function EmailMarketing() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-[Satoshi]">
+          <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
             Email Marketing
           </h1>
           <p className="text-[#737373] dark:text-[#A3A3A3] text-sm mt-1">

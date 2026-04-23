@@ -5185,16 +5185,16 @@ app.get('/api/analytics/report', authWithRestaurant, async (req: any, res) => {
     // ── Labor cost analysis ──
     let laborAnalysis = null;
     try {
-      const timeEntries = await prisma.timeEntry.findMany({
+      const timeEntries = await (prisma.timeEntry as any).findMany({
         where: { restaurantId: rid, date: { gte: periodStart.toISOString().slice(0, 10) } },
         include: { employee: { select: { firstName: true, lastName: true, hourlyRate: true } } },
-      });
+      }) as any[];
       if (timeEntries.length > 0) {
-        const totalMinutes = timeEntries.reduce((s, e) => s + (e.totalMinutes || 0), 0);
+        const totalMinutes = timeEntries.reduce((s: number, e: any) => s + (e.totalMinutes || 0), 0);
         const totalHours = totalMinutes / 60;
-        const totalLaborCost = timeEntries.reduce((s, e) => {
+        const totalLaborCost = timeEntries.reduce((s: number, e: any) => {
           const hours = (e.totalMinutes || 0) / 60;
-          return s + hours * (e.employee.hourlyRate || 0);
+          return s + hours * (e.employee?.hourlyRate || 0);
         }, 0);
         laborAnalysis = {
           totalHours: Math.round(totalHours * 10) / 10,

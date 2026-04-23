@@ -334,7 +334,7 @@ ${header('RestauMargin', 'Bienvenue !')}
 <tr><td style="padding:30px 25px 10px;">
   <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
   <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
-    Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">7 jours</strong> est activ&eacute;.
+    Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">14 jours</strong> est activ&eacute;.
     Voici comment d&eacute;marrer en 3 &eacute;tapes simples :
   </p>
 </td></tr>
@@ -799,7 +799,7 @@ ${header('RestauMargin', 'Votre essai a expir&eacute;')}
 <tr><td style="padding:30px 25px 10px;">
   <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
   <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
-    Votre essai gratuit de 7 jours est termin&eacute;. Votre compte est d&eacute;sactiv&eacute;,
+    Votre essai gratuit de 14 jours est termin&eacute;. Votre compte est d&eacute;sactiv&eacute;,
     mais <strong style="color:${DARK};">vos donn&eacute;es sont conserv&eacute;es 30 jours</strong>.
   </p>
 </td></tr>
@@ -1349,7 +1349,7 @@ export function buildCampaignEmail(restaurant: CampaignRestaurant, cuisineType?:
     </td></tr>
     <tr><td align="center" style="padding:14px 0 0;">
       <p style="color:#6b7280;font-family:'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;margin:0;line-height:1.6;">
-        7 jours gratuits &bull; Sans carte bancaire &bull; Annulation libre
+        14 jours gratuits &bull; Sans carte bancaire &bull; Annulation libre
       </p>
     </td></tr>
     <tr><td align="center" style="padding:6px 0 0;">
@@ -1433,78 +1433,289 @@ export function buildCampaignEmail(restaurant: CampaignRestaurant, cuisineType?:
 }
 
 // ============================================================
-// Dunning — Relance paiement échoué (J+1 / J+3 / J+7)
-// Ajouté par CFO build 2026-04-23
+// DUNNING SEQUENCE — Relance paiement echoue
+// Wiring : webhook invoice.payment_failed -> J+1, retry J+3, final J+7
+// Idempotency : verifier que l'email n'a pas deja ete envoye pour cet invoiceId
 // ============================================================
 
-type DunningParams = {
+export interface DunningEmailData {
   userName: string;
-  invoiceNumber: string;
-  amountTtc: number; // en centimes
-  updatePaymentUrl: string; // Stripe Customer Portal
-  supportEmail?: string;
+  userEmail: string;
+  plan: 'pro' | 'business';
+  amountEur: number;          // montant en euros (ex: 29 ou 79)
+  invoiceId: string;          // Stripe invoice ID pour idempotency
+  invoiceUrl?: string;        // lien Stripe hosted invoice
+  updatePaymentUrl?: string;  // lien Customer Portal pour maj CB
+  nextRetryDate?: string;     // date du prochain retry Stripe (YYYY-MM-DD)
+  gracePeriodEndsAt?: string; // date de suspension si non-regle (YYYY-MM-DD)
+}
+
+const DUNNING_COLORS = {
+  amber: '#f59e0b',
+  rose: '#ef4444',
+  dark: '#111111',
+  muted: '#6b7280',
+  bg: '#fffbeb',
+  border: '#fde68a',
 };
 
-function fmtEur(cents: number): string {
-  return `${(cents / 100).toFixed(2).replace('.', ',')} €`;
+function dunningWrapper(content: string, urgency: 'warning' | 'urgent' | 'final'): string {
+  const bgMap = { warning: '#fffbeb', urgent: '#fff7ed', final: '#fef2f2' };
+  const borderColorMap = { warning: '#fbbf24', urgent: '#fb923c', final: '#f87171' };
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RestauMargin — Paiement</title>
+</head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:'Segoe UI',Arial,sans-serif;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f1f5f9;">
+  <tr><td align="center" style="padding:24px 12px;">
+    <table role="presentation" width="600" cellspacing="0" cellpadding="0"
+      style="max-width:600px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;
+             box-shadow:0 4px 24px rgba(0,0,0,0.08);border-top:4px solid ${borderColorMap[urgency]};">
+      ${content}
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>`;
 }
 
-export function buildDunningJ1Email(p: DunningParams): { subject: string; html: string } {
-  const support = p.supportEmail ?? 'contact@restaumargin.fr';
-  return {
-    subject: `Paiement en attente — facture ${p.invoiceNumber}`,
-    html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#FFF;color:#111;padding:24px;max-width:600px;margin:0 auto">
-<div style="background:#FFF7AD;padding:14px;border-left:4px solid #F59E0B;border-radius:4px;margin-bottom:20px">
-<strong>⚠️ Votre dernier paiement n'a pas pu aboutir.</strong>
-</div>
-<p>Bonjour ${p.userName},</p>
-<p>Votre paiement pour la facture <strong>${p.invoiceNumber}</strong> de <strong>${fmtEur(p.amountTtc)}</strong> n'a pas été traité par votre banque. Cela arrive parfois (plafond temporaire, carte expirée).</p>
-<p>Pour éviter l'interruption de votre accès RestauMargin, merci de mettre à jour votre moyen de paiement :</p>
-<p><a href="${p.updatePaymentUrl}" style="display:inline-block;background:#8B5CF6;color:#FFF;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600">Mettre à jour ma carte</a></p>
-<p>Nous réessaierons automatiquement dans 2 jours. Une question ? <a href="mailto:${support}" style="color:#8B5CF6">${support}</a></p>
-<p style="color:#666;font-size:12px;margin-top:32px">L'équipe RestauMargin</p>
-</body></html>`,
-  };
+function dunningHeader(title: string, emoji: string): string {
+  return `
+<tr><td style="padding:28px 30px 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td style="vertical-align:middle;">
+        <span style="font-size:22px;">${emoji}</span>
+        <span style="font-family:'Segoe UI',Arial,sans-serif;font-size:18px;font-weight:700;
+               color:#111111;vertical-align:middle;margin-left:8px;">RestauMargin</span>
+      </td>
+    </tr>
+  </table>
+</td></tr>
+<tr><td style="padding:20px 30px 0;">
+  <h1 style="font-family:'Segoe UI',Arial,sans-serif;font-size:22px;font-weight:700;
+             color:#111111;margin:0;line-height:1.3;">${title}</h1>
+</td></tr>`;
 }
 
-export function buildDunningJ3Email(p: DunningParams): { subject: string; html: string } {
-  const support = p.supportEmail ?? 'contact@restaumargin.fr';
-  return {
-    subject: `🔔 Action requise — paiement RestauMargin ${p.invoiceNumber}`,
-    html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#FFF;color:#111;padding:24px;max-width:600px;margin:0 auto">
-<div style="background:#FEE2E2;padding:14px;border-left:4px solid #DC2626;border-radius:4px;margin-bottom:20px">
-<strong>🔔 Sans action de votre part, votre accès sera suspendu dans 4 jours.</strong>
-</div>
-<p>Bonjour ${p.userName},</p>
-<p>Nous avons essayé de prélever <strong>${fmtEur(p.amountTtc)}</strong> (facture <strong>${p.invoiceNumber}</strong>) à plusieurs reprises sans succès.</p>
-<p>Pour continuer à utiliser RestauMargin sans interruption, merci de mettre à jour votre paiement dès maintenant :</p>
-<p><a href="${p.updatePaymentUrl}" style="display:inline-block;background:#8B5CF6;color:#FFF;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-size:16px">Régulariser le paiement</a></p>
-<p><strong>Ce qui se passe si rien n'est fait :</strong></p>
-<ul>
-<li>J+7 : votre compte passe en lecture seule</li>
-<li>J+30 : suppression automatique du compte (vos données restent exportables)</li>
-</ul>
-<p>Besoin d'aide ou de plus de temps ? Répondez directement à cet email, on trouvera une solution : <a href="mailto:${support}" style="color:#8B5CF6">${support}</a></p>
-<p style="color:#666;font-size:12px;margin-top:32px">L'équipe RestauMargin</p>
-</body></html>`,
-  };
+function dunningPaymentBlock(data: DunningEmailData): string {
+  const planLabel = data.plan === 'pro' ? 'Pro' : 'Business';
+  return `
+<tr><td style="padding:16px 30px 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
+    style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;">
+    <tr><td style="padding:16px 18px;">
+      <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;font-size:13px;
+               color:#92400e;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">
+        Paiement en echec
+      </p>
+      <p style="margin:6px 0 0;font-family:'Segoe UI',Arial,sans-serif;font-size:20px;
+               font-weight:700;color:#111111;">
+        ${data.amountEur.toFixed(2)}&nbsp;&euro; — Abonnement ${planLabel}
+      </p>
+      ${data.invoiceId ? `<p style="margin:4px 0 0;font-family:'Segoe UI',Arial,sans-serif;font-size:12px;color:#6b7280;">
+        Ref. facture : ${data.invoiceId}
+      </p>` : ''}
+    </td></tr>
+  </table>
+</td></tr>`;
 }
 
-export function buildDunningJ7Email(p: DunningParams): { subject: string; html: string } {
-  const support = p.supportEmail ?? 'contact@restaumargin.fr';
-  return {
-    subject: `🚨 Dernier rappel avant suspension — ${p.invoiceNumber}`,
-    html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#FFF;color:#111;padding:24px;max-width:600px;margin:0 auto">
-<div style="background:#111;color:#FFF;padding:18px;border-radius:6px;margin-bottom:20px">
-<strong style="font-size:18px">🚨 Votre accès RestauMargin est suspendu dès aujourd'hui.</strong>
-</div>
-<p>Bonjour ${p.userName},</p>
-<p>Nous n'avons pas réussi à encaisser <strong>${fmtEur(p.amountTtc)}</strong> (facture <strong>${p.invoiceNumber}</strong>) malgré plusieurs tentatives étalées sur 7 jours.</p>
-<p><strong>Votre compte est désormais en lecture seule.</strong> Vous pouvez toujours consulter vos données mais plus les modifier.</p>
-<p>Pour réactiver immédiatement votre accès :</p>
-<p><a href="${p.updatePaymentUrl}" style="display:inline-block;background:#DC2626;color:#FFF;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-size:16px">Régler et réactiver</a></p>
-<p>Si vous rencontrez une difficulté particulière ou souhaitez annuler votre abonnement, écrivez-nous : <a href="mailto:${support}" style="color:#8B5CF6">${support}</a>. On s'arrange toujours.</p>
-<p style="color:#666;font-size:12px;margin-top:32px">L'équipe RestauMargin<br>Après 30 jours sans régularisation, le compte sera supprimé automatiquement.</p>
-</body></html>`,
-  };
+function dunningCTA(updateUrl: string, invoiceUrl?: string): string {
+  return `
+<tr><td style="padding:24px 30px 0;">
+  <table role="presentation" cellspacing="0" cellpadding="0" width="100%">
+    <tr><td>
+      <a href="${updateUrl}"
+        style="display:inline-block;padding:14px 36px;background:#111111;color:#ffffff;
+               text-decoration:none;border-radius:10px;font-weight:700;font-size:15px;
+               font-family:'Segoe UI',Arial,sans-serif;">
+        Mettre a jour ma carte &rarr;
+      </a>
+    </td></tr>
+    ${invoiceUrl ? `<tr><td style="padding-top:10px;">
+      <a href="${invoiceUrl}"
+        style="font-family:'Segoe UI',Arial,sans-serif;font-size:13px;color:#6b7280;text-decoration:underline;">
+        Voir la facture en ligne
+      </a>
+    </td></tr>` : ''}
+  </table>
+</td></tr>`;
+}
+
+function dunningFooter(unsubEmail: string): string {
+  return `
+<tr><td style="padding:24px 30px;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:13px;color:#6b7280;margin:0;line-height:1.6;">
+    Cet email concerne votre abonnement RestauMargin. Si vous avez deja mis a jour votre moyen de paiement,
+    ignorez ce message.<br><br>
+    En cas de question : <a href="mailto:contact@restaumargin.fr" style="color:#0d9488;">contact@restaumargin.fr</a>
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:11px;color:#9ca3af;margin:12px 0 0;">
+    &copy; 2026 RestauMargin &mdash; Montpellier, France
+    &nbsp;|&nbsp;
+    <a href="https://www.restaumargin.fr/billing" style="color:#9ca3af;text-decoration:underline;">
+      Gerer mon abonnement
+    </a>
+  </p>
+</td></tr>`;
+}
+
+// ── J+1 : Avertissement initial, ton empathique ──
+export function buildDunningJ1Email(data: DunningEmailData): string {
+  const updateUrl = data.updatePaymentUrl ?? 'https://www.restaumargin.fr/billing';
+  const retryMsg = data.nextRetryDate
+    ? `Stripe effectuera un second essai de paiement le <strong>${data.nextRetryDate}</strong>.`
+    : 'Stripe effectuera un second essai automatiquement dans 2 jours.';
+
+  const html = dunningWrapper(`
+${dunningHeader('Probleme de paiement sur votre abonnement', '&#128205;')}
+
+<tr><td style="padding:16px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#111111;line-height:1.7;margin:0;">
+    Bonjour ${data.userName},
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    Le paiement de votre abonnement RestauMargin n'a pas pu etre preleve. Cela arrive parfois
+    (carte expiree, plafond atteint, authentification 3D Secure manquante).
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    ${retryMsg} Pour eviter toute interruption de service, veuillez verifier votre moyen de paiement.
+  </p>
+</td></tr>
+
+${dunningPaymentBlock(data)}
+
+${dunningCTA(updateUrl, data.invoiceUrl)}
+
+<tr><td style="padding:20px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:0;">
+    Votre acces reste actif pendant la periode de regularisation. Nous comptons sur vous !
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    L'equipe RestauMargin
+  </p>
+</td></tr>
+
+${dunningFooter(data.userEmail)}
+`, 'warning');
+
+  return html;
+}
+
+// ── J+3 : Urgence moderee, ton direct ──
+export function buildDunningJ3Email(data: DunningEmailData): string {
+  const updateUrl = data.updatePaymentUrl ?? 'https://www.restaumargin.fr/billing';
+  const suspendMsg = data.gracePeriodEndsAt
+    ? `Votre acces sera suspendu le <strong>${data.gracePeriodEndsAt}</strong> si le paiement n'est pas regularise.`
+    : 'Votre acces sera suspendu dans les prochains jours si le paiement n\'est pas regularise.';
+
+  const html = dunningWrapper(`
+${dunningHeader('2eme avertissement — Paiement toujours en attente', '&#9888;&#65039;')}
+
+<tr><td style="padding:16px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#111111;line-height:1.7;margin:0;">
+    Bonjour ${data.userName},
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    Malgre notre premier message, le paiement de votre abonnement RestauMargin reste en echec.
+    ${suspendMsg}
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    En cas de suspension, vous perdrez l'acces a :
+  </p>
+  <ul style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:2;
+             margin:8px 0 0;padding-left:20px;">
+    <li>Le calcul de marges et food cost en temps reel</li>
+    <li>La gestion de vos recettes et ingredients</li>
+    <li>L'assistant IA et les suggestions d'optimisation</li>
+    <li>Les commandes fournisseurs et le suivi des stocks</li>
+  </ul>
+</td></tr>
+
+${dunningPaymentBlock(data)}
+
+${dunningCTA(updateUrl, data.invoiceUrl)}
+
+<tr><td style="padding:20px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:0;">
+    Pour toute question sur votre paiement, repondez directement a cet email.
+    Nous sommes la pour vous aider.
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    L'equipe RestauMargin
+  </p>
+</td></tr>
+
+${dunningFooter(data.userEmail)}
+`, 'urgent');
+
+  return html;
+}
+
+// ── J+7 : Derniere chance, ton ferme ──
+export function buildDunningJ7Email(data: DunningEmailData): string {
+  const updateUrl = data.updatePaymentUrl ?? 'https://www.restaumargin.fr/billing';
+
+  const html = dunningWrapper(`
+${dunningHeader('Dernier avertissement — Suspension imminente', '&#128680;')}
+
+<tr><td style="padding:16px 30px 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
+    style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;">
+    <tr><td style="padding:14px 18px;">
+      <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;font-size:14px;
+               font-weight:700;color:#991b1b;">
+        &#9888; Votre acces RestauMargin va etre suspendu aujourd'hui
+      </p>
+    </td></tr>
+  </table>
+</td></tr>
+
+<tr><td style="padding:16px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#111111;line-height:1.7;margin:0;">
+    Bonjour ${data.userName},
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    Malgre nos deux precedents messages, le paiement de votre abonnement n'a pas ete regularise.
+    Stripe a effectue plusieurs tentatives de prelevement sans succes.
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    <strong>C'est votre derniere opportunite</strong> de regulariser votre situation avant la suspension
+    automatique de votre compte.
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    Toutes vos donnees (recettes, ingredients, fournisseurs, historique) seront conservees pendant
+    30 jours apres la suspension. Vous pourrez reactiver votre compte a tout moment.
+  </p>
+</td></tr>
+
+${dunningPaymentBlock(data)}
+
+${dunningCTA(updateUrl, data.invoiceUrl)}
+
+<tr><td style="padding:16px 30px 0;">
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:0;">
+    Si vous souhaitez resilier definitivement votre abonnement, vous pouvez le faire depuis
+    <a href="${updateUrl}" style="color:#0d9488;text-decoration:underline;">votre espace de facturation</a>.
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    Pour tout probleme technique ou question de facturation, contactez-nous :
+    <a href="mailto:contact@restaumargin.fr" style="color:#0d9488;text-decoration:underline;">
+      contact@restaumargin.fr
+    </a>
+  </p>
+  <p style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;margin:12px 0 0;">
+    L'equipe RestauMargin
+  </p>
+</td></tr>
+
+${dunningFooter(data.userEmail)}
+`, 'final');
+
+  return html;
 }

@@ -63,7 +63,7 @@ export default function APropos() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
-            <span style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>RestauMargin</span>
+            <span>RestauMargin</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link
@@ -91,7 +91,7 @@ export default function APropos() {
         </div>
         <h1
           className="text-4xl sm:text-5xl md:text-6xl font-black text-[#111111] mb-6 leading-tight"
-          style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
+         
         >
           Nous aidons les restaurateurs à maîtriser leurs marges
         </h1>
@@ -117,7 +117,7 @@ export default function APropos() {
               </div>
               <h2
                 className="text-2xl sm:text-3xl font-bold text-[#111111] mb-3"
-                style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
+               
               >
                 L'équipe RestauMargin
               </h2>
@@ -156,7 +156,7 @@ export default function APropos() {
           </div>
           <h2
             className="text-3xl sm:text-4xl font-black text-[#111111] mb-4"
-            style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
+           
           >
             Démocratiser la gestion professionnelle en restauration
           </h2>
@@ -202,7 +202,7 @@ export default function APropos() {
       <section className="py-16 px-4 sm:px-6 max-w-4xl mx-auto bg-[#f8fafb] rounded-3xl my-8">
         <h2
           className="text-3xl sm:text-4xl font-black text-[#111111] mb-8 text-center"
-          style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
+         
         >
           Ce qui nous distingue
         </h2>
@@ -227,7 +227,7 @@ export default function APropos() {
       <section className="py-16 px-4 sm:px-6 max-w-4xl mx-auto">
         <h2
           className="text-2xl sm:text-3xl font-bold text-[#111111] mb-6 text-center"
-          style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
+         
         >
           Notre expertise technique
         </h2>
@@ -258,7 +258,7 @@ export default function APropos() {
         <div className="bg-gradient-to-br from-[#111111] to-[#1f2937] rounded-3xl p-8 sm:p-12 text-center text-white">
           <h3
             className="text-2xl sm:text-3xl font-bold mb-3"
-            style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
+           
           >
             Prêt à maîtriser vos marges ?
           </h3>

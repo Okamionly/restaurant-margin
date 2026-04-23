@@ -35,20 +35,25 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
   try {
     const sig = req.headers['stripe-signature'] as string | undefined;
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    let event: any;
 
-    if (endpointSecret && sig) {
-      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-      try {
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-      } catch (err: any) {
-        console.error('[STRIPE WEBHOOK] Signature verification failed:', err.message);
-        return res.status(400).send('Webhook signature verification failed');
-      }
-    } else {
-      // Fallback: parse without verification (log warning)
-      console.warn('[STRIPE WEBHOOK] WARNING: No STRIPE_WEBHOOK_SECRET configured, skipping signature verification');
-      event = JSON.parse(req.body.toString());
+    // SECURITY: Require STRIPE_WEBHOOK_SECRET — reject all requests if not configured.
+    // This prevents forged webhook events (CWE-345). No fallback JSON.parse allowed.
+    if (!endpointSecret) {
+      console.error('[STRIPE WEBHOOK] STRIPE_WEBHOOK_SECRET not configured — rejecting request');
+      return res.status(400).send('Webhook configuration error: missing STRIPE_WEBHOOK_SECRET');
+    }
+    if (!sig) {
+      console.error('[STRIPE WEBHOOK] Missing stripe-signature header — rejecting request');
+      return res.status(400).send('Missing stripe-signature header');
+    }
+
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    let event: any;
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err: any) {
+      console.error('[STRIPE WEBHOOK] Signature verification failed:', err.message);
+      return res.status(400).send('Webhook signature verification failed');
     }
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;

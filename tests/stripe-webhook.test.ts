@@ -91,7 +91,7 @@ describe('Stripe webhook security — hardened handler rules', () => {
   it('RULE 4: stripeWebhookHandler must call constructEvent before trusting event', async () => {
     const fs = await import('fs');
     const path = await import('path');
-    // Handler is now in api/routes/stripe.ts (extracted from monolith)
+    // Handler is in api/routes/stripe.ts (extracted from monolith)
     const stripePath = path.join(process.cwd(), 'api', 'routes', 'stripe.ts');
     const source = fs.readFileSync(stripePath, 'utf8');
     expect(source).toContain('stripe.webhooks.constructEvent');

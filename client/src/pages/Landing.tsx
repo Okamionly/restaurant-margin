@@ -47,7 +47,7 @@ HERO SECTION BACKUP (lines 323-414 of original Landing.tsx):
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
           <Link to="/login?mode=register" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold shadow-lg transition-all text-base">
-            Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
+            Essai gratuit 14 jours <ArrowRight className="w-4 h-4" />
           </Link>
           <Link to="/pricing" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#111111] hover:bg-[#333] text-white font-semibold transition-all text-base">
             Voir les tarifs <ArrowRight className="w-4 h-4" />
@@ -246,7 +246,7 @@ const faqItems = [
   },
   {
     q: "Combien ca coute ?",
-    a: "Le plan Pro demarre a 29 euros/mois et le plan Business a 79 euros/mois. L'essai gratuit de 7 jours est sans carte bancaire et sans engagement. Vous pouvez annuler a tout moment depuis votre espace.",
+    a: "Le plan Pro demarre a 29 euros/mois et le plan Business a 79 euros/mois. L'essai gratuit de 14 jours est sans carte bancaire et sans engagement. Vous pouvez annuler a tout moment depuis votre espace.",
   },
   {
     q: 'Mes donnees sont-elles securisees ?',
@@ -595,7 +595,7 @@ export default function Landing() {
     <div className="min-h-screen bg-[#FFFFFF] text-[#111111] overflow-x-hidden scroll-smooth" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <SEOHead
         title="RestauMargin — Logiciel de calcul de marge restaurant | Food cost et fiches techniques"
-        description="RestauMargin : fiches techniques, food cost et commandes fournisseurs automatises par l'IA. Logiciel de gestion de marge restaurant. Essai gratuit 7 jours."
+        description="RestauMargin : fiches techniques, food cost et commandes fournisseurs automatises par l'IA. Logiciel de gestion de marge restaurant. Essai gratuit 14 jours."
         path="/"
       />
 
@@ -637,7 +637,7 @@ export default function Landing() {
               <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">FAQ</button>
               <hr className="border-[#E5E7EB]" />
               <Link to="/login" className="block text-sm text-[#6B7280] hover:text-[#111111] py-2">Se connecter</Link>
-              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold">Essai gratuit 7 jours</Link>
+              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold">Essai gratuit 14 jours</Link>
             </div>
           </div>
         )}
@@ -678,7 +678,7 @@ export default function Landing() {
                   to="/login?mode=register"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold shadow-lg shadow-teal-600/20 transition-all text-lg"
                 >
-                  Essai gratuit 7 jours <ArrowRight className="w-5 h-5" />
+                  Essai gratuit 14 jours <ArrowRight className="w-5 h-5" />
                 </Link>
               </div>
               <p className="mt-3 text-sm text-[#6B7280] text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
@@ -950,7 +950,7 @@ export default function Landing() {
               >
                 Creer mon compte gratuit <ArrowRight className="w-5 h-5" />
               </Link>
-              <p className="mt-3 text-sm text-[#9CA3AF]">7 jours gratuits -- Sans carte bancaire</p>
+              <p className="mt-3 text-sm text-[#9CA3AF]">14 jours gratuits -- Sans carte bancaire</p>
             </div>
           </FadeIn>
         </div>
@@ -1115,7 +1115,7 @@ export default function Landing() {
                 to="/login?mode=register"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#111111] hover:bg-[#333333] text-white font-bold text-lg transition-all shadow-lg"
               >
-                Essayer gratuitement pendant 7 jours <ArrowRight className="w-5 h-5" />
+                Essayer gratuitement pendant 14 jours <ArrowRight className="w-5 h-5" />
               </Link>
               <p className="mt-3 text-sm text-[#9CA3AF]">Sans carte bancaire -- Sans engagement</p>
             </div>
@@ -1285,7 +1285,7 @@ export default function Landing() {
                 { icon: Globe, label: 'Made in France', sub: 'Heberge en Europe' },
                 { icon: Headphones, label: 'Support 7j/7', sub: 'Reponse sous 24h' },
                 { icon: FileCheck, label: 'RGPD Conforme', sub: 'Vos donnees vous appartiennent' },
-                { icon: CreditCard, label: 'Essai sans CB', sub: '7 jours gratuits' },
+                { icon: CreditCard, label: 'Essai sans CB', sub: '14 jours gratuits' },
               ].map((badge, i) => {
                 const Icon = badge.icon;
                 return (
@@ -1370,7 +1370,7 @@ export default function Landing() {
                   rel="noopener noreferrer"
                   className="block w-full text-center px-6 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold transition-colors shadow-lg shadow-teal-600/20"
                 >
-                  Essai gratuit 7 jours
+                  Essai gratuit 14 jours
                 </a>
                 <p className="text-xs text-[#9CA3AF] text-center mt-2">Sans carte bancaire</p>
               </div>
@@ -1415,7 +1415,7 @@ export default function Landing() {
                   rel="noopener noreferrer"
                   className="block w-full text-center px-6 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold transition-colors shadow-lg shadow-teal-600/20"
                 >
-                  Essai gratuit 7 jours
+                  Essai gratuit 14 jours
                 </a>
                 <p className="text-xs text-[#9CA3AF] text-center mt-2">Sans carte bancaire</p>
               </div>
@@ -1693,11 +1693,11 @@ export default function Landing() {
                 <Zap className="w-4 h-4 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Essayer gratuitement -- 7 jours sans engagement</p>
+                <p className="text-sm font-semibold text-white">Essayer gratuitement -- 14 jours sans engagement</p>
                 <p className="text-xs text-white/50">Pas de carte bancaire requise</p>
               </div>
             </div>
-            <p className="sm:hidden text-sm font-semibold text-white">7 jours gratuits, sans CB</p>
+            <p className="sm:hidden text-sm font-semibold text-white">14 jours gratuits, sans CB</p>
             <div className="flex items-center gap-3 shrink-0">
               <Link
                 to="/login?mode=register"
@@ -1906,7 +1906,7 @@ export default function Landing() {
               to="/login?mode=register"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-teal-700 font-semibold text-sm hover:bg-teal-50 transition-colors whitespace-nowrap shrink-0"
             >
-              Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
+              Essai gratuit 14 jours <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>

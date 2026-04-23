@@ -339,18 +339,11 @@ export function buildWelcomeEmail(data: WelcomeEmailData): string {
   const content = `
 ${header('RestauMargin', 'Bienvenue !')}
 
-<<<<<<< HEAD
 <tr><td style="padding:30px 25px 16px;">
   <p style="font-size:19px;color:${DARK};margin:0;font-weight:700;">Bonjour ${esc(data.userName)},</p>
   <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.7;">
     Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">14&nbsp;jours</strong> est activ&eacute;.
-=======
-<tr><td style="padding:30px 25px 10px;">
-  <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
-  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
-    Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">14 jours</strong> est activ&eacute;.
     Voici comment d&eacute;marrer en 3 &eacute;tapes simples :
->>>>>>> origin/main
   </p>
 </td></tr>
 

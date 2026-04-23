@@ -210,12 +210,13 @@ export default function SearchBar({
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373] pointer-events-none z-10" />
       <input
         ref={inputRef}
-        type="text"
+        type="search"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
+        aria-label={placeholder}
         autoComplete="off"
         spellCheck={false}
         className={`

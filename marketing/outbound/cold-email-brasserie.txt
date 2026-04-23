@@ -1,0 +1,53 @@
+==============================================================
+COLD EMAIL - BRASSERIE / BISTRO TRADITIONNEL
+Sequence : J+0 / J+3 / J+7 / J+14
+From : youssef@restaumargin.fr
+==============================================================
+
+ETAPE 1 - J+0 : INTRO
+-------------------------------------------------------------
+OBJET A : "{{PRENOM}}, combien vous coute votre plat du jour ?"
+OBJET B : "Brasserie {{NOM_RESTAURANT}} - pilotage des marges"
+OBJET C : "Question pour {{PRENOM}} - food cost brasserie"
+
+Bonjour {{PRENOM}},
+
+Youssef, fondateur de RestauMargin. Je prospecte les brasseries independantes de {{VILLE}} - une question directe :
+
+Pilotez-vous vos marges plat par plat, ou globalement en fin de mois ?
+
+La majorite des brasseries connaissent leur cout matiere global (33-38%), mais pas le detail par plat. La blanquette de veau peut plomber la marge depuis des mois sans qu'on s'en apercoive.
+
+RestauMargin calcule le food cost exact de chaque plat en temps reel - IA + balance Bluetooth.
+
+14 jours d'essai sans carte bancaire :
+https://www.restaumargin.fr/login?mode=register
+
+Youssef
+[VOTRE_TELEPHONE]
+
+-------------------------------------------------------------
+ETAPE 2 - J+3 : RELANCE
+-------------------------------------------------------------
+Un bistrot parisien a decouvert que son entrecote frites (24 EUR) avait un food cost de 41% au lieu de 29% estime. Le prix du boeuf avait augmente de 12% chez son fournisseur. Il a revu le prix a 26 EUR. Marge retrouvee.
+
+Ce genre de derive se detecte en 10 secondes avec les alertes fournisseurs RestauMargin.
+
+Demo en 15 min ? https://calendly.com/[VOTRE_LIEN]/15min
+
+-------------------------------------------------------------
+ETAPE 3 - J+7 : GUIDE BRASSERIE
+-------------------------------------------------------------
+Guide marge brasserie (gratuit, sans inscription) :
+https://www.restaumargin.fr/guide-marge/brasserie
+Food cost cible par categorie, carte rentable, 4 indicateurs a surveiller.
+
+-------------------------------------------------------------
+ETAPE 4 - J+14 : LAST CHANCE
+-------------------------------------------------------------
+Dernier message - promis.
+https://www.restaumargin.fr (14j gratuits, sans CB)
+
+==============================================================
+VARIABLES : {{PRENOM}} {{NOM_RESTAURANT}} {{VILLE}}
+==============================================================

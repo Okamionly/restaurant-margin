@@ -125,8 +125,8 @@ function WidgetPickerModal({ visible, order, onSave, onClose }: {
             </div>
             <h3 className="text-lg font-bold font-satoshi text-[#111111] dark:text-white">Personnaliser</h3>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-            <X className="w-5 h-5 text-[#9CA3AF]" />
+          <button onClick={onClose} aria-label="Fermer le personnalisateur de widgets" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+            <X className="w-5 h-5 text-[#9CA3AF]" aria-hidden="true" />
           </button>
         </div>
 
@@ -152,16 +152,16 @@ function WidgetPickerModal({ visible, order, onSave, onClose }: {
                 <Icon className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3] flex-shrink-0" />
                 <span className="text-sm font-medium text-[#111111] dark:text-white flex-1">{def.label}</span>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => moveUp(idx)} className="p-1 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] hover:text-[#6B7280]" title="Monter">
-                    <ArrowUpRight className="w-3.5 h-3.5 rotate-[-45deg]" />
+                  <button onClick={() => moveUp(idx)} aria-label={`Monter le widget ${def.label}`} className="p-1 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] hover:text-[#6B7280]">
+                    <ArrowUpRight className="w-3.5 h-3.5 rotate-[-45deg]" aria-hidden="true" />
                   </button>
-                  <button onClick={() => moveDown(idx)} className="p-1 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] hover:text-[#6B7280]" title="Descendre">
-                    <ArrowDownRight className="w-3.5 h-3.5 rotate-[45deg]" />
+                  <button onClick={() => moveDown(idx)} aria-label={`Descendre le widget ${def.label}`} className="p-1 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] hover:text-[#6B7280]">
+                    <ArrowDownRight className="w-3.5 h-3.5 rotate-[45deg]" aria-hidden="true" />
                   </button>
-                  <button onClick={() => toggle(wId)} className="p-1 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                  <button onClick={() => toggle(wId)} aria-label={isVisible ? `Masquer ${def.label}` : `Afficher ${def.label}`} aria-pressed={isVisible} className="p-1 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
                     {isVisible
-                      ? <Eye className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                      : <EyeOff className="w-4 h-4 text-[#9CA3AF]" />}
+                      ? <Eye className="w-4 h-4 text-teal-600 dark:text-teal-400" aria-hidden="true" />
+                      : <EyeOff className="w-4 h-4 text-[#9CA3AF]" aria-hidden="true" />}
                   </button>
                 </div>
               </div>
@@ -957,7 +957,7 @@ export default function Dashboard() {
       </div>
 
       {/* ── 3 BIG KPI CARDS ─────────────────────────────────────────────── */}
-      {isWidgetVisible('kpis') && <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {isWidgetVisible('kpis') && <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" data-tour-id="tour-kpis">
         {/* Marge moyenne */}
         <div className="rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black p-6 card-hover animate-kpi-1">
           <p className="text-xs font-medium uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-2">Marge moyenne</p>
@@ -1089,7 +1089,7 @@ export default function Dashboard() {
                 return <TodayFocus key={wId} recipes={recipes} navigate={navigate} />;
 
               case 'quick-actions':
-                return <QuickActionsWidget key={wId} navigate={navigate} />;
+                return <div key={wId} data-tour-id="tour-quick-actions"><QuickActionsWidget navigate={navigate} /></div>;
 
               case 'top5':
                 return stats && stats.sortedByMarginAsc.length > 0 ? (
@@ -1142,13 +1142,14 @@ export default function Dashboard() {
 
               case 'onboarding':
                 return recipes.length < 5 ? (
-                  <OnboardingChecklist
-                    key={wId}
-                    restaurantName={selectedRestaurant?.name || ''}
-                    ingredientCount={ingredients.length}
-                    recipeCount={recipes.length}
-                    navigate={navigate}
-                  />
+                  <div key={wId} data-tour-id="tour-checklist">
+                    <OnboardingChecklist
+                      restaurantName={selectedRestaurant?.name || ''}
+                      ingredientCount={ingredients.length}
+                      recipeCount={recipes.length}
+                      navigate={navigate}
+                    />
+                  </div>
                 ) : null;
 
               default:

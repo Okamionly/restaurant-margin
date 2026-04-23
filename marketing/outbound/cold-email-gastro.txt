@@ -1,0 +1,58 @@
+==============================================================
+COLD EMAIL - RESTAURANT GASTRONOMIQUE / BISTRONOMIQUE
+Sequence : J+0 / J+3 / J+7 / J+14
+From : youssef@restaumargin.fr
+Ton : plus premium, axe sur precision et pilotage
+==============================================================
+
+ETAPE 1 - J+0 : INTRO
+-------------------------------------------------------------
+OBJET A : "Pilotage des couts matiere - {{NOM_RESTAURANT}}"
+OBJET B : "{{PRENOM}}, une question sur vos fiches techniques"
+
+Bonjour {{PRENOM}},
+
+Je me permets de vous contacter directement - Youssef, fondateur de RestauMargin.
+
+En gastronomie, la precision des fiches techniques separe souvent un 28% de food cost d'un 35%. Pourtant, beaucoup de cuisines haut de gamme fonctionnent encore sur estimation.
+
+RestauMargin calcule le food cost exact de chaque mise en place, ingredient par ingredient, avec prise en compte des pertes au parage et de la variation des prix fournisseurs en temps reel.
+
+Comment gerez-vous aujourd'hui le suivi des couts quand vous changez de carte ? C'est souvent la que les pertes sont les plus invisibles.
+
+20 minutes d'echange si le sujet vous parle :
+https://calendly.com/[VOTRE_LIEN]/20min
+
+Youssef
+
+-------------------------------------------------------------
+ETAPE 2 - J+3 : STATION BALANCE
+-------------------------------------------------------------
+RestauMargin integre une balance Bluetooth pour peser les ingredients en cuisine et valider que les fiches techniques sont respectees en production - particulierement utile pour la portion control en gastronomie.
+
+Guide gastronomique (gratuit) :
+https://www.restaumargin.fr/guide-marge/restaurant-gastronomique
+
+-------------------------------------------------------------
+ETAPE 3 - J+7 : DIFFERENCIATEUR TECHNIQUE
+-------------------------------------------------------------
+Ce qui differencie RestauMargin pour les cuisines gastronomiques :
+1. Balance Bluetooth : pesee en temps reel, marge affichee pendant la prep
+2. IA vocale : "Ajoute 200g de beurre noisette" - la fiche se met a jour sans toucher l'ecran
+3. Scanner factures : photo d'une livraison Metro, prix mis a jour dans toutes les recettes
+
+Essai 14j sans CB : https://www.restaumargin.fr
+
+-------------------------------------------------------------
+ETAPE 4 - J+14 : LAST CHANCE
+-------------------------------------------------------------
+Dernier message.
+https://www.restaumargin.fr si le sujet revient sur la table.
+
+Youssef
+
+==============================================================
+NOTE GASTRO : Ne pas mentionner "29 EUR" au premier email (ancrage bas).
+Mentionner Station Balance des J+0 (differenciateur premium).
+VARIABLES : {{PRENOM}} {{NOM_RESTAURANT}} {{VILLE}}
+==============================================================

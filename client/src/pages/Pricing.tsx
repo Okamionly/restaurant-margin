@@ -5,7 +5,7 @@ import {
   Calculator, SlidersHorizontal, Star, BadgePercent
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 interface FAQItem {
   question: string;
@@ -112,7 +112,7 @@ const plans: Plan[] = [
       { text: 'HACCP digital : temperatures, nettoyage, conformite', included: true },
       { text: 'Messagerie integree avec vos fournisseurs', included: true },
       { text: '500 requetes IA par mois', included: true },
-      { text: 'Essai gratuit 7 jours', included: true },
+      { text: 'Essai gratuit 14 jours — sans carte bancaire', included: true },
       { text: 'Multi-etablissements', included: false },
       { text: 'Rapport IA hebdomadaire', included: false },
       { text: 'Analyse predictive des ventes', included: false },
@@ -135,11 +135,30 @@ const plans: Plan[] = [
       { text: 'Analyse predictive : previsions de ventes et suggestions prix', included: true },
       { text: 'Station Balance compatible (tablette + balance Bluetooth)', included: true },
       { text: 'Support prioritaire', included: true },
-      { text: 'Essai gratuit 7 jours', included: true },
+      { text: 'Essai gratuit 14 jours', included: true },
     ],
     cta: "S'abonner — 79\u20AC/mois",
     ctaLink: 'https://buy.stripe.com/4gMbIU5Ki4cAfbe1b187K05',
     external: true,
+  },
+  {
+    name: 'Enterprise',
+    description: 'Pour les groupes 3+ etablissements, franchises et chaines regionales',
+    priceMonthly: null,
+    priceLabel: 'Sur devis',
+    icon: <Users className="w-6 h-6 text-black" />,
+    features: [
+      { text: 'Tout du plan Business', included: true },
+      { text: 'Gestion multi-sites illimitee (groupes, franchises)', included: true },
+      { text: 'Requetes IA illimitees', included: true },
+      { text: 'Station Balance hardware : tablette + balance BT fournie', included: true },
+      { text: 'Kiosk mode cuisine sans connexion internet', included: true },
+      { text: 'Integrabilite API (ERP, caisse, compta)', included: true },
+      { text: 'SLA 99.9% + support dedie + formation equipe', included: true },
+      { text: 'Contrat annuel avec MSA + DPA RGPD', included: true },
+    ],
+    cta: 'Demander un devis',
+    ctaLink: '',
   },
 ];
 
@@ -415,9 +434,13 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-white text-black">
       <SEOHead
-        title="Tarifs — RestauMargin"
-        description="Plans Pro (29 EUR/mois) et Business (79 EUR/mois). Calculez vos marges restaurant, food cost et fiches techniques. Essai gratuit 7 jours sans engagement."
+        title="Tarifs RestauMargin — Pro 29€/mois, Business 79€/mois | Logiciel marge restaurant"
+        description="RestauMargin Pro a 29€/mois : fiches techniques, food cost, IA vocale, balance Bluetooth. Business a 79€/mois : multi-sites, rapport IA hebdomadaire. Enterprise sur devis. Essai 14j sans CB."
         path="/pricing"
+        schema={[
+          buildFAQSchema(faqs.map(f => ({ question: f.question, answer: f.answer }))),
+          buildBreadcrumbSchema([{ name: 'Accueil', url: '/' }, { name: 'Tarifs', url: '/pricing' }]),
+        ]}
       />
       {/* Header */}
       <header className="border-b border-[#E5E7EB]">
@@ -450,7 +473,7 @@ export default function Pricing() {
       <section className="pt-20 pb-12 px-4 sm:px-6 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#F3F4F6] rounded-full mb-6">
           <BadgePercent className="w-4 h-4 text-black" />
-          <span className="text-xs font-semibold text-black">150+ restaurants nous font confiance</span>
+          <span className="text-xs font-semibold text-black">150+ restaurants — essai 14j sans CB</span>
         </div>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-black">
           Tarifs simples,{' '}
@@ -484,15 +507,15 @@ export default function Pricing() {
           </span>
           {annual && (
             <span className="ml-1 px-3 py-1 bg-black text-white text-xs font-semibold rounded-full">
-              -20%
+              2 mois offerts
             </span>
           )}
         </div>
       </section>
 
       {/* Pricing Cards */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {plans.map((plan) => (
             <div
               key={plan.name}
@@ -746,7 +769,7 @@ export default function Pricing() {
           Pret a reprendre le controle de vos marges ?
         </h2>
         <p className="text-white/50 mb-8 max-w-lg mx-auto">
-          Essayez gratuitement pendant 7 jours. Sans carte bancaire, sans engagement.
+          Essayez gratuitement pendant 14 jours. Sans carte bancaire, sans engagement.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <a

@@ -1,0 +1,59 @@
+==============================================================
+LINKEDIN DM SCRIPT - RestauMargin
+Cible : gerants / chefs proprietaires / directeurs restauration
+Sequence : Connexion -> Message 1 -> Message 2 (J+5) -> Message 3 (J+12)
+==============================================================
+
+NOTE DE CONNEXION (300 caracteres max)
+-------------------------------------------------------------
+Bonjour {{PRENOM}}, je travaille sur un outil de pilotage des marges pour les restos independants. Votre parcours m'interesse - j'aurais une question rapide si vous acceptez la connexion.
+
+MESSAGE 1 - Apres connexion acceptee
+-------------------------------------------------------------
+Bonjour {{PRENOM}},
+
+Merci d'avoir accepte !
+
+Youssef, fondateur de RestauMargin - logiciel de calcul de marge et food cost pour restaurants independants.
+
+Une question directe : le food cost de vos plats est-il calcule en temps reel dans votre etablissement, ou c'est un chiffre global mensuel ?
+
+On a constate que 80% des restos independants connaissent leur cout matiere global, mais pas le detail par recette - et c'est la que se jouent 3-5 points de marge.
+
+Pas de pitch - juste curieux de savoir comment vous fonctionnez.
+
+(VARIANTE CHEFS ETOILES : "vos fiches techniques sont-elles recalculees automatiquement quand les prix fournisseurs changent, ou c'est un process manuel ?")
+
+MESSAGE 2 - J+5 si pas de reponse
+-------------------------------------------------------------
+Bonjour {{PRENOM}},
+
+Je relance une seule fois.
+
+J'ai publie un guide gratuit sur les marges par type de restaurant :
+https://www.restaumargin.fr/guide-marge/[TYPE_RESTAURANT]
+
+Si vous voulez qu'on en parle, je suis disponible pour 15 minutes.
+
+[TYPE_RESTAURANT] = pizzeria | brasserie | bistro | food-truck | restaurant-gastronomique
+
+MESSAGE 3 - J+12 (optionnel)
+-------------------------------------------------------------
+Dernier message - promis !
+
+Si le sujet revient :
+https://www.restaumargin.fr (14j sans CB)
+
+==============================================================
+PROFILS A CIBLER (Sales Navigator)
+- Intitule : "gerant restaurant", "chef proprietaire", "directeur F&B"
+- Secteur : Restaurants et restauration
+- Zone : Montpellier (34) -> Lyon (69) -> Paris (75)
+- Taille : 1-50 employes
+
+CONTENU ORGANIQUE (2x/semaine depuis compte Youssef)
+- "Ce que j'ai appris en analysant les marges de 150 restaurants"
+- "Pourquoi votre plat du jour vous coute peut-etre 5 EUR de plus que vous pensez"
+- "J'ai quitte mon CDI pour creer un logiciel de marge resto - voici ou j'en suis"
+Format : 5 lignes max avant "Voir plus", premier hook + chiffre
+==============================================================

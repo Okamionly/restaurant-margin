@@ -915,7 +915,7 @@ function AppLayout() {
       {/* Mobile bottom navigation bar */}
       <MobileBottomNav />
 
-      {/* NPS Survey - triggers 14 days after signup, once per user */}
+      {/* NPS Survey — triggers 14 days after signup, once per user */}
       <NPSModal />
 
       {/* Onboarding Wizard for new users */}

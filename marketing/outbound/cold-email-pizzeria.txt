@@ -1,0 +1,79 @@
+==============================================================
+COLD EMAIL - PIZZERIA / FAST-FOOD PIZZA
+Sequence : J+0 (intro) / J+3 (relance) / J+7 (valeur) / J+14 (last chance)
+From : youssef@restaumargin.fr (TOUJOURS le fondateur, pas contact@)
+==============================================================
+
+ETAPE 1 - J+0 : INTRO
+-------------------------------------------------------------
+OBJET A : "{{PRENOM}}, quel est votre food cost sur la Margherita ?"
+OBJET B : "Pizzeria {{NOM_RESTAURANT}} - 3 points de marge en 30 jours"
+OBJET C : "Question rapide sur vos marges, {{PRENOM}}"
+
+Bonjour {{PRENOM}},
+
+Je me presente : Youssef, fondateur de RestauMargin.
+
+Je cartographie les pizzerias independantes de {{VILLE}} qui pourraient beneficier d'un outil de calcul de marge automatique.
+
+Une question directe : connaissez-vous precisement votre food cost sur vos 5 pizzas les plus vendues ? Pas une estimation - le chiffre exact au centime.
+
+La plupart des pizzaioli me donnent "entre 28 et 33%". Avec RestauMargin, c'est 26.4% sur la Margherita et 31.7% sur la 4 fromages - l'IA calcule ingredient par ingredient, en temps reel.
+
+14 jours d'essai sans carte bancaire :
+https://www.restaumargin.fr/login?mode=register
+
+Youssef
+Fondateur RestauMargin
+[VOTRE_TELEPHONE]
+
+-------------------------------------------------------------
+ETAPE 2 - J+3 : RELANCE (si pas de reponse)
+-------------------------------------------------------------
+OBJET : "Re : {{OBJET_J0}}"
+
+Bonjour {{PRENOM}},
+
+La semaine derniere, un pizzaiolo de Lyon a decouvert avec RestauMargin que sa pizza vegetarienne avait un food cost reel de 38% (pas 29% comme il estimait). Il a ajuste la recette en 10 minutes. 3 points de marge recuperes.
+
+C'est le genre de chose qu'on ne voit pas sans outil.
+
+Si vous avez 10 minutes, je vous propose une demo en visio - vous entrez vos 3 pizzas et on calcule vos vraies marges en live.
+
+https://calendly.com/[VOTRE_LIEN]/15min
+
+Youssef
+
+-------------------------------------------------------------
+ETAPE 3 - J+7 : VALEUR (guide offert)
+-------------------------------------------------------------
+OBJET : "Le guide marge pizzeria (offert, sans inscription)"
+
+Bonjour {{PRENOM}},
+
+Pas de pitch - juste un guide pour les pizzerias independantes :
+https://www.restaumargin.fr/guide-marge/pizzeria
+
+Food cost cible par type de pizza, prix plancher, 3 erreurs qui font perdre 2-4 points de marge.
+
+Youssef
+
+-------------------------------------------------------------
+ETAPE 4 - J+14 : LAST CHANCE
+-------------------------------------------------------------
+OBJET : "Derniere fois que je vous ecris, {{PRENOM}}"
+
+Bonjour {{PRENOM}},
+
+C'est mon dernier email.
+
+Si vous voulez tester quand vous aurez du temps :
+https://www.restaumargin.fr (essai 14j, sans CB)
+
+Belle continuation,
+Youssef
+
+==============================================================
+VARIABLES : {{PRENOM}} {{NOM_RESTAURANT}} {{VILLE}} {{OBJET_J0}}
+DELIVERABILITE : max 50 emails/jour les 2 premieres semaines, SPF/DKIM verifie
+==============================================================

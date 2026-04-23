@@ -1418,8 +1418,8 @@ export default function Settings() {
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-teal-600 flex items-center justify-center text-white text-xl font-bold shadow-lg">
                 {getInitials(user?.name)}
               </div>
-              <button className="absolute inset-0 w-16 h-16 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                <Camera className="w-4 h-4 text-white" />
+              <button aria-label="Changer la photo de profil" className="absolute inset-0 w-16 h-16 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                <Camera className="w-4 h-4 text-white" aria-hidden="true" />
               </button>
             </div>
             <div className="flex-1">

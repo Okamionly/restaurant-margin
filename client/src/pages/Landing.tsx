@@ -594,8 +594,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#111111] overflow-x-hidden scroll-smooth" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <SEOHead
-        title="RestauMargin — Logiciel de calcul de marge restaurant | Food cost et fiches techniques"
-        description="RestauMargin : fiches techniques, food cost et commandes fournisseurs automatises par l'IA. Logiciel de gestion de marge restaurant. Essai gratuit 7 jours."
+        title="RestauMargin — Logiciel de marge restaurant | Food cost, fiches techniques, IA"
+        description="Calculez vos marges, detectez vos pertes, commandez vos fournisseurs. RestauMargin automatise le food cost et les fiches techniques pour restaurants independants. Essai gratuit 14 jours, sans CB."
         path="/"
       />
 
@@ -637,7 +637,7 @@ export default function Landing() {
               <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">FAQ</button>
               <hr className="border-[#E5E7EB]" />
               <Link to="/login" className="block text-sm text-[#6B7280] hover:text-[#111111] py-2">Se connecter</Link>
-              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold">Essai gratuit 7 jours</Link>
+              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold">Calculer ma marge — 14j gratuits</Link>
             </div>
           </div>
         )}
@@ -659,18 +659,18 @@ export default function Landing() {
             <div className="text-center lg:text-left animate-[fadeInUp_0.6s_ease-out]">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(13,148,136,0.08)]">
                 <Zap className="w-3.5 h-3.5" />
-                Nouveau 2026
+                Essai gratuit 14 jours — sans carte bancaire
               </div>
 
               <h1 className="text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
-                <span className="text-[#111111]">Maitrisez vos marges,</span>
+                <span className="text-[#111111]">Calculez vos marges.</span>
                 <br />
                 <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">
-                  augmentez vos profits.
+                  Stoppez les pertes.
                 </span>
               </h1>
               <p className="mt-5 text-lg sm:text-xl text-[#6B7280] max-w-lg mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
-                Fiches techniques, food cost et commandes fournisseurs automatises par l'IA pour votre restaurant.
+                Le logiciel de marge pour restaurateurs independants. Fiches techniques, food cost et commandes fournisseurs automatises par l'IA — en cuisine, en 2 minutes.
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
@@ -678,11 +678,17 @@ export default function Landing() {
                   to="/login?mode=register"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold shadow-lg shadow-teal-600/20 transition-all text-lg"
                 >
-                  Essai gratuit 7 jours <ArrowRight className="w-5 h-5" />
+                  Calculer ma marge reelle <ArrowRight className="w-5 h-5" />
                 </Link>
+                <button
+                  onClick={() => document.getElementById('live-demo')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl border-2 border-[#E5E7EB] hover:border-[#111111] text-[#111111] font-semibold transition-all text-lg bg-white"
+                >
+                  <Eye className="w-5 h-5" /> Voir la demo
+                </button>
               </div>
               <p className="mt-3 text-sm text-[#6B7280] text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
-                <Shield className="w-3.5 h-3.5" /> Sans carte bancaire -- Sans engagement
+                <Shield className="w-3.5 h-3.5" /> 14 jours gratuits — Sans carte bancaire — Sans engagement
               </p>
             </div>
 
@@ -755,7 +761,7 @@ export default function Landing() {
 
                 {/* Badge */}
                 <div className="absolute -top-4 -right-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold z-10">
-                  Nouveau 2026
+                  Essai gratuit 14 jours — sans carte bancaire
                 </div>
               </div>
             </div>
@@ -784,6 +790,105 @@ export default function Landing() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════ 1b. PROBLEME → SOLUTION (CRO v2) ═══════════════ */}
+      <section className="py-20 sm:py-28 bg-white border-t border-[#E5E7EB]">
+        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-3">Le vrai probleme</p>
+              <h2 className="text-3xl sm:text-4xl font-black text-[#111111] leading-tight">
+                Vous savez que vous perdez de l'argent.<br />
+                <span className="text-teal-600">Vous ne savez pas ou.</span>
+              </h2>
+              <p className="mt-5 text-lg text-[#6B7280] max-w-xl mx-auto leading-relaxed">
+                La plupart des restaurateurs pilotent leurs marges a vue. Pas de donnees precises, pas d'alertes fournisseurs, pas de temps. 5 a 10 points de marge qui s'evaporent chaque mois.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-16">
+            <FadeIn delay={0}>
+              <div className="bg-[#FFF5F5] border border-red-100 rounded-2xl p-8 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
+                    <XCircle className="w-5 h-5 text-red-500" />
+                  </div>
+                  <h3 className="font-bold text-[#111111] text-lg">Sans RestauMargin</h3>
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    'Food cost calcule a la main sur Excel, une fois par trimestre',
+                    'Hausse de prix Metro decouverte trop tard, apres impression de la carte',
+                    'Le staff gaspille 200g de creme par recette — personne ne le sait',
+                    "Le plat signature perd de l'argent depuis 6 mois",
+                    'Fin de mois : vous devinez pourquoi la marge a baisse',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-[#525252]">
+                      <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <XCircle className="w-3 h-3 text-red-500" />
+                      </div>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={100}>
+              <div className="bg-[#F0FDF4] border border-emerald-100 rounded-2xl p-8 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <h3 className="font-bold text-[#111111] text-lg">Avec RestauMargin</h3>
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    'Food cost de chaque plat calcule en temps reel, visible en 2 clics',
+                    'Alerte automatique quand un fournisseur augmente ses prix de plus de 5%',
+                    'Balance Bluetooth : chaque pesee valide le respect de la fiche technique',
+                    'Menu Engineering : plats rentables en avant, plombeurs sortis de la carte',
+                    "Rapport hebdomadaire IA : voici ou vous avez perdu de l'argent cette semaine",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-[#525252]">
+                      <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                      </div>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </FadeIn>
+          </div>
+
+          <FadeIn delay={150}>
+            <div className="bg-[#111111] rounded-2xl p-10 text-center">
+              <p className="text-xs font-semibold text-white/40 uppercase tracking-[0.15em] mb-4">Pourquoi RestauMargin et pas Koust ou Inpulse</p>
+              <h3 className="text-2xl sm:text-3xl font-black text-white mb-4 max-w-2xl mx-auto leading-snug">
+                Le seul logiciel de marge avec balance Bluetooth integree, commandes vocales et IA — a 29€/mois.
+              </h3>
+              <p className="text-white/60 text-base max-w-xl mx-auto mb-8">
+                Koust et Inpulse sont des outils de gestion. RestauMargin est une station de pilotage active : IA vocale en cuisine, pesee en temps reel, alertes prix fournisseurs. Pour le prix d'un repas.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                {[
+                  { Icon: Scale, label: 'Balance Bluetooth' },
+                  { Icon: Brain, label: '19 actions IA' },
+                  { Icon: Phone, label: 'Commandes vocales' },
+                  { Icon: TrendingUp, label: 'Alertes prix fournisseurs' },
+                ].map(({ Icon, label }, i) => (
+                  <div key={i} className="flex items-center gap-2 bg-white/10 rounded-lg px-4 py-2">
+                    <Icon className="w-4 h-4 text-teal-400" />
+                    <span className="text-white text-sm font-medium">{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
         </div>
       </section>
 

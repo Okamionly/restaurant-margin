@@ -19,6 +19,7 @@ import ContextualTooltips from './components/ContextualTooltips';
 import OnboardingProgress from './components/OnboardingProgress';
 import MobileBottomNav from './components/MobileBottomNav';
 import TrialPaywallGuard from './components/TrialPaywallGuard';
+import NPSModal from './components/NPSModal';
 // HelpButton, KitchenTimer, VoiceCommand merged into FloatingActionBubble
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
@@ -125,6 +126,8 @@ const EmailMarketing = lazyRetry(() => import('./pages/EmailMarketing'));
 const BlogGaspillage = lazyRetry(() => import('./pages/BlogGaspillage'));
 const BlogHACCP = lazyRetry(() => import('./pages/BlogHACCP'));
 const BlogFicheTechnique = lazyRetry(() => import('./pages/BlogFicheTechnique'));
+const Careers = lazyRetry(() => import('./pages/Careers'));
+const HelpPage = lazyRetry(() => import('./pages/Help'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -364,6 +367,7 @@ function AppLayout() {
         { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },
         { to: '/menu', icon: BookOpen, label: 'La Carte' },
         { to: '/qr-menu', icon: QrCode, label: 'Menu QR Code' },
+        { to: '/aide', icon: BookOpen, label: "Centre d'aide" },
       ],
     },
     {
@@ -886,6 +890,7 @@ function AppLayout() {
               <Route path="/reactivation" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><TrialReactivate /></Suspense>} />
               <Route path="/admin/metrics" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AdminMetrics /></Suspense>} />
               <Route path="/email-marketing" element={<EmailMarketing />} />
+              <Route path="/aide" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><HelpPage /></Suspense>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
@@ -909,6 +914,9 @@ function AppLayout() {
 
       {/* Mobile bottom navigation bar */}
       <MobileBottomNav />
+
+      {/* NPS Survey - triggers 14 days after signup, once per user */}
+      <NPSModal />
 
       {/* Onboarding Wizard for new users */}
       {showOnboarding && (
@@ -958,6 +966,7 @@ function App() {
           <Route path="/blog" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogIndex /></Suspense>} />
           <Route path="/guide-marge/:slug" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><NicheLanding /></Suspense>} />
           <Route path="/a-propos" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><APropos /></Suspense>} />
+          <Route path="/carrieres" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Careers /></Suspense>} />
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />
           <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111]" /></div>}><Temoignages /></Suspense>} />
           <Route path="/demo" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Demo /></Suspense>} />

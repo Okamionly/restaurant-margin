@@ -263,7 +263,7 @@ export default function Demo() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2 text-[#111111] font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
-            <span style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>RestauMargin</span>
+            <span>RestauMargin</span>
             <span className="ml-2 text-xs font-medium text-[#A3A3A3] bg-[#F5F5F5] px-2 py-0.5 rounded-full">DEMO</span>
           </div>
           <div className="flex items-center gap-3">
@@ -293,7 +293,7 @@ export default function Demo() {
               <UtensilsCrossed className="w-7 h-7 text-white" />
             </div>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-[#111111]" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+              <h1 className="text-2xl font-bold text-[#111111] font-satoshi">
                 Le Bistrot de Marie
               </h1>
               <p className="text-sm text-[#737373] mt-0.5">Bistrot traditionnel -- Paris 11e -- 45 couverts/service</p>
@@ -313,7 +313,7 @@ export default function Demo() {
 
         {/* -- KPI Cards with animated numbers -- */}
         <section className="anim-slide-up">
-          <h2 className="text-lg font-bold text-[#111111] mb-4 flex items-center gap-2" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#111111] mb-4 flex items-center gap-2 font-satoshi">
             <BarChart3 className="w-5 h-5 text-teal-600" />
             Tableau de bord
           </h2>
@@ -394,7 +394,7 @@ export default function Demo() {
         <section className="grid lg:grid-cols-3 gap-6">
           {/* Margin Evolution Chart */}
           <div className="lg:col-span-2">
-            <h2 className="text-lg font-bold text-[#111111] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+            <h2 className="text-lg font-bold text-[#111111] mb-4 font-satoshi">
               Evolution de la marge (6 derniers mois)
             </h2>
             <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
@@ -426,7 +426,7 @@ export default function Demo() {
 
           {/* Category Distribution */}
           <div>
-            <h2 className="text-lg font-bold text-[#111111] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+            <h2 className="text-lg font-bold text-[#111111] mb-4 font-satoshi">
               Repartition par categorie
             </h2>
             <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 h-[calc(100%-2rem)]">
@@ -460,7 +460,7 @@ export default function Demo() {
         {/* -- Recipes with FoodIllustration -- */}
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-[#111111] flex items-center gap-2" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+            <h2 className="text-lg font-bold text-[#111111] flex items-center gap-2 font-satoshi">
               <ClipboardList className="w-5 h-5 text-teal-600" />
               Fiches techniques ({FAKE_RECIPES.length} recettes)
             </h2>
@@ -683,7 +683,7 @@ export default function Demo() {
 
         {/* -- Ingredients -- */}
         <section>
-          <h2 className="text-lg font-bold text-[#111111] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#111111] mb-4 font-satoshi">
             Ingredients ({FAKE_INGREDIENTS.length})
           </h2>
           <div className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden">
@@ -722,7 +722,7 @@ export default function Demo() {
 
         {/* -- Menu Engineering Matrix -- */}
         <section>
-          <h2 className="text-lg font-bold text-[#111111] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#111111] mb-4 font-satoshi">
             Matrice Menu Engineering
           </h2>
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
@@ -786,7 +786,7 @@ export default function Demo() {
               <Sparkles className="w-3.5 h-3.5" />
               Essai gratuit 7 jours -- Sans carte bancaire
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 font-satoshi">
               Impressionne ? Creez votre compte gratuit
             </h2>
             <p className="text-white/60 max-w-md mx-auto mb-8 text-lg">

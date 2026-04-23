@@ -599,6 +599,7 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/mercuriale', mercurialeRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/referrals', referralsRoutes);
+app.use('/api/nps', npsRoutes);
 app.use('/api/admin', adminRoutes);
 
 // ── Activation codes (kept at /api/activation/* for backward compat) ──

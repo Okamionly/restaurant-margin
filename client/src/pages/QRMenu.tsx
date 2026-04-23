@@ -484,7 +484,7 @@ export default function QRMenu() {
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-black dark:text-white flex items-center gap-3" style={{ fontFamily: "'Satoshi', 'Inter', system-ui, sans-serif" }}>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-black dark:text-white flex items-center gap-3 font-satoshi">
             <div className="w-10 h-10 bg-black dark:bg-white rounded-xl flex items-center justify-center">
               <QrCode className="w-5 h-5 text-white dark:text-black" />
             </div>
@@ -518,7 +518,7 @@ export default function QRMenu() {
             <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-3">
               <ChefHat className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-lg font-extrabold text-black mb-0.5" style={{ fontFamily: "'Satoshi', 'Inter', system-ui, sans-serif" }}>
+            <h3 className="text-lg font-extrabold text-black mb-0.5 font-satoshi">
               {restaurantName}
             </h3>
             <p className="text-sm text-black/40 mb-6">Scannez pour decouvrir notre carte</p>
@@ -707,7 +707,7 @@ export default function QRMenu() {
               <ChefHat className="w-7 h-7 text-black dark:text-white" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-white dark:text-black" style={{ fontFamily: "'Satoshi', 'Inter', system-ui, sans-serif" }}>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-white dark:text-black font-satoshi">
                 {restaurantName}
               </h2>
               <p className="text-sm text-white/50 dark:text-black/50">Apercu de votre carte digitale</p>
@@ -843,7 +843,7 @@ export default function QRMenu() {
                     <div className="w-8 h-8 bg-black/5 dark:bg-white/5 rounded-lg flex items-center justify-center text-black/60 dark:text-white/60">
                       {cat.icon}
                     </div>
-                    <h3 className="text-lg font-bold text-black dark:text-white" style={{ fontFamily: "'Satoshi', 'Inter', system-ui, sans-serif" }}>
+                    <h3 className="text-lg font-bold text-black dark:text-white font-satoshi">
                       {getCategoryLabel(cat.key, language)}
                     </h3>
                     <div className="flex-1 h-px bg-black/5 dark:bg-white/5" />

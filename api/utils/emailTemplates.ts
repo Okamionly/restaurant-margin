@@ -1431,3 +1431,80 @@ export function buildCampaignEmail(restaurant: CampaignRestaurant, cuisineType?:
 
   return { subject: cuisine.subject, html };
 }
+
+// ============================================================
+// Dunning — Relance paiement échoué (J+1 / J+3 / J+7)
+// Ajouté par CFO build 2026-04-23
+// ============================================================
+
+type DunningParams = {
+  userName: string;
+  invoiceNumber: string;
+  amountTtc: number; // en centimes
+  updatePaymentUrl: string; // Stripe Customer Portal
+  supportEmail?: string;
+};
+
+function fmtEur(cents: number): string {
+  return `${(cents / 100).toFixed(2).replace('.', ',')} €`;
+}
+
+export function buildDunningJ1Email(p: DunningParams): { subject: string; html: string } {
+  const support = p.supportEmail ?? 'contact@restaumargin.fr';
+  return {
+    subject: `Paiement en attente — facture ${p.invoiceNumber}`,
+    html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#FFF;color:#111;padding:24px;max-width:600px;margin:0 auto">
+<div style="background:#FFF7AD;padding:14px;border-left:4px solid #F59E0B;border-radius:4px;margin-bottom:20px">
+<strong>⚠️ Votre dernier paiement n'a pas pu aboutir.</strong>
+</div>
+<p>Bonjour ${p.userName},</p>
+<p>Votre paiement pour la facture <strong>${p.invoiceNumber}</strong> de <strong>${fmtEur(p.amountTtc)}</strong> n'a pas été traité par votre banque. Cela arrive parfois (plafond temporaire, carte expirée).</p>
+<p>Pour éviter l'interruption de votre accès RestauMargin, merci de mettre à jour votre moyen de paiement :</p>
+<p><a href="${p.updatePaymentUrl}" style="display:inline-block;background:#8B5CF6;color:#FFF;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600">Mettre à jour ma carte</a></p>
+<p>Nous réessaierons automatiquement dans 2 jours. Une question ? <a href="mailto:${support}" style="color:#8B5CF6">${support}</a></p>
+<p style="color:#666;font-size:12px;margin-top:32px">L'équipe RestauMargin</p>
+</body></html>`,
+  };
+}
+
+export function buildDunningJ3Email(p: DunningParams): { subject: string; html: string } {
+  const support = p.supportEmail ?? 'contact@restaumargin.fr';
+  return {
+    subject: `🔔 Action requise — paiement RestauMargin ${p.invoiceNumber}`,
+    html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#FFF;color:#111;padding:24px;max-width:600px;margin:0 auto">
+<div style="background:#FEE2E2;padding:14px;border-left:4px solid #DC2626;border-radius:4px;margin-bottom:20px">
+<strong>🔔 Sans action de votre part, votre accès sera suspendu dans 4 jours.</strong>
+</div>
+<p>Bonjour ${p.userName},</p>
+<p>Nous avons essayé de prélever <strong>${fmtEur(p.amountTtc)}</strong> (facture <strong>${p.invoiceNumber}</strong>) à plusieurs reprises sans succès.</p>
+<p>Pour continuer à utiliser RestauMargin sans interruption, merci de mettre à jour votre paiement dès maintenant :</p>
+<p><a href="${p.updatePaymentUrl}" style="display:inline-block;background:#8B5CF6;color:#FFF;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-size:16px">Régulariser le paiement</a></p>
+<p><strong>Ce qui se passe si rien n'est fait :</strong></p>
+<ul>
+<li>J+7 : votre compte passe en lecture seule</li>
+<li>J+30 : suppression automatique du compte (vos données restent exportables)</li>
+</ul>
+<p>Besoin d'aide ou de plus de temps ? Répondez directement à cet email, on trouvera une solution : <a href="mailto:${support}" style="color:#8B5CF6">${support}</a></p>
+<p style="color:#666;font-size:12px;margin-top:32px">L'équipe RestauMargin</p>
+</body></html>`,
+  };
+}
+
+export function buildDunningJ7Email(p: DunningParams): { subject: string; html: string } {
+  const support = p.supportEmail ?? 'contact@restaumargin.fr';
+  return {
+    subject: `🚨 Dernier rappel avant suspension — ${p.invoiceNumber}`,
+    html: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#FFF;color:#111;padding:24px;max-width:600px;margin:0 auto">
+<div style="background:#111;color:#FFF;padding:18px;border-radius:6px;margin-bottom:20px">
+<strong style="font-size:18px">🚨 Votre accès RestauMargin est suspendu dès aujourd'hui.</strong>
+</div>
+<p>Bonjour ${p.userName},</p>
+<p>Nous n'avons pas réussi à encaisser <strong>${fmtEur(p.amountTtc)}</strong> (facture <strong>${p.invoiceNumber}</strong>) malgré plusieurs tentatives étalées sur 7 jours.</p>
+<p><strong>Votre compte est désormais en lecture seule.</strong> Vous pouvez toujours consulter vos données mais plus les modifier.</p>
+<p>Pour réactiver immédiatement votre accès :</p>
+<p><a href="${p.updatePaymentUrl}" style="display:inline-block;background:#DC2626;color:#FFF;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-size:16px">Régler et réactiver</a></p>
+<p>Si vous rencontrez une difficulté particulière ou souhaitez annuler votre abonnement, écrivez-nous : <a href="mailto:${support}" style="color:#8B5CF6">${support}</a>. On s'arrange toujours.</p>
+<p style="color:#666;font-size:12px;margin-top:32px">L'équipe RestauMargin<br>Après 30 jours sans régularisation, le compte sera supprimé automatiquement.</p>
+</body></html>`,
+  };
+}

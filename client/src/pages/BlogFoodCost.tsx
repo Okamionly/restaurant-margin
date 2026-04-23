@@ -44,7 +44,7 @@ export default function BlogFoodCost() {
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
-            <span style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>RestauMargin</span>
+            <span>RestauMargin</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">Connexion</Link>
@@ -59,7 +59,7 @@ export default function BlogFoodCost() {
             <BookOpen className="w-3.5 h-3.5" />
             Guide pratique
           </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-[#111111] leading-tight mb-6" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-[#111111] leading-tight mb-6 font-satoshi">
             5 methodes pour reduire votre food cost de 15 %
           </h1>
           <div className="flex items-center justify-center gap-4 text-sm text-[#737373]">
@@ -391,7 +391,7 @@ export default function BlogFoodCost() {
       {/* ── CTA ── */}
       <section className="bg-teal-50 py-14 px-4 text-center">
         <div className="max-w-lg mx-auto">
-          <h2 className="text-2xl font-bold text-[#111111] mb-3" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-2xl font-bold text-[#111111] mb-3 font-satoshi">
             Automatisez ces 5 methodes avec RestauMargin
           </h2>
           <p className="text-[#525252] mb-6">

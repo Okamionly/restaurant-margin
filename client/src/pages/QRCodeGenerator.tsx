@@ -319,7 +319,7 @@ export default function QRCodeGenerator() {
       {/* ── Navbar ── */}
       <nav className="bg-white dark:bg-black border-b border-black/10 dark:border-white/10 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 h-14">
-          <Link to="/" className="flex items-center gap-2 text-black dark:text-white font-bold text-lg" style={{ fontFamily: "'Satoshi', 'Inter', system-ui, sans-serif" }}>
+          <Link to="/" className="flex items-center gap-2 text-black dark:text-white font-bold text-lg font-satoshi">
             <ChefHat className="w-6 h-6" />
             RestauMargin
           </Link>
@@ -335,7 +335,7 @@ export default function QRCodeGenerator() {
           <QrCode className="w-3.5 h-3.5" />
           Outil 100% gratuit
         </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-black dark:text-white leading-tight tracking-tight" style={{ fontFamily: "'Satoshi', 'Inter', system-ui, sans-serif" }}>
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-black dark:text-white leading-tight tracking-tight font-satoshi">
           Generateur de QR Code
           <br />
           <span className="text-black/40 dark:text-white/40">pour votre restaurant</span>
@@ -697,7 +697,7 @@ export default function QRCodeGenerator() {
 
         {/* ── CTA ── */}
         <div className="mt-16 text-center bg-black dark:bg-white rounded-2xl p-8 sm:p-12">
-          <h2 className="text-xl sm:text-2xl font-bold text-white dark:text-black mb-2" style={{ fontFamily: "'Satoshi', 'Inter', system-ui, sans-serif" }}>
+          <h2 className="text-xl sm:text-2xl font-bold text-white dark:text-black mb-2 font-satoshi">
             Creez votre menu digital complet avec RestauMargin
           </h2>
           <p className="text-white/60 dark:text-black/60 text-sm sm:text-base mb-6 max-w-md mx-auto">
@@ -714,7 +714,7 @@ export default function QRCodeGenerator() {
 
         {/* ── SEO text ── */}
         <section className="mt-16 space-y-6 text-black/60 dark:text-white/60 text-sm leading-relaxed max-w-2xl mx-auto">
-          <h2 className="text-lg font-bold text-black dark:text-white" style={{ fontFamily: "'Satoshi', 'Inter', system-ui, sans-serif" }}>
+          <h2 className="text-lg font-bold text-black dark:text-white font-satoshi">
             Pourquoi utiliser un QR code pour votre menu ?
           </h2>
           <p>

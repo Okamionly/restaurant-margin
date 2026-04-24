@@ -63,9 +63,9 @@ HERO SECTION BACKUP (lines 323-414 of original Landing.tsx):
           <div className="relative bg-white border border-gray-200 shadow-sm hover:shadow-md rounded-3xl p-8 transition-shadow">
             <div className="relative overflow-hidden rounded-2xl">
               <div className="flex transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${heroSlide * 100}%)` }}>
-                <img src="/images/hero/hero-1.webp" alt="RestauMargin Station en cuisine" className="w-full h-auto flex-shrink-0" loading="eager" />
-                <img src="/images/hero/hero-2.webp" alt="RestauMargin Station cuisine pro" className="w-full h-auto flex-shrink-0" loading="eager" />
-                <img src="/images/hero/hero-3.webp" alt="Chef utilisant RestauMargin" className="w-full h-auto flex-shrink-0" loading="eager" />
+                <img src="/images/hero/hero-1.webp" alt="RestauMargin Station en cuisine" width="800" height="600" className="w-full h-auto flex-shrink-0" loading="eager" fetchPriority="high" />
+                <img src="/images/hero/hero-2.webp" alt="RestauMargin Station cuisine pro" width="800" height="600" className="w-full h-auto flex-shrink-0" loading="lazy" />
+                <img src="/images/hero/hero-3.webp" alt="Chef utilisant RestauMargin" width="800" height="600" className="w-full h-auto flex-shrink-0" loading="lazy" />
               </div>
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
                 {[0, 1, 2].map(i => (

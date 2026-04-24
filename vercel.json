@@ -16,7 +16,9 @@
         { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(self)" }
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(self)" },
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://browser.sentry-cdn.com https://js.sentry-cdn.com https://client.crisp.chat https://settings.crisp.chat https://js.stripe.com https://api.fontshare.com https://cdn.fontshare.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://api.fontshare.com https://cdn.fontshare.com https://client.crisp.chat; font-src 'self' data: https://api.fontshare.com https://cdn.fontshare.com https://client.crisp.chat; frame-src https://js.stripe.com https://hooks.stripe.com https://game.crisp.chat; media-src 'self' https: blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://api.stripe.com; frame-ancestors 'self'" }
       ]
     },
     {

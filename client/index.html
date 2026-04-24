@@ -183,9 +183,13 @@
       fbq('track', 'PageView');
     </script>
     -->
-    <!-- Fontshare: Satoshi (display) + General Sans (body) -->
+    <!-- Fontshare: Satoshi (display) + General Sans (body) — non-blocking load -->
     <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" /></noscript>
+
+    <!-- LCP preload: hero-1.webp is the above-the-fold hero on landing page -->
+    <link rel="preload" as="image" href="/images/hero/hero-1.webp" fetchpriority="high" type="image/webp" />
   </head>
   <body>
     <div id="root">

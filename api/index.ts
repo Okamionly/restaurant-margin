@@ -22,6 +22,8 @@ import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail, buildTr
 
 
 const app = express();
+// Remove X-Powered-By: Express header (fingerprinting / CWE-200)
+app.disable('x-powered-by');
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -407,7 +409,28 @@ app.use('/api/auth/forgot-password', (req, _res, next) => {
 });
 
 // --- Health Check Endpoint (monitoring) ---
-app.get('/api/health', async (_req, res) => {
+// Public endpoint: returns minimal `{ status: 'ok' }` so any uptime probe can ping it
+// without leaking infrastructure details (uptime, response time, service map).
+// Detailed payload (uptime, responseTime, services) is only returned when an admin
+// JWT is presented via Authorization header.
+app.get('/api/health', async (req: any, res) => {
+  // Try to authenticate, but never reject — fall through to public response.
+  let isAdmin = false;
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    try {
+      const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload;
+      isAdmin = decoded.role === 'admin';
+    } catch {
+      /* invalid token → treat as anonymous */
+    }
+  }
+
+  if (!isAdmin) {
+    return res.status(200).json({ status: 'ok' });
+  }
+
+  // Admin-only: full diagnostic payload
   const start = Date.now();
   let dbStatus = 'ok';
   try {
@@ -891,9 +914,17 @@ app.post('/api/activation/validate', async (req: any, res) => {
 
 app.get('/api/activation/list', async (req: any, res) => {
   try {
-    const { secret } = req.query;
+    // SECURITY: prefer Authorization: Bearer <secret> header so the secret is never
+    // logged in URL/access logs. Query-param `?secret=` kept for back-compat (7-day
+    // grace) — to be removed once all consumers migrate.
+    const authHeader = req.headers.authorization;
+    const headerSecret =
+      authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+    const querySecret = typeof req.query.secret === 'string' ? req.query.secret : null;
+    const provided = headerSecret || querySecret;
+
     // SECURITY: fail closed — same pattern as /generate.
-    if (!process.env.ACTIVATION_SECRET || secret !== process.env.ACTIVATION_SECRET) {
+    if (!process.env.ACTIVATION_SECRET || provided !== process.env.ACTIVATION_SECRET) {
       return res.status(401).json({ error: 'Non autorisé' });
     }
     const codes = await prisma.activationCode.findMany({ orderBy: { createdAt: 'desc' } });

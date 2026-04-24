@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression';
 import cors from 'cors';
 import crypto from 'crypto';
 import { prisma } from '../api-lib/prisma';
@@ -26,6 +27,12 @@ const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) throw new Error('JWT_SECRET env variable required');
 
 const TOKEN_EXPIRY = '7d';
+
+// Compress responses > 1 KB. Saves 60-80% on JSON payloads (recipes,
+// ingredients, analytics). Webhook route below uses raw body and is
+// excluded automatically because compression streams ignore non-text
+// content-types unless explicitly forced.
+app.use(compression({ threshold: 1024 }));
 
 app.use(cors({
   origin: ['http://localhost:5173', 'https://www.restaumargin.fr', 'https://restaumargin.fr', 'https://restaumargin.vercel.app'],

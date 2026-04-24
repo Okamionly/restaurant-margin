@@ -178,6 +178,104 @@ router.post('/logout', authMiddleware, async (req: any, res) => {
   }
 });
 
+// ============ RGPD: data portability + right to erasure ============
+
+// GET /api/auth/me/export — full data dump for the authenticated user (RGPD art. 20).
+// Returns a JSON attachment with the user record + every restaurant they own/belong
+// to + nested business data (recipes, ingredients, invoices, devis, financial entries).
+router.get('/me/export', authMiddleware, async (req: any, res) => {
+  try {
+    const userId = req.user.userId as number;
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true, email: true, name: true, role: true, plan: true, emailVerified: true,
+        acceptedCguAt: true, trialEndsAt: true, createdAt: true,
+        memberships: {
+          include: {
+            restaurant: {
+              include: {
+                recipes: { include: { ingredients: true } },
+                ingredients: true,
+                suppliers: true,
+                invoices: { include: { items: true } },
+                priceHistory: true,
+                menuSales: true,
+                devis: { include: { items: true } },
+                financialEntries: true,
+                wasteLogs: true,
+                inventory: true,
+                employees: true,
+                shifts: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!user) return res.status(404).json({ error: 'Non trouvé' });
+
+    const filename = `restaumargin-data-${userId}-${new Date().toISOString().slice(0, 10)}.json`;
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.json({
+      exportedAt: new Date().toISOString(),
+      rgpdArticle: 'Article 20 RGPD — Right to data portability',
+      user,
+    });
+  } catch (e: any) {
+    console.error('[RGPD EXPORT]', e.message);
+    res.status(500).json({ error: 'Erreur export RGPD' });
+  }
+});
+
+// POST /api/auth/me/delete — soft anonymisation of the authenticated user (RGPD art. 17).
+// Email/name/passwordHash are scrambled so the row cannot be tied back to the
+// real person. Restaurants/business data are kept (auditability + co-owners),
+// but the user's PII is unrecoverable. SLA: 30 days for full pipeline cleanup —
+// see docs/rgpd-erasure.md for the runbook.
+router.post('/me/delete', authMiddleware, async (req: any, res) => {
+  try {
+    const userId = req.user.userId as number;
+    if (req.user.role === 'admin') {
+      // Admin self-deletion is too dangerous as a single-call self-serve flow —
+      // require the manual /api/auth/users/:id path instead.
+      return res.status(400).json({
+        error: 'Suppression admin non autorisée par self-service. Contactez le support.',
+      });
+    }
+    const anonEmail = `deleted-${crypto.randomUUID()}@deleted.local`;
+    const scrambled = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12);
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        email: anonEmail,
+        name: 'Compte supprimé',
+        passwordHash: scrambled,
+        role: 'deleted',
+        verificationToken: null,
+        resetToken: null,
+        resetTokenExpiry: null,
+        stripeCustomerId: null,
+        stripeSubId: null,
+      },
+    });
+
+    // Revoke the current session token so the now-anonymised user is locked out
+    // immediately, even on the back-compat Bearer header path.
+    const jti = req.user?.jti as string | undefined;
+    const exp = req.user?.exp as number | undefined;
+    if (jti && exp) {
+      try { await revokeJti(jti, new Date(exp * 1000)); } catch { /* best-effort */ }
+    }
+    res.clearCookie(AUTH_COOKIE_NAME, { path: '/' });
+    res.json({ message: 'Compte supprimé. Vos données ont été anonymisées.' });
+  } catch (e: any) {
+    console.error('[RGPD DELETE]', e.message);
+    res.status(500).json({ error: 'Erreur suppression RGPD' });
+  }
+});
+
 router.get('/me', authMiddleware, async (req: any, res) => {
   try {
     const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { id: true, email: true, name: true, role: true, plan: true, trialEndsAt: true, createdAt: true } });

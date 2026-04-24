@@ -10,8 +10,10 @@ const router = Router();
 
 // Fixed dummy hash for timing-attack-safe login (CWE-208).
 // Ensures bcrypt.compare() always runs even when the user doesn't exist.
-// Generated once via bcrypt.hashSync('dummy-for-timing-only', 12)
-const DUMMY_BCRYPT_HASH = '$2a$12$abcdefghijklmnopqrstuuKxS8Mc.YZJQRYbK2GmL.bkmpcZf6ZZfi';
+// Valid bcrypt hash generated via bcryptjs.hashSync('never-matches', 12) — any
+// password compared against it will return false, preserving latency parity
+// with real user lookups.
+const DUMMY_BCRYPT_HASH = '$2b$12$Ni2/SnC.Hp7AUij27cHg/eS8T/xymqGz8PwwTfRVNTgst18apv71e';
 
 // Password policy (WCAG-accessible and strong enough to resist offline dictionary + bcrypt)
 function validatePasswordPolicy(password: string): string | null {

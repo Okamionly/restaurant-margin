@@ -979,6 +979,10 @@ function App() {
           <Route path="/blog/gaspillage-alimentaire" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogGaspillage /></Suspense>} />
           <Route path="/blog/haccp-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogHACCP /></Suspense>} />
           <Route path="/blog/fiche-technique-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFicheTechnique /></Suspense>} />
+          {/* Catch-all: unknown blog slug → redirect to blog index (avoids falling into ProtectedRoute /login) */}
+          <Route path="/blog/*" element={<Navigate to="/blog" replace />} />
+          {/* Catch-all: unknown public tool → redirect to home */}
+          <Route path="/outils/*" element={<Navigate to="/" replace />} />
           <Route
             path="/station"
             element={

@@ -109,12 +109,26 @@ function useInView(threshold = 0.01) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    // Immediate check: if element already in viewport on mount, mark visible right away
+    // (IntersectionObserver sometimes misses initial intersection on certain browsers/paint timings)
+    const rect = el.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+    if (inView) {
+      setVisible(true);
+      return;
+    }
+
     const obs = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold },
+      { threshold, rootMargin: '0px 0px -10% 0px' },
     );
     obs.observe(el);
-    return () => obs.disconnect();
+
+    // Safety fallback: reveal after 1.5s no matter what (prevents stuck opacity-0 if observer fails)
+    const fallback = setTimeout(() => setVisible(true), 1500);
+
+    return () => { obs.disconnect(); clearTimeout(fallback); };
   }, [threshold]);
   return { ref, visible };
 }

@@ -24,3 +24,9 @@ logs/
 client/logs/
 client/src/logs/
 client/src/pages/logs/
+
+# Playwright artefacts
+client/test-results/
+client/playwright-report/
+client/playwright/.cache/
+coverage/

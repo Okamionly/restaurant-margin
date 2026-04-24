@@ -8,6 +8,7 @@ import type { MercurialeSuggestedIngredient } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
 import { RECIPE_CATEGORIES, INGREDIENT_CATEGORIES, UNITS } from '../types';
 import { useToast } from '../hooks/useToast';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import { useUndoDelete } from '../hooks/useUndoDelete';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
@@ -607,22 +608,34 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
   const marginColor = (m: number) => m >= 70 ? 'text-emerald-500' : m >= 50 ? 'text-amber-500' : 'text-red-500';
   const marginBg = (m: number) => m >= 70 ? 'bg-emerald-500' : m >= 50 ? 'bg-amber-500' : 'bg-red-500';
 
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="recipe-compare-title"
+        className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+        onClick={e => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center">
-              <GitCompareArrows className="w-4.5 h-4.5 text-white dark:text-black" />
+              <GitCompareArrows className="w-4.5 h-4.5 text-white dark:text-black" aria-hidden="true" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-[#111111] dark:text-white">Comparaison de recettes</h3>
+              <h3 id="recipe-compare-title" className="text-lg font-bold text-[#111111] dark:text-white">Comparaison de recettes</h3>
               <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse cote a cote</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors">
-            <X className="w-5 h-5" />
+          <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors">
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -1312,22 +1325,34 @@ function CostOptimizerPanel({
   const currentMargin = recipe.sellingPrice > 0 ? ((recipe.sellingPrice - (totalCost / recipe.nbPortions)) / recipe.sellingPrice) * 100 : 0;
   const optimizedMargin = recipe.sellingPrice > 0 ? ((recipe.sellingPrice - (optimizedCost / recipe.nbPortions)) / recipe.sellingPrice) * 100 : 0;
 
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="recipe-optimization-title"
+        className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl"
+        onClick={e => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-[#111111] dark:text-white">Optimisation : {recipe.name}</h3>
+              <h3 id="recipe-optimization-title" className="text-lg font-bold text-[#111111] dark:text-white">Optimisation : {recipe.name}</h3>
               <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse du cout et suggestions d'economies</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-            <X className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373]" />
+          <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+            <X className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373]" aria-hidden="true" />
           </button>
         </div>
 
@@ -1600,22 +1625,34 @@ function BatchOptimizerPanel({
   const avgCostAfter = avgCostBefore - (totalSavingsPerServing / recipes.length);
   const avgMarginAfter = avgSellingPrice > 0 ? ((avgSellingPrice - avgCostAfter) / avgSellingPrice) * 100 : 0;
 
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="menu-optimization-title"
+        className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl"
+        onClick={e => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white dark:text-[#111111]" />
+              <Zap className="w-5 h-5 text-white dark:text-[#111111]" aria-hidden="true" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-[#111111] dark:text-white">Optimiser la carte ({recipes.length} recettes)</h3>
+              <h3 id="menu-optimization-title" className="text-lg font-bold text-[#111111] dark:text-white">Optimiser la carte ({recipes.length} recettes)</h3>
               <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse croisee et substitutions groupees</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-            <X className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373]" />
+          <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+            <X className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373]" aria-hidden="true" />
           </button>
         </div>
 

@@ -146,13 +146,18 @@ export default function Login() {
     setForgotPasswordSuccess('');
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
+      let res: Response;
+      try {
+        res = await fetch('/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+      } catch {
+        throw new Error(t('login.connectionError'));
+      }
       if (!res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         throw new Error(data.error || 'Erreur');
       }
       setForgotPasswordSuccess(t('login.resetEmailSent'));

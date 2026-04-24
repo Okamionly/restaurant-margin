@@ -502,8 +502,11 @@ app.get('/api/cron-test', (_req, res) => {
 // ══════════════════════════════════════════════════════════════════════════
 
 function verifyCron(req: any, res: any): boolean {
+  // SECURITY: fail closed — previously `return true` when CRON_SECRET was unset
+  // left all /api/cron/* endpoints publicly callable (CWE-306). Require the secret
+  // to be explicitly configured before allowing any cron invocation.
   const secret = process.env.CRON_SECRET;
-  if (secret && req.headers.authorization !== `Bearer ${secret}`) {
+  if (!secret || req.headers.authorization !== `Bearer ${secret}`) {
     res.status(401).json({ error: 'Unauthorized cron' });
     return false;
   }
@@ -830,7 +833,11 @@ function generateActivationCode(): string {
 app.post('/api/activation/generate', async (req: any, res) => {
   try {
     const { plan, secret } = req.body;
-    if (secret !== process.env.ACTIVATION_SECRET) return res.status(401).json({ error: 'Non autorisé' });
+    // SECURITY: fail closed — if ACTIVATION_SECRET unset, `undefined !== undefined` is false,
+    // bypassing the guard. Explicitly require the env var to be set.
+    if (!process.env.ACTIVATION_SECRET || secret !== process.env.ACTIVATION_SECRET) {
+      return res.status(401).json({ error: 'Non autorisé' });
+    }
     if (!plan || !['pro', 'business'].includes(plan)) return res.status(400).json({ error: 'Plan invalide (pro ou business)' });
     const code = generateActivationCode();
     const activation = await prisma.activationCode.create({ data: { code, plan } });
@@ -852,7 +859,10 @@ app.post('/api/activation/validate', async (req: any, res) => {
 app.get('/api/activation/list', async (req: any, res) => {
   try {
     const { secret } = req.query;
-    if (secret !== process.env.ACTIVATION_SECRET) return res.status(401).json({ error: 'Non autorisé' });
+    // SECURITY: fail closed — same pattern as /generate.
+    if (!process.env.ACTIVATION_SECRET || secret !== process.env.ACTIVATION_SECRET) {
+      return res.status(401).json({ error: 'Non autorisé' });
+    }
     const codes = await prisma.activationCode.findMany({ orderBy: { createdAt: 'desc' } });
     res.json(codes);
   } catch { res.status(500).json({ error: 'Erreur liste codes' }); }

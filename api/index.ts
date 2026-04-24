@@ -259,11 +259,12 @@ app.use((req, res, next) => {
 
 // ── Stripe Price IDs (LIVE mode, account acct_1TCSG73Y5IoWMA5k) ──
 // Set via env vars STRIPE_PRICE_PRO_MONTHLY, etc. or fall back to production IDs
+// Trim env vars to strip any trailing whitespace/newline from shell injection during `vercel env add`
 const STRIPE_PRICES = {
-  PRO_MONTHLY: process.env.STRIPE_PRICE_PRO_MONTHLY || 'price_1TGSSU3Y5IoWMA5kc6YRt86p', // 29€/mois
-  PRO_ANNUAL: process.env.STRIPE_PRICE_PRO_ANNUAL || 'price_1TNJcy3Y5IoWMA5k7T7ZOyI9', // 278€/an (-20%)
-  BUSINESS_MONTHLY: process.env.STRIPE_PRICE_BUSINESS_MONTHLY || 'price_1TGSSV3Y5IoWMA5k8Elzb9RU', // 79€/mois
-  BUSINESS_ANNUAL: process.env.STRIPE_PRICE_BUSINESS_ANNUAL || 'price_1TNJd03Y5IoWMA5kMN2CPkNc', // 758€/an (-20%)
+  PRO_MONTHLY: (process.env.STRIPE_PRICE_PRO_MONTHLY?.trim()) || 'price_1TGSSU3Y5IoWMA5kc6YRt86p', // 29€/mois
+  PRO_ANNUAL: (process.env.STRIPE_PRICE_PRO_ANNUAL?.trim()) || 'price_1TNJcy3Y5IoWMA5k7T7ZOyI9', // 278€/an (-20%)
+  BUSINESS_MONTHLY: (process.env.STRIPE_PRICE_BUSINESS_MONTHLY?.trim()) || 'price_1TGSSV3Y5IoWMA5k8Elzb9RU', // 79€/mois
+  BUSINESS_ANNUAL: (process.env.STRIPE_PRICE_BUSINESS_ANNUAL?.trim()) || 'price_1TNJd03Y5IoWMA5kMN2CPkNc', // 758€/an (-20%)
 } as const;
 
 // ── Stripe Checkout Session ──

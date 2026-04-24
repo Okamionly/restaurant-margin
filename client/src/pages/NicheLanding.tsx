@@ -208,6 +208,53 @@ const NICHES: Record<string, NicheConfig> = {
       { q: 'Menu degustation plat par plat ?', a: 'Oui, vous creez chaque plat separement avec sa marge. Le menu degustation est la somme des plats avec son coefficient global. Vous voyez la rentabilite globale ET plat par plat.' },
     ],
   },
+  'cafe-coffee-shop': {
+    slug: 'cafe-coffee-shop',
+    title: 'Calcul de marge cafe et coffee shop : guide complet 2026',
+    h1: 'Optimisez la marge de votre cafe et coffee shop',
+    tagline: 'Logiciel de gestion specialise pour cafes et coffee shops',
+    description: 'Guide et outil pour calculer les marges de votre cafe ou coffee shop. Food cost cafe, coefficient boissons, marge patisserie, gestion takeaway et optimisation recettes signature.',
+    heroSubtitle: "Le cafe a 0,20€ de matiere vendu 3,50€ : un des meilleurs coefficients de la restauration. Mais mal gere, le food cost explose. RestauMargin vous donne la maitrise totale.",
+    avgMargin: '70-78%',
+    avgFoodCost: '22-28%',
+    avgCoef: '4,5 a 6',
+    challenges: [
+      'Cafes specialty : grain, torrefaction, recette — chaque parametre impacte le cout',
+      'Accompagnements patisserie : food cost eleve (35-40%) qui tire la marge vers le bas',
+      'Takeaway vs sur place : TVA differente, tarification a adapter',
+      'Machines espresso et broyeurs : amortissement a integrer dans le prix de revient',
+      'Saisonnalite des boissons chaudes vs froides : gestion des pertes en ete',
+    ],
+    stats: [
+      { label: 'Food cost boissons', value: '18%', color: 'teal' },
+      { label: 'Marge brute cible', value: '74%', color: 'emerald' },
+      { label: 'Coefficient espresso', value: '12-15x', color: 'amber' },
+      { label: 'Ticket moyen', value: '6-12€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "J'avais l'impression de vendre beaucoup mais la fin du mois etait serree. RestauMargin m'a montre que mes formules petit-dej avec jus de fruit frais avaient un food cost de 42%. J'ai reajuste les grammages et le prix : +6 points de marge en 3 semaines.",
+      author: 'Camille',
+      role: 'Fondatrice de coffee shop, Bordeaux',
+    },
+    faqs: [
+      {
+        q: 'Quelle est la marge moyenne d\'un cafe ou coffee shop ?',
+        a: 'La marge brute d\'un cafe ou coffee shop se situe entre 70% et 78%, ce qui en fait l\'un des segments les plus rentables de la restauration. La boisson chaude (espresso, cappuccino, latte) affiche un food cost de 15 a 20%, la boisson froide 20 a 25%, et la patisserie 30 a 40%. La cle est d\'equilibrer les ventes : plus vous vendez de cafes simples par rapport aux preparations complexes ou aux accompagnements sucres, meilleure est votre marge globale. La marge nette apres charges (loyer, equipement, masse salariale) oscille entre 5% et 12% selon l\'emplacement et le positionnement specialty vs traditionnel.',
+      },
+      {
+        q: 'Comment calculer le food cost d\'un espresso ou d\'un cappuccino ?',
+        a: 'Pour un espresso : dose de cafe (7 a 9g selon recette) x prix du kg de grain. Exemple : 8g d\'un grain specialty a 25€/kg = 0,20€ de matiere. Vendu 2,80€, le food cost est de 7%. Pour un cappuccino : dose cafe (0,20€) + 120ml de lait (0,12€) = 0,32€. Vendu 3,80€, food cost de 8,4%. RestauMargin calcule automatiquement ces couts des que vous renseignez vos prix fournisseurs grains et lait, et met a jour toutes vos recettes en temps reel si le prix du grain change.',
+      },
+      {
+        q: 'Comment gerer la TVA takeaway vs consommation sur place ?',
+        a: 'En France, la TVA sur les boissons et aliments est de 10% en consommation sur place et de 5,5% a emporter (sauf boissons alcoolisees a 20%). Cela signifie que le prix TTC peut etre le meme mais votre marge HT differe selon le mode de consommation. RestauMargin vous permet de definir deux prix de vente par produit (sur place / emporter) et calcule la marge reelle HT dans les deux cas. Indispensable si votre chiffre d\'affaires takeaway depasse 30% du total.',
+      },
+      {
+        q: 'RestauMargin convient-il aux coffee shops avec carte food ?',
+        a: 'Oui, RestauMargin gere aussi bien les boissons (cafes, thes, smoothies, jus) que les solides (brunchs, toasts avocado, bowls, patisseries maison). Vous creez une fiche technique par produit avec grammages precis. Le tableau de bord vous montre cote a cote la marge de chaque reference : vous identifiez immediatement quelles recettes signature tirent la moyenne vers le bas et pouvez ajuster le prix ou les proportions. Le plan Pro a 29€/mois est suffisant pour un coffee shop avec une carte de 30 a 60 references.',
+      },
+    ],
+  },
 };
 
 export default function NicheLanding() {

@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression';
 import cors from 'cors';
 import crypto from 'crypto';
 import { prisma } from '../api-lib/prisma';
@@ -30,6 +31,12 @@ const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) throw new Error('JWT_SECRET env variable required');
 
 const TOKEN_EXPIRY = '7d';
+
+// Compress responses > 1 KB. Saves 60-80% on JSON payloads (recipes,
+// ingredients, analytics). Webhook route below uses raw body and is
+// excluded automatically because compression streams ignore non-text
+// content-types unless explicitly forced.
+app.use(compression({ threshold: 1024 }));
 
 app.use(cors({
   origin: ['http://localhost:5173', 'https://www.restaumargin.fr', 'https://restaumargin.fr', 'https://restaumargin.vercel.app'],
@@ -1101,7 +1108,10 @@ app.delete('/api/restaurants/:id', authMiddleware, async (req: any, res) => {
 // ============ INGREDIENTS ============
 app.get('/api/ingredients', authWithRestaurant, async (req: any, res) => {
   try {
-    const { limit, offset } = req.query;
+    const { limit, offset, search } = req.query;
+    // Hint browsers/CDN to cache for 5 min on idempotent list reads.
+    // Skipped when ?search is present (per-user, per-query — too granular).
+    if (!search) res.set('Cache-Control', 'private, max-age=300');
     if (limit !== undefined || offset !== undefined) {
       const take = Math.min(parseInt(limit) || 100, 500);
       const skip = parseInt(offset) || 0;
@@ -1111,6 +1121,8 @@ app.get('/api/ingredients', authWithRestaurant, async (req: any, res) => {
       ]);
       return res.json({ data, total, limit: take, offset: skip });
     }
+    // Back-compat default: no implicit cap. Clients should opt-in to
+    // pagination via ?limit/?offset for large datasets.
     res.json(await prisma.ingredient.findMany({ where: { restaurantId: req.restaurantId, deletedAt: null }, orderBy: { name: 'asc' }, include: { supplierRef: { select: { id: true, name: true } } } }));
   } catch { res.status(500).json({ error: 'Erreur récupération ingrédients' }); }
 });
@@ -1207,7 +1219,9 @@ app.put('/api/ingredients/:id/restore', authWithRestaurant, async (req: any, res
 // ============ RECIPES ============
 app.get('/api/recipes', authWithRestaurant, async (req: any, res) => {
   try {
-    const { limit, offset } = req.query;
+    const { limit, offset, search } = req.query;
+    // Hint browsers to cache for 5 min on idempotent list reads.
+    if (!search) res.set('Cache-Control', 'private, max-age=300');
     if (limit !== undefined || offset !== undefined) {
       const take = Math.min(parseInt(limit) || 100, 500);
       const skip = parseInt(offset) || 0;

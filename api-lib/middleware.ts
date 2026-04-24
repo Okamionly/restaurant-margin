@@ -1,42 +1,63 @@
 import jwt from 'jsonwebtoken';
 import { prisma } from './prisma';
+import { isJtiRevoked } from './jti-blocklist';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) throw new Error('JWT_SECRET env variable required');
 
 export const TOKEN_EXPIRY = '7d';
+export const AUTH_COOKIE_NAME = 'auth_token';
 
 export interface JwtPayload {
   userId: number;
   email: string;
   role: string;
+  jti?: string; // present on tokens issued from 2026-04-25 onward
+  exp?: number;
+  iat?: number;
 }
 
-export function authMiddleware(req: any, res: any, next: any) {
+/**
+ * Pull a JWT off the request: cookie first (preferred, httpOnly), Authorization
+ * header second (back-compat for native clients and pre-cookie sessions).
+ */
+function extractToken(req: any): string | null {
+  const cookieToken = req.cookies?.[AUTH_COOKIE_NAME];
+  if (cookieToken && typeof cookieToken === 'string') return cookieToken;
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Token requis' });
-  }
+  if (authHeader && authHeader.startsWith('Bearer ')) return authHeader.split(' ')[1];
+  return null;
+}
+
+export async function authMiddleware(req: any, res: any, next: any) {
+  const token = extractToken(req);
+  if (!token) return res.status(401).json({ error: 'Token requis' });
+  let decoded: JwtPayload;
   try {
-    const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET!) as JwtPayload;
-    req.user = decoded;
-    next();
+    decoded = jwt.verify(token, JWT_SECRET!) as JwtPayload;
   } catch {
     return res.status(401).json({ error: 'Token invalide' });
   }
+  if (await isJtiRevoked(decoded.jti)) {
+    return res.status(401).json({ error: 'Token révoqué' });
+  }
+  req.user = decoded;
+  next();
 }
 
 export async function authWithRestaurant(req: any, res: any, next: any) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Token requis' });
-  }
+  const token = extractToken(req);
+  if (!token) return res.status(401).json({ error: 'Token requis' });
+  let decoded: JwtPayload;
   try {
-    const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET!) as JwtPayload;
-    req.user = decoded;
+    decoded = jwt.verify(token, JWT_SECRET!) as JwtPayload;
   } catch {
     return res.status(401).json({ error: 'Token invalide' });
   }
+  if (await isJtiRevoked(decoded.jti)) {
+    return res.status(401).json({ error: 'Token révoqué' });
+  }
+  req.user = decoded;
   const restaurantHeader = req.headers['x-restaurant-id'];
   if (!restaurantHeader) {
     return res.status(400).json({ error: 'X-Restaurant-Id header requis' });

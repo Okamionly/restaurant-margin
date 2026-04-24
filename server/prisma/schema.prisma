@@ -556,6 +556,16 @@ model InvoiceSequence {
   @@map("invoice_sequences")
 }
 
+// ── JWT Revocation Blocklist — checked on every authenticated request ──
+model JwtRevoked {
+  jti       String   @id
+  expiresAt DateTime @map("expires_at")
+  revokedAt DateTime @default(now()) @map("revoked_at")
+
+  @@index([expiresAt])
+  @@map("jwt_revoked")
+}
+
 // ── AI Usage Log — instrumentation cout Anthropic par appel ──
 model AiUsageLog {
   id           Int      @id @default(autoincrement())

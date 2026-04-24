@@ -17,9 +17,18 @@ vi.mock('@prisma/client', () => {
   class PrismaClient {
     restaurantMember = { findFirst: vi.fn() };
     auditLog = { create: vi.fn() };
+    jwtRevoked = { findUnique: vi.fn().mockResolvedValue(null) };
   }
   return { PrismaClient };
 });
+
+// Stub the jti-blocklist module so the middleware never hits the (mocked) DB.
+// We default to "not revoked" — individual tests can re-mock via vi.mocked.
+vi.mock('../api-lib/jti-blocklist', () => ({
+  isJtiRevoked: vi.fn().mockResolvedValue(false),
+  revokeJti: vi.fn().mockResolvedValue(undefined),
+  pruneExpired: vi.fn().mockResolvedValue(0),
+}));
 
 function makeReq(token?: string): any {
   return {
@@ -42,7 +51,7 @@ describe('authMiddleware — JWT validation', () => {
     const req = makeReq();
     const res = makeRes();
     const next = vi.fn();
-    authMiddleware(req, res, next);
+    await authMiddleware(req, res, next);
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ error: 'Token requis' });
     expect(next).not.toHaveBeenCalled();
@@ -53,7 +62,7 @@ describe('authMiddleware — JWT validation', () => {
     const req = makeReq('invalid.token.here');
     const res = makeRes();
     const next = vi.fn();
-    authMiddleware(req, res, next);
+    await authMiddleware(req, res, next);
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ error: 'Token invalide' });
     expect(next).not.toHaveBeenCalled();
@@ -65,7 +74,7 @@ describe('authMiddleware — JWT validation', () => {
     const req = makeReq(badToken);
     const res = makeRes();
     const next = vi.fn();
-    authMiddleware(req, res, next);
+    await authMiddleware(req, res, next);
     expect(res.status).toHaveBeenCalledWith(401);
     expect(next).not.toHaveBeenCalled();
   });
@@ -77,7 +86,7 @@ describe('authMiddleware — JWT validation', () => {
     const req = makeReq(token);
     const res = makeRes();
     const next = vi.fn();
-    authMiddleware(req, res, next);
+    await authMiddleware(req, res, next);
     expect(next).toHaveBeenCalledOnce();
     expect(req.user.userId).toBe(42);
     expect(req.user.email).toBe('chef@restaurant.fr');
@@ -91,7 +100,7 @@ describe('authMiddleware — JWT validation', () => {
     const req = makeReq(token);
     const res = makeRes();
     const next = vi.fn();
-    authMiddleware(req, res, next);
+    await authMiddleware(req, res, next);
     expect(res.status).toHaveBeenCalledWith(401);
     expect(next).not.toHaveBeenCalled();
   });

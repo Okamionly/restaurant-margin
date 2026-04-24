@@ -1,6 +1,7 @@
 import express from 'express';
 import compression from 'compression';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import crypto from 'crypto';
 import { prisma } from '../api-lib/prisma';
 import bcrypt from 'bcryptjs';
@@ -42,6 +43,9 @@ app.use(cors({
   origin: ['http://localhost:5173', 'https://www.restaumargin.fr', 'https://restaumargin.fr', 'https://restaumargin.vercel.app'],
   credentials: true,
 }));
+// Parse cookies (auth_token httpOnly cookie + csrf_token); must run before
+// any route that calls req.cookies (auth middleware reads auth_token cookie).
+app.use(cookieParser());
 // ── Stripe Webhook (must be before express.json() for raw body) ──
 app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   try {

@@ -3,10 +3,46 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Resend } from 'resend';
-import { prisma, JWT_SECRET, TOKEN_EXPIRY, authMiddleware, JwtPayload } from '../middleware';
+import {
+  prisma,
+  JWT_SECRET,
+  TOKEN_EXPIRY,
+  AUTH_COOKIE_NAME,
+  authMiddleware,
+  JwtPayload,
+} from '../middleware';
+import { revokeJti } from '../jti-blocklist';
 import { buildWelcomeEmail, buildVerifyEmail, buildResetPasswordEmail } from '../utils/emailTemplates';
 
 const router = Router();
+
+const TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60; // mirror TOKEN_EXPIRY = '7d'
+
+/** Sign a JWT with a unique jti so it can be individually revoked via the blocklist. */
+function signAuthToken(payload: { userId: number; email: string; role: string }): {
+  token: string;
+  jti: string;
+} {
+  const jti = crypto.randomUUID();
+  const token = jwt.sign({ ...payload, jti }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
+  return { token, jti };
+}
+
+/**
+ * Set the JWT as an httpOnly cookie. Bearer-token JSON responses are kept in
+ * parallel for back-compat (native clients, server-to-server) — migration
+ * window closes 7 days after deploy.
+ */
+function setAuthCookie(res: any, token: string) {
+  const isProd = process.env.NODE_ENV === 'production';
+  res.cookie(AUTH_COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: TOKEN_TTL_SECONDS * 1000,
+  });
+}
 
 // Fixed dummy hash for timing-attack-safe login (CWE-208).
 // Ensures bcrypt.compare() always runs even when the user doesn't exist.
@@ -89,7 +125,8 @@ router.post('/register', async (req: any, res) => {
       console.error('Failed to send welcome email:', emailErr);
     }
 
-    const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
+    const { token } = signAuthToken({ userId: user.id, email: user.email, role: user.role });
+    setAuthCookie(res, token);
     res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan, trialEndsAt: user.trialEndsAt || null }, restaurantId: restaurant.id });
   } catch (e) { console.error(e); res.status(500).json({ error: "Erreur inscription" }); }
 });
@@ -103,7 +140,8 @@ router.post('/login', async (req, res) => {
     // Non-existent users hit a dummy hash so the latency profile is identical.
     const valid = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_BCRYPT_HASH);
     if (!user || !valid) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
-    const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
+    const { token } = signAuthToken({ userId: user.id, email: user.email, role: user.role });
+    setAuthCookie(res, token);
 
     // Récupère le restaurant principal de l'utilisateur (pour X-Restaurant-Id header)
     const membership = await prisma.restaurantMember.findFirst({
@@ -120,6 +158,122 @@ router.post('/login', async (req, res) => {
       restaurantId: restaurant?.id || null,
     });
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur connexion' }); }
+});
+
+// ── Logout: revoke the current JWT (jti blocklist) + clear cookie ──
+router.post('/logout', authMiddleware, async (req: any, res) => {
+  try {
+    const jti = req.user?.jti as string | undefined;
+    const exp = req.user?.exp as number | undefined;
+    if (jti && exp) {
+      await revokeJti(jti, new Date(exp * 1000));
+    }
+    res.clearCookie(AUTH_COOKIE_NAME, { path: '/' });
+    res.json({ message: 'Déconnecté' });
+  } catch (e: any) {
+    console.error('[LOGOUT]', e.message);
+    // Even on error, clear the cookie so the client is logged out client-side.
+    res.clearCookie(AUTH_COOKIE_NAME, { path: '/' });
+    res.json({ message: 'Déconnecté (erreur révocation: token expirera naturellement)' });
+  }
+});
+
+// ============ RGPD: data portability + right to erasure ============
+
+// GET /api/auth/me/export — full data dump for the authenticated user (RGPD art. 20).
+// Returns a JSON attachment with the user record + every restaurant they own/belong
+// to + nested business data (recipes, ingredients, invoices, devis, financial entries).
+router.get('/me/export', authMiddleware, async (req: any, res) => {
+  try {
+    const userId = req.user.userId as number;
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true, email: true, name: true, role: true, plan: true, emailVerified: true,
+        acceptedCguAt: true, trialEndsAt: true, createdAt: true,
+        memberships: {
+          include: {
+            restaurant: {
+              include: {
+                recipes: { include: { ingredients: true } },
+                ingredients: true,
+                suppliers: true,
+                invoices: { include: { items: true } },
+                priceHistory: true,
+                menuSales: true,
+                devis: { include: { items: true } },
+                financialEntries: true,
+                wasteLogs: true,
+                inventory: true,
+                employees: true,
+                shifts: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!user) return res.status(404).json({ error: 'Non trouvé' });
+
+    const filename = `restaumargin-data-${userId}-${new Date().toISOString().slice(0, 10)}.json`;
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.json({
+      exportedAt: new Date().toISOString(),
+      rgpdArticle: 'Article 20 RGPD — Right to data portability',
+      user,
+    });
+  } catch (e: any) {
+    console.error('[RGPD EXPORT]', e.message);
+    res.status(500).json({ error: 'Erreur export RGPD' });
+  }
+});
+
+// POST /api/auth/me/delete — soft anonymisation of the authenticated user (RGPD art. 17).
+// Email/name/passwordHash are scrambled so the row cannot be tied back to the
+// real person. Restaurants/business data are kept (auditability + co-owners),
+// but the user's PII is unrecoverable. SLA: 30 days for full pipeline cleanup —
+// see docs/rgpd-erasure.md for the runbook.
+router.post('/me/delete', authMiddleware, async (req: any, res) => {
+  try {
+    const userId = req.user.userId as number;
+    if (req.user.role === 'admin') {
+      // Admin self-deletion is too dangerous as a single-call self-serve flow —
+      // require the manual /api/auth/users/:id path instead.
+      return res.status(400).json({
+        error: 'Suppression admin non autorisée par self-service. Contactez le support.',
+      });
+    }
+    const anonEmail = `deleted-${crypto.randomUUID()}@deleted.local`;
+    const scrambled = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12);
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        email: anonEmail,
+        name: 'Compte supprimé',
+        passwordHash: scrambled,
+        role: 'deleted',
+        verificationToken: null,
+        resetToken: null,
+        resetTokenExpiry: null,
+        stripeCustomerId: null,
+        stripeSubId: null,
+      },
+    });
+
+    // Revoke the current session token so the now-anonymised user is locked out
+    // immediately, even on the back-compat Bearer header path.
+    const jti = req.user?.jti as string | undefined;
+    const exp = req.user?.exp as number | undefined;
+    if (jti && exp) {
+      try { await revokeJti(jti, new Date(exp * 1000)); } catch { /* best-effort */ }
+    }
+    res.clearCookie(AUTH_COOKIE_NAME, { path: '/' });
+    res.json({ message: 'Compte supprimé. Vos données ont été anonymisées.' });
+  } catch (e: any) {
+    console.error('[RGPD DELETE]', e.message);
+    res.status(500).json({ error: 'Erreur suppression RGPD' });
+  }
 });
 
 router.get('/me', authMiddleware, async (req: any, res) => {
@@ -300,7 +454,8 @@ router.get('/google/callback', async (req, res) => {
 
     if (user) {
       // Existing user → login
-      const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
+      const { token } = signAuthToken({ userId: user.id, email: user.email, role: user.role });
+      setAuthCookie(res, token);
       return res.redirect(`${frontendUrl}/login?token=${token}`);
     }
 
@@ -342,7 +497,8 @@ router.get('/google/callback', async (req, res) => {
       console.error('Failed to send welcome email (Google OAuth):', emailErr);
     }
 
-    const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
+    const { token } = signAuthToken({ userId: user.id, email: user.email, role: user.role });
+    setAuthCookie(res, token);
     return res.redirect(`${frontendUrl}/login?token=${token}`);
   } catch (e) {
     console.error('[GOOGLE OAUTH] Error:', e);

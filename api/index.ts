@@ -691,6 +691,90 @@ app.get('/api/cron/daily-report', async (req: any, res) => {
   }
 });
 
+// 7b. SIGNUP ALERT — every 4h, detect real new customers
+app.get('/api/cron/signup-alert', async (req: any, res) => {
+  if (!verifyCron(req, res)) return;
+  try {
+    const since = new Date(Date.now() - 4 * 60 * 60 * 1000);
+    const newUsers = await prisma.user.findMany({
+      where: { createdAt: { gte: since } },
+      select: { id: true, email: true, name: true, plan: true, createdAt: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const TEST_PATTERNS = ['guessous', 'okamihokari', 'okamihokori', 'test'];
+    const realUsers = newUsers.filter(u =>
+      !TEST_PATTERNS.some(p => u.email.toLowerCase().includes(p))
+    );
+
+    if (realUsers.length === 0) {
+      return res.json({ alerted: false, newUsers: 0, realUsers: 0 });
+    }
+
+    const hotLeadDomains = /\.(restaurant|resto|bistro|brasserie|cafe|hotel|traiteur|pizzeria|boulangerie|buffet|snack)\./i;
+    const rows = realUsers.map(u => {
+      const isHot = hotLeadDomains.test(u.email);
+      return `<tr>
+        <td style="padding:8px;border-bottom:1px solid #eee;">${isHot ? '🔥 LEAD CHAUD' : '👤 Lead'}</td>
+        <td style="padding:8px;border-bottom:1px solid #eee;">${u.name || '—'}</td>
+        <td style="padding:8px;border-bottom:1px solid #eee;">${u.email}</td>
+        <td style="padding:8px;border-bottom:1px solid #eee;">${u.plan || 'free'}</td>
+        <td style="padding:8px;border-bottom:1px solid #eee;">${new Date(u.createdAt).toLocaleString('fr-FR')}</td>
+      </tr>`;
+    }).join('');
+
+    const hotCount = realUsers.filter(u => hotLeadDomains.test(u.email)).length;
+    const subject = hotCount > 0
+      ? `🔥 ${hotCount} LEAD CHAUD RestauMargin — Action requise`
+      : `🆕 ${realUsers.length} nouveau signup RestauMargin`;
+
+    const html = `
+      <div style="font-family:sans-serif;max-width:640px;margin:0 auto;">
+        <h2 style="color:#0d9488;">Nouveau(x) client(s) détecté(s) !</h2>
+        <p style="color:#111;">Inscriptions des 4 dernières heures :</p>
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <thead>
+            <tr style="background:#f5f5f5;">
+              <th style="padding:8px;text-align:left;">Type</th>
+              <th style="padding:8px;text-align:left;">Nom</th>
+              <th style="padding:8px;text-align:left;">Email</th>
+              <th style="padding:8px;text-align:left;">Plan</th>
+              <th style="padding:8px;text-align:left;">Heure</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div style="margin-top:20px;padding:16px;background:#f0fdf4;border-radius:8px;">
+          <b>Actions suggérées :</b>
+          <ul style="margin:8px 0;">
+            <li>Envoyer un email personnel de bienvenue</li>
+            <li>Proposer un appel découverte</li>
+            <li>Suivre l'activation (ajout d'une recette dans les 24h ?)</li>
+          </ul>
+        </div>
+        <p style="color:#737373;font-size:12px;margin-top:16px;">Veilleur RestauMargin — déclenché automatiquement toutes les 4h</p>
+      </div>
+    `;
+
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey) {
+      const { Resend } = await import('resend');
+      const resend = new Resend(resendKey);
+      await resend.emails.send({
+        from: 'RestauMargin <contact@restaumargin.fr>',
+        to: ['Mr.guessousyoussef@gmail.com'],
+        subject,
+        html,
+      });
+    }
+
+    res.json({ alerted: true, newUsers: newUsers.length, realUsers: realUsers.length, hotLeads: hotCount });
+  } catch (e: any) {
+    console.error('[CRON SIGNUP-ALERT]', e.message);
+    res.json({ error: e.message });
+  }
+});
+
 // 7. TRIAL EXPIRY EMAILS — daily at 9h
 app.get('/api/cron/trial-expiry', async (req: any, res) => {
   if (!verifyCron(req, res)) return;

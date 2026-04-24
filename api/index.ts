@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import crypto from 'crypto';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../api-lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Resend } from 'resend';
@@ -19,7 +19,6 @@ import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail, buildTr
 
 
 const app = express();
-const prisma = new PrismaClient();
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
 
 const JWT_SECRET = process.env.JWT_SECRET;

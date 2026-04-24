@@ -8,21 +8,27 @@
  */
 import { Router } from 'express';
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
 import { Resend } from 'resend';
+import { prisma } from '../prisma';
 import { authMiddleware } from '../middleware';
 import { buildActivationCodeEmail } from '../utils/emailTemplates';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // ── Stripe Price IDs ───────────────────────────────────────────────────────────
-// Set via env vars or fall back to production price IDs.
+// SECURITY: no hardcoded live fallbacks — previous `|| 'price_...'` meant a
+// preview deploy missing an env var would silently charge against LIVE prices.
+// Fail loud at module load time so missing config is caught in CI, not in prod.
+function requireEnv(name: string): string {
+  const v = process.env[name];
+  if (!v) throw new Error(`Missing required env var: ${name}`);
+  return v;
+}
 export const STRIPE_PRICES = {
-  PRO_MONTHLY: process.env.STRIPE_PRICE_PRO_MONTHLY || 'price_1TGSSU3Y5IoWMA5kc6YRt86p',
-  PRO_ANNUAL: process.env.STRIPE_PRICE_PRO_ANNUAL || 'price_1TNJcy3Y5IoWMA5k7T7ZOyI9',
-  BUSINESS_MONTHLY: process.env.STRIPE_PRICE_BUSINESS_MONTHLY || 'price_1TGSSV3Y5IoWMA5k8Elzb9RU',
-  BUSINESS_ANNUAL: process.env.STRIPE_PRICE_BUSINESS_ANNUAL || 'price_1TNJd03Y5IoWMA5kMN2CPkNc',
+  PRO_MONTHLY: requireEnv('STRIPE_PRICE_PRO_MONTHLY'),
+  PRO_ANNUAL: requireEnv('STRIPE_PRICE_PRO_ANNUAL'),
+  BUSINESS_MONTHLY: requireEnv('STRIPE_PRICE_BUSINESS_MONTHLY'),
+  BUSINESS_ANNUAL: requireEnv('STRIPE_PRICE_BUSINESS_ANNUAL'),
 } as const;
 
 // ── Webhook (raw body — must be mounted BEFORE express.json()) ─────────────────

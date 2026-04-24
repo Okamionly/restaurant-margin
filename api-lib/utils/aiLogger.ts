@@ -97,15 +97,36 @@ export async function withAiLogging<T extends { usage?: { input_tokens: number; 
 
 /**
  * Récupère le coût cumulé par user pour un mois donné (pour admin finance dashboard).
+ *
+ * SECURITY: uses tagged-template $queryRaw (auto-parameterized) instead of $queryRawUnsafe
+ * to prevent SQL injection via userId or month interpolation (CWE-89).
  */
 export async function getMonthlyAiCost(userId: number | null, month: string): Promise<{ costUsd: number; costEur: number; calls: number }> {
-  const [start, end] = [`${month}-01`, `${month}-31`];
-  const userFilter = userId ? `AND user_id = ${userId}` : '';
-  const result = (await prisma.$queryRawUnsafe(
-    `SELECT COALESCE(SUM(cost_usd),0) AS cost_usd, COALESCE(SUM(cost_eur),0) AS cost_eur, COUNT(*) AS calls
-     FROM ai_usage_logs
-     WHERE created_at >= '${start}' AND created_at <= '${end}' ${userFilter}`
-  )) as Array<{ cost_usd: number; cost_eur: number; calls: bigint }>;
+  // Strict input validation (defense in depth, even though tagged template is already safe)
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+    throw new Error('Invalid month format (expected YYYY-MM)');
+  }
+  const [year, monthNum] = month.split('-').map(Number);
+  const startDate = new Date(Date.UTC(year, monthNum - 1, 1));
+  const endDate = new Date(Date.UTC(year, monthNum, 1)); // first day of next month (exclusive upper bound)
+
+  const result = userId
+    ? await prisma.$queryRaw<Array<{ cost_usd: number; cost_eur: number; calls: bigint }>>`
+        SELECT COALESCE(SUM(cost_usd), 0) AS cost_usd,
+               COALESCE(SUM(cost_eur), 0) AS cost_eur,
+               COUNT(*) AS calls
+        FROM ai_usage_logs
+        WHERE created_at >= ${startDate} AND created_at < ${endDate}
+          AND user_id = ${userId}
+      `
+    : await prisma.$queryRaw<Array<{ cost_usd: number; cost_eur: number; calls: bigint }>>`
+        SELECT COALESCE(SUM(cost_usd), 0) AS cost_usd,
+               COALESCE(SUM(cost_eur), 0) AS cost_eur,
+               COUNT(*) AS calls
+        FROM ai_usage_logs
+        WHERE created_at >= ${startDate} AND created_at < ${endDate}
+      `;
+
   const row = result[0];
   return {
     costUsd: Number(row?.cost_usd ?? 0),

@@ -1,7 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from './prisma';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) throw new Error('JWT_SECRET env variable required');

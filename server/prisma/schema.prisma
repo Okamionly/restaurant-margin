@@ -31,54 +31,54 @@ model User {
 }
 
 model ActivationCode {
-  id        Int      @id @default(autoincrement())
-  code      String   @unique
-  plan      String   // basic, pro, business
-  used      Boolean  @default(false)
-  usedBy    String?  // email of user who used it
-  usedAt    DateTime?
+  id              Int       @id @default(autoincrement())
+  code            String    @unique
+  plan            String // basic, pro, business
+  used            Boolean   @default(false)
+  usedBy          String? // email of user who used it
+  usedAt          DateTime?
   stripePaymentId String?
-  createdAt DateTime @default(now())
+  createdAt       DateTime  @default(now())
 
   @@index([code])
   @@map("activation_codes")
 }
 
 model Restaurant {
-  id            Int                @id @default(autoincrement())
-  name          String
-  address       String?
-  cuisineType   String?
-  phone         String?
-  coversPerDay  Int                @default(80)
-  ownerId       Int
-  owner         User               @relation("OwnedRestaurants", fields: [ownerId], references: [id])
-  members       RestaurantMember[]
-  ingredients   Ingredient[]
-  recipes       Recipe[]
-  suppliers     Supplier[]
-  inventory     InventoryItem[]
-  invoices      Invoice[]
-  priceHistory  PriceHistory[]
-  menuSales     MenuSale[]
-  devis         Devis[]
-  conversations    Conversation[]
-  financialEntries FinancialEntry[]
-  wasteLogs        WasteLog[]
+  id                     Int                     @id @default(autoincrement())
+  name                   String
+  address                String?
+  cuisineType            String?
+  phone                  String?
+  coversPerDay           Int                     @default(80)
+  ownerId                Int
+  owner                  User                    @relation("OwnedRestaurants", fields: [ownerId], references: [id])
+  members                RestaurantMember[]
+  ingredients            Ingredient[]
+  recipes                Recipe[]
+  suppliers              Supplier[]
+  inventory              InventoryItem[]
+  invoices               Invoice[]
+  priceHistory           PriceHistory[]
+  menuSales              MenuSale[]
+  devis                  Devis[]
+  conversations          Conversation[]
+  financialEntries       FinancialEntry[]
+  wasteLogs              WasteLog[]
   haccpTemperatures      HaccpTemperature[]
   haccpCleanings         HaccpCleaning[]
   haccpCorrectiveActions HaccpCorrectiveAction[]
-  employees        Employee[]
-  shifts           Shift[]
-  seminaires       Seminaire[]
-  marketplaceOrders MarketplaceOrder[]
-  newsItems         NewsItem[]
-  dailyBudget       Float?
-  weeklyBudget      Float?
-  monthlyBudget     Float?
-  budgetEmailAlert  Boolean            @default(false)
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  employees              Employee[]
+  shifts                 Shift[]
+  seminaires             Seminaire[]
+  marketplaceOrders      MarketplaceOrder[]
+  newsItems              NewsItem[]
+  dailyBudget            Float?
+  weeklyBudget           Float?
+  monthlyBudget          Float?
+  budgetEmailAlert       Boolean                 @default(false)
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
 
   @@map("restaurants")
 }
@@ -98,28 +98,29 @@ model RestaurantMember {
 }
 
 model Supplier {
-  id           Int        @id @default(autoincrement())
-  name         String
-  phone        String?
-  email        String?
-  address      String?
-  city         String?
-  postalCode   String?
-  region       String?
-  country      String     @default("France")
-  siret        String?
-  website      String?
-  notes        String?
-  categories   String[]
-  contactName  String?
-  delivery     Boolean    @default(true)
+  id            Int          @id @default(autoincrement())
+  name          String
+  phone         String?
+  email         String?
+  address       String?
+  city          String?
+  postalCode    String?
+  region        String?
+  country       String       @default("France")
+  siret         String?
+  website       String?
+  notes         String?
+  categories    String[]
+  contactName   String?
+  delivery      Boolean      @default(true)
   minOrder      String?
   paymentTerms  String?
   whatsappPhone String?
   restaurantId  Int
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  restaurant    Restaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  deletedAt     DateTime?    @map("deleted_at")
   ingredients   Ingredient[]
 
   @@index([restaurantId])
@@ -141,6 +142,7 @@ model Ingredient {
   restaurant    Restaurant         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
+  deletedAt     DateTime?          @map("deleted_at")
   recipes       RecipeIngredient[]
   inventoryItem InventoryItem?
   wasteLogs     WasteLog[]
@@ -166,6 +168,7 @@ model Recipe {
   restaurant       Restaurant         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
+  deletedAt        DateTime?          @map("deleted_at")
   ingredients      RecipeIngredient[]
 
   @@index([restaurantId, category])
@@ -216,6 +219,7 @@ model Invoice {
   restaurantId  Int
   restaurant    Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt     DateTime      @default(now())
+  deletedAt     DateTime?     @map("deleted_at")
   items         InvoiceItem[]
 
   @@index([supplierName])
@@ -225,9 +229,9 @@ model Invoice {
 }
 
 model InvoiceItem {
-  id           Int      @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   invoiceId    Int
-  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoice      Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   productName  String
   quantity     Float
   unit         String
@@ -274,24 +278,25 @@ model MenuSale {
 }
 
 model Devis {
-  id           Int         @id @default(autoincrement())
-  number       String      // DEV-2026-001
-  clientName   String
-  clientEmail  String?
-  clientPhone  String?
+  id            Int         @id @default(autoincrement())
+  number        String // DEV-2026-001
+  clientName    String
+  clientEmail   String?
+  clientPhone   String?
   clientAddress String?
-  subject      String
-  status       String      @default("draft") // draft, sent, accepted, rejected
-  totalHT      Float       @default(0)
-  totalTTC     Float       @default(0)
-  tvaRate      Float       @default(20)
-  validUntil   String?
-  notes        String?
-  restaurantId Int
-  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  items        DevisItem[]
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  subject       String
+  status        String      @default("draft") // draft, sent, accepted, rejected
+  totalHT       Float       @default(0)
+  totalTTC      Float       @default(0)
+  tvaRate       Float       @default(20)
+  validUntil    String?
+  notes         String?
+  restaurantId  Int
+  restaurant    Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  items         DevisItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  deletedAt     DateTime?   @map("deleted_at")
 
   @@index([restaurantId, status])
   @@map("devis")
@@ -312,15 +317,15 @@ model DevisItem {
 
 model FinancialEntry {
   id           Int        @id @default(autoincrement())
-  date         String     // YYYY-MM-DD
-  type         String     // revenue, expense
-  category     String     // Matières premières, Personnel, Loyer, Énergie, etc.
-  label        String     // Description
+  date         String // YYYY-MM-DD
+  type         String // revenue, expense
+  category     String // Matières premières, Personnel, Loyer, Énergie, etc.
+  label        String // Description
   amount       Float
   tvaRate      Float      @default(20)
   tvaAmount    Float      @default(0)
-  paymentMode  String?    // CB, Espèces, Chèque, Virement, Ticket resto
-  reference    String?    // Invoice number, receipt number
+  paymentMode  String? // CB, Espèces, Chèque, Virement, Ticket resto
+  reference    String? // Invoice number, receipt number
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
@@ -336,9 +341,9 @@ model WasteLog {
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
   quantity     Float
   unit         String
-  reason       String     // expired, spoiled, overproduction, damaged, other
-  costImpact   Float      // quantity * ingredient pricePerUnit
-  date         String     // YYYY-MM-DD
+  reason       String // expired, spoiled, overproduction, damaged, other
+  costImpact   Float // quantity * ingredient pricePerUnit
+  date         String // YYYY-MM-DD
   notes        String?
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
@@ -351,7 +356,7 @@ model WasteLog {
 model Employee {
   id           Int        @id @default(autoincrement())
   name         String
-  role         String     // Chef, Commis, Serveur, Plongeur, Barman, Manager
+  role         String // Chef, Commis, Serveur, Plongeur, Barman, Manager
   email        String?
   phone        String?
   hourlyRate   Float      @default(12)
@@ -370,10 +375,10 @@ model Shift {
   id           Int        @id @default(autoincrement())
   employeeId   Int
   employee     Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  date         String     // YYYY-MM-DD
-  startTime    String     // HH:MM
-  endTime      String     // HH:MM
-  type         String     // Matin, Midi, Soir, Coupure
+  date         String // YYYY-MM-DD
+  startTime    String // HH:MM
+  endTime      String // HH:MM
+  type         String // Matin, Midi, Soir, Coupure
   notes        String?
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
@@ -386,13 +391,13 @@ model Shift {
 
 model HaccpTemperature {
   id           Int        @id @default(autoincrement())
-  zone         String     // Frigo, Congélateur, Plats chauds, Réception
+  zone         String // Frigo, Congélateur, Plats chauds, Réception
   temperature  Float
   status       String     @default("conforme") // conforme, non_conforme, en_attente
   recordedBy   String?
   notes        String?
-  date         String     // YYYY-MM-DD
-  time         String?    // HH:MM
+  date         String // YYYY-MM-DD
+  time         String? // HH:MM
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
@@ -403,8 +408,8 @@ model HaccpTemperature {
 
 model HaccpCleaning {
   id           Int        @id @default(autoincrement())
-  zone         String     // Cuisine, Salle, Toilettes, Chambre froide, etc.
-  task         String     // Description of cleaning task
+  zone         String // Cuisine, Salle, Toilettes, Chambre froide, etc.
+  task         String // Description of cleaning task
   status       String     @default("en_attente") // fait, en_attente, non_fait
   doneBy       String?
   date         String
@@ -439,8 +444,8 @@ model Seminaire {
   clientName   String
   clientEmail  String?
   clientPhone  String?
-  eventType    String     // Séminaire, Mariage, Anniversaire, Corporate, Autre
-  date         String     // YYYY-MM-DD
+  eventType    String // Séminaire, Mariage, Anniversaire, Corporate, Autre
+  date         String // YYYY-MM-DD
   startTime    String?
   endTime      String?
   guestCount   Int        @default(20)
@@ -453,6 +458,7 @@ model Seminaire {
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?  @map("deleted_at")
 
   @@index([restaurantId, status])
   @@index([restaurantId, date])
@@ -460,19 +466,19 @@ model Seminaire {
 }
 
 model MarketplaceOrder {
-  id               Int        @id @default(autoincrement())
+  id               Int                    @id @default(autoincrement())
   supplierName     String
   supplierId       Int?
-  status           String     @default("draft") // draft, sent, confirmed, received, cancelled, claimed
-  totalHT          Float      @default(0)
+  status           String                 @default("draft") // draft, sent, confirmed, received, cancelled, claimed
+  totalHT          Float                  @default(0)
   notes            String?
   expectedDelivery DateTime?
   receivedAt       DateTime?
   restaurantId     Int
-  restaurant       Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurant       Restaurant             @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   items            MarketplaceOrderItem[]
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
 
   @@index([restaurantId, status])
   @@index([restaurantId, createdAt])
@@ -497,13 +503,13 @@ model MarketplaceOrderItem {
 
 model NewsItem {
   id            Int         @id @default(autoincrement())
-  restaurantId  Int?        // null = news globale (tous restaurants)
+  restaurantId  Int? // null = news globale (tous restaurants)
   title         String
   content       String      @db.Text
-  type          String      // price_alert | opportunity | trend | tip
+  type          String // price_alert | opportunity | trend | tip
   priority      String      @default("normal") // high | normal | low
   dismissed     Boolean     @default(false)
-  mercurialeRef String?     // ex: "2026-03-30"
+  mercurialeRef String? // ex: "2026-03-30"
   createdAt     DateTime    @default(now())
   restaurant    Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
 

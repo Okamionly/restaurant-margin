@@ -48,7 +48,10 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
       return res.status(400).send('Missing stripe-signature header');
     }
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+      httpClient: Stripe.createNodeHttpClient(),
+      timeout: 30000,
+    });
     let event: any;
     try {
       event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
@@ -268,7 +271,10 @@ app.post('/api/stripe/checkout', authMiddleware, async (req: any, res) => {
   try {
     const stripeKey = process.env.STRIPE_SECRET_KEY;
     if (!stripeKey) return res.status(503).json({ error: 'Stripe non configuré' });
-    const stripe = new Stripe(stripeKey);
+    const stripe = new Stripe(stripeKey, {
+      httpClient: Stripe.createNodeHttpClient(),
+      timeout: 30000,
+    });
 
     const { planId, annual } = req.body;
     if (!planId || !['pro', 'business'].includes(planId)) {
@@ -340,7 +346,10 @@ app.post('/api/stripe/portal', authMiddleware, async (req: any, res) => {
   try {
     const stripeKey = process.env.STRIPE_SECRET_KEY;
     if (!stripeKey) return res.status(503).json({ error: 'Stripe non configuré' });
-    const stripe = new Stripe(stripeKey);
+    const stripe = new Stripe(stripeKey, {
+      httpClient: Stripe.createNodeHttpClient(),
+      timeout: 30000,
+    });
 
     // Find customer by email
     const user = await prisma.user.findUnique({ where: { id: req.user.userId } });

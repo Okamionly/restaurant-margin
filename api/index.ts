@@ -6,16 +6,16 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Resend } from 'resend';
 import Anthropic from '@anthropic-ai/sdk';
-import authRoutes from './routes/auth';
-import aiRoutes from './routes/ai';
-import mercurialeRoutes from './routes/mercuriale';
-import exportRoutes from './routes/export';
-import referralsRoutes from './routes/referrals';
-import adminRoutes from './routes/admin';
-import npsRoutes from './routes/nps';
-import { getUnitDivisor } from './utils/unitConversion';
-import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit } from './middleware';
-import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail, buildTrialExpiringEmail, buildTrialLastDayEmail, buildTrialExpiredEmail } from './utils/emailTemplates';
+import authRoutes from '../api-lib/routes/auth';
+import aiRoutes from '../api-lib/routes/ai';
+import mercurialeRoutes from '../api-lib/routes/mercuriale';
+import exportRoutes from '../api-lib/routes/export';
+import referralsRoutes from '../api-lib/routes/referrals';
+import adminRoutes from '../api-lib/routes/admin';
+import npsRoutes from '../api-lib/routes/nps';
+import { getUnitDivisor } from '../api-lib/utils/unitConversion';
+import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit } from '../api-lib/middleware';
+import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail, buildTrialExpiringEmail, buildTrialLastDayEmail, buildTrialExpiredEmail } from '../api-lib/utils/emailTemplates';
 
 
 const app = express();

@@ -390,11 +390,16 @@ async function handleResponse<T>(res: Response): Promise<T> {
 // --- Auth ---
 
 export async function login(credentials: LoginCredentials): Promise<{ token: string; user: User; restaurant?: { id: number } }> {
-  const res = await fetch(`${API_BASE}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(credentials),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+    });
+  } catch {
+    throw new Error(NETWORK_ERROR_MSG);
+  }
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new Error(body.error || 'Erreur de connexion');
@@ -403,11 +408,16 @@ export async function login(credentials: LoginCredentials): Promise<{ token: str
 }
 
 export async function register(data: RegisterData): Promise<{ token: string; user: User; restaurant?: { id: number } }> {
-  const res = await fetch(`${API_BASE}/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  } catch {
+    throw new Error(NETWORK_ERROR_MSG);
+  }
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new Error(body.error || "Erreur lors de l'inscription");
@@ -423,10 +433,14 @@ export async function getMe(): Promise<User> {
 }
 
 export async function checkFirstUser(): Promise<boolean> {
-  const res = await fetch(`${API_BASE}/auth/first-user`);
-  if (!res.ok) return false;
-  const data = await res.json();
-  return data.isFirstUser;
+  try {
+    const res = await fetch(`${API_BASE}/auth/first-user`);
+    if (!res.ok) return false;
+    const data = await res.json();
+    return data.isFirstUser;
+  } catch {
+    return false;
+  }
 }
 
 // --- AI Chat ---

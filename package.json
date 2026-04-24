@@ -50,5 +50,8 @@
     "recharts": "^3.8.0",
     "resend": "^6.9.4",
     "stripe": "^22.0.1"
+  },
+  "overrides": {
+    "path-to-regexp": ">=0.1.13"
   }
 }

@@ -1121,13 +1121,16 @@ export default function Ingredients() {
                     <div className="flex items-center gap-1.5 mt-0.5">
                       <span className="text-xs font-mono text-[#6B7280] dark:text-[#A3A3A3]">{ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}/{ing.unit}</span>
                       {change && change.direction !== 'stable' && (
-                        <span className={`inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
-                          change.direction === 'up'
-                            ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400'
-                            : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400'
-                        }`}>
-                          {change.direction === 'up' ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
-                          {change.percent.toFixed(1)}%
+                        <span
+                          aria-label={`Prix en ${change.direction === 'up' ? 'hausse' : 'baisse'} de ${change.percent.toFixed(1)}%`}
+                          className={`inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                            change.direction === 'up'
+                              ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400'
+                              : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400'
+                          }`}
+                        >
+                          {change.direction === 'up' ? <TrendingUp className="w-2.5 h-2.5" aria-hidden="true" /> : <TrendingDown className="w-2.5 h-2.5" aria-hidden="true" />}
+                          <span aria-hidden="true">{change.percent.toFixed(1)}%</span>
                         </span>
                       )}
                     </div>
@@ -1209,7 +1212,7 @@ export default function Ingredients() {
         <table className="w-full text-sm min-w-[740px]">
           <thead className="bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-left">
             <tr>
-              <th className="px-4 py-3 w-10">
+              <th scope="col" className="px-4 py-3 w-10">
                 <input
                   type="checkbox"
                   checked={filtered.length > 0 && selectedIds.size === filtered.length}
@@ -1218,14 +1221,14 @@ export default function Ingredients() {
                   aria-label="Tout selectionner"
                 />
               </th>
-              <th className="px-4 py-3"><SortHeader label={t('ingredients.nameColumn')} field="name" /></th>
-              <th className="px-4 py-3"><SortHeader label={t('ingredients.categoryColumn')} field="category" /></th>
-              <th className="px-4 py-3"><SortHeader label={t('ingredients.unitPriceColumn')} field="pricePerUnit" /></th>
-              <th className="px-3 py-3 font-medium text-xs">Tendance</th>
-              <th className="px-4 py-3"><SortHeader label={t('ingredients.unitColumn')} field="unit" /></th>
-              <th className="px-4 py-3"><SortHeader label={t('ingredients.supplierColumn')} field="supplier" /></th>
-              <th className="px-3 py-3 font-medium text-xs">Statut</th>
-              <th className="px-4 py-3 font-medium w-32">{t('ingredients.actionsColumn')}</th>
+              <th scope="col" className="px-4 py-3"><SortHeader label={t('ingredients.nameColumn')} field="name" /></th>
+              <th scope="col" className="px-4 py-3"><SortHeader label={t('ingredients.categoryColumn')} field="category" /></th>
+              <th scope="col" className="px-4 py-3"><SortHeader label={t('ingredients.unitPriceColumn')} field="pricePerUnit" /></th>
+              <th scope="col" className="px-3 py-3 font-medium text-xs">Tendance</th>
+              <th scope="col" className="px-4 py-3"><SortHeader label={t('ingredients.unitColumn')} field="unit" /></th>
+              <th scope="col" className="px-4 py-3"><SortHeader label={t('ingredients.supplierColumn')} field="supplier" /></th>
+              <th scope="col" className="px-3 py-3 font-medium text-xs">Statut</th>
+              <th scope="col" className="px-4 py-3 font-medium w-32">{t('ingredients.actionsColumn')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
@@ -1312,13 +1315,16 @@ export default function Ingredients() {
                           const change = computePriceChange(allPriceHistories[ing.id]);
                           if (!change || change.direction === 'stable') return null;
                           return (
-                            <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold ml-1 px-1.5 py-0.5 rounded-full ${
-                              change.direction === 'up'
-                                ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400'
-                                : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400'
-                            }`}>
-                              {change.direction === 'up' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                              {change.percent.toFixed(1)}%
+                            <span
+                              aria-label={`Prix en ${change.direction === 'up' ? 'hausse' : 'baisse'} de ${change.percent.toFixed(1)}%`}
+                              className={`inline-flex items-center gap-0.5 text-[10px] font-semibold ml-1 px-1.5 py-0.5 rounded-full ${
+                                change.direction === 'up'
+                                  ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400'
+                                  : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400'
+                              }`}
+                            >
+                              {change.direction === 'up' ? <TrendingUp className="w-3 h-3" aria-hidden="true" /> : <TrendingDown className="w-3 h-3" aria-hidden="true" />}
+                              <span aria-hidden="true">{change.percent.toFixed(1)}%</span>
                             </span>
                           );
                         })()}
@@ -1372,20 +1378,20 @@ export default function Ingredients() {
                       <div className="flex gap-1">
                         <button
                           onClick={() => togglePriceWatch(ing.id)}
-                          className={`p-1.5 rounded transition-colors ${watchedIds.has(ing.id) ? 'bg-teal-100 dark:bg-teal-900/30' : 'hover:bg-teal-50 dark:hover:bg-teal-900/20'}`}
+                          className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded transition-colors ${watchedIds.has(ing.id) ? 'bg-teal-100 dark:bg-teal-900/30' : 'hover:bg-teal-50 dark:hover:bg-teal-900/20'}`}
                           title={watchedIds.has(ing.id) ? 'Retirer la surveillance' : 'Surveiller le prix'}
                           aria-label={watchedIds.has(ing.id) ? 'Ne plus surveiller' : 'Surveiller le prix'}
                         >
-                          <Bell className={`w-4 h-4 ${watchedIds.has(ing.id) ? 'text-teal-600 dark:text-teal-400 fill-teal-600 dark:fill-teal-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                          <Bell aria-hidden="true" className={`w-4 h-4 ${watchedIds.has(ing.id) ? 'text-teal-600 dark:text-teal-400 fill-teal-600 dark:fill-teal-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
                         </button>
-                        <button onClick={() => openWeigh(ing)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title={t('ingredients.weighTooltip')} aria-label="Peser l'ingredient">
-                          <Scale className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                        <button onClick={() => openWeigh(ing)} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title={t('ingredients.weighTooltip')} aria-label="Peser l'ingredient">
+                          <Scale aria-hidden="true" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         </button>
-                        <button onClick={() => openEdit(ing)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t('ingredients.editTooltip')} aria-label="Modifier l'ingredient">
-                          <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                        <button onClick={() => openEdit(ing)} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t('ingredients.editTooltip')} aria-label="Modifier l'ingredient">
+                          <Pencil aria-hidden="true" className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
                         </button>
-                        <button onClick={() => setDeleteTarget(ing.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t('ingredients.deleteTooltip')} aria-label="Supprimer l'ingredient">
-                          <Trash2 className="w-4 h-4 text-red-500" />
+                        <button onClick={() => setDeleteTarget(ing.id)} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t('ingredients.deleteTooltip')} aria-label="Supprimer l'ingredient">
+                          <Trash2 aria-hidden="true" className="w-4 h-4 text-red-500" />
                         </button>
                       </div>
                     </td>
@@ -1644,10 +1650,13 @@ export default function Ingredients() {
                 const isUp = diff > 0;
                 const isDown = diff < 0;
                 return (
-                  <span className={`flex items-center gap-1 text-xs font-semibold ${isUp ? 'text-red-500' : isDown ? 'text-emerald-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
-                    {isUp && <TrendingUp className="w-3.5 h-3.5" />}
-                    {isDown && <TrendingDown className="w-3.5 h-3.5" />}
-                    {isUp ? '+' : ''}{pct}%
+                  <span
+                    aria-label={isUp ? `Prix en hausse de ${pct}%` : isDown ? `Prix en baisse de ${pct}%` : `Prix stable`}
+                    className={`flex items-center gap-1 text-xs font-semibold ${isUp ? 'text-red-500' : isDown ? 'text-emerald-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`}
+                  >
+                    {isUp && <TrendingUp className="w-3.5 h-3.5" aria-hidden="true" />}
+                    {isDown && <TrendingDown className="w-3.5 h-3.5" aria-hidden="true" />}
+                    <span aria-hidden="true">{isUp ? '+' : ''}{pct}%</span>
                   </span>
                 );
               })()}
@@ -1714,10 +1723,13 @@ export default function Ingredients() {
         <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown} className={`space-y-4 transition-colors duration-500 ${saveSuccess ? 'bg-green-50 dark:bg-green-900/20 rounded-lg p-2 -m-2' : ''}`}>
           {/* Name with autocomplete */}
           <div className="relative" ref={nameDropdownRef}>
-            <label className="label">{t('ingredients.nameLabel')}</label>
+            <label htmlFor="ingredient-name" className="label">{t('ingredients.nameLabel')}</label>
             <input
+              id="ingredient-name"
               ref={nameInputRef}
               required
+              aria-invalid={!!formErrors.name}
+              aria-describedby={formErrors.name ? 'ingredient-name-error' : undefined}
               className={`input w-full ${formErrors.name ? 'border-red-500 ring-1 ring-red-500' : ''}`}
               value={form.name}
               onChange={(e) => handleNameChange(e.target.value)}
@@ -1725,7 +1737,11 @@ export default function Ingredients() {
               placeholder={t('ingredients.namePlaceholder')}
               autoComplete="off"
             />
-            {formErrors.name && <p className="text-xs text-red-500 mt-1">{t('ingredients.nameRequired')}</p>}
+            {formErrors.name && (
+              <p id="ingredient-name-error" role="alert" className="text-xs text-red-500 mt-1">
+                {t('ingredients.nameRequired')}
+              </p>
+            )}
             {/* Name suggestions dropdown */}
             {showNameSuggestions && (nameSuggestions.length > 0 || catalogSuggestions.length > 0) && (
               <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-64 overflow-y-auto">

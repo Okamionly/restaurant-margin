@@ -267,14 +267,12 @@ const STRIPE_PRICES = {
 } as const;
 
 // ── Stripe Checkout Session ──
+// Use raw fetch() instead of Stripe SDK to avoid SDK v22 / Node v24 incompatibility
+// that caused StripeConnectionError on every request.
 app.post('/api/stripe/checkout', authMiddleware, async (req: any, res) => {
   try {
     const stripeKey = process.env.STRIPE_SECRET_KEY;
     if (!stripeKey) return res.status(503).json({ error: 'Stripe non configuré' });
-    const stripe = new Stripe(stripeKey, {
-      httpClient: Stripe.createNodeHttpClient(),
-      timeout: 30000,
-    });
 
     const { planId, annual } = req.body;
     if (!planId || !['pro', 'business'].includes(planId)) {
@@ -299,26 +297,33 @@ app.post('/api/stripe/checkout', authMiddleware, async (req: any, res) => {
       select: { restaurantId: true },
     });
 
-    // Create Stripe Checkout Session
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      payment_method_types: ['card'],
-      line_items: [{ price: priceId, quantity: 1 }],
-      customer_email: user.email,
-      success_url: 'https://www.restaumargin.fr/dashboard?subscription=success',
-      cancel_url: 'https://www.restaumargin.fr/abonnement',
-      metadata: {
-        userId: String(user.id),
-        restaurantId: membership ? String(membership.restaurantId) : '',
-        planType: planId,
+    // Build form-encoded body (Stripe API uses x-www-form-urlencoded)
+    const params = new URLSearchParams();
+    params.append('mode', 'subscription');
+    params.append('payment_method_types[0]', 'card');
+    params.append('line_items[0][price]', priceId);
+    params.append('line_items[0][quantity]', '1');
+    params.append('customer_email', user.email);
+    params.append('success_url', 'https://www.restaumargin.fr/dashboard?subscription=success');
+    params.append('cancel_url', 'https://www.restaumargin.fr/abonnement');
+    params.append('metadata[userId]', String(user.id));
+    params.append('metadata[restaurantId]', membership ? String(membership.restaurantId) : '');
+    params.append('metadata[planType]', planId);
+    params.append('subscription_data[metadata][userId]', String(user.id));
+    params.append('subscription_data[metadata][planType]', planId);
+
+    const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${stripeKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      subscription_data: {
-        metadata: {
-          userId: String(user.id),
-          planType: planId,
-        },
-      },
+      body: params.toString(),
     });
+    const session: any = await stripeRes.json();
+    if (!stripeRes.ok) {
+      throw new Error(session?.error?.message || `Stripe returned ${stripeRes.status}`);
+    }
 
     res.json({ url: session.url });
   } catch (err: any) {

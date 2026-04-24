@@ -31,6 +31,7 @@ import { fetchRecipes } from '../services/api';
 import { getToken, getActiveRestaurantId } from '../services/api';
 import { useToast } from '../hooks/useToast';
 import { useRestaurant } from '../hooks/useRestaurant';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import type { Recipe } from '../types';
 import FoodIllustration from '../components/FoodIllustration';
 
@@ -208,6 +209,7 @@ export default function MenuCalendar() {
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
+  const modalTrapRef = useFocusTrap<HTMLDivElement>(modalOpen);
   const [modalDate, setModalDate] = useState<Date | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -1189,15 +1191,23 @@ export default function MenuCalendar() {
 
       {/* ── Recipe Assignment Modal ── */}
       {modalOpen && modalDate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 no-print" onClick={() => setModalOpen(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 no-print"
+          onClick={() => setModalOpen(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setModalOpen(false); }}
+        >
           <div
+            ref={modalTrapRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="menu-calendar-modal-title"
             className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl w-full max-w-lg mx-4 max-h-[80vh] flex flex-col shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
             {/* Modal header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
               <div>
-                <h3 className="text-base font-semibold text-[#111111] dark:text-white font-satoshi">
+                <h3 id="menu-calendar-modal-title" className="text-base font-semibold text-[#111111] dark:text-white font-satoshi">
                   Ajouter au {modalDate.getDate()} {MONTH_NAMES[modalDate.getMonth()]}
                 </h3>
                 <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-0.5">

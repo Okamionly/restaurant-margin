@@ -10,6 +10,7 @@ import {
   Settings, Edit3, Scissors, LayoutGrid, MapPin, XCircle
 } from 'lucide-react';
 import { fetchRecipes } from '../services/api';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import type { Recipe } from '../types';
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -562,12 +563,24 @@ function AllergenBanner({ notes }: { notes: string }) {
 // ██  RECIPE QUICK VIEW  ██████████████████████████████████████████████████
 // ══════════════════════════════════════════════════════════════════════════
 function RecipeQuickView({ recipe, onClose }: { recipe: Recipe; onClose: () => void }) {
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="recipe-quickview-title"
+        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto p-6"
+        onClick={e => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-3xl font-bold text-white">{recipe.name}</h2>
+            <h2 id="recipe-quickview-title" className="text-3xl font-bold text-white">{recipe.name}</h2>
             <div className="flex gap-3 mt-2 flex-wrap">
               <span className="text-lg text-[#fbbf24] font-semibold">{recipe.category}</span>
               <span className="text-lg text-[#a1a1aa]">{recipe.nbPortions} portions</span>
@@ -657,11 +670,23 @@ function NewOrderModal({ recipes, onAdd, onClose }: { recipes: Recipe[]; onAdd: 
     onClose();
   };
 
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="new-order-title"
+        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6"
+        onClick={e => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold text-white">Nouvelle Commande</h2>
+          <h2 id="new-order-title" className="text-3xl font-bold text-white">Nouvelle Commande</h2>
           <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[64px] min-h-[64px] flex items-center justify-center">
             <X className="w-7 h-7" />
           </button>
@@ -1160,16 +1185,28 @@ function PerformanceStatsModal({ stats, orders, onClose }: { stats: DailyStats; 
   const avgTime = stats.totalPrepTimes.length > 0
     ? Math.round(stats.totalPrepTimes.reduce((a, b) => a + b, 0) / stats.totalPrepTimes.length) : 0;
 
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="perf-stats-title"
+        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6"
+        onClick={e => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <BarChart3 className="w-8 h-8 text-[#14b8a6]" />
-            <h2 className="text-3xl font-bold text-white">Performance du jour</h2>
+            <BarChart3 className="w-8 h-8 text-[#14b8a6]" aria-hidden="true" />
+            <h2 id="perf-stats-title" className="text-3xl font-bold text-white">Performance du jour</h2>
           </div>
-          <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[64px] min-h-[64px] flex items-center justify-center">
-            <X className="w-7 h-7" />
+          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[64px] min-h-[64px] flex items-center justify-center">
+            <X className="w-7 h-7" aria-hidden="true" />
           </button>
         </div>
 
@@ -1357,15 +1394,27 @@ function StandaloneTimer({ onClose }: { onClose: () => void }) {
 
   const reset = () => { setSeconds(0); setRunning(false); setAlarm(false); if (intervalRef.current) clearInterval(intervalRef.current); };
 
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className={`bg-[#0a0a0a] border-2 rounded-2xl p-8 w-full max-w-md ${alarm ? 'border-[#ef4444] animate-pulse' : 'border-[#333333]'}`} onClick={e => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="standalone-timer-title"
+        className={`bg-[#0a0a0a] border-2 rounded-2xl p-8 w-full max-w-md ${alarm ? 'border-[#ef4444] motion-reduce:animate-none animate-pulse' : 'border-[#333333]'}`}
+        onClick={e => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <Timer className="w-8 h-8 text-[#14b8a6]" /><span className="text-2xl font-bold text-white">Timer Cuisine</span>
+            <Timer className="w-8 h-8 text-[#14b8a6]" aria-hidden="true" /><h2 id="standalone-timer-title" className="text-2xl font-bold text-white">Timer Cuisine</h2>
           </div>
-          <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white min-w-[64px] min-h-[64px] flex items-center justify-center">
-            <X className="w-7 h-7" />
+          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white min-w-[64px] min-h-[64px] flex items-center justify-center">
+            <X className="w-7 h-7" aria-hidden="true" />
           </button>
         </div>
         <div className={`text-8xl font-mono font-black text-center py-6 ${alarm ? 'text-[#ef4444]' : 'text-white'}`}>{formatElapsed(seconds)}</div>
@@ -1592,13 +1641,25 @@ function EditOrderModal({ order, onSave, onClose }: {
   const [notes, setNotes] = useState(order.notes);
   const [priority, setPriority] = useState<OrderPriority>(order.priority);
 
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg p-6" onClick={e => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-order-title"
+        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg p-6"
+        onClick={e => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-white">Modifier {formatOrderNumber(order.orderNumber)}</h2>
-          <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
-            <X className="w-6 h-6" />
+          <h2 id="edit-order-title" className="text-2xl font-bold text-white">Modifier {formatOrderNumber(order.orderNumber)}</h2>
+          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
+            <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
 
@@ -1668,13 +1729,25 @@ function SplitOrderModal({ order, onSplit, onClose }: {
 
   const canSplit = selectedDishIds.size > 0 && selectedDishIds.size < order.dishes.length;
 
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg p-6" onClick={e => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="split-order-title"
+        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg p-6"
+        onClick={e => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-white">Scinder {formatOrderNumber(order.orderNumber)}</h2>
-          <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
-            <X className="w-6 h-6" />
+          <h2 id="split-order-title" className="text-2xl font-bold text-white">Scinder {formatOrderNumber(order.orderNumber)}</h2>
+          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
+            <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
 
@@ -1751,13 +1824,25 @@ function TableConfigModal({ config, onSave, onClose }: {
     setTables(prev => prev.map(t => t.number === num ? { ...t, section: t.section === 'salle' ? 'terrasse' : 'salle' } : t));
   };
 
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="table-config-title"
+        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto p-6"
+        onClick={e => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <Settings className="w-7 h-7 text-[#14b8a6]" />
-            <h2 className="text-2xl font-bold text-white">Configuration Tables</h2>
+            <Settings className="w-7 h-7 text-[#14b8a6]" aria-hidden="true" />
+            <h2 id="table-config-title" className="text-2xl font-bold text-white">Configuration Tables</h2>
           </div>
           <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
             <X className="w-6 h-6" />

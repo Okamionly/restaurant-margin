@@ -1,5 +1,7 @@
 import express from 'express';
+import compression from 'compression';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import crypto from 'crypto';
 import { prisma } from '../api-lib/prisma';
 import bcrypt from 'bcryptjs';
@@ -15,11 +17,15 @@ import referralsRoutes from '../api-lib/routes/referrals';
 import adminRoutes from '../api-lib/routes/admin';
 import npsRoutes from '../api-lib/routes/nps';
 import { getUnitDivisor } from '../api-lib/utils/unitConversion';
+import { getTemperatureStatus } from '../api-lib/utils/haccp';
+import { calculateRecipeMargin } from '../api-lib/utils/marginCalculator';
 import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit } from '../api-lib/middleware';
 import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail, buildTrialExpiringEmail, buildTrialLastDayEmail, buildTrialExpiredEmail } from '../api-lib/utils/emailTemplates';
 
 
 const app = express();
+// Remove X-Powered-By: Express header (fingerprinting / CWE-200)
+app.disable('x-powered-by');
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -27,10 +33,19 @@ if (!JWT_SECRET) throw new Error('JWT_SECRET env variable required');
 
 const TOKEN_EXPIRY = '7d';
 
+// Compress responses > 1 KB. Saves 60-80% on JSON payloads (recipes,
+// ingredients, analytics). Webhook route below uses raw body and is
+// excluded automatically because compression streams ignore non-text
+// content-types unless explicitly forced.
+app.use(compression({ threshold: 1024 }));
+
 app.use(cors({
   origin: ['http://localhost:5173', 'https://www.restaumargin.fr', 'https://restaumargin.fr', 'https://restaumargin.vercel.app'],
   credentials: true,
 }));
+// Parse cookies (auth_token httpOnly cookie + csrf_token); must run before
+// any route that calls req.cookies (auth middleware reads auth_token cookie).
+app.use(cookieParser());
 // ── Stripe Webhook (must be before express.json() for raw body) ──
 app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   try {
@@ -405,7 +420,28 @@ app.use('/api/auth/forgot-password', (req, _res, next) => {
 });
 
 // --- Health Check Endpoint (monitoring) ---
-app.get('/api/health', async (_req, res) => {
+// Public endpoint: returns minimal `{ status: 'ok' }` so any uptime probe can ping it
+// without leaking infrastructure details (uptime, response time, service map).
+// Detailed payload (uptime, responseTime, services) is only returned when an admin
+// JWT is presented via Authorization header.
+app.get('/api/health', async (req: any, res) => {
+  // Try to authenticate, but never reject — fall through to public response.
+  let isAdmin = false;
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    try {
+      const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload;
+      isAdmin = decoded.role === 'admin';
+    } catch {
+      /* invalid token → treat as anonymous */
+    }
+  }
+
+  if (!isAdmin) {
+    return res.status(200).json({ status: 'ok' });
+  }
+
+  // Admin-only: full diagnostic payload
   const start = Date.now();
   let dbStatus = 'ok';
   try {
@@ -477,32 +513,9 @@ async function authWithRestaurant(req: any, res: any, next: any) {
   }
 }
 
-// --- Margin Calculator ---
+// --- Margin Calculator (extracted to api-lib/utils/marginCalculator.ts) ---
 function calculateMargin(recipe: any) {
-  const foodCost = recipe.ingredients.reduce((total: number, ri: any) => {
-    const wasteMultiplier = ri.wastePercent > 0 ? 1 / (1 - ri.wastePercent / 100) : 1;
-    const divisor = getUnitDivisor(ri.ingredient.unit);
-    return total + (ri.quantity / divisor) * ri.ingredient.pricePerUnit * wasteMultiplier;
-  }, 0);
-  const costPerPortion = recipe.nbPortions > 0 ? foodCost / recipe.nbPortions : foodCost;
-  const prepTime = recipe.prepTimeMinutes || 0;
-  const cookTime = recipe.cookTimeMinutes || 0;
-  const totalTimeHours = (prepTime + cookTime) / 60;
-  const totalLaborCost = totalTimeHours * recipe.laborCostPerHour;
-  const laborCostPerPortion = recipe.nbPortions > 0 ? totalLaborCost / recipe.nbPortions : totalLaborCost;
-  const totalCostPerPortion = costPerPortion + laborCostPerPortion;
-  const marginAmount = recipe.sellingPrice - totalCostPerPortion;
-  const marginPercent = recipe.sellingPrice > 0 ? (marginAmount / recipe.sellingPrice) * 100 : 0;
-  const coefficient = totalCostPerPortion > 0 ? recipe.sellingPrice / totalCostPerPortion : 0;
-  return {
-    foodCost: Math.round(foodCost * 100) / 100,
-    costPerPortion: Math.round(costPerPortion * 100) / 100,
-    laborCostPerPortion: Math.round(laborCostPerPortion * 100) / 100,
-    totalCostPerPortion: Math.round(totalCostPerPortion * 100) / 100,
-    marginAmount: Math.round(marginAmount * 100) / 100,
-    marginPercent: Math.round(marginPercent * 10) / 10,
-    coefficient: Math.round(coefficient * 100) / 100,
-  };
+  return calculateRecipeMargin(recipe);
 }
 
 function formatRecipe(recipe: any) {
@@ -912,9 +925,17 @@ app.post('/api/activation/validate', async (req: any, res) => {
 
 app.get('/api/activation/list', async (req: any, res) => {
   try {
-    const { secret } = req.query;
+    // SECURITY: prefer Authorization: Bearer <secret> header so the secret is never
+    // logged in URL/access logs. Query-param `?secret=` kept for back-compat (7-day
+    // grace) — to be removed once all consumers migrate.
+    const authHeader = req.headers.authorization;
+    const headerSecret =
+      authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+    const querySecret = typeof req.query.secret === 'string' ? req.query.secret : null;
+    const provided = headerSecret || querySecret;
+
     // SECURITY: fail closed — same pattern as /generate.
-    if (!process.env.ACTIVATION_SECRET || secret !== process.env.ACTIVATION_SECRET) {
+    if (!process.env.ACTIVATION_SECRET || provided !== process.env.ACTIVATION_SECRET) {
       return res.status(401).json({ error: 'Non autorisé' });
     }
     const codes = await prisma.activationCode.findMany({ orderBy: { createdAt: 'desc' } });
@@ -1091,7 +1112,10 @@ app.delete('/api/restaurants/:id', authMiddleware, async (req: any, res) => {
 // ============ INGREDIENTS ============
 app.get('/api/ingredients', authWithRestaurant, async (req: any, res) => {
   try {
-    const { limit, offset } = req.query;
+    const { limit, offset, search } = req.query;
+    // Hint browsers/CDN to cache for 5 min on idempotent list reads.
+    // Skipped when ?search is present (per-user, per-query — too granular).
+    if (!search) res.set('Cache-Control', 'private, max-age=300');
     if (limit !== undefined || offset !== undefined) {
       const take = Math.min(parseInt(limit) || 100, 500);
       const skip = parseInt(offset) || 0;
@@ -1101,6 +1125,8 @@ app.get('/api/ingredients', authWithRestaurant, async (req: any, res) => {
       ]);
       return res.json({ data, total, limit: take, offset: skip });
     }
+    // Back-compat default: no implicit cap. Clients should opt-in to
+    // pagination via ?limit/?offset for large datasets.
     res.json(await prisma.ingredient.findMany({ where: { restaurantId: req.restaurantId, deletedAt: null }, orderBy: { name: 'asc' }, include: { supplierRef: { select: { id: true, name: true } } } }));
   } catch { res.status(500).json({ error: 'Erreur récupération ingrédients' }); }
 });
@@ -1197,7 +1223,9 @@ app.put('/api/ingredients/:id/restore', authWithRestaurant, async (req: any, res
 // ============ RECIPES ============
 app.get('/api/recipes', authWithRestaurant, async (req: any, res) => {
   try {
-    const { limit, offset } = req.query;
+    const { limit, offset, search } = req.query;
+    // Hint browsers to cache for 5 min on idempotent list reads.
+    if (!search) res.set('Cache-Control', 'private, max-age=300');
     if (limit !== undefined || offset !== undefined) {
       const take = Math.min(parseInt(limit) || 100, 500);
       const skip = parseInt(offset) || 0;
@@ -3600,14 +3628,7 @@ app.post('/api/contact', async (req, res) => {
 });
 
 // ============ HACCP ============
-function getTemperatureStatus(zone: string, temperature: number): string {
-  const z = zone.toLowerCase();
-  if (z === 'frigo' || z === 'réfrigérateur') return temperature >= 0 && temperature <= 4 ? 'conforme' : 'non_conforme';
-  if (z === 'congélateur' || z === 'congelateur') return temperature <= -18 ? 'conforme' : 'non_conforme';
-  if (z === 'plats chauds' || z === 'plat_chaud') return temperature >= 63 ? 'conforme' : 'non_conforme';
-  if (z === 'réception' || z === 'reception') return temperature >= 0 && temperature <= 4 ? 'conforme' : 'non_conforme';
-  return 'en_attente';
-}
+// getTemperatureStatus extracted to api-lib/utils/haccp.ts (pure, tested).
 
 app.get('/api/haccp/temperatures', authWithRestaurant, async (req: any, res) => {
   try {

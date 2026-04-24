@@ -868,6 +868,31 @@ app.post('/api/activation/generate', async (req: any, res) => {
   } catch { res.status(500).json({ error: 'Erreur génération code' }); }
 });
 
+// ── DEBUG Stripe connectivity (temporary) ──
+app.get('/api/debug/stripe-fetch', async (_req: any, res) => {
+  const results: any = { nodeVersion: process.version, hasKey: !!process.env.STRIPE_SECRET_KEY };
+  // Test 1: raw fetch to api.stripe.com
+  try {
+    const t0 = Date.now();
+    const r = await fetch('https://api.stripe.com/v1/balance', {
+      headers: { Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}` },
+    });
+    const body = await r.json() as any;
+    results.rawFetch = { status: r.status, tookMs: Date.now() - t0, livemode: body?.livemode };
+  } catch (e: any) {
+    results.rawFetch = { error: e.message, code: e.code, cause: e.cause?.message, causeCode: e.cause?.code };
+  }
+  // Test 2: DNS resolution
+  try {
+    const dns = await import('dns/promises');
+    const addrs = await dns.resolve4('api.stripe.com');
+    results.dns = { ips: addrs.slice(0, 3) };
+  } catch (e: any) {
+    results.dns = { error: e.message };
+  }
+  res.json(results);
+});
+
 app.post('/api/activation/validate', async (req: any, res) => {
   try {
     const { code } = req.body;

@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Resend } from 'resend';
 import Anthropic from '@anthropic-ai/sdk';
+import Stripe from 'stripe';
 import authRoutes from '../api-lib/routes/auth';
 import aiRoutes from '../api-lib/routes/ai';
 import mercurialeRoutes from '../api-lib/routes/mercuriale';
@@ -47,7 +48,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
       return res.status(400).send('Missing stripe-signature header');
     }
 
-    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
     let event: any;
     try {
       event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
@@ -267,7 +268,7 @@ app.post('/api/stripe/checkout', authMiddleware, async (req: any, res) => {
   try {
     const stripeKey = process.env.STRIPE_SECRET_KEY;
     if (!stripeKey) return res.status(503).json({ error: 'Stripe non configuré' });
-    const stripe = require('stripe')(stripeKey);
+    const stripe = new Stripe(stripeKey);
 
     const { planId, annual } = req.body;
     if (!planId || !['pro', 'business'].includes(planId)) {
@@ -325,7 +326,7 @@ app.post('/api/stripe/portal', authMiddleware, async (req: any, res) => {
   try {
     const stripeKey = process.env.STRIPE_SECRET_KEY;
     if (!stripeKey) return res.status(503).json({ error: 'Stripe non configuré' });
-    const stripe = require('stripe')(stripeKey);
+    const stripe = new Stripe(stripeKey);
 
     // Find customer by email
     const user = await prisma.user.findUnique({ where: { id: req.user.userId } });

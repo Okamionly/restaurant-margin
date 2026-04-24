@@ -15,6 +15,8 @@ import referralsRoutes from '../api-lib/routes/referrals';
 import adminRoutes from '../api-lib/routes/admin';
 import npsRoutes from '../api-lib/routes/nps';
 import { getUnitDivisor } from '../api-lib/utils/unitConversion';
+import { getTemperatureStatus } from '../api-lib/utils/haccp';
+import { calculateRecipeMargin } from '../api-lib/utils/marginCalculator';
 import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit } from '../api-lib/middleware';
 import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail, buildTrialExpiringEmail, buildTrialLastDayEmail, buildTrialExpiredEmail } from '../api-lib/utils/emailTemplates';
 
@@ -500,32 +502,9 @@ async function authWithRestaurant(req: any, res: any, next: any) {
   }
 }
 
-// --- Margin Calculator ---
+// --- Margin Calculator (extracted to api-lib/utils/marginCalculator.ts) ---
 function calculateMargin(recipe: any) {
-  const foodCost = recipe.ingredients.reduce((total: number, ri: any) => {
-    const wasteMultiplier = ri.wastePercent > 0 ? 1 / (1 - ri.wastePercent / 100) : 1;
-    const divisor = getUnitDivisor(ri.ingredient.unit);
-    return total + (ri.quantity / divisor) * ri.ingredient.pricePerUnit * wasteMultiplier;
-  }, 0);
-  const costPerPortion = recipe.nbPortions > 0 ? foodCost / recipe.nbPortions : foodCost;
-  const prepTime = recipe.prepTimeMinutes || 0;
-  const cookTime = recipe.cookTimeMinutes || 0;
-  const totalTimeHours = (prepTime + cookTime) / 60;
-  const totalLaborCost = totalTimeHours * recipe.laborCostPerHour;
-  const laborCostPerPortion = recipe.nbPortions > 0 ? totalLaborCost / recipe.nbPortions : totalLaborCost;
-  const totalCostPerPortion = costPerPortion + laborCostPerPortion;
-  const marginAmount = recipe.sellingPrice - totalCostPerPortion;
-  const marginPercent = recipe.sellingPrice > 0 ? (marginAmount / recipe.sellingPrice) * 100 : 0;
-  const coefficient = totalCostPerPortion > 0 ? recipe.sellingPrice / totalCostPerPortion : 0;
-  return {
-    foodCost: Math.round(foodCost * 100) / 100,
-    costPerPortion: Math.round(costPerPortion * 100) / 100,
-    laborCostPerPortion: Math.round(laborCostPerPortion * 100) / 100,
-    totalCostPerPortion: Math.round(totalCostPerPortion * 100) / 100,
-    marginAmount: Math.round(marginAmount * 100) / 100,
-    marginPercent: Math.round(marginPercent * 10) / 10,
-    coefficient: Math.round(coefficient * 100) / 100,
-  };
+  return calculateRecipeMargin(recipe);
 }
 
 function formatRecipe(recipe: any) {
@@ -3631,14 +3610,7 @@ app.post('/api/contact', async (req, res) => {
 });
 
 // ============ HACCP ============
-function getTemperatureStatus(zone: string, temperature: number): string {
-  const z = zone.toLowerCase();
-  if (z === 'frigo' || z === 'réfrigérateur') return temperature >= 0 && temperature <= 4 ? 'conforme' : 'non_conforme';
-  if (z === 'congélateur' || z === 'congelateur') return temperature <= -18 ? 'conforme' : 'non_conforme';
-  if (z === 'plats chauds' || z === 'plat_chaud') return temperature >= 63 ? 'conforme' : 'non_conforme';
-  if (z === 'réception' || z === 'reception') return temperature >= 0 && temperature <= 4 ? 'conforme' : 'non_conforme';
-  return 'en_attente';
-}
+// getTemperatureStatus extracted to api-lib/utils/haccp.ts (pure, tested).
 
 app.get('/api/haccp/temperatures', authWithRestaurant, async (req: any, res) => {
   try {

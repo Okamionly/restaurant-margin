@@ -38,7 +38,11 @@ interface SendResult {
 }
 
 // ── Config ─────────────────────────────────────────────────────────
-const RESEND_API_KEY = 're_7ubbQbFa_GVBfFkYLpW3ga9DQUdT35rAD';
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+if (!RESEND_API_KEY) {
+  console.error('[FATAL] RESEND_API_KEY env var is required');
+  process.exit(1);
+}
 const RATE_LIMIT_MS = 1200;        // 1 email per 1.2 seconds
 const BATCH_SIZE = 50;             // Pause after every 50 emails
 const BATCH_PAUSE_MS = 10000;      // 10 second pause between batches

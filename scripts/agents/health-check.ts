@@ -12,7 +12,11 @@ import * as path from 'path';
 const SITE_URL = 'https://www.restaumargin.fr';
 const HEALTH_ENDPOINT = `${SITE_URL}/api/health`;
 const MAX_RESPONSE_TIME_MS = 2000;
-const RESEND_API_KEY = 're_7ubbQbFa_GVBfFkYLpW3ga9DQUdT35rAD';
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+if (!RESEND_API_KEY) {
+  console.error('[FATAL] RESEND_API_KEY env var is required');
+  process.exit(1);
+}
 const ALERT_EMAIL = 'contact@restaumargin.fr';
 const FROM_ADDRESS = 'RestauMargin Agents <contact@restaumargin.fr>';
 

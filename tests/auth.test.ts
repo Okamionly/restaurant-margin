@@ -38,7 +38,7 @@ function makeRes(): any {
 
 describe('authMiddleware — JWT validation', () => {
   it('rejects request with no Authorization header', async () => {
-    const { authMiddleware } = await import('../api/middleware');
+    const { authMiddleware } = await import('../api-lib/middleware');
     const req = makeReq();
     const res = makeRes();
     const next = vi.fn();
@@ -49,7 +49,7 @@ describe('authMiddleware — JWT validation', () => {
   });
 
   it('rejects request with invalid token', async () => {
-    const { authMiddleware } = await import('../api/middleware');
+    const { authMiddleware } = await import('../api-lib/middleware');
     const req = makeReq('invalid.token.here');
     const res = makeRes();
     const next = vi.fn();
@@ -60,7 +60,7 @@ describe('authMiddleware — JWT validation', () => {
   });
 
   it('rejects token signed with wrong secret', async () => {
-    const { authMiddleware } = await import('../api/middleware');
+    const { authMiddleware } = await import('../api-lib/middleware');
     const badToken = jwt.sign({ userId: 1, email: 'a@b.com', role: 'owner' }, 'wrong-secret');
     const req = makeReq(badToken);
     const res = makeRes();
@@ -71,7 +71,7 @@ describe('authMiddleware — JWT validation', () => {
   });
 
   it('accepts valid JWT and populates req.user', async () => {
-    const { authMiddleware } = await import('../api/middleware');
+    const { authMiddleware } = await import('../api-lib/middleware');
     const payload = { userId: 42, email: 'chef@restaurant.fr', role: 'owner' };
     const token = jwt.sign(payload, TEST_SECRET);
     const req = makeReq(token);
@@ -85,7 +85,7 @@ describe('authMiddleware — JWT validation', () => {
   });
 
   it('rejects expired JWT', async () => {
-    const { authMiddleware } = await import('../api/middleware');
+    const { authMiddleware } = await import('../api-lib/middleware');
     // Sign with negative expiry to get an already-expired token
     const token = jwt.sign({ userId: 1, email: 'x@x.com', role: 'owner' }, TEST_SECRET, { expiresIn: -1 });
     const req = makeReq(token);

@@ -11,7 +11,11 @@ import * as path from 'path';
 // ── Config ──────────────────────────────────────────────────
 const SENTRY_BASE = 'https://sentry.io/api/0/projects/restaumargin/restaumargin';
 const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN || '';
-const RESEND_API_KEY = 're_7ubbQbFa_GVBfFkYLpW3ga9DQUdT35rAD';
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+if (!RESEND_API_KEY) {
+  console.error('[FATAL] RESEND_API_KEY env var is required');
+  process.exit(1);
+}
 const ALERT_EMAIL = 'contact@restaumargin.fr';
 const FROM_ADDRESS = 'RestauMargin Agents <contact@restaumargin.fr>';
 

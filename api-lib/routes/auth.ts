@@ -8,6 +8,20 @@ import { buildWelcomeEmail, buildVerifyEmail, buildResetPasswordEmail } from '..
 
 const router = Router();
 
+// Fixed dummy hash for timing-attack-safe login (CWE-208).
+// Ensures bcrypt.compare() always runs even when the user doesn't exist.
+// Generated once via bcrypt.hashSync('dummy-for-timing-only', 12)
+const DUMMY_BCRYPT_HASH = '$2a$12$abcdefghijklmnopqrstuuKxS8Mc.YZJQRYbK2GmL.bkmpcZf6ZZfi';
+
+// Password policy (WCAG-accessible and strong enough to resist offline dictionary + bcrypt)
+function validatePasswordPolicy(password: string): string | null {
+  if (!password || password.length < 8) return 'Le mot de passe doit contenir au moins 8 caractères';
+  if (!/[A-Z]/.test(password)) return 'Le mot de passe doit contenir au moins une majuscule';
+  if (!/[0-9]/.test(password)) return 'Le mot de passe doit contenir au moins un chiffre';
+  if (password.length > 128) return 'Mot de passe trop long (max 128 caractères)';
+  return null;
+}
+
 // ============ AUTH: First user check ============
 router.get('/first-user', async (_req, res) => {
   try {
@@ -21,7 +35,8 @@ router.post('/register', async (req: any, res) => {
   try {
     const { email: rawEmail, password, name, restaurantName, activationCode } = req.body;
     if (!rawEmail || !password || !name) return res.status(400).json({ error: 'Email, mot de passe et nom requis' });
-    if (password.length < 6) return res.status(400).json({ error: 'Min. 6 caractères' });
+    const policyError = validatePasswordPolicy(password);
+    if (policyError) return res.status(400).json({ error: policyError });
     const email = rawEmail.toLowerCase().trim();
 
     const userCount = await prisma.user.count();
@@ -82,9 +97,10 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis' });
     const user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
-    if (!user) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
-    const valid = await bcrypt.compare(password, user.passwordHash);
-    if (!valid) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
+    // SECURITY: always run bcrypt.compare() to prevent user enumeration via timing (CWE-208).
+    // Non-existent users hit a dummy hash so the latency profile is identical.
+    const valid = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_BCRYPT_HASH);
+    if (!user || !valid) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
 
     // Récupère le restaurant principal de l'utilisateur (pour X-Restaurant-Id header)

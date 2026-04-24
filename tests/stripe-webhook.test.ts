@@ -92,7 +92,7 @@ describe('Stripe webhook security — hardened handler rules', () => {
     const fs = await import('fs');
     const path = await import('path');
     // Handler is in api/routes/stripe.ts (extracted from monolith)
-    const stripePath = path.join(process.cwd(), 'api', 'routes', 'stripe.ts');
+    const stripePath = path.join(process.cwd(), 'api-lib', 'routes', 'stripe.ts');
     const source = fs.readFileSync(stripePath, 'utf8');
     expect(source).toContain('stripe.webhooks.constructEvent');
   });
@@ -100,7 +100,7 @@ describe('Stripe webhook security — hardened handler rules', () => {
   it('RULE 5: stripe.ts must require secret AND signature (no optional fallback)', async () => {
     const fs = await import('fs');
     const path = await import('path');
-    const stripePath = path.join(process.cwd(), 'api', 'routes', 'stripe.ts');
+    const stripePath = path.join(process.cwd(), 'api-lib', 'routes', 'stripe.ts');
     const source = fs.readFileSync(stripePath, 'utf8');
     expect(source).toContain('STRIPE_WEBHOOK_SECRET');
     expect(source).toContain('Missing stripe-signature header');

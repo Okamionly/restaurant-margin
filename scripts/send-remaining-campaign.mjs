@@ -12,7 +12,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ── Config ─────────────────────────────────────────────────────────
-const RESEND_API_KEY = 're_7ubbQbFa_GVBfFkYLpW3ga9DQUdT35rAD';
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+if (!RESEND_API_KEY) {
+  console.error('[FATAL] RESEND_API_KEY env var is required');
+  process.exit(1);
+}
 const FROM_ADDRESS = 'RestauMargin <contact@restaumargin.fr>';
 const RATE_LIMIT_MS = 1100; // ~1 email per second
 const BATCH_SIZE = 50;

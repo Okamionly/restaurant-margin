@@ -255,9 +255,14 @@ export default function Login() {
             </h2>
 
             {error && (
-              <div className="bg-[#1a0000] border border-[#441111] rounded-lg p-3 mb-4 text-sm text-red-400">
+              <p
+                id="login-error"
+                role="alert"
+                aria-live="assertive"
+                className="bg-[#1a0000] border border-[#441111] rounded-lg p-3 mb-4 text-sm text-red-400"
+              >
                 {error}
-              </div>
+              </p>
             )}
 
             {forgotPasswordSuccess && (
@@ -276,14 +281,18 @@ export default function Login() {
               <>
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-1">{t('login.email')}</label>
+                    <label htmlFor="forgot-email" className="block text-sm font-medium text-white/70 mb-1">{t('login.email')}</label>
                     <div className="relative">
-                      <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                      <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" aria-hidden="true" />
                       <input
+                        id="forgot-email"
                         type="email"
                         required
+                        autoComplete="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        aria-invalid={!!error}
+                        aria-describedby={error ? 'login-error' : undefined}
                         className="w-full bg-[#000000] border border-[#333333] rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent"
                         placeholder="votre@email.com"
                       />
@@ -359,14 +368,17 @@ export default function Login() {
                   <div>
                     <label htmlFor="login-email" className="block text-sm font-medium text-white/70 mb-1">{t('login.email')}</label>
                     <div className="relative">
-                      <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                      <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" aria-hidden="true" />
                       <input
                         id="login-email"
                         type="email"
                         required
+                        autoComplete="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         aria-label="Adresse email"
+                        aria-invalid={!!error}
+                        aria-describedby={error ? 'login-error' : undefined}
                         className="w-full bg-[#000000] border border-[#333333] rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent"
                         placeholder="votre@email.com"
                       />
@@ -376,15 +388,18 @@ export default function Login() {
                   <div>
                     <label htmlFor="login-password" className="block text-sm font-medium text-white/70 mb-1">{t('login.password')}</label>
                     <div className="relative">
-                      <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                      <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" aria-hidden="true" />
                       <input
                         id="login-password"
                         type="password"
                         required
                         minLength={6}
+                        autoComplete={isRegisterMode ? 'new-password' : 'current-password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         aria-label="Mot de passe"
+                        aria-invalid={!!error}
+                        aria-describedby={error ? 'login-error' : undefined}
                         className="w-full bg-[#000000] border border-[#333333] rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent"
                         placeholder="........"
                       />
@@ -407,14 +422,17 @@ export default function Login() {
                     <div>
                       <label htmlFor="register-restaurant" className="block text-sm font-medium text-white/70 mb-1">Nom du restaurant</label>
                       <div className="relative">
-                        <Store className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                        <Store className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" aria-hidden="true" />
                         <input
                           id="register-restaurant"
                           type="text"
                           required
+                          autoComplete="organization"
                           value={restaurantName}
                           onChange={(e) => setRestaurantName(e.target.value)}
                           aria-label="Nom du restaurant"
+                          aria-invalid={!!error}
+                          aria-describedby={error ? 'login-error' : undefined}
                           className="w-full bg-[#000000] border border-[#333333] rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent"
                           placeholder="Le Bistrot de Marie"
                         />
@@ -495,12 +513,12 @@ export default function Login() {
           </div>
 
           {/* Footer links */}
-          <div className="mt-6 text-center text-sm text-white/30">
-            <a href="/cgu" className="hover:text-white/60">{t('login.cgu')}</a>
+          <div className="mt-6 text-center text-sm text-white/50">
+            <a href="/cgu" className="hover:text-white">{t('login.cgu')}</a>
             <span className="mx-2">&middot;</span>
-            <a href="/politique-confidentialite" className="hover:text-white/60">{t('login.privacy')}</a>
+            <a href="/politique-confidentialite" className="hover:text-white">{t('login.privacy')}</a>
             <span className="mx-2">&middot;</span>
-            <a href="/mentions-legales" className="hover:text-white/60">{t('login.legalNotice')}</a>
+            <a href="/mentions-legales" className="hover:text-white">{t('login.legalNotice')}</a>
           </div>
         </div>
       </div>

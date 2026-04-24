@@ -7,6 +7,7 @@ import {
   CreditCard, Loader2, X, Check, AlertTriangle, Newspaper
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import { getToken } from '../services/api';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
@@ -224,6 +225,7 @@ export default function AdminDashboard() {
   const [usersRoleFilter, setUsersRoleFilter] = useState('');
   const [expandedUser, setExpandedUser] = useState<number | null>(null);
   const [editingUser, setEditingUser] = useState<{ id: number; plan: string; role: string } | null>(null);
+  const editUserTrapRef = useFocusTrap<HTMLDivElement>(!!editingUser);
 
   // ── Messages state ──
   const [messages, setMessages] = useState<AdminMessage[]>([]);
@@ -647,12 +649,23 @@ export default function AdminDashboard() {
 
               {/* Edit Modal */}
               {editingUser && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setEditingUser(null)}>
-                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-6 w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
+                <div
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                  onClick={() => setEditingUser(null)}
+                  onKeyDown={(e) => { if (e.key === 'Escape') setEditingUser(null); }}
+                >
+                  <div
+                    ref={editUserTrapRef}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="admin-edit-user-title"
+                    className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-6 w-full max-w-md shadow-xl"
+                    onClick={e => e.stopPropagation()}
+                  >
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold text-[#111111] dark:text-white">Modifier utilisateur #{editingUser.id}</h3>
-                      <button onClick={() => setEditingUser(null)} className="p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg">
-                        <X className="w-4 h-4 text-[#6B7280]" />
+                      <h3 id="admin-edit-user-title" className="text-lg font-semibold text-[#111111] dark:text-white">Modifier utilisateur #{editingUser.id}</h3>
+                      <button onClick={() => setEditingUser(null)} aria-label="Fermer" className="p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg">
+                        <X className="w-4 h-4 text-[#6B7280]" aria-hidden="true" />
                       </button>
                     </div>
                     <div className="space-y-4">

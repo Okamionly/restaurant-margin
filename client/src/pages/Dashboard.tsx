@@ -15,6 +15,7 @@ import { fetchRecipes, fetchIngredients } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 import { trackEvent } from '../utils/analytics';
 
@@ -114,16 +115,26 @@ function WidgetPickerModal({ visible, order, onSave, onClose }: {
   };
   const handleDragEnd = () => setDragIdx(null);
 
+  const trapRef = useFocusTrap<HTMLDivElement>(true);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-2xl overflow-hidden">
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="widget-customizer-title"
+        className="relative w-full max-w-md bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-2xl overflow-hidden"
+      >
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-[#111111] dark:bg-white rounded-lg">
-              <Settings2 className="w-4 h-4 text-white dark:text-black" />
+              <Settings2 className="w-4 h-4 text-white dark:text-black" aria-hidden="true" />
             </div>
-            <h3 className="text-lg font-bold font-satoshi text-[#111111] dark:text-white">Personnaliser</h3>
+            <h3 id="widget-customizer-title" className="text-lg font-bold font-satoshi text-[#111111] dark:text-white">Personnaliser</h3>
           </div>
           <button onClick={onClose} aria-label="Fermer le personnalisateur de widgets" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
             <X className="w-5 h-5 text-[#9CA3AF]" aria-hidden="true" />
@@ -624,6 +635,7 @@ export default function Dashboard() {
   const [reportCopied, setReportCopied] = useState(false);
   const [reportEmailSending, setReportEmailSending] = useState(false);
   const [reportEmailSent, setReportEmailSent] = useState(false);
+  const reportTrapRef = useFocusTrap<HTMLDivElement>(reportModalOpen);
 
   // ── P&L state ──────────────────────────────────────────────────────────
   const [pnlPeriod, setPnlPeriod] = useState<'week' | 'month' | 'year'>('month');
@@ -1527,17 +1539,26 @@ export default function Dashboard() {
 
       {/* ── WEEKLY AI REPORT MODAL ──────────────────────────────────── */}
       {reportModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 no-print">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 no-print"
+          onKeyDown={(e) => { if (e.key === 'Escape') setReportModalOpen(false); }}
+        >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setReportModalOpen(false)} />
-          <div className="relative w-full max-w-3xl max-h-[90vh] overflow-hidden bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-2xl flex flex-col">
+          <div
+            ref={reportTrapRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="weekly-report-title"
+            className="relative w-full max-w-3xl max-h-[90vh] overflow-hidden bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-2xl flex flex-col"
+          >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-[#111111] dark:bg-white rounded-lg">
-                  <Sparkles className="w-5 h-5 text-white dark:text-black" />
+                  <Sparkles className="w-5 h-5 text-white dark:text-black" aria-hidden="true" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold font-satoshi text-[#111111] dark:text-white">Rapport Hebdomadaire IA</h3>
+                  <h3 id="weekly-report-title" className="text-lg font-bold font-satoshi text-[#111111] dark:text-white">Rapport Hebdomadaire IA</h3>
                   {reportData?.generatedAt && (
                     <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
                       {new Date(reportData.generatedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
@@ -1545,8 +1566,8 @@ export default function Dashboard() {
                   )}
                 </div>
               </div>
-              <button onClick={() => setReportModalOpen(false)} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-                <X className="w-5 h-5 text-[#9CA3AF]" />
+              <button onClick={() => setReportModalOpen(false)} aria-label="Fermer" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                <X className="w-5 h-5 text-[#9CA3AF]" aria-hidden="true" />
               </button>
             </div>
 

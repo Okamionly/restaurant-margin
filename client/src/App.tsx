@@ -4,17 +4,17 @@ import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, M
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
 import OfflineSyncBar from './components/OfflineSyncBar';
-import OnboardingWizard, { isOnboardingCompleted } from './components/OnboardingWizard';
+import { isOnboardingCompleted } from './utils/onboardingFlags';
 import FloatingActionBubble from './components/FloatingActionBubble';
 import CookieBanner from './components/CookieBanner';
 import Breadcrumbs from './components/Breadcrumbs';
-import CommandPalette, { trackPageVisit } from './components/CommandPalette';
+import { trackPageVisit } from './utils/recentPages';
 import NotificationCenter from './components/NotificationCenter';
 import ShortcutsModal from './components/ShortcutsModal';
 import ActiveUsers, { ConnectedBadge, PageActivityDot } from './components/ActiveUsers';
 import CollaborationToast from './components/CollaborationToast';
 import WorkingIndicator from './components/WorkingIndicator';
-import Gamification, { SidebarLevelBadge } from './components/Gamification';
+import SidebarLevelBadge from './components/SidebarLevelBadge';
 import ContextualTooltips from './components/ContextualTooltips';
 import OnboardingProgress from './components/OnboardingProgress';
 import MobileBottomNav from './components/MobileBottomNav';
@@ -54,6 +54,12 @@ import Landing from './pages/Landing';
 import StationLanding from './pages/StationLanding';
 import PublicMenu from './pages/PublicMenu';
 import NotFound from './pages/NotFound';
+
+// Lazy-loaded heavy components (kept out of main bundle)
+const OnboardingWizard = lazyRetry(() => import('./components/OnboardingWizard'));
+const CommandPalette = lazyRetry(() => import('./components/CommandPalette'));
+// Gamification is only needed on /mon-score — lazy it.
+const GamificationPage = lazyRetry(() => import('./components/Gamification'));
 
 // Lazy-loaded pages for code splitting
 const Dashboard = lazyRetry(() => import('./pages/Dashboard'));
@@ -115,8 +121,6 @@ const PublicFeedback = lazyRetry(() => import('./pages/PublicFeedback'));
 const PublicRecipe = lazyRetry(() => import('./pages/PublicRecipe'));
 const MenuCalendar = lazyRetry(() => import('./pages/MenuCalendar'));
 const AdminDashboard = lazyRetry(() => import('./pages/AdminDashboard'));
-// Gamification is already statically imported (SidebarLevelBadge needs it in main bundle)
-const GamificationPage = Gamification;
 const Temoignages = lazyRetry(() => import('./pages/Temoignages'));
 const Demo = lazyRetry(() => import('./pages/Demo'));
 const BlogCoefficient = lazyRetry(() => import('./pages/BlogCoefficient'));
@@ -242,6 +246,9 @@ function AppLayout() {
   const [verificationSent, setVerificationSent] = useState(false);
   const [showShortcutsModal, setShowShortcutsModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  // CommandPalette is lazy-loaded — only mount it after first Cmd+K / Ctrl+K
+  // to keep ~40 KB out of the main bundle on first paint.
+  const [commandPaletteArmed, setCommandPaletteArmed] = useState(false);
   const [trialBannerDismissed, setTrialBannerDismissed] = useState(() => localStorage.getItem('trial-banner-dismissed') === '1');
   const location = useLocation();
   const navigate = useNavigate();
@@ -360,6 +367,18 @@ function AppLayout() {
     window.addEventListener('keydown', handleShortcutKey);
     return () => window.removeEventListener('keydown', handleShortcutKey);
   }, []);
+
+  // Arm CommandPalette lazy import on first Cmd+K / Ctrl+K.
+  useEffect(() => {
+    if (commandPaletteArmed) return;
+    function handleArmKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+        setCommandPaletteArmed(true);
+      }
+    }
+    window.addEventListener('keydown', handleArmKey);
+    return () => window.removeEventListener('keydown', handleArmKey);
+  }, [commandPaletteArmed]);
   // Grouped navigation sections
   const navSections: NavSection[] = [
     {
@@ -910,8 +929,12 @@ function AppLayout() {
         </footer>
       </div>
 
-      {/* Command Palette (Ctrl+K) — unified search + actions */}
-      <CommandPalette />
+      {/* Command Palette (Ctrl+K) — lazy-loaded on first shortcut press */}
+      {commandPaletteArmed && (
+        <Suspense fallback={null}>
+          <CommandPalette />
+        </Suspense>
+      )}
       <ShortcutsModal open={showShortcutsModal} onClose={() => setShowShortcutsModal(false)} />
       {/* Contextual tooltips for first-visit pages */}
       <ContextualTooltips />
@@ -925,9 +948,11 @@ function AppLayout() {
       {/* NPS survey — shows at J+14 after first login, once per user */}
       <NPSModal />
 
-      {/* Onboarding Wizard for new users */}
+      {/* Onboarding Wizard for new users — lazy-loaded (only rendered when needed) */}
       {showOnboarding && (
-        <OnboardingWizard onComplete={() => setShowOnboarding(false)} />
+        <Suspense fallback={null}>
+          <OnboardingWizard onComplete={() => setShowOnboarding(false)} />
+        </Suspense>
       )}
     </div>
   );

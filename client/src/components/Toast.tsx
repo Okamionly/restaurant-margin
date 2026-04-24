@@ -40,8 +40,13 @@ export default function Toast({ message, type, onClose, action, duration }: Toas
   };
 
   return (
-    <div className={`${bg} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 min-w-[280px] max-w-sm ${exiting ? 'animate-toast-slide-out' : 'animate-toast-slide-in'}`}>
-      <Icon className="w-5 h-5 flex-shrink-0" />
+    <div
+      role={type === 'error' ? 'alert' : 'status'}
+      aria-live={type === 'error' ? 'assertive' : 'polite'}
+      aria-atomic="true"
+      className={`${bg} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 min-w-[280px] max-w-sm ${exiting ? 'animate-toast-slide-out' : 'animate-toast-slide-in'}`}
+    >
+      <Icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
       <span className="text-sm flex-1">{message}</span>
       {action && (
         <button
@@ -54,8 +59,12 @@ export default function Toast({ message, type, onClose, action, duration }: Toas
           {action.label}
         </button>
       )}
-      <button onClick={handleClose} className="p-0.5 rounded hover:bg-white/20 flex-shrink-0 active:scale-90 transition-transform">
-        <X className="w-4 h-4" />
+      <button
+        onClick={handleClose}
+        aria-label="Fermer la notification"
+        className="p-0.5 rounded hover:bg-white/20 flex-shrink-0 active:scale-90 transition-transform"
+      >
+        <X className="w-4 h-4" aria-hidden="true" />
       </button>
     </div>
   );

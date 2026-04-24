@@ -8,6 +8,7 @@ import type { Recipe, RecipeOptimizationResult, OptimizationSuggestion } from '.
 import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
 import RecipePlaceholder, { getMarginBadgeColor } from '../components/RecipePlaceholder';
 import FoodIllustration from '../components/FoodIllustration';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 // ─── Category emoji map ───
 // ── Unit conversion divisor (price is always per bulk unit: kg/L) ───
@@ -139,6 +140,7 @@ export default function RecipeDetail() {
   const [shareLoading, setShareLoading] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const shareTrapRef = useFocusTrap<HTMLDivElement>(showShareModal);
   // AI Allergen & Nutrition state
   const [allergenResult, setAllergenResult] = useState<AllergenCheckResult | null>(null);
   const [allergenLoading, setAllergenLoading] = useState(false);
@@ -526,12 +528,23 @@ export default function RecipeDetail() {
 
       {/* ─── Share Modal ─── */}
       {showShareModal && shareUrl && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 no-print" onClick={() => setShowShareModal(false)}>
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 no-print"
+          onClick={() => setShowShareModal(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setShowShareModal(false); }}
+        >
+          <div
+            ref={shareTrapRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="recipe-share-title"
+            className="bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <h3 className="text-lg font-bold text-[#111111] dark:text-white">Partager la recette</h3>
-              <button onClick={() => setShowShareModal(false)} className="text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white transition-colors">
-                <X className="w-5 h-5" />
+              <h3 id="recipe-share-title" className="text-lg font-bold text-[#111111] dark:text-white">Partager la recette</h3>
+              <button onClick={() => setShowShareModal(false)} aria-label="Fermer" className="text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white transition-colors">
+                <X className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
             <div className="p-5 space-y-4">

@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, TrendingUp, AlertTriangle, BarChart3, ShoppingBasket, ArrowRight, Lock, Eye, Percent, DollarSign, UtensilsCrossed, Truck, ClipboardList, Target, X, Sparkles } from 'lucide-react';
 import FoodIllustration from '../components/FoodIllustration';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 /* ═══════════════════════════════════════════════════════════════
    Demo Page — Mode demo pour les prospects (route publique /demo)
@@ -205,6 +206,7 @@ function useAnimatedNumber(target: number, duration = 1500) {
 
 export default function Demo() {
   const [selectedRecipe, setSelectedRecipe] = useState<number | null>(null);
+  const recipeTrapRef = useFocusTrap<HTMLDivElement>(selectedRecipe !== null);
 
   useEffect(() => {
     document.title = 'Demo \u2014 RestauMargin';
@@ -523,8 +525,16 @@ export default function Demo() {
 
         {/* -- Recipe Detail Modal -- */}
         {selectedRecipe !== null && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm anim-fade" onClick={() => setSelectedRecipe(null)}>
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm anim-fade"
+            onClick={() => setSelectedRecipe(null)}
+            onKeyDown={(e) => { if (e.key === 'Escape') setSelectedRecipe(null); }}
+          >
             <div
+              ref={recipeTrapRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="demo-recipe-title"
               className="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl anim-slide-up"
               onClick={(e) => e.stopPropagation()}
             >
@@ -538,15 +548,15 @@ export default function Demo() {
                       <div className="flex items-center gap-3">
                         <FoodIllustration recipeName={r.name} category={r.category} size="sm" />
                         <div>
-                          <h3 className="text-lg font-bold text-[#111111]">{r.name}</h3>
+                          <h3 id="demo-recipe-title" className="text-lg font-bold text-[#111111]">{r.name}</h3>
                           <div className="flex items-center gap-2 mt-0.5">
                             <span className="text-xs text-[#A3A3A3]">{r.category}</span>
                             <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${st.color}`}>{st.text}</span>
                           </div>
                         </div>
                       </div>
-                      <button onClick={() => setSelectedRecipe(null)} className="p-2 hover:bg-[#F5F5F5] rounded-full transition-colors">
-                        <X className="w-5 h-5 text-[#737373]" />
+                      <button onClick={() => setSelectedRecipe(null)} aria-label="Fermer" className="p-2 hover:bg-[#F5F5F5] rounded-full transition-colors">
+                        <X className="w-5 h-5 text-[#737373]" aria-hidden="true" />
                       </button>
                     </div>
 

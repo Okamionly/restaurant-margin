@@ -69,6 +69,10 @@ export default function MobileBottomNav() {
       {drawerOpen && (
         <div
           ref={drawerRef}
+          id="mobile-drawer"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Plus de pages"
           className="md:hidden fixed bottom-[calc(56px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-[101] bg-white dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] rounded-t-2xl shadow-2xl animate-slide-up max-h-[60vh] overflow-y-auto"
         >
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
@@ -78,7 +82,7 @@ export default function MobileBottomNav() {
               className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
               aria-label="Fermer"
             >
-              <X className="w-4 h-4 text-[#737373]" />
+              <X className="w-4 h-4 text-[#737373]" aria-hidden="true" />
             </button>
           </div>
           <div className="grid grid-cols-3 gap-1 p-3">
@@ -109,6 +113,7 @@ export default function MobileBottomNav() {
               key={tab.to}
               to={tab.to}
               end={tab.to === '/dashboard'}
+              aria-label={tab.label}
               className={({ isActive }) =>
                 `flex flex-col items-center justify-center flex-1 h-full gap-0.5 transition-all duration-200 ${
                   isActive
@@ -119,9 +124,11 @@ export default function MobileBottomNav() {
             >
               {({ isActive }) => (
                 <>
-                  <tab.icon className={`w-5 h-5 transition-transform duration-200 ${isActive ? 'scale-110' : ''}`} />
-                  {isActive && (
+                  <tab.icon className={`w-5 h-5 transition-transform duration-200 ${isActive ? 'scale-110' : ''}`} aria-hidden="true" />
+                  {isActive ? (
                     <span className="text-[10px] font-semibold leading-tight">{tab.label}</span>
+                  ) : (
+                    <span className="sr-only">{tab.label}</span>
                   )}
                 </>
               )}
@@ -131,15 +138,20 @@ export default function MobileBottomNav() {
           {/* Plus/More button */}
           <button
             onClick={() => setDrawerOpen(!drawerOpen)}
+            aria-label="Plus de navigation"
+            aria-expanded={drawerOpen}
+            aria-controls="mobile-drawer"
             className={`flex flex-col items-center justify-center flex-1 h-full gap-0.5 transition-all duration-200 ${
               isMoreActive || drawerOpen
                 ? 'text-teal-600 dark:text-teal-400'
                 : 'text-[#9CA3AF] dark:text-[#737373]'
             }`}
           >
-            <MoreHorizontal className={`w-5 h-5 transition-transform duration-200 ${drawerOpen ? 'rotate-90' : ''}`} />
-            {(isMoreActive || drawerOpen) && (
+            <MoreHorizontal className={`w-5 h-5 transition-transform duration-200 ${drawerOpen ? 'rotate-90' : ''}`} aria-hidden="true" />
+            {(isMoreActive || drawerOpen) ? (
               <span className="text-[10px] font-semibold leading-tight">Plus</span>
+            ) : (
+              <span className="sr-only">Plus</span>
             )}
           </button>
         </div>

@@ -21,7 +21,7 @@ import { getOpenApiSpec } from '../api-lib/openapi/spec';
 import { getUnitDivisor } from '../api-lib/utils/unitConversion';
 import { getTemperatureStatus } from '../api-lib/utils/haccp';
 import { calculateRecipeMargin } from '../api-lib/utils/marginCalculator';
-import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit } from '../api-lib/middleware';
+import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit, requireMFA, setGUC } from '../api-lib/middleware';
 import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail, buildTrialExpiringEmail, buildTrialLastDayEmail, buildTrialExpiredEmail } from '../api-lib/utils/emailTemplates';
 
 
@@ -947,7 +947,9 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/mercuriale', mercurialeRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/referrals', referralsRoutes);
-app.use('/api/admin', adminRoutes);
+// Wave 3: requireMFA enforces TOTP second-factor on sensitive admin routes.
+// setGUC injects app.current_user_id GUC for RLS Phase 2 strict policies.
+app.use('/api/admin', requireMFA, setGUC, adminRoutes);
 app.use('/api/nps', npsRoutes);
 
 // ── OpenAPI 3.1 — spec + Swagger UI (Wave 3) ──────────────────────────────────
@@ -965,7 +967,7 @@ function generateActivationCode(): string {
   return code;
 }
 
-app.post('/api/activation/generate', async (req: any, res) => {
+app.post('/api/activation/generate', requireMFA, async (req: any, res) => {
   try {
     const { plan, secret } = req.body;
     // SECURITY: fail closed — if ACTIVATION_SECRET unset, `undefined !== undefined` is false,

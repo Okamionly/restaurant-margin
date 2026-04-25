@@ -734,6 +734,90 @@ app.get('/api/cron/daily-report', async (req: any, res) => {
   }
 });
 
+// ── PUBLIC AGENTS ENDPOINT — no auth, anonymized aggregates only ──────────
+// For cloud Anthropic remote-trigger agents (CEO/CTO/CMO/CFO/COO/onboarder/...)
+// who don't have access to CRON_SECRET. Returns counts + anonymized data.
+// Rate-limit: cached 60s server-side to avoid abuse.
+let __agentsDataCache: { data: any; ts: number } | null = null;
+const AGENTS_CACHE_TTL_MS = 60_000;
+
+app.get('/api/agents/data', async (_req, res) => {
+  try {
+    if (__agentsDataCache && Date.now() - __agentsDataCache.ts < AGENTS_CACHE_TTL_MS) {
+      return res.json({ ...__agentsDataCache.data, cached: true });
+    }
+
+    const now = new Date();
+    const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+
+    const [
+      userCount,
+      recipeCount,
+      ingredientCount,
+      newUsers24h,
+      newUsers48h,
+      proCount,
+      businessCount,
+      trialUsers,
+    ] = await Promise.all([
+      prisma.user.count(),
+      prisma.recipe.count(),
+      prisma.ingredient.count(),
+      prisma.user.count({ where: { createdAt: { gte: dayAgo } } }),
+      prisma.user.count({ where: { createdAt: { gte: twoDaysAgo } } }),
+      prisma.user.count({ where: { plan: 'pro' } }),
+      prisma.user.count({ where: { plan: 'business' } }),
+      prisma.user.count({ where: { plan: 'trial' } }),
+    ]);
+
+    const recentUsers = await prisma.user.findMany({
+      where: { createdAt: { gte: dayAgo } },
+      select: { email: true, plan: true, createdAt: true },
+      take: 50,
+    });
+
+    const internalKeywords = ['guessous', 'okamihokori', 'test', '@cesoir.app'];
+    const realLeads = recentUsers
+      .filter((u) => !internalKeywords.some((kw) => u.email.toLowerCase().includes(kw)))
+      .map((u) => {
+        const parts = u.email.split('@');
+        return {
+          domain: parts[1] || 'unknown',
+          plan: u.plan,
+          firstSeenIso: u.createdAt.toISOString(),
+        };
+      });
+
+    const data = {
+      stats: {
+        totalUsers: userCount,
+        totalRecipes: recipeCount,
+        totalIngredients: ingredientCount,
+        newUsers24h,
+        newUsers48h,
+        realLeadsCount: realLeads.length,
+      },
+      revenue: {
+        proSubscribers: proCount,
+        businessSubscribers: businessCount,
+        trialUsers,
+        estimatedMRR: proCount * 29 + businessCount * 79,
+        estimatedARR: (proCount * 29 + businessCount * 79) * 12,
+      },
+      leadsAnonymized: realLeads,
+      timestamp: now.toISOString(),
+      cached: false,
+    };
+
+    __agentsDataCache = { data, ts: Date.now() };
+    res.json(data);
+  } catch (e: any) {
+    console.error('[AGENTS DATA]', e.message);
+    res.status(500).json({ error: 'agents_data_failed', message: e.message });
+  }
+});
+
 // 7. TRIAL EXPIRY EMAILS — daily at 9h
 app.get('/api/cron/trial-expiry', async (req: any, res) => {
   if (!verifyCron(req, res)) return;

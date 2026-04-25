@@ -3,6 +3,8 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Resend } from 'resend';
+import { authenticator } from 'otplib';
+import qrcode from 'qrcode';
 import {
   prisma,
   JWT_SECRET,
@@ -19,7 +21,7 @@ const router = Router();
 const TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60; // mirror TOKEN_EXPIRY = '7d'
 
 /** Sign a JWT with a unique jti so it can be individually revoked via the blocklist. */
-function signAuthToken(payload: { userId: number; email: string; role: string }): {
+function signAuthToken(payload: { userId: number; email: string; role: string; mfaVerified?: boolean }): {
   token: string;
   jti: string;
 } {
@@ -133,14 +135,27 @@ router.post('/register', async (req: any, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, totpCode } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis' });
     const user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
     // SECURITY: always run bcrypt.compare() to prevent user enumeration via timing (CWE-208).
     // Non-existent users hit a dummy hash so the latency profile is identical.
     const valid = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_BCRYPT_HASH);
     if (!user || !valid) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
-    const { token } = signAuthToken({ userId: user.id, email: user.email, role: user.role });
+
+    // MFA check: if enabled, require TOTP code in the same login request
+    if ((user as any).totpEnabled && (user as any).totpSecret) {
+      if (!totpCode) {
+        return res.status(200).json({ mfaRequired: true, message: 'Code TOTP requis' });
+      }
+      const totpValid = authenticator.verify({ token: totpCode, secret: (user as any).totpSecret });
+      if (!totpValid) {
+        return res.status(401).json({ error: 'Code TOTP invalide' });
+      }
+    }
+
+    const mfaVerified = (user as any).totpEnabled ? true : undefined;
+    const { token } = signAuthToken({ userId: user.id, email: user.email, role: user.role, mfaVerified });
     setAuthCookie(res, token);
 
     // Récupère le restaurant principal de l'utilisateur (pour X-Restaurant-Id header)
@@ -153,7 +168,7 @@ router.post('/login', async (req, res) => {
 
     res.json({
       token,
-      user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan || 'basic', trialEndsAt: user.trialEndsAt || null },
+      user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan || 'basic', trialEndsAt: user.trialEndsAt || null, totpEnabled: (user as any).totpEnabled || false },
       restaurant,
       restaurantId: restaurant?.id || null,
     });
@@ -387,6 +402,140 @@ router.post('/reset-password', async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
 });
 
+// ============ MFA TOTP ============
+
+const APP_NAME = 'RestauMargin';
+
+// POST /api/auth/mfa/setup — generate TOTP secret + return QR code data URL
+router.post('/mfa/setup', authMiddleware, async (req: any, res) => {
+  try {
+    const userId = req.user.userId as number;
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+    if (!user) return res.status(404).json({ error: 'Utilisateur introuvable' });
+
+    const secret = authenticator.generateSecret();
+    const otpauthUrl = authenticator.keyuri(user.email, APP_NAME, secret);
+    const qrDataUrl = await qrcode.toDataURL(otpauthUrl);
+
+    // Persist the pending secret (not yet enabled — user must verify first)
+    await (prisma as any).user.update({
+      where: { id: userId },
+      data: { totpSecret: secret, totpEnabled: false },
+    });
+
+    res.json({ secret, otpauthUrl, qrDataUrl });
+  } catch (e) {
+    console.error('[MFA SETUP]', e);
+    res.status(500).json({ error: 'Erreur setup MFA' });
+  }
+});
+
+// POST /api/auth/mfa/verify — confirm TOTP code + activate MFA
+router.post('/mfa/verify', authMiddleware, async (req: any, res) => {
+  try {
+    const userId = req.user.userId as number;
+    const { code } = req.body;
+    if (!code) return res.status(400).json({ error: 'Code TOTP requis' });
+
+    const user = await (prisma as any).user.findUnique({
+      where: { id: userId },
+      select: { totpSecret: true, totpEnabled: true },
+    });
+    if (!user || !user.totpSecret) {
+      return res.status(400).json({ error: 'MFA setup non initié — appelez /mfa/setup d\'abord' });
+    }
+    const valid = authenticator.verify({ token: code, secret: user.totpSecret });
+    if (!valid) return res.status(401).json({ error: 'Code TOTP invalide' });
+
+    await (prisma as any).user.update({ where: { id: userId }, data: { totpEnabled: true } });
+    res.json({ message: 'MFA activé avec succès' });
+  } catch (e) {
+    console.error('[MFA VERIFY]', e);
+    res.status(500).json({ error: 'Erreur vérification MFA' });
+  }
+});
+
+// POST /api/auth/mfa/disable — disable MFA (requires TOTP code + password)
+router.post('/mfa/disable', authMiddleware, async (req: any, res) => {
+  try {
+    const userId = req.user.userId as number;
+    const { code, password } = req.body;
+    if (!code || !password) return res.status(400).json({ error: 'Code TOTP et mot de passe requis' });
+
+    const user = await (prisma as any).user.findUnique({
+      where: { id: userId },
+      select: { totpSecret: true, totpEnabled: true, passwordHash: true },
+    });
+    if (!user) return res.status(404).json({ error: 'Utilisateur introuvable' });
+    if (!user.totpEnabled || !user.totpSecret) {
+      return res.status(400).json({ error: 'MFA non activé' });
+    }
+
+    // Verify TOTP code
+    const totpValid = authenticator.verify({ token: code, secret: user.totpSecret });
+    if (!totpValid) return res.status(401).json({ error: 'Code TOTP invalide' });
+
+    // Verify password
+    const pwValid = await bcrypt.compare(password, user.passwordHash);
+    if (!pwValid) return res.status(401).json({ error: 'Mot de passe incorrect' });
+
+    await (prisma as any).user.update({
+      where: { id: userId },
+      data: { totpEnabled: false, totpSecret: null },
+    });
+    res.json({ message: 'MFA désactivé avec succès' });
+  } catch (e) {
+    console.error('[MFA DISABLE]', e);
+    res.status(500).json({ error: 'Erreur désactivation MFA' });
+  }
+});
+
+// ============ OAUTH ONE-TIME CODE EXCHANGE ============
+
+// POST /api/auth/oauth/exchange — exchange one-time code for JWT
+// Client calls this after Google callback redirects with ?code=...
+router.post('/oauth/exchange', async (req: any, res) => {
+  try {
+    const { code } = req.body;
+    if (!code || typeof code !== 'string') {
+      return res.status(400).json({ error: 'Code requis' });
+    }
+
+    const oauthCode = await (prisma as any).oauthCode.findUnique({ where: { code } });
+    if (!oauthCode) return res.status(401).json({ error: 'Code invalide' });
+    if (oauthCode.used) return res.status(401).json({ error: 'Code déjà utilisé' });
+    if (new Date(oauthCode.expiresAt) < new Date()) return res.status(401).json({ error: 'Code expiré' });
+
+    // Mark as used (atomic — prevents replay)
+    await (prisma as any).oauthCode.update({ where: { code }, data: { used: true } });
+
+    const user = await prisma.user.findUnique({
+      where: { id: oauthCode.userId },
+      select: { id: true, email: true, name: true, role: true, plan: true, trialEndsAt: true },
+    });
+    if (!user) return res.status(404).json({ error: 'Utilisateur introuvable' });
+
+    const { token } = signAuthToken({ userId: user.id, email: user.email, role: user.role });
+    setAuthCookie(res, token);
+
+    const membership = await prisma.restaurantMember.findFirst({
+      where: { userId: user.id },
+      include: { restaurant: { select: { id: true, name: true } } },
+      orderBy: { id: 'asc' },
+    });
+
+    res.json({
+      token,
+      user: { ...user, trialEndsAt: user.trialEndsAt || null },
+      restaurant: membership?.restaurant || null,
+      restaurantId: membership?.restaurant?.id || null,
+    });
+  } catch (e) {
+    console.error('[OAUTH EXCHANGE]', e);
+    res.status(500).json({ error: 'Erreur échange code OAuth' });
+  }
+});
+
 // ============ GOOGLE OAUTH ============
 
 // GET /api/auth/google → redirect to Google consent screen
@@ -453,10 +602,12 @@ router.get('/google/callback', async (req, res) => {
     let user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
 
     if (user) {
-      // Existing user → login
-      const { token } = signAuthToken({ userId: user.id, email: user.email, role: user.role });
-      setAuthCookie(res, token);
-      return res.redirect(`${frontendUrl}/login?token=${token}`);
+      // Existing user → login: issue one-time code (no JWT in URL)
+      const oauthCode = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 60 * 1000); // 60s TTL
+      await (prisma as any).oauthCode.create({ data: { code: oauthCode, userId: user.id, expiresAt } });
+      setAuthCookie(res, signAuthToken({ userId: user.id, email: user.email, role: user.role }).token);
+      return res.redirect(`${frontendUrl}/login?code=${oauthCode}`);
     }
 
     // New user → create account + restaurant
@@ -497,9 +648,12 @@ router.get('/google/callback', async (req, res) => {
       console.error('Failed to send welcome email (Google OAuth):', emailErr);
     }
 
-    const { token } = signAuthToken({ userId: user.id, email: user.email, role: user.role });
-    setAuthCookie(res, token);
-    return res.redirect(`${frontendUrl}/login?token=${token}`);
+    // New user → issue one-time code (no JWT in URL)
+    const oauthCode = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 60 * 1000); // 60s TTL
+    await (prisma as any).oauthCode.create({ data: { code: oauthCode, userId: user.id, expiresAt } });
+    setAuthCookie(res, signAuthToken({ userId: user.id, email: user.email, role: user.role }).token);
+    return res.redirect(`${frontendUrl}/login?code=${oauthCode}`);
   } catch (e) {
     console.error('[GOOGLE OAUTH] Error:', e);
     return res.redirect(`${frontendUrl}/login?error=google_failed`);

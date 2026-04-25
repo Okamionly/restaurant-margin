@@ -23,6 +23,8 @@ model User {
   resetTokenExpiry  DateTime?
   acceptedCguAt     DateTime?
   trialEndsAt       DateTime?
+  totpSecret        String?
+  totpEnabled       Boolean            @default(false)
   createdAt         DateTime           @default(now())
   ownedRestaurants  Restaurant[]       @relation("OwnedRestaurants")
   memberships       RestaurantMember[]
@@ -560,6 +562,17 @@ model InvoiceSequence {
 
   @@index([prefix, year])
   @@map("invoice_sequences")
+}
+
+// ── OAuth One-Time Code Exchange — prevents JWT in URL (OWASP A01) ──
+model OauthCode {
+  code      String   @id
+  userId    Int
+  expiresAt DateTime @map("expires_at")
+  used      Boolean  @default(false)
+
+  @@index([expiresAt])
+  @@map("oauth_codes")
 }
 
 // ── JWT Revocation Blocklist — checked on every authenticated request ──

@@ -13,6 +13,7 @@ export interface JwtPayload {
   email: string;
   role: string;
   jti?: string; // present on tokens issued from 2026-04-25 onward
+  mfaVerified?: boolean; // true when user completed TOTP challenge this session
   exp?: number;
   iat?: number;
 }
@@ -118,6 +119,60 @@ export async function logAudit(
   } catch {
     /* silent fail — audit should never break main flow */
   }
+}
+
+/**
+ * requireMFA — enforces that the JWT claim mfaVerified=true is present.
+ * Mount AFTER authMiddleware on routes that need TOTP second-factor.
+ * If the user has not enabled MFA the check is skipped (grace mode for
+ * non-enrolled users). If MFA is enabled on the account and the claim is
+ * missing/false, return 403 so the client can redirect to the TOTP prompt.
+ */
+export async function requireMFA(req: any, res: any, next: any) {
+  const decoded: JwtPayload = req.user;
+  // No req.user means this route uses a different auth mechanism (e.g. ACTIVATION_SECRET).
+  // requireMFA is a JWT-layer decorator — skip silently when there's no JWT user.
+  if (!decoded) return next();
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+      select: { totpEnabled: true },
+    });
+    // If user does not have MFA enabled, skip the check — they are not
+    // yet enrolled. Admins should be nudged to enroll via the onboarding UI.
+    if (!user || !user.totpEnabled) {
+      return next();
+    }
+    if (!decoded.mfaVerified) {
+      return res.status(403).json({ error: 'MFA requis — vérifiez votre code TOTP', code: 'MFA_REQUIRED' });
+    }
+    next();
+  } catch {
+    return res.status(500).json({ error: 'Erreur vérification MFA' });
+  }
+}
+
+/**
+ * setGUC — sets the PostgreSQL GUC app.current_user_id to the authenticated
+ * user's id within the current transaction/request context.
+ * Required by RLS Phase 2 strict policies (see migration 20260425_3020_rls_strict).
+ * Call this AFTER authMiddleware, once per request.
+ */
+export async function setGUC(req: any, _res: any, next: any) {
+  const decoded: JwtPayload = req.user;
+  if (decoded?.userId) {
+    try {
+      await prisma.$executeRawUnsafe(
+        `SELECT set_config('app.current_user_id', $1, true)`,
+        String(decoded.userId)
+      );
+    } catch {
+      // Non-fatal: if the DB doesn't support the GUC (e.g. legacy migration not run),
+      // we continue. The membership check in authWithRestaurant is the primary gate.
+    }
+  }
+  next();
 }
 
 export { prisma, JWT_SECRET };

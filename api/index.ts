@@ -16,6 +16,8 @@ import exportRoutes from '../api-lib/routes/export';
 import referralsRoutes from '../api-lib/routes/referrals';
 import adminRoutes from '../api-lib/routes/admin';
 import npsRoutes from '../api-lib/routes/nps';
+import swaggerUi from 'swagger-ui-express';
+import { getOpenApiSpec } from '../api-lib/openapi/spec';
 import { getUnitDivisor } from '../api-lib/utils/unitConversion';
 import { getTemperatureStatus } from '../api-lib/utils/haccp';
 import { calculateRecipeMargin } from '../api-lib/utils/marginCalculator';
@@ -947,6 +949,13 @@ app.use('/api/export', exportRoutes);
 app.use('/api/referrals', referralsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/nps', npsRoutes);
+
+// ── OpenAPI 3.1 — spec + Swagger UI (Wave 3) ──────────────────────────────────
+app.get('/api/openapi.json', (_req, res) => {
+  res.json(getOpenApiSpec());
+});
+app.use('/api/docs', swaggerUi.serve);
+app.get('/api/docs', swaggerUi.setup(undefined, { swaggerOptions: { url: '/api/openapi.json' } }));
 
 // ── Activation codes (kept at /api/activation/* for backward compat) ──
 function generateActivationCode(): string {

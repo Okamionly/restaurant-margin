@@ -10,8 +10,9 @@ import { Router } from 'express';
 import express from 'express';
 import { Resend } from 'resend';
 import { prisma } from '../prisma';
-import { authMiddleware } from '../middleware';
+import { authMiddleware, validateRequest } from '../middleware';
 import { buildActivationCodeEmail } from '../utils/emailTemplates';
+import { stripeCheckoutRequestSchema } from '../schemas/stripe';
 
 const router = Router();
 
@@ -145,7 +146,7 @@ export async function stripeWebhookHandler(req: any, res: any) {
 }
 
 // ── Stripe Checkout Session ────────────────────────────────────────────────────
-router.post('/checkout', authMiddleware, async (req: any, res) => {
+router.post('/checkout', authMiddleware, validateRequest(stripeCheckoutRequestSchema), async (req: any, res) => {
   try {
     const stripeKey = process.env.STRIPE_SECRET_KEY;
     if (!stripeKey) return res.status(503).json({ error: 'Stripe non configuré' });

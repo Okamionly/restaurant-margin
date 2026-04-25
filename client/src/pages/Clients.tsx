@@ -1,5 +1,6 @@
 import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import ClientMigrationBanner from '../components/ClientMigrationBanner';
 import {
   Users, Search, Plus, Edit2, Trash2, Mail, Phone, Building2, Star,
   Tag, Filter, LayoutGrid, List, ChevronDown, ChevronUp, Eye, FileText,
@@ -1411,6 +1412,8 @@ export default function Clients() {
       }} />
       {/* Main content area */}
       <div className={`flex-1 space-y-6 transition-all duration-300 ${sidebarClient ? 'mr-0' : ''}`}>
+        {/* localStorage → DB migration banner (shown only when legacy data exists) */}
+        <ClientMigrationBanner onMigrationComplete={() => window.location.reload()} />
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>

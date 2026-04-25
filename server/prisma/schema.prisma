@@ -73,6 +73,7 @@ model Restaurant {
   seminaires             Seminaire[]
   marketplaceOrders      MarketplaceOrder[]
   newsItems              NewsItem[]
+  clients                Client[]
   dailyBudget            Float?
   weeklyBudget           Float?
   monthlyBudget          Float?
@@ -592,4 +593,27 @@ model AiUsageLog {
   @@index([action, createdAt])
   @@index([createdAt])
   @@map("ai_usage_logs")
+}
+
+// ── CRM Client — Wave 3 (replaces localStorage) ──────────────────────────
+model Client {
+  id            Int        @id @default(autoincrement())
+  restaurantId  Int
+  name          String
+  email         String?
+  phone         String?
+  notes         String?
+  tags          String[]   @default([])
+  totalOrders   Int        @default(0)
+  totalSpentEur Decimal    @default(0) @db.Decimal(10, 2)
+  lastOrderAt   DateTime?
+  deletedAt     DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([restaurantId, name])
+  @@index([restaurantId, email])
+  @@index([restaurantId])
+  @@map("clients")
 }

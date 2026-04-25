@@ -16,6 +16,7 @@ import exportRoutes from '../api-lib/routes/export';
 import referralsRoutes from '../api-lib/routes/referrals';
 import adminRoutes from '../api-lib/routes/admin';
 import npsRoutes from '../api-lib/routes/nps';
+import clientsRoutes from '../api-lib/routes/clients';
 import { getUnitDivisor } from '../api-lib/utils/unitConversion';
 import { getTemperatureStatus } from '../api-lib/utils/haccp';
 import { calculateRecipeMargin } from '../api-lib/utils/marginCalculator';
@@ -947,6 +948,7 @@ app.use('/api/export', exportRoutes);
 app.use('/api/referrals', referralsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/nps', npsRoutes);
+app.use('/api/clients', authWithRestaurant, clientsRoutes);
 
 // ── Activation codes (kept at /api/activation/* for backward compat) ──
 function generateActivationCode(): string {

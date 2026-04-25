@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { prisma } from './prisma';
 import { isJtiRevoked } from './jti-blocklist';
+import { z, ZodTypeAny } from 'zod';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) throw new Error('JWT_SECRET env variable required');
@@ -119,6 +120,34 @@ export async function logAudit(
   } catch {
     /* silent fail — audit should never break main flow */
   }
+}
+
+// ── Zod Request Validation Middleware (Wave 3 QA) ─────────────────────────────
+/**
+ * Express middleware factory that validates req.body against a Zod schema.
+ * Returns HTTP 400 with structured { error, issues } if validation fails.
+ * On success, replaces req.body with the parsed (coerced) value.
+ *
+ * Usage:
+ *   router.post('/login', validateRequest(loginRequestSchema), handler)
+ */
+export function validateRequest<T extends ZodTypeAny>(schema: T) {
+  return async (req: any, res: any, next: any) => {
+    const result = schema.safeParse(req.body);
+    if (!result.success) {
+      return res.status(400).json({
+        error: 'Validation échouée',
+        issues: result.error.issues.map((i) => ({
+          path: i.path.join('.'),
+          message: i.message,
+        })),
+      });
+    }
+    req.body = result.data;
+    // Await next so handler chain (incl. async handlers in tests) completes
+    // before the caller's await resolves. Express runtime is fine with async.
+    await next();
+  };
 }
 
 /**

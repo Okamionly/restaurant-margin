@@ -11,10 +11,17 @@ import {
   TOKEN_EXPIRY,
   AUTH_COOKIE_NAME,
   authMiddleware,
+  validateRequest,
   JwtPayload,
 } from '../middleware';
 import { revokeJti } from '../jti-blocklist';
 import { buildWelcomeEmail, buildVerifyEmail, buildResetPasswordEmail } from '../utils/emailTemplates';
+import {
+  loginRequestSchema,
+  registerRequestSchema,
+  forgotPasswordRequestSchema,
+  resetPasswordRequestSchema,
+} from '../schemas/auth';
 import { ratelimit } from '../ratelimit';
 
 const router = Router();
@@ -72,7 +79,7 @@ router.get('/first-user', async (_req, res) => {
 });
 
 // ── Register with activation code ──
-router.post('/register', async (req: any, res) => {
+router.post('/register', validateRequest(registerRequestSchema), async (req: any, res) => {
   try {
     const { email: rawEmail, password, name, restaurantName, activationCode } = req.body;
     if (!rawEmail || !password || !name) return res.status(400).json({ error: 'Email, mot de passe et nom requis' });
@@ -142,7 +149,7 @@ function setRLHeaders(res: any, rl: { limit: number; remaining: number; reset: n
   res.setHeader('X-RateLimit-Reset', String(rl.reset));
 }
 
-router.post('/login', async (req: any, res) => {
+router.post('/login', validateRequest(loginRequestSchema), async (req: any, res) => {
   try {
     // Rate limit by IP — 50 req/min (distributed via Upstash, in-memory fallback)
     const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
@@ -386,7 +393,7 @@ router.post('/resend-verification', authMiddleware, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
 });
 
-router.post('/forgot-password', async (req: any, res) => {
+router.post('/forgot-password', validateRequest(forgotPasswordRequestSchema), async (req: any, res) => {
   try {
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: 'Email requis' });
@@ -410,7 +417,7 @@ router.post('/forgot-password', async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
 });
 
-router.post('/reset-password', async (req: any, res) => {
+router.post('/reset-password', validateRequest(resetPasswordRequestSchema), async (req: any, res) => {
   try {
     const { token, newPassword } = req.body;
     if (!token || !newPassword) return res.status(400).json({ error: 'Token et nouveau mot de passe requis' });

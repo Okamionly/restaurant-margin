@@ -100,8 +100,16 @@ async function callRegister(req: any, res: any) {
     (l: any) => l.route?.path === '/register' && l.route?.methods?.post
   );
   if (!layer) throw new Error('register handler not found');
-  const handler = layer.route.stack[0].handle;
-  await handler(req, res, () => {});
+  // Walk the full middleware stack (validateRequest -> handler) so Wave 3
+  // Zod validation runs first, then the actual handler.
+  const stack = layer.route.stack;
+  let i = 0;
+  const runNext = async (): Promise<void> => {
+    const fn = stack[i++]?.handle;
+    if (!fn) return;
+    await fn(req, res, runNext);
+  };
+  await runNext();
 }
 
 describe('POST /api/auth/register', () => {

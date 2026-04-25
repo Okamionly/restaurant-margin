@@ -132,7 +132,7 @@ export async function logAudit(
  *   router.post('/login', validateRequest(loginRequestSchema), handler)
  */
 export function validateRequest<T extends ZodTypeAny>(schema: T) {
-  return (req: any, res: any, next: any) => {
+  return async (req: any, res: any, next: any) => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
       return res.status(400).json({
@@ -144,7 +144,9 @@ export function validateRequest<T extends ZodTypeAny>(schema: T) {
       });
     }
     req.body = result.data;
-    next();
+    // Await next so handler chain (incl. async handlers in tests) completes
+    // before the caller's await resolves. Express runtime is fine with async.
+    await next();
   };
 }
 

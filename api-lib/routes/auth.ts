@@ -15,6 +15,7 @@ import {
 } from '../middleware';
 import { revokeJti } from '../jti-blocklist';
 import { buildWelcomeEmail, buildVerifyEmail, buildResetPasswordEmail } from '../utils/emailTemplates';
+import { ratelimit } from '../ratelimit';
 
 const router = Router();
 
@@ -133,8 +134,28 @@ router.post('/register', async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: "Erreur inscription" }); }
 });
 
-router.post('/login', async (req, res) => {
+// Helper: set headers only when res.setHeader exists (missing in unit-test mocks)
+function setRLHeaders(res: any, rl: { limit: number; remaining: number; reset: number }) {
+  if (typeof res.setHeader !== 'function') return;
+  res.setHeader('X-RateLimit-Limit', String(rl.limit));
+  res.setHeader('X-RateLimit-Remaining', String(rl.remaining));
+  res.setHeader('X-RateLimit-Reset', String(rl.reset));
+}
+
+router.post('/login', async (req: any, res) => {
   try {
+    // Rate limit by IP — 50 req/min (distributed via Upstash, in-memory fallback)
+    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
+    const rl = await ratelimit(`login:${ip}`);
+    if (!rl.success) {
+      setRLHeaders(res, { ...rl, remaining: 0 });
+      if (typeof res.setHeader === 'function') {
+        res.setHeader('Retry-After', String(rl.reset - Math.floor(Date.now() / 1000)));
+      }
+      return res.status(429).json({ error: 'Trop de tentatives. Réessayez dans une minute.' });
+    }
+    setRLHeaders(res, rl);
+
     const { email, password, totpCode } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis' });
     const user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });

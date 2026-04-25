@@ -1,87 +1,40 @@
-# Rapport CMO — 25 avril 2026
+# Rapport CMO — 2026-04-25
 
-**Agent** : CMO RestauMargin (Claude Code)
-**Date** : 25 avril 2026, 08h00 Paris
-**Branche** : main
+## Métriques (08h00 Paris)
 
----
-
-## 1. Metrics Acquisition
-
-### API Daily Report
-- **Status** : `{"error":"Unauthorized cron"}` — endpoint protégé, accès externe non autorisé
-- **Action requise (répétée)** : Fournir un token cron à l'agent ou exposer un endpoint interne
-
-### Blog / SEO
-| Indicateur | Valeur | Δ vs hier |
-|---|---|---|
-| Articles blog indexés | **9 pages** | +1 ✅ |
-| Pages dans le sitemap | **28 URLs** | +2 ✅ |
-| Couverture thématique | Food cost, marge, HACCP, fiche technique, gaspillage, IA resto, coefficient, KPIs | — |
-
-**Nouvel article détecté :**
-- `BlogKpiRestaurateur.tsx` — KPIs du restaurateur (publié entre J-1 et J)
-
-**Articles actifs :**
-| Fichier | Thème |
+| Métrique | Valeur |
 |---|---|
-| `BlogCalcMarge.tsx` | Calcul de marge restaurant |
-| `BlogCoefficient.tsx` | Coefficient multiplicateur |
-| `BlogFicheTechnique.tsx` | Fiche technique recette |
-| `BlogFoodCost.tsx` | Food cost |
-| `BlogGaspillage.tsx` | Gaspillage alimentaire |
-| `BlogHACCP.tsx` | HACCP |
-| `BlogIA.tsx` | IA en restauration |
-| `BlogIndex.tsx` | Index blog |
-| `BlogKpiRestaurateur.tsx` | KPIs restaurateur (**nouveau**) |
+| Total utilisateurs | N/D (API indisponible) |
+| Nouveaux utilisateurs 24h | N/D |
+| Leads qualifiés | N/D |
+| MRR estimé | N/D |
+| Pages blog actives | 9 |
 
-**Ratio blog/sitemap** : 9/28 = 32 % des URLs sont du contenu blog (+1 point vs hier).
-
-### Analyse gap contenu (opportunités SEO non couvertes)
-| Thème | Intention | Priorité |
-|---|---|---|
-| Comment fixer le prix de vente d'un plat | Transactionnel | 🔴 Haute |
-| Logiciel gestion restaurant (comparatif) | Commercial | 🔴 Haute |
-| Calcul coût de revient d'un plat | Informationnel fort | 🔴 Haute |
-| Planning équipe restauration | TOFU large | 🟡 Moyenne |
-| Seuil de rentabilité restaurant | Transactionnel | 🟡 Moyenne |
-| Programme fidélité restaurant | MOFU | 🟢 Basse |
+> ⚠️ L'endpoint `/api/agents/data` n'a pas répondu ce matin (DNS cache overflow). Les métriques seront disponibles lors du prochain run.
 
 ---
 
-## 2. Action du Jour
+## Post publié
 
-### Post social rédigé
-- **Fichier** : `docs/marketing/social-posts/2026-04-25.md`
-- **Thème** : 5 KPIs que tout restaurateur devrait surveiller chaque semaine
-- **Format** : LinkedIn + Instagram, ~300 mots
-- **Angle** : Opérationnel / prise de conscience — lié au nouvel article BlogKpiRestaurateur
-- **CTA principal** : `/outils/calculateur-food-cost` (TOFU)
-- **CTA secondaire** : `/pricing` (conversion)
-- **Hashtags** : #restauration #restaurateur #foodcost #gestion #kpi #rentabilité
-
-### Rationale du thème
-Publication du `BlogKpiRestaurateur.tsx` détectée ce matin → capitaliser sur le contenu frais avec un post social aligné. Thème KPIs = fort taux d'enregistrement (sauvegardé / bookmarké) sur LinkedIn. Suit logiquement le post food cost d'hier (J-1) : hier = erreurs à éviter, aujourd'hui = pilotage proactif.
+**Fichier** : `docs/marketing/social-posts/2026-04-25.md`  
+**Angle** : Food cost non maîtrisé → 4 réflexes actionnables immédiatement  
+**CTA principal** : `/outils/calculateur-food-cost` (acquisition gratuite)  
+**CTA secondaire** : `/pricing` (conversion)  
+**Canaux cibles** : LinkedIn + Instagram  
+**Hashtags** : #restauration #restaurateur #foodcost #gestion #margebrute #rentabilite
 
 ---
 
-## 3. Recommandations Semaine
+## Analyse & actions recommandées
 
-| Priorité | Action | Impact attendu |
-|---|---|---|
-| 🔴 Haute | Rédiger article "Comment fixer le prix de vente d'un plat" | SEO transactionnel fort |
-| 🔴 Haute | Corriger accès API daily-report pour agent CMO | Métriques réels dès J+1 |
-| 🟡 Moyenne | Intégrer UTM sur tous les liens sociaux (`?utm_source=linkedin&utm_medium=social`) | Tracking clics |
-| 🟡 Moyenne | Thread LinkedIn lundi prochain : "Semaine de pilotage resto — J1 à J5" | Série à fort engagement |
-| 🟡 Moyenne | Ajouter Open Graph / Twitter Card sur les nouveaux articles blog | CTR partage social |
-| 🟢 Basse | Landing page comparatif RestauMargin vs Excel | SEO concurrentiel |
+### Contenu
+- 9 pages blog en ligne — envisager de planifier la 10e sur la thématique "mercuriale & hausse fournisseurs" (tendance forte en 2026).
+- L'angle "vous perdez de l'argent sans le savoir" performe généralement bien en acquisition froide sur LinkedIn restauration.
 
----
+### Acquisition
+- Le calculateur food cost est le meilleur outil d'entrée dans le funnel : pousser ce lien en priorité dans les posts, stories et bio Instagram.
+- Surveiller le taux de conversion calculateur → inscription lors du prochain run avec métriques.
 
-## 4. KPIs à Suivre
-
-- Portée du post social J+48h (objectif LinkedIn : >900 impressions)
-- Bookmarks / enregistrements du post (indicateur qualité contenu)
-- Clics vers `/outils/calculateur-food-cost` (UTM à ajouter dès demain)
-- Nouvelles inscriptions trial dans les 72h post-publication
-- Indexation `BlogKpiRestaurateur` dans Google Search Console sous 7 jours
+### Priorité du jour
+- Vérifier la disponibilité de l'API `/api/agents/data` côté infrastructure.
+- Recycler le post LinkedIn en version courte pour Instagram Stories (< 80 mots).

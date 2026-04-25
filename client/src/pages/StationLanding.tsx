@@ -380,6 +380,38 @@ export default function StationLanding() {
         </div>
       </section>
 
+      {/* ═══ DEMO VIDEO ═══ */}
+      <section id="demo-video" className="py-20 px-6 bg-[#FAFAFA] dark:bg-[#0A0A0A]/30">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-4">La station en action</h2>
+          <p className="text-center text-[#737373] dark:text-[#A3A3A3] mb-10 text-base">
+            Voyez comment la pesée en direct transforme la gestion de vos fiches techniques.
+          </p>
+          <div className="aspect-video rounded-2xl overflow-hidden shadow-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#111]">
+            {import.meta.env.VITE_CLOUDFLARE_STREAM_VIDEO_ID ? (
+              <iframe
+                src={`https://customer-inu5okyp5g2t5fku.cloudflarestream.com/${import.meta.env.VITE_CLOUDFLARE_STREAM_VIDEO_ID}/iframe`}
+                title="RestauMargin Station — démonstration"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+                loading="lazy"
+              />
+            ) : (
+              /* Fallback: local video for dev environment (VITE_CLOUDFLARE_STREAM_VIDEO_ID not set) */
+              <video
+                src="/images/hero/station-demo.mp4"
+                controls
+                preload="metadata"
+                poster="/images/restaumargin-station-opt.webp"
+                className="w-full h-full object-contain"
+                aria-label="Démonstration RestauMargin Station"
+              />
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* ═══ SPECS ═══ */}
       <section id="specs" className="py-20 px-6 bg-[#FAFAFA] dark:bg-[#0A0A0A]/30">
         <div className="max-w-4xl mx-auto">

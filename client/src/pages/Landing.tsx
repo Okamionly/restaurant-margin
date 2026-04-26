@@ -6,7 +6,7 @@
  * Match exact des screenshots claude.design partagés par l'utilisateur.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ChefHat, Menu, X as XIcon, ArrowRight, Calculator, X, Check,
@@ -73,6 +73,62 @@ function useCounter(target: number, decimals = 0) {
   return { ref, value: decimals === 0 ? Math.round(v) : Number(v.toFixed(decimals)) };
 }
 
+// Stagger multiple children on scroll-enter
+function useStagger<T extends HTMLElement>(staggerDelay = 0.1) {
+  const ref = useRef<T>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const children = Array.from(el.children) as HTMLElement[];
+    if (!children.length) return;
+    const ctx = gsap.context(() => {
+      gsap.from(children, {
+        y: 30,
+        opacity: 0,
+        duration: 0.7,
+        ease: 'power3.out',
+        stagger: staggerDelay,
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
+      });
+    });
+    return () => ctx.revert();
+  }, [staggerDelay]);
+  return ref;
+}
+
+// Typing effect for a string — returns displayed text
+function useTypingEffect(text: string, active: boolean, speed = 60) {
+  const [displayed, setDisplayed] = useState('');
+  useEffect(() => {
+    if (!active) { setDisplayed(text); return; }
+    setDisplayed('');
+    let i = 0;
+    const id = setInterval(() => {
+      i++;
+      setDisplayed(text.slice(0, i));
+      if (i >= text.length) clearInterval(id);
+    }, speed);
+    return () => clearInterval(id);
+  }, [text, active, speed]);
+  return displayed;
+}
+
+// Pulse glow on value change
+function usePulseOnChange(value: number) {
+  const ref = useRef<HTMLDivElement>(null);
+  const prevRef = useRef(value);
+  useEffect(() => {
+    if (prevRef.current === value) return;
+    prevRef.current = value;
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    gsap.fromTo(el, { scale: 1.04 }, { scale: 1, duration: 0.35, ease: 'power2.out' });
+  }, [value]);
+  return ref;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════════════════════
@@ -133,11 +189,55 @@ function DashboardMiniCard({ animated = false }: { animated?: boolean }) {
 // ═══════════════════════════════════════════════════════════════════════════
 // 01 — HERO
 // ═══════════════════════════════════════════════════════════════════════════
+function HeroKpis() {
+  const kpis = [
+    { label: 'Restaurants actifs', value: 320, suffix: '+' },
+    { label: 'Économies moyennes / mois', value: 479, suffix: ' €' },
+    { label: 'Points de marge gagnés', value: 4, suffix: ' pts' },
+    { label: "Jours d'essai gratuit", value: 14, suffix: 'j' },
+  ];
+  const containerRef = useStagger<HTMLDivElement>(0.12);
+  return (
+    <div ref={containerRef} className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10">
+      {kpis.map((k) => (
+        <div key={k.label} className="rounded-2xl p-4 text-center" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
+          <div className="text-2xl font-extrabold tabular-nums" style={{ color: ACCENT_DARK }}>
+            {k.value}{k.suffix}
+          </div>
+          <div className="text-xs mt-1 font-medium leading-snug" style={{ color: TEXT_MUTED }}>{k.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function HeroSection() {
   const ref = useReveal<HTMLDivElement>();
+  const bgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = bgRef.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ctx = gsap.context(() => {
+      gsap.to(el, {
+        yPercent: 18,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el.parentElement,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    });
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section className="relative pt-32 pb-20 px-6 lg:px-8 overflow-hidden">
       <div
+        ref={bgRef}
         className="absolute inset-0 -z-10 opacity-40 pointer-events-none"
         style={{
           background: `radial-gradient(ellipse at 30% 30%, ${ACCENT_BG} 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, ${ACCENT_BG} 0%, transparent 50%)`,
@@ -167,8 +267,8 @@ function HeroSection() {
           <div className="mt-10 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
             <Link
               to="/login?mode=register"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold text-base shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
-              style={{ background: `linear-gradient(135deg, ${ACCENT} 0%, ${ACCENT_DARK} 100%)`, boxShadow: `0 12px 30px ${ACCENT}40` }}
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold text-base shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              style={{ background: `linear-gradient(135deg, ${ACCENT} 0%, ${ACCENT_DARK} 100%)`, boxShadow: `0 12px 30px ${ACCENT}40`, '--tw-ring-color': ACCENT } as React.CSSProperties}
             >
               Essayer gratuitement <ArrowRight className="w-4 h-4" />
             </Link>
@@ -181,6 +281,7 @@ function HeroSection() {
               <span>Sans carte bancaire</span>
             </span>
           </div>
+          <HeroKpis />
         </div>
         <div className="relative">
           <DashboardMiniCard animated />
@@ -200,6 +301,10 @@ function RoiCalculatorSection() {
   const [plats, setPlats] = useState(25);
   const ca = couverts * prix * 30;
   const economiesMois = Math.round(ca * 0.04);
+  const pulseRef = usePulseOnChange(economiesMois);
+
+  const fmtEur = (n: number) =>
+    new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n);
 
   return (
     <section className="py-24 px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
@@ -220,10 +325,10 @@ function RoiCalculatorSection() {
               </div>
               <div>
                 <div className="text-sm font-bold" style={{ color: TEXT }}>
-                  Jusqu'à 500€ d'économies par mois
+                  Jusqu'à 500 € d'économies par mois
                 </div>
                 <div className="text-xs" style={{ color: TEXT_MUTED }}>
-                  Calcul en temps réel et 100% personnalisé
+                  Calcul en temps réel et 100 % personnalisé
                 </div>
               </div>
             </div>
@@ -240,7 +345,7 @@ function RoiCalculatorSection() {
 
           {[
             { label: 'Nombre de couverts par jour', value: couverts, set: setCouverts, min: 20, max: 300, suffix: '' },
-            { label: "Prix moyen d'un plat (EUR)", value: prix, set: setPrix, min: 8, max: 45, suffix: '€' },
+            { label: "Prix moyen d'un plat", value: prix, set: setPrix, min: 8, max: 45, suffix: ' €' },
             { label: 'Nombre de plats à la carte', value: plats, set: setPlats, min: 5, max: 80, suffix: '' },
           ].map((field) => (
             <div key={field.label} className="mb-6">
@@ -256,8 +361,9 @@ function RoiCalculatorSection() {
                 max={field.max}
                 value={field.value}
                 onChange={(e) => field.set(parseInt(e.target.value))}
-                className="w-full"
-                style={{ accentColor: ACCENT }}
+                className="w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-full"
+                style={{ accentColor: ACCENT, '--tw-ring-color': ACCENT } as React.CSSProperties}
+                aria-label={field.label}
               />
               <div className="flex justify-between text-xs mt-1" style={{ color: TEXT_MUTED }}>
                 <span>{field.min}{field.suffix}</span>
@@ -266,10 +372,18 @@ function RoiCalculatorSection() {
             </div>
           ))}
 
-          <div className="rounded-2xl p-5 mt-6" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
+          <div
+            ref={pulseRef}
+            className="rounded-2xl p-5 mt-6 transition-shadow duration-300"
+            style={{
+              background: ACCENT_BG,
+              border: `1px solid ${ACCENT_LIGHT}`,
+              boxShadow: `0 0 0 3px ${ACCENT}22`,
+            }}
+          >
             <div className="text-xs uppercase tracking-widest font-semibold" style={{ color: ACCENT_DARK }}>Économies / mois</div>
             <div className="text-4xl font-extrabold mt-1 tabular-nums" style={{ color: TEXT }}>
-              {economiesMois.toLocaleString('fr-FR')}.00 €
+              {fmtEur(economiesMois)}
             </div>
           </div>
         </div>
@@ -327,7 +441,12 @@ function PricingSection() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <div className="rounded-3xl p-8 bg-white" style={{ border: `1px solid ${BORDER}` }}>
+          <div
+            className="rounded-3xl p-8 bg-white transition-all duration-200 hover:-translate-y-1"
+            style={{ border: `1px solid ${BORDER}`, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }}
+          >
             <h3 className="text-2xl font-bold mb-4" style={{ color: TEXT }}>Pro</h3>
             <div className="flex items-baseline gap-1 mb-2">
               <span className="text-5xl font-extrabold" style={{ color: TEXT }}>
@@ -337,7 +456,7 @@ function PricingSection() {
             </div>
             {annual && (
               <p className="text-xs font-semibold mb-6" style={{ color: ACCENT_DARK }}>
-                Soit {pricing.pro.annual * 12}€/an au lieu de {pricing.pro.monthly * 12}€
+                Soit {pricing.pro.annual * 12} €/an au lieu de {pricing.pro.monthly * 12} €
               </p>
             )}
             <ul className="space-y-3 mb-8">
@@ -350,13 +469,21 @@ function PricingSection() {
             </ul>
             <Link
               to="/login?mode=register"
-              className="block w-full text-center py-3.5 rounded-xl font-bold text-sm transition-all hover:scale-[1.01]"
-              style={{ background: 'white', color: TEXT, border: `2px solid ${BORDER}` }}
-            >Essai gratuit 14 jours</Link>
+              className="block w-full text-center py-3.5 rounded-xl font-bold text-sm transition-all hover:bg-[#F5F5F5] hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              style={{ background: 'white', color: TEXT, border: `2px solid ${BORDER}`, '--tw-ring-color': ACCENT } as React.CSSProperties}
+            >Commencer l'essai gratuit</Link>
           </div>
 
-          <div className="rounded-3xl p-8 bg-white relative" style={{ border: `2px solid ${ACCENT}`, boxShadow: `0 20px 40px ${ACCENT}1A` }}>
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider" style={{ background: ACCENT, color: 'white' }}>
+          <div
+            className="rounded-3xl p-8 bg-white relative transition-all duration-200 hover:-translate-y-1"
+            style={{ border: `2px solid ${ACCENT}`, boxShadow: `0 20px 40px ${ACCENT}1A` }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = `0 28px 48px ${ACCENT}28`; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = `0 20px 40px ${ACCENT}1A`; }}
+          >
+            <div
+              className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider animate-pulse-badge"
+              style={{ background: ACCENT, color: 'white' }}
+            >
               Populaire
             </div>
             <h3 className="text-2xl font-bold mb-4" style={{ color: TEXT }}>Business</h3>
@@ -368,7 +495,7 @@ function PricingSection() {
             </div>
             {annual && (
               <p className="text-xs font-semibold mb-6" style={{ color: ACCENT_DARK }}>
-                Soit {pricing.business.annual * 12}€/an au lieu de {pricing.business.monthly * 12}€
+                Soit {pricing.business.annual * 12} €/an au lieu de {pricing.business.monthly * 12} €
               </p>
             )}
             <ul className="space-y-3 mb-8">
@@ -381,9 +508,9 @@ function PricingSection() {
             </ul>
             <Link
               to="/login?mode=register"
-              className="block w-full text-center py-3.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all hover:scale-[1.02]"
-              style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, boxShadow: `0 12px 30px ${ACCENT}40` }}
-            >Essai gratuit 14 jours</Link>
+              className="block w-full text-center py-3.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, boxShadow: `0 12px 30px ${ACCENT}40`, '--tw-ring-color': ACCENT } as React.CSSProperties}
+            >Commencer l'essai gratuit</Link>
           </div>
         </div>
       </div>
@@ -395,21 +522,22 @@ function PricingSection() {
 // 04 — FONCTIONNALITÉS
 // ═══════════════════════════════════════════════════════════════════════════
 function FeaturesSection() {
-  const ref = useReveal<HTMLDivElement>();
+  const titleRef = useReveal<HTMLDivElement>();
+  const gridRef = useStagger<HTMLDivElement>(0.1);
   const features = [
     { icon: Send, title: 'Commandes fournisseurs en 1 clic' },
     { icon: Sparkles, title: "L'IA qui parle cuisine" },
     { icon: ClipboardList, title: 'Fiches techniques en quelques clics' },
     { icon: Truck, title: 'Suivi des prix fournisseurs' },
-    { icon: Scale, title: 'Balance Bluetooth en cuisine' },
+    { icon: Scale, title: 'Pesage live en cuisine' },
     { icon: Thermometer, title: 'HACCP digital, sans papier' },
   ];
 
   return (
     <section className="py-24 px-6 lg:px-8 bg-white">
-      <div ref={ref} className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-start">
-          <div>
+          <div ref={titleRef}>
             <SectionNumber n="04" label="Fonctionnalités" />
             <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
               Tout ce dont
@@ -420,16 +548,29 @@ function FeaturesSection() {
               Six outils puissants pour reprendre le contrôle de vos marges.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div ref={gridRef} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {features.map((f) => {
               const Icon = f.icon;
               return (
                 <div
                   key={f.title}
-                  className="rounded-2xl p-5 bg-white transition-all hover:-translate-y-1 hover:shadow-md"
+                  className="rounded-2xl p-5 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-md group"
                   style={{ border: `1px solid ${BORDER}` }}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget;
+                    el.style.borderColor = ACCENT;
+                    el.style.background = ACCENT_BG;
+                  }}
+                  onMouseLeave={(e) => {
+                    const el = e.currentTarget;
+                    el.style.borderColor = BORDER;
+                    el.style.background = 'white';
+                  }}
                 >
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-3" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
+                  <div
+                    className="w-11 h-11 rounded-xl flex items-center justify-center mb-3 transition-transform duration-200 group-hover:scale-110"
+                    style={{ background: ACCENT_BG, color: ACCENT_DARK }}
+                  >
                     <Icon className="w-5 h-5" />
                   </div>
                   <h3 className="text-sm font-bold" style={{ color: TEXT }}>{f.title}</h3>
@@ -447,15 +588,34 @@ function FeaturesSection() {
 // 05 — PROCESSUS
 // ═══════════════════════════════════════════════════════════════════════════
 function ProcessSection() {
-  const ref = useReveal<HTMLDivElement>();
+  const titleRef = useReveal<HTMLDivElement>();
+  const stepsRef = useStagger<HTMLDivElement>(0.15);
+  const timelineRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = timelineRef.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ctx = gsap.context(() => {
+      gsap.from(el, {
+        scaleX: 0,
+        transformOrigin: 'left center',
+        duration: 1.2,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 80%', toggleActions: 'play none none none' },
+      });
+    });
+    return () => ctx.revert();
+  }, []);
+
   const steps = [
-    { n: '01', icon: ScanLine, title: 'Ajoutez vos ingrédients', desc: "Importez votre liste d'ingrédients depuis Excel ou dictez-les à l'IA. Prix, fournisseurs, unités : tout est organisé automatiquement." },
-    { n: '02', icon: ClipboardList, title: 'Créez vos fiches techniques', desc: "L'assistant IA génère vos fiches en 10 secondes. Food cost, marge, allergènes, coefficient — tout est calculé en temps réel." },
-    { n: '03', icon: BarChart3, title: 'Optimisez vos marges', desc: "Dashboard avec KPIs, alertes prix fournisseurs, Menu Engineering. Vos marges s'améliorent dès le premier jour." },
+    { n: '01', icon: ScanLine, title: 'Ajoutez vos ingrédients', desc: "Importez votre liste depuis Excel ou dictez-les à l'IA. Prix, fournisseurs, unités : tout est organisé automatiquement." },
+    { n: '02', icon: ClipboardList, title: 'Créez vos fiches techniques', desc: "L'assistant IA génère vos fiches en 10 secondes. Food cost, marge, allergènes, coefficient — calculés en temps réel." },
+    { n: '03', icon: BarChart3, title: 'Optimisez vos marges', desc: "Dashboard KPIs, alertes prix fournisseurs, Menu Engineering. Vos marges s'améliorent dès le premier jour." },
   ];
   return (
     <section className="py-24 px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
-      <div ref={ref} className="max-w-6xl mx-auto">
+      <div ref={titleRef} className="max-w-6xl mx-auto">
         <SectionNumber n="05" label="Processus" />
         <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
           Trois étapes <span style={{ color: ACCENT }}>simples</span>
@@ -463,26 +623,33 @@ function ProcessSection() {
         <p className="mt-4 text-lg" style={{ color: TEXT_MUTED }}>
           De l'inscription à l'optimisation de vos marges en quelques minutes.
         </p>
-        <div className="mt-16 grid md:grid-cols-3 gap-6 relative">
+        <div className="mt-16 relative">
+          {/* Animated dotted timeline */}
           <div
-            className="hidden md:block absolute top-12 left-1/6 right-1/6 h-px -z-10"
-            style={{ backgroundImage: `repeating-linear-gradient(to right, ${ACCENT} 0 6px, transparent 6px 12px)` }}
+            ref={timelineRef}
+            className="hidden md:block absolute top-7 left-[calc(16.67%+28px)] right-[calc(16.67%+28px)] h-px -z-10"
+            style={{ backgroundImage: `repeating-linear-gradient(to right, ${ACCENT} 0 8px, transparent 8px 16px)` }}
           />
-          {steps.map((step) => {
-            const Icon = step.icon;
-            return (
-              <div key={step.n} className="text-center">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-4 font-mono font-bold text-sm" style={{ background: 'white', border: `1px solid ${BORDER}`, color: TEXT }}>
-                  {step.n}
+          <div ref={stepsRef} className="grid md:grid-cols-3 gap-6">
+            {steps.map((step) => {
+              const Icon = step.icon;
+              return (
+                <div key={step.n} className="text-center">
+                  <div
+                    className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-4 font-mono font-bold text-sm transition-transform duration-200 hover:scale-110"
+                    style={{ background: 'white', border: `2px solid ${ACCENT}`, color: ACCENT_DARK }}
+                  >
+                    {step.n}
+                  </div>
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4 mx-auto" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
+                    <Icon className="w-6 h-6" style={{ color: ACCENT_DARK }} />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2" style={{ color: TEXT }}>{step.title}</h3>
+                  <p className="text-sm leading-relaxed max-w-xs mx-auto" style={{ color: TEXT_MUTED }}>{step.desc}</p>
                 </div>
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4 mx-auto" style={{ background: 'white', border: `1px solid ${BORDER}` }}>
-                  <Icon className="w-6 h-6" style={{ color: TEXT }} />
-                </div>
-                <h3 className="text-lg font-bold mb-2" style={{ color: TEXT }}>{step.title}</h3>
-                <p className="text-sm leading-relaxed max-w-xs mx-auto" style={{ color: TEXT_MUTED }}>{step.desc}</p>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
@@ -493,16 +660,39 @@ function ProcessSection() {
 // 06 — TÉMOIGNAGES
 // ═══════════════════════════════════════════════════════════════════════════
 function TestimonialsSection() {
-  const ref = useReveal<HTMLDivElement>();
+  const titleRef = useReveal<HTMLDivElement>();
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = cardsRef.current;
+    if (!container) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const cards = Array.from(container.children) as HTMLElement[];
+    const xOffsets = [-60, 0, 60];
+    const ctx = gsap.context(() => {
+      cards.forEach((card, i) => {
+        gsap.from(card, {
+          x: xOffsets[i] ?? 0,
+          opacity: 0,
+          duration: 0.75,
+          ease: 'power3.out',
+          delay: i * 0.12,
+          scrollTrigger: { trigger: container, start: 'top 85%', toggleActions: 'play none none none' },
+        });
+      });
+    });
+    return () => ctx.revert();
+  }, []);
+
   const testimonials = [
     { stars: 5, quote: '+4 points de marge en 3 mois. Les fiches techniques automatiques nous ont tout changé. Avant on calculait à la main sur des Post-it, maintenant tout est précis au centime près.', initials: 'LD', name: 'Laurent Dubois', role: 'Chef propriétaire', restaurant: 'Le Jardin des Saveurs, Lyon' },
-    { stars: 5, quote: "On a réduit notre food cost de 34% à 27% en 2 mois. L'IA qui crée les fiches techniques en 10 secondes, c'est un game changer. Mon équipe ne peut plus s'en passer.", initials: 'SM', name: 'Sophie Martin', role: 'Directrice', restaurant: 'Brasserie Le Comptoir, Paris' },
-    { stars: 5, quote: "Chaque centime compte en food truck. Les alertes sur les prix fournisseurs m'ont fait économiser 800 euros le premier mois. L'app est simple, rapide, parfaite pour le terrain.", initials: 'KB', name: 'Karim Benali', role: 'Gérant', restaurant: 'Street Flavors, Bordeaux' },
+    { stars: 5, quote: "On a réduit notre food cost de 34 % à 27 % en 2 mois. L'IA qui crée les fiches techniques en 10 secondes, c'est un vrai gain de temps. Mon équipe ne peut plus s'en passer.", initials: 'SM', name: 'Sophie Martin', role: 'Directrice', restaurant: 'Brasserie Le Comptoir, Paris' },
+    { stars: 5, quote: "Chaque centime compte en food truck. Les alertes sur les prix fournisseurs m'ont fait économiser 800 € le premier mois. L'app est simple, rapide, parfaite pour le terrain.", initials: 'KB', name: 'Karim Benali', role: 'Gérant', restaurant: 'Street Flavors, Bordeaux' },
   ];
   return (
     <section className="py-24 px-6 lg:px-8 bg-white">
-      <div ref={ref} className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+      <div className="max-w-7xl mx-auto">
+        <div ref={titleRef} className="text-center mb-12">
           <div className="flex justify-center"><SectionNumber n="06" label="Témoignages" /></div>
           <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
             Ils ont <span style={{ color: ACCENT }}>transformé</span>
@@ -513,9 +703,13 @@ function TestimonialsSection() {
             Des restaurateurs comme vous partagent leur expérience.
           </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div ref={cardsRef} className="grid md:grid-cols-3 gap-6">
           {testimonials.map((t) => (
-            <div key={t.name} className="rounded-3xl p-7 bg-white" style={{ border: `1px solid ${BORDER}` }}>
+            <div
+              key={t.name}
+              className="rounded-3xl p-7 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+              style={{ border: `1px solid ${BORDER}` }}
+            >
               <div className="flex gap-0.5 mb-4">
                 {Array.from({ length: t.stars }).map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-current" style={{ color: '#0F172A' }} />
@@ -523,7 +717,7 @@ function TestimonialsSection() {
               </div>
               <p className="text-sm leading-relaxed mb-6" style={{ color: TEXT }}>"{t.quote}"</p>
               <div className="pt-5 mt-auto flex items-center gap-3" style={{ borderTop: `1px solid ${BORDER}` }}>
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs" style={{ background: '#F5F5F5', color: TEXT }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
                   {t.initials}
                 </div>
                 <div>
@@ -772,19 +966,42 @@ function TutorialsSection() {
   const ref = useReveal<HTMLDivElement>();
   const [activeIdx, setActiveIdx] = useState(0);
   const [autoplay, setAutoplay] = useState(true);
+  const [prevIdx, setPrevIdx] = useState<number | null>(null);
+  const mockupRef = useRef<HTMLDivElement>(null);
+
   const tutorials = [
     { icon: Scale, title: 'Balance connectée', desc: 'Pesez vos ingrédients en temps réel.', mockup: MockupBalance, slug: 'weigh' },
     { icon: Truck, title: 'Commandes fournisseurs', desc: "L'IA suggère, vous envoyez en 1 clic.", mockup: MockupCommandes, slug: 'commandes' },
-    { icon: Sparkles, title: 'Assistant IA', desc: '19 actions IA pour piloter votre cuisine.', mockup: MockupIA, slug: 'assistant-ia' },
+    { icon: Sparkles, title: 'Assistant IA', desc: '19 actions disponibles pour piloter votre cuisine.', mockup: MockupIA, slug: 'assistant-ia' },
     { icon: Send, title: 'Messages & alertes', desc: 'Hausse prix, livraisons, suggestions IA.', mockup: MockupMessages, slug: 'messages' },
     { icon: ClipboardList, title: 'Actualités IA', desc: 'Veille marché, réglementation, tendances.', mockup: MockupActualites, slug: 'actualites-ia' },
   ];
+
+  const currentSlug = `app.restaumargin.fr/${tutorials[activeIdx].slug}`;
+  const typedSlug = useTypingEffect(currentSlug, prevIdx !== null, 35);
+  const displayedSlug = prevIdx !== null ? typedSlug : currentSlug;
+
+  const switchTo = useCallback((i: number) => {
+    setPrevIdx(activeIdx);
+    setActiveIdx(i);
+  }, [activeIdx]);
+
+  // Fade+scale transition on mockup switch
+  useEffect(() => {
+    const el = mockupRef.current;
+    if (!el || prevIdx === null) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    gsap.fromTo(el, { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' });
+  }, [activeIdx, prevIdx]);
+
   useEffect(() => {
     if (!autoplay) return;
-    const id = setInterval(() => setActiveIdx((i) => (i + 1) % tutorials.length), 5000);
+    const id = setInterval(() => switchTo((activeIdx + 1) % tutorials.length), 5000);
     return () => clearInterval(id);
-  }, [autoplay, tutorials.length]);
+  }, [autoplay, activeIdx, switchTo, tutorials.length]);
+
   const ActiveMockup = tutorials[activeIdx].mockup;
+
   return (
     <section className="py-24 px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
       <div ref={ref} className="max-w-7xl mx-auto">
@@ -798,6 +1015,7 @@ function TutorialsSection() {
         <div className="mt-12 grid lg:grid-cols-[2fr_1fr] gap-8 items-start">
           <div className="rounded-3xl bg-[#0F172A] p-3 shadow-2xl relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
             <div className="rounded-2xl bg-white h-full flex flex-col overflow-hidden" style={{ border: `1px solid ${BORDER}` }}>
+              {/* Browser chrome */}
               <div className="flex items-center gap-2 px-4 py-2.5 border-b" style={{ background: '#FAFAFA', borderColor: BORDER }}>
                 <div className="flex gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
@@ -805,23 +1023,25 @@ function TutorialsSection() {
                   <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
                 </div>
                 <div className="ml-3 flex-1 max-w-md text-center text-xs px-3 py-1 rounded-md font-mono" style={{ background: 'white', border: `1px solid ${BORDER}`, color: TEXT_MUTED }}>
-                  app.restaumargin.fr/{tutorials[activeIdx].slug}
+                  {displayedSlug}
                 </div>
                 <div className="flex items-center gap-2 text-xs" style={{ color: TEXT_MUTED }}>
                   <span className="w-2 h-2 rounded-full" style={{ background: ACCENT }} />
                   Live
                 </div>
               </div>
-              <div key={activeIdx} className="flex-1 p-5 overflow-hidden animate-fade-in">
+              {/* Mockup content with fade+scale transition */}
+              <div ref={mockupRef} className="flex-1 p-5 overflow-hidden">
                 <ActiveMockup />
               </div>
             </div>
+            {/* Progress bar + controls */}
             <div className="absolute bottom-1 left-1 right-1 px-3 flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => setAutoplay((a) => !a)}
-                className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
-                aria-label={autoplay ? 'Pause' : 'Play'}
+                className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                aria-label={autoplay ? 'Mettre en pause' : 'Lancer la lecture'}
               >
                 {autoplay ? <span className="block w-2 h-2.5 border-l-2 border-r-2 border-white" /> : <Play className="w-3 h-3 ml-0.5" />}
               </button>
@@ -851,12 +1071,16 @@ function TutorialsSection() {
                 <button
                   key={tut.title}
                   type="button"
-                  onClick={() => { setActiveIdx(i); setAutoplay(false); }}
-                  className="w-full text-left rounded-2xl p-4 bg-white transition-all"
-                  style={{ border: `2px solid ${active ? ACCENT : BORDER}`, boxShadow: active ? `0 8px 24px ${ACCENT}1A` : 'none' }}
+                  onClick={() => { switchTo(i); setAutoplay(false); }}
+                  className="w-full text-left rounded-2xl p-4 bg-white transition-all duration-200 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  style={{
+                    border: `2px solid ${active ? ACCENT : BORDER}`,
+                    boxShadow: active ? `0 8px 24px ${ACCENT}1A` : 'none',
+                    '--tw-ring-color': ACCENT,
+                  } as React.CSSProperties}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: active ? ACCENT : '#F5F5F5', color: active ? 'white' : TEXT }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors duration-200" style={{ background: active ? ACCENT : '#F5F5F5', color: active ? 'white' : TEXT }}>
                       <Icon className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -869,9 +1093,9 @@ function TutorialsSection() {
             })}
             <Link
               to="/login?mode=register"
-              className="block text-center px-6 py-3 rounded-xl text-white font-bold text-sm shadow-lg mt-4 transition-all hover:scale-[1.02]"
-              style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, boxShadow: `0 12px 30px ${ACCENT}40` }}
-            >Essayer maintenant →</Link>
+              className="block text-center px-6 py-3 rounded-xl text-white font-bold text-sm shadow-lg mt-4 transition-all hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, boxShadow: `0 12px 30px ${ACCENT}40`, '--tw-ring-color': ACCENT } as React.CSSProperties}
+            >Essayer maintenant <ArrowRight className="inline w-4 h-4 ml-1" /></Link>
           </div>
         </div>
       </div>
@@ -883,7 +1107,27 @@ function TutorialsSection() {
 // 08 — TRUST BADGES
 // ═══════════════════════════════════════════════════════════════════════════
 function TrustBadgesSection() {
-  const ref = useReveal<HTMLDivElement>();
+  const titleRef = useReveal<HTMLDivElement>();
+  const badgesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = badgesRef.current;
+    if (!container) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const items = Array.from(container.children) as HTMLElement[];
+    const ctx = gsap.context(() => {
+      gsap.from(items, {
+        x: -40,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        stagger: 0.1,
+        scrollTrigger: { trigger: container, start: 'top 85%', toggleActions: 'play none none none' },
+      });
+    });
+    return () => ctx.revert();
+  }, []);
+
   const badges = [
     { icon: ShieldCheck, title: 'Données sécurisées', sub: 'Chiffrement SSL/TLS' },
     { icon: MapPin, title: 'Made in France', sub: 'Hébergé en Europe' },
@@ -891,16 +1135,22 @@ function TrustBadgesSection() {
     { icon: FileCheck, title: 'RGPD Conforme', sub: 'Vos données vous appartiennent' },
     { icon: CreditCard, title: 'Essai sans CB', sub: '14 jours gratuits' },
   ];
+
   return (
     <section className="py-24 px-6 lg:px-8 bg-white">
-      <div ref={ref} className="max-w-7xl mx-auto">
-        <SectionNumber n="08" label="Confiance & sécurité" />
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-5 gap-8">
+      <div className="max-w-7xl mx-auto">
+        <div ref={titleRef}>
+          <SectionNumber n="08" label="Confiance & sécurité" />
+        </div>
+        <div ref={badgesRef} className="mt-12 grid grid-cols-2 md:grid-cols-5 gap-8">
           {badges.map((b) => {
             const Icon = b.icon;
             return (
-              <div key={b.title} className="text-center">
-                <div className="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center mb-3" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
+              <div key={b.title} className="text-center group">
+                <div
+                  className="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center mb-3 transition-transform duration-300 group-hover:rotate-[15deg]"
+                  style={{ background: ACCENT_BG, color: ACCENT_DARK }}
+                >
                   <Icon className="w-6 h-6" />
                 </div>
                 <p className="text-sm font-bold" style={{ color: TEXT }}>{b.title}</p>
@@ -923,7 +1173,15 @@ function TrustBadgesSection() {
 function FinalCtaSection() {
   const ref = useReveal<HTMLDivElement>();
   return (
-    <section className="py-24 px-6 lg:px-8 bg-white">
+    <section className="relative py-24 px-6 lg:px-8 overflow-hidden" style={{ background: 'white' }}>
+      {/* Animated gradient mesh */}
+      <div
+        className="absolute inset-0 -z-10 opacity-30 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse at 20% 50%, ${ACCENT_BG} 0%, transparent 60%), radial-gradient(ellipse at 80% 50%, ${ACCENT_BG} 0%, transparent 60%)`,
+          animation: 'gradientDrift 8s ease-in-out infinite alternate',
+        }}
+      />
       <div ref={ref} className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_1fr] gap-12 items-center">
         <div>
           <SectionNumber n="09" label="Prêt à augmenter vos marges ?" />
@@ -935,8 +1193,13 @@ function FinalCtaSection() {
           <p className="mt-4 text-lg" style={{ color: TEXT_MUTED }}>Essayez gratuitement pendant 14 jours.</p>
           <Link
             to="/login?mode=register"
-            className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-white font-bold text-base shadow-lg mt-8 transition-all hover:scale-[1.02] active:scale-[0.98]"
-            style={{ background: `linear-gradient(135deg, ${ACCENT} 0%, ${ACCENT_DARK} 100%)`, boxShadow: `0 12px 30px ${ACCENT}40` }}
+            className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-white font-bold text-base shadow-lg mt-8 transition-all hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            style={{
+              background: `linear-gradient(135deg, ${ACCENT} 0%, ${ACCENT_DARK} 100%)`,
+              boxShadow: `0 12px 30px ${ACCENT}40`,
+              animation: 'ctaGlow 2.5s ease-in-out infinite',
+              '--tw-ring-color': ACCENT,
+            } as React.CSSProperties}
           >
             Commencer gratuitement <ArrowRight className="w-4 h-4" />
           </Link>
@@ -954,9 +1217,11 @@ function FinalCtaSection() {
               <span className="text-sm font-bold" style={{ color: TEXT }}>Vue d'ensemble</span>
             </div>
             <div className="text-xs uppercase tracking-widest font-semibold mb-1" style={{ color: TEXT_MUTED }}>Économies ce mois</div>
-            <div className="text-4xl font-extrabold tabular-nums mb-2" style={{ color: ACCENT_DARK }}>479.00 €</div>
+            <div className="text-4xl font-extrabold tabular-nums mb-2" style={{ color: ACCENT_DARK }}>
+              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(479)}
+            </div>
             <div className="flex items-center gap-1 text-xs font-semibold mb-5" style={{ color: ACCENT_DARK }}>
-              ↗ +12% <span className="font-normal" style={{ color: TEXT_MUTED }}>vs mois dernier</span>
+              ↗ +12 % <span className="font-normal" style={{ color: TEXT_MUTED }}>vs mois dernier</span>
             </div>
             <svg viewBox="0 0 240 80" className="w-full mb-5" preserveAspectRatio="none">
               <defs>
@@ -971,13 +1236,13 @@ function FinalCtaSection() {
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-xl p-3" style={{ background: '#F8FAFC' }}>
                 <div className="text-xs font-semibold" style={{ color: TEXT_MUTED }}>Marge moyenne</div>
-                <div className="text-2xl font-extrabold mt-1 tabular-nums" style={{ color: TEXT }}>4.8%</div>
-                <div className="text-xs font-semibold mt-0.5" style={{ color: ACCENT_DARK }}>+0.0%</div>
+                <div className="text-2xl font-extrabold mt-1 tabular-nums" style={{ color: TEXT }}>4,8 %</div>
+                <div className="text-xs font-semibold mt-0.5" style={{ color: ACCENT_DARK }}>+0,0 %</div>
               </div>
               <div className="rounded-xl p-3" style={{ background: '#F8FAFC' }}>
                 <div className="text-xs font-semibold" style={{ color: TEXT_MUTED }}>Food cost moyen</div>
-                <div className="text-2xl font-extrabold mt-1 tabular-nums" style={{ color: TEXT }}>27.4%</div>
-                <div className="text-xs font-semibold mt-0.5" style={{ color: ACCENT_DARK }}>-2.1%</div>
+                <div className="text-2xl font-extrabold mt-1 tabular-nums" style={{ color: TEXT }}>27,4 %</div>
+                <div className="text-xs font-semibold mt-0.5" style={{ color: ACCENT_DARK }}>-2,1 %</div>
               </div>
             </div>
           </div>
@@ -1075,11 +1340,15 @@ function Navbar() {
           <Link to="/blog" className="hover:text-[#0F172A] transition-colors">Blog</Link>
         </div>
         <div className="hidden lg:flex items-center gap-3">
-          <Link to="/login" className="text-sm font-semibold transition-colors" style={{ color: TEXT }}>Se connecter</Link>
+          <Link
+            to="/login"
+            className="text-sm font-semibold transition-colors hover:text-[#0F172A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md px-2 py-1"
+            style={{ color: TEXT, '--tw-ring-color': ACCENT } as React.CSSProperties}
+          >Se connecter</Link>
           <Link
             to="/login?mode=register"
-            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-white font-semibold text-sm shadow-md transition-transform hover:scale-[1.02]"
-            style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})` }}
+            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-white font-semibold text-sm shadow-md transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, '--tw-ring-color': ACCENT } as React.CSSProperties}
           >
             Essai 14 jours <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -1127,7 +1396,16 @@ function StickyCtaBar() {
   }, []);
   return (
     <div className={`lg:hidden fixed bottom-4 inset-x-4 z-40 transition-transform duration-300 ${show ? 'translate-y-0' : 'translate-y-32'}`}>
-      <Link to="/login?mode=register" className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-white font-bold shadow-2xl" style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, boxShadow: `0 10px 30px ${ACCENT}66` }}>
+      <Link
+        to="/login?mode=register"
+        className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-white font-bold shadow-2xl active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+        style={{
+          background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`,
+          boxShadow: `0 10px 30px ${ACCENT}66`,
+          '--tw-ring-color': ACCENT,
+          animation: show ? 'ctaGlow 2.5s ease-in-out infinite' : 'none',
+        } as React.CSSProperties}
+      >
         Essai gratuit 14 jours <ArrowRight className="w-4 h-4" />
       </Link>
     </div>
@@ -1203,11 +1481,38 @@ function StructuredData() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// GLOBAL KEYFRAMES (injected once per page)
+// ═══════════════════════════════════════════════════════════════════════════
+const LANDING_STYLES = `
+  @keyframes gradientDrift {
+    0%   { background-position: 20% 50%; }
+    100% { background-position: 80% 50%; }
+  }
+  @keyframes ctaGlow {
+    0%, 100% { box-shadow: 0 12px 30px rgba(16,185,129,0.25); }
+    50%       { box-shadow: 0 12px 40px rgba(16,185,129,0.50); }
+  }
+  @keyframes badgePulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.75; }
+  }
+  .animate-pulse-badge { animation: badgePulse 2s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-pulse-badge,
+    [style*="ctaGlow"],
+    [style*="gradientDrift"] {
+      animation: none !important;
+    }
+  }
+`;
+
+// ═══════════════════════════════════════════════════════════════════════════
 // MAIN PAGE
 // ═══════════════════════════════════════════════════════════════════════════
 export default function Landing() {
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: LANDING_STYLES }} />
       <SEOHead
         title="RestauMargin — Logiciel de marge restaurant | L'IA au service de votre rentabilité"
         description="Gérez mieux. Gagnez plus. RestauMargin : fiches techniques, food cost et commandes fournisseurs automatisés par l'IA. Essai gratuit 14 jours sans CB."

@@ -23,6 +23,12 @@ model User {
   resetTokenExpiry  DateTime?
   acceptedCguAt     DateTime?
   trialEndsAt       DateTime?
+  totpSecret        String?
+  totpEnabled       Boolean            @default(false)
+  // Onboarding nurture sequence — populated by cron /api/cron/onboarding-nurture.
+  onboardingDay1SentAt DateTime?       @map("onboardingDay1SentAt")
+  onboardingDay3SentAt DateTime?       @map("onboardingDay3SentAt")
+  onboardingDay7SentAt DateTime?       @map("onboardingDay7SentAt")
   createdAt         DateTime           @default(now())
   ownedRestaurants  Restaurant[]       @relation("OwnedRestaurants")
   memberships       RestaurantMember[]
@@ -45,43 +51,41 @@ model ActivationCode {
 }
 
 model Restaurant {
-  id                Int                @id @default(autoincrement())
-  name              String
-  address           String?
-  cuisineType       String?
-  phone             String?
-  coversPerDay      Int                @default(80)
-  ownerId           Int
-  owner             User               @relation("OwnedRestaurants", fields: [ownerId], references: [id])
-  members           RestaurantMember[]
-  ingredients       Ingredient[]
-  recipes           Recipe[]
-  suppliers         Supplier[]
-  inventory         InventoryItem[]
-  invoices          Invoice[]
-  priceHistory      PriceHistory[]
-  menuSales         MenuSale[]
-  devis             Devis[]
-  conversations     Conversation[]
-  financialEntries  FinancialEntry[]
-  wasteLogs         WasteLog[]
+  id                     Int                     @id @default(autoincrement())
+  name                   String
+  address                String?
+  cuisineType            String?
+  phone                  String?
+  coversPerDay           Int                     @default(80)
+  ownerId                Int
+  owner                  User                    @relation("OwnedRestaurants", fields: [ownerId], references: [id])
+  members                RestaurantMember[]
+  ingredients            Ingredient[]
+  recipes                Recipe[]
+  suppliers              Supplier[]
+  inventory              InventoryItem[]
+  invoices               Invoice[]
+  priceHistory           PriceHistory[]
+  menuSales              MenuSale[]
+  devis                  Devis[]
+  conversations          Conversation[]
+  financialEntries       FinancialEntry[]
+  wasteLogs              WasteLog[]
   haccpTemperatures      HaccpTemperature[]
   haccpCleanings         HaccpCleaning[]
   haccpCorrectiveActions HaccpCorrectiveAction[]
-  employees         Employee[]
-  shifts            Shift[]
-  timeEntries       TimeEntry[]
-  seminaires        Seminaire[]
-  marketplaceOrders MarketplaceOrder[]
-  newsItems         NewsItem[]
-  customerFeedback  CustomerFeedback[]
-  menuCalendar      MenuCalendar[]
-  dailyBudget       Float?
-  weeklyBudget      Float?
-  monthlyBudget     Float?
-  budgetEmailAlert  Boolean            @default(false)
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  employees              Employee[]
+  shifts                 Shift[]
+  seminaires             Seminaire[]
+  marketplaceOrders      MarketplaceOrder[]
+  newsItems              NewsItem[]
+  clients                Client[]
+  dailyBudget            Float?
+  weeklyBudget           Float?
+  monthlyBudget          Float?
+  budgetEmailAlert       Boolean                 @default(false)
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
 
   @@map("restaurants")
 }
@@ -123,6 +127,7 @@ model Supplier {
   restaurant    Restaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
+  deletedAt     DateTime?    @map("deleted_at")
   ingredients   Ingredient[]
 
   @@index([restaurantId])
@@ -140,20 +145,17 @@ model Ingredient {
   category      String
   allergens     String[]           @default([])
   barcode       String?
-  deletedAt     DateTime?
   restaurantId  Int
   restaurant    Restaurant         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
+  deletedAt     DateTime?          @map("deleted_at")
   recipes       RecipeIngredient[]
   inventoryItem InventoryItem?
   wasteLogs     WasteLog[]
-  priceHistory  PriceHistory[]
 
   @@index([restaurantId, name])
-  @@index([restaurantId, category])
   @@index([restaurantId, barcode])
-  @@index([supplierId])
   @@map("ingredients")
 }
 
@@ -167,15 +169,14 @@ model Recipe {
   prepTimeMinutes  Int?
   cookTimeMinutes  Int?
   laborCostPerHour Float              @default(0)
-  deletedAt        DateTime?
   photos           String[]           @default([])
   shareToken       String?            @unique
   restaurantId     Int
   restaurant       Restaurant         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
+  deletedAt        DateTime?          @map("deleted_at")
   ingredients      RecipeIngredient[]
-  menuCalendar     MenuCalendar[]
 
   @@index([restaurantId, category])
   @@map("recipes")
@@ -202,7 +203,6 @@ model InventoryItem {
   unit                String
   minStock            Float      @default(0)
   maxStock            Float?
-  minQuantity         Float      @default(0)
   lastRestockDate     DateTime?
   lastRestockQuantity Float?
   notes               String?
@@ -226,12 +226,12 @@ model Invoice {
   restaurantId  Int
   restaurant    Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt     DateTime      @default(now())
+  deletedAt     DateTime?     @map("deleted_at")
   items         InvoiceItem[]
 
   @@index([supplierName])
   @@index([status])
   @@index([restaurantId, createdAt])
-  @@index([restaurantId, status])
   @@map("invoices")
 }
 
@@ -253,7 +253,6 @@ model InvoiceItem {
 model PriceHistory {
   id           Int        @id @default(autoincrement())
   ingredientId Int
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
   price        Float
   date         String
   source       String     @default("manual")
@@ -304,6 +303,7 @@ model Devis {
   items         DevisItem[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  deletedAt     DateTime?   @map("deleted_at")
 
   @@index([restaurantId, status])
   @@map("devis")
@@ -361,19 +361,18 @@ model WasteLog {
 }
 
 model Employee {
-  id           Int         @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   name         String
   role         String // Chef, Commis, Serveur, Plongeur, Barman, Manager
   email        String?
   phone        String?
-  hourlyRate   Float       @default(12)
-  color        String      @default("#3b82f6")
-  active       Boolean     @default(true)
+  hourlyRate   Float      @default(12)
+  color        String     @default("#3b82f6")
+  active       Boolean    @default(true)
   restaurantId Int
-  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   shifts       Shift[]
-  timeEntries  TimeEntry[]
-  createdAt    DateTime    @default(now())
+  createdAt    DateTime   @default(now())
 
   @@index([restaurantId])
   @@map("employees")
@@ -395,24 +394,6 @@ model Shift {
   @@index([restaurantId, date])
   @@index([employeeId, date])
   @@map("shifts")
-}
-
-model TimeEntry {
-  id           Int        @id @default(autoincrement())
-  employeeId   Int
-  employee     Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  date         String // YYYY-MM-DD
-  punchIn      DateTime
-  punchOut     DateTime?
-  totalMinutes Int?
-  notes        String?
-  restaurantId Int
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  createdAt    DateTime   @default(now())
-
-  @@index([restaurantId, date])
-  @@index([employeeId, date])
-  @@map("time_entries")
 }
 
 model HaccpTemperature {
@@ -484,6 +465,7 @@ model Seminaire {
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?  @map("deleted_at")
 
   @@index([restaurantId, status])
   @@index([restaurantId, date])
@@ -526,6 +508,22 @@ model MarketplaceOrderItem {
   @@map("marketplace_order_items")
 }
 
+model NewsItem {
+  id            Int         @id @default(autoincrement())
+  restaurantId  Int? // null = news globale (tous restaurants)
+  title         String
+  content       String      @db.Text
+  type          String // price_alert | opportunity | trend | tip
+  priority      String      @default("normal") // high | normal | low
+  dismissed     Boolean     @default(false)
+  mercurialeRef String? // ex: "2026-03-30"
+  createdAt     DateTime    @default(now())
+  restaurant    Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([restaurantId, dismissed])
+  @@map("news_items")
+}
+
 model Conversation {
   id           String     @id
   name         String
@@ -534,7 +532,6 @@ model Conversation {
   unreadCount  Int        @default(0)
   isGroup      Boolean    @default(false)
   avatar       String     @default("")
-  starred      Boolean    @default(false)
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
@@ -559,94 +556,11 @@ model Message {
   @@map("messages")
 }
 
-model Referral {
-  id            Int      @id @default(autoincrement())
-  referrerId    Int?
-  refereeId     Int?
-  referralCode  String   @unique
-  status        String   @default("pending")
-  rewardApplied Boolean  @default(false)
-  createdAt     DateTime @default(now())
-
-  @@map("referrals")
-}
-
-model AuditLog {
-  id           Int      @id @default(autoincrement())
-  userId       Int
-  restaurantId Int
-  action       String // CREATE, UPDATE, DELETE, RESTORE
-  entityType   String // ingredient, recipe, supplier, inventory, order
-  entityId     Int
-  changes      Json? // { field: { old: value, new: value } }
-  createdAt    DateTime @default(now())
-
-  @@index([restaurantId, createdAt])
-  @@index([entityType, entityId])
-  @@map("audit_logs")
-}
-
-model NewsItem {
-  id            Int         @id @default(autoincrement())
-  restaurantId  Int?
-  title         String
-  content       String
-  type          String
-  priority      String      @default("normal")
-  dismissed     Boolean     @default(false)
-  mercurialeRef String?
-  createdAt     DateTime    @default(now())
-  restaurant    Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-
-  @@index([restaurantId, dismissed])
-  @@map("news_items")
-}
-
-model NewsletterSubscriber {
-  id           Int      @id @default(autoincrement())
-  email        String   @unique
-  subscribedAt DateTime @default(now())
-  unsubscribed Boolean  @default(false)
-
-  @@map("newsletter_subscribers")
-}
-
-model CustomerFeedback {
-  id           Int        @id @default(autoincrement())
-  restaurantId Int
-  rating       Int
-  comment      String?
-  source       String     @default("app")
-  createdAt    DateTime   @default(now())
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-
-  @@index([restaurantId, createdAt])
-  @@map("customer_feedback")
-}
-
-model MenuCalendar {
-  id           Int        @id @default(autoincrement())
-  restaurantId Int
-  date         DateTime   @db.Date
-  mealType     String     @default("lunch")
-  recipeId     Int
-  recipe       Recipe     @relation(fields: [recipeId], references: [id])
-  category     String?
-  createdAt    DateTime   @default(now())
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-
-  @@index([restaurantId, date])
-  @@map("menu_calendar")
-}
-
 // ── Invoice Sequence — numerotation FR-conforme (art. 242 nonies A CGI) ──
-// Une ligne par (prefix, annee) — ex: key="FAC-2026", lastNumber=42
-// Transaction Prisma garantit l'atomicite (pas de doublon en concurrence)
-// JAMAIS supprimer ou modifier ces lignes (obligation legale 10 ans)
 model InvoiceSequence {
   id         Int      @id @default(autoincrement())
-  key        String   @unique  // ex: "FAC-2026", "AVO-2026"
-  prefix     String            // FAC | AVO | PRF
+  key        String   @unique
+  prefix     String
   year       Int
   lastNumber Int      @default(0)
   updatedAt  DateTime @updatedAt
@@ -655,26 +569,68 @@ model InvoiceSequence {
   @@map("invoice_sequences")
 }
 
+// ── OAuth One-Time Code Exchange — prevents JWT in URL (OWASP A01) ──
+model OauthCode {
+  code      String   @id
+  userId    Int
+  expiresAt DateTime @map("expires_at")
+  used      Boolean  @default(false)
+
+  @@index([expiresAt])
+  @@map("oauth_codes")
+}
+
+// ── JWT Revocation Blocklist — checked on every authenticated request ──
+model JwtRevoked {
+  jti       String   @id
+  expiresAt DateTime @map("expires_at")
+  revokedAt DateTime @default(now()) @map("revoked_at")
+
+  @@index([expiresAt])
+  @@map("jwt_revoked")
+}
+
 // ── AI Usage Log — instrumentation cout Anthropic par appel ──
-// Permet de calculer gross margin reelle (cout IA variable / user actif)
-// Alimentee par le middleware logAiUsage() dans api/utils/aiLogger.ts
 model AiUsageLog {
   id           Int      @id @default(autoincrement())
-  userId       Int?     // null si appel non-authentifie (ex: calcul public)
-  restaurantId Int?     // null si non applicable
-  action       String   // ex: "recipe_suggestion", "food_cost_analysis", "voice_command"
-  model        String   @default("claude-haiku-4-5") // modele utilise
-  tokensIn     Int      @default(0)  // prompt tokens
-  tokensOut    Int      @default(0)  // completion tokens
-  costUsd      Float    @default(0)  // cout USD (calcule depuis tokens)
-  costEur      Float    @default(0)  // cout EUR (converti au taux du moment)
-  durationMs   Int?     // duree de l'appel en ms
+  userId       Int?
+  restaurantId Int?
+  action       String
+  model        String   @default("claude-haiku-4-5")
+  tokensIn     Int      @default(0)
+  tokensOut    Int      @default(0)
+  costUsd      Float    @default(0)
+  costEur      Float    @default(0)
+  durationMs   Int?
   success      Boolean  @default(true)
-  errorCode    String?  // code erreur si success=false
+  errorCode    String?
   createdAt    DateTime @default(now())
 
   @@index([userId, createdAt])
   @@index([action, createdAt])
   @@index([createdAt])
   @@map("ai_usage_logs")
+}
+
+// ── CRM Client — Wave 3 (replaces localStorage) ──────────────────────────
+model Client {
+  id            Int        @id @default(autoincrement())
+  restaurantId  Int
+  name          String
+  email         String?
+  phone         String?
+  notes         String?
+  tags          String[]   @default([])
+  totalOrders   Int        @default(0)
+  totalSpentEur Decimal    @default(0) @db.Decimal(10, 2)
+  lastOrderAt   DateTime?
+  deletedAt     DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([restaurantId, name])
+  @@index([restaurantId, email])
+  @@index([restaurantId])
+  @@map("clients")
 }

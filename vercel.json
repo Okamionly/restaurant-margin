@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npx prisma generate --schema=server/prisma/schema.prisma && cd client && npx vite build && node scripts/prerender.cjs",
+  "buildCommand": "npx prisma generate && cd client && npx vite build && node scripts/prerender.cjs",
   "outputDirectory": "client/dist",
   "installCommand": "npm install && cd client && npm install && cd ../server && npm install",
   "functions": {

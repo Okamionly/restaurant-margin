@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RestauMargin — Wave 3 Preview | Obsidian Kitchen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   DESIGN SYSTEM — Obsidian Kitchen
+   RestauMargin Wave 3 — Cinematic Dark × Data-Dense
+   ============================================================ */
+
+:root {
+  /* Surfaces */
+  --bg:               #050505;
+  --bg-subtle:        #0A0F0D;
+  --surface:          #0F1612;
+  --surface-elevated: #1A2420;
+  --surface-hover:    #1F2E28;
+
+  /* Foreground */
+  --fg:               #F5F2EC;
+  --fg-muted:         #7A8C85;
+  --fg-subtle:        #3D4D47;
+
+  /* Accent */
+  --accent:           #00C878;
+  --accent-fg:        #000000;
+  --accent-subtle:    #001F12;
+  --accent-hover:     #00E589;
+  --accent-glow:      rgba(0, 200, 120, 0.15);
+
+  /* Semantic */
+  --success:          #00C878;
+  --warning:          #F59E0B;
+  --error:            #EF4444;
+  --info:             #60A5FA;
+
+  /* Borders */
+  --border:           #1A2E26;
+  --border-strong:    #2A4A3C;
+  --border-accent:    rgba(0, 200, 120, 0.3);
+
+  /* Shadows */
+  --shadow-sm:  0 2px 8px rgba(0,0,0,0.5);
+  --shadow-md:  0 4px 20px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.3);
+  --shadow-lg:  0 8px 40px rgba(0,0,0,0.65), 0 2px 8px rgba(0,0,0,0.4);
+  --shadow-xl:  0 16px 60px rgba(0,0,0,0.75), 0 4px 16px rgba(0,0,0,0.5);
+  --glow-accent: 0 0 40px rgba(0,200,120,0.18);
+  --glow-accent-sm: 0 0 20px rgba(0,200,120,0.12);
+
+  /* Radius */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  20px;
+  --radius-2xl: 28px;
+  --radius-full: 9999px;
+}
+
+/* ============================================================
+   RESET + BASE
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Body font — fallback (General Sans not loaded, Space Grotesk fills in) */
+p, li, label, input, textarea, span.body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-weight: 400;
+  color: var(--fg-muted);
+}
+
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 64px;
+  background: rgba(5, 5, 5, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+.navbar-inner {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--fg);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.logo-dot {
+  color: var(--accent);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+  margin-left: 12px;
+}
+
+.nav-links a {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  text-decoration: none;
+  transition: color 180ms ease;
+  letter-spacing: -0.01em;
+}
+
+.nav-links a:hover { color: var(--fg); }
+
+.nav-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-ghost-nav {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  transition: color 180ms, background 180ms;
+}
+
+.btn-ghost-nav:hover {
+  color: var(--fg);
+  background: var(--surface);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 200ms ease;
+  text-decoration: none;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #00C878, #00A862);
+  color: #000;
+  padding: 14px 24px;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--accent-hover), #00C878);
+  box-shadow: var(--glow-accent-sm);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--fg);
+  padding: 13px 23px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-strong);
+  font-size: 15px;
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.btn-nav {
+  background: linear-gradient(135deg, #00C878, #00A862);
+  color: #000;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-nav:hover {
+  box-shadow: var(--glow-accent-sm);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
+
+.hero {
+  position: relative;
+  padding-top: 128px;
+  padding-bottom: 96px;
+  overflow: hidden;
+}
+
+/* Background — 1 seule sphere tres discrete */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-glow-sphere {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(0, 200, 120, 0.09) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(0,200,120,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 64px;
+  align-items: center;
+}
+
+/* Eyebrow badge */
+.eyebrow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--accent-subtle);
+  border: 1px solid rgba(0, 200, 120, 0.2);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.eyebrow-badge svg {
+  width: 13px;
+  height: 13px;
+  fill: var(--accent);
+}
+
+/* H1 */
+.hero-h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(48px, 6vw, 80px);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: var(--fg);
+  margin-bottom: 24px;
+}
+
+.hero-h1 .accent-text {
+  color: var(--accent);
+}
+
+/* Subhead */
+.hero-subhead {
+  font-size: clamp(16px, 1.5vw, 20px);
+  font-weight: 400;
+  color: var(--fg-muted);
+  max-width: 42ch;
+  line-height: 1.65;
+  margin-bottom: 36px;
+}
+
+/* CTA group */
+.hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.hero-micro {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--fg-subtle);
+  margin-bottom: 48px;
+}
+
+.hero-micro svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--fg-subtle);
+}
+
+/* KPI row */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.kpi-item {
+  padding: 20px 24px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+  transition: background 200ms;
+}
+
+.kpi-item:last-child { border-right: none; }
+
+.kpi-item:hover { background: var(--surface-hover); }
+
+.kpi-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  display: block;
+}
+
+.kpi-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+/* ============================================================
+   HERO VISUAL (right column)
+   ============================================================ */
+
+.hero-visual {
+  position: relative;
+}
+
+.dashboard-frame {
+  position: relative;
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(0,200,120,0.15);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow-xl), var(--glow-accent);
+}
+
+/* Fake dashboard screenshot using CSS */
+.dashboard-mockup {
+  padding: 20px;
+  min-height: 400px;
+}
+
+.dash-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dash-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #EF4444; }
+.dot-y { background: #F59E0B; }
+.dot-g { background: #00C878; }
+
+.dash-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  font-family: 'JetBrains Mono', monospace;
+  margin-left: 4px;
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dash-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+.dash-card-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-subtle);
+  margin-bottom: 8px;
+}
+
+.dash-card-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.value-green { color: var(--accent); }
+.value-white { color: var(--fg); }
+.value-yellow { color: var(--warning); }
+.value-red { color: var(--error); }
+
+.dash-card-sub {
+  font-size: 11px;
+  color: var(--fg-muted);
+  margin-top: 4px;
+}
+
+.dash-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.dash-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-bar-label {
+  font-size: 11px;
+  color: var(--fg-muted);
+  width: 80px;
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.dash-bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dash-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+  transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dash-bar-fill-warn { background: var(--warning); }
+.dash-bar-fill-err { background: var(--error); }
+
+.dash-bar-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-muted);
+  width: 36px;
+  text-align: right;
+}
+
+.dash-alert {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #FCA5A5;
+}
+
+.dash-alert-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--error);
+  flex-shrink: 0;
+}
+
+/* Badge "Nouveau 2026" */
+.badge-nouveau {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: linear-gradient(135deg, #00C878, #00A862);
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: var(--glow-accent-sm);
+}
+
+/* ============================================================
+   SECTION: FEATURES
+   ============================================================ */
+
+.section-features {
+  padding: 96px 0;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+
+.section-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.section-h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  line-height: 1.1;
+  max-width: 18ch;
+  margin-bottom: 16px;
+}
+
+.section-h2 .accent-text { color: var(--accent); }
+
+.section-subhead {
+  font-size: 18px;
+  color: var(--fg-muted);
+  max-width: 48ch;
+  line-height: 1.65;
+  margin-bottom: 64px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  transition: all 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 3px 3px 0;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.feature-card:hover {
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-lg), var(--glow-accent-sm);
+  transform: translateY(-3px);
+}
+
+.feature-card:hover::before { opacity: 1; }
+
+.feature-card.priority {
+  background: linear-gradient(145deg, var(--surface), rgba(0,200,120,0.04));
+}
+
+.feature-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--accent-subtle);
+  border: 1px solid rgba(0,200,120,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.feature-icon-wrapper svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.75;
+}
+
+/* Non-priority icons — no wrapper */
+.feature-icon-plain {
+  width: 22px;
+  height: 22px;
+  stroke: var(--fg-muted);
+  fill: none;
+  stroke-width: 1.75;
+  margin-bottom: 18px;
+  display: block;
+}
+
+.feature-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.015em;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.feature-desc {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--fg-muted);
+  line-height: 1.65;
+}
+
+/* ============================================================
+   SECTION: PRICING
+   ============================================================ */
+
+.section-pricing {
+  padding: 96px 0;
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--border);
+}
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.pricing-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 32px 28px;
+  transition: all 220ms ease;
+  position: relative;
+}
+
+.pricing-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.pricing-card.featured {
+  background: linear-gradient(160deg, var(--surface-elevated), rgba(0,200,120,0.06));
+  border: 1.5px solid var(--accent);
+  transform: scale(1.03);
+  box-shadow: var(--shadow-xl), var(--glow-accent);
+}
+
+.pricing-card.featured:hover { transform: scale(1.03) translateY(-2px); }
+
+.pricing-badge-featured {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #00C878, #00A862);
+  color: #000;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pricing-plan-name {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-bottom: 16px;
+}
+
+.pricing-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 56px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.pricing-price .currency {
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--fg-muted);
+  vertical-align: top;
+  margin-top: 10px;
+  display: inline-block;
+}
+
+.pricing-price .period {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--fg-muted);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.pricing-desc {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 28px;
+  line-height: 1.55;
+  min-height: 40px;
+}
+
+.pricing-divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 24px;
+}
+
+.pricing-features-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.pricing-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--fg-muted);
+  line-height: 1.45;
+}
+
+.pricing-feature-item svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 2.5;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.pricing-feature-item.muted svg {
+  stroke: var(--fg-subtle);
+}
+
+.pricing-feature-item.muted {
+  color: var(--fg-subtle);
+}
+
+/* Trial badge */
+.trial-note {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 14px;
+  color: var(--fg-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.trial-note svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--fg-subtle);
+}
+
+/* ============================================================
+   SCROLL-IN ANIMATIONS
+   ============================================================ */
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-in-d1 { transition-delay: 80ms; }
+.fade-in-d2 { transition-delay: 160ms; }
+.fade-in-d3 { transition-delay: 240ms; }
+.fade-in-d4 { transition-delay: 320ms; }
+.fade-in-d5 { transition-delay: 400ms; }
+.fade-in-d6 { transition-delay: 480ms; }
+
+/* ============================================================
+   SCROLL PROGRESS BAR
+   ============================================================ */
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 200;
+  transition: width 80ms linear;
+  box-shadow: 0 0 8px rgba(0,200,120,0.6);
+}
+
+/* ============================================================
+   SECTION SEPARATOR
+   ============================================================ */
+
+.section-sep {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0;
+}
+
+/* ============================================================
+   RESPONSIVE — mobile first
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .btn-ghost-nav { display: none; }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .hero-visual { order: -1; }
+
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .kpi-item:nth-child(2) { border-right: none; }
+  .kpi-item:nth-child(3) { border-top: 1px solid var(--border); }
+  .kpi-item:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .pricing-card.featured {
+    transform: scale(1);
+    order: -1;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .pricing-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ============================================================
+   FOOTER PREVIEW
+   ============================================================ */
+
+.footer-preview {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 64px 0 32px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand p {
+  font-size: 14px;
+  color: var(--fg-muted);
+  line-height: 1.65;
+  max-width: 28ch;
+  margin-top: 12px;
+}
+
+.footer-col h4 {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-bottom: 16px;
+}
+
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col a {
+  font-size: 14px;
+  color: var(--fg-subtle);
+  text-decoration: none;
+  transition: color 180ms;
+}
+.footer-col a:hover { color: var(--fg-muted); }
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--fg-subtle);
+}
+
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- SCROLL PROGRESS BAR -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="logo">RestauMargin<span class="logo-dot">.</span></a>
+    <ul class="nav-links">
+      <li><a href="#features">Fonctionnalites</a></li>
+      <li><a href="#pricing">Tarifs</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Connexion</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#" class="btn-ghost-nav">Se connecter</a>
+      <button class="btn btn-nav">Essai 14 jours gratuit</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section class="hero" id="hero">
+
+  <!-- Background elements -->
+  <div class="hero-bg">
+    <div class="hero-glow-sphere"></div>
+    <div class="hero-grid-pattern"></div>
+  </div>
+
+  <div class="container">
+    <div class="hero-grid">
+
+      <!-- LEFT: Copy -->
+      <div class="hero-copy">
+
+        <!-- Eyebrow -->
+        <div class="eyebrow-badge fade-in visible">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor"/>
+          </svg>
+          Plateforme #1 des restaurateurs
+        </div>
+
+        <!-- H1 -->
+        <h1 class="hero-h1 fade-in fade-in-d1 visible">
+          Maitrisez vos marges.<br>
+          Augmentez vos <span class="accent-text">profits.</span>
+        </h1>
+
+        <!-- Subhead -->
+        <p class="hero-subhead fade-in fade-in-d2 visible">
+          La plateforme tout-en-un pour reprendre le controle de vos couts matiere,
+          calculer vos fiches techniques en secondes et automatiser vos commandes fournisseurs.
+        </p>
+
+        <!-- CTAs -->
+        <div class="hero-ctas fade-in fade-in-d3 visible">
+          <a href="#" class="btn btn-primary">
+            Essai gratuit 14 jours
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+          <a href="#" class="btn btn-secondary">
+            Voir le dashboard
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </a>
+        </div>
+
+        <!-- Micro copy -->
+        <p class="hero-micro fade-in fade-in-d3 visible">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Pas de carte bancaire requise &nbsp;·&nbsp; Annulation a tout moment
+        </p>
+
+        <!-- KPI row -->
+        <div class="kpi-row fade-in fade-in-d4 visible">
+          <div class="kpi-item">
+            <span class="kpi-value">150<span style="font-size:18px">+</span></span>
+            <div class="kpi-label">Restaurants equipes</div>
+          </div>
+          <div class="kpi-item">
+            <span class="kpi-value">-7<span style="font-size:18px">pts</span></span>
+            <div class="kpi-label">Food cost gagne en moy.</div>
+          </div>
+          <div class="kpi-item">
+            <span class="kpi-value">50k</span>
+            <div class="kpi-label">Pesees / mois</div>
+          </div>
+          <div class="kpi-item">
+            <span class="kpi-value">4.8<span style="font-size:18px">/5</span></span>
+            <div class="kpi-label">Satisfaction client</div>
+          </div>
+        </div>
+
+      </div><!-- /hero-copy -->
+
+      <!-- RIGHT: Dashboard -->
+      <div class="hero-visual fade-in fade-in-d2 visible">
+        <div class="badge-nouveau">Nouveau 2026</div>
+        <div class="dashboard-frame">
+          <div class="dashboard-mockup">
+
+            <!-- Topbar -->
+            <div class="dash-topbar">
+              <div class="dash-dots">
+                <div class="dot dot-r"></div>
+                <div class="dot dot-y"></div>
+                <div class="dot dot-g"></div>
+              </div>
+              <span class="dash-title">RestauMargin / Dashboard</span>
+            </div>
+
+            <!-- KPI cards -->
+            <div class="dash-grid">
+              <div class="dash-card">
+                <div class="dash-card-label">Food cost actuel</div>
+                <div class="dash-card-value value-green">27.3<span style="font-size:16px;font-weight:400">%</span></div>
+                <div class="dash-card-sub">▼ 6.7pts vs janvier</div>
+              </div>
+              <div class="dash-card">
+                <div class="dash-card-label">Marge brute</div>
+                <div class="dash-card-value value-white">72.7<span style="font-size:16px;font-weight:400">%</span></div>
+                <div class="dash-card-sub">Objectif : 70%</div>
+              </div>
+              <div class="dash-card">
+                <div class="dash-card-label">CA ce mois</div>
+                <div class="dash-card-value value-white">38<span style="font-size:16px;font-weight:400">k€</span></div>
+                <div class="dash-card-sub">▲ +4.2% vs N-1</div>
+              </div>
+              <div class="dash-card">
+                <div class="dash-card-label">Economies / mois</div>
+                <div class="dash-card-value value-green">2.6<span style="font-size:16px;font-weight:400">k€</span></div>
+                <div class="dash-card-sub">vs avant RestauMargin</div>
+              </div>
+            </div>
+
+            <!-- Bar chart -->
+            <div class="dash-bar-row">
+              <div style="font-size:11px;font-weight:600;color:var(--fg-muted);margin-bottom:4px;letter-spacing:0.06em;text-transform:uppercase">Food Cost par Plat</div>
+              <div class="dash-bar-item">
+                <span class="dash-bar-label">Entrecote</span>
+                <div class="dash-bar-track"><div class="dash-bar-fill" style="width:62%"></div></div>
+                <span class="dash-bar-pct">62%</span>
+              </div>
+              <div class="dash-bar-item">
+                <span class="dash-bar-label">Pavé saumon</span>
+                <div class="dash-bar-track"><div class="dash-bar-fill dash-bar-fill-warn" style="width:38%"></div></div>
+                <span class="dash-bar-pct">38%</span>
+              </div>
+              <div class="dash-bar-item">
+                <span class="dash-bar-label">Poulet roti</span>
+                <div class="dash-bar-track"><div class="dash-bar-fill" style="width:24%"></div></div>
+                <span class="dash-bar-pct">24%</span>
+              </div>
+              <div class="dash-bar-item">
+                <span class="dash-bar-label">Risotto</span>
+                <div class="dash-bar-track"><div class="dash-bar-fill" style="width:18%"></div></div>
+                <span class="dash-bar-pct">18%</span>
+              </div>
+            </div>
+
+            <!-- Alert -->
+            <div class="dash-alert">
+              <div class="dash-alert-dot"></div>
+              Entrecote : food cost 62% — revoir le grammage ou le tarif fournisseur
+            </div>
+
+          </div><!-- /dashboard-mockup -->
+        </div><!-- /dashboard-frame -->
+      </div><!-- /hero-visual -->
+
+    </div><!-- /hero-grid -->
+  </div><!-- /container -->
+</section>
+
+<div class="section-sep"></div>
+
+<!-- ============================================================
+     FEATURES SECTION
+     ============================================================ -->
+<section class="section-features" id="features">
+  <div class="container">
+
+    <div class="fade-in" style="transition-delay:0ms">
+      <span class="section-label">Fonctionnalites</span>
+      <h2 class="section-h2">Tout ce dont vous avez besoin.<br><span class="accent-text">Rien de superflu.</span></h2>
+      <p class="section-subhead">8 outils construits par des restaurateurs, pour des restaurateurs. Pas de jargon tech, pas de fonctions inutiles — juste des resultats sur vos marges.</p>
+    </div>
+
+    <div class="features-grid">
+
+      <!-- PRIORITY 1 -->
+      <div class="feature-card priority fade-in fade-in-d1">
+        <div class="feature-icon-wrapper">
+          <!-- Send / commande icon -->
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </div>
+        <h3 class="feature-title">Commandes fournisseurs en 1 clic</h3>
+        <p class="feature-desc">Envoyez vos commandes par email ou WhatsApp directement depuis l'appli. Fini les jonglages entre mails et coups de fil.</p>
+      </div>
+
+      <!-- PRIORITY 2 -->
+      <div class="feature-card priority fade-in fade-in-d2">
+        <div class="feature-icon-wrapper">
+          <!-- Sparkles / IA icon -->
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        </div>
+        <h3 class="feature-title">Creez des recettes en 10 secondes</h3>
+        <p class="feature-desc">Dictez vos ingredients a voix ou par chat. L'assistant calcule le food cost, les allergenes et la marge en temps reel.</p>
+      </div>
+
+      <!-- PRIORITY 3 -->
+      <div class="feature-card priority fade-in fade-in-d3">
+        <div class="feature-icon-wrapper">
+          <!-- ClipboardList / fiches icon -->
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            <line x1="9" y1="12" x2="15" y2="12"></line>
+            <line x1="9" y1="16" x2="13" y2="16"></line>
+          </svg>
+        </div>
+        <h3 class="feature-title">Fiches techniques instantanees</h3>
+        <p class="feature-desc">Marges, coefficients, allergenes calcules automatiquement. Vous n'avez qu'a cuisiner.</p>
+      </div>
+
+      <!-- Standard 4 -->
+      <div class="feature-card fade-in fade-in-d4">
+        <svg class="feature-icon-plain" viewBox="0 0 24 24">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <h3 class="feature-title">Optimisez votre carte</h3>
+        <p class="feature-desc">Identifiez quels plats plombent vos marges et lesquels vous rapportent le plus. Prenez les bonnes decisions sur vos prix.</p>
+      </div>
+
+      <!-- Standard 5 -->
+      <div class="feature-card fade-in fade-in-d5">
+        <svg class="feature-icon-plain" viewBox="0 0 24 24">
+          <rect x="1" y="3" width="15" height="13"></rect>
+          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+          <circle cx="5.5" cy="18.5" r="2.5"></circle>
+          <circle cx="18.5" cy="18.5" r="2.5"></circle>
+        </svg>
+        <h3 class="feature-title">Mercuriale — Alertes prix fournisseurs</h3>
+        <p class="feature-desc">Le suivi automatique des prix fournisseurs vous alerte quand une hausse impacte vos marges. Comparez en un coup d'oeil.</p>
+      </div>
+
+      <!-- Standard 6 -->
+      <div class="feature-card fade-in fade-in-d6">
+        <svg class="feature-icon-plain" viewBox="0 0 24 24">
+          <line x1="12" y1="3" x2="12" y2="21"></line>
+          <path d="m17 8-5-5-5 5"></path>
+          <path d="m7 16 5 5 5-5"></path>
+        </svg>
+        <h3 class="feature-title">Balance Bluetooth en cuisine</h3>
+        <p class="feature-desc">Connectez votre balance et pesez vos ingredients en direct. Verifiez vos marges pendant la preparation, au gramme pres.</p>
+      </div>
+
+      <!-- Standard 7 -->
+      <div class="feature-card fade-in fade-in-d1">
+        <svg class="feature-icon-plain" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        <h3 class="feature-title">HACCP digital — Zero papier</h3>
+        <p class="feature-desc">Temperatures, nettoyage, tracabilite. Tout est numerique et conforme aux exigences reglementaires. Fini les classeurs.</p>
+      </div>
+
+      <!-- Standard 8 -->
+      <div class="feature-card fade-in fade-in-d2">
+        <svg class="feature-icon-plain" viewBox="0 0 24 24">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+          <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+        <h3 class="feature-title">OCR — Scannez vos factures</h3>
+        <p class="feature-desc">Photographiez une facture fournisseur, RestauMargin extrait les prix et met a jour vos fiches techniques automatiquement.</p>
+      </div>
+
+    </div><!-- /features-grid -->
+
+  </div><!-- /container -->
+</section>
+
+<div class="section-sep"></div>
+
+<!-- ============================================================
+     PRICING SECTION
+     ============================================================ -->
+<section class="section-pricing" id="pricing">
+  <div class="container">
+
+    <div class="pricing-header">
+      <span class="section-label">Tarifs</span>
+      <h2 class="section-h2" style="margin:0 auto 16px;text-align:center;max-width:none">Simple. Transparent. <span class="accent-text">Sans surprise.</span></h2>
+      <p class="section-subhead" style="margin:0 auto;text-align:center">Essai gratuit 14 jours sur tous les plans. Sans carte bancaire. Annulation a tout moment.</p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <!-- FREE TRIAL -->
+      <div class="pricing-card fade-in fade-in-d1">
+        <div class="pricing-plan-name">Decouverte</div>
+        <div class="pricing-price">
+          <span class="currency">€</span>0<span class="period">/mois</span>
+        </div>
+        <p class="pricing-desc">Pour tester la plateforme et verifier si RestauMargin correspond a vos besoins.</p>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features-list">
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            5 fiches techniques
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Calcul food cost manuel
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Dashboard basique
+          </li>
+          <li class="pricing-feature-item muted">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            Commandes fournisseurs
+          </li>
+          <li class="pricing-feature-item muted">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            Scanner de factures (OCR)
+          </li>
+          <li class="pricing-feature-item muted">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            Balance Bluetooth
+          </li>
+        </ul>
+        <a href="#" class="btn btn-secondary" style="width:100%;justify-content:center">Commencer gratuitement</a>
+      </div>
+
+      <!-- PRO (featured) -->
+      <div class="pricing-card featured fade-in fade-in-d2">
+        <div class="pricing-badge-featured">Le plus populaire</div>
+        <div class="pricing-plan-name" style="color:var(--accent)">Pro</div>
+        <div class="pricing-price" style="color:var(--fg)">
+          <span class="currency">€</span>49<span class="period">/mois</span>
+        </div>
+        <p class="pricing-desc">Pour les restaurants independants qui veulent maitriser leurs couts et gagner du temps chaque semaine.</p>
+        <div class="pricing-divider" style="background:var(--border-accent)"></div>
+        <ul class="pricing-features-list">
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Fiches techniques illimitees
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            IA recettes par chat &amp; vocal
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Commandes fournisseurs email / WhatsApp
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Scanner de factures (OCR)
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Mercuriale &amp; alertes prix
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Balance Bluetooth
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            HACCP digital
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Support prioritaire 7j/7
+          </li>
+        </ul>
+        <a href="#" class="btn btn-primary" style="width:100%;justify-content:center">Demarrer l'essai gratuit</a>
+      </div>
+
+      <!-- BUSINESS -->
+      <div class="pricing-card fade-in fade-in-d3">
+        <div class="pricing-plan-name">Business</div>
+        <div class="pricing-price">
+          <span class="currency">€</span>149<span class="period">/mois</span>
+        </div>
+        <p class="pricing-desc">Pour les multi-sites, chaines et dark kitchens qui ont besoin de tout centraliser.</p>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features-list">
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Tout le plan Pro
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Jusqu'a 10 etablissements
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Utilisateurs illimites
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Reporting consolide multi-sites
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Integrations ERP &amp; caisse
+          </li>
+          <li class="pricing-feature-item">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Gestionnaire de compte dedie
+          </li>
+        </ul>
+        <a href="#" class="btn btn-secondary" style="width:100%;justify-content:center">Contacter l'equipe</a>
+      </div>
+
+    </div><!-- /pricing-grid -->
+
+    <!-- Trial note -->
+    <p class="trial-note fade-in">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      Paiement securise &nbsp;·&nbsp; Hebergement Europe (RGPD) &nbsp;·&nbsp; Sans engagement &nbsp;·&nbsp; Annulation en 1 clic
+    </p>
+
+  </div><!-- /container -->
+</section>
+
+<div class="section-sep"></div>
+
+<!-- ============================================================
+     FOOTER PREVIEW
+     ============================================================ -->
+<footer class="footer-preview">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">RestauMargin<span class="logo-dot">.</span></a>
+        <p>La plateforme de gestion des marges pour les restaurateurs qui veulent rester rentables.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produit</h4>
+        <ul>
+          <li><a href="#">Fonctionnalites</a></li>
+          <li><a href="#">Tarifs</a></li>
+          <li><a href="#">Calculateur food cost</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Ressources</h4>
+        <ul>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">Support</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Mentions legales</a></li>
+          <li><a href="#">CGU</a></li>
+          <li><a href="#">RGPD</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 RestauMargin. Tous droits reserves. Heberge en Europe.</span>
+      <span style="display:flex;align-items:center;gap:6px">
+        <span style="width:8px;height:8px;background:var(--accent);border-radius:50%;display:inline-block"></span>
+        Serveurs operationnels
+      </span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT — Scroll progress + Fade-in observer
+     ============================================================ -->
+<script>
+// Scroll progress bar
+const progressBar = document.getElementById('scrollProgress');
+window.addEventListener('scroll', () => {
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = (window.scrollY / docH) * 100;
+  progressBar.style.width = pct + '%';
+});
+
+// Fade-in on scroll
+const fadeEls = document.querySelectorAll('.fade-in:not(.visible)');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+
+fadeEls.forEach(el => observer.observe(el));
+
+// Animate bars on enter (hero dashboard)
+const bars = document.querySelectorAll('.dash-bar-fill');
+const finalWidths = ['62%', '38%', '24%', '18%'];
+bars.forEach((bar, i) => {
+  const final = bar.style.width;
+  bar.style.width = '0%';
+  setTimeout(() => {
+    bar.style.width = final;
+  }, 600 + i * 120);
+});
+</script>
+
+</body>
+</html>

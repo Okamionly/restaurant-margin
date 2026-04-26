@@ -25,6 +25,10 @@ model User {
   trialEndsAt       DateTime?
   totpSecret        String?
   totpEnabled       Boolean            @default(false)
+  // Onboarding nurture sequence — populated by cron /api/cron/onboarding-nurture.
+  onboardingDay1SentAt DateTime?       @map("onboardingDay1SentAt")
+  onboardingDay3SentAt DateTime?       @map("onboardingDay3SentAt")
+  onboardingDay7SentAt DateTime?       @map("onboardingDay7SentAt")
   createdAt         DateTime           @default(now())
   ownedRestaurants  Restaurant[]       @relation("OwnedRestaurants")
   memberships       RestaurantMember[]

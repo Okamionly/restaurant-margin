@@ -632,6 +632,80 @@ app.get('/api/cron/email-sequence', async (req: any, res) => {
   }
 });
 
+/**
+ * Onboarding nurture sequence — sends J+1, J+3, J+7 emails to new users who
+ * registered exactly that many days ago (UTC midnight buckets) and haven't
+ * received that day's email yet. Idempotent: safe to call multiple times per day.
+ *
+ * Schedule: cron-job.org (or Vercel cron) hits this daily at 09:00 Europe/Paris.
+ * Auth: requires CRON_SECRET via Authorization: Bearer header.
+ */
+app.get('/api/cron/onboarding-nurture', async (req: any, res) => {
+  if (!verifyCron(req, res)) return;
+  try {
+    if (!process.env.RESEND_API_KEY) {
+      return res.json({ skipped: true, reason: 'No RESEND_API_KEY' });
+    }
+
+    // Lazy-load Resend + templates so the dep cost is only paid when this cron runs.
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const {
+      buildOnboardingDay1Email,
+      buildOnboardingDay3Email,
+      buildOnboardingDay7Email,
+    } = await import('../api-lib/utils/onboardingTemplates');
+
+    const now = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+    // Look back 24h windows so users registering at any hour get their email
+    // within ~24h of the milestone, not pinned to a UTC midnight.
+    const windows = [
+      { day: 1 as const, after: now - 2 * dayMs, before: now - 1 * dayMs, col: 'onboardingDay1SentAt', build: buildOnboardingDay1Email, subject: 'Premier pas avec RestauMargin' },
+      { day: 3 as const, after: now - 4 * dayMs, before: now - 3 * dayMs, col: 'onboardingDay3SentAt', build: buildOnboardingDay3Email, subject: 'Ce que vos confrères font cette semaine' },
+      { day: 7 as const, after: now - 8 * dayMs, before: now - 7 * dayMs, col: 'onboardingDay7SentAt', build: buildOnboardingDay7Email, subject: 'Vous êtes à mi-essai — voilà votre ROI' },
+    ];
+
+    const results: Record<string, number> = { day1Sent: 0, day3Sent: 0, day7Sent: 0, errors: 0 };
+
+    for (const w of windows) {
+      // Find users registered in the window who haven't received this email yet.
+      const candidates = await prisma.user.findMany({
+        where: {
+          createdAt: { gte: new Date(w.after), lte: new Date(w.before) },
+          [w.col]: null,
+        } as any,
+        select: { id: true, email: true, name: true },
+      });
+
+      for (const u of candidates) {
+        try {
+          await resend.emails.send({
+            from: 'RestauMargin <contact@restaumargin.fr>',
+            to: u.email,
+            subject: w.subject,
+            html: w.build({ userName: u.name }),
+          });
+          // Mark as sent (race-safe: one row, one column).
+          await prisma.user.update({
+            where: { id: u.id },
+            data: { [w.col]: new Date() } as any,
+          });
+          results[`day${w.day}Sent`]++;
+        } catch (sendErr: any) {
+          console.error(`[CRON NURTURE day${w.day}] failed for ${u.email}:`, sendErr.message);
+          results.errors++;
+        }
+      }
+    }
+
+    res.json({ status: 'ok', timestamp: new Date().toISOString(), ...results });
+  } catch (e: any) {
+    console.error('[CRON NURTURE]', e.message);
+    res.json({ error: e.message });
+  }
+});
+
 // 4. LEAD FINDER — daily at 8h
 app.get('/api/cron/lead-finder', async (req: any, res) => {
   if (!verifyCron(req, res)) return;

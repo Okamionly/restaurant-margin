@@ -102,7 +102,14 @@ export default function Login() {
     setLoading(true);
     try {
       if (isRegisterMode) {
-        await register({ email, password, name: restaurantName || name || email.split('@')[0], restaurantName: restaurantName || undefined });
+        await register({
+          email,
+          password,
+          name: restaurantName || name || email.split('@')[0],
+          restaurantName: restaurantName || undefined,
+          // RGPD: persist consent timestamp on the backend (acceptedCguAt).
+          acceptedCgu: true,
+        });
         trackEvent('sign_up');
         // Google Ads conversion tracking
         if (typeof window !== 'undefined' && (window as any).gtag) {

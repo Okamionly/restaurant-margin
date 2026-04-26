@@ -317,7 +317,10 @@ ${footer('Devis g&eacute;n&eacute;r&eacute; via RestauMargin &mdash; www.restaum
 
 export function buildWelcomeEmail(data: WelcomeEmailData): string {
   const dashboardUrl = data.dashboardUrl || 'https://www.restaumargin.fr/dashboard';
-  const calendlyUrl = 'https://calendly.com/restaumargin/demo-15min';
+  // Use sending-domain URL to satisfy Resend "Ensure link URLs match sending
+  // domain" check + reduce spam-filter false positives. Vercel redirects
+  // /booking-demo -> calendly.com/restaumargin/demo-15min (302).
+  const calendlyUrl = 'https://www.restaumargin.fr/booking-demo';
   const loomVideoUrl = 'https://www.restaumargin.fr/dashboard';
   const loomThumbnailUrl = 'https://www.restaumargin.fr/og-image.png';
 

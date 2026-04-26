@@ -33,6 +33,11 @@ export const registerRequestSchema = z.object({
   name: z.string().min(1, 'Nom requis'),
   restaurantName: z.string().optional(),
   activationCode: z.string().optional(),
+  // RGPD: explicit consent must be true at registration time. UI gates the
+  // submit button on a checkbox; backend enforces the same here.
+  acceptedCgu: z.literal(true, {
+    errorMap: () => ({ message: 'Vous devez accepter les CGU pour vous inscrire' }),
+  }),
 });
 
 export const registerResponseSchema = z.object({

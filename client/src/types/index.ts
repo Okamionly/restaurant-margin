@@ -19,7 +19,11 @@ export interface RegisterData {
   name: string;
   restaurantName?: string;
   invitationCode?: string;
+  activationCode?: string;
   role?: string;
+  // RGPD: must be true at registration time. UI gates the submit button on
+  // a checkbox; backend (Zod + handler) enforces the same server-side.
+  acceptedCgu: true;
 }
 
 export interface Supplier {

@@ -24,6 +24,7 @@ import { getTemperatureStatus } from '../api-lib/utils/haccp';
 import { calculateRecipeMargin } from '../api-lib/utils/marginCalculator';
 import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit, requireMFA, setGUC } from '../api-lib/middleware';
 import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail, buildTrialExpiringEmail, buildTrialLastDayEmail, buildTrialExpiredEmail } from '../api-lib/utils/emailTemplates';
+import { buildOnboardingDay1Email, buildOnboardingDay3Email, buildOnboardingDay7Email } from '../api-lib/utils/onboardingTemplates';
 
 
 const app = express();
@@ -647,14 +648,8 @@ app.get('/api/cron/onboarding-nurture', async (req: any, res) => {
       return res.json({ skipped: true, reason: 'No RESEND_API_KEY' });
     }
 
-    // Lazy-load Resend + templates so the dep cost is only paid when this cron runs.
-    const { Resend } = await import('resend');
+    // Static imports below at top of file so Vercel NFT bundles them properly.
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const {
-      buildOnboardingDay1Email,
-      buildOnboardingDay3Email,
-      buildOnboardingDay7Email,
-    } = await import('../api-lib/utils/onboardingTemplates');
 
     const now = Date.now();
     const dayMs = 24 * 60 * 60 * 1000;

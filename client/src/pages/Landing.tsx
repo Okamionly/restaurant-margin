@@ -236,7 +236,7 @@ function HeroSection() {
   }, []);
 
   return (
-    <section className="relative pt-32 pb-20 px-6 lg:px-8 overflow-hidden">
+    <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Animated paper-fold green WebGL2 wallpaper, with CSS gradient fallback. */}
       <ShaderBackground intensity={0.45} />
       {/* White-ish veil so text contrast remains AA. Sits above the shader. */}
@@ -312,7 +312,7 @@ function RoiCalculatorSection() {
     new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n);
 
   return (
-    <section className="py-24 px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
+    <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
       <div ref={ref} className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_1fr] gap-12 items-center">
         <div>
           <SectionNumber n="02" label="Calculateur ROI" />
@@ -410,7 +410,7 @@ function PricingSection() {
   };
 
   return (
-    <section className="py-24 px-6 lg:px-8 bg-white">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
       <div ref={ref} className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-start mb-12">
           <div>
@@ -424,7 +424,7 @@ function PricingSection() {
               Sans engagement. Annulez quand vous voulez.
             </p>
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-start lg:justify-end">
             <div className="inline-flex items-center gap-1 p-1 rounded-full" style={{ background: '#F5F5F5' }}>
               <button
                 type="button"
@@ -539,7 +539,7 @@ function FeaturesSection() {
   ];
 
   return (
-    <section className="py-24 px-6 lg:px-8 bg-white">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-start">
           <div ref={titleRef}>
@@ -619,7 +619,7 @@ function ProcessSection() {
     { n: '03', icon: BarChart3, title: 'Optimisez vos marges', desc: "Dashboard KPIs, alertes prix fournisseurs, Menu Engineering. Vos marges s'améliorent dès le premier jour." },
   ];
   return (
-    <section className="py-24 px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
+    <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
       <div ref={titleRef} className="max-w-6xl mx-auto">
         <SectionNumber n="05" label="Processus" />
         <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
@@ -695,7 +695,7 @@ function TestimonialsSection() {
     { stars: 5, quote: "Chaque centime compte en food truck. Les alertes sur les prix fournisseurs m'ont fait économiser 800 € le premier mois. L'app est simple, rapide, parfaite pour le terrain.", initials: 'KB', name: 'Karim Benali', role: 'Gérant', restaurant: 'Street Flavors, Bordeaux' },
   ];
   return (
-    <section className="py-24 px-6 lg:px-8 bg-white">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
         <div ref={titleRef} className="text-center mb-12">
           <div className="flex justify-center"><SectionNumber n="06" label="Témoignages" /></div>
@@ -1008,7 +1008,7 @@ function TutorialsSection() {
   const ActiveMockup = tutorials[activeIdx].mockup;
 
   return (
-    <section className="py-24 px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
+    <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
       <div ref={ref} className="max-w-7xl mx-auto">
         <SectionNumber n="07" label="Tutoriels animés" />
         <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
@@ -1018,7 +1018,7 @@ function TutorialsSection() {
           Cinq scénarios animés directement dans l'application.
         </p>
         <div className="mt-12 grid lg:grid-cols-[2fr_1fr] gap-8 items-start">
-          <div className="rounded-3xl bg-[#0F172A] p-3 shadow-2xl relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
+          <div className="rounded-3xl bg-[#0F172A] p-3 shadow-2xl relative overflow-hidden aspect-[3/4] sm:aspect-[4/3]">
             <div className="rounded-2xl bg-white h-full flex flex-col overflow-hidden" style={{ border: `1px solid ${BORDER}` }}>
               {/* Browser chrome */}
               <div className="flex items-center gap-2 px-4 py-2.5 border-b" style={{ background: '#FAFAFA', borderColor: BORDER }}>
@@ -1142,7 +1142,7 @@ function TrustBadgesSection() {
   ];
 
   return (
-    <section className="py-24 px-6 lg:px-8 bg-white">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
         <div ref={titleRef}>
           <SectionNumber n="08" label="Confiance & sécurité" />
@@ -1178,7 +1178,7 @@ function TrustBadgesSection() {
 function FinalCtaSection() {
   const ref = useReveal<HTMLDivElement>();
   return (
-    <section className="relative py-24 px-6 lg:px-8 overflow-hidden" style={{ background: 'white' }}>
+    <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden" style={{ background: 'white' }}>
       {/* Animated gradient mesh */}
       <div
         className="absolute inset-0 -z-10 opacity-30 pointer-events-none"
@@ -1262,8 +1262,8 @@ function FinalCtaSection() {
 // ═══════════════════════════════════════════════════════════════════════════
 function Footer() {
   return (
-    <footer className="bg-[#0F172A] text-white/70 py-16 px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10">
+    <footer className="bg-[#0F172A] text-white/70 py-12 sm:py-16 px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
         <div>
           <div className="flex items-center gap-2.5 mb-3">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: ACCENT_BG }}>
@@ -1331,7 +1331,7 @@ function Navbar() {
         borderBottom: scrolled ? `1px solid ${BORDER}` : 'none',
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: ACCENT_BG }}>
             <ChefHat className="w-5 h-5" style={{ color: ACCENT_DARK }} />
@@ -1358,7 +1358,7 @@ function Navbar() {
             Essai 14 jours <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
-        <button type="button" onClick={() => setOpen((o) => !o)} className="lg:hidden p-2" aria-label={open ? 'Fermer' : 'Ouvrir'}>
+        <button type="button" onClick={() => setOpen((o) => !o)} className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2" style={{ '--tw-ring-color': ACCENT } as React.CSSProperties} aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}>
           {open ? <XIcon className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
@@ -1440,7 +1440,7 @@ function ExitIntentPopup() {
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm">
       <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-7 relative">
-        <button type="button" onClick={close} className="absolute top-4 right-4 p-2 hover:bg-[#F1F5F9] rounded-full" aria-label="Fermer">
+        <button type="button" onClick={close} className="absolute top-3 right-3 inline-flex items-center justify-center w-11 h-11 hover:bg-[#F1F5F9] rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2" style={{ '--tw-ring-color': ACCENT } as React.CSSProperties} aria-label="Fermer">
           <X className="w-5 h-5" />
         </button>
         <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>

@@ -81,8 +81,10 @@ router.get('/first-user', async (_req, res) => {
 // ── Register with activation code ──
 router.post('/register', validateRequest(registerRequestSchema), async (req: any, res) => {
   try {
-    const { email: rawEmail, password, name, restaurantName, activationCode } = req.body;
+    const { email: rawEmail, password, name, restaurantName, activationCode, acceptedCgu } = req.body;
     if (!rawEmail || !password || !name) return res.status(400).json({ error: 'Email, mot de passe et nom requis' });
+    // RGPD: enforce server-side that CGU acceptance was sent (Zod schema also gates this).
+    if (acceptedCgu !== true) return res.status(400).json({ error: 'Vous devez accepter les CGU pour vous inscrire' });
     const policyError = validatePasswordPolicy(password);
     if (policyError) return res.status(400).json({ error: policyError });
     const email = rawEmail.toLowerCase().trim();
@@ -113,7 +115,18 @@ router.post('/register', validateRequest(registerRequestSchema), async (req: any
     if (existing) return res.status(409).json({ error: 'Email déjà utilisé' });
     const passwordHash = await bcrypt.hash(password, 12);
     const role = userCount === 0 ? 'admin' : 'chef';
-    const user = await prisma.user.create({ data: { email, passwordHash, name, role, plan, ...(trialEndsAt ? { trialEndsAt } : {}) } });
+    const user = await prisma.user.create({
+      data: {
+        email,
+        passwordHash,
+        name,
+        role,
+        plan,
+        // RGPD: timestamp the CGU acceptance for legal traceability.
+        acceptedCguAt: new Date(),
+        ...(trialEndsAt ? { trialEndsAt } : {}),
+      },
+    });
 
     const restaurant = await prisma.restaurant.create({
       data: { name: restaurantName?.trim() || 'Mon Restaurant', ownerId: user.id, members: { create: { userId: user.id, role: 'owner' } } },

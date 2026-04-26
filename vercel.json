@@ -75,6 +75,11 @@
       "has": [{ "type": "host", "value": "restaumargin.fr" }],
       "destination": "https://www.restaumargin.fr/$1",
       "permanent": true
+    },
+    {
+      "source": "/booking-demo",
+      "destination": "https://calendly.com/restaumargin/demo-15min",
+      "permanent": false
     }
   ],
   "rewrites": [

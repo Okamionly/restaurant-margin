@@ -124,6 +124,7 @@ describe('POST /api/auth/register', () => {
       password: 'StrongPass1',
       name: 'Chef',
       activationCode: 'code123', // case-insensitive
+      acceptedCgu: true,
     });
     const res = makeRes();
     await callRegister(req, res);
@@ -140,6 +141,7 @@ describe('POST /api/auth/register', () => {
       email: 'newbie@bistro.fr',
       password: 'StrongPass1',
       name: 'Newbie',
+      acceptedCgu: true,
     });
     const res = makeRes();
     await callRegister(req, res);
@@ -159,6 +161,7 @@ describe('POST /api/auth/register', () => {
       password: 'StrongPass1',
       name: 'Chef',
       activationCode: 'used99',
+      acceptedCgu: true,
     });
     const res = makeRes();
     await callRegister(req, res);
@@ -173,6 +176,7 @@ describe('POST /api/auth/register', () => {
       email: 'TAKEN@bistro.fr',
       password: 'StrongPass1',
       name: 'Dup',
+      acceptedCgu: true,
     });
     const res = makeRes();
     await callRegister(req, res);

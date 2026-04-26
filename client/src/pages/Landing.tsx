@@ -237,9 +237,7 @@ function HeroSection() {
 
   return (
     <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Animated paper-fold green WebGL2 wallpaper, with CSS gradient fallback. */}
-      <ShaderBackground intensity={0.45} />
-      {/* White-ish veil so text contrast remains AA. Sits above the shader. */}
+      {/* Local soft veil so text contrast remains AA over global page shader. */}
       <div
         ref={bgRef}
         className="absolute inset-0 -z-[5] pointer-events-none"
@@ -1324,11 +1322,11 @@ function Navbar() {
   }, []);
   return (
     <nav
-      className="fixed top-0 inset-x-0 z-50 transition-all duration-300"
+      className="sticky top-0 inset-x-0 z-50 transition-all duration-300"
       style={{
-        background: scrolled ? 'rgba(255,255,255,0.92)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(16px)' : 'none',
-        borderBottom: scrolled ? `1px solid ${BORDER}` : 'none',
+        background: scrolled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.85)',
+        backdropFilter: 'blur(16px)',
+        borderBottom: scrolled ? `1px solid ${BORDER}` : '1px solid transparent',
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -1512,6 +1510,36 @@ const LANDING_STYLES = `
 `;
 
 // ═══════════════════════════════════════════════════════════════════════════
+// BROWSER FRAME — Safari-style chrome wrapping the entire site (desktop only)
+// On mobile: the wrapper degrades to a flat white background, no frame.
+// ═══════════════════════════════════════════════════════════════════════════
+function BrowserChrome() {
+  return (
+    <div
+      className="hidden lg:flex items-center gap-2 px-5 py-3 border-b"
+      style={{ background: '#F8FAFC', borderColor: BORDER }}
+    >
+      <div className="flex gap-1.5">
+        <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
+        <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
+        <span className="w-3 h-3 rounded-full bg-[#28C840]" />
+      </div>
+      <div
+        className="flex-1 max-w-md mx-auto text-center text-xs px-4 py-1.5 rounded-md font-mono flex items-center justify-center gap-2"
+        style={{ background: 'white', border: `1px solid ${BORDER}`, color: TEXT_MUTED }}
+      >
+        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        restaumargin.fr
+      </div>
+      <div className="w-12" aria-hidden />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // MAIN PAGE
 // ═══════════════════════════════════════════════════════════════════════════
 export default function Landing() {
@@ -1525,19 +1553,39 @@ export default function Landing() {
       />
       <StructuredData />
       <ScrollProgressBar />
-      <Navbar />
-      <main className="bg-white overflow-x-hidden">
-        <HeroSection />
-        <RoiCalculatorSection />
-        <section id="tarifs"><PricingSection /></section>
-        <section id="fonctionnalites"><FeaturesSection /></section>
-        <ProcessSection />
-        <section id="temoignages"><TestimonialsSection /></section>
-        <TutorialsSection />
-        <TrustBadgesSection />
-        <FinalCtaSection />
-      </main>
-      <Footer />
+
+      {/* Animated paper-fold green WebGL2 wallpaper — fixed full-page, sits behind everything.
+          Visible on the sides and corners outside of the centred browser frame on lg+ viewports. */}
+      <div className="fixed inset-0 -z-10 pointer-events-none">
+        <ShaderBackground intensity={0.4} />
+      </div>
+
+      {/* Site shell — on lg+, max-w 1500 with browser frame; on mobile, full width white. */}
+      <div className="relative lg:max-w-[1500px] lg:mx-auto lg:px-6 xl:px-12 lg:py-8">
+        <div
+          className="relative bg-white lg:rounded-3xl lg:overflow-hidden lg:border"
+          style={{
+            borderColor: BORDER,
+            boxShadow: '0 50px 120px -20px rgba(15, 23, 42, 0.18), 0 20px 50px -20px rgba(15, 23, 42, 0.10)',
+          }}
+        >
+          <BrowserChrome />
+          <Navbar />
+          <main className="bg-white overflow-x-hidden">
+            <HeroSection />
+            <RoiCalculatorSection />
+            <section id="tarifs"><PricingSection /></section>
+            <section id="fonctionnalites"><FeaturesSection /></section>
+            <ProcessSection />
+            <section id="temoignages"><TestimonialsSection /></section>
+            <TutorialsSection />
+            <TrustBadgesSection />
+            <FinalCtaSection />
+          </main>
+          <Footer />
+        </div>
+      </div>
+
       <StickyCtaBar />
       <ExitIntentPopup />
     </>

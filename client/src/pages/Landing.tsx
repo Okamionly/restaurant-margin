@@ -541,16 +541,250 @@ function TestimonialsSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 07 — TUTORIELS ANIMÉS
+// 07 — TUTORIELS ANIMÉS — 5 mockups TSX réalistes des écrans de l'app
 // ═══════════════════════════════════════════════════════════════════════════
+
+function MockupBalance() {
+  const [weight, setWeight] = useState(0);
+  useEffect(() => {
+    const obj = { v: 0 };
+    const tw = gsap.to(obj, { v: 156, duration: 1.4, ease: 'power2.out', onUpdate: () => setWeight(Math.round(obj.v)) });
+    return () => { tw.kill(); };
+  }, []);
+  return (
+    <>
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <div className="text-xs uppercase tracking-widest font-semibold" style={{ color: TEXT_MUTED }}>Pesage en cours</div>
+          <h4 className="text-base font-bold mt-0.5" style={{ color: TEXT }}>Bowl Saumon · Tomate</h4>
+        </div>
+        <span className="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
+          <span className="w-1.5 h-1.5 rounded-full" style={{ background: ACCENT }} />
+          Connectée
+        </span>
+      </div>
+      <div className="rounded-2xl p-6 mb-4 text-center" style={{ background: '#0F172A' }}>
+        <div className="text-xs uppercase tracking-widest font-semibold text-white/50 mb-2">Poids actuel</div>
+        <div className="text-6xl font-extrabold tabular-nums font-mono" style={{ color: ACCENT }}>
+          {weight}<span className="text-2xl ml-2 text-white/60">g</span>
+        </div>
+        <div className="text-xs text-white/40 mt-2 font-mono">Cible: 150g · Tolérance ±5g</div>
+        <div className="mt-3 h-1 rounded-full bg-white/10 overflow-hidden mx-8">
+          <div className="h-full rounded-full transition-all duration-300" style={{ width: `${Math.min(100, (weight / 156) * 100)}%`, background: ACCENT }} />
+        </div>
+      </div>
+      <div className="space-y-2">
+        {[
+          { name: 'Saumon', weight: '120g', cost: '2.45€', done: true },
+          { name: 'Avocat', weight: '80g', cost: '1.10€', done: true },
+          { name: 'Tomate', weight: weight + 'g', cost: '—', current: true },
+          { name: 'Riz basmati', weight: '150g', cost: '0.35€' },
+        ].map((it, i) => (
+          <div key={i} className="rounded-xl px-4 py-2.5 flex items-center justify-between text-sm" style={{ background: it.current ? ACCENT_BG : '#F8FAFC', border: `1px solid ${it.current ? ACCENT_LIGHT : BORDER}` }}>
+            <div className="flex items-center gap-3">
+              {it.done ? <Check className="w-4 h-4" style={{ color: ACCENT }} /> : it.current ? <span className="w-3 h-3 rounded-full animate-pulse" style={{ background: ACCENT }} /> : <span className="w-3 h-3 rounded-full" style={{ background: BORDER }} />}
+              <span style={{ color: TEXT, fontWeight: it.current ? 700 : 500 }}>{it.name}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-mono" style={{ color: it.current ? ACCENT_DARK : TEXT_MUTED }}>{it.weight}</span>
+              <span className="text-xs font-mono font-semibold" style={{ color: it.cost === '—' ? TEXT_MUTED : ACCENT_DARK }}>{it.cost}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function MockupCommandes() {
+  return (
+    <>
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <div className="text-xs uppercase tracking-widest font-semibold" style={{ color: TEXT_MUTED }}>Commandes du jour</div>
+          <h4 className="text-base font-bold mt-0.5" style={{ color: TEXT }}>3 fournisseurs · 12 produits</h4>
+        </div>
+        <button type="button" className="px-4 py-2 rounded-lg text-xs font-bold text-white flex items-center gap-1.5" style={{ background: ACCENT }}>
+          <Send className="w-3.5 h-3.5" />Envoyer tout
+        </button>
+      </div>
+      {[
+        { name: 'Métro Lyon', items: 5, total: '127.40€', status: 'Suggéré par IA', icon: 'M', color: '#F59E0B' },
+        { name: 'Pêcheur du Nord', items: 3, total: '218.70€', status: 'WhatsApp prêt', icon: 'P', color: '#3B82F6' },
+        { name: 'Sysco France', items: 4, total: '94.20€', status: 'Email envoyé', icon: 'S', color: ACCENT, sent: true },
+      ].map((sup, i) => (
+        <div key={i} className="rounded-xl p-3 mb-2 flex items-center gap-3" style={{ background: '#F8FAFC', border: `1px solid ${BORDER}` }}>
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm shrink-0" style={{ background: sup.color }}>{sup.icon}</div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-bold" style={{ color: TEXT }}>{sup.name}</div>
+            <div className="text-xs flex items-center gap-2" style={{ color: TEXT_MUTED }}>
+              <span>{sup.items} produits</span>
+              <span>·</span>
+              <span className="flex items-center gap-1">
+                {sup.sent && <Check className="w-3 h-3" style={{ color: ACCENT }} />}
+                {sup.status}
+              </span>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-bold tabular-nums" style={{ color: TEXT }}>{sup.total}</div>
+            <div className="text-xs" style={{ color: TEXT_MUTED }}>HT</div>
+          </div>
+        </div>
+      ))}
+      <div className="mt-4 rounded-xl p-3 flex items-center gap-2" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
+        <Sparkles className="w-4 h-4 shrink-0" style={{ color: ACCENT_DARK }} />
+        <p className="text-xs" style={{ color: ACCENT_DARK }}>
+          <strong>L'IA suggère</strong> de regrouper Métro + Sysco → économie estimée 24€
+        </p>
+      </div>
+    </>
+  );
+}
+
+function MockupIA() {
+  const messages = [
+    { who: 'user', text: "Crée une fiche pour bowl saumon 4 portions" },
+    { who: 'ia', text: "Bowl Saumon créé · Food cost 27.3% · Marge 72.7% · 4 allergènes (poisson, gluten, lait, sésame). Voulez-vous l'enregistrer ?" },
+    { who: 'user', text: "Oui, et propose 2 variantes vegan" },
+  ];
+  return (
+    <>
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-base font-bold" style={{ color: TEXT }}>Assistant IA</h4>
+            <div className="text-xs flex items-center gap-1.5" style={{ color: ACCENT_DARK }}>
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
+              En ligne · 19 actions disponibles
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="space-y-2 max-h-[260px] overflow-y-auto pr-2">
+        {messages.map((m, i) => (
+          <div key={i} className={`flex ${m.who === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className="rounded-2xl px-4 py-2.5 max-w-[80%] text-sm" style={{
+              background: m.who === 'user' ? ACCENT : '#F1F5F9',
+              color: m.who === 'user' ? 'white' : TEXT,
+              borderTopRightRadius: m.who === 'user' ? 4 : undefined,
+              borderTopLeftRadius: m.who === 'ia' ? 4 : undefined,
+            }}>
+              {m.text}
+            </div>
+          </div>
+        ))}
+        <div className="flex justify-start">
+          <div className="rounded-2xl px-4 py-3 inline-flex gap-1" style={{ background: '#F1F5F9' }}>
+            {[0, 1, 2].map(i => (
+              <span key={i} className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: TEXT_MUTED, animationDelay: `${i * 0.15}s` }} />
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="mt-3 flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: '#F8FAFC', border: `1px solid ${BORDER}` }}>
+        <Sparkles className="w-4 h-4 shrink-0" style={{ color: ACCENT }} />
+        <input type="text" disabled placeholder="Posez votre question..." className="flex-1 bg-transparent text-sm outline-none" style={{ color: TEXT_MUTED }} />
+        <button type="button" className="px-3 py-1.5 rounded-lg text-xs font-bold text-white" style={{ background: ACCENT }}>Envoyer</button>
+      </div>
+    </>
+  );
+}
+
+function MockupMessages() {
+  const notifs = [
+    { icon: '⚠', title: 'Hausse prix · Tomate', desc: 'Métro +12% (1.40€ → 1.57€/kg). Impact: -0.3 pt marge sur 4 plats.', time: '2 min', accent: '#EF4444' },
+    { icon: '✓', title: 'Commande livrée', desc: 'Pêcheur du Nord · 218.70€ · Toutes les références conformes.', time: '14 min', accent: ACCENT },
+    { icon: '⊙', title: 'Plat le plus rentable', desc: 'Bowl Saumon · marge 72.7% · 18 ventes cette semaine.', time: '1h', accent: '#3B82F6' },
+    { icon: '☆', title: 'Suggestion IA', desc: 'Augmentez "Tartare bœuf" de 1€ pour récupérer la marge perdue.', time: '2h', accent: ACCENT_DARK },
+  ];
+  return (
+    <>
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <div className="text-xs uppercase tracking-widest font-semibold" style={{ color: TEXT_MUTED }}>Notifications</div>
+          <h4 className="text-base font-bold mt-0.5" style={{ color: TEXT }}>4 nouvelles · Aujourd'hui</h4>
+        </div>
+        <button type="button" className="px-3 py-1.5 rounded-lg text-xs font-semibold" style={{ background: '#F5F5F5', color: TEXT }}>
+          Tout marquer lu
+        </button>
+      </div>
+      <div className="space-y-2">
+        {notifs.map((n, i) => (
+          <div key={i} className="rounded-xl p-3 flex items-start gap-3" style={{ background: '#F8FAFC', border: `1px solid ${BORDER}` }}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0" style={{ background: n.accent + '22', color: n.accent }}>
+              {n.icon}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2">
+                <div className="text-sm font-bold truncate" style={{ color: TEXT }}>{n.title}</div>
+                <span className="text-xs shrink-0" style={{ color: TEXT_MUTED }}>il y a {n.time}</span>
+              </div>
+              <p className="text-xs mt-0.5 leading-relaxed" style={{ color: TEXT_MUTED }}>{n.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function MockupActualites() {
+  const news = [
+    { tag: 'Marché', tagColor: '#3B82F6', title: 'Saumon norvégien : prix à la baisse cette semaine', summary: '-8% vs semaine dernière. Bonne fenêtre pour stocker.', date: "Aujourd'hui" },
+    { tag: 'Réglementation', tagColor: '#F59E0B', title: 'Nouvel arrêté traçabilité viande bovine 2026', summary: 'Effet 1er juin. RestauMargin met à jour HACCP automatiquement.', date: 'Hier' },
+    { tag: 'Tendance', tagColor: ACCENT, title: 'Le bowl asiatique en tête des recherches Google', summary: '+34% en 30 jours. Pensez à mettre en avant votre offre.', date: '2 jours' },
+  ];
+  return (
+    <>
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-base font-bold" style={{ color: TEXT }}>Actualités IA</h4>
+            <div className="text-xs" style={{ color: TEXT_MUTED }}>Curated pour votre restaurant · Daily</div>
+          </div>
+        </div>
+        <span className="px-3 py-1.5 rounded-full text-xs font-semibold" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>3 nouveautés</span>
+      </div>
+      <div className="space-y-3">
+        {news.map((n, i) => (
+          <div key={i} className="rounded-xl p-4" style={{ background: '#F8FAFC', border: `1px solid ${BORDER}` }}>
+            <div className="flex items-center justify-between mb-2">
+              <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ background: n.tagColor + '22', color: n.tagColor }}>{n.tag}</span>
+              <span className="text-xs" style={{ color: TEXT_MUTED }}>{n.date}</span>
+            </div>
+            <h5 className="text-sm font-bold mb-1" style={{ color: TEXT }}>{n.title}</h5>
+            <p className="text-xs leading-relaxed" style={{ color: TEXT_MUTED }}>{n.summary}</p>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
 function TutorialsSection() {
   const ref = useReveal<HTMLDivElement>();
   const [activeIdx, setActiveIdx] = useState(0);
+  const [autoplay, setAutoplay] = useState(true);
   const tutorials = [
-    { icon: ClipboardList, title: 'Créer une fiche technique', desc: 'De la recette à la marge en 4 étapes.', visual: { title: 'Bowl Saumon', items: ['Saumon · 120g · 2.45€', 'Avocat · 80g · 1.10€', 'Riz basmati · 150g · 0.35€'] } },
-    { icon: Scale, title: 'Peser un ingrédient', desc: 'Connectez votre balance et pesez en temps réel.', visual: { title: 'Balance Bluetooth', items: ['Tomate · 156g', 'Mozzarella · 122g', 'Basilic · 14g'] } },
-    { icon: Truck, title: 'Commander un fournisseur', desc: "L'IA suggère, vous envoyez en 1 clic.", visual: { title: 'Commande #4523', items: ['Tomates 5kg · Métro', 'Saumon 2kg · Pêcheur du Nord', 'Riz 10kg · Sysco'] } },
+    { icon: Scale, title: 'Balance connectée', desc: 'Pesez vos ingrédients en temps réel.', mockup: MockupBalance, slug: 'weigh' },
+    { icon: Truck, title: 'Commandes fournisseurs', desc: "L'IA suggère, vous envoyez en 1 clic.", mockup: MockupCommandes, slug: 'commandes' },
+    { icon: Sparkles, title: 'Assistant IA', desc: '19 actions IA pour piloter votre cuisine.', mockup: MockupIA, slug: 'assistant-ia' },
+    { icon: Send, title: 'Messages & alertes', desc: 'Hausse prix, livraisons, suggestions IA.', mockup: MockupMessages, slug: 'messages' },
+    { icon: ClipboardList, title: 'Actualités IA', desc: 'Veille marché, réglementation, tendances.', mockup: MockupActualites, slug: 'actualites-ia' },
   ];
+  useEffect(() => {
+    if (!autoplay) return;
+    const id = setInterval(() => setActiveIdx((i) => (i + 1) % tutorials.length), 5000);
+    return () => clearInterval(id);
+  }, [autoplay, tutorials.length]);
+  const ActiveMockup = tutorials[activeIdx].mockup;
   return (
     <section className="py-24 px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
       <div ref={ref} className="max-w-7xl mx-auto">
@@ -559,46 +793,53 @@ function TutorialsSection() {
           Voyez le produit <span style={{ color: ACCENT }}>en action</span>
         </h2>
         <p className="mt-4 text-lg" style={{ color: TEXT_MUTED }}>
-          Trois scénarios animés qui montrent la puissance de RestauMargin.
+          Cinq scénarios animés directement dans l'application.
         </p>
         <div className="mt-12 grid lg:grid-cols-[2fr_1fr] gap-8 items-start">
-          <div className="rounded-3xl bg-[#0F172A] p-6 shadow-2xl relative overflow-hidden" style={{ aspectRatio: '16/10' }}>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-                <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
+          <div className="rounded-3xl bg-[#0F172A] p-3 shadow-2xl relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
+            <div className="rounded-2xl bg-white h-full flex flex-col overflow-hidden" style={{ border: `1px solid ${BORDER}` }}>
+              <div className="flex items-center gap-2 px-4 py-2.5 border-b" style={{ background: '#FAFAFA', borderColor: BORDER }}>
+                <div className="flex gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                </div>
+                <div className="ml-3 flex-1 max-w-md text-center text-xs px-3 py-1 rounded-md font-mono" style={{ background: 'white', border: `1px solid ${BORDER}`, color: TEXT_MUTED }}>
+                  app.restaumargin.fr/{tutorials[activeIdx].slug}
+                </div>
+                <div className="flex items-center gap-2 text-xs" style={{ color: TEXT_MUTED }}>
+                  <span className="w-2 h-2 rounded-full" style={{ background: ACCENT }} />
+                  Live
+                </div>
               </div>
-              <div className="ml-3 text-xs text-white/40 font-mono">Dashboard</div>
+              <div key={activeIdx} className="flex-1 p-5 overflow-hidden animate-fade-in">
+                <ActiveMockup />
+              </div>
             </div>
-            <div className="rounded-2xl p-6 bg-white h-full">
-              <div className="flex items-center justify-between mb-5">
-                <h4 className="text-base font-bold" style={{ color: TEXT }}>{tutorials[activeIdx].visual.title}</h4>
-                <button type="button" className="px-3 py-1.5 rounded-lg text-xs font-bold text-white" style={{ background: ACCENT }}>
-                  Enregistrer
-                </button>
-              </div>
-              <div className="space-y-2">
-                {tutorials[activeIdx].visual.items.map((line, i) => (
-                  <div key={i} className="rounded-xl px-4 py-3 flex items-center justify-between text-sm" style={{ background: '#F8FAFC', border: `1px solid ${BORDER}` }}>
-                    <span style={{ color: TEXT }}>{line.split(' · ')[0]}</span>
-                    <div className="flex items-center gap-3">
-                      {line.split(' · ').slice(1).map((part, j, arr) => (
-                        <span key={j} className="text-xs font-mono font-semibold" style={{ color: j === arr.length - 1 ? ACCENT_DARK : TEXT_MUTED }}>
-                          {part}
-                        </span>
-                      ))}
-                    </div>
+            <div className="absolute bottom-1 left-1 right-1 px-3 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setAutoplay((a) => !a)}
+                className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
+                aria-label={autoplay ? 'Pause' : 'Play'}
+              >
+                {autoplay ? <span className="block w-2 h-2.5 border-l-2 border-r-2 border-white" /> : <Play className="w-3 h-3 ml-0.5" />}
+              </button>
+              <div className="flex-1 flex gap-1.5">
+                {tutorials.map((_, i) => (
+                  <div key={i} className="flex-1 h-1 rounded-full bg-white/15 overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: i < activeIdx ? '100%' : i === activeIdx ? (autoplay ? '100%' : '50%') : '0%',
+                        background: ACCENT,
+                        transition: i === activeIdx && autoplay ? 'width 5s linear' : 'width 0.4s ease',
+                      }}
+                    />
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="absolute bottom-3 left-6 right-6 flex items-center gap-3">
-              <Play className="w-4 h-4 text-white/60" />
-              <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full transition-all duration-500" style={{ width: `${((activeIdx + 1) / 3) * 100}%`, background: ACCENT }} />
-              </div>
-              <span className="text-xs text-white/40 font-mono">0:0{activeIdx * 5 + 4} / 0:15</span>
+              <span className="text-xs text-white/60 font-mono">{activeIdx + 1}/{tutorials.length}</span>
             </div>
           </div>
 
@@ -610,17 +851,17 @@ function TutorialsSection() {
                 <button
                   key={tut.title}
                   type="button"
-                  onClick={() => setActiveIdx(i)}
-                  className="w-full text-left rounded-2xl p-5 bg-white transition-all"
+                  onClick={() => { setActiveIdx(i); setAutoplay(false); }}
+                  className="w-full text-left rounded-2xl p-4 bg-white transition-all"
                   style={{ border: `2px solid ${active ? ACCENT : BORDER}`, boxShadow: active ? `0 8px 24px ${ACCENT}1A` : 'none' }}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: active ? ACCENT : '#F5F5F5', color: active ? 'white' : TEXT }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: active ? ACCENT : '#F5F5F5', color: active ? 'white' : TEXT }}>
                       <Icon className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-bold" style={{ color: TEXT }}>{tut.title}</div>
-                      <div className="text-xs mt-0.5" style={{ color: TEXT_MUTED }}>{tut.desc}</div>
+                      <div className="text-xs mt-0.5 leading-snug" style={{ color: TEXT_MUTED }}>{tut.desc}</div>
                     </div>
                   </div>
                 </button>

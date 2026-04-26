@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Obsidian Kitchen — Google Fonts ─────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap');
-
 @layer base {
   /* ── 8. Smooth Scroll ─────────────────────────────────────────────────── */
   html {

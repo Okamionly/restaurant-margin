@@ -21,46 +21,46 @@ HERO SECTION BACKUP (lines 323-414 of original Landing.tsx):
 
 <section ref={heroRef} className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden">
   <div className="absolute inset-0 -z-10">
-    <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-[#00C878]/[0.05] rounded-full blur-[120px] animate-pulse" />
-    <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-[#00C878]/[0.04] rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#00C878]/[0.03] rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
+    <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-teal-500/[0.05] rounded-full blur-[120px] animate-pulse" />
+    <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-teal-400/[0.04] rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-emerald-500/[0.03] rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
     <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #0d9488 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
-    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#00C878]/20 to-transparent" />
+    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-500/20 to-transparent" />
   </div>
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <div className="text-center lg:text-left animate-[fadeInUp_0.6s_ease-out]">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0F1612] text-[#00C878] border border-[#1A2E26] text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(0,200,120,0.08)]">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(13,148,136,0.08)]">
           <Zap className="w-3.5 h-3.5" />
           PLATEFORME #1 DES RESTAURATEURS
         </div>
         <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
-          <span className="text-[#F5F2EC]">Maitrisez vos marges.</span>
+          <span className="text-gray-900">Maitrisez vos marges.</span>
           <br />
-          <span className="text-[#F5F2EC]">Augmentez vos </span>
-          <span className="bg-gradient-to-r from-[#00C878] to-[#00A865] bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(0,200,120,0.2)]">
+          <span className="text-gray-900">Augmentez vos </span>
+          <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(13,148,136,0.2)]">
             profits.
           </span>
         </h1>
-        <p className="mt-6 text-lg sm:text-xl text-[#7A8C85] max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
+        <p className="mt-6 text-lg sm:text-xl text-gray-500 max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
           La plateforme tout-en-un pour les restaurateurs qui veulent reprendre le controle de leurs couts matiere, optimiser leur carte et automatiser leurs commandes.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
-          <Link to="/login?mode=register" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#00C878] hover:bg-[#00E891] text-white font-semibold shadow-lg transition-all text-base">
+          <Link to="/login?mode=register" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold shadow-lg transition-all text-base">
             Essai gratuit 14 jours <ArrowRight className="w-4 h-4" />
           </Link>
-          <Link to="/pricing" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#00C878] hover:bg-[#00E589] text-white font-semibold transition-all text-base">
+          <Link to="/pricing" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#111111] hover:bg-[#333] text-white font-semibold transition-all text-base">
             Voir les tarifs <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <p className="mt-3 text-sm text-[#7A8C85] text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
+        <p className="mt-3 text-sm text-gray-500 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
           <Shield className="w-3.5 h-3.5" /> Pas de carte bancaire requise
         </p>
       </div>
       <div className="hidden lg:block animate-[fadeInUp_1s_ease-out_0.3s_both]">
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#00C878]/[0.07] to-[#00C878]/[0.07] rounded-3xl blur-2xl" />
-          <div className="relative bg-[#0F1612] border border-[#1A2E26] shadow-sm hover:shadow-md rounded-3xl p-8 transition-shadow">
+          <div className="absolute inset-0 bg-gradient-to-br from-teal-500/[0.07] to-emerald-500/[0.07] rounded-3xl blur-2xl" />
+          <div className="relative bg-white border border-gray-200 shadow-sm hover:shadow-md rounded-3xl p-8 transition-shadow">
             <div className="relative overflow-hidden rounded-2xl">
               <div className="flex transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${heroSlide * 100}%)` }}>
                 <img src="/images/hero/hero-1.webp" alt="RestauMargin Station en cuisine" width="800" height="600" className="w-full h-auto flex-shrink-0" loading="eager" fetchPriority="high" />
@@ -69,26 +69,26 @@ HERO SECTION BACKUP (lines 323-414 of original Landing.tsx):
               </div>
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
                 {[0, 1, 2].map(i => (
-                  <button key={i} onClick={() => setHeroSlide(i)} className={`w-2 h-2 rounded-full transition-all ${heroSlide === i ? 'bg-[#00C878] w-6' : 'bg-gray-400/50'}`} />
+                  <button key={i} onClick={() => setHeroSlide(i)} className={`w-2 h-2 rounded-full transition-all ${heroSlide === i ? 'bg-teal-600 w-6' : 'bg-gray-400/50'}`} />
                 ))}
               </div>
             </div>
           </div>
-          <div className="absolute -top-4 -right-4 bg-gradient-to-r from-[#00C878] to-[#00A865] text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold">
+          <div className="absolute -top-4 -right-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold">
             Nouveau 2026
           </div>
         </div>
       </div>
     </div>
     <div className="animate-[fadeInUp_1s_ease-out_0.5s_both]">
-      <div className="mt-16 bg-[#0F1612] border border-[#1A2E26] shadow-sm rounded-2xl py-8 px-4">
+      <div className="mt-16 bg-white border border-gray-200 shadow-sm rounded-2xl py-8 px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-gray-200 md:divide-x">
           <StatCounter value={150} suffix="+" label="Restaurants equipes" />
           <StatCounter value={8} suffix="%" label="Cout matiere economise" />
           <StatCounter value={50} suffix="k" label="Pesees par mois" />
           <div className="text-center px-6">
-            <div className="text-3xl sm:text-4xl font-extrabold text-[#F5F2EC] tracking-tight">4.8/5</div>
-            <div className="text-sm text-[#7A8C85] mt-1 font-medium">Satisfaction clients</div>
+            <div className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">4.8/5</div>
+            <div className="text-sm text-gray-500 mt-1 font-medium">Satisfaction clients</div>
           </div>
         </div>
       </div>
@@ -583,10 +583,10 @@ export default function Landing() {
     const count = useAnimatedCounter(value, 1800, visible);
     return (
       <div ref={ref} className="text-center px-6">
-        <div className="text-3xl sm:text-4xl font-extrabold text-[#F5F2EC] tracking-tight">
+        <div className="text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">
           {count}{suffix}
         </div>
-        <div className="text-sm text-[#7A8C85] mt-1 font-medium">{label}</div>
+        <div className="text-sm text-[#6B7280] mt-1 font-medium">{label}</div>
       </div>
     );
   };
@@ -606,7 +606,7 @@ export default function Landing() {
   /* ================================================================ */
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#F5F2EC] overflow-x-hidden scroll-smooth" style={{ fontFamily: "'Space Grotesk', 'General Sans', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-[#FFFFFF] text-[#111111] overflow-x-hidden scroll-smooth" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <SEOHead
         title="RestauMargin — Logiciel de calcul de marge restaurant | Food cost et fiches techniques"
         description="RestauMargin : fiches techniques, food cost et commandes fournisseurs automatises par l'IA. Logiciel de gestion de marge restaurant. Essai gratuit 14 jours."
@@ -614,88 +614,88 @@ export default function Landing() {
       />
 
       {/* ═══════════════ NAVBAR ═══════════════ */}
-      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#050505]/95 backdrop-blur-xl border-b border-[#1A2E26]' : 'bg-transparent'}`}>
+      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#FFFFFF]/95 backdrop-blur-xl border-b border-[#E5E7EB]' : 'bg-transparent'}`}>
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#1A2420] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-[#111111] flex items-center justify-center">
               <ChefHat className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-[#F5F2EC]">RestauMargin</span>
+            <span className="text-xl font-bold text-[#111111]">RestauMargin</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <button onClick={() => scrollTo('live-demo')} className="text-sm text-[#7A8C85] hover:text-[#F5F2EC] transition-colors cursor-pointer">Demo</button>
-            <button onClick={() => scrollTo('features')} className="text-sm text-[#7A8C85] hover:text-[#F5F2EC] transition-colors cursor-pointer">Fonctionnalites</button>
-            <button onClick={() => scrollTo('pricing')} className="text-sm text-[#7A8C85] hover:text-[#F5F2EC] transition-colors cursor-pointer">Tarifs</button>
-            <button onClick={() => scrollTo('faq')} className="text-sm text-[#7A8C85] hover:text-[#F5F2EC] transition-colors cursor-pointer">FAQ</button>
+            <button onClick={() => scrollTo('live-demo')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Demo</button>
+            <button onClick={() => scrollTo('features')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Fonctionnalites</button>
+            <button onClick={() => scrollTo('pricing')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Tarifs</button>
+            <button onClick={() => scrollTo('faq')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">FAQ</button>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login" className="text-sm text-[#7A8C85] hover:text-[#F5F2EC] transition-colors px-3 py-2">Se connecter</Link>
-            <Link to="/login?mode=register" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-[#00C878] hover:bg-[#00E589] text-white text-sm font-semibold transition-all">
+            <Link to="/login" className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors px-3 py-2">Se connecter</Link>
+            <Link to="/login?mode=register" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold transition-all">
               Essai gratuit <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 text-[#7A8C85] hover:text-[#F5F2EC]">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 text-[#6B7280] hover:text-[#111111]">
             {mobileMenuOpen ? <XIcon className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#050505] border-t border-[#1A2E26]">
+          <div className="md:hidden bg-[#FFFFFF] border-t border-[#E5E7EB]">
             <div className="px-4 py-4 space-y-3">
-              <button onClick={() => scrollTo('live-demo')} className="block w-full text-left text-sm text-[#7A8C85] hover:text-[#F5F2EC] py-2">Demo</button>
-              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-[#7A8C85] hover:text-[#F5F2EC] py-2">Fonctionnalites</button>
-              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-[#7A8C85] hover:text-[#F5F2EC] py-2">Tarifs</button>
-              <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-[#7A8C85] hover:text-[#F5F2EC] py-2">FAQ</button>
-              <hr className="border-[#1A2E26]" />
-              <Link to="/login" className="block text-sm text-[#7A8C85] hover:text-[#F5F2EC] py-2">Se connecter</Link>
-              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#00C878] hover:bg-[#00E589] text-white text-sm font-semibold">Essai gratuit 14 jours</Link>
+              <button onClick={() => scrollTo('live-demo')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Demo</button>
+              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Fonctionnalites</button>
+              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Tarifs</button>
+              <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">FAQ</button>
+              <hr className="border-[#E5E7EB]" />
+              <Link to="/login" className="block text-sm text-[#6B7280] hover:text-[#111111] py-2">Se connecter</Link>
+              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold">Essai gratuit 14 jours</Link>
             </div>
           </div>
         )}
       </nav>
 
       {/* ═══════════════ 1. HERO — A/B TEST READY ═══════════════ */}
-      <section ref={heroRef} className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden bg-[#0F1612]">
+      <section ref={heroRef} className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden bg-white">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-[#00C878]/[0.05] rounded-full blur-[120px] animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-[#00C878]/[0.04] rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#00C878]/[0.03] rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-teal-500/[0.05] rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-teal-400/[0.04] rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-emerald-500/[0.03] rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #0d9488 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#00C878]/20 to-transparent" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-500/20 to-transparent" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left */}
             <div className="text-center lg:text-left animate-[fadeInUp_0.6s_ease-out]">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0F1612] text-[#00C878] border border-[#1A2E26] text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(0,200,120,0.08)]">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(13,148,136,0.08)]">
                 <Zap className="w-3.5 h-3.5" />
                 Nouveau 2026
               </div>
 
               <h1 className="text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
-                <span className="text-[#F5F2EC]">Maitrisez vos marges,</span>
+                <span className="text-[#111111]">Maitrisez vos marges,</span>
                 <br />
-                <span className="bg-gradient-to-r from-[#00C878] to-[#00A865] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">
                   augmentez vos profits.
                 </span>
               </h1>
-              <p className="mt-5 text-lg sm:text-xl text-[#7A8C85] max-w-lg mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
+              <p className="mt-5 text-lg sm:text-xl text-[#6B7280] max-w-lg mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
                 Fiches techniques, food cost et commandes fournisseurs automatises par l'IA pour votre restaurant.
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
                 <Link
                   to="/login?mode=register"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#00C878] hover:bg-[#00E891] text-white font-bold shadow-lg shadow-[#00C878]/30 transition-all text-lg"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold shadow-lg shadow-teal-600/20 transition-all text-lg"
                 >
                   Essai gratuit 14 jours <ArrowRight className="w-5 h-5" />
                 </Link>
               </div>
-              <p className="mt-3 text-sm text-[#7A8C85] text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
+              <p className="mt-3 text-sm text-[#6B7280] text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
                 <Shield className="w-3.5 h-3.5" /> Sans carte bancaire -- Sans engagement
               </p>
             </div>
@@ -703,72 +703,72 @@ export default function Landing() {
             {/* Right -- CSS mockup dashboard + food illustrations */}
             <div className="hidden lg:block animate-[fadeInUp_1s_ease-out_0.3s_both]">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#00C878]/[0.07] to-[#00C878]/[0.07] rounded-3xl blur-2xl" />
+                <div className="absolute inset-0 bg-gradient-to-br from-teal-500/[0.07] to-emerald-500/[0.07] rounded-3xl blur-2xl" />
 
                 {/* Laptop frame mockup */}
                 <div className="relative">
                   {/* Laptop bezel */}
-                  <div className="bg-[#1A2420] rounded-t-2xl pt-3 px-3">
+                  <div className="bg-[#111111] rounded-t-2xl pt-3 px-3">
                     <div className="flex items-center gap-1.5 pb-2">
                       <div className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
                       <div className="w-2.5 h-2.5 rounded-full bg-amber-400/60" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#00C878]/60" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/60" />
                       <div className="flex-1 flex justify-center">
                         <div className="bg-[#2a2a2a] rounded-md px-3 py-0.5 text-[9px] text-white/40 font-mono">app.restaumargin.com/dashboard</div>
                       </div>
                     </div>
                   </div>
                   {/* Screen content — mini dashboard */}
-                  <div className="bg-[#0F1612] border-x border-b border-[#1A2E26] rounded-b-xl p-4 space-y-3">
+                  <div className="bg-white border-x border-b border-[#E5E7EB] rounded-b-xl p-4 space-y-3">
                     {/* Mini KPI row */}
                     <div className="grid grid-cols-3 gap-2">
-                      <div className="bg-[#0A0F0D] rounded-lg p-2.5 text-center">
-                        <p className="text-[9px] text-[#7A8C85] uppercase tracking-wider font-semibold">Food cost</p>
-                        <p className="text-lg font-extrabold text-[#F5F2EC]">26.8%</p>
+                      <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+                        <p className="text-[9px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Food cost</p>
+                        <p className="text-lg font-extrabold text-[#111111]">26.8%</p>
                       </div>
-                      <div className="bg-[#0A0F0D] rounded-lg p-2.5 text-center">
-                        <p className="text-[9px] text-[#7A8C85] uppercase tracking-wider font-semibold">Marge</p>
-                        <p className="text-lg font-extrabold text-[#00C878]">73.2%</p>
+                      <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+                        <p className="text-[9px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Marge</p>
+                        <p className="text-lg font-extrabold text-emerald-600">73.2%</p>
                       </div>
-                      <div className="bg-[#0A0F0D] rounded-lg p-2.5 text-center">
-                        <p className="text-[9px] text-[#7A8C85] uppercase tracking-wider font-semibold">CA HT</p>
-                        <p className="text-lg font-extrabold text-[#F5F2EC]">46k</p>
+                      <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+                        <p className="text-[9px] text-[#A3A3A3] uppercase tracking-wider font-semibold">CA HT</p>
+                        <p className="text-lg font-extrabold text-[#111111]">46k</p>
                       </div>
                     </div>
                     {/* Mini chart bars */}
                     <div className="flex items-end gap-1.5 h-16 px-1">
                       {[68, 69, 70, 72, 73, 74].map((v, i) => (
-                        <div key={i} className="flex-1 bg-gradient-to-t from-[#00C878] to-[#00C878] rounded-t" style={{ height: `${(v / 80) * 100}%` }} />
+                        <div key={i} className="flex-1 bg-gradient-to-t from-teal-600 to-teal-400 rounded-t" style={{ height: `${(v / 80) * 100}%` }} />
                       ))}
                     </div>
                     {/* Mini recipe cards with FoodIllustration */}
                     <div className="flex gap-2">
                       {['Risotto aux champignons', 'Magret de canard', 'Creme brulee'].map((name, i) => (
-                        <div key={i} className="flex-1 bg-[#0A0F0D] rounded-lg p-2 flex flex-col items-center gap-1">
+                        <div key={i} className="flex-1 bg-[#F9FAFB] rounded-lg p-2 flex flex-col items-center gap-1">
                           <FoodIllustration recipeName={name} size="sm" animated={false} />
-                          <p className="text-[8px] text-[#7A8C85] font-medium text-center leading-tight truncate w-full">{name.split(' ').slice(0, 2).join(' ')}</p>
+                          <p className="text-[8px] text-[#737373] font-medium text-center leading-tight truncate w-full">{name.split(' ').slice(0, 2).join(' ')}</p>
                         </div>
                       ))}
                     </div>
                   </div>
                   {/* Laptop base */}
-                  <div className="mx-auto w-[60%] h-2 bg-[#1A2E26] rounded-b-lg" />
+                  <div className="mx-auto w-[60%] h-2 bg-[#E5E7EB] rounded-b-lg" />
                 </div>
 
                 {/* Floating food illustrations */}
                 <div className="absolute -top-3 -right-3 animate-bounce" style={{ animationDuration: '3s' }}>
-                  <div className="bg-[#0F1612] rounded-2xl p-2 shadow-lg border border-[#1A2E26]">
+                  <div className="bg-white rounded-2xl p-2 shadow-lg border border-[#E5E7EB]">
                     <FoodIllustration recipeName="pizza margherita" size="sm" />
                   </div>
                 </div>
                 <div className="absolute -bottom-2 -left-3 animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}>
-                  <div className="bg-[#0F1612] rounded-2xl p-2 shadow-lg border border-[#1A2E26]">
+                  <div className="bg-white rounded-2xl p-2 shadow-lg border border-[#E5E7EB]">
                     <FoodIllustration recipeName="croissant" size="sm" />
                   </div>
                 </div>
 
                 {/* Badge */}
-                <div className="absolute -top-4 -right-4 bg-gradient-to-r from-[#00C878] to-[#00A865] text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold z-10">
+                <div className="absolute -top-4 -right-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold z-10">
                   Nouveau 2026
                 </div>
               </div>
@@ -777,7 +777,7 @@ export default function Landing() {
 
           {/* Social proof stats bar */}
           <div className="animate-[fadeInUp_1s_ease-out_0.5s_both]">
-            <div className="mt-16 bg-[#1A2420] rounded-2xl py-10 px-6 shadow-lg">
+            <div className="mt-16 bg-[#111111] rounded-2xl py-10 px-6 shadow-lg">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 md:divide-x md:divide-white/10">
                 <div className="text-center px-4">
                   <StatCounterDark value={150} suffix="+" />
@@ -802,15 +802,15 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ 2. FEATURES ═══════════════ */}
-      <section id="features" className="py-24 sm:py-32 bg-[#0A0F0D]">
+      <section id="features" className="py-24 sm:py-32 bg-[#FAFAFA]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
-              <p className="text-sm font-semibold text-[#7A8C85] uppercase tracking-[0.15em] mb-4">Fonctionnalites</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight text-[#F5F2EC]">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Fonctionnalites</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight text-[#111111]">
                 Tout ce dont vous avez besoin
               </h2>
-              <p className="mt-4 text-lg text-[#7A8C85] max-w-lg mx-auto">
+              <p className="mt-4 text-lg text-[#6B7280] max-w-lg mx-auto">
                 Six outils puissants pour reprendre le controle total de vos marges.
               </p>
             </div>
@@ -820,15 +820,15 @@ export default function Landing() {
           <div className="grid sm:grid-cols-3 gap-6 mb-6">
             {features.filter((f: any) => f.priority).map((f, i) => {
               const Icon = f.icon;
-              const leftBorderColors = ['border-l-[#00C878]', 'border-l-[#00C878]', 'border-l-[#F5A524]'];
+              const leftBorderColors = ['border-l-teal-500', 'border-l-emerald-500', 'border-l-amber-500'];
               return (
                 <FadeIn key={i} delay={i * 80}>
-                  <div className={`bg-[#050505] border-2 border-[#1A2E26] ${leftBorderColors[i % 3]} border-l-4 rounded-2xl p-10 h-full hover:shadow-md transition-all duration-300`}>
-                    <div className="w-14 h-14 rounded-xl bg-[#1A2420] flex items-center justify-center mb-6">
+                  <div className={`bg-[#FFFFFF] border-2 border-[#E5E7EB] ${leftBorderColors[i % 3]} border-l-4 rounded-2xl p-10 h-full hover:shadow-md transition-all duration-300`}>
+                    <div className="w-14 h-14 rounded-xl bg-[#111111] flex items-center justify-center mb-6">
                       <Icon className="w-7 h-7 text-white" />
                     </div>
-                    <h3 className="text-lg font-bold text-[#F5F2EC] mb-3">{f.title}</h3>
-                    <p className="text-sm text-[#3D4D47] leading-relaxed">{f.description}</p>
+                    <h3 className="text-lg font-bold text-[#111111] mb-3">{f.title}</h3>
+                    <p className="text-sm text-[#525252] leading-relaxed">{f.description}</p>
                   </div>
                 </FadeIn>
               );
@@ -842,12 +842,12 @@ export default function Landing() {
               const leftBorderColors = ['border-l-blue-500', 'border-l-purple-500', 'border-l-rose-500', 'border-l-orange-500', 'border-l-cyan-500'];
               return (
                 <FadeIn key={i} delay={(i + 3) * 80}>
-                  <div className={`bg-[#050505] border-2 border-[#1A2E26] ${leftBorderColors[i % 5]} border-l-4 rounded-2xl p-8 h-full hover:shadow-md transition-all duration-300`}>
-                    <div className="w-12 h-12 rounded-xl bg-[#0A0F0D] border border-[#1A2E26] flex items-center justify-center mb-6">
-                      <Icon className="w-6 h-6 text-[#F5F2EC]" />
+                  <div className={`bg-[#FFFFFF] border-2 border-[#E5E7EB] ${leftBorderColors[i % 5]} border-l-4 rounded-2xl p-8 h-full hover:shadow-md transition-all duration-300`}>
+                    <div className="w-12 h-12 rounded-xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center mb-6">
+                      <Icon className="w-6 h-6 text-[#111111]" />
                     </div>
-                    <h3 className="text-lg font-bold text-[#F5F2EC] mb-2">{f.title}</h3>
-                    <p className="text-sm text-[#3D4D47] leading-relaxed">{f.description}</p>
+                    <h3 className="text-lg font-bold text-[#111111] mb-2">{f.title}</h3>
+                    <p className="text-sm text-[#525252] leading-relaxed">{f.description}</p>
                   </div>
                 </FadeIn>
               );
@@ -857,15 +857,15 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ LIVE DEMO WIDGET ═══════════════ */}
-      <section id="live-demo" className="py-24 sm:py-32 bg-[#050505] border-t border-[#1A2E26]">
+      <section id="live-demo" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <p className="text-sm font-semibold text-[#7A8C85] uppercase tracking-[0.15em] mb-4">Demo interactive</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#F5F2EC]">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Demo interactive</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Testez en 10 secondes
               </h2>
-              <p className="mt-4 text-lg text-[#7A8C85]">
+              <p className="mt-4 text-lg text-[#6B7280]">
                 Cliquez sur une recette pour voir sa fiche technique complete. Aucun compte necessaire.
               </p>
             </div>
@@ -880,70 +880,70 @@ export default function Landing() {
                   <div key={idx}>
                     <button
                       onClick={() => setDemoActiveRecipe(isActive ? null : idx)}
-                      className={`w-full text-left bg-[#050505] border-2 rounded-2xl p-6 transition-all duration-300 hover:shadow-lg ${
-                        isActive ? 'border-[#2A4A3C] shadow-lg' : 'border-[#1A2E26] hover:border-[#2A4A3C]/30'
+                      className={`w-full text-left bg-[#FFFFFF] border-2 rounded-2xl p-6 transition-all duration-300 hover:shadow-lg ${
+                        isActive ? 'border-[#111111] shadow-lg' : 'border-[#E5E7EB] hover:border-[#111111]/30'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <span className="text-xs font-semibold text-[#7A8C85] uppercase tracking-wider">{recipe.category}</span>
-                          <h3 className="text-lg font-bold text-[#F5F2EC]">{recipe.name}</h3>
+                          <span className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">{recipe.category}</span>
+                          <h3 className="text-lg font-bold text-[#111111]">{recipe.name}</h3>
                         </div>
-                        <div className="w-10 h-10 rounded-xl bg-[#0A0F0D] border border-[#1A2E26] flex items-center justify-center">
-                          <Eye className="w-5 h-5 text-[#F5F2EC]" />
+                        <div className="w-10 h-10 rounded-xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center">
+                          <Eye className="w-5 h-5 text-[#111111]" />
                         </div>
                       </div>
                       <div className="grid grid-cols-3 gap-3">
-                        <div className="bg-[#0A0F0D] rounded-lg p-2.5 text-center">
-                          <p className="text-[10px] text-[#7A8C85] uppercase font-semibold">Prix</p>
-                          <p className="text-sm font-bold text-[#F5F2EC]">{formatCurrency(recipe.prixVente)}</p>
+                        <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+                          <p className="text-[10px] text-[#9CA3AF] uppercase font-semibold">Prix</p>
+                          <p className="text-sm font-bold text-[#111111]">{formatCurrency(recipe.prixVente)}</p>
                         </div>
-                        <div className="bg-[#0A0F0D] rounded-lg p-2.5 text-center">
-                          <p className="text-[10px] text-[#7A8C85] uppercase font-semibold">Food Cost</p>
-                          <p className="text-sm font-bold text-[#F5F2EC]">{formatCurrency(recipe.foodCost)}</p>
+                        <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+                          <p className="text-[10px] text-[#9CA3AF] uppercase font-semibold">Food Cost</p>
+                          <p className="text-sm font-bold text-[#111111]">{formatCurrency(recipe.foodCost)}</p>
                         </div>
-                        <div className="bg-[#1A2420] rounded-lg p-2.5 text-center">
+                        <div className="bg-[#111111] rounded-lg p-2.5 text-center">
                           <p className="text-[10px] text-white/60 uppercase font-semibold">Marge</p>
                           <p className="text-sm font-bold text-white">{margin.toFixed(1)}%</p>
                         </div>
                       </div>
-                      <p className="mt-3 text-xs text-[#00C878] font-semibold flex items-center gap-1">
+                      <p className="mt-3 text-xs text-teal-600 font-semibold flex items-center gap-1">
                         {isActive ? 'Cliquez pour fermer' : 'Cliquez pour voir la fiche technique'} <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isActive ? 'rotate-90' : ''}`} />
                       </p>
                     </button>
 
                     {/* Expanded fiche technique */}
                     <div className={`overflow-hidden transition-all duration-500 ${isActive ? 'max-h-[500px] mt-4 opacity-100' : 'max-h-0 opacity-0'}`}>
-                      <div className="bg-[#050505] border border-[#1A2E26] rounded-2xl p-6">
-                        <h4 className="text-sm font-bold text-[#F5F2EC] mb-4 flex items-center gap-2">
+                      <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-6">
+                        <h4 className="text-sm font-bold text-[#111111] mb-4 flex items-center gap-2">
                           <ClipboardList className="w-4 h-4" /> Fiche technique — {recipe.name}
                         </h4>
                         <div className="space-y-2">
                           {recipe.ingredients.map((ing, i) => (
-                            <div key={i} className="flex items-center justify-between py-2 px-3 bg-[#0A0F0D] rounded-lg">
+                            <div key={i} className="flex items-center justify-between py-2 px-3 bg-[#F9FAFB] rounded-lg">
                               <div className="flex items-center gap-3">
-                                <div className="w-6 h-6 rounded-full bg-[#1A2420] flex items-center justify-center">
+                                <div className="w-6 h-6 rounded-full bg-[#111111] flex items-center justify-center">
                                   <span className="text-[10px] text-white font-bold">{ing.nom.charAt(0)}</span>
                                 </div>
-                                <span className="text-sm text-[#F5F2EC] font-medium">{ing.nom}</span>
+                                <span className="text-sm text-[#111111] font-medium">{ing.nom}</span>
                               </div>
                               <div className="flex items-center gap-4">
-                                <span className="text-xs text-[#7A8C85]">{ing.qte}</span>
-                                <span className="text-sm font-bold text-[#F5F2EC]">{formatCurrency(ing.cout)}</span>
+                                <span className="text-xs text-[#9CA3AF]">{ing.qte}</span>
+                                <span className="text-sm font-bold text-[#111111]">{formatCurrency(ing.cout)}</span>
                               </div>
                             </div>
                           ))}
                         </div>
-                        <div className="mt-4 pt-4 border-t border-[#1A2E26] flex items-center justify-between">
+                        <div className="mt-4 pt-4 border-t border-[#E5E7EB] flex items-center justify-between">
                           <div>
-                            <span className="text-xs text-[#7A8C85]">Cout total</span>
-                            <p className="text-lg font-bold text-[#F5F2EC]">{formatCurrency(recipe.foodCost)}</p>
+                            <span className="text-xs text-[#9CA3AF]">Cout total</span>
+                            <p className="text-lg font-bold text-[#111111]">{formatCurrency(recipe.foodCost)}</p>
                           </div>
                           <div>
-                            <span className="text-xs text-[#7A8C85]">Coefficient</span>
-                            <p className="text-lg font-bold text-[#F5F2EC]">{(recipe.prixVente / recipe.foodCost).toFixed(2)}x</p>
+                            <span className="text-xs text-[#9CA3AF]">Coefficient</span>
+                            <p className="text-lg font-bold text-[#111111]">{(recipe.prixVente / recipe.foodCost).toFixed(2)}x</p>
                           </div>
-                          <div className="bg-[#1A2420] rounded-xl px-4 py-2 text-center">
+                          <div className="bg-[#111111] rounded-xl px-4 py-2 text-center">
                             <span className="text-[10px] text-white/60">Marge brute</span>
                             <p className="text-lg font-bold text-white">{margin.toFixed(1)}%</p>
                           </div>
@@ -957,29 +957,29 @@ export default function Landing() {
 
             {/* CTA */}
             <div className="mt-12 text-center">
-              <p className="text-lg font-bold text-[#F5F2EC] mb-4">Impressionnant ? Essayez avec VOS recettes.</p>
+              <p className="text-lg font-bold text-[#111111] mb-4">Impressionnant ? Essayez avec VOS recettes.</p>
               <Link
                 to="/login?mode=register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#00C878] hover:bg-[#00E891] text-white font-bold text-lg transition-all shadow-lg"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-lg transition-all shadow-lg"
               >
                 Creer mon compte gratuit <ArrowRight className="w-5 h-5" />
               </Link>
-              <p className="mt-3 text-sm text-[#7A8C85]">14 jours gratuits -- Sans carte bancaire</p>
+              <p className="mt-3 text-sm text-[#9CA3AF]">14 jours gratuits -- Sans carte bancaire</p>
             </div>
           </FadeIn>
         </div>
       </section>
 
       {/* ═══════════════ VOIR EN ACTION ═══════════════ */}
-      <section className="py-24 sm:py-32 bg-[#050505] border-t border-[#1A2E26]">
+      <section className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
-              <p className="text-sm font-semibold text-[#7A8C85] uppercase tracking-[0.15em] mb-4">Voir en action</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#F5F2EC]">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Voir en action</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Un apercu de votre futur quotidien
               </h2>
-              <p className="mt-4 text-lg text-[#7A8C85]">
+              <p className="mt-4 text-lg text-[#6B7280]">
                 Trois ecrans qui changent la gestion de votre restaurant.
               </p>
             </div>
@@ -989,8 +989,8 @@ export default function Landing() {
             {/* Mockup 1: Dashboard KPIs */}
             <FadeIn delay={0}>
               <div className="group">
-                <div className="relative bg-[#0A0F0D] border border-[#1A2E26] rounded-2xl overflow-hidden aspect-[4/3] flex flex-col items-center justify-center p-8 hover:border-[#2A4A3C]/30 transition-all duration-500 hover:shadow-lg">
-                  <div className="absolute top-0 left-0 right-0 h-8 bg-[#1A2420] flex items-center px-3 gap-1.5">
+                <div className="relative bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl overflow-hidden aspect-[4/3] flex flex-col items-center justify-center p-8 hover:border-[#111111]/30 transition-all duration-500 hover:shadow-lg">
+                  <div className="absolute top-0 left-0 right-0 h-8 bg-[#111111] flex items-center px-3 gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444]/80" />
                     <div className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]/80" />
                     <div className="w-2.5 h-2.5 rounded-full bg-[#22C55E]/80" />
@@ -998,35 +998,35 @@ export default function Landing() {
                   </div>
                   <div className="mt-4 w-full space-y-3">
                     <div className="grid grid-cols-3 gap-2">
-                      <div className="bg-[#0F1612] border border-[#1A2E26] rounded-lg p-3 text-center">
-                        <div className="text-xs text-[#7A8C85]">Food Cost</div>
-                        <div className="text-lg font-bold text-[#F5F2EC]">28.4%</div>
+                      <div className="bg-white border border-[#E5E7EB] rounded-lg p-3 text-center">
+                        <div className="text-xs text-[#9CA3AF]">Food Cost</div>
+                        <div className="text-lg font-bold text-[#111111]">28.4%</div>
                       </div>
-                      <div className="bg-[#0F1612] border border-[#1A2E26] rounded-lg p-3 text-center">
-                        <div className="text-xs text-[#7A8C85]">Marge</div>
-                        <div className="text-lg font-bold text-[#F5F2EC]">71.6%</div>
+                      <div className="bg-white border border-[#E5E7EB] rounded-lg p-3 text-center">
+                        <div className="text-xs text-[#9CA3AF]">Marge</div>
+                        <div className="text-lg font-bold text-[#111111]">71.6%</div>
                       </div>
-                      <div className="bg-[#0F1612] border border-[#1A2E26] rounded-lg p-3 text-center">
-                        <div className="text-xs text-[#7A8C85]">Recettes</div>
-                        <div className="text-lg font-bold text-[#F5F2EC]">47</div>
+                      <div className="bg-white border border-[#E5E7EB] rounded-lg p-3 text-center">
+                        <div className="text-xs text-[#9CA3AF]">Recettes</div>
+                        <div className="text-lg font-bold text-[#111111]">47</div>
                       </div>
                     </div>
-                    <div className="bg-[#0F1612] border border-[#1A2E26] rounded-lg p-3">
+                    <div className="bg-white border border-[#E5E7EB] rounded-lg p-3">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs text-[#7A8C85]">Evolution marge</span>
+                        <span className="text-xs text-[#9CA3AF]">Evolution marge</span>
                         <span className="text-xs font-semibold text-[#22C55E]">+4.2%</span>
                       </div>
                       <div className="flex items-end gap-1 h-10">
                         {[40, 55, 45, 60, 52, 68, 72, 65, 78, 82, 75, 88].map((h, i) => (
-                          <div key={i} className="flex-1 bg-[#1A2420] rounded-sm transition-all duration-700 group-hover:bg-[#00C878]" style={{ height: `${h}%` }} />
+                          <div key={i} className="flex-1 bg-[#111111] rounded-sm transition-all duration-700 group-hover:bg-teal-600" style={{ height: `${h}%` }} />
                         ))}
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="mt-4 text-center">
-                  <h3 className="text-lg font-bold text-[#F5F2EC]">Dashboard temps reel</h3>
-                  <p className="text-sm text-[#7A8C85] mt-1">KPIs, marges et food cost en un coup d'oeil</p>
+                  <h3 className="text-lg font-bold text-[#111111]">Dashboard temps reel</h3>
+                  <p className="text-sm text-[#6B7280] mt-1">KPIs, marges et food cost en un coup d'oeil</p>
                 </div>
               </div>
             </FadeIn>
@@ -1034,30 +1034,30 @@ export default function Landing() {
             {/* Mockup 2: AI Assistant */}
             <FadeIn delay={150}>
               <div className="group">
-                <div className="relative bg-[#0A0F0D] border border-[#1A2E26] rounded-2xl overflow-hidden aspect-[4/3] flex flex-col items-center justify-center p-8 hover:border-[#2A4A3C]/30 transition-all duration-500 hover:shadow-lg">
-                  <div className="absolute top-0 left-0 right-0 h-8 bg-[#1A2420] flex items-center px-3 gap-1.5">
+                <div className="relative bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl overflow-hidden aspect-[4/3] flex flex-col items-center justify-center p-8 hover:border-[#111111]/30 transition-all duration-500 hover:shadow-lg">
+                  <div className="absolute top-0 left-0 right-0 h-8 bg-[#111111] flex items-center px-3 gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444]/80" />
                     <div className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]/80" />
                     <div className="w-2.5 h-2.5 rounded-full bg-[#22C55E]/80" />
                     <span className="text-[10px] text-white/50 ml-2 font-mono">restaumargin.fr/ai</span>
                   </div>
                   <div className="mt-4 w-full space-y-3">
-                    <div className="bg-[#1A2420] rounded-lg p-3 ml-8">
+                    <div className="bg-[#111111] rounded-lg p-3 ml-8">
                       <p className="text-xs text-white/90">"Cree une fiche technique pour un risotto aux cepes, 4 portions, prix de vente 19 euros"</p>
                     </div>
-                    <div className="bg-[#0F1612] border border-[#1A2E26] rounded-lg p-3 mr-8">
+                    <div className="bg-white border border-[#E5E7EB] rounded-lg p-3 mr-8">
                       <div className="flex items-center gap-2 mb-2">
-                        <Brain className="w-3.5 h-3.5 text-[#00C878]" />
-                        <span className="text-xs font-semibold text-[#F5F2EC]">Assistant IA</span>
+                        <Brain className="w-3.5 h-3.5 text-teal-600" />
+                        <span className="text-xs font-semibold text-[#111111]">Assistant IA</span>
                       </div>
-                      <p className="text-xs text-[#7A8C85]">Fiche creee ! Food cost: 5.20EUR (27.4%). Marge brute: 72.6%. Coefficient: 3.65x</p>
+                      <p className="text-xs text-[#6B7280]">Fiche creee ! Food cost: 5.20EUR (27.4%). Marge brute: 72.6%. Coefficient: 3.65x</p>
                     </div>
-                    <div className="bg-[#0F1612] border border-[#1A2E26] rounded-lg p-2.5">
+                    <div className="bg-white border border-[#E5E7EB] rounded-lg p-2.5">
                       <div className="flex items-center gap-2">
-                        <div className="flex-1 h-7 bg-[#0A0F0D] border border-[#1A2E26] rounded px-2 flex items-center">
-                          <span className="text-xs text-[#7A8C85]">Demandez a l'IA...</span>
+                        <div className="flex-1 h-7 bg-[#F9FAFB] border border-[#E5E7EB] rounded px-2 flex items-center">
+                          <span className="text-xs text-[#9CA3AF]">Demandez a l'IA...</span>
                         </div>
-                        <div className="w-7 h-7 rounded bg-[#1A2420] flex items-center justify-center">
+                        <div className="w-7 h-7 rounded bg-[#111111] flex items-center justify-center">
                           <Send className="w-3 h-3 text-white" />
                         </div>
                       </div>
@@ -1065,8 +1065,8 @@ export default function Landing() {
                   </div>
                 </div>
                 <div className="mt-4 text-center">
-                  <h3 className="text-lg font-bold text-[#F5F2EC]">Assistant IA cuisine</h3>
-                  <p className="text-sm text-[#7A8C85] mt-1">Creez une recette par chat en 10 secondes</p>
+                  <h3 className="text-lg font-bold text-[#111111]">Assistant IA cuisine</h3>
+                  <p className="text-sm text-[#6B7280] mt-1">Creez une recette par chat en 10 secondes</p>
                 </div>
               </div>
             </FadeIn>
@@ -1074,40 +1074,40 @@ export default function Landing() {
             {/* Mockup 3: Supplier Order via WhatsApp */}
             <FadeIn delay={300}>
               <div className="group">
-                <div className="relative bg-[#0A0F0D] border border-[#1A2E26] rounded-2xl overflow-hidden aspect-[4/3] flex flex-col items-center justify-center p-8 hover:border-[#2A4A3C]/30 transition-all duration-500 hover:shadow-lg">
-                  <div className="absolute top-0 left-0 right-0 h-8 bg-[#1A2420] flex items-center px-3 gap-1.5">
+                <div className="relative bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl overflow-hidden aspect-[4/3] flex flex-col items-center justify-center p-8 hover:border-[#111111]/30 transition-all duration-500 hover:shadow-lg">
+                  <div className="absolute top-0 left-0 right-0 h-8 bg-[#111111] flex items-center px-3 gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444]/80" />
                     <div className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]/80" />
                     <div className="w-2.5 h-2.5 rounded-full bg-[#22C55E]/80" />
                     <span className="text-[10px] text-white/50 ml-2 font-mono">restaumargin.fr/commandes</span>
                   </div>
                   <div className="mt-4 w-full space-y-2.5">
-                    <div className="bg-[#0F1612] border border-[#1A2E26] rounded-lg p-3">
+                    <div className="bg-white border border-[#E5E7EB] rounded-lg p-3">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-semibold text-[#F5F2EC]">Metro France</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#0A0F0D] border border-[#1A2E26] text-[#7A8C85]">CMD-2026-042</span>
+                        <span className="text-xs font-semibold text-[#111111]">Metro France</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F9FAFB] border border-[#E5E7EB] text-[#9CA3AF]">CMD-2026-042</span>
                       </div>
                       <div className="space-y-1.5">
                         <div className="flex justify-between text-xs">
-                          <span className="text-[#7A8C85]">Mozzarella di Bufala</span>
-                          <span className="text-[#F5F2EC] font-medium">5 kg</span>
+                          <span className="text-[#6B7280]">Mozzarella di Bufala</span>
+                          <span className="text-[#111111] font-medium">5 kg</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-[#7A8C85]">Tomates San Marzano</span>
-                          <span className="text-[#F5F2EC] font-medium">10 kg</span>
+                          <span className="text-[#6B7280]">Tomates San Marzano</span>
+                          <span className="text-[#111111] font-medium">10 kg</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-[#7A8C85]">Farine T00</span>
-                          <span className="text-[#F5F2EC] font-medium">25 kg</span>
+                          <span className="text-[#6B7280]">Farine T00</span>
+                          <span className="text-[#111111] font-medium">25 kg</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <div className="flex-1 bg-[#0F1612] border border-[#1A2E26] rounded-lg p-2.5 flex items-center justify-center gap-2 hover:border-[#2A4A3C]/30 transition-colors cursor-pointer">
-                        <Mail className="w-3.5 h-3.5 text-[#F5F2EC]" />
-                        <span className="text-xs font-medium text-[#F5F2EC]">Email</span>
+                      <div className="flex-1 bg-white border border-[#E5E7EB] rounded-lg p-2.5 flex items-center justify-center gap-2 hover:border-[#111111]/30 transition-colors cursor-pointer">
+                        <Mail className="w-3.5 h-3.5 text-[#111111]" />
+                        <span className="text-xs font-medium text-[#111111]">Email</span>
                       </div>
-                      <div className="flex-1 bg-[#1A2420] rounded-lg p-2.5 flex items-center justify-center gap-2 cursor-pointer">
+                      <div className="flex-1 bg-[#111111] rounded-lg p-2.5 flex items-center justify-center gap-2 cursor-pointer">
                         <MessageCircle className="w-3.5 h-3.5 text-white" />
                         <span className="text-xs font-medium text-white">WhatsApp</span>
                       </div>
@@ -1115,8 +1115,8 @@ export default function Landing() {
                   </div>
                 </div>
                 <div className="mt-4 text-center">
-                  <h3 className="text-lg font-bold text-[#F5F2EC]">Commandes en 1 clic</h3>
-                  <p className="text-sm text-[#7A8C85] mt-1">Envoyez par email ou WhatsApp a vos fournisseurs</p>
+                  <h3 className="text-lg font-bold text-[#111111]">Commandes en 1 clic</h3>
+                  <p className="text-sm text-[#6B7280] mt-1">Envoyez par email ou WhatsApp a vos fournisseurs</p>
                 </div>
               </div>
             </FadeIn>
@@ -1127,26 +1127,26 @@ export default function Landing() {
             <div className="mt-16 text-center">
               <Link
                 to="/login?mode=register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#00C878] hover:bg-[#00E589] text-white font-bold text-lg transition-all shadow-lg"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#111111] hover:bg-[#333333] text-white font-bold text-lg transition-all shadow-lg"
               >
                 Essayer gratuitement pendant 14 jours <ArrowRight className="w-5 h-5" />
               </Link>
-              <p className="mt-3 text-sm text-[#7A8C85]">Sans carte bancaire -- Sans engagement</p>
+              <p className="mt-3 text-sm text-[#9CA3AF]">Sans carte bancaire -- Sans engagement</p>
             </div>
           </FadeIn>
         </div>
       </section>
 
       {/* ═══════════════ 3. HOW IT WORKS ═══════════════ */}
-      <section id="how-it-works" className="py-24 sm:py-32 bg-[#0A0F0D] border-t border-[#1A2E26]">
+      <section id="how-it-works" className="py-24 sm:py-32 bg-[#FAFAFA] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
-              <p className="text-sm font-semibold text-[#7A8C85] uppercase tracking-[0.15em] mb-4">Comment ca marche</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#F5F2EC]">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Comment ca marche</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Trois etapes simples
               </h2>
-              <p className="mt-4 text-lg text-[#7A8C85]">
+              <p className="mt-4 text-lg text-[#6B7280]">
                 De l'inscription a l'optimisation de vos marges en quelques minutes.
               </p>
             </div>
@@ -1154,7 +1154,7 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-3 gap-8 lg:gap-12 relative">
             {/* Connector line (desktop) */}
-            <div className="hidden md:block absolute top-20 left-[20%] right-[20%] h-px bg-[#1A2E26]" />
+            <div className="hidden md:block absolute top-20 left-[20%] right-[20%] h-px bg-[#E5E7EB]" />
 
             {[
               { num: '01', icon: Package, title: 'Ajoutez vos ingredients', desc: 'Importez votre liste d\'ingredients depuis Excel ou dictez-les a l\'IA. Prix, fournisseurs, unites : tout est organise automatiquement.' },
@@ -1165,14 +1165,14 @@ export default function Landing() {
               return (
                 <FadeIn key={i} delay={i * 150}>
                   <div className="text-center relative">
-                    <div className="relative z-10 w-16 h-16 rounded-2xl bg-[#1A2420] flex items-center justify-center mx-auto mb-6 shadow-lg">
+                    <div className="relative z-10 w-16 h-16 rounded-2xl bg-[#111111] flex items-center justify-center mx-auto mb-6 shadow-lg">
                       <Icon className="w-8 h-8 text-white" />
                     </div>
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#1A2420] text-white text-sm font-bold flex items-center justify-center -mt-3 -ml-8 z-20 border-2 border-white shadow">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#111111] text-white text-sm font-bold flex items-center justify-center -mt-3 -ml-8 z-20 border-2 border-white shadow">
                       {step.num}
                     </div>
-                    <h3 className="text-xl font-bold text-[#F5F2EC] mb-3">{step.title}</h3>
-                    <p className="text-[#7A8C85] leading-relaxed max-w-xs mx-auto">{step.desc}</p>
+                    <h3 className="text-xl font-bold text-[#111111] mb-3">{step.title}</h3>
+                    <p className="text-[#6B7280] leading-relaxed max-w-xs mx-auto">{step.desc}</p>
                   </div>
                 </FadeIn>
               );
@@ -1182,15 +1182,15 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ 4. SOCIAL PROOF / TESTIMONIALS ═══════════════ */}
-      <section id="testimonials" className="py-24 sm:py-32 bg-[#0A0F0D] border-t border-[#1A2E26]">
+      <section id="testimonials" className="py-24 sm:py-32 bg-[#FAFAFA] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
-              <p className="text-sm font-semibold text-[#7A8C85] uppercase tracking-[0.15em] mb-4">Temoignages</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#F5F2EC]">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Temoignages</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Ils ont transforme leurs marges
               </h2>
-              <p className="mt-4 text-lg text-[#7A8C85]">
+              <p className="mt-4 text-lg text-[#6B7280]">
                 Des restaurateurs comme vous partagent leur experience.
               </p>
             </div>
@@ -1199,24 +1199,24 @@ export default function Landing() {
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <FadeIn key={i} delay={i * 100}>
-                <div className="bg-[#050505] border-2 border-[#1A2E26] border-l-4 border-l-[#00C878] rounded-2xl p-8 h-full flex flex-col hover:shadow-lg hover:border-[#2A4A3C]/20 transition-all duration-500">
+                <div className="bg-[#FFFFFF] border-2 border-[#E5E7EB] border-l-4 border-l-teal-500 rounded-2xl p-8 h-full flex flex-col hover:shadow-lg hover:border-[#111111]/20 transition-all duration-500">
                   {/* Stars */}
                   <div className="flex items-center gap-0.5 mb-4">
                     {Array.from({ length: t.stars }).map((_, s) => (
-                      <Star key={s} className="w-4 h-4 fill-[#111111] text-[#F5F2EC]" />
+                      <Star key={s} className="w-4 h-4 fill-[#111111] text-[#111111]" />
                     ))}
                   </div>
-                  <p className="text-[#F5F2EC] leading-relaxed mb-8 flex-1 text-[15px]">
+                  <p className="text-[#111111] leading-relaxed mb-8 flex-1 text-[15px]">
                     &ldquo;{t.quote}&rdquo;
                   </p>
-                  <div className="border-t border-[#1A2E26] pt-6 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-[#1A2420] flex items-center justify-center shrink-0">
+                  <div className="border-t border-[#E5E7EB] pt-6 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-[#111111] flex items-center justify-center shrink-0">
                       <span className="text-white font-bold text-sm">{t.initials}</span>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-[#F5F2EC]">{t.name}</p>
-                      <p className="text-sm text-[#7A8C85]">{t.role}</p>
-                      <p className="text-xs text-[#7A8C85]">{t.restaurant}, {t.city}</p>
+                      <p className="text-sm font-bold text-[#111111]">{t.name}</p>
+                      <p className="text-sm text-[#6B7280]">{t.role}</p>
+                      <p className="text-xs text-[#9CA3AF]">{t.restaurant}, {t.city}</p>
                     </div>
                   </div>
                 </div>
@@ -1227,15 +1227,15 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ VIDEO TESTIMONIAL — ANIMATED TUTORIALS ═══════════════ */}
-      <section className="py-24 sm:py-32 bg-[#0A0F0D] border-t border-[#1A2E26]">
+      <section className="py-24 sm:py-32 bg-[#FAFAFA] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <p className="text-sm font-semibold text-[#7A8C85] uppercase tracking-[0.15em] mb-4">Tutoriels animes</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#F5F2EC]">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Tutoriels animes</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Voyez le produit en action
               </h2>
-              <p className="mt-4 text-lg text-[#7A8C85]">
+              <p className="mt-4 text-lg text-[#6B7280]">
                 Trois scenarios animes qui montrent la puissance de RestauMargin.
               </p>
             </div>
@@ -1260,7 +1260,7 @@ export default function Landing() {
             <div className="mt-12 text-center">
               <Link
                 to="/login?mode=register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#00C878] hover:bg-[#00E589] text-white font-bold text-lg transition-all shadow-lg"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#111111] hover:bg-[#333333] text-white font-bold text-lg transition-all shadow-lg"
               >
                 Essayer maintenant <ArrowRight className="w-5 h-5" />
               </Link>
@@ -1270,15 +1270,15 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ ROI CALCULATOR ═══════════════ */}
-      <section id="roi-calculator" className="py-24 sm:py-32 bg-[#050505] border-t border-[#1A2E26]">
+      <section id="roi-calculator" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
         <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <p className="text-sm font-semibold text-[#7A8C85] uppercase tracking-[0.15em] mb-4">Calculateur ROI</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#F5F2EC]">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Calculateur ROI</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Combien pouvez-vous economiser ?
               </h2>
-              <p className="mt-4 text-lg text-[#7A8C85]">
+              <p className="mt-4 text-lg text-[#6B7280]">
                 Estimez vos economies mensuelles avec RestauMargin.
               </p>
             </div>
@@ -1290,7 +1290,7 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ TRUST BADGES ═══════════════ */}
-      <section className="py-16 bg-[#050505] border-t border-[#1A2E26]">
+      <section className="py-16 bg-[#FFFFFF] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8">
@@ -1304,11 +1304,11 @@ export default function Landing() {
                 const Icon = badge.icon;
                 return (
                   <div key={i} className="flex flex-col items-center text-center p-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#0A0F0D] border border-[#1A2E26] flex items-center justify-center mb-3">
-                      <Icon className="w-6 h-6 text-[#F5F2EC]" />
+                    <div className="w-12 h-12 rounded-xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center mb-3">
+                      <Icon className="w-6 h-6 text-[#111111]" />
                     </div>
-                    <p className="text-sm font-bold text-[#F5F2EC]">{badge.label}</p>
-                    <p className="text-xs text-[#7A8C85] mt-0.5">{badge.sub}</p>
+                    <p className="text-sm font-bold text-[#111111]">{badge.label}</p>
+                    <p className="text-xs text-[#9CA3AF] mt-0.5">{badge.sub}</p>
                   </div>
                 );
               })}
@@ -1319,29 +1319,29 @@ export default function Landing() {
 
 
       {/* ═══════════════ 6. PRICING ═══════════════ */}
-      <section id="pricing" className="py-24 sm:py-32 bg-[#0A0F0D] border-t border-[#1A2E26]">
+      <section id="pricing" className="py-24 sm:py-32 bg-[#FAFAFA] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-12">
-              <p className="text-sm font-semibold text-[#7A8C85] uppercase tracking-[0.15em] mb-4">Tarifs</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#F5F2EC]">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Tarifs</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Des tarifs simples et transparents
               </h2>
-              <p className="mt-4 text-lg text-[#7A8C85]">Sans engagement. Annulez quand vous voulez.</p>
+              <p className="mt-4 text-lg text-[#6B7280]">Sans engagement. Annulez quand vous voulez.</p>
 
               {/* Annual / Monthly toggle */}
-              <div className="mt-8 inline-flex items-center gap-3 bg-[#0A0F0D] border border-[#1A2E26] rounded-full p-1">
+              <div className="mt-8 inline-flex items-center gap-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-full p-1">
                 <button
                   onClick={() => setAnnualBilling(false)}
-                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${!annualBilling ? 'bg-[#1A2420] text-white shadow-sm' : 'text-[#7A8C85] hover:text-[#F5F2EC]'}`}
+                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${!annualBilling ? 'bg-[#111111] text-white shadow-sm' : 'text-[#6B7280] hover:text-[#111111]'}`}
                 >
                   Mensuel
                 </button>
                 <button
                   onClick={() => setAnnualBilling(true)}
-                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2 ${annualBilling ? 'bg-[#1A2420] text-white shadow-sm' : 'text-[#7A8C85] hover:text-[#F5F2EC]'}`}
+                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2 ${annualBilling ? 'bg-[#111111] text-white shadow-sm' : 'text-[#6B7280] hover:text-[#111111]'}`}
                 >
-                  Annuel <span className={`text-xs px-2 py-0.5 rounded-full ${annualBilling ? 'bg-[#00C878] text-white' : 'bg-[#0F1612] text-[#00C878] border border-[#1A2E26]'}`}>-20%</span>
+                  Annuel <span className={`text-xs px-2 py-0.5 rounded-full ${annualBilling ? 'bg-teal-500 text-white' : 'bg-teal-50 text-teal-700 border border-teal-200'}`}>-20%</span>
                 </button>
               </div>
             </div>
@@ -1350,15 +1350,15 @@ export default function Landing() {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Pro */}
             <FadeIn delay={100}>
-              <div className="bg-[#050505] border-2 border-[#1A2E26] rounded-2xl p-8 h-full flex flex-col">
-                <h3 className="text-lg font-bold text-[#F5F2EC] mb-1">Pro</h3>
-                <p className="text-sm text-[#7A8C85] mb-6">Pour les independants qui veulent maitriser leurs marges.</p>
+              <div className="bg-[#FFFFFF] border-2 border-[#E5E7EB] rounded-2xl p-8 h-full flex flex-col">
+                <h3 className="text-lg font-bold text-[#111111] mb-1">Pro</h3>
+                <p className="text-sm text-[#9CA3AF] mb-6">Pour les independants qui veulent maitriser leurs marges.</p>
                 <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-5xl font-extrabold text-[#F5F2EC]">{annualBilling ? '23' : '29'}</span>
-                  <span className="text-[#7A8C85] text-base">&euro;/mois</span>
+                  <span className="text-5xl font-extrabold text-[#111111]">{annualBilling ? '23' : '29'}</span>
+                  <span className="text-[#9CA3AF] text-base">&euro;/mois</span>
                 </div>
                 {annualBilling && (
-                  <p className="text-xs text-[#00C878] font-semibold mb-6">276 EUR/an au lieu de 348 EUR — Economisez 72 EUR</p>
+                  <p className="text-xs text-teal-600 font-semibold mb-6">276 EUR/an au lieu de 348 EUR — Economisez 72 EUR</p>
                 )}
                 {!annualBilling && <div className="mb-6" />}
                 <div className="space-y-4 mb-10 flex-1">
@@ -1373,8 +1373,8 @@ export default function Landing() {
                     '500 requetes IA par mois',
                   ].map((f) => (
                     <div key={f} className="flex items-center gap-3">
-                      <Check className="w-4 h-4 text-[#F5F2EC] shrink-0" />
-                      <span className="text-sm text-[#7A8C85]">{f}</span>
+                      <Check className="w-4 h-4 text-[#111111] shrink-0" />
+                      <span className="text-sm text-[#6B7280]">{f}</span>
                     </div>
                   ))}
                 </div>
@@ -1382,28 +1382,28 @@ export default function Landing() {
                   href="https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full text-center px-6 py-3.5 rounded-xl bg-[#00C878] hover:bg-[#00E891] text-white font-semibold transition-colors shadow-lg shadow-[#00C878]/30"
+                  className="block w-full text-center px-6 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold transition-colors shadow-lg shadow-teal-600/20"
                 >
                   Essai gratuit 14 jours
                 </a>
-                <p className="text-xs text-[#7A8C85] text-center mt-2">Sans carte bancaire</p>
+                <p className="text-xs text-[#9CA3AF] text-center mt-2">Sans carte bancaire</p>
               </div>
             </FadeIn>
 
             {/* Business */}
             <FadeIn delay={200}>
-              <div className="bg-[#050505] border-2 border-[#00C878] rounded-2xl p-8 h-full flex flex-col relative shadow-xl">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#00C878] text-white text-xs font-bold uppercase tracking-wide">
+              <div className="bg-[#FFFFFF] border-2 border-teal-500 rounded-2xl p-8 h-full flex flex-col relative shadow-xl">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-teal-600 text-white text-xs font-bold uppercase tracking-wide">
                   Populaire
                 </div>
-                <h3 className="text-lg font-bold text-[#F5F2EC] mb-1 mt-2">Business</h3>
-                <p className="text-sm text-[#7A8C85] mb-6">Pour les groupes qui gerent plusieurs etablissements.</p>
+                <h3 className="text-lg font-bold text-[#111111] mb-1 mt-2">Business</h3>
+                <p className="text-sm text-[#9CA3AF] mb-6">Pour les groupes qui gerent plusieurs etablissements.</p>
                 <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-5xl font-extrabold text-[#F5F2EC]">{annualBilling ? '63' : '79'}</span>
-                  <span className="text-[#7A8C85] text-base">&euro;/mois</span>
+                  <span className="text-5xl font-extrabold text-[#111111]">{annualBilling ? '63' : '79'}</span>
+                  <span className="text-[#9CA3AF] text-base">&euro;/mois</span>
                 </div>
                 {annualBilling && (
-                  <p className="text-xs text-[#00C878] font-semibold mb-6">756 EUR/an au lieu de 948 EUR — Economisez 192 EUR</p>
+                  <p className="text-xs text-teal-600 font-semibold mb-6">756 EUR/an au lieu de 948 EUR — Economisez 192 EUR</p>
                 )}
                 {!annualBilling && <div className="mb-6" />}
                 <div className="space-y-4 mb-10 flex-1">
@@ -1418,8 +1418,8 @@ export default function Landing() {
                     'Support prioritaire',
                   ].map((f) => (
                     <div key={f} className="flex items-center gap-3">
-                      <Check className="w-4 h-4 text-[#F5F2EC] shrink-0" />
-                      <span className="text-sm text-[#7A8C85]">{f}</span>
+                      <Check className="w-4 h-4 text-[#111111] shrink-0" />
+                      <span className="text-sm text-[#6B7280]">{f}</span>
                     </div>
                   ))}
                 </div>
@@ -1427,11 +1427,11 @@ export default function Landing() {
                   href="https://buy.stripe.com/4gMbIU5Ki4cAfbe1b187K05"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full text-center px-6 py-3.5 rounded-xl bg-[#00C878] hover:bg-[#00E891] text-white font-semibold transition-colors shadow-lg shadow-[#00C878]/30"
+                  className="block w-full text-center px-6 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold transition-colors shadow-lg shadow-teal-600/20"
                 >
                   Essai gratuit 14 jours
                 </a>
-                <p className="text-xs text-[#7A8C85] text-center mt-2">Sans carte bancaire</p>
+                <p className="text-xs text-[#9CA3AF] text-center mt-2">Sans carte bancaire</p>
               </div>
             </FadeIn>
           </div>
@@ -1439,17 +1439,17 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ 7. FAQ ═══════════════ */}
-      <section id="faq" className="py-24 sm:py-32 bg-[#050505] border-t border-[#1A2E26]">
+      <section id="faq" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-16">
-              <p className="text-sm font-semibold text-[#7A8C85] uppercase tracking-[0.15em] mb-4">FAQ</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#F5F2EC]">Questions frequentes</h2>
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">FAQ</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">Questions frequentes</h2>
             </div>
           </FadeIn>
 
           <FadeIn delay={100}>
-            <div className="space-y-0 border-2 border-[#1A2E26] rounded-2xl overflow-hidden">
+            <div className="space-y-0 border-2 border-[#E5E7EB] rounded-2xl overflow-hidden">
               {faqItems.map((item, i) => (
                 <FAQItem key={i} q={item.q} a={item.a} isLast={i === faqItems.length - 1} />
               ))}
@@ -1459,22 +1459,22 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ 8. NEWSLETTER ═══════════════ */}
-      <section className="py-24 sm:py-32 bg-[#050505] border-t border-[#1A2E26]">
+      <section className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
         <div className="max-w-[560px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#F5F2EC] mb-3">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111111] mb-3">
                 Restez informe
               </h2>
-              <p className="text-[#7A8C85] mb-8">
+              <p className="text-[#6B7280] mb-8">
                 Recevez nos conseils marge, actualites fournisseurs et mises a jour produit.
               </p>
 
               {inlineNewsletterSent ? (
-                <div className="border border-[#1A2E26] rounded-2xl p-8">
-                  <CheckCircle2 className="w-10 h-10 text-[#F5F2EC] mx-auto mb-3" />
-                  <p className="text-lg font-semibold text-[#F5F2EC]">Merci !</p>
-                  <p className="text-sm text-[#7A8C85] mt-1">Vous recevrez nos actualites restaurant.</p>
+                <div className="border border-[#E5E7EB] rounded-2xl p-8">
+                  <CheckCircle2 className="w-10 h-10 text-[#111111] mx-auto mb-3" />
+                  <p className="text-lg font-semibold text-[#111111]">Merci !</p>
+                  <p className="text-sm text-[#9CA3AF] mt-1">Vous recevrez nos actualites restaurant.</p>
                 </div>
               ) : (
                 <form onSubmit={handleInlineNewsletterSubmit}>
@@ -1485,12 +1485,12 @@ export default function Landing() {
                       value={inlineNewsletterEmail}
                       onChange={(e) => setInlineNewsletterEmail(e.target.value)}
                       placeholder="votre@email.com"
-                      className="flex-1 min-w-0 px-4 py-3 rounded-lg bg-[#050505] border border-[#1A2E26] text-[#F5F2EC] placeholder-[#3D4D47] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C878] focus:border-transparent"
+                      className="flex-1 min-w-0 px-4 py-3 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
                     />
                     <button
                       type="submit"
                       disabled={inlineNewsletterLoading}
-                      className="px-6 py-3 rounded-lg bg-[#1A2420] text-white font-semibold text-sm hover:bg-[#1F2E28] transition-colors disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap"
+                      className="px-6 py-3 rounded-lg bg-[#111111] text-white font-semibold text-sm hover:bg-[#333333] transition-colors disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap"
                     >
                       {inlineNewsletterLoading ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -1502,7 +1502,7 @@ export default function Landing() {
                   {inlineNewsletterError && (
                     <p className="text-red-500 text-sm mt-2">{inlineNewsletterError}</p>
                   )}
-                  <p className="text-xs text-[#7A8C85] mt-3">Pas de spam. Desinscription en un clic.</p>
+                  <p className="text-xs text-[#9CA3AF] mt-3">Pas de spam. Desinscription en un clic.</p>
                 </form>
               )}
             </div>
@@ -1511,66 +1511,66 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ 9. CONTACT ═══════════════ */}
-      <section id="contact" className="py-24 sm:py-32 bg-[#050505] border-t border-[#1A2E26]">
+      <section id="contact" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
         <div className="max-w-[560px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-10">
-              <p className="text-sm font-semibold text-[#7A8C85] uppercase tracking-[0.15em] mb-4">Contact</p>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#F5F2EC] mb-3">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Contact</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-3">
                 Parlons de votre projet
               </h2>
-              <p className="text-[#7A8C85]">Notre equipe vous recontacte sous 24h.</p>
+              <p className="text-[#6B7280]">Notre equipe vous recontacte sous 24h.</p>
             </div>
 
             {contactSent ? (
-              <div className="border border-[#1A2E26] rounded-2xl p-8 text-center">
-                <CheckCircle2 className="w-12 h-12 text-[#F5F2EC] mx-auto mb-4" />
-                <p className="text-lg font-semibold text-[#F5F2EC]">Demande envoyee !</p>
-                <p className="text-sm text-[#7A8C85] mt-1">Nous vous recontactons tres vite.</p>
+              <div className="border border-[#E5E7EB] rounded-2xl p-8 text-center">
+                <CheckCircle2 className="w-12 h-12 text-[#111111] mx-auto mb-4" />
+                <p className="text-lg font-semibold text-[#111111]">Demande envoyee !</p>
+                <p className="text-sm text-[#9CA3AF] mt-1">Nous vous recontactons tres vite.</p>
               </div>
             ) : (
-              <form onSubmit={handleContactSubmit} className="border border-[#1A2E26] rounded-2xl p-8 space-y-5">
+              <form onSubmit={handleContactSubmit} className="border border-[#E5E7EB] rounded-2xl p-8 space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-[#F5F2EC] mb-1.5">Nom</label>
+                    <label className="block text-sm font-medium text-[#111111] mb-1.5">Nom</label>
                     <input
                       type="text"
                       required
                       value={contactForm.nom}
                       onChange={(e) => setContactForm({ ...contactForm, nom: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-lg bg-[#050505] border border-[#1A2E26] text-[#F5F2EC] placeholder-[#3D4D47] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C878] focus:border-transparent"
+                      className="w-full px-4 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
                       placeholder="Votre nom"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#F5F2EC] mb-1.5">Email</label>
+                    <label className="block text-sm font-medium text-[#111111] mb-1.5">Email</label>
                     <input
                       type="email"
                       required
                       value={contactForm.email}
                       onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-lg bg-[#050505] border border-[#1A2E26] text-[#F5F2EC] placeholder-[#3D4D47] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C878] focus:border-transparent"
+                      className="w-full px-4 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
                       placeholder="votre@email.com"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#F5F2EC] mb-1.5">Telephone</label>
+                  <label className="block text-sm font-medium text-[#111111] mb-1.5">Telephone</label>
                   <input
                     type="tel"
                     value={contactForm.telephone}
                     onChange={(e) => setContactForm({ ...contactForm, telephone: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg bg-[#050505] border border-[#1A2E26] text-[#F5F2EC] placeholder-[#3D4D47] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C878] focus:border-transparent"
+                    className="w-full px-4 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
                     placeholder="06 12 34 56 78"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#F5F2EC] mb-1.5">Message</label>
+                  <label className="block text-sm font-medium text-[#111111] mb-1.5">Message</label>
                   <textarea
                     rows={4}
                     value={contactForm.message}
                     onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg bg-[#050505] border border-[#1A2E26] text-[#F5F2EC] placeholder-[#3D4D47] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C878] focus:border-transparent resize-none"
+                    className="w-full px-4 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent resize-none"
                     placeholder="Decrivez votre besoin..."
                   />
                 </div>
@@ -1582,7 +1582,7 @@ export default function Landing() {
                 <button
                   type="submit"
                   disabled={contactLoading}
-                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-[#00C878] hover:bg-[#00E589] text-white font-semibold text-base transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white font-semibold text-base transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {contactLoading ? (
                     <>
@@ -1601,26 +1601,26 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ 10. FOOTER ═══════════════ */}
-      <footer className="border-t border-[#1A2E26] bg-[#050505]">
+      <footer className="border-t border-[#E5E7EB] bg-[#FFFFFF]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-16 grid sm:grid-cols-2 lg:grid-cols-5 gap-10">
             {/* Brand column */}
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-9 h-9 rounded-xl bg-[#1A2420] flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-[#111111] flex items-center justify-center">
                   <ChefHat className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-lg font-bold text-[#F5F2EC]">RestauMargin</span>
+                <span className="text-lg font-bold text-[#111111]">RestauMargin</span>
               </div>
-              <p className="text-sm text-[#7A8C85] leading-relaxed max-w-xs">
+              <p className="text-sm text-[#6B7280] leading-relaxed max-w-xs">
                 La plateforme de gestion des marges pour la restauration professionnelle.
               </p>
 
               {/* Made in France badge */}
-              <div className="mt-5 inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#0A0F0D] border border-[#1A2E26]">
+              <div className="mt-5 inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#F9FAFB] border border-[#E5E7EB]">
                 <span className="text-base">🇫🇷</span>
-                <span className="text-xs font-semibold text-[#F5F2EC]">Made in France</span>
-                <span className="text-[10px] text-[#7A8C85]">Donnees hebergees en Europe</span>
+                <span className="text-xs font-semibold text-[#111111]">Made in France</span>
+                <span className="text-[10px] text-[#9CA3AF]">Donnees hebergees en Europe</span>
               </div>
 
               {/* Social icons */}
@@ -1634,9 +1634,9 @@ export default function Landing() {
                     key={social.label}
                     href="#"
                     aria-label={social.label}
-                    className="w-9 h-9 rounded-lg bg-[#0A0F0D] border border-[#1A2E26] flex items-center justify-center hover:bg-[#1A2420] hover:border-[#2A4A3C] group transition-colors"
+                    className="w-9 h-9 rounded-lg bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center hover:bg-[#111111] hover:border-[#111111] group transition-colors"
                   >
-                    <svg className="w-4 h-4 text-[#7A8C85] group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[#9CA3AF] group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
                       <path d={social.path} />
                     </svg>
                   </a>
@@ -1646,49 +1646,49 @@ export default function Landing() {
 
             {/* Produit */}
             <div>
-              <h4 className="font-semibold text-[#F5F2EC] text-sm mb-4">Produit</h4>
-              <ul className="space-y-2.5 text-sm text-[#7A8C85]">
-                <li><button onClick={() => scrollTo('features')} className="hover:text-[#F5F2EC] transition-colors">Fonctionnalites</button></li>
-                <li><button onClick={() => scrollTo('pricing')} className="hover:text-[#F5F2EC] transition-colors">Tarifs</button></li>
-                <li><Link to="/blog" className="hover:text-[#F5F2EC] transition-colors">Blog</Link></li>
-                <li><button onClick={() => scrollTo('contact')} className="hover:text-[#F5F2EC] transition-colors">Contact</button></li>
+              <h4 className="font-semibold text-[#111111] text-sm mb-4">Produit</h4>
+              <ul className="space-y-2.5 text-sm text-[#6B7280]">
+                <li><button onClick={() => scrollTo('features')} className="hover:text-[#111111] transition-colors">Fonctionnalites</button></li>
+                <li><button onClick={() => scrollTo('pricing')} className="hover:text-[#111111] transition-colors">Tarifs</button></li>
+                <li><Link to="/blog" className="hover:text-[#111111] transition-colors">Blog</Link></li>
+                <li><button onClick={() => scrollTo('contact')} className="hover:text-[#111111] transition-colors">Contact</button></li>
               </ul>
             </div>
 
             {/* Legal */}
             <div>
-              <h4 className="font-semibold text-[#F5F2EC] text-sm mb-4">Legal</h4>
-              <ul className="space-y-2.5 text-sm text-[#7A8C85]">
-                <li><Link to="/cgu" className="hover:text-[#F5F2EC] transition-colors">CGU</Link></li>
-                <li><Link to="/cgv" className="hover:text-[#F5F2EC] transition-colors">CGV</Link></li>
-                <li><Link to="/mentions-legales" className="hover:text-[#F5F2EC] transition-colors">Mentions legales</Link></li>
-                <li><Link to="/politique-confidentialite" className="hover:text-[#F5F2EC] transition-colors">Confidentialite</Link></li>
+              <h4 className="font-semibold text-[#111111] text-sm mb-4">Legal</h4>
+              <ul className="space-y-2.5 text-sm text-[#6B7280]">
+                <li><Link to="/cgu" className="hover:text-[#111111] transition-colors">CGU</Link></li>
+                <li><Link to="/cgv" className="hover:text-[#111111] transition-colors">CGV</Link></li>
+                <li><Link to="/mentions-legales" className="hover:text-[#111111] transition-colors">Mentions legales</Link></li>
+                <li><Link to="/politique-confidentialite" className="hover:text-[#111111] transition-colors">Confidentialite</Link></li>
               </ul>
             </div>
 
             {/* Contact */}
             <div>
-              <h4 className="font-semibold text-[#F5F2EC] text-sm mb-4">Contact</h4>
-              <ul className="space-y-2.5 text-sm text-[#7A8C85]">
+              <h4 className="font-semibold text-[#111111] text-sm mb-4">Contact</h4>
+              <ul className="space-y-2.5 text-sm text-[#6B7280]">
                 <li className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-[#7A8C85]" />
-                  <a href="mailto:contact@restaumargin.fr" className="hover:text-[#F5F2EC] transition-colors">contact@restaumargin.fr</a>
+                  <Mail className="w-4 h-4 text-[#9CA3AF]" />
+                  <a href="mailto:contact@restaumargin.fr" className="hover:text-[#111111] transition-colors">contact@restaumargin.fr</a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-[#7A8C85]" />
+                  <Phone className="w-4 h-4 text-[#9CA3AF]" />
                   <span>01 23 45 67 89</span>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-[#1A2E26] py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-[#7A8C85]">RestauMargin &copy; 2026. Tous droits reserves.</p>
-            <div className="flex items-center gap-6 text-xs text-[#7A8C85]">
-              <Link to="/cgu" className="hover:text-[#F5F2EC] transition-colors">CGU</Link>
-              <Link to="/cgv" className="hover:text-[#F5F2EC] transition-colors">CGV</Link>
-              <Link to="/mentions-legales" className="hover:text-[#F5F2EC] transition-colors">Mentions legales</Link>
-              <Link to="/politique-confidentialite" className="hover:text-[#F5F2EC] transition-colors">Confidentialite</Link>
+          <div className="border-t border-[#E5E7EB] py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-[#9CA3AF]">RestauMargin &copy; 2026. Tous droits reserves.</p>
+            <div className="flex items-center gap-6 text-xs text-[#9CA3AF]">
+              <Link to="/cgu" className="hover:text-[#111111] transition-colors">CGU</Link>
+              <Link to="/cgv" className="hover:text-[#111111] transition-colors">CGV</Link>
+              <Link to="/mentions-legales" className="hover:text-[#111111] transition-colors">Mentions legales</Link>
+              <Link to="/politique-confidentialite" className="hover:text-[#111111] transition-colors">Confidentialite</Link>
             </div>
           </div>
         </div>
@@ -1700,10 +1700,10 @@ export default function Landing() {
           showFloatingCTA ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'
         }`}
       >
-        <div className="bg-[#1A2420] border-t border-[#1F2E28] shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
+        <div className="bg-[#111111] border-t border-[#333333] shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
             <div className="hidden sm:flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#0F1612]/10 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
                 <Zap className="w-4 h-4 text-white" />
               </div>
               <div>
@@ -1715,7 +1715,7 @@ export default function Landing() {
             <div className="flex items-center gap-3 shrink-0">
               <Link
                 to="/login?mode=register"
-                className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-[#00C878] hover:bg-[#00E891] text-black font-semibold text-sm transition-all shadow-lg shadow-[#00C878]/30"
+                className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-white hover:bg-gray-100 text-[#111111] font-semibold text-sm transition-all"
               >
                 Commencer maintenant <ArrowRight className="w-4 h-4" />
               </Link>
@@ -1730,10 +1730,10 @@ export default function Landing() {
           showNewsletter ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'
         }`}
       >
-        <div className="bg-[#050505] border border-[#1A2E26] rounded-2xl shadow-lg p-5 relative">
+        <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl shadow-lg p-5 relative">
           <button
             onClick={dismissNewsletter}
-            className="absolute top-3 right-3 text-[#7A8C85] hover:text-[#F5F2EC] transition-colors"
+            className="absolute top-3 right-3 text-[#9CA3AF] hover:text-[#111111] transition-colors"
             aria-label="Fermer"
           >
             <XIcon className="w-4 h-4" />
@@ -1741,17 +1741,17 @@ export default function Landing() {
 
           {newsletterSent ? (
             <div className="text-center py-2">
-              <CheckCircle2 className="w-8 h-8 text-[#F5F2EC] mx-auto mb-2" />
-              <p className="text-sm font-semibold text-[#F5F2EC]">Inscription confirmee !</p>
-              <p className="text-xs text-[#7A8C85] mt-1">A bientot dans votre boite mail.</p>
+              <CheckCircle2 className="w-8 h-8 text-[#111111] mx-auto mb-2" />
+              <p className="text-sm font-semibold text-[#111111]">Inscription confirmee !</p>
+              <p className="text-xs text-[#9CA3AF] mt-1">A bientot dans votre boite mail.</p>
             </div>
           ) : (
             <>
               <div className="flex items-center gap-2 mb-2">
-                <Newspaper className="w-4 h-4 text-[#F5F2EC]" />
-                <h4 className="text-sm font-bold text-[#F5F2EC]">Mercuriale hebdomadaire</h4>
+                <Newspaper className="w-4 h-4 text-[#111111]" />
+                <h4 className="text-sm font-bold text-[#111111]">Mercuriale hebdomadaire</h4>
               </div>
-              <p className="text-xs text-[#7A8C85] mb-3">
+              <p className="text-xs text-[#6B7280] mb-3">
                 Recevez les prix du marche chaque semaine
               </p>
               <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
@@ -1761,12 +1761,12 @@ export default function Landing() {
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}
                   placeholder="votre@email.com"
-                  className="flex-1 min-w-0 px-3 py-2 text-xs rounded-lg bg-[#050505] border border-[#1A2E26] text-[#F5F2EC] placeholder-[#3D4D47] focus:outline-none focus:ring-2 focus:ring-[#00C878] focus:border-transparent"
+                  className="flex-1 min-w-0 px-3 py-2 text-xs rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
                 />
                 <button
                   type="submit"
                   disabled={newsletterLoading}
-                  className="px-3 py-2 rounded-lg bg-[#00C878] hover:bg-[#00E589] text-white text-xs font-semibold transition-colors disabled:opacity-60 whitespace-nowrap"
+                  className="px-3 py-2 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-xs font-semibold transition-colors disabled:opacity-60 whitespace-nowrap"
                 >
                   {newsletterLoading ? '...' : "S'inscrire"}
                 </button>
@@ -1779,16 +1779,16 @@ export default function Landing() {
       {/* ═══════════════ EXIT-INTENT POPUP — FOOD COST CALCULATOR ═══════════════ */}
       {showExitPopup && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="relative mx-4 w-full max-w-lg bg-[#050505] border border-[#1A2E26] rounded-2xl shadow-2xl overflow-hidden">
+          <div className="relative mx-4 w-full max-w-lg bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl shadow-2xl overflow-hidden">
             <button
               onClick={() => setShowExitPopup(false)}
-              className="absolute top-4 right-4 z-10 text-[#7A8C85] hover:text-[#F5F2EC] transition-colors"
+              className="absolute top-4 right-4 z-10 text-[#9CA3AF] hover:text-[#111111] transition-colors"
               aria-label="Fermer"
             >
               <XIcon className="w-5 h-5" />
             </button>
 
-            <div className="bg-[#1A2420] px-6 py-5">
+            <div className="bg-[#111111] px-6 py-5">
               <h3 className="text-xl font-bold text-white">Attendez ! Calculez GRATUITEMENT le food cost de votre plat star</h3>
               <p className="text-sm text-white/60 mt-1">Remplissez 4 champs, obtenez votre marge instantanement.</p>
             </div>
@@ -1797,23 +1797,23 @@ export default function Landing() {
               {exitCalcResult ? (
                 <div className="text-center">
                   <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="bg-[#0A0F0D] border border-[#1A2E26] rounded-xl p-4">
-                      <p className="text-xs text-[#7A8C85] uppercase font-semibold">Food Cost</p>
-                      <p className="text-2xl font-extrabold text-[#F5F2EC]">{formatCurrency(exitCalcResult.foodCost)}</p>
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4">
+                      <p className="text-xs text-[#9CA3AF] uppercase font-semibold">Food Cost</p>
+                      <p className="text-2xl font-extrabold text-[#111111]">{formatCurrency(exitCalcResult.foodCost)}</p>
                     </div>
-                    <div className="bg-[#1A2420] rounded-xl p-4">
+                    <div className="bg-[#111111] rounded-xl p-4">
                       <p className="text-xs text-white/60 uppercase font-semibold">Marge brute</p>
                       <p className="text-2xl font-extrabold text-white">{exitCalcResult.margin.toFixed(1)}%</p>
                     </div>
                   </div>
-                  <p className="text-sm text-[#7A8C85] mb-4">
+                  <p className="text-sm text-[#6B7280] mb-4">
                     {exitCalcResult.margin >= 70 ? 'Excellente marge ! RestauMargin peut vous aider a la maintenir.' :
                      exitCalcResult.margin >= 60 ? 'Bonne marge. RestauMargin peut vous aider a l\'ameliorer.' :
                      'Votre marge peut etre optimisee. RestauMargin vous montre comment.'}
                   </p>
                   <Link
                     to="/login?mode=register"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#00C878] hover:bg-[#00E891] text-white font-semibold rounded-lg transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-lg transition-colors"
                   >
                     Voir plus de details — Creer un compte gratuit <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -1821,59 +1821,59 @@ export default function Landing() {
               ) : (
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-[#F5F2EC] mb-1 block">Nom du plat</label>
+                    <label className="text-sm font-medium text-[#111111] mb-1 block">Nom du plat</label>
                     <input
                       type="text"
                       value={exitCalcForm.nom}
                       onChange={e => setExitCalcForm({ ...exitCalcForm, nom: e.target.value })}
                       placeholder="Ex: Risotto aux cepes"
-                      className="w-full px-4 py-2.5 rounded-lg bg-[#050505] border border-[#1A2E26] text-[#F5F2EC] placeholder-[#3D4D47] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C878] focus:border-transparent"
+                      className="w-full px-4 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
                     />
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <label className="text-xs font-medium text-[#F5F2EC] mb-1 block">Ingredient 1 (EUR)</label>
+                      <label className="text-xs font-medium text-[#111111] mb-1 block">Ingredient 1 (EUR)</label>
                       <input
                         type="number"
                         step="0.01"
                         value={exitCalcForm.ing1}
                         onChange={e => setExitCalcForm({ ...exitCalcForm, ing1: e.target.value })}
                         placeholder="2.50"
-                        className="w-full px-3 py-2.5 rounded-lg bg-[#050505] border border-[#1A2E26] text-[#F5F2EC] placeholder-[#3D4D47] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C878] focus:border-transparent"
+                        className="w-full px-3 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-[#F5F2EC] mb-1 block">Ingredient 2 (EUR)</label>
+                      <label className="text-xs font-medium text-[#111111] mb-1 block">Ingredient 2 (EUR)</label>
                       <input
                         type="number"
                         step="0.01"
                         value={exitCalcForm.ing2}
                         onChange={e => setExitCalcForm({ ...exitCalcForm, ing2: e.target.value })}
                         placeholder="1.80"
-                        className="w-full px-3 py-2.5 rounded-lg bg-[#050505] border border-[#1A2E26] text-[#F5F2EC] placeholder-[#3D4D47] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C878] focus:border-transparent"
+                        className="w-full px-3 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-[#F5F2EC] mb-1 block">Ingredient 3 (EUR)</label>
+                      <label className="text-xs font-medium text-[#111111] mb-1 block">Ingredient 3 (EUR)</label>
                       <input
                         type="number"
                         step="0.01"
                         value={exitCalcForm.ing3}
                         onChange={e => setExitCalcForm({ ...exitCalcForm, ing3: e.target.value })}
                         placeholder="0.90"
-                        className="w-full px-3 py-2.5 rounded-lg bg-[#050505] border border-[#1A2E26] text-[#F5F2EC] placeholder-[#3D4D47] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C878] focus:border-transparent"
+                        className="w-full px-3 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-[#F5F2EC] mb-1 block">Prix de vente (EUR)</label>
+                    <label className="text-sm font-medium text-[#111111] mb-1 block">Prix de vente (EUR)</label>
                     <input
                       type="number"
                       step="0.01"
                       value={exitCalcForm.prix}
                       onChange={e => setExitCalcForm({ ...exitCalcForm, prix: e.target.value })}
                       placeholder="18.50"
-                      className="w-full px-4 py-2.5 rounded-lg bg-[#050505] border border-[#1A2E26] text-[#F5F2EC] placeholder-[#3D4D47] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C878] focus:border-transparent"
+                      className="w-full px-4 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
                     />
                   </div>
                   <button
@@ -1887,7 +1887,7 @@ export default function Landing() {
                       const margin = ((prix - fc) / prix) * 100;
                       setExitCalcResult({ foodCost: fc, margin: Math.max(0, margin) });
                     }}
-                    className="w-full py-3.5 rounded-lg bg-[#00C878] hover:bg-[#00E589] text-white font-semibold text-base transition-colors flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white font-semibold text-base transition-colors flex items-center justify-center gap-2"
                   >
                     <Calculator className="w-5 h-5" /> Calculer ma marge
                   </button>
@@ -1896,7 +1896,7 @@ export default function Landing() {
 
               <button
                 onClick={() => setShowExitPopup(false)}
-                className="block mx-auto mt-4 text-sm text-[#7A8C85] hover:text-[#F5F2EC] transition-colors"
+                className="block mx-auto mt-4 text-sm text-[#9CA3AF] hover:text-[#111111] transition-colors"
               >
                 Non merci
               </button>
@@ -1912,13 +1912,13 @@ export default function Landing() {
         }`}
       >
         <div className="max-w-[700px] mx-auto px-4 pointer-events-auto">
-          <div className="bg-[#00C878] rounded-2xl shadow-xl px-6 py-3.5 flex items-center justify-between gap-4">
+          <div className="bg-teal-600 rounded-2xl shadow-xl px-6 py-3.5 flex items-center justify-between gap-4">
             <p className="text-sm sm:text-base font-semibold text-white">
               Pret a transformer votre gestion ?
             </p>
             <Link
               to="/login?mode=register"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0F1612] text-[#00C878] font-semibold text-sm hover:bg-[#0F1612] transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-teal-700 font-semibold text-sm hover:bg-teal-50 transition-colors whitespace-nowrap shrink-0"
             >
               Essai gratuit 14 jours <ArrowRight className="w-4 h-4" />
             </Link>
@@ -1932,15 +1932,15 @@ export default function Landing() {
           socialNotif ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0 pointer-events-none'
         }`}
       >
-        <div className="bg-[#050505] border border-[#1A2E26] rounded-2xl shadow-lg px-5 py-3.5 flex items-center gap-3 max-w-xs">
-          <div className="w-8 h-8 rounded-full bg-[#0F1612] border border-[#1A2E26] flex items-center justify-center shrink-0">
-            <MapPin className="w-4 h-4 text-[#00C878]" />
+        <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl shadow-lg px-5 py-3.5 flex items-center gap-3 max-w-xs">
+          <div className="w-8 h-8 rounded-full bg-teal-50 border border-teal-200 flex items-center justify-center shrink-0">
+            <MapPin className="w-4 h-4 text-teal-600" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#F5F2EC]">
+            <p className="text-sm font-semibold text-[#111111]">
               Un restaurant de {socialNotif} vient de s'inscrire
             </p>
-            <p className="text-xs text-[#7A8C85]">Il y a quelques instants</p>
+            <p className="text-xs text-[#9CA3AF]">Il y a quelques instants</p>
           </div>
         </div>
       </div>
@@ -1975,18 +1975,18 @@ export default function Landing() {
 function FAQItem({ q, a, isLast = false }: { q: string; a: string; isLast?: boolean }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className={`${!isLast ? 'border-b-2 border-[#1A2E26]' : ''}`}>
+    <div className={`${!isLast ? 'border-b-2 border-[#E5E7EB]' : ''}`}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#0F1612] transition-colors"
+        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#F5F5F5] transition-colors"
       >
-        <span className="font-bold text-[#F5F2EC] pr-4">{q}</span>
-        <div className={`w-6 h-6 rounded-full border border-[#1A2E26] flex items-center justify-center shrink-0 transition-all duration-300 ${open ? 'rotate-180 bg-[#1A2420] border-[#2A4A3C]' : ''}`}>
-          {open ? <Minus className="w-3.5 h-3.5 text-white" /> : <Plus className="w-3.5 h-3.5 text-[#F5F2EC]" />}
+        <span className="font-bold text-[#111111] pr-4">{q}</span>
+        <div className={`w-6 h-6 rounded-full border border-[#E5E7EB] flex items-center justify-center shrink-0 transition-all duration-300 ${open ? 'rotate-180 bg-[#111111] border-[#111111]' : ''}`}>
+          {open ? <Minus className="w-3.5 h-3.5 text-white" /> : <Plus className="w-3.5 h-3.5 text-[#111111]" />}
         </div>
       </button>
       <div className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-60 pb-5' : 'max-h-0'}`}>
-        <p className="px-6 text-sm text-[#7A8C85] leading-relaxed">{a}</p>
+        <p className="px-6 text-sm text-[#6B7280] leading-relaxed">{a}</p>
       </div>
     </div>
   );
@@ -2011,8 +2011,8 @@ function ROICalculator() {
   const yearlySavings = monthlySavings * 12;
 
   return (
-    <div className="border-2 border-[#2A4A3C] rounded-2xl overflow-hidden">
-      <div className="bg-[#1A2420] px-8 py-5">
+    <div className="border-2 border-[#111111] rounded-2xl overflow-hidden">
+      <div className="bg-[#111111] px-8 py-5">
         <div className="flex items-center gap-3">
           <Calculator className="w-5 h-5 text-white" />
           <h3 className="text-lg font-bold text-white">Estimez vos economies</h3>
@@ -2023,8 +2023,8 @@ function ROICalculator() {
         {/* Slider: Couverts/jour */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <label className="text-sm font-semibold text-[#F5F2EC]">Nombre de couverts par jour</label>
-            <span className="text-lg font-extrabold text-[#F5F2EC] bg-[#0A0F0D] border border-[#1A2E26] rounded-lg px-3 py-1 min-w-[60px] text-center">{couverts}</span>
+            <label className="text-sm font-semibold text-[#111111]">Nombre de couverts par jour</label>
+            <span className="text-lg font-extrabold text-[#111111] bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-1 min-w-[60px] text-center">{couverts}</span>
           </div>
           <input
             type="range"
@@ -2033,9 +2033,9 @@ function ROICalculator() {
             step={5}
             value={couverts}
             onChange={(e) => setCouverts(Number(e.target.value))}
-            className="w-full h-2 bg-[#1A2E26] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#1A2420] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-[#1A2420] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+            className="w-full h-2 bg-[#E5E7EB] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#111111] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-[#111111] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
           />
-          <div className="flex justify-between text-xs text-[#7A8C85] mt-1">
+          <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
             <span>20</span>
             <span>300</span>
           </div>
@@ -2044,8 +2044,8 @@ function ROICalculator() {
         {/* Slider: Prix moyen */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <label className="text-sm font-semibold text-[#F5F2EC]">Prix moyen d'un plat (EUR)</label>
-            <span className="text-lg font-extrabold text-[#F5F2EC] bg-[#0A0F0D] border border-[#1A2E26] rounded-lg px-3 py-1 min-w-[60px] text-center">{formatCurrency(prixMoyen)}</span>
+            <label className="text-sm font-semibold text-[#111111]">Prix moyen d'un plat (EUR)</label>
+            <span className="text-lg font-extrabold text-[#111111] bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-1 min-w-[60px] text-center">{formatCurrency(prixMoyen)}</span>
           </div>
           <input
             type="range"
@@ -2054,9 +2054,9 @@ function ROICalculator() {
             step={1}
             value={prixMoyen}
             onChange={(e) => setPrixMoyen(Number(e.target.value))}
-            className="w-full h-2 bg-[#1A2E26] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#1A2420] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-[#1A2420] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+            className="w-full h-2 bg-[#E5E7EB] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#111111] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-[#111111] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
           />
-          <div className="flex justify-between text-xs text-[#7A8C85] mt-1">
+          <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
             <span>{formatCurrency(8)}</span>
             <span>{formatCurrency(45)}</span>
           </div>
@@ -2065,8 +2065,8 @@ function ROICalculator() {
         {/* Slider: Nombre de plats */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <label className="text-sm font-semibold text-[#F5F2EC]">Nombre de plats a la carte</label>
-            <span className="text-lg font-extrabold text-[#F5F2EC] bg-[#0A0F0D] border border-[#1A2E26] rounded-lg px-3 py-1 min-w-[60px] text-center">{nbPlats}</span>
+            <label className="text-sm font-semibold text-[#111111]">Nombre de plats a la carte</label>
+            <span className="text-lg font-extrabold text-[#111111] bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-1 min-w-[60px] text-center">{nbPlats}</span>
           </div>
           <input
             type="range"
@@ -2075,37 +2075,37 @@ function ROICalculator() {
             step={1}
             value={nbPlats}
             onChange={(e) => setNbPlats(Number(e.target.value))}
-            className="w-full h-2 bg-[#1A2E26] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#1A2420] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-[#1A2420] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+            className="w-full h-2 bg-[#E5E7EB] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#111111] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-[#111111] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
           />
-          <div className="flex justify-between text-xs text-[#7A8C85] mt-1">
+          <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
             <span>5</span>
             <span>80</span>
           </div>
         </div>
 
         {/* Results */}
-        <div className="border-t border-[#1A2E26] pt-8">
+        <div className="border-t border-[#E5E7EB] pt-8">
           <div className="grid sm:grid-cols-3 gap-4">
-            <div className="bg-[#0A0F0D] border border-[#1A2E26] rounded-xl p-5 text-center">
-              <p className="text-xs text-[#7A8C85] uppercase tracking-wider font-semibold mb-1">CA mensuel estime</p>
-              <p className="text-2xl font-extrabold text-[#F5F2EC]">{formatCurrency(monthlyRevenue)}</p>
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-5 text-center">
+              <p className="text-xs text-[#9CA3AF] uppercase tracking-wider font-semibold mb-1">CA mensuel estime</p>
+              <p className="text-2xl font-extrabold text-[#111111]">{formatCurrency(monthlyRevenue)}</p>
             </div>
-            <div className="bg-[#1A2420] rounded-xl p-5 text-center">
+            <div className="bg-[#111111] rounded-xl p-5 text-center">
               <p className="text-xs text-white/60 uppercase tracking-wider font-semibold mb-1">Economies / mois</p>
               <p className="text-3xl font-extrabold text-white">{formatCurrency(monthlySavings)}</p>
             </div>
-            <div className="bg-[#0A0F0D] border border-[#1A2E26] rounded-xl p-5 text-center">
-              <p className="text-xs text-[#7A8C85] uppercase tracking-wider font-semibold mb-1">Economies / an</p>
-              <p className="text-2xl font-extrabold text-[#F5F2EC]">{formatCurrency(yearlySavings)}</p>
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-5 text-center">
+              <p className="text-xs text-[#9CA3AF] uppercase tracking-wider font-semibold mb-1">Economies / an</p>
+              <p className="text-2xl font-extrabold text-[#111111]">{formatCurrency(yearlySavings)}</p>
             </div>
           </div>
-          <p className="text-xs text-[#7A8C85] text-center mt-4">
+          <p className="text-xs text-[#9CA3AF] text-center mt-4">
             * Estimation basee sur une reduction moyenne de 4% du food cost, constatee chez nos clients.
           </p>
           <div className="mt-6 text-center">
             <Link
               to="/login?mode=register"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#00C878] hover:bg-[#00E589] text-white font-semibold text-base transition-all"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#111111] hover:bg-[#333333] text-white font-semibold text-base transition-all"
             >
               Commencer a economiser <ArrowRight className="w-4 h-4" />
             </Link>
@@ -2152,9 +2152,9 @@ function AnimatedTutorialCard({ tutorialId, title, description, icon: Icon }: {
   if (!meta) return null;
 
   return (
-    <div className="bg-[#050505] border border-[#1A2E26] rounded-2xl overflow-hidden hover:shadow-lg hover:border-[#2A4A3C]/20 transition-all duration-500">
+    <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl overflow-hidden hover:shadow-lg hover:border-[#111111]/20 transition-all duration-500">
       {/* Animated viewport */}
-      <div className="relative h-48 bg-[#1A2420] overflow-hidden">
+      <div className="relative h-48 bg-[#111111] overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
           {meta.steps.map((step, i) => (
             <div
@@ -2164,7 +2164,7 @@ function AnimatedTutorialCard({ tutorialId, title, description, icon: Icon }: {
               }`}
             >
               <div className="text-center">
-                <div className="w-10 h-10 rounded-full bg-[#0F1612]/10 flex items-center justify-center mx-auto mb-3 border border-white/20">
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3 border border-white/20">
                   <span className="text-sm font-bold text-white">{i + 1}</span>
                 </div>
                 <p className="text-sm font-semibold text-white">{step}</p>
@@ -2178,7 +2178,7 @@ function AnimatedTutorialCard({ tutorialId, title, description, icon: Icon }: {
             <div
               key={i}
               className={`h-1.5 rounded-full transition-all duration-500 ${
-                i === activeStep ? 'w-6 bg-[#00C878]' : 'w-1.5 bg-[#0F1612]/30'
+                i === activeStep ? 'w-6 bg-teal-400' : 'w-1.5 bg-white/30'
               }`}
             />
           ))}
@@ -2187,12 +2187,12 @@ function AnimatedTutorialCard({ tutorialId, title, description, icon: Icon }: {
       {/* Info */}
       <div className="p-6">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-[#0A0F0D] border border-[#1A2E26] flex items-center justify-center">
-            <Icon className="w-5 h-5 text-[#F5F2EC]" />
+          <div className="w-10 h-10 rounded-xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center">
+            <Icon className="w-5 h-5 text-[#111111]" />
           </div>
-          <h3 className="text-lg font-bold text-[#F5F2EC]">{title}</h3>
+          <h3 className="text-lg font-bold text-[#111111]">{title}</h3>
         </div>
-        <p className="text-sm text-[#7A8C85] leading-relaxed">{description}</p>
+        <p className="text-sm text-[#6B7280] leading-relaxed">{description}</p>
       </div>
     </div>
   );

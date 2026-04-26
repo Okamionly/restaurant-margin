@@ -17,6 +17,7 @@ import {
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SEOHead from '../components/SEOHead';
+import ShaderBackground from '../components/landing/ShaderBackground';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -236,11 +237,15 @@ function HeroSection() {
 
   return (
     <section className="relative pt-32 pb-20 px-6 lg:px-8 overflow-hidden">
+      {/* Animated paper-fold green WebGL2 wallpaper, with CSS gradient fallback. */}
+      <ShaderBackground intensity={0.45} />
+      {/* White-ish veil so text contrast remains AA. Sits above the shader. */}
       <div
         ref={bgRef}
-        className="absolute inset-0 -z-10 opacity-40 pointer-events-none"
+        className="absolute inset-0 -z-[5] pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at 30% 30%, ${ACCENT_BG} 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, ${ACCENT_BG} 0%, transparent 50%)`,
+          background:
+            'linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.78) 60%, rgba(255,255,255,0.92) 100%)',
         }}
       />
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">

@@ -1024,11 +1024,18 @@ app.use('/api/nps', npsRoutes);
 app.use('/api/clients', authWithRestaurant, clientsRoutes);
 
 // ── OpenAPI 3.1 — spec + Swagger UI (Wave 3) ──────────────────────────────────
+// Swagger UI only mounted in development to:
+//  - reduce cold-start memory footprint on Vercel serverless (saves ~2 MB of static assets)
+//  - avoid exposing the full API surface publicly without auth gate (security)
+// In production, the OpenAPI spec is still served at /api/openapi.json for tooling,
+// but the interactive UI at /api/docs is disabled.
 app.get('/api/openapi.json', (_req, res) => {
   res.json(getOpenApiSpec());
 });
-app.use('/api/docs', swaggerUi.serve);
-app.get('/api/docs', swaggerUi.setup(undefined, { swaggerOptions: { url: '/api/openapi.json' } }));
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/api/docs', swaggerUi.serve);
+  app.get('/api/docs', swaggerUi.setup(undefined, { swaggerOptions: { url: '/api/openapi.json' } }));
+}
 
 // ── Activation codes (kept at /api/activation/* for backward compat) ──
 function generateActivationCode(): string {

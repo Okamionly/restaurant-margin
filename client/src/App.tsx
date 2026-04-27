@@ -50,10 +50,15 @@ function lazyRetry(importFn: () => Promise<any>) {
 
 // Critical pages loaded eagerly (first pages users see)
 import Login from './pages/Login';
-import Landing from './pages/Landing';
-import StationLanding from './pages/StationLanding';
-import PublicMenu from './pages/PublicMenu';
 import NotFound from './pages/NotFound';
+
+// Public marketing pages — lazy loaded to keep initial bundle small.
+// Landing.tsx (2341 lines + GSAP) and StationLanding etc. are heavy and not always
+// the first page users see (we have many entry points : /blog, /pricing, /launch, etc.).
+// Loading them lazily reduces critical path JS by ~80 KB gzip.
+const Landing = lazyRetry(() => import('./pages/Landing'));
+const StationLanding = lazyRetry(() => import('./pages/StationLanding'));
+const PublicMenu = lazyRetry(() => import('./pages/PublicMenu'));
 
 // Lazy-loaded heavy components (kept out of main bundle)
 const OnboardingWizard = lazyRetry(() => import('./components/OnboardingWizard'));
@@ -994,7 +999,11 @@ function PublicHome() {
     return <Navigate to="/dashboard" replace />;
   }
 
-  return <Landing />;
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-[#9CA3AF] dark:text-[#737373]">Chargement...</div>}>
+      <Landing />
+    </Suspense>
+  );
 }
 
 function App() {
@@ -1005,12 +1014,12 @@ function App() {
         <RestaurantProvider>
           <Routes>
             <Route path="/" element={<PublicHome />} />
-          <Route path="/landing" element={<Landing />} />
+          <Route path="/landing" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>}><Landing /></Suspense>} />
           <Route path="/login" element={<Login />} />
-          <Route path="/menu-public" element={<PublicMenu />} />
+          <Route path="/menu-public" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>}><PublicMenu /></Suspense>} />
           <Route path="/feedback/:id" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-[#0A0A0A] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" /></div>}><PublicFeedback /></Suspense>} />
           <Route path="/r/:token" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111]" /></div>}><PublicRecipe /></Suspense>} />
-          <Route path="/station-produit" element={<StationLanding />} />
+          <Route path="/station-produit" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>}><StationLanding /></Suspense>} />
           <Route path="/dev-corp" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><DevCorp /></Suspense>} />
           <Route path="/mentions-legales" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><MentionsLegales /></Suspense>} />
           <Route path="/cgv" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGV /></Suspense>} />

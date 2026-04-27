@@ -48,6 +48,8 @@ export default function Button({
       className={`
         inline-flex items-center justify-center gap-2 font-medium rounded-xl
         transition-colors duration-150
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+        focus-visible:ring-teal-500 dark:focus-visible:ring-offset-[#0A0A0A]
         ${variantClasses[variant]}
         ${sizeClasses[size]}
         ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}

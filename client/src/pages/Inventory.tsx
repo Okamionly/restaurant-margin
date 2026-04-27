@@ -38,16 +38,9 @@ import WeighModal from '../components/WeighModal';
 import { useTranslation } from '../hooks/useTranslation';
 import { updateOnboardingStep } from '../components/OnboardingWizard';
 
-// ── Unit conversion divisor (price is always per bulk unit: kg/L) ────────
-function getUnitDivisor(unit: string): number {
-  const u = (unit || '').toLowerCase().trim();
-  if (u === 'g') return 1000;
-  if (u === 'mg') return 1000000;
-  if (u === 'cl') return 100;
-  if (u === 'ml') return 1000;
-  if (u === 'dl') return 10;
-  return 1;
-}
+// getUnitDivisor moved to ../utils/units (single source of truth).
+// Unit conversion divisor (price is always per bulk unit: kg/L).
+import { getUnitDivisor } from '../utils/units';
 
 const CATEGORY_EMOJIS: Record<string, string> = {
   'Viandes': '🥩',

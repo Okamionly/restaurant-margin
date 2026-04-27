@@ -128,7 +128,7 @@ export default function EmptyState({ icon, title, description, action, secondary
           <button
             type="button"
             onClick={action.onClick}
-            className="inline-flex items-center gap-2 py-2.5 px-5 text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors duration-150 cursor-pointer"
+            className="inline-flex items-center gap-2 py-2.5 px-5 text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#0A0A0A]"
           >
             <Plus className="w-4 h-4" />
             {action.label}
@@ -138,7 +138,7 @@ export default function EmptyState({ icon, title, description, action, secondary
           <button
             type="button"
             onClick={secondaryAction.onClick}
-            className="inline-flex items-center gap-2 py-2.5 px-5 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#333333] rounded-xl hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white transition-colors duration-150 cursor-pointer"
+            className="inline-flex items-center gap-2 py-2.5 px-5 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#333333] rounded-xl hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#0A0A0A]"
           >
             {secondaryAction.label}
             <ArrowRight className="w-4 h-4" />

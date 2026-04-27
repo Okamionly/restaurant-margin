@@ -26,17 +26,10 @@ import { InlineWeighPanel, ModePeseeBar, BatchWeighingPanel, QuickWeighAdd } fro
 // ── Unit conversion divisor ─────────────────────────────────────────────
 // pricePerUnit is ALWAYS per the bulk unit (kg for weight, L for volume).
 // If ingredient.unit is "g", quantity is in grams but price is per kg → divide by 1000.
+// getUnitDivisor moved to ../utils/units (was duplicated in 3 files).
 // If ingredient.unit is "cl", quantity is in cl but price is per L → divide by 100.
 // Returns the divisor to convert quantity to the bulk pricing unit.
-function getUnitDivisor(unit: string): number {
-  const u = (unit || '').toLowerCase().trim();
-  if (u === 'g') return 1000;
-  if (u === 'mg') return 1000000;
-  if (u === 'cl') return 100;
-  if (u === 'ml') return 1000;
-  if (u === 'dl') return 10;
-  return 1; // kg, L, pièce, piece, unité, etc.
-}
+import { getUnitDivisor } from '../utils/units';
 
 // Legacy wrapper: convert quantity from inputUnit to priceUnit for form preview.
 // When inputUnit === priceUnit, uses getUnitDivisor to handle sub-unit pricing.

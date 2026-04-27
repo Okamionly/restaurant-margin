@@ -20,15 +20,9 @@ import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 import { trackEvent } from '../utils/analytics';
 
 // ── Unit conversion divisor ────────────────────────────────────────────────
-function getUnitDivisor(unit: string): number {
-  const u = (unit || '').toLowerCase().trim();
-  if (u === 'g') return 1000;
-  if (u === 'mg') return 1000000;
-  if (u === 'cl') return 100;
-  if (u === 'ml') return 1000;
-  if (u === 'dl') return 10;
-  return 1;
-}
+// getUnitDivisor moved to ../utils/units to avoid duplication (was copy-pasted
+// in Dashboard.tsx, Recipes.tsx, Inventory.tsx — now single source of truth).
+import { getUnitDivisor } from '../utils/units';
 
 // ── Tab definitions ────────────────────────────────────────────────────────
 type TabKey = 'overview' | 'margins' | 'costs' | 'profitability' | 'pnl';
@@ -42,8 +36,10 @@ interface WidgetDef {
   icon: typeof Sparkles;
 }
 
+// 'welcome' widget retired 2026-04-28 (audit allègement) — ne servait qu'à afficher
+// "Bonjour Chef + date" déjà visible dans l'OS. La carte prenait de la hauteur sans valeur.
+// Le type WidgetId garde 'welcome' pour rétrocompatibilité localStorage (anciens layouts).
 const ALL_WIDGETS: WidgetDef[] = [
-  { id: 'welcome', label: 'Message de bienvenue', icon: Sun },
   { id: 'ai-insight', label: 'AI Insight du jour', icon: Lightbulb },
   { id: 'kpis', label: 'KPIs principaux', icon: TrendingUp },
   { id: 'alerts', label: 'Alertes intelligentes', icon: AlertTriangle },
@@ -53,7 +49,7 @@ const ALL_WIDGETS: WidgetDef[] = [
   { id: 'onboarding', label: 'Onboarding', icon: Check },
 ];
 
-const DEFAULT_WIDGET_ORDER: WidgetId[] = ['welcome', 'ai-insight', 'kpis', 'alerts', 'today-focus', 'quick-actions', 'top5', 'onboarding'];
+const DEFAULT_WIDGET_ORDER: WidgetId[] = ['ai-insight', 'kpis', 'alerts', 'today-focus', 'quick-actions', 'top5', 'onboarding'];
 const WIDGET_LAYOUT_KEY = 'restaumargin_widget_layout';
 
 function loadWidgetLayout(): { visible: WidgetId[]; order: WidgetId[] } {
@@ -1080,13 +1076,9 @@ export default function Dashboard() {
           {widgetLayout.order.filter(wId => isWidgetVisible(wId)).map(wId => {
             switch (wId) {
               case 'welcome':
-                return (
-                  <WelcomeMessage
-                    key={wId}
-                    restaurantName={selectedRestaurant?.name || ''}
-                    firstName={selectedRestaurant?.name && selectedRestaurant.name !== 'Mon Restaurant' ? selectedRestaurant.name.split(' ')[0] : 'Chef'}
-                  />
-                );
+                // Widget retired 2026-04-28 — kept as no-op for backward compat
+                // with users who have 'welcome' persisted in their localStorage layout.
+                return null;
 
               case 'ai-insight':
                 return <AIDailyInsight key={wId} recipes={recipes} ingredients={ingredients} />;

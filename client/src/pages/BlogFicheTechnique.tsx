@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, Calculator, ArrowRight, BookOpen, Users, FileText, ClipboardList, CheckCircle, Lightbulb, AlertTriangle, TrendingDown, BarChart3 } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Fiche technique restaurant : le guide complet"
@@ -69,30 +70,14 @@ export default function BlogFicheTechnique() {
       </nav>
 
       {/* ── Hero / H1 ── */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <FileText className="w-3.5 h-3.5" />
-            Gestion &amp; rentabilite
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111] leading-tight mb-6">
-            Fiche technique restaurant :<br className="hidden sm:block" />
-            le guide complet 2026
-          </h1>
-          <p className="text-lg text-[#525252] max-w-2xl mx-auto leading-relaxed">
-            La fiche technique est le document le plus sous-estime de la cuisine professionnelle.
-            Bien construite, elle elimine les dérives de coûts, garantit la constance de vos plats
-            et devient le fondement de votre rentabilite.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-[#737373]">
-            <span className="flex items-center gap-1"><Users className="w-4 h-4" /> Par l'equipe RestauMargin</span>
-            <span>|</span>
-            <span>Mis a jour : avril 2026</span>
-            <span>|</span>
-            <span>11 min de lecture</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Fiches techniques"
+        readTime="11 min"
+        date="Avril 2026"
+        title="Fiche technique restaurant : le guide complet 2026"
+        accentWord="fiche technique"
+        subtitle="La fiche technique est le document le plus sous-estime de la cuisine professionnelle. Bien construite, elle elimine les derives de couts, garantit la constance de vos plats et devient le fondement de votre rentabilite."
+      />
 
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">

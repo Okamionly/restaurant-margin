@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, ArrowRight, ArrowLeft, Clock, User, Target, TrendingDown, ShoppingCart, BarChart3, LineChart } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — 5 methodes pour reduire votre food cost de 15 %
@@ -53,21 +54,14 @@ export default function BlogFoodCost() {
       </nav>
 
       {/* ── Hero ── */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Guide pratique
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-[#111111] leading-tight mb-6 font-satoshi">
-            5 methodes pour reduire votre food cost de 15 %
-          </h1>
-          <div className="flex items-center justify-center gap-4 text-sm text-[#737373]">
-            <span className="flex items-center gap-1"><User className="w-4 h-4" /> RestauMargin</span>
-            <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> 12 min de lecture</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Food Cost"
+        readTime="10 min"
+        date="Avril 2026"
+        title="5 methodes pour reduire votre food cost de 15 %"
+        accentWord="food cost"
+        subtitle="Un food cost de 35 % au lieu de 30 % peut faire perdre 25 000 EUR de marge brute par an. Decouvrez 5 methodes eprouvees : fiches techniques, negociation fournisseurs, reduction du gaspillage, menu engineering, mercuriale."
+      />
 
       {/* ── Article ── */}
       <article className="max-w-[720px] mx-auto px-4 sm:px-6 py-12 prose-article">

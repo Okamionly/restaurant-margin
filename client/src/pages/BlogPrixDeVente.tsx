@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, Calculator, ArrowRight, BookOpen, Users, Zap, AlertTriangle, Lightbulb, ListChecks, Target, TrendingUp, Sparkles, Pizza, Tag, Brain, Award, BarChart3 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Comment calculer le prix de vente d'un plat"
@@ -120,41 +121,15 @@ export default function BlogPrixDeVente() {
         </div>
       </nav>
 
-      {/* ── Breadcrumbs visibles ── */}
-      <div className="bg-[#FAFAFA] border-b border-[#E5E7EB] py-3 px-4">
-        <div className="max-w-4xl mx-auto text-xs text-[#737373] flex items-center gap-2 flex-wrap">
-          <Link to="/" className="hover:text-teal-600">Accueil</Link>
-          <span>/</span>
-          <Link to="/blog" className="hover:text-teal-600">Blog</Link>
-          <span>/</span>
-          <span className="text-[#111111] font-medium">Prix de vente restaurant</span>
-        </div>
-      </div>
-
       {/* ── Hero / H1 ── */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <Tag className="w-3.5 h-3.5" />
-            Pricing 2026
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111] leading-tight mb-6">
-            Comment calculer le prix de vente <br className="hidden sm:block" />
-            d'un plat de restaurant ?
-          </h1>
-          <p className="text-lg text-[#525252] max-w-2xl mx-auto leading-relaxed">
-            Trois methodes eprouvees pour fixer le prix de vos plats : coefficient multiplicateur,
-            marge cible, pricing psychologique. Cas pratiques chiffres et formules pretes a l'emploi.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-[#737373]">
-            <span className="flex items-center gap-1"><Users className="w-4 h-4" /> Par l'equipe RestauMargin</span>
-            <span>|</span>
-            <span>Avril 2026</span>
-            <span>|</span>
-            <span>15 min de lecture</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Pricing"
+        readTime="15 min"
+        date="Avril 2026"
+        title="Comment calculer le prix de vente d'un plat de restaurant ?"
+        accentWord="prix de vente"
+        subtitle="Trois methodes eprouvees pour fixer le prix de vos plats : coefficient multiplicateur, marge cible, pricing psychologique. Cas pratiques chiffres et formules pretes a l'emploi."
+      />
 
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">

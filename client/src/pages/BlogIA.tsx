@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, ArrowRight, ArrowLeft, Clock, User, Scan, Mic, AlertTriangle, BarChart3, ShoppingCart, DollarSign, Heart, Sparkles, ShieldAlert } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — L'IA en restauration : gadget ou revolution ?
@@ -53,21 +54,14 @@ export default function BlogIA() {
       </nav>
 
       {/* ── Hero ── */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Innovation
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-[#111111] leading-tight mb-6 font-satoshi">
-            L'IA en restauration : gadget ou revolution ?
-          </h1>
-          <div className="flex items-center justify-center gap-4 text-sm text-[#737373]">
-            <span className="flex items-center gap-1"><User className="w-4 h-4" /> RestauMargin</span>
-            <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> 10 min de lecture</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="IA"
+        readTime="15 min"
+        date="Avril 2026"
+        title="L'IA en restauration : gadget ou revolution ?"
+        accentWord="IA"
+        subtitle="L'intelligence artificielle est partout. Mais dans votre cuisine ? Derriere vos fourneaux ? Cet article fait le tri entre les promesses marketing et la realite du terrain."
+      />
 
       {/* ── Article ── */}
       <article className="max-w-[720px] mx-auto px-4 sm:px-6 py-12 prose-article">

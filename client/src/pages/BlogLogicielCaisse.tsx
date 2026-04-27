@@ -33,7 +33,7 @@ export default function BlogLogicielCaisse() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Logiciel de caisse restaurant : comparatif 2026 (Lightspeed, Zelty, L'Addition...)"
         description="Comparatif des meilleurs logiciels de caisse enregistreuse pour restaurant en 2026. Prix, fonctionnalités, avantages et inconvénients."
@@ -91,7 +91,7 @@ export default function BlogLogicielCaisse() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         <p className="text-[#374151] text-lg leading-relaxed mb-8">
           <strong>90 % des décisions de pilotage d'un restaurant se prennent à partir de données issues de la caisse.</strong> Et pourtant, plus d'un restaurateur sur trois utilise encore un système qui n'exporte pas ses données ou ne se synchronise pas avec sa comptabilité. Ce comparatif passe au crible les 7 solutions les plus utilisées en France.

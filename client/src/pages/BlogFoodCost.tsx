@@ -10,7 +10,7 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogFoodCost() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead title="Réduire le food cost de votre restaurant : 10 stratégies" description="Stratégies concrètes pour réduire le food cost de votre restaurant : gestion des stocks, fiches techniques, négociation fournisseurs, réduction du gaspillage." path="/blog/reduire-food-cost" type="article" />
       <script
         type="application/ld+json"
@@ -64,7 +64,7 @@ export default function BlogFoodCost() {
       />
 
       {/* ── Article ── */}
-      <article className="max-w-[720px] mx-auto px-4 sm:px-6 py-12 prose-article">
+      <article className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 py-12 prose-article bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         <BlogAuthor publishedDate="2026-04-14" readTime="10 min" variant="header" />
 

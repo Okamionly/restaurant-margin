@@ -34,7 +34,7 @@ export default function BlogCoutRevient() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Calculer le coût de revient d'un plat : méthode complète pour restaurateurs"
         description="Calculez précisément le coût de revient de chaque plat de votre carte : ratio de perte, fiche technique, seuil d'alerte food cost."
@@ -92,7 +92,7 @@ export default function BlogCoutRevient() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">

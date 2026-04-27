@@ -34,7 +34,7 @@ export default function BlogOuvrirRestaurant() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Comment ouvrir un restaurant en 2026 : guide complet étape par étape"
         description="Les 10 étapes pour ouvrir votre restaurant : business plan, financement, licences, recrutement. Guide complet pour créer un restaurant rentable."
@@ -92,7 +92,7 @@ export default function BlogOuvrirRestaurant() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">

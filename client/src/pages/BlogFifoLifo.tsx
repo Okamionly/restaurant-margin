@@ -5,7 +5,7 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogFifoLifo() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="FIFO vs LIFO en restauration : quelle méthode de stocks choisir ? (2026)"
         description="FIFO ou LIFO pour gérer vos stocks en cuisine ? Définitions, comparatif, mise en place pratique et impact sur le food cost. Guide complet pour restaurateurs."
@@ -69,7 +69,7 @@ export default function BlogFifoLifo() {
         subtitle="Dans votre cuisine, chaque jour, quelqu'un décide quel produit utiliser en premier. Sans système, on attrape ce qui est à portée de main — et on perd entre 3 et 5 % des achats en produits périmés."
       />
 
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24 pt-8">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">

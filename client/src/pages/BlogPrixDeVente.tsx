@@ -47,7 +47,7 @@ const faqItems = [
 
 export default function BlogPrixDeVente() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Calculer le prix de vente d'un plat de restaurant en 2026"
         description="Methodes eprouvees pour fixer le prix de vente de vos plats : coefficient multiplicateur, marge cible, pricing psychologique. Cas pratiques chiffres et outils gratuits."
@@ -132,7 +132,7 @@ export default function BlogPrixDeVente() {
       />
 
       {/* ── Contenu principal ── */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         <BlogAuthor publishedDate="2026-04-27" readTime="15 min" variant="header" />
 

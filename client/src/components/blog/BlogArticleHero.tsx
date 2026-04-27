@@ -24,6 +24,9 @@ import { Link } from 'react-router-dom';
 import { Clock, Calendar, ChevronRight, BookOpen } from 'lucide-react';
 
 const ShaderBackground = lazy(() => import('../landing/ShaderBackground'));
+// MistMint = fond animé global (visible sur les côtés latéraux quand le contenu
+// central blanc occupe la lecture). Position fixed -z-10 pour être derriere tout.
+const MintMistBackground = lazy(() => import('../landing/MintMistBackground'));
 
 interface BlogArticleHeroProps {
   category: string;
@@ -59,10 +62,20 @@ export default function BlogArticleHero({
   };
 
   return (
-    <header className="relative pt-20 pb-16 sm:pt-24 sm:pb-20 px-4 sm:px-6 overflow-hidden isolate">
-      <Suspense fallback={<div className="absolute inset-0 z-0 bg-[#FAFAF7]" />}>
-        <ShaderBackground intensity={0.6} />
+    <>
+      {/* Curves shader (lignes emerald) FIXED en fond de TOUTE la page —
+          visible sur les cotes lateraux quand le contenu central est blanc. */}
+      <Suspense fallback={null}>
+        <div className="fixed inset-0 -z-10 pointer-events-none">
+          <ShaderBackground intensity={0.5} />
+        </div>
       </Suspense>
+
+      <header className="relative pt-20 pb-16 sm:pt-24 sm:pb-20 px-4 sm:px-6 overflow-hidden isolate">
+        {/* MistMint dans le hero (au-dessus du fond global Curves) */}
+        <Suspense fallback={<div className="absolute inset-0 z-0 bg-[#FAFAF7]" />}>
+          <MintMistBackground intensity={0.8} className="z-0" />
+        </Suspense>
 
       <div className="relative z-10 max-w-4xl mx-auto">
         {/* Breadcrumb */}
@@ -104,6 +117,7 @@ export default function BlogArticleHero({
           </p>
         )}
       </div>
-    </header>
+      </header>
+    </>
   );
 }

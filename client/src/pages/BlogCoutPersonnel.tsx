@@ -5,7 +5,7 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogCoutPersonnel() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Comment réduire le coût du personnel en restauration (sans licencier)"
         description="Planning optimisé, réduction du turnover, formation, process cuisine : 5 leviers concrets pour réduire votre masse salariale de 10 à 20 % sans sacrifier la qualité."
@@ -62,7 +62,7 @@ export default function BlogCoutPersonnel() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">

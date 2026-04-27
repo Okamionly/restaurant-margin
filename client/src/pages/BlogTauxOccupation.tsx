@@ -34,7 +34,7 @@ export default function BlogTauxOccupation() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Taux d'occupation restaurant : calcul, benchmarks et 8 leviers pour l'améliorer"
         description="Calculez votre taux d'occupation et RevPASH. Stratégies concrètes pour remplir votre salle et maximiser votre chiffre d'affaires."
@@ -92,7 +92,7 @@ export default function BlogTauxOccupation() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">

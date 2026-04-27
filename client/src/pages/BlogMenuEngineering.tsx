@@ -33,7 +33,7 @@ export default function BlogMenuEngineering() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Menu engineering : la méthode Boston Matrix pour optimiser votre carte"
         description="Classez vos plats en Stars, Vaches à lait, Puzzles et Chiens. La matrice Boston appliquée à la restauration pour maximiser vos marges."
@@ -91,7 +91,7 @@ export default function BlogMenuEngineering() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         <p className="text-[#374151] text-lg leading-relaxed mb-8">
           <strong>Sur une carte typique de 25 plats, seuls 4 à 6 plats génèrent 80 % de la marge brute totale.</strong> Le menu engineering, formalisé par Donald Smith et Michael Kasavana à l'Université du Michigan en 1982, est la science qui permet d'identifier ces dynamiques et de transformer chaque plat en levier de rentabilité.

@@ -12,7 +12,7 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogFicheTechnique() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Fiche technique restaurant : le guide complet 2026"
         description="Creez des fiches techniques restaurant parfaites : recette, couts, grammages, photos. Modele gratuit + conseils pour maitriser votre food cost."
@@ -80,7 +80,7 @@ export default function BlogFicheTechnique() {
       />
 
       {/* ── Contenu principal ── */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         <BlogAuthor publishedDate="2026-04-14" readTime="11 min" variant="header" />
 

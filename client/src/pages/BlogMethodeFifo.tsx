@@ -33,7 +33,7 @@ export default function BlogMethodeFifo() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Méthode FIFO en restauration : guide pratique pour réduire les pertes"
         description="Appliquez la méthode FIFO dans votre cuisine : étiquetage, organisation des stocks, impact sur le food cost et réduction du gaspillage."
@@ -91,7 +91,7 @@ export default function BlogMethodeFifo() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         <p className="text-[#374151] text-lg leading-relaxed mb-8">
           <strong>Un restaurant moyen jette entre 6 et 10 % de ses achats alimentaires chaque mois.</strong> Sur un food cost mensuel de 12 000 €, ce sont 720 à 1 200 € qui partent à la poubelle, soit jusqu'à 14 400 € de marge nette annuelle perdue. Dans 80 % des cas, ces pertes sont dues à une mauvaise rotation des stocks.

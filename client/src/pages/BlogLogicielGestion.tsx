@@ -34,7 +34,7 @@ export default function BlogLogicielGestion() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Logiciel de gestion restaurant : comparatif et guide d'achat 2026"
         description="Comparez les meilleurs logiciels de gestion pour restaurant : caisse, stocks, comptabilité, plannings, marges. Stack idéal selon votre taille."
@@ -92,7 +92,7 @@ export default function BlogLogicielGestion() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">

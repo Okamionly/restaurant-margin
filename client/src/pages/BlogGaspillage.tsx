@@ -13,7 +13,7 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogGaspillage() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead title="Réduire le gaspillage alimentaire restaurant : 10 méthodes" description="Solutions concrètes pour réduire le gaspillage alimentaire dans votre restaurant : FIFO, portionnement, valorisation des déchets, suivi des pertes." path="/blog/gaspillage-alimentaire" type="article" />
       <script
         type="application/ld+json"
@@ -79,7 +79,7 @@ export default function BlogGaspillage() {
       />
 
       {/* ── Contenu principal ── */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         <BlogAuthor publishedDate="2026-04-14" readTime="9 min" variant="header" />
 

@@ -29,7 +29,7 @@ export default function BlogStrategieDigitale() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Stratégie digitale pour restaurant : attirer et fidéliser plus de clients en 2026"
         description="Les 6 piliers du marketing digital pour restaurant : Google Business, Instagram, TikTok, avis clients, réservation en ligne et fidélisation."
@@ -87,7 +87,7 @@ export default function BlogStrategieDigitale() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">

@@ -5,7 +5,7 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogKpiRestaurateur() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Les 10 KPI essentiels pour piloter votre restaurant en 2026"
         description="Food cost, prime cost, RevPASH, ticket moyen… Découvrez les indicateurs clés de performance indispensables pour gérer un restaurant rentable en 2026."
@@ -62,7 +62,7 @@ export default function BlogKpiRestaurateur() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">

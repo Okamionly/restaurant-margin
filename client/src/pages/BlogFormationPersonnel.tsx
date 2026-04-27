@@ -29,7 +29,7 @@ export default function BlogFormationPersonnel() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Formation du personnel en restauration : obligations, aides et meilleures pratiques 2026"
         description="Financez la formation de vos équipes grâce à l'OPCO et au CPF. Formations prioritaires en 2026 et ROI concret de la montée en compétences."
@@ -87,7 +87,7 @@ export default function BlogFormationPersonnel() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">

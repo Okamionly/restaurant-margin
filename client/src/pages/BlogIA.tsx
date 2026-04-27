@@ -10,7 +10,7 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogIA() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead title="L'intelligence artificielle en restauration : guide 2026" description="Comment l'IA transforme la restauration : gestion des marges, prévisions de ventes, optimisation des menus, commandes automatisées." path="/blog/ia-restauration" type="article" />
       <script
         type="application/ld+json"
@@ -64,7 +64,7 @@ export default function BlogIA() {
       />
 
       {/* ── Article ── */}
-      <article className="max-w-[720px] mx-auto px-4 sm:px-6 py-12 prose-article">
+      <article className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 py-12 prose-article bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         <BlogAuthor publishedDate="2026-04-14" readTime="15 min" variant="header" />
 

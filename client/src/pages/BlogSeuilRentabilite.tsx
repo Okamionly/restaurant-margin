@@ -33,7 +33,7 @@ export default function BlogSeuilRentabilite() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Comment calculer le seuil de rentabilité d'un restaurant (2026)"
         description="Guide complet pour calculer le seuil de rentabilité de votre restaurant : formules, exemples chiffrés et stratégies pour atteindre la rentabilité plus vite."
@@ -91,7 +91,7 @@ export default function BlogSeuilRentabilite() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         <p className="text-[#374151] text-lg leading-relaxed mb-8">
           Saviez-vous que <strong>60 % des restaurants ferment dans les trois premières années</strong> ? L'une des causes principales n'est pas le manque de clients — c'est de ne pas savoir combien de couverts il faut servir chaque jour pour ne pas perdre d'argent. Ce chiffre s'appelle le <strong>seuil de rentabilité</strong>, et le connaître change tout.

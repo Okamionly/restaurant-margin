@@ -34,7 +34,7 @@ export default function BlogPrimeCost() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Prime cost en restauration : l'indicateur n°1 de rentabilité (guide 2026)"
         description="Comprenez et maîtrisez le prime cost de votre restaurant. Formule, benchmarks sectoriels et plan d'action pour passer sous les 65%."
@@ -92,7 +92,7 @@ export default function BlogPrimeCost() {
       />
 
       {/* Body */}
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">

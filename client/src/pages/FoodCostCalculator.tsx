@@ -1,9 +1,13 @@
 import { formatCurrency } from '../utils/currency';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Trash2, RotateCcw, ArrowRight, ChefHat, ChevronDown, TrendingUp, Users, Calendar, DollarSign, Target, AlertTriangle, CheckCircle, HelpCircle } from 'lucide-react';
+import { Plus, Trash2, RotateCcw, ArrowRight, ChefHat, ChevronDown, TrendingUp, Users, Calendar, DollarSign, Target, AlertTriangle, CheckCircle, HelpCircle, Sparkles, Zap } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
 import SEOHead from '../components/SEOHead';
+
+// Curves shader (lignes emerald qui derivent — meme theme que la landing principale).
+// Lazy-loaded pour preserver le LCP.
+const ShaderBackground = lazy(() => import('../components/landing/ShaderBackground'));
 
 /* ─────────────── Types ─────────────── */
 
@@ -161,21 +165,42 @@ export default function FoodCostCalculator() {
         </div>
       </nav>
 
-      {/* ── Hero ── */}
-      <header className="pt-12 pb-8 sm:pt-16 sm:pb-10 text-center px-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f5f5f5] text-[#000000] text-xs font-semibold mb-5 border border-[#e5e5e5]">
-          <span className="w-1.5 h-1.5 bg-[#10b981] rounded-full" /> Outil 100% gratuit — aucun compte requis
+      {/* ── Hero with PaperFold animated shader background ── */}
+      <header className="relative pt-20 pb-16 sm:pt-24 sm:pb-20 px-4 overflow-hidden isolate">
+        <Suspense fallback={<div className="absolute inset-0 z-0 bg-[#FAFAF7]" />}>
+          <ShaderBackground intensity={0.8} />
+        </Suspense>
+
+        <div className="relative z-10 text-center max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur text-[#000000] text-xs font-semibold mb-6 border border-[#E5E7EB]">
+            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Outil 100% gratuit — aucun compte requis
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0F172A] leading-tight tracking-tight mb-6">
+            Calculateur de <span className="text-emerald-600">Food Cost</span> Restaurant
+          </h1>
+
+          <p className="text-base sm:text-lg lg:text-xl text-[#525252] max-w-2xl mx-auto leading-relaxed mb-8">
+            Ajoutez vos ingredients, visualisez votre food cost avec une jauge interactive,
+            comparez-vous aux standards du secteur et simulez votre profit mensuel.
+          </p>
+
+          {/* Stats badges cinematic */}
+          <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+              <Zap className="w-4 h-4 text-emerald-600" />
+              <strong className="text-[#0F172A]">Calcul instantane</strong>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+              <Target className="w-4 h-4 text-emerald-600" />
+              Benchmark <strong className="text-[#0F172A]">6 secteurs</strong>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+              <Sparkles className="w-4 h-4 text-emerald-600" />
+              <strong className="text-[#0F172A]">100% gratuit</strong>
+            </span>
+          </div>
         </div>
-        <h1
-          className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#000000] leading-tight max-w-3xl mx-auto"
-         
-        >
-          Calculateur de Food Cost Restaurant
-        </h1>
-        <p className="mt-4 text-[#666666] text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-          Ajoutez vos ingredients, visualisez votre food cost avec une jauge interactive,
-          comparez-vous aux standards du secteur et simulez votre profit mensuel.
-        </p>
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 pb-20">

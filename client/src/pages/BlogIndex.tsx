@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { ChefHat, Calculator, ArrowRight, Clock, BookOpen, Sparkles } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 
-// PaperFold WebGL2 shader = lazy-loaded for perf (preserves LCP).
-const PaperFoldBackground = lazy(() => import('../components/landing/PaperFoldBackground'));
+// Curves shader (lignes emerald qui derivent — meme theme que la landing principale).
+// Lazy-loaded pour preserver le LCP.
+const ShaderBackground = lazy(() => import('../components/landing/ShaderBackground'));
 
 /* ═══════════════════════════════════════════════════════════════
    Blog Index — Liste des articles
@@ -313,7 +314,7 @@ export default function BlogIndex() {
       {/* Hero with PaperFold animated shader background */}
       <section className="relative pt-20 pb-20 sm:pb-28 px-4 sm:px-6 overflow-hidden isolate">
         <Suspense fallback={<div className="absolute inset-0 z-0 bg-[#FAFAF7]" />}>
-          <PaperFoldBackground intensity={0.7} className="z-0" />
+          <ShaderBackground intensity={0.7} />
         </Suspense>
 
         <div className="relative z-10 max-w-5xl mx-auto">

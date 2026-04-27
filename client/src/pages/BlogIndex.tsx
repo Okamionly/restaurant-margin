@@ -3,7 +3,7 @@ import { ChefHat, Calculator, ArrowRight, Clock, BookOpen } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 
 /* ═══════════════════════════════════════════════════════════════
-   Blog Index — Liste des 8 articles
+   Blog Index — Liste des articles
    Mot-clé principal : blog restauration, gestion restaurant
    ═══════════════════════════════════════════════════════════════ */
 
@@ -18,11 +18,19 @@ interface BlogPost {
 
 const posts: BlogPost[] = [
   {
+    slug: 'prix-de-vente-restaurant',
+    title: "Calculer le prix de vente d'un plat de restaurant en 2026",
+    excerpt: 'Methodes eprouvees pour fixer vos prix : coefficient multiplicateur, marge cible, pricing psychologique. Cas pratiques chiffres et outils gratuits.',
+    category: 'Pricing',
+    readTime: '15 min',
+    date: '2026-04-27',
+  },
+  {
     slug: 'calcul-marge-restaurant',
     title: 'Comment calculer la marge de votre restaurant en 2026',
     excerpt: 'Guide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.',
     category: 'Marges',
-    readTime: '12 min',
+    readTime: '15 min',
     date: '2026-04-14',
   },
   {
@@ -135,7 +143,7 @@ export default function BlogIndex() {
         </div>
         <h1
           className="text-4xl sm:text-5xl md:text-6xl font-black text-[#111111] mb-6 leading-tight"
-         
+
         >
           Guides et conseils pour restaurateurs
         </h1>
@@ -172,7 +180,7 @@ export default function BlogIndex() {
               {/* Title */}
               <h2
                 className="text-xl sm:text-2xl font-bold text-[#111111] mb-3 leading-tight group-hover:text-teal-600 transition-colors"
-               
+
               >
                 {post.title}
               </h2>
@@ -195,7 +203,7 @@ export default function BlogIndex() {
         <div className="mt-20 bg-gradient-to-br from-[#111111] to-[#1f2937] rounded-3xl p-8 sm:p-12 text-center text-white">
           <h3
             className="text-2xl sm:text-3xl font-bold mb-3"
-           
+
           >
             Prêt à optimiser votre restaurant ?
           </h3>

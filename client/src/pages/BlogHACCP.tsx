@@ -12,7 +12,7 @@ import BlogAuthor from '../components/BlogAuthor';
 export default function BlogHACCP() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-      <SEOHead title="HACCP en restaurant : guide complet des normes d'hygiene" description="Tout savoir sur la methode HACCP en restaurant : 7 principes, plan de maitrise sanitaire, temperatures, tracabilite, controles officiels." path="/blog/haccp-restaurant" type="article" />
+      <SEOHead title="HACCP restaurant : guide complet des normes d'hygiène 2026" description="Tout savoir sur la méthode HACCP en restaurant : 7 principes, plan de maîtrise sanitaire, températures, traçabilité, contrôles officiels." path="/blog/haccp-restaurant" type="article" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

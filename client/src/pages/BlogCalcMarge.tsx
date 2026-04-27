@@ -12,7 +12,7 @@ import BlogAuthor from '../components/BlogAuthor';
 export default function BlogCalcMarge() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-      <SEOHead title="Comment calculer la marge de votre restaurant en 2026" description="Guide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs." path="/blog/calcul-marge-restaurant" type="article" />
+      <SEOHead title="Calcul marge restaurant : guide complet 2026 + formule" description="Comment calculer la marge de votre restaurant pas à pas : food cost, coefficient multiplicateur, marge brute et nette. Méthodes, exemples chiffrés et outils gratuits." path="/blog/calcul-marge-restaurant" type="article" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

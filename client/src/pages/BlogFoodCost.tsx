@@ -10,7 +10,7 @@ import BlogAuthor from '../components/BlogAuthor';
 export default function BlogFoodCost() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-      <SEOHead title="Reduire le food cost de votre restaurant : 10 strategies" description="Strategies concretes pour reduire le food cost de votre restaurant : gestion des stocks, fiches techniques, negociation fournisseurs, reduction du gaspillage." path="/blog/reduire-food-cost" type="article" />
+      <SEOHead title="Réduire le food cost de votre restaurant : 10 stratégies" description="Stratégies concrètes pour réduire le food cost de votre restaurant : gestion des stocks, fiches techniques, négociation fournisseurs, réduction du gaspillage." path="/blog/reduire-food-cost" type="article" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

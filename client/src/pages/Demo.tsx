@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, TrendingUp, AlertTriangle, BarChart3, ShoppingBasket, ArrowRight, Lock, Eye, Percent, DollarSign, UtensilsCrossed, Truck, ClipboardList, Target, X, Sparkles } from 'lucide-react';
 import FoodIllustration from '../components/FoodIllustration';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import SEOHead from '../components/SEOHead';
 
 /* ═══════════════════════════════════════════════════════════════
    Demo Page — Mode demo pour les prospects (route publique /demo)
@@ -223,6 +224,11 @@ export default function Demo() {
 
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <SEOHead
+        title="Démo RestauMargin — Logiciel de calcul de marge restaurant"
+        description="Découvrez RestauMargin en mode démo : dashboard live, food cost, fiches techniques IA, alertes prix fournisseurs. Sans inscription, sans carte bancaire."
+        path="/demo"
+      />
 
       {/* ── Animated CSS keyframes ── */}
       <style>{`

@@ -10,7 +10,7 @@ import BlogAuthor from '../components/BlogAuthor';
 export default function BlogCoefficient() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-      <SEOHead title="Le coefficient multiplicateur en restauration : guide complet" description="Comprendre et appliquer le coefficient multiplicateur pour fixer vos prix de vente en restaurant. Formules, exemples et erreurs a eviter." path="/blog/coefficient-multiplicateur" type="article" />
+      <SEOHead title="Coefficient multiplicateur restaurant : formule et calcul 2026" description="Comprendre et appliquer le coefficient multiplicateur pour fixer vos prix de vente en restaurant. Formules, exemples chiffrés et erreurs à éviter." path="/blog/coefficient-multiplicateur" type="article" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

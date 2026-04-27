@@ -662,7 +662,7 @@ function HeroSection() {
             Plateforme #1 des restaurateurs
           </span>
           <h1 className="mt-6 text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.02] tracking-tight" style={{ color: TEXT }}>
-            Maîtrisez vos marges.
+            Maîtrisez vos marges restaurant.
             <br />
             <span style={{ color: ACCENT }}>Augmentez vos profits.</span>
           </h1>
@@ -2234,8 +2234,8 @@ export default function Landing() {
     <>
       <style dangerouslySetInnerHTML={{ __html: LANDING_STYLES }} />
       <SEOHead
-        title="RestauMargin — Logiciel de marge restaurant | L'IA au service de votre rentabilité"
-        description="Gérez mieux. Gagnez plus. RestauMargin : fiches techniques, food cost et commandes fournisseurs automatisés par l'IA. Essai gratuit 7 jours sans CB."
+        title="RestauMargin — Logiciel calcul marge restaurant + food cost"
+        description="Calculez votre marge restaurant et food cost en temps réel. Logiciel + IA + fiches techniques + commandes fournisseurs. Essai gratuit 7 jours sans CB."
         path="/"
       />
       <StructuredData />

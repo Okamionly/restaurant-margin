@@ -107,8 +107,10 @@ export default function SEOHead({
   const fullImage = ogImage.startsWith('http') ? ogImage : `${BASE_URL}${ogImage}`;
   const fullTitle = title.includes('RestauMargin') ? title : `${title} | RestauMargin`;
 
-  // Schemas to inject: always include default, then any extra schemas passed as prop
-  const schemas: Record<string, unknown>[] = [defaultSchema];
+  // Schemas to inject: only include default SoftwareApplication on landing.
+  // index.html already contains a global SoftwareApplication schema, so we
+  // avoid duplicating it on every page (Google sees double = ranks worse).
+  const schemas: Record<string, unknown>[] = path === '/' ? [defaultSchema] : [];
   if (schema) {
     if (Array.isArray(schema)) {
       schemas.push(...schema);

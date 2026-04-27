@@ -5,6 +5,7 @@ import {
   Printer, Instagram, Star, Link2, FileImage, FileCode, FileText,
   Table2, Plus, Minus, RotateCcw, Eye, Smartphone, Globe
 } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type ExportFormat = 'png' | 'svg' | 'pdf';
@@ -316,6 +317,11 @@ export default function QRCodeGenerator() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black transition-colors" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <SEOHead
+        title="Générateur QR Code Menu Restaurant Gratuit | RestauMargin"
+        description="Créez gratuitement un QR Code menu restaurant : couleurs, logo, formats PNG/SVG/PDF, presets Instagram + Google. Sans compte, sans inscription."
+        path="/outils/generateur-qr-menu"
+      />
       {/* ── Navbar ── */}
       <nav className="bg-white dark:bg-black border-b border-black/10 dark:border-white/10 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 h-14">

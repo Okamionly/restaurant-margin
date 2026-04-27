@@ -2886,9 +2886,45 @@ app.post('/api/inbound/email', async (req: any, res) => {
       },
     });
 
-    // NOTE: No notification email sent to avoid infinite loop
-    // (sending to contact@restaumargin.fr triggers inbound webhook again)
     console.log(`[INBOUND] New message from ${senderEmail} in conversation ${conv.id}`);
+
+    // Forward inbound email to founder's personal inbox so verification links
+    // (Capterra/G2/Product Hunt/etc.) and human messages are not lost in DB.
+    // Safe re anti-loop: gmail.com != restaumargin.fr, so the forward target
+    // never re-triggers this webhook. We only forward when RESEND_API_KEY is set.
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey) {
+      try {
+        const resend = new Resend(resendKey);
+        const forwardSubject = `[Forward contact@] ${subject || '(sans objet)'} — de ${senderEmail}`;
+        const forwardHtml = html
+          ? `<div style="background:#f3f4f6;padding:12px;border-radius:8px;margin-bottom:16px;font-family:Arial,sans-serif;font-size:13px;color:#374151;">
+               <strong>Forward depuis contact@restaumargin.fr</strong><br/>
+               De : ${senderName} &lt;${senderEmail}&gt;<br/>
+               Sujet original : ${subject || '(sans objet)'}
+             </div>${html}`
+          : `<div style="font-family:Arial,sans-serif;font-size:14px;color:#1f2937;">
+               <div style="background:#f3f4f6;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;color:#374151;">
+                 <strong>Forward depuis contact@restaumargin.fr</strong><br/>
+                 De : ${senderName} &lt;${senderEmail}&gt;<br/>
+                 Sujet original : ${subject || '(sans objet)'}
+               </div>
+               <pre style="white-space:pre-wrap;font-family:inherit;">${(text || messageContent).replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+             </div>`;
+        await resend.emails.send({
+          from: 'RestauMargin Forwarder <contact@restaumargin.fr>',
+          to: 'mr.guessousyoussef@gmail.com',
+          replyTo: senderEmail,
+          subject: forwardSubject,
+          html: forwardHtml,
+          text: text || messageContent,
+        });
+        console.log(`[INBOUND] Forwarded to gmail perso`);
+      } catch (forwardErr: any) {
+        // Forward failure must not break the inbound webhook (BDD save already done).
+        console.error('[INBOUND] Forward to gmail failed:', forwardErr.message);
+      }
+    }
 
     res.json({ success: true, conversationId: conv.id });
   } catch (e: any) {
@@ -3687,7 +3723,10 @@ app.post('/api/contact', async (req, res) => {
 
       await resendClient.emails.send({
         from: 'RestauMargin <contact@restaumargin.fr>',
-        to: 'contact@restaumargin.fr',
+        // Direct delivery to founder's gmail to avoid the contact@ -> contact@
+        // anti-loop in /api/inbound/email which would silently drop the message.
+        to: 'mr.guessousyoussef@gmail.com',
+        replyTo: email,
         subject: `[RestauMargin] ${sourceLabel} — ${name}`,
         html: `
 <!DOCTYPE html>

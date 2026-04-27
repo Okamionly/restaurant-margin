@@ -17,14 +17,10 @@ import FilterPanel, { type FilterDef, type FilterValues } from '../components/Fi
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
+import { useApiClient } from '../hooks/useApiClient';
 
 const API = '';
 
-function authHeaders() {
-  const token = localStorage.getItem('token');
-  const restaurantId = localStorage.getItem('activeRestaurantId');
-  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', 'X-Restaurant-Id': restaurantId || '1' };
-}
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -362,6 +358,7 @@ const interactionIcons: Record<string, { icon: string; color: string }> = {
 export default function Clients() {
   const { showToast } = useToast();
   const { t } = useTranslation();
+  const { authHeaders } = useApiClient();
 
   // State
   const [clients, setClients] = useState<Client[]>(initClients);

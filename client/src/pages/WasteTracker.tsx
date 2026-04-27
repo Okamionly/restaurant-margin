@@ -18,6 +18,7 @@ import { useRestaurant } from '../hooks/useRestaurant';
 import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
 import { fetchIngredients } from '../services/api';
+import { useApiClient } from '../hooks/useApiClient';
 import { HeatmapGrid, CSSBarChart, ProgressRing } from '../components/Charts';
 
 // ── Unit conversion divisor (price is always per bulk unit: kg/L) ────────
@@ -149,14 +150,6 @@ interface ReductionGoal {
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
-function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token');
-  const rid = localStorage.getItem('activeRestaurantId');
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  if (rid) headers['X-Restaurant-Id'] = rid;
-  return headers;
-}
 
 type Period = 'jour' | 'semaine' | 'mois';
 
@@ -376,6 +369,7 @@ export default function WasteTracker() {
   const { t } = useTranslation();
   const { showToast } = useToast();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
+  const { authHeaders } = useApiClient();
   const [entries, setEntries] = useState<WasteEntry[]>([]);
   const [loadingEntries, setLoadingEntries] = useState(true);
   const [submitting, setSubmitting] = useState(false);

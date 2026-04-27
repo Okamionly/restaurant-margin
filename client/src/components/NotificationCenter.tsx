@@ -1,11 +1,11 @@
 import { formatCurrency } from '../utils/currency';
+import { useApiClient } from '../hooks/useApiClient';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Bell, Package, TrendingUp, AlertTriangle, Check, X, Loader2,
   Volume2, VolumeX, Settings, Users, Sparkles, Shield,
   Zap, Clock, CheckCheck, ShoppingCart, DollarSign, BarChart3, Trophy, AlertCircle
 } from 'lucide-react';
-import { getToken, getActiveRestaurantId } from '../services/api';
 
 // ── Types ──────────────────────────────────────────────────────────
 interface Notification {
@@ -155,15 +155,8 @@ export default function NotificationCenter() {
   const prevCountRef = useRef(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const bellRef = useRef<HTMLButtonElement>(null);
+  const { authHeaders } = useApiClient();
 
-  const authHeaders = useCallback((): Record<string, string> => {
-    const token = getToken();
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    const rid = getActiveRestaurantId();
-    if (rid) headers['X-Restaurant-Id'] = rid;
-    return headers;
-  }, []);
 
   // ── Fetch all notifications ──
   const fetchNotifications = useCallback(async () => {

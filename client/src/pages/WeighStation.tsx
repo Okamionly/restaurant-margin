@@ -15,14 +15,10 @@ import { useScale } from '../hooks/useScale';
 import { useToast } from '../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
+import { useApiClient } from '../hooks/useApiClient';
 
 const API = '';
 
-function authHeaders() {
-  const token = localStorage.getItem('token');
-  const restaurantId = localStorage.getItem('activeRestaurantId');
-  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, 'X-Restaurant-Id': restaurantId || '1' };
-}
 
 type Ingredient = { id: number; name: string; unit: string; category: string; pricePerUnit: number };
 
@@ -264,6 +260,7 @@ export default function WeighStation() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { authHeaders } = useApiClient();
   const {
     status, reading, error, isSupported, deviceName, scaleType,
     kioskMode, setKioskMode, autoReconnect, setAutoReconnect,

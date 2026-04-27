@@ -279,6 +279,10 @@ function AppLayout() {
   // to keep ~40 KB out of the main bundle on first paint.
   const [commandPaletteArmed, setCommandPaletteArmed] = useState(false);
   const [trialBannerDismissed, setTrialBannerDismissed] = useState(() => localStorage.getItem('trial-banner-dismissed') === '1');
+  // Progressive disclosure: sidebar_advanced_mode persists across sessions
+  const [advancedMode, setAdvancedMode] = useState<boolean>(
+    () => localStorage.getItem('sidebar_advanced_mode') === 'expanded'
+  );
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -295,6 +299,12 @@ function AppLayout() {
     });
     return () => { cancelled = true; };
   }, []);
+
+  function toggleAdvancedMode() {
+    const next = !advancedMode;
+    setAdvancedMode(next);
+    localStorage.setItem('sidebar_advanced_mode', next ? 'expanded' : 'collapsed');
+  }
 
   async function handleResendVerification() {
     try {
@@ -408,28 +418,36 @@ function AppLayout() {
     window.addEventListener('keydown', handleArmKey);
     return () => window.removeEventListener('keydown', handleArmKey);
   }, [commandPaletteArmed]);
-  // Grouped navigation sections
-  const navSections: NavSection[] = [
+  // --- Progressive disclosure: ESSENTIAL sections (~10 items, visible by default) ---
+  const essentialSections: NavSection[] = [
     {
       title: 'PRINCIPAL',
       items: [
         { to: '/dashboard', icon: BarChart3, label: 'Tableau de bord' },
         { to: '/mon-score', icon: Trophy, label: 'Mon score' },
         { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },
-        { to: '/menu', icon: BookOpen, label: 'La Carte' },
-        { to: '/qr-menu', icon: QrCode, label: 'Menu QR Code' },
         { to: '/aide', icon: BookOpen, label: "Centre d'aide" },
       ],
     },
     {
       title: 'GESTION',
       items: [
-        { to: '/ingredients', icon: ShoppingBasket, label: 'Ingredients' },
         { to: '/recipes', icon: ClipboardList, label: 'Fiches techniques' },
+        { to: '/ingredients', icon: ShoppingBasket, label: 'Ingredients' },
         { to: '/inventory', icon: Package, label: 'Inventaire' },
+        { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },
         { to: '/suppliers', icon: Truck, label: 'Fournisseurs' },
-        { to: '/gaspillage', icon: Trash2, label: 'Gaspillage' },
-        { to: '/menu-calendar', icon: Calendar, label: 'Menu Calendrier' },
+      ],
+    },
+  ];
+
+  // --- ADVANCED sections (hidden by default, shown when advancedMode === true) ---
+  const advancedSections: NavSection[] = [
+    {
+      title: 'PRINCIPAL +',
+      items: [
+        { to: '/menu', icon: BookOpen, label: 'La Carte' },
+        { to: '/qr-menu', icon: QrCode, label: 'Menu QR Code' },
       ],
     },
     {
@@ -440,10 +458,16 @@ function AppLayout() {
         { to: '/scanner-factures', icon: Receipt, label: 'Factures' },
         { to: '/actualites', icon: Newspaper, label: 'Actualités IA' },
         { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
-        { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },
         { to: '/allergen-matrix', icon: Shield, label: 'Matrice allergenes' },
         { to: '/recettes-semaine', icon: ChefHat, label: 'Recettes semaine' },
         { to: '/negociation-ia', icon: Handshake, label: 'Negociation IA' },
+      ],
+    },
+    {
+      title: 'GESTION +',
+      items: [
+        { to: '/gaspillage', icon: Trash2, label: 'Gaspillage' },
+        { to: '/menu-calendar', icon: Calendar, label: 'Menu Calendrier' },
       ],
     },
     {
@@ -609,7 +633,8 @@ function AppLayout() {
 
       {/* Nav sections - scrollable area */}
       <nav aria-label="Navigation principale" className="flex-1 overflow-y-auto px-3 space-y-1.5 pb-4 sidebar-scroll">
-        {navSections.map((section, idx) => (
+        {/* Essential sections — always visible */}
+        {essentialSections.map((section, idx) => (
           <div key={section.title} className={idx > 0 ? 'pt-4' : ''}>
             {!collapsed && idx > 0 && <div className="border-t border-[#E5E7EB]/60 dark:border-white/5 mb-3" />}
             {!collapsed && (
@@ -623,6 +648,52 @@ function AppLayout() {
             </div>
           </div>
         ))}
+
+        {/* Progressive disclosure toggle */}
+        {!collapsed && (
+          <div className="pt-4">
+            <div className="border-t border-[#E5E7EB]/60 dark:border-white/5 mb-3" />
+            <button
+              type="button"
+              onClick={toggleAdvancedMode}
+              aria-expanded={advancedMode}
+              aria-controls="sidebar-advanced-tools"
+              className="flex items-center gap-2 w-full px-3 py-1.5 text-[11px] font-medium text-[#9CA3AF] dark:text-[#525252] hover:text-[#111111] dark:hover:text-white transition-colors rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1 group"
+            >
+              <ChevronDown
+                className={`w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 ${advancedMode ? 'rotate-180' : ''}`}
+              />
+              <span className="tracking-[0.12em] uppercase font-satoshi">
+                {advancedMode ? 'Masquer les outils' : 'Outils avancés'}
+              </span>
+              {!advancedMode && (
+                <span className="ml-auto text-[9px] font-semibold bg-[#F3F4F6] dark:bg-[#1A1A1A] text-[#9CA3AF] dark:text-[#525252] px-1.5 py-0.5 rounded-full">
+                  +{advancedSections.reduce((acc, s) => acc + s.items.length, 0)}
+                </span>
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* Advanced sections — revealed on toggle */}
+        {(advancedMode || collapsed) && (
+          <div id="sidebar-advanced-tools">
+            {advancedSections.map((section, idx) => (
+              <div key={section.title} className="pt-4">
+                {!collapsed && <div className="border-t border-[#E5E7EB]/40 dark:border-white/[0.04] mb-3" />}
+                {!collapsed && (
+                  <div className="px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-[#C4C4C4] dark:text-[#404040] uppercase sidebar-label font-satoshi">
+                    {section.title}
+                  </div>
+                )}
+                {collapsed && idx === 0 && <div className="border-t border-[#E5E7EB]/60 dark:border-white/5 my-2" />}
+                <div className="space-y-0.5 opacity-90">
+                  {section.items.map((item) => renderNavItem(item, collapsed))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </nav>
 
       {/* Bottom section */}

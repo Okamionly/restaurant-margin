@@ -1968,7 +1968,7 @@ function Footer() {
           <ul className="space-y-2 text-sm">
             <li><Link to="/outils/calculateur-food-cost" className="hover:text-white">Calculateur food cost</Link></li>
             <li><Link to="/outils/generateur-qr-menu" className="hover:text-white">Générateur QR menu</Link></li>
-            <li><Link to="/booking-demo" className="hover:text-white">Réserver une démo</Link></li>
+            <li><a href="#contact" className="hover:text-white">Réserver une démo</a></li>
           </ul>
         </div>
         <div>

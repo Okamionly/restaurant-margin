@@ -188,8 +188,9 @@
     <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" /></noscript>
 
-    <!-- LCP preload: hero-1.webp is the above-the-fold hero on landing page -->
-    <link rel="preload" as="image" href="/images/hero/hero-1.webp" fetchpriority="high" type="image/webp" />
+    <!-- Note: hero-1.webp preload removed — Landing v3 uses an animated WebGL
+         shader (Paper Fold + Curves) for the hero background, no static image. -->
+
   </head>
   <body>
     <div id="root">

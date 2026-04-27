@@ -569,7 +569,7 @@ export default function BlogFicheTechnique() {
             to="/register"
             className="inline-flex items-center gap-2 bg-white text-teal-700 font-bold px-8 py-3.5 rounded-full hover:bg-teal-50 transition-colors text-base"
           >
-            Essayer gratuitement 14 jours
+            Essayer gratuitement 7 jours
             <ArrowRight className="w-5 h-5" />
           </Link>
           <p className="text-teal-200 text-sm mt-4">Sans carte bancaire · Configuration en 5 minutes</p>

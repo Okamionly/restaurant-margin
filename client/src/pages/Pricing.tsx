@@ -112,7 +112,7 @@ const plans: Plan[] = [
       { text: 'HACCP digital : temperatures, nettoyage, conformite', included: true },
       { text: 'Messagerie integree avec vos fournisseurs', included: true },
       { text: '500 requetes IA par mois', included: true },
-      { text: 'Essai gratuit 14 jours — sans carte bancaire', included: true },
+      { text: 'Essai gratuit 7 jours — sans carte bancaire', included: true },
       { text: 'Multi-etablissements', included: false },
       { text: 'Rapport IA hebdomadaire', included: false },
       { text: 'Analyse predictive des ventes', included: false },
@@ -135,7 +135,7 @@ const plans: Plan[] = [
       { text: 'Analyse predictive : previsions de ventes et suggestions prix', included: true },
       { text: 'Station Balance compatible (tablette + balance Bluetooth)', included: true },
       { text: 'Support prioritaire', included: true },
-      { text: 'Essai gratuit 14 jours — sans carte bancaire', included: true },
+      { text: 'Essai gratuit 7 jours — sans carte bancaire', included: true },
     ],
     cta: "S'abonner — 79\u20AC/mois",
     ctaLink: 'https://buy.stripe.com/4gMbIU5Ki4cAfbe1b187K05',
@@ -435,7 +435,7 @@ export default function Pricing() {
     <div className="min-h-screen bg-white text-black">
       <SEOHead
         title="Tarifs RestauMargin — Pro 29€, Business 79€, Enterprise"
-        description="Plans Pro (29 EUR/mois), Business (79 EUR/mois) et Enterprise sur devis. Calculez vos marges restaurant, food cost et fiches techniques. Essai gratuit 14 jours sans carte bancaire."
+        description="Plans Pro (29 EUR/mois), Business (79 EUR/mois) et Enterprise sur devis. Calculez vos marges restaurant, food cost et fiches techniques. Essai gratuit 7 jours sans carte bancaire."
         path="/pricing"
       />
       {/* Header */}
@@ -469,7 +469,7 @@ export default function Pricing() {
       <section className="pt-20 pb-12 px-4 sm:px-6 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#F3F4F6] rounded-full mb-6">
           <BadgePercent className="w-4 h-4 text-black" />
-          <span className="text-xs font-semibold text-black">150+ restaurants — essai 14j sans carte bancaire</span>
+          <span className="text-xs font-semibold text-black">150+ restaurants — essai 7j sans carte bancaire</span>
         </div>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-black">
           Tarifs simples,{' '}
@@ -765,7 +765,7 @@ export default function Pricing() {
           Pret a reprendre le controle de vos marges ?
         </h2>
         <p className="text-white/50 mb-8 max-w-lg mx-auto">
-          Essayez gratuitement pendant 14 jours. Sans carte bancaire, sans engagement.
+          Essayez gratuitement pendant 7 jours. Sans carte bancaire, sans engagement.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <a

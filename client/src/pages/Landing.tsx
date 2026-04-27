@@ -12,12 +12,13 @@ import {
   ChefHat, Menu, X as XIcon, ArrowRight, Calculator, X, Check,
   Send, Sparkles, ClipboardList, BarChart3, Truck, Scale, Thermometer,
   Star, ShieldCheck, MapPin, Headphones, FileCheck, CreditCard,
-  Play, Tablet, ScanLine, ArrowUpRight,
+  Play, Tablet, ScanLine, ArrowUpRight, Camera, TrendingUp, Mic,
 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SEOHead from '../components/SEOHead';
 import ShaderBackground from '../components/landing/ShaderBackground';
+import PaperFoldBackground from '../components/landing/PaperFoldBackground';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -84,16 +85,30 @@ function useStagger<T extends HTMLElement>(staggerDelay = 0.1) {
     const children = Array.from(el.children) as HTMLElement[];
     if (!children.length) return;
     const ctx = gsap.context(() => {
-      gsap.from(children, {
-        y: 30,
-        opacity: 0,
-        duration: 0.7,
-        ease: 'power3.out',
-        stagger: staggerDelay,
-        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
-      });
+      // fromTo guarantees a deterministic final state if the ScrollTrigger
+      // never fires (defensive : we'd rather show the cards than hide them).
+      gsap.fromTo(
+        children,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: 'power3.out',
+          stagger: staggerDelay,
+          // 'top bottom' = trigger as soon as the grid top touches the bottom
+          // of the viewport (was 'top 85%', which left ~15% of cases unfired).
+          scrollTrigger: { trigger: el, start: 'top bottom-=80', toggleActions: 'play none none none' },
+        }
+      );
     });
-    return () => ctx.revert();
+    // Force a refresh once the rest of the page (lazy images, fonts) has
+    // settled — guards against stale measurements after Vite HMR or fonts.
+    const t = setTimeout(() => ScrollTrigger.refresh(), 250);
+    return () => {
+      clearTimeout(t);
+      ctx.revert();
+    };
   }, [staggerDelay]);
   return ref;
 }
@@ -188,24 +203,408 @@ function DashboardMiniCard({ animated = false }: { animated?: boolean }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// Rich Dashboard Mockup — auto-cycling carousel between 2 variants.
+// V1: Light dashboard (food cost, marge, alerts)
+// V2: Voice mode "Nouvelle fiche · dictée" (audio waveform → recipe card)
+// 3D tilt is driven by GSAP scrollTrigger so the mockup leans towards the
+// viewer as it enters the viewport (Apple-style "lift" effect). Neon blue
+// (#06B6D4 cyan) is interleaved with the emerald green for a fluo accent.
+// ═══════════════════════════════════════════════════════════════════════════
+const NEON_BLUE = '#06B6D4'; // cyan/electric blue companion to ACCENT (emerald)
+const MONO_STYLE = { fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, monospace' } as React.CSSProperties;
+
+// ── Variant A : Dashboard ──────────────────────────────────────────────────
+function DashboardVariant({ active }: { active: boolean }) {
+  const foodCost = useCounter(27.3, 1);
+  const marge = useCounter(72.7, 1);
+  const ca = useCounter(38, 0);
+  const economies = useCounter(2.6, 1);
+
+  const platBars = [
+    { n: 'Entrecôte', pct: 62, color: '#F59E0B', warn: true },
+    { n: 'Saumon', pct: 38, color: ACCENT },
+    { n: 'Poulet', pct: 24, color: ACCENT },
+    { n: 'Risotto', pct: 18, color: NEON_BLUE },
+  ];
+
+  return (
+    <div ref={foodCost.ref} className="rounded-2xl overflow-hidden bg-white"
+      style={{ border: `1px solid ${BORDER}`, boxShadow: `0 30px 80px -20px rgba(15, 23, 42, 0.18), 0 0 0 1px ${ACCENT}1A, 0 0 60px ${NEON_BLUE}1A` }}
+    >
+      {/* URL bar */}
+      <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b" style={{ borderColor: BORDER, background: '#FAFBFC' }}>
+        <div className="flex gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
+        </div>
+        <div className="ml-2 text-[11px] font-bold flex items-center gap-1" style={{ color: TEXT }}>
+          RestauMargin<span style={{ color: TEXT_MUTED, fontWeight: 400 }}>/ Dashboard</span>
+        </div>
+        <span className="ml-auto px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-[0.14em]"
+          style={{ background: `linear-gradient(135deg, ${ACCENT}22, ${NEON_BLUE}22)`, color: ACCENT_DARK, border: `1px solid ${ACCENT}33` }}
+        >
+          Nouveau 2026
+        </span>
+      </div>
+
+      <div className="p-4 sm:p-5 space-y-4">
+        {/* 4 KPI cards */}
+        <div className="grid grid-cols-2 gap-2.5">
+          {[
+            { l: 'FOOD COST', v: (active ? foodCost.value : 27.3).toFixed(1), unit: '%', sub: '▼ 6.7pts vs janvier', subColor: ACCENT_DARK, mainColor: ACCENT_DARK },
+            { l: 'MARGE BRUTE', v: (active ? marge.value : 72.7).toFixed(1), unit: '%', sub: 'Objectif : 70%', subColor: TEXT_MUTED, mainColor: TEXT },
+            { l: 'CA CE MOIS', v: Math.round(active ? ca.value : 38).toString(), unit: 'k€', sub: '▲ +4.2% vs N-1', subColor: ACCENT_DARK, mainColor: TEXT },
+            { l: 'ÉCONOMIES/MOIS', v: (active ? economies.value : 2.6).toFixed(1), unit: 'k€', sub: 'vs avant RM', subColor: TEXT_MUTED, mainColor: NEON_BLUE },
+          ].map((k) => (
+            <div key={k.l} className="rounded-xl p-3" style={{ background: '#FAFBFC', border: `1px solid ${BORDER}` }}>
+              <div className="text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: TEXT_MUTED }}>{k.l}</div>
+              <div className="mt-1.5 flex items-baseline gap-0.5">
+                <span className="text-2xl font-extrabold tabular-nums leading-none" style={{ ...MONO_STYLE, color: k.mainColor }}>{k.v}</span>
+                <span className="text-[11px] font-semibold opacity-70" style={{ ...MONO_STYLE, color: k.mainColor }}>{k.unit}</span>
+              </div>
+              <div className="text-[9px] mt-1.5" style={{ color: k.subColor }}>{k.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Food cost par plat bars */}
+        <div>
+          <div className="text-[9px] font-bold uppercase tracking-[0.14em] mb-2.5" style={{ color: TEXT_MUTED }}>Food cost par plat</div>
+          <div className="space-y-1.5">
+            {platBars.map((p) => (
+              <div key={p.n} className="grid grid-cols-[60px_1fr_auto] gap-3 items-center text-[10px]">
+                <span style={{ color: TEXT }}>{p.n}</span>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#F1F5F9' }}>
+                  <div className="h-full rounded-full" style={{
+                    width: `${p.pct}%`,
+                    background: p.warn ? p.color : p.color === NEON_BLUE ? `linear-gradient(90deg, ${NEON_BLUE}, ${ACCENT})` : `linear-gradient(90deg, ${ACCENT}, ${ACCENT_DARK})`,
+                    boxShadow: `0 0 8px ${p.color}66`,
+                  }} />
+                </div>
+                <span className="font-semibold tabular-nums" style={{ ...MONO_STYLE, color: TEXT_MUTED }}>{p.pct}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Alert */}
+        <div className="rounded-lg px-3 py-2 flex items-center gap-2 text-[10px]" style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#991B1B' }}>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626] shrink-0" />
+          <span><strong>Entrecôte 62%</strong> — revoir grammage ou tarif fournisseur</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Variant B : Voice fiche dictée ─────────────────────────────────────────
+function VoiceFicheVariant({ active }: { active: boolean }) {
+  const [seconds, setSeconds] = useState(14);
+  useEffect(() => {
+    if (!active) { setSeconds(14); return; }
+    const id = setInterval(() => setSeconds((s) => (s >= 30 ? 14 : s + 1)), 1000);
+    return () => clearInterval(id);
+  }, [active]);
+
+  // Animated waveform bars heights
+  const bars = Array.from({ length: 28 }, (_, i) => {
+    const base = 0.3 + 0.7 * Math.abs(Math.sin(i * 0.7 + (active ? Date.now() / 400 : 0)));
+    return Math.round(base * 100);
+  });
+
+  return (
+    <div className="rounded-2xl overflow-hidden bg-white"
+      style={{ border: `1px solid ${BORDER}`, boxShadow: `0 30px 80px -20px rgba(15, 23, 42, 0.18), 0 0 0 1px ${NEON_BLUE}1A, 0 0 60px ${ACCENT}1A` }}
+    >
+      {/* Header with mic icon */}
+      <div className="flex items-center gap-3 px-5 sm:px-6 py-4">
+        <div className="relative w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: ACCENT_BG }}>
+          <span className="absolute inset-0 rounded-full animate-ping opacity-40" style={{ background: ACCENT }} />
+          <Mic className="w-5 h-5 relative" style={{ color: ACCENT_DARK }} />
+        </div>
+        <div className="flex-1">
+          <div className="text-sm font-bold" style={{ color: TEXT }}>Nouvelle fiche · dictée</div>
+          <div className="text-xs flex items-center gap-1.5" style={{ color: ACCENT_DARK }}>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
+            Enregistrement…
+          </div>
+        </div>
+        <div className="text-sm font-bold tabular-nums" style={{ ...MONO_STYLE, color: TEXT }}>
+          00:{String(seconds).padStart(2, '0')}
+        </div>
+      </div>
+
+      {/* Audio waveform */}
+      <div className="px-5 sm:px-6 pt-1 pb-3">
+        <div className="flex items-center justify-center gap-[3px] h-12">
+          {bars.map((h, i) => (
+            <span
+              key={i}
+              className="rounded-full"
+              style={{
+                width: 3,
+                height: `${Math.max(6, h * 0.36)}px`,
+                background: i < 16 ? ACCENT : ACCENT_DARK,
+                opacity: 0.4 + (h / 100) * 0.6,
+                animation: active ? `waveBar 0.8s ease-in-out ${i * 50}ms infinite alternate` : 'none',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Quote */}
+      <div className="px-5 sm:px-6 py-3">
+        <p className="text-sm leading-relaxed" style={{ color: TEXT }}>
+          <span className="text-lg font-bold" style={{ color: ACCENT_DARK }}>« </span>
+          Magret de canard, sauce miel et thym, pommes grenailles rôties, 220 g par portion, coefficient 3,8.
+          <span className="text-lg font-bold ml-0.5" style={{ color: ACCENT_DARK }}> »</span>
+        </p>
+      </div>
+
+      {/* Divider with label */}
+      <div className="px-5 sm:px-6 py-2 flex items-center gap-3">
+        <div className="flex-1 h-px" style={{ background: BORDER }} />
+        <span className="text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: ACCENT_DARK }}>L'IA structure</span>
+        <div className="flex-1 h-px" style={{ background: BORDER }} />
+      </div>
+
+      {/* Recipe card */}
+      <div className="px-5 sm:px-6 pb-5 space-y-3">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h4 className="text-base font-extrabold" style={{ color: TEXT }}>Magret · sauce miel & thym</h4>
+            <p className="text-xs mt-0.5" style={{ color: TEXT_MUTED }}>Plat · 220 g · 1 portion</p>
+          </div>
+          <div className="text-right shrink-0">
+            <div className="text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: TEXT_MUTED }}>Coût matière</div>
+            <div className="text-2xl font-extrabold tabular-nums" style={{ ...MONO_STYLE, color: ACCENT_DARK }}>7,08 €</div>
+          </div>
+        </div>
+
+        {/* Ingredient lines */}
+        <div className="space-y-1.5">
+          {[
+            { n: 'Magret de canard', q: '180 g', p: '3,42 €' },
+            { n: 'Pommes grenailles', q: '120 g', p: '0,82 €' },
+            { n: 'Miel de châtaignier', q: '15 g', p: '0,38 €' },
+            { n: 'Thym frais · ail · beurre', q: '—', p: '2,46 €' },
+          ].map((it) => (
+            <div key={it.n} className="rounded-lg px-3 py-2 grid grid-cols-[1fr_auto_auto] gap-3 items-center text-xs" style={{ background: ACCENT_BG }}>
+              <span className="text-right font-medium" style={{ color: TEXT }}>{it.n}</span>
+              <span className="font-semibold tabular-nums" style={{ ...MONO_STYLE, color: TEXT_MUTED, minWidth: 38 }}>{it.q}</span>
+              <span className="font-semibold tabular-nums" style={{ ...MONO_STYLE, color: TEXT, minWidth: 48 }}>{it.p}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Stats row */}
+        <div className="grid grid-cols-3 gap-3 pt-2">
+          <div>
+            <div className="text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: TEXT_MUTED }}>Food cost</div>
+            <div className="mt-1 text-xl font-extrabold tabular-nums" style={{ ...MONO_STYLE, color: ACCENT_DARK }}>26,3 %</div>
+          </div>
+          <div>
+            <div className="text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: TEXT_MUTED }}>Coefficient</div>
+            <div className="mt-1 text-xl font-extrabold tabular-nums" style={{ ...MONO_STYLE, color: TEXT }}>×3,8</div>
+          </div>
+          <div>
+            <div className="text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: TEXT_MUTED }}>Prix de vente</div>
+            <div className="mt-1 text-xl font-extrabold tabular-nums" style={{ ...MONO_STYLE, color: ACCENT_DARK }}>26,90 €</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Carousel orchestrator ──────────────────────────────────────────────────
+function RichDashboardMockup() {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const tiltRef = useRef<HTMLDivElement>(null);
+
+  // Auto-cycle every 6.5s between the 2 variants. Pause on hover.
+  const [paused, setPaused] = useState(false);
+  useEffect(() => {
+    if (paused) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const id = setInterval(() => setActiveIdx((i) => (i === 0 ? 1 : 0)), 6500);
+    return () => clearInterval(id);
+  }, [paused]);
+
+  // 3D tilt sur scroll (lift Apple-style).
+  useEffect(() => {
+    const el = tiltRef.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { rotateX: 12, rotateY: -10, scale: 0.95 },
+        {
+          rotateX: 0,
+          rotateY: 0,
+          scale: 1,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 90%', end: 'top 30%', scrub: 0.6 },
+        }
+      );
+    });
+    return () => ctx.revert();
+  }, []);
+
+  // Pre-measure the taller variant so the wrapper height stays stable.
+  // Each variant is absolute-positioned in the wrapper; without a min-height
+  // the parent collapses on flip. Use min-height matching variant B (taller).
+  return (
+    <div
+      className="relative"
+      style={{ perspective: '1400px', perspectiveOrigin: '50% 60%' }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div ref={tiltRef} className="relative" style={{ transformStyle: 'preserve-3d' }}>
+        {/* Neon glow halo */}
+        <div
+          className="absolute inset-0 -z-10 rounded-3xl pointer-events-none"
+          style={{
+            background: `radial-gradient(ellipse at 30% 50%, ${ACCENT}33 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, ${NEON_BLUE}33 0%, transparent 50%)`,
+            filter: 'blur(40px)',
+            transform: 'translateZ(-40px) scale(1.05)',
+          }}
+        />
+
+        {/* 3D flip stage. Each variant occupies the same slot; non-active rotates Y to hide. */}
+        <div className="relative" style={{ transformStyle: 'preserve-3d', minHeight: '560px' }}>
+          <div
+            className="transition-all duration-700 ease-out"
+            style={{
+              transformStyle: 'preserve-3d',
+              transform: activeIdx === 0 ? 'rotateY(0deg)' : 'rotateY(-90deg)',
+              opacity: activeIdx === 0 ? 1 : 0,
+              pointerEvents: activeIdx === 0 ? 'auto' : 'none',
+              position: activeIdx === 0 ? 'relative' : 'absolute',
+              inset: 0,
+              backfaceVisibility: 'hidden',
+            }}
+          >
+            <DashboardVariant active={activeIdx === 0} />
+          </div>
+          <div
+            className="transition-all duration-700 ease-out"
+            style={{
+              transformStyle: 'preserve-3d',
+              transform: activeIdx === 1 ? 'rotateY(0deg)' : 'rotateY(90deg)',
+              opacity: activeIdx === 1 ? 1 : 0,
+              pointerEvents: activeIdx === 1 ? 'auto' : 'none',
+              position: activeIdx === 1 ? 'relative' : 'absolute',
+              inset: 0,
+              backfaceVisibility: 'hidden',
+            }}
+          >
+            <VoiceFicheVariant active={activeIdx === 1} />
+          </div>
+        </div>
+
+        {/* Carousel dots indicator */}
+        <div className="flex items-center justify-center gap-1.5 mt-4">
+          {[0, 1].map((i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setActiveIdx(i)}
+              aria-label={i === 0 ? 'Voir le dashboard' : 'Voir la fiche dictée'}
+              className="rounded-full transition-all"
+              style={{
+                width: activeIdx === i ? 24 : 6,
+                height: 6,
+                background: activeIdx === i ? ACCENT : '#CBD5E1',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Floating cards stay outside the carousel so they're visible on both variants */}
+      <div
+        className="hidden md:flex absolute items-center gap-2.5 rounded-xl bg-white shadow-2xl px-3 py-2.5"
+        style={{
+          left: '-20px',
+          bottom: '18%',
+          border: `1px solid ${ACCENT}33`,
+          boxShadow: `0 20px 40px rgba(15, 23, 42, 0.12), 0 0 24px ${ACCENT}22`,
+          animation: 'floatY 6s ease-in-out infinite',
+        }}
+      >
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: `linear-gradient(135deg, ${ACCENT_BG}, ${NEON_BLUE}22)`, color: ACCENT_DARK }}>
+          <Sparkles className="w-3.5 h-3.5" />
+        </div>
+        <div>
+          <div className="text-xs font-bold leading-tight" style={{ color: TEXT }}>Fiche technique générée</div>
+          <div className="text-[10px] mt-0.5" style={{ color: TEXT_MUTED }}>
+            <span style={{ ...MONO_STYLE, color: ACCENT_DARK, fontWeight: 600 }}>10,4 s</span> · Magret sauce miel
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="hidden md:flex absolute items-center gap-2.5 rounded-xl bg-white shadow-2xl px-3 py-2.5"
+        style={{
+          right: '-12px',
+          top: '6%',
+          border: `1px solid ${NEON_BLUE}33`,
+          boxShadow: `0 20px 40px rgba(15, 23, 42, 0.12), 0 0 24px ${NEON_BLUE}22`,
+          animation: 'floatY 7s ease-in-out -2s infinite',
+        }}
+      >
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: `linear-gradient(135deg, ${NEON_BLUE}22, ${ACCENT_BG})`, color: NEON_BLUE }}>
+          <BarChart3 className="w-3.5 h-3.5" />
+        </div>
+        <div>
+          <div className="text-xs font-bold leading-tight" style={{ color: TEXT }}>Coefficient appliqué</div>
+          <div className="text-[10px] mt-0.5" style={{ color: TEXT_MUTED }}>
+            <span style={{ ...MONO_STYLE, fontWeight: 600 }}>×3,8</span> → prix de vente <span style={{ ...MONO_STYLE, color: ACCENT_DARK, fontWeight: 600 }}>26,90 €</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // 01 — HERO
 // ═══════════════════════════════════════════════════════════════════════════
 function HeroKpis() {
+  // Format inspired from claude.design "RestauMargin Nouveau" — big number on top
+  // (mono font for the technical feel), small uppercase tracking-wide label below.
   const kpis = [
-    { label: 'Restaurants actifs', value: 320, suffix: '+' },
-    { label: 'Économies moyennes / mois', value: 479, suffix: ' €' },
-    { label: 'Points de marge gagnés', value: 4, suffix: ' pts' },
-    { label: "Jours d'essai gratuit", value: 14, suffix: 'j' },
+    { value: '320+', label: 'Brigades actives' },
+    { value: '+4 pts', label: 'Marge en 90 j' },
+    { value: '10 s', label: 'Pour une fiche' },
+    { value: '800 €', label: 'Économisés / site' },
   ];
   const containerRef = useStagger<HTMLDivElement>(0.12);
   return (
-    <div ref={containerRef} className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10">
+    <div ref={containerRef} className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-10">
       {kpis.map((k) => (
-        <div key={k.label} className="rounded-2xl p-4 text-center" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
-          <div className="text-2xl font-extrabold tabular-nums" style={{ color: ACCENT_DARK }}>
-            {k.value}{k.suffix}
+        <div
+          key={k.label}
+          className="rounded-2xl px-4 py-4 sm:py-5"
+          style={{ background: 'white', border: `1px solid ${BORDER}` }}
+        >
+          <div
+            className="text-2xl sm:text-3xl font-extrabold tabular-nums tracking-tight"
+            style={{ color: TEXT, fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, monospace' }}
+          >
+            {k.value}
           </div>
-          <div className="text-xs mt-1 font-medium leading-snug" style={{ color: TEXT_MUTED }}>{k.label}</div>
+          <div
+            className="text-[10px] sm:text-[11px] mt-1.5 font-semibold uppercase tracking-[0.12em]"
+            style={{ color: TEXT_MUTED }}
+          >
+            {k.label}
+          </div>
         </div>
       ))}
     </div>
@@ -236,23 +635,36 @@ function HeroSection() {
   }, []);
 
   return (
-    <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Local soft veil so text contrast remains AA over global page shader. */}
+    <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden isolate">
+      {/* Paper Fold shader inside the browser frame — animated folded paper
+          texture with neon emerald creases that follow the cursor. The
+          shader's own paper-white base (#FAFAF7) guarantees text contrast,
+          no veil needed on top. `isolate` on the parent + z-0 here creates
+          a fresh stacking context so the negative z-index of nothing below
+          us can clip the canvas. */}
+      <PaperFoldBackground intensity={1.0} className="z-0" />
+      {/* Scroll parallax stub — visible above the shader, transparent. */}
       <div
         ref={bgRef}
-        className="absolute inset-0 -z-[5] pointer-events-none"
-        style={{
-          background:
-            'linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.78) 60%, rgba(255,255,255,0.92) 100%)',
-        }}
+        className="absolute inset-0 z-0 pointer-events-none"
       />
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
         <div ref={ref}>
-          <SectionNumber n="01" label="RestauMargin" />
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight" style={{ color: TEXT }}>
-            Gérez mieux.
+          {/* Eyebrow badge with pulse dot — replaces the "01 RestauMargin" SectionNumber. */}
+          <span
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase tracking-[0.14em]"
+            style={{ background: ACCENT_BG, color: ACCENT_DARK, border: `1px solid ${ACCENT_LIGHT}` }}
+          >
+            <span className="relative flex w-2 h-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: ACCENT }} />
+              <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: ACCENT }} />
+            </span>
+            Plateforme #1 des restaurateurs
+          </span>
+          <h1 className="mt-6 text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.02] tracking-tight" style={{ color: TEXT }}>
+            Maîtrisez vos marges.
             <br />
-            <span style={{ color: ACCENT }}>Gagnez plus.</span>
+            <span style={{ color: ACCENT }}>Augmentez vos profits.</span>
           </h1>
           <p className="mt-6 text-xl leading-relaxed" style={{ color: TEXT_MUTED }}>
             L'IA au service de votre rentabilité.
@@ -278,7 +690,7 @@ function HeroSection() {
             <span className="text-xs flex items-center gap-3 font-medium" style={{ color: TEXT_MUTED }}>
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: ACCENT }} />
-                14 jours gratuits
+                7 jours gratuits
               </span>
               <span>·</span>
               <span>Sans carte bancaire</span>
@@ -287,7 +699,7 @@ function HeroSection() {
           <HeroKpis />
         </div>
         <div className="relative">
-          <DashboardMiniCard animated />
+          <RichDashboardMockup />
         </div>
       </div>
     </section>
@@ -298,96 +710,148 @@ function HeroSection() {
 // 02 — ROI CALCULATOR
 // ═══════════════════════════════════════════════════════════════════════════
 function RoiCalculatorSection() {
-  const ref = useReveal<HTMLDivElement>();
+  const titleRef = useReveal<HTMLDivElement>();
+  const cardsRef = useReveal<HTMLDivElement>();
   const [couverts, setCouverts] = useState(80);
   const [prix, setPrix] = useState(18);
   const [plats, setPlats] = useState(25);
-  const ca = couverts * prix * 30;
-  const economiesMois = Math.round(ca * 0.04);
-  const pulseRef = usePulseOnChange(economiesMois);
+  // Same model as the claude.design "RestauMargin Nouveau" ROI card —
+  // 4 % marge récupérée × 20 % de l'amélioration adressable.
+  const monthly = Math.round(couverts * prix * 30 * 0.04 * 0.20);
+  const annual = monthly * 12;
+  const retour = Math.max(1, Math.round(monthly / 49));
+  const pulseRef = usePulseOnChange(monthly);
+  const fmtEur = (n: number) => n.toLocaleString('fr-FR');
 
-  const fmtEur = (n: number) =>
-    new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n);
+  const monoStyle = { fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, monospace' } as React.CSSProperties;
+
+  // Slider rows extracted to drive a single map and shave repetition.
+  const rows = [
+    { label: 'Couverts par jour', value: couverts, set: setCouverts, min: 20, max: 300, suffix: '' },
+    { label: 'Ticket moyen', value: prix, set: setPrix, min: 8, max: 60, suffix: ' €' },
+    { label: 'Plats à la carte', value: plats, set: setPlats, min: 5, max: 80, suffix: '' },
+  ];
 
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
-      <div ref={ref} className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_1fr] gap-12 items-center">
-        <div>
-          <SectionNumber n="02" label="Calculateur ROI" />
-          <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
-            Combien pouvez-vous{' '}
-            <span style={{ color: ACCENT }}>économiser ?</span>
-          </h2>
-          <p className="mt-4 text-lg" style={{ color: TEXT_MUTED }}>
-            Estimez vos économies mensuelles en quelques clics.
-          </p>
-          <div className="mt-8 rounded-2xl p-5" style={{ background: 'white', border: `1px solid ${BORDER}` }}>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
-                <Calculator className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="text-sm font-bold" style={{ color: TEXT }}>
-                  Jusqu'à 500 € d'économies par mois
-                </div>
-                <div className="text-xs" style={{ color: TEXT_MUTED }}>
-                  Calcul en temps réel et 100 % personnalisé
-                </div>
-              </div>
-            </div>
+      <div className="max-w-7xl mx-auto">
+        <div ref={titleRef} className="grid lg:grid-cols-[1fr_1fr] gap-8 lg:gap-12 items-start mb-10 lg:mb-14">
+          <div>
+            <SectionNumber n="02" label="Calcul de marge" />
+            <h2 className="text-4xl sm:text-5xl font-extrabold leading-[1.05] tracking-tight" style={{ color: TEXT }}>
+              Votre cuisine,
+              <br />
+              <span style={{ color: ACCENT }}>en chiffres.</span>
+            </h2>
           </div>
+          <p className="text-base lg:text-lg lg:pt-16" style={{ color: TEXT_MUTED }}>
+            Quatre points de marge récupérés sur des milliers de couverts.
+            Bougez les curseurs : votre service vous parle.
+          </p>
         </div>
 
-        <div className="rounded-3xl p-8 bg-white shadow-xl" style={{ border: `1px solid ${BORDER}` }}>
-          <h3 className="text-base font-bold mb-6 flex items-center gap-2" style={{ color: TEXT }}>
-            <span className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
-              <Calculator className="w-3.5 h-3.5" />
-            </span>
-            Estimez vos économies
-          </h3>
-
-          {[
-            { label: 'Nombre de couverts par jour', value: couverts, set: setCouverts, min: 20, max: 300, suffix: '' },
-            { label: "Prix moyen d'un plat", value: prix, set: setPrix, min: 8, max: 45, suffix: ' €' },
-            { label: 'Nombre de plats à la carte', value: plats, set: setPlats, min: 5, max: 80, suffix: '' },
-          ].map((field) => (
-            <div key={field.label} className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-semibold" style={{ color: TEXT }}>{field.label}</label>
-                <span className="px-3 py-1 rounded-full text-sm font-bold tabular-nums" style={{ background: '#F5F5F5', color: TEXT }}>
-                  {field.value}{field.suffix}
-                </span>
+        <div ref={cardsRef} className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+          {/* ── Sliders card ──────────────────────────────────────── */}
+          <div className="rounded-3xl p-6 sm:p-8 bg-white shadow-xl" style={{ border: `1px solid ${BORDER}` }}>
+            {rows.map((field, i) => (
+              <div key={field.label} className={i < rows.length - 1 ? 'mb-7' : ''}>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-sm font-semibold" style={{ color: TEXT }}>
+                    {field.label}
+                  </label>
+                  <span
+                    className="px-3 py-1 rounded-full text-sm font-bold tabular-nums"
+                    style={{ ...monoStyle, background: ACCENT_BG, color: ACCENT_DARK }}
+                  >
+                    {field.value}{field.suffix}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={field.min}
+                  max={field.max}
+                  value={field.value}
+                  onChange={(e) => field.set(parseInt(e.target.value))}
+                  className="w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-full"
+                  style={{ accentColor: ACCENT, '--tw-ring-color': ACCENT } as React.CSSProperties}
+                  aria-label={field.label}
+                />
+                <div className="flex justify-between text-xs mt-2" style={{ color: TEXT_MUTED }}>
+                  <span>{field.min}{field.suffix}</span>
+                  <span>{field.max}{field.suffix}</span>
+                </div>
               </div>
-              <input
-                type="range"
-                min={field.min}
-                max={field.max}
-                value={field.value}
-                onChange={(e) => field.set(parseInt(e.target.value))}
-                className="w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-full"
-                style={{ accentColor: ACCENT, '--tw-ring-color': ACCENT } as React.CSSProperties}
-                aria-label={field.label}
-              />
-              <div className="flex justify-between text-xs mt-1" style={{ color: TEXT_MUTED }}>
-                <span>{field.min}{field.suffix}</span>
-                <span>{field.max}{field.suffix}</span>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
+          {/* ── Result card ───────────────────────────────────────── */}
           <div
             ref={pulseRef}
-            className="rounded-2xl p-5 mt-6 transition-shadow duration-300"
-            style={{
-              background: ACCENT_BG,
-              border: `1px solid ${ACCENT_LIGHT}`,
-              boxShadow: `0 0 0 3px ${ACCENT}22`,
-            }}
+            className="rounded-3xl p-6 sm:p-8 bg-white shadow-xl transition-shadow duration-300 flex flex-col"
+            style={{ border: `1px solid ${BORDER}` }}
           >
-            <div className="text-xs uppercase tracking-widest font-semibold" style={{ color: ACCENT_DARK }}>Économies / mois</div>
-            <div className="text-4xl font-extrabold mt-1 tabular-nums" style={{ color: TEXT }}>
-              {fmtEur(economiesMois)}
+            <div className="text-xs uppercase tracking-[0.18em] font-semibold" style={{ color: TEXT_MUTED }}>
+              Économies estimées
             </div>
+            <div className="mt-3 flex items-baseline gap-2">
+              <div
+                className="text-6xl sm:text-7xl font-extrabold tabular-nums leading-none"
+                style={{ ...monoStyle, color: TEXT }}
+              >
+                {fmtEur(monthly)}
+              </div>
+              <span className="text-2xl font-semibold" style={{ color: TEXT_MUTED }}>€</span>
+            </div>
+            <p className="mt-2 text-sm" style={{ color: TEXT_MUTED }}>
+              par mois — sur la base de +4 pts de marge
+            </p>
+
+            {/* Progress bar */}
+            <div className="mt-5 h-1.5 rounded-full overflow-hidden" style={{ background: '#F1F5F9' }}>
+              <div
+                className="h-full rounded-full transition-[width] duration-300"
+                style={{
+                  width: `${Math.min(100, monthly / 60)}%`,
+                  background: `linear-gradient(90deg, ${ACCENT}, ${ACCENT_DARK})`,
+                }}
+              />
+            </div>
+
+            {/* /AN · RETOUR · DÉLAI grid */}
+            <div className="mt-6 grid grid-cols-3 gap-3 sm:gap-4">
+              {[
+                { l: '/ AN', v: `${fmtEur(annual)} €`, accent: true },
+                { l: 'RETOUR', v: `×${retour}`, accent: false },
+                { l: 'DÉLAI', v: '30 j', accent: false },
+              ].map((s) => (
+                <div key={s.l}>
+                  <div
+                    className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.14em] mb-1"
+                    style={{ color: TEXT_MUTED }}
+                  >
+                    {s.l}
+                  </div>
+                  <div
+                    className="text-lg sm:text-xl font-extrabold tabular-nums"
+                    style={{ ...monoStyle, color: s.accent ? ACCENT_DARK : TEXT }}
+                  >
+                    {s.v}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Link
+              to="/login?mode=register"
+              className="mt-6 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              style={{
+                background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`,
+                boxShadow: `0 12px 30px ${ACCENT}40`,
+                '--tw-ring-color': ACCENT,
+              } as React.CSSProperties}
+            >
+              Lancer mon essai 7 jours <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </div>
@@ -526,61 +990,76 @@ function PricingSection() {
 // ═══════════════════════════════════════════════════════════════════════════
 function FeaturesSection() {
   const titleRef = useReveal<HTMLDivElement>();
-  const gridRef = useStagger<HTMLDivElement>(0.1);
+  const gridRef = useStagger<HTMLDivElement>(0.06);
+  // 8 features (port from claude.design "RestauMargin Nouveau" Features grid).
   const features = [
-    { icon: Send, title: 'Commandes fournisseurs en 1 clic' },
-    { icon: Sparkles, title: "L'IA qui parle cuisine" },
-    { icon: ClipboardList, title: 'Fiches techniques en quelques clics' },
-    { icon: Truck, title: 'Suivi des prix fournisseurs' },
-    { icon: Scale, title: 'Pesage live en cuisine' },
-    { icon: Thermometer, title: 'HACCP digital, sans papier' },
+    { icon: Send, title: 'Commandes fournisseurs en 1 clic', body: 'Email ou WhatsApp envoyés directement depuis la mercuriale, avec votre BL pré-rempli.' },
+    { icon: Sparkles, title: "L'IA qui parle cuisine", body: "Dictez la recette, l'IA structure ingrédients, allergènes et coût. Pas de jargon SaaS." },
+    { icon: ClipboardList, title: 'Fiches techniques en 10 s', body: 'Food cost, marge, coefficient, allergènes — calculés en temps réel, prêts pour l\'inspection.' },
+    { icon: Truck, title: 'Mercuriale & alertes prix', body: 'Suivi automatique des prix par fournisseur. Alerte dès que le beurre dérive.' },
+    { icon: Scale, title: 'Pesage Bluetooth', body: 'Balance connectée à la fiche, en plein service. Plus de Post-it sur le plan de travail.' },
+    { icon: Thermometer, title: 'HACCP digital', body: 'Températures, nettoyage, traçabilité — un tap. Inspection : un PDF. Fini le classeur.' },
+    { icon: Camera, title: 'OCR factures', body: 'Photo de la facture, prix injectés dans la mercuriale en 4 secondes. Aucune saisie.' },
+    { icon: TrendingUp, title: 'Menu Engineering', body: 'Stars, puzzles, plowhorses, dogs. Sait quel plat sortir de la carte avant qu\'il vous coûte cher.' },
   ];
+
+  const monoStyle = { fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, monospace' } as React.CSSProperties;
 
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-start">
+        <div className="grid lg:grid-cols-[1fr_1fr] gap-8 lg:gap-12 items-start mb-10 lg:mb-14">
           <div ref={titleRef}>
             <SectionNumber n="04" label="Fonctionnalités" />
-            <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
-              Tout ce dont
+            <h2 className="text-4xl sm:text-5xl font-extrabold leading-[1.05] tracking-tight" style={{ color: TEXT }}>
+              Tout ce qu'il faut
               <br />
-              vous <span style={{ color: ACCENT }}>avez besoin</span>
+              pour piloter une
+              <br />
+              <span style={{ color: ACCENT }}>cuisine rentable.</span>
             </h2>
-            <p className="mt-4 text-base" style={{ color: TEXT_MUTED }}>
-              Six outils puissants pour reprendre le contrôle de vos marges.
-            </p>
           </div>
-          <div ref={gridRef} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {features.map((f) => {
-              const Icon = f.icon;
-              return (
-                <div
-                  key={f.title}
-                  className="rounded-2xl p-5 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-md group"
-                  style={{ border: `1px solid ${BORDER}` }}
-                  onMouseEnter={(e) => {
-                    const el = e.currentTarget;
-                    el.style.borderColor = ACCENT;
-                    el.style.background = ACCENT_BG;
-                  }}
-                  onMouseLeave={(e) => {
-                    const el = e.currentTarget;
-                    el.style.borderColor = BORDER;
-                    el.style.background = 'white';
-                  }}
-                >
-                  <div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center mb-3 transition-transform duration-200 group-hover:scale-110"
-                    style={{ background: ACCENT_BG, color: ACCENT_DARK }}
-                  >
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <h3 className="text-sm font-bold" style={{ color: TEXT }}>{f.title}</h3>
+          <p className="text-base lg:text-lg lg:pt-24" style={{ color: TEXT_MUTED }}>
+            Huit modules qui se parlent — pas une suite d'outils dispersés.
+            Construits avec des chefs, sur le pass, à 23 h.
+          </p>
+        </div>
+        <div ref={gridRef} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+          {features.map((f, i) => {
+            const Icon = f.icon;
+            const num = String(i + 1).padStart(2, '0');
+            return (
+              <article
+                key={f.title}
+                className="rounded-2xl p-5 lg:p-6 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-md group flex flex-col"
+                style={{ border: `1px solid ${BORDER}` }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget;
+                  el.style.borderColor = ACCENT;
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget;
+                  el.style.borderColor = BORDER;
+                }}
+              >
+                <div className="text-xs font-semibold mb-3" style={{ ...monoStyle, color: TEXT_MUTED }}>
+                  {num}
                 </div>
-              );
-            })}
-          </div>
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 transition-transform duration-200 group-hover:scale-110"
+                  style={{ background: ACCENT_BG, color: ACCENT_DARK }}
+                >
+                  <Icon className="w-5 h-5" />
+                </div>
+                <h3 className="text-sm sm:text-base font-bold mb-2" style={{ color: TEXT }}>
+                  {f.title}
+                </h3>
+                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: TEXT_MUTED }}>
+                  {f.body}
+                </p>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -1136,7 +1615,7 @@ function TrustBadgesSection() {
     { icon: MapPin, title: 'Made in France', sub: 'Hébergé en Europe' },
     { icon: Headphones, title: 'Support 7j/7', sub: 'Réponse sous 24h' },
     { icon: FileCheck, title: 'RGPD Conforme', sub: 'Vos données vous appartiennent' },
-    { icon: CreditCard, title: 'Essai sans CB', sub: '14 jours gratuits' },
+    { icon: CreditCard, title: 'Essai sans CB', sub: '7 jours gratuits' },
   ];
 
   return (
@@ -1193,7 +1672,7 @@ function FinalCtaSection() {
             <br />
             vos marges ?
           </h2>
-          <p className="mt-4 text-lg" style={{ color: TEXT_MUTED }}>Essayez gratuitement pendant 14 jours.</p>
+          <p className="mt-4 text-lg" style={{ color: TEXT_MUTED }}>Essayez gratuitement pendant 7 jours.</p>
           <Link
             to="/login?mode=register"
             className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-white font-bold text-base shadow-lg mt-8 transition-all hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
@@ -1250,6 +1729,206 @@ function FinalCtaSection() {
             </div>
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NEWSLETTER — light theme variant
+// ═══════════════════════════════════════════════════════════════════════════
+function NewsletterSection() {
+  const ref = useReveal<HTMLDivElement>();
+  const [email, setEmail] = useState('');
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email) return;
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) throw new Error("Echec de l'inscription. Reessayez.");
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur inconnue');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <section className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8 bg-white">
+      <div ref={ref} className="max-w-xl mx-auto text-center">
+        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ color: TEXT }}>
+          Restez informé
+        </h2>
+        <p className="mt-3 text-base" style={{ color: TEXT_MUTED }}>
+          Recevez nos conseils marge, actualités fournisseurs et mises à jour produit.
+        </p>
+
+        {sent ? (
+          <div className="mt-8 rounded-2xl p-8" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
+            <Check className="w-10 h-10 mx-auto mb-3" style={{ color: ACCENT_DARK }} strokeWidth={3} />
+            <p className="text-lg font-semibold" style={{ color: TEXT }}>Merci !</p>
+            <p className="text-sm mt-1" style={{ color: TEXT_MUTED }}>Vous recevrez nos actualités restaurant.</p>
+          </div>
+        ) : (
+          <form onSubmit={onSubmit} className="mt-8">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="votre@email.com"
+                className="flex-1 min-w-0 px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-offset-2"
+                style={{ background: 'white', border: `1px solid ${BORDER}`, color: TEXT, '--tw-ring-color': ACCENT } as React.CSSProperties}
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-6 py-3 rounded-xl text-white font-semibold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap"
+                style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, boxShadow: `0 8px 20px ${ACCENT}40` }}
+              >
+                {loading ? '...' : "S'inscrire"}
+              </button>
+            </div>
+            {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+            <p className="text-xs mt-3" style={{ color: TEXT_MUTED }}>Pas de spam. Désinscription en un clic.</p>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONTACT — "Parlons de votre projet" form, light variant
+// ═══════════════════════════════════════════════════════════════════════════
+function ContactSection() {
+  const ref = useReveal<HTMLDivElement>();
+  const [form, setForm] = useState({ nom: '', email: '', telephone: '', message: '' });
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Echec de l'envoi. Réessayez.");
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur inconnue');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const fieldClass = 'w-full px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-offset-1';
+  const fieldStyle = {
+    background: 'white',
+    border: `1px solid ${BORDER}`,
+    color: TEXT,
+    '--tw-ring-color': ACCENT,
+  } as React.CSSProperties;
+
+  return (
+    <section id="contact" className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
+      <div ref={ref} className="max-w-xl mx-auto">
+        <div className="text-center mb-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: TEXT_MUTED }}>Contact</p>
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight" style={{ color: TEXT }}>
+            Parlons de votre projet
+          </h2>
+          <p className="mt-3" style={{ color: TEXT_MUTED }}>Notre équipe vous recontacte sous 24 h.</p>
+        </div>
+
+        {sent ? (
+          <div className="rounded-2xl p-8 text-center" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
+            <Check className="w-12 h-12 mx-auto mb-4" style={{ color: ACCENT_DARK }} strokeWidth={3} />
+            <p className="text-lg font-semibold" style={{ color: TEXT }}>Demande envoyée !</p>
+            <p className="text-sm mt-1" style={{ color: TEXT_MUTED }}>Nous vous recontactons très vite.</p>
+          </div>
+        ) : (
+          <form onSubmit={onSubmit} className="rounded-2xl p-6 sm:p-8 space-y-5 bg-white" style={{ border: `1px solid ${BORDER}` }}>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1.5" style={{ color: TEXT }}>Nom</label>
+                <input
+                  type="text"
+                  required
+                  value={form.nom}
+                  onChange={(e) => setForm({ ...form, nom: e.target.value })}
+                  className={fieldClass}
+                  style={fieldStyle}
+                  placeholder="Votre nom"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1.5" style={{ color: TEXT }}>Email</label>
+                <input
+                  type="email"
+                  required
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className={fieldClass}
+                  style={fieldStyle}
+                  placeholder="votre@email.com"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: TEXT }}>Téléphone</label>
+              <input
+                type="tel"
+                value={form.telephone}
+                onChange={(e) => setForm({ ...form, telephone: e.target.value })}
+                className={fieldClass}
+                style={fieldStyle}
+                placeholder="06 12 34 56 78"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: TEXT }}>Message</label>
+              <textarea
+                rows={4}
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })}
+                className={`${fieldClass} resize-none`}
+                style={fieldStyle}
+                placeholder="Décrivez votre besoin..."
+              />
+            </div>
+            {error && (
+              <div className="rounded-lg p-3 text-sm" style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#991B1B' }}>
+                {error}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-bold text-base transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, boxShadow: `0 12px 30px ${ACCENT}40` }}
+            >
+              {loading ? 'Envoi en cours...' : <>Envoyer <Send className="w-4 h-4" /></>}
+            </button>
+          </form>
+        )}
       </div>
     </section>
   );
@@ -1353,7 +2032,7 @@ function Navbar() {
             className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-white font-semibold text-sm shadow-md transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, '--tw-ring-color': ACCENT } as React.CSSProperties}
           >
-            Essai 14 jours <ArrowRight className="w-3.5 h-3.5" />
+            Essai 7 jours <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
         <button type="button" onClick={() => setOpen((o) => !o)} className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2" style={{ '--tw-ring-color': ACCENT } as React.CSSProperties} aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}>
@@ -1369,7 +2048,7 @@ function Navbar() {
           <hr className="border-[#E5E7EB]" />
           <Link to="/login" className="block py-2" onClick={() => setOpen(false)}>Se connecter</Link>
           <Link to="/login?mode=register" className="block text-center px-5 py-3 rounded-xl text-white font-semibold shadow-md" style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})` }} onClick={() => setOpen(false)}>
-            Essai 14 jours
+            Essai 7 jours
           </Link>
         </div>
       )}
@@ -1409,7 +2088,7 @@ function StickyCtaBar() {
           animation: show ? 'ctaGlow 2.5s ease-in-out infinite' : 'none',
         } as React.CSSProperties}
       >
-        Essai gratuit 14 jours <ArrowRight className="w-4 h-4" />
+        Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
       </Link>
     </div>
   );
@@ -1500,6 +2179,14 @@ const LANDING_STYLES = `
     50%       { opacity: 0.75; }
   }
   .animate-pulse-badge { animation: badgePulse 2s ease-in-out infinite; }
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+  }
+  @keyframes waveBar {
+    0%   { transform: scaleY(0.4); }
+    100% { transform: scaleY(1); }
+  }
   @media (prefers-reduced-motion: reduce) {
     .animate-pulse-badge,
     [style*="ctaGlow"],
@@ -1548,7 +2235,7 @@ export default function Landing() {
       <style dangerouslySetInnerHTML={{ __html: LANDING_STYLES }} />
       <SEOHead
         title="RestauMargin — Logiciel de marge restaurant | L'IA au service de votre rentabilité"
-        description="Gérez mieux. Gagnez plus. RestauMargin : fiches techniques, food cost et commandes fournisseurs automatisés par l'IA. Essai gratuit 14 jours sans CB."
+        description="Gérez mieux. Gagnez plus. RestauMargin : fiches techniques, food cost et commandes fournisseurs automatisés par l'IA. Essai gratuit 7 jours sans CB."
         path="/"
       />
       <StructuredData />
@@ -1581,6 +2268,8 @@ export default function Landing() {
             <TutorialsSection />
             <TrustBadgesSection />
             <FinalCtaSection />
+            <NewsletterSection />
+            <ContactSection />
           </main>
           <Footer />
         </div>

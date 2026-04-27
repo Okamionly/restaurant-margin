@@ -634,3 +634,32 @@ model Client {
   @@index([restaurantId])
   @@map("clients")
 }
+
+model AuditLog {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  restaurantId Int
+  action       String
+  entityType   String
+  entityId     Int
+  changes      Json?
+  createdAt    DateTime @default(now())
+
+  @@index([restaurantId, createdAt])
+  @@index([userId, createdAt])
+  @@index([entityType, entityId])
+  @@map("audit_logs")
+}
+
+model CustomerFeedback {
+  id           Int      @id @default(autoincrement())
+  restaurantId Int
+  rating       Int
+  comment      String?
+  source       String?  @default("app")
+  createdAt    DateTime @default(now())
+
+  @@index([restaurantId, createdAt])
+  @@index([restaurantId, rating])
+  @@map("customer_feedback")
+}

@@ -1,6 +1,10 @@
+import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import { ChefHat, Calculator, ArrowRight, Clock, BookOpen } from 'lucide-react';
+import { ChefHat, Calculator, ArrowRight, Clock, BookOpen, Sparkles } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+
+// PaperFold WebGL2 shader = lazy-loaded for perf (preserves LCP).
+const PaperFoldBackground = lazy(() => import('../components/landing/PaperFoldBackground'));
 
 /* ═══════════════════════════════════════════════════════════════
    Blog Index — Liste des articles
@@ -306,22 +310,41 @@ export default function BlogIndex() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="pt-16 pb-12 px-4 sm:px-6 max-w-5xl mx-auto">
-        <div className="flex items-center gap-2 mb-4">
-          <BookOpen className="w-5 h-5 text-teal-600" />
-          <span className="text-sm font-semibold text-teal-600 uppercase tracking-wider">Blog</span>
-        </div>
-        <h1
-          className="text-4xl sm:text-5xl md:text-6xl font-black text-[#111111] mb-6 leading-tight"
+      {/* Hero with PaperFold animated shader background */}
+      <section className="relative pt-20 pb-20 sm:pb-28 px-4 sm:px-6 overflow-hidden isolate">
+        <Suspense fallback={<div className="absolute inset-0 z-0 bg-[#FAFAF7]" />}>
+          <PaperFoldBackground intensity={0.7} className="z-0" />
+        </Suspense>
 
-        >
-          Guides et conseils pour restaurateurs
-        </h1>
-        <p className="text-lg text-[#525252] max-w-2xl leading-relaxed">
-          Articles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost,
-          et gerer votre restaurant au quotidien.
-        </p>
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <div className="flex items-center gap-2 mb-4">
+            <BookOpen className="w-5 h-5 text-teal-600" />
+            <span className="text-sm font-semibold text-teal-600 uppercase tracking-wider">Blog RestauMargin</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-[#111111] mb-6 leading-tight tracking-tight">
+            Guides et conseils pour <span className="text-teal-600">restaurateurs</span>
+          </h1>
+          <p className="text-lg sm:text-xl text-[#525252] max-w-2xl leading-relaxed mb-8">
+            {posts.length} articles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost,
+            et gerer votre restaurant au quotidien.
+          </p>
+
+          {/* Stats badges */}
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+              <BookOpen className="w-4 h-4 text-teal-600" />
+              <strong className="text-[#111111]">{posts.length} articles</strong>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+              <Clock className="w-4 h-4 text-teal-600" />
+              Lecture moyenne <strong className="text-[#111111]">12 min</strong>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+              <Sparkles className="w-4 h-4 text-teal-600" />
+              Mis a jour <strong className="text-[#111111]">avril 2026</strong>
+            </span>
+          </div>
+        </div>
       </section>
 
       {/* Articles grid */}

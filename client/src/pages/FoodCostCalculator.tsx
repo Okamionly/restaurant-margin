@@ -314,7 +314,7 @@ export default function FoodCostCalculator() {
             Resultats
           </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6 items-start">
+          <div className={`grid grid-cols-1 ${prixVente > 0 ? 'lg:grid-cols-[240px_1fr]' : ''} gap-6 items-start`}>
 
             {/* ── 2. VISUAL GAUGE — Circular conic-gradient ── */}
             {prixVente > 0 && (

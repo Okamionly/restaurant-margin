@@ -1,8 +1,37 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, Eye, Users, Brain, TrendingUp, AlertTriangle, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogPrixCarte() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Faut-il afficher les prix avec ou sans le symbole € ?",
+      answer: "Sans le symbole, idéalement. Études comportementales (Cornell) : panier moyen +8 %. Si vous voulez un compromis : symbole € très discret, même typo, taille réduite."
+    },
+    {
+      question: "Quel coefficient pour un food truck ou snacking ?",
+      answer: "Plus bas qu'un restaurant traditionnel (2,8 à 3,2) car le client compare au prix d'un kebab ou d'une salade Picard. Mais vos charges fixes sont aussi plus basses, donc la marge tient."
+    },
+    {
+      question: "Mon coefficient idéal donne un prix bizarre (24,30 €). Que faire ?",
+      answer: "Arrondissez au prix psychologique le plus proche : 24 € (premium), 23,90 € (bon plan) ou 24,50 € (intermédiaire). Ne laissez jamais des prix biscornus type 24,30 €."
+    },
+    {
+      question: "Combien de fois par an dois-je revoir mes prix ?",
+      answer: "Tous les 6 mois pour le contrôle, et au minimum à chaque rotation de carte (printemps-été, automne-hiver). Une révision annuelle est insuffisante en période d'inflation."
+    },
+    {
+      question: "Mes concurrents sont 20 % moins chers, je dois m'aligner ?",
+      answer: "Pas automatiquement. Vérifiez d'abord : ont-ils la même qualité ? Mêmes origines ? Même service ? Si oui, regardez votre food cost. Si non, assumez votre positionnement supérieur."
+    }
+  ]);
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Fixer les prix de sa carte de restaurant", url: "https://www.restaumargin.fr/blog/fixer-prix-carte-restaurant" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +39,7 @@ export default function BlogPrixCarte() {
         description="3 méthodes pour fixer vos prix : par le coût, par la valeur, par la concurrence. Coefficients multiplicateurs par poste et psychologie des prix."
         path="/blog/fixer-prix-carte-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

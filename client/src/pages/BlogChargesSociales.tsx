@@ -1,8 +1,37 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Scale, Calculator, Users, AlertTriangle, FileText, TrendingUp, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogChargesSociales() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Le repas du salarié est-il obligatoire en restauration ?",
+      answer: "Oui en CCN HCR. L'employeur doit fournir le repas ou verser une indemnité compensatrice. La valeur 2026 est de 4,22 € par repas, à intégrer dans l'avantage en nature."
+    },
+    {
+      question: "La mutuelle HCR est-elle obligatoire ?",
+      answer: "Oui, depuis 2016. L'employeur doit prendre en charge au moins 50 % de la cotisation. La mutuelle HCR (HCR Prévoyance) est l'organisme par défaut, mais l'employeur peut choisir un autre organisme avec garanties au moins équivalentes."
+    },
+    {
+      question: "Combien coûte un apprenti par mois en restauration ?",
+      answer: "Apprenti 18-20 ans, 1ère année : salaire ~795 €/mois (43 % SMIC) + charges quasi nulles = coût employeur ~830 €/mois. À comparer à un CDI à 2 540 €. Plus aide à l'apprentissage de 6 000 € la première année."
+    },
+    {
+      question: "La réduction Fillon est-elle automatique ?",
+      answer: "Elle est automatique via la DSN si votre logiciel de paie est paramétré. Vérifiez chaque mois sur le bulletin URSSAF qu'elle est bien appliquée — ce n'est pas toujours le cas en cas de changement d'effectif ou de statut."
+    },
+    {
+      question: "Que se passe-t-il en cas de contrôle URSSAF ?",
+      answer: "Le contrôleur peut remonter sur 3 ans (5 ans si travail dissimulé). Redressements moyens en restauration : 15 000 à 80 000 €. Préparez : DPAE, contrats, fiches de paie, plannings, livre de caisse, déclarations TVA."
+    }
+  ]);
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Charges sociales en restauration", url: "https://www.restaumargin.fr/blog/charges-sociales-restauration" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +39,7 @@ export default function BlogChargesSociales() {
         description="Maîtrisez vos cotisations sociales en restauration : taux 2026 CCN HCR, réduction Fillon, comparatif CDI/CDD/extras/apprentis."
         path="/blog/charges-sociales-restauration"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

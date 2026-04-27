@@ -1,8 +1,37 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, TrendingUp, BarChart3, Target, AlertTriangle, LineChart, Zap, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogPrimeCost() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Différence entre prime cost et marge brute ?",
+      answer: "La marge brute ne tient compte que du food cost. Le prime cost ajoute la masse salariale. Marge brute = (CA - food cost) / CA. Prime cost = (food cost + labour cost) / CA. Le prime cost est plus complet et plus prédictif de la rentabilité."
+    },
+    {
+      question: "Peut-on calculer le prime cost d'un seul plat ?",
+      answer: "Non, en pratique. Le labour cost est rarement attribuable à un plat précis. On calcule le prime cost à l'échelle du restaurant ou d'un service. Pour un plat, on utilise la marge brute."
+    },
+    {
+      question: "Le prime cost inclut-il les pourboires ?",
+      answer: "Si les pourboires sont déclarés et reversés via la fiche de paie, ils alourdissent le labour cost. S'ils sont remis en main propre, ils n'apparaissent pas dans la comptabilité et n'impactent pas le prime cost."
+    },
+    {
+      question: "Mon restaurant est saisonnier, quel prime cost viser ?",
+      answer: "Raisonnez en annuel et non mensuel. En basse saison, le ratio peut grimper à 80% sans drame, à condition que la haute saison descende à 50-55%. La moyenne annuelle reste l'indicateur clé."
+    },
+    {
+      question: "Faut-il intégrer le salaire du dirigeant ?",
+      answer: "Si le dirigeant se rémunère en salaire (gérant majoritaire EURL ou SASU), oui. S'il se rémunère en dividendes ou TNS forfait, non — mais ajoutez une rémunération de gérant théorique pour comparer avec d'autres restaurants."
+    }
+  ]);
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Prime cost en restauration", url: "https://www.restaumargin.fr/blog/prime-cost-restaurant" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +39,7 @@ export default function BlogPrimeCost() {
         description="Comprenez et maîtrisez le prime cost de votre restaurant. Formule, benchmarks sectoriels et plan d'action pour passer sous les 65%."
         path="/blog/prime-cost-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

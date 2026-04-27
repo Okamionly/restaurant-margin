@@ -1,8 +1,36 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, TrendingDown, BarChart3, AlertTriangle, Target, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogSeuilRentabilite() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Quelle est la différence entre seuil de rentabilité et point mort ?",
+      answer: "Ces deux termes désignent la même réalité : le niveau de CA à partir duquel vous ne perdez plus d'argent. \"Seuil de rentabilité\" est la terminologie comptable, \"point mort\" est l'expression courante. Dans certains pays francophones, le point mort désigne la date à partir de laquelle l'entreprise devient rentable."
+    },
+    {
+      question: "Quel est le seuil de rentabilité moyen d'un restaurant en France ?",
+      answer: "Selon les études sectorielles 2024-2025, les restaurants français atteignent leur point mort en moyenne vers le 7ème ou 8ème mois de l'année. Les plus rentables le franchissent dès le 5ème mois, les plus fragiles ne l'atteignent jamais."
+    },
+    {
+      question: "Mon food cost est à 35 %, est-ce trop élevé ?",
+      answer: "35 % est dans la fourchette haute mais acceptable pour un gastronomique. Pour un fast casual ou pizzeria, c'est trop élevé — visez 25-30 %. La règle : food cost + masse salariale ne doivent pas dépasser 65-70 % du CA."
+    },
+    {
+      question: "Comment le seuil change-t-il avec la livraison ?",
+      answer: "La livraison crée un deuxième seuil de rentabilité avec son propre taux de charges variables. Les commissions plateforme (25-30 %) s'ajoutent aux coûts matières. Calculez le seuil de votre activité livraison séparément."
+    },
+    {
+      question: "Puis-je calculer mon seuil sans comptable ?",
+      answer: "Oui. La formule ne nécessite pas de formation comptable — il faut classer correctement vos charges en fixes et variables. Un outil comme RestauMargin fait ce calcul automatiquement à partir de vos données réelles."
+    }
+  ]);
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: 'Accueil', url: 'https://www.restaumargin.fr' },
+    { name: 'Blog', url: 'https://www.restaumargin.fr/blog' },
+    { name: 'Seuil de rentabilité', url: 'https://www.restaumargin.fr/blog/seuil-rentabilite-restaurant' },
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +38,7 @@ export default function BlogSeuilRentabilite() {
         description="Guide complet pour calculer le seuil de rentabilité de votre restaurant : formules, exemples chiffrés et stratégies pour atteindre la rentabilité plus vite."
         path="/blog/seuil-rentabilite-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

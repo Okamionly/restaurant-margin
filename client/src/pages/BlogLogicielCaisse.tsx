@@ -1,8 +1,36 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Cpu, ShieldCheck, Layers, Zap, BarChart3, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogLogicielCaisse() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Faut-il acheter ou louer son matériel de caisse ?",
+      answer: "La location-financement (LOA) est dominante : 50 à 100 €/mois pour un kit complet (terminal + tiroir + imprimante + douchette). Achat direct possible chez SumUp/Zettle (250-450 €)."
+    },
+    {
+      question: "Une caisse iPad est-elle aussi fiable qu'un terminal dédié ?",
+      answer: "Oui, en 2026. La majorité des leaders (Zelty, L'Addition, Lightspeed) tournent sur iPad ou Android avec une fiabilité équivalente, à condition d'avoir une connexion internet stable et une box de secours 4G."
+    },
+    {
+      question: "Combien de temps pour migrer d'une caisse à une autre ?",
+      answer: "Comptez 2 à 4 semaines : import du catalogue, formation des équipes, période de test parallèle, bascule définitive. La première semaine de fermeture estivale est un classique."
+    },
+    {
+      question: "Mon expert-comptable peut-il imposer un logiciel précis ?",
+      answer: "Non, mais il peut facturer plus cher si votre caisse n'exporte pas un FEC propre. Vérifiez la compatibilité avant de signer."
+    },
+    {
+      question: "Quelle caisse pour un restaurant qui ouvre en 2026 ?",
+      answer: "Pour un restaurant indépendant traditionnel ou bistronomie : Zelty offre le meilleur compromis prix/fonctionnalités/écosystème français. Pour un food truck ou snack : SumUp POS. Pour une chaîne : Innovorder ou Lightspeed."
+    }
+  ]);
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: 'Accueil', url: 'https://www.restaumargin.fr' },
+    { name: 'Blog', url: 'https://www.restaumargin.fr/blog' },
+    { name: 'Logiciel de caisse', url: 'https://www.restaumargin.fr/blog/logiciel-caisse-enregistreuse-restaurant' },
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +38,7 @@ export default function BlogLogicielCaisse() {
         description="Comparatif des meilleurs logiciels de caisse enregistreuse pour restaurant en 2026. Prix, fonctionnalités, avantages et inconvénients."
         path="/blog/logiciel-caisse-enregistreuse-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

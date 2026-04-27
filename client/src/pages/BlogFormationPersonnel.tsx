@@ -1,8 +1,32 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Users, GraduationCap, Euro, Calendar, ClipboardCheck, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogFormationPersonnel() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Faut-il payer une formation pendant les heures de travail ?",
+      answer: "Si la formation est dans le plan de développement des compétences de l'employeur, oui : c'est du temps de travail rémunéré. Si c'est sur CPF en dehors des heures, non, mais l'employeur peut décider de financer sur le temps de travail."
+    },
+    {
+      question: "Mon employé refuse une formation, puis-je l'imposer ?",
+      answer: "Oui pour les formations obligatoires (HACCP, sécurité, adaptation au poste). Non pour celles de développement personnel hors temps de travail. Si refus de formation obligatoire, c'est un motif disciplinaire."
+    },
+    {
+      question: "L'OPCO finance-t-il à 100 % en 2026 ?",
+      answer: "Pour les TPE/PME (< 50 salariés) HCR : oui, dans la limite de 25 €/heure et selon les enveloppes annuelles. Faire la demande dès janvier car les enveloppes s'épuisent."
+    },
+    {
+      question: "Combien de jours de formation par an et par salarié ?",
+      answer: "Pas d'obligation chiffrée mais bon ratio : 3 à 5 jours par an et par salarié, soit 21 à 35 heures."
+    }
+  ]);
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Formation personnel restauration", url: "https://www.restaumargin.fr/blog/formation-personnel-restauration" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +34,7 @@ export default function BlogFormationPersonnel() {
         description="Financez la formation de vos équipes grâce à l'OPCO et au CPF. Formations prioritaires en 2026 et ROI concret de la montée en compétences."
         path="/blog/formation-personnel-restauration"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

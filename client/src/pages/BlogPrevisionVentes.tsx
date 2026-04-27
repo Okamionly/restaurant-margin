@@ -1,8 +1,32 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, TrendingUp, CloudRain, Calendar, BarChart3, Target, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogPrevisionVentes() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Combien d'historique faut-il pour des prévisions fiables ?",
+      answer: "3 mois pour démarrer (moyennes mobiles), 12 mois pour intégrer la saisonnalité, 24 mois pour calibrer un modèle de régression précis."
+    },
+    {
+      question: "Quelle météo consulter ?",
+      answer: "Météo France, à 4-5 jours d'horizon. Au-delà, la précision baisse fortement. Privilégiez les API gratuites (Open-Meteo) pour automatiser."
+    },
+    {
+      question: "Faut-il prévoir par plat ou par couvert ?",
+      answer: "Les deux. Au niveau global : couverts. Au niveau commande matières : par plat, en utilisant le mix-vente moyen des 4 dernières semaines équivalentes."
+    },
+    {
+      question: "Mon restaurant ouvre depuis 1 mois, comment prévoir ?",
+      answer: "Utilisez les ratios sectoriels (ticket moyen, taux remplissage) de votre format. Au bout de 4 semaines, basculez en moyennes mobiles. Au bout de 12 semaines, vous aurez vos propres patterns."
+    }
+  ]);
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Prévision des ventes restaurant", url: "https://www.restaumargin.fr/blog/prevision-ventes-restaurant" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +34,7 @@ export default function BlogPrevisionVentes() {
         description="3 méthodes pour prévoir vos ventes : historique N-1, moyennes mobiles, facteurs externes. Commander juste et staffer juste."
         path="/blog/prevision-ventes-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

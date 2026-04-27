@@ -1,8 +1,37 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, TrendingUp, BarChart3, Sun, Users, Clock, Smartphone, Calendar, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogTauxOccupation() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Différence entre taux d'occupation et taux de remplissage ?",
+      answer: "Stricto sensu, taux de remplissage se rapporte à un service donné, taux d'occupation à une période plus longue. Dans la pratique, ils désignent la même mesure."
+    },
+    {
+      question: "Comment calculer pour un restaurant à plusieurs salles ?",
+      answer: "Calculez la capacité totale (somme des places) puis appliquez la formule globale. Pour un pilotage fin, suivez aussi le taux par salle (la principale est souvent à 80% pendant que la mezzanine est à 30%)."
+    },
+    {
+      question: "Mon restaurant a un fort take-away, comment l'intégrer ?",
+      answer: "Le take-away n'utilise pas de places assises et ne doit pas être intégré au calcul du taux d'occupation. Suivi distinct (CA take-away, panier moyen, commandes), mais il influe sur la rentabilité globale."
+    },
+    {
+      question: "Quel taux viser le premier mois d'ouverture ?",
+      answer: "35-50% le premier mois est un bon résultat. La montée en charge prend 3 à 6 mois pour un concept nouveau. Chercher 80% dès le mois 1 ne se voit que sur les buzz médiatiques exceptionnels."
+    },
+    {
+      question: "Faut-il prendre en compte les annulations dans le taux ?",
+      answer: "Non. Le taux se calcule sur les couverts effectivement servis, pas sur les réservations. Mais suivez séparément le taux de no-show pour optimiser la politique de réservation."
+    }
+  ]);
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Taux d'occupation restaurant", url: "https://www.restaumargin.fr/blog/taux-occupation-restaurant" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +39,7 @@ export default function BlogTauxOccupation() {
         description="Calculez votre taux d'occupation et RevPASH. Stratégies concrètes pour remplir votre salle et maximiser votre chiffre d'affaires."
         path="/blog/taux-occupation-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

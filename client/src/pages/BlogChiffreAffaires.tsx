@@ -1,8 +1,32 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, PieChart, TrendingUp, BarChart3, Target, Zap, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogChiffreAffaires() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "HT ou TTC pour piloter ?",
+      answer: "Toujours en HT pour les marges, food cost, ratios. Le TTC est utile uniquement pour la trésorerie immédiate (encaissement) et la facturation client."
+    },
+    {
+      question: "À partir de quel CA un restaurant est rentable ?",
+      answer: "Pas de seuil universel. Le seuil de rentabilité dépend des charges fixes. Pour un restaurant urbain moyen avec 18 000 € de charges fixes/mois, il faut environ 60 000 €/mois de CA HT pour atteindre l'équilibre."
+    },
+    {
+      question: "Comment comparer mon CA aux concurrents ?",
+      answer: "Indicateurs publics utiles : Insee panorama de la restauration, GIRA Conseil, observatoire UMIH. Ratios robustes : CA/m² (3 000 à 8 000 €/m²/an), CA/employé (60 000 à 120 000 €/an)."
+    },
+    {
+      question: "CA en croissance mais EBE qui baisse, pourquoi ?",
+      answer: "Trois causes possibles : (1) inflation matières non répercutée sur les prix, (2) salaires qui dérapent (extras, heures sup), (3) charges fixes en hausse (loyer indexé, énergie). Audit poste par poste obligatoire."
+    }
+  ]);
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Chiffre d'affaires restaurant", url: "https://www.restaumargin.fr/blog/chiffre-affaires-restaurant-comment-calculer" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +34,7 @@ export default function BlogChiffreAffaires() {
         description="Calculez votre CA par service, analysez les créneaux faibles et appliquez les 5 leviers pour augmenter votre chiffre d'affaires de restaurant."
         path="/blog/chiffre-affaires-restaurant-comment-calculer"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

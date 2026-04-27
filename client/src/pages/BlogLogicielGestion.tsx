@@ -1,8 +1,37 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Layers, Server, Package, ShieldCheck, TrendingUp, AlertTriangle, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogLogicielGestion() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Puis-je tout faire avec Excel ?",
+      answer: "Théoriquement oui, en pratique non. Excel ne gère pas la NF525, ne déduit pas le stock automatiquement, ne fait pas la DSN. Vous pouvez piloter une partie de la marge sur Excel — mais vous y passez 3x plus de temps qu'avec un outil dédié."
+    },
+    {
+      question: "Quelle est la durée d'engagement habituelle ?",
+      answer: "La plupart des SaaS (Lightspeed, Skello, Pennylane, RestauMargin) sont sans engagement ou en mensuel. Évitez les contrats > 12 mois sauf forte remise (50 %+) car le marché évolue vite."
+    },
+    {
+      question: "Les solutions cloud sont-elles fiables en cas de coupure internet ?",
+      answer: "Les bonnes solutions ont un mode offline (cache local) qui permet de continuer la prise de commande et l'encaissement même sans internet. Vérifiez ce point avant de signer — c'est critique en zone rurale."
+    },
+    {
+      question: "Combien de temps pour amortir un logiciel à 200 €/mois ?",
+      answer: "Si l'outil vous fait gagner 1 point de food cost sur 600 000 € CA, c'est 6 000 €/an = remboursé en 12 jours. Le ROI est presque toujours positif si l'outil est bien utilisé."
+    },
+    {
+      question: "Faut-il intégrer ChatGPT / IA dans son stack restaurant ?",
+      answer: "Pas en remplacement, mais en complément. L'IA est utile pour : prévoir la fréquentation, générer des descriptions de plats, suggérer des accords vins, automatiser le scoring de revues clients. Plusieurs solutions intègrent ces fonctions en 2026 (Skello, Lightspeed AI, RestauMargin)."
+    }
+  ]);
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Logiciel de gestion restaurant", url: "https://www.restaumargin.fr/blog/logiciel-gestion-restaurant" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +39,7 @@ export default function BlogLogicielGestion() {
         description="Comparez les meilleurs logiciels de gestion pour restaurant : caisse, stocks, comptabilité, plannings, marges. Stack idéal selon votre taille."
         path="/blog/logiciel-gestion-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

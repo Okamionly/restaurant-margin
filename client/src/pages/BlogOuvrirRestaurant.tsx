@@ -1,8 +1,37 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Lightbulb, MapPin, FileText, Building2, Banknote, Scale, FileCheck, Wrench, Users, Megaphone, AlertTriangle, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogOuvrirRestaurant() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Combien de temps faut-il pour ouvrir un restaurant ?",
+      answer: "Comptez 8 à 14 mois entre la décision et la première fourchette servie. Recherche de local 3-6 mois, démarches administratives 2-4 mois, travaux 2-4 mois."
+    },
+    {
+      question: "Faut-il un diplôme de cuisine pour ouvrir un restaurant ?",
+      answer: "Non. Aucun diplôme n'est obligatoire en France. Seul le permis d'exploitation (formation 20h) est requis pour servir de l'alcool. Mais ne pas avoir d'expérience est statistiquement le premier facteur de fermeture précoce."
+    },
+    {
+      question: "Vaut-il mieux acheter un fonds existant ou ouvrir from scratch ?",
+      answer: "Reprendre un fonds existant coûte plus cher mais évite les travaux lourds, génère un CA dès le jour 1, et facilite l'obtention d'un prêt. Pour un premier projet, la reprise est souvent plus sûre."
+    },
+    {
+      question: "Quel chiffre d'affaires viser la première année ?",
+      answer: "Un bistrot de 50 couverts en ville moyenne table sur 350 000 à 500 000€ HT la première année, avec montée en puissance progressive : 60% au T1, 80% au T2, 100% à partir du T4."
+    },
+    {
+      question: "Quand sait-on que le restaurant est viable ?",
+      answer: "Si à la fin du mois 6 vous tournez à plus de 70% du CA prévisionnel et que votre prime cost est sous 65%, le projet est viable. Sinon, plan de redressement immédiat."
+    }
+  ]);
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Comment ouvrir un restaurant", url: "https://www.restaumargin.fr/blog/comment-ouvrir-restaurant-guide-complet" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +39,7 @@ export default function BlogOuvrirRestaurant() {
         description="Les 10 étapes pour ouvrir votre restaurant : business plan, financement, licences, recrutement. Guide complet pour créer un restaurant rentable."
         path="/blog/comment-ouvrir-restaurant-guide-complet"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

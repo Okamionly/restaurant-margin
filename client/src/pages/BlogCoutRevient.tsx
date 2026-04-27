@@ -1,8 +1,37 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, Scissors, Table, RefreshCw, AlertTriangle, ClipboardList, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogCoutRevient() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Faut-il intégrer le coût de l'huile de cuisson dans la fiche technique ?",
+      answer: "Oui, mais sous forme de forfait moyen (0,10 à 0,20 € par portion) car le pesage exact à chaque cuisson est irréaliste. Calculez votre consommation mensuelle d'huile et divisez par le nombre de couverts."
+    },
+    {
+      question: "Comment gérer un plat à plusieurs garnitures interchangeables ?",
+      answer: "Créez une fiche technique par variante. Le filet de bœuf avec frites, gratin dauphinois ou légumes grillés a 3 coûts différents. Calculez la moyenne pondérée selon la fréquence de chaque garniture."
+    },
+    {
+      question: "Mon coût calculé est 8,20 € mais je ressens que ça coûte plus cher. Pourquoi ?",
+      answer: "Vous oubliez probablement : sauce et fonds (0,50-1 €), pain et beurre offerts (0,30 €), pertes au dressage (5-8 %), erreurs de portionnage (10-15 % d'écart). Total réel souvent 15-20 % au-dessus du calcul théorique."
+    },
+    {
+      question: "Faut-il intégrer le coût de la main-d'œuvre dans le coût de revient ?",
+      answer: "Non, le coût de revient ne contient que les matières. La main-d'œuvre est intégrée plus haut, via le coefficient multiplicateur (méthode 1 de tarification) ou dans le prime cost global."
+    },
+    {
+      question: "Combien de temps pour faire les fiches techniques de toute ma carte ?",
+      answer: "Pour 25 plats : 8-12 heures la première fois (avec pesées et photos). Ensuite 1-2 heures de mise à jour mensuelle. Un logiciel comme RestauMargin réduit ce temps de 70 %."
+    }
+  ]);
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Calculer le coût de revient d'un plat", url: "https://www.restaumargin.fr/blog/cout-revient-plat-restaurant" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +39,7 @@ export default function BlogCoutRevient() {
         description="Calculez précisément le coût de revient de chaque plat de votre carte : ratio de perte, fiche technique, seuil d'alerte food cost."
         path="/blog/cout-revient-plat-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

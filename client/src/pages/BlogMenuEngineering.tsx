@@ -1,8 +1,36 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Star, TrendingUp, Puzzle, AlertCircle, Layout, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogMenuEngineering() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Combien de plats Stars devrais-je avoir sur ma carte ?",
+      answer: "Idéalement 4 à 7 Stars sur une carte de 20-25 plats. Au-delà de 8, vos serveurs ne pourront pas tous les valoriser. En dessous de 3, vous manquez de différenciation."
+    },
+    {
+      question: "Faut-il vraiment supprimer tous les Chiens ?",
+      answer: "Non. Conservez 1 ou 2 plats signature à valeur émotionnelle (le plat de la grand-mère du chef) et les options nécessaires (végé, sans gluten). Mais supprimez tout le reste."
+    },
+    {
+      question: "À quelle fréquence faire le menu engineering ?",
+      answer: "Trimestriellement pour une analyse approfondie, mensuellement pour un suivi rapide. Si vous changez de fournisseur ou que vos coûts évoluent de plus de 5 %, refaites un calcul immédiatement."
+    },
+    {
+      question: "Comment tester une augmentation de prix sans risque ?",
+      answer: "Augmentez 1 ou 2 plats à la fois, de 0,50 à 1 €, et mesurez les ventes sur 4 semaines. Si la baisse de volume est inférieure à 10 %, l'augmentation est rentable."
+    },
+    {
+      question: "Est-ce que ça fonctionne aussi pour les boissons ?",
+      answer: "Oui, et c'est même très puissant. Les boissons (vins au verre, cocktails, softs) ont souvent les plus belles marges contribution (12-22 €/cocktail) et méritent leur propre matrice."
+    }
+  ]);
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: 'Accueil', url: 'https://www.restaumargin.fr' },
+    { name: 'Blog', url: 'https://www.restaumargin.fr/blog' },
+    { name: 'Menu engineering', url: 'https://www.restaumargin.fr/blog/menu-engineering-boston-matrix-restaurant' },
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +38,7 @@ export default function BlogMenuEngineering() {
         description="Classez vos plats en Stars, Vaches à lait, Puzzles et Chiens. La matrice Boston appliquée à la restauration pour maximiser vos marges."
         path="/blog/menu-engineering-boston-matrix-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

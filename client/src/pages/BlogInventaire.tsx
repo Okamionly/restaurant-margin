@@ -1,8 +1,37 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Package, Calendar, ListChecks, RefreshCw, AlertTriangle, Smartphone, ClipboardList, UserCheck, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogInventaire() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Combien de temps prend un inventaire complet ?",
+      answer: "Pour un bistrot 50 couverts (~150 références), comptez 2h30 à 4h en équipe de 2 personnes. Avec logiciel + code-barres : 1h30 à 2h30. Le premier inventaire est toujours plus long (3-5h)."
+    },
+    {
+      question: "Faut-il faire l'inventaire portes fermées ?",
+      answer: "Idéalement oui, après le dernier service ou avant le premier. Pendant le service, les sorties non comptées rendent l'inventaire faux. Si nécessaire, isolez les zones (sec, cave) qui ne sont pas en flux."
+    },
+    {
+      question: "Que faire si je détecte un grand écart soudain ?",
+      answer: "1) Recompter physiquement la zone. 2) Vérifier les bons de livraison récents. 3) Vérifier les fiches techniques (changement de portion ?). 4) Si l'écart persiste, enquêter discrètement sur les procédures et accès."
+    },
+    {
+      question: "Est-il légal de tenir le personnel responsable d'un manque ?",
+      answer: "Non, le restaurateur est légalement responsable de ses stocks. Toutefois, en cas de vol avéré (preuves), des sanctions disciplinaires sont possibles selon la convention collective. Un règlement intérieur clair sur la consommation personnelle est indispensable."
+    },
+    {
+      question: "Comment gérer les produits 'consommation gratuite équipe' ?",
+      answer: "Tracez-les obligatoirement dans une fiche 'consommation interne' mensuelle (en valeur ou quantités). Cette consommation s'ajoute à la sortie de stock théorique et réduit l'écart d'inventaire apparent. Sans cette traçabilité, vos calculs sont biaisés."
+    }
+  ]);
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Inventaire restaurant", url: "https://www.restaumargin.fr/blog/inventaire-restaurant-guide" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +39,7 @@ export default function BlogInventaire() {
         description="Guide complet pour faire l'inventaire de votre restaurant : méthode pas à pas, fréquence recommandée, calcul de rotation des stocks et outils digitaux."
         path="/blog/inventaire-restaurant-guide"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

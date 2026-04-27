@@ -1,8 +1,36 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Package, Tag, ClipboardList, AlertTriangle, TrendingDown, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogMethodeFifo() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "FIFO ou FEFO, lequel utiliser concrètement ?",
+      answer: "En cuisine professionnelle, on parle de FIFO mais on applique du FEFO dans les faits. Concentrez-vous sur la DLC : c'est elle qui prime sur la date d'arrivée."
+    },
+    {
+      question: "Mes employés ne respectent pas le FIFO, comment faire ?",
+      answer: "Trois leviers : formation initiale documentée (procédure écrite affichée en cuisine), responsabilisation (un référent FIFO par service), et incentives (prime trimestrielle indexée sur le taux de pertes)."
+    },
+    {
+      question: "Combien coûte la mise en place d'un système FIFO ?",
+      answer: "Très peu. Étiqueteuse 50 €, rouleaux d'étiquettes 30 €/an, formation 2h. Total : moins de 100 € pour 25 000 € de gain annuel potentiel."
+    },
+    {
+      question: "Le FIFO s'applique-t-il aussi aux boissons ?",
+      answer: "Oui. Les vins, les softs, et surtout les bières en pression (les fûts ont une DLC). N'oubliez pas non plus les produits d'épicerie ouverts (huiles, vinaigres)."
+    },
+    {
+      question: "Comment mesurer l'efficacité de mon FIFO ?",
+      answer: "Suivez deux indicateurs : taux de pertes mensuel (objectif < 2 %) et écart entre food cost théorique (ventes × fiches techniques) et food cost réel (inventaire). Un écart > 2 points signale un problème."
+    }
+  ]);
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: 'Accueil', url: 'https://www.restaumargin.fr' },
+    { name: 'Blog', url: 'https://www.restaumargin.fr/blog' },
+    { name: 'Méthode FIFO', url: 'https://www.restaumargin.fr/blog/methode-fifo-gestion-stocks-restaurant' },
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +38,7 @@ export default function BlogMethodeFifo() {
         description="Appliquez la méthode FIFO dans votre cuisine : étiquetage, organisation des stocks, impact sur le food cost et réduction du gaspillage."
         path="/blog/methode-fifo-gestion-stocks-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

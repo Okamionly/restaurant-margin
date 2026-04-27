@@ -1,8 +1,36 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, BarChart3, TrendingUp, Clock, Star, Target, Users, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogKpiGuide() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Combien de KPI suivre quand je débute ?",
+      answer: "Commencez par 4 : food cost, ticket moyen, taux d'occupation, note Google. Une fois maîtrisés (3-6 mois), ajoutez prime cost et RevPASH."
+    },
+    {
+      question: "À quelle fréquence calculer le food cost ?",
+      answer: "Hebdomadairement avec un inventaire flash sur les 10 produits stratégiques (80 % de la valeur), et mensuellement avec un inventaire complet."
+    },
+    {
+      question: "Mon food cost est à 38 %, est-ce grave ?",
+      answer: "Oui, sauf en gastronomie. Auditez 4 axes : prix d'achat, pertes (FIFO mal appliqué ?), portionnement (grammages réels vs fiches techniques), et pricing."
+    },
+    {
+      question: "Quel logiciel pour automatiser le suivi ?",
+      answer: "Pour un restaurant indépendant, RestauMargin suffit largement et coûte moins de 50 €/mois. Pour les groupes multi-sites : Innovorder, Tiller Insights ou Lightspeed Analytics."
+    },
+    {
+      question: "Comment impliquer mon équipe dans le suivi des KPI ?",
+      answer: "Affichez 2-3 KPI clés en cuisine (food cost de la semaine, ticket moyen) et instaurez une prime trimestrielle indexée sur leur amélioration. La transparence motive davantage que le contrôle."
+    }
+  ]);
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: 'Accueil', url: 'https://www.restaumargin.fr' },
+    { name: 'Blog', url: 'https://www.restaumargin.fr/blog' },
+    { name: 'KPI restaurateur', url: 'https://www.restaumargin.fr/blog/kpi-restaurateur' },
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +38,7 @@ export default function BlogKpiGuide() {
         description="Food cost, prime cost, RevPASH, ticket moyen… Les indicateurs clés de performance indispensables pour gérer un restaurant rentable."
         path="/blog/kpi-restaurateur"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

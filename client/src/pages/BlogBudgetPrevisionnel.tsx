@@ -1,8 +1,32 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, FileSpreadsheet, TrendingDown, Target, AlertTriangle, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogBudgetPrevisionnel() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Quand commencer son budget prévisionnel ?",
+      answer: "Pour une création, 3 à 6 mois avant l'ouverture avec révision dans les 30 jours après le démarrage. Pour un existant, idéalement en novembre pour l'année suivante avec validation en décembre."
+    },
+    {
+      question: "Combien de temps pour construire un budget prévisionnel ?",
+      answer: "2 à 3 jours pleins la première fois, dont 1 journée d'étude (loyers, salaires, ratios sectoriels). Les années suivantes, une journée suffit en partant du précédent."
+    },
+    {
+      question: "Mon comptable peut-il faire mon budget à ma place ?",
+      answer: "Il peut vous aider à le mettre en forme, mais il ne peut pas prévoir vos couverts, votre ticket moyen, votre saisonnalité. Le budget doit être co-construit : vous apportez la connaissance terrain, le comptable apporte la rigueur des chiffres."
+    },
+    {
+      question: "Que faire si le réel dévie de 15 % du budget pendant 2 mois ?",
+      answer: "Reforecast complet immédiat. Soit le budget était irréaliste (à corriger pour les 10 mois suivants), soit la réalité a changé (nouveau concurrent, perte d'un service midi entreprise) et il faut un plan d'action en 30 jours."
+    }
+  ]);
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Budget prévisionnel restaurant", url: "https://www.restaumargin.fr/blog/budget-previsionnel-restaurant" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +34,7 @@ export default function BlogBudgetPrevisionnel() {
         description="Construisez votre budget prévisionnel restaurant étape par étape : structure, méthode, tableau 12 mois et pilotage mensuel."
         path="/blog/budget-previsionnel-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

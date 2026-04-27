@@ -1,8 +1,37 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, RefreshCw, Calculator, BarChart3, TrendingUp, Settings, AlertTriangle, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogRotationStocks() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Faut-il faire un inventaire chaque semaine ?",
+      answer: "Inventaire complet : tous les 15 jours suffit pour la plupart des restaurants. Inventaire ciblé sur les produits chers (viandes, poissons, vins) chaque lundi pour ajuster les commandes. Au mensuel minimum pour calculer la rotation officielle."
+    },
+    {
+      question: "Mon fournisseur impose une commande minimum de 300 €. Comment faire ?",
+      answer: "Trois options : grouper avec un autre restaurant voisin (achat groupé), changer de fournisseur (Frigo Magic, Pourdebon Pro, La Ruche qui dit Oui Pro), ou accepter un sur-stock partiel sur les secs uniquement (jamais sur le frais)."
+    },
+    {
+      question: "Comment gérer la rotation pendant les saisons creuses ?",
+      answer: "Adaptez immédiatement vos commandes : -30 % à -50 % sur viandes/légumes/poissons. Diminuez aussi la variété (mini-carte saison creuse). Évitez le piège de garder le même stock sans visibilité sur le CA."
+    },
+    {
+      question: "Quelle est la rotation idéale pour les vins ?",
+      answer: "Vins courants : 1-2x/mois. Vins de cave / garde : 0,3-0,5x/mois, c'est normal et même souhaitable (les vins prennent de la valeur). Stockez en moyenne 1,5x les ventes mensuelles pour les vins courants."
+    },
+    {
+      question: "Que faire des produits qui approchent de la DLC ?",
+      answer: "Trois options : suggestion du jour (mettre en avant le plat qui les utilise), prix plat du jour réduit pour écouler, dons à des associations (Restos du Cœur, ANDES) déductible fiscalement à 60 %. Jamais de jet pur, c'est un échec de planification."
+    }
+  ]);
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Rotation des stocks en restauration", url: "https://www.restaumargin.fr/blog/rotation-stocks-restaurant" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +39,7 @@ export default function BlogRotationStocks() {
         description="Calculez votre rotation des stocks par catégorie. Benchmarks, leviers d'optimisation et impact sur la trésorerie de votre restaurant."
         path="/blog/rotation-stocks-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

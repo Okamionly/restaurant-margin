@@ -1,8 +1,37 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, TrendingUp, Wine, Utensils, Sparkles, Coffee, BookOpen as BookIcon, GraduationCap, Star, Shield, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogTicketMoyen() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Mon ticket moyen baisse depuis 6 mois, que faire ?",
+      answer: "Trois pistes : cannibalisation par une formule trop bon marché, baisse de la prise de boissons (bouteilles → carafes), changement de profil clientèle. Comparer midi et soir séparément aide à identifier la zone problématique."
+    },
+    {
+      question: "Comment mesurer l'efficacité d'une nouvelle technique ?",
+      answer: "Comparez le ticket moyen sur 2 semaines avant et 2 semaines après. Segmentez par jour de la semaine (un mardi vs un mardi) car les profils diffèrent. Une hausse >5% est statistiquement significative."
+    },
+    {
+      question: "Faut-il augmenter ses prix ou augmenter le ticket moyen ?",
+      answer: "Les deux sont des leviers différents. Combiner légère hausse de prix annuelle (3-4%) + travail continu sur le ticket via les 10 techniques est la stratégie la plus durable."
+    },
+    {
+      question: "Comment ne pas frustrer le client en proposant trop ?",
+      answer: "Maximum 3 suggestions durant un repas : à l'arrivée (apéritif/eau), entre commande et plat (vin ou entrée à partager), en fin de plat (dessert + café). Au-delà, l'expérience devient pesante."
+    },
+    {
+      question: "Le digital peut-il aider ?",
+      answer: "Oui, énormément. La commande au QR code ou tablette montre toujours les options et boissons, suggère automatiquement des desserts. Augmente le ticket de 8 à 15% par rapport à une prise de commande traditionnelle."
+    }
+  ]);
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Augmenter le ticket moyen", url: "https://www.restaumargin.fr/blog/augmenter-ticket-moyen-restaurant" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +39,7 @@ export default function BlogTicketMoyen() {
         description="Upselling, cross-selling, design de carte, formation de la salle… 10 techniques concrètes pour augmenter le ticket moyen de votre restaurant."
         path="/blog/augmenter-ticket-moyen-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

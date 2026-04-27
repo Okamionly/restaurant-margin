@@ -1,8 +1,32 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, MapPin, Globe, Instagram, Video, Star, Mail, ArrowRight } from 'lucide-react';
-import SEOHead from '../components/SEOHead';
+import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 export default function BlogStrategieDigitale() {
+  const faqSchema = buildFAQSchema([
+    {
+      question: "Faut-il être sur tous les réseaux sociaux ?",
+      answer: "Non. Mieux vaut être excellent sur 2 (Instagram + TikTok) que médiocre sur 5. La règle : choisir là où votre cible passe du temps."
+    },
+    {
+      question: "Combien de temps pour voir les résultats ?",
+      answer: "Google Business : 1-3 mois. Instagram : 3-6 mois. TikTok : 1-12 mois (très volatil). Avis Google : effets visibles dès 50 avis."
+    },
+    {
+      question: "Faut-il déléguer à une agence ?",
+      answer: "Pour un restaurant solo, payer 1 500 €/mois une agence est rarement rentable. Mieux vaut former un membre de l'équipe + faire appel à un freelance ponctuel pour la production photo/vidéo."
+    },
+    {
+      question: "Comment mesurer le ROI marketing digital ?",
+      answer: "3 indicateurs simples : (1) évolution mensuelle des couverts, (2) demandes d'itinéraire Google Business, (3) réservations en ligne directes. Comparer à N-1 mensuel pour neutraliser la saisonnalité."
+    }
+  ]);
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Accueil", url: "https://www.restaumargin.fr/" },
+    { name: "Blog", url: "https://www.restaumargin.fr/blog" },
+    { name: "Stratégie digitale restaurant", url: "https://www.restaumargin.fr/blog/strategie-digitale-restaurant" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
@@ -10,6 +34,7 @@ export default function BlogStrategieDigitale() {
         description="Les 6 piliers du marketing digital pour restaurant : Google Business, Instagram, TikTok, avis clients, réservation en ligne et fidélisation."
         path="/blog/strategie-digitale-restaurant"
         type="article"
+        schema={[faqSchema, breadcrumbSchema]}
       />
       <script
         type="application/ld+json"

@@ -135,7 +135,25 @@ const BlogKpiRestaurateur = lazyRetry(() => import('./pages/BlogKpiRestaurateur'
 const BlogCoutPersonnel = lazyRetry(() => import('./pages/BlogCoutPersonnel'));
 const BlogFifoLifo = lazyRetry(() => import('./pages/BlogFifoLifo'));
 const BlogSeuilRentabilite = lazyRetry(() => import('./pages/BlogSeuilRentabilite'));
+const BlogKpiGuide = lazyRetry(() => import('./pages/BlogKpiGuide'));
+const BlogLogicielCaisse = lazyRetry(() => import('./pages/BlogLogicielCaisse'));
+const BlogMethodeFifo = lazyRetry(() => import('./pages/BlogMethodeFifo'));
 const BlogMenuEngineering = lazyRetry(() => import('./pages/BlogMenuEngineering'));
+const BlogOuvrirRestaurant = lazyRetry(() => import('./pages/BlogOuvrirRestaurant'));
+const BlogPrimeCost = lazyRetry(() => import('./pages/BlogPrimeCost'));
+const BlogTauxOccupation = lazyRetry(() => import('./pages/BlogTauxOccupation'));
+const BlogTicketMoyen = lazyRetry(() => import('./pages/BlogTicketMoyen'));
+const BlogInventaire = lazyRetry(() => import('./pages/BlogInventaire'));
+const BlogPrixCarte = lazyRetry(() => import('./pages/BlogPrixCarte'));
+const BlogChargesSociales = lazyRetry(() => import('./pages/BlogChargesSociales'));
+const BlogCoutRevient = lazyRetry(() => import('./pages/BlogCoutRevient'));
+const BlogLogicielGestion = lazyRetry(() => import('./pages/BlogLogicielGestion'));
+const BlogRotationStocks = lazyRetry(() => import('./pages/BlogRotationStocks'));
+const BlogBudgetPrevisionnel = lazyRetry(() => import('./pages/BlogBudgetPrevisionnel'));
+const BlogPrevisionVentes = lazyRetry(() => import('./pages/BlogPrevisionVentes'));
+const BlogFormationPersonnel = lazyRetry(() => import('./pages/BlogFormationPersonnel'));
+const BlogStrategieDigitale = lazyRetry(() => import('./pages/BlogStrategieDigitale'));
+const BlogChiffreAffaires = lazyRetry(() => import('./pages/BlogChiffreAffaires'));
 const Careers = lazyRetry(() => import('./pages/Careers'));
 const HelpPage = lazyRetry(() => import('./pages/Help'));
 const BreakevenCalculator = lazyRetry(() => import('./pages/BreakevenCalculator'));
@@ -1017,6 +1035,25 @@ function App() {
           <Route path="/blog/fifo-lifo-stocks-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFifoLifo /></Suspense>} />
           <Route path="/blog/seuil-rentabilite-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogSeuilRentabilite /></Suspense>} />
           <Route path="/blog/menu-engineering-boston-matrix" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogMenuEngineering /></Suspense>} />
+          <Route path="/blog/kpi-restaurateur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogKpiGuide /></Suspense>} />
+          <Route path="/blog/logiciel-caisse-enregistreuse-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogLogicielCaisse /></Suspense>} />
+          <Route path="/blog/methode-fifo-gestion-stocks-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogMethodeFifo /></Suspense>} />
+          <Route path="/blog/menu-engineering-boston-matrix-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogMenuEngineering /></Suspense>} />
+          <Route path="/blog/comment-ouvrir-restaurant-guide-complet" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogOuvrirRestaurant /></Suspense>} />
+          <Route path="/blog/prime-cost-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrimeCost /></Suspense>} />
+          <Route path="/blog/taux-occupation-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogTauxOccupation /></Suspense>} />
+          <Route path="/blog/augmenter-ticket-moyen-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogTicketMoyen /></Suspense>} />
+          <Route path="/blog/inventaire-restaurant-guide" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogInventaire /></Suspense>} />
+          <Route path="/blog/fixer-prix-carte-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrixCarte /></Suspense>} />
+          <Route path="/blog/charges-sociales-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogChargesSociales /></Suspense>} />
+          <Route path="/blog/cout-revient-plat-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoutRevient /></Suspense>} />
+          <Route path="/blog/logiciel-gestion-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogLogicielGestion /></Suspense>} />
+          <Route path="/blog/rotation-stocks-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogRotationStocks /></Suspense>} />
+          <Route path="/blog/budget-previsionnel-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogBudgetPrevisionnel /></Suspense>} />
+          <Route path="/blog/prevision-ventes-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrevisionVentes /></Suspense>} />
+          <Route path="/blog/formation-personnel-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFormationPersonnel /></Suspense>} />
+          <Route path="/blog/strategie-digitale-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogStrategieDigitale /></Suspense>} />
+          <Route path="/blog/chiffre-affaires-restaurant-comment-calculer" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogChiffreAffaires /></Suspense>} />
           {/* Catch-all: unknown blog slug → redirect to blog index (avoids falling into ProtectedRoute /login) */}
           <Route path="/blog/*" element={<Navigate to="/blog" replace />} />
           {/* Catch-all: unknown public tool → redirect to home */}

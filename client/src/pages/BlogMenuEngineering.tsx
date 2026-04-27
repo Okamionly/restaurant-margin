@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, BookOpen, Star, TrendingUp, HelpCircle, Trash2, LayoutGrid, ArrowRight } from 'lucide-react';
+import { ChefHat, BookOpen, Star, TrendingUp, Puzzle, AlertCircle, Layout, ArrowRight } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 
 export default function BlogMenuEngineering() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
-        title="Menu Engineering & Matrice BCG restaurant : optimisez votre carte (2026)"
-        description="Stars, Plowhorses, Puzzles, Dogs : apprenez à classer vos plats avec la matrice de menu engineering pour augmenter le ticket moyen et réduire le food cost."
-        path="/blog/menu-engineering-boston-matrix"
+        title="Menu engineering : la méthode Boston Matrix pour optimiser votre carte"
+        description="Classez vos plats en Stars, Vaches à lait, Puzzles et Chiens. La matrice Boston appliquée à la restauration pour maximiser vos marges."
+        path="/blog/menu-engineering-boston-matrix-restaurant"
         type="article"
       />
       <script
@@ -17,25 +17,22 @@ export default function BlogMenuEngineering() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Article",
-            "headline": "Menu Engineering et Matrice BCG : optimisez votre carte de restaurant en 2026",
-            "description": "Stars, Plowhorses, Puzzles, Dogs : classez vos plats selon leur popularité et rentabilité pour maximiser votre marge.",
+            "headline": "Menu engineering : la méthode Boston Matrix pour optimiser votre carte",
             "datePublished": "2026-04-27",
             "dateModified": "2026-04-27",
-            "author": { "@type": "Organization", "name": "La rédaction RestauMargin", "url": "https://www.restaumargin.fr/a-propos" },
+            "author": {
+              "@type": "Organization",
+              "name": "La rédaction RestauMargin",
+              "url": "https://www.restaumargin.fr/a-propos"
+            },
             "publisher": {
               "@type": "Organization",
               "name": "RestauMargin",
               "logo": { "@type": "ImageObject", "url": "https://www.restaumargin.fr/icon-512.png" }
             },
-            "image": "https://www.restaumargin.fr/images/blog/menu-engineering-boston-matrix.jpg",
+            "image": "https://www.restaumargin.fr/og-image.png",
             "inLanguage": "fr-FR",
-            "mainEntityOfPage": "https://www.restaumargin.fr/blog/menu-engineering-boston-matrix",
-            "keywords": "menu engineering restaurant, matrice BCG restauration, optimiser carte restaurant, stars plowhorses puzzles dogs, rentabilité carte menu, food cost carte restaurant",
-            "about": [
-              { "@type": "Thing", "name": "Menu Engineering" },
-              { "@type": "Thing", "name": "Matrice BCG restauration" },
-              { "@type": "Thing", "name": "Optimisation de carte de restaurant" }
-            ]
+            "mainEntityOfPage": "https://www.restaumargin.fr/blog/menu-engineering-boston-matrix-restaurant"
           })
         }}
       />
@@ -47,297 +44,305 @@ export default function BlogMenuEngineering() {
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">Connexion</Link>
+          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+            Connexion
+          </Link>
         </div>
       </nav>
 
-      {/* Hero image */}
-      <div className="w-full bg-gradient-to-br from-purple-700 to-purple-900 h-56 sm:h-72 flex items-center justify-center relative overflow-hidden">
-        <img
-          src="/images/blog/menu-engineering-boston-matrix.jpg"
-          alt="Matrice de menu engineering restaurant - Stars, Plowhorses, Puzzles, Dogs"
-          className="absolute inset-0 w-full h-full object-cover opacity-25"
-          loading="lazy"
-        />
-        <div className="relative z-10 text-center px-4">
-          <span className="inline-flex items-center gap-1.5 text-purple-200 bg-purple-800/60 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
+      {/* Hero */}
+      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
+        <div className="max-w-[720px] mx-auto text-center">
+          <span className="inline-flex items-center gap-1.5 text-violet-700 bg-violet-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
             <BookOpen className="w-3.5 h-3.5" />
-            Menu &amp; Rentabilité
+            Carte & Prix
           </span>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white leading-tight max-w-[640px]">
-            Menu Engineering &amp; Matrice BCG : optimisez votre carte de restaurant
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
+            Menu engineering : la méthode Boston Matrix
           </h1>
+          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
+            Sur une carte typique de 25 plats, seuls 4 à 6 génèrent 80 % de la marge brute. Voici comment identifier vos Stars et transformer votre carte en levier de rentabilité.
+          </p>
+          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
+            <span>27 avril 2026</span>
+            <span>·</span>
+            <span>12 min de lecture</span>
+            <span>·</span>
+            <span>La rédaction RestauMargin</span>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Meta + tags */}
-      <div className="max-w-[720px] mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center gap-4 text-sm text-[#737373] border-b border-[#E5E7EB]">
-        <span>27 avril 2026</span>
-        <span>·</span>
-        <span>9 min de lecture</span>
-        <span>·</span>
-        <span>La rédaction RestauMargin</span>
-        <div className="flex flex-wrap gap-2 ml-auto">
-          {['Carte', 'Menu engineering', 'Marge', 'BCG'].map(tag => (
-            <span key={tag} className="bg-[#F5F5F5] text-[#525252] text-xs px-2 py-0.5 rounded-full">{tag}</span>
-          ))}
-        </div>
-      </div>
+      {/* Body */}
+      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">
 
-      <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24 pt-8">
-
-        {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">
-          Votre carte est votre meilleur commercial — ou votre pire ennemi. Un menu mal conçu peut faire perdre plusieurs milliers d'euros par mois, même avec une cuisine excellente et une salle pleine. Le menu engineering transforme votre carte en outil de rentabilité. Au cœur de cette approche : la <strong>matrice BCG adaptée à la restauration</strong>.
+          <strong>Sur une carte typique de 25 plats, seuls 4 à 6 plats génèrent 80 % de la marge brute totale.</strong> Le menu engineering, formalisé par Donald Smith et Michael Kasavana à l'Université du Michigan en 1982, est la science qui permet d'identifier ces dynamiques et de transformer chaque plat en levier de rentabilité.
         </p>
 
         {/* Sommaire */}
-        <nav className="bg-purple-50 border border-purple-100 rounded-2xl p-6 mb-10">
-          <p className="text-sm font-bold text-purple-700 uppercase tracking-wider mb-4">Sommaire</p>
+        <nav className="bg-teal-50 border border-teal-100 rounded-2xl p-6 mb-10">
+          <p className="text-sm font-bold text-teal-700 uppercase tracking-wider mb-4">Sommaire</p>
           <ol className="space-y-2 text-sm text-[#374151]">
-            <li><a href="#definition" className="hover:text-purple-600 transition-colors">1. Qu'est-ce que le menu engineering ?</a></li>
-            <li><a href="#matrice" className="hover:text-purple-600 transition-colors">2. La matrice BCG adaptée à la restauration</a></li>
-            <li><a href="#classifier" className="hover:text-purple-600 transition-colors">3. Comment classer vos plats</a></li>
-            <li><a href="#strategies" className="hover:text-purple-600 transition-colors">4. Stratégies par catégorie</a></li>
-            <li><a href="#visuel" className="hover:text-purple-600 transition-colors">5. Optimiser visuellement votre carte</a></li>
+            <li><a href="#definition" className="hover:text-teal-600 transition-colors">1. Qu'est-ce que le menu engineering</a></li>
+            <li><a href="#quadrants" className="hover:text-teal-600 transition-colors">2. Les 4 quadrants Boston Matrix</a></li>
+            <li><a href="#methode" className="hover:text-teal-600 transition-colors">3. Méthode pas-à-pas pour classer ses plats</a></li>
+            <li><a href="#exemple" className="hover:text-teal-600 transition-colors">4. Exemple chiffré : 20 plats analysés</a></li>
+            <li><a href="#actions" className="hover:text-teal-600 transition-colors">5. Actions concrètes par quadrant</a></li>
+            <li><a href="#design-carte" className="hover:text-teal-600 transition-colors">6. Design de la carte : où placer les Stars</a></li>
           </ol>
         </nav>
 
         {/* Section 1 */}
         <section id="definition" className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
-              <LayoutGrid className="w-5 h-5 text-purple-600" />
+            <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center">
+              <Star className="w-5 h-5 text-violet-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Qu'est-ce que le menu engineering ?</h2>
+            <h2 className="text-2xl font-bold text-[#111111]">1. Qu'est-ce que le menu engineering</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
-            Le menu engineering est l'analyse systématique de chaque plat selon deux critères : sa <strong>popularité</strong> (volume de ventes) et sa <strong>rentabilité</strong> (marge brute). Formalisé en 1982 par Kasavana &amp; Smith (Michigan State University), c'est un standard dans les groupes de restauration — et un avantage massif pour les indépendants qui l'appliquent.
+            Le menu engineering est l'analyse systématique de la rentabilité et de la popularité de chaque plat, dans le but de prendre des décisions éclairées sur : quels plats mettre en avant, lesquels reformuler, lesquels supprimer, quels prix ajuster.
           </p>
-          <div className="grid sm:grid-cols-3 gap-3">
-            {[
-              { label: 'Ticket moyen', value: '+5 à +15 %', color: 'teal' },
-              { label: 'Food cost', value: '−2 à −4 pts', color: 'blue' },
-              { label: 'Marge nette', value: '+3 à +8 %', color: 'purple' },
-            ].map(({ label, value, color }) => (
-              <div key={label} className={`bg-${color}-50 border border-${color}-100 rounded-xl p-4 text-center`}>
-                <p className={`text-2xl font-extrabold text-${color}-700 mb-1`}>{value}</p>
-                <p className="text-sm text-[#525252]">{label} après optimisation</p>
-              </div>
-            ))}
+          <p className="text-[#374151] leading-relaxed mb-4">
+            <strong>Pourquoi c'est révolutionnaire :</strong> la plupart des restaurateurs raisonnent en food cost % (le coût matières en pourcentage du prix de vente). C'est trompeur.
+          </p>
+          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+            <div>Plat A : 25 % food cost, vendu 12 € → marge 9 €</div>
+            <div>Plat B : 35 % food cost, vendu 28 € → marge 18,20 €</div>
           </div>
+          <p className="text-[#374151] leading-relaxed">
+            Le plat B est <strong>2× plus rentable</strong>, malgré un food cost % moins bon. Le menu engineering raisonne donc en marge contribution euros par plat × volume vendu.
+          </p>
         </section>
 
-        {/* Section 2 — Matrice */}
-        <section id="matrice" className="mb-12">
+        {/* Section 2 */}
+        <section id="quadrants" className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center flex-shrink-0">
-              <TrendingUp className="w-5 h-5 text-teal-600" />
+            <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
+              <Layout className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. La matrice BCG en restauration</h2>
+            <h2 className="text-2xl font-bold text-[#111111]">2. Les 4 quadrants Boston Matrix</h2>
           </div>
-
-          {/* Image placeholder matrice */}
-          <div className="w-full bg-gradient-to-br from-purple-50 to-teal-50 rounded-2xl border border-purple-100 overflow-hidden mb-5 relative">
-            <img
-              src="/images/blog/matrice-menu-engineering.jpg"
-              alt="Matrice de menu engineering : axe popularité vs axe rentabilité, 4 quadrants Stars Plowhorses Puzzles Dogs"
-              className="absolute inset-0 w-full h-full object-cover opacity-20"
-              loading="lazy"
-            />
-            <div className="relative z-10 grid grid-cols-2 gap-0">
-              {[
-                { emoji: '⭐', name: 'Stars', desc: 'Haute marge + haute popularité', bg: 'bg-emerald-100/80', text: 'text-emerald-800' },
-                { emoji: '❓', name: 'Puzzles', desc: 'Haute marge + basse popularité', bg: 'bg-blue-100/80', text: 'text-blue-800' },
-                { emoji: '🐄', name: 'Plowhorses', desc: 'Basse marge + haute popularité', bg: 'bg-orange-100/80', text: 'text-orange-800' },
-                { emoji: '🐕', name: 'Dogs', desc: 'Basse marge + basse popularité', bg: 'bg-red-100/80', text: 'text-red-800' },
-              ].map(({ emoji, name, desc, bg, text }) => (
-                <div key={name} className={`${bg} p-5 border border-white/50`}>
-                  <p className="text-2xl mb-1">{emoji}</p>
-                  <p className={`font-bold ${text} mb-1`}>{name}</p>
-                  <p className="text-xs text-[#525252]">{desc}</p>
-                </div>
-              ))}
-            </div>
-            <div className="relative z-10 flex justify-between px-4 py-2 bg-white/60 text-xs text-[#737373] border-t border-purple-100">
-              <span>← Marge faible · Marge élevée →</span>
-              <span>↕ Popularité</span>
-            </div>
+          <p className="text-[#374151] leading-relaxed mb-4">
+            La matrice BCG croise <strong>popularité (volume)</strong> et <strong>marge contribution (€)</strong> sur 4 quadrants.
+          </p>
+          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+            <div>           Forte marge   |   Forte marge</div>
+            <div>           Faible vol.   |   Forte vol.</div>
+            <div>            PUZZLES      |    STARS</div>
+            <div>           ───────────────┼───────────────</div>
+            <div>            CHIENS       |  VACHES À LAIT</div>
+            <div>           Faible marge  |   Faible marge</div>
+            <div>           Faible vol.   |   Forte vol.</div>
           </div>
+          <ul className="space-y-3 text-[#374151] mb-4">
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 flex-shrink-0" />
+              <span><strong>STARS</strong> — Forte popularité + Forte marge. Vos plats champions. 15-25 % de la carte mais 40-50 % de la marge.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-500 mt-2 flex-shrink-0" />
+              <span><strong>VACHES À LAIT</strong> — Forte popularité + Faible marge. Les clients les attendent mais ils diluent la rentabilité.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0" />
+              <span><strong>PUZZLES</strong> — Faible popularité + Forte marge. Mauvais positionnement carte ou nom peu attractif.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-500 mt-2 flex-shrink-0" />
+              <span><strong>CHIENS</strong> — Faible popularité + Faible marge. À supprimer dans 90 % des cas.</span>
+            </li>
+          </ul>
         </section>
 
-        {/* Section 3 — Classifier */}
-        <section id="classifier" className="mb-12">
+        {/* Section 3 */}
+        <section id="methode" className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-              <LayoutGrid className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+              <Puzzle className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Classer vos plats en 3 étapes</h2>
+            <h2 className="text-2xl font-bold text-[#111111]">3. Méthode pas-à-pas</h2>
           </div>
-          <div className="space-y-4">
-            {[
-              {
-                n: '01', title: 'Calculer la marge brute de chaque plat',
-                content: (
-                  <div className="overflow-x-auto rounded-xl border border-[#E5E7EB] mt-2">
-                    <table className="w-full text-sm">
-                      <thead><tr className="bg-[#F5F5F5]"><th className="text-left px-3 py-2">Plat</th><th className="text-center px-3 py-2">Prix HT</th><th className="text-center px-3 py-2">Food cost</th><th className="text-center px-3 py-2 text-teal-700">Marge brute</th></tr></thead>
-                      <tbody className="divide-y divide-[#E5E7EB]">
-                        {[
-                          ['Bavette échalote', '24 €', '7,80 €', '16,20 €'],
-                          ['Salade César', '14 €', '2,90 €', '11,10 €'],
-                          ['Côte de bœuf', '38 €', '18,00 €', '20,00 €'],
-                        ].map(([p, prix, fc, mb]) => (
-                          <tr key={p} className="bg-white"><td className="px-3 py-2">{p}</td><td className="px-3 py-2 text-center">{prix}</td><td className="px-3 py-2 text-center text-red-500">{fc}</td><td className="px-3 py-2 text-center font-bold text-teal-700">{mb}</td></tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )
-              },
-              {
-                n: '02', title: 'Calculer la popularité de chaque plat',
-                content: (
-                  <div className="bg-[#F5F5F5] rounded-xl p-4 mt-2 text-sm text-[#374151] space-y-1">
-                    <p>Popularité (%) = Ventes du plat / Couverts totaux × 100</p>
-                    <p>Seuil = 70 % × (1 / nombre de plats)</p>
-                    <p className="text-[#737373]">Pour 10 plats : seuil = 70 % × 10 % = <strong>7 %</strong></p>
-                  </div>
-                )
-              },
-              {
-                n: '03', title: 'Croiser les deux axes → catégorie',
-                content: <p className="text-sm text-[#525252] mt-2">Placez chaque plat dans le quadrant correspondant. Cette analyse prend 30 à 60 minutes avec vos données de caisse et fiches techniques.</p>
-              },
-            ].map(({ n, title, content }) => (
-              <div key={n} className="flex gap-4">
-                <div className="w-10 h-10 rounded-xl bg-[#111111] text-white text-sm font-bold flex items-center justify-center flex-shrink-0">{n}</div>
-                <div className="flex-1">
-                  <p className="font-semibold text-[#111111]">{title}</p>
-                  {content}
-                </div>
-              </div>
-            ))}
+          <p className="text-[#374151] leading-relaxed mb-3"><strong>Étape 1 — Récupérer les données sur 30 jours :</strong></p>
+          <ul className="space-y-2 text-[#374151] mb-4">
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500 inline-block" /> Quantité vendue (logiciel de caisse)</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500 inline-block" /> Prix de vente HT</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500 inline-block" /> Coût matières HT (fiche technique)</li>
+          </ul>
+          <p className="text-[#374151] leading-relaxed mb-3"><strong>Étape 2 — Calculer la marge contribution :</strong></p>
+          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+            <div>Marge €/plat = PV HT - Coût matières HT</div>
+            <div>Marge totale = Marge × Quantité vendue</div>
           </div>
+          <p className="text-[#374151] leading-relaxed mb-3"><strong>Étape 3 — Calculer les seuils :</strong></p>
+          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+            <div>Seuil pop. = (Total ventes / Nb plats) × 0,7</div>
+            <div>Seuil marge = Marge moyenne pondérée</div>
+          </div>
+          <p className="text-[#374151] leading-relaxed">
+            Le coefficient 0,7 corrige la sur-pondération des plats moyens. Chaque plat est ensuite classé selon son positionnement par rapport aux deux seuils.
+          </p>
         </section>
 
-        {/* Section 4 — Stratégies */}
-        <section id="strategies" className="mb-12">
+        {/* Section 4 */}
+        <section id="exemple" className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-              <Star className="w-5 h-5 text-emerald-600" />
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Stratégies par catégorie</h2>
+            <h2 className="text-2xl font-bold text-[#111111]">4. Exemple chiffré : 20 plats</h2>
           </div>
-          <div className="space-y-4">
-            {[
-              {
-                emoji: '⭐', name: 'Stars', color: 'emerald',
-                strat: 'Protégez-les. Placez-les en position de visibilité maximale (coin supérieur droit, première section). Entraînez votre équipe à les recommander. Une hausse de 1–2 € sur un plat Star vendu 300 fois/mois = +600 € de marge mensuelle.',
-              },
-              {
-                emoji: '🐄', name: 'Plowhorses', color: 'orange',
-                strat: 'Réduisez le food cost sans dégrader la qualité perçue (portion légèrement réduite, ingrédient substitué), ou augmentez légèrement le prix. Associez-les à des accompagnements à forte marge (bundling). Exemple : burger populaire, food cost 38 % → 32 % = +144 €/mois sur 200 ventes.',
-              },
-              {
-                emoji: '❓', name: 'Puzzles', color: 'blue',
-                strat: 'Testez la mise en valeur avant de supprimer : encadré "Coup de cœur du chef", recommandation des serveurs, renommage, description plus appétissante. Si 4 semaines d\'efforts ne changent rien → plat du jour ou suppression.',
-              },
-              {
-                emoji: '🐕', name: 'Dogs', color: 'red',
-                strat: 'Supprimez ou transformez radicalement. Chaque Dog retiré simplifie la mise en place, réduit le gaspillage et améliore la lisibilité de la carte. Une carte de 10 plats bien choisis est plus rentable que 25 plats dont 10 Dogs.',
-              },
-            ].map(({ emoji, name, color, strat }) => (
-              <div key={name} className={`border border-${color}-100 bg-${color}-50/30 rounded-2xl p-5`}>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xl">{emoji}</span>
-                  <p className={`font-bold text-${color}-700`}>{name}</p>
-                </div>
-                <p className="text-sm text-[#374151] leading-relaxed">{strat}</p>
-              </div>
-            ))}
+          <p className="text-[#374151] leading-relaxed mb-4">
+            Restaurant "Le Comptoir" — 28 600 € de CA HT, 1 000 plats vendus sur 30 jours, 20 plats à la carte.
+          </p>
+          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+            <div>Seuil popularité : (1000/20) × 0,7 = 35 ventes</div>
+            <div>Marge contribution moyenne : 15,80 €</div>
           </div>
+          <p className="text-[#374151] leading-relaxed mb-3"><strong>Synthèse de la matrice :</strong></p>
+          <ul className="space-y-3 text-[#374151] mb-4">
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 flex-shrink-0" />
+              <span><strong>STARS (4 plats)</strong> — Filet de bœuf, Risotto truffe, Magret, Saint-Jacques. Marge totale : 4 138 € (27 %)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-500 mt-2 flex-shrink-0" />
+              <span><strong>VACHES À LAIT (10 plats)</strong> — Tartare, Burger, César, Crème brûlée… Marge : 7 632 € (49 %)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0" />
+              <span><strong>PUZZLES (1 plat)</strong> — Côte de bœuf 1 kg. Marge : 1 120 € (7 %)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-500 mt-2 flex-shrink-0" />
+              <span><strong>CHIENS (5 plats)</strong> — Cabillaud, Risotto champignons, Soupe oignon… Marge : 1 455 € (9 %)</span>
+            </li>
+          </ul>
         </section>
 
-        {/* Section 5 — Visuel */}
-        <section id="visuel" className="mb-12">
+        {/* Section 5 */}
+        <section id="actions" className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
-              <LayoutGrid className="w-5 h-5 text-orange-500" />
+            <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+              <AlertCircle className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Optimiser visuellement votre carte</h2>
+            <h2 className="text-2xl font-bold text-[#111111]">5. Actions concrètes par quadrant</h2>
           </div>
-          <div className="overflow-x-auto rounded-2xl border border-[#E5E7EB] mb-4">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-[#F5F5F5]">
-                  <th className="text-left px-4 py-3 font-semibold text-[#111111]">Levier visuel</th>
-                  <th className="text-center px-4 py-3 font-semibold text-teal-700">Impact prouvé</th>
-                  <th className="text-left px-4 py-3 font-semibold text-[#111111]">Source</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E5E7EB]">
-                {[
-                  ['Triangle d\'or (coin sup. droit)', 'Zone de lecture privilégiée', 'Études eye-tracking'],
-                  ['Encadré autour d\'un plat', '+15 à +20 % de ventes', 'Cornell University'],
-                  ['Prix sans symbole €', '+8 % de dépenses moy.', 'Cornell University (2009)'],
-                  ['Description sensorielle 5–8 mots', '+27 % de ventes du plat', 'Cornell University (2010)'],
-                  ['Max 7 ± 2 choix par catégorie', 'Réduit la paralysie décisionnelle', 'Loi de Hick'],
-                  ['Photos haute qualité', 'Augmente la crédibilité', 'Études comportementales'],
-                ].map(([levier, impact, source]) => (
-                  <tr key={levier} className="bg-white hover:bg-[#FAFAFA] transition-colors">
-                    <td className="px-4 py-3 text-[#374151]">{levier}</td>
-                    <td className="px-4 py-3 text-center font-semibold text-teal-700">{impact}</td>
-                    <td className="px-4 py-3 text-[#737373] text-xs">{source}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <p className="text-[#374151] leading-relaxed mb-3"><strong>STARS :</strong></p>
+          <ul className="space-y-2 text-[#374151] mb-4">
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Mettre en gras ou avec encadré sur la carte</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Position en haut à droite (zone de regard naturel)</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Recommandation systématique par les serveurs</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Surveillance étroite des coûts matières</li>
+          </ul>
+          <p className="text-[#374151] leading-relaxed mb-3"><strong>VACHES À LAIT :</strong></p>
+          <ul className="space-y-2 text-[#374151] mb-4">
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> Reformulation discrète (parmesan → pecorino moins cher)</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> Test d'augmentation +0,50 € à +1 €</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> Conservation : ne pas supprimer, base de la fréquentation</li>
+          </ul>
+          <p className="text-[#374151] leading-relaxed mb-3"><strong>PUZZLES :</strong></p>
+          <ul className="space-y-2 text-[#374151] mb-4">
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500 inline-block" /> Renommer pour valoriser ("Black Angus 280g, jus à la moelle")</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500 inline-block" /> Description riche : provenance, méthode</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500 inline-block" /> Position centrale, suggestion serveurs</li>
+          </ul>
+          <p className="text-[#374151] leading-relaxed mb-3"><strong>CHIENS :</strong></p>
+          <p className="text-[#374151] leading-relaxed">
+            Supprimer dans 90 % des cas. Conserver uniquement : plat signature historique, option végé/sans gluten, plat absorbant un produit en stock.
+          </p>
+        </section>
+
+        {/* Section 6 */}
+        <section id="design-carte" className="mb-12">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
+              <Layout className="w-5 h-5 text-purple-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-[#111111]">6. Design de la carte : où placer les Stars</h2>
           </div>
-          <div className="bg-red-50 border border-red-100 rounded-xl p-4">
-            <p className="text-sm font-semibold text-red-700 mb-2">À éviter absolument</p>
-            <ul className="space-y-1 text-sm text-red-600">
-              {[
-                'Prix en colonne alignée → facilite la comparaison, oriente vers le moins cher',
-                'Photos de mauvaise qualité → discrédite le plat et l\'établissement',
-                'Descriptions génériques ("servi avec frites ou salade")',
-              ].map(i => <li key={i}>• {i}</li>)}
-            </ul>
+          <p className="text-[#374151] leading-relaxed mb-4">
+            Des études d'eye-tracking ont identifié les <strong>zones de focus</strong> sur une carte de restaurant.
+          </p>
+          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+            <div>┌────────────────────────┐</div>
+            <div>│ HOT ZONE  │ SWEET SPOT │</div>
+            <div>│ haut G    │ haut D     │</div>
+            <div>│           │ ★ Star n°1 │</div>
+            <div>├───────────┼────────────┤</div>
+            <div>│ Neutre    │ HOT ZONE   │</div>
+            <div>│ centre    │            │</div>
+            <div>├───────────┼────────────┤</div>
+            <div>│ FROIDE    │ Neutre     │</div>
+            <div>│ bas G     │ bas D      │</div>
+            <div>└────────────────────────┘</div>
+          </div>
+          <p className="text-[#374151] leading-relaxed mb-3"><strong>Techniques de mise en valeur :</strong></p>
+          <ul className="space-y-2 text-[#374151] mb-4">
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500 inline-block" /> Encadré ou couleur différente (max 3-5 Stars)</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500 inline-block" /> Pas de symbole € ("22" au lieu de "22 €", +12 % ventes)</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500 inline-block" /> Pas d'alignement vertical des prix</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500 inline-block" /> Format court (max 25 plats, sinon paralysie du choix)</li>
+          </ul>
+          <div className="border-l-4 border-red-400 bg-red-50 rounded-r-xl p-4">
+            <p className="text-sm font-semibold text-red-700">À éviter</p>
+            <p className="text-sm text-red-600">Soulignement de tous les prix · Plus de 30 plats · Photos pour tous les plats (effet fast-food) · Pas de rotation saisonnière.</p>
           </div>
         </section>
 
         {/* FAQ */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
-          <div className="space-y-4">
+          <div className="space-y-5">
             {[
-              { q: 'À quelle fréquence faire une analyse de menu engineering ?', a: 'Idéalement tous les 3 mois, ou après chaque changement de carte saisonnière. Une analyse annuelle est le minimum. Les données de caisse des 3 derniers mois suffisent.' },
-              { q: 'Mon restaurant a 20 couverts. Est-ce pertinent ?', a: 'Encore plus. Un petit restaurant a moins de marge d\'erreur. Éliminer 2 Dogs et transformer 1 Plowhorse en Star peut représenter 500 à 1 000 € de marge supplémentaire par mois.' },
-              { q: 'Que faire d\'un plat iconique avec un mauvais food cost ?', a: 'Gardez-le en Plowhorse mais travaillez à améliorer sa marge progressivement. Un plat iconique crée de la fidélité et une valeur d\'image qu\'une analyse purement chiffrée ne capture pas.' },
-              { q: 'Comment calculer le seuil de popularité ?', a: 'Seuil = 70 % × (1 / nombre de plats dans la catégorie). Pour 8 entrées : 70 % × 12,5 % = 8,75 %. Une entrée vendue à plus de 8,75 % des couverts est "populaire".' },
+              {
+                q: "Combien de plats Stars devrais-je avoir sur ma carte ?",
+                a: "Idéalement 4 à 7 Stars sur une carte de 20-25 plats. Au-delà de 8, vos serveurs ne pourront pas tous les valoriser. En dessous de 3, vous manquez de différenciation."
+              },
+              {
+                q: "Faut-il vraiment supprimer tous les Chiens ?",
+                a: "Non. Conservez 1 ou 2 plats signature à valeur émotionnelle (le plat de la grand-mère du chef) et les options nécessaires (végé, sans gluten). Mais supprimez tout le reste."
+              },
+              {
+                q: "À quelle fréquence faire le menu engineering ?",
+                a: "Trimestriellement pour une analyse approfondie, mensuellement pour un suivi rapide. Si vous changez de fournisseur ou que vos coûts évoluent de plus de 5 %, refaites un calcul immédiatement."
+              },
+              {
+                q: "Comment tester une augmentation de prix sans risque ?",
+                a: "Augmentez 1 ou 2 plats à la fois, de 0,50 à 1 €, et mesurez les ventes sur 4 semaines. Si la baisse de volume est inférieure à 10 %, l'augmentation est rentable."
+              },
+              {
+                q: "Est-ce que ça fonctionne aussi pour les boissons ?",
+                a: "Oui, et c'est même très puissant. Les boissons (vins au verre, cocktails, softs) ont souvent les plus belles marges contribution (12-22 €/cocktail) et méritent leur propre matrice."
+              }
             ].map(({ q, a }) => (
               <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
                 <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-sm text-[#525252] leading-relaxed">{a}</p>
+                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* CTA */}
-        <div className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-8 text-center text-white">
-          <h2 className="text-2xl font-bold mb-3">Analysez votre carte en quelques clics</h2>
-          <p className="text-purple-100 mb-6 text-sm max-w-[480px] mx-auto leading-relaxed">
-            RestauMargin calcule la marge brute de chaque plat et vous classe automatiquement vos Stars, Plowhorses, Puzzles et Dogs — pour des décisions de carte basées sur vos chiffres réels.
+        <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 text-center text-white">
+          <h2 className="text-2xl font-bold mb-3">Identifiez vos Stars en un clic</h2>
+          <p className="text-teal-100 mb-6 text-sm leading-relaxed max-w-[480px] mx-auto">
+            RestauMargin calcule automatiquement la marge contribution par plat et génère votre matrice Boston en temps réel à partir de votre caisse + fiches techniques.
           </p>
-          <a href="https://www.restaumargin.fr/pricing" className="inline-flex items-center gap-2 bg-white text-purple-700 font-semibold px-6 py-3 rounded-xl hover:bg-purple-50 transition-colors text-sm">
+          <a
+            href="https://www.restaumargin.fr/pricing"
+            className="inline-flex items-center gap-2 bg-white text-teal-700 font-semibold px-6 py-3 rounded-xl hover:bg-teal-50 transition-colors text-sm"
+          >
             Essayer gratuitement <ArrowRight className="w-4 h-4" />
           </a>
         </div>
 
+        {/* Nav bas */}
         <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
-          <Link to="/blog/seuil-rentabilite-restaurant" className="text-sm text-teal-600 hover:underline">Seuil de rentabilité →</Link>
+          <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>
       </main>
     </div>

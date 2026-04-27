@@ -136,7 +136,7 @@ describe('POST /api/auth/register', () => {
     expect(res.status).toHaveBeenCalledWith(201);
   });
 
-  it('assigns basic plan + 14d trial when no activation code', async () => {
+  it('assigns basic plan + 7d trial when no activation code', async () => {
     const req = makeReq({
       email: 'newbie@bistro.fr',
       password: 'StrongPass1',
@@ -150,8 +150,8 @@ describe('POST /api/auth/register', () => {
     const days = Math.round(
       (mockPrismaState.createdUser.trialEndsAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000)
     );
-    expect(days).toBeGreaterThanOrEqual(13);
-    expect(days).toBeLessThanOrEqual(14);
+    expect(days).toBeGreaterThanOrEqual(6);
+    expect(days).toBeLessThanOrEqual(7);
   });
 
   it('returns 403 on already-used activation code', async () => {

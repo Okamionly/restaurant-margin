@@ -36,6 +36,39 @@
   background: #000000;
 }
 
+/* ── Mobile : prevent iOS Safari zoom on text inputs (must be 16px+) ───── */
+@media (max-width: 640px) {
+  input[type="text"]:not([disabled]),
+  input[type="email"]:not([disabled]),
+  input[type="password"]:not([disabled]),
+  input[type="number"]:not([disabled]),
+  input[type="tel"]:not([disabled]),
+  input[type="url"]:not([disabled]),
+  input[type="search"]:not([disabled]),
+  input[type="date"]:not([disabled]),
+  input[type="datetime-local"]:not([disabled]),
+  input[type="time"]:not([disabled]),
+  input:not([type]):not([disabled]),
+  textarea:not([disabled]),
+  select:not([disabled]) {
+    font-size: 16px !important;
+  }
+}
+
+/* ── Mobile : ensure all interactive elements meet 44x44 touch target ──── */
+@media (hover: none) and (pointer: coarse) {
+  button:not([data-no-touch-min]),
+  [role="button"]:not([data-no-touch-min]),
+  a.btn:not([data-no-touch-min]) {
+    min-height: 44px;
+  }
+}
+
+/* ── Prevent horizontal overflow on mobile (catch-all safety net) ──────── */
+html, body {
+  overflow-x: hidden;
+}
+
 /* ── Staggered reveal animations ───────────────────────────────────────── */
 @keyframes luxFadeInUp {
   from { opacity: 0; transform: translateY(16px); }
@@ -98,7 +131,7 @@
     @apply bg-white text-mono-100 px-4 py-2 min-h-[44px] rounded-xl font-medium border border-mono-900 hover:bg-mono-950 transition-colors dark:bg-mono-200 dark:text-mono-white dark:border-mono-200 dark:hover:bg-mono-300;
   }
   .input {
-    @apply border border-mono-900 rounded-xl px-3 py-2 text-sm
+    @apply border border-mono-900 rounded-xl px-3 py-2 min-h-[44px] text-base sm:text-sm
       focus:outline-none focus:ring-2 focus:ring-mono-600/40 focus:border-mono-400 focus:shadow-[0_0_0_3px_rgba(17,17,17,0.08)]
       transition-all duration-200 ease-out
       bg-white text-mono-100

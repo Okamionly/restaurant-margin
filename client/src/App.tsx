@@ -687,7 +687,7 @@ function AppLayout() {
             <button
               onClick={() => setMobileMenuOpen(false)}
               aria-label="Fermer le menu"
-              className="absolute top-4 right-3 p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+              className="absolute top-3 right-3 inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
             >
               <X className="w-5 h-5" />
             </button>
@@ -703,7 +703,7 @@ function AppLayout() {
           <button
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Ouvrir le menu"
-            className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+            className="inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
           >
             <Menu className="w-5 h-5" />
           </button>
@@ -712,7 +712,7 @@ function AppLayout() {
             <span className="font-bold text-[#111111] dark:text-white">RestauMargin</span>
           </div>
           <div className="flex items-center gap-1">
-              <button onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", ctrlKey: true }); window.dispatchEvent(e); }} aria-label="Rechercher" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"><Search className="w-5 h-5 text-[#6B7280] dark:text-[#737373]" /></button>
+              <button onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", ctrlKey: true }); window.dispatchEvent(e); }} aria-label="Rechercher" className="inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"><Search className="w-5 h-5 text-[#6B7280] dark:text-[#737373]" /></button>
               <NotificationCenter />
             </div>
         </header>

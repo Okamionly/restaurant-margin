@@ -1,22 +1,21 @@
 /**
- * @file client/src/components/landing/ShaderBackground.tsx
- * Curves shader wallpaper for the landing page background.
+ * @file client/src/components/landing/PaperFoldBackground.tsx
+ * Paper Fold shader — folded paper texture with neon emerald creases.
  *
- * Ported verbatim from the claude.ai/design "Shader wallpapers" project
- * (CURVES variant) — six emerald price-curve lines drifting horizontally,
- * gently bending toward the cursor on desktop. The cursor reaction is
- * decorative; default mouse position keeps the curves animated even when
- * the user doesn't move the pointer.
+ * Verbatim port of the PAPER_FOLD fragment shader (variant 1) from the
+ * claude.ai/design "Shader wallpapers" pack (variant Light).
  *
- * Implementation notes:
- *   - WebGL1 (most permissive — older devices, iOS Safari, etc.).
- *   - Honours prefers-reduced-motion (renders one static frame, no RAF).
- *   - Pauses when the tab is hidden (Page Visibility API) → no battery drain.
- *   - Falls back to a CSS radial gradient when WebGL is unavailable.
- *   - Position absolute + pointer-events-none so it never blocks UI.
+ * What you see:
+ *   - A soft folded-paper texture (two paper tones blended through fbm noise)
+ *   - Sharp ink creases where the folds bend hardest
+ *   - A subtle emerald "neon" accent that lights the creases nearest the cursor
  *
- * Usage:
- *   <ShaderBackground intensity={0.6} />
+ * Difference from MINT_MIST :
+ *   - PAPER_FOLD has visible paper folds (sin(n1*8 + n2*3)) → strong texture
+ *   - MINT_MIST is just diffuse mint clouds → much softer
+ *
+ * Implementation : WebGL1 (broad device support), prefers-reduced-motion
+ * fallback, Page Visibility pause, ResizeObserver, CSS gradient fallback.
  */
 
 import { useEffect, useRef } from 'react';
@@ -26,8 +25,6 @@ attribute vec2 a_position;
 void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
 `;
 
-// Curves shader — verbatim port of the claude.design "curves" wallpaper,
-// minus u_click (we don't render ripples on click in this background variant).
 const FRAG = `
 precision highp float;
 uniform vec2 u_resolution;
@@ -43,51 +40,53 @@ float noise(vec2 p){
   vec2 u=f*f*(3.-2.*f);
   return mix(mix(a,b,u.x), mix(c,d,u.x), u.y);
 }
-float fbm(vec2 p){ float v=0., a=0.5; for(int i=0;i<4;i++){ v+=a*noise(p); p*=2.0; a*=0.5; } return v; }
+float fbm(vec2 p){ float v=0., a=0.5; for(int i=0;i<5;i++){ v+=a*noise(p); p*=2.0; a*=0.5; } return v; }
 
 void main(){
-  vec2 uv = gl_FragCoord.xy / u_resolution;
-  vec2 suv = (gl_FragCoord.xy - 0.5*u_resolution) / u_resolution.y;
-  vec2 m = u_mouse;
+  vec2 uv = (gl_FragCoord.xy - 0.5*u_resolution)/u_resolution.y;
+  vec2 m = (u_mouse - 0.5)*vec2(u_resolution.x/u_resolution.y, 1.0);
 
-  vec3 paper   = vec3(0.985, 0.982, 0.962);
-  vec3 emerald = vec3(0.000, 1.000, 0.785);
-  vec3 emLight = vec3(0.000, 0.880, 1.000);
+  vec2 d = uv - m;
+  float r = length(d);
+  // Paper bends toward cursor — local warp.
+  vec2 p = uv + (-d * exp(-r*2.5) * 0.18);
 
-  vec3 col = paper;
+  float t = u_time*0.05;
+  float n1 = fbm(p*1.5 + t);
+  float n2 = fbm(p*4.0 - t*0.5 + n1);
+  // Folds : sine of layered noise creates wavefront-like crease pattern.
+  float folds = sin(n1*8.0 + n2*3.0);
 
-  for(int i = 0; i < 6; i++){
-    float fi = float(i);
-    float yBase = 0.18 + fi * 0.13;
-    float w = fbm(vec2(uv.x * 2.5 + u_time * 0.06 + fi * 4.0, fi));
-    float dx = uv.x - m.x;
-    float bend = (m.y - yBase) * exp(-dx * dx * 5.0) * 0.5;
-    float y = yBase + w * 0.04 + bend;
-    float dy = abs(uv.y - y);
+  vec3 paper   = vec3(0.985, 0.978, 0.955);   // top sheet
+  vec3 paper2  = vec3(0.945, 0.940, 0.915);   // shadowed under-fold
+  vec3 ink     = vec3(0.078, 0.125, 0.102);   // dark crease ink
+  vec3 emerald = vec3(0.000, 1.000, 0.785);   // neon accent
 
-    float thickness = 0.0015 + fi * 0.0004;
-    float line = smoothstep(thickness * 1.5, 0.0, dy);
-    vec3 c = mix(emLight, emerald, fi / 5.0);
-    col = mix(col, c, line * 0.7 * u_intensity);
+  vec3 col = mix(paper, paper2, smoothstep(-0.2, 0.6, folds));
 
-    // Soft halo so curves feel airy, not pixel-thin.
-    col = mix(col, c, smoothstep(0.04, 0.0, dy) * 0.06 * u_intensity);
-  }
+  // Sharp dark creases
+  float crease = smoothstep(0.92, 0.99, abs(folds));
+  col = mix(col, ink, crease * 0.10 * u_intensity);
 
-  // Subtle vignette — keeps the centre brighter than the edges.
-  col *= 1.0 - 0.10 * length(suv);
+  // Emerald accent on creases close to cursor — that's the "neon" the user
+  // asked for in light mode.
+  float emCrease = smoothstep(0.85, 0.99, folds) * smoothstep(0.4, 0.0, r);
+  col = mix(col, emerald, emCrease * 0.55 * u_intensity);
+
+  // Soft vignette
+  col *= 1.0 - 0.12 * length(uv);
   gl_FragColor = vec4(col, 1.0);
 }
 `;
 
 interface Props {
-  /** Visual saturation of the curves. 0.4 (subtle) to 1.0 (bold). Default 0.7. */
+  /** Visual saturation. 0.4 (whisper) to 1.0 (bold). Default 1.0. */
   intensity?: number;
-  /** Extra Tailwind classes for the wrapper. */
+  /** Extra Tailwind classes. */
   className?: string;
 }
 
-export default function ShaderBackground({ intensity = 0.7, className = '' }: Props) {
+export default function PaperFoldBackground({ intensity = 1.0, className = '' }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -98,9 +97,8 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const gl = canvas.getContext('webgl', { antialias: false, premultipliedAlpha: false });
-    if (!gl) return; // CSS fallback below handles unsupported browsers
+    if (!gl) return;
 
-    // ── Compile shaders ───────────────────────────────────────────────
     const compile = (type: number, source: string): WebGLShader | null => {
       const shader = gl.createShader(type);
       if (!shader) return null;
@@ -108,7 +106,7 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
         // eslint-disable-next-line no-console
-        console.warn('Shader compile failed:', gl.getShaderInfoLog(shader));
+        console.warn('[PaperFold] shader compile failed:', gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
       }
@@ -126,12 +124,11 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       // eslint-disable-next-line no-console
-      console.warn('Program link failed:', gl.getProgramInfoLog(program));
+      console.warn('[PaperFold] program link failed:', gl.getProgramInfoLog(program));
       return;
     }
     gl.useProgram(program);
 
-    // ── Fullscreen quad ───────────────────────────────────────────────
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(
@@ -149,16 +146,15 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
     const uIntensity = gl.getUniformLocation(program, 'u_intensity');
     gl.uniform1f(uIntensity, intensity);
 
-    // ── Mouse handling (smoothed) ─────────────────────────────────────
     const mouse = { x: 0.5, y: 0.5 };
     const target = { x: 0.5, y: 0.5 };
     const onMove = (e: PointerEvent) => {
-      target.x = e.clientX / window.innerWidth;
-      target.y = 1.0 - e.clientY / window.innerHeight;
+      const rect = wrapper.getBoundingClientRect();
+      target.x = (e.clientX - rect.left) / rect.width;
+      target.y = 1.0 - (e.clientY - rect.top) / rect.height;
     };
     window.addEventListener('pointermove', onMove, { passive: true });
 
-    // ── Resize handling ───────────────────────────────────────────────
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const resize = () => {
       const w = wrapper.clientWidth;
@@ -174,7 +170,6 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
     const ro = new ResizeObserver(resize);
     ro.observe(wrapper);
 
-    // ── Render loop ───────────────────────────────────────────────────
     let raf = 0;
     let start = performance.now();
     let visible = true;
@@ -183,14 +178,12 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
     const onVisibility = () => {
       visible = !document.hidden;
       if (visible) {
-        // Resync time so animation continues smoothly after pause.
         start = performance.now() - elapsed * 1000;
         raf = requestAnimationFrame(loop);
       }
     };
     const loop = (now: number) => {
       elapsed = (now - start) / 1000;
-      // Smooth mouse for that lazy lerp feel from the original demo.
       mouse.x += (target.x - mouse.x) * 0.08;
       mouse.y += (target.y - mouse.y) * 0.08;
       gl.uniform1f(uTime, elapsed);
@@ -226,9 +219,9 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
       aria-hidden="true"
       className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}
       style={{
-        // CSS fallback so the section is never visually empty even if WebGL fails.
+        // CSS fallback
         background:
-          'radial-gradient(ellipse at 30% 30%, #ECFDF5 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, #DCFCE7 0%, transparent 60%)',
+          'radial-gradient(ellipse at 30% 40%, #F5F2EC 0%, transparent 55%), radial-gradient(ellipse at 70% 60%, #ECF7F1 0%, transparent 60%)',
       }}
     >
       <canvas ref={canvasRef} className="block w-full h-full" />

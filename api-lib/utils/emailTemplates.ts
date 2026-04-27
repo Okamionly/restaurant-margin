@@ -839,7 +839,7 @@ ${header('RestauMargin', 'Votre essai a expir&eacute;')}
 <tr><td style="padding:30px 25px 10px;">
   <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
   <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
-    Votre essai gratuit de 14 jours est termin&eacute;. Votre compte est d&eacute;sactiv&eacute;,
+    Votre essai gratuit de 7 jours est termin&eacute;. Votre compte est d&eacute;sactiv&eacute;,
     mais <strong style="color:${DARK};">vos donn&eacute;es sont conserv&eacute;es 30 jours</strong>.
   </p>
 </td></tr>
@@ -1389,7 +1389,7 @@ export function buildCampaignEmail(restaurant: CampaignRestaurant, cuisineType?:
     </td></tr>
     <tr><td align="center" style="padding:14px 0 0;">
       <p style="color:#6b7280;font-family:'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;margin:0;line-height:1.6;">
-        14 jours gratuits &bull; Sans carte bancaire &bull; Annulation libre
+        7 jours gratuits &bull; Sans carte bancaire &bull; Annulation libre
       </p>
     </td></tr>
     <tr><td align="center" style="padding:6px 0 0;">

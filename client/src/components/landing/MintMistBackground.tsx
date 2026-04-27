@@ -1,22 +1,24 @@
 /**
- * @file client/src/components/landing/ShaderBackground.tsx
- * Curves shader wallpaper for the landing page background.
+ * @file client/src/components/landing/MintMistBackground.tsx
+ * Mint Mist shader — soft mint clouds with subtle neon spotlight reaction.
  *
- * Ported verbatim from the claude.ai/design "Shader wallpapers" project
- * (CURVES variant) — six emerald price-curve lines drifting horizontally,
- * gently bending toward the cursor on desktop. The cursor reaction is
- * decorative; default mouse position keeps the curves animated even when
- * the user doesn't move the pointer.
+ * Verbatim port of the MINT_MIST fragment shader from the claude.ai/design
+ * "Shader wallpapers" pack (variant Light). Different from CURVES :
+ *   - CURVES draws horizontal lines that bend toward cursor
+ *   - MINT_MIST paints diffuse mint/cyan clouds (FBM noise) with a soft
+ *     emerald spotlight under the cursor
  *
- * Implementation notes:
- *   - WebGL1 (most permissive — older devices, iOS Safari, etc.).
- *   - Honours prefers-reduced-motion (renders one static frame, no RAF).
- *   - Pauses when the tab is hidden (Page Visibility API) → no battery drain.
- *   - Falls back to a CSS radial gradient when WebGL is unavailable.
- *   - Position absolute + pointer-events-none so it never blocks UI.
+ * Use case in the landing :
+ *   - CURVES sits OUTSIDE the browser frame as the wallpaper extérieur
+ *   - MINT_MIST sits INSIDE the browser frame, behind the hero copy, so
+ *     the centre of the page glows softly mint-cyan rather than being flat
  *
- * Usage:
- *   <ShaderBackground intensity={0.6} />
+ * Implementation :
+ *   - WebGL1 (broad device support — same as CURVES sibling)
+ *   - prefers-reduced-motion → static frame, no RAF
+ *   - Page Visibility API → pauses on tab hidden
+ *   - CSS radial gradient fallback if WebGL unavailable
+ *   - aria-hidden + pointer-events-none → never blocks UI
  */
 
 import { useEffect, useRef } from 'react';
@@ -26,8 +28,9 @@ attribute vec2 a_position;
 void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
 `;
 
-// Curves shader — verbatim port of the claude.design "curves" wallpaper,
-// minus u_click (we don't render ripples on click in this background variant).
+// MINT_MIST — verbatim port from claude.design "Shader wallpapers" pack.
+// Two FBM noise layers, paper base + mint clouds layer, with an emerald
+// spotlight that follows the (smoothed) cursor.
 const FRAG = `
 precision highp float;
 uniform vec2 u_resolution;
@@ -43,51 +46,52 @@ float noise(vec2 p){
   vec2 u=f*f*(3.-2.*f);
   return mix(mix(a,b,u.x), mix(c,d,u.x), u.y);
 }
-float fbm(vec2 p){ float v=0., a=0.5; for(int i=0;i<4;i++){ v+=a*noise(p); p*=2.0; a*=0.5; } return v; }
+float fbm(vec2 p){ float v=0., a=0.5; for(int i=0;i<5;i++){ v+=a*noise(p); p*=2.0; a*=0.5; } return v; }
 
 void main(){
-  vec2 uv = gl_FragCoord.xy / u_resolution;
-  vec2 suv = (gl_FragCoord.xy - 0.5*u_resolution) / u_resolution.y;
-  vec2 m = u_mouse;
+  vec2 uv = (gl_FragCoord.xy - 0.5*u_resolution)/u_resolution.y;
+  vec2 m = (u_mouse - 0.5)*vec2(u_resolution.x/u_resolution.y, 1.0);
 
-  vec3 paper   = vec3(0.985, 0.982, 0.962);
-  vec3 emerald = vec3(0.000, 1.000, 0.785);
-  vec3 emLight = vec3(0.000, 0.880, 1.000);
+  vec2 d = uv - m;
+  float r = length(d);
+  // Faster drift so the animation is unmistakably visible at first glance.
+  vec2 p = uv*1.2 + vec2(u_time*0.06, -u_time*0.04);
+  p += -d * exp(-r*1.8) * 0.30;
+
+  float n = fbm(p*1.8);
+  float n2 = fbm(p*3.5 + n*0.6);
+  // Second layer that drifts in the opposite direction — gives the mist
+  // a sense of depth (foreground / background clouds passing each other).
+  float n3 = fbm(p*2.4 - vec2(u_time*0.04, u_time*0.03));
+
+  vec3 paper   = vec3(0.985, 0.985, 0.972);
+  vec3 mint    = vec3(0.580, 0.945, 0.985);   // brighter cyan-mint
+  vec3 cyan    = vec3(0.380, 0.870, 0.965);   // electric cyan accent
+  vec3 emerald = vec3(0.020, 0.980, 0.750);   // neon emerald
 
   vec3 col = paper;
+  // Mint clouds (broader / more opaque so they read at a glance)
+  col = mix(col, mint, smoothstep(0.30, 0.80, n2) * 0.85 * u_intensity);
+  // Cyan accent on the second layer — only the brighter cells lift to neon
+  col = mix(col, cyan, smoothstep(0.55, 0.90, n3) * 0.45 * u_intensity);
+  // Emerald spotlight under cursor (brighter for the "neon fluo" the user asked)
+  float spot = exp(-r*2.5);
+  col = mix(col, emerald, spot * 0.35 * u_intensity);
 
-  for(int i = 0; i < 6; i++){
-    float fi = float(i);
-    float yBase = 0.18 + fi * 0.13;
-    float w = fbm(vec2(uv.x * 2.5 + u_time * 0.06 + fi * 4.0, fi));
-    float dx = uv.x - m.x;
-    float bend = (m.y - yBase) * exp(-dx * dx * 5.0) * 0.5;
-    float y = yBase + w * 0.04 + bend;
-    float dy = abs(uv.y - y);
-
-    float thickness = 0.0015 + fi * 0.0004;
-    float line = smoothstep(thickness * 1.5, 0.0, dy);
-    vec3 c = mix(emLight, emerald, fi / 5.0);
-    col = mix(col, c, line * 0.7 * u_intensity);
-
-    // Soft halo so curves feel airy, not pixel-thin.
-    col = mix(col, c, smoothstep(0.04, 0.0, dy) * 0.06 * u_intensity);
-  }
-
-  // Subtle vignette — keeps the centre brighter than the edges.
-  col *= 1.0 - 0.10 * length(suv);
+  // Soft edge wash so the centre glows brightest.
+  col *= 1.0 - 0.12 * length(uv);
   gl_FragColor = vec4(col, 1.0);
 }
 `;
 
 interface Props {
-  /** Visual saturation of the curves. 0.4 (subtle) to 1.0 (bold). Default 0.7. */
+  /** Visual saturation. 0.4 (whisper) to 1.0 (bold). Default 0.7. */
   intensity?: number;
   /** Extra Tailwind classes for the wrapper. */
   className?: string;
 }
 
-export default function ShaderBackground({ intensity = 0.7, className = '' }: Props) {
+export default function MintMistBackground({ intensity = 0.7, className = '' }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -98,9 +102,8 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const gl = canvas.getContext('webgl', { antialias: false, premultipliedAlpha: false });
-    if (!gl) return; // CSS fallback below handles unsupported browsers
+    if (!gl) return;
 
-    // ── Compile shaders ───────────────────────────────────────────────
     const compile = (type: number, source: string): WebGLShader | null => {
       const shader = gl.createShader(type);
       if (!shader) return null;
@@ -108,7 +111,7 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
         // eslint-disable-next-line no-console
-        console.warn('Shader compile failed:', gl.getShaderInfoLog(shader));
+        console.warn('[MintMist] shader compile failed:', gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
       }
@@ -126,12 +129,11 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       // eslint-disable-next-line no-console
-      console.warn('Program link failed:', gl.getProgramInfoLog(program));
+      console.warn('[MintMist] program link failed:', gl.getProgramInfoLog(program));
       return;
     }
     gl.useProgram(program);
 
-    // ── Fullscreen quad ───────────────────────────────────────────────
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(
@@ -149,16 +151,15 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
     const uIntensity = gl.getUniformLocation(program, 'u_intensity');
     gl.uniform1f(uIntensity, intensity);
 
-    // ── Mouse handling (smoothed) ─────────────────────────────────────
     const mouse = { x: 0.5, y: 0.5 };
     const target = { x: 0.5, y: 0.5 };
     const onMove = (e: PointerEvent) => {
-      target.x = e.clientX / window.innerWidth;
-      target.y = 1.0 - e.clientY / window.innerHeight;
+      const rect = wrapper.getBoundingClientRect();
+      target.x = (e.clientX - rect.left) / rect.width;
+      target.y = 1.0 - (e.clientY - rect.top) / rect.height;
     };
     window.addEventListener('pointermove', onMove, { passive: true });
 
-    // ── Resize handling ───────────────────────────────────────────────
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const resize = () => {
       const w = wrapper.clientWidth;
@@ -174,7 +175,6 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
     const ro = new ResizeObserver(resize);
     ro.observe(wrapper);
 
-    // ── Render loop ───────────────────────────────────────────────────
     let raf = 0;
     let start = performance.now();
     let visible = true;
@@ -183,14 +183,12 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
     const onVisibility = () => {
       visible = !document.hidden;
       if (visible) {
-        // Resync time so animation continues smoothly after pause.
         start = performance.now() - elapsed * 1000;
         raf = requestAnimationFrame(loop);
       }
     };
     const loop = (now: number) => {
       elapsed = (now - start) / 1000;
-      // Smooth mouse for that lazy lerp feel from the original demo.
       mouse.x += (target.x - mouse.x) * 0.08;
       mouse.y += (target.y - mouse.y) * 0.08;
       gl.uniform1f(uTime, elapsed);
@@ -226,9 +224,9 @@ export default function ShaderBackground({ intensity = 0.7, className = '' }: Pr
       aria-hidden="true"
       className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}
       style={{
-        // CSS fallback so the section is never visually empty even if WebGL fails.
+        // CSS fallback for browsers without WebGL
         background:
-          'radial-gradient(ellipse at 30% 30%, #ECFDF5 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, #DCFCE7 0%, transparent 60%)',
+          'radial-gradient(ellipse at 30% 40%, #B8E5CD 0%, transparent 55%), radial-gradient(ellipse at 70% 60%, #B8F5FF 0%, transparent 60%)',
       }}
     >
       <canvas ref={canvasRef} className="block w-full h-full" />

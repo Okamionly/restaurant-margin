@@ -107,7 +107,7 @@ router.post('/register', validateRequest(registerRequestSchema), async (req: any
       } else {
         // Free trial: basic plan with 7-day trial period
         plan = 'basic';
-        trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+        trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
       }
     }
 

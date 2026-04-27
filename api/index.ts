@@ -5345,6 +5345,95 @@ app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
   }
 });
 
+// ── Launch PH Notify (email capture pour reminder jour-J) ──
+// Public endpoint : un visiteur sur /launch entre son email pour recevoir
+// un rappel jour-J (= 9h01 du launch sur Product Hunt). On forward l'email
+// vers la BAL perso pour traçabilité + envoi confirmation au visiteur.
+app.post('/api/launch-notify', async (req, res) => {
+  try {
+    const { email, source } = req.body as { email?: string; source?: string };
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: 'Email invalide' });
+    }
+
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) return res.json({ ok: true, queued: true });
+
+    // Forward to perso pour tracking
+    try {
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'RestauMargin Launch <contact@restaumargin.fr>',
+          to: 'mr.guessousyoussef@gmail.com',
+          replyTo: email,
+          subject: `[Launch PH] Nouveau abonné jour-J : ${email}`,
+          html: `<p>Nouveau visiteur sur <strong>/launch</strong> a demandé un rappel jour-J.</p>
+                 <p><strong>Email :</strong> ${email}</p>
+                 <p><strong>Source :</strong> ${source || 'launch-page'}</p>
+                 <p><strong>Timestamp :</strong> ${new Date().toISOString()}</p>`,
+        }),
+      });
+    } catch {}
+
+    // Confirmation au visiteur
+    try {
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'Youssef (RestauMargin) <contact@restaumargin.fr>',
+          to: email,
+          replyTo: 'contact@restaumargin.fr',
+          subject: '🚀 On t\'enverra un rappel pour notre launch Product Hunt',
+          html: `
+            <div style="font-family: -apple-system, sans-serif; max-width: 540px; margin: 0 auto; padding: 32px 24px; color: #0F172A;">
+              <div style="background: linear-gradient(135deg, #10B981 0%, #047857 100%); border-radius: 16px; padding: 24px; color: white; margin-bottom: 24px;">
+                <h1 style="margin: 0 0 8px; font-size: 24px;">Merci de ton soutien ! 🙏</h1>
+                <p style="margin: 0; opacity: 0.9;">On t'enverra un rappel pile au moment du launch.</p>
+              </div>
+              <p>Salut,</p>
+              <p>C'est Youssef, fondateur de RestauMargin.</p>
+              <p>Je voulais te remercier personnellement de t'inscrire pour suivre notre launch Product Hunt.</p>
+              <p><strong>Voici ce qui t'attend :</strong></p>
+              <ul style="line-height: 1.8;">
+                <li>Le 6 mai 2026 à 9h01 (Paris), tu recevras un email avec le lien direct</li>
+                <li>Un upvote prend 30 secondes (faut juste un compte PH gratuit)</li>
+                <li>Plus on a d'upvotes dans la 1ère heure, plus on monte dans le classement</li>
+              </ul>
+              <p style="margin-top: 24px;">En attendant, si tu veux jeter un œil au draft :</p>
+              <p style="text-align: center; margin: 32px 0;">
+                <a href="https://www.producthunt.com/products/restaumargin"
+                   style="background: #DA552F; color: white; padding: 14px 28px; border-radius: 12px; text-decoration: none; font-weight: bold; display: inline-block;">
+                  Voir le draft Product Hunt
+                </a>
+              </p>
+              <p>À très vite,<br>Youssef</p>
+              <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 32px 0;">
+              <p style="color: #737373; font-size: 13px;">
+                RestauMargin — Suivi des marges resto par IA<br>
+                <a href="https://www.restaumargin.fr" style="color: #10B981;">restaumargin.fr</a>
+              </p>
+            </div>
+          `,
+        }),
+      });
+    } catch {}
+
+    res.json({ ok: true });
+  } catch (e: any) {
+    console.error('[LAUNCH-NOTIFY]', e.message);
+    res.json({ ok: true }); // toujours OK pour UX
+  }
+});
+
 // ── Outreach Mailer (branded HTML, sent from contact@restaumargin.fr) ──
 //
 // Used for SEO link building / partnerships : journalists, syndicats, blogs

@@ -2061,6 +2061,58 @@ function Navbar() {
   );
 }
 
+/**
+ * Sticky banner top "Coming soon on Product Hunt".
+ * Drives traffic vers /launch pour capturer les emails early supporters.
+ * Dismissible via localStorage (réapparait après 7 jours).
+ */
+function PHLaunchBanner() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const dismissed = localStorage.getItem('ph_banner_dismissed_at');
+    if (dismissed) {
+      const age = Date.now() - parseInt(dismissed, 10);
+      if (age < 7 * 24 * 60 * 60 * 1000) return; // 7 jours
+    }
+    setShow(true);
+  }, []);
+
+  const dismiss = () => {
+    localStorage.setItem('ph_banner_dismissed_at', String(Date.now()));
+    setShow(false);
+  };
+
+  if (!show) return null;
+  return (
+    <div className="fixed top-0 inset-x-0 z-[55] bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
+        <Link to="/launch" className="flex-1 flex items-center gap-2 sm:gap-3 hover:opacity-90 transition-opacity">
+          <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/20 backdrop-blur text-xs font-bold uppercase tracking-wider">
+            🚀 Bientôt
+          </span>
+          <span className="text-sm sm:text-base font-semibold">
+            <span className="sm:hidden">🚀 </span>
+            On lance sur <strong className="font-extrabold">Product Hunt le 6 mai</strong>
+            <span className="hidden sm:inline"> — sois prévenu·e jour-J</span>
+          </span>
+          <span className="ml-auto text-sm font-bold opacity-90 hover:opacity-100 underline-offset-2 hover:underline">
+            En savoir plus →
+          </span>
+        </Link>
+        <button
+          onClick={dismiss}
+          className="p-1 rounded-full hover:bg-white/10 transition-colors flex-shrink-0"
+          aria-label="Fermer la bannière"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ScrollProgressBar() {
   const [p, setP] = useState(0);
   useEffect(() => {
@@ -2245,6 +2297,7 @@ export default function Landing() {
       />
       <StructuredData />
       <ScrollProgressBar />
+      <PHLaunchBanner />
 
       {/* Animated paper-fold green WebGL2 wallpaper — fixed full-page, sits behind everything.
           Visible on the sides and corners outside of the centred browser frame on lg+ viewports. */}

@@ -102,6 +102,7 @@ const CGU = lazyRetry(() => import('./pages/CGU'));
 const Pricing = lazyRetry(() => import('./pages/Pricing'));
 const ResetPassword = lazyRetry(() => import('./pages/ResetPassword'));
 const FoodCostCalculator = lazyRetry(() => import('./pages/FoodCostCalculator'));
+const LaunchPH = lazyRetry(() => import('./pages/LaunchPH'));
 const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
 const BlogIndex = lazyRetry(() => import('./pages/BlogIndex'));
 const APropos = lazyRetry(() => import('./pages/APropos'));
@@ -1018,6 +1019,7 @@ function App() {
           <Route path="/pricing" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><Pricing /></Suspense>} />
           <Route path="/reset-password" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><ResetPassword /></Suspense>} />
           <Route path="/outils/calculateur-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><FoodCostCalculator /></Suspense>} />
+          <Route path="/launch" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><LaunchPH /></Suspense>} />
           <Route path="/outils/generateur-qr-menu" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><QRCodeGenerator /></Suspense>} />
           <Route path="/blog" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogIndex /></Suspense>} />
           <Route path="/guide-marge/:slug" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><NicheLanding /></Suspense>} />

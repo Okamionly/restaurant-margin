@@ -1,0 +1,1 @@
+3 articles enrichis publiés le 2026-04-27 : fifo-lifo-stocks-restaurant, seuil-rentabilite-restaurant, menu-engineering-boston-matrix. Enrichissements : hero image, tags SEO, JSON-LD avec keywords/about/FAQPage, tableaux comparatifs HTML, données chiffrées.

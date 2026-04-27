@@ -6,7 +6,7 @@
  * Match exact des screenshots claude.design partagés par l'utilisateur.
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ChefHat, Menu, X as XIcon, ArrowRight, Calculator, X, Check,
@@ -18,7 +18,10 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SEOHead from '../components/SEOHead';
 import ShaderBackground from '../components/landing/ShaderBackground';
-import PaperFoldBackground from '../components/landing/PaperFoldBackground';
+// PaperFoldBackground = WebGL2 shader = ~30KB + GPU work that blocks the main
+// thread during landing FCP. We lazy-load it so the LCP text renders first;
+// the shader fades in once React has finished initial paint.
+const PaperFoldBackground = lazy(() => import('../components/landing/PaperFoldBackground'));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -642,7 +645,9 @@ function HeroSection() {
           no veil needed on top. `isolate` on the parent + z-0 here creates
           a fresh stacking context so the negative z-index of nothing below
           us can clip the canvas. */}
-      <PaperFoldBackground intensity={1.0} className="z-0" />
+      <Suspense fallback={<div className="absolute inset-0 z-0 bg-[#FAFAF7]" />}>
+        <PaperFoldBackground intensity={1.0} className="z-0" />
+      </Suspense>
       {/* Scroll parallax stub — visible above the shader, transparent. */}
       <div
         ref={bgRef}

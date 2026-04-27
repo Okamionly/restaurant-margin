@@ -5114,12 +5114,22 @@ app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
     }
 
     // 2. Price changes — significant changes in last 30 days
+    // NOTE: PriceHistory n'a pas de relation Prisma `ingredient` — fetch manuellement par ingredientId
     const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
     const priceHistory = await prisma.priceHistory.findMany({
       where: { restaurantId: rid, createdAt: { gte: thirtyDaysAgo } },
-      include: { ingredient: { select: { id: true, name: true, unit: true, pricePerUnit: true } } },
       orderBy: { createdAt: 'asc' },
     });
+    const ingIdsForPrice = [...new Set(priceHistory.map(h => h.ingredientId))];
+    const ingredientsForPrice = ingIdsForPrice.length
+      ? await prisma.ingredient.findMany({
+          where: { id: { in: ingIdsForPrice } },
+          select: { id: true, name: true, unit: true, pricePerUnit: true },
+        })
+      : [];
+    const ingMap: Record<number, { id: number; name: string; unit: string; pricePerUnit: number }> = {};
+    ingredientsForPrice.forEach(i => { ingMap[i.id] = i; });
+
     const byIngredient: Record<number, any[]> = {};
     priceHistory.forEach(h => {
       if (!byIngredient[h.ingredientId]) byIngredient[h.ingredientId] = [];
@@ -5127,6 +5137,8 @@ app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
     });
     for (const [ingId, records] of Object.entries(byIngredient)) {
       if (records.length < 2) continue;
+      const ing = ingMap[Number(ingId)];
+      if (!ing) continue;
       const oldest = records[0];
       const newest = records[records.length - 1];
       const change = ((newest.price - oldest.price) / oldest.price) * 100;
@@ -5135,8 +5147,8 @@ app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
         notifications.push({
           id: `price-${ingId}-${newest.id}`,
           type: 'price',
-          title: `Prix en ${direction}: ${newest.ingredient.name}`,
-          message: `${change > 0 ? '+' : ''}${change.toFixed(1)}% (${oldest.price.toFixed(2)}€ → ${newest.price.toFixed(2)}€/${newest.ingredient.unit})`,
+          title: `Prix en ${direction}: ${ing.name}`,
+          message: `${change > 0 ? '+' : ''}${change.toFixed(1)}% (${oldest.price.toFixed(2)}€ → ${newest.price.toFixed(2)}€/${ing.unit})`,
           createdAt: newest.createdAt.toISOString(),
           read: false,
           severity: Math.abs(change) >= 15 ? 'critical' : 'warning',
@@ -5222,9 +5234,17 @@ app.post('/api/notifications/send-digest', authWithRestaurant, async (req: any, 
     const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
     const priceHistory = await prisma.priceHistory.findMany({
       where: { restaurantId: rid, createdAt: { gte: thirtyDaysAgo } },
-      include: { ingredient: { select: { name: true, unit: true, pricePerUnit: true } } },
       orderBy: { createdAt: 'asc' },
     });
+    const ingIdsDigest = [...new Set(priceHistory.map(h => h.ingredientId))];
+    const ingDigestMap: Record<number, { name: string; unit: string; pricePerUnit: number }> = {};
+    if (ingIdsDigest.length) {
+      const ings = await prisma.ingredient.findMany({
+        where: { id: { in: ingIdsDigest } },
+        select: { id: true, name: true, unit: true, pricePerUnit: true },
+      });
+      ings.forEach(i => { ingDigestMap[i.id] = { name: i.name, unit: i.unit, pricePerUnit: i.pricePerUnit }; });
+    }
 
     const alerts: { type: string; title: string; detail: string }[] = [];
 
@@ -5243,13 +5263,15 @@ app.post('/api/notifications/send-digest', authWithRestaurant, async (req: any, 
       if (!byIng[h.ingredientId]) byIng[h.ingredientId] = [];
       byIng[h.ingredientId].push(h);
     });
-    for (const records of Object.values(byIng)) {
+    for (const [ingIdStr, records] of Object.entries(byIng)) {
       if (records.length < 2) continue;
+      const ing = ingDigestMap[Number(ingIdStr)];
+      if (!ing) continue;
       const oldest = records[0];
       const newest = records[records.length - 1];
       const change = ((newest.price - oldest.price) / oldest.price) * 100;
       if (Math.abs(change) >= 5) {
-        alerts.push({ type: 'Prix', title: `${newest.ingredient.name}`, detail: `${change > 0 ? '+' : ''}${change.toFixed(1)}%` });
+        alerts.push({ type: 'Prix', title: ing.name, detail: `${change > 0 ? '+' : ''}${change.toFixed(1)}%` });
       }
     }
 
@@ -5354,24 +5376,35 @@ app.get('/api/analytics/report', authWithRestaurant, async (req: any, res) => {
     }));
 
     // ── Ingredient cost trends (price history) ──
+    // NOTE: PriceHistory n'a pas de relation `ingredient` — fetch manuellement
     const priceHistory = await prisma.priceHistory.findMany({
       where: {
         restaurantId: rid,
         createdAt: { gte: prevPeriodStart },
       },
-      include: { ingredient: { select: { name: true, unit: true, pricePerUnit: true, category: true } } },
       orderBy: { createdAt: 'asc' },
     });
+    const ingIdsTrend = [...new Set(priceHistory.map(h => h.ingredientId))];
+    const ingTrendMap: Record<number, { name: string; unit: string; pricePerUnit: number; category: string }> = {};
+    if (ingIdsTrend.length) {
+      const ings = await prisma.ingredient.findMany({
+        where: { id: { in: ingIdsTrend } },
+        select: { id: true, name: true, unit: true, pricePerUnit: true, category: true },
+      });
+      ings.forEach(i => { ingTrendMap[i.id] = { name: i.name, unit: i.unit, pricePerUnit: i.pricePerUnit, category: i.category }; });
+    }
 
     // Group price history by ingredient and compute increase
     const ingredientPriceMap: Record<number, { name: string; category: string; prices: { date: string; price: number }[]; currentPrice: number }> = {};
     for (const ph of priceHistory) {
+      const ing = ingTrendMap[ph.ingredientId];
+      if (!ing) continue;
       if (!ingredientPriceMap[ph.ingredientId]) {
         ingredientPriceMap[ph.ingredientId] = {
-          name: ph.ingredient.name,
-          category: ph.ingredient.category,
+          name: ing.name,
+          category: ing.category,
           prices: [],
-          currentPrice: ph.ingredient.pricePerUnit,
+          currentPrice: ing.pricePerUnit,
         };
       }
       ingredientPriceMap[ph.ingredientId].prices.push({ date: ph.date, price: ph.price });

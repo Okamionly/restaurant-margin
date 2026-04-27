@@ -12,49 +12,9 @@ interface SEOHeadProps {
 
 const BASE_URL = 'https://www.restaumargin.fr';
 
-// Default SoftwareApplication schema for RestauMargin
-const defaultSchema: Record<string, unknown> = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'RestauMargin',
-  applicationCategory: 'BusinessApplication',
-  operatingSystem: 'Web',
-  url: 'https://www.restaumargin.fr',
-  description: 'Logiciel de gestion des marges pour restaurants. Calcul food cost, fiches techniques, IA, commandes fournisseurs.',
-  offers: [
-    {
-      '@type': 'Offer',
-      name: 'Pro',
-      price: '29',
-      priceCurrency: 'EUR',
-      priceSpecification: {
-        '@type': 'UnitPriceSpecification',
-        price: '29',
-        priceCurrency: 'EUR',
-        unitText: 'MONTH',
-      },
-    },
-    {
-      '@type': 'Offer',
-      name: 'Business',
-      price: '79',
-      priceCurrency: 'EUR',
-      priceSpecification: {
-        '@type': 'UnitPriceSpecification',
-        price: '79',
-        priceCurrency: 'EUR',
-        unitText: 'MONTH',
-      },
-    },
-  ],
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.8',
-    reviewCount: '150',
-    bestRating: '5',
-    worstRating: '1',
-  },
-};
+// NOTE: SoftwareApplication schema is declared globally in client/index.html.
+// We do NOT inject another one here to avoid duplication (Google detected 3
+// instances which triggers "non-critical issues" + ranking penalty).
 
 /**
  * Build a FAQPage schema from an array of Q&A pairs.
@@ -107,10 +67,9 @@ export default function SEOHead({
   const fullImage = ogImage.startsWith('http') ? ogImage : `${BASE_URL}${ogImage}`;
   const fullTitle = title.includes('RestauMargin') ? title : `${title} | RestauMargin`;
 
-  // Schemas to inject: only include default SoftwareApplication on landing.
-  // index.html already contains a global SoftwareApplication schema, so we
-  // avoid duplicating it on every page (Google sees double = ranks worse).
-  const schemas: Record<string, unknown>[] = path === '/' ? [defaultSchema] : [];
+  // Schemas to inject. SoftwareApplication is in index.html globally — we don't
+  // duplicate it here. Pages can pass page-specific schemas via the `schema` prop.
+  const schemas: Record<string, unknown>[] = [];
   if (schema) {
     if (Array.isArray(schema)) {
       schemas.push(...schema);

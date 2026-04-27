@@ -5353,7 +5353,7 @@ app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
 //
 // Auth-protected (only logged-in users) to avoid abuse, but does NOT require
 // a restaurant context (the founder may send from any account).
-app.post('/api/outreach/send', requireAuth, async (req: any, res) => {
+app.post('/api/outreach/send', authMiddleware, async (req: any, res) => {
   try {
     const { to, subject, intro, articles, pitch, signOff, recipientName } = req.body as {
       to: string;

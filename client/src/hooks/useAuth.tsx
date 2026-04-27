@@ -47,8 +47,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const result = await apiLogin(credentials);
     setToken(result.token);
     setUser(result.user);
-    if (result.restaurant?.id) {
-      setActiveRestaurantId(result.restaurant.id);
+    // Backend returns `restaurantId` at root level (see api-lib/routes/auth.ts).
+    // Fallback to `restaurant.id` for legacy compatibility.
+    const rid = (result as { restaurantId?: number }).restaurantId ?? result.restaurant?.id;
+    if (rid) {
+      setActiveRestaurantId(rid);
     }
   };
 
@@ -56,8 +59,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const result = await apiRegister(data);
     setToken(result.token);
     setUser(result.user);
-    if (result.restaurant?.id) {
-      setActiveRestaurantId(result.restaurant.id);
+    // Same as login above — backend returns `restaurantId` at root.
+    const rid = (result as { restaurantId?: number }).restaurantId ?? result.restaurant?.id;
+    if (rid) {
+      setActiveRestaurantId(rid);
     }
   };
 

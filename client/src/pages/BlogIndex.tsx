@@ -73,6 +73,14 @@ const posts: BlogPost[] = [
     readTime: '11 min',
     date: '2026-04-14',
   },
+  {
+    slug: 'kpi-essentiels-restaurateur',
+    title: 'Les 12 KPIs essentiels pour piloter votre restaurant',
+    excerpt: 'Food cost, marge brute, ticket moyen, productivite par couvert : les indicateurs incontournables pour un restaurant rentable.',
+    category: 'Marges',
+    readTime: '13 min',
+    date: '2026-04-20',
+  },
 ];
 
 const categoryColors: Record<string, string> = {

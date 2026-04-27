@@ -55,13 +55,13 @@ export default function NPSModal() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!user?.id || !(user as any)?.createdAt) return;
+    if (!user?.id || !user.createdAt) return;
 
     // Dedup: only show once per user
     const alreadyShown = localStorage.getItem(npsKey(user.id));
     if (alreadyShown) return;
 
-    const signupDate = new Date((user as any).createdAt);
+    const signupDate = new Date(user.createdAt);
     const daysSince = (Date.now() - signupDate.getTime()) / (1000 * 60 * 60 * 24);
 
     if (daysSince >= NPS_TRIGGER_DAYS) {

@@ -6,6 +6,7 @@ export interface User {
   plan?: string;
   emailVerified?: boolean;
   trialEndsAt?: string | null;
+  createdAt?: string;
 }
 
 export interface LoginCredentials {

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, TrendingUp, Calculator, AlertTriangle, CheckCircle, ArrowRight, BarChart3, DollarSign, Percent, Target, BookOpen, Lightbulb, Users, Pizza, Beef, Zap, Award, ListChecks, Sparkles } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Comment calculer la marge de votre restaurant en 2026"
@@ -131,31 +132,15 @@ export default function BlogCalcMarge() {
         </div>
       </div>
 
-      {/* ── Hero / H1 ── */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Guide complet 2026
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111] leading-tight mb-6">
-            Comment calculer la marge <br className="hidden sm:block" />
-            de votre restaurant en 2026
-          </h1>
-          <p className="text-lg text-[#525252] max-w-2xl mx-auto leading-relaxed">
-            Le calcul de marge restaurant est la clef de voute de votre rentabilite.
-            Decouvrez les formules, les benchmarks par type d'etablissement, les cas pratiques
-            chiffres et les erreurs qui plombent vos benefices.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-[#737373]">
-            <span className="flex items-center gap-1"><Users className="w-4 h-4" /> Par l'equipe RestauMargin</span>
-            <span>|</span>
-            <span>Mis a jour : avril 2026</span>
-            <span>|</span>
-            <span>15 min de lecture</span>
-          </div>
-        </div>
-      </header>
+      {/* ── Hero / H1 — BlogArticleHero (theme cinematic Curves) ── */}
+      <BlogArticleHero
+        category="Marges"
+        readTime="15 min"
+        date="Avril 2026"
+        title="Comment calculer la marge de votre restaurant en 2026"
+        accentWord="marge"
+        subtitle="Le calcul de marge restaurant est la clef de voute de votre rentabilite. Decouvrez les formules, les benchmarks par type d'etablissement, les cas pratiques chiffres et les erreurs qui plombent vos benefices."
+      />
 
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">

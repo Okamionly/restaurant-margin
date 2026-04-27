@@ -133,6 +133,9 @@ const BlogHACCP = lazyRetry(() => import('./pages/BlogHACCP'));
 const BlogFicheTechnique = lazyRetry(() => import('./pages/BlogFicheTechnique'));
 const BlogKpiRestaurateur = lazyRetry(() => import('./pages/BlogKpiRestaurateur'));
 const BlogCoutPersonnel = lazyRetry(() => import('./pages/BlogCoutPersonnel'));
+const BlogFifoLifo = lazyRetry(() => import('./pages/BlogFifoLifo'));
+const BlogSeuilRentabilite = lazyRetry(() => import('./pages/BlogSeuilRentabilite'));
+const BlogMenuEngineering = lazyRetry(() => import('./pages/BlogMenuEngineering'));
 const Careers = lazyRetry(() => import('./pages/Careers'));
 const HelpPage = lazyRetry(() => import('./pages/Help'));
 const BreakevenCalculator = lazyRetry(() => import('./pages/BreakevenCalculator'));
@@ -1011,6 +1014,9 @@ function App() {
           <Route path="/blog/fiche-technique-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFicheTechnique /></Suspense>} />
           <Route path="/blog/kpi-essentiels-restaurateur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogKpiRestaurateur /></Suspense>} />
           <Route path="/blog/reduire-cout-personnel-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoutPersonnel /></Suspense>} />
+          <Route path="/blog/fifo-lifo-stocks-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFifoLifo /></Suspense>} />
+          <Route path="/blog/seuil-rentabilite-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogSeuilRentabilite /></Suspense>} />
+          <Route path="/blog/menu-engineering-boston-matrix" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogMenuEngineering /></Suspense>} />
           {/* Catch-all: unknown blog slug → redirect to blog index (avoids falling into ProtectedRoute /login) */}
           <Route path="/blog/*" element={<Navigate to="/blog" replace />} />
           {/* Catch-all: unknown public tool → redirect to home */}

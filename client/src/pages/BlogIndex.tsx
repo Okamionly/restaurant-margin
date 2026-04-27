@@ -347,50 +347,107 @@ export default function BlogIndex() {
         </div>
       </section>
 
-      {/* Articles grid */}
-      <section className="pb-24 px-4 sm:px-6 max-w-5xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-          {posts.map((post) => (
-            <Link
-              key={post.slug}
-              to={`/blog/${post.slug}`}
-              className="group block bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-8 hover:border-teal-500 hover:shadow-xl transition-all duration-300"
-            >
-              {/* Category + read time */}
-              <div className="flex items-center justify-between mb-4">
-                <span
-                  className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${
-                    categoryColors[post.category] || 'bg-gray-100 text-gray-700 border-gray-200'
-                  }`}
-                >
-                  {post.category}
+      {/* Articles grid — cinematic landing theme */}
+      <section className="relative pb-24 px-4 sm:px-6 max-w-6xl mx-auto">
+        {/* Featured article — premier article en grand 2-cols-span */}
+        {posts[0] && (
+          <Link
+            to={`/blog/${posts[0].slug}`}
+            className="group relative block bg-gradient-to-br from-emerald-50 via-white to-teal-50 border border-[#E5E7EB] rounded-3xl p-8 sm:p-12 mb-8 overflow-hidden transition-all duration-500 hover:scale-[1.01] hover:shadow-2xl hover:shadow-emerald-500/30 hover:border-emerald-500"
+          >
+            {/* Numero decoratif geant */}
+            <div className="pointer-events-none absolute -top-8 -right-8 text-[16rem] font-black leading-none select-none text-emerald-100 group-hover:text-emerald-200 transition-colors duration-500">
+              01
+            </div>
+
+            {/* Glow halo au hover */}
+            <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10 blur-3xl"
+              style={{ background: 'radial-gradient(circle at 30% 50%, rgba(16,185,129,0.4) 0%, transparent 60%)' }}
+            />
+
+            <div className="relative">
+              <div className="inline-flex items-center gap-2 px-3 py-1 mb-4 text-xs font-bold uppercase tracking-wider rounded-full bg-emerald-600 text-white">
+                <Sparkles className="w-3.5 h-3.5" />
+                Article a la une
+              </div>
+
+              <div className="flex items-center gap-3 mb-4">
+                <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${categoryColors[posts[0].category] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
+                  {posts[0].category}
                 </span>
                 <span className="flex items-center gap-1 text-xs text-[#737373]">
                   <Clock className="w-3.5 h-3.5" />
-                  {post.readTime}
+                  {posts[0].readTime}
                 </span>
               </div>
 
-              {/* Title */}
-              <h2
-                className="text-xl sm:text-2xl font-bold text-[#111111] mb-3 leading-tight group-hover:text-teal-600 transition-colors"
-
-              >
-                {post.title}
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] mb-4 leading-tight tracking-tight group-hover:text-emerald-600 transition-colors max-w-3xl">
+                {posts[0].title}
               </h2>
 
-              {/* Excerpt */}
-              <p className="text-sm text-[#525252] leading-relaxed mb-6 line-clamp-3">
-                {post.excerpt}
+              <p className="text-base sm:text-lg text-[#525252] leading-relaxed mb-6 max-w-2xl">
+                {posts[0].excerpt}
               </p>
 
-              {/* Read more */}
-              <div className="flex items-center gap-2 text-sm font-semibold text-teal-600 group-hover:gap-3 transition-all">
+              <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] group-hover:bg-emerald-600 text-white text-sm font-bold rounded-full transition-all">
                 Lire l'article
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
-            </Link>
-          ))}
+            </div>
+          </Link>
+        )}
+
+        {/* Reste des articles — cards numerotees avec 3D hover */}
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          {posts.slice(1).map((post, idx) => {
+            const num = String(idx + 2).padStart(2, '0');
+            return (
+              <Link
+                key={post.slug}
+                to={`/blog/${post.slug}`}
+                className="group relative block bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-8 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20 hover:border-emerald-500"
+              >
+                {/* Numero decoratif en background */}
+                <div className="pointer-events-none absolute -top-4 -right-4 text-[7rem] font-black leading-none select-none text-[#F0FDF4] group-hover:text-emerald-100 transition-colors duration-500">
+                  {num}
+                </div>
+
+                {/* Glow au hover */}
+                <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-2xl"
+                  style={{ background: 'radial-gradient(circle at 50% 100%, rgba(16,185,129,0.25) 0%, transparent 70%)' }}
+                />
+
+                <div className="relative">
+                  {/* Category + read time */}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${categoryColors[post.category] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
+                      {post.category}
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-[#737373]">
+                      <Clock className="w-3.5 h-3.5" />
+                      {post.readTime}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#111111] mb-3 leading-tight tracking-tight group-hover:text-emerald-600 transition-colors">
+                    {post.title}
+                  </h2>
+
+                  {/* Excerpt */}
+                  <p className="text-sm text-[#525252] leading-relaxed mb-6 line-clamp-3">
+                    {post.excerpt}
+                  </p>
+
+                  {/* Read more */}
+                  <div className="flex items-center gap-2 text-sm font-semibold text-emerald-600 group-hover:gap-3 transition-all">
+                    Lire l'article
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
 
         {/* CTA */}

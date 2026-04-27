@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Lightbulb, MapPin, FileText, Building2, Banknote, Scale, FileCheck, Wrench, Users, Megaphone, AlertTriangle, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogOuvrirRestaurant() {
   const faqSchema = buildFAQSchema([
@@ -81,27 +82,14 @@ export default function BlogOuvrirRestaurant() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-orange-700 bg-orange-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Création
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Comment ouvrir un restaurant en 2026 : guide complet étape par étape
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            60% des restaurants ferment dans les 3 premières années. Voici les 10 étapes, le budget réaliste et les pièges à éviter pour faire partie des 40% qui réussissent.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>15 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Création"
+        readTime="15 min"
+        date="Avril 2026"
+        title="Comment ouvrir un restaurant en 2026 : guide complet étape par étape"
+        accentWord="ouvrir un restaurant"
+        subtitle="60% des restaurants ferment dans les 3 premières années. Voici les 10 étapes, le budget réaliste et les pièges à éviter pour faire partie des 40% qui réussissent."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

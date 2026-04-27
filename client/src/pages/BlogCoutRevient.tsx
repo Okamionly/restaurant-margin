@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, Scissors, Table, RefreshCw, AlertTriangle, ClipboardList, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogCoutRevient() {
   const faqSchema = buildFAQSchema([
@@ -81,27 +82,14 @@ export default function BlogCoutRevient() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Food Cost
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Calculer le coût de revient d'un plat : méthode complète pour restaurateurs
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            Méthode pas à pas, ratios de perte par produit, exemple chiffré boeuf bourguignon et modèle de fiche technique réutilisable.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>11 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Marges"
+        readTime="10 min"
+        date="Avril 2026"
+        title="Calculer le coût de revient d'un plat : méthode complète pour restaurateurs"
+        accentWord="coût de revient"
+        subtitle="Méthode pas à pas, ratios de perte par produit, exemple chiffré boeuf bourguignon et modèle de fiche technique réutilisable."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

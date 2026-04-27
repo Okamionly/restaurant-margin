@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Package, Tag, ClipboardList, AlertTriangle, TrendingDown, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogMethodeFifo() {
   const faqSchema = buildFAQSchema([
@@ -80,27 +81,14 @@ export default function BlogMethodeFifo() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Stocks
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Méthode FIFO en restauration : guide pratique
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            Un restaurant moyen jette 6-10 % de ses achats alimentaires chaque mois. Le FIFO est la solution la plus simple jamais inventée pour résoudre ce problème.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>10 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Stocks"
+        readTime="10 min"
+        date="Avril 2026"
+        title="Méthode FIFO en restauration : guide pratique"
+        accentWord="FIFO"
+        subtitle="Un restaurant moyen jette 6-10 % de ses achats alimentaires chaque mois. Le FIFO est la solution la plus simple jamais inventée pour résoudre ce problème."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

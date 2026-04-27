@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Users, Calendar, TrendingDown, Wrench, ArrowRight } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogCoutPersonnel() {
   return (
@@ -51,27 +52,14 @@ export default function BlogCoutPersonnel() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Guide RH & gestion
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Comment réduire le coût du personnel en restauration sans licencier
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            Planning, turnover, formation, process — 5 leviers pour économiser 10 à 20 % sur votre masse salariale dès ce mois-ci.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>9 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="RH & Paie"
+        readTime="11 min"
+        date="Avril 2026"
+        title="Comment réduire le coût du personnel en restauration sans licencier"
+        accentWord="coût personnel"
+        subtitle="Planning, turnover, formation, process — 5 leviers pour économiser 10 à 20 % sur votre masse salariale dès ce mois-ci."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

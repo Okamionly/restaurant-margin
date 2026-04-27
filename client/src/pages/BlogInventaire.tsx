@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Package, Calendar, ListChecks, RefreshCw, AlertTriangle, Smartphone, ClipboardList, UserCheck, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogInventaire() {
   const faqSchema = buildFAQSchema([
@@ -81,27 +82,14 @@ export default function BlogInventaire() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Stocks
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Faire l'inventaire de son restaurant : méthode, fréquence et outils
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            Un restaurant moyen perd 2 000€ à 5 000€ par mois en écarts non détectés. Vol, gaspillage, casse, surdosage : voici comment les détecter et les stopper.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>11 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Stocks"
+        readTime="11 min"
+        date="Avril 2026"
+        title="Faire l'inventaire de son restaurant : méthode, fréquence et outils"
+        accentWord="inventaire"
+        subtitle="Un restaurant moyen perd 2 000€ à 5 000€ par mois en écarts non détectés. Vol, gaspillage, casse, surdosage : voici comment les détecter et les stopper."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

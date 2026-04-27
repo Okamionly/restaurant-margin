@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, Eye, Users, Brain, TrendingUp, AlertTriangle, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogPrixCarte() {
   const faqSchema = buildFAQSchema([
@@ -81,27 +82,14 @@ export default function BlogPrixCarte() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-purple-700 bg-purple-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Carte & Prix
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Comment fixer les prix de sa carte de restaurant : méthode et stratégie 2026
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            Une variation de 0,50 € sur un plat phare = 18 000 € de marge nette annuelle. Méthode rigoureuse, coefficients par poste, psychologie des prix.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>12 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Carte & Prix"
+        readTime="12 min"
+        date="Avril 2026"
+        title="Comment fixer les prix de sa carte de restaurant : méthode et stratégie 2026"
+        accentWord="prix"
+        subtitle="Une variation de 0,50 € sur un plat phare = 18 000 € de marge nette annuelle. Méthode rigoureuse, coefficients par poste, psychologie des prix."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

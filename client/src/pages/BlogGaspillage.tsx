@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, Trash2, Calculator, ArrowRight, BookOpen, Lightbulb, AlertTriangle, Users, Leaf, TrendingDown, BarChart3, ShoppingBasket, Scale, Recycle, CheckCircle } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Comment reduire le gaspillage alimentaire en restaurant"
@@ -68,30 +69,14 @@ export default function BlogGaspillage() {
       </nav>
 
       {/* ── Hero / H1 ── */}
-      <header className="bg-gradient-to-b from-emerald-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <Leaf className="w-3.5 h-3.5" />
-            Guide anti-gaspillage 2026
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111] leading-tight mb-6">
-            Comment reduire le gaspillage <br className="hidden sm:block" />
-            alimentaire en restaurant
-          </h1>
-          <p className="text-lg text-[#525252] max-w-2xl mx-auto leading-relaxed">
-            En France, un restaurant jette en moyenne 14 % de ses achats alimentaires.
-            Cela represente entre 5 000 et 20 000 EUR par an de pertes directes sur vos marges.
-            Decouvrez 5 methodes concretes pour reduire ce gaspillage de 30 % et plus.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-[#737373]">
-            <span className="flex items-center gap-1"><Users className="w-4 h-4" /> Par l'equipe RestauMargin</span>
-            <span>|</span>
-            <span>Mis a jour : avril 2026</span>
-            <span>|</span>
-            <span>10 min de lecture</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Gaspillage"
+        readTime="9 min"
+        date="Avril 2026"
+        title="Comment reduire le gaspillage alimentaire en restaurant"
+        accentWord="gaspillage"
+        subtitle="En France, un restaurant jette en moyenne 14 % de ses achats alimentaires. Cela represente entre 5 000 et 20 000 EUR par an de pertes directes sur vos marges. Decouvrez 5 methodes concretes pour reduire ce gaspillage de 30 % et plus."
+      />
 
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">

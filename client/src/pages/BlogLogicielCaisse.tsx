@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Cpu, ShieldCheck, Layers, Zap, BarChart3, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogLogicielCaisse() {
   const faqSchema = buildFAQSchema([
@@ -80,27 +81,14 @@ export default function BlogLogicielCaisse() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-amber-700 bg-amber-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Outils
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Logiciel de caisse restaurant : comparatif 2026
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            Lightspeed, Zelty, L'Addition, Innovorder, SumUp, Zettle… Le comparatif complet des 7 solutions les plus utilisées en France.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>13 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Outils"
+        readTime="13 min"
+        date="Avril 2026"
+        title="Logiciel de caisse restaurant : comparatif 2026"
+        accentWord="logiciel de caisse"
+        subtitle="Lightspeed, Zelty, L'Addition, Innovorder, SumUp, Zettle… Le comparatif complet des 7 solutions les plus utilisées en France."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Package, RefreshCw, AlertTriangle, CheckCircle, ArrowRight, TrendingDown } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogFifoLifo() {
   return (
@@ -58,38 +59,15 @@ export default function BlogFifoLifo() {
         </div>
       </nav>
 
-      {/* Hero image */}
-      <div className="w-full bg-gradient-to-br from-teal-700 to-teal-900 h-56 sm:h-72 flex items-center justify-center relative overflow-hidden">
-        <img
-          src="/images/blog/fifo-lifo-stocks-restaurant.jpg"
-          alt="Gestion des stocks FIFO en chambre froide de restaurant"
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
-          loading="lazy"
-        />
-        <div className="relative z-10 text-center px-4">
-          <span className="inline-flex items-center gap-1.5 text-teal-200 bg-teal-800/60 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
-            <BookOpen className="w-3.5 h-3.5" />
-            Guide stocks &amp; HACCP
-          </span>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white leading-tight max-w-[640px]">
-            FIFO vs LIFO : quelle méthode de gestion des stocks pour votre restaurant ?
-          </h1>
-        </div>
-      </div>
-
-      {/* Meta */}
-      <div className="max-w-[720px] mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center gap-4 text-sm text-[#737373] border-b border-[#E5E7EB]">
-        <span>27 avril 2026</span>
-        <span>·</span>
-        <span>8 min de lecture</span>
-        <span>·</span>
-        <span>La rédaction RestauMargin</span>
-        <div className="flex flex-wrap gap-2 ml-auto">
-          {['Stocks', 'HACCP', 'Food cost', 'Gestion cuisine'].map(tag => (
-            <span key={tag} className="bg-[#F5F5F5] text-[#525252] text-xs px-2 py-0.5 rounded-full">{tag}</span>
-          ))}
-        </div>
-      </div>
+      {/* Hero */}
+      <BlogArticleHero
+        category="Stocks"
+        readTime="9 min"
+        date="Avril 2026"
+        title="FIFO vs LIFO : quelle méthode de gestion des stocks pour votre restaurant ?"
+        accentWord="FIFO"
+        subtitle="Dans votre cuisine, chaque jour, quelqu'un décide quel produit utiliser en premier. Sans système, on attrape ce qui est à portée de main — et on perd entre 3 et 5 % des achats en produits périmés."
+      />
 
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24 pt-8">
 

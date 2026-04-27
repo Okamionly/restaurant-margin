@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, BarChart3, TrendingUp, Clock, Star, Target, Users, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogKpiGuide() {
   const faqSchema = buildFAQSchema([
@@ -80,27 +81,14 @@ export default function BlogKpiGuide() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-blue-700 bg-blue-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Pilotage
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Les 10 KPI essentiels pour piloter son restaurant en 2026
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            En 2026, marge nette moyenne sous les 5 % et inflation matières +6 %/an : piloter "au feeling" est devenu un luxe.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>11 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Marges"
+        readTime="13 min"
+        date="Avril 2026"
+        title="Les 10 KPI essentiels pour piloter son restaurant en 2026"
+        accentWord="KPI"
+        subtitle="En 2026, marge nette moyenne sous les 5 % et inflation matières +6 %/an : piloter &quot;au feeling&quot; est devenu un luxe."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

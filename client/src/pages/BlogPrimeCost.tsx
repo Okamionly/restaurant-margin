@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, TrendingUp, BarChart3, Target, AlertTriangle, LineChart, Zap, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogPrimeCost() {
   const faqSchema = buildFAQSchema([
@@ -81,27 +82,14 @@ export default function BlogPrimeCost() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Gestion financière
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Prime cost en restauration : l'indicateur n°1 de rentabilité
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            Si vous ne deviez suivre qu'un seul indicateur dans votre restaurant, ce serait celui-ci. Voici comment le calculer, le benchmarker et le faire passer sous 65%.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>10 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Gestion financière"
+        readTime="10 min"
+        date="Avril 2026"
+        title="Prime cost en restauration : l'indicateur n°1 de rentabilité"
+        accentWord="Prime cost"
+        subtitle="Si vous ne deviez suivre qu'un seul indicateur dans votre restaurant, ce serait celui-ci. Voici comment le calculer, le benchmarker et le faire passer sous 65%."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, TrendingUp, CloudRain, Calendar, BarChart3, Target, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogPrevisionVentes() {
   const faqSchema = buildFAQSchema([
@@ -76,27 +77,14 @@ export default function BlogPrevisionVentes() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-blue-700 bg-blue-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Pilotage
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Prévision des ventes en restauration : méthodes et outils pour anticiper votre CA
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            Combien de couverts vendredi prochain ? Si la réponse est "ça dépend", vous perdez de l'argent chaque semaine.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>10 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Pilotage"
+        readTime="11 min"
+        date="Avril 2026"
+        title="Prévision des ventes en restauration : méthodes et outils pour anticiper votre CA"
+        accentWord="prévision"
+        subtitle="Combien de couverts vendredi prochain ? Si la réponse est &quot;ça dépend&quot;, vous perdez de l'argent chaque semaine."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

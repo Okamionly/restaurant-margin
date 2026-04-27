@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, TrendingDown, BarChart3, AlertTriangle, Target, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogSeuilRentabilite() {
   const faqSchema = buildFAQSchema([
@@ -80,27 +81,14 @@ export default function BlogSeuilRentabilite() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Gestion financière
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Comment calculer le seuil de rentabilité d'un restaurant (2026)
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            60 % des restaurants ferment dans les trois premières années. La cause principale ? Ne pas connaître son point mort. Voici la méthode complète.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>25 avril 2026</span>
-            <span>·</span>
-            <span>12 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Gestion financière"
+        readTime="12 min"
+        date="Avril 2026"
+        title="Comment calculer le seuil de rentabilité d'un restaurant (2026)"
+        accentWord="seuil de rentabilité"
+        subtitle="60 % des restaurants ferment dans les trois premières années. La cause principale ? Ne pas connaître son point mort. Voici la méthode complète."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

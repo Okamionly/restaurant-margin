@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, PieChart, TrendingUp, BarChart3, Target, Zap, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogChiffreAffaires() {
   const faqSchema = buildFAQSchema([
@@ -76,27 +77,14 @@ export default function BlogChiffreAffaires() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Gestion financière
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Chiffre d'affaires restaurant : comment le calculer, l'analyser et l'augmenter
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            Un restaurant à 600 K€ peut perdre. Un autre à 380 K€ peut dégager 60 K€ d'EBE. Le CA n'est qu'une moitié de l'équation.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>11 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Pilotage"
+        readTime="11 min"
+        date="Avril 2026"
+        title="Chiffre d'affaires restaurant : comment le calculer, l'analyser et l'augmenter"
+        accentWord="chiffre d'affaires"
+        subtitle="Un restaurant à 600 K€ peut perdre. Un autre à 380 K€ peut dégager 60 K€ d'EBE. Le CA n'est qu'une moitié de l'équation."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

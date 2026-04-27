@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, RefreshCw, Calculator, BarChart3, TrendingUp, Settings, AlertTriangle, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogRotationStocks() {
   const faqSchema = buildFAQSchema([
@@ -81,27 +82,14 @@ export default function BlogRotationStocks() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Stocks
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Rotation des stocks en restauration : calcul, benchmarks et optimisation
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            15 000 € de stock immobilisé = 9 000 € coincés en cuisine au lieu d'être en banque. Formule, benchmarks par catégorie et 6 leviers concrets.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>10 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Stocks"
+        readTime="10 min"
+        date="Avril 2026"
+        title="Rotation des stocks en restauration : calcul, benchmarks et optimisation"
+        accentWord="rotation"
+        subtitle="15 000 € de stock immobilisé = 9 000 € coincés en cuisine au lieu d'être en banque. Formule, benchmarks par catégorie et 6 leviers concrets."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

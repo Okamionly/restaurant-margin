@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Star, TrendingUp, Puzzle, AlertCircle, Layout, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogMenuEngineering() {
   const faqSchema = buildFAQSchema([
@@ -80,27 +81,14 @@ export default function BlogMenuEngineering() {
       </nav>
 
       {/* Hero */}
-      <header className="bg-gradient-to-b from-teal-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-[720px] mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-violet-700 bg-violet-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <BookOpen className="w-3.5 h-3.5" />
-            Carte & Prix
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111] leading-tight mb-4">
-            Menu engineering : la méthode Boston Matrix
-          </h1>
-          <p className="text-lg text-[#525252] max-w-[600px] mx-auto mb-8">
-            Sur une carte typique de 25 plats, seuls 4 à 6 génèrent 80 % de la marge brute. Voici comment identifier vos Stars et transformer votre carte en levier de rentabilité.
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-[#737373]">
-            <span>27 avril 2026</span>
-            <span>·</span>
-            <span>12 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="Carte & Prix"
+        readTime="12 min"
+        date="Avril 2026"
+        title="Menu engineering : la méthode Boston Matrix"
+        accentWord="Menu Engineering"
+        subtitle="Sur une carte typique de 25 plats, seuls 4 à 6 génèrent 80 % de la marge brute. Voici comment identifier vos Stars et transformer votre carte en levier de rentabilité."
+      />
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-4 sm:px-6 pb-24">

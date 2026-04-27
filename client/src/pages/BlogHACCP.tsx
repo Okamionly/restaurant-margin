@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, Calculator, ArrowRight, BookOpen, Lightbulb, AlertTriangle, Users, Thermometer, ShieldCheck, ClipboardList, CheckCircle, Download, FileText, ListChecks } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
+import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Guide HACCP pour les restaurants : tout ce qu'il faut savoir"
@@ -67,30 +68,14 @@ export default function BlogHACCP() {
       </nav>
 
       {/* ── Hero / H1 ── */}
-      <header className="bg-gradient-to-b from-blue-50 to-white pt-16 pb-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="inline-flex items-center gap-1.5 text-blue-700 bg-blue-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            Securite alimentaire 2026
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111] leading-tight mb-6">
-            Guide HACCP pour les restaurants :<br className="hidden sm:block" />
-            tout ce qu'il faut savoir
-          </h1>
-          <p className="text-lg text-[#525252] max-w-2xl mx-auto leading-relaxed">
-            Le HACCP (Hazard Analysis Critical Control Points) est obligatoire pour tous les
-            restaurants en France. Decouvrez les 7 principes, les temperatures a respecter et
-            une checklist pratique pour votre etablissement.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-[#737373]">
-            <span className="flex items-center gap-1"><Users className="w-4 h-4" /> Par l'equipe RestauMargin</span>
-            <span>|</span>
-            <span>Mis a jour : avril 2026</span>
-            <span>|</span>
-            <span>12 min de lecture</span>
-          </div>
-        </div>
-      </header>
+      <BlogArticleHero
+        category="HACCP"
+        readTime="14 min"
+        date="Avril 2026"
+        title="Guide HACCP pour les restaurants : tout ce qu'il faut savoir"
+        accentWord="HACCP"
+        subtitle="Le HACCP (Hazard Analysis Critical Control Points) est obligatoire pour tous les restaurants en France. Decouvrez les 7 principes, les temperatures a respecter et une checklist pratique pour votre etablissement."
+      />
 
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">

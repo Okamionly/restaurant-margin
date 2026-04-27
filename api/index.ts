@@ -5124,12 +5124,31 @@ app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
     const notifications: { id: string; type: string; title: string; message: string; createdAt: string; read: boolean; severity?: string }[] = [];
 
     // 1. Stock alerts — low stock & out-of-stock
+    //    FIX 2026-04-27: filter only items where minStock > 0 (= really managed in stock).
+    //    Group when too many to avoid spam ("99+ Critique" pattern reported by user).
     const inventory = await prisma.inventoryItem.findMany({
       where: { restaurantId: rid },
       include: { ingredient: { select: { id: true, name: true, unit: true } } },
     });
-    for (const item of inventory) {
-      if (item.currentStock <= 0) {
+    const managedInventory = inventory.filter(i => i.minStock > 0);
+    const oosItems = managedInventory.filter(i => i.currentStock <= 0);
+    const lowItems = managedInventory.filter(i => i.currentStock > 0 && i.currentStock < i.minStock);
+
+    if (oosItems.length > 5) {
+      // Group : 1 grouped notif instead of 50+ individual ones
+      const sample = oosItems.slice(0, 3).map(i => i.ingredient.name).join(', ');
+      const extra = oosItems.length > 3 ? `, +${oosItems.length - 3}` : '';
+      notifications.push({
+        id: 'stock-grouped-oos',
+        type: 'stock',
+        title: `${oosItems.length} ingredients en rupture`,
+        message: `${sample}${extra}. Verifiez votre inventaire.`,
+        createdAt: new Date().toISOString(),
+        read: false,
+        severity: 'critical',
+      });
+    } else {
+      for (const item of oosItems) {
         notifications.push({
           id: `stock-oos-${item.id}`,
           type: 'stock',
@@ -5139,7 +5158,23 @@ app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
           read: false,
           severity: 'critical',
         });
-      } else if (item.currentStock < item.minStock) {
+      }
+    }
+
+    if (lowItems.length > 5) {
+      const sample = lowItems.slice(0, 3).map(i => i.ingredient.name).join(', ');
+      const extra = lowItems.length > 3 ? `, +${lowItems.length - 3}` : '';
+      notifications.push({
+        id: 'stock-grouped-low',
+        type: 'stock',
+        title: `${lowItems.length} stocks sous le seuil`,
+        message: `${sample}${extra}. Pensez a reapprovisionner.`,
+        createdAt: new Date().toISOString(),
+        read: false,
+        severity: 'warning',
+      });
+    } else {
+      for (const item of lowItems) {
         notifications.push({
           id: `stock-low-${item.id}`,
           type: 'stock',
@@ -5196,23 +5231,80 @@ app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
     }
 
     // 3. Recipe margin alerts — recipes below 60% margin
+    //    FIX 2026-04-27: filter only recipes with REAL data (cost > 0 + sellingPrice > 0).
+    //    Group when too many to avoid the "everything is Critique" spam.
     const recipes = await prisma.recipe.findMany({
       where: { restaurantId: rid, deletedAt: null },
       include: { ingredients: { include: { ingredient: true } } },
     });
+    const marginIssues: { recipe: typeof recipes[number]; cost: number; margin: number; severity: string }[] = [];
     for (const r of recipes) {
       if (r.sellingPrice <= 0) continue;
+      if (!r.ingredients || r.ingredients.length === 0) continue; // skip recipes without ingredients (= incomplete data)
       const cost = r.ingredients.reduce((s, ri) => s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
+      if (cost <= 0) continue; // skip recipes with no real cost (likely test data)
       const margin = ((r.sellingPrice - cost) / r.sellingPrice) * 100;
       if (margin < 60) {
-        notifications.push({
-          id: `margin-${r.id}`,
-          type: 'margin',
-          title: `Marge faible: ${r.name}`,
-          message: `${margin.toFixed(1)}% de marge (cout ${cost.toFixed(2)}€, vente ${r.sellingPrice.toFixed(2)}€)`,
-          createdAt: r.updatedAt.toISOString(),
-          read: false,
+        marginIssues.push({
+          recipe: r,
+          cost,
+          margin,
           severity: margin < 40 ? 'critical' : 'warning',
+        });
+      }
+    }
+
+    const criticalMargins = marginIssues.filter(m => m.severity === 'critical');
+    const warningMargins = marginIssues.filter(m => m.severity === 'warning');
+
+    if (criticalMargins.length > 3) {
+      const sample = criticalMargins.slice(0, 3).map(m => m.recipe.name).join(', ');
+      const extra = criticalMargins.length > 3 ? `, +${criticalMargins.length - 3}` : '';
+      notifications.push({
+        id: 'margin-grouped-critical',
+        type: 'margin',
+        title: `${criticalMargins.length} recettes en marge critique (<40%)`,
+        message: `${sample}${extra}. Revoir prix ou couts.`,
+        createdAt: new Date().toISOString(),
+        read: false,
+        severity: 'critical',
+      });
+    } else {
+      for (const m of criticalMargins) {
+        notifications.push({
+          id: `margin-${m.recipe.id}`,
+          type: 'margin',
+          title: `Marge critique: ${m.recipe.name}`,
+          message: `${m.margin.toFixed(1)}% de marge (cout ${m.cost.toFixed(2)}€, vente ${m.recipe.sellingPrice.toFixed(2)}€)`,
+          createdAt: m.recipe.updatedAt.toISOString(),
+          read: false,
+          severity: 'critical',
+        });
+      }
+    }
+
+    if (warningMargins.length > 5) {
+      const sample = warningMargins.slice(0, 3).map(m => m.recipe.name).join(', ');
+      const extra = warningMargins.length > 3 ? `, +${warningMargins.length - 3}` : '';
+      notifications.push({
+        id: 'margin-grouped-warning',
+        type: 'margin',
+        title: `${warningMargins.length} recettes en marge faible (40-60%)`,
+        message: `${sample}${extra}. A optimiser.`,
+        createdAt: new Date().toISOString(),
+        read: false,
+        severity: 'warning',
+      });
+    } else {
+      for (const m of warningMargins) {
+        notifications.push({
+          id: `margin-${m.recipe.id}`,
+          type: 'margin',
+          title: `Marge faible: ${m.recipe.name}`,
+          message: `${m.margin.toFixed(1)}% de marge (cout ${m.cost.toFixed(2)}€, vente ${m.recipe.sellingPrice.toFixed(2)}€)`,
+          createdAt: m.recipe.updatedAt.toISOString(),
+          read: false,
+          severity: 'warning',
         });
       }
     }
@@ -5240,10 +5332,159 @@ app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
-    res.json({ notifications, count: notifications.length });
+    // FIX 2026-04-27: cap to 20 notifications max to avoid the "99+" spam
+    // reported by user. Total count is preserved separately for the badge UI.
+    const MAX_NOTIFICATIONS = 20;
+    const totalCount = notifications.length;
+    const capped = notifications.slice(0, MAX_NOTIFICATIONS);
+
+    res.json({ notifications: capped, count: capped.length, total: totalCount });
   } catch (e: any) {
     console.error('[NOTIFICATIONS]', e.message);
     res.status(500).json({ error: 'Erreur chargement notifications' });
+  }
+});
+
+// ── Outreach Mailer (branded HTML, sent from contact@restaumargin.fr) ──
+//
+// Used for SEO link building / partnerships : journalists, syndicats, blogs
+// (L'Hotellerie, UMIH, GNI, Appvizer, Toast, etc.). Renders a professional
+// HTML email with RestauMargin logo, colors, signature.
+//
+// Auth-protected (only logged-in users) to avoid abuse, but does NOT require
+// a restaurant context (the founder may send from any account).
+app.post('/api/outreach/send', requireAuth, async (req: any, res) => {
+  try {
+    const { to, subject, intro, articles, pitch, signOff, recipientName } = req.body as {
+      to: string;
+      subject: string;
+      intro: string;            // intro paragraph (1-2 lines) — explains who we are
+      articles?: { title: string; url: string }[];  // optional list of blog articles for credibility
+      pitch: string;            // main body / pitch (multi-line)
+      signOff?: string;         // optional closing line
+      recipientName?: string;   // "Madame, Monsieur" or "Bonjour [name]"
+    };
+
+    if (!to?.trim() || !subject?.trim() || !intro?.trim() || !pitch?.trim()) {
+      return res.status(400).json({ error: 'to, subject, intro et pitch requis' });
+    }
+
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) return res.status(503).json({ error: 'Service email non configure' });
+
+    const greeting = (recipientName?.trim()) || 'Bonjour,';
+    const closing = (signOff?.trim()) || 'Cordialement,';
+
+    // Render articles list as styled <ul>
+    const articlesHtml = articles && articles.length > 0
+      ? `
+      <p style="margin: 24px 0 12px; color: #525252; font-size: 14px;">
+        Pour vous donner un apercu de notre expertise, voici quelques articles publies sur notre blog :
+      </p>
+      <ul style="margin: 0 0 24px; padding: 0 0 0 20px; color: #0F172A;">
+        ${articles.map(a => `
+          <li style="margin-bottom: 8px;">
+            <a href="${a.url}" style="color: #10B981; text-decoration: none; font-weight: 500;">${a.title}</a>
+          </li>
+        `).join('')}
+      </ul>
+      `
+      : '';
+
+    // Convert pitch line breaks to <br>, preserve **bold** as <strong>
+    const renderPitch = (text: string) => {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+    };
+
+    const html = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${subject}</title>
+</head>
+<body style="margin:0; padding:0; background:#F1F5F9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color:#0F172A;">
+  <div style="max-width:640px; margin:0 auto; padding:24px;">
+
+    <!-- Header avec logo -->
+    <div style="background: linear-gradient(135deg, #10B981 0%, #047857 100%); border-radius:16px 16px 0 0; padding:32px 40px; text-align:left;">
+      <div style="display:inline-block; background:rgba(255,255,255,0.15); border-radius:12px; padding:10px 14px;">
+        <span style="font-size:20px; color:white; font-weight:800; letter-spacing:-0.02em;">RestauMargin</span>
+      </div>
+      <p style="color: rgba(255,255,255,0.9); margin:12px 0 0; font-size:13px; font-weight:500;">
+        Logiciel de gestion de marges restaurant
+      </p>
+    </div>
+
+    <!-- Body -->
+    <div style="background:white; padding:40px; border:1px solid #E5E7EB; border-top:none;">
+      <p style="margin:0 0 20px; font-size:15px; color:#0F172A;">
+        ${greeting}
+      </p>
+
+      <p style="margin:0 0 20px; font-size:15px; line-height:1.6; color:#0F172A;">
+        ${renderPitch(intro)}
+      </p>
+
+      ${articlesHtml}
+
+      <div style="margin:0 0 24px; font-size:15px; line-height:1.6; color:#0F172A;">
+        ${renderPitch(pitch)}
+      </div>
+
+      <p style="margin:32px 0 4px; font-size:15px; color:#0F172A;">
+        ${closing}
+      </p>
+      <p style="margin:0; font-size:15px; color:#0F172A; font-weight:600;">
+        Youssef Guessous
+      </p>
+      <p style="margin:0; font-size:14px; color:#64748B;">
+        Fondateur · RestauMargin
+      </p>
+      <p style="margin:8px 0 0; font-size:13px; color:#64748B;">
+        <a href="https://www.restaumargin.fr" style="color:#10B981; text-decoration:none;">restaumargin.fr</a>
+        · <a href="mailto:contact@restaumargin.fr" style="color:#64748B; text-decoration:none;">contact@restaumargin.fr</a>
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div style="background:#F8FAFC; border:1px solid #E5E7EB; border-top:none; border-radius:0 0 16px 16px; padding:20px 40px; text-align:center;">
+      <p style="margin:0; font-size:12px; color:#94A3B8;">
+        RestauMargin SAS · Logiciel SaaS de gestion de marges pour restaurateurs
+      </p>
+      <p style="margin:6px 0 0; font-size:11px; color:#94A3B8;">
+        Email envoye depuis contact@restaumargin.fr · <a href="https://www.restaumargin.fr/blog" style="color:#94A3B8;">Notre blog</a>
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>`;
+
+    const resend = new Resend(resendKey);
+    const result = await resend.emails.send({
+      from: 'Youssef Guessous (RestauMargin) <contact@restaumargin.fr>',
+      to,
+      replyTo: 'contact@restaumargin.fr',
+      subject,
+      html,
+    });
+
+    if ((result as any).error) {
+      console.error('[OUTREACH] Resend error:', (result as any).error);
+      return res.status(502).json({ error: 'Echec envoi (Resend)' });
+    }
+
+    console.log(`[OUTREACH] Sent to ${to} — subject: ${subject}`);
+    res.json({ success: true, messageId: (result as any).data?.id || null });
+  } catch (e: any) {
+    console.error('[OUTREACH ERROR]', e.message);
+    res.status(500).json({ error: 'Erreur envoi outreach' });
   }
 });
 

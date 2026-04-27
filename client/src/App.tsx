@@ -109,6 +109,7 @@ const MesParrainages = lazyRetry(() => import('./pages/MesParrainages'));
 const TrialReactivate = lazyRetry(() => import('./pages/TrialReactivate'));
 const AdminMetrics = lazyRetry(() => import('./pages/AdminMetrics'));
 const AdminFinance = lazyRetry(() => import('./pages/AdminFinance'));
+const OutreachMailer = lazyRetry(() => import('./pages/OutreachMailer'));
 const NicheLanding = lazyRetry(() => import('./pages/NicheLanding'));
 const QRCodeGenerator = lazyRetry(() => import('./pages/QRCodeGenerator'));
 const KitchenMode = lazyRetry(() => import('./pages/KitchenMode'));
@@ -937,6 +938,7 @@ function AppLayout() {
               <Route path="/reactivation" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><TrialReactivate /></Suspense>} />
               <Route path="/admin/metrics" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AdminMetrics /></Suspense>} />
               <Route path="/admin/finance" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AdminFinance /></Suspense>} />
+              <Route path="/admin/outreach" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><OutreachMailer /></Suspense>} />
               <Route path="/email-marketing" element={<EmailMarketing />} />
               <Route path="/aide" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><HelpPage /></Suspense>} />
               <Route path="*" element={<NotFound />} />

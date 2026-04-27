@@ -9,6 +9,7 @@ import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useTranslation } from '../hooks/useTranslation';
+import { useApiClient } from '../hooks/useApiClient';
 
 interface UserInfo {
   id: number;
@@ -20,16 +21,7 @@ interface UserInfo {
 
 const API_BASE = '/api';
 
-function getToken(): string | null {
-  return localStorage.getItem('token');
-}
 
-function authHeaders(): Record<string, string> {
-  const token = getToken();
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  return headers;
-}
 
 function getInitials(name: string): string {
   return name
@@ -72,6 +64,7 @@ export default function UserManagement() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { showToast } = useToast();
+  const { authHeaders } = useApiClient();
   const [users, setUsers] = useState<UserInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

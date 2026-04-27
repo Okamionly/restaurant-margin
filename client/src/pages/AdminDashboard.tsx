@@ -8,17 +8,9 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useFocusTrap } from '../hooks/useFocusTrap';
-import { getToken } from '../services/api';
+import { authHeadersStandalone as authHeaders } from '../hooks/useApiClient';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
-
-function authHeaders(): Record<string, string> {
-  const token = getToken();
-  return {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-}
 
 async function adminFetch<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE}/admin${path}`, { headers: authHeaders() });

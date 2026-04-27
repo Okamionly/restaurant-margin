@@ -9,6 +9,7 @@ import {
 import { useToast } from '../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
+import { useApiClient } from '../hooks/useApiClient';
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -47,14 +48,6 @@ interface ChangelogEntry {
 
 // ── Config ──────────────────────────────────────────────────────────────────
 
-function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token');
-  const restaurantId = localStorage.getItem('activeRestaurantId');
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  if (restaurantId) headers['X-Restaurant-Id'] = restaurantId;
-  return headers;
-}
 
 const TYPE_CONFIG = {
   price_alert: {
@@ -255,6 +248,7 @@ export default function Actualites() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { showToast: addToast } = useToast();
+  const { authHeaders } = useApiClient();
 
   // Market news state (from API)
   const [news, setNews] = useState<NewsItem[]>([]);

@@ -28,7 +28,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { fetchRecipes } from '../services/api';
-import { getToken, getActiveRestaurantId } from '../services/api';
+import { useApiClient } from '../hooks/useApiClient';
 import { useToast } from '../hooks/useToast';
 import { useRestaurant } from '../hooks/useRestaurant';
 import { useFocusTrap } from '../hooks/useFocusTrap';
@@ -141,14 +141,6 @@ function getCategoryStyle(cat: string) {
 
 // ── Helpers ──
 
-function authHeaders(): Record<string, string> {
-  const token = getToken();
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  const rid = getActiveRestaurantId();
-  if (rid) headers['X-Restaurant-Id'] = rid;
-  return headers;
-}
 
 function formatDateKey(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -190,6 +182,7 @@ const MONTH_NAMES = [
 export default function MenuCalendar() {
   const { showToast } = useToast();
   useRestaurant();
+  const { authHeaders } = useApiClient();
 
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());

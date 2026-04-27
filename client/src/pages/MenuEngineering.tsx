@@ -12,6 +12,7 @@ import {
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
+import { useApiClient } from '../hooks/useApiClient';
 
 const API = '';
 
@@ -26,14 +27,6 @@ function getUnitDivisor(unit: string): number {
   return 1;
 }
 
-function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token');
-  const rid = localStorage.getItem('activeRestaurantId');
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  if (rid) headers['X-Restaurant-Id'] = rid;
-  return headers;
-}
 
 // ── Types ────────────────────────────────────────────────────────────────────
 interface EngineeringItem {
@@ -491,6 +484,7 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
 export default function MenuEngineering() {
   const { t } = useTranslation();
   const { showToast } = useToast();
+  const { authHeaders } = useApiClient();
 
   // Data
   const [data, setData] = useState<EngineeringData | null>(null);

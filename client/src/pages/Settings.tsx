@@ -62,6 +62,8 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
 import { useTranslation } from '../hooks/useTranslation';
+import { getToken } from '../services/api';
+import { useApiClient } from '../hooks/useApiClient';
 
 // ---------------------------------------------------------------------------
 // Types & defaults
@@ -229,16 +231,7 @@ function saveSettingsToStorage(settings: AppSettings) {
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
-function getToken(): string | null {
-  return localStorage.getItem('token');
-}
 
-function authHeaders(): Record<string, string> {
-  const token = getToken();
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  return headers;
-}
 
 function getInitials(name: string | undefined): string {
   if (!name) return '?';
@@ -374,6 +367,7 @@ export default function Settings() {
   const { t, locale, setLocale } = useTranslation();
   const { user } = useAuth();
   const { showToast } = useToast();
+  const { authHeaders } = useApiClient();
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
 
   // Active tab

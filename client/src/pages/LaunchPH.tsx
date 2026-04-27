@@ -12,6 +12,7 @@
 import { lazy, Suspense, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Mic, Sparkles, Bell, TrendingUp, ArrowRight, Calendar, Clock, Users, Zap } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 const ShaderBackground = lazy(() => import('../components/landing/ShaderBackground'));
 const MintMistBackground = lazy(() => import('../components/landing/MintMistBackground'));
@@ -57,7 +58,7 @@ export default function LaunchPH() {
 
     try {
       // Stocke en localStorage et envoie à l'API
-      await fetch('/api/launch-notify', {
+      await fetch('/api/public/launch-notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, source: 'launch-page' }),
@@ -75,6 +76,12 @@ export default function LaunchPH() {
 
   return (
     <>
+      <SEOHead
+        title="Launch Product Hunt — RestauMargin (6 mai 2026)"
+        description="On lance RestauMargin sur Product Hunt le 6 mai 2026. Suivi des marges restaurant par IA, dictée vocale, food cost temps réel. Inscris-toi pour un rappel jour-J."
+        path="/launch"
+        ogImage="https://www.restaumargin.fr/og-launch.svg"
+      />
       {/* Curves shader fixed background */}
       <Suspense fallback={null}>
         <div className="fixed inset-0 -z-10 pointer-events-none">

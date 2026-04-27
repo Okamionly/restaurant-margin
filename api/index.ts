@@ -5349,7 +5349,7 @@ app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
 // Public endpoint : un visiteur sur /launch entre son email pour recevoir
 // un rappel jour-J (= 9h01 du launch sur Product Hunt). On forward l'email
 // vers la BAL perso pour traçabilité + envoi confirmation au visiteur.
-app.post('/api/launch-notify', async (req, res) => {
+app.post('/api/public/launch-notify', async (req, res) => {
   try {
     const { email, source } = req.body as { email?: string; source?: string };
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {

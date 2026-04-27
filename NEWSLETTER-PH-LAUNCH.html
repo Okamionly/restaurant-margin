@@ -1,0 +1,143 @@
+<!--
+  Newsletter ready-to-send pour Resend ou Brevo.
+  Subject : 🚀 Big news : RestauMargin est en live sur Product Hunt aujourd'hui
+
+  À envoyer le jour J à 9h05 Paris (4 minutes après le launch officiel).
+  Liste cible : tous les utilisateurs ayant rempli le form /launch + early supporters perso (50-100 personnes).
+
+  ENVOI VIA RESEND (curl) :
+  curl -X POST "https://api.resend.com/emails" \
+    -H "Authorization: Bearer $RESEND_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d @resend-newsletter-payload.json
+-->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RestauMargin x Product Hunt</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #FAFAF7; color: #0F172A;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background: #FAFAF7;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.06);">
+
+          <!-- Header gradient -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #10B981 0%, #047857 100%); padding: 40px 32px; text-align: center;">
+              <p style="margin: 0 0 12px; color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">🚀 PRODUCT HUNT LAUNCH</p>
+              <h1 style="margin: 0 0 8px; color: white; font-size: 32px; font-weight: 900; letter-spacing: -0.5px;">On est en LIVE !</h1>
+              <p style="margin: 0; color: rgba(255,255,255,0.95); font-size: 16px;">Top 5 du jour est à portée — un upvote de toi peut tout changer.</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px 32px;">
+
+              <p style="margin: 0 0 16px; font-size: 17px; line-height: 1.6;">Salut <strong style="color: #047857;">{{first_name}}</strong>,</p>
+
+              <p style="margin: 0 0 16px; font-size: 16px; line-height: 1.7; color: #525252;">
+                On y est. RestauMargin est officiellement lancé sur <strong>Product Hunt</strong>, la plus grosse plateforme tech au monde (1M+ visiteurs/jour).
+              </p>
+
+              <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.7; color: #525252;">
+                Sur les <strong>24 prochaines heures</strong>, des milliers de personnes vont découvrir RestauMargin. Et plus on a d'upvotes <strong>maintenant</strong>, plus on monte dans le classement.
+              </p>
+
+              <!-- CTA Button -->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 32px 0;">
+                <tr>
+                  <td align="center">
+                    <a href="https://www.producthunt.com/products/restaumargin" style="display: inline-block; background: #DA552F; color: white; padding: 18px 40px; border-radius: 14px; text-decoration: none; font-size: 17px; font-weight: 800; box-shadow: 0 4px 16px rgba(218, 85, 47, 0.3);">
+                      ⬆️ Upvote sur Product Hunt
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin: 0 0 16px; font-size: 14px; text-align: center; color: #737373;">
+                Ça prend 30 secondes. Compte gratuit avec Google si tu n'es pas déjà sur PH.
+              </p>
+
+              <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 32px 0;">
+
+              <h2 style="margin: 0 0 16px; font-size: 20px; font-weight: 800; color: #0F172A;">Pourquoi ton upvote compte</h2>
+
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td width="50" valign="top" style="padding: 8px 0;">
+                    <div style="width: 36px; height: 36px; background: #ECFDF5; border-radius: 10px; text-align: center; line-height: 36px; font-size: 18px;">🎯</div>
+                  </td>
+                  <td valign="top" style="padding: 8px 12px;">
+                    <p style="margin: 0; font-size: 15px; line-height: 1.6;"><strong style="color: #0F172A;">Top 5 = 10 000 visiteurs.</strong> <span style="color: #525252;">Sur RestauMargin en 24h. Du jamais vu pour nous.</span></p>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="50" valign="top" style="padding: 8px 0;">
+                    <div style="width: 36px; height: 36px; background: #ECFDF5; border-radius: 10px; text-align: center; line-height: 36px; font-size: 18px;">📰</div>
+                  </td>
+                  <td valign="top" style="padding: 8px 12px;">
+                    <p style="margin: 0; font-size: 15px; line-height: 1.6;"><strong style="color: #0F172A;">Newsletter PH 700k abonnés.</strong> <span style="color: #525252;">Top 5 du jour = reprise dans la newsletter quotidienne.</span></p>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="50" valign="top" style="padding: 8px 0;">
+                    <div style="width: 36px; height: 36px; background: #ECFDF5; border-radius: 10px; text-align: center; line-height: 36px; font-size: 18px;">🍽️</div>
+                  </td>
+                  <td valign="top" style="padding: 8px 12px;">
+                    <p style="margin: 0; font-size: 15px; line-height: 1.6;"><strong style="color: #0F172A;">Plus de restaurateurs aidés.</strong> <span style="color: #525252;">Visibility = plus de gens qui découvrent l'outil et reprennent le contrôle de leurs marges.</span></p>
+                  </td>
+                </tr>
+              </table>
+
+              <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 32px 0;">
+
+              <h2 style="margin: 0 0 16px; font-size: 20px; font-weight: 800; color: #0F172A;">3 façons d'aider en plus</h2>
+
+              <ol style="margin: 0; padding-left: 20px; line-height: 1.8; color: #525252; font-size: 15px;">
+                <li>Laisser un commentaire sur la page PH (ça boost l'algo)</li>
+                <li>Partager le lien à <strong>1 restaurateur</strong> de ton réseau</li>
+                <li>Retweeter notre annonce <a href="https://twitter.com/intent/like?tweet_id=YOUR_TWEET_ID" style="color: #10B981;">ici</a></li>
+              </ol>
+
+              <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 32px 0;">
+
+              <p style="margin: 0 0 16px; font-size: 16px; line-height: 1.7;">
+                Merci infiniment pour ton soutien depuis le début. Chaque upvote aujourd'hui, c'est une petite victoire pour qu'on aide plus de restaurants demain.
+              </p>
+
+              <p style="margin: 0; font-size: 16px; line-height: 1.7;">
+                — Youssef<br>
+                <span style="color: #737373; font-size: 14px;">Fondateur RestauMargin</span>
+              </p>
+
+              <p style="margin: 24px 0 0; padding: 16px; background: #ECFDF5; border-radius: 12px; font-size: 14px; color: #047857; line-height: 1.6;">
+                <strong>PS :</strong> Je posterai un récap des résultats demain matin. Si on fait Top 5, je t'envoie un screenshot 🚀
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background: #FAFAF7; padding: 24px 32px; text-align: center; border-top: 1px solid #E5E7EB;">
+              <p style="margin: 0 0 8px; font-size: 13px; color: #737373;">RestauMargin — Suivi des marges resto par IA</p>
+              <p style="margin: 0; font-size: 13px;">
+                <a href="https://www.restaumargin.fr" style="color: #10B981; text-decoration: none;">restaumargin.fr</a>
+                <span style="color: #D4D4D4; margin: 0 8px;">·</span>
+                <a href="https://www.restaumargin.fr/launch" style="color: #10B981; text-decoration: none;">Page launch</a>
+                <span style="color: #D4D4D4; margin: 0 8px;">·</span>
+                <a href="mailto:contact@restaumargin.fr" style="color: #10B981; text-decoration: none;">Nous écrire</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

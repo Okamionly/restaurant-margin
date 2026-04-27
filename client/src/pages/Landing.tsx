@@ -1974,6 +1974,7 @@ function Footer() {
             <li><Link to="/outils/calculateur-food-cost" className="hover:text-white">Calculateur food cost</Link></li>
             <li><Link to="/outils/generateur-qr-menu" className="hover:text-white">Générateur QR menu</Link></li>
             <li><a href="#contact" className="hover:text-white">Réserver une démo</a></li>
+            <li><Link to="/launch" className="hover:text-white inline-flex items-center gap-1.5">🚀 Launch Product Hunt</Link></li>
           </ul>
         </div>
         <div>

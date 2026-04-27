@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 500" width="1500" height="500">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FAFAF7"/>
+      <stop offset="100%" stop-color="#ECFDF5"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1500" height="500" fill="url(#bgGrad)"/>
+
+  <!-- Curves -->
+  <g opacity="0.15" stroke="#10B981" stroke-width="2.5" fill="none">
+    <path d="M 0,140 Q 375,100 750,160 T 1500,140"/>
+    <path d="M 0,220 Q 375,180 750,240 T 1500,220"/>
+    <path d="M 0,300 Q 375,260 750,320 T 1500,300"/>
+    <path d="M 0,380 Q 375,340 750,400 T 1500,380"/>
+  </g>
+
+  <!-- Center content -->
+  <g transform="translate(750, 250)" text-anchor="middle">
+    <text y="-100" font-family="-apple-system, sans-serif" font-size="14" font-weight="800" fill="#047857" letter-spacing="3">
+      🚀 PRODUCT HUNT LAUNCH · 6 MAI 2026
+    </text>
+    <text y="-30" font-family="-apple-system, 'Satoshi', sans-serif" font-size="64" font-weight="900" fill="#0F172A" letter-spacing="-2">
+      RestauMargin
+    </text>
+    <text y="20" font-family="-apple-system, sans-serif" font-size="28" font-weight="700" fill="url(#emeraldGrad)">
+      Suivi des marges resto par IA
+    </text>
+    <text y="80" font-family="-apple-system, sans-serif" font-size="20" font-weight="500" fill="#525252">
+      Dictée vocale · Food cost temps réel · Alertes prix fournisseurs
+    </text>
+    <text y="140" font-family="-apple-system, sans-serif" font-size="16" font-weight="600" fill="#10B981">
+      restaumargin.fr/launch
+    </text>
+  </g>
+</svg>

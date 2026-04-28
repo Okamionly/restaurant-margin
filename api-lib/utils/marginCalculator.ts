@@ -56,8 +56,21 @@ export function computeFoodCost(
 }
 
 /**
- * Simple margin calculator (additive waste strategy: waste 20% => multiplier 1.20).
- * Used by tests + the public /api/public/food-cost endpoint.
+ * ⚠️⚠️⚠️ ATTENTION — NE PAS UTILISER POUR DES RECETTES COMPLETES ⚠️⚠️⚠️
+ *
+ * Cette fonction est UNIQUEMENT pour le calculateur public anonyme
+ * (/api/public/food-cost). Elle :
+ *   - N'a PAS le concept de nbPortions (cost = total cost, pas par portion)
+ *   - Utilise la stratégie waste "additive" (1 + w/100) au lieu de "yield"
+ *   - N'inclut PAS le coût main d'oeuvre
+ *
+ * Pour TOUT calcul de marge sur une recette stockée en DB, utilise
+ * calculateRecipeMargin() ci-dessous.
+ *
+ * Bug historique 2026-04-28 (commit fb315d4) : api-lib/routes/recipes.ts
+ * importait par erreur cette fonction au lieu de calculateRecipeMargin —
+ * toutes les recettes multi-portions affichaient des marges délirantes
+ * en production pendant ~24h. Ne PAS répéter.
  */
 export function calculateMargin(
   ingredients: IngredientWithQty[],

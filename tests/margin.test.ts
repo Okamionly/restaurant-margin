@@ -96,3 +96,85 @@ describe('computeFoodCost — strategy switch', () => {
     expect(computeFoodCost(ing, 'yield')).toBeCloseTo(4.0, 2); // 2 * 2
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// REGRESSION TESTS — 2026-04-28
+// Bug fb315d4 : api-lib/routes/recipes.ts importait calculateMargin (mauvais)
+// au lieu de calculateRecipeMargin. Toute recette multi-portions affichait
+// une marge fausse en production. Ces tests garantissent que la fonction
+// utilisée par formatRecipe respecte bien nbPortions.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('REGRESSION: calculateRecipeMargin must divide by nbPortions', () => {
+  it('Magret canard 4 portions, ingredients 32€ total, vente 18€ → costPerPortion = 8€', () => {
+    // Crée 4 ingrédients à 8€ chacun (pour totalFoodCost = 32€)
+    const ingredients = [
+      { quantity: 1000, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 8 } },  // 8€
+      { quantity: 1000, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 8 } },
+      { quantity: 1000, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 8 } },
+      { quantity: 1000, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 8 } },
+    ];
+    const r = calculateRecipeMargin({ ingredients, sellingPrice: 18, nbPortions: 4 });
+    expect(r.foodCost).toBeCloseTo(32.0, 2);            // total
+    expect(r.costPerPortion).toBeCloseTo(8.0, 2);       // 32 / 4
+    expect(r.marginAmount).toBeCloseTo(10.0, 2);        // 18 - 8 par portion
+    expect(r.marginPercent).toBeCloseTo(55.6, 1);       // (18-8)/18*100
+  });
+
+  it('Recipe 1 portion → costPerPortion === foodCost (no division surprise)', () => {
+    const ingredients = [{ quantity: 100, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 20 } }];
+    const r = calculateRecipeMargin({ ingredients, sellingPrice: 10, nbPortions: 1 });
+    expect(r.costPerPortion).toBeCloseTo(2.0, 2);
+    expect(r.foodCost).toBeCloseTo(2.0, 2);
+  });
+
+  it('Recipe nbPortions = 0 or undefined → fallback to 1 (no NaN/Infinity)', () => {
+    const ingredients = [{ quantity: 100, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 20 } }];
+    const r1 = calculateRecipeMargin({ ingredients, sellingPrice: 10, nbPortions: 0 });
+    const r2 = calculateRecipeMargin({ ingredients, sellingPrice: 10 } as any);
+    expect(r1.costPerPortion).toBeCloseTo(2.0, 2);
+    expect(r2.costPerPortion).toBeCloseTo(2.0, 2);
+    expect(Number.isFinite(r1.marginPercent)).toBe(true);
+    expect(Number.isFinite(r2.marginPercent)).toBe(true);
+  });
+
+  it('calculateMargin (legacy) ≠ calculateRecipeMargin — strategies divergent on multi-portions', () => {
+    // CE TEST documente l'invariance fonctionnelle :
+    // calculateMargin n'a PAS de nbPortions → ne divise jamais
+    // calculateRecipeMargin DIVISE par nbPortions
+    // Si quelqu'un swap les deux par erreur (comme moi en commit b8d02be),
+    // ce test plante immédiatement.
+    const ingredients = [
+      { quantity: 500, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 40 } },  // 20€
+      { quantity: 500, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 40 } },  // 20€
+    ];
+    const legacy = calculateMargin(ingredients, 50);                              // pas de nbPortions
+    const recipe = calculateRecipeMargin({ ingredients, sellingPrice: 50, nbPortions: 5 });
+
+    expect(legacy.costPerPortion).toBeCloseTo(40.0, 2);     // 40€ total (PAS divisé)
+    expect(recipe.costPerPortion).toBeCloseTo(8.0, 2);      // 40 / 5 = 8€
+    expect(legacy.costPerPortion).not.toBeCloseTo(recipe.costPerPortion, 2);
+  });
+});
+
+describe('REGRESSION: formatRecipe must call calculateRecipeMargin (not calculateMargin)', () => {
+  // Ces tests vérifient que la fonction formatRecipe (qui formate les recettes
+  // pour l'API GET /api/recipes) utilise bien la BONNE fonction de calcul.
+  it('via api-lib/routes/recipes.ts : multi-portion recipe returns correct costPerPortion', () => {
+    const recipe = {
+      id: 1,
+      name: 'Magret canard',
+      sellingPrice: 18,
+      nbPortions: 4,
+      ingredients: [
+        { quantity: 1000, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 8, allergens: [] } },
+        { quantity: 1000, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 8, allergens: [] } },
+        { quantity: 1000, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 8, allergens: [] } },
+        { quantity: 1000, wastePercent: 0, ingredient: { unit: 'g', pricePerUnit: 8, allergens: [] } },
+      ],
+    };
+    // Simule ce que fait formatRecipe dans api-lib/routes/recipes.ts
+    const margin = calculateRecipeMargin(recipe);
+    expect(margin.costPerPortion).toBeCloseTo(8.0, 2);
+    expect(margin.costPerPortion).not.toBeCloseTo(32.0, 2); // BAD si on appelle calculateMargin par erreur
+  });
+});

@@ -11,14 +11,9 @@ import {
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
 import { useTranslation } from '../hooks/useTranslation';
+import { useApiClient } from '../hooks/useApiClient';
 
 const API = '';
-
-function authHeaders() {
-  const token = localStorage.getItem('token');
-  const rid = localStorage.getItem('activeRestaurantId') || '';
-  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', 'X-Restaurant-Id': rid };
-}
 
 // ── Status mapping (backend <-> frontend) ──
 const STATUS_TO_BACKEND: Record<string, string> = {
@@ -190,6 +185,7 @@ function getFirstDayOfMonth(year: number, month: number): number {
 // ── Component ──────────────────────────────────────────────────────────
 
 export default function Seminaires() {
+  const { authHeaders } = useApiClient();
   const { t } = useTranslation();
   const { showToast } = useToast();
 

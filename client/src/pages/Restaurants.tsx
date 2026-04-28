@@ -78,11 +78,11 @@ function getSimulatedKPIs(r: Restaurant, overview?: RestaurantOverviewStat) {
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 shadow-lg">
-      <p className="text-xs font-medium text-[#111111] dark:text-white mb-1">{label}</p>
+    <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 shadow-lg">
+      <p className="text-xs font-medium text-mono-100 dark:text-white mb-1">{label}</p>
       {payload.map((entry: any, i: number) => (
-        <p key={i} className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
-          {entry.name}: <span className="font-semibold text-[#111111] dark:text-white">
+        <p key={i} className="text-xs text-[#6B7280] dark:text-mono-700">
+          {entry.name}: <span className="font-semibold text-mono-100 dark:text-white">
             {typeof entry.value === 'number' && entry.value < 200 ? entry.value.toFixed(1) + ' %' : formatCurrency(entry.value)}
           </span>
         </p>
@@ -95,7 +95,7 @@ function ChartTooltip({ active, payload, label }: any) {
 function StatusBadge({ open }: { open: boolean }) {
   if (open) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#111111]/5 dark:bg-white/5 text-xs font-semibold text-[#111111] dark:text-white">
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-mono-100/5 dark:bg-white/5 text-xs font-semibold text-mono-100 dark:text-white">
         <span className="relative flex h-2 w-2">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75" />
           <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]" />
@@ -105,8 +105,8 @@ function StatusBadge({ open }: { open: boolean }) {
     );
   }
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">
-      <span className="h-2 w-2 rounded-full bg-[#9CA3AF] dark:bg-[#737373]" />
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-mono-950 dark:bg-[#171717] text-xs font-medium text-[#9CA3AF] dark:text-mono-500">
+      <span className="h-2 w-2 rounded-full bg-[#9CA3AF] dark:bg-mono-500" />
       Ferme
     </span>
   );
@@ -125,15 +125,15 @@ function TabButton({ active, icon: Icon, label, count, onClick }: {
       onClick={onClick}
       className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
         active
-          ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] shadow-sm'
-          : 'text-[#6B7280] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white'
+          ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 shadow-sm'
+          : 'text-[#6B7280] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] hover:text-mono-100 dark:hover:text-white'
       }`}
     >
       <Icon className="w-4 h-4" />
       <span>{label}</span>
       {count !== undefined && count > 0 && (
         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-          active ? 'bg-white/20 dark:bg-[#111111]/20' : 'bg-[#F3F4F6] dark:bg-[#171717]'
+          active ? 'bg-white/20 dark:bg-mono-100/20' : 'bg-mono-950 dark:bg-[#171717]'
         }`}>
           {count}
         </span>
@@ -184,18 +184,18 @@ function RestaurantCardsDashboard({
         return (
           <div
             key={r.id}
-            className={`relative bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-sm border-2 transition-all group ${
+            className={`relative bg-white dark:bg-mono-50 rounded-2xl shadow-sm border-2 transition-all group ${
               isSelected
-                ? 'border-[#111111] dark:border-white ring-2 ring-[#111111]/10 dark:ring-white/10'
+                ? 'border-mono-100 dark:border-white ring-2 ring-mono-100/10 dark:ring-white/10'
                 : isCompare
-                  ? 'border-[#111111]/50 dark:border-white/50 ring-1 ring-[#111111]/10 dark:ring-white/10'
-                  : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111]/30 dark:hover:border-white/30'
+                  ? 'border-mono-100/50 dark:border-white/50 ring-1 ring-mono-100/10 dark:ring-white/10'
+                  : 'border-mono-900 dark:border-mono-200 hover:border-mono-100/30 dark:hover:border-white/30'
             }`}
           >
             {/* Top badges */}
             <div className="absolute -top-2.5 left-4 flex items-center gap-2">
               {isSelected && (
-                <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs font-bold">
+                <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-xs font-bold">
                   <Check className="w-3 h-3" />
                   Actif
                 </span>
@@ -206,14 +206,14 @@ function RestaurantCardsDashboard({
               {/* Header: name + cuisine + status + actions */}
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className={`p-2.5 rounded-xl flex-shrink-0 ${isSelected ? 'bg-[#111111] dark:bg-white' : 'bg-[#F3F4F6] dark:bg-[#171717]'}`}>
-                    <Building2 className={`w-5 h-5 ${isSelected ? 'text-white dark:text-[#111111]' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                  <div className={`p-2.5 rounded-xl flex-shrink-0 ${isSelected ? 'bg-mono-100 dark:bg-white' : 'bg-mono-950 dark:bg-[#171717]'}`}>
+                    <Building2 className={`w-5 h-5 ${isSelected ? 'text-white dark:text-mono-100' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-bold text-[#111111] dark:text-white truncate">{r.name}</h3>
+                    <h3 className="font-bold text-mono-100 dark:text-white truncate">{r.name}</h3>
                     <div className="flex items-center gap-2 mt-1">
                       {r.cuisineType && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] font-medium uppercase tracking-wider">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 font-medium uppercase tracking-wider">
                           {r.cuisineType}
                         </span>
                       )}
@@ -222,10 +222,10 @@ function RestaurantCardsDashboard({
                   </div>
                 </div>
                 <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                  <button onClick={() => onEdit(r)} className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors" title="Modifier">
+                  <button onClick={() => onEdit(r)} className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors" title="Modifier">
                     <Edit className="w-4 h-4" />
                   </button>
-                  <button onClick={() => onDelete(r.id, r.name)} className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#DC2626] transition-colors" title="Supprimer">
+                  <button onClick={() => onDelete(r.id, r.name)} className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-[#DC2626] transition-colors" title="Supprimer">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -233,7 +233,7 @@ function RestaurantCardsDashboard({
 
               {/* Address */}
               {r.address && (
-                <div className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-[#737373] mb-4">
+                <div className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-mono-500 mb-4">
                   <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                   <span className="truncate">{r.address}</span>
                 </div>
@@ -241,44 +241,44 @@ function RestaurantCardsDashboard({
 
               {/* KPI Grid */}
               <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">CA Aujourd'hui</div>
-                  <div className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">{formatCurrency(kpis.caToday)}</div>
+                <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">CA Aujourd'hui</div>
+                  <div className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">{formatCurrency(kpis.caToday)}</div>
                 </div>
-                <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Marge</div>
-                  <div className={`text-lg font-bold font-satoshi ${kpis.marginPercent >= 65 ? 'text-[#111111] dark:text-white' : 'text-[#DC2626]'}`}>
+                <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Marge</div>
+                  <div className={`text-lg font-bold font-satoshi ${kpis.marginPercent >= 65 ? 'text-mono-100 dark:text-white' : 'text-[#DC2626]'}`}>
                     {formatPercent(kpis.marginPercent)}
                   </div>
                 </div>
-                <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Food Cost</div>
-                  <div className={`text-lg font-bold font-satoshi ${kpis.foodCostPercent <= 30 ? 'text-[#111111] dark:text-white' : 'text-[#DC2626]'}`}>
+                <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Food Cost</div>
+                  <div className={`text-lg font-bold font-satoshi ${kpis.foodCostPercent <= 30 ? 'text-mono-100 dark:text-white' : 'text-[#DC2626]'}`}>
                     {formatPercent(kpis.foodCostPercent)}
                   </div>
                 </div>
-                <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Staff actif</div>
-                  <div className="text-lg font-bold text-[#111111] dark:text-white font-satoshi flex items-center gap-1.5">
-                    <Users className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Staff actif</div>
+                  <div className="text-lg font-bold text-mono-100 dark:text-white font-satoshi flex items-center gap-1.5">
+                    <Users className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                     {kpis.activeStaff}
                   </div>
                 </div>
               </div>
 
               {/* Stats mini row */}
-              <div className="flex items-center gap-4 py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A] mb-4">
-                <div className="flex items-center gap-1.5 text-xs text-[#6B7280] dark:text-[#737373]">
+              <div className="flex items-center gap-4 py-3 border-t border-mono-900 dark:border-mono-200 mb-4">
+                <div className="flex items-center gap-1.5 text-xs text-[#6B7280] dark:text-mono-500">
                   <ClipboardList className="w-3.5 h-3.5" />
-                  <span className="font-semibold text-[#111111] dark:text-white">{kpis.recipeCount}</span> recettes
+                  <span className="font-semibold text-mono-100 dark:text-white">{kpis.recipeCount}</span> recettes
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-[#6B7280] dark:text-[#737373]">
+                <div className="flex items-center gap-1.5 text-xs text-[#6B7280] dark:text-mono-500">
                   <Package className="w-3.5 h-3.5" />
-                  <span className="font-semibold text-[#111111] dark:text-white">{kpis.ingredientCount}</span> ingredients
+                  <span className="font-semibold text-mono-100 dark:text-white">{kpis.ingredientCount}</span> ingredients
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-[#6B7280] dark:text-[#737373]">
+                <div className="flex items-center gap-1.5 text-xs text-[#6B7280] dark:text-mono-500">
                   <Truck className="w-3.5 h-3.5" />
-                  <span className="font-semibold text-[#111111] dark:text-white">{kpis.supplierCount}</span> fourn.
+                  <span className="font-semibold text-mono-100 dark:text-white">{kpis.supplierCount}</span> fourn.
                 </div>
               </div>
 
@@ -286,7 +286,7 @@ function RestaurantCardsDashboard({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => onView(r.id)}
-                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-[#111111] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] text-white dark:text-[#111111] text-sm font-medium transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-mono-100 dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] text-white dark:text-mono-100 text-sm font-medium transition-colors"
                 >
                   <Eye className="w-4 h-4" />
                   Voir
@@ -295,8 +295,8 @@ function RestaurantCardsDashboard({
                   onClick={(e) => { e.stopPropagation(); onToggleCompare(r.id); }}
                   className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border-2 text-sm font-medium transition-all ${
                     isCompare
-                      ? 'border-[#111111] dark:border-white bg-[#111111]/5 dark:bg-white/5 text-[#111111] dark:text-white'
-                      : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#737373] hover:border-[#111111] dark:hover:border-white hover:text-[#111111] dark:hover:text-white'
+                      ? 'border-mono-100 dark:border-white bg-mono-100/5 dark:bg-white/5 text-mono-100 dark:text-white'
+                      : 'border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-500 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white'
                   }`}
                 >
                   {isCompare ? <CheckCircle2 className="w-4 h-4" /> : <GitCompare className="w-4 h-4" />}
@@ -360,10 +360,10 @@ function ComparisonMode({
 
   if (selected.length < 2) {
     return (
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-12 text-center">
-        <GitCompare className="w-12 h-12 text-[#D4D4D4] dark:text-[#404040] mx-auto mb-4" />
-        <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-2">Mode Comparaison</h3>
-        <p className="text-sm text-[#6B7280] dark:text-[#737373] max-w-md mx-auto">
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-12 text-center">
+        <GitCompare className="w-12 h-12 text-mono-800 dark:text-mono-350 mx-auto mb-4" />
+        <h3 className="text-lg font-bold text-mono-100 dark:text-white mb-2">Mode Comparaison</h3>
+        <p className="text-sm text-[#6B7280] dark:text-mono-500 max-w-md mx-auto">
           Selectionnez 2 a 4 restaurants dans l'onglet Dashboard en cliquant sur "Comparer" pour les analyser cote a cote.
         </p>
       </div>
@@ -374,9 +374,9 @@ function ComparisonMode({
     <div className="space-y-6">
       {/* Selected restaurants pills */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Comparaison:</span>
+        <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Comparaison:</span>
         {selected.map((r) => (
-          <span key={r.id} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs font-medium">
+          <span key={r.id} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-xs font-medium">
             {r.name}
             <button onClick={() => onRemove(r.id)} className="hover:opacity-70 transition-opacity">
               <X className="w-3 h-3" />
@@ -386,21 +386,21 @@ function ComparisonMode({
       </div>
 
       {/* Side-by-side comparison table */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <h4 className="text-sm font-bold text-[#111111] dark:text-white font-satoshi">Comparaison des KPI</h4>
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
+          <h4 className="text-sm font-bold text-mono-100 dark:text-white font-satoshi">Comparaison des KPI</h4>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-                <th className="text-left px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Metrique</th>
+              <tr className="border-b border-mono-900 dark:border-mono-200">
+                <th className="text-left px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Metrique</th>
                 {selected.map((r) => (
-                  <th key={r.id} className="text-center px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#111111] dark:text-white">
+                  <th key={r.id} className="text-center px-5 py-3 text-xs font-bold uppercase tracking-wider text-mono-100 dark:text-white">
                     {r.name}
                   </th>
                 ))}
-                <th className="text-center px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Verdict</th>
+                <th className="text-center px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Verdict</th>
               </tr>
             </thead>
             <tbody>
@@ -411,19 +411,19 @@ function ComparisonMode({
                 const allSame = values.every((v) => v === values[0]);
 
                 return (
-                  <tr key={def.key} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-0">
-                    <td className="px-5 py-3.5 font-medium text-[#111111] dark:text-white">{def.label}</td>
+                  <tr key={def.key} className="border-b border-mono-900 dark:border-mono-200 last:border-0">
+                    <td className="px-5 py-3.5 font-medium text-mono-100 dark:text-white">{def.label}</td>
                     {metrics.map((m) => {
                       const val = (m as any)[def.key] as number;
                       const isBest = val === bestVal && !allSame;
                       const isWorst = val === worstVal && !allSame;
                       return (
                         <td key={m.id} className="px-5 py-3.5 text-center">
-                          <span className={`font-semibold ${isBest ? 'text-[#111111] dark:text-white' : isWorst ? 'text-[#DC2626]' : 'text-[#6B7280] dark:text-[#737373]'}`}>
+                          <span className={`font-semibold ${isBest ? 'text-mono-100 dark:text-white' : isWorst ? 'text-[#DC2626]' : 'text-[#6B7280] dark:text-mono-500'}`}>
                             {def.format(val)}
                           </span>
                           {isBest && (
-                            <span className="ml-2 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#111111]/10 dark:bg-white/10 text-[#111111] dark:text-white">
+                            <span className="ml-2 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-mono-100/10 dark:bg-white/10 text-mono-100 dark:text-white">
                               <Crown className="w-2.5 h-2.5" /> Meilleur
                             </span>
                           )}
@@ -437,7 +437,7 @@ function ComparisonMode({
                     })}
                     <td className="px-5 py-3.5 text-center">
                       {!allSame && (
-                        <span className="text-xs text-[#6B7280] dark:text-[#737373]">
+                        <span className="text-xs text-[#6B7280] dark:text-mono-500">
                           Ecart: {def.format(Math.abs(bestVal - worstVal))}
                         </span>
                       )}
@@ -453,11 +453,11 @@ function ComparisonMode({
       {/* Bar charts */}
       {chartData.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-            <h4 className="text-sm font-bold text-[#111111] dark:text-white font-satoshi mb-4">Marge vs Food Cost</h4>
+          <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+            <h4 className="text-sm font-bold text-mono-100 dark:text-white font-satoshi mb-4">Marge vs Food Cost</h4>
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={chartData} barGap={4}>
-                <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-[#E5E7EB] dark:text-[#1A1A1A]" />
+                <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-mono-900 dark:text-mono-200" />
                 <XAxis dataKey="name" tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={{ stroke: '#E5E7EB' }} tickLine={false} />
                 <YAxis tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={{ stroke: '#E5E7EB' }} tickLine={false} domain={[0, 100]} tickFormatter={(v: number) => `${v}%`} />
                 <Tooltip content={<ChartTooltip />} />
@@ -466,26 +466,26 @@ function ComparisonMode({
                     <Cell key={index} fill="#111111" className="dark:fill-white" />
                   ))}
                 </Bar>
-                <Bar dataKey="Food Cost %" radius={[4, 4, 0, 0]} maxBarSize={48} fill="#D4D4D4" className="dark:fill-[#404040]" />
+                <Bar dataKey="Food Cost %" radius={[4, 4, 0, 0]} maxBarSize={48} fill="#D4D4D4" className="dark:fill-mono-350" />
               </BarChart>
             </ResponsiveContainer>
             <div className="flex items-center justify-center gap-6 mt-2">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-sm bg-[#111111] dark:bg-white" />
-                <span className="text-xs text-[#6B7280] dark:text-[#737373]">Marge %</span>
+                <div className="w-3 h-3 rounded-sm bg-mono-100 dark:bg-white" />
+                <span className="text-xs text-[#6B7280] dark:text-mono-500">Marge %</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-sm bg-[#D4D4D4] dark:bg-[#404040]" />
-                <span className="text-xs text-[#6B7280] dark:text-[#737373]">Food Cost %</span>
+                <div className="w-3 h-3 rounded-sm bg-mono-800 dark:bg-mono-350" />
+                <span className="text-xs text-[#6B7280] dark:text-mono-500">Food Cost %</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-            <h4 className="text-sm font-bold text-[#111111] dark:text-white font-satoshi mb-4">Chiffre d'affaires</h4>
+          <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+            <h4 className="text-sm font-bold text-mono-100 dark:text-white font-satoshi mb-4">Chiffre d'affaires</h4>
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={chartData} barGap={4}>
-                <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-[#E5E7EB] dark:text-[#1A1A1A]" />
+                <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-mono-900 dark:text-mono-200" />
                 <XAxis dataKey="name" tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={{ stroke: '#E5E7EB' }} tickLine={false} />
                 <YAxis tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={{ stroke: '#E5E7EB' }} tickLine={false} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`} />
                 <Tooltip content={<ChartTooltip />} />
@@ -517,10 +517,10 @@ function GroupAnalytics({
 }) {
   if (!overview || overview.restaurants.length < 2) {
     return (
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-12 text-center">
-        <BarChart3 className="w-12 h-12 text-[#D4D4D4] dark:text-[#404040] mx-auto mb-4" />
-        <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-2">Analytiques Groupe</h3>
-        <p className="text-sm text-[#6B7280] dark:text-[#737373]">Ajoutez au moins 2 restaurants pour voir les analytiques groupe.</p>
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-12 text-center">
+        <BarChart3 className="w-12 h-12 text-mono-800 dark:text-mono-350 mx-auto mb-4" />
+        <h3 className="text-lg font-bold text-mono-100 dark:text-white mb-2">Analytiques Groupe</h3>
+        <p className="text-sm text-[#6B7280] dark:text-mono-500">Ajoutez au moins 2 restaurants pour voir les analytiques groupe.</p>
       </div>
     );
   }
@@ -544,37 +544,37 @@ function GroupAnalytics({
     <div className="space-y-6">
       {/* Big KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-3">
-            <DollarSign className="w-5 h-5 text-[#111111] dark:text-white" />
-            <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">CA Total Groupe</span>
+            <DollarSign className="w-5 h-5 text-mono-100 dark:text-white" />
+            <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">CA Total Groupe</span>
           </div>
-          <p className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{formatCurrency(totals.totalRevenue)}</p>
-          <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-1">{overview.restaurants.length} restaurants</p>
+          <p className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{formatCurrency(totals.totalRevenue)}</p>
+          <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-1">{overview.restaurants.length} restaurants</p>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-3">
-            <TrendingUp className="w-5 h-5 text-[#111111] dark:text-white" />
-            <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Marge Moyenne</span>
+            <TrendingUp className="w-5 h-5 text-mono-100 dark:text-white" />
+            <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Marge Moyenne</span>
           </div>
-          <p className={`text-2xl font-bold font-satoshi ${totals.avgMarginPercent >= 65 ? 'text-[#111111] dark:text-white' : 'text-[#DC2626]'}`}>
+          <p className={`text-2xl font-bold font-satoshi ${totals.avgMarginPercent >= 65 ? 'text-mono-100 dark:text-white' : 'text-[#DC2626]'}`}>
             {formatPercent(totals.avgMarginPercent)}
           </p>
-          <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-1">Objectif: 65%+</p>
+          <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-1">Objectif: 65%+</p>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-3">
-            <ClipboardList className="w-5 h-5 text-[#111111] dark:text-white" />
-            <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Recettes Total</span>
+            <ClipboardList className="w-5 h-5 text-mono-100 dark:text-white" />
+            <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Recettes Total</span>
           </div>
-          <p className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{totals.totalRecipes}</p>
+          <p className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{totals.totalRecipes}</p>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-3">
-            <Package className="w-5 h-5 text-[#111111] dark:text-white" />
-            <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Ingredients Total</span>
+            <Package className="w-5 h-5 text-mono-100 dark:text-white" />
+            <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Ingredients Total</span>
           </div>
-          <p className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{totals.totalIngredients}</p>
+          <p className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{totals.totalIngredients}</p>
         </div>
       </div>
 
@@ -582,28 +582,28 @@ function GroupAnalytics({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Best */}
         <div
-          className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 cursor-pointer hover:border-[#111111] dark:hover:border-white transition-all"
+          className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 cursor-pointer hover:border-mono-100 dark:hover:border-white transition-all"
           onClick={() => onNavigate(best.id)}
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2.5 rounded-xl bg-[#111111]/5 dark:bg-white/5">
-              <Crown className="w-5 h-5 text-[#111111] dark:text-white" />
+            <div className="p-2.5 rounded-xl bg-mono-100/5 dark:bg-white/5">
+              <Crown className="w-5 h-5 text-mono-100 dark:text-white" />
             </div>
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-[#111111] dark:text-white">Meilleure performance du mois</p>
-              <p className="text-sm text-[#6B7280] dark:text-[#737373]">Basee sur la marge</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-mono-100 dark:text-white">Meilleure performance du mois</p>
+              <p className="text-sm text-[#6B7280] dark:text-mono-500">Basee sur la marge</p>
             </div>
           </div>
-          <h4 className="text-xl font-bold text-[#111111] dark:text-white mb-2">{best.name}</h4>
+          <h4 className="text-xl font-bold text-mono-100 dark:text-white mb-2">{best.name}</h4>
           <div className="flex items-center gap-4">
             <div>
-              <span className="text-2xl font-bold text-[#111111] dark:text-white">{formatPercent(best.marginPercent)}</span>
-              <span className="text-xs text-[#6B7280] dark:text-[#737373] ml-1">marge</span>
+              <span className="text-2xl font-bold text-mono-100 dark:text-white">{formatPercent(best.marginPercent)}</span>
+              <span className="text-xs text-[#6B7280] dark:text-mono-500 ml-1">marge</span>
             </div>
-            <div className="w-px h-8 bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
+            <div className="w-px h-8 bg-mono-900 dark:bg-mono-200" />
             <div>
-              <span className="text-lg font-bold text-[#111111] dark:text-white">{formatCurrency(best.revenue)}</span>
-              <span className="text-xs text-[#6B7280] dark:text-[#737373] ml-1">CA</span>
+              <span className="text-lg font-bold text-mono-100 dark:text-white">{formatCurrency(best.revenue)}</span>
+              <span className="text-xs text-[#6B7280] dark:text-mono-500 ml-1">CA</span>
             </div>
           </div>
         </div>
@@ -611,7 +611,7 @@ function GroupAnalytics({
         {/* Worst */}
         {worst.id !== best.id && (
           <div
-            className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 cursor-pointer hover:border-[#DC2626] transition-all"
+            className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 cursor-pointer hover:border-[#DC2626] transition-all"
             onClick={() => onNavigate(worst.id)}
           >
             <div className="flex items-center gap-3 mb-4">
@@ -620,19 +620,19 @@ function GroupAnalytics({
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-[#DC2626]">A ameliorer</p>
-                <p className="text-sm text-[#6B7280] dark:text-[#737373]">Necessite attention</p>
+                <p className="text-sm text-[#6B7280] dark:text-mono-500">Necessite attention</p>
               </div>
             </div>
-            <h4 className="text-xl font-bold text-[#111111] dark:text-white mb-2">{worst.name}</h4>
+            <h4 className="text-xl font-bold text-mono-100 dark:text-white mb-2">{worst.name}</h4>
             <div className="flex items-center gap-4">
               <div>
                 <span className="text-2xl font-bold text-[#DC2626]">{formatPercent(worst.marginPercent)}</span>
-                <span className="text-xs text-[#6B7280] dark:text-[#737373] ml-1">marge</span>
+                <span className="text-xs text-[#6B7280] dark:text-mono-500 ml-1">marge</span>
               </div>
-              <div className="w-px h-8 bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
+              <div className="w-px h-8 bg-mono-900 dark:bg-mono-200" />
               <div>
-                <span className="text-lg font-bold text-[#111111] dark:text-white">{formatCurrency(worst.revenue)}</span>
-                <span className="text-xs text-[#6B7280] dark:text-[#737373] ml-1">CA</span>
+                <span className="text-lg font-bold text-mono-100 dark:text-white">{formatCurrency(worst.revenue)}</span>
+                <span className="text-xs text-[#6B7280] dark:text-mono-500 ml-1">CA</span>
               </div>
             </div>
           </div>
@@ -640,21 +640,21 @@ function GroupAnalytics({
       </div>
 
       {/* Consolidated P&L */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-2">
-          <Briefcase className="w-4 h-4 text-[#111111] dark:text-white" />
-          <h4 className="text-sm font-bold text-[#111111] dark:text-white font-satoshi">Compte de resultat consolide (estimatif)</h4>
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200 flex items-center gap-2">
+          <Briefcase className="w-4 h-4 text-mono-100 dark:text-white" />
+          <h4 className="text-sm font-bold text-mono-100 dark:text-white font-satoshi">Compte de resultat consolide (estimatif)</h4>
         </div>
-        <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+        <div className="divide-y divide-mono-900 dark:divide-mono-200">
           {pnlData.map((row, i) => (
-            <div key={i} className={`flex items-center justify-between px-5 py-3.5 ${row.type === 'profit' ? 'bg-[#FAFAFA] dark:bg-[#111111]' : ''}`}>
-              <span className={`text-sm ${row.type === 'profit' ? 'font-bold text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#737373]'}`}>
+            <div key={i} className={`flex items-center justify-between px-5 py-3.5 ${row.type === 'profit' ? 'bg-mono-1000 dark:bg-mono-100' : ''}`}>
+              <span className={`text-sm ${row.type === 'profit' ? 'font-bold text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-500'}`}>
                 {row.label}
               </span>
               <span className={`text-sm font-bold ${
-                row.type === 'revenue' ? 'text-[#111111] dark:text-white'
+                row.type === 'revenue' ? 'text-mono-100 dark:text-white'
                 : row.type === 'cost' ? 'text-[#DC2626]'
-                : row.value >= 0 ? 'text-[#111111] dark:text-white' : 'text-[#DC2626]'
+                : row.value >= 0 ? 'text-mono-100 dark:text-white' : 'text-[#DC2626]'
               }`}>
                 {row.type === 'cost' ? '- ' : ''}{formatCurrency(Math.abs(row.value))}
               </span>
@@ -664,50 +664,50 @@ function GroupAnalytics({
       </div>
 
       {/* Per-restaurant ranking table */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <h4 className="text-sm font-bold text-[#111111] dark:text-white font-satoshi">Classement des restaurants</h4>
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
+          <h4 className="text-sm font-bold text-mono-100 dark:text-white font-satoshi">Classement des restaurants</h4>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-                <th className="text-left px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">#</th>
-                <th className="text-left px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Restaurant</th>
-                <th className="text-right px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">CA</th>
-                <th className="text-right px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Food Cost %</th>
-                <th className="text-right px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Marge %</th>
-                <th className="text-right px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Recettes</th>
+              <tr className="border-b border-mono-900 dark:border-mono-200">
+                <th className="text-left px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">#</th>
+                <th className="text-left px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Restaurant</th>
+                <th className="text-right px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">CA</th>
+                <th className="text-right px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Food Cost %</th>
+                <th className="text-right px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Marge %</th>
+                <th className="text-right px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Recettes</th>
               </tr>
             </thead>
             <tbody>
               {sorted.map((r, i) => (
                 <tr
                   key={r.id}
-                  className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-0 hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors cursor-pointer"
+                  className="border-b border-mono-900 dark:border-mono-200 last:border-0 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors cursor-pointer"
                   onClick={() => onNavigate(r.id)}
                 >
                   <td className="px-5 py-3">
                     <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${
-                      i === 0 ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#737373]'
+                      i === 0 ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100' : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-500'
                     }`}>
                       {i + 1}
                     </span>
                   </td>
-                  <td className="px-5 py-3 font-medium text-[#111111] dark:text-white">{r.name}</td>
-                  <td className="px-5 py-3 text-right font-medium text-[#111111] dark:text-white">{formatCurrency(r.revenue)}</td>
+                  <td className="px-5 py-3 font-medium text-mono-100 dark:text-white">{r.name}</td>
+                  <td className="px-5 py-3 text-right font-medium text-mono-100 dark:text-white">{formatCurrency(r.revenue)}</td>
                   <td className="px-5 py-3 text-right">
-                    <span className={`font-medium ${r.foodCostPercent <= 30 ? 'text-[#111111] dark:text-white' : 'text-[#DC2626]'}`}>
+                    <span className={`font-medium ${r.foodCostPercent <= 30 ? 'text-mono-100 dark:text-white' : 'text-[#DC2626]'}`}>
                       {formatPercent(r.foodCostPercent)}
                     </span>
                   </td>
                   <td className="px-5 py-3 text-right">
-                    <span className={`inline-flex items-center gap-1 font-bold ${r.marginPercent >= 65 ? 'text-[#111111] dark:text-white' : 'text-[#DC2626]'}`}>
+                    <span className={`inline-flex items-center gap-1 font-bold ${r.marginPercent >= 65 ? 'text-mono-100 dark:text-white' : 'text-[#DC2626]'}`}>
                       {r.marginPercent >= 65 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                       {formatPercent(r.marginPercent)}
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-right text-[#6B7280] dark:text-[#737373]">{r.recipeCount}</td>
+                  <td className="px-5 py-3 text-right text-[#6B7280] dark:text-mono-500">{r.recipeCount}</td>
                 </tr>
               ))}
             </tbody>
@@ -800,10 +800,10 @@ function TemplateSharing({ restaurants }: { restaurants: Restaurant[] }) {
 
   if (restaurants.length < 2) {
     return (
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-12 text-center">
-        <Share2 className="w-12 h-12 text-[#D4D4D4] dark:text-[#404040] mx-auto mb-4" />
-        <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-2">Partage de recettes</h3>
-        <p className="text-sm text-[#6B7280] dark:text-[#737373]">Ajoutez au moins 2 restaurants pour partager des recettes entre eux.</p>
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-12 text-center">
+        <Share2 className="w-12 h-12 text-mono-800 dark:text-mono-350 mx-auto mb-4" />
+        <h3 className="text-lg font-bold text-mono-100 dark:text-white mb-2">Partage de recettes</h3>
+        <p className="text-sm text-[#6B7280] dark:text-mono-500">Ajoutez au moins 2 restaurants pour partager des recettes entre eux.</p>
       </div>
     );
   }
@@ -811,25 +811,25 @@ function TemplateSharing({ restaurants }: { restaurants: Restaurant[] }) {
   return (
     <div className="space-y-6">
       {/* Source selection */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-        <h4 className="text-sm font-bold text-[#111111] dark:text-white font-satoshi mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+        <h4 className="text-sm font-bold text-mono-100 dark:text-white font-satoshi mb-4 flex items-center gap-2">
           <Share2 className="w-4 h-4" /> Partager des recettes
         </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-2">Restaurant source</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500 mb-2">Restaurant source</label>
             <select
               value={sourceId ?? ''}
               onChange={(e) => { setSourceId(Number(e.target.value) || null); setSelectedRecipes(new Set()); }}
-              className="w-full px-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+              className="w-full px-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
             >
               <option value="">Choisir...</option>
               {restaurants.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-2">Restaurants cibles</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500 mb-2">Restaurants cibles</label>
             <div className="flex flex-wrap gap-2">
               {restaurants.filter((r) => r.id !== sourceId).map((r) => (
                 <button
@@ -837,8 +837,8 @@ function TemplateSharing({ restaurants }: { restaurants: Restaurant[] }) {
                   onClick={() => toggleTarget(r.id)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium border-2 transition-all ${
                     targetIds.has(r.id)
-                      ? 'border-[#111111] dark:border-white bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
-                      : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#737373] hover:border-[#111111] dark:hover:border-white'
+                      ? 'border-mono-100 dark:border-white bg-mono-100 dark:bg-white text-white dark:text-mono-100'
+                      : 'border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-500 hover:border-mono-100 dark:hover:border-white'
                   }`}
                 >
                   {r.name}
@@ -853,7 +853,7 @@ function TemplateSharing({ restaurants }: { restaurants: Restaurant[] }) {
           <button
             onClick={() => setShareMode('single')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              shareMode === 'single' ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#737373]'
+              shareMode === 'single' ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100' : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-500'
             }`}
           >
             Selection individuelle
@@ -861,7 +861,7 @@ function TemplateSharing({ restaurants }: { restaurants: Restaurant[] }) {
           <button
             onClick={() => setShareMode('bulk')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              shareMode === 'bulk' ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#737373]'
+              shareMode === 'bulk' ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100' : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-500'
             }`}
           >
             Par categorie
@@ -871,11 +871,11 @@ function TemplateSharing({ restaurants }: { restaurants: Restaurant[] }) {
 
       {/* Recipe list */}
       {sourceId && (
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between gap-4">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200 flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <ClipboardList className="w-4 h-4 text-[#111111] dark:text-white" />
-              <h4 className="text-sm font-bold text-[#111111] dark:text-white font-satoshi">
+              <ClipboardList className="w-4 h-4 text-mono-100 dark:text-white" />
+              <h4 className="text-sm font-bold text-mono-100 dark:text-white font-satoshi">
                 Recettes ({selectedRecipes.size}/{demoRecipes.length} selectionnees)
               </h4>
             </div>
@@ -886,18 +886,18 @@ function TemplateSharing({ restaurants }: { restaurants: Restaurant[] }) {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Rechercher..."
-                className="pl-9 pr-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#171717] text-sm text-[#111111] dark:text-white w-48 outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                className="pl-9 pr-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-[#171717] text-sm text-mono-100 dark:text-white w-48 outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
               />
             </div>
           </div>
 
           {shareMode === 'bulk' && (
-            <div className="px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-2 flex-wrap">
+            <div className="px-5 py-3 border-b border-mono-900 dark:border-mono-200 flex items-center gap-2 flex-wrap">
               {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => selectCategory(cat)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#6B7280] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-all flex items-center gap-1.5"
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium border border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717] text-[#6B7280] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-all flex items-center gap-1.5"
                 >
                   <Layers className="w-3 h-3" />
                   {cat}
@@ -906,38 +906,38 @@ function TemplateSharing({ restaurants }: { restaurants: Restaurant[] }) {
             </div>
           )}
 
-          <div className="max-h-80 overflow-y-auto divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+          <div className="max-h-80 overflow-y-auto divide-y divide-mono-900 dark:divide-mono-200">
             {filteredRecipes.map((recipe) => (
               <label
                 key={recipe.id}
-                className="flex items-center gap-3 px-5 py-3 hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors cursor-pointer"
+                className="flex items-center gap-3 px-5 py-3 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors cursor-pointer"
               >
                 <input
                   type="checkbox"
                   checked={selectedRecipes.has(recipe.id)}
                   onChange={() => toggleRecipe(recipe.id)}
-                  className="w-4 h-4 rounded border-[#D4D4D4] dark:border-[#404040] text-[#111111] dark:text-white focus:ring-[#111111] dark:focus:ring-white"
+                  className="w-4 h-4 rounded border-mono-800 dark:border-mono-350 text-mono-100 dark:text-white focus:ring-mono-100 dark:focus:ring-white"
                 />
                 <div className="flex-1 min-w-0">
-                  <span className="text-sm font-medium text-[#111111] dark:text-white">{recipe.name}</span>
-                  <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                  <span className="text-sm font-medium text-mono-100 dark:text-white">{recipe.name}</span>
+                  <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
                     {recipe.category}
                   </span>
                 </div>
-                <span className="text-xs text-[#6B7280] dark:text-[#737373]">FC: {recipe.foodCost}%</span>
+                <span className="text-xs text-[#6B7280] dark:text-mono-500">FC: {recipe.foodCost}%</span>
               </label>
             ))}
           </div>
 
           {/* Share button */}
-          <div className="px-5 py-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
-            <span className="text-xs text-[#6B7280] dark:text-[#737373]">
+          <div className="px-5 py-4 border-t border-mono-900 dark:border-mono-200 flex items-center justify-between">
+            <span className="text-xs text-[#6B7280] dark:text-mono-500">
               {selectedRecipes.size} recette(s) vers {targetIds.size} restaurant(s)
             </span>
             <button
               onClick={handleShare}
               disabled={selectedRecipes.size === 0 || targetIds.size === 0}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#111111] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] disabled:opacity-40 text-white dark:text-[#111111] text-sm font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-mono-100 dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] disabled:opacity-40 text-white dark:text-mono-100 text-sm font-medium transition-colors"
             >
               <Send className="w-4 h-4" />
               Partager
@@ -980,10 +980,10 @@ function CentralizedOrdering({ restaurants }: { restaurants: Restaurant[] }) {
 
   if (restaurants.length < 2) {
     return (
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-12 text-center">
-        <ShoppingCart className="w-12 h-12 text-[#D4D4D4] dark:text-[#404040] mx-auto mb-4" />
-        <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-2">Commandes centralisees</h3>
-        <p className="text-sm text-[#6B7280] dark:text-[#737373]">Ajoutez au moins 2 restaurants pour regrouper les commandes.</p>
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-12 text-center">
+        <ShoppingCart className="w-12 h-12 text-mono-800 dark:text-mono-350 mx-auto mb-4" />
+        <h3 className="text-lg font-bold text-mono-100 dark:text-white mb-2">Commandes centralisees</h3>
+        <p className="text-sm text-[#6B7280] dark:text-mono-500">Ajoutez au moins 2 restaurants pour regrouper les commandes.</p>
       </div>
     );
   }
@@ -991,21 +991,21 @@ function CentralizedOrdering({ restaurants }: { restaurants: Restaurant[] }) {
   return (
     <div className="space-y-6">
       {/* Volume discount banner */}
-      <div className="bg-[#111111] dark:bg-white rounded-2xl p-5 flex items-center justify-between">
+      <div className="bg-mono-100 dark:bg-white rounded-2xl p-5 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="p-3 rounded-xl bg-white/10 dark:bg-[#111111]/10">
-            <Calculator className="w-6 h-6 text-white dark:text-[#111111]" />
+          <div className="p-3 rounded-xl bg-white/10 dark:bg-mono-100/10">
+            <Calculator className="w-6 h-6 text-white dark:text-mono-100" />
           </div>
           <div>
-            <p className="text-sm font-bold text-white dark:text-[#111111]">Remise volume estimee: -{discountRate}%</p>
-            <p className="text-xs text-white/60 dark:text-[#111111]/60">
+            <p className="text-sm font-bold text-white dark:text-mono-100">Remise volume estimee: -{discountRate}%</p>
+            <p className="text-xs text-white/60 dark:text-mono-100/60">
               Volume total: {formatCurrency(totalVolume)} — Economie: {formatCurrency(savings)}/commande
             </p>
           </div>
         </div>
         <button
           onClick={() => showToast('Commande groupee envoyee aux fournisseurs!', 'success')}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-[#111111] text-[#111111] dark:text-white text-sm font-bold hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-mono-100 text-mono-100 dark:text-white text-sm font-bold hover:opacity-90 transition-opacity"
         >
           <ShoppingCart className="w-4 h-4" />
           Commander pour tous
@@ -1013,56 +1013,56 @@ function CentralizedOrdering({ restaurants }: { restaurants: Restaurant[] }) {
       </div>
 
       {/* Aggregated needs table */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-2">
-          <Package className="w-4 h-4 text-[#111111] dark:text-white" />
-          <h4 className="text-sm font-bold text-[#111111] dark:text-white font-satoshi">Besoins agreges en ingredients</h4>
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200 flex items-center gap-2">
+          <Package className="w-4 h-4 text-mono-100 dark:text-white" />
+          <h4 className="text-sm font-bold text-mono-100 dark:text-white font-satoshi">Besoins agreges en ingredients</h4>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-                <th className="text-left px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Ingredient</th>
+              <tr className="border-b border-mono-900 dark:border-mono-200">
+                <th className="text-left px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Ingredient</th>
                 {restaurants.map((r) => (
-                  <th key={r.id} className="text-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">
+                  <th key={r.id} className="text-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">
                     {r.name.length > 10 ? r.name.slice(0, 10) + '...' : r.name}
                   </th>
                 ))}
-                <th className="text-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#111111] dark:text-white bg-[#FAFAFA] dark:bg-[#111111]">Total</th>
-                <th className="text-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Prix unit.</th>
-                <th className="text-right px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Montant</th>
+                <th className="text-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-mono-100 dark:text-white bg-mono-1000 dark:bg-mono-100">Total</th>
+                <th className="text-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Prix unit.</th>
+                <th className="text-right px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Montant</th>
               </tr>
             </thead>
             <tbody>
               {ingredientNeeds.map((item, i) => (
-                <tr key={i} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-0 hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
-                  <td className="px-5 py-3 font-medium text-[#111111] dark:text-white">
+                <tr key={i} className="border-b border-mono-900 dark:border-mono-200 last:border-0 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
+                  <td className="px-5 py-3 font-medium text-mono-100 dark:text-white">
                     {item.name}
-                    <span className="ml-1 text-[10px] text-[#9CA3AF] dark:text-[#737373]">({item.unit})</span>
+                    <span className="ml-1 text-[10px] text-[#9CA3AF] dark:text-mono-500">({item.unit})</span>
                   </td>
                   {item.restaurants.map((r) => (
-                    <td key={r.id} className="px-4 py-3 text-center text-[#6B7280] dark:text-[#737373]">{r.qty}</td>
+                    <td key={r.id} className="px-4 py-3 text-center text-[#6B7280] dark:text-mono-500">{r.qty}</td>
                   ))}
-                  <td className="px-4 py-3 text-center font-bold text-[#111111] dark:text-white bg-[#FAFAFA] dark:bg-[#111111]">
+                  <td className="px-4 py-3 text-center font-bold text-mono-100 dark:text-white bg-mono-1000 dark:bg-mono-100">
                     {item.totalQty} {item.unit}
                   </td>
-                  <td className="px-4 py-3 text-center text-[#6B7280] dark:text-[#737373]">{formatCurrency(item.unitPrice)}/{item.unit}</td>
-                  <td className="px-5 py-3 text-right font-medium text-[#111111] dark:text-white">{formatCurrency(item.totalQty * item.unitPrice)}</td>
+                  <td className="px-4 py-3 text-center text-[#6B7280] dark:text-mono-500">{formatCurrency(item.unitPrice)}/{item.unit}</td>
+                  <td className="px-5 py-3 text-right font-medium text-mono-100 dark:text-white">{formatCurrency(item.totalQty * item.unitPrice)}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
-              <tr className="bg-[#FAFAFA] dark:bg-[#111111]">
-                <td colSpan={restaurants.length + 1} className="px-5 py-3 text-right font-bold text-[#111111] dark:text-white">Total commande</td>
+              <tr className="bg-mono-1000 dark:bg-mono-100">
+                <td colSpan={restaurants.length + 1} className="px-5 py-3 text-right font-bold text-mono-100 dark:text-white">Total commande</td>
                 <td className="px-4 py-3" />
-                <td className="px-5 py-3 text-right text-lg font-bold text-[#111111] dark:text-white">{formatCurrency(totalVolume)}</td>
+                <td className="px-5 py-3 text-right text-lg font-bold text-mono-100 dark:text-white">{formatCurrency(totalVolume)}</td>
               </tr>
-              <tr className="bg-[#111111]/5 dark:bg-white/5">
-                <td colSpan={restaurants.length + 1} className="px-5 py-3 text-right font-bold text-[#111111] dark:text-white">
+              <tr className="bg-mono-100/5 dark:bg-white/5">
+                <td colSpan={restaurants.length + 1} className="px-5 py-3 text-right font-bold text-mono-100 dark:text-white">
                   Apres remise volume (-{discountRate}%)
                 </td>
                 <td className="px-4 py-3" />
-                <td className="px-5 py-3 text-right text-lg font-bold text-[#111111] dark:text-white">{formatCurrency(totalVolume - savings)}</td>
+                <td className="px-5 py-3 text-right text-lg font-bold text-mono-100 dark:text-white">{formatCurrency(totalVolume - savings)}</td>
               </tr>
             </tfoot>
           </table>
@@ -1113,10 +1113,10 @@ function StaffAllocation({ restaurants }: { restaurants: Restaurant[] }) {
 
   if (restaurants.length < 2) {
     return (
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-12 text-center">
-        <Users className="w-12 h-12 text-[#D4D4D4] dark:text-[#404040] mx-auto mb-4" />
-        <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-2">Gestion du personnel</h3>
-        <p className="text-sm text-[#6B7280] dark:text-[#737373]">Ajoutez au moins 2 restaurants pour gerer le personnel entre sites.</p>
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-12 text-center">
+        <Users className="w-12 h-12 text-mono-800 dark:text-mono-350 mx-auto mb-4" />
+        <h3 className="text-lg font-bold text-mono-100 dark:text-white mb-2">Gestion du personnel</h3>
+        <p className="text-sm text-[#6B7280] dark:text-mono-500">Ajoutez au moins 2 restaurants pour gerer le personnel entre sites.</p>
       </div>
     );
   }
@@ -1125,13 +1125,13 @@ function StaffAllocation({ restaurants }: { restaurants: Restaurant[] }) {
     <div className="space-y-6">
       {/* Summary KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-2">Total employes</div>
-          <div className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{totalStaff}</div>
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500 mb-2">Total employes</div>
+          <div className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{totalStaff}</div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-2">En poste maintenant</div>
-          <div className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi flex items-center gap-2">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500 mb-2">En poste maintenant</div>
+          <div className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi flex items-center gap-2">
             {workingNow}
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75" />
@@ -1139,35 +1139,35 @@ function StaffAllocation({ restaurants }: { restaurants: Restaurant[] }) {
             </span>
           </div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-2">Sites</div>
-          <div className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{restaurants.length}</div>
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500 mb-2">Sites</div>
+          <div className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{restaurants.length}</div>
         </div>
       </div>
 
       {/* Transfer widget */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-        <h4 className="text-sm font-bold text-[#111111] dark:text-white font-satoshi mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+        <h4 className="text-sm font-bold text-mono-100 dark:text-white font-satoshi mb-4 flex items-center gap-2">
           <ArrowLeftRight className="w-4 h-4" /> Transfert de personnel
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-1.5">De</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500 mb-1.5">De</label>
             <select
               value={transferFrom ?? ''}
               onChange={(e) => setTransferFrom(Number(e.target.value) || null)}
-              className="w-full px-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white outline-none"
+              className="w-full px-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white outline-none"
             >
               <option value="">Restaurant...</option>
               {restaurants.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-1.5">Employe</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500 mb-1.5">Employe</label>
             <select
               value={transferPerson}
               onChange={(e) => setTransferPerson(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white outline-none"
+              className="w-full px-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white outline-none"
             >
               <option value="">Choisir...</option>
               {transferFrom && staffData.find((s) => s.id === transferFrom)?.staff.map((p) => (
@@ -1176,11 +1176,11 @@ function StaffAllocation({ restaurants }: { restaurants: Restaurant[] }) {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-1.5">Vers</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#6B7280] dark:text-mono-500 mb-1.5">Vers</label>
             <select
               value={transferTo ?? ''}
               onChange={(e) => setTransferTo(Number(e.target.value) || null)}
-              className="w-full px-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white outline-none"
+              className="w-full px-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white outline-none"
             >
               <option value="">Restaurant...</option>
               {restaurants.filter((r) => r.id !== transferFrom).map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
@@ -1189,7 +1189,7 @@ function StaffAllocation({ restaurants }: { restaurants: Restaurant[] }) {
           <button
             onClick={handleTransfer}
             disabled={!transferFrom || !transferTo || !transferPerson}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#111111] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] disabled:opacity-40 text-white dark:text-[#111111] text-sm font-medium transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-mono-100 dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] disabled:opacity-40 text-white dark:text-mono-100 text-sm font-medium transition-colors"
           >
             <ArrowLeftRight className="w-4 h-4" />
             Transferer
@@ -1200,27 +1200,27 @@ function StaffAllocation({ restaurants }: { restaurants: Restaurant[] }) {
       {/* Staff per restaurant */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {staffData.map((site) => (
-          <div key={site.id} className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-            <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+          <div key={site.id} className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+            <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-[#111111] dark:text-white" />
-                <h4 className="text-sm font-bold text-[#111111] dark:text-white font-satoshi">{site.name}</h4>
+                <Building2 className="w-4 h-4 text-mono-100 dark:text-white" />
+                <h4 className="text-sm font-bold text-mono-100 dark:text-white font-satoshi">{site.name}</h4>
               </div>
-              <span className="text-xs font-medium text-[#6B7280] dark:text-[#737373]">
+              <span className="text-xs font-medium text-[#6B7280] dark:text-mono-500">
                 {site.staff.filter((p) => p.isWorking).length}/{site.staff.length} en poste
               </span>
             </div>
-            <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+            <div className="divide-y divide-mono-900 dark:divide-mono-200">
               {site.staff.map((person) => (
                 <div key={person.id} className="flex items-center gap-3 px-5 py-3">
-                  <div className={`w-2 h-2 rounded-full flex-shrink-0 ${person.isWorking ? 'bg-[#22C55E]' : 'bg-[#D4D4D4] dark:bg-[#404040]'}`} />
+                  <div className={`w-2 h-2 rounded-full flex-shrink-0 ${person.isWorking ? 'bg-[#22C55E]' : 'bg-mono-800 dark:bg-mono-350'}`} />
                   <div className="flex-1 min-w-0">
-                    <span className="text-sm font-medium text-[#111111] dark:text-white">{person.name}</span>
-                    <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                    <span className="text-sm font-medium text-mono-100 dark:text-white">{person.name}</span>
+                    <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
                       {person.role}
                     </span>
                   </div>
-                  <span className="text-xs text-[#6B7280] dark:text-[#737373]">{person.hours}</span>
+                  <span className="text-xs text-[#6B7280] dark:text-mono-500">{person.hours}</span>
                 </div>
               ))}
             </div>
@@ -1359,7 +1359,7 @@ export default function Restaurants() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-[#9CA3AF] dark:text-[#737373]">Chargement...</div>
+        <div className="text-[#9CA3AF] dark:text-mono-500">Chargement...</div>
       </div>
     );
   }
@@ -1379,12 +1379,12 @@ export default function Restaurants() {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">Hub Multi-Restaurants</h2>
-            <span className="px-2.5 py-1 rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-[10px] font-bold uppercase tracking-wider">
+            <h2 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">Hub Multi-Restaurants</h2>
+            <span className="px-2.5 py-1 rounded-full bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-[10px] font-bold uppercase tracking-wider">
               Business
             </span>
           </div>
-          <p className="text-sm text-[#6B7280] dark:text-[#737373] mt-1">
+          <p className="text-sm text-[#6B7280] dark:text-mono-500 mt-1">
             {hasMultiple
               ? `${restaurants.length} etablissements — Gerez, comparez et optimisez votre portefeuille`
               : 'Gerez vos etablissements et basculez entre eux'}
@@ -1392,7 +1392,7 @@ export default function Restaurants() {
         </div>
         <button
           onClick={openAdd}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111111] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] text-white dark:text-[#111111] text-sm font-bold transition-colors shadow-sm"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-mono-100 dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] text-white dark:text-mono-100 text-sm font-bold transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" />
           Ajouter un restaurant
@@ -1417,21 +1417,21 @@ export default function Restaurants() {
 
       {/* Compare mode floating bar */}
       {compareSet.size >= 2 && activeTab === 'dashboard' && (
-        <div className="bg-[#111111] dark:bg-white rounded-2xl px-5 py-3 flex items-center justify-between shadow-lg">
+        <div className="bg-mono-100 dark:bg-white rounded-2xl px-5 py-3 flex items-center justify-between shadow-lg">
           <div className="flex items-center gap-3">
-            <GitCompare className="w-5 h-5 text-white dark:text-[#111111]" />
-            <span className="text-sm font-bold text-white dark:text-[#111111]">{compareSet.size} restaurants selectionnes</span>
+            <GitCompare className="w-5 h-5 text-white dark:text-mono-100" />
+            <span className="text-sm font-bold text-white dark:text-mono-100">{compareSet.size} restaurants selectionnes</span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setCompareSet(new Set())}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium text-white/70 dark:text-[#111111]/70 hover:text-white dark:hover:text-[#111111] transition-colors"
+              className="px-3 py-1.5 rounded-lg text-xs font-medium text-white/70 dark:text-mono-100/70 hover:text-white dark:hover:text-mono-100 transition-colors"
             >
               Tout deselectionner
             </button>
             <button
               onClick={() => setActiveTab('compare')}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-[#111111] text-[#111111] dark:text-white text-sm font-bold hover:opacity-90 transition-opacity"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-mono-100 text-mono-100 dark:text-white text-sm font-bold hover:opacity-90 transition-opacity"
             >
               <BarChart3 className="w-4 h-4" />
               Comparer maintenant
@@ -1442,8 +1442,8 @@ export default function Restaurants() {
 
       {/* Loading state */}
       {hasMultiple && overviewLoading && (
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-12 flex items-center justify-center">
-          <div className="text-sm text-[#9CA3AF] dark:text-[#737373]">Chargement de l'apercu...</div>
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-12 flex items-center justify-center">
+          <div className="text-sm text-[#9CA3AF] dark:text-mono-500">Chargement de l'apercu...</div>
         </div>
       )}
 
@@ -1501,23 +1501,23 @@ export default function Restaurants() {
           {restaurants.map((r) => {
             const kpis = getSimulatedKPIs(r);
             return (
-              <div key={r.id} className="relative bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-sm border-2 border-[#111111] dark:border-white ring-2 ring-[#111111]/10 dark:ring-white/10">
+              <div key={r.id} className="relative bg-white dark:bg-mono-50 rounded-2xl shadow-sm border-2 border-mono-100 dark:border-white ring-2 ring-mono-100/10 dark:ring-white/10">
                 <div className="absolute -top-2.5 left-4">
-                  <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs font-bold">
+                  <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-xs font-bold">
                     <Check className="w-3 h-3" /> Actif
                   </span>
                 </div>
                 <div className="p-5">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-xl bg-[#111111] dark:bg-white">
-                        <Building2 className="w-5 h-5 text-white dark:text-[#111111]" />
+                      <div className="p-2.5 rounded-xl bg-mono-100 dark:bg-white">
+                        <Building2 className="w-5 h-5 text-white dark:text-mono-100" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-[#111111] dark:text-white">{r.name}</h3>
+                        <h3 className="font-bold text-mono-100 dark:text-white">{r.name}</h3>
                         <div className="flex items-center gap-2 mt-1">
                           {r.cuisineType && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] font-medium uppercase tracking-wider">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 font-medium uppercase tracking-wider">
                               {r.cuisineType}
                             </span>
                           )}
@@ -1526,33 +1526,33 @@ export default function Restaurants() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
-                      <button onClick={() => openEdit(r)} className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white transition-colors">
+                      <button onClick={() => openEdit(r)} className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] hover:text-mono-100 dark:hover:text-white transition-colors">
                         <Edit className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
                   {r.address && (
-                    <div className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-[#737373] mb-4">
+                    <div className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-mono-500 mb-4">
                       <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                       <span>{r.address}</span>
                     </div>
                   )}
                   <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Recettes</div>
-                      <div className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">{r._count?.recipes ?? 0}</div>
+                    <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Recettes</div>
+                      <div className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">{r._count?.recipes ?? 0}</div>
                     </div>
-                    <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Ingredients</div>
-                      <div className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">{r._count?.ingredients ?? 0}</div>
+                    <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Ingredients</div>
+                      <div className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">{r._count?.ingredients ?? 0}</div>
                     </div>
-                    <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Fournisseurs</div>
-                      <div className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">{r._count?.suppliers ?? 0}</div>
+                    <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Fournisseurs</div>
+                      <div className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">{r._count?.suppliers ?? 0}</div>
                     </div>
-                    <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Couverts/jour</div>
-                      <div className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">{r.coversPerDay}</div>
+                    <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Couverts/jour</div>
+                      <div className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">{r.coversPerDay}</div>
                     </div>
                   </div>
                 </div>
@@ -1566,28 +1566,28 @@ export default function Restaurants() {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editingId ? 'Modifier le restaurant' : 'Ajouter un restaurant'}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#737373] mb-1.5">Nom du restaurant *</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-500 mb-1.5">Nom du restaurant *</label>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
               <input
                 type="text"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111] dark:focus:border-white outline-none"
+                className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-mono-100 dark:focus:border-white outline-none"
                 placeholder="Ex: Le Bistrot du Chef"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#737373] mb-1.5">Adresse</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-500 mb-1.5">Adresse</label>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
               <input
                 type="text"
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
-                className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
                 placeholder="25 rue de la Paix, Paris"
               />
             </div>
@@ -1595,27 +1595,27 @@ export default function Restaurants() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#737373] mb-1.5">Type de cuisine</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-500 mb-1.5">Type de cuisine</label>
               <div className="relative">
-                <ChefHat className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                <ChefHat className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                 <input
                   type="text"
                   value={form.cuisineType}
                   onChange={(e) => setForm({ ...form, cuisineType: e.target.value })}
-                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
                   placeholder="Cuisine francaise"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#737373] mb-1.5">Telephone</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-500 mb-1.5">Telephone</label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                 <input
                   type="tel"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
                   placeholder="01 42 00 00 00"
                 />
               </div>
@@ -1624,40 +1624,40 @@ export default function Restaurants() {
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#737373] mb-1.5">Couverts/jour</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-500 mb-1.5">Couverts/jour</label>
               <div className="relative">
-                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                 <input
                   type="number"
                   min={0}
                   value={form.coversPerDay || ''}
                   onChange={(e) => setForm({ ...form, coversPerDay: parseInt(e.target.value) || 0 })}
-                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
                   placeholder="80"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#737373] mb-1.5">Ouverture</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-500 mb-1.5">Ouverture</label>
               <div className="relative">
-                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                 <input
                   type="time"
                   value={form.openingHour}
                   onChange={(e) => setForm({ ...form, openingHour: e.target.value })}
-                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#737373] mb-1.5">Fermeture</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-500 mb-1.5">Fermeture</label>
               <div className="relative">
-                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                 <input
                   type="time"
                   value={form.closingHour}
                   onChange={(e) => setForm({ ...form, closingHour: e.target.value })}
-                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
                 />
               </div>
             </div>
@@ -1667,14 +1667,14 @@ export default function Restaurants() {
             <button
               type="button"
               onClick={() => setShowModal(false)}
-              className="px-4 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#737373] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-sm font-medium transition-colors"
+              className="px-4 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-500 hover:bg-mono-1000 dark:hover:bg-[#171717] text-sm font-medium transition-colors"
             >
               Annuler
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2.5 rounded-xl bg-[#111111] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 text-white dark:text-[#111111] text-sm font-bold transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-mono-100 dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 text-white dark:text-mono-100 text-sm font-bold transition-colors"
             >
               {submitting ? 'En cours...' : editingId ? 'Enregistrer' : 'Ajouter'}
             </button>

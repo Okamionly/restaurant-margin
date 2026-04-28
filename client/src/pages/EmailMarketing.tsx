@@ -8,6 +8,7 @@ import {
   Megaphone, Newspaper, Cake, UserPlus,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { useApiClient } from '../hooks/useApiClient';
 
 // ── Types ──────────────────────────────────────────────────────────────
 type TabId = 'builder' | 'history' | 'widget' | 'sequences' | 'analytics';
@@ -44,13 +45,6 @@ interface SequenceStep {
   subject: string;
   condition?: string;
   active: boolean;
-}
-
-// ── Helpers ────────────────────────────────────────────────────────────
-function authHeaders() {
-  const token = localStorage.getItem('token');
-  const restaurantId = localStorage.getItem('activeRestaurantId');
-  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', 'X-Restaurant-Id': restaurantId || '1' };
 }
 
 const TEMPLATE_META: Record<TemplateId, { label: string; icon: React.ComponentType<{ className?: string }>; color: string; description: string }> = {
@@ -202,6 +196,7 @@ const MOCK_SEQUENCES: SequenceStep[] = [
 // ── Component ──────────────────────────────────────────────────────────
 export default function EmailMarketing() {
   const { showToast } = useToast();
+  const { authHeaders } = useApiClient();
   const [activeTab, setActiveTab] = useState<TabId>('builder');
   const [campaigns, setCampaigns] = useState<Campaign[]>(MOCK_CAMPAIGNS);
   const [sequences, setSequences] = useState<SequenceStep[]>(MOCK_SEQUENCES);

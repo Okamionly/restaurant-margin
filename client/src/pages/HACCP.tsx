@@ -360,8 +360,8 @@ function getTempColor(zone: string, temp: number): 'emerald' | 'amber' | 'red' |
   return 'slate';
 }
 
-const TEMP_TEXT: Record<string, string> = { emerald: 'text-emerald-400', amber: 'text-amber-400', red: 'text-red-400', slate: 'text-[#9CA3AF] dark:text-[#737373]' };
-const TEMP_BADGE: Record<string, string> = { emerald: 'bg-emerald-900/40 text-emerald-300', amber: 'bg-amber-900/40 text-amber-300', red: 'bg-red-900/40 text-red-300', slate: 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3]' };
+const TEMP_TEXT: Record<string, string> = { emerald: 'text-emerald-400', amber: 'text-amber-400', red: 'text-red-400', slate: 'text-[#9CA3AF] dark:text-mono-500' };
+const TEMP_BADGE: Record<string, string> = { emerald: 'bg-emerald-900/40 text-emerald-300', amber: 'bg-amber-900/40 text-amber-300', red: 'bg-red-900/40 text-red-300', slate: 'bg-[#FAFAFA] dark:bg-mono-50 text-[#6B7280] dark:text-mono-700' };
 const TEMP_STATUS: Record<string, string> = { emerald: 'OK', amber: 'Attention', red: 'Danger', slate: '-' };
 
 const ZONE_CHART_COLORS: Record<string, string> = {
@@ -388,7 +388,7 @@ function getDeadlineColor(deadline: string): string {
   const diffDays = Math.ceil((dl.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   if (diffDays < 0) return 'text-red-400';
   if (diffDays <= 2) return 'text-amber-400';
-  return 'text-[#6B7280] dark:text-[#A3A3A3]';
+  return 'text-[#6B7280] dark:text-mono-700';
 }
 
 function getDeadlineBg(deadline: string): string {
@@ -511,7 +511,7 @@ function ComplianceScoreWidget({ score, size = 180 }: { score: number; size?: nu
           <div className="bg-white dark:bg-black rounded-full w-[85%] h-[85%] flex flex-col items-center justify-center shadow-inner">
             <span className="text-4xl font-black" style={{ color }}>{score}%</span>
             <span className="text-xs font-semibold mt-0.5" style={{ color }}>{label}</span>
-            <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">Conformite HACCP</span>
+            <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-0.5">Conformite HACCP</span>
           </div>
         </div>
       </div>
@@ -847,8 +847,8 @@ export default function HACCP() {
   const TempChartTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload?.length) return null;
     return (
-      <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg p-3 shadow-xl text-xs">
-        <div className="text-[#9CA3AF] dark:text-[#737373] mb-1.5 font-medium">{label}</div>
+      <div className="bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg p-3 shadow-xl text-xs">
+        <div className="text-[#9CA3AF] dark:text-mono-500 mb-1.5 font-medium">{label}</div>
         {payload.map((p: any) => {
           const temp = p.value as number;
           let status = 'OK';
@@ -860,10 +860,10 @@ export default function HACCP() {
             <div key={p.dataKey} className="flex items-center justify-between gap-4 py-0.5">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.color }} />
-                <span className="text-[#6B7280] dark:text-[#A3A3A3]">{p.dataKey}</span>
+                <span className="text-[#6B7280] dark:text-mono-700">{p.dataKey}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[#111111] dark:text-white font-semibold">{temp}°C</span>
+                <span className="text-mono-100 dark:text-white font-semibold">{temp}°C</span>
                 <span className={`font-medium ${statusColor}`}>{status}</span>
               </div>
             </div>
@@ -1417,20 +1417,20 @@ export default function HACCP() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print">
         <div>
-          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-3">
             <ShieldCheck className="w-7 h-7 text-emerald-400" />
             {t('haccp.title')}
           </h1>
-          <p className="text-[#9CA3AF] dark:text-[#737373] mt-1">{t('haccp.subtitle')}</p>
+          <p className="text-[#9CA3AF] dark:text-mono-500 mt-1">{t('haccp.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <button onClick={exportRegistreCSV}
-            className="flex items-center gap-2 px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] rounded-xl text-sm font-medium transition-colors">
+            className="flex items-center gap-2 px-4 py-2.5 border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:bg-[#FAFAFA] dark:hover:bg-[#171717] rounded-xl text-sm font-medium transition-colors">
             <Download className="w-4 h-4" />
             Exporter registre
           </button>
           <button onClick={handlePrint}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+            className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
             <Printer className="w-4 h-4" />
             Imprimer le registre
           </button>
@@ -1438,10 +1438,10 @@ export default function HACCP() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-white dark:bg-black/50 p-1 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto no-print">
+      <div className="flex gap-1 bg-white dark:bg-black/50 p-1 rounded-xl border border-mono-900 dark:border-mono-200 overflow-x-auto no-print">
         {tabs.map(tab => (
           <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-            className={`relative flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.key ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-lg' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'}`}>
+            className={`relative flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.key ? 'bg-mono-100 dark:bg-white text-white dark:text-black shadow-lg' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white hover:bg-mono-950 dark:hover:bg-[#171717]'}`}>
             {tab.icon}{tab.label}
             {tab.badge && (
               <span className={`ml-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full text-[10px] font-bold ${activeTab === tab.key ? 'bg-red-500 text-white' : 'bg-red-500/80 text-white'}`}>
@@ -1460,14 +1460,14 @@ export default function HACCP() {
           {/* Top row: Compliance Score + Quick Stats */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Compliance Score Widget */}
-            <div className="lg:col-span-4 bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 flex flex-col items-center justify-center">
+            <div className="lg:col-span-4 bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6 flex flex-col items-center justify-center">
               <ComplianceScoreWidget score={complianceScore} />
               <div className="mt-4 w-full">
-                <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">
+                <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">
                   <span>Progression du jour</span>
                   <span>{checklistProgress.done}/{checklistProgress.total}</span>
                 </div>
-                <div className="h-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full overflow-hidden">
+                <div className="h-2 bg-[#FAFAFA] dark:bg-mono-50 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
@@ -1482,13 +1482,13 @@ export default function HACCP() {
             {/* Quick Stats Cards */}
             <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* Consecutive compliant days */}
-              <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+              <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[#9CA3AF] dark:text-[#737373] text-xs font-medium uppercase tracking-wider">Jours consecutifs conforme</span>
+                  <span className="text-[#9CA3AF] dark:text-mono-500 text-xs font-medium uppercase tracking-wider">Jours consecutifs conforme</span>
                 </div>
                 <div className="flex items-end gap-2">
                   <span className="text-4xl font-black text-emerald-400">{quickStats.consecutiveDays}</span>
-                  <span className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-1">jours</span>
+                  <span className="text-sm text-[#9CA3AF] dark:text-mono-500 mb-1">jours</span>
                 </div>
                 <div className="mt-3 flex items-center gap-2 text-xs text-emerald-400">
                   <TrendingUp className="w-3.5 h-3.5" />
@@ -1497,23 +1497,23 @@ export default function HACCP() {
               </div>
 
               {/* Last non-conformity */}
-              <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+              <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[#9CA3AF] dark:text-[#737373] text-xs font-medium uppercase tracking-wider">Derniere non-conformite</span>
+                  <span className="text-[#9CA3AF] dark:text-mono-500 text-xs font-medium uppercase tracking-wider">Derniere non-conformite</span>
                 </div>
                 <div className="flex items-end gap-2">
                   {quickStats.lastNCDaysAgo >= 0 ? (
                     <>
-                      <span className={`text-4xl font-black ${quickStats.lastNCDaysAgo <= 1 ? 'text-red-400' : quickStats.lastNCDaysAgo <= 3 ? 'text-amber-400' : 'text-[#111111] dark:text-white'}`}>
+                      <span className={`text-4xl font-black ${quickStats.lastNCDaysAgo <= 1 ? 'text-red-400' : quickStats.lastNCDaysAgo <= 3 ? 'text-amber-400' : 'text-mono-100 dark:text-white'}`}>
                         {quickStats.lastNCDaysAgo}
                       </span>
-                      <span className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-1">jour{quickStats.lastNCDaysAgo !== 1 ? 's' : ''}</span>
+                      <span className="text-sm text-[#9CA3AF] dark:text-mono-500 mb-1">jour{quickStats.lastNCDaysAgo !== 1 ? 's' : ''}</span>
                     </>
                   ) : (
                     <span className="text-lg font-bold text-emerald-400">Aucune</span>
                   )}
                 </div>
-                <div className="mt-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                <div className="mt-3 text-xs text-[#9CA3AF] dark:text-mono-500">
                   {quickStats.lastNCDaysAgo < 0 ? 'Aucune non-conformite enregistree' :
                     quickStats.lastNCDaysAgo === 0 ? 'Aujourd\'hui' :
                     `Il y a ${quickStats.lastNCDaysAgo} jour${quickStats.lastNCDaysAgo !== 1 ? 's' : ''}`}
@@ -1521,15 +1521,15 @@ export default function HACCP() {
               </div>
 
               {/* Pending corrective actions */}
-              <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+              <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[#9CA3AF] dark:text-[#737373] text-xs font-medium uppercase tracking-wider">Actions correctives en cours</span>
+                  <span className="text-[#9CA3AF] dark:text-mono-500 text-xs font-medium uppercase tracking-wider">Actions correctives en cours</span>
                 </div>
                 <div className="flex items-end gap-2">
                   <span className={`text-4xl font-black ${quickStats.pendingActions > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
                     {quickStats.pendingActions}
                   </span>
-                  <span className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-1">action{quickStats.pendingActions !== 1 ? 's' : ''}</span>
+                  <span className="text-sm text-[#9CA3AF] dark:text-mono-500 mb-1">action{quickStats.pendingActions !== 1 ? 's' : ''}</span>
                 </div>
                 {quickStats.pendingActions > 0 ? (
                   <button onClick={() => setActiveTab('actions')} className="mt-3 flex items-center gap-1 text-xs text-amber-400 hover:text-amber-300 transition-colors">
@@ -1548,47 +1548,47 @@ export default function HACCP() {
           {/* Summary stat cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Conformite */}
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[#9CA3AF] dark:text-[#737373] text-sm">{t('haccp.tempCompliance')}</span>
+                <span className="text-[#9CA3AF] dark:text-mono-500 text-sm">{t('haccp.tempCompliance')}</span>
                 <Thermometer className="w-5 h-5 text-teal-400" />
               </div>
               <div className={`text-3xl font-bold ${stats.rate >= 90 ? 'text-emerald-400' : stats.rate >= 70 ? 'text-amber-400' : 'text-red-400'}`}>{stats.rate}%</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">{stats.total} {t('haccp.readings')}</div>
-              <div className="mt-3 h-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full overflow-hidden">
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">{stats.total} {t('haccp.readings')}</div>
+              <div className="mt-3 h-2 bg-[#FAFAFA] dark:bg-mono-50 rounded-full overflow-hidden">
                 <div className={`h-full rounded-full ${stats.rate >= 90 ? 'bg-emerald-500' : stats.rate >= 70 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${stats.rate}%` }} />
               </div>
             </div>
             {/* Alertes */}
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[#9CA3AF] dark:text-[#737373] text-sm">{t('haccp.dluoAlerts')}</span>
+                <span className="text-[#9CA3AF] dark:text-mono-500 text-sm">{t('haccp.dluoAlerts')}</span>
                 <AlertTriangle className="w-5 h-5 text-amber-400" />
               </div>
               <div className="text-3xl font-bold text-amber-400">{stats.activeAlerts}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">{t('haccp.including')} {stats.expired} {t('haccp.expired')}</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">{t('haccp.including')} {stats.expired} {t('haccp.expired')}</div>
               {stats.expired > 0 && <div className="mt-3 flex items-center gap-2 text-xs text-red-400 bg-red-900/20 px-2 py-1 rounded-lg"><XCircle className="w-3.5 h-3.5" />{t('haccp.actionRequired')}</div>}
             </div>
             {/* Nettoyage */}
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[#9CA3AF] dark:text-[#737373] text-sm">{t('haccp.todayCleaning')}</span>
+                <span className="text-[#9CA3AF] dark:text-mono-500 text-sm">{t('haccp.todayCleaning')}</span>
                 <SprayCan className="w-5 h-5 text-violet-400" />
               </div>
               <div className={`text-3xl font-bold ${stats.cleanRate === 100 ? 'text-emerald-400' : stats.cleanRate >= 50 ? 'text-amber-400' : 'text-red-400'}`}>{stats.cleanRate}%</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">{stats.cleanDone}/{stats.cleanTotal} zones</div>
-              <div className="mt-3 h-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full overflow-hidden">
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">{stats.cleanDone}/{stats.cleanTotal} zones</div>
+              <div className="mt-3 h-2 bg-[#FAFAFA] dark:bg-mono-50 rounded-full overflow-hidden">
                 <div className={`h-full rounded-full ${stats.cleanRate === 100 ? 'bg-emerald-500' : stats.cleanRate >= 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${stats.cleanRate}%` }} />
               </div>
             </div>
             {/* Actions correctives */}
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[#9CA3AF] dark:text-[#737373] text-sm">Actions correctives</span>
+                <span className="text-[#9CA3AF] dark:text-mono-500 text-sm">Actions correctives</span>
                 <Wrench className="w-5 h-5 text-orange-400" />
               </div>
-              <div className="text-3xl font-bold text-[#111111] dark:text-white">{complianceReport?.correctiveActions.open || 0}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">ouvertes / {complianceReport?.correctiveActions.total || 0} total</div>
+              <div className="text-3xl font-bold text-mono-100 dark:text-white">{complianceReport?.correctiveActions.open || 0}</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">ouvertes / {complianceReport?.correctiveActions.total || 0} total</div>
               {(complianceReport?.correctiveActions.open || 0) > 0 && (
                 <button onClick={() => setActiveTab('actions')} className="mt-3 flex items-center gap-1 text-xs text-amber-400 hover:text-amber-300 transition-colors">
                   Voir les actions <ChevronRight className="w-3 h-3" />
@@ -1598,21 +1598,21 @@ export default function HACCP() {
           </div>
 
           {/* Weekly Calendar View */}
-          <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+          <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+              <h3 className="text-mono-100 dark:text-white font-semibold flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-teal-400" />
                 Vue hebdomadaire
               </h3>
               <div className="flex items-center gap-2">
-                <button onClick={() => setWeekOffset(o => o - 1)} aria-label="Semaine precedente" className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-                  <ChevronLeft className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" aria-hidden="true" />
+                <button onClick={() => setWeekOffset(o => o - 1)} aria-label="Semaine precedente" className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
+                  <ChevronLeft className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" aria-hidden="true" />
                 </button>
-                <button onClick={() => setWeekOffset(0)} aria-label="Revenir a aujourd'hui" className="px-3 py-1 rounded-lg text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                <button onClick={() => setWeekOffset(0)} aria-label="Revenir a aujourd'hui" className="px-3 py-1 rounded-lg text-xs font-medium text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
                   Aujourd'hui
                 </button>
-                <button onClick={() => setWeekOffset(o => o + 1)} aria-label="Semaine suivante" className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-                  <ChevronRight className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" aria-hidden="true" />
+                <button onClick={() => setWeekOffset(o => o + 1)} aria-label="Semaine suivante" className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
+                  <ChevronRight className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -1636,11 +1636,11 @@ export default function HACCP() {
                     }}
                     className={`relative flex flex-col items-center p-3 rounded-xl border-2 transition-all ${statusColor} ${isSelected ? 'ring-2 ring-teal-400/50' : ''} ${isToday ? 'shadow-lg' : ''} hover:scale-105`}
                   >
-                    <span className="text-[10px] font-bold uppercase text-[#9CA3AF] dark:text-[#737373]">{WEEKDAY_NAMES[i]}</span>
-                    <span className={`text-lg font-bold mt-0.5 ${isToday ? 'text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                    <span className="text-[10px] font-bold uppercase text-[#9CA3AF] dark:text-mono-500">{WEEKDAY_NAMES[i]}</span>
+                    <span className={`text-lg font-bold mt-0.5 ${isToday ? 'text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-700'}`}>
                       {day.date.getDate()}
                     </span>
-                    <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+                    <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-0.5">
                       {day.done}/{day.total}
                     </span>
                     <div className={`w-2 h-2 rounded-full mt-1.5 ${dotColor}`} />
@@ -1652,20 +1652,20 @@ export default function HACCP() {
               })}
             </div>
             <div className="flex gap-4 mt-3 text-xs">
-              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-emerald-500" /><span className="text-[#9CA3AF] dark:text-[#737373]">Complet</span></div>
-              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-amber-500" /><span className="text-[#9CA3AF] dark:text-[#737373]">Partiel</span></div>
-              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-red-500/50" /><span className="text-[#9CA3AF] dark:text-[#737373]">Manquant</span></div>
+              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-emerald-500" /><span className="text-[#9CA3AF] dark:text-mono-500">Complet</span></div>
+              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-amber-500" /><span className="text-[#9CA3AF] dark:text-mono-500">Partiel</span></div>
+              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-red-500/50" /><span className="text-[#9CA3AF] dark:text-mono-500">Manquant</span></div>
             </div>
           </div>
 
           {/* Temperature trend chart */}
-          <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-            <h3 className="text-[#111111] dark:text-white font-semibold mb-4 flex items-center gap-2">
+          <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+            <h3 className="text-mono-100 dark:text-white font-semibold mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-teal-400" />
               {t('haccp.tempTrend')}
             </h3>
             {temperatures.length === 0 ? (
-              <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373] text-sm">{t('haccp.noTempData')}</div>
+              <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500 text-sm">{t('haccp.noTempData')}</div>
             ) : (
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
@@ -1676,7 +1676,7 @@ export default function HACCP() {
                     <Tooltip content={<TempChartTooltip />} />
                     <Legend
                       wrapperStyle={{ fontSize: 12, color: '#94a3b8' }}
-                      formatter={(value: string) => <span className="text-[#6B7280] dark:text-[#A3A3A3]">{value}</span>}
+                      formatter={(value: string) => <span className="text-[#6B7280] dark:text-mono-700">{value}</span>}
                     />
                     <ReferenceLine y={0} stroke="#ef4444" strokeDasharray="6 4" strokeWidth={1} label={{ value: '0C', position: 'right', fill: '#ef4444', fontSize: 10 }} />
                     <ReferenceLine y={4} stroke="#ef4444" strokeDasharray="6 4" strokeWidth={1} label={{ value: '4C froid', position: 'right', fill: '#ef4444', fontSize: 10 }} />
@@ -1703,20 +1703,20 @@ export default function HACCP() {
           </div>
 
           {/* Recent temps */}
-          <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-            <h3 className="text-[#111111] dark:text-white font-semibold mb-4 flex items-center gap-2"><Thermometer className="w-5 h-5 text-teal-400" />{t('haccp.latestReadings')}</h3>
+          <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+            <h3 className="text-mono-100 dark:text-white font-semibold mb-4 flex items-center gap-2"><Thermometer className="w-5 h-5 text-teal-400" />{t('haccp.latestReadings')}</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead><tr className="text-[#9CA3AF] dark:text-[#737373] text-xs uppercase tracking-wider border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider border-b border-mono-900 dark:border-mono-200">
                   <th className="text-left py-3 px-3">{t('haccp.zone')}</th><th className="text-left py-3 px-3">{t('haccp.temp')}</th><th className="text-left py-3 px-3">{t('haccp.time')}</th><th className="text-left py-3 px-3">{t('haccp.agent')}</th>
                 </tr></thead>
                 <tbody>{temperatures.slice(0, 6).map(t => {
                   const c = getTempColor(t.zone, t.temperature);
-                  return (<tr key={t.id} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/30 transition-colors">
-                    <td className="py-2.5 px-3 text-[#6B7280] dark:text-[#A3A3A3]">{ZONE_LABELS[t.zone]}</td>
+                  return (<tr key={t.id} className="border-b border-mono-900 dark:border-mono-200/50 hover:bg-mono-950 dark:hover:bg-[#171717]/30 transition-colors">
+                    <td className="py-2.5 px-3 text-[#6B7280] dark:text-mono-700">{ZONE_LABELS[t.zone]}</td>
                     <td className="py-2.5 px-3"><span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${TEMP_BADGE[c]}`}>{t.temperature}°C</span></td>
-                    <td className="py-2.5 px-3 text-[#9CA3AF] dark:text-[#737373]">{new Date(t.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</td>
-                    <td className="py-2.5 px-3 text-[#9CA3AF] dark:text-[#737373]">{t.agent}</td>
+                    <td className="py-2.5 px-3 text-[#9CA3AF] dark:text-mono-500">{new Date(t.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</td>
+                    <td className="py-2.5 px-3 text-[#9CA3AF] dark:text-mono-500">{t.agent}</td>
                   </tr>);
                 })}</tbody>
               </table>
@@ -1733,7 +1733,7 @@ export default function HACCP() {
           {/* Date selector + progress */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+              <h3 className="text-mono-100 dark:text-white font-semibold flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-teal-400" />
                 Checklist HACCP
               </h3>
@@ -1741,7 +1741,7 @@ export default function HACCP() {
                 type="date"
                 value={checklistDate}
                 onChange={(e) => setChecklistDate(e.target.value)}
-                className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-1.5 text-sm text-[#111111] dark:text-white"
+                className="bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-1.5 text-sm text-mono-100 dark:text-white"
               />
               {checklistDate !== today && (
                 <button onClick={() => setChecklistDate(today)} className="text-xs text-teal-400 hover:text-teal-300 font-medium">
@@ -1754,9 +1754,9 @@ export default function HACCP() {
                 <span className={checklistProgress.pct >= 80 ? 'text-emerald-400' : checklistProgress.pct >= 50 ? 'text-amber-400' : 'text-red-400'}>
                   {checklistProgress.done}/{checklistProgress.total}
                 </span>
-                <span className="text-[#9CA3AF] dark:text-[#737373] ml-1">controles</span>
+                <span className="text-[#9CA3AF] dark:text-mono-500 ml-1">controles</span>
               </div>
-              <div className="w-32 h-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full overflow-hidden">
+              <div className="w-32 h-2.5 bg-[#FAFAFA] dark:bg-mono-50 rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{
@@ -1778,20 +1778,20 @@ export default function HACCP() {
             const hasTemps = items.some(i => i.zone);
 
             return (
-              <div key={category} className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div key={category} className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200">
                   <div className="flex items-center gap-2">
                     {getCategoryIcon(category)}
-                    <span className="text-[#111111] dark:text-white font-semibold text-sm">{category}</span>
+                    <span className="text-mono-100 dark:text-white font-semibold text-sm">{category}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`text-xs font-medium ${catDone === catTotal ? 'text-emerald-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                    <span className={`text-xs font-medium ${catDone === catTotal ? 'text-emerald-400' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                       {catDone}/{catTotal}
                     </span>
                     {catDone === catTotal && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
                   </div>
                 </div>
-                <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]/50">
+                <div className="divide-y divide-mono-900 dark:divide-mono-200/50">
                   {items.map(item => {
                     // Check if temp is out of range
                     let tempWarning = false;
@@ -1804,18 +1804,18 @@ export default function HACCP() {
                     }
 
                     return (
-                      <div key={item.id} className={`flex items-center gap-4 px-5 py-3 transition-colors ${item.checked ? 'bg-emerald-500/5' : 'hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/30'} ${tempWarning ? 'bg-red-500/5 border-l-4 border-red-500' : ''}`}>
+                      <div key={item.id} className={`flex items-center gap-4 px-5 py-3 transition-colors ${item.checked ? 'bg-emerald-500/5' : 'hover:bg-mono-950 dark:hover:bg-[#171717]/30'} ${tempWarning ? 'bg-red-500/5 border-l-4 border-red-500' : ''}`}>
                         {/* Checkbox */}
                         <button
                           onClick={() => toggleCheckItem(item.id)}
-                          className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${item.checked ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-[#E5E7EB] dark:border-[#333] hover:border-emerald-400'}`}
+                          className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${item.checked ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-mono-900 dark:border-[#333] hover:border-emerald-400'}`}
                         >
                           {item.checked && <CheckCircle2 className="w-4 h-4" />}
                         </button>
 
                         {/* Label */}
                         <div className="flex-1 min-w-0">
-                          <span className={`text-sm ${item.checked ? 'text-[#9CA3AF] dark:text-[#737373] line-through' : 'text-[#111111] dark:text-white'}`}>
+                          <span className={`text-sm ${item.checked ? 'text-[#9CA3AF] dark:text-mono-500 line-through' : 'text-mono-100 dark:text-white'}`}>
                             {item.label}
                           </span>
                         </div>
@@ -1829,15 +1829,15 @@ export default function HACCP() {
                               value={item.temperature}
                               onChange={(e) => updateCheckItemTemp(item.id, e.target.value)}
                               placeholder="°C"
-                              className={`w-20 bg-[#FAFAFA] dark:bg-[#0A0A0A] border rounded-lg px-2 py-1.5 text-sm text-center font-mono font-bold ${tempWarning ? 'border-red-500 text-red-400' : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white'} placeholder:text-[#6B7280]`}
+                              className={`w-20 bg-[#FAFAFA] dark:bg-mono-50 border rounded-lg px-2 py-1.5 text-sm text-center font-mono font-bold ${tempWarning ? 'border-red-500 text-red-400' : 'border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white'} placeholder:text-[#6B7280]`}
                             />
-                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">°C</span>
+                            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">°C</span>
                           </div>
                         )}
 
                         {/* Timestamp */}
                         {item.timestamp && (
-                          <div className="flex items-center gap-1.5 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                          <div className="flex items-center gap-1.5 text-xs text-[#9CA3AF] dark:text-mono-500">
                             <Clock className="w-3 h-3" />
                             <span>{item.timestamp}</span>
                           </div>
@@ -1845,7 +1845,7 @@ export default function HACCP() {
 
                         {/* Agent */}
                         {item.agent && (
-                          <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                          <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-mono-500">
                             <User className="w-3 h-3" />
                             <span>{item.agent}</span>
                           </div>
@@ -1866,35 +1866,35 @@ export default function HACCP() {
       {activeTab === 'temperatures' && (
         <div className="space-y-4">
           {/* Legend */}
-          <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
-            <h3 className="text-sm font-semibold text-[#111111] dark:text-white mb-3">{t('haccp.dangerZones')}</h3>
+          <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
+            <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-3">{t('haccp.dangerZones')}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500 mt-0.5 flex-shrink-0" /><div><div className="text-emerald-400 font-medium">{t('haccp.compliantStatus')}</div><div className="text-[#9CA3AF] dark:text-[#737373]">{t('haccp.compliantRanges')}</div></div></div>
-              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-amber-500 mt-0.5 flex-shrink-0" /><div><div className="text-amber-400 font-medium">{t('haccp.warningStatus')}</div><div className="text-[#9CA3AF] dark:text-[#737373]">{t('haccp.warningRanges')}</div></div></div>
-              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-red-500 mt-0.5 flex-shrink-0" /><div><div className="text-red-400 font-medium">{t('haccp.dangerStatus')}</div><div className="text-[#9CA3AF] dark:text-[#737373]">{t('haccp.dangerRanges')}</div></div></div>
+              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500 mt-0.5 flex-shrink-0" /><div><div className="text-emerald-400 font-medium">{t('haccp.compliantStatus')}</div><div className="text-[#9CA3AF] dark:text-mono-500">{t('haccp.compliantRanges')}</div></div></div>
+              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-amber-500 mt-0.5 flex-shrink-0" /><div><div className="text-amber-400 font-medium">{t('haccp.warningStatus')}</div><div className="text-[#9CA3AF] dark:text-mono-500">{t('haccp.warningRanges')}</div></div></div>
+              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-red-500 mt-0.5 flex-shrink-0" /><div><div className="text-red-400 font-medium">{t('haccp.dangerStatus')}</div><div className="text-[#9CA3AF] dark:text-mono-500">{t('haccp.dangerRanges')}</div></div></div>
             </div>
           </div>
 
           <div className="flex justify-end">
-            <button onClick={() => setShowTempForm(!showTempForm)} className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+            <button onClick={() => setShowTempForm(!showTempForm)} className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
               <Plus className="w-4 h-4" />{t('haccp.newReading')}
             </button>
           </div>
 
           {showTempForm && (
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
-              <h3 className="text-[#111111] dark:text-white font-semibold">{t('haccp.recordReading')}</h3>
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 space-y-4">
+              <h3 className="text-mono-100 dark:text-white font-semibold">{t('haccp.recordReading')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t('haccp.zone')}</label>
-                  <select value={tempForm.zone} onChange={e => setTempForm(f => ({ ...f, zone: e.target.value as TemperatureRecord['zone'] }))} className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white">
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.zone')}</label>
+                  <select value={tempForm.zone} onChange={e => setTempForm(f => ({ ...f, zone: e.target.value as TemperatureRecord['zone'] }))} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white">
                     {Object.entries(ZONE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t('haccp.temperatureLabel')}</label>
-                  <input type="number" step="0.1" value={tempForm.temperature} onChange={e => setTempForm(f => ({ ...f, temperature: e.target.value }))} placeholder="Ex: 3.5" className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t('haccp.agent')}</label>
-                  <input type="text" value={tempForm.agent} onChange={e => setTempForm(f => ({ ...f, agent: e.target.value }))} placeholder={t('haccp.yourName')} className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t('haccp.notes')}</label>
-                  <input type="text" value={tempForm.notes} onChange={e => setTempForm(f => ({ ...f, notes: e.target.value }))} placeholder={t('haccp.optional')} className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.temperatureLabel')}</label>
+                  <input type="number" step="0.1" value={tempForm.temperature} onChange={e => setTempForm(f => ({ ...f, temperature: e.target.value }))} placeholder="Ex: 3.5" className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.agent')}</label>
+                  <input type="text" value={tempForm.agent} onChange={e => setTempForm(f => ({ ...f, agent: e.target.value }))} placeholder={t('haccp.yourName')} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.notes')}</label>
+                  <input type="text" value={tempForm.notes} onChange={e => setTempForm(f => ({ ...f, notes: e.target.value }))} placeholder={t('haccp.optional')} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
               </div>
 
               {/* Live temperature alert preview */}
@@ -1915,26 +1915,26 @@ export default function HACCP() {
 
               <div className="flex gap-3">
                 <button onClick={addTemp} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">{t('haccp.save')}</button>
-                <button onClick={() => setShowTempForm(false)} className="px-4 py-2 bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium transition-colors">{t('haccp.cancel')}</button>
+                <button onClick={() => setShowTempForm(false)} className="px-4 py-2 bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-[#222] text-[#6B7280] dark:text-mono-700 rounded-xl text-sm font-medium transition-colors">{t('haccp.cancel')}</button>
               </div>
             </div>
           )}
 
-          <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+          <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead><tr className="text-[#9CA3AF] dark:text-[#737373] text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-[#0A0A0A]/50">
+                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
                   <th className="text-left py-3 px-4">{t('haccp.zone')}</th><th className="text-left py-3 px-4">{t('haccp.temp')}</th><th className="text-left py-3 px-4">{t('haccp.status')}</th><th className="text-left py-3 px-4">{t('haccp.dateTime')}</th><th className="text-left py-3 px-4">{t('haccp.agent')}</th><th className="text-left py-3 px-4">{t('haccp.notes')}</th>
                 </tr></thead>
                 <tbody>{temperatures.map(t => {
                   const c = getTempColor(t.zone, t.temperature);
-                  return (<tr key={t.id} className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/30 transition-colors">
-                    <td className="py-3 px-4 text-[#6B7280] dark:text-[#A3A3A3] font-medium">{ZONE_LABELS[t.zone]}</td>
+                  return (<tr key={t.id} className="border-t border-mono-900 dark:border-mono-200/50 hover:bg-mono-950 dark:hover:bg-[#171717]/30 transition-colors">
+                    <td className="py-3 px-4 text-[#6B7280] dark:text-mono-700 font-medium">{ZONE_LABELS[t.zone]}</td>
                     <td className={`py-3 px-4 font-bold ${TEMP_TEXT[c]}`}>{t.temperature}°C</td>
                     <td className="py-3 px-4"><span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${TEMP_BADGE[c]}`}>{TEMP_STATUS[c]}</span></td>
-                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-[#737373]">{new Date(t.timestamp).toLocaleDateString('fr-FR')} {new Date(t.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</td>
-                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-[#737373]">{t.agent}</td>
-                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-[#737373]">{t.notes || '-'}</td>
+                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-mono-500">{new Date(t.timestamp).toLocaleDateString('fr-FR')} {new Date(t.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</td>
+                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-mono-500">{t.agent}</td>
+                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-mono-500">{t.notes || '-'}</td>
                   </tr>);
                 })}</tbody>
               </table>
@@ -1949,29 +1949,29 @@ export default function HACCP() {
       {activeTab === 'nettoyage' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2"><SprayCan className="w-5 h-5 text-violet-400" />{t('haccp.cleaningRegistry')} — {new Date().toLocaleDateString('fr-FR')}</h3>
-            <div className="text-sm text-[#9CA3AF] dark:text-[#737373]">{cleaning.filter(c => c.verified).length}/{cleaning.length} zones</div>
+            <h3 className="text-mono-100 dark:text-white font-semibold flex items-center gap-2"><SprayCan className="w-5 h-5 text-violet-400" />{t('haccp.cleaningRegistry')} — {new Date().toLocaleDateString('fr-FR')}</h3>
+            <div className="text-sm text-[#9CA3AF] dark:text-mono-500">{cleaning.filter(c => c.verified).length}/{cleaning.length} zones</div>
           </div>
-          <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+          <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead><tr className="text-[#9CA3AF] dark:text-[#737373] text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-[#0A0A0A]/50">
+                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
                   <th className="text-left py-3 px-4 w-8">{t('haccp.done')}</th><th className="text-left py-3 px-4">{t('haccp.zone')}</th><th className="text-left py-3 px-4">{t('haccp.time')}</th><th className="text-left py-3 px-4">{t('haccp.agent')}</th><th className="text-left py-3 px-4">{t('haccp.status')}</th>
                 </tr></thead>
                 <tbody>{cleaning.map(c => (
-                  <tr key={c.id} className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/30 transition-colors">
+                  <tr key={c.id} className="border-t border-mono-900 dark:border-mono-200/50 hover:bg-mono-950 dark:hover:bg-[#171717]/30 transition-colors">
                     <td className="py-3 px-4">
-                      <button onClick={() => toggleClean(c.id)} className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${c.verified ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-[#E5E7EB] dark:border-[#333] hover:border-[#999]'}`}>
+                      <button onClick={() => toggleClean(c.id)} className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${c.verified ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-mono-900 dark:border-[#333] hover:border-[#999]'}`}>
                         {c.verified && <CheckCircle2 className="w-4 h-4" />}
                       </button>
                     </td>
-                    <td className="py-3 px-4 text-[#111111] dark:text-white font-medium">{c.zone}</td>
-                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-[#737373]">{c.time || '-'}</td>
-                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-[#737373]">{c.agent || '-'}</td>
+                    <td className="py-3 px-4 text-mono-100 dark:text-white font-medium">{c.zone}</td>
+                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-mono-500">{c.time || '-'}</td>
+                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-mono-500">{c.agent || '-'}</td>
                     <td className="py-3 px-4">
                       {c.verified
                         ? <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-emerald-900/40 text-emerald-300"><CheckCircle2 className="w-3 h-3" />{t('haccp.cleaned')}</span>
-                        : <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373]"><Clock className="w-3 h-3" />{t('haccp.pending')}</span>}
+                        : <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-[#FAFAFA] dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500"><Clock className="w-3 h-3" />{t('haccp.pending')}</span>}
                     </td>
                   </tr>
                 ))}</tbody>
@@ -1989,59 +1989,59 @@ export default function HACCP() {
           {/* Score + Summary row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Score Ring */}
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 flex flex-col items-center justify-center">
-              <h3 className="text-[#111111] dark:text-white font-semibold mb-4 flex items-center gap-2">
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6 flex flex-col items-center justify-center">
+              <h3 className="text-mono-100 dark:text-white font-semibold mb-4 flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-emerald-400" />
                 Score de conformite
               </h3>
               <ComplianceScoreWidget score={complianceReport?.compliance.score || complianceScore} size={160} />
-              <div className="mt-4 text-center text-sm text-[#9CA3AF] dark:text-[#737373]">
+              <div className="mt-4 text-center text-sm text-[#9CA3AF] dark:text-mono-500">
                 {complianceReport?.compliance.completedChecks || 0} / {complianceReport?.compliance.requiredChecks || 0} controles effectues
               </div>
             </div>
 
             {/* Stats summary */}
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 space-y-4">
-              <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6 space-y-4">
+              <h3 className="text-mono-100 dark:text-white font-semibold flex items-center gap-2">
                 <BarChart3 className="w-5 h-5 text-teal-400" />
                 Bilan de la semaine
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#9CA3AF] dark:text-[#737373] text-sm">Releves temperature</span>
-                  <span className="text-[#111111] dark:text-white font-semibold">{complianceReport?.temperatures.weekCount || 0}</span>
+                  <span className="text-[#9CA3AF] dark:text-mono-500 text-sm">Releves temperature</span>
+                  <span className="text-mono-100 dark:text-white font-semibold">{complianceReport?.temperatures.weekCount || 0}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[#9CA3AF] dark:text-[#737373] text-sm">Non-conformites</span>
+                  <span className="text-[#9CA3AF] dark:text-mono-500 text-sm">Non-conformites</span>
                   <span className="text-red-400 font-semibold">{complianceReport?.temperatures.weekNonConformes || 0}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[#9CA3AF] dark:text-[#737373] text-sm">Nettoyages effectues</span>
-                  <span className="text-[#111111] dark:text-white font-semibold">{complianceReport?.cleanings.weekDone || 0} / {complianceReport?.cleanings.weekTotal || 0}</span>
+                  <span className="text-[#9CA3AF] dark:text-mono-500 text-sm">Nettoyages effectues</span>
+                  <span className="text-mono-100 dark:text-white font-semibold">{complianceReport?.cleanings.weekDone || 0} / {complianceReport?.cleanings.weekTotal || 0}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[#9CA3AF] dark:text-[#737373] text-sm">Actions ouvertes</span>
+                  <span className="text-[#9CA3AF] dark:text-mono-500 text-sm">Actions ouvertes</span>
                   <span className="text-amber-400 font-semibold">{complianceReport?.correctiveActions.open || 0}</span>
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-                <h4 className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2">Ce mois</h4>
+              <div className="pt-3 border-t border-mono-900 dark:border-mono-200">
+                <h4 className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2">Ce mois</h4>
                 <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div><span className="text-[#9CA3AF] dark:text-[#737373]">Temp: </span><span className="text-[#111111] dark:text-white font-medium">{complianceReport?.temperatures.monthCount || 0}</span></div>
-                  <div><span className="text-[#9CA3AF] dark:text-[#737373]">NC: </span><span className="text-red-400 font-medium">{complianceReport?.temperatures.monthNonConformes || 0}</span></div>
+                  <div><span className="text-[#9CA3AF] dark:text-mono-500">Temp: </span><span className="text-mono-100 dark:text-white font-medium">{complianceReport?.temperatures.monthCount || 0}</span></div>
+                  <div><span className="text-[#9CA3AF] dark:text-mono-500">NC: </span><span className="text-red-400 font-medium">{complianceReport?.temperatures.monthNonConformes || 0}</span></div>
                 </div>
               </div>
             </div>
 
             {/* Calendar Heatmap */}
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
-              <h3 className="text-[#111111] dark:text-white font-semibold mb-4 flex items-center gap-2">
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
+              <h3 className="text-mono-100 dark:text-white font-semibold mb-4 flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-teal-400" />
                 Calendrier du mois
               </h3>
               <div className="grid grid-cols-7 gap-1.5">
                 {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, i) => (
-                  <div key={i} className="text-center text-xs text-[#9CA3AF] dark:text-[#737373] font-medium py-1">{d}</div>
+                  <div key={i} className="text-center text-xs text-[#9CA3AF] dark:text-mono-500 font-medium py-1">{d}</div>
                 ))}
                 {(() => {
                   const heatmap = complianceReport?.calendarHeatmap || [];
@@ -2060,7 +2060,7 @@ export default function HACCP() {
                       <div key={day.date}
                         className={`w-full aspect-square rounded-md border flex items-center justify-center text-xs font-medium ${bg}`}
                         title={`${day.date}: ${day.complete ? 'Complet' : day.hasTemp && day.hasCleaning ? 'Partiel' : day.hasTemp ? 'Temp. seulement' : day.hasCleaning ? 'Nettoyage seul' : 'Aucun controle'}`}>
-                        <span className="text-[#111111] dark:text-white">{dayNum}</span>
+                        <span className="text-mono-100 dark:text-white">{dayNum}</span>
                       </div>
                     );
                   });
@@ -2068,9 +2068,9 @@ export default function HACCP() {
                 })()}
               </div>
               <div className="flex gap-4 mt-3 text-xs">
-                <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-emerald-500/30 border border-emerald-500/50" /><span className="text-[#9CA3AF] dark:text-[#737373]">Complet</span></div>
-                <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-amber-500/20 border border-amber-500/40" /><span className="text-[#9CA3AF] dark:text-[#737373]">Partiel</span></div>
-                <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-red-500/15 border border-red-500/30" /><span className="text-[#9CA3AF] dark:text-[#737373]">Manquant</span></div>
+                <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-emerald-500/30 border border-emerald-500/50" /><span className="text-[#9CA3AF] dark:text-mono-500">Complet</span></div>
+                <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-amber-500/20 border border-amber-500/40" /><span className="text-[#9CA3AF] dark:text-mono-500">Partiel</span></div>
+                <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-red-500/15 border border-red-500/30" /><span className="text-[#9CA3AF] dark:text-mono-500">Manquant</span></div>
               </div>
             </div>
           </div>
@@ -2078,7 +2078,7 @@ export default function HACCP() {
           {/* Missing checks */}
           {(complianceReport?.compliance.missingTempDays?.length || 0) > 0 && (
             <div className="bg-white dark:bg-black/50 border border-red-700/30 rounded-2xl p-5">
-              <h3 className="text-[#111111] dark:text-white font-semibold mb-3 flex items-center gap-2">
+              <h3 className="text-mono-100 dark:text-white font-semibold mb-3 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-red-400" />
                 Controles manquants cette semaine
               </h3>
@@ -2087,7 +2087,7 @@ export default function HACCP() {
                   <div key={day} className="flex items-center justify-between bg-red-900/10 border border-red-900/20 rounded-xl px-4 py-3">
                     <div className="flex items-center gap-2">
                       <XCircle className="w-4 h-4 text-red-400" />
-                      <span className="text-sm text-[#111111] dark:text-white">{new Date(day).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'short' })}</span>
+                      <span className="text-sm text-mono-100 dark:text-white">{new Date(day).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'short' })}</span>
                     </div>
                     <button onClick={() => { setActiveTab('temperatures'); setShowTempForm(true); }}
                       className="text-xs text-teal-400 hover:text-teal-300 font-medium transition-colors no-print">
@@ -2102,21 +2102,21 @@ export default function HACCP() {
           {/* Non-conformity alerts */}
           {(complianceReport?.temperatures.nonConformitiesList?.length || 0) > 0 && (
             <div className="bg-white dark:bg-black/50 border border-amber-700/30 rounded-2xl p-5">
-              <h3 className="text-[#111111] dark:text-white font-semibold mb-3 flex items-center gap-2">
+              <h3 className="text-mono-100 dark:text-white font-semibold mb-3 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-400" />
                 Non-conformites cette semaine ({complianceReport?.temperatures.weekNonConformes})
               </h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead><tr className="text-[#9CA3AF] dark:text-[#737373] text-xs uppercase tracking-wider border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider border-b border-mono-900 dark:border-mono-200">
                     <th className="text-left py-2 px-3">Zone</th><th className="text-left py-2 px-3">Temperature</th><th className="text-left py-2 px-3">Date</th><th className="text-left py-2 px-3">Heure</th>
                   </tr></thead>
                   <tbody>{complianceReport?.temperatures.nonConformitiesList.map(nc => (
-                    <tr key={nc.id} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50">
-                      <td className="py-2 px-3 text-[#6B7280] dark:text-[#A3A3A3]">{ZONE_LABELS[nc.zone] || nc.zone}</td>
+                    <tr key={nc.id} className="border-b border-mono-900 dark:border-mono-200/50">
+                      <td className="py-2 px-3 text-[#6B7280] dark:text-mono-700">{ZONE_LABELS[nc.zone] || nc.zone}</td>
                       <td className="py-2 px-3 text-red-400 font-bold">{nc.temperature}°C</td>
-                      <td className="py-2 px-3 text-[#9CA3AF] dark:text-[#737373]">{new Date(nc.date).toLocaleDateString('fr-FR')}</td>
-                      <td className="py-2 px-3 text-[#9CA3AF] dark:text-[#737373]">{nc.time || '-'}</td>
+                      <td className="py-2 px-3 text-[#9CA3AF] dark:text-mono-500">{new Date(nc.date).toLocaleDateString('fr-FR')}</td>
+                      <td className="py-2 px-3 text-[#9CA3AF] dark:text-mono-500">{nc.time || '-'}</td>
                     </tr>
                   ))}</tbody>
                 </table>
@@ -2125,9 +2125,9 @@ export default function HACCP() {
           )}
 
           {/* Corrective actions log */}
-          <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+          <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+              <h3 className="text-mono-100 dark:text-white font-semibold flex items-center gap-2">
                 <Wrench className="w-5 h-5 text-orange-400" />
                 Dernieres actions correctives
               </h3>
@@ -2136,17 +2136,17 @@ export default function HACCP() {
               </button>
             </div>
             {correctiveActions.length === 0 ? (
-              <div className="text-center py-8 text-[#9CA3AF] dark:text-[#737373] text-sm">Aucune action corrective enregistree</div>
+              <div className="text-center py-8 text-[#9CA3AF] dark:text-mono-500 text-sm">Aucune action corrective enregistree</div>
             ) : (
               <div className="space-y-2">
                 {correctiveActions.slice(0, 5).map(a => (
-                  <div key={a.id} className={`flex items-center justify-between px-4 py-3 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] ${getDeadlineBg(a.deadline)}`}>
+                  <div key={a.id} className={`flex items-center justify-between px-4 py-3 rounded-xl border border-mono-900 dark:border-mono-200 ${getDeadlineBg(a.deadline)}`}>
                     <div className="flex items-center gap-3">
                       <span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${ACTION_STATUS_BADGE[a.status]}`}>{ACTION_STATUS_LABELS[a.status]}</span>
-                      <span className="text-sm text-[#111111] dark:text-white">{a.description}</span>
+                      <span className="text-sm text-mono-100 dark:text-white">{a.description}</span>
                     </div>
                     <div className="flex items-center gap-3 text-xs">
-                      <span className="text-[#9CA3AF] dark:text-[#737373]">{a.responsiblePerson}</span>
+                      <span className="text-[#9CA3AF] dark:text-mono-500">{a.responsiblePerson}</span>
                       <span className={getDeadlineColor(a.deadline)}>{new Date(a.deadline).toLocaleDateString('fr-FR')}</span>
                     </div>
                   </div>
@@ -2163,12 +2163,12 @@ export default function HACCP() {
       {activeTab === 'actions' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+            <h3 className="text-mono-100 dark:text-white font-semibold flex items-center gap-2">
               <Wrench className="w-5 h-5 text-orange-400" />
               Actions correctives
             </h3>
             <button onClick={() => setShowActionForm(!showActionForm)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+              className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
               <Plus className="w-4 h-4" />Nouvelle action
             </button>
           </div>
@@ -2177,60 +2177,60 @@ export default function HACCP() {
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-white dark:bg-black/50 border border-red-700/30 rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-red-400">{correctiveActions.filter(a => a.status === 'ouvert').length}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Ouvertes</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Ouvertes</div>
             </div>
             <div className="bg-white dark:bg-black/50 border border-amber-700/30 rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-amber-400">{correctiveActions.filter(a => a.status === 'en_cours').length}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">En cours</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">En cours</div>
             </div>
             <div className="bg-white dark:bg-black/50 border border-emerald-700/30 rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-emerald-400">{correctiveActions.filter(a => a.status === 'resolu').length}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Resolues</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Resolues</div>
             </div>
           </div>
 
           {/* New action form */}
           {showActionForm && (
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
-              <h3 className="text-[#111111] dark:text-white font-semibold">Nouvelle action corrective</h3>
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 space-y-4">
+              <h3 className="text-mono-100 dark:text-white font-semibold">Nouvelle action corrective</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Type</label>
+                  <label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Type</label>
                   <select value={actionForm.type} onChange={e => setActionForm(f => ({ ...f, type: e.target.value as CorrectiveAction['type'] }))}
-                    className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white">
+                    className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white">
                     {Object.entries(ACTION_TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Description</label>
+                  <label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Description</label>
                   <input type="text" value={actionForm.description} onChange={e => setActionForm(f => ({ ...f, description: e.target.value }))}
                     placeholder="Decrire la non-conformite..."
-                    className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Responsable</label>
+                  <label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Responsable</label>
                   <input type="text" value={actionForm.responsiblePerson} onChange={e => setActionForm(f => ({ ...f, responsiblePerson: e.target.value }))}
                     placeholder="Nom du responsable"
-                    className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Echeance</label>
+                  <label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Echeance</label>
                   <input type="date" value={actionForm.deadline} onChange={e => setActionForm(f => ({ ...f, deadline: e.target.value }))}
-                    className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white" />
+                    className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white" />
                 </div>
               </div>
               <div className="flex gap-3">
                 <button onClick={addCorrectiveAction} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">Enregistrer</button>
-                <button onClick={() => setShowActionForm(false)} className="px-4 py-2 bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium transition-colors">Annuler</button>
+                <button onClick={() => setShowActionForm(false)} className="px-4 py-2 bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-[#222] text-[#6B7280] dark:text-mono-700 rounded-xl text-sm font-medium transition-colors">Annuler</button>
               </div>
             </div>
           )}
 
           {/* Actions list */}
-          <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+          <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead><tr className="text-[#9CA3AF] dark:text-[#737373] text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-[#0A0A0A]/50">
+                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
                   <th className="text-left py-3 px-4">Type</th>
                   <th className="text-left py-3 px-4">Description</th>
                   <th className="text-left py-3 px-4">Responsable</th>
@@ -2239,19 +2239,19 @@ export default function HACCP() {
                   <th className="text-left py-3 px-4">Actions</th>
                 </tr></thead>
                 <tbody>{correctiveActions.map(a => (
-                  <tr key={a.id} className={`border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/30 transition-colors ${getDeadlineBg(a.deadline)}`}>
+                  <tr key={a.id} className={`border-t border-mono-900 dark:border-mono-200/50 hover:bg-mono-950 dark:hover:bg-[#171717]/30 transition-colors ${getDeadlineBg(a.deadline)}`}>
                     <td className="py-3 px-4">
-                      <span className="px-2 py-0.5 rounded-lg text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                      <span className="px-2 py-0.5 rounded-lg text-xs font-medium bg-[#FAFAFA] dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-200">
                         {ACTION_TYPE_LABELS[a.type] || a.type}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-[#111111] dark:text-white max-w-xs">
+                    <td className="py-3 px-4 text-mono-100 dark:text-white max-w-xs">
                       <div>{a.description}</div>
                       {a.resolution && (
-                        <div className="mt-1 text-xs text-[#9CA3AF] dark:text-[#737373] italic">Action: {a.resolution}</div>
+                        <div className="mt-1 text-xs text-[#9CA3AF] dark:text-mono-500 italic">Action: {a.resolution}</div>
                       )}
                     </td>
-                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-[#737373]">{a.responsiblePerson}</td>
+                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-mono-500">{a.responsiblePerson}</td>
                     <td className={`py-3 px-4 font-medium ${getDeadlineColor(a.deadline)}`}>{new Date(a.deadline).toLocaleDateString('fr-FR')}</td>
                     <td className="py-3 px-4">
                       <span className={`px-2.5 py-0.5 rounded-lg text-xs font-semibold ${ACTION_STATUS_BADGE[a.status]}`}>{ACTION_STATUS_LABELS[a.status]}</span>
@@ -2281,7 +2281,7 @@ export default function HACCP() {
                 ))}</tbody>
               </table>
             </div>
-            {correctiveActions.length === 0 && <div className="text-center py-8 text-[#9CA3AF] dark:text-[#737373]">Aucune action corrective</div>}
+            {correctiveActions.length === 0 && <div className="text-center py-8 text-[#9CA3AF] dark:text-mono-500">Aucune action corrective</div>}
           </div>
         </div>
       )}
@@ -2294,7 +2294,7 @@ export default function HACCP() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+              <h3 className="text-mono-100 dark:text-white font-semibold flex items-center gap-2">
                 <Thermometer className="w-5 h-5 text-teal-400" />
                 Releve de temperatures
               </h3>
@@ -2302,7 +2302,7 @@ export default function HACCP() {
                 type="date"
                 value={tempLogDate}
                 onChange={(e) => setTempLogDate(e.target.value)}
-                className="bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-1.5 text-sm text-[#111111] dark:text-white"
+                className="bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-1.5 text-sm text-mono-100 dark:text-white"
               />
               {tempLogDate !== today && (
                 <button onClick={() => setTempLogDate(today)} className="text-xs text-teal-400 hover:text-teal-300 font-medium">
@@ -2312,11 +2312,11 @@ export default function HACCP() {
             </div>
             <div className="flex items-center gap-3">
               <button onClick={() => setShowTempLogForm(!showTempLogForm)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+                className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
                 <Plus className="w-4 h-4" />Enregistrer
               </button>
               <button onClick={handlePrint}
-                className="flex items-center gap-2 px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#333] text-[#111111] dark:text-white rounded-xl text-sm font-medium transition-colors">
+                className="flex items-center gap-2 px-4 py-2.5 bg-mono-975 dark:bg-mono-300 hover:bg-mono-900 dark:hover:bg-[#333] text-mono-100 dark:text-white rounded-xl text-sm font-medium transition-colors">
                 <Printer className="w-4 h-4" />Imprimer
               </button>
             </div>
@@ -2324,38 +2324,38 @@ export default function HACCP() {
 
           {/* Quick entry form */}
           {showTempLogForm && (
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
-              <h3 className="text-[#111111] dark:text-white font-semibold">Nouveau releve</h3>
+            <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 space-y-4">
+              <h3 className="text-mono-100 dark:text-white font-semibold">Nouveau releve</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-xs text-[#737373] dark:text-[#A3A3A3] mb-1">Equipement</label>
+                  <label className="block text-xs text-mono-500 dark:text-mono-700 mb-1">Equipement</label>
                   <select value={tempLogForm.equipment} onChange={e => setTempLogForm(f => ({ ...f, equipment: e.target.value }))}
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white">
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white">
                     {TEMP_LOG_EQUIPMENT.map(eq => <option key={eq.id} value={eq.id}>{eq.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] dark:text-[#A3A3A3] mb-1">Heure du controle</label>
+                  <label className="block text-xs text-mono-500 dark:text-mono-700 mb-1">Heure du controle</label>
                   <select value={tempLogForm.checkTime} onChange={e => setTempLogForm(f => ({ ...f, checkTime: e.target.value as any }))}
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white">
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white">
                     <option value="08:00">8h - Matin</option>
                     <option value="12:00">12h - Midi</option>
                     <option value="18:00">18h - Soir</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] dark:text-[#A3A3A3] mb-1">Temperature (°C)</label>
+                  <label className="block text-xs text-mono-500 dark:text-mono-700 mb-1">Temperature (°C)</label>
                   <input type="number" step="0.1" value={tempLogForm.temperature}
                     onChange={e => setTempLogForm(f => ({ ...f, temperature: e.target.value }))}
                     placeholder="Ex: 3.2"
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] dark:text-[#A3A3A3] mb-1">Operateur</label>
+                  <label className="block text-xs text-mono-500 dark:text-mono-700 mb-1">Operateur</label>
                   <input type="text" value={tempLogForm.operator}
                     onChange={e => setTempLogForm(f => ({ ...f, operator: e.target.value }))}
                     placeholder="Votre nom"
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
               </div>
 
@@ -2384,22 +2384,22 @@ export default function HACCP() {
 
               <div className="flex gap-3">
                 <button onClick={addTempLogEntry} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">Enregistrer</button>
-                <button onClick={() => setShowTempLogForm(false)} className="px-4 py-2 bg-[#F5F5F5] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium transition-colors">Annuler</button>
+                <button onClick={() => setShowTempLogForm(false)} className="px-4 py-2 bg-mono-975 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-[#222] text-[#6B7280] dark:text-mono-700 rounded-xl text-sm font-medium transition-colors">Annuler</button>
               </div>
             </div>
           )}
 
           {/* Professional grid: equipment x time */}
-          <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden print-report">
-            <div className="px-5 py-3 bg-[#F5F5F5] dark:bg-[#0A0A0A] border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <h4 className="text-sm font-semibold text-[#111111] dark:text-white">
+          <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden print-report">
+            <div className="px-5 py-3 bg-mono-975 dark:bg-mono-50 border-b border-mono-900 dark:border-mono-200">
+              <h4 className="text-sm font-semibold text-mono-100 dark:text-white">
                 Fiche de releve - {new Date(tempLogDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
               </h4>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-[#737373] dark:text-[#737373] text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-[#0A0A0A]/50">
+                  <tr className="text-mono-500 dark:text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
                     <th className="text-left py-3 px-4 font-semibold">Equipement</th>
                     <th className="text-left py-3 px-4 font-semibold">Limite</th>
                     {TEMP_LOG_TIMES.map(time => (
@@ -2409,14 +2409,14 @@ export default function HACCP() {
                 </thead>
                 <tbody>
                   {TEMP_LOG_EQUIPMENT.map(eq => (
-                    <tr key={eq.id} className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50">
+                    <tr key={eq.id} className="border-t border-mono-900 dark:border-mono-200/50">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
                           {eq.type === 'chaud' ? <Flame className="w-4 h-4 text-orange-400" /> : <Snowflake className="w-4 h-4 text-blue-400" />}
-                          <span className="text-[#111111] dark:text-white font-medium">{eq.label}</span>
+                          <span className="text-mono-100 dark:text-white font-medium">{eq.label}</span>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-xs text-[#737373] dark:text-[#A3A3A3]">
+                      <td className="py-3 px-4 text-xs text-mono-500 dark:text-mono-700">
                         {eq.type === 'chaud' ? `>= ${eq.minTemp}°C` : `< ${eq.maxTemp}°C`}
                       </td>
                       {TEMP_LOG_TIMES.map(time => {
@@ -2429,7 +2429,7 @@ export default function HACCP() {
                                   setTempLogForm(f => ({ ...f, equipment: eq.id, checkTime: time as any }));
                                   setShowTempLogForm(true);
                                 }}
-                                className="text-xs text-[#737373] hover:text-teal-400 transition-colors px-3 py-1.5 rounded-lg border border-dashed border-[#E5E7EB] dark:border-[#333] hover:border-teal-400/50"
+                                className="text-xs text-mono-500 hover:text-teal-400 transition-colors px-3 py-1.5 rounded-lg border border-dashed border-mono-900 dark:border-[#333] hover:border-teal-400/50"
                               >
                                 + Saisir
                               </button>
@@ -2440,7 +2440,7 @@ export default function HACCP() {
                           <td key={time} className="py-3 px-4 text-center">
                             <div className={`inline-flex flex-col items-center px-3 py-1.5 rounded-lg ${entry.isConform ? 'bg-emerald-900/20' : 'bg-red-900/20 border border-red-500/30'}`}>
                               <span className={`text-sm font-bold ${entry.isConform ? 'text-emerald-400' : 'text-red-400'}`}>{entry.temperature}°C</span>
-                              <span className="text-[10px] text-[#737373] dark:text-[#A3A3A3]">{entry.operator}</span>
+                              <span className="text-[10px] text-mono-500 dark:text-mono-700">{entry.operator}</span>
                             </div>
                           </td>
                         );
@@ -2454,8 +2454,8 @@ export default function HACCP() {
 
           {/* Non-conformities of the day */}
           {tempLogEntries.filter(e => !e.isConform).length > 0 && (
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-red-700/30 rounded-2xl p-5">
-              <h4 className="text-[#111111] dark:text-white font-semibold mb-3 flex items-center gap-2">
+            <div className="bg-white dark:bg-mono-50/50 border border-red-700/30 rounded-2xl p-5">
+              <h4 className="text-mono-100 dark:text-white font-semibold mb-3 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-red-400" />
                 Non-conformites du jour ({tempLogEntries.filter(e => !e.isConform).length})
               </h4>
@@ -2467,9 +2467,9 @@ export default function HACCP() {
                       <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="text-[#111111] dark:text-white font-medium">{eq?.label}</span>
+                          <span className="text-mono-100 dark:text-white font-medium">{eq?.label}</span>
                           <span className="text-red-400 font-bold">{entry.temperature}°C</span>
-                          <span className="text-[#737373] text-xs">a {entry.checkTime}</span>
+                          <span className="text-mono-500 text-xs">a {entry.checkTime}</span>
                         </div>
                         {entry.correctiveAction && (
                           <p className="text-xs text-red-400/70 mt-1">{entry.correctiveAction}</p>
@@ -2491,7 +2491,7 @@ export default function HACCP() {
         <div className="space-y-4">
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+            <h3 className="text-mono-100 dark:text-white font-semibold flex items-center gap-2">
               <ListChecks className="w-5 h-5 text-violet-400" />
               Plan de nettoyage et desinfection
             </h3>
@@ -2499,26 +2499,26 @@ export default function HACCP() {
               {/* Filter buttons */}
               {(['all', 'daily', 'weekly', 'monthly'] as const).map(f => (
                 <button key={f} onClick={() => setCleaningFilter(f)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${cleaningFilter === f ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F5F5F5] dark:hover:bg-[#171717]'}`}>
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${cleaningFilter === f ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'text-mono-500 hover:text-mono-100 dark:hover:text-white hover:bg-mono-975 dark:hover:bg-[#171717]'}`}>
                   {f === 'all' ? 'Tout' : f === 'daily' ? 'Quotidien' : f === 'weekly' ? 'Hebdo' : 'Mensuel'}
                 </button>
               ))}
               <button onClick={handlePrint}
-                className="flex items-center gap-2 px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#333] text-[#111111] dark:text-white rounded-xl text-sm font-medium transition-colors">
+                className="flex items-center gap-2 px-4 py-2.5 bg-mono-975 dark:bg-mono-300 hover:bg-mono-900 dark:hover:bg-[#333] text-mono-100 dark:text-white rounded-xl text-sm font-medium transition-colors">
                 <Printer className="w-4 h-4" />PDF
               </button>
             </div>
           </div>
 
           {/* Progress bar */}
-          <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-[#737373] dark:text-[#A3A3A3]">Progression</span>
+              <span className="text-sm text-mono-500 dark:text-mono-700">Progression</span>
               <span className={`text-sm font-bold ${cleaningScheduleProgress.pct >= 80 ? 'text-emerald-400' : cleaningScheduleProgress.pct >= 50 ? 'text-amber-400' : 'text-red-400'}`}>
                 {cleaningScheduleProgress.done}/{cleaningScheduleProgress.total} ({cleaningScheduleProgress.pct}%)
               </span>
             </div>
-            <div className="h-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full overflow-hidden">
+            <div className="h-2.5 bg-[#FAFAFA] dark:bg-mono-50 rounded-full overflow-hidden">
               <div className="h-full rounded-full transition-all duration-500"
                 style={{
                   width: `${cleaningScheduleProgress.pct}%`,
@@ -2540,48 +2540,48 @@ export default function HACCP() {
               <Calendar className="w-4 h-4 text-violet-400" />;
 
             return (
-              <div key={cat} className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden print-report">
-                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div key={cat} className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden print-report">
+                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200">
                   <div className="flex items-center gap-2">
                     {freqIcon}
-                    <span className="text-[#111111] dark:text-white font-semibold text-sm">{cat}</span>
-                    <span className="text-xs text-[#737373] dark:text-[#A3A3A3]">
+                    <span className="text-mono-100 dark:text-white font-semibold text-sm">{cat}</span>
+                    <span className="text-xs text-mono-500 dark:text-mono-700">
                       ({cat === 'Quotidien' ? 'tous les jours' : cat === 'Hebdomadaire' ? '1x/semaine' : '1x/mois'})
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`text-xs font-medium ${catDone === tasks.length ? 'text-emerald-400' : 'text-[#737373]'}`}>
+                    <span className={`text-xs font-medium ${catDone === tasks.length ? 'text-emerald-400' : 'text-mono-500'}`}>
                       {catDone}/{tasks.length}
                     </span>
                     {catDone === tasks.length && tasks.length > 0 && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
                   </div>
                 </div>
-                <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]/50">
+                <div className="divide-y divide-mono-900 dark:divide-mono-200/50">
                   {tasks.map(task => (
-                    <div key={task.id} className={`flex items-center gap-4 px-5 py-3 transition-colors ${task.checked ? 'bg-emerald-500/5' : 'hover:bg-[#F5F5F5] dark:hover:bg-[#171717]/30'}`}>
+                    <div key={task.id} className={`flex items-center gap-4 px-5 py-3 transition-colors ${task.checked ? 'bg-emerald-500/5' : 'hover:bg-mono-975 dark:hover:bg-[#171717]/30'}`}>
                       <button onClick={() => toggleCleaningTask(task.id)}
-                        className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${task.checked ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-[#E5E7EB] dark:border-[#333] hover:border-emerald-400'}`}>
+                        className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${task.checked ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-mono-900 dark:border-[#333] hover:border-emerald-400'}`}>
                         {task.checked && <CheckCircle2 className="w-4 h-4" />}
                       </button>
                       <div className="flex-1 min-w-0">
-                        <span className={`text-sm ${task.checked ? 'text-[#737373] line-through' : 'text-[#111111] dark:text-white'}`}>
+                        <span className={`text-sm ${task.checked ? 'text-mono-500 line-through' : 'text-mono-100 dark:text-white'}`}>
                           {task.label}
                         </span>
                       </div>
                       {/* Photo placeholder */}
                       <button onClick={() => toggleCleaningPhoto(task.id)}
-                        className={`p-1.5 rounded-lg transition-colors ${task.photoPlaceholder ? 'bg-teal-500/20 text-teal-400' : 'text-[#737373] hover:text-teal-400 hover:bg-[#F5F5F5] dark:hover:bg-[#171717]'}`}
+                        className={`p-1.5 rounded-lg transition-colors ${task.photoPlaceholder ? 'bg-teal-500/20 text-teal-400' : 'text-mono-500 hover:text-teal-400 hover:bg-mono-975 dark:hover:bg-[#171717]'}`}
                         title="Photo attestation">
                         <Camera className="w-4 h-4" />
                       </button>
                       {task.timestamp && (
-                        <div className="flex items-center gap-1.5 text-xs text-[#737373]">
+                        <div className="flex items-center gap-1.5 text-xs text-mono-500">
                           <Clock className="w-3 h-3" />
                           <span>{task.timestamp}</span>
                         </div>
                       )}
                       {task.operator && (
-                        <div className="flex items-center gap-1 text-xs text-[#737373]">
+                        <div className="flex items-center gap-1 text-xs text-mono-500">
                           <User className="w-3 h-3" />
                           <span>{task.operator}</span>
                         </div>
@@ -2601,7 +2601,7 @@ export default function HACCP() {
       {activeTab === 'supplier_trace' && (
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+            <h3 className="text-mono-100 dark:text-white font-semibold flex items-center gap-2">
               <Truck className="w-5 h-5 text-teal-400" />
               Tracabilite fournisseurs - Receptions
             </h3>
@@ -2611,7 +2611,7 @@ export default function HACCP() {
                 Page Fournisseurs
               </a>
               <button onClick={() => setShowDeliveryForm(!showDeliveryForm)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+                className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
                 <Plus className="w-4 h-4" />Nouvelle livraison
               </button>
             </div>
@@ -2619,64 +2619,64 @@ export default function HACCP() {
 
           {/* Summary cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 text-center">
-              <div className="text-2xl font-bold text-[#111111] dark:text-white">{deliveries.length}</div>
-              <div className="text-xs text-[#737373] mt-1">Total livraisons</div>
+            <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-mono-100 dark:text-white">{deliveries.length}</div>
+              <div className="text-xs text-mono-500 mt-1">Total livraisons</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-emerald-700/30 rounded-2xl p-4 text-center">
+            <div className="bg-white dark:bg-mono-50/50 border border-emerald-700/30 rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-emerald-400">{deliveries.filter(d => d.decision === 'accepte').length}</div>
-              <div className="text-xs text-[#737373] mt-1">Acceptees</div>
+              <div className="text-xs text-mono-500 mt-1">Acceptees</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-red-700/30 rounded-2xl p-4 text-center">
+            <div className="bg-white dark:bg-mono-50/50 border border-red-700/30 rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-red-400">{deliveries.filter(d => d.decision === 'refuse').length}</div>
-              <div className="text-xs text-[#737373] mt-1">Refusees</div>
+              <div className="text-xs text-mono-500 mt-1">Refusees</div>
             </div>
           </div>
 
           {/* Delivery form */}
           {showDeliveryForm && (
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
-              <h3 className="text-[#111111] dark:text-white font-semibold">Enregistrer une livraison</h3>
+            <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 space-y-4">
+              <h3 className="text-mono-100 dark:text-white font-semibold">Enregistrer une livraison</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs text-[#737373] mb-1">Fournisseur</label>
+                  <label className="block text-xs text-mono-500 mb-1">Fournisseur</label>
                   <input type="text" value={deliveryForm.supplierName}
                     onChange={e => setDeliveryForm(f => ({ ...f, supplierName: e.target.value }))}
                     placeholder="Nom du fournisseur"
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] mb-1">Date de livraison</label>
+                  <label className="block text-xs text-mono-500 mb-1">Date de livraison</label>
                   <input type="date" value={deliveryForm.deliveryDate}
                     onChange={e => setDeliveryForm(f => ({ ...f, deliveryDate: e.target.value }))}
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white" />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] mb-1">Produits livres</label>
+                  <label className="block text-xs text-mono-500 mb-1">Produits livres</label>
                   <input type="text" value={deliveryForm.products}
                     onChange={e => setDeliveryForm(f => ({ ...f, products: e.target.value }))}
                     placeholder="Viande, legumes, etc."
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] mb-1">Numeros de lot</label>
+                  <label className="block text-xs text-mono-500 mb-1">Numeros de lot</label>
                   <input type="text" value={deliveryForm.lotNumbers}
                     onChange={e => setDeliveryForm(f => ({ ...f, lotNumbers: e.target.value }))}
                     placeholder="LOT-001, LOT-002"
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] mb-1">Temperature a reception (°C)</label>
+                  <label className="block text-xs text-mono-500 mb-1">Temperature a reception (°C)</label>
                   <input type="number" step="0.1" value={deliveryForm.temperatureReception}
                     onChange={e => setDeliveryForm(f => ({ ...f, temperatureReception: e.target.value }))}
                     placeholder="Ex: 2.5"
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] mb-1">Decision</label>
+                  <label className="block text-xs text-mono-500 mb-1">Decision</label>
                   <select value={deliveryForm.decision}
                     onChange={e => setDeliveryForm(f => ({ ...f, decision: e.target.value as DeliveryRecord['decision'] }))}
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white">
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white">
                     <option value="en_attente">En attente</option>
                     <option value="accepte">Accepte</option>
                     <option value="refuse">Refuse</option>
@@ -2684,19 +2684,19 @@ export default function HACCP() {
                 </div>
                 {deliveryForm.decision === 'refuse' && (
                   <div className="sm:col-span-2">
-                    <label className="block text-xs text-[#737373] mb-1">Motif de refus</label>
+                    <label className="block text-xs text-mono-500 mb-1">Motif de refus</label>
                     <input type="text" value={deliveryForm.refusalReason}
                       onChange={e => setDeliveryForm(f => ({ ...f, refusalReason: e.target.value }))}
                       placeholder="Temperature non conforme, emballage endommage..."
-                      className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                      className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                   </div>
                 )}
                 <div>
-                  <label className="block text-xs text-[#737373] mb-1">Operateur</label>
+                  <label className="block text-xs text-mono-500 mb-1">Operateur</label>
                   <input type="text" value={deliveryForm.operator}
                     onChange={e => setDeliveryForm(f => ({ ...f, operator: e.target.value }))}
                     placeholder="Votre nom"
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
               </div>
 
@@ -2717,17 +2717,17 @@ export default function HACCP() {
 
               <div className="flex gap-3">
                 <button onClick={addDelivery} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">Enregistrer</button>
-                <button onClick={() => setShowDeliveryForm(false)} className="px-4 py-2 bg-[#F5F5F5] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium transition-colors">Annuler</button>
+                <button onClick={() => setShowDeliveryForm(false)} className="px-4 py-2 bg-mono-975 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-[#222] text-[#6B7280] dark:text-mono-700 rounded-xl text-sm font-medium transition-colors">Annuler</button>
               </div>
             </div>
           )}
 
           {/* Deliveries list */}
-          <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+          <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-[#737373] text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-[#0A0A0A]/50">
+                  <tr className="text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
                     <th className="text-left py-3 px-4">Fournisseur</th>
                     <th className="text-left py-3 px-4">Date</th>
                     <th className="text-left py-3 px-4">Produits</th>
@@ -2739,22 +2739,22 @@ export default function HACCP() {
                 </thead>
                 <tbody>
                   {deliveries.map(d => (
-                    <tr key={d.id} className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50 hover:bg-[#F5F5F5] dark:hover:bg-[#171717]/30 transition-colors">
+                    <tr key={d.id} className="border-t border-mono-900 dark:border-mono-200/50 hover:bg-mono-975 dark:hover:bg-[#171717]/30 transition-colors">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <Building2 className="w-4 h-4 text-[#737373]" />
-                          <span className="text-[#111111] dark:text-white font-medium">{d.supplierName}</span>
+                          <Building2 className="w-4 h-4 text-mono-500" />
+                          <span className="text-mono-100 dark:text-white font-medium">{d.supplierName}</span>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-[#737373]">{new Date(d.deliveryDate).toLocaleDateString('fr-FR')}</td>
-                      <td className="py-3 px-4 text-[#111111] dark:text-white max-w-xs truncate">{d.products}</td>
+                      <td className="py-3 px-4 text-mono-500">{new Date(d.deliveryDate).toLocaleDateString('fr-FR')}</td>
+                      <td className="py-3 px-4 text-mono-100 dark:text-white max-w-xs truncate">{d.products}</td>
                       <td className="py-3 px-4 text-teal-400 font-mono text-xs">{d.lotNumbers || '-'}</td>
                       <td className="py-3 px-4">
                         {d.temperatureReception !== null ? (
                           <span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${d.tempIsConform ? 'bg-emerald-900/40 text-emerald-300' : 'bg-red-900/40 text-red-300'}`}>
                             {d.temperatureReception}°C
                           </span>
-                        ) : <span className="text-[#737373]">-</span>}
+                        ) : <span className="text-mono-500">-</span>}
                       </td>
                       <td className="py-3 px-4">
                         <span className={`px-2.5 py-0.5 rounded-lg text-xs font-semibold ${
@@ -2791,9 +2791,9 @@ export default function HACCP() {
               </table>
             </div>
             {deliveries.length === 0 && (
-              <div className="text-center py-12 text-[#737373]">
-                <Truck className="w-12 h-12 mx-auto mb-3 text-[#737373]/40" />
-                <p className="font-medium text-[#111111] dark:text-white">Aucune livraison enregistree</p>
+              <div className="text-center py-12 text-mono-500">
+                <Truck className="w-12 h-12 mx-auto mb-3 text-mono-500/40" />
+                <p className="font-medium text-mono-100 dark:text-white">Aucune livraison enregistree</p>
                 <p className="text-sm mt-1">Cliquez "Nouvelle livraison" pour commencer</p>
               </div>
             )}
@@ -2808,33 +2808,33 @@ export default function HACCP() {
         <div className="space-y-6">
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+            <h3 className="text-mono-100 dark:text-white font-semibold flex items-center gap-2">
               <ClipboardCheck className="w-5 h-5 text-teal-400" />
               Preparer un audit
             </h3>
             <button onClick={handlePrint}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+              className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
               <FileText className="w-4 h-4" />Generer rapport audit
             </button>
           </div>
 
           {/* Audit readiness score */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 flex flex-col items-center justify-center">
+            <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6 flex flex-col items-center justify-center">
               <ComplianceScoreWidget score={auditScore} size={160} />
               <div className="mt-4 text-center">
-                <p className="text-sm text-[#111111] dark:text-white font-semibold">
+                <p className="text-sm text-mono-100 dark:text-white font-semibold">
                   Vous etes pret a {auditScore}% pour l'audit
                 </p>
-                <p className="text-xs text-[#737373] mt-1">
+                <p className="text-xs text-mono-500 mt-1">
                   {auditChecklist.filter(i => i.isPresent).length}/{auditChecklist.length} documents disponibles
                 </p>
               </div>
             </div>
 
             {/* Missing critical items */}
-            <div className="lg:col-span-2 bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
-              <h4 className="text-[#111111] dark:text-white font-semibold mb-4 flex items-center gap-2">
+            <div className="lg:col-span-2 bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
+              <h4 className="text-mono-100 dark:text-white font-semibold mb-4 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-red-400" />
                 Elements manquants
               </h4>
@@ -2842,7 +2842,7 @@ export default function HACCP() {
                 <div className="text-center py-8">
                   <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
                   <p className="text-emerald-400 font-semibold">Tous les documents sont presents !</p>
-                  <p className="text-sm text-[#737373] mt-1">Vous etes pret pour l'audit</p>
+                  <p className="text-sm text-mono-500 mt-1">Vous etes pret pour l'audit</p>
                 </div>
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -2877,36 +2877,36 @@ export default function HACCP() {
             const catCritical = items.filter(i => i.isCritical && !i.isPresent).length;
 
             return (
-              <div key={category} className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden print-report">
-                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div key={category} className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden print-report">
+                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200">
                   <div className="flex items-center gap-2">
                     <FileCheck className="w-4 h-4 text-teal-400" />
-                    <span className="text-[#111111] dark:text-white font-semibold text-sm">{category}</span>
+                    <span className="text-mono-100 dark:text-white font-semibold text-sm">{category}</span>
                     {catCritical > 0 && (
                       <span className="text-[10px] text-red-400 bg-red-900/30 px-1.5 py-0.5 rounded">{catCritical} critique{catCritical > 1 ? 's' : ''} manquant{catCritical > 1 ? 's' : ''}</span>
                     )}
                   </div>
-                  <span className={`text-xs font-medium ${catDone === items.length ? 'text-emerald-400' : 'text-[#737373]'}`}>
+                  <span className={`text-xs font-medium ${catDone === items.length ? 'text-emerald-400' : 'text-mono-500'}`}>
                     {catDone}/{items.length}
                   </span>
                 </div>
-                <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]/50">
+                <div className="divide-y divide-mono-900 dark:divide-mono-200/50">
                   {items.map(item => (
                     <div key={item.id} className={`flex items-center gap-4 px-5 py-3 transition-colors ${item.isPresent ? 'bg-emerald-500/5' : item.isCritical ? 'bg-red-500/5' : ''}`}>
                       <button onClick={() => toggleAuditItem(item.id)}
-                        className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${item.isPresent ? 'bg-emerald-500 border-emerald-500 text-white' : item.isCritical ? 'border-red-500/50 hover:border-red-400' : 'border-[#E5E7EB] dark:border-[#333] hover:border-emerald-400'}`}>
+                        className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${item.isPresent ? 'bg-emerald-500 border-emerald-500 text-white' : item.isCritical ? 'border-red-500/50 hover:border-red-400' : 'border-mono-900 dark:border-[#333] hover:border-emerald-400'}`}>
                         {item.isPresent && <CheckCircle2 className="w-4 h-4" />}
                       </button>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className={`text-sm ${item.isPresent ? 'text-[#737373] line-through' : 'text-[#111111] dark:text-white'}`}>
+                          <span className={`text-sm ${item.isPresent ? 'text-mono-500 line-through' : 'text-mono-100 dark:text-white'}`}>
                             {item.label}
                           </span>
                           {item.isCritical && !item.isPresent && (
                             <span className="text-[10px] text-red-400 bg-red-900/30 px-1.5 py-0.5 rounded flex-shrink-0">OBLIGATOIRE</span>
                           )}
                         </div>
-                        <p className="text-xs text-[#737373] mt-0.5">{item.description}</p>
+                        <p className="text-xs text-mono-500 mt-0.5">{item.description}</p>
                       </div>
                     </div>
                   ))}
@@ -2923,28 +2923,28 @@ export default function HACCP() {
       {activeTab === 'incidents' && (
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+            <h3 className="text-mono-100 dark:text-white font-semibold flex items-center gap-2">
               <AlertOctagon className="w-5 h-5 text-red-400" />
               Journal des incidents
             </h3>
             <div className="flex items-center gap-3">
               {/* View toggle */}
-              <div className="flex bg-[#F5F5F5] dark:bg-[#171717] rounded-lg p-0.5">
+              <div className="flex bg-mono-975 dark:bg-[#171717] rounded-lg p-0.5">
                 <button onClick={() => setIncidentView('list')}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${incidentView === 'list' ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'text-[#737373]'}`}>
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${incidentView === 'list' ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'text-mono-500'}`}>
                   Liste
                 </button>
                 <button onClick={() => setIncidentView('timeline')}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${incidentView === 'timeline' ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'text-[#737373]'}`}>
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${incidentView === 'timeline' ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'text-mono-500'}`}>
                   Chronologie
                 </button>
               </div>
               <button onClick={exportRegistreCSV}
-                className="flex items-center gap-2 px-3 py-2 text-xs border border-[#E5E7EB] dark:border-[#333] text-[#111111] dark:text-white rounded-xl hover:bg-[#F5F5F5] dark:hover:bg-[#171717] transition-colors">
+                className="flex items-center gap-2 px-3 py-2 text-xs border border-mono-900 dark:border-[#333] text-mono-100 dark:text-white rounded-xl hover:bg-mono-975 dark:hover:bg-[#171717] transition-colors">
                 <Download className="w-3.5 h-3.5" />Exporter registre
               </button>
               <button onClick={() => setShowIncidentForm(!showIncidentForm)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+                className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
                 <Plus className="w-4 h-4" />Nouvel incident
               </button>
             </div>
@@ -2952,42 +2952,42 @@ export default function HACCP() {
 
           {/* Summary cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 text-center">
-              <div className="text-2xl font-bold text-[#111111] dark:text-white">{incidents.length}</div>
-              <div className="text-xs text-[#737373] mt-1">Total incidents</div>
+            <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-mono-100 dark:text-white">{incidents.length}</div>
+              <div className="text-xs text-mono-500 mt-1">Total incidents</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-red-700/30 rounded-2xl p-4 text-center">
+            <div className="bg-white dark:bg-mono-50/50 border border-red-700/30 rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-red-400">{incidents.filter(i => i.status === 'ouvert').length}</div>
-              <div className="text-xs text-[#737373] mt-1">Ouverts</div>
+              <div className="text-xs text-mono-500 mt-1">Ouverts</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-amber-700/30 rounded-2xl p-4 text-center">
+            <div className="bg-white dark:bg-mono-50/50 border border-amber-700/30 rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-amber-400">{incidents.filter(i => i.status === 'en_cours').length}</div>
-              <div className="text-xs text-[#737373] mt-1">En cours</div>
+              <div className="text-xs text-mono-500 mt-1">En cours</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-emerald-700/30 rounded-2xl p-4 text-center">
+            <div className="bg-white dark:bg-mono-50/50 border border-emerald-700/30 rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-emerald-400">{incidents.filter(i => i.status === 'clos').length}</div>
-              <div className="text-xs text-[#737373] mt-1">Clos</div>
+              <div className="text-xs text-mono-500 mt-1">Clos</div>
             </div>
           </div>
 
           {/* Incident form */}
           {showIncidentForm && (
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
-              <h3 className="text-[#111111] dark:text-white font-semibold">Signaler un incident</h3>
+            <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 space-y-4">
+              <h3 className="text-mono-100 dark:text-white font-semibold">Signaler un incident</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-2">
-                  <label className="block text-xs text-[#737373] mb-1">Description de l'incident</label>
+                  <label className="block text-xs text-mono-500 mb-1">Description de l'incident</label>
                   <textarea value={incidentForm.description}
                     onChange={e => setIncidentForm(f => ({ ...f, description: e.target.value }))}
                     placeholder="Decrire l'incident en detail..."
                     rows={3}
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280] resize-none" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280] resize-none" />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] mb-1">Gravite</label>
+                  <label className="block text-xs text-mono-500 mb-1">Gravite</label>
                   <select value={incidentForm.severity}
                     onChange={e => setIncidentForm(f => ({ ...f, severity: e.target.value as IncidentRecord['severity'] }))}
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white">
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white">
                     <option value="faible">Faible</option>
                     <option value="moyen">Moyen</option>
                     <option value="grave">Grave</option>
@@ -2995,41 +2995,41 @@ export default function HACCP() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] mb-1">Signale par</label>
+                  <label className="block text-xs text-mono-500 mb-1">Signale par</label>
                   <input type="text" value={incidentForm.reporter}
                     onChange={e => setIncidentForm(f => ({ ...f, reporter: e.target.value }))}
                     placeholder="Votre nom"
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] mb-1">Actions prises</label>
+                  <label className="block text-xs text-mono-500 mb-1">Actions prises</label>
                   <input type="text" value={incidentForm.actionsTaken}
                     onChange={e => setIncidentForm(f => ({ ...f, actionsTaken: e.target.value }))}
                     placeholder="Mesures immediates prises..."
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#737373] mb-1">Suivi necessaire</label>
+                  <label className="block text-xs text-mono-500 mb-1">Suivi necessaire</label>
                   <input type="text" value={incidentForm.followUp}
                     onChange={e => setIncidentForm(f => ({ ...f, followUp: e.target.value }))}
                     placeholder="Actions de suivi..."
-                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
               </div>
               <div className="flex gap-3">
                 <button onClick={addIncident} className="px-4 py-2 bg-red-500 hover:bg-red-400 text-white rounded-xl text-sm font-medium transition-colors">Signaler l'incident</button>
-                <button onClick={() => setShowIncidentForm(false)} className="px-4 py-2 bg-[#F5F5F5] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium transition-colors">Annuler</button>
+                <button onClick={() => setShowIncidentForm(false)} className="px-4 py-2 bg-mono-975 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-[#222] text-[#6B7280] dark:text-mono-700 rounded-xl text-sm font-medium transition-colors">Annuler</button>
               </div>
             </div>
           )}
 
           {/* LIST VIEW */}
           {incidentView === 'list' && (
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden print-report">
+            <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden print-report">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-[#737373] text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-[#0A0A0A]/50">
+                    <tr className="text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
                       <th className="text-left py-3 px-4">Date</th>
                       <th className="text-left py-3 px-4">Description</th>
                       <th className="text-left py-3 px-4">Gravite</th>
@@ -3041,19 +3041,19 @@ export default function HACCP() {
                   </thead>
                   <tbody>
                     {incidents.map(inc => (
-                      <tr key={inc.id} className={`border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50 hover:bg-[#F5F5F5] dark:hover:bg-[#171717]/30 transition-colors ${inc.severity === 'critique' ? 'bg-red-500/5' : ''}`}>
-                        <td className="py-3 px-4 text-[#737373] whitespace-nowrap">{new Date(inc.date).toLocaleDateString('fr-FR')}</td>
-                        <td className="py-3 px-4 text-[#111111] dark:text-white max-w-xs">
+                      <tr key={inc.id} className={`border-t border-mono-900 dark:border-mono-200/50 hover:bg-mono-975 dark:hover:bg-[#171717]/30 transition-colors ${inc.severity === 'critique' ? 'bg-red-500/5' : ''}`}>
+                        <td className="py-3 px-4 text-mono-500 whitespace-nowrap">{new Date(inc.date).toLocaleDateString('fr-FR')}</td>
+                        <td className="py-3 px-4 text-mono-100 dark:text-white max-w-xs">
                           <div className="truncate">{inc.description}</div>
-                          <div className="text-[10px] text-[#737373] mt-0.5">Par {inc.reporter}</div>
+                          <div className="text-[10px] text-mono-500 mt-0.5">Par {inc.reporter}</div>
                         </td>
                         <td className="py-3 px-4">
                           <span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${SEVERITY_BADGE[inc.severity]}`}>
                             {SEVERITY_LABELS[inc.severity]}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-[#737373] text-xs max-w-[200px] truncate">{inc.actionsTaken || '-'}</td>
-                        <td className="py-3 px-4 text-[#737373] text-xs max-w-[200px] truncate">{inc.followUp || '-'}</td>
+                        <td className="py-3 px-4 text-mono-500 text-xs max-w-[200px] truncate">{inc.actionsTaken || '-'}</td>
+                        <td className="py-3 px-4 text-mono-500 text-xs max-w-[200px] truncate">{inc.followUp || '-'}</td>
                         <td className="py-3 px-4">
                           <span className={`px-2.5 py-0.5 rounded-lg text-xs font-semibold ${INCIDENT_STATUS_BADGE[inc.status]}`}>
                             {INCIDENT_STATUS_LABELS[inc.status]}
@@ -3081,9 +3081,9 @@ export default function HACCP() {
                 </table>
               </div>
               {incidents.length === 0 && (
-                <div className="text-center py-12 text-[#737373]">
+                <div className="text-center py-12 text-mono-500">
                   <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-emerald-400" />
-                  <p className="font-medium text-[#111111] dark:text-white">Aucun incident enregistre</p>
+                  <p className="font-medium text-mono-100 dark:text-white">Aucun incident enregistre</p>
                   <p className="text-sm mt-1">C'est une bonne nouvelle !</p>
                 </div>
               )}
@@ -3094,14 +3094,14 @@ export default function HACCP() {
           {incidentView === 'timeline' && (
             <div className="space-y-0 print-report">
               {incidents.length === 0 ? (
-                <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-12 text-center">
+                <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-12 text-center">
                   <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-emerald-400" />
-                  <p className="font-medium text-[#111111] dark:text-white">Aucun incident</p>
+                  <p className="font-medium text-mono-100 dark:text-white">Aucun incident</p>
                 </div>
               ) : (
                 <div className="relative pl-8">
                   {/* Timeline line */}
-                  <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
+                  <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-mono-900 dark:bg-mono-200" />
 
                   {incidents.map((inc, idx) => {
                     const sevColor = inc.severity === 'critique' ? 'bg-red-500' :
@@ -3113,11 +3113,11 @@ export default function HACCP() {
                         {/* Timeline dot */}
                         <div className={`absolute -left-5 top-4 w-4 h-4 rounded-full border-2 border-white dark:border-black ${sevColor} z-10`} />
 
-                        <div className={`bg-white dark:bg-[#0A0A0A]/50 border rounded-2xl p-5 ml-4 ${inc.severity === 'critique' ? 'border-red-500/30' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'}`}>
+                        <div className={`bg-white dark:bg-mono-50/50 border rounded-2xl p-5 ml-4 ${inc.severity === 'critique' ? 'border-red-500/30' : 'border-mono-900 dark:border-mono-200'}`}>
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
-                                <span className="text-xs text-[#737373]">{new Date(inc.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+                                <span className="text-xs text-mono-500">{new Date(inc.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
                                 <span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${SEVERITY_BADGE[inc.severity]}`}>
                                   {SEVERITY_LABELS[inc.severity]}
                                 </span>
@@ -3125,20 +3125,20 @@ export default function HACCP() {
                                   {INCIDENT_STATUS_LABELS[inc.status]}
                                 </span>
                               </div>
-                              <p className="text-sm text-[#111111] dark:text-white">{inc.description}</p>
+                              <p className="text-sm text-mono-100 dark:text-white">{inc.description}</p>
                               {inc.actionsTaken && (
                                 <div className="mt-2 text-xs">
-                                  <span className="text-[#737373]">Actions: </span>
-                                  <span className="text-[#111111] dark:text-[#A3A3A3]">{inc.actionsTaken}</span>
+                                  <span className="text-mono-500">Actions: </span>
+                                  <span className="text-mono-100 dark:text-mono-700">{inc.actionsTaken}</span>
                                 </div>
                               )}
                               {inc.followUp && (
                                 <div className="mt-1 text-xs">
-                                  <span className="text-[#737373]">Suivi: </span>
-                                  <span className="text-[#111111] dark:text-[#A3A3A3]">{inc.followUp}</span>
+                                  <span className="text-mono-500">Suivi: </span>
+                                  <span className="text-mono-100 dark:text-mono-700">{inc.followUp}</span>
                                 </div>
                               )}
-                              <div className="mt-2 text-[10px] text-[#737373]">
+                              <div className="mt-2 text-[10px] text-mono-500">
                                 Signale par {inc.reporter} a {new Date(inc.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                               </div>
                             </div>
@@ -3175,50 +3175,50 @@ export default function HACCP() {
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row gap-3 justify-between">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
-              <input type="text" value={searchLots} onChange={e => setSearchLots(e.target.value)} placeholder={t('haccp.searchLots')} className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg pl-10 pr-3 py-2.5 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
+              <input type="text" value={searchLots} onChange={e => setSearchLots(e.target.value)} placeholder={t('haccp.searchLots')} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg pl-10 pr-3 py-2.5 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
             </div>
-            <button onClick={() => setShowLotForm(!showLotForm)} className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"><Plus className="w-4 h-4" />{t('haccp.newLot')}</button>
+            <button onClick={() => setShowLotForm(!showLotForm)} className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"><Plus className="w-4 h-4" />{t('haccp.newLot')}</button>
           </div>
 
           {showLotForm && (
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
-              <h3 className="text-[#111111] dark:text-white font-semibold">{t('haccp.recordLot')}</h3>
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 space-y-4">
+              <h3 className="text-mono-100 dark:text-white font-semibold">{t('haccp.recordLot')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t('haccp.lotNumber')}</label><input type="text" value={lotForm.lotNumber} onChange={e => setLotForm(f => ({ ...f, lotNumber: e.target.value }))} placeholder="LOT-XXXX" className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t('haccp.product')}</label><input type="text" value={lotForm.product} onChange={e => setLotForm(f => ({ ...f, product: e.target.value }))} placeholder={t('haccp.productName')} className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t('haccp.supplier')}</label><input type="text" value={lotForm.supplier} onChange={e => setLotForm(f => ({ ...f, supplier: e.target.value }))} placeholder={t('haccp.supplier')} className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t('haccp.dlc')}</label><input type="date" value={lotForm.dlc} onChange={e => setLotForm(f => ({ ...f, dlc: e.target.value }))} className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t('haccp.ddm')}</label><input type="date" value={lotForm.ddm} onChange={e => setLotForm(f => ({ ...f, ddm: e.target.value }))} className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t('haccp.status')}</label><select value={lotForm.status} onChange={e => setLotForm(f => ({ ...f, status: e.target.value as LotRecord['status'] }))} className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white"><option value="en_attente">{t('haccp.pending')}</option><option value="conforme">{t('haccp.compliantStatus')}</option><option value="non_conforme">{t('haccp.nonCompliantStatus')}</option></select></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.lotNumber')}</label><input type="text" value={lotForm.lotNumber} onChange={e => setLotForm(f => ({ ...f, lotNumber: e.target.value }))} placeholder="LOT-XXXX" className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.product')}</label><input type="text" value={lotForm.product} onChange={e => setLotForm(f => ({ ...f, product: e.target.value }))} placeholder={t('haccp.productName')} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.supplier')}</label><input type="text" value={lotForm.supplier} onChange={e => setLotForm(f => ({ ...f, supplier: e.target.value }))} placeholder={t('haccp.supplier')} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.dlc')}</label><input type="date" value={lotForm.dlc} onChange={e => setLotForm(f => ({ ...f, dlc: e.target.value }))} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.ddm')}</label><input type="date" value={lotForm.ddm} onChange={e => setLotForm(f => ({ ...f, ddm: e.target.value }))} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.status')}</label><select value={lotForm.status} onChange={e => setLotForm(f => ({ ...f, status: e.target.value as LotRecord['status'] }))} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white"><option value="en_attente">{t('haccp.pending')}</option><option value="conforme">{t('haccp.compliantStatus')}</option><option value="non_conforme">{t('haccp.nonCompliantStatus')}</option></select></div>
               </div>
               <div className="flex gap-3">
                 <button onClick={addLot} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">{t('haccp.save')}</button>
-                <button onClick={() => setShowLotForm(false)} className="px-4 py-2 bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium transition-colors">{t('haccp.cancel')}</button>
+                <button onClick={() => setShowLotForm(false)} className="px-4 py-2 bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-[#222] text-[#6B7280] dark:text-mono-700 rounded-xl text-sm font-medium transition-colors">{t('haccp.cancel')}</button>
               </div>
             </div>
           )}
 
-          <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+          <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead><tr className="text-[#9CA3AF] dark:text-[#737373] text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-[#0A0A0A]/50">
+                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
                   <th className="text-left py-3 px-4">{t('haccp.lotNumber')}</th><th className="text-left py-3 px-4">{t('haccp.product')}</th><th className="text-left py-3 px-4">{t('haccp.supplier')}</th><th className="text-left py-3 px-4">{t('haccp.reception')}</th><th className="text-left py-3 px-4">{t('haccp.dlc')}</th><th className="text-left py-3 px-4">{t('haccp.ddm')}</th><th className="text-left py-3 px-4">{t('haccp.status')}</th>
                 </tr></thead>
                 <tbody>{filteredLots.map(l => (
-                  <tr key={l.id} className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/30 transition-colors">
+                  <tr key={l.id} className="border-t border-mono-900 dark:border-mono-200/50 hover:bg-mono-950 dark:hover:bg-[#171717]/30 transition-colors">
                     <td className="py-3 px-4 text-teal-400 font-mono text-xs font-semibold">{l.lotNumber}</td>
-                    <td className="py-3 px-4 text-[#111111] dark:text-white font-medium">{l.product}</td>
-                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-[#737373]">{l.supplier}</td>
-                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-[#737373]">{new Date(l.receptionDate).toLocaleDateString('fr-FR')}</td>
-                    <td className="py-3 px-4 text-[#6B7280] dark:text-[#A3A3A3]">{l.dlc ? new Date(l.dlc).toLocaleDateString('fr-FR') : '-'}</td>
-                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-[#737373]">{l.ddm ? new Date(l.ddm).toLocaleDateString('fr-FR') : '-'}</td>
+                    <td className="py-3 px-4 text-mono-100 dark:text-white font-medium">{l.product}</td>
+                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-mono-500">{l.supplier}</td>
+                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-mono-500">{new Date(l.receptionDate).toLocaleDateString('fr-FR')}</td>
+                    <td className="py-3 px-4 text-[#6B7280] dark:text-mono-700">{l.dlc ? new Date(l.dlc).toLocaleDateString('fr-FR') : '-'}</td>
+                    <td className="py-3 px-4 text-[#9CA3AF] dark:text-mono-500">{l.ddm ? new Date(l.ddm).toLocaleDateString('fr-FR') : '-'}</td>
                     <td className="py-3 px-4"><span className={`px-2.5 py-0.5 rounded-lg text-xs font-semibold ${STATUS_BADGE[l.status]}`}>{STATUS_LABELS[l.status]}</span></td>
                   </tr>
                 ))}</tbody>
               </table>
             </div>
-            {filteredLots.length === 0 && <div className="text-center py-8 text-[#9CA3AF] dark:text-[#737373]">{t('haccp.noLotsFound')}</div>}
+            {filteredLots.length === 0 && <div className="text-center py-8 text-[#9CA3AF] dark:text-mono-500">{t('haccp.noLotsFound')}</div>}
           </div>
         </div>
       )}
@@ -3228,24 +3228,24 @@ export default function HACCP() {
          ═══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'alertes' && (
         <div className="space-y-4">
-          <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
-            <h3 className="text-sm font-semibold text-[#111111] dark:text-white mb-3">{t('haccp.legend')}</h3>
+          <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
+            <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-3">{t('haccp.legend')}</h3>
             <div className="flex flex-wrap gap-4 text-xs">
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500" /><span className="text-[#9CA3AF] dark:text-[#737373]">{t('haccp.expiredOrD1')}</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500" /><span className="text-[#9CA3AF] dark:text-[#737373]">{t('haccp.d2ToD3')}</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500" /><span className="text-[#9CA3AF] dark:text-[#737373]">{t('haccp.d4Plus')}</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500" /><span className="text-[#9CA3AF] dark:text-mono-500">{t('haccp.expiredOrD1')}</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500" /><span className="text-[#9CA3AF] dark:text-mono-500">{t('haccp.d2ToD3')}</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500" /><span className="text-[#9CA3AF] dark:text-mono-500">{t('haccp.d4Plus')}</span></div>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {dluoAlerts.map(a => (
-              <div key={a.id} className={`bg-white dark:bg-black/50 border rounded-2xl p-5 transition-all ${a.daysRemaining <= 1 ? 'border-red-700/50 shadow-[0_0_15px_rgba(220,38,38,0.1)]' : a.daysRemaining <= 3 ? 'border-amber-700/50' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'}`}>
+              <div key={a.id} className={`bg-white dark:bg-black/50 border rounded-2xl p-5 transition-all ${a.daysRemaining <= 1 ? 'border-red-700/50 shadow-[0_0_15px_rgba(220,38,38,0.1)]' : a.daysRemaining <= 3 ? 'border-amber-700/50' : 'border-mono-900 dark:border-mono-200'}`}>
                 <div className="flex items-start justify-between mb-3">
-                  <div><h4 className="text-[#111111] dark:text-white font-semibold">{a.product}</h4><p className="text-xs text-[#9CA3AF] dark:text-[#737373] font-mono">{a.lotNumber}</p></div>
+                  <div><h4 className="text-mono-100 dark:text-white font-semibold">{a.product}</h4><p className="text-xs text-[#9CA3AF] dark:text-mono-500 font-mono">{a.lotNumber}</p></div>
                   <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${getDluoBadge(a.daysRemaining)}`}>{getDluoLabel(a.daysRemaining)}</span>
                 </div>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-[#9CA3AF] dark:text-[#737373]">{t('haccp.dlc')}</span><span className="text-[#6B7280] dark:text-[#A3A3A3]">{new Date(a.dlc).toLocaleDateString('fr-FR')}</span></div>
-                  <div className="flex justify-between"><span className="text-[#9CA3AF] dark:text-[#737373]">{t('haccp.quantity')}</span><span className="text-[#6B7280] dark:text-[#A3A3A3]">{a.quantity}</span></div>
+                  <div className="flex justify-between"><span className="text-[#9CA3AF] dark:text-mono-500">{t('haccp.dlc')}</span><span className="text-[#6B7280] dark:text-mono-700">{new Date(a.dlc).toLocaleDateString('fr-FR')}</span></div>
+                  <div className="flex justify-between"><span className="text-[#9CA3AF] dark:text-mono-500">{t('haccp.quantity')}</span><span className="text-[#6B7280] dark:text-mono-700">{a.quantity}</span></div>
                 </div>
                 {a.daysRemaining <= 1 && (
                   <div className="mt-3 flex items-center gap-2 text-xs text-red-400 bg-red-900/20 px-3 py-2 rounded-lg">
@@ -3257,10 +3257,10 @@ export default function HACCP() {
             ))}
           </div>
           {dluoAlerts.length === 0 && (
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-12 text-center">
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-12 text-center">
               <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
-              <p className="text-[#111111] dark:text-white font-semibold">Aucune alerte DLC</p>
-              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">Tous les produits sont dans les delais</p>
+              <p className="text-mono-100 dark:text-white font-semibold">Aucune alerte DLC</p>
+              <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">Tous les produits sont dans les delais</p>
             </div>
           )}
         </div>

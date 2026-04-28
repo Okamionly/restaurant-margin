@@ -15,14 +15,9 @@ import { useScale } from '../hooks/useScale';
 import { useToast } from '../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
+import { useApiClient } from '../hooks/useApiClient';
 
 const API = '';
-
-function authHeaders() {
-  const token = localStorage.getItem('token');
-  const restaurantId = localStorage.getItem('activeRestaurantId');
-  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, 'X-Restaurant-Id': restaurantId || '1' };
-}
 
 type Ingredient = { id: number; name: string; unit: string; category: string; pricePerUnit: number };
 
@@ -119,7 +114,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 function getCategoryColor(cat: string) {
-  return CATEGORY_COLORS[cat] ?? 'bg-[#F3F4F6] dark:bg-[#171717]/20 text-[#6B7280] dark:text-[#A3A3A3] border-[#E5E7EB] dark:border-[#1A1A1A]/30';
+  return CATEGORY_COLORS[cat] ?? 'bg-mono-950 dark:bg-[#171717]/20 text-[#6B7280] dark:text-mono-700 border-mono-900 dark:border-mono-200/30';
 }
 
 // Scale gives kg, convert to target unit
@@ -264,6 +259,7 @@ export default function WeighStation() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { authHeaders } = useApiClient();
   const {
     status, reading, error, isSupported, deviceName, scaleType,
     kioskMode, setKioskMode, autoReconnect, setAutoReconnect,
@@ -713,7 +709,7 @@ export default function WeighStation() {
       case 'reconnecting': return 'bg-teal-400 animate-pulse';
       case 'error':
       case 'unsupported': return 'bg-red-400';
-      default: return 'bg-[#F3F4F6] dark:bg-[#171717]';
+      default: return 'bg-mono-950 dark:bg-[#171717]';
     }
   })();
 
@@ -1021,12 +1017,12 @@ export default function WeighStation() {
     <div className={`min-h-screen lg:h-screen bg-gradient-to-b from-white dark:from-black via-white dark:via-black to-white dark:to-black text-white flex flex-col select-none lg:overflow-hidden ${kioskMode ? 'kiosk-mode' : ''}`}>
 
       {/* ===== TOP BAR ===== */}
-      <header className={`flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 bg-white dark:bg-black/80 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 backdrop-blur-sm ${kioskMode ? 'py-1.5' : 'py-2 sm:py-3'}`}>
+      <header className={`flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 bg-white dark:bg-black/80 border-b border-mono-900 dark:border-mono-200/60 backdrop-blur-sm ${kioskMode ? 'py-1.5' : 'py-2 sm:py-3'}`}>
         <div className="flex items-center gap-2 sm:gap-3">
           {!kioskMode && (
             <button
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 px-4 py-2.5 min-h-[48px] bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-xl text-[#111111] dark:text-white font-medium text-sm transition-all active:scale-95"
+              className="flex items-center gap-2 px-4 py-2.5 min-h-[48px] bg-mono-1000 dark:bg-mono-50 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-xl text-mono-100 dark:text-white font-medium text-sm transition-all active:scale-95"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="hidden sm:inline">Retour</span>
@@ -1034,15 +1030,15 @@ export default function WeighStation() {
           )}
           <div className="flex items-center gap-2">
             <Scale className={`text-emerald-400 ${kioskMode ? 'w-7 h-7' : 'w-5 h-5 sm:w-6 sm:h-6'}`} />
-            <span className={`font-bold text-[#111111] dark:text-white tracking-tight ${kioskMode ? 'text-xl' : 'text-base sm:text-lg'}`}>Station Balance</span>
+            <span className={`font-bold text-mono-100 dark:text-white tracking-tight ${kioskMode ? 'text-xl' : 'text-base sm:text-lg'}`}>Station Balance</span>
           </div>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Connection status */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-mono-1000 dark:bg-mono-50/60 border border-mono-900 dark:border-mono-200/50">
             <div className={`w-2.5 h-2.5 rounded-full transition-colors duration-300 ${statusDotClass}`} />
-            <span className="text-xs text-[#9CA3AF] dark:text-[#737373] hidden sm:inline">
+            <span className="text-xs text-[#9CA3AF] dark:text-mono-500 hidden sm:inline">
               {useSimulation ? 'Mode Simule' : statusLabel}
               {status === 'connected' && deviceName && !useSimulation && (
                 <span className="ml-1 text-emerald-400">({deviceName})</span>
@@ -1054,7 +1050,7 @@ export default function WeighStation() {
           <div className="relative">
             <button
               onClick={() => setShowScaleSelector(s => !s)}
-              className="flex items-center gap-1.5 px-3 py-2.5 min-h-[48px] rounded-xl text-sm font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/50 transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-2.5 min-h-[48px] rounded-xl text-sm font-medium bg-mono-1000 dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] border border-mono-900 dark:border-mono-200/50 transition-all active:scale-95"
               title="Changer de balance"
             >
               <Router className="w-4 h-4" />
@@ -1062,15 +1058,15 @@ export default function WeighStation() {
               <ChevronDown className="w-3 h-3" />
             </button>
             {showScaleSelector && (
-              <div className="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-2xl z-30 overflow-hidden">
-                <div className="px-3 py-2 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-                  <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider">Balances disponibles</p>
+              <div className="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-mono-100 border border-mono-900 dark:border-mono-200 rounded-xl shadow-2xl z-30 overflow-hidden">
+                <div className="px-3 py-2 border-b border-mono-900 dark:border-mono-200">
+                  <p className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider">Balances disponibles</p>
                 </div>
                 {scaleProfiles.map(sp => (
                   <button
                     key={sp.id}
                     onClick={() => { setActiveScaleId(sp.id); setShowScaleSelector(false); showToast(`Balance "${sp.name}" selectionnee`, 'success'); }}
-                    className={`w-full flex items-center gap-3 px-3 py-3 min-h-[48px] text-left transition-all hover:bg-[#FAFAFA] dark:hover:bg-[#171717] ${activeScaleId === sp.id ? 'bg-emerald-900/20' : ''}`}
+                    className={`w-full flex items-center gap-3 px-3 py-3 min-h-[48px] text-left transition-all hover:bg-mono-1000 dark:hover:bg-[#171717] ${activeScaleId === sp.id ? 'bg-emerald-900/20' : ''}`}
                   >
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                       sp.type === 'precision' ? 'bg-purple-900/30 text-purple-400' :
@@ -1080,8 +1076,8 @@ export default function WeighStation() {
                       <Scale className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{sp.name}</p>
-                      <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                      <p className="text-sm font-medium text-mono-100 dark:text-white truncate">{sp.name}</p>
+                      <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                         {sp.type === 'precision' ? 'Pour epices, herbes' : sp.type === 'floor' ? 'Pour sacs, cartons' : 'Usage general'}
                       </p>
                     </div>
@@ -1096,7 +1092,7 @@ export default function WeighStation() {
           <button
             onClick={() => setUseSimulation(s => !s)}
             className={`px-3 py-2.5 min-h-[48px] rounded-xl text-sm font-medium transition-all active:scale-95 ${
-              useSimulation ? 'bg-amber-600/80 text-[#111111] dark:text-white border border-amber-500/50' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/50'
+              useSimulation ? 'bg-amber-600/80 text-mono-100 dark:text-white border border-amber-500/50' : 'bg-mono-1000 dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] border border-mono-900 dark:border-mono-200/50'
             }`}
           >
             {useSimulation ? 'Mode Simule' : 'Mode Bluetooth'}
@@ -1111,9 +1107,9 @@ export default function WeighStation() {
                 connectAnim ? 'animate-pulse' : ''
               } ${
                 status === 'connected' ? 'bg-emerald-600 hover:bg-emerald-500 text-white' :
-                status === 'connecting' || status === 'reconnecting' ? 'bg-teal-700 text-[#111111] dark:text-white cursor-wait' :
+                status === 'connecting' || status === 'reconnecting' ? 'bg-teal-700 text-mono-100 dark:text-white cursor-wait' :
                 status === 'error' || status === 'unsupported' ? 'bg-red-600 hover:bg-red-500 text-white' :
-                'bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black'
+                'bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black'
               }`}
             >
               {status === 'connected' ? <Wifi className="w-5 h-5" /> :
@@ -1134,7 +1130,7 @@ export default function WeighStation() {
             className={`p-2.5 min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl transition-all active:scale-95 ${
               kioskMode
                 ? 'bg-teal-600 text-white border border-teal-500/50'
-                : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/50'
+                : 'bg-mono-1000 dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] border border-mono-900 dark:border-mono-200/50'
             }`}
             title={kioskMode ? 'Quitter Mode Kiosque' : 'Mode Kiosque'}
           >
@@ -1144,7 +1140,7 @@ export default function WeighStation() {
           {/* Settings */}
           <button
             onClick={() => setShowSettings(s => !s)}
-            className="p-2.5 min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/50 transition-all active:scale-95"
+            className="p-2.5 min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl bg-mono-1000 dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] border border-mono-900 dark:border-mono-200/50 transition-all active:scale-95"
             title="Parametres"
           >
             <Settings className="w-5 h-5" />
@@ -1154,7 +1150,7 @@ export default function WeighStation() {
 
       {/* Settings dropdown */}
       {showSettings && (
-        <div className="px-4 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/90 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex flex-wrap items-center gap-4 text-sm">
+        <div className="px-4 py-3 bg-mono-1000 dark:bg-mono-50/90 border-b border-mono-900 dark:border-mono-200/60 flex flex-wrap items-center gap-4 text-sm">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
@@ -1162,9 +1158,9 @@ export default function WeighStation() {
               onChange={e => setAutoReconnect(e.target.checked)}
               className="w-5 h-5 accent-teal-500 rounded"
             />
-            <span className="text-[#6B7280] dark:text-[#A3A3A3]">Reconnexion auto Bluetooth</span>
+            <span className="text-[#6B7280] dark:text-mono-700">Reconnexion auto Bluetooth</span>
           </label>
-          <div className="flex items-center gap-2 text-[#6B7280] dark:text-[#A3A3A3]">
+          <div className="flex items-center gap-2 text-[#6B7280] dark:text-mono-700">
             <Bluetooth className="w-4 h-4" />
             <span>Type : {scaleType === 'mi-scale' ? 'Mi Scale 2' : scaleType === 'generic' ? 'Balance BLE Standard' : 'Non detecte'}</span>
           </div>
@@ -1176,9 +1172,9 @@ export default function WeighStation() {
           )}
           <button
             onClick={() => setShowSettings(false)}
-            className="ml-auto p-2 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-colors"
+            className="ml-auto p-2 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition-colors"
           >
-            <X className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+            <X className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
           </button>
         </div>
       )}
@@ -1234,10 +1230,10 @@ export default function WeighStation() {
       {/* Camera placeholder modal */}
       {showCameraPlaceholder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setShowCameraPlaceholder(false)}>
-          <div className="bg-white dark:bg-[#111111] rounded-2xl p-6 max-w-sm mx-4 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-mono-100 rounded-2xl p-6 max-w-sm mx-4 text-center border border-mono-900 dark:border-mono-200" onClick={e => e.stopPropagation()}>
             <Camera className="w-16 h-16 text-teal-500 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-2">Scanner code-barres</h3>
-            <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mb-4">
+            <h3 className="text-lg font-bold text-mono-100 dark:text-white mb-2">Scanner code-barres</h3>
+            <p className="text-sm text-[#6B7280] dark:text-mono-700 mb-4">
               Cette fonctionnalite utilisera la camera de votre tablette pour scanner les codes-barres
               des ingredients et les selectionner automatiquement.
             </p>
@@ -1253,7 +1249,7 @@ export default function WeighStation() {
 
       {/* ===== TAB NAVIGATION ===== */}
       {!kioskMode && (
-        <div className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-mono-1000/50 dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200/60 overflow-x-auto scrollbar-none">
           {([
             { id: 'peser' as MainTab, label: 'Peser', icon: Scale },
             { id: 'recette' as MainTab, label: 'Peser une recette', icon: BookOpen },
@@ -1266,7 +1262,7 @@ export default function WeighStation() {
               className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-medium transition-all active:scale-95 whitespace-nowrap ${
                 mainTab === tab.id
                   ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30'
-                  : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-transparent'
+                  : 'text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] border border-transparent'
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -1278,7 +1274,7 @@ export default function WeighStation() {
 
       {/* ===== STEP INDICATOR (only for peser tab, hidden in kiosk) ===== */}
       {mainTab === 'peser' && !quickMode && !kioskMode && (
-        <div className="flex items-center justify-center gap-1 px-4 py-3 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
+        <div className="flex items-center justify-center gap-1 px-4 py-3 bg-mono-1000/50 dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200/60">
           {STEPS.map((step, idx) => {
             const active = currentStep === step.num;
             const done = currentStep > step.num;
@@ -1287,15 +1283,15 @@ export default function WeighStation() {
               <div key={step.num} className="flex items-center">
                 <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-300 ${
                   active ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/40' :
-                  done ? 'bg-[#F3F4F6] dark:bg-[#171717]/40 text-emerald-400' :
-                  'bg-[#FAFAFA]/30 dark:bg-[#0A0A0A]/30 text-[#6B7280] dark:text-[#A3A3A3]'
+                  done ? 'bg-mono-950 dark:bg-[#171717]/40 text-emerald-400' :
+                  'bg-mono-1000/30 dark:bg-mono-50/30 text-[#6B7280] dark:text-mono-700'
                 }`}>
                   <Icon className="w-4 h-4" />
                   <span className="text-xs font-medium hidden sm:inline">{step.label}</span>
                   <span className="text-xs font-bold sm:hidden">{step.num}</span>
                 </div>
                 {idx < STEPS.length - 1 && (
-                  <div className={`w-6 h-0.5 mx-1 rounded transition-colors ${done ? 'bg-emerald-500/60' : 'bg-[#F3F4F6] dark:bg-[#171717]/40'}`} />
+                  <div className={`w-6 h-0.5 mx-1 rounded transition-colors ${done ? 'bg-emerald-500/60' : 'bg-mono-950 dark:bg-[#171717]/40'}`} />
                 )}
               </div>
             );
@@ -1310,13 +1306,13 @@ export default function WeighStation() {
         <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
           {/* LEFT PANEL */}
           {!kioskMode && (
-            <div className="max-h-[50vh] lg:max-h-none lg:w-80 xl:w-96 bg-white dark:bg-black/40 border-b lg:border-b-0 lg:border-r border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex flex-col overflow-hidden shrink-0">
+            <div className="max-h-[50vh] lg:max-h-none lg:w-80 xl:w-96 bg-white dark:bg-black/40 border-b lg:border-b-0 lg:border-r border-mono-900 dark:border-mono-200/60 flex flex-col overflow-hidden shrink-0">
               {/* Quick actions */}
-              <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex overflow-x-auto sm:grid sm:grid-cols-5 gap-2 scrollbar-none">
+              <div className="p-3 border-b border-mono-900 dark:border-mono-200/60 flex overflow-x-auto sm:grid sm:grid-cols-5 gap-2 scrollbar-none">
                 <button
                   onClick={() => { setQuickMode(true); setSelected(null); setSearch(''); }}
                   className={`flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium transition-all active:scale-95 ${
-                    quickMode ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40'
+                    quickMode ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'bg-mono-1000 dark:bg-mono-50/60 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717]/60 border border-mono-900 dark:border-mono-200/40'
                   }`}
                 >
                   <Zap className="w-5 h-5" />
@@ -1331,7 +1327,7 @@ export default function WeighStation() {
                 </button>
                 <button
                   onClick={() => setShowCameraPlaceholder(true)}
-                  className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40 transition-all active:scale-95"
+                  className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-mono-1000 dark:bg-mono-50/60 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717]/60 border border-mono-900 dark:border-mono-200/40 transition-all active:scale-95"
                 >
                   <Camera className="w-5 h-5" />
                   Scanner
@@ -1339,7 +1335,7 @@ export default function WeighStation() {
                 <button
                   onClick={() => setShowTareProfiles(s => !s)}
                   className={`flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium transition-all active:scale-95 ${
-                    showTareProfiles ? 'bg-purple-600/30 text-purple-300 border border-purple-500/40' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40'
+                    showTareProfiles ? 'bg-purple-600/30 text-purple-300 border border-purple-500/40' : 'bg-mono-1000 dark:bg-mono-50/60 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717]/60 border border-mono-900 dark:border-mono-200/40'
                   }`}
                 >
                   <Weight className="w-5 h-5" />
@@ -1347,7 +1343,7 @@ export default function WeighStation() {
                 </button>
                 <button
                   onClick={() => setMainTab('recette')}
-                  className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40 transition-all active:scale-95"
+                  className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-mono-1000 dark:bg-mono-50/60 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717]/60 border border-mono-900 dark:border-mono-200/40 transition-all active:scale-95"
                 >
                   <ChefHat className="w-5 h-5" />
                   Recettes
@@ -1356,11 +1352,11 @@ export default function WeighStation() {
 
               {/* ── Tare Profiles Panel ── */}
               {showTareProfiles && (
-                <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-purple-900/10">
+                <div className="p-3 border-b border-mono-900 dark:border-mono-200/60 bg-purple-900/10">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-sm font-semibold text-purple-300 flex items-center gap-2"><Weight className="w-4 h-4" /> Profils de tare</p>
-                    <button onClick={() => setShowTareProfiles(false)} className="p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-colors">
-                      <X className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                    <button onClick={() => setShowTareProfiles(false)} className="p-1 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition-colors">
+                      <X className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                     </button>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5 mb-2">
@@ -1368,10 +1364,10 @@ export default function WeighStation() {
                       <button
                         key={tp.id}
                         onClick={() => handleTareFromProfile(tp)}
-                        className="flex items-center justify-between gap-1 px-2.5 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 hover:bg-purple-900/20 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A]/50 transition-all active:scale-95 text-left group"
+                        className="flex items-center justify-between gap-1 px-2.5 py-2.5 min-h-[44px] bg-mono-1000 dark:bg-mono-50/80 hover:bg-purple-900/20 rounded-lg border border-mono-900 dark:border-mono-200/50 transition-all active:scale-95 text-left group"
                       >
                         <div className="min-w-0 flex-1">
-                          <p className="text-xs font-medium text-[#111111] dark:text-white truncate">{tp.name}</p>
+                          <p className="text-xs font-medium text-mono-100 dark:text-white truncate">{tp.name}</p>
                           <p className="text-[10px] text-purple-400 font-bold">{tp.weightGrams}g</p>
                         </div>
                         {tp.id.startsWith('custom-') && (
@@ -1391,14 +1387,14 @@ export default function WeighStation() {
                       placeholder="Nom..."
                       value={newTareForm.name}
                       onChange={e => setNewTareForm(f => ({ ...f, name: e.target.value }))}
-                      className="flex-1 px-2.5 py-2 min-h-[40px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-xs placeholder-[#9CA3AF] dark:placeholder-[#737373] border border-[#E5E7EB] dark:border-[#1A1A1A]/50 focus:outline-none focus:ring-1 focus:ring-purple-500/60"
+                      className="flex-1 px-2.5 py-2 min-h-[40px] bg-mono-1000 dark:bg-mono-50/80 rounded-lg text-mono-100 dark:text-white text-xs placeholder-[#9CA3AF] dark:placeholder-mono-500 border border-mono-900 dark:border-mono-200/50 focus:outline-none focus:ring-1 focus:ring-purple-500/60"
                     />
                     <input
                       type="number"
                       placeholder="Poids (g)"
                       value={newTareForm.weightGrams}
                       onChange={e => setNewTareForm(f => ({ ...f, weightGrams: e.target.value }))}
-                      className="w-20 px-2.5 py-2 min-h-[40px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-xs placeholder-[#9CA3AF] dark:placeholder-[#737373] border border-[#E5E7EB] dark:border-[#1A1A1A]/50 focus:outline-none focus:ring-1 focus:ring-purple-500/60"
+                      className="w-20 px-2.5 py-2 min-h-[40px] bg-mono-1000 dark:bg-mono-50/80 rounded-lg text-mono-100 dark:text-white text-xs placeholder-[#9CA3AF] dark:placeholder-mono-500 border border-mono-900 dark:border-mono-200/50 focus:outline-none focus:ring-1 focus:ring-purple-500/60"
                     />
                     <button
                       onClick={addTareProfile}
@@ -1419,11 +1415,11 @@ export default function WeighStation() {
 
               {/* New ingredient mini form */}
               {showNewIngredient && (
-                <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-emerald-900/20">
+                <div className="p-3 border-b border-mono-900 dark:border-mono-200/60 bg-emerald-900/20">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-sm font-semibold text-emerald-300">Nouvel ingredient</p>
-                    <button onClick={() => setShowNewIngredient(false)} className="p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-colors">
-                      <X className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                    <button onClick={() => setShowNewIngredient(false)} className="p-1 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition-colors">
+                      <X className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                     </button>
                   </div>
                   <div className="space-y-2">
@@ -1432,13 +1428,13 @@ export default function WeighStation() {
                       placeholder="Nom *"
                       value={newIngForm.name}
                       onChange={e => setNewIngForm(f => ({ ...f, name: e.target.value }))}
-                      className="w-full px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                      className="w-full px-3 py-2.5 min-h-[44px] bg-mono-1000 dark:bg-mono-50/80 rounded-lg text-mono-100 dark:text-white text-sm placeholder-[#9CA3AF] dark:placeholder-mono-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-mono-900 dark:border-mono-200/50"
                     />
                     <div className="grid grid-cols-2 gap-2">
                       <select
                         value={newIngForm.category}
                         onChange={e => setNewIngForm(f => ({ ...f, category: e.target.value }))}
-                        className="px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                        className="px-3 py-2.5 min-h-[44px] bg-mono-1000 dark:bg-mono-50/80 rounded-lg text-mono-100 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-mono-900 dark:border-mono-200/50"
                       >
                         {['Viandes', 'Poissons', 'Legumes', 'Fruits', 'Produits laitiers', 'Epicerie', 'Autres'].map(c => (
                           <option key={c} value={c}>{c}</option>
@@ -1447,7 +1443,7 @@ export default function WeighStation() {
                       <select
                         value={newIngForm.unit}
                         onChange={e => setNewIngForm(f => ({ ...f, unit: e.target.value }))}
-                        className="px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                        className="px-3 py-2.5 min-h-[44px] bg-mono-1000 dark:bg-mono-50/80 rounded-lg text-mono-100 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-mono-900 dark:border-mono-200/50"
                       >
                         {['kg', 'g', 'L', 'cl', 'ml', 'piece'].map(u => (
                           <option key={u} value={u}>{u}</option>
@@ -1460,7 +1456,7 @@ export default function WeighStation() {
                       placeholder="Prix / unite (EUR) *"
                       value={newIngForm.pricePerUnit}
                       onChange={e => setNewIngForm(f => ({ ...f, pricePerUnit: e.target.value }))}
-                      className="w-full px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                      className="w-full px-3 py-2.5 min-h-[44px] bg-mono-1000 dark:bg-mono-50/80 rounded-lg text-mono-100 dark:text-white text-sm placeholder-[#9CA3AF] dark:placeholder-mono-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-mono-900 dark:border-mono-200/50"
                     />
                     <button
                       disabled={!newIngForm.name.trim() || !newIngForm.pricePerUnit || creatingIngredient}
@@ -1501,9 +1497,9 @@ export default function WeighStation() {
               )}
 
               {/* Ingredient search */}
-              <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60" ref={dropdownRef}>
+              <div className="p-3 border-b border-mono-900 dark:border-mono-200/60" ref={dropdownRef}>
                 <div className="relative">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500 pointer-events-none" />
                   <input
                     ref={searchRef}
                     type="text"
@@ -1511,14 +1507,14 @@ export default function WeighStation() {
                     onChange={e => { setSearch(e.target.value); setShowDropdown(true); setCategoryFilter(null); }}
                     onFocus={() => setShowDropdown(true)}
                     placeholder="Rechercher un ingredient..."
-                    className="w-full pl-10 pr-10 py-3 min-h-[48px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-xl text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                    className="w-full pl-10 pr-10 py-3 min-h-[48px] bg-mono-1000 dark:bg-mono-50/80 rounded-xl text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-mono-900 dark:border-mono-200/50"
                   />
                   {search && (
                     <button
                       onClick={() => { setSearch(''); setCategoryFilter(null); }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition-colors"
                     >
-                      <X className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+                      <X className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
                     </button>
                   )}
                 </div>
@@ -1526,7 +1522,7 @@ export default function WeighStation() {
                 {/* Recent ingredients chips */}
                 {recentIngredients.length > 0 && !search && (
                   <div className="mt-2">
-                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider font-semibold mb-1.5 flex items-center gap-1">
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider font-semibold mb-1.5 flex items-center gap-1">
                       <Clock className="w-3 h-3" /> Recents
                     </p>
                     <div className="flex flex-wrap gap-1.5">
@@ -1537,7 +1533,7 @@ export default function WeighStation() {
                           className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 ${
                             selected?.id === ing.id
                               ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/40'
-                              : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A]/40 hover:bg-emerald-900/10 hover:border-emerald-500/20 hover:text-emerald-400'
+                              : 'bg-mono-1000 dark:bg-mono-50/60 text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-200/40 hover:bg-emerald-900/10 hover:border-emerald-500/20 hover:text-emerald-400'
                           }`}
                         >
                           <span className="truncate max-w-[100px]">{ing.name}</span>
@@ -1554,8 +1550,8 @@ export default function WeighStation() {
                       onClick={() => setCategoryFilter(null)}
                       className={`px-2 py-1 rounded-lg text-[10px] font-semibold transition-all ${
                         !categoryFilter
-                          ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
-                          : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/40'
+                          ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100'
+                          : 'bg-mono-1000 dark:bg-mono-50/60 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] border border-mono-900 dark:border-mono-200/40'
                       }`}
                     >
                       Tous
@@ -1566,7 +1562,7 @@ export default function WeighStation() {
                         onClick={() => setCategoryFilter(categoryFilter === cat ? null : cat)}
                         className={`px-2 py-1 rounded-lg text-[10px] font-semibold transition-all ${
                           categoryFilter === cat
-                            ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
+                            ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100'
                             : `${getCategoryColor(cat)} hover:opacity-80`
                         }`}
                       >
@@ -1586,7 +1582,7 @@ export default function WeighStation() {
                     className={`w-full flex items-center justify-between px-3 py-3 min-h-[48px] rounded-xl text-left transition-all active:scale-[0.98] ${
                       selected?.id === ing.id
                         ? 'bg-emerald-600/30 text-white border border-emerald-500/40'
-                        : 'hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]/60 text-[#6B7280] dark:text-[#A3A3A3] border border-transparent'
+                        : 'hover:bg-mono-1000 dark:hover:bg-mono-50/60 text-[#6B7280] dark:text-mono-700 border border-transparent'
                     }`}
                   >
                     <div className="min-w-0 flex-1">
@@ -1595,7 +1591,7 @@ export default function WeighStation() {
                         <span className={`text-[10px] px-1.5 py-0.5 rounded border ${getCategoryColor(ing.category)}`}>
                           {ing.category}
                         </span>
-                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{ing.unit}</span>
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{ing.unit}</span>
                         <span className="text-[10px] text-teal-400">{formatCurrency(ing.pricePerUnit ?? 0)}/{ing.unit === 'g' ? 'kg' : ing.unit === 'cl' ? 'L' : ing.unit === 'ml' ? 'L' : ing.unit}</span>
                       </div>
                     </div>
@@ -1606,7 +1602,7 @@ export default function WeighStation() {
                 ))}
                 {displayIngredients.length === 0 && (search || categoryFilter) && (
                   <div className="text-center py-8">
-                    <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm">Aucun resultat</p>
+                    <p className="text-[#6B7280] dark:text-mono-700 text-sm">Aucun resultat</p>
                     {categoryFilter && (
                       <button
                         onClick={() => setCategoryFilter(null)}
@@ -1627,25 +1623,25 @@ export default function WeighStation() {
             {kioskMode && (
               <div className="w-full max-w-2xl flex items-center gap-2">
                 <div className="relative flex-1">
-                  <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
+                  <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500 pointer-events-none" />
                   <input
                     type="text"
                     value={search}
                     onChange={e => { setSearch(e.target.value); setShowDropdown(true); }}
                     onFocus={() => setShowDropdown(true)}
                     placeholder="Rechercher un ingredient..."
-                    className="w-full pl-12 pr-4 py-4 min-h-[56px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-2xl text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] text-lg focus:outline-none focus:ring-2 focus:ring-teal-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                    className="w-full pl-12 pr-4 py-4 min-h-[56px] bg-mono-1000 dark:bg-mono-50/80 rounded-2xl text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500 text-lg focus:outline-none focus:ring-2 focus:ring-teal-500/60 border border-mono-900 dark:border-mono-200/50"
                   />
                   {showDropdown && search && filteredIngredients.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-20">
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-mono-100 border border-mono-900 dark:border-mono-200 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-20">
                       {filteredIngredients.slice(0, 8).map(ing => (
                         <button
                           key={ing.id}
                           onClick={() => { selectIngredient(ing); setShowDropdown(false); }}
-                          className="w-full flex items-center justify-between px-4 py-4 min-h-[56px] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-left transition-all border-b border-[#E5E7EB] dark:border-[#1A1A1A]/30 last:border-b-0"
+                          className="w-full flex items-center justify-between px-4 py-4 min-h-[56px] hover:bg-mono-1000 dark:hover:bg-[#171717] text-left transition-all border-b border-mono-900 dark:border-mono-200/30 last:border-b-0"
                         >
                           <div>
-                            <p className="font-semibold text-base text-[#111111] dark:text-white">{ing.name}</p>
+                            <p className="font-semibold text-base text-mono-100 dark:text-white">{ing.name}</p>
                             <span className={`text-xs px-2 py-0.5 rounded border ${getCategoryColor(ing.category)}`}>{ing.category}</span>
                           </div>
                           <span className="text-teal-400 font-bold text-lg">{formatCurrency(ing.pricePerUnit ?? 0)}</span>
@@ -1657,14 +1653,14 @@ export default function WeighStation() {
                 <button
                   onClick={() => { setQuickMode(true); setSelected(null); setSearch(''); }}
                   className={`px-5 py-4 min-h-[56px] rounded-2xl font-semibold text-base transition-all active:scale-95 ${
-                    quickMode ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/40'
+                    quickMode ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'bg-mono-1000 dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] border border-mono-900 dark:border-mono-200/40'
                   }`}
                 >
                   <Zap className="w-6 h-6" />
                 </button>
                 <button
                   onClick={() => setShowCameraPlaceholder(true)}
-                  className="px-5 py-4 min-h-[56px] rounded-2xl bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/40 transition-all active:scale-95"
+                  className="px-5 py-4 min-h-[56px] rounded-2xl bg-mono-1000 dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] border border-mono-900 dark:border-mono-200/40 transition-all active:scale-95"
                 >
                   <Camera className="w-6 h-6" />
                 </button>
@@ -1676,12 +1672,12 @@ export default function WeighStation() {
               {quickMode ? (
                 <div>
                   <p className={`text-amber-400 uppercase tracking-widest font-medium ${kioskMode ? 'text-base' : 'text-sm'}`}>Pesee rapide</p>
-                  {!kioskMode && <p className="text-[#9CA3AF] dark:text-[#737373] text-xs mt-1">Pesez sans selectionner d'ingredient</p>}
+                  {!kioskMode && <p className="text-[#9CA3AF] dark:text-mono-500 text-xs mt-1">Pesez sans selectionner d'ingredient</p>}
                 </div>
               ) : selected ? (
                 <div>
-                  {!kioskMode && <p className="text-[#9CA3AF] dark:text-[#737373] text-[10px] uppercase tracking-[0.2em]">Ingredient selectionne</p>}
-                  <p className={`font-bold text-[#111111] dark:text-white mt-0.5 ${kioskMode ? 'text-3xl' : 'text-2xl'}`}>{selected.name}</p>
+                  {!kioskMode && <p className="text-[#9CA3AF] dark:text-mono-500 text-[10px] uppercase tracking-[0.2em]">Ingredient selectionne</p>}
+                  <p className={`font-bold text-mono-100 dark:text-white mt-0.5 ${kioskMode ? 'text-3xl' : 'text-2xl'}`}>{selected.name}</p>
                   <div className="flex items-center justify-center gap-3 mt-1">
                     <span className={`inline-block px-2 py-0.5 rounded border ${getCategoryColor(selected.category)} ${kioskMode ? 'text-xs' : 'text-[10px]'}`}>
                       {selected.category}
@@ -1692,7 +1688,7 @@ export default function WeighStation() {
                   </div>
                   <div className="mt-1.5">
                     {loadingStock ? (
-                      <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">Chargement stock...</span>
+                      <span className="text-[11px] text-[#6B7280] dark:text-mono-700">Chargement stock...</span>
                     ) : ingredientStock ? (
                       <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
                         ingredientStock.stock <= 0 ? 'bg-red-900/40 text-red-400' :
@@ -1702,13 +1698,13 @@ export default function WeighStation() {
                         Stock : {ingredientStock.stock.toFixed(2)} {ingredientStock.unit}
                       </span>
                     ) : (
-                      <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">Pas de stock enregistre</span>
+                      <span className="text-[11px] text-[#6B7280] dark:text-mono-700">Pas de stock enregistre</span>
                     )}
                   </div>
                 </div>
               ) : (
                 <div>
-                  <p className={`text-[#6B7280] dark:text-[#A3A3A3] px-2 text-center ${kioskMode ? 'text-lg' : 'text-sm sm:text-base'}`}>
+                  <p className={`text-[#6B7280] dark:text-mono-700 px-2 text-center ${kioskMode ? 'text-lg' : 'text-sm sm:text-base'}`}>
                     {kioskMode ? 'Recherchez un ingredient ci-dessus' : 'Selectionnez un ingredient ou utilisez la pesee rapide'}
                   </p>
                 </div>
@@ -1845,7 +1841,7 @@ export default function WeighStation() {
             )}
 
             {/* Unit toggle */}
-            <div className="flex items-center gap-1 p-1 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
+            <div className="flex items-center gap-1 p-1 bg-mono-1000 dark:bg-mono-50/60 rounded-xl border border-mono-900 dark:border-mono-200/40">
               {(['g', 'kg', 'L', 'piece'] as DisplayUnit[]).map(u => (
                 <button
                   key={u}
@@ -1853,7 +1849,7 @@ export default function WeighStation() {
                   className={`px-3 sm:px-5 py-2 rounded-lg font-bold transition-all ${kioskMode ? 'min-h-[56px] text-base' : 'min-h-[48px] text-sm'} ${
                     displayUnit === u
                       ? 'bg-emerald-600 text-white shadow-md'
-                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60'
+                      : 'text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white hover:bg-mono-950 dark:hover:bg-[#171717]/60'
                   }`}
                 >
                   {u}
@@ -1863,18 +1859,18 @@ export default function WeighStation() {
 
             {/* Simulation controls */}
             {useSimulation && (
-              <div className={`flex items-center gap-3 sm:gap-4 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 px-3 sm:px-5 py-3 rounded-2xl border border-amber-600/30 ${kioskMode ? 'gap-6 px-8 py-4' : ''}`}>
+              <div className={`flex items-center gap-3 sm:gap-4 bg-mono-1000 dark:bg-mono-50/60 px-3 sm:px-5 py-3 rounded-2xl border border-amber-600/30 ${kioskMode ? 'gap-6 px-8 py-4' : ''}`}>
                 <p className={`text-amber-400 font-medium uppercase tracking-wider ${kioskMode ? 'text-sm' : 'text-xs'}`}>Sim</p>
                 <button
                   onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))}
-                  className={`rounded-xl bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all ${kioskMode ? 'w-16 h-16' : 'w-12 h-12'}`}
+                  className={`rounded-xl bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all ${kioskMode ? 'w-16 h-16' : 'w-12 h-12'}`}
                 >
                   <Minus className={kioskMode ? 'w-7 h-7' : 'w-5 h-5'} />
                 </button>
-                <span className={`text-[#111111] dark:text-white font-mono text-center tabular-nums ${kioskMode ? 'w-32 text-2xl' : 'w-24 text-lg'}`}>{simWeight.toFixed(3)} kg</span>
+                <span className={`text-mono-100 dark:text-white font-mono text-center tabular-nums ${kioskMode ? 'w-32 text-2xl' : 'w-24 text-lg'}`}>{simWeight.toFixed(3)} kg</span>
                 <button
                   onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))}
-                  className={`rounded-xl bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all ${kioskMode ? 'w-16 h-16' : 'w-12 h-12'}`}
+                  className={`rounded-xl bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all ${kioskMode ? 'w-16 h-16' : 'w-12 h-12'}`}
                 >
                   <Plus className={kioskMode ? 'w-7 h-7' : 'w-5 h-5'} />
                 </button>
@@ -1893,7 +1889,7 @@ export default function WeighStation() {
                   className={`flex items-center gap-2 rounded-xl font-bold transition-all active:scale-95 ${kioskMode ? 'px-6 py-4 min-h-[56px] text-base' : 'px-4 sm:px-5 py-2.5 min-h-[48px] text-sm'} ${
                     stockMode === 'remove'
                       ? 'bg-red-600 text-white shadow-lg shadow-red-900/30 border-2 border-red-500/50'
-                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 hover:bg-red-900/10 border-2 border-transparent'
+                      : 'text-[#9CA3AF] dark:text-mono-500 hover:text-red-400 hover:bg-red-900/10 border-2 border-transparent'
                   }`}
                 >
                   <Minus className={kioskMode ? 'w-6 h-6' : 'w-5 h-5'} />
@@ -1904,7 +1900,7 @@ export default function WeighStation() {
                   className={`flex items-center gap-2 rounded-xl font-bold transition-all active:scale-95 ${kioskMode ? 'px-6 py-4 min-h-[56px] text-base' : 'px-4 sm:px-5 py-2.5 min-h-[48px] text-sm'} ${
                     stockMode === 'add'
                       ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/30 border-2 border-emerald-500/50'
-                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-emerald-400 hover:bg-emerald-900/10 border-2 border-transparent'
+                      : 'text-[#9CA3AF] dark:text-mono-500 hover:text-emerald-400 hover:bg-emerald-900/10 border-2 border-transparent'
                   }`}
                 >
                   <Plus className={kioskMode ? 'w-6 h-6' : 'w-5 h-5'} />
@@ -1915,7 +1911,7 @@ export default function WeighStation() {
                   className={`flex items-center gap-2 rounded-xl font-bold transition-all active:scale-95 ${kioskMode ? 'px-6 py-4 min-h-[56px] text-base' : 'px-4 sm:px-5 py-2.5 min-h-[48px] text-sm'} ${
                     stockMode === 'set'
                       ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/30 border-2 border-blue-500/50'
-                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-blue-400 hover:bg-blue-900/10 border-2 border-transparent'
+                      : 'text-[#9CA3AF] dark:text-mono-500 hover:text-blue-400 hover:bg-blue-900/10 border-2 border-transparent'
                   }`}
                 >
                   <Replace className={kioskMode ? 'w-6 h-6' : 'w-5 h-5'} />
@@ -1931,11 +1927,11 @@ export default function WeighStation() {
                 stockMode === 'set' ? 'bg-blue-900/10 border-blue-500/15' :
                 'bg-red-900/10 border-red-500/10'
               }`}>
-                <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider font-semibold mb-2">Stock actuel</p>
+                <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider font-semibold mb-2">Stock actuel</p>
                 <div className={`flex items-center justify-center gap-3 ${kioskMode ? 'text-xl' : 'text-base'}`}>
                   <div className="flex items-center gap-1.5">
-                    <Package className={`${kioskMode ? 'w-5 h-5' : 'w-4 h-4'} text-[#9CA3AF] dark:text-[#737373]`} />
-                    <span className="font-bold text-[#111111] dark:text-white tabular-nums" style={{ fontFamily: 'ui-monospace, monospace' }}>
+                    <Package className={`${kioskMode ? 'w-5 h-5' : 'w-4 h-4'} text-[#9CA3AF] dark:text-mono-500`} />
+                    <span className="font-bold text-mono-100 dark:text-white tabular-nums" style={{ fontFamily: 'ui-monospace, monospace' }}>
                       {ingredientStock.stock.toFixed(2)} {selected.unit}
                     </span>
                   </div>
@@ -1978,7 +1974,7 @@ export default function WeighStation() {
               <button
                 onClick={handleTare}
                 disabled={currentWeight <= 0}
-                className={`flex items-center gap-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-semibold text-[#111111] dark:text-white transition-all active:scale-95 border border-[#E5E7EB] dark:border-[#1A1A1A]/50 ${
+                className={`flex items-center gap-2 bg-mono-1000 dark:bg-mono-50 hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-semibold text-mono-100 dark:text-white transition-all active:scale-95 border border-mono-900 dark:border-mono-200/50 ${
                   kioskMode ? 'px-8 py-5 min-h-[64px] text-lg' : 'px-4 sm:px-6 py-3 sm:py-4 min-h-[48px] sm:min-h-[56px] text-sm sm:text-base'
                 }`}
               >
@@ -2016,7 +2012,7 @@ export default function WeighStation() {
 
               <button
                 onClick={handleReset}
-                className={`flex items-center gap-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-2xl font-semibold text-[#111111] dark:text-white transition-all active:scale-95 border border-[#E5E7EB] dark:border-[#1A1A1A]/50 ${
+                className={`flex items-center gap-2 bg-mono-1000 dark:bg-mono-50 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-2xl font-semibold text-mono-100 dark:text-white transition-all active:scale-95 border border-mono-900 dark:border-mono-200/50 ${
                   kioskMode ? 'px-8 py-5 min-h-[64px] text-lg' : 'px-4 sm:px-6 py-3 sm:py-4 min-h-[48px] sm:min-h-[56px] text-sm sm:text-base'
                 }`}
               >
@@ -2027,11 +2023,11 @@ export default function WeighStation() {
 
           {/* RIGHT PANEL: History log (hidden in kiosk) */}
           {!kioskMode && (
-            <div className="max-h-[40vh] lg:max-h-none lg:w-80 xl:w-96 bg-white dark:bg-black/40 border-t lg:border-t-0 lg:border-l border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex flex-col overflow-hidden shrink-0">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
+            <div className="max-h-[40vh] lg:max-h-none lg:w-80 xl:w-96 bg-white dark:bg-black/40 border-t lg:border-t-0 lg:border-l border-mono-900 dark:border-mono-200/60 flex flex-col overflow-hidden shrink-0">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-mono-200/60">
                 <div className="flex items-center gap-2">
-                  <ClipboardList className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
-                  <p className="text-sm font-bold text-[#111111] dark:text-white">Historique</p>
+                  <ClipboardList className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
+                  <p className="text-sm font-bold text-mono-100 dark:text-white">Historique</p>
                   {history.length > 0 && (
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-900/20 text-emerald-400 font-bold">{history.length}</span>
                   )}
@@ -2048,7 +2044,7 @@ export default function WeighStation() {
               </div>
               <div className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5">
                 {history.length === 0 && (
-                  <div className="flex flex-col items-center justify-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="flex flex-col items-center justify-center py-12 text-[#9CA3AF] dark:text-mono-500">
                     <Scale className="w-8 h-8 mb-2 opacity-40" />
                     <p className="text-sm">Aucune pesee</p>
                     <p className="text-[10px] mt-1">Les pesees apparaitront ici</p>
@@ -2068,13 +2064,13 @@ export default function WeighStation() {
                     <div key={date}>
                       {/* Date header */}
                       <div className="flex items-center gap-2 px-2 py-1.5 mt-1 first:mt-0">
-                        <div className="h-[1px] flex-1 bg-[#E5E7EB] dark:bg-[#1A1A1A]/60" />
-                        <span className="text-[10px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider shrink-0">
+                        <div className="h-[1px] flex-1 bg-mono-900 dark:bg-mono-200/60" />
+                        <span className="text-[10px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider shrink-0">
                           {date === today ? "Aujourd'hui" :
                            date === yesterday ? 'Hier' :
                            new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                         </span>
-                        <div className="h-[1px] flex-1 bg-[#E5E7EB] dark:bg-[#1A1A1A]/60" />
+                        <div className="h-[1px] flex-1 bg-mono-900 dark:bg-mono-200/60" />
                       </div>
                       {entries.map((entry, i) => {
                         const actionColor = entry.status === 'error' ? 'red' :
@@ -2088,16 +2084,16 @@ export default function WeighStation() {
                               entry.status === 'error'
                                 ? 'bg-red-900/10 border-l-2 border-red-500'
                                 : entry.stockAction === 'add'
-                                ? 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border-l-2 border-emerald-500'
+                                ? 'bg-mono-1000/40 dark:bg-mono-50/40 border-l-2 border-emerald-500'
                                 : entry.stockAction === 'set'
-                                ? 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border-l-2 border-blue-500'
-                                : 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border-l-2 border-red-400'
+                                ? 'bg-mono-1000/40 dark:bg-mono-50/40 border-l-2 border-blue-500'
+                                : 'bg-mono-1000/40 dark:bg-mono-50/40 border-l-2 border-red-400'
                             }`}
                           >
                             <div className="flex items-start justify-between gap-2">
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-1.5">
-                                  <p className="text-[#111111] dark:text-white text-sm font-semibold truncate">{entry.ingredientName}</p>
+                                  <p className="text-mono-100 dark:text-white text-sm font-semibold truncate">{entry.ingredientName}</p>
                                   {entry.stockAction && (
                                     <span className={`inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-full font-bold ${
                                       entry.stockAction === 'add' ? 'bg-emerald-500/15 text-emerald-400' :
@@ -2129,14 +2125,14 @@ export default function WeighStation() {
                               </div>
                             </div>
                             {entry.stockAction && entry.stockBefore !== undefined && entry.stockAfter !== undefined && entry.status === 'success' && (
-                              <div className="flex items-center gap-1.5 mt-1.5 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                              <div className="flex items-center gap-1.5 mt-1.5 text-[10px] text-[#9CA3AF] dark:text-mono-500">
                                 <Package className="w-3 h-3 opacity-50" />
                                 <span className="tabular-nums">{entry.stockBefore.toFixed(1)}</span>
                                 <span className="opacity-40">&rarr;</span>
-                                <span className="font-bold text-[#111111] dark:text-white tabular-nums">{entry.stockAfter.toFixed(1)} {entry.unit}</span>
+                                <span className="font-bold text-mono-100 dark:text-white tabular-nums">{entry.stockAfter.toFixed(1)} {entry.unit}</span>
                               </div>
                             )}
-                            <p className="text-[#6B7280] dark:text-[#A3A3A3] text-[10px] mt-1 tabular-nums">
+                            <p className="text-[#6B7280] dark:text-mono-700 text-[10px] mt-1 tabular-nums">
                               {new Date(entry.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                             </p>
                           </div>
@@ -2148,27 +2144,27 @@ export default function WeighStation() {
               </div>
 
               {/* Daily stats footer - premium */}
-              <div className="px-3 py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-[#FAFAFA]/80 dark:bg-[#0A0A0A]/80">
-                <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider font-bold mb-2">Statistiques du jour</p>
+              <div className="px-3 py-3 border-t border-mono-900 dark:border-mono-200/60 bg-mono-1000/80 dark:bg-mono-50/80">
+                <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider font-bold mb-2">Statistiques du jour</p>
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="text-center px-2 py-2 rounded-xl bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
+                  <div className="text-center px-2 py-2 rounded-xl bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200/40">
                     <p className="text-lg font-black text-emerald-400 tabular-nums" style={{ fontFamily: 'ui-monospace, monospace' }}>{todayStats.totalWeighs}</p>
-                    <p className="text-[9px] text-[#9CA3AF] dark:text-[#737373] font-medium">Pesees</p>
+                    <p className="text-[9px] text-[#9CA3AF] dark:text-mono-500 font-medium">Pesees</p>
                   </div>
-                  <div className="text-center px-2 py-2 rounded-xl bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
+                  <div className="text-center px-2 py-2 rounded-xl bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200/40">
                     <p className="text-lg font-black text-teal-400 tabular-nums" style={{ fontFamily: 'ui-monospace, monospace' }}>{todayStats.totalKg}</p>
-                    <p className="text-[9px] text-[#9CA3AF] dark:text-[#737373] font-medium">kg total</p>
+                    <p className="text-[9px] text-[#9CA3AF] dark:text-mono-500 font-medium">kg total</p>
                   </div>
-                  <div className="text-center px-2 py-2 rounded-xl bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
+                  <div className="text-center px-2 py-2 rounded-xl bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200/40">
                     <p className="text-lg font-black text-amber-400 tabular-nums" style={{ fontFamily: 'ui-monospace, monospace' }}>{todayStats.totalValue}</p>
-                    <p className="text-[9px] text-[#9CA3AF] dark:text-[#737373] font-medium">{getCurrencySymbol()}</p>
+                    <p className="text-[9px] text-[#9CA3AF] dark:text-mono-500 font-medium">{getCurrencySymbol()}</p>
                   </div>
                 </div>
                 {todayStats.mostWeighedName && (
-                  <div className="mt-2 flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
+                  <div className="mt-2 flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200/40">
                     <BarChart3 className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                    <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Plus pese:</span>
-                    <span className="text-[10px] font-bold text-[#111111] dark:text-white truncate">{todayStats.mostWeighedName}</span>
+                    <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Plus pese:</span>
+                    <span className="text-[10px] font-bold text-mono-100 dark:text-white truncate">{todayStats.mostWeighedName}</span>
                     <span className="text-[10px] text-purple-400 font-bold shrink-0">x{todayStats.mostWeighedCount}</span>
                   </div>
                 )}
@@ -2185,13 +2181,13 @@ export default function WeighStation() {
         <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
 
           {/* LEFT: Recipe selector / ingredient list */}
-          <div className="lg:w-96 xl:w-[28rem] bg-white dark:bg-black/40 border-b lg:border-b-0 lg:border-r border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex flex-col overflow-hidden shrink-0">
+          <div className="lg:w-96 xl:w-[28rem] bg-white dark:bg-black/40 border-b lg:border-b-0 lg:border-r border-mono-900 dark:border-mono-200/60 flex flex-col overflow-hidden shrink-0">
 
             {!recipeSession ? (
               <>
                 {/* Recipe selector */}
-                <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
-                  <p className="text-sm font-semibold text-[#111111] dark:text-white mb-2 flex items-center gap-2">
+                <div className="p-4 border-b border-mono-900 dark:border-mono-200/60">
+                  <p className="text-sm font-semibold text-mono-100 dark:text-white mb-2 flex items-center gap-2">
                     <BookOpen className="w-4 h-4 text-teal-400" />
                     Selectionner une recette
                   </p>
@@ -2201,7 +2197,7 @@ export default function WeighStation() {
                       const r = recipes.find(r => r.id === Number(e.target.value));
                       setSelectedRecipe(r || null);
                     }}
-                    className="w-full px-3 py-3 min-h-[48px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-xl text-[#111111] dark:text-white text-sm border border-[#E5E7EB] dark:border-[#1A1A1A]/50 focus:outline-none focus:ring-2 focus:ring-teal-500/60"
+                    className="w-full px-3 py-3 min-h-[48px] bg-mono-1000 dark:bg-mono-50/80 rounded-xl text-mono-100 dark:text-white text-sm border border-mono-900 dark:border-mono-200/50 focus:outline-none focus:ring-2 focus:ring-teal-500/60"
                   >
                     <option value="">-- Choisir une recette --</option>
                     {recipes.map(r => (
@@ -2213,19 +2209,19 @@ export default function WeighStation() {
                 {/* Selected recipe preview */}
                 {selectedRecipe && selectedRecipe.ingredients && (
                   <div className="flex-1 overflow-y-auto">
-                    <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
-                      <h3 className="text-lg font-bold text-[#111111] dark:text-white">{selectedRecipe.name}</h3>
+                    <div className="p-4 border-b border-mono-900 dark:border-mono-200/60">
+                      <h3 className="text-lg font-bold text-mono-100 dark:text-white">{selectedRecipe.name}</h3>
                       <div className="flex items-center gap-3 mt-1">
-                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{selectedRecipe.category}</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{selectedRecipe.category}</span>
                         <span className="text-xs text-teal-400">{selectedRecipe.ingredients.length} ingredients</span>
                         <span className="text-xs text-emerald-400">{formatCurrency(selectedRecipe.sellingPrice ?? 0)}</span>
                       </div>
                     </div>
                     <div className="p-3 space-y-1">
                       {selectedRecipe.ingredients.map((ri, idx) => (
-                        <div key={ri.id || idx} className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border border-[#E5E7EB] dark:border-[#1A1A1A]/30">
+                        <div key={ri.id || idx} className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-mono-1000/40 dark:bg-mono-50/40 border border-mono-900 dark:border-mono-200/30">
                           <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{ri.ingredient.name}</p>
+                            <p className="text-sm font-medium text-mono-100 dark:text-white truncate">{ri.ingredient.name}</p>
                             <span className={`text-[10px] px-1.5 py-0.5 rounded border ${getCategoryColor(ri.ingredient.category)}`}>
                               {ri.ingredient.category}
                             </span>
@@ -2249,7 +2245,7 @@ export default function WeighStation() {
                 )}
 
                 {!selectedRecipe && (
-                  <div className="flex-1 flex flex-col items-center justify-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="flex-1 flex flex-col items-center justify-center py-12 text-[#9CA3AF] dark:text-mono-500">
                     <ChefHat className="w-12 h-12 mb-3" />
                     <p className="text-sm">Choisissez une recette pour commencer</p>
                   </div>
@@ -2258,11 +2254,11 @@ export default function WeighStation() {
             ) : (
               <>
                 {/* Active recipe session */}
-                <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-teal-900/10">
+                <div className="p-4 border-b border-mono-900 dark:border-mono-200/60 bg-teal-900/10">
                   <div className="flex items-center justify-between mb-2">
                     <div>
                       <p className="text-xs text-teal-400 uppercase tracking-wider font-medium">Pesee en cours</p>
-                      <h3 className="text-lg font-bold text-[#111111] dark:text-white">{recipeSession.recipeName}</h3>
+                      <h3 className="text-lg font-bold text-mono-100 dark:text-white">{recipeSession.recipeName}</h3>
                     </div>
                     <button
                       onClick={() => { setRecipeSession(null); setActiveRecipeIngIdx(null); setSelected(null); }}
@@ -2276,10 +2272,10 @@ export default function WeighStation() {
                   {/* Progress bar */}
                   <div className="mb-2">
                     <div className="flex items-center justify-between text-xs mb-1">
-                      <span className="text-[#6B7280] dark:text-[#A3A3A3]">{recipeWeighedCount}/{recipeTotalCount} ingredients peses</span>
+                      <span className="text-[#6B7280] dark:text-mono-700">{recipeWeighedCount}/{recipeTotalCount} ingredients peses</span>
                       <span className="text-teal-400 font-medium">{Math.round(recipeProgress)}%</span>
                     </div>
-                    <div className="h-2.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                    <div className="h-2.5 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-teal-600 to-emerald-500 rounded-full transition-all duration-500"
                         style={{ width: `${recipeProgress}%` }}
@@ -2289,20 +2285,20 @@ export default function WeighStation() {
 
                   {/* Cost comparison */}
                   <div className="grid grid-cols-2 gap-2 mt-3">
-                    <div className="px-3 py-2 bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A]/50">
-                      <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Cout theorique</p>
-                      <p className="text-sm font-bold text-[#111111] dark:text-white">{formatCurrency(recipeTheoreticalCost)}</p>
+                    <div className="px-3 py-2 bg-mono-1000 dark:bg-mono-50/80 rounded-lg border border-mono-900 dark:border-mono-200/50">
+                      <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Cout theorique</p>
+                      <p className="text-sm font-bold text-mono-100 dark:text-white">{formatCurrency(recipeTheoreticalCost)}</p>
                     </div>
                     <div className={`px-3 py-2 rounded-lg border ${
                       recipeActualCost > recipeTheoreticalCost * 1.05 ? 'bg-red-900/20 border-red-500/30' :
                       recipeActualCost < recipeTheoreticalCost * 0.95 ? 'bg-emerald-900/20 border-emerald-500/30' :
-                      'bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 border-[#E5E7EB] dark:border-[#1A1A1A]/50'
+                      'bg-mono-1000 dark:bg-mono-50/80 border-mono-900 dark:border-mono-200/50'
                     }`}>
-                      <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Cout reel</p>
+                      <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Cout reel</p>
                       <p className={`text-sm font-bold ${
                         recipeActualCost > recipeTheoreticalCost * 1.05 ? 'text-red-400' :
                         recipeActualCost < recipeTheoreticalCost * 0.95 ? 'text-emerald-400' :
-                        'text-[#111111] dark:text-white'
+                        'text-mono-100 dark:text-white'
                       }`}>{formatCurrency(recipeActualCost)}</p>
                     </div>
                   </div>
@@ -2331,14 +2327,14 @@ export default function WeighStation() {
                         className={`w-full flex items-center gap-3 px-3 py-3 min-h-[52px] rounded-xl text-left transition-all ${
                           isActive ? 'bg-teal-600/20 border-2 border-teal-500/50 shadow-lg shadow-teal-900/20' :
                           isWeighed ? `border ${getAccuracyClasses(accuracy!)}` :
-                          'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border border-[#E5E7EB] dark:border-[#1A1A1A]/30 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                          'bg-mono-1000/40 dark:bg-mono-50/40 border border-mono-900 dark:border-mono-200/30 hover:bg-mono-950 dark:hover:bg-[#171717]'
                         }`}
                       >
                         {/* Status icon */}
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                           isActive ? 'bg-teal-600 text-white' :
                           isWeighed && AccIcon ? 'bg-transparent' :
-                          'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]'
+                          'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500'
                         }`}>
                           {isActive ? <Scale className="w-4 h-4" /> :
                            isWeighed && AccIcon ? <AccIcon className="w-5 h-5" /> :
@@ -2346,11 +2342,11 @@ export default function WeighStation() {
                         </div>
 
                         <div className="min-w-0 flex-1">
-                          <p className={`text-sm font-medium truncate ${isActive ? 'text-[#111111] dark:text-white' : isWeighed ? '' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                          <p className={`text-sm font-medium truncate ${isActive ? 'text-mono-100 dark:text-white' : isWeighed ? '' : 'text-[#6B7280] dark:text-mono-700'}`}>
                             {entry.ingredientName}
                           </p>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Cible : {entry.targetQty} {entry.unit}</span>
+                            <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Cible : {entry.targetQty} {entry.unit}</span>
                             {isWeighed && entry.actualQty !== null && (
                               <span className={`text-[10px] font-bold ${accuracy === 'green' ? 'text-emerald-400' : accuracy === 'amber' ? 'text-amber-400' : 'text-red-400'}`}>
                                 Pese : {entry.actualQty.toFixed(2)} {entry.unit}
@@ -2366,7 +2362,7 @@ export default function WeighStation() {
                 </div>
 
                 {/* Save session button */}
-                <div className="p-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]/60">
+                <div className="p-3 border-t border-mono-900 dark:border-mono-200/60">
                   <button
                     onClick={saveRecipeSession}
                     disabled={recipeWeighedCount === 0}
@@ -2386,7 +2382,7 @@ export default function WeighStation() {
               <>
                 <div className="text-center">
                   <p className="text-[10px] text-teal-400 uppercase tracking-[0.2em]">Ingredient a peser</p>
-                  <p className="text-2xl font-bold text-[#111111] dark:text-white mt-1">{recipeSession.entries[activeRecipeIngIdx].ingredientName}</p>
+                  <p className="text-2xl font-bold text-mono-100 dark:text-white mt-1">{recipeSession.entries[activeRecipeIngIdx].ingredientName}</p>
                   <p className="text-lg text-teal-400 font-medium mt-1">
                     Cible : {recipeSession.entries[activeRecipeIngIdx].targetQty} {recipeSession.entries[activeRecipeIngIdx].unit}
                   </p>
@@ -2409,7 +2405,7 @@ export default function WeighStation() {
                     }`}>
                       {netWeight <= 0 ? '0' : weightForDisplay}
                     </span>
-                    <span className="font-bold text-xl text-[#9CA3AF] dark:text-[#737373]">{unitForDisplay}</span>
+                    <span className="font-bold text-xl text-[#9CA3AF] dark:text-mono-500">{unitForDisplay}</span>
                   </div>
                   {tare > 0 && <p className="relative z-10 text-xs text-amber-400/70 mt-1">Tare : {(tare * 1000).toFixed(0)} g</p>}
                 </div>
@@ -2434,13 +2430,13 @@ export default function WeighStation() {
 
                 {/* Simulation controls in recipe mode */}
                 {useSimulation && (
-                  <div className="flex items-center gap-4 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 px-5 py-3 rounded-2xl border border-amber-600/30">
+                  <div className="flex items-center gap-4 bg-mono-1000 dark:bg-mono-50/60 px-5 py-3 rounded-2xl border border-amber-600/30">
                     <p className="text-amber-400 font-medium uppercase tracking-wider text-xs">Sim</p>
-                    <button onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))} className="w-12 h-12 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all">
+                    <button onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))} className="w-12 h-12 rounded-xl bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all">
                       <Minus className="w-5 h-5" />
                     </button>
-                    <span className="text-[#111111] dark:text-white font-mono w-24 text-lg text-center tabular-nums">{simWeight.toFixed(3)} kg</span>
-                    <button onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))} className="w-12 h-12 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all">
+                    <span className="text-mono-100 dark:text-white font-mono w-24 text-lg text-center tabular-nums">{simWeight.toFixed(3)} kg</span>
+                    <button onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))} className="w-12 h-12 rounded-xl bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all">
                       <Plus className="w-5 h-5" />
                     </button>
                   </div>
@@ -2464,7 +2460,7 @@ export default function WeighStation() {
                   <button
                     onClick={handleTare}
                     disabled={currentWeight <= 0}
-                    className="flex items-center gap-2 px-6 py-4 min-h-[56px] bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 rounded-2xl font-semibold text-[#111111] dark:text-white transition-all active:scale-95 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                    className="flex items-center gap-2 px-6 py-4 min-h-[56px] bg-mono-1000 dark:bg-mono-50 hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30 rounded-2xl font-semibold text-mono-100 dark:text-white transition-all active:scale-95 border border-mono-900 dark:border-mono-200/50"
                   >
                     <RotateCcw className="w-5 h-5" /> Tare
                   </button>
@@ -2480,20 +2476,20 @@ export default function WeighStation() {
             ) : recipeSession ? (
               <div className="text-center">
                 <CheckCircle2 className="w-16 h-16 text-emerald-400 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-[#111111] dark:text-white mb-2">Pesee terminee !</h3>
-                <p className="text-[#6B7280] dark:text-[#A3A3A3] mb-4">
+                <h3 className="text-2xl font-bold text-mono-100 dark:text-white mb-2">Pesee terminee !</h3>
+                <p className="text-[#6B7280] dark:text-mono-700 mb-4">
                   {recipeWeighedCount}/{recipeTotalCount} ingredients peses
                 </p>
                 <div className="flex items-center justify-center gap-4 mb-6">
-                  <div className="px-4 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50">
-                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Theorique</p>
-                    <p className="text-lg font-bold text-[#111111] dark:text-white">{formatCurrency(recipeTheoreticalCost)}</p>
+                  <div className="px-4 py-3 bg-mono-1000 dark:bg-mono-50/80 rounded-xl border border-mono-900 dark:border-mono-200/50">
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Theorique</p>
+                    <p className="text-lg font-bold text-mono-100 dark:text-white">{formatCurrency(recipeTheoreticalCost)}</p>
                   </div>
-                  <span className="text-[#9CA3AF] dark:text-[#737373]">&rarr;</span>
+                  <span className="text-[#9CA3AF] dark:text-mono-500">&rarr;</span>
                   <div className={`px-4 py-3 rounded-xl border ${
                     recipeActualCost > recipeTheoreticalCost * 1.05 ? 'bg-red-900/20 border-red-500/30' : 'bg-emerald-900/20 border-emerald-500/30'
                   }`}>
-                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Reel</p>
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Reel</p>
                     <p className={`text-lg font-bold ${recipeActualCost > recipeTheoreticalCost * 1.05 ? 'text-red-400' : 'text-emerald-400'}`}>
                       {formatCurrency(recipeActualCost)}
                     </p>
@@ -2508,7 +2504,7 @@ export default function WeighStation() {
                 </button>
               </div>
             ) : (
-              <div className="text-center text-[#6B7280] dark:text-[#A3A3A3]">
+              <div className="text-center text-[#6B7280] dark:text-mono-700">
                 <BookOpen className="w-16 h-16 mx-auto mb-4 opacity-30" />
                 <p className="text-lg">Selectionnez une recette dans le panneau de gauche</p>
               </div>
@@ -2523,24 +2519,24 @@ export default function WeighStation() {
       {mainTab === 'historique' && (
         <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
           {/* LEFT: Calendar */}
-          <div className="lg:w-96 bg-white dark:bg-black/40 border-b lg:border-b-0 lg:border-r border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex flex-col overflow-hidden shrink-0">
-            <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
+          <div className="lg:w-96 bg-white dark:bg-black/40 border-b lg:border-b-0 lg:border-r border-mono-900 dark:border-mono-200/60 flex flex-col overflow-hidden shrink-0">
+            <div className="p-4 border-b border-mono-900 dark:border-mono-200/60">
               <div className="flex items-center justify-between mb-4">
-                <button onClick={() => navigateCalendar(-1)} className="p-2 min-h-[44px] min-w-[44px] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-all">
-                  <ArrowLeft className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                <button onClick={() => navigateCalendar(-1)} className="p-2 min-h-[44px] min-w-[44px] hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition-all">
+                  <ArrowLeft className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
                 </button>
-                <p className="text-sm font-bold text-[#111111] dark:text-white capitalize">
+                <p className="text-sm font-bold text-mono-100 dark:text-white capitalize">
                   {new Date(historyCalendarMonth + '-01').toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
                 </p>
-                <button onClick={() => navigateCalendar(1)} className="p-2 min-h-[44px] min-w-[44px] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-all">
-                  <ChevronRight className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                <button onClick={() => navigateCalendar(1)} className="p-2 min-h-[44px] min-w-[44px] hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition-all">
+                  <ChevronRight className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
                 </button>
               </div>
 
               {/* Day headers */}
               <div className="grid grid-cols-7 gap-1 mb-1">
                 {['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'].map(d => (
-                  <div key={d} className="text-center text-[10px] font-medium text-[#9CA3AF] dark:text-[#737373] py-1">{d}</div>
+                  <div key={d} className="text-center text-[10px] font-medium text-[#9CA3AF] dark:text-mono-500 py-1">{d}</div>
                 ))}
               </div>
 
@@ -2556,7 +2552,7 @@ export default function WeighStation() {
                         : day.hasData && day.isCurrentMonth
                         ? 'bg-emerald-900/20 text-emerald-400 font-medium hover:bg-emerald-900/40 cursor-pointer'
                         : day.isCurrentMonth
-                        ? 'text-[#6B7280] dark:text-[#A3A3A3]'
+                        ? 'text-[#6B7280] dark:text-mono-700'
                         : 'text-[#D1D5DB] dark:text-[#3A3A3A]'
                     }`}
                   >
@@ -2571,7 +2567,7 @@ export default function WeighStation() {
 
             {/* Session summaries */}
             <div className="flex-1 overflow-y-auto p-3 space-y-2">
-              <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider px-1">Sessions recentes</p>
+              <p className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider px-1">Sessions recentes</p>
               {historySessions.slice(0, 15).map(session => (
                 <button
                   key={session.date}
@@ -2579,14 +2575,14 @@ export default function WeighStation() {
                   className={`w-full flex items-center justify-between px-3 py-3 min-h-[48px] rounded-xl text-left transition-all active:scale-[0.98] ${
                     historySelectedDate === session.date
                       ? 'bg-teal-600/20 border border-teal-500/40'
-                      : 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border border-[#E5E7EB] dark:border-[#1A1A1A]/30 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                      : 'bg-mono-1000/40 dark:bg-mono-50/40 border border-mono-900 dark:border-mono-200/30 hover:bg-mono-950 dark:hover:bg-[#171717]'
                   }`}
                 >
                   <div>
-                    <p className="text-sm font-medium text-[#111111] dark:text-white">
+                    <p className="text-sm font-medium text-mono-100 dark:text-white">
                       {new Date(session.date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
                     </p>
-                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{session.entries.length} pesees</p>
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{session.entries.length} pesees</p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-bold text-teal-400">{session.totalKg.toFixed(1)} kg</p>
@@ -2601,16 +2597,16 @@ export default function WeighStation() {
           <div className="flex-1 flex flex-col overflow-hidden">
             {historySelectedDate ? (
               <>
-                <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-mono-200/60">
                   <div>
-                    <p className="text-lg font-bold text-[#111111] dark:text-white">
+                    <p className="text-lg font-bold text-mono-100 dark:text-white">
                       {new Date(historySelectedDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                     </p>
-                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{selectedDateEntries.length} pesees enregistrees</p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{selectedDateEntries.length} pesees enregistrees</p>
                   </div>
                   <button
                     onClick={() => exportCSV(selectedDateEntries, `pesees_${historySelectedDate}.csv`)}
-                    className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-medium transition-all active:scale-95 hover:bg-[#333] dark:hover:bg-[#E5E5E5]"
+                    className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-xl text-sm font-medium transition-all active:scale-95 hover:bg-[#333] dark:hover:bg-[#E5E5E5]"
                   >
                     <Download className="w-4 h-4" />
                     Exporter CSV
@@ -2623,7 +2619,7 @@ export default function WeighStation() {
                       key={`${entry.timestamp}-${i}`}
                       className={`rounded-xl px-4 py-3 border ${
                         entry.status === 'error' ? 'bg-red-900/10 border-red-800/30' :
-                        'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border-[#E5E7EB] dark:border-[#1A1A1A]/30'
+                        'bg-mono-1000/40 dark:bg-mono-50/40 border-mono-900 dark:border-mono-200/30'
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -2639,7 +2635,7 @@ export default function WeighStation() {
                              <Scale className="w-4 h-4" />}
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-[#111111] dark:text-white">{entry.ingredientName}</p>
+                            <p className="text-sm font-medium text-mono-100 dark:text-white">{entry.ingredientName}</p>
                             <div className="flex items-center gap-2 mt-0.5">
                               {entry.ingredientCategory && (
                                 <span className={`text-[10px] px-1.5 py-0.5 rounded border ${getCategoryColor(entry.ingredientCategory)}`}>
@@ -2651,7 +2647,7 @@ export default function WeighStation() {
                                   {entry.recipeName}
                                 </span>
                               )}
-                              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                              <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                                 {new Date(entry.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                               </span>
                             </div>
@@ -2672,7 +2668,7 @@ export default function WeighStation() {
                 </div>
               </>
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-[#9CA3AF] dark:text-[#737373]">
+              <div className="flex-1 flex flex-col items-center justify-center text-[#9CA3AF] dark:text-mono-500">
                 <Calendar className="w-16 h-16 mb-4 opacity-30" />
                 <p className="text-lg">Selectionnez une date dans le calendrier</p>
                 <p className="text-sm mt-1">Les jours avec des pesees sont marques en vert</p>
@@ -2691,11 +2687,11 @@ export default function WeighStation() {
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
+                <h2 className="text-2xl font-bold text-mono-100 dark:text-white flex items-center gap-3">
                   <BarChart3 className="w-7 h-7 text-teal-400" />
                   Rapport du jour
                 </h2>
-                <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mt-1">
+                <p className="text-sm text-[#6B7280] dark:text-mono-700 mt-1">
                   {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                 </p>
               </div>
@@ -2705,7 +2701,7 @@ export default function WeighStation() {
                   const todayEntries = history.filter(e => e.timestamp.slice(0, 10) === today);
                   exportCSV(todayEntries, `rapport_${today}.csv`);
                 }}
-                className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-medium transition-all active:scale-95"
+                className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-xl text-sm font-medium transition-all active:scale-95"
               >
                 <Download className="w-4 h-4" />
                 Exporter
@@ -2714,46 +2710,46 @@ export default function WeighStation() {
 
             {/* KPI Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+              <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Scale className="w-5 h-5 text-teal-400" />
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-medium">Pesees</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase font-medium">Pesees</span>
                 </div>
-                <p className="text-3xl font-black text-[#111111] dark:text-white tabular-nums">{dailyReport.totalWeighs}</p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">{dailyReport.uniqueIngredients} ingredients differents</p>
+                <p className="text-3xl font-black text-mono-100 dark:text-white tabular-nums">{dailyReport.totalWeighs}</p>
+                <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-1">{dailyReport.uniqueIngredients} ingredients differents</p>
               </div>
 
-              <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+              <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Package className="w-5 h-5 text-emerald-400" />
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-medium">Total pese</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase font-medium">Total pese</span>
                 </div>
-                <p className="text-3xl font-black text-[#111111] dark:text-white tabular-nums">{dailyReport.totalKg}</p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">kilogrammes</p>
+                <p className="text-3xl font-black text-mono-100 dark:text-white tabular-nums">{dailyReport.totalKg}</p>
+                <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-1">kilogrammes</p>
               </div>
 
-              <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+              <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Euro className="w-5 h-5 text-emerald-400" />
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-medium">Valeur pesee</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase font-medium">Valeur pesee</span>
                 </div>
-                <p className="text-3xl font-black text-[#111111] dark:text-white tabular-nums">{dailyReport.totalValue}</p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">euros</p>
+                <p className="text-3xl font-black text-mono-100 dark:text-white tabular-nums">{dailyReport.totalValue}</p>
+                <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-1">euros</p>
               </div>
 
               <div className={`border rounded-2xl p-4 ${
                 dailyReport.totalLoss > 0
                   ? 'bg-red-900/10 dark:bg-red-900/20 border-red-500/30'
-                  : 'bg-white dark:bg-[#0A0A0A]/50 border-[#E5E7EB] dark:border-[#1A1A1A]'
+                  : 'bg-white dark:bg-mono-50/50 border-mono-900 dark:border-mono-200'
               }`}>
                 <div className="flex items-center gap-2 mb-2">
-                  <AlertTriangle className={`w-5 h-5 ${dailyReport.totalLoss > 0 ? 'text-red-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-medium">Ecarts</span>
+                  <AlertTriangle className={`w-5 h-5 ${dailyReport.totalLoss > 0 ? 'text-red-400' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
+                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase font-medium">Ecarts</span>
                 </div>
-                <p className={`text-3xl font-black tabular-nums ${dailyReport.totalLoss > 0 ? 'text-red-400' : 'text-[#111111] dark:text-white'}`}>
+                <p className={`text-3xl font-black tabular-nums ${dailyReport.totalLoss > 0 ? 'text-red-400' : 'text-mono-100 dark:text-white'}`}>
                   {dailyReport.discrepancies.length}
                 </p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">
+                <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-1">
                   {dailyReport.totalLoss > 0 ? `${formatCurrency(dailyReport.totalLoss)} de pertes` : 'Aucune perte detectee'}
                 </p>
               </div>
@@ -2761,9 +2757,9 @@ export default function WeighStation() {
 
             {/* Discrepancies table */}
             {dailyReport.discrepancies.length > 0 && (
-              <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-                <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-                  <p className="text-sm font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+              <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-mono-200">
+                  <p className="text-sm font-semibold text-mono-100 dark:text-white flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 text-amber-400" />
                     Ecarts detectes (attendu vs reel)
                   </p>
@@ -2775,7 +2771,7 @@ export default function WeighStation() {
                     Voir WasteTracker
                   </button>
                 </div>
-                <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+                <div className="divide-y divide-mono-900 dark:divide-mono-200">
                   {dailyReport.discrepancies.map((d, i) => {
                     const color = getAccuracyColor(d.target, d.actual);
                     const AccIcon = getAccuracyIcon(color);
@@ -2784,8 +2780,8 @@ export default function WeighStation() {
                         <div className="flex items-center gap-3">
                           <AccIcon className={`w-5 h-5 ${color === 'amber' ? 'text-amber-400' : 'text-red-400'}`} />
                           <div>
-                            <p className="text-sm font-medium text-[#111111] dark:text-white">{d.ingredient}</p>
-                            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                            <p className="text-sm font-medium text-mono-100 dark:text-white">{d.ingredient}</p>
+                            <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
                               Cible : {d.target} {d.unit} &rarr; Reel : {d.actual.toFixed(2)} {d.unit}
                             </p>
                           </div>
@@ -2808,7 +2804,7 @@ export default function WeighStation() {
                 <AlertCircle className="w-6 h-6 text-red-400 shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-red-400">{dailyReport.errorCount} erreur{dailyReport.errorCount > 1 ? 's' : ''} de pesee</p>
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Verifiez la connexion de la balance et les niveaux de stock</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Verifiez la connexion de la balance et les niveaux de stock</p>
                 </div>
               </div>
             )}
@@ -2827,7 +2823,7 @@ export default function WeighStation() {
 
             {/* Empty state */}
             {dailyReport.totalWeighs === 0 && (
-              <div className="text-center py-16 text-[#9CA3AF] dark:text-[#737373]">
+              <div className="text-center py-16 text-[#9CA3AF] dark:text-mono-500">
                 <BarChart3 className="w-16 h-16 mx-auto mb-4 opacity-30" />
                 <p className="text-lg">Aucune pesee aujourd'hui</p>
                 <p className="text-sm mt-1">Les donnees du rapport s'afficheront apres vos premieres pesees</p>

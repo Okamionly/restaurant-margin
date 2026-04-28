@@ -170,7 +170,7 @@ function getSeasonalColor(value: number): string {
     case 3: return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400';
     case 4: return 'bg-orange-200 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300';
     case 5: return 'bg-red-200 dark:bg-red-900/40 text-red-800 dark:text-red-300';
-    default: return 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF]';
+    default: return 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF]';
   }
 }
 
@@ -226,11 +226,11 @@ function renderStars(rating: number) {
               ? 'text-amber-400 fill-amber-400'
               : i === full && half
               ? 'text-amber-400 fill-amber-400/50'
-              : 'text-[#D1D5DB] dark:text-[#404040]'
+              : 'text-[#D1D5DB] dark:text-mono-350'
           }`}
         />
       ))}
-      <span className="ml-1 text-[11px] font-semibold text-[#6B7280] dark:text-[#A3A3A3]">{rating.toFixed(1)}</span>
+      <span className="ml-1 text-[11px] font-semibold text-[#6B7280] dark:text-mono-700">{rating.toFixed(1)}</span>
     </span>
   );
 }
@@ -239,10 +239,10 @@ function renderRatingBar(rating: number) {
   const pct = (rating / 5) * 100;
   return (
     <div className="flex items-center gap-2">
-      <div className="w-16 h-1.5 rounded-full bg-[#E5E7EB] dark:bg-[#262626] overflow-hidden">
+      <div className="w-16 h-1.5 rounded-full bg-mono-900 dark:bg-[#262626] overflow-hidden">
         <div className="h-full rounded-full bg-amber-400 transition-all" style={{ width: `${pct}%` }} />
       </div>
-      <span className="text-[11px] font-bold text-[#6B7280] dark:text-[#A3A3A3]">{rating.toFixed(1)}</span>
+      <span className="text-[11px] font-bold text-[#6B7280] dark:text-mono-700">{rating.toFixed(1)}</span>
     </div>
   );
 }
@@ -251,7 +251,7 @@ function renderRatingBar(rating: number) {
 
 function SupplierCard({ supplier, onContact }: { supplier: Supplier; onContact: (s: Supplier) => void }) {
   return (
-    <div className="group relative bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 hover:border-[#111111] dark:hover:border-white/20 transition-all hover:shadow-lg">
+    <div className="group relative bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-5 hover:border-[#111111] dark:hover:border-white/20 transition-all hover:shadow-lg">
       {/* Premium badge */}
       <div className="absolute -top-2.5 right-4">
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-sm">
@@ -261,24 +261,24 @@ function SupplierCard({ supplier, onContact }: { supplier: Supplier; onContact: 
       </div>
 
       <div className="flex gap-4">
-        <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-center text-lg font-bold text-[#111111] dark:text-white">
+        <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] flex items-center justify-center text-lg font-bold text-[#111111] dark:text-white">
           {supplier.logo}
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-[#111111] dark:text-white text-sm">{supplier.name}</h3>
           <div className="flex items-center gap-2 mt-1">
             {renderStars(supplier.rating)}
-            <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">
+            <span className="text-[11px] text-[#9CA3AF] dark:text-mono-500">
               ({supplier.reviewCount})
             </span>
           </div>
-          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1.5 line-clamp-2">
+          <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-1.5 line-clamp-2">
             {supplier.description}
           </p>
 
           {/* Tags + CTA */}
           <div className="flex items-center gap-2 mt-3 flex-wrap">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-medium bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
               <Truck className="w-3 h-3" /> J+{supplier.deliveryDays}
             </span>
             {supplier.bio && (
@@ -317,12 +317,12 @@ function ProductCard({ product, onAddToCart, viewMode }: {
   const worstPrice = getWorstPrice(product.offers);
   const sortedOffers = [...product.offers].sort((a, b) => a.price - b.price);
   const savings = worstPrice > 0 && bestPrice < Infinity ? ((worstPrice - bestPrice) / worstPrice * 100).toFixed(0) : null;
-  const catConfig = CATEGORY_CONFIG[product.category] || { color: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]', icon: '📦' };
+  const catConfig = CATEGORY_CONFIG[product.category] || { color: 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700', icon: '📦' };
   const inStockCount = product.offers.filter(o => o.inStock).length;
 
   if (viewMode === 'list') {
     return (
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl hover:border-[#111111]/20 dark:hover:border-white/10 transition-all hover:shadow-md">
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl hover:border-[#111111]/20 dark:hover:border-white/10 transition-all hover:shadow-md">
         <div className="flex items-center gap-4 p-4">
           {/* Icon */}
           <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] flex items-center justify-center text-xl">
@@ -343,7 +343,7 @@ function ProductCard({ product, onAddToCart, viewMode }: {
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5 truncate">{product.description}</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5 truncate">{product.description}</p>
           </div>
 
           {/* Price range */}
@@ -354,31 +354,31 @@ function ProductCard({ product, onAddToCart, viewMode }: {
                   {formatCurrency(bestPrice)}
                 </div>
                 {sortedOffers.length > 1 && (
-                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                     a {formatCurrency(worstPrice)}
                   </div>
                 )}
               </>
             ) : (
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Indispo.</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Indispo.</span>
             )}
           </div>
 
           {/* Offers count */}
           <div className="flex-shrink-0 flex items-center gap-2">
-            <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">{inStockCount} offre{inStockCount > 1 ? 's' : ''}</span>
+            <span className="text-[11px] text-[#6B7280] dark:text-mono-700">{inStockCount} offre{inStockCount > 1 ? 's' : ''}</span>
             <button
               onClick={() => setExpanded(!expanded)}
-              className="p-2 rounded-xl hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="p-2 rounded-xl hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             >
-              {expanded ? <ChevronUp className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" /> : <ChevronDown className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />}
+              {expanded ? <ChevronUp className="w-4 h-4 text-[#6B7280] dark:text-mono-700" /> : <ChevronDown className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />}
             </button>
           </div>
         </div>
 
         {/* Expanded offers */}
         {expanded && (
-          <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] px-4 pb-4 pt-3 space-y-2">
+          <div className="border-t border-mono-900 dark:border-[#1A1A1A] px-4 pb-4 pt-3 space-y-2">
             {sortedOffers.map(offer => {
               const supplier = getSupplier(offer.supplierId);
               const isBest = offer.price === bestPrice && offer.inStock;
@@ -394,7 +394,7 @@ function ProductCard({ product, onAddToCart, viewMode }: {
 
   // Grid view
   return (
-    <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden hover:border-[#111111]/20 dark:hover:border-white/10 transition-all hover:shadow-lg group">
+    <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl overflow-hidden hover:border-[#111111]/20 dark:hover:border-white/10 transition-all hover:shadow-lg group">
       {/* Card header */}
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between gap-3">
@@ -416,11 +416,11 @@ function ProductCard({ product, onAddToCart, viewMode }: {
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5 line-clamp-1">
+            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5 line-clamp-1">
               {product.description}
             </p>
           </div>
-          <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] flex items-center justify-center text-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] flex items-center justify-center text-2xl border border-mono-900 dark:border-[#1A1A1A]">
             {catConfig.icon}
           </div>
         </div>
@@ -432,7 +432,7 @@ function ProductCard({ product, onAddToCart, viewMode }: {
           </span>
           {bestPrice < Infinity && (
             <div className="text-right">
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">a partir de </span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">a partir de </span>
               <span className="text-sm font-bold text-[#111111] dark:text-white">{formatCurrency(bestPrice)}</span>
             </div>
           )}
@@ -443,14 +443,14 @@ function ProductCard({ product, onAddToCart, viewMode }: {
       {sortedOffers.length > 1 && bestPrice < Infinity && (
         <div className="px-4 pb-2">
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-3 h-3 text-[#9CA3AF] dark:text-[#737373]" />
-            <div className="flex-1 h-1.5 rounded-full bg-[#E5E7EB] dark:bg-[#262626] overflow-hidden">
+            <BarChart3 className="w-3 h-3 text-[#9CA3AF] dark:text-mono-500" />
+            <div className="flex-1 h-1.5 rounded-full bg-mono-900 dark:bg-[#262626] overflow-hidden">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-amber-400"
                 style={{ width: '100%' }}
               />
             </div>
-            <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] tabular-nums">
+            <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 tabular-nums">
               {bestPrice.toFixed(2)} - {worstPrice.toFixed(2)}
             </span>
           </div>
@@ -463,10 +463,10 @@ function ProductCard({ product, onAddToCart, viewMode }: {
           onClick={() => setExpanded(!expanded)}
           className="w-full flex items-center justify-between py-1.5"
         >
-          <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">
+          <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">
             {sortedOffers.length} offre{sortedOffers.length > 1 ? 's' : ''} fournisseur{sortedOffers.length > 1 ? 's' : ''}
           </span>
-          {expanded ? <ChevronUp className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" /> : <ChevronDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />}
+          {expanded ? <ChevronUp className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" /> : <ChevronDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />}
         </button>
 
         {/* Always show best offer */}
@@ -505,10 +505,10 @@ function OfferRow({ offer, supplier, isBest, productId, onAdd }: {
     <div className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all ${
       isBest
         ? 'bg-emerald-50/50 dark:bg-emerald-950/10 border-emerald-200 dark:border-emerald-800/30'
-        : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+        : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border-mono-900 dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333]'
     }`}>
       {/* Supplier avatar */}
-      <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] flex items-center justify-center text-xs font-bold text-[#6B7280] dark:text-[#A3A3A3]">
+      <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white dark:bg-[#171717] border border-mono-900 dark:border-[#262626] flex items-center justify-center text-xs font-bold text-[#6B7280] dark:text-mono-700">
         {supplier.logo}
       </div>
 
@@ -529,7 +529,7 @@ function OfferRow({ offer, supplier, isBest, productId, onAdd }: {
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           {renderRatingBar(supplier.rating)}
-          <span className="flex items-center gap-0.5 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+          <span className="flex items-center gap-0.5 text-[10px] text-[#9CA3AF] dark:text-mono-500">
             <Truck className="w-3 h-3" /> J+{supplier.deliveryDays}
           </span>
           {!offer.inStock && (
@@ -544,7 +544,7 @@ function OfferRow({ offer, supplier, isBest, productId, onAdd }: {
           <div className={`text-sm font-bold tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'}`}>
             {formatCurrency(offer.price)}
           </div>
-          <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">/ {offer.unit}</div>
+          <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">/ {offer.unit}</div>
         </div>
         <button
           onClick={() => onAdd(productId, offer.supplierId, offer.price, offer.unit)}
@@ -552,7 +552,7 @@ function OfferRow({ offer, supplier, isBest, productId, onAdd }: {
           className={`p-2 rounded-xl transition-all ${
             offer.inStock
               ? 'bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] hover:scale-105 active:scale-95'
-              : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] cursor-not-allowed'
+              : 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 cursor-not-allowed'
           }`}
         >
           <Plus className="w-4 h-4" />
@@ -578,33 +578,33 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
   const itemCount = cart.reduce((s, c) => s + c.quantity, 0);
 
   return (
-    <div className="bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden shadow-lg">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+    <div className="bg-white dark:bg-black rounded-2xl border border-mono-900 dark:border-[#1A1A1A] overflow-hidden shadow-lg">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-[#1A1A1A]">
         <h3 className="font-bold text-[#111111] dark:text-white flex items-center gap-2">
           <ShoppingBag className="w-5 h-5 text-[#111111] dark:text-white" />
           Panier
-          <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">({itemCount} article{itemCount > 1 ? 's' : ''})</span>
+          <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">({itemCount} article{itemCount > 1 ? 's' : ''})</span>
         </h3>
-        <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-          <X className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+        <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
+          <X className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
         </button>
       </div>
 
       {cart.length === 0 ? (
         <div className="p-8 text-center">
-          <ShoppingCart className="w-10 h-10 text-[#D1D5DB] dark:text-[#404040] mx-auto mb-3" />
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] font-medium">Votre panier est vide</p>
-          <p className="text-xs text-[#D1D5DB] dark:text-[#525252] mt-1">Ajoutez des produits pour commencer</p>
+          <ShoppingCart className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 font-medium">Votre panier est vide</p>
+          <p className="text-xs text-[#D1D5DB] dark:text-mono-400 mt-1">Ajoutez des produits pour commencer</p>
         </div>
       ) : (
         <>
-          <div className="max-h-[50vh] overflow-y-auto divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+          <div className="max-h-[50vh] overflow-y-auto divide-y divide-mono-900 dark:divide-[#1A1A1A]">
             {Object.entries(cartBySupplier).map(([supplierId, { items, total }]) => {
               const supplier = getSupplier(supplierId);
               return (
                 <div key={supplierId} className="p-3">
                   <div className="flex items-center gap-2 mb-2.5">
-                    <div className="w-6 h-6 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center text-[10px] font-bold text-[#6B7280] dark:text-[#A3A3A3]">
+                    <div className="w-6 h-6 rounded-lg bg-mono-950 dark:bg-[#171717] flex items-center justify-center text-[10px] font-bold text-[#6B7280] dark:text-mono-700">
                       {supplier.logo}
                     </div>
                     <span className="text-xs font-bold text-[#111111] dark:text-white">{supplier.name}</span>
@@ -617,21 +617,21 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
                         <div key={`${item.productId}-${item.supplierId}`} className="flex items-center gap-2 py-1 px-2 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A] transition-colors">
                           <div className="flex-1 min-w-0">
                             <div className="text-xs font-medium text-[#111111] dark:text-white truncate">{product?.name || item.productId}</div>
-                            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] tabular-nums">{formatCurrency(item.price)} / {item.unit}</div>
+                            <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 tabular-nums">{formatCurrency(item.price)} / {item.unit}</div>
                           </div>
-                          <div className="flex items-center gap-0.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-0.5">
+                          <div className="flex items-center gap-0.5 bg-mono-950 dark:bg-[#171717] rounded-lg p-0.5">
                             <button
                               onClick={() => onUpdateQty(item.productId, item.supplierId, -1)}
                               className="p-1 rounded-md hover:bg-white dark:hover:bg-[#262626] transition-colors"
                             >
-                              <Minus className="w-3 h-3 text-[#6B7280] dark:text-[#A3A3A3]" />
+                              <Minus className="w-3 h-3 text-[#6B7280] dark:text-mono-700" />
                             </button>
                             <span className="text-xs font-semibold w-6 text-center text-[#111111] dark:text-white tabular-nums">{item.quantity}</span>
                             <button
                               onClick={() => onUpdateQty(item.productId, item.supplierId, 1)}
                               className="p-1 rounded-md hover:bg-white dark:hover:bg-[#262626] transition-colors"
                             >
-                              <Plus className="w-3 h-3 text-[#6B7280] dark:text-[#A3A3A3]" />
+                              <Plus className="w-3 h-3 text-[#6B7280] dark:text-mono-700" />
                             </button>
                           </div>
                           <span className="text-xs font-bold text-[#111111] dark:text-white tabular-nums w-14 text-right">
@@ -639,7 +639,7 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
                           </span>
                           <button
                             onClick={() => onRemove(item.productId, item.supplierId)}
-                            className="p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-[#D1D5DB] dark:text-[#525252] hover:text-red-500 transition-colors"
+                            className="p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-[#D1D5DB] dark:text-mono-400 hover:text-red-500 transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -652,7 +652,7 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
             })}
           </div>
 
-          <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] p-4 space-y-3">
+          <div className="border-t border-mono-900 dark:border-[#1A1A1A] p-4 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-bold text-[#111111] dark:text-white">Total HT</span>
               <span className="text-xl font-black text-[#111111] dark:text-white tabular-nums">{formatCurrency(cartTotal)}</span>
@@ -676,7 +676,7 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
             </button>
             <button
               onClick={onClear}
-              className="w-full py-2 text-xs text-[#9CA3AF] dark:text-[#737373] hover:text-red-500 transition-colors font-medium"
+              className="w-full py-2 text-xs text-[#9CA3AF] dark:text-mono-500 hover:text-red-500 transition-colors font-medium"
             >
               Vider le panier
             </button>
@@ -701,17 +701,17 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
         </div>
         <div>
           <h2 className="font-bold text-[#111111] dark:text-white text-lg">Comparateur de prix</h2>
-          <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Comparez les prix de tous vos fournisseurs cote a cote</p>
+          <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Comparez les prix de tous vos fournisseurs cote a cote</p>
         </div>
       </div>
 
       {/* Product selector */}
-      <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
-        <label className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2 block">Choisir un ingredient</label>
+      <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4">
+        <label className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2 block">Choisir un ingredient</label>
         <select
           value={selectedProduct || ''}
           onChange={e => setSelectedProduct(e.target.value || null)}
-          className="w-full py-2.5 px-3 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+          className="w-full py-2.5 px-3 bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
         >
           <option value="">-- Selectionnez un produit --</option>
           {products.filter(p => p.offers.length > 1).map(p => (
@@ -722,18 +722,18 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
 
       {/* Comparison table */}
       {product && (
-        <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+        <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-mono-900 dark:border-[#1A1A1A] flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-xl">{CATEGORY_CONFIG[product.category]?.icon || '📦'}</span>
               <div>
                 <h3 className="font-bold text-[#111111] dark:text-white">{product.name}</h3>
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{product.offers.length} fournisseurs comparés</p>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{product.offers.length} fournisseurs comparés</p>
               </div>
             </div>
           </div>
 
-          <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+          <div className="divide-y divide-mono-900 dark:divide-[#1A1A1A]">
             {[...product.offers].sort((a, b) => a.price - b.price).map((offer, idx) => {
               const supplier = getSupplier(offer.supplierId);
               const bestPrice = getBestPrice(product.offers);
@@ -746,13 +746,13 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
                 <div key={offer.supplierId} className={`px-5 py-4 flex items-center gap-4 transition-colors ${isBest ? 'bg-emerald-50/50 dark:bg-emerald-950/10' : 'hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]'}`}>
                   {/* Rank */}
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black ${
-                    idx === 0 ? 'bg-emerald-500 text-white' : idx === 1 ? 'bg-[#E5E7EB] dark:bg-[#262626] text-[#111111] dark:text-white' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]'
+                    idx === 0 ? 'bg-emerald-500 text-white' : idx === 1 ? 'bg-mono-900 dark:bg-[#262626] text-[#111111] dark:text-white' : 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500'
                   }`}>
                     #{idx + 1}
                   </div>
 
                   {/* Supplier info */}
-                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-center text-sm font-bold text-[#6B7280] dark:text-[#A3A3A3]">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] flex items-center justify-center text-sm font-bold text-[#6B7280] dark:text-mono-700">
                     {supplier.logo}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -770,7 +770,7 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
                     </div>
                     <div className="flex items-center gap-3 mt-1">
                       {renderStars(supplier.rating)}
-                      <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
+                      <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 flex items-center gap-1">
                         <Truck className="w-3 h-3" /> J+{supplier.deliveryDays}
                       </span>
                     </div>
@@ -781,13 +781,13 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
                     <div className={`text-lg font-black tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'}`}>
                       {formatCurrency(offer.price)}
                     </div>
-                    <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">/ {offer.unit}</div>
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">/ {offer.unit}</div>
                   </div>
 
                   {/* Savings badge */}
                   <div className="flex-shrink-0 w-20 text-right">
                     {idx > 0 && Number(savingsVsWorst) > 0 ? (
-                      <span className="text-[11px] font-medium text-[#9CA3AF] dark:text-[#737373]">
+                      <span className="text-[11px] font-medium text-[#9CA3AF] dark:text-mono-500">
                         -{savingsVsWorst}% vs max
                       </span>
                     ) : idx === 0 && Number(savingsVsWorst) > 0 ? (
@@ -800,7 +800,7 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
 
                   {/* Price bar visualization */}
                   <div className="hidden sm:block flex-shrink-0 w-32">
-                    <div className="h-2 rounded-full bg-[#E5E7EB] dark:bg-[#262626] overflow-hidden">
+                    <div className="h-2 rounded-full bg-mono-900 dark:bg-[#262626] overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all ${isBest ? 'bg-emerald-500' : 'bg-amber-400'}`}
                         style={{ width: `${(getBestPrice(product.offers) / offer.price) * 100}%` }}
@@ -813,10 +813,10 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
           </div>
 
           {/* Summary */}
-          <div className="px-5 py-4 bg-[#F9FAFB] dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+          <div className="px-5 py-4 bg-[#F9FAFB] dark:bg-[#0A0A0A] border-t border-mono-900 dark:border-[#1A1A1A] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-emerald-500" />
-              <span className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">
+              <span className="text-xs font-medium text-[#6B7280] dark:text-mono-700">
                 Economie potentielle en choisissant le meilleur prix :
               </span>
             </div>
@@ -828,9 +828,9 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
       )}
 
       {!selectedProduct && (
-        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <BarChart3 className="w-10 h-10 text-[#D1D5DB] dark:text-[#404040] mx-auto mb-3" />
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] font-medium">Selectionnez un produit pour comparer les prix</p>
+        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
+          <BarChart3 className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 font-medium">Selectionnez un produit pour comparer les prix</p>
         </div>
       )}
     </div>
@@ -886,7 +886,7 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
         </div>
         <div>
           <h2 className="font-bold text-[#111111] dark:text-white text-lg">Evaluation des fournisseurs</h2>
-          <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Notez vos fournisseurs sur 4 criteres — les meilleurs obtiennent le badge Recommande</p>
+          <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Notez vos fournisseurs sur 4 criteres — les meilleurs obtiennent le badge Recommande</p>
         </div>
       </div>
 
@@ -897,16 +897,16 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
 
           return (
             <div key={item.supplierId} className={`bg-white dark:bg-black border rounded-2xl overflow-hidden transition-all ${
-              isRecommended ? 'border-amber-300 dark:border-amber-800/40' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
+              isRecommended ? 'border-amber-300 dark:border-amber-800/40' : 'border-mono-900 dark:border-[#1A1A1A]'
             }`}>
               {/* Header */}
               <div className="px-5 py-4 flex items-center gap-4">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black ${
-                  idx === 0 ? 'bg-amber-400 text-white' : idx === 1 ? 'bg-[#D1D5DB] dark:bg-[#404040] text-white' : idx === 2 ? 'bg-orange-300 text-white' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF]'
+                  idx === 0 ? 'bg-amber-400 text-white' : idx === 1 ? 'bg-[#D1D5DB] dark:bg-mono-350 text-white' : idx === 2 ? 'bg-orange-300 text-white' : 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF]'
                 }`}>
                   #{idx + 1}
                 </div>
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-center text-lg font-bold text-[#6B7280] dark:text-[#A3A3A3]">
+                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] flex items-center justify-center text-lg font-bold text-[#6B7280] dark:text-mono-700">
                   {item.supplier.logo}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -921,10 +921,10 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-2xl font-black text-[#111111] dark:text-white">{item.overall}</span>
-                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">/ 5</span>
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500">/ 5</span>
                     <div className="flex gap-0.5 ml-1">
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`w-3.5 h-3.5 ${i < Math.round(item.overall) ? 'text-amber-400 fill-amber-400' : 'text-[#D1D5DB] dark:text-[#404040]'}`} />
+                        <Star key={i} className={`w-3.5 h-3.5 ${i < Math.round(item.overall) ? 'text-amber-400 fill-amber-400' : 'text-[#D1D5DB] dark:text-mono-350'}`} />
                       ))}
                     </div>
                   </div>
@@ -934,7 +934,7 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
                   className={`px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${
                     isEditing
                       ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
-                      : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+                      : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#262626]'
                   }`}
                 >
                   {isEditing ? 'Sauvegarder' : 'Modifier'}
@@ -947,8 +947,8 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
                   const value = isEditing && tempRating ? tempRating[criteria.key] : item[criteria.key];
                   return (
                     <div key={criteria.key} className="flex items-center gap-3">
-                      <criteria.icon className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373] flex-shrink-0" />
-                      <span className="text-[11px] font-medium text-[#6B7280] dark:text-[#A3A3A3] w-28 flex-shrink-0">{criteria.label}</span>
+                      <criteria.icon className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500 flex-shrink-0" />
+                      <span className="text-[11px] font-medium text-[#6B7280] dark:text-mono-700 w-28 flex-shrink-0">{criteria.label}</span>
                       {isEditing && tempRating ? (
                         <div className="flex items-center gap-1 flex-1">
                           {[1, 2, 3, 4, 5].map(n => (
@@ -957,13 +957,13 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
                               onClick={() => setTempRating({ ...tempRating, [criteria.key]: n })}
                               className="p-0.5"
                             >
-                              <Star className={`w-5 h-5 transition-colors ${n <= value ? 'text-amber-400 fill-amber-400' : 'text-[#D1D5DB] dark:text-[#404040]'}`} />
+                              <Star className={`w-5 h-5 transition-colors ${n <= value ? 'text-amber-400 fill-amber-400' : 'text-[#D1D5DB] dark:text-mono-350'}`} />
                             </button>
                           ))}
                         </div>
                       ) : (
                         <>
-                          <div className="flex-1 h-2 rounded-full bg-[#E5E7EB] dark:bg-[#262626] overflow-hidden">
+                          <div className="flex-1 h-2 rounded-full bg-mono-900 dark:bg-[#262626] overflow-hidden">
                             <div
                               className={`h-full rounded-full transition-all ${value >= 4 ? 'bg-emerald-500' : value >= 3 ? 'bg-amber-400' : 'bg-red-400'}`}
                               style={{ width: `${(value / 5) * 100}%` }}
@@ -982,9 +982,9 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
       </div>
 
       {suppliers.length === 0 && (
-        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <Star className="w-10 h-10 text-[#D1D5DB] dark:text-[#404040] mx-auto mb-3" />
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] font-medium">Aucun fournisseur a evaluer</p>
+        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
+          <Star className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 font-medium">Aucun fournisseur a evaluer</p>
         </div>
       )}
     </div>
@@ -1020,7 +1020,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
   }, [orders]);
 
   const statusColors: Record<string, string> = {
-    draft: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] border-[#E5E7EB] dark:border-[#262626]',
+    draft: 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 border-mono-900 dark:border-[#262626]',
     sent: 'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/30',
     confirmed: 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/30',
     received: 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/30',
@@ -1038,7 +1038,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
         </div>
         <div>
           <h2 className="font-bold text-[#111111] dark:text-white text-lg">Historique par fournisseur</h2>
-          <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Timeline de vos commandes avec montants, dates et articles</p>
+          <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Timeline de vos commandes avec montants, dates et articles</p>
         </div>
       </div>
 
@@ -1047,7 +1047,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
         <button
           onClick={() => setSelectedSupplier(null)}
           className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-            !selectedSupplier ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3]'
+            !selectedSupplier ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] text-[#6B7280] dark:text-mono-700'
           }`}
         >
           Tous ({orders.length})
@@ -1057,7 +1057,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
             key={name}
             onClick={() => setSelectedSupplier(selectedSupplier === name ? null : name)}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-              selectedSupplier === name ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3]'
+              selectedSupplier === name ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] text-[#6B7280] dark:text-mono-700'
             }`}
           >
             {name} ({orders.filter(o => o.supplierName === name).length})
@@ -1068,16 +1068,16 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
       {/* Supplier stats cards */}
       {selectedSupplier && supplierStats[selectedSupplier] && (
         <div className="grid grid-cols-3 gap-3">
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
-            <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Total depense</span>
+          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4">
+            <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Total depense</span>
             <p className="text-xl font-black text-[#111111] dark:text-white mt-1 tabular-nums">{formatCurrency(supplierStats[selectedSupplier].totalSpent)}</p>
           </div>
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
-            <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Commandes</span>
+          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4">
+            <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Commandes</span>
             <p className="text-xl font-black text-[#111111] dark:text-white mt-1">{supplierStats[selectedSupplier].orderCount}</p>
           </div>
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
-            <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Derniere commande</span>
+          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4">
+            <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Derniere commande</span>
             <p className="text-sm font-bold text-[#111111] dark:text-white mt-1">{new Date(supplierStats[selectedSupplier].lastOrder).toLocaleDateString('fr-FR')}</p>
           </div>
         </div>
@@ -1087,7 +1087,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
       {sortedOrders.length > 0 ? (
         <div className="relative pl-6">
           {/* Timeline line */}
-          <div className="absolute left-[11px] top-2 bottom-2 w-px bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
+          <div className="absolute left-[11px] top-2 bottom-2 w-px bg-mono-900 dark:bg-[#1A1A1A]" />
 
           <div className="space-y-4">
             {sortedOrders.map((order, idx) => (
@@ -1097,10 +1097,10 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
                   order.status === 'received' ? 'bg-emerald-500 border-emerald-500' :
                   order.status === 'confirmed' ? 'bg-amber-400 border-amber-400' :
                   order.status === 'sent' ? 'bg-blue-400 border-blue-400' :
-                  'bg-white dark:bg-black border-[#D1D5DB] dark:border-[#404040]'
+                  'bg-white dark:bg-black border-[#D1D5DB] dark:border-mono-350'
                 }`} />
 
-                <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-colors">
+                <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-colors">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <span className="font-bold text-sm text-[#111111] dark:text-white">{order.supplierName}</span>
@@ -1110,16 +1110,16 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-sm font-bold text-[#111111] dark:text-white tabular-nums">{formatCurrency(order.totalHT)}</span>
-                      <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                      <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                         {new Date(order.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
                       </span>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {order.items.map(item => (
-                      <span key={item.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#262626]">
+                      <span key={item.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-medium bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-[#262626]">
                         {item.quantity}x {item.productName}
-                        <span className="text-[#9CA3AF] dark:text-[#525252]">({formatCurrency(item.unitPrice * item.quantity)})</span>
+                        <span className="text-[#9CA3AF] dark:text-mono-400">({formatCurrency(item.unitPrice * item.quantity)})</span>
                       </span>
                     ))}
                   </div>
@@ -1129,9 +1129,9 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
           </div>
         </div>
       ) : (
-        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <Inbox className="w-10 h-10 text-[#D1D5DB] dark:text-[#404040] mx-auto mb-3" />
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] font-medium">Aucune commande dans l'historique</p>
+        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
+          <Inbox className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 font-medium">Aucune commande dans l'historique</p>
         </div>
       )}
     </div>
@@ -1184,7 +1184,7 @@ function PriceAlertSetup() {
           </div>
           <div>
             <h2 className="font-bold text-[#111111] dark:text-white text-lg">Alertes de prix</h2>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Soyez notifie quand un ingredient passe sous votre seuil</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Soyez notifie quand un ingredient passe sous votre seuil</p>
           </div>
         </div>
         <button
@@ -1198,27 +1198,27 @@ function PriceAlertSetup() {
 
       {/* New alert form */}
       {showForm && (
-        <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
+        <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
           <div className="flex items-center gap-2 mb-1">
             <Bell className="w-4 h-4 text-violet-500" />
             <span className="text-sm font-bold text-[#111111] dark:text-white">Creer une alerte</span>
           </div>
-          <div className="text-xs text-[#9CA3AF] dark:text-[#737373] italic mb-3 px-3 py-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 italic mb-3 px-3 py-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-xl border border-mono-900 dark:border-[#1A1A1A]">
             Exemple : "Alertez-moi quand le saumon passe sous 15 EUR/kg"
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="text-[10px] font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-1 block">Ingredient</label>
+              <label className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-1 block">Ingredient</label>
               <input
                 type="text"
                 value={newAlert.ingredientName}
                 onChange={e => setNewAlert({ ...newAlert, ingredientName: e.target.value })}
                 placeholder="Ex: Saumon frais"
-                className="w-full px-3 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2.5 bg-mono-975 dark:bg-[#262626] border border-mono-900 dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
             <div>
-              <label className="text-[10px] font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-1 block">Seuil (EUR)</label>
+              <label className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-1 block">Seuil (EUR)</label>
               <input
                 type="number"
                 value={newAlert.threshold}
@@ -1226,15 +1226,15 @@ function PriceAlertSetup() {
                 placeholder="15"
                 min="0"
                 step="0.5"
-                className="w-full px-3 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2.5 bg-mono-975 dark:bg-[#262626] border border-mono-900 dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
             <div>
-              <label className="text-[10px] font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-1 block">Unite</label>
+              <label className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-1 block">Unite</label>
               <select
                 value={newAlert.unit}
                 onChange={e => setNewAlert({ ...newAlert, unit: e.target.value })}
-                className="w-full px-3 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2.5 bg-mono-975 dark:bg-[#262626] border border-mono-900 dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white outline-none focus:ring-2 focus:ring-violet-500"
               >
                 <option value="kg">kg</option>
                 <option value="L">L</option>
@@ -1256,7 +1256,7 @@ function PriceAlertSetup() {
             </button>
             <button
               onClick={() => { setShowForm(false); setNewAlert({ ingredientName: '', threshold: '', unit: 'kg' }); }}
-              className="px-4 py-2.5 text-sm text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors font-medium"
+              className="px-4 py-2.5 text-sm text-[#9CA3AF] dark:text-mono-500 hover:text-[#111111] dark:hover:text-white transition-colors font-medium"
             >
               Annuler
             </button>
@@ -1270,10 +1270,10 @@ function PriceAlertSetup() {
           <div key={alert.id} className={`bg-white dark:bg-black border rounded-2xl px-5 py-4 flex items-center gap-4 transition-all ${
             alert.active
               ? 'border-violet-200 dark:border-violet-900/30 bg-violet-50/30 dark:bg-violet-950/10'
-              : 'border-[#E5E7EB] dark:border-[#1A1A1A] opacity-60'
+              : 'border-mono-900 dark:border-[#1A1A1A] opacity-60'
           }`}>
-            <div className={`p-2 rounded-xl ${alert.active ? 'bg-violet-100 dark:bg-violet-900/30' : 'bg-[#F3F4F6] dark:bg-[#171717]'}`}>
-              <Bell className={`w-5 h-5 ${alert.active ? 'text-violet-600 dark:text-violet-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+            <div className={`p-2 rounded-xl ${alert.active ? 'bg-violet-100 dark:bg-violet-900/30' : 'bg-mono-950 dark:bg-[#171717]'}`}>
+              <Bell className={`w-5 h-5 ${alert.active ? 'text-violet-600 dark:text-violet-400' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
@@ -1282,16 +1282,16 @@ function PriceAlertSetup() {
                   <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400">Active</span>
                 )}
               </div>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">
                 Alerter quand le prix passe sous <span className="font-bold text-[#111111] dark:text-white">{formatCurrency(alert.threshold)}/{alert.unit}</span>
               </p>
-              <span className="text-[10px] text-[#D1D5DB] dark:text-[#525252]">Creee le {alert.createdAt}</span>
+              <span className="text-[10px] text-[#D1D5DB] dark:text-mono-400">Creee le {alert.createdAt}</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={() => toggleAlert(alert.id)}
                 className={`relative inline-flex h-6 w-10 rounded-full transition-colors ${
-                  alert.active ? 'bg-violet-500' : 'bg-[#D1D5DB] dark:bg-[#404040]'
+                  alert.active ? 'bg-violet-500' : 'bg-[#D1D5DB] dark:bg-mono-350'
                 }`}
               >
                 <span className={`inline-block w-4 h-4 rounded-full bg-white shadow transform transition-transform mt-1 ${
@@ -1300,7 +1300,7 @@ function PriceAlertSetup() {
               </button>
               <button
                 onClick={() => removeAlert(alert.id)}
-                className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-[#D1D5DB] dark:text-[#525252] hover:text-red-500 transition-colors"
+                className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-[#D1D5DB] dark:text-mono-400 hover:text-red-500 transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -1310,10 +1310,10 @@ function PriceAlertSetup() {
       </div>
 
       {alerts.length === 0 && !showForm && (
-        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <BellRing className="w-10 h-10 text-[#D1D5DB] dark:text-[#404040] mx-auto mb-3" />
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] font-medium">Aucune alerte de prix configuree</p>
-          <p className="text-xs text-[#D1D5DB] dark:text-[#525252] mt-1">Cliquez sur "Nouvelle alerte" pour commencer</p>
+        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
+          <BellRing className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 font-medium">Aucune alerte de prix configuree</p>
+          <p className="text-xs text-[#D1D5DB] dark:text-mono-400 mt-1">Cliquez sur "Nouvelle alerte" pour commencer</p>
         </div>
       )}
     </div>
@@ -1333,33 +1333,33 @@ function SeasonalPriceCalendar() {
         </div>
         <div>
           <h2 className="font-bold text-[#111111] dark:text-white text-lg">Calendrier saisonnier des prix</h2>
-          <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Identifiez les mois les moins chers pour chaque ingredient</p>
+          <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Identifiez les mois les moins chers pour chaque ingredient</p>
         </div>
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-3 px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-        <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Legende :</span>
+      <div className="flex items-center gap-3 px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
+        <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Legende :</span>
         <div className="flex items-center gap-2 flex-wrap">
           {[1, 2, 3, 4, 5].map(v => (
             <div key={v} className="flex items-center gap-1">
               <div className={`w-4 h-4 rounded ${getSeasonalColor(v)}`} />
-              <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">{getSeasonalLabel(v)}</span>
+              <span className="text-[10px] text-[#6B7280] dark:text-mono-700">{getSeasonalLabel(v)}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Heatmap grid */}
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
         {/* Header row */}
-        <div className="grid gap-px bg-[#E5E7EB] dark:bg-[#1A1A1A]" style={{ gridTemplateColumns: '160px repeat(12, 1fr)' }}>
+        <div className="grid gap-px bg-mono-900 dark:bg-[#1A1A1A]" style={{ gridTemplateColumns: '160px repeat(12, 1fr)' }}>
           <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] px-4 py-3">
-            <span className="text-[10px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Ingredient</span>
+            <span className="text-[10px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Ingredient</span>
           </div>
           {MONTH_LABELS.map((month, idx) => (
             <div key={month} className={`bg-[#F9FAFB] dark:bg-[#0A0A0A] px-1 py-3 text-center ${idx === currentMonth ? 'bg-[#111111] dark:bg-white' : ''}`}>
-              <span className={`text-[10px] font-bold uppercase tracking-wider ${idx === currentMonth ? 'text-white dark:text-black' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${idx === currentMonth ? 'text-white dark:text-black' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                 {month}
               </span>
             </div>
@@ -1367,11 +1367,11 @@ function SeasonalPriceCalendar() {
         </div>
 
         {/* Data rows */}
-        <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+        <div className="divide-y divide-mono-900 dark:divide-[#1A1A1A]">
           {SEASONAL_DATA.map(item => {
             const cheapestMonth = item.months.indexOf(Math.min(...item.months));
             return (
-              <div key={item.ingredient} className="grid gap-px bg-[#E5E7EB] dark:bg-[#1A1A1A]" style={{ gridTemplateColumns: '160px repeat(12, 1fr)' }}>
+              <div key={item.ingredient} className="grid gap-px bg-mono-900 dark:bg-[#1A1A1A]" style={{ gridTemplateColumns: '160px repeat(12, 1fr)' }}>
                 <div className="bg-white dark:bg-black px-4 py-3 flex items-center gap-2">
                   <span className="text-xs font-semibold text-[#111111] dark:text-white truncate">{item.ingredient}</span>
                   {cheapestMonth === currentMonth && (
@@ -1656,19 +1656,19 @@ export default function Marketplace() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-black text-[#111111] dark:text-white flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div className="p-2 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A]">
                 <Store className="w-6 h-6 text-[#111111] dark:text-white" />
               </div>
               {t('marketplace.title')}
             </h1>
-            <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+            <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
               {t('marketplace.subtitle')}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => { setShowOrders(!showOrders); if (!showOrders) fetchOrders(); }}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333] text-[#111111] dark:text-white rounded-xl font-medium text-sm transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333] text-[#111111] dark:text-white rounded-xl font-medium text-sm transition-all"
             >
               <History className="w-4 h-4" />
               <span className="hidden sm:inline">{t('marketplace.orders')}</span>
@@ -1701,10 +1701,10 @@ export default function Marketplace() {
             { label: 'Note moyenne', value: avgRating, icon: Star, color: 'text-amber-500' },
             { label: 'Dans le panier', value: cart.reduce((s, c) => s + c.quantity, 0), icon: ShoppingBag, color: 'text-[#111111] dark:text-white' },
           ].map((stat, i) => (
-            <div key={i} className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+            <div key={i} className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-1.5">
                 <stat.icon className={`w-4 h-4 ${stat.color}`} />
-                <span className="text-[11px] font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">{stat.label}</span>
+                <span className="text-[11px] font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">{stat.label}</span>
               </div>
               <p className="text-2xl font-black text-[#111111] dark:text-white">{stat.value}</p>
             </div>
@@ -1712,7 +1712,7 @@ export default function Marketplace() {
         </div>
 
         {/* Feature tabs */}
-        <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide bg-[#F3F4F6] dark:bg-[#171717] rounded-2xl p-1">
+        <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide bg-mono-950 dark:bg-[#171717] rounded-2xl p-1">
           {[
             { id: 'products' as MarketplaceTab, label: 'Catalogue', icon: Package },
             { id: 'comparison' as MarketplaceTab, label: 'Comparateur', icon: BarChart3 },
@@ -1726,7 +1726,7 @@ export default function Marketplace() {
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'bg-white dark:bg-black text-[#111111] dark:text-white shadow-sm'
-                  : 'text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white'
+                  : 'text-[#6B7280] dark:text-mono-700 hover:text-[#111111] dark:hover:text-white'
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -1760,17 +1760,17 @@ export default function Marketplace() {
 
         {/* Search bar */}
         <div className="relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#D1D5DB] dark:text-[#525252] group-focus-within:text-[#111111] dark:group-focus-within:text-white transition-colors" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#D1D5DB] dark:text-mono-400 group-focus-within:text-[#111111] dark:group-focus-within:text-white transition-colors" />
           <input
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder={t('marketplace.searchPlaceholder')}
-            className="w-full pl-12 pr-4 py-3.5 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent focus:bg-white dark:focus:bg-black outline-none transition-all"
+            className="w-full pl-12 pr-4 py-3.5 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent focus:bg-white dark:focus:bg-black outline-none transition-all"
           />
           {searchQuery && (
-            <button onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#262626]">
-              <X className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+            <button onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-mono-900 dark:hover:bg-[#262626]">
+              <X className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
             </button>
           )}
         </div>
@@ -1782,7 +1782,7 @@ export default function Marketplace() {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
               !selectedCategory
                 ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-md'
-                : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333] hover:text-[#111111] dark:hover:text-white'
+                : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333] hover:text-[#111111] dark:hover:text-white'
             }`}
           >
             <Grid3x3 className="w-3.5 h-3.5" />
@@ -1799,7 +1799,7 @@ export default function Marketplace() {
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
                   selectedCategory === cat
                     ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-md'
-                    : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333] hover:text-[#111111] dark:hover:text-white'
+                    : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333] hover:text-[#111111] dark:hover:text-white'
                 }`}
               >
                 <span>{cfg?.icon || '📦'}</span>
@@ -1813,8 +1813,8 @@ export default function Marketplace() {
         {/* Sort & Filters toolbar */}
         <div className="flex flex-wrap items-center gap-3">
           {/* Sort */}
-          <div className="flex items-center gap-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl px-3 py-2">
-            <ArrowUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+          <div className="flex items-center gap-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-xl px-3 py-2">
+            <ArrowUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value as SortOption)}
@@ -1833,7 +1833,7 @@ export default function Marketplace() {
             className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl border transition-all ${
               showFilters || showBioOnly || showLocalOnly
                 ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-transparent'
-                : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border-mono-900 dark:border-[#1A1A1A] text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333]'
             }`}
           >
             <Filter className="w-3.5 h-3.5" />
@@ -1845,22 +1845,22 @@ export default function Marketplace() {
 
           {showFilters && (
             <>
-              <label className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-[#A3A3A3] cursor-pointer px-3 py-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:border-green-300 dark:hover:border-green-800 transition-colors">
+              <label className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-mono-700 cursor-pointer px-3 py-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-xl hover:border-green-300 dark:hover:border-green-800 transition-colors">
                 <input
                   type="checkbox"
                   checked={showBioOnly}
                   onChange={e => setShowBioOnly(e.target.checked)}
-                  className="rounded border-[#D1D5DB] dark:border-[#404040] text-green-600 focus:ring-green-500"
+                  className="rounded border-[#D1D5DB] dark:border-mono-350 text-green-600 focus:ring-green-500"
                 />
                 <Leaf className="w-3.5 h-3.5 text-green-500" />
                 Bio
               </label>
-              <label className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-[#A3A3A3] cursor-pointer px-3 py-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:border-teal-300 dark:hover:border-teal-800 transition-colors">
+              <label className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-mono-700 cursor-pointer px-3 py-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-xl hover:border-teal-300 dark:hover:border-teal-800 transition-colors">
                 <input
                   type="checkbox"
                   checked={showLocalOnly}
                   onChange={e => setShowLocalOnly(e.target.checked)}
-                  className="rounded border-[#D1D5DB] dark:border-[#404040] text-teal-600 focus:ring-teal-500"
+                  className="rounded border-[#D1D5DB] dark:border-mono-350 text-teal-600 focus:ring-teal-500"
                 />
                 <MapPin className="w-3.5 h-3.5 text-teal-500" />
                 Local
@@ -1869,22 +1869,22 @@ export default function Marketplace() {
           )}
 
           {/* View mode toggle */}
-          <div className="ml-auto flex items-center gap-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-0.5">
+          <div className="ml-auto flex items-center gap-1 bg-mono-950 dark:bg-[#171717] rounded-xl p-0.5">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-[#262626] shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373]'}`}
+              className={`p-1.5 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-[#262626] shadow-sm' : 'text-[#9CA3AF] dark:text-mono-500'}`}
             >
               <Grid3x3 className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-1.5 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-[#262626] shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373]'}`}
+              className={`p-1.5 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-[#262626] shadow-sm' : 'text-[#9CA3AF] dark:text-mono-500'}`}
             >
               <List className="w-4 h-4" />
             </button>
           </div>
 
-          <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373] font-medium tabular-nums">
+          <span className="text-[11px] text-[#9CA3AF] dark:text-mono-500 font-medium tabular-nums">
             {filteredProducts.length} {t('marketplace.products')}
           </span>
         </div>
@@ -1892,7 +1892,7 @@ export default function Marketplace() {
         {/* Premium suppliers */}
         {premiumSuppliers.length > 0 && (
           <div>
-            <h2 className="text-xs font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3 flex items-center gap-2">
+            <h2 className="text-xs font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-3 flex items-center gap-2">
               <Award className="w-3.5 h-3.5 text-amber-500" />
               {t('marketplace.partnerSuppliers')}
             </h2>
@@ -1913,12 +1913,12 @@ export default function Marketplace() {
           {/* Product grid */}
           <div className="flex-1 min-w-0">
             {filteredProducts.length === 0 ? (
-              <div className="text-center py-20 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-                <div className="w-16 h-16 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-center mx-auto mb-4">
-                  <Package className="w-8 h-8 text-[#D1D5DB] dark:text-[#404040]" />
+              <div className="text-center py-20 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
+                <div className="w-16 h-16 rounded-2xl bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] flex items-center justify-center mx-auto mb-4">
+                  <Package className="w-8 h-8 text-[#D1D5DB] dark:text-mono-350" />
                 </div>
                 <p className="text-[#111111] dark:text-white font-semibold">{t('marketplace.noProducts')}</p>
-                <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">{t('marketplace.tryFilters')}</p>
+                <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">{t('marketplace.tryFilters')}</p>
                 {(selectedCategory || searchQuery || showBioOnly || showLocalOnly) && (
                   <button
                     onClick={() => { setSelectedCategory(null); setSearchQuery(''); setShowBioOnly(false); setShowLocalOnly(false); }}
@@ -1986,32 +1986,32 @@ export default function Marketplace() {
 
         {/* Order history (with timeline for 'products' tab, standalone for order button) */}
         {showOrders && activeTab === 'products' && (
-          <div className="bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="bg-white dark:bg-black rounded-2xl border border-mono-900 dark:border-[#1A1A1A] overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-mono-900 dark:border-[#1A1A1A]">
               <h2 className="font-bold text-[#111111] dark:text-white flex items-center gap-2">
                 <History className="w-5 h-5" />
                 {t('marketplace.orderHistory')}
               </h2>
-              <button onClick={() => setShowOrders(false)} className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-                <X className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+              <button onClick={() => setShowOrders(false)} className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
+                <X className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
               </button>
             </div>
 
             {ordersLoading ? (
               <div className="p-12 text-center">
-                <div className="w-8 h-8 border-2 border-[#E5E7EB] dark:border-[#262626] border-t-[#111111] dark:border-t-white rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('common.loading')}</p>
+                <div className="w-8 h-8 border-2 border-mono-900 dark:border-[#262626] border-t-[#111111] dark:border-t-white rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm text-[#9CA3AF] dark:text-mono-500">{t('common.loading')}</p>
               </div>
             ) : orders.length === 0 ? (
               <div className="p-12 text-center">
-                <Inbox className="w-10 h-10 text-[#D1D5DB] dark:text-[#404040] mx-auto mb-3" />
-                <p className="text-sm text-[#9CA3AF] dark:text-[#737373] font-medium">{t('marketplace.noOrders')}</p>
+                <Inbox className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
+                <p className="text-sm text-[#9CA3AF] dark:text-mono-500 font-medium">{t('marketplace.noOrders')}</p>
               </div>
             ) : (
-              <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+              <div className="divide-y divide-mono-900 dark:divide-[#1A1A1A]">
                 {orders.map(order => {
                   const statusConfig: Record<string, { label: string; color: string }> = {
-                    draft: { label: 'Brouillon', color: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]' },
+                    draft: { label: 'Brouillon', color: 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700' },
                     sent: { label: 'Envoye', color: 'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400' },
                     confirmed: { label: 'Confirme', color: 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400' },
                     received: { label: 'Recu', color: 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400' },
@@ -2033,13 +2033,13 @@ export default function Marketplace() {
                           <span className="text-sm font-bold text-[#111111] dark:text-white tabular-nums">
                             {formatCurrency(order.totalHT)}
                           </span>
-                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                             {new Date(order.createdAt).toLocaleDateString('fr-FR')}
                           </span>
                         </div>
                       </div>
 
-                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-3">
+                      <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-3">
                         {order.items.map((item, idx) => (
                           <span key={item.id}>
                             {item.quantity}x {item.productName}

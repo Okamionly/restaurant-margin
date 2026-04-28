@@ -147,46 +147,14 @@ const TEMPLATE_BODIES: Record<TemplateId, string> = {
 </div>`,
 };
 
-// ── Mock Data ──────────────────────────────────────────────────────────
-const MOCK_CAMPAIGNS: Campaign[] = [
-  {
-    id: '1', name: 'Newsletter Mars 2026', template: 'newsletter', recipientType: 'all',
-    recipientCount: 342, status: 'sent', sentAt: '2026-03-15T10:00:00Z',
-    stats: { sent: 342, delivered: 338, opened: 187, clicked: 45, failed: 4 },
-  },
-  {
-    id: '2', name: 'Relance inactifs Février', template: 'relance', recipientType: 'segment', segment: 'inactifs',
-    recipientCount: 89, status: 'sent', sentAt: '2026-02-20T14:00:00Z',
-    stats: { sent: 89, delivered: 86, opened: 34, clicked: 12, failed: 3 },
-  },
-  {
-    id: '3', name: 'Promotion Saint-Valentin', template: 'promotion', recipientType: 'all',
-    recipientCount: 342, status: 'sent', sentAt: '2026-02-12T09:00:00Z',
-    stats: { sent: 342, delivered: 340, opened: 256, clicked: 89, failed: 2 },
-  },
-  {
-    id: '4', name: 'Welcome Nouveaux Mars', template: 'welcome', recipientType: 'segment', segment: 'nouveaux',
-    recipientCount: 28, status: 'sent', sentAt: '2026-03-01T08:00:00Z',
-    stats: { sent: 28, delivered: 28, opened: 22, clicked: 15, failed: 0 },
-  },
-  {
-    id: '5', name: 'Newsletter Avril 2026', template: 'newsletter', recipientType: 'all',
-    recipientCount: 356, status: 'scheduled', scheduledAt: '2026-04-15T10:00:00Z',
-    stats: { sent: 0, delivered: 0, opened: 0, clicked: 0, failed: 0 },
-  },
-  {
-    id: '6', name: 'Campagne Noel 2025', template: 'promotion', recipientType: 'all',
-    recipientCount: 310, status: 'finished', sentAt: '2025-12-20T09:00:00Z',
-    stats: { sent: 310, delivered: 306, opened: 248, clicked: 102, failed: 4 },
-  },
-  {
-    id: '7', name: 'Brouillon Paques 2026', template: 'promotion', recipientType: 'all',
-    recipientCount: 0, status: 'draft',
-    stats: { sent: 0, delivered: 0, opened: 0, clicked: 0, failed: 0 },
-  },
-];
-
-const MOCK_SEQUENCES: SequenceStep[] = [
+// FIX 2026-04-28 : retrait du MOCK_CAMPAIGNS + MOCK_SEQUENCES (~7 fausses
+// campagnes "Newsletter Mars 2026", "Saint-Valentin", "Noel 2025" hardcodees).
+// Aucune raison d'afficher de fausses stats pretes a 256 ouvertures, 89 clics
+// — un user comprenait pas pourquoi ses stats matchaient pas. Empty state
+// jusqu'a ce que les vraies campagnes soient creees + l'API /api/email-campaigns
+// branchee. Le SequenceStep par defaut reste car c'est un template UX
+// (suggestion de sequence type "welcome → relance → newsletter").
+const DEFAULT_SEQUENCE_TEMPLATE: SequenceStep[] = [
   { id: 's1', day: 0,  template: 'welcome',    subject: 'Bienvenue chez nous !',              condition: 'Inscription newsletter', active: true },
   { id: 's2', day: 3,  template: 'newsletter',  subject: 'Comment etait votre experience ?',   condition: undefined, active: true },
   { id: 's3', day: 7,  template: 'newsletter',  subject: 'Decouvrez notre menu de la semaine',  condition: undefined, active: true },
@@ -198,8 +166,8 @@ export default function EmailMarketing() {
   const { showToast } = useToast();
   const { authHeaders } = useApiClient();
   const [activeTab, setActiveTab] = useState<TabId>('builder');
-  const [campaigns, setCampaigns] = useState<Campaign[]>(MOCK_CAMPAIGNS);
-  const [sequences, setSequences] = useState<SequenceStep[]>(MOCK_SEQUENCES);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [sequences, setSequences] = useState<SequenceStep[]>(DEFAULT_SEQUENCE_TEMPLATE);
 
   // Builder state
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateId>('welcome');

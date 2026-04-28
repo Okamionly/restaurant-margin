@@ -146,7 +146,9 @@ const FAKE_KPIS = {
   commandesMois: 34,
 };
 
-// Margin evolution fake data (last 6 months)
+// Margin evolution DEMO data (last 6 months) — Demo.tsx est une page de
+// présentation publique avec des données fictives pour montrer ce que
+// l'app peut faire. Pas un vrai dashboard. Banner "Mode démo" affiché.
 const MARGIN_EVOLUTION = [
   { month: 'Nov', margin: 68.5, foodCost: 31.5 },
   { month: 'Dec', margin: 69.2, foodCost: 30.8 },

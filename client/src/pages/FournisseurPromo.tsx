@@ -245,19 +245,13 @@ export default function FournisseurPromo() {
     return list;
   }, [urgentPromos, bestDeals, supplier]);
 
-  // Past promos (mock data based on current products)
-  const pastPromos = useMemo(() => {
-    return supplier.products.slice(0, 5).map((p, i) => ({
-      id: p.id,
-      name: p.name,
-      category: p.category,
-      discount: Math.round(p.discount * 0.8),
-      savedAmount: ((p.normalPrice - p.promoPrice) * (3 + i)).toFixed(2),
-      usedDate: new Date(Date.now() - (7 + i * 5) * 86400000).toISOString(),
-      quantity: 3 + i,
-      unit: p.unit,
-    }));
-  }, [supplier]);
+  // FIX 2026-04-28 : retrait des "Past promos" mock (genere depuis supplier.products
+  // avec discount * 0.8, savedAmount fictif, dates fictives). Empty array jusqu'a
+  // ce qu'un endpoint reel /api/supplier-promos/history soit branche.
+  const pastPromos: Array<{
+    id: number; name: string; category: string; discount: number;
+    savedAmount: string; usedDate: string; quantity: number; unit: string;
+  }> = [];
 
   const dismissAlert = useCallback((alertId: number) => {
     setDismissedAlerts(prev => {

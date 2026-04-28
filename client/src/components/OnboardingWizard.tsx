@@ -497,19 +497,19 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
       )}
 
       {/* Content */}
-      <div className="relative z-[220] w-full max-w-2xl mx-4 bg-white dark:bg-[#0A0A0A] rounded-3xl shadow-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden max-h-[90vh] flex flex-col">
+      <div className="relative z-[220] w-full max-w-2xl mx-4 bg-white dark:bg-mono-50 rounded-3xl shadow-2xl border border-mono-900 dark:border-mono-200 overflow-hidden max-h-[90vh] flex flex-col">
         {/* Skip button */}
         <button
           onClick={handleSkip}
-          className="absolute top-4 right-4 z-10 px-3 py-1.5 rounded-lg text-sm font-medium border border-[#E5E7EB] dark:border-[#333333] text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white hover:border-[#111111] dark:hover:border-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-all flex items-center gap-1.5"
+          className="absolute top-4 right-4 z-10 px-3 py-1.5 rounded-lg text-sm font-medium border border-mono-900 dark:border-[#333333] text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white hover:border-mono-100 dark:hover:border-white hover:bg-mono-950 dark:hover:bg-[#171717] transition-all flex items-center gap-1.5"
         >
           Passer <X className="w-3.5 h-3.5" />
         </button>
 
         {/* Progress bar */}
-        <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] flex-shrink-0">
+        <div className="h-1.5 bg-mono-950 dark:bg-[#171717] flex-shrink-0">
           <div
-            className="h-full bg-[#111111] dark:bg-white transition-all duration-500 ease-out rounded-r-full"
+            className="h-full bg-mono-100 dark:bg-white transition-all duration-500 ease-out rounded-r-full"
             style={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
           />
         </div>
@@ -521,16 +521,16 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
               key={i}
               className={`h-2 rounded-full transition-all duration-300 ${
                 i === step
-                  ? 'bg-[#111111] dark:bg-white w-8'
+                  ? 'bg-mono-100 dark:bg-white w-8'
                   : i < step
-                    ? 'bg-[#111111] dark:bg-white w-2'
+                    ? 'bg-mono-100 dark:bg-white w-2'
                     : 'bg-[#D1D5DB] dark:bg-[#333333] w-2'
               }`}
             />
           ))}
         </div>
         <div className="text-center pb-2 flex-shrink-0">
-          <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">
+          <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">
             {step + 1}/{TOTAL_STEPS} — {stepLabels[step]}
           </span>
         </div>
@@ -543,10 +543,10 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
             <div>
               <div className="text-center mb-6">
                 <div className="text-5xl sm:text-6xl mb-3">👨‍🍳</div>
-                <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+                <h2 className="text-xl sm:text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
                   Bienvenue ! Quel type de restaurant avez-vous ?
                 </h2>
-                <p className="text-[#6B7280] dark:text-[#A3A3A3] mt-2 text-sm">
+                <p className="text-[#6B7280] dark:text-mono-700 mt-2 text-sm">
                   Nous adapterons RestauMargin a votre activite
                 </p>
               </div>
@@ -558,8 +558,8 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                     onClick={() => setRestaurantType(type.value)}
                     className={`flex flex-col items-center gap-1.5 p-4 rounded-2xl border-2 transition-all duration-200 group ${
                       restaurantType === type.value
-                        ? 'border-[#111111] dark:border-white bg-[#F3F4F6] dark:bg-[#171717] scale-[1.02]'
-                        : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#9CA3AF] dark:hover:border-[#555555] hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/50'
+                        ? 'border-mono-100 dark:border-white bg-mono-950 dark:bg-[#171717] scale-[1.02]'
+                        : 'border-mono-900 dark:border-mono-200 hover:border-[#9CA3AF] dark:hover:border-[#555555] hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/50'
                     }`}
                   >
                     <span className={`text-4xl transition-transform duration-200 ${
@@ -567,17 +567,17 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                     }`}>{type.emoji}</span>
                     <span className={`text-sm font-bold ${
                       restaurantType === type.value
-                        ? 'text-[#111111] dark:text-white'
-                        : 'text-[#6B7280] dark:text-[#A3A3A3]'
+                        ? 'text-mono-100 dark:text-white'
+                        : 'text-[#6B7280] dark:text-mono-700'
                     }`}>
                       {type.label}
                     </span>
-                    <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] leading-tight text-center">
+                    <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 leading-tight text-center">
                       {type.desc}
                     </span>
                     {restaurantType === type.value && (
-                      <div className="w-5 h-5 rounded-full bg-[#111111] dark:bg-white flex items-center justify-center mt-0.5">
-                        <Check className="w-3 h-3 text-white dark:text-[#111111]" />
+                      <div className="w-5 h-5 rounded-full bg-mono-100 dark:bg-white flex items-center justify-center mt-0.5">
+                        <Check className="w-3 h-3 text-white dark:text-mono-100" />
                       </div>
                     )}
                   </button>
@@ -591,10 +591,10 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
             <div>
               <div className="text-center mb-8">
                 <div className="text-5xl sm:text-6xl mb-3">📋</div>
-                <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+                <h2 className="text-xl sm:text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
                   Combien de plats avez-vous sur votre carte ?
                 </h2>
-                <p className="text-[#6B7280] dark:text-[#A3A3A3] mt-2 text-sm">
+                <p className="text-[#6B7280] dark:text-mono-700 mt-2 text-sm">
                   Cela nous aide a personnaliser votre experience
                 </p>
               </div>
@@ -602,10 +602,10 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
               <div className="max-w-md mx-auto">
                 {/* Display value */}
                 <div className="text-center mb-6">
-                  <div className="inline-flex items-center justify-center w-24 h-24 rounded-2xl bg-[#F3F4F6] dark:bg-[#171717] border-2 border-[#111111] dark:border-white">
-                    <span className="text-4xl font-bold text-[#111111] dark:text-white font-satoshi">{dishCount}</span>
+                  <div className="inline-flex items-center justify-center w-24 h-24 rounded-2xl bg-mono-950 dark:bg-[#171717] border-2 border-mono-100 dark:border-white">
+                    <span className="text-4xl font-bold text-mono-100 dark:text-white font-satoshi">{dishCount}</span>
                   </div>
-                  <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mt-2">plats</p>
+                  <p className="text-sm text-[#6B7280] dark:text-mono-700 mt-2">plats</p>
                 </div>
 
                 {/* Slider */}
@@ -616,9 +616,9 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                     max={100}
                     value={dishCount}
                     onChange={e => setDishCount(Number(e.target.value))}
-                    className="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#E5E7EB] dark:bg-[#333333] accent-[#111111] dark:accent-white slider-thumb"
+                    className="w-full h-2 rounded-full appearance-none cursor-pointer bg-mono-900 dark:bg-[#333333] accent-mono-100 dark:accent-white slider-thumb"
                   />
-                  <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-2">
+                  <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-mono-500 mt-2">
                     <span>5</span>
                     <span>25</span>
                     <span>50</span>
@@ -635,8 +635,8 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                       onClick={() => setDishCount(v)}
                       className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                         dishCount === v
-                          ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
-                          : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A]'
+                          ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100'
+                          : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-200'
                       }`}
                     >
                       {v}
@@ -652,10 +652,10 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
             <div>
               <div className="text-center mb-6">
                 <div className="text-5xl sm:text-6xl mb-3">🎯</div>
-                <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+                <h2 className="text-xl sm:text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
                   Quel est votre objectif principal ?
                 </h2>
-                <p className="text-[#6B7280] dark:text-[#A3A3A3] mt-2 text-sm">
+                <p className="text-[#6B7280] dark:text-mono-700 mt-2 text-sm">
                   Nous mettrons en avant les fonctionnalites adaptees
                 </p>
               </div>
@@ -669,30 +669,30 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                       onClick={() => setGoal(g.value)}
                       className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 text-left transition-all duration-200 ${
                         goal === g.value
-                          ? 'border-[#111111] dark:border-white bg-[#F3F4F6] dark:bg-[#171717]'
-                          : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#9CA3AF] dark:hover:border-[#555555]'
+                          ? 'border-mono-100 dark:border-white bg-mono-950 dark:bg-[#171717]'
+                          : 'border-mono-900 dark:border-mono-200 hover:border-[#9CA3AF] dark:hover:border-[#555555]'
                       }`}
                     >
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
                         goal === g.value
-                          ? 'bg-[#111111] dark:bg-white'
-                          : 'bg-[#F3F4F6] dark:bg-[#171717]'
+                          ? 'bg-mono-100 dark:bg-white'
+                          : 'bg-mono-950 dark:bg-[#171717]'
                       }`}>
                         <Icon className={`w-6 h-6 ${
-                          goal === g.value ? 'text-white dark:text-[#111111]' : 'text-[#6B7280] dark:text-[#A3A3A3]'
+                          goal === g.value ? 'text-white dark:text-mono-100' : 'text-[#6B7280] dark:text-mono-700'
                         }`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className={`text-sm font-bold ${
-                          goal === g.value ? 'text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'
+                          goal === g.value ? 'text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-700'
                         }`}>
                           {g.label}
                         </h3>
-                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{g.desc}</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{g.desc}</p>
                       </div>
                       {goal === g.value && (
-                        <div className="w-6 h-6 rounded-full bg-[#111111] dark:bg-white flex items-center justify-center flex-shrink-0">
-                          <Check className="w-3.5 h-3.5 text-white dark:text-[#111111]" />
+                        <div className="w-6 h-6 rounded-full bg-mono-100 dark:bg-white flex items-center justify-center flex-shrink-0">
+                          <Check className="w-3.5 h-3.5 text-white dark:text-mono-100" />
                         </div>
                       )}
                     </button>
@@ -707,10 +707,10 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
             <div>
               <div className="text-center mb-5">
                 <div className="text-5xl sm:text-6xl mb-3">🧅</div>
-                <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+                <h2 className="text-xl sm:text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
                   Ajoutons votre premier ingredient
                 </h2>
-                <p className="text-[#6B7280] dark:text-[#A3A3A3] mt-2 text-sm">
+                <p className="text-[#6B7280] dark:text-mono-700 mt-2 text-sm">
                   Modifiez les prix selon vos fournisseurs, ou ajoutez les votres
                 </p>
               </div>
@@ -731,7 +731,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                         <button
                           key={s.name}
                           onClick={() => setIngredients(prev => [...prev, { ...s }])}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-[#1A1A1A] border border-[#BAE6FD] dark:border-[#1E3A5F] text-[#0284C7] dark:text-[#38BDF8] hover:bg-[#F0F9FF] dark:hover:bg-[#0C1426] transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-mono-200 border border-[#BAE6FD] dark:border-[#1E3A5F] text-[#0284C7] dark:text-[#38BDF8] hover:bg-[#F0F9FF] dark:hover:bg-[#0C1426] transition-colors"
                         >
                           <Plus className="w-3 h-3" /> {s.name}
                         </button>
@@ -743,7 +743,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
               {/* Ingredients list */}
               <div className="space-y-2.5 max-h-[240px] overflow-y-auto pr-1">
                 {ingredients.map((ing, i) => (
-                  <div key={i} className="flex items-center gap-2 sm:gap-3 p-3 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717]">
+                  <div key={i} className="flex items-center gap-2 sm:gap-3 p-3 rounded-xl border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-[#171717]">
                     <div className="flex-1 min-w-0">
                       <input
                         type="text"
@@ -753,9 +753,9 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                           next[i] = { ...next[i], name: e.target.value };
                           setIngredients(next);
                         }}
-                        className="w-full bg-transparent text-sm font-medium text-[#111111] dark:text-white focus:outline-none"
+                        className="w-full bg-transparent text-sm font-medium text-mono-100 dark:text-white focus:outline-none"
                       />
-                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{ing.category}</div>
+                      <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{ing.category}</div>
                     </div>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       <input
@@ -768,9 +768,9 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                           next[i] = { ...next[i], pricePerUnit: Number(e.target.value) };
                           setIngredients(next);
                         }}
-                        className="w-16 sm:w-20 text-right px-2 py-1 rounded-lg border border-[#E5E7EB] dark:border-[#333333] bg-white dark:bg-[#0A0A0A] text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#111111] dark:focus:ring-white"
+                        className="w-16 sm:w-20 text-right px-2 py-1 rounded-lg border border-mono-900 dark:border-[#333333] bg-white dark:bg-mono-50 text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-1 focus:ring-mono-100 dark:focus:ring-white"
                       />
-                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-6">/{ing.unit}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500 w-6">/{ing.unit}</span>
                     </div>
                     {ingredients.length > 1 && (
                       <button
@@ -799,24 +799,24 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                         if (ingredientNameInput.length >= 2) setShowAutoComplete(true);
                       }}
                       placeholder="Ajouter un ingredient..."
-                      className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717] text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-1 focus:ring-[#111111] dark:focus:ring-white"
+                      className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-[#171717] text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500 focus:outline-none focus:ring-1 focus:ring-mono-100 dark:focus:ring-white"
                     />
                     {showAutoComplete && autoCompleteSuggestions.length > 0 && (
-                      <div className="absolute left-0 right-0 top-full mt-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-xl z-10 py-1 max-h-48 overflow-y-auto">
-                        <div className="px-3 py-1.5 text-[10px] font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider flex items-center gap-1.5">
+                      <div className="absolute left-0 right-0 top-full mt-1 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl shadow-xl z-10 py-1 max-h-48 overflow-y-auto">
+                        <div className="px-3 py-1.5 text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider flex items-center gap-1.5">
                           <Sparkles className="w-3 h-3" /> Suggestions IA
                         </div>
                         {autoCompleteSuggestions.map(s => (
                           <button
                             key={s.name}
                             onClick={() => addAutoCompleteIngredient(s)}
-                            className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                            className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
                           >
                             <div>
-                              <span className="font-medium text-[#111111] dark:text-white">{s.name}</span>
-                              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-2">{s.category}</span>
+                              <span className="font-medium text-mono-100 dark:text-white">{s.name}</span>
+                              <span className="text-xs text-[#9CA3AF] dark:text-mono-500 ml-2">{s.category}</span>
                             </div>
-                            <span className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">
+                            <span className="text-xs font-medium text-[#6B7280] dark:text-mono-700">
                               {formatCurrency(s.pricePerUnit)}/{s.unit}
                             </span>
                           </button>
@@ -833,7 +833,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                       }
                     }}
                     disabled={!ingredientNameInput.trim()}
-                    className="px-3 py-2 rounded-lg bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-sm font-medium disabled:opacity-30 hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors flex-shrink-0"
+                    className="px-3 py-2 rounded-lg bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium disabled:opacity-30 hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors flex-shrink-0"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -847,10 +847,10 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
             <div>
               <div className="text-center mb-5">
                 <div className="text-5xl sm:text-6xl mb-3">🍳</div>
-                <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+                <h2 className="text-xl sm:text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
                   Creons votre premiere recette !
                 </h2>
-                <p className="text-[#6B7280] dark:text-[#A3A3A3] mt-2 text-sm">
+                <p className="text-[#6B7280] dark:text-mono-700 mt-2 text-sm">
                   Selectionnez des ingredients et fixez votre prix de vente
                 </p>
               </div>
@@ -858,20 +858,20 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Nom</label>
+                    <label className="block text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1">Nom</label>
                     <input
                       type="text"
                       value={recipeName}
                       onChange={e => setRecipeName(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717] text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#111111] dark:focus:ring-white"
+                      className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-[#171717] text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-1 focus:ring-mono-100 dark:focus:ring-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Categorie</label>
+                    <label className="block text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1">Categorie</label>
                     <select
                       value={recipeCategory}
                       onChange={e => setRecipeCategory(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717] text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#111111] dark:focus:ring-white"
+                      className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-[#171717] text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-1 focus:ring-mono-100 dark:focus:ring-white"
                     >
                       {['Entree', 'Plat', 'Dessert', 'Boisson', 'Accompagnement'].map(c => (
                         <option key={c} value={c}>{c}</option>
@@ -881,19 +881,19 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Prix de vente (EUR)</label>
+                  <label className="block text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1">Prix de vente (EUR)</label>
                   <input
                     type="number"
                     step="0.5"
                     min="0"
                     value={recipePrice}
                     onChange={e => setRecipePrice(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717] text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#111111] dark:focus:ring-white"
+                    className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-[#171717] text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-1 focus:ring-mono-100 dark:focus:ring-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-2">Ingredients</label>
+                  <label className="block text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-2">Ingredients</label>
                   <div className="space-y-2 max-h-[180px] overflow-y-auto">
                     {ingredients.map((ing, idx) => {
                       const selected = selectedIngredientIndexes.includes(idx);
@@ -902,19 +902,19 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                           key={idx}
                           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl border cursor-pointer transition-all ${
                             selected
-                              ? 'border-[#111111] dark:border-white bg-[#F3F4F6] dark:bg-[#171717]'
-                              : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#9CA3AF] dark:hover:border-[#555555]'
+                              ? 'border-mono-100 dark:border-white bg-mono-950 dark:bg-[#171717]'
+                              : 'border-mono-900 dark:border-mono-200 hover:border-[#9CA3AF] dark:hover:border-[#555555]'
                           }`}
                           onClick={() => toggleIngredient(idx)}
                         >
                           <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                             selected
-                              ? 'bg-[#111111] dark:bg-white border-[#111111] dark:border-white'
+                              ? 'bg-mono-100 dark:bg-white border-mono-100 dark:border-white'
                               : 'border-[#D1D5DB] dark:border-[#555555]'
                           }`}>
-                            {selected && <Check className="w-3 h-3 text-white dark:text-[#111111]" />}
+                            {selected && <Check className="w-3 h-3 text-white dark:text-mono-100" />}
                           </div>
-                          <span className="flex-1 text-sm text-[#111111] dark:text-white">{ing.name}</span>
+                          <span className="flex-1 text-sm text-mono-100 dark:text-white">{ing.name}</span>
                           {selected && (
                             <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
                               <input
@@ -923,9 +923,9 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                                 min="0.01"
                                 value={recipeQuantities[idx] || 0.1}
                                 onChange={e => setRecipeQuantities(prev => ({ ...prev, [idx]: Number(e.target.value) }))}
-                                className="w-16 text-right px-2 py-1 rounded-lg border border-[#E5E7EB] dark:border-[#333333] bg-white dark:bg-[#0A0A0A] text-xs text-[#111111] dark:text-white focus:outline-none"
+                                className="w-16 text-right px-2 py-1 rounded-lg border border-mono-900 dark:border-[#333333] bg-white dark:bg-mono-50 text-xs text-mono-100 dark:text-white focus:outline-none"
                               />
-                              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ing.unit}</span>
+                              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{ing.unit}</span>
                             </div>
                           )}
                         </div>
@@ -935,13 +935,13 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                 </div>
 
                 {/* Live preview */}
-                <div className="p-3 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div className="p-3 rounded-xl bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-[#6B7280] dark:text-[#A3A3A3]">Apercu food cost</span>
-                    <span className="font-bold text-[#111111] dark:text-white">{formatCurrency(marginData.foodCost)}</span>
+                    <span className="text-[#6B7280] dark:text-mono-700">Apercu food cost</span>
+                    <span className="font-bold text-mono-100 dark:text-white">{formatCurrency(marginData.foodCost)}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm mt-1">
-                    <span className="text-[#6B7280] dark:text-[#A3A3A3]">Marge estimee</span>
+                    <span className="text-[#6B7280] dark:text-mono-700">Marge estimee</span>
                     <span className={`font-bold ${marginData.margin >= 70 ? 'text-[#10B981]' : marginData.margin >= 60 ? 'text-[#F59E0B]' : 'text-[#EF4444]'}`}>
                       {marginData.margin.toFixed(1)}%
                     </span>
@@ -955,38 +955,38 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
           {step === 5 && (
             <div className="text-center">
               <div className="text-5xl sm:text-6xl mb-3">🎉</div>
-              <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white font-satoshi mb-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-mono-100 dark:text-white font-satoshi mb-2">
                 Voila votre premiere fiche technique !
               </h2>
-              <p className="text-[#6B7280] dark:text-[#A3A3A3] mb-6 text-sm">
-                Resultat pour <strong className="text-[#111111] dark:text-white">{recipeName}</strong>
+              <p className="text-[#6B7280] dark:text-mono-700 mb-6 text-sm">
+                Resultat pour <strong className="text-mono-100 dark:text-white">{recipeName}</strong>
               </p>
 
               {/* Stats grid */}
               <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
-                <div className="p-4 sm:p-5 rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717]">
-                  <div className="text-2xl sm:text-3xl font-bold text-[#111111] dark:text-white font-satoshi animate-counter">
+                <div className="p-4 sm:p-5 rounded-2xl border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-[#171717]">
+                  <div className="text-2xl sm:text-3xl font-bold text-mono-100 dark:text-white font-satoshi animate-counter">
                     {marginData.foodCost.toFixed(2)}
                   </div>
-                  <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Food Cost (EUR)</div>
+                  <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Food Cost (EUR)</div>
                 </div>
-                <div className="p-4 sm:p-5 rounded-2xl border-2 border-[#111111] dark:border-white bg-[#111111] dark:bg-white">
-                  <div className="text-2xl sm:text-3xl font-bold text-white dark:text-[#111111] font-satoshi animate-counter">
+                <div className="p-4 sm:p-5 rounded-2xl border-2 border-mono-100 dark:border-white bg-mono-100 dark:bg-white">
+                  <div className="text-2xl sm:text-3xl font-bold text-white dark:text-mono-100 font-satoshi animate-counter">
                     {marginData.margin.toFixed(1)}%
                   </div>
                   <div className="text-[10px] sm:text-xs text-[#D1D5DB] dark:text-[#6B7280] mt-1">Marge Brute</div>
                 </div>
-                <div className="p-4 sm:p-5 rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717]">
-                  <div className="text-2xl sm:text-3xl font-bold text-[#111111] dark:text-white font-satoshi animate-counter">
+                <div className="p-4 sm:p-5 rounded-2xl border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-[#171717]">
+                  <div className="text-2xl sm:text-3xl font-bold text-mono-100 dark:text-white font-satoshi animate-counter">
                     x{marginData.coefficient.toFixed(1)}
                   </div>
-                  <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Coefficient</div>
+                  <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Coefficient</div>
                 </div>
               </div>
 
               {/* Ingredients breakdown */}
-              <div className="p-4 rounded-xl bg-[#F9FAFB] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] text-left mb-4">
-                <h3 className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2">Composition</h3>
+              <div className="p-4 rounded-xl bg-[#F9FAFB] dark:bg-[#171717] border border-mono-900 dark:border-mono-200 text-left mb-4">
+                <h3 className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2">Composition</h3>
                 <div className="space-y-1.5">
                   {selectedIngredientIndexes.map(idx => {
                     const ing = ingredients[idx];
@@ -995,10 +995,10 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                     const cost = ing.pricePerUnit * qty;
                     return (
                       <div key={idx} className="flex items-center justify-between text-sm">
-                        <span className="text-[#111111] dark:text-white">{ing.name}</span>
+                        <span className="text-mono-100 dark:text-white">{ing.name}</span>
                         <div className="flex items-center gap-3">
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{qty} {ing.unit}</span>
-                          <span className="font-medium text-[#111111] dark:text-white">{formatCurrency(cost)}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{qty} {ing.unit}</span>
+                          <span className="font-medium text-mono-100 dark:text-white">{formatCurrency(cost)}</span>
                         </div>
                       </div>
                     );
@@ -1007,20 +1007,20 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
               </div>
 
               {/* Advice */}
-              <div className="p-4 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] text-left">
+              <div className="p-4 rounded-xl bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200 text-left">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#111111] dark:bg-white flex items-center justify-center flex-shrink-0">
-                    <BarChart3 className="w-4 h-4 text-white dark:text-[#111111]" />
+                  <div className="w-8 h-8 rounded-lg bg-mono-100 dark:bg-white flex items-center justify-center flex-shrink-0">
+                    <BarChart3 className="w-4 h-4 text-white dark:text-mono-100" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-[#111111] dark:text-white">
+                    <p className="text-sm font-medium text-mono-100 dark:text-white">
                       {marginData.margin >= 70
                         ? 'Excellente marge ! Votre recette est tres rentable.'
                         : marginData.margin >= 60
                           ? 'Bonne marge. Vous pouvez encore optimiser les quantites.'
                           : 'Marge a ameliorer. Ajustez le prix ou les quantites.'}
                     </p>
-                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">
                       Objectif restauration : marge brute entre 65% et 75%
                     </p>
                   </div>
@@ -1033,15 +1033,15 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                   <div className="flex items-start gap-3">
                     <span className="text-2xl flex-shrink-0">{matchingPack.emoji}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-[#111111] dark:text-white">
+                      <p className="text-sm font-bold text-mono-100 dark:text-white">
                         Importer le pack "{matchingPack.name}" ?
                       </p>
-                      <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">
+                      <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-0.5">
                         {matchingPack.recipes.slice(0, 5).length} recettes pre-remplies avec ingredients et prix
                       </p>
                       <div className="flex flex-wrap gap-1 mt-2">
                         {matchingPack.recipes.slice(0, 5).map(r => (
-                          <span key={r.name} className="text-[10px] px-2 py-0.5 rounded-full bg-white dark:bg-[#1A1A1A] border border-[#E5E7EB] dark:border-[#333333] text-[#6B7280] dark:text-[#A3A3A3]">
+                          <span key={r.name} className="text-[10px] px-2 py-0.5 rounded-full bg-white dark:bg-mono-200 border border-mono-900 dark:border-[#333333] text-[#6B7280] dark:text-mono-700">
                             {r.name}
                           </span>
                         ))}
@@ -1052,7 +1052,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                         className={`mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                           packImported
                             ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700'
-                            : 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E7EB] disabled:opacity-50'
+                            : 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:bg-[#333333] dark:hover:bg-mono-900 disabled:opacity-50'
                         }`}
                       >
                         {packImported ? (
@@ -1072,12 +1072,12 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
         </div>
 
         {/* Navigation buttons */}
-        <div className="px-6 sm:px-8 pb-6 sm:pb-8 flex items-center justify-between flex-shrink-0 border-t border-[#F3F4F6] dark:border-[#1A1A1A] pt-4">
+        <div className="px-6 sm:px-8 pb-6 sm:pb-8 flex items-center justify-between flex-shrink-0 border-t border-mono-950 dark:border-mono-200 pt-4">
           <div>
             {step > 0 && (
               <button
                 onClick={goPrev}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" /> Precedent
               </button>
@@ -1089,7 +1089,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
               <button
                 onClick={step === 4 ? handleSaveAndShowResults : goNext}
                 disabled={saving}
-                className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors disabled:opacity-50"
+                className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors disabled:opacity-50"
               >
                 {saving ? (
                   <>
@@ -1104,7 +1104,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
             ) : (
               <button
                 onClick={handleFinish}
-                className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+                className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
               >
                 <ChefHat className="w-4 h-4" /> C'est parti !
               </button>

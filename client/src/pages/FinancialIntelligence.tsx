@@ -12,15 +12,6 @@ import { fetchRecipes, fetchIngredients } from '../services/api';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token');
-  const rid = localStorage.getItem('activeRestaurantId');
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  if (rid) headers['X-Restaurant-Id'] = rid;
-  return headers;
-}
-
 function fmt(n: number): string {
   return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 }

@@ -1163,11 +1163,11 @@ export default function Planning() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-2 print-title">
+          <h1 className="text-2xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-2 print-title">
             <CalendarDays className="w-7 h-7 text-indigo-500 no-print" />
             {t('planning.title')}
           </h1>
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1 print-subtitle">
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1 print-subtitle">
             {t('planning.subtitle')} -- {weekLabel}
           </p>
         </div>
@@ -1182,19 +1182,19 @@ export default function Planning() {
           {/* Templates */}
           <button
             onClick={() => setShowTemplateModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition text-sm font-medium"
           >
             <FileText className="w-4 h-4" /> Templates
           </button>
           <button
             onClick={exportPlanningCSV}
-            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition text-sm font-medium"
           >
             <Download className="w-4 h-4" /> Exporter planning
           </button>
           <button
             onClick={handlePrint}
-            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition text-sm font-medium"
           >
             <Printer className="w-4 h-4" /> Imprimer
           </button>
@@ -1225,13 +1225,13 @@ export default function Planning() {
       </div>
 
       {/* Tab navigation */}
-      <div className="flex rounded-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] p-1 gap-1 no-print">
+      <div className="flex rounded-lg bg-white dark:bg-black border border-mono-900 dark:border-mono-200 p-1 gap-1 no-print">
         <button
           onClick={() => setPlanningTab('planning')}
           className={`flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition ${
             planningTab === 'planning'
-              ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-              : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]'
+              ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+              : 'text-[#6B7280] dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-mono-50'
           }`}
         >
           <CalendarDays className="w-4 h-4" /> Planning
@@ -1240,8 +1240,8 @@ export default function Planning() {
           onClick={() => setPlanningTab('pointage')}
           className={`flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition ${
             planningTab === 'pointage'
-              ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-              : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]'
+              ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+              : 'text-[#6B7280] dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-mono-50'
           }`}
         >
           <Timer className="w-4 h-4" /> Pointage
@@ -1294,29 +1294,29 @@ export default function Planning() {
       </div>
 
       {/* Week navigation + view toggle */}
-      <div className="flex flex-col sm:flex-row items-center justify-between bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 gap-3 no-print">
+      <div className="flex flex-col sm:flex-row items-center justify-between bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-4 gap-3 no-print">
         <div className="flex items-center gap-2">
-          <button onClick={goPrev} className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
-            <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
+          <button onClick={goPrev} className="p-2 rounded-lg hover:bg-mono-1000 dark:hover:bg-mono-50 transition">
+            <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
           </button>
           <button onClick={goThisWeek} className="px-3 py-1 text-xs font-medium rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800/50 transition border border-indigo-200 dark:border-indigo-700/30">
             {t('planning.today')}
           </button>
-          <h2 className="text-lg font-semibold text-[#111111] dark:text-white px-2">{weekLabel}</h2>
-          <button onClick={goNext} className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
-            <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
+          <h2 className="text-lg font-semibold text-mono-100 dark:text-white px-2">{weekLabel}</h2>
+          <button onClick={goNext} className="p-2 rounded-lg hover:bg-mono-1000 dark:hover:bg-mono-50 transition">
+            <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
           </button>
         </div>
-        <div className="flex rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] p-0.5">
+        <div className="flex rounded-lg bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 p-0.5">
           <button
             onClick={() => setView('semaine')}
-            className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'semaine' ? 'bg-indigo-600 text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'semaine' ? 'bg-indigo-600 text-white' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
           >
             {t('planning.week')}
           </button>
           <button
             onClick={() => setView('jour')}
-            className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'jour' ? 'bg-indigo-600 text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'jour' ? 'bg-indigo-600 text-white' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
           >
             {t('planning.day')}
           </button>
@@ -1324,8 +1324,8 @@ export default function Planning() {
       </div>
 
       {/* Employee drag panel */}
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 no-print">
-        <h3 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3">
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-4 no-print">
+        <h3 className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-3">
           {t('planning.dragToAssign')}
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -1336,14 +1336,14 @@ export default function Planning() {
                 key={emp.id}
                 draggable
                 onDragStart={() => handleDragStart(emp)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-[#FAFAFA] dark:bg-[#0A0A0A] cursor-grab active:cursor-grabbing hover:border-[#D1D5DB] dark:hover:border-[#333] transition select-none ${
-                  empConflicts.length > 0 ? 'border-red-500 ring-1 ring-red-500/30' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-mono-1000 dark:bg-mono-50 cursor-grab active:cursor-grabbing hover:border-[#D1D5DB] dark:hover:border-[#333] transition select-none ${
+                  empConflicts.length > 0 ? 'border-red-500 ring-1 ring-red-500/30' : 'border-mono-900 dark:border-mono-200'
                 }`}
               >
-                <GripVertical className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+                <GripVertical className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
                 <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3] font-medium">{emp.name || ''}</span>
-                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
+                <span className="text-sm text-[#6B7280] dark:text-mono-700 font-medium">{emp.name || ''}</span>
+                <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
                 {empConflicts.length > 0 && (
                   <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-500 text-[10px] font-bold">
                     <AlertCircle className="w-3 h-3" /> {empConflicts.length}
@@ -1357,7 +1357,7 @@ export default function Planning() {
 
       {/* ── Week View Calendar: 7-column time grid ── */}
       {view === 'semaine' && (
-        <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+        <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
           {/* Desktop: Full time-slot grid */}
           <div className="hidden lg:block overflow-x-auto">
             <div
@@ -1367,8 +1367,8 @@ export default function Planning() {
               onMouseLeave={() => dragCreateState?.active && handleGridMouseUp()}
             >
               {/* Header row */}
-              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border-b border-r border-[#E5E7EB] dark:border-[#1A1A1A] p-2 text-center">
-                <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase font-medium">Heure</span>
+              <div className="bg-mono-1000 dark:bg-mono-50 border-b border-r border-mono-900 dark:border-mono-200 p-2 text-center">
+                <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase font-medium">Heure</span>
               </div>
               {weekDays.map((day, i) => {
                 const dayStr = formatDate(day);
@@ -1378,12 +1378,12 @@ export default function Planning() {
                 return (
                   <div
                     key={i}
-                    className={`border-b border-r border-[#E5E7EB] dark:border-[#1A1A1A] last:border-r-0 px-2 py-2 text-center ${
-                      isToday ? 'bg-indigo-50 dark:bg-indigo-950/20' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]'
+                    className={`border-b border-r border-mono-900 dark:border-mono-200 last:border-r-0 px-2 py-2 text-center ${
+                      isToday ? 'bg-indigo-50 dark:bg-indigo-950/20' : 'bg-mono-1000 dark:bg-mono-50'
                     }`}
                   >
-                    <div className="text-[10px] font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{JOURS_FULL[i]}</div>
-                    <div className={`text-sm font-bold ${isToday ? 'text-indigo-500' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                    <div className="text-[10px] font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{JOURS_FULL[i]}</div>
+                    <div className={`text-sm font-bold ${isToday ? 'text-indigo-500' : 'text-[#6B7280] dark:text-mono-700'}`}>
                       {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
                     </div>
                     {/* Labor cost badge per day */}
@@ -1407,9 +1407,9 @@ export default function Planning() {
                   {/* Hour label */}
                   <div
                     key={`label-${hour}`}
-                    className="border-b border-r border-[#E5E7EB] dark:border-[#1A1A1A] p-1 text-center flex items-center justify-center"
+                    className="border-b border-r border-mono-900 dark:border-mono-200 p-1 text-center flex items-center justify-center"
                   >
-                    <span className="text-[10px] font-mono text-[#9CA3AF] dark:text-[#737373]">
+                    <span className="text-[10px] font-mono text-[#9CA3AF] dark:text-mono-500">
                       {hour.toString().padStart(2, '0')}:00
                     </span>
                   </div>
@@ -1450,12 +1450,12 @@ export default function Planning() {
                     return (
                       <div
                         key={`cell-${hour}-${dayIdx}`}
-                        className={`border-b border-r border-[#E5E7EB] dark:border-[#1A1A1A] last:border-r-0 relative min-h-[32px] transition-colors cursor-crosshair ${
+                        className={`border-b border-r border-mono-900 dark:border-mono-200 last:border-r-0 relative min-h-[32px] transition-colors cursor-crosshair ${
                           isToday ? 'bg-indigo-50/50 dark:bg-indigo-950/10' : ''
                         } ${isDragHighlight ? 'bg-indigo-100 dark:bg-indigo-900/30' : ''} ${
-                          hasUnavailable && !isDragHighlight ? 'bg-[#F0F0F0] dark:bg-[#1A1A1A]' : ''
+                          hasUnavailable && !isDragHighlight ? 'bg-[#F0F0F0] dark:bg-mono-200' : ''
                         } ${
-                          dragEmployee ? 'hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]' : ''
+                          dragEmployee ? 'hover:bg-mono-1000 dark:hover:bg-mono-50' : ''
                         }`}
                         onDragOver={handleDragOver}
                         onDrop={() => {
@@ -1493,10 +1493,10 @@ export default function Planning() {
                               <div className="flex items-center gap-1 truncate">
                                 {shiftConflict && <AlertCircle className="w-2.5 h-2.5 text-red-500 flex-shrink-0" />}
                                 <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                                <span className="font-semibold text-[#111111] dark:text-white truncate">{emp.name}</span>
+                                <span className="font-semibold text-mono-100 dark:text-white truncate">{emp.name}</span>
                               </div>
                               {spanHours >= 2 && (
-                                <div className="flex items-center gap-1 mt-0.5 text-[#9CA3AF] dark:text-[#737373]">
+                                <div className="flex items-center gap-1 mt-0.5 text-[#9CA3AF] dark:text-mono-500">
                                   {getPosteIcon(s.type)}
                                   <span>{s.startTime}-{s.endTime}</span>
                                 </div>
@@ -1520,24 +1520,24 @@ export default function Planning() {
 
           {/* Mobile: single day view */}
           <div className="lg:hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50">
               <button
                 onClick={() => setSelectedDayIdx(prev => (prev - 1 + 7) % 7)}
-                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
+                className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition"
               >
-                <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
+                <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
               </button>
               <div className="text-center">
-                <div className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{JOURS_FULL[selectedDayIdx]}</div>
-                <div className="text-sm font-semibold text-[#111111] dark:text-white">
+                <div className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{JOURS_FULL[selectedDayIdx]}</div>
+                <div className="text-sm font-semibold text-mono-100 dark:text-white">
                   {weekDays[selectedDayIdx].getDate()}/{(weekDays[selectedDayIdx].getMonth() + 1).toString().padStart(2, '0')}
                 </div>
               </div>
               <button
                 onClick={() => setSelectedDayIdx(prev => (prev + 1) % 7)}
-                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
+                className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition"
               >
-                <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
+                <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
               </button>
             </div>
             <MobileDayContent
@@ -1558,25 +1558,25 @@ export default function Planning() {
 
       {/* ── Day Detail View (jour) ── */}
       {view === 'jour' && (
-        <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A] no-print">
+        <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3 border-b border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50 no-print">
             <button
               onClick={() => setSelectedDayIdx(prev => (prev - 1 + 7) % 7)}
-              className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
+              className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition"
             >
-              <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
+              <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
             </button>
             <div className="text-center">
-              <div className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{JOURS_FULL[selectedDayIdx]}</div>
-              <div className="text-lg font-bold text-[#111111] dark:text-white">
+              <div className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{JOURS_FULL[selectedDayIdx]}</div>
+              <div className="text-lg font-bold text-mono-100 dark:text-white">
                 {weekDays[selectedDayIdx].toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
               </div>
             </div>
             <button
               onClick={() => setSelectedDayIdx(prev => (prev + 1) % 7)}
-              className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
+              className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition"
             >
-              <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
+              <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
             </button>
           </div>
           <DayTimelineView
@@ -1592,9 +1592,9 @@ export default function Planning() {
       )}
 
       {/* Employee list */}
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
-          <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200 flex items-center justify-between">
+          <h3 className="font-semibold text-mono-100 dark:text-white flex items-center gap-2">
             <Users className="w-4 h-4 text-indigo-400" /> {t('planning.team')} ({employees.length})
           </h3>
           <button onClick={openAddEmployee} className="text-xs font-medium text-indigo-400 hover:underline flex items-center gap-1 no-print">
@@ -1604,27 +1604,27 @@ export default function Planning() {
         <div className="overflow-x-auto -mx-4 sm:mx-0">
           <table className="w-full text-sm min-w-[700px]">
             <thead>
-              <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.employee')}</th>
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.role')}</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.rate')}</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.hoursPerWeek')}</th>
-                <th className="px-4 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.status')}</th>
-                <th className="px-4 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase no-print">{t('planning.actions')}</th>
+              <tr className="bg-mono-1000 dark:bg-mono-50">
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{t('planning.employee')}</th>
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{t('planning.role')}</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{t('planning.rate')}</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{t('planning.hoursPerWeek')}</th>
+                <th className="px-4 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{t('planning.status')}</th>
+                <th className="px-4 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase no-print">{t('planning.actions')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+            <tbody className="divide-y divide-mono-900 dark:divide-mono-200">
               {employees.map(emp => {
                 const hours = employeeWeeklyHours.get(emp.id) || 0;
                 const isOver35 = hours > 35;
                 const isOver48 = hours > 48;
                 const empConflicts = conflicts.filter(c => c.employeeId === emp.id);
                 return (
-                  <tr key={emp.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
+                  <tr key={emp.id} className="hover:bg-mono-1000 dark:hover:bg-mono-50 transition">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                        <span className="font-medium text-[#111111] dark:text-white">{emp.name || ''}</span>
+                        <span className="font-medium text-mono-100 dark:text-white">{emp.name || ''}</span>
                         {empConflicts.length > 0 && (
                           <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-500 text-[10px] font-bold">
                             <AlertCircle className="w-3 h-3" /> Conflit
@@ -1637,7 +1637,7 @@ export default function Planning() {
                         {ROLE_LABELS[emp.role] || emp.role || ''}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(emp.hourlyRate ?? 0)}/h</td>
+                    <td className="px-4 py-3 text-right text-[#6B7280] dark:text-mono-700">{formatCurrency(emp.hourlyRate ?? 0)}/h</td>
                     <td className="px-4 py-3 text-right">
                       <span className={`font-semibold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-emerald-400'}`}>
                         {hours.toFixed(0)}h
@@ -1664,11 +1664,11 @@ export default function Planning() {
                     </td>
                     <td className="px-4 py-3 text-center no-print">
                       <div className="flex items-center justify-center gap-1">
-                        <button onClick={() => openAvailabilityManager(emp)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition" title="Disponibilites">
-                          <Clock className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+                        <button onClick={() => openAvailabilityManager(emp)} className="p-1.5 rounded hover:bg-mono-950 dark:hover:bg-[#171717] transition" title="Disponibilites">
+                          <Clock className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
                         </button>
-                        <button onClick={() => openEditEmployee(emp)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition">
-                          <Edit className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+                        <button onClick={() => openEditEmployee(emp)} className="p-1.5 rounded hover:bg-mono-950 dark:hover:bg-[#171717] transition">
+                          <Edit className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
                         </button>
                         <button onClick={() => deleteEmployee(emp.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/20 transition">
                           <Trash2 className="w-3.5 h-3.5 text-red-500" />
@@ -1684,47 +1684,47 @@ export default function Planning() {
       </div>
 
       {/* Weekly summary table (print-friendly) */}
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
+          <h3 className="font-semibold text-mono-100 dark:text-white flex items-center gap-2">
             <Clock className="w-4 h-4 text-amber-400" /> {t('planning.weeklySummary')}
           </h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.employee')}</th>
+              <tr className="bg-mono-1000 dark:bg-mono-50">
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{t('planning.employee')}</th>
                 {JOURS.map(j => (
-                  <th key={j} className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{j}</th>
+                  <th key={j} className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{j}</th>
                 ))}
-                <th className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">Total</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.cost')}</th>
-                <th className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.alert')}</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">Total</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{t('planning.cost')}</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{t('planning.alert')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+            <tbody className="divide-y divide-mono-900 dark:divide-mono-200">
               {summaryRows.map(row => {
                 const isOver35 = row.total > 35;
                 const isOver48 = row.total > 48;
                 const empConflicts = conflicts.filter(c => c.employeeId === row.emp.id);
                 return (
-                  <tr key={row.emp.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
+                  <tr key={row.emp.id} className="hover:bg-mono-1000 dark:hover:bg-mono-50 transition">
                     <td className="px-4 py-2.5 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: row.emp.color || '#6366f1' }} />
-                        <span className="font-medium text-[#111111] dark:text-white">{row.emp.name || ''}</span>
+                        <span className="font-medium text-mono-100 dark:text-white">{row.emp.name || ''}</span>
                       </div>
                     </td>
                     {row.days.map((h, i) => (
-                      <td key={i} className={`px-3 py-2.5 text-center text-xs ${h > 0 ? 'text-[#6B7280] dark:text-[#A3A3A3] font-medium' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                      <td key={i} className={`px-3 py-2.5 text-center text-xs ${h > 0 ? 'text-[#6B7280] dark:text-mono-700 font-medium' : 'text-[#6B7280] dark:text-mono-700'}`}>
                         {h > 0 ? `${h}h` : '-'}
                       </td>
                     ))}
-                    <td className={`px-3 py-2.5 text-center font-bold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-[#111111] dark:text-white'}`}>
+                    <td className={`px-3 py-2.5 text-center font-bold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-mono-100 dark:text-white'}`}>
                       {row.total > 0 ? `${row.total}h` : '-'}
                     </td>
-                    <td className="px-4 py-2.5 text-right font-medium text-[#6B7280] dark:text-[#A3A3A3]">
+                    <td className="px-4 py-2.5 text-right font-medium text-[#6B7280] dark:text-mono-700">
                       {row.cost > 0 ? formatCurrency(row.cost) : '-'}
                     </td>
                     <td className="px-3 py-2.5 text-center">
@@ -1740,10 +1740,10 @@ export default function Planning() {
                 );
               })}
               {/* Totals */}
-              <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A] font-semibold">
-                <td className="px-4 py-2.5 text-[#111111] dark:text-white">Total</td>
+              <tr className="bg-mono-1000 dark:bg-mono-50 font-semibold">
+                <td className="px-4 py-2.5 text-mono-100 dark:text-white">Total</td>
                 {totalRow.days.map((h, i) => (
-                  <td key={i} className="px-3 py-2.5 text-center text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                  <td key={i} className="px-3 py-2.5 text-center text-xs text-[#6B7280] dark:text-mono-700">
                     {h > 0 ? `${h}h` : '-'}
                   </td>
                 ))}
@@ -1752,10 +1752,10 @@ export default function Planning() {
                 <td />
               </tr>
               {/* Daily cost row */}
-              <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-                <td className="px-4 py-2.5 text-[#9CA3AF] dark:text-[#737373] text-xs">{t('planning.costPerDay')}</td>
+              <tr className="bg-mono-1000 dark:bg-mono-50">
+                <td className="px-4 py-2.5 text-[#9CA3AF] dark:text-mono-500 text-xs">{t('planning.costPerDay')}</td>
                 {dailyCosts.map((c, i) => (
-                  <td key={i} className="px-3 py-2.5 text-center text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  <td key={i} className="px-3 py-2.5 text-center text-xs text-[#9CA3AF] dark:text-mono-500">
                     {c > 0 ? `${c.toFixed(0)}` : '-'}
                   </td>
                 ))}
@@ -1801,21 +1801,21 @@ export default function Planning() {
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.fullName')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('planning.fullName')}</label>
             <input
               type="text"
               value={empForm.name}
               onChange={e => setEmpForm(f => ({ ...f, name: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               placeholder="Ex: Marie Dupont"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.role')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('planning.role')}</label>
             <select
               value={empForm.role}
               onChange={e => setEmpForm(f => ({ ...f, role: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
               {ROLES.map(r => (
                 <option key={r} value={r}>{ROLE_LABELS[r]}</option>
@@ -1824,34 +1824,34 @@ export default function Planning() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.hourlyRate')}</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('planning.hourlyRate')}</label>
               <input
                 type="number"
                 step="0.01"
                 min="0"
                 value={empForm.hourlyRate}
                 onChange={e => setEmpForm(f => ({ ...f, hourlyRate: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
                 placeholder="Ex: 14.00"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.color')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('planning.color')}</label>
             <div className="flex gap-2 flex-wrap">
               {EMPLOYEE_COLORS.map(c => (
                 <button
                   key={c}
                   type="button"
                   onClick={() => setEmpForm(f => ({ ...f, color: c }))}
-                  className={`w-8 h-8 rounded-full border-2 transition ${empForm.color === c ? 'border-[#111111] dark:border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                  className={`w-8 h-8 rounded-full border-2 transition ${empForm.color === c ? 'border-mono-100 dark:border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'}`}
                   style={{ backgroundColor: c }}
                 />
               ))}
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowEmployeeModal(false)} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+            <button onClick={() => setShowEmployeeModal(false)} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition">
               {t('common.cancel')}
             </button>
             <button onClick={saveEmployee} className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
@@ -1869,11 +1869,11 @@ export default function Planning() {
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.employee')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('planning.employee')}</label>
             <select
               value={shiftForm.employeeId}
               onChange={e => setShiftForm(f => ({ ...f, employeeId: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
               <option value="">-- {t('common.select')} --</option>
               {employees.map(emp => (
@@ -1883,7 +1883,7 @@ export default function Planning() {
           </div>
           {/* Quick shift type buttons */}
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.serviceType')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('planning.serviceType')}</label>
             <div className="flex gap-2">
               {SHIFT_TYPES.map(st => (
                 <button
@@ -1893,7 +1893,7 @@ export default function Planning() {
                   className={`flex-1 py-2 rounded-lg text-xs font-medium border transition ${
                     shiftForm.startTime === st.start && shiftForm.endTime === st.end
                       ? st.bg + ' text-white'
-                      : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                      : 'bg-mono-1000 dark:bg-mono-50 border-mono-900 dark:border-mono-200 text-[#9CA3AF] dark:text-mono-500 hover:border-[#D1D5DB] dark:hover:border-[#333]'
                   }`}
                 >
                   {st.label}<br />{st.start}-{st.end}
@@ -1902,36 +1902,36 @@ export default function Planning() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.date')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('planning.date')}</label>
             <input
               type="date"
               value={shiftForm.date}
               onChange={e => setShiftForm(f => ({ ...f, date: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.startTime')}</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('planning.startTime')}</label>
               <input
                 type="time"
                 value={shiftForm.startTime}
                 onChange={e => setShiftForm(f => ({ ...f, startTime: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.endTime')}</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('planning.endTime')}</label>
               <input
                 type="time"
                 value={shiftForm.endTime}
                 onChange={e => setShiftForm(f => ({ ...f, endTime: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.position')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('planning.position')}</label>
             <div className="grid grid-cols-4 gap-2">
               {POSTES.map(p => {
                 const colors = POSTE_COLORS[p.value];
@@ -1944,7 +1944,7 @@ export default function Planning() {
                     className={`flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition ${
                       isSelected
                         ? `${colors.bg} ${colors.text} ${colors.border}`
-                        : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                        : 'bg-mono-1000 dark:bg-mono-50 border-mono-900 dark:border-mono-200 text-[#9CA3AF] dark:text-mono-500 hover:border-[#D1D5DB] dark:hover:border-[#333]'
                     }`}
                   >
                     {getPosteIcon(p.value)}
@@ -1955,7 +1955,7 @@ export default function Planning() {
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowShiftModal(false)} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+            <button onClick={() => setShowShiftModal(false)} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition">
               {t('common.cancel')}
             </button>
             {editShift && (
@@ -1980,15 +1980,15 @@ export default function Planning() {
         title="Conflits de planning detectes"
       >
         <div className="space-y-3">
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700">
             Les employes suivants ont des creneaux qui se chevauchent :
           </p>
           {conflicts.map((c, idx) => (
             <div key={idx} className="p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/30">
               <div className="flex items-center gap-2 mb-1">
                 <AlertCircle className="w-4 h-4 text-red-500" />
-                <span className="font-semibold text-[#111111] dark:text-white text-sm">{c.employeeName}</span>
-                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{c.shiftA.date}</span>
+                <span className="font-semibold text-mono-100 dark:text-white text-sm">{c.employeeName}</span>
+                <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{c.shiftA.date}</span>
               </div>
               <div className="text-xs text-red-600 dark:text-red-400 space-y-0.5 pl-6">
                 <div>Creneau 1 : {c.shiftA.startTime} - {c.shiftA.endTime} ({c.shiftA.type})</div>
@@ -1997,10 +1997,10 @@ export default function Planning() {
             </div>
           ))}
           {conflicts.length === 0 && (
-            <p className="text-center text-[#9CA3AF] dark:text-[#737373] py-4">Aucun conflit detecte.</p>
+            <p className="text-center text-[#9CA3AF] dark:text-mono-500 py-4">Aucun conflit detecte.</p>
           )}
           <div className="flex justify-end pt-2">
-            <button onClick={() => setShowConflictsModal(false)} className="px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
+            <button onClick={() => setShowConflictsModal(false)} className="px-4 py-2 text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
               Fermer
             </button>
           </div>
@@ -2017,9 +2017,9 @@ export default function Planning() {
           <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30">
             <div className="flex items-center gap-2 mb-1">
               <Shield className="w-4 h-4 text-amber-500" />
-              <span className="font-semibold text-[#111111] dark:text-white text-sm">Code du travail francais</span>
+              <span className="font-semibold text-mono-100 dark:text-white text-sm">Code du travail francais</span>
             </div>
-            <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] space-y-0.5 pl-6">
+            <div className="text-xs text-[#6B7280] dark:text-mono-700 space-y-0.5 pl-6">
               <div>Duree legale : {LEGAL_WEEKLY_HOURS}h/semaine</div>
               <div>Maximum absolu : {LEGAL_MAX_WEEKLY_HOURS}h/semaine</div>
               <div>Maximum journalier : {LEGAL_MAX_DAILY_HOURS}h/jour</div>
@@ -2034,14 +2034,14 @@ export default function Planning() {
             }`}>
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: detail.emp.color || '#6366f1' }} />
-                <span className="font-semibold text-[#111111] dark:text-white">{detail.emp.name}</span>
+                <span className="font-semibold text-mono-100 dark:text-white">{detail.emp.name}</span>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${
                   detail.isOver48 ? 'bg-red-500/20 text-red-500' : 'bg-amber-500/20 text-amber-500'
                 }`}>
                   {detail.hours.toFixed(1)}h / {LEGAL_WEEKLY_HOURS}h
                 </span>
               </div>
-              <div className="text-xs space-y-1 pl-5 text-[#6B7280] dark:text-[#A3A3A3]">
+              <div className="text-xs space-y-1 pl-5 text-[#6B7280] dark:text-mono-700">
                 {detail.isOver48 && (
                   <div className="text-red-500 font-bold flex items-center gap-1">
                     <Ban className="w-3 h-3" /> ILLEGAL : depasse {LEGAL_MAX_WEEKLY_HOURS}h hebdomadaires
@@ -2052,7 +2052,7 @@ export default function Planning() {
                     <div>Heures supplementaires : {detail.overtime.toFixed(1)}h</div>
                     {detail.overtimeAt25 > 0 && <div>- {detail.overtimeAt25.toFixed(1)}h a 125% = {formatCurrency(detail.overtimeAt25 * (detail.emp.hourlyRate ?? 0) * OVERTIME_RATE_1)}</div>}
                     {detail.overtimeAt50 > 0 && <div>- {detail.overtimeAt50.toFixed(1)}h a 150% = {formatCurrency(detail.overtimeAt50 * (detail.emp.hourlyRate ?? 0) * OVERTIME_RATE_2)}</div>}
-                    <div className="font-semibold text-[#111111] dark:text-white">Surcout heures sup : {formatCurrency(detail.overtimeCost)}</div>
+                    <div className="font-semibold text-mono-100 dark:text-white">Surcout heures sup : {formatCurrency(detail.overtimeCost)}</div>
                   </>
                 )}
                 {detail.dailyAlerts.length > 0 && (
@@ -2070,12 +2070,12 @@ export default function Planning() {
           {overtimeDetails.length === 0 && (
             <div className="text-center py-6">
               <Check className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-              <p className="text-[#6B7280] dark:text-[#A3A3A3]">Aucun depassement horaire cette semaine.</p>
+              <p className="text-[#6B7280] dark:text-mono-700">Aucun depassement horaire cette semaine.</p>
             </div>
           )}
 
           <div className="flex justify-end pt-2">
-            <button onClick={() => setShowOvertimeModal(false)} className="px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
+            <button onClick={() => setShowOvertimeModal(false)} className="px-4 py-2 text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
               Fermer
             </button>
           </div>
@@ -2089,18 +2089,18 @@ export default function Planning() {
         title="Templates de planning"
       >
         <div className="space-y-4">
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700">
             Appliquez un template pour remplir rapidement une journee.
           </p>
           {shiftTemplates.map(tmpl => (
-            <div key={tmpl.id} className="p-4 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333] transition">
+            <div key={tmpl.id} className="p-4 rounded-xl bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 hover:border-[#D1D5DB] dark:hover:border-[#333] transition">
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <div className="font-semibold text-[#111111] dark:text-white text-sm flex items-center gap-2">
+                  <div className="font-semibold text-mono-100 dark:text-white text-sm flex items-center gap-2">
                     <Zap className="w-4 h-4 text-amber-400" />
                     {tmpl.name}
                   </div>
-                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{tmpl.description}</div>
+                  <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{tmpl.description}</div>
                 </div>
                 <button
                   onClick={() => {
@@ -2126,7 +2126,7 @@ export default function Planning() {
             </div>
           ))}
           <div className="flex justify-end pt-2">
-            <button onClick={() => setShowTemplateModal(false)} className="px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
+            <button onClick={() => setShowTemplateModal(false)} className="px-4 py-2 text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
               Fermer
             </button>
           </div>
@@ -2140,26 +2140,26 @@ export default function Planning() {
         title={`Appliquer : ${selectedTemplate?.name || ''}`}
       >
         <div className="space-y-4">
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700">
             Choisissez la date a laquelle appliquer ce template. Les creneaux seront automatiquement attribues aux employes disponibles.
           </p>
           {selectedTemplate && (
-            <div className="p-3 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Creneaux prevus :</div>
+            <div className="p-3 rounded-xl bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200">
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Creneaux prevus :</div>
               {selectedTemplate.assignments.map((a, i) => (
-                <div key={i} className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                <div key={i} className="text-xs text-[#6B7280] dark:text-mono-700">
                   {a.count}x {ROLE_LABELS[a.role] || a.role} -- {a.startTime} a {a.endTime} ({a.type})
                 </div>
               ))}
             </div>
           )}
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Date</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">Date</label>
             <input
               type="date"
               value={templateApplyDate}
               onChange={e => setTemplateApplyDate(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             />
           </div>
           {/* Quick day buttons */}
@@ -2173,7 +2173,7 @@ export default function Planning() {
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition ${
                     templateApplyDate === dayStr
                       ? 'bg-indigo-600 text-white border-indigo-600'
-                      : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                      : 'bg-mono-1000 dark:bg-mono-50 border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333]'
                   }`}
                 >
                   {JOURS[i]} {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
@@ -2182,7 +2182,7 @@ export default function Planning() {
             })}
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => { setShowTemplateApplyModal(false); setSelectedTemplate(null); }} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+            <button onClick={() => { setShowTemplateApplyModal(false); setSelectedTemplate(null); }} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition">
               Annuler
             </button>
             <button
@@ -2203,25 +2203,25 @@ export default function Planning() {
         title={`Disponibilites : ${availabilityEmployee?.name || ''}`}
       >
         <div className="space-y-4">
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700">
             Definissez les creneaux ou l'employe n'est pas disponible. Les zones grises apparaitront sur le planning.
           </p>
 
           {/* Current unavailabilities */}
           {availabilityEmployee && (
             <div className="space-y-2">
-              <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Indisponibilites actuelles</h4>
+              <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Indisponibilites actuelles</h4>
               {availabilities.filter(a => a.employeeId === availabilityEmployee.id && !a.available).length === 0 && (
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-dashed border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500 text-center py-3 bg-mono-1000 dark:bg-mono-50 rounded-xl border border-dashed border-mono-900 dark:border-mono-200">
                   Aucune indisponibilite definie.
                 </p>
               )}
               {availabilities.filter(a => a.employeeId === availabilityEmployee.id && !a.available).map(avail => (
-                <div key={avail.id} className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div key={avail.id} className="flex items-center justify-between p-2.5 rounded-xl bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200">
                   <div className="flex items-center gap-2">
                     <Ban className="w-3.5 h-3.5 text-red-400" />
-                    <span className="text-sm text-[#111111] dark:text-white font-medium">{JOURS_FULL[avail.dayOfWeek]}</span>
-                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{avail.startTime} - {avail.endTime}</span>
+                    <span className="text-sm text-mono-100 dark:text-white font-medium">{JOURS_FULL[avail.dayOfWeek]}</span>
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{avail.startTime} - {avail.endTime}</span>
                   </div>
                   <button onClick={() => removeAvailability(avail.id)} className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900/20 transition">
                     <X className="w-3.5 h-3.5 text-red-400" />
@@ -2232,14 +2232,14 @@ export default function Planning() {
           )}
 
           {/* Add new unavailability */}
-          <div className="p-3 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] space-y-3">
-            <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Ajouter une indisponibilite</h4>
+          <div className="p-3 rounded-xl bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 space-y-3">
+            <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Ajouter une indisponibilite</h4>
             <div>
-              <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Jour</label>
+              <label className="block text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1">Jour</label>
               <select
                 value={availForm.dayOfWeek}
                 onChange={e => setAvailForm(f => ({ ...f, dayOfWeek: parseInt(e.target.value) }))}
-                className="w-full px-3 py-2 rounded-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-white dark:bg-black border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white text-sm"
               >
                 {JOURS_FULL.map((j, i) => (
                   <option key={i} value={i}>{j}</option>
@@ -2248,21 +2248,21 @@ export default function Planning() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">De</label>
+                <label className="block text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1">De</label>
                 <input
                   type="time"
                   value={availForm.startTime}
                   onChange={e => setAvailForm(f => ({ ...f, startTime: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white text-sm"
+                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-black border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white text-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">A</label>
+                <label className="block text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1">A</label>
                 <input
                   type="time"
                   value={availForm.endTime}
                   onChange={e => setAvailForm(f => ({ ...f, endTime: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white text-sm"
+                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-black border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white text-sm"
                 />
               </div>
             </div>
@@ -2275,7 +2275,7 @@ export default function Planning() {
           </div>
 
           <div className="flex justify-end pt-2">
-            <button onClick={() => setShowAvailabilityModal(false)} className="px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
+            <button onClick={() => setShowAvailabilityModal(false)} className="px-4 py-2 text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
               Fermer
             </button>
           </div>
@@ -2289,7 +2289,7 @@ export default function Planning() {
         title="Envoyer le planning"
       >
         <div className="space-y-4">
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700">
             Copiez le message ci-dessous et envoyez-le via WhatsApp, SMS ou autre messagerie.
           </p>
 
@@ -2298,7 +2298,7 @@ export default function Planning() {
               readOnly
               value={whatsappMessage}
               rows={12}
-              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white text-xs font-mono resize-none"
+              className="w-full px-3 py-2 rounded-lg bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white text-xs font-mono resize-none"
             />
           </div>
 
@@ -2308,7 +2308,7 @@ export default function Planning() {
                 navigator.clipboard.writeText(whatsappMessage);
                 showToast('Message copie dans le presse-papier !', 'success');
               }}
-              className="flex-1 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition text-sm font-medium flex items-center justify-center gap-2"
+              className="flex-1 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition text-sm font-medium flex items-center justify-center gap-2"
             >
               <Copy className="w-4 h-4" /> Copier le message
             </button>
@@ -2325,7 +2325,7 @@ export default function Planning() {
 
           {/* Per-employee send links */}
           <div className="space-y-2">
-            <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Envoyer par employe</h4>
+            <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Envoyer par employe</h4>
             {employees.map(emp => {
               const empShifts = weekShifts.filter(s => s.employeeId === emp.id);
               if (empShifts.length === 0) return null;
@@ -2340,11 +2340,11 @@ export default function Planning() {
               empMsg.push(`Total: ${hours.toFixed(0)}h`);
               const msg = empMsg.join('\n');
               return (
-                <div key={emp.id} className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div key={emp.id} className="flex items-center justify-between p-2.5 rounded-xl bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                    <span className="text-sm font-medium text-[#111111] dark:text-white">{emp.name}</span>
-                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{hours.toFixed(0)}h</span>
+                    <span className="text-sm font-medium text-mono-100 dark:text-white">{emp.name}</span>
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{hours.toFixed(0)}h</span>
                   </div>
                   <div className="flex gap-1.5">
                     <button
@@ -2352,10 +2352,10 @@ export default function Planning() {
                         navigator.clipboard.writeText(msg);
                         showToast(`Planning de ${emp.name} copie !`, 'success');
                       }}
-                      className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
+                      className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition"
                       title="Copier"
                     >
-                      <Copy className="w-3.5 h-3.5 text-[#6B7280] dark:text-[#A3A3A3]" />
+                      <Copy className="w-3.5 h-3.5 text-[#6B7280] dark:text-mono-700" />
                     </button>
                     <button
                       onClick={() => {
@@ -2374,7 +2374,7 @@ export default function Planning() {
           </div>
 
           <div className="flex justify-end pt-2">
-            <button onClick={() => setShowWhatsappModal(false)} className="px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
+            <button onClick={() => setShowWhatsappModal(false)} className="px-4 py-2 text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
               Fermer
             </button>
           </div>
@@ -2394,14 +2394,14 @@ function StatCard({ icon, label, value, alert, subtitle }: {
   subtitle?: string;
 }) {
   return (
-    <div className={`bg-white dark:bg-black rounded-2xl p-4 border ${alert ? 'border-red-700/50' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'}`}>
+    <div className={`bg-white dark:bg-black rounded-2xl p-4 border ${alert ? 'border-red-700/50' : 'border-mono-900 dark:border-mono-200'}`}>
       <div className="flex items-center gap-3">
-        <div className={`p-2 rounded-lg ${alert ? 'bg-red-100 dark:bg-red-900/30' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]'}`}>
+        <div className={`p-2 rounded-lg ${alert ? 'bg-red-100 dark:bg-red-900/30' : 'bg-mono-1000 dark:bg-mono-50'}`}>
           {icon}
         </div>
         <div className="min-w-0">
-          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373] truncate">{label}</div>
-          <div className={`text-lg sm:text-xl font-bold ${alert ? 'text-red-400' : 'text-[#111111] dark:text-white'}`}>{value}</div>
+          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-mono-500 truncate">{label}</div>
+          <div className={`text-lg sm:text-xl font-bold ${alert ? 'text-red-400' : 'text-mono-100 dark:text-white'}`}>{value}</div>
           {subtitle && (
             <div className={`text-[10px] sm:text-xs truncate ${alert ? 'text-red-400' : 'text-emerald-400'}`}>{subtitle}</div>
           )}
@@ -2453,22 +2453,22 @@ function MobileDayContent({ day, shifts, employees, conflicts, onEditShift, onDe
                     <div
                       key={s.id}
                       className={`rounded-lg p-2.5 bg-white dark:bg-black border cursor-pointer hover:border-[#D1D5DB] dark:hover:border-[#333] transition group relative ${
-                        shiftConflict ? 'border-red-500 ring-1 ring-red-500/30' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
+                        shiftConflict ? 'border-red-500 ring-1 ring-red-500/30' : 'border-mono-900 dark:border-mono-200'
                       }`}
                       onClick={() => onEditShift(s)}
                     >
                       <div className="flex items-center gap-2">
                         {shiftConflict && <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />}
                         <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                        <span className="font-semibold text-[#111111] dark:text-white text-sm">{emp.name || ''}</span>
+                        <span className="font-semibold text-mono-100 dark:text-white text-sm">{emp.name || ''}</span>
                         <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${posteColor.bg} ${posteColor.text} font-medium`}>
                           {s.type}
                         </span>
                       </div>
-                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{ROLE_LABELS[emp.role] || emp.role || ''} -- {s.startTime} a {s.endTime}</div>
+                      <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{ROLE_LABELS[emp.role] || emp.role || ''} -- {s.startTime} a {s.endTime}</div>
                       <button
                         onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
-                        className="absolute top-2 right-2 p-1 rounded bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-red-100 dark:hover:bg-red-900/40 transition"
+                        className="absolute top-2 right-2 p-1 rounded bg-mono-1000 dark:bg-mono-50 hover:bg-red-100 dark:hover:bg-red-900/40 transition"
                       >
                         <X className="w-3.5 h-3.5 text-red-400" />
                       </button>
@@ -2476,12 +2476,12 @@ function MobileDayContent({ day, shifts, employees, conflicts, onEditShift, onDe
                   );
                 })}
               {zoneShifts.length === 0 && (
-                <p className="text-center text-xs text-[#9CA3AF] dark:text-[#737373] py-2">{t('planning.noShift')}</p>
+                <p className="text-center text-xs text-[#9CA3AF] dark:text-mono-500 py-2">{t('planning.noShift')}</p>
               )}
             </div>
             <button
               onClick={() => onAddShift(dayStr, st.key)}
-              className="w-full mt-2 py-2 border border-dashed border-[#D1D5DB] dark:border-[#475569] rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
+              className="w-full mt-2 py-2 border border-dashed border-[#D1D5DB] dark:border-[#475569] rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
             >
               <Plus className="w-3.5 h-3.5" /> {t('common.add')}
             </button>
@@ -2526,16 +2526,16 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
     <div className="p-5 space-y-5">
       {/* Day stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-2 sm:p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.presentEmployees')}</div>
-          <div className="text-lg sm:text-2xl font-bold text-[#111111] dark:text-white">{uniqueEmployees}</div>
+        <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-2 sm:p-3 text-center border border-mono-900 dark:border-mono-200">
+          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-mono-500">{t('planning.presentEmployees')}</div>
+          <div className="text-lg sm:text-2xl font-bold text-mono-100 dark:text-white">{uniqueEmployees}</div>
         </div>
-        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-2 sm:p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.totalHours')}</div>
-          <div className="text-lg sm:text-2xl font-bold text-[#111111] dark:text-white">{totalHours.toFixed(0)}h</div>
+        <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-2 sm:p-3 text-center border border-mono-900 dark:border-mono-200">
+          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-mono-500">{t('planning.totalHours')}</div>
+          <div className="text-lg sm:text-2xl font-bold text-mono-100 dark:text-white">{totalHours.toFixed(0)}h</div>
         </div>
-        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-2 sm:p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.dayCost')}</div>
+        <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-2 sm:p-3 text-center border border-mono-900 dark:border-mono-200">
+          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-mono-500">{t('planning.dayCost')}</div>
           <div className="text-lg sm:text-2xl font-bold text-emerald-400">{formatCurrency(totalCost)}</div>
         </div>
         {dayConflicts.length > 0 && (
@@ -2547,15 +2547,15 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
       </div>
 
       {/* Timeline visualization */}
-      <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 overflow-x-auto">
-        <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3">Timeline 6h - 23h</h4>
+      <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-4 overflow-x-auto">
+        <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-3">Timeline 6h - 23h</h4>
         {/* Hour ruler */}
         <div className="flex mb-2" style={{ minWidth: '600px' }}>
           <div className="w-28 flex-shrink-0" />
           <div className="flex-1 flex">
             {GRID_HOURS.map(h => (
               <div key={h} className="flex-1 text-center">
-                <span className="text-[9px] font-mono text-[#9CA3AF] dark:text-[#737373]">{h}</span>
+                <span className="text-[9px] font-mono text-[#9CA3AF] dark:text-mono-500">{h}</span>
               </div>
             ))}
           </div>
@@ -2569,15 +2569,15 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
               <div key={emp.id} className="flex items-center gap-2">
                 <div className="w-28 flex-shrink-0 flex items-center gap-1.5 truncate">
                   <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                  <span className="text-xs font-medium text-[#111111] dark:text-white truncate">{emp.name}</span>
+                  <span className="text-xs font-medium text-mono-100 dark:text-white truncate">{emp.name}</span>
                   {empConflicts.length > 0 && <AlertCircle className="w-3 h-3 text-red-500 flex-shrink-0" />}
                 </div>
-                <div className="flex-1 relative h-7 bg-white dark:bg-black rounded border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div className="flex-1 relative h-7 bg-white dark:bg-black rounded border border-mono-900 dark:border-mono-200">
                   {/* Hour grid lines */}
                   {GRID_HOURS.map((h, i) => (
                     <div
                       key={h}
-                      className="absolute top-0 bottom-0 border-l border-[#E5E7EB] dark:border-[#1A1A1A]"
+                      className="absolute top-0 bottom-0 border-l border-mono-900 dark:border-mono-200"
                       style={{ left: `${(i / GRID_HOURS.length) * 100}%` }}
                     />
                   ))}
@@ -2606,7 +2606,7 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
                         onClick={() => onEditShift(s)}
                         title={`${emp.name} - ${s.startTime} a ${s.endTime} (${s.type})`}
                       >
-                        <span className="text-[9px] font-medium text-[#111111] dark:text-white truncate">
+                        <span className="text-[9px] font-medium text-mono-100 dark:text-white truncate">
                           {s.startTime}-{s.endTime}
                         </span>
                       </div>
@@ -2627,7 +2627,7 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
             <div className="flex items-center gap-2 mb-3">
               <div className={`w-3 h-3 rounded-full ${st.key === 'matin' ? 'bg-amber-400' : st.key === 'midi' ? 'bg-teal-400' : 'bg-purple-400'}`} />
               <h4 className={`font-semibold ${st.color}`}>{st.label} ({st.start} - {st.end})</h4>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{zoneShifts.length} creneau(x)</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{zoneShifts.length} creneau(x)</span>
             </div>
             {zoneShifts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -2642,8 +2642,8 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
                     return (
                       <div
                         key={s.id}
-                        className={`rounded-xl p-4 border bg-[#FAFAFA] dark:bg-[#0A0A0A] cursor-pointer hover:border-[#D1D5DB] dark:hover:border-[#333] transition group relative ${
-                          shiftConflict ? 'border-red-500 ring-1 ring-red-500/30' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
+                        className={`rounded-xl p-4 border bg-mono-1000 dark:bg-mono-50 cursor-pointer hover:border-[#D1D5DB] dark:hover:border-[#333] transition group relative ${
+                          shiftConflict ? 'border-red-500 ring-1 ring-red-500/30' : 'border-mono-900 dark:border-mono-200'
                         }`}
                         onClick={() => onEditShift(s)}
                       >
@@ -2654,10 +2654,10 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5">
                               {shiftConflict && <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />}
-                              <span className="font-semibold text-[#111111] dark:text-white truncate">{emp.name || ''}</span>
+                              <span className="font-semibold text-mono-100 dark:text-white truncate">{emp.name || ''}</span>
                             </div>
                             <div className="flex items-center gap-1.5 mt-0.5">
-                              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
+                              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
                               <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${posteColor.bg} ${posteColor.text} font-medium flex items-center gap-0.5`}>
                                 {getPosteIcon(s.type)} {s.type}
                               </span>
@@ -2665,8 +2665,8 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
                           </div>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-mono text-[#6B7280] dark:text-[#A3A3A3]">{s.startTime} - {s.endTime}</span>
-                          <span className="text-[#9CA3AF] dark:text-[#737373]">{hours}h -- {formatCurrency(hours * (emp.hourlyRate ?? 0))}</span>
+                          <span className="font-mono text-[#6B7280] dark:text-mono-700">{s.startTime} - {s.endTime}</span>
+                          <span className="text-[#9CA3AF] dark:text-mono-500">{hours}h -- {formatCurrency(hours * (emp.hourlyRate ?? 0))}</span>
                         </div>
                         <button
                           onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
@@ -2679,13 +2679,13 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
                   })}
               </div>
             ) : (
-              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] py-3 text-center bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-dashed border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <p className="text-sm text-[#9CA3AF] dark:text-mono-500 py-3 text-center bg-mono-1000 dark:bg-mono-50 rounded-xl border border-dashed border-mono-900 dark:border-mono-200">
                 {t('planning.noShift')}
               </p>
             )}
             <button
               onClick={() => onAddShift(dayStr, st.key)}
-              className="mt-2 w-full py-2 border border-dashed border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#9CA3AF] dark:text-[#737373] hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-sm no-print"
+              className="mt-2 w-full py-2 border border-dashed border-mono-900 dark:border-mono-200 rounded-xl text-[#9CA3AF] dark:text-mono-500 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-sm no-print"
             >
               <Plus className="w-4 h-4" /> Ajouter un creneau {st.label.toLowerCase()}
             </button>
@@ -2695,7 +2695,7 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
 
       {/* Presence summary */}
       <div>
-        <h4 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2 mb-3">
+        <h4 className="font-semibold text-mono-100 dark:text-white flex items-center gap-2 mb-3">
           <Eye className="w-4 h-4 text-indigo-400" /> {t('planning.dayPresence')}
         </h4>
         <div className="space-y-2">
@@ -2710,25 +2710,25 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
                 className={`flex items-center justify-between px-4 py-2.5 rounded-xl border transition ${
                   empConflicts.length > 0
                     ? 'border-red-500 bg-red-50 dark:bg-red-950/10'
-                    : isPresent ? 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]' : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black opacity-50'
+                    : isPresent ? 'border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50' : 'border-mono-900 dark:border-mono-200 bg-white dark:bg-black opacity-50'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-2.5 h-2.5 rounded-full ${empConflicts.length > 0 ? 'bg-red-500' : isPresent ? 'bg-emerald-400' : 'bg-[#D1D5DB] dark:bg-[#475569]'}`} />
                   <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                  <span className={`text-sm font-medium ${isPresent ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{emp.name || ''}</span>
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
+                  <span className={`text-sm font-medium ${isPresent ? 'text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'}`}>{emp.name || ''}</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
                   {empConflicts.length > 0 && (
                     <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-500 font-bold">CONFLIT</span>
                   )}
                 </div>
                 <div className="text-sm">
                   {isPresent ? (
-                    <span className="text-[#6B7280] dark:text-[#A3A3A3]">
+                    <span className="text-[#6B7280] dark:text-mono-700">
                       {empShifts!.map(s => `${s.startTime}-${s.endTime}`).join(', ')} -- <span className="font-semibold">{empHours}h</span>
                     </span>
                   ) : (
-                    <span className="text-[#6B7280] dark:text-[#A3A3A3]">{t('planning.absent')}</span>
+                    <span className="text-[#6B7280] dark:text-mono-700">{t('planning.absent')}</span>
                   )}
                 </div>
               </div>
@@ -2781,60 +2781,60 @@ function PointageTab({
     <div className="space-y-6">
       {/* Pointage summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="p-1.5 sm:p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" />
+            <div className="p-1.5 sm:p-2 rounded-lg bg-mono-1000 dark:bg-mono-50">
+              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-mono-100 dark:text-white" />
             </div>
             <div>
-              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">En service</div>
-              <div className="text-lg sm:text-xl font-bold text-[#111111] dark:text-white">{activePunches}</div>
+              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-mono-500">En service</div>
+              <div className="text-lg sm:text-xl font-bold text-mono-100 dark:text-white">{activePunches}</div>
             </div>
           </div>
         </div>
-        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="p-1.5 sm:p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-              <LogOut className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" />
+            <div className="p-1.5 sm:p-2 rounded-lg bg-mono-1000 dark:bg-mono-50">
+              <LogOut className="w-4 h-4 sm:w-5 sm:h-5 text-mono-100 dark:text-white" />
             </div>
             <div>
-              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">Termines aujourd'hui</div>
-              <div className="text-lg sm:text-xl font-bold text-[#111111] dark:text-white">{completedToday}</div>
+              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-mono-500">Termines aujourd'hui</div>
+              <div className="text-lg sm:text-xl font-bold text-mono-100 dark:text-white">{completedToday}</div>
             </div>
           </div>
         </div>
-        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="p-1.5 sm:p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" />
+            <div className="p-1.5 sm:p-2 rounded-lg bg-mono-1000 dark:bg-mono-50">
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-mono-100 dark:text-white" />
             </div>
             <div>
-              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">Heures aujourd'hui</div>
-              <div className="text-lg sm:text-xl font-bold text-[#111111] dark:text-white">{formatDuration(totalMinutesToday)}</div>
+              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-mono-500">Heures aujourd'hui</div>
+              <div className="text-lg sm:text-xl font-bold text-mono-100 dark:text-white">{formatDuration(totalMinutesToday)}</div>
             </div>
           </div>
         </div>
-        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="p-1.5 sm:p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-              <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" />
+            <div className="p-1.5 sm:p-2 rounded-lg bg-mono-1000 dark:bg-mono-50">
+              <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5 text-mono-100 dark:text-white" />
             </div>
             <div>
-              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">Date</div>
-              <div className="text-xs sm:text-sm font-bold text-[#111111] dark:text-white capitalize">{today}</div>
+              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-mono-500">Date</div>
+              <div className="text-xs sm:text-sm font-bold text-mono-100 dark:text-white capitalize">{today}</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Punch buttons per employee */}
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
-            <Timer className="w-4 h-4 text-[#111111] dark:text-white" /> Pointage du jour
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
+          <h3 className="font-semibold text-mono-100 dark:text-white flex items-center gap-2">
+            <Timer className="w-4 h-4 text-mono-100 dark:text-white" /> Pointage du jour
           </h3>
         </div>
-        <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+        <div className="divide-y divide-mono-900 dark:divide-mono-200">
           {employees.map(emp => {
             const { isPunchedIn, entry } = getEmployeePunchStatus(emp.id);
             const empCompletedEntries = todayEntries.filter(e => e.employeeId === emp.id && e.punchOut);
@@ -2846,8 +2846,8 @@ function PointageTab({
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
                   <div className="min-w-0">
-                    <div className="font-medium text-[#111111] dark:text-white text-sm truncate">{emp.name}</div>
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                    <div className="font-medium text-mono-100 dark:text-white text-sm truncate">{emp.name}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500">
                       {ROLE_LABELS[emp.role] || emp.role}
                       {empTotalMinutes > 0 && ` -- ${formatDuration(empTotalMinutes)} aujourd'hui`}
                     </div>
@@ -2857,10 +2857,10 @@ function PointageTab({
                 <div className="flex items-center gap-3 flex-shrink-0">
                   {isPunchedIn && entry && (
                     <div className="text-right">
-                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                      <div className="text-xs text-[#9CA3AF] dark:text-mono-500">
                         Arrive {formatTimeFromISO(entry.punchIn)}
                       </div>
-                      <div className="text-sm font-semibold text-[#111111] dark:text-white flex items-center gap-1">
+                      <div className="text-sm font-semibold text-mono-100 dark:text-white flex items-center gap-1">
                         <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                         {formatDuration(elapsed)}
                       </div>
@@ -2871,7 +2871,7 @@ function PointageTab({
                     <button
                       onClick={() => onPunchOut(emp.id)}
                       disabled={timeclockLoading}
-                      className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition text-sm font-medium disabled:opacity-50"
+                      className="flex items-center gap-2 px-4 py-2 bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition text-sm font-medium disabled:opacity-50"
                     >
                       <Square className="w-3.5 h-3.5" /> Sortie
                     </button>
@@ -2879,7 +2879,7 @@ function PointageTab({
                     <button
                       onClick={() => onPunchIn(emp.id)}
                       disabled={timeclockLoading}
-                      className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition text-sm font-medium disabled:opacity-50"
+                      className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition text-sm font-medium disabled:opacity-50"
                     >
                       <Play className="w-3.5 h-3.5" /> Entree
                     </button>
@@ -2889,7 +2889,7 @@ function PointageTab({
             );
           })}
           {employees.length === 0 && (
-            <div className="px-5 py-8 text-center text-[#9CA3AF] dark:text-[#737373] text-sm">
+            <div className="px-5 py-8 text-center text-[#9CA3AF] dark:text-mono-500 text-sm">
               Aucun employe. Ajoutez des employes dans l'onglet Planning.
             </div>
           )}
@@ -2897,10 +2897,10 @@ function PointageTab({
       </div>
 
       {/* Today's timeline */}
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
-            <Clock className="w-4 h-4 text-[#111111] dark:text-white" /> Timeline du jour
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
+          <h3 className="font-semibold text-mono-100 dark:text-white flex items-center gap-2">
+            <Clock className="w-4 h-4 text-mono-100 dark:text-white" /> Timeline du jour
           </h3>
         </div>
         <div className="px-5 py-4">
@@ -2914,22 +2914,22 @@ function PointageTab({
                 return (
                   <div key={entry.id} className="flex items-center gap-3">
                     <div className="flex flex-col items-center w-16 flex-shrink-0">
-                      <span className="text-xs font-mono text-[#6B7280] dark:text-[#A3A3A3]">{formatTimeFromISO(entry.punchIn)}</span>
-                      <div className={`w-px h-4 ${isOpen ? 'bg-emerald-500' : 'bg-[#E5E7EB] dark:bg-[#1A1A1A]'}`} />
-                      <span className="text-xs font-mono text-[#6B7280] dark:text-[#A3A3A3]">
+                      <span className="text-xs font-mono text-[#6B7280] dark:text-mono-700">{formatTimeFromISO(entry.punchIn)}</span>
+                      <div className={`w-px h-4 ${isOpen ? 'bg-emerald-500' : 'bg-mono-900 dark:bg-mono-200'}`} />
+                      <span className="text-xs font-mono text-[#6B7280] dark:text-mono-700">
                         {entry.punchOut ? formatTimeFromISO(entry.punchOut) : '--:--'}
                       </span>
                     </div>
-                    <div className={`flex-1 rounded-xl p-3 border ${isOpen ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]'}`}>
+                    <div className={`flex-1 rounded-xl p-3 border ${isOpen ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50'}`}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                          <span className="font-medium text-[#111111] dark:text-white text-sm">{emp.name}</span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role}</span>
+                          <span className="font-medium text-mono-100 dark:text-white text-sm">{emp.name}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{ROLE_LABELS[emp.role] || emp.role}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           {isOpen && <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />}
-                          <span className={`text-sm font-semibold ${isOpen ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'}`}>
+                          <span className={`text-sm font-semibold ${isOpen ? 'text-emerald-600 dark:text-emerald-400' : 'text-mono-100 dark:text-white'}`}>
                             {formatDuration(elapsed)}
                           </span>
                         </div>
@@ -2940,7 +2940,7 @@ function PointageTab({
               })}
             </div>
           ) : (
-            <p className="text-center text-[#9CA3AF] dark:text-[#737373] text-sm py-6">
+            <p className="text-center text-[#9CA3AF] dark:text-mono-500 text-sm py-6">
               Aucun pointage enregistre aujourd'hui.
             </p>
           )}
@@ -2948,37 +2948,37 @@ function PointageTab({
       </div>
 
       {/* Weekly summary table */}
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
-            <Euro className="w-4 h-4 text-[#111111] dark:text-white" /> Recap hebdomadaire (pointages)
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <h3 className="font-semibold text-mono-100 dark:text-white flex items-center gap-2">
+            <Euro className="w-4 h-4 text-mono-100 dark:text-white" /> Recap hebdomadaire (pointages)
           </h3>
           <div className="flex items-center gap-2">
-            <button onClick={goPrev} className="p-1.5 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
-              <ChevronLeft className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+            <button onClick={goPrev} className="p-1.5 rounded-lg hover:bg-mono-1000 dark:hover:bg-mono-50 transition">
+              <ChevronLeft className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
             </button>
-            <button onClick={goThisWeek} className="px-3 py-1 text-xs font-medium rounded-full bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition border border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <button onClick={goThisWeek} className="px-3 py-1 text-xs font-medium rounded-full bg-mono-1000 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition border border-mono-900 dark:border-mono-200">
               Cette semaine
             </button>
-            <span className="text-sm font-medium text-[#111111] dark:text-white px-2">{weekLabel}</span>
-            <button onClick={goNext} className="p-1.5 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
-              <ChevronRight className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+            <span className="text-sm font-medium text-mono-100 dark:text-white px-2">{weekLabel}</span>
+            <button onClick={goNext} className="p-1.5 rounded-lg hover:bg-mono-1000 dark:hover:bg-mono-50 transition">
+              <ChevronRight className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
             </button>
           </div>
         </div>
         <div className="overflow-x-auto -mx-4 sm:mx-0">
           <table className="w-full text-sm min-w-[700px]">
             <thead>
-              <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">Employe</th>
+              <tr className="bg-mono-1000 dark:bg-mono-50">
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">Employe</th>
                 {JOURS_SHORT.map(j => (
-                  <th key={j} className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{j}</th>
+                  <th key={j} className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">{j}</th>
                 ))}
-                <th className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">Total</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">Cout</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">Total</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">Cout</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+            <tbody className="divide-y divide-mono-900 dark:divide-mono-200">
               {timeclockSummary.length > 0 ? (
                 <>
                   {timeclockSummary.map(emp => {
@@ -2987,54 +2987,54 @@ function PointageTab({
                       return d.toISOString().slice(0, 10);
                     });
                     return (
-                      <tr key={emp.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
+                      <tr key={emp.id} className="hover:bg-mono-1000 dark:hover:bg-mono-50 transition">
                         <td className="px-4 py-2.5 whitespace-nowrap">
                           <div className="flex items-center gap-2">
                             <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                            <span className="font-medium text-[#111111] dark:text-white">{emp.name}</span>
+                            <span className="font-medium text-mono-100 dark:text-white">{emp.name}</span>
                           </div>
                         </td>
                         {weekDayStrings.map((dayStr, i) => {
                           const dayMinutes = emp.days[dayStr] || 0;
                           const h = Math.round((dayMinutes / 60) * 10) / 10;
                           return (
-                            <td key={i} className={`px-3 py-2.5 text-center text-xs ${h > 0 ? 'text-[#6B7280] dark:text-[#A3A3A3] font-medium' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                            <td key={i} className={`px-3 py-2.5 text-center text-xs ${h > 0 ? 'text-[#6B7280] dark:text-mono-700 font-medium' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                               {h > 0 ? `${h}h` : '-'}
                             </td>
                           );
                         })}
-                        <td className="px-3 py-2.5 text-center font-bold text-[#111111] dark:text-white">
+                        <td className="px-3 py-2.5 text-center font-bold text-mono-100 dark:text-white">
                           {emp.totalHours > 0 ? `${emp.totalHours}h` : '-'}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-medium text-[#6B7280] dark:text-[#A3A3A3]">
+                        <td className="px-4 py-2.5 text-right font-medium text-[#6B7280] dark:text-mono-700">
                           {emp.totalCost > 0 ? formatCurrency(emp.totalCost) : '-'}
                         </td>
                       </tr>
                     );
                   })}
-                  <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A] font-semibold">
-                    <td className="px-4 py-2.5 text-[#111111] dark:text-white">Total</td>
+                  <tr className="bg-mono-1000 dark:bg-mono-50 font-semibold">
+                    <td className="px-4 py-2.5 text-mono-100 dark:text-white">Total</td>
                     {weekDays.map((d, i) => {
                       const dayStr = d && !isNaN(d.getTime()) ? d.toISOString().slice(0, 10) : '';
                       const dayMinutes = timeclockSummary.reduce((sum, emp) => sum + (emp.days[dayStr] || 0), 0);
                       const h = Math.round((dayMinutes / 60) * 10) / 10;
                       return (
-                        <td key={i} className="px-3 py-2.5 text-center text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                        <td key={i} className="px-3 py-2.5 text-center text-xs text-[#6B7280] dark:text-mono-700">
                           {h > 0 ? `${h}h` : '-'}
                         </td>
                       );
                     })}
-                    <td className="px-3 py-2.5 text-center text-[#111111] dark:text-white">
+                    <td className="px-3 py-2.5 text-center text-mono-100 dark:text-white">
                       {timeclockSummary.reduce((s, e) => s + e.totalHours, 0).toFixed(1)}h
                     </td>
-                    <td className="px-4 py-2.5 text-right text-[#111111] dark:text-white">
+                    <td className="px-4 py-2.5 text-right text-mono-100 dark:text-white">
                       {formatCurrency(timeclockSummary.reduce((s, e) => s + e.totalCost, 0))}
                     </td>
                   </tr>
                 </>
               ) : (
                 <tr>
-                  <td colSpan={10} className="px-5 py-8 text-center text-[#9CA3AF] dark:text-[#737373] text-sm">
+                  <td colSpan={10} className="px-5 py-8 text-center text-[#9CA3AF] dark:text-mono-500 text-sm">
                     Aucun pointage enregistre cette semaine.
                   </td>
                 </tr>

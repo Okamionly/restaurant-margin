@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Search, Plus, Loader2, ChevronDown } from 'lucide-react';
+import { authHeadersStandalone as authHeaders } from '../hooks/useApiClient';
 
 interface Ingredient {
   id: number;
@@ -55,14 +56,6 @@ const CATEGORIES = [
   'Boulangerie',
   'Condiments',
 ];
-
-function authHeaders() {
-  const token = localStorage.getItem('token');
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  };
-}
 
 export default function SmartIngredientInput({
   onSelect,

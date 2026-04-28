@@ -12,6 +12,7 @@ import {
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
+import { useApiClient } from '../hooks/useApiClient';
 
 const API = '';
 
@@ -24,15 +25,6 @@ function getUnitDivisor(unit: string): number {
   if (u === 'ml') return 1000;
   if (u === 'dl') return 10;
   return 1;
-}
-
-function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token');
-  const rid = localStorage.getItem('activeRestaurantId');
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  if (rid) headers['X-Restaurant-Id'] = rid;
-  return headers;
 }
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -187,7 +179,7 @@ const ALLERGEN_COLORS: Record<string, string> = {
 
 function getAllergenColor(allergen: string): string {
   const key = allergen.toLowerCase().trim();
-  return ALLERGEN_COLORS[key] || 'bg-[#F5F5F5] text-[#111111] dark:bg-[#171717] dark:text-[#A3A3A3]';
+  return ALLERGEN_COLORS[key] || 'bg-mono-975 text-mono-100 dark:bg-[#171717] dark:text-mono-700';
 }
 
 function getRecipeAllergens(recipe: Recipe): string[] {
@@ -363,17 +355,17 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
         {[0.25, 0.5, 0.75, 1].map(t => (
           <g key={`grid-${t}`}>
             <line x1={padding.left} y1={padding.top + plotH * (1 - t)} x2={padding.left + plotW} y2={padding.top + plotH * (1 - t)}
-              stroke="currentColor" className="text-[#111111] dark:text-white dark:text-[#1A1A1A]" strokeWidth={0.5} strokeDasharray="4,4" />
+              stroke="currentColor" className="text-mono-100 dark:text-white dark:text-mono-200" strokeWidth={0.5} strokeDasharray="4,4" />
             <line x1={padding.left + plotW * t} y1={padding.top} x2={padding.left + plotW * t} y2={padding.top + plotH}
-              stroke="currentColor" className="text-[#111111] dark:text-white dark:text-[#1A1A1A]" strokeWidth={0.5} strokeDasharray="4,4" />
+              stroke="currentColor" className="text-mono-100 dark:text-white dark:text-mono-200" strokeWidth={0.5} strokeDasharray="4,4" />
           </g>
         ))}
 
         {/* Average lines */}
         <line x1={avgPopX} y1={padding.top} x2={avgPopX} y2={padding.top + plotH}
-          stroke="currentColor" className="text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3]" strokeWidth={1.5} strokeDasharray="6,4" />
+          stroke="currentColor" className="text-[#9CA3AF] dark:text-mono-500 dark:text-mono-700" strokeWidth={1.5} strokeDasharray="6,4" />
         <line x1={padding.left} y1={avgMarginY} x2={padding.left + plotW} y2={avgMarginY}
-          stroke="currentColor" className="text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3]" strokeWidth={1.5} strokeDasharray="6,4" />
+          stroke="currentColor" className="text-[#9CA3AF] dark:text-mono-500 dark:text-mono-700" strokeWidth={1.5} strokeDasharray="6,4" />
 
         {/* Quadrant labels */}
         <text x={padding.left + 8} y={padding.top + 18} className="fill-teal-400 dark:fill-teal-500" fontSize={11} fontWeight={600}>
@@ -391,9 +383,9 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
 
         {/* Axes */}
         <line x1={padding.left} y1={padding.top + plotH} x2={padding.left + plotW} y2={padding.top + plotH}
-          stroke="currentColor" className="text-[#6B7280] dark:text-[#A3A3A3] dark:text-[#1A1A1A]" strokeWidth={1} />
+          stroke="currentColor" className="text-[#6B7280] dark:text-mono-700 dark:text-mono-200" strokeWidth={1} />
         <line x1={padding.left} y1={padding.top} x2={padding.left} y2={padding.top + plotH}
-          stroke="currentColor" className="text-[#6B7280] dark:text-[#A3A3A3] dark:text-[#1A1A1A]" strokeWidth={1} />
+          stroke="currentColor" className="text-[#6B7280] dark:text-mono-700 dark:text-mono-200" strokeWidth={1} />
 
         {/* Axis labels */}
         <text x={padding.left + plotW / 2} y={height - 8} className="fill-[#6B7280] dark:fill-[#9CA3AF]" fontSize={12} textAnchor="middle" fontWeight={500}>
@@ -440,7 +432,7 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
                 className="transition-all duration-150" />
               {isHovered && (
                 <text x={cx} y={cy - r - 6} textAnchor="middle"
-                  className="fill-[#111111] dark:fill-white" fontSize={11} fontWeight={600}>
+                  className="fill-mono-100 dark:fill-white" fontSize={11} fontWeight={600}>
                   {item.name}
                 </text>
               )}
@@ -450,33 +442,33 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
 
         {/* Border */}
         <rect x={padding.left} y={padding.top} width={plotW} height={plotH}
-          fill="none" stroke="currentColor" className="text-[#111111] dark:text-white dark:text-[#1A1A1A]" strokeWidth={1} />
+          fill="none" stroke="currentColor" className="text-mono-100 dark:text-white dark:text-mono-200" strokeWidth={1} />
       </svg>
 
       {/* Floating tooltip */}
       {hovered && (
         <div
-          className="absolute z-50 pointer-events-none bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-xl px-4 py-3 text-sm max-w-xs"
+          className="absolute z-50 pointer-events-none bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl shadow-xl px-4 py-3 text-sm max-w-xs"
           style={{
             left: Math.min(tooltipPos.x + 16, 500),
             top: tooltipPos.y - 10,
           }}
         >
-          <div className="font-bold text-[#111111] dark:text-white mb-1">{hovered.name}</div>
-          <div className="text-[#9CA3AF] dark:text-[#737373] text-xs mb-2">{hovered.category}</div>
+          <div className="font-bold text-mono-100 dark:text-white mb-1">{hovered.name}</div>
+          <div className="text-[#9CA3AF] dark:text-mono-500 text-xs mb-2">{hovered.category}</div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-            <span className="text-[#9CA3AF] dark:text-[#737373]">Prix vente:</span>
-            <span className="font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmtEur(hovered.sellingPrice)}</span>
-            <span className="text-[#9CA3AF] dark:text-[#737373]">Coût:</span>
-            <span className="font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmtEur(hovered.costPerPortion)}</span>
-            <span className="text-[#9CA3AF] dark:text-[#737373]">Marge:</span>
-            <span className="font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmt(hovered.marginPercent, 1)}%</span>
-            <span className="text-[#9CA3AF] dark:text-[#737373]">Ventes:</span>
-            <span className="font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-white">{hovered.salesQty}</span>
-            <span className="text-[#9CA3AF] dark:text-[#737373]">CA:</span>
-            <span className="font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmtEur(hovered.salesRevenue)}</span>
+            <span className="text-[#9CA3AF] dark:text-mono-500">Prix vente:</span>
+            <span className="font-medium text-[#9CA3AF] dark:text-mono-500 dark:text-white">{fmtEur(hovered.sellingPrice)}</span>
+            <span className="text-[#9CA3AF] dark:text-mono-500">Coût:</span>
+            <span className="font-medium text-[#9CA3AF] dark:text-mono-500 dark:text-white">{fmtEur(hovered.costPerPortion)}</span>
+            <span className="text-[#9CA3AF] dark:text-mono-500">Marge:</span>
+            <span className="font-medium text-[#9CA3AF] dark:text-mono-500 dark:text-white">{fmt(hovered.marginPercent, 1)}%</span>
+            <span className="text-[#9CA3AF] dark:text-mono-500">Ventes:</span>
+            <span className="font-medium text-[#9CA3AF] dark:text-mono-500 dark:text-white">{hovered.salesQty}</span>
+            <span className="text-[#9CA3AF] dark:text-mono-500">CA:</span>
+            <span className="font-medium text-[#9CA3AF] dark:text-mono-500 dark:text-white">{fmtEur(hovered.salesRevenue)}</span>
           </div>
-          <div className="mt-2 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="mt-2 pt-2 border-t border-mono-900 dark:border-mono-200">
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${(QUADRANT_CONFIG[hovered.quadrant] || QUADRANT_CONFIG['star']).badge}`}>
               {(QUADRANT_CONFIG[hovered.quadrant] || QUADRANT_CONFIG['star']).emoji} {(QUADRANT_CONFIG[hovered.quadrant] || QUADRANT_CONFIG['star']).action}
             </span>
@@ -491,6 +483,7 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
 export default function MenuEngineering() {
   const { t } = useTranslation();
   const { showToast } = useToast();
+  const { authHeaders } = useApiClient();
 
   // Data
   const [data, setData] = useState<EngineeringData | null>(null);
@@ -1010,7 +1003,7 @@ export default function MenuEngineering() {
   }, [recipes]);
 
   const SortIcon = ({ field }: { field: SortField }) => {
-    if (sortField !== field) return <ArrowUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />;
+    if (sortField !== field) return <ArrowUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />;
     return sortDir === 'asc'
       ? <ArrowUp className="w-3.5 h-3.5 text-teal-500" />
       : <ArrowDown className="w-3.5 h-3.5 text-teal-500" />;
@@ -1018,19 +1011,19 @@ export default function MenuEngineering() {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FAFAFA] via-white to-[#F5F5F5] dark:from-black dark:via-black dark:to-black">
+    <div className="min-h-screen bg-gradient-to-br from-mono-1000 via-white to-mono-975 dark:from-black dark:via-black dark:to-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
         {/* ── Header ───────────────────────────────────────────────────────── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
+            <h1 className="text-2xl sm:text-3xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-3">
               <div className="p-2.5 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl text-white shadow-lg">
                 <BarChart3 className="w-6 h-6" />
               </div>
               {t('menuEngineering.title')}
             </h1>
-            <p className="text-[#9CA3AF] dark:text-[#737373] mt-1">
+            <p className="text-[#9CA3AF] dark:text-mono-500 mt-1">
               {t('menuEngineering.subtitle')}
             </p>
           </div>
@@ -1038,7 +1031,7 @@ export default function MenuEngineering() {
             <button
               onClick={handleOptimizeMenu}
               disabled={aiOptimizing || !data?.engineering?.length}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium text-sm shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium text-sm shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {aiOptimizing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
               Optimiser avec IA
@@ -1051,13 +1044,13 @@ export default function MenuEngineering() {
             </button>
             <button
               onClick={() => window.print()}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] dark:text-white rounded-xl font-medium text-sm transition-all no-print"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 dark:text-white rounded-xl font-medium text-sm transition-all no-print"
             >
               <Printer className="w-4 h-4" /> {t('menuEngineering.print')}
             </button>
             <button
               onClick={() => window.print()}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] dark:text-white rounded-xl font-medium text-sm transition-all no-print"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 dark:text-white rounded-xl font-medium text-sm transition-all no-print"
             >
               <FileDown className="w-4 h-4" /> Exporter la carte
             </button>
@@ -1066,8 +1059,8 @@ export default function MenuEngineering() {
 
         {/* ── Seasonal Performance Toggle ──────────────────────────────────── */}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">Periode :</span>
-          <div className="flex items-center gap-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-1 shadow-sm">
+          <span className="text-sm font-medium text-[#6B7280] dark:text-mono-700">Periode :</span>
+          <div className="flex items-center gap-1 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl p-1 shadow-sm">
             {([
               { key: 'all' as const, label: 'Tout' },
               { key: 'week' as const, label: 'Semaine' },
@@ -1079,8 +1072,8 @@ export default function MenuEngineering() {
                 onClick={() => setSeasonalTab(tab.key)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   seasonalTab === tab.key
-                    ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-md'
-                    : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F5F5F5] dark:hover:bg-[#171717]'
+                    ? 'bg-mono-100 dark:bg-white text-white dark:text-black shadow-md'
+                    : 'text-[#6B7280] dark:text-mono-700 hover:bg-mono-975 dark:hover:bg-[#171717]'
                 }`}
               >
                 {tab.label}
@@ -1091,7 +1084,7 @@ export default function MenuEngineering() {
 
         {/* ── Period selector ──────────────────────────────────────────────── */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-1 shadow-sm">
+          <div className="flex items-center gap-1 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl p-1 shadow-sm">
             {(['7', '30', '90'] as Period[]).map(p => (
               <button
                 key={p}
@@ -1099,7 +1092,7 @@ export default function MenuEngineering() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   period === p
                     ? 'bg-violet-600 text-white shadow-md'
-                    : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F5F5F5] dark:hover:bg-[#171717]'
+                    : 'text-[#6B7280] dark:text-mono-700 hover:bg-mono-975 dark:hover:bg-[#171717]'
                 }`}
               >
                 {p}j
@@ -1110,7 +1103,7 @@ export default function MenuEngineering() {
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
                 period === 'custom'
                   ? 'bg-violet-600 text-white shadow-md'
-                  : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F5F5F5] dark:hover:bg-[#171717]'
+                  : 'text-[#6B7280] dark:text-mono-700 hover:bg-mono-975 dark:hover:bg-[#171717]'
               }`}
             >
               <Calendar className="w-3.5 h-3.5" /> {t('menuEngineering.custom')}
@@ -1123,14 +1116,14 @@ export default function MenuEngineering() {
                 type="date"
                 value={customFrom}
                 onChange={e => setCustomFrom(e.target.value)}
-                className="px-3 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white text-sm"
+                className="px-3 py-2 border border-mono-900 dark:border-mono-200 rounded-lg bg-white dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 dark:text-white text-sm"
               />
-              <span className="text-[#9CA3AF] dark:text-[#737373]">→</span>
+              <span className="text-[#9CA3AF] dark:text-mono-500">→</span>
               <input
                 type="date"
                 value={customTo}
                 onChange={e => setCustomTo(e.target.value)}
-                className="px-3 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white text-sm"
+                className="px-3 py-2 border border-mono-900 dark:border-mono-200 rounded-lg bg-white dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 dark:text-white text-sm"
               />
               <button
                 onClick={fetchData}
@@ -1148,19 +1141,19 @@ export default function MenuEngineering() {
             {/* Close bar */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-[#111111] dark:bg-white rounded-xl">
+                <div className="p-2 bg-mono-100 dark:bg-white rounded-xl">
                   <Sparkles className="w-5 h-5 text-white dark:text-black" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-[#111111] dark:text-white">Matrice BCG — Optimisation IA</h2>
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  <h2 className="text-lg font-bold text-mono-100 dark:text-white">Matrice BCG — Optimisation IA</h2>
+                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
                     Basé sur {aiResult.totalSales} ventes · Marge moy. {aiResult.avgMargin}% · Popularité moy. {aiResult.avgPopularity}%
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setShowAiPanel(false)}
-                className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#171717] rounded-lg transition-colors"
+                className="p-2 hover:bg-mono-975 dark:hover:bg-[#171717] rounded-lg transition-colors"
               >
                 <X className="w-5 h-5 text-[#9CA3AF]" />
               </button>
@@ -1168,27 +1161,27 @@ export default function MenuEngineering() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* ── BCG Matrix Visualization ── */}
-              <div className="lg:col-span-2 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 shadow-sm">
+              <div className="lg:col-span-2 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6 shadow-sm">
                 <div className="relative w-full" style={{ paddingBottom: '80%' }}>
                   <div className="absolute inset-0">
                     {/* Axes */}
-                    <div className="absolute left-8 top-0 bottom-8 w-px bg-[#E5E7EB] dark:bg-[#333333]" />
-                    <div className="absolute left-8 bottom-8 right-0 h-px bg-[#E5E7EB] dark:bg-[#333333]" />
+                    <div className="absolute left-8 top-0 bottom-8 w-px bg-mono-900 dark:bg-[#333333]" />
+                    <div className="absolute left-8 bottom-8 right-0 h-px bg-mono-900 dark:bg-[#333333]" />
                     {/* Mid lines (dashed) */}
-                    <div className="absolute left-8 right-0 border-t border-dashed border-[#E5E7EB] dark:border-[#333333]" style={{ top: 'calc(50% - 16px)' }} />
-                    <div className="absolute top-0 bottom-8 border-l border-dashed border-[#E5E7EB] dark:border-[#333333]" style={{ left: 'calc(50% + 16px)' }} />
+                    <div className="absolute left-8 right-0 border-t border-dashed border-mono-900 dark:border-[#333333]" style={{ top: 'calc(50% - 16px)' }} />
+                    <div className="absolute top-0 bottom-8 border-l border-dashed border-mono-900 dark:border-[#333333]" style={{ left: 'calc(50% + 16px)' }} />
 
                     {/* Quadrant labels */}
-                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#525252]" style={{ top: '8px', left: 'calc(25% + 16px)', transform: 'translateX(-50%)' }}>
+                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-400" style={{ top: '8px', left: 'calc(25% + 16px)', transform: 'translateX(-50%)' }}>
                       Puzzles
                     </div>
-                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#525252]" style={{ top: '8px', left: 'calc(75% + 16px)', transform: 'translateX(-50%)' }}>
+                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-400" style={{ top: '8px', left: 'calc(75% + 16px)', transform: 'translateX(-50%)' }}>
                       Stars
                     </div>
-                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#525252]" style={{ bottom: 'calc(50% - 38px)', left: 'calc(25% + 16px)', transform: 'translateX(-50%)' }}>
+                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-400" style={{ bottom: 'calc(50% - 38px)', left: 'calc(25% + 16px)', transform: 'translateX(-50%)' }}>
                       Dogs
                     </div>
-                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#525252]" style={{ bottom: 'calc(50% - 38px)', left: 'calc(75% + 16px)', transform: 'translateX(-50%)' }}>
+                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-400" style={{ bottom: 'calc(50% - 38px)', left: 'calc(75% + 16px)', transform: 'translateX(-50%)' }}>
                       Plowhorses
                     </div>
 
@@ -1199,10 +1192,10 @@ export default function MenuEngineering() {
                     <div className="absolute bg-amber-50/50 dark:bg-amber-950/10" style={{ bottom: '32px', right: 0, width: 'calc(50% - 16px)', height: 'calc(50% - 16px)' }} />
 
                     {/* Axis labels */}
-                    <div className="absolute text-[9px] font-medium text-[#9CA3AF] dark:text-[#525252] -rotate-90" style={{ left: '-4px', top: '50%', transform: 'rotate(-90deg) translateX(50%)' }}>
+                    <div className="absolute text-[9px] font-medium text-[#9CA3AF] dark:text-mono-400 -rotate-90" style={{ left: '-4px', top: '50%', transform: 'rotate(-90deg) translateX(50%)' }}>
                       MARGE %
                     </div>
-                    <div className="absolute text-[9px] font-medium text-[#9CA3AF] dark:text-[#525252]" style={{ bottom: '8px', left: '50%', transform: 'translateX(-50%)' }}>
+                    <div className="absolute text-[9px] font-medium text-[#9CA3AF] dark:text-mono-400" style={{ bottom: '8px', left: '50%', transform: 'translateX(-50%)' }}>
                       POPULARITE
                     </div>
 
@@ -1240,11 +1233,11 @@ export default function MenuEngineering() {
                             }}
                           >
                             <div
-                              className="w-3 h-3 rounded-full border-2 border-white dark:border-[#0A0A0A] shadow-md transition-transform group-hover:scale-150"
+                              className="w-3 h-3 rounded-full border-2 border-white dark:border-mono-50 shadow-md transition-transform group-hover:scale-150"
                               style={{ backgroundColor: dotColor }}
                             />
                             {/* Tooltip */}
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-[#111111] dark:bg-white text-white dark:text-black text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-20">
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-mono-100 dark:bg-white text-white dark:text-black text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-20">
                               <div className="font-semibold">{recipe.name}</div>
                               <div>Marge: {recipe.marginPercent}% · Pop: {recipe.popularity}%</div>
                               <div>Prix: {formatCurrency(recipe.sellingPrice)}</div>
@@ -1257,7 +1250,7 @@ export default function MenuEngineering() {
                 </div>
 
                 {/* Legend */}
-                <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-mono-900 dark:border-mono-200">
                   {[
                     { color: '#10B981', label: 'Stars — Garder' },
                     { color: '#3B82F6', label: 'Puzzles — Promouvoir' },
@@ -1266,7 +1259,7 @@ export default function MenuEngineering() {
                   ].map(item => (
                     <div key={item.label} className="flex items-center gap-1.5">
                       <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                      <span className="text-[10px] font-medium text-[#6B7280] dark:text-[#A3A3A3]">{item.label}</span>
+                      <span className="text-[10px] font-medium text-[#6B7280] dark:text-mono-700">{item.label}</span>
                     </div>
                   ))}
                 </div>
@@ -1276,12 +1269,12 @@ export default function MenuEngineering() {
               <div className="space-y-4">
                 {/* Summary */}
                 {aiResult.optimization?.summary && (
-                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                  <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center gap-2 mb-2">
-                      <Lightbulb className="w-4 h-4 text-[#111111] dark:text-white" />
-                      <span className="text-sm font-bold text-[#111111] dark:text-white">Synthèse IA</span>
+                      <Lightbulb className="w-4 h-4 text-mono-100 dark:text-white" />
+                      <span className="text-sm font-bold text-mono-100 dark:text-white">Synthèse IA</span>
                     </div>
-                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">
+                    <p className="text-xs text-[#6B7280] dark:text-mono-700 leading-relaxed">
                       {aiResult.optimization.summary}
                     </p>
                   </div>
@@ -1289,18 +1282,18 @@ export default function MenuEngineering() {
 
                 {/* Stars */}
                 {aiResult.optimization?.stars?.length > 0 && (
-                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                  <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                      <span className="text-sm font-bold text-[#111111] dark:text-white">Stars ({aiResult.optimization.stars.length})</span>
+                      <span className="text-sm font-bold text-mono-100 dark:text-white">Stars ({aiResult.optimization.stars.length})</span>
                     </div>
                     <div className="space-y-2">
                       {aiResult.optimization.stars.map((item: any) => (
                         <div key={item.id} className="flex items-start gap-2">
                           <Star className="w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0" />
                           <div>
-                            <span className="text-xs font-semibold text-[#111111] dark:text-white">{item.name}</span>
-                            <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{item.action}</p>
+                            <span className="text-xs font-semibold text-mono-100 dark:text-white">{item.name}</span>
+                            <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{item.action}</p>
                           </div>
                         </div>
                       ))}
@@ -1310,18 +1303,18 @@ export default function MenuEngineering() {
 
                 {/* Puzzles */}
                 {aiResult.optimization?.puzzles?.length > 0 && (
-                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                  <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-2 h-2 rounded-full bg-blue-500" />
-                      <span className="text-sm font-bold text-[#111111] dark:text-white">Puzzles ({aiResult.optimization.puzzles.length})</span>
+                      <span className="text-sm font-bold text-mono-100 dark:text-white">Puzzles ({aiResult.optimization.puzzles.length})</span>
                     </div>
                     <div className="space-y-2">
                       {aiResult.optimization.puzzles.map((item: any) => (
                         <div key={item.id} className="flex items-start gap-2">
                           <Zap className="w-3.5 h-3.5 text-blue-500 mt-0.5 shrink-0" />
                           <div>
-                            <span className="text-xs font-semibold text-[#111111] dark:text-white">{item.name}</span>
-                            <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{item.action}</p>
+                            <span className="text-xs font-semibold text-mono-100 dark:text-white">{item.name}</span>
+                            <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{item.action}</p>
                             {item.marketingSuggestion && (
                               <p className="text-[10px] text-blue-600 dark:text-blue-400 mt-0.5">{item.marketingSuggestion}</p>
                             )}
@@ -1334,18 +1327,18 @@ export default function MenuEngineering() {
 
                 {/* Plowhorses */}
                 {aiResult.optimization?.plowhorses?.length > 0 && (
-                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                  <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-2 h-2 rounded-full bg-amber-500" />
-                      <span className="text-sm font-bold text-[#111111] dark:text-white">Plowhorses ({aiResult.optimization.plowhorses.length})</span>
+                      <span className="text-sm font-bold text-mono-100 dark:text-white">Plowhorses ({aiResult.optimization.plowhorses.length})</span>
                     </div>
                     <div className="space-y-2">
                       {aiResult.optimization.plowhorses.map((item: any) => (
                         <div key={item.id} className="flex items-start gap-2">
                           <TrendingUp className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
                           <div>
-                            <span className="text-xs font-semibold text-[#111111] dark:text-white">{item.name}</span>
-                            <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{item.action}</p>
+                            <span className="text-xs font-semibold text-mono-100 dark:text-white">{item.name}</span>
+                            <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{item.action}</p>
                             {item.suggestedPrice && (
                               <p className="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5">
                                 Prix suggéré: {formatCurrency(item.suggestedPrice)}
@@ -1360,18 +1353,18 @@ export default function MenuEngineering() {
 
                 {/* Dogs */}
                 {aiResult.optimization?.dogs?.length > 0 && (
-                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                  <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-2 h-2 rounded-full bg-red-500" />
-                      <span className="text-sm font-bold text-[#111111] dark:text-white">Dogs ({aiResult.optimization.dogs.length})</span>
+                      <span className="text-sm font-bold text-mono-100 dark:text-white">Dogs ({aiResult.optimization.dogs.length})</span>
                     </div>
                     <div className="space-y-2">
                       {aiResult.optimization.dogs.map((item: any) => (
                         <div key={item.id} className="flex items-start gap-2">
                           <X className="w-3.5 h-3.5 text-red-500 mt-0.5 shrink-0" />
                           <div>
-                            <span className="text-xs font-semibold text-[#111111] dark:text-white">{item.name}</span>
-                            <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{item.action}</p>
+                            <span className="text-xs font-semibold text-mono-100 dark:text-white">{item.name}</span>
+                            <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{item.action}</p>
                             {item.alternative && (
                               <p className="text-[10px] text-red-600 dark:text-red-400 mt-0.5">Alternative: {item.alternative}</p>
                             )}
@@ -1384,20 +1377,20 @@ export default function MenuEngineering() {
 
                 {/* Revenue Impact */}
                 {aiResult.optimization?.revenueImpact && (
-                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                  <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center gap-2 mb-3">
-                      <TrendingUp className="w-4 h-4 text-[#111111] dark:text-white" />
-                      <span className="text-sm font-bold text-[#111111] dark:text-white">Impact estimé</span>
+                      <TrendingUp className="w-4 h-4 text-mono-100 dark:text-white" />
+                      <span className="text-sm font-bold text-mono-100 dark:text-white">Impact estimé</span>
                     </div>
                     {aiResult.optimization.revenueImpact.estimatedMonthlyRevenue > 0 && (
                       <div className="flex items-baseline gap-2 mb-2">
                         <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                           +{aiResult.optimization.revenueImpact.percentChange}%
                         </span>
-                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">revenu mensuel</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500">revenu mensuel</span>
                       </div>
                     )}
-                    <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">
+                    <p className="text-[10px] text-[#6B7280] dark:text-mono-700 leading-relaxed">
                       {aiResult.optimization.revenueImpact.explanation}
                     </p>
                   </div>
@@ -1405,19 +1398,19 @@ export default function MenuEngineering() {
 
                 {/* Price Adjustments Table + Apply Button */}
                 {aiResult.optimization?.priceAdjustments?.length > 0 && (
-                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                  <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <DollarSign className="w-4 h-4 text-[#111111] dark:text-white" />
-                        <span className="text-sm font-bold text-[#111111] dark:text-white">Ajustements de prix</span>
+                        <DollarSign className="w-4 h-4 text-mono-100 dark:text-white" />
+                        <span className="text-sm font-bold text-mono-100 dark:text-white">Ajustements de prix</span>
                       </div>
                     </div>
                     <div className="space-y-2 mb-4">
                       {aiResult.optimization.priceAdjustments.map((adj: any) => (
-                        <div key={adj.id} className="flex items-center justify-between py-1.5 border-b border-[#F5F5F5] dark:border-[#1A1A1A] last:border-0">
-                          <span className="text-xs font-medium text-[#111111] dark:text-white">{adj.name}</span>
+                        <div key={adj.id} className="flex items-center justify-between py-1.5 border-b border-mono-975 dark:border-mono-200 last:border-0">
+                          <span className="text-xs font-medium text-mono-100 dark:text-white">{adj.name}</span>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373] line-through">{formatCurrency(adj.currentPrice)}</span>
+                            <span className="text-xs text-[#9CA3AF] dark:text-mono-500 line-through">{formatCurrency(adj.currentPrice)}</span>
                             <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(adj.suggestedPrice)}</span>
                           </div>
                         </div>
@@ -1426,7 +1419,7 @@ export default function MenuEngineering() {
                     <button
                       onClick={handleApplyPrices}
                       disabled={applyingPrices}
-                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium text-sm transition-all disabled:opacity-50"
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium text-sm transition-all disabled:opacity-50"
                     >
                       {applyingPrices ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                       Appliquer les suggestions
@@ -1436,12 +1429,12 @@ export default function MenuEngineering() {
 
                 {/* Menu Composition */}
                 {aiResult.optimization?.menuComposition?.recommendation && (
-                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                  <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center gap-2 mb-2">
-                      <ChefHat className="w-4 h-4 text-[#111111] dark:text-white" />
-                      <span className="text-sm font-bold text-[#111111] dark:text-white">Composition du menu</span>
+                      <ChefHat className="w-4 h-4 text-mono-100 dark:text-white" />
+                      <span className="text-sm font-bold text-mono-100 dark:text-white">Composition du menu</span>
                     </div>
-                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">
+                    <p className="text-xs text-[#6B7280] dark:text-mono-700 leading-relaxed">
                       {aiResult.optimization.menuComposition.recommendation}
                     </p>
                   </div>
@@ -1455,7 +1448,7 @@ export default function MenuEngineering() {
         {loading && (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-violet-500" />
-            <span className="ml-3 text-[#9CA3AF] dark:text-[#737373]">{t('menuEngineering.loadingAnalysis')}</span>
+            <span className="ml-3 text-[#9CA3AF] dark:text-mono-500">{t('menuEngineering.loadingAnalysis')}</span>
           </div>
         )}
 
@@ -1511,17 +1504,17 @@ export default function MenuEngineering() {
                     className={`text-left p-5 rounded-2xl border-2 transition-all ${
                       filterQuadrant === q
                         ? `${cfg.border} ${cfg.bg} ring-2 ring-offset-1 ring-${cfg.color}-400/50`
-                        : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] hover:border-[#D1D5DB] dark:hover:border-[#333333]'
+                        : 'border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 hover:border-[#D1D5DB] dark:hover:border-[#333333]'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-2xl">{cfg.emoji}</span>
                       <span className={`text-3xl font-bold ${cfg.text}`}>{quadrantCounts[q]}</span>
                     </div>
-                    <div className="font-bold text-sm text-[#111111] dark:text-white">{cfg.label}</div>
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{cfg.desc}</div>
+                    <div className="font-bold text-sm text-mono-100 dark:text-white">{cfg.label}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{cfg.desc}</div>
                     {qRevenue > 0 && (
-                      <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1 font-medium">
+                      <div className="text-xs text-[#6B7280] dark:text-mono-700 mt-1 font-medium">
                         CA: {fmtEur(qRevenue)}
                       </div>
                     )}
@@ -1537,14 +1530,14 @@ export default function MenuEngineering() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
               {/* ── Menu Mix Donut Chart ── */}
-              <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
+              <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 shadow-sm p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2.5 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl text-white shadow-lg">
                     <PieChart className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-[#111111] dark:text-white">Menu Mix</h2>
-                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Repartition du CA par categorie</p>
+                    <h2 className="text-lg font-bold text-mono-100 dark:text-white">Menu Mix</h2>
+                    <p className="text-sm text-[#9CA3AF] dark:text-mono-500">Repartition du CA par categorie</p>
                   </div>
                 </div>
 
@@ -1558,9 +1551,9 @@ export default function MenuEngineering() {
                       />
                       {/* Inner circle for donut effect */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-24 h-24 rounded-full bg-white dark:bg-[#0A0A0A] flex flex-col items-center justify-center shadow-sm">
-                          <span className="text-lg font-bold text-[#111111] dark:text-white">{menuMixData.length}</span>
-                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">categories</span>
+                        <div className="w-24 h-24 rounded-full bg-white dark:bg-mono-50 flex flex-col items-center justify-center shadow-sm">
+                          <span className="text-lg font-bold text-mono-100 dark:text-white">{menuMixData.length}</span>
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">categories</span>
                         </div>
                       </div>
                     </div>
@@ -1572,15 +1565,15 @@ export default function MenuEngineering() {
                           <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium text-[#111111] dark:text-white truncate">{d.category}</span>
-                              <span className="text-sm font-bold text-[#111111] dark:text-white ml-2">{fmt(d.percent, 1)}%</span>
+                              <span className="text-sm font-medium text-mono-100 dark:text-white truncate">{d.category}</span>
+                              <span className="text-sm font-bold text-mono-100 dark:text-white ml-2">{fmt(d.percent, 1)}%</span>
                             </div>
                             <div className="flex items-center justify-between mt-0.5">
-                              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{d.count} recettes - {d.qty} ventes</span>
-                              <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] font-medium">{fmtEur(d.revenue)}</span>
+                              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{d.count} recettes - {d.qty} ventes</span>
+                              <span className="text-xs text-[#6B7280] dark:text-mono-700 font-medium">{fmtEur(d.revenue)}</span>
                             </div>
                             {/* Progress bar */}
-                            <div className="w-full h-1.5 bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded-full mt-1.5 overflow-hidden">
+                            <div className="w-full h-1.5 bg-mono-975 dark:bg-mono-200 rounded-full mt-1.5 overflow-hidden">
                               <div className="h-full rounded-full transition-all duration-500" style={{ width: `${d.percent}%`, backgroundColor: d.color }} />
                             </div>
                           </div>
@@ -1589,7 +1582,7 @@ export default function MenuEngineering() {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">
                     <PieChart className="w-10 h-10 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">Aucune donnee de vente disponible</p>
                   </div>
@@ -1597,14 +1590,14 @@ export default function MenuEngineering() {
               </div>
 
               {/* ── Price Optimization Suggestions ── */}
-              <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
+              <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 shadow-sm p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl text-white shadow-lg">
                     <TrendingUp className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-[#111111] dark:text-white">Optimisation des prix</h2>
-                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Suggestions par impact sur la marge globale</p>
+                    <h2 className="text-lg font-bold text-mono-100 dark:text-white">Optimisation des prix</h2>
+                    <p className="text-sm text-[#9CA3AF] dark:text-mono-500">Suggestions par impact sur la marge globale</p>
                   </div>
                 </div>
 
@@ -1616,7 +1609,7 @@ export default function MenuEngineering() {
                       return (
                         <div
                           key={sug.id}
-                          className="p-4 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333333] transition-all"
+                          className="p-4 rounded-xl border border-mono-900 dark:border-mono-200 hover:border-[#D1D5DB] dark:hover:border-[#333333] transition-all"
                         >
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex items-start gap-3 min-w-0">
@@ -1627,13 +1620,13 @@ export default function MenuEngineering() {
                               </div>
                               <div className="min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="font-bold text-sm text-[#111111] dark:text-white">{sug.name}</span>
+                                  <span className="font-bold text-sm text-mono-100 dark:text-white">{sug.name}</span>
                                   <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-semibold ${cfgQ.badge}`}>
                                     {cfgQ.emoji} {cfgQ.label}
                                   </span>
                                 </div>
-                                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 leading-relaxed">
-                                  Si vous {isIncrease ? 'augmentez' : 'reduisez'} <strong className="text-[#111111] dark:text-white">{sug.name}</strong> de{' '}
+                                <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1 leading-relaxed">
+                                  Si vous {isIncrease ? 'augmentez' : 'reduisez'} <strong className="text-mono-100 dark:text-white">{sug.name}</strong> de{' '}
                                   <strong className={isIncrease ? 'text-emerald-600 dark:text-emerald-400' : 'text-teal-600 dark:text-teal-400'}>
                                     {fmtEur(Math.abs(sug.suggestedChange))}
                                   </strong>, votre marge globale {sug.marginImpactPct > 0 ? 'augmente' : 'diminue'} de{' '}
@@ -1641,11 +1634,11 @@ export default function MenuEngineering() {
                                     {sug.marginImpactPct > 0 ? '+' : ''}{fmt(sug.marginImpactPct, 1)}%
                                   </strong>.
                                 </p>
-                                <p className="text-[10px] text-[#9CA3AF] dark:text-[#525252] mt-1">{sug.reason}</p>
+                                <p className="text-[10px] text-[#9CA3AF] dark:text-mono-400 mt-1">{sug.reason}</p>
                               </div>
                             </div>
                             <div className="text-right flex-shrink-0">
-                              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] line-through">{fmtEur(sug.currentPrice)}</div>
+                              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 line-through">{fmtEur(sug.currentPrice)}</div>
                               <div className={`text-sm font-bold ${isIncrease ? 'text-emerald-600 dark:text-emerald-400' : 'text-teal-600 dark:text-teal-400'}`}>
                                 {fmtEur(sug.newPrice)}
                               </div>
@@ -1665,7 +1658,7 @@ export default function MenuEngineering() {
                     })}
                   </div>
                 ) : (
-                  <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">
                     <CircleDollarSign className="w-10 h-10 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">Ajoutez des ventes pour obtenir des suggestions</p>
                   </div>
@@ -1674,18 +1667,18 @@ export default function MenuEngineering() {
             </div>
 
             {/* ── BCG Matrix ──────────────────────────────────────────────── */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-lg font-bold text-[#111111] dark:text-white flex items-center gap-2">
+                  <h2 className="text-lg font-bold text-mono-100 dark:text-white flex items-center gap-2">
                     <Target className="w-5 h-5 text-violet-500" />
                     {t('menuEngineering.bcgMatrix')}
                   </h2>
-                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+                  <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-0.5">
                     {t('menuEngineering.bcgDescription')}
                   </p>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                <div className="flex items-center gap-3 text-xs text-[#9CA3AF] dark:text-mono-500">
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Vedettes</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-teal-500" /> Énigmes</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Valeurs sûres</span>
@@ -1696,7 +1689,7 @@ export default function MenuEngineering() {
               {items.length > 0 ? (
                 <BCGMatrix items={items} />
               ) : (
-                <div className="text-center py-16 text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3]">
+                <div className="text-center py-16 text-[#9CA3AF] dark:text-mono-500 dark:text-mono-700">
                   <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-50" />
                   <p className="font-medium">{t('menuEngineering.addRecipesAndSales')}</p>
                   <p className="text-sm mt-1">{t('menuEngineering.createRecipesHint')}</p>
@@ -1705,9 +1698,9 @@ export default function MenuEngineering() {
             </div>
 
             {/* ── Detailed table ───────────────────────────────────────────── */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-lg font-bold text-[#111111] dark:text-white flex items-center gap-2">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-mono-900 dark:border-mono-200 flex flex-wrap items-center justify-between gap-3">
+                <h2 className="text-lg font-bold text-mono-100 dark:text-white flex items-center gap-2">
                   <Award className="w-5 h-5 text-violet-500" />
                   {t('menuEngineering.detailByRecipe')}
                 </h2>
@@ -1715,7 +1708,7 @@ export default function MenuEngineering() {
                   <select
                     value={filterQuadrant}
                     onChange={e => setFilterQuadrant(e.target.value as Quadrant | 'all')}
-                    className="px-3 py-1.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-sm text-[#9CA3AF] dark:text-[#737373] dark:text-white"
+                    className="px-3 py-1.5 border border-mono-900 dark:border-mono-200 rounded-lg bg-white dark:bg-mono-50 text-sm text-[#9CA3AF] dark:text-mono-500 dark:text-white"
                   >
                     <option value="all">{t('menuEngineering.allQuadrants')}</option>
                     {(Object.keys(QUADRANT_CONFIG) as Quadrant[]).map(q => (
@@ -1728,7 +1721,7 @@ export default function MenuEngineering() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-[#FAFAFA] dark:bg-black/50">
+                    <tr className="bg-mono-1000 dark:bg-black/50">
                       {[
                         { field: 'name' as SortField, label: 'Nom' },
                         { field: 'category' as SortField, label: 'Catégorie' },
@@ -1743,7 +1736,7 @@ export default function MenuEngineering() {
                         <th
                           key={col.field}
                           onClick={() => handleSort(col.field)}
-                          className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider cursor-pointer hover:text-[#111111] dark:hover:text-[#111111] dark:text-white transition-colors select-none"
+                          className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider cursor-pointer hover:text-mono-100 dark:hover:text-mono-100 dark:text-white transition-colors select-none"
                         >
                           <span className="inline-flex items-center gap-1">
                             {col.label}
@@ -1751,21 +1744,21 @@ export default function MenuEngineering() {
                           </span>
                         </th>
                       ))}
-                      <th className="px-4 py-3 text-center text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">
                         Score
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">
                         Allergènes
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">
                         Action
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]/50">
+                  <tbody className="divide-y divide-mono-900 dark:divide-mono-200/50">
                     {sortedItems.length === 0 ? (
                       <tr>
-                        <td colSpan={12} className="px-4 py-12 text-center text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3]">
+                        <td colSpan={12} className="px-4 py-12 text-center text-[#9CA3AF] dark:text-mono-500 dark:text-mono-700">
                           {t('menuEngineering.noDishFound')}
                         </td>
                       </tr>
@@ -1775,29 +1768,29 @@ export default function MenuEngineering() {
                         const score = computeProfitabilityScore(item, maxSalesQty);
                         const allergens = recipeAllergens[item.id] || [];
                         return (
-                          <tr key={item.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/50 transition-colors">
-                            <td className="px-4 py-3 font-medium text-[#111111] dark:text-white whitespace-nowrap">
+                          <tr key={item.id} className="hover:bg-mono-1000 dark:hover:bg-[#171717]/50 transition-colors">
+                            <td className="px-4 py-3 font-medium text-mono-100 dark:text-white whitespace-nowrap">
                               {item.name}
                             </td>
-                            <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">
+                            <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700">
                               {item.category}
                             </td>
-                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373] dark:text-white font-mono text-right">
+                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-mono-500 dark:text-white font-mono text-right">
                               {fmtEur(item.sellingPrice)}
                             </td>
-                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373] dark:text-white font-mono text-right">
+                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-mono-500 dark:text-white font-mono text-right">
                               {fmtEur(item.costPerPortion)}
                             </td>
-                            <td className="px-4 py-3 font-mono text-right font-medium text-[#111111] dark:text-white">
+                            <td className="px-4 py-3 font-mono text-right font-medium text-mono-100 dark:text-white">
                               {fmtEur(item.margin)}
                             </td>
                             <td className="px-4 py-3 text-right">
                               <MarginBadge percent={item.marginPercent} />
                             </td>
-                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373] dark:text-white font-mono text-right">
+                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-mono-500 dark:text-white font-mono text-right">
                               {item.salesQty}
                             </td>
-                            <td className="px-4 py-3 font-mono text-right font-medium text-[#111111] dark:text-white">
+                            <td className="px-4 py-3 font-mono text-right font-medium text-mono-100 dark:text-white">
                               {fmtEur(item.salesRevenue)}
                             </td>
                             <td className="px-4 py-3">
@@ -1824,7 +1817,7 @@ export default function MenuEngineering() {
                                     ))}
                                   </>
                                 ) : (
-                                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">-</span>
+                                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500">-</span>
                                 )}
                               </div>
                             </td>
@@ -1848,16 +1841,16 @@ export default function MenuEngineering() {
 
             {/* ── AI Recommendations ─────────────────────────────────────────── */}
             {recommendations.length > 0 && (
-              <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
+              <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 shadow-sm p-6">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="p-2.5 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl text-white shadow-lg">
                     <Lightbulb className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-[#111111] dark:text-white">
+                    <h2 className="text-lg font-bold text-mono-100 dark:text-white">
                       {t('menuEngineering.aiRecommendations')}
                     </h2>
-                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+                    <p className="text-sm text-[#9CA3AF] dark:text-mono-500">
                       {t('menuEngineering.aiRecommendationsDesc')}
                     </p>
                   </div>
@@ -1877,7 +1870,7 @@ export default function MenuEngineering() {
                         className={`flex items-start gap-3 p-4 rounded-xl border-l-4 ${borderColors[tip.type]}`}
                       >
                         <span className="text-xl flex-shrink-0 mt-0.5">{tip.icon}</span>
-                        <p className="text-sm text-[#9CA3AF] dark:text-[#737373] dark:text-white leading-relaxed">
+                        <p className="text-sm text-[#9CA3AF] dark:text-mono-500 dark:text-white leading-relaxed">
                           {tip.text}
                         </p>
                       </div>
@@ -1888,15 +1881,15 @@ export default function MenuEngineering() {
             )}
 
             {/* ── Drag-Drop Menu Reorder ──────────────────────────────────── */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 shadow-sm p-6">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
                   <div className="p-2.5 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl text-white shadow-lg">
                     <GripVertical className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-[#111111] dark:text-white">Simuler l'ordre du menu</h2>
-                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Glissez-deposez pour reorganiser vos plats</p>
+                    <h2 className="text-lg font-bold text-mono-100 dark:text-white">Simuler l'ordre du menu</h2>
+                    <p className="text-sm text-[#9CA3AF] dark:text-mono-500">Glissez-deposez pour reorganiser vos plats</p>
                   </div>
                 </div>
                 <button
@@ -1906,8 +1899,8 @@ export default function MenuEngineering() {
                   }}
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     showReorder
-                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                      : 'bg-[#F5F5F5] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A]'
+                      ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+                      : 'bg-mono-975 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-200'
                   }`}
                 >
                   <GripVertical className="w-4 h-4" />
@@ -1936,23 +1929,23 @@ export default function MenuEngineering() {
                             ? 'opacity-50 border-violet-400 dark:border-violet-600 bg-violet-50 dark:bg-violet-950/30'
                             : isDragOver
                               ? 'border-violet-300 dark:border-violet-700 bg-violet-50/50 dark:bg-violet-950/20 scale-[1.01]'
-                              : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717]'
+                              : 'border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 hover:bg-mono-1000 dark:hover:bg-[#171717]'
                         }`}
                       >
                         {/* Drag handle */}
-                        <div className="flex flex-col items-center gap-0.5 text-[#D1D5DB] dark:text-[#525252]">
+                        <div className="flex flex-col items-center gap-0.5 text-[#D1D5DB] dark:text-mono-400">
                           <GripVertical className="w-4 h-4" />
                         </div>
 
                         {/* Position number */}
-                        <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#F5F5F5] dark:bg-[#171717] text-xs font-bold text-[#6B7280] dark:text-[#A3A3A3]">
+                        <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-mono-975 dark:bg-[#171717] text-xs font-bold text-[#6B7280] dark:text-mono-700">
                           {idx + 1}
                         </div>
 
                         {/* Item info */}
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm text-[#111111] dark:text-white truncate">{item.name}</div>
-                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{item.category} - {fmtEur(item.sellingPrice)}</div>
+                          <div className="font-medium text-sm text-mono-100 dark:text-white truncate">{item.name}</div>
+                          <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{item.category} - {fmtEur(item.sellingPrice)}</div>
                         </div>
 
                         {/* Quadrant badge */}
@@ -1962,8 +1955,8 @@ export default function MenuEngineering() {
 
                         {/* Margin */}
                         <div className="text-right flex-shrink-0">
-                          <div className="text-xs font-bold text-[#111111] dark:text-white">{fmt(item.marginPercent, 1)}%</div>
-                          <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtEur(item.margin)}</div>
+                          <div className="text-xs font-bold text-mono-100 dark:text-white">{fmt(item.marginPercent, 1)}%</div>
+                          <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{fmtEur(item.margin)}</div>
                         </div>
                       </div>
                     );
@@ -1972,30 +1965,30 @@ export default function MenuEngineering() {
               )}
 
               {showReorder && menuOrder.length === 0 && (
-                <div className="text-center py-8 text-[#9CA3AF] dark:text-[#737373]">
+                <div className="text-center py-8 text-[#9CA3AF] dark:text-mono-500">
                   <GripVertical className="w-10 h-10 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">Aucune recette a reorganiser</p>
                 </div>
               )}
 
               {!showReorder && (
-                <div className="text-center py-6 text-[#9CA3AF] dark:text-[#737373]">
+                <div className="text-center py-6 text-[#9CA3AF] dark:text-mono-500">
                   <p className="text-sm">Cliquez sur "Reorganiser" pour simuler un nouvel agencement de votre carte</p>
                 </div>
               )}
             </div>
 
             {/* ── Score Legend ────────────────────────────────────────────────── */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 shadow-sm p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2.5 bg-gradient-to-br from-teal-500 to-indigo-600 rounded-xl text-white shadow-lg">
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-[#111111] dark:text-white">
+                  <h2 className="text-lg font-bold text-mono-100 dark:text-white">
                     {t('menuEngineering.scoreLegend')}
                   </h2>
-                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+                  <p className="text-sm text-[#9CA3AF] dark:text-mono-500">
                     {t('menuEngineering.scoreLegendDesc')}
                   </p>
                 </div>
@@ -2033,11 +2026,11 @@ export default function MenuEngineering() {
         <div className="space-y-5">
           {/* Recipe selector */}
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-1">{t('menuEngineering.recipe')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 dark:text-mono-700 mb-1">{t('menuEngineering.recipe')}</label>
             <select
               value={whatIfRecipeId}
               onChange={e => { setWhatIfRecipeId(e.target.value ? Number(e.target.value) : ''); setWhatIfPriceAdjust(0); }}
-              className="w-full px-3 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white"
+              className="w-full px-3 py-2.5 border border-mono-900 dark:border-mono-200 rounded-xl bg-white dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 dark:text-white"
             >
               <option value="">{t('menuEngineering.selectRecipe')}</option>
               {items.map(r => (
@@ -2050,8 +2043,8 @@ export default function MenuEngineering() {
           {whatIfRecipeId && whatIfData && (
             <>
               <div>
-                <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-2">
-                  Ajustement du prix: <span className={`font-bold ${whatIfPriceAdjust > 0 ? 'text-emerald-600' : whatIfPriceAdjust < 0 ? 'text-red-600' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 dark:text-mono-700 mb-2">
+                  Ajustement du prix: <span className={`font-bold ${whatIfPriceAdjust > 0 ? 'text-emerald-600' : whatIfPriceAdjust < 0 ? 'text-red-600' : 'text-[#6B7280] dark:text-mono-700'}`}>
                     {whatIfPriceAdjust > 0 ? '+' : ''}{whatIfPriceAdjust}%
                   </span>
                 </label>
@@ -2062,9 +2055,9 @@ export default function MenuEngineering() {
                   step={1}
                   value={whatIfPriceAdjust}
                   onChange={e => setWhatIfPriceAdjust(Number(e.target.value))}
-                  className="w-full h-2 bg-[#E5E7EB] dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-violet-600"
+                  className="w-full h-2 bg-mono-900 dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-violet-600"
                 />
-                <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+                <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">
                   <span>-30%</span>
                   <span>0%</span>
                   <span>+30%</span>
@@ -2072,49 +2065,49 @@ export default function MenuEngineering() {
               </div>
 
               {/* Results */}
-              <div className="bg-[#FAFAFA] dark:bg-black/50 rounded-xl p-4 space-y-3">
+              <div className="bg-mono-1000 dark:bg-black/50 rounded-xl p-4 space-y-3">
                 <div className="grid grid-cols-2 gap-4">
                   {/* Price comparison */}
                   <div className="space-y-1">
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Prix actuel</div>
-                    <div className="text-lg font-bold text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmtEur(whatIfData.originalPrice)}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase font-semibold">Prix actuel</div>
+                    <div className="text-lg font-bold text-[#9CA3AF] dark:text-mono-500 dark:text-white">{fmtEur(whatIfData.originalPrice)}</div>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Nouveau prix</div>
-                    <div className={`text-lg font-bold ${whatIfPriceAdjust > 0 ? 'text-emerald-600 dark:text-emerald-400' : whatIfPriceAdjust < 0 ? 'text-red-600 dark:text-red-400' : 'text-[#9CA3AF] dark:text-[#737373] dark:text-white'}`}>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase font-semibold">Nouveau prix</div>
+                    <div className={`text-lg font-bold ${whatIfPriceAdjust > 0 ? 'text-emerald-600 dark:text-emerald-400' : whatIfPriceAdjust < 0 ? 'text-red-600 dark:text-red-400' : 'text-[#9CA3AF] dark:text-mono-500 dark:text-white'}`}>
                       {fmtEur(whatIfData.newPrice)}
                     </div>
                   </div>
 
                   {/* Margin comparison */}
                   <div className="space-y-1">
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Marge actuelle</div>
-                    <div className="text-lg font-bold text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmt(whatIfData.originalMarginPercent, 1)}%</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase font-semibold">Marge actuelle</div>
+                    <div className="text-lg font-bold text-[#9CA3AF] dark:text-mono-500 dark:text-white">{fmt(whatIfData.originalMarginPercent, 1)}%</div>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Nouvelle marge</div>
-                    <div className={`text-lg font-bold ${whatIfData.newMarginPercent > whatIfData.originalMarginPercent ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.newMarginPercent < whatIfData.originalMarginPercent ? 'text-red-600 dark:text-red-400' : 'text-[#9CA3AF] dark:text-[#737373] dark:text-white'}`}>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase font-semibold">Nouvelle marge</div>
+                    <div className={`text-lg font-bold ${whatIfData.newMarginPercent > whatIfData.originalMarginPercent ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.newMarginPercent < whatIfData.originalMarginPercent ? 'text-red-600 dark:text-red-400' : 'text-[#9CA3AF] dark:text-mono-500 dark:text-white'}`}>
                       {fmt(whatIfData.newMarginPercent, 1)}%
                     </div>
                   </div>
 
                   {/* Food cost ratio */}
                   <div className="space-y-1">
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Ratio coût matière</div>
-                    <div className="text-lg font-bold text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmt(whatIfData.originalFoodCostRatio, 1)}%</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase font-semibold">Ratio coût matière</div>
+                    <div className="text-lg font-bold text-[#9CA3AF] dark:text-mono-500 dark:text-white">{fmt(whatIfData.originalFoodCostRatio, 1)}%</div>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Nouveau ratio</div>
-                    <div className={`text-lg font-bold ${whatIfData.newFoodCostRatio < whatIfData.originalFoodCostRatio ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.newFoodCostRatio > whatIfData.originalFoodCostRatio ? 'text-red-600 dark:text-red-400' : 'text-[#9CA3AF] dark:text-[#737373] dark:text-white'}`}>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase font-semibold">Nouveau ratio</div>
+                    <div className={`text-lg font-bold ${whatIfData.newFoodCostRatio < whatIfData.originalFoodCostRatio ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.newFoodCostRatio > whatIfData.originalFoodCostRatio ? 'text-red-600 dark:text-red-400' : 'text-[#9CA3AF] dark:text-mono-500 dark:text-white'}`}>
                       {fmt(whatIfData.newFoodCostRatio, 1)}%
                     </div>
                   </div>
                 </div>
 
                 {/* Revenue impact */}
-                <div className="pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold mb-1">Impact CA estimé (sur {whatIfData.item.salesQty} ventes)</div>
-                  <div className={`text-xl font-bold ${whatIfData.revenueImpact > 0 ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.revenueImpact < 0 ? 'text-red-600 dark:text-red-400' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                <div className="pt-3 border-t border-mono-900 dark:border-mono-200">
+                  <div className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase font-semibold mb-1">Impact CA estimé (sur {whatIfData.item.salesQty} ventes)</div>
+                  <div className={`text-xl font-bold ${whatIfData.revenueImpact > 0 ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.revenueImpact < 0 ? 'text-red-600 dark:text-red-400' : 'text-[#6B7280] dark:text-mono-700'}`}>
                     {whatIfData.revenueImpact > 0 ? '+' : ''}{fmtEur(whatIfData.revenueImpact)}
                   </div>
                 </div>
@@ -2132,7 +2125,7 @@ export default function MenuEngineering() {
           <div className="flex justify-end pt-2">
             <button
               onClick={() => setShowWhatIf(false)}
-              className="px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
+              className="px-4 py-2.5 border border-mono-900 dark:border-mono-200 rounded-xl text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors"
             >
               {t('menuEngineering.close')}
             </button>
@@ -2144,11 +2137,11 @@ export default function MenuEngineering() {
       <Modal isOpen={showSalesModal} onClose={() => setShowSalesModal(false)} title={t('menuEngineering.addSaleTitle')}>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-1">{t('menuEngineering.recipe')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 dark:text-mono-700 mb-1">{t('menuEngineering.recipe')}</label>
             <select
               value={saleRecipeId}
               onChange={e => setSaleRecipeId(e.target.value ? Number(e.target.value) : '')}
-              className="w-full px-3 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white"
+              className="w-full px-3 py-2.5 border border-mono-900 dark:border-mono-200 rounded-xl bg-white dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 dark:text-white"
             >
               <option value="">{t('menuEngineering.selectRecipe')}</option>
               {recipes.map(r => (
@@ -2158,31 +2151,31 @@ export default function MenuEngineering() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-1">{t('menuEngineering.qtySold')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 dark:text-mono-700 mb-1">{t('menuEngineering.qtySold')}</label>
             <input
               type="number"
               min="1"
               value={saleQty}
               onChange={e => setSaleQty(e.target.value)}
               placeholder="Ex: 12"
-              className="w-full px-3 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white"
+              className="w-full px-3 py-2.5 border border-mono-900 dark:border-mono-200 rounded-xl bg-white dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 dark:text-white"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-1">{t('menuEngineering.date')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 dark:text-mono-700 mb-1">{t('menuEngineering.date')}</label>
             <input
               type="date"
               value={saleDate}
               onChange={e => setSaleDate(e.target.value)}
-              className="w-full px-3 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white"
+              className="w-full px-3 py-2.5 border border-mono-900 dark:border-mono-200 rounded-xl bg-white dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 dark:text-white"
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
             <button
               onClick={() => setShowSalesModal(false)}
-              className="px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
+              className="px-4 py-2.5 border border-mono-900 dark:border-mono-200 rounded-xl text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors"
             >
               {t('menuEngineering.cancel')}
             </button>
@@ -2212,7 +2205,7 @@ export default function MenuEngineering() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-1">
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 dark:text-mono-700 mb-1">
               {t('menuEngineering.csvData')}
             </label>
             <textarea
@@ -2220,14 +2213,14 @@ export default function MenuEngineering() {
               value={bulkCsv}
               onChange={e => setBulkCsv(e.target.value)}
               placeholder={t('menuEngineering.pasteDataHere')}
-              className="w-full px-3 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white font-mono text-sm resize-y"
+              className="w-full px-3 py-2.5 border border-mono-900 dark:border-mono-200 rounded-xl bg-white dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 dark:text-white font-mono text-sm resize-y"
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
             <button
               onClick={() => setShowBulkModal(false)}
-              className="px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
+              className="px-4 py-2.5 border border-mono-900 dark:border-mono-200 rounded-xl text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors"
             >
               {t('menuEngineering.cancel')}
             </button>
@@ -2257,22 +2250,22 @@ function SummaryCard({ icon, label, value, sub, color }: {
 }) {
   const colorMap: Record<string, { bg: string; icon: string; border: string }> = {
     violet: {
-      bg: 'from-violet-50 to-white dark:from-violet-950/30 dark:to-[#0A0A0A]',
+      bg: 'from-violet-50 to-white dark:from-violet-950/30 dark:to-mono-50',
       icon: 'bg-violet-100 text-violet-600 dark:bg-violet-900/50 dark:text-violet-400',
       border: 'border-t-violet-500',
     },
     emerald: {
-      bg: 'from-emerald-50 to-white dark:from-emerald-950/30 dark:to-[#0A0A0A]',
+      bg: 'from-emerald-50 to-white dark:from-emerald-950/30 dark:to-mono-50',
       icon: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400',
       border: 'border-t-emerald-500',
     },
     teal: {
-      bg: 'from-teal-50 to-white dark:from-teal-950/30 dark:to-[#0A0A0A]',
+      bg: 'from-teal-50 to-white dark:from-teal-950/30 dark:to-mono-50',
       icon: 'bg-teal-100 text-teal-600 dark:bg-teal-900/50 dark:text-teal-400',
       border: 'border-t-teal-500',
     },
     amber: {
-      bg: 'from-amber-50 to-white dark:from-amber-950/30 dark:to-[#0A0A0A]',
+      bg: 'from-amber-50 to-white dark:from-amber-950/30 dark:to-mono-50',
       icon: 'bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400',
       border: 'border-t-amber-500',
     },
@@ -2280,13 +2273,13 @@ function SummaryCard({ icon, label, value, sub, color }: {
   const c = colorMap[color] || colorMap.violet;
 
   return (
-    <div className={`bg-gradient-to-br ${c.bg} rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] border-t-4 ${c.border} p-5 shadow-sm`}>
+    <div className={`bg-gradient-to-br ${c.bg} rounded-2xl border border-mono-900 dark:border-mono-200 border-t-4 ${c.border} p-5 shadow-sm`}>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">{label}</span>
         <div className={`p-2 rounded-lg ${c.icon}`}>{icon}</div>
       </div>
-      <div className="text-2xl font-bold text-[#111111] dark:text-white">{value}</div>
-      <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">{sub}</div>
+      <div className="text-2xl font-bold text-mono-100 dark:text-white">{value}</div>
+      <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">{sub}</div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import {
   Volume2, VolumeX, Settings, Users, Sparkles, Shield,
   Zap, Clock, CheckCheck, ShoppingCart, DollarSign, BarChart3, Trophy, AlertCircle
 } from 'lucide-react';
-import { getToken, getActiveRestaurantId } from '../services/api';
+import { useApiClient } from '../hooks/useApiClient';
 
 // ── Types ──────────────────────────────────────────────────────────
 interface Notification {
@@ -155,15 +155,7 @@ export default function NotificationCenter() {
   const prevCountRef = useRef(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const bellRef = useRef<HTMLButtonElement>(null);
-
-  const authHeaders = useCallback((): Record<string, string> => {
-    const token = getToken();
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    const rid = getActiveRestaurantId();
-    if (rid) headers['X-Restaurant-Id'] = rid;
-    return headers;
-  }, []);
+  const { authHeaders } = useApiClient();
 
   // ── Fetch all notifications ──
   const fetchNotifications = useCallback(async () => {

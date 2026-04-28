@@ -636,7 +636,7 @@ export default function Comptabilite() {
 
   function DeltaArrow({ current, previous, invert = false }: { current: number; previous: number; invert?: boolean }) {
     const delta = deltaPercent(current, previous);
-    if (delta === 0) return <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">--</span>;
+    if (delta === 0) return <span className="text-xs text-[#9CA3AF] dark:text-mono-500">--</span>;
     const isPositive = invert ? delta < 0 : delta > 0;
     return (
       <span className={`inline-flex items-center gap-0.5 text-xs font-medium ${isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
@@ -846,18 +846,18 @@ export default function Comptabilite() {
     const pct = Math.min((value / (th.orange * 1.3)) * 100, 100);
 
     return (
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+      <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">{label}</span>
-          <Target className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+          <span className="text-sm font-medium text-[#6B7280] dark:text-mono-700">{label}</span>
+          <Target className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
         </div>
         <div className={`text-2xl font-bold ${color}`}>
           {unit === 'EUR' ? fmt(value) : fmtPct(value)}
         </div>
-        <div className="mt-2 h-2 bg-[#E5E7EB] dark:bg-[#171717] rounded-full overflow-hidden">
+        <div className="mt-2 h-2 bg-mono-900 dark:bg-[#171717] rounded-full overflow-hidden">
           <div className={`h-full rounded-full transition-all ${bgColor}`} style={{ width: `${pct}%` }} />
         </div>
-        <div className="mt-1 text-xs text-[#9CA3AF] dark:text-[#737373]">
+        <div className="mt-1 text-xs text-[#9CA3AF] dark:text-mono-500">
           Objectif : {unit === 'EUR' ? fmt(target) : fmtPct(target)}
         </div>
       </div>
@@ -872,19 +872,19 @@ export default function Comptabilite() {
     const positive = amount >= 0;
     const colorClass = isSubtotal
       ? (positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400')
-      : 'text-[#111111] dark:text-white';
+      : 'text-mono-100 dark:text-white';
 
     return (
-      <div className={`flex items-center justify-between py-3 px-4 ${isSubtotal ? 'bg-[#F9FAFB] dark:bg-[#171717]/30 font-semibold border-t border-b border-[#E5E7EB] dark:border-[#1A1A1A]' : 'border-b border-[#F3F4F6] dark:border-[#1A1A1A]/50'}`}>
+      <div className={`flex items-center justify-between py-3 px-4 ${isSubtotal ? 'bg-[#F9FAFB] dark:bg-[#171717]/30 font-semibold border-t border-b border-mono-900 dark:border-mono-200' : 'border-b border-mono-950 dark:border-mono-200/50'}`}>
         <div className={`flex items-center gap-2 ${indent ? 'pl-6' : ''}`}>
-          {isNegative && !isSubtotal && <Minus className="w-3 h-3 text-[#9CA3AF] dark:text-[#737373]" />}
-          {isSubtotal && <ChevronRight className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />}
-          <span className={isSubtotal ? colorClass : 'text-[#374151] dark:text-[#D4D4D4] text-sm'}>{label}</span>
+          {isNegative && !isSubtotal && <Minus className="w-3 h-3 text-[#9CA3AF] dark:text-mono-500" />}
+          {isSubtotal && <ChevronRight className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />}
+          <span className={isSubtotal ? colorClass : 'text-[#374151] dark:text-mono-800 text-sm'}>{label}</span>
         </div>
         <div className="flex items-center gap-6">
           {/* Previous month */}
           <div className="text-right w-24 hidden md:block">
-            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{fmt(prevAmount)}</span>
+            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{fmt(prevAmount)}</span>
           </div>
           {/* Current */}
           <div className="text-right w-28">
@@ -892,7 +892,7 @@ export default function Comptabilite() {
           </div>
           {/* % of CA */}
           <div className="text-right w-16">
-            <span className={`text-xs ${isSubtotal ? colorClass : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{fmtPct(pct)}</span>
+            <span className={`text-xs ${isSubtotal ? colorClass : 'text-[#9CA3AF] dark:text-mono-500'}`}>{fmtPct(pct)}</span>
           </div>
           {/* Delta */}
           <div className="w-16 text-right hidden md:block">
@@ -910,10 +910,10 @@ export default function Comptabilite() {
     const bgGradient = `conic-gradient(${healthColor} 0deg, ${healthColor} ${angle}deg, #E5E7EB ${angle}deg, #E5E7EB 360deg)`;
 
     return (
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+      <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
         <div className="flex items-center gap-2 mb-4">
-          <Heart className="w-5 h-5 text-[#111111] dark:text-[#A3A3A3]" />
-          <h3 className="text-lg font-semibold text-[#111111] dark:text-white">Sante financiere</h3>
+          <Heart className="w-5 h-5 text-mono-100 dark:text-mono-700" />
+          <h3 className="text-lg font-semibold text-mono-100 dark:text-white">Sante financiere</h3>
         </div>
         <div className="flex items-center gap-8">
           {/* Circular gauge */}
@@ -922,9 +922,9 @@ export default function Comptabilite() {
               className="w-32 h-32 rounded-full flex items-center justify-center"
               style={{ background: bgGradient }}
             >
-              <div className="w-24 h-24 rounded-full bg-white dark:bg-[#0A0A0A] flex flex-col items-center justify-center">
+              <div className="w-24 h-24 rounded-full bg-white dark:bg-mono-50 flex flex-col items-center justify-center">
                 <span className="text-3xl font-bold" style={{ color: healthColor }}>{healthScore}</span>
-                <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">/100</span>
+                <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">/100</span>
               </div>
             </div>
           </div>
@@ -932,26 +932,26 @@ export default function Comptabilite() {
           <div className="flex-1 space-y-3">
             <div>
               <span className="text-sm font-semibold" style={{ color: healthColor }}>{healthLabel}</span>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">
                 Score base sur la marge brute, les ratios de charges et la tresorerie
               </p>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${pnlData.pctMargeBrute >= 65 ? 'bg-emerald-500' : pnlData.pctMargeBrute >= 50 ? 'bg-amber-500' : 'bg-red-500'}`} />
-                <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Marge brute {fmtPct(pnlData.pctMargeBrute)}</span>
+                <span className="text-xs text-[#6B7280] dark:text-mono-700">Marge brute {fmtPct(pnlData.pctMargeBrute)}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${pnlData.pctPersonnel <= 35 ? 'bg-emerald-500' : pnlData.pctPersonnel <= 40 ? 'bg-amber-500' : 'bg-red-500'}`} />
-                <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Personnel {fmtPct(pnlData.pctPersonnel)}</span>
+                <span className="text-xs text-[#6B7280] dark:text-mono-700">Personnel {fmtPct(pnlData.pctPersonnel)}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${pnlData.resultatNet > 0 ? 'bg-emerald-500' : 'bg-red-500'}`} />
-                <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Resultat {pnlData.resultatNet >= 0 ? '+' : ''}{fmt(pnlData.resultatNet)}</span>
+                <span className="text-xs text-[#6B7280] dark:text-mono-700">Resultat {pnlData.resultatNet >= 0 ? '+' : ''}{fmt(pnlData.resultatNet)}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${pnlData.pctMatieres <= 30 ? 'bg-emerald-500' : pnlData.pctMatieres <= 35 ? 'bg-amber-500' : 'bg-red-500'}`} />
-                <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Matieres {fmtPct(pnlData.pctMatieres)}</span>
+                <span className="text-xs text-[#6B7280] dark:text-mono-700">Matieres {fmtPct(pnlData.pctMatieres)}</span>
               </div>
             </div>
           </div>
@@ -977,7 +977,7 @@ export default function Comptabilite() {
   return (
     <div className="space-y-6">
       {loading && (
-        <div className="flex items-center justify-center py-4 text-[#9CA3AF] dark:text-[#737373]">
+        <div className="flex items-center justify-center py-4 text-[#9CA3AF] dark:text-mono-500">
           <Loader2 className="w-5 h-5 animate-spin mr-2" />
           Chargement des donnees...
         </div>
@@ -986,11 +986,11 @@ export default function Comptabilite() {
       {/* ─── Header ──────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-2">
-            <Calculator className="w-7 h-7 text-[#111111] dark:text-[#A3A3A3]" />
+          <h1 className="text-2xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-2">
+            <Calculator className="w-7 h-7 text-mono-100 dark:text-mono-700" />
             Comptabilite
           </h1>
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
             P&L, tresorerie, TVA, ratios et exports comptables
           </p>
         </div>
@@ -1000,21 +1000,21 @@ export default function Comptabilite() {
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm text-[#111111] dark:text-white"
+            className="px-3 py-2 rounded-xl border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-mono-50 text-sm text-mono-100 dark:text-white"
           >
             {monthlyData.map((m) => (
               <option key={m.mois} value={m.mois}>{m.moisLabel}</option>
             ))}
           </select>
-          <div className="flex rounded-xl border border-[#D1D5DB] dark:border-[#1A1A1A] overflow-hidden">
+          <div className="flex rounded-xl border border-[#D1D5DB] dark:border-mono-200 overflow-hidden">
             {(['mois', 'trimestre', 'annee'] as PeriodType[]).map((p) => (
               <button
                 key={p}
                 onClick={() => setPeriod(p)}
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   period === p
-                    ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                    : 'bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F9FAFB] dark:hover:bg-[#171717]'
+                    ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+                    : 'bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]'
                 }`}
               >
                 {p === 'mois' ? 'Mois' : p === 'trimestre' ? 'Trim.' : 'Annee'}
@@ -1027,61 +1027,61 @@ export default function Comptabilite() {
       {/* ─── Summary KPI Row ──────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {/* CA */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">CA</span>
+            <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">CA</span>
             <ArrowUpRight className="w-4 h-4 text-emerald-500" />
           </div>
-          <div className="text-xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{fmt(periodTotals.ca)}</div>
+          <div className="text-xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{fmt(periodTotals.ca)}</div>
           <DeltaArrow current={currentMonth.ca} previous={previousMonth.ca} />
         </div>
 
         {/* Charges */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Charges</span>
+            <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Charges</span>
             <ArrowDownRight className="w-4 h-4 text-red-500" />
           </div>
-          <div className="text-xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{fmt(periodTotals.charges)}</div>
+          <div className="text-xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{fmt(periodTotals.charges)}</div>
           <DeltaArrow current={currentMonth.charges} previous={previousMonth.charges} invert />
         </div>
 
         {/* Resultat net */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Resultat</span>
+            <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Resultat</span>
             {periodTotals.resultat >= 0 ? <TrendingUp className="w-4 h-4 text-emerald-500" /> : <TrendingDown className="w-4 h-4 text-red-500" />}
           </div>
           <div className={`text-xl font-bold ${periodTotals.resultat >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
             {fmt(periodTotals.resultat)}
           </div>
-          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">
             {fmtPct(periodTotals.ca > 0 ? (periodTotals.resultat / periodTotals.ca) * 100 : 0)} du CA
           </span>
         </div>
 
         {/* Ratio matiere */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Cout matiere</span>
-            <PieChartIcon className="w-4 h-4 text-[#374151] dark:text-[#D4D4D4]" />
+            <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Cout matiere</span>
+            <PieChartIcon className="w-4 h-4 text-[#374151] dark:text-mono-800" />
           </div>
           <div className={`text-xl font-bold ${periodTotals.ratioMatiere <= 30 ? 'text-emerald-600 dark:text-emerald-400' : periodTotals.ratioMatiere <= 35 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
             {fmtPct(periodTotals.ratioMatiere)}
           </div>
-          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Objectif : &lt;30%</span>
+          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Objectif : &lt;30%</span>
         </div>
 
         {/* Ratio personnel */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Personnel</span>
+            <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Personnel</span>
             <BarChart3 className="w-4 h-4 text-violet-500" />
           </div>
           <div className={`text-xl font-bold ${periodTotals.ratioPersonnel <= 35 ? 'text-emerald-600 dark:text-emerald-400' : periodTotals.ratioPersonnel <= 40 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
             {fmtPct(periodTotals.ratioPersonnel)}
           </div>
-          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Objectif : &lt;35%</span>
+          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Objectif : &lt;35%</span>
         </div>
       </div>
 
@@ -1091,31 +1091,31 @@ export default function Comptabilite() {
           <HealthGauge />
         </div>
         {/* Quick Export Buttons */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6 flex flex-col justify-between">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6 flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Download className="w-5 h-5 text-[#111111] dark:text-[#A3A3A3]" />
-              <h3 className="text-lg font-semibold text-[#111111] dark:text-white">Actions rapides</h3>
+              <Download className="w-5 h-5 text-mono-100 dark:text-mono-700" />
+              <h3 className="text-lg font-semibold text-mono-100 dark:text-white">Actions rapides</h3>
             </div>
           </div>
           <div className="space-y-2">
             <button
               onClick={() => handleExportCSV('Comptabilite')}
-              className="w-full flex items-center gap-3 px-4 py-2.5 bg-[#F9FAFB] dark:bg-[#171717] hover:bg-[#F3F4F6] dark:hover:bg-[#1A1A1A] rounded-xl text-sm font-medium text-[#111111] dark:text-white transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A]"
+              className="w-full flex items-center gap-3 px-4 py-2.5 bg-[#F9FAFB] dark:bg-[#171717] hover:bg-mono-950 dark:hover:bg-mono-200 rounded-xl text-sm font-medium text-mono-100 dark:text-white transition-colors border border-mono-900 dark:border-mono-200"
             >
               <Download className="w-4 h-4 text-emerald-500" />
               Exporter en CSV
             </button>
             <button
               onClick={handleExportPDF}
-              className="w-full flex items-center gap-3 px-4 py-2.5 bg-[#F9FAFB] dark:bg-[#171717] hover:bg-[#F3F4F6] dark:hover:bg-[#1A1A1A] rounded-xl text-sm font-medium text-[#111111] dark:text-white transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A]"
+              className="w-full flex items-center gap-3 px-4 py-2.5 bg-[#F9FAFB] dark:bg-[#171717] hover:bg-mono-950 dark:hover:bg-mono-200 rounded-xl text-sm font-medium text-mono-100 dark:text-white transition-colors border border-mono-900 dark:border-mono-200"
             >
               <FileText className="w-4 h-4 text-red-500" />
               Exporter en PDF
             </button>
             <button
               onClick={handleSendToAccountant}
-              className="w-full flex items-center gap-3 px-4 py-2.5 bg-[#F9FAFB] dark:bg-[#171717] hover:bg-[#F3F4F6] dark:hover:bg-[#1A1A1A] rounded-xl text-sm font-medium text-[#111111] dark:text-white transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A]"
+              className="w-full flex items-center gap-3 px-4 py-2.5 bg-[#F9FAFB] dark:bg-[#171717] hover:bg-mono-950 dark:hover:bg-mono-200 rounded-xl text-sm font-medium text-mono-100 dark:text-white transition-colors border border-mono-900 dark:border-mono-200"
             >
               <Mail className="w-4 h-4 text-blue-500" />
               Envoyer au comptable (email)
@@ -1125,7 +1125,7 @@ export default function Comptabilite() {
       </div>
 
       {/* ─── Tabs ──────────────────────────────────────────────────────── */}
-      <div className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto">
+      <div className="border-b border-mono-900 dark:border-mono-200 overflow-x-auto">
         <div className="flex gap-1 min-w-max">
           {tabs.map((tab) => (
             <button
@@ -1133,8 +1133,8 @@ export default function Comptabilite() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'border-[#111111] text-[#111111] dark:text-white dark:border-white'
-                  : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:hover:text-[#A3A3A3]'
+                  ? 'border-mono-100 text-mono-100 dark:text-white dark:border-white'
+                  : 'border-transparent text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] dark:hover:text-mono-700'
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -1150,13 +1150,13 @@ export default function Comptabilite() {
       {activeTab === 'pnl' && (
         <div className="space-y-6">
           {/* Monthly Comparison Header */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
+            <div className="px-4 py-3 border-b border-mono-900 dark:border-mono-200 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-mono-100 dark:text-white flex items-center gap-2">
                 <FileText className="w-5 h-5" />
                 Compte de Resultat (P&L)
               </h2>
-              <div className="hidden md:flex items-center gap-6 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">
+              <div className="hidden md:flex items-center gap-6 text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase">
                 <span className="w-24 text-right">Mois prec.</span>
                 <span className="w-28 text-right">Mois actuel</span>
                 <span className="w-16 text-right">% du CA</span>
@@ -1175,8 +1175,8 @@ export default function Comptabilite() {
           </div>
 
           {/* P&L Monthly Evolution Chart */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
-            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-4">Evolution CA vs Charges vs Resultat</h3>
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
+            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-4">Evolution CA vs Charges vs Resultat</h3>
             <ResponsiveContainer width="100%" height={300}>
               <ComposedChart data={monthlyData.map(m => ({
                 mois: m.moisLabel,
@@ -1202,33 +1202,33 @@ export default function Comptabilite() {
           TAB: Journal des ventes
           ═══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'journal' && (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
           {/* Filters */}
-          <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-wrap gap-3 items-end">
+          <div className="p-4 border-b border-mono-900 dark:border-mono-200 flex flex-wrap gap-3 items-end">
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Du</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Du</label>
               <input
                 type="date"
                 value={journalDateFrom}
                 onChange={(e) => setJournalDateFrom(e.target.value)}
-                className="px-3 py-1.5 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white"
+                className="px-3 py-1.5 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Au</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Au</label>
               <input
                 type="date"
                 value={journalDateTo}
                 onChange={(e) => setJournalDateTo(e.target.value)}
-                className="px-3 py-1.5 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white"
+                className="px-3 py-1.5 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Paiement</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Paiement</label>
               <select
                 value={journalPaiement}
                 onChange={(e) => setJournalPaiement(e.target.value)}
-                className="px-3 py-1.5 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white"
+                className="px-3 py-1.5 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white"
               >
                 <option value="">Tous</option>
                 {['CB', 'Especes', 'Cheque', 'Virement', 'Ticket resto'].map((p) => (
@@ -1237,22 +1237,22 @@ export default function Comptabilite() {
               </select>
             </div>
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Recherche</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Recherche</label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                 <input
                   type="text"
                   value={journalSearch}
                   onChange={(e) => setJournalSearch(e.target.value)}
                   placeholder="N facture, client..."
-                  className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373]"
+                  className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500"
                 />
               </div>
             </div>
             {(journalDateFrom || journalDateTo || journalPaiement || journalSearch) && (
               <button
                 onClick={() => { setJournalDateFrom(''); setJournalDateTo(''); setJournalPaiement(''); setJournalSearch(''); }}
-                className="px-3 py-1.5 text-sm text-[#9CA3AF] dark:text-[#737373] hover:text-red-500 transition-colors"
+                className="px-3 py-1.5 text-sm text-[#9CA3AF] dark:text-mono-500 hover:text-red-500 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1264,29 +1264,29 @@ export default function Comptabilite() {
             <table className="w-full text-sm">
               <thead className="sticky top-0 bg-[#F9FAFB] dark:bg-[#171717]/50">
                 <tr>
-                  <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Date</th>
-                  <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">N facture</th>
-                  <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Client</th>
-                  <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Description</th>
-                  <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">HT</th>
-                  <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">TVA</th>
-                  <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">TTC</th>
-                  <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Paiement</th>
+                  <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Date</th>
+                  <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">N facture</th>
+                  <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Client</th>
+                  <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Description</th>
+                  <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">HT</th>
+                  <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">TVA</th>
+                  <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">TTC</th>
+                  <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Paiement</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredSales.slice(0, 100).map((s) => (
-                  <tr key={s.id} className="border-t border-[#F3F4F6] dark:border-[#1A1A1A]/50 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30">
-                    <td className="py-2 px-3 text-[#111111] dark:text-white whitespace-nowrap">{fmtDate(s.date)}</td>
-                    <td className="py-2 px-3 font-mono text-xs text-[#6B7280] dark:text-[#A3A3A3]">{s.invoiceNum}</td>
-                    <td className="py-2 px-3 text-[#6B7280] dark:text-[#A3A3A3]">{s.client || '--'}</td>
-                    <td className="py-2 px-3 text-[#6B7280] dark:text-[#A3A3A3]">{s.description}</td>
-                    <td className="py-2 px-3 text-right text-[#111111] dark:text-white">{fmt(s.montantHT)}</td>
-                    <td className="py-2 px-3 text-right text-[#111111] dark:text-[#A3A3A3]">{fmt(s.tva)}</td>
-                    <td className="py-2 px-3 text-right font-medium text-[#111111] dark:text-white">{fmt(s.ttc)}</td>
+                  <tr key={s.id} className="border-t border-mono-950 dark:border-mono-200/50 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30">
+                    <td className="py-2 px-3 text-mono-100 dark:text-white whitespace-nowrap">{fmtDate(s.date)}</td>
+                    <td className="py-2 px-3 font-mono text-xs text-[#6B7280] dark:text-mono-700">{s.invoiceNum}</td>
+                    <td className="py-2 px-3 text-[#6B7280] dark:text-mono-700">{s.client || '--'}</td>
+                    <td className="py-2 px-3 text-[#6B7280] dark:text-mono-700">{s.description}</td>
+                    <td className="py-2 px-3 text-right text-mono-100 dark:text-white">{fmt(s.montantHT)}</td>
+                    <td className="py-2 px-3 text-right text-mono-100 dark:text-mono-700">{fmt(s.tva)}</td>
+                    <td className="py-2 px-3 text-right font-medium text-mono-100 dark:text-white">{fmt(s.ttc)}</td>
                     <td className="py-2 px-3">
                       <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-                        s.paiement === 'CB' ? 'bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-[#A3A3A3]' :
+                        s.paiement === 'CB' ? 'bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-mono-700' :
                         s.paiement === 'Especes' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300' :
                         s.paiement === 'Cheque' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' :
                         s.paiement === 'Virement' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300' :
@@ -1302,17 +1302,17 @@ export default function Comptabilite() {
           </div>
 
           {/* Running total */}
-          <div className="p-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717]/30 flex flex-wrap gap-6 text-sm">
-            <span className="text-[#9CA3AF] dark:text-[#737373]">
+          <div className="p-4 border-t border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-[#171717]/30 flex flex-wrap gap-6 text-sm">
+            <span className="text-[#9CA3AF] dark:text-mono-500">
               {filteredSales.length} ecritures
             </span>
-            <span className="font-medium text-[#111111] dark:text-white">
+            <span className="font-medium text-mono-100 dark:text-white">
               Total HT : {fmt(journalTotals.ht)}
             </span>
-            <span className="font-medium text-[#111111] dark:text-[#A3A3A3]">
+            <span className="font-medium text-mono-100 dark:text-mono-700">
               Total TVA : {fmt(journalTotals.tva)}
             </span>
-            <span className="font-bold text-[#111111] dark:text-white">
+            <span className="font-bold text-mono-100 dark:text-white">
               Total TTC : {fmt(journalTotals.ttc)}
             </span>
           </div>
@@ -1326,10 +1326,10 @@ export default function Comptabilite() {
         <div className="space-y-6">
           {/* Header with add button */}
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-[#111111] dark:text-white">Charges & depenses</h2>
+            <h2 className="text-lg font-semibold text-mono-100 dark:text-white">Charges & depenses</h2>
             <button
               onClick={() => setShowExpenseModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"
             >
               <Plus className="w-4 h-4" />
               Ajouter une depense
@@ -1337,10 +1337,10 @@ export default function Comptabilite() {
           </div>
 
           {/* Expense Categories — Horizontal Bar Chart */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
-            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-4">Repartition des charges par categorie</h3>
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
+            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-4">Repartition des charges par categorie</h3>
             {chargesByCategory.length === 0 ? (
-              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-8">Aucune charge pour la periode selectionnee</p>
+              <p className="text-sm text-[#9CA3AF] dark:text-mono-500 text-center py-8">Aucune charge pour la periode selectionnee</p>
             ) : (
               <div className="space-y-3">
                 {chargesByCategory.map((cat) => {
@@ -1349,13 +1349,13 @@ export default function Comptabilite() {
                   return (
                     <div key={cat.name}>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm text-[#374151] dark:text-[#D4D4D4]">{cat.name}</span>
+                        <span className="text-sm text-[#374151] dark:text-mono-800">{cat.name}</span>
                         <div className="flex items-center gap-3">
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{fmtPct(pct)}</span>
-                          <span className="text-sm font-medium text-[#111111] dark:text-white w-20 text-right">{fmt(cat.value)}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{fmtPct(pct)}</span>
+                          <span className="text-sm font-medium text-mono-100 dark:text-white w-20 text-right">{fmt(cat.value)}</span>
                         </div>
                       </div>
-                      <div className="h-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                      <div className="h-3 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all duration-500"
                           style={{ width: `${pct}%`, backgroundColor: barColor }}
@@ -1365,17 +1365,17 @@ export default function Comptabilite() {
                   );
                 })}
                 {/* Total */}
-                <div className="pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
-                  <span className="text-sm font-semibold text-[#111111] dark:text-white">Total charges</span>
-                  <span className="text-sm font-bold text-[#111111] dark:text-white">{fmt(totalChargesForBar)}</span>
+                <div className="pt-3 border-t border-mono-900 dark:border-mono-200 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-mono-100 dark:text-white">Total charges</span>
+                  <span className="text-sm font-bold text-mono-100 dark:text-white">{fmt(totalChargesForBar)}</span>
                 </div>
               </div>
             )}
           </div>
 
           {/* Recharts bar chart */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
-            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-4">Graphique des charges</h3>
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
+            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-4">Graphique des charges</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={chargesByCategory} layout="vertical" margin={{ left: 130, right: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
@@ -1392,39 +1392,39 @@ export default function Comptabilite() {
           </div>
 
           {/* Expenses table */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
             <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-[#F9FAFB] dark:bg-[#171717]/50">
                   <tr>
-                    <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Date</th>
-                    <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Fournisseur</th>
-                    <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Categorie</th>
-                    <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Montant HT</th>
-                    <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">TVA</th>
-                    <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">TTC</th>
-                    <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Description</th>
+                    <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Date</th>
+                    <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Fournisseur</th>
+                    <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Categorie</th>
+                    <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Montant HT</th>
+                    <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">TVA</th>
+                    <th className="text-right py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">TTC</th>
+                    <th className="text-left py-2.5 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Description</th>
                     <th className="py-2.5 px-3 w-10"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {expenses.slice(0, 80).map((e) => (
-                    <tr key={e.id} className="border-t border-[#F3F4F6] dark:border-[#1A1A1A]/50 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30">
-                      <td className="py-2 px-3 text-[#111111] dark:text-white whitespace-nowrap">{fmtDate(e.date)}</td>
-                      <td className="py-2 px-3 text-[#6B7280] dark:text-[#A3A3A3]">{e.fournisseur}</td>
+                    <tr key={e.id} className="border-t border-mono-950 dark:border-mono-200/50 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30">
+                      <td className="py-2 px-3 text-mono-100 dark:text-white whitespace-nowrap">{fmtDate(e.date)}</td>
+                      <td className="py-2 px-3 text-[#6B7280] dark:text-mono-700">{e.fournisseur}</td>
                       <td className="py-2 px-3">
-                        <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                        <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
                           {e.categorie}
                         </span>
                       </td>
-                      <td className="py-2 px-3 text-right text-[#111111] dark:text-white">{fmt(e.montantHT)}</td>
-                      <td className="py-2 px-3 text-right text-[#111111] dark:text-[#A3A3A3]">{fmt(e.tva)}</td>
-                      <td className="py-2 px-3 text-right font-medium text-[#111111] dark:text-white">{fmt(e.ttc)}</td>
-                      <td className="py-2 px-3 text-[#6B7280] dark:text-[#A3A3A3] truncate max-w-[200px]">{e.description}</td>
+                      <td className="py-2 px-3 text-right text-mono-100 dark:text-white">{fmt(e.montantHT)}</td>
+                      <td className="py-2 px-3 text-right text-mono-100 dark:text-mono-700">{fmt(e.tva)}</td>
+                      <td className="py-2 px-3 text-right font-medium text-mono-100 dark:text-white">{fmt(e.ttc)}</td>
+                      <td className="py-2 px-3 text-[#6B7280] dark:text-mono-700 truncate max-w-[200px]">{e.description}</td>
                       <td className="py-2 px-3">
                         <button
                           onClick={() => handleDeleteExpense(e.id)}
-                          className="p-1 text-[#9CA3AF] dark:text-[#737373] hover:text-red-500 transition-colors"
+                          className="p-1 text-[#9CA3AF] dark:text-mono-500 hover:text-red-500 transition-colors"
                           title="Supprimer"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -1446,30 +1446,30 @@ export default function Comptabilite() {
         <div className="space-y-6">
           {/* Cash flow summary cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                   <ArrowUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Entrees du mois</span>
+                <span className="text-sm text-[#6B7280] dark:text-mono-700">Entrees du mois</span>
               </div>
               <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{fmt(currentMonth.ca)}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
                   <ArrowDown className="w-4 h-4 text-red-600 dark:text-red-400" />
                 </div>
-                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Sorties du mois</span>
+                <span className="text-sm text-[#6B7280] dark:text-mono-700">Sorties du mois</span>
               </div>
               <div className="text-2xl font-bold text-red-600 dark:text-red-400">{fmt(currentMonth.charges)}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                   <DollarSign className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Solde cumule</span>
+                <span className="text-sm text-[#6B7280] dark:text-mono-700">Solde cumule</span>
               </div>
               <div className={`text-2xl font-bold ${(cashFlowData[cashFlowData.length - 1]?.solde ?? 0) >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600 dark:text-red-400'}`}>
                 {fmt(cashFlowData[cashFlowData.length - 1]?.solde ?? 0)}
@@ -1478,8 +1478,8 @@ export default function Comptabilite() {
           </div>
 
           {/* Cash Flow Timeline Area Chart */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
-            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-4">Flux de tresorerie sur la periode</h3>
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
+            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-4">Flux de tresorerie sur la periode</h3>
             <ResponsiveContainer width="100%" height={350}>
               <AreaChart data={cashFlowData} margin={{ top: 10, right: 20, bottom: 5, left: 0 }}>
                 <defs>
@@ -1505,22 +1505,22 @@ export default function Comptabilite() {
           </div>
 
           {/* Cash Flow Table */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-[#F9FAFB] dark:bg-[#171717]/50">
                   <tr>
-                    <th className="text-left py-2.5 px-4 font-medium text-[#9CA3AF] dark:text-[#737373]">Mois</th>
+                    <th className="text-left py-2.5 px-4 font-medium text-[#9CA3AF] dark:text-mono-500">Mois</th>
                     <th className="text-right py-2.5 px-4 font-medium text-emerald-600 dark:text-emerald-400">Entrees</th>
                     <th className="text-right py-2.5 px-4 font-medium text-red-600 dark:text-red-400">Sorties</th>
-                    <th className="text-right py-2.5 px-4 font-medium text-[#111111] dark:text-white">Net</th>
+                    <th className="text-right py-2.5 px-4 font-medium text-mono-100 dark:text-white">Net</th>
                     <th className="text-right py-2.5 px-4 font-medium text-blue-600 dark:text-blue-400">Solde cumule</th>
                   </tr>
                 </thead>
                 <tbody>
                   {cashFlowData.map((row, i) => (
-                    <tr key={i} className="border-t border-[#F3F4F6] dark:border-[#1A1A1A]/50 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30">
-                      <td className="py-2.5 px-4 text-[#111111] dark:text-white font-medium">{row.mois}</td>
+                    <tr key={i} className="border-t border-mono-950 dark:border-mono-200/50 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30">
+                      <td className="py-2.5 px-4 text-mono-100 dark:text-white font-medium">{row.mois}</td>
                       <td className="py-2.5 px-4 text-right text-emerald-600 dark:text-emerald-400">{fmt(row.entrees)}</td>
                       <td className="py-2.5 px-4 text-right text-red-600 dark:text-red-400">{fmt(row.sorties)}</td>
                       <td className={`py-2.5 px-4 text-right font-medium ${row.entrees - row.sorties >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
@@ -1545,44 +1545,44 @@ export default function Comptabilite() {
         <div className="space-y-6">
           {/* TVA Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                   <ArrowUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">TVA collectee</span>
+                <span className="text-sm text-[#6B7280] dark:text-mono-700">TVA collectee</span>
               </div>
               <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{fmt(tvaCollected)}</div>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Sur les ventes</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Sur les ventes</span>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
                   <ArrowDown className="w-4 h-4 text-red-600 dark:text-red-400" />
                 </div>
-                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">TVA deductible</span>
+                <span className="text-sm text-[#6B7280] dark:text-mono-700">TVA deductible</span>
               </div>
               <div className="text-2xl font-bold text-red-600 dark:text-red-400">{fmt(tvaPaid)}</div>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Sur les achats</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Sur les achats</span>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                   <Shield className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">TVA nette due</span>
+                <span className="text-sm text-[#6B7280] dark:text-mono-700">TVA nette due</span>
               </div>
               <div className={`text-2xl font-bold ${tvaNet >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
                 {fmt(tvaNet)}
               </div>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{tvaNet >= 0 ? 'A reverser' : 'Credit de TVA'}</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{tvaNet >= 0 ? 'A reverser' : 'Credit de TVA'}</span>
             </div>
           </div>
 
           {/* Ventilation TVA table + pie chart */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
-            <h2 className="text-lg font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
-              <Euro className="w-5 h-5 text-[#111111] dark:text-[#A3A3A3]" />
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
+            <h2 className="text-lg font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
+              <Euro className="w-5 h-5 text-mono-100 dark:text-mono-700" />
               Ventilation TVA
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
@@ -1590,34 +1590,34 @@ export default function Comptabilite() {
               <div className="md:col-span-2 overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-                      <th className="text-left py-2 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Taux TVA</th>
-                      <th className="text-left py-2 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Applicable a</th>
-                      <th className="text-right py-2 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Base HT</th>
-                      <th className="text-right py-2 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Montant TVA</th>
-                      <th className="text-right py-2 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Total TTC</th>
+                    <tr className="border-b border-mono-900 dark:border-mono-200">
+                      <th className="text-left py-2 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Taux TVA</th>
+                      <th className="text-left py-2 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Applicable a</th>
+                      <th className="text-right py-2 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Base HT</th>
+                      <th className="text-right py-2 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Montant TVA</th>
+                      <th className="text-right py-2 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Total TTC</th>
                     </tr>
                   </thead>
                   <tbody>
                     {tvaData.map((row, i) => (
-                      <tr key={i} className="border-b border-[#F3F4F6] dark:border-[#1A1A1A]/50">
-                        <td className="py-2.5 px-3 font-medium text-[#111111] dark:text-white">
+                      <tr key={i} className="border-b border-mono-950 dark:border-mono-200/50">
+                        <td className="py-2.5 px-3 font-medium text-mono-100 dark:text-white">
                           <span className="inline-flex items-center gap-1.5">
                             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: TVA_COLORS[i] }} />
                             {row.taux}
                           </span>
                         </td>
-                        <td className="py-2.5 px-3 text-[#6B7280] dark:text-[#A3A3A3]">{row.label}</td>
-                        <td className="py-2.5 px-3 text-right text-[#111111] dark:text-white">{fmt(row.baseHT)}</td>
-                        <td className="py-2.5 px-3 text-right font-medium text-[#111111] dark:text-[#A3A3A3]">{fmt(row.montantTVA)}</td>
-                        <td className="py-2.5 px-3 text-right text-[#111111] dark:text-white">{fmt(row.totalTTC)}</td>
+                        <td className="py-2.5 px-3 text-[#6B7280] dark:text-mono-700">{row.label}</td>
+                        <td className="py-2.5 px-3 text-right text-mono-100 dark:text-white">{fmt(row.baseHT)}</td>
+                        <td className="py-2.5 px-3 text-right font-medium text-mono-100 dark:text-mono-700">{fmt(row.montantTVA)}</td>
+                        <td className="py-2.5 px-3 text-right text-mono-100 dark:text-white">{fmt(row.totalTTC)}</td>
                       </tr>
                     ))}
                     <tr className="font-semibold bg-[#F9FAFB] dark:bg-[#171717]/30">
-                      <td className="py-2.5 px-3 text-[#111111] dark:text-white" colSpan={2}>Total</td>
-                      <td className="py-2.5 px-3 text-right text-[#111111] dark:text-white">{fmt(tvaData.reduce((s, r) => s + r.baseHT, 0))}</td>
-                      <td className="py-2.5 px-3 text-right text-[#111111] dark:text-[#A3A3A3]">{fmt(tvaData.reduce((s, r) => s + r.montantTVA, 0))}</td>
-                      <td className="py-2.5 px-3 text-right text-[#111111] dark:text-white">{fmt(tvaData.reduce((s, r) => s + r.totalTTC, 0))}</td>
+                      <td className="py-2.5 px-3 text-mono-100 dark:text-white" colSpan={2}>Total</td>
+                      <td className="py-2.5 px-3 text-right text-mono-100 dark:text-white">{fmt(tvaData.reduce((s, r) => s + r.baseHT, 0))}</td>
+                      <td className="py-2.5 px-3 text-right text-mono-100 dark:text-mono-700">{fmt(tvaData.reduce((s, r) => s + r.montantTVA, 0))}</td>
+                      <td className="py-2.5 px-3 text-right text-mono-100 dark:text-white">{fmt(tvaData.reduce((s, r) => s + r.totalTTC, 0))}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1641,16 +1641,16 @@ export default function Comptabilite() {
           </div>
 
           {/* Quarterly TVA Totals */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
-            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-4">Totaux trimestriels TVA</h3>
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
+            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-4">Totaux trimestriels TVA</h3>
             {quarterlyTva.length === 0 ? (
-              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-4">Pas de donnees trimestrielles</p>
+              <p className="text-sm text-[#9CA3AF] dark:text-mono-500 text-center py-4">Pas de donnees trimestrielles</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-                      <th className="text-left py-2 px-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Trimestre</th>
+                    <tr className="border-b border-mono-900 dark:border-mono-200">
+                      <th className="text-left py-2 px-3 font-medium text-[#9CA3AF] dark:text-mono-500">Trimestre</th>
                       <th className="text-right py-2 px-3 font-medium text-emerald-600 dark:text-emerald-400">TVA collectee</th>
                       <th className="text-right py-2 px-3 font-medium text-red-600 dark:text-red-400">TVA deductible</th>
                       <th className="text-right py-2 px-3 font-medium text-blue-600 dark:text-blue-400">TVA nette due</th>
@@ -1658,8 +1658,8 @@ export default function Comptabilite() {
                   </thead>
                   <tbody>
                     {quarterlyTva.map((q, i) => (
-                      <tr key={i} className="border-b border-[#F3F4F6] dark:border-[#1A1A1A]/50">
-                        <td className="py-2.5 px-3 font-medium text-[#111111] dark:text-white">{q.label}</td>
+                      <tr key={i} className="border-b border-mono-950 dark:border-mono-200/50">
+                        <td className="py-2.5 px-3 font-medium text-mono-100 dark:text-white">{q.label}</td>
                         <td className="py-2.5 px-3 text-right text-emerald-600 dark:text-emerald-400">{fmt(q.collected)}</td>
                         <td className="py-2.5 px-3 text-right text-red-600 dark:text-red-400">{fmt(q.paid)}</td>
                         <td className={`py-2.5 px-3 text-right font-semibold ${q.net >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
@@ -1682,39 +1682,39 @@ export default function Comptabilite() {
         <div className="space-y-6">
           {/* Summary cards */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Budget total</span>
-              <div className="text-xl font-bold text-[#111111] dark:text-white mt-1">{fmt(totalBudget)}</div>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{period === 'mois' ? 'Ce mois' : period === 'trimestre' ? 'Ce trimestre' : 'Cette annee'}</span>
+            <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Budget total</span>
+              <div className="text-xl font-bold text-mono-100 dark:text-white mt-1">{fmt(totalBudget)}</div>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{period === 'mois' ? 'Ce mois' : period === 'trimestre' ? 'Ce trimestre' : 'Cette annee'}</span>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Depenses reelles</span>
-              <div className="text-xl font-bold text-[#111111] dark:text-white mt-1">{fmt(totalActual)}</div>
+            <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Depenses reelles</span>
+              <div className="text-xl font-bold text-mono-100 dark:text-white mt-1">{fmt(totalActual)}</div>
               <span className={`text-xs font-medium ${totalActual <= totalBudget ? 'text-emerald-500' : 'text-red-500'}`}>
                 {totalActual <= totalBudget ? 'Dans le budget' : `Depassement ${fmt(totalActual - totalBudget)}`}
               </span>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Ecart</span>
+            <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Ecart</span>
               <div className={`text-xl font-bold mt-1 ${totalBudget - totalActual >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                 {totalBudget - totalActual >= 0 ? '+' : ''}{fmt(totalBudget - totalActual)}
               </div>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">
                 {totalBudget > 0 ? fmtPct(((totalBudget - totalActual) / totalBudget) * 100) : '0%'} du budget
               </span>
             </div>
           </div>
 
           {/* Budget table with color bars */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
-            <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
-              <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
-                <BarChart2 className="w-5 h-5 text-[#111111] dark:text-[#A3A3A3]" />
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
+            <div className="p-4 border-b border-mono-900 dark:border-mono-200 flex items-center justify-between">
+              <h3 className="font-semibold text-mono-100 dark:text-white flex items-center gap-2">
+                <BarChart2 className="w-5 h-5 text-mono-100 dark:text-mono-700" />
                 Budget mensuel par categorie
               </h3>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Cliquez sur un montant pour modifier</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Cliquez sur un montant pour modifier</span>
             </div>
-            <div className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
+            <div className="divide-y divide-mono-950 dark:divide-mono-200">
               {budgetData.map(({ category, budget, actual }) => {
                 const variance = budget - actual;
                 const pct = budget > 0 ? (actual / budget) * 100 : 0;
@@ -1726,19 +1726,19 @@ export default function Comptabilite() {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-3">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: EXPENSE_BAR_COLORS[category] || '#6b7280' }} />
-                        <span className="text-sm font-medium text-[#111111] dark:text-white">{category}</span>
+                        <span className="text-sm font-medium text-mono-100 dark:text-white">{category}</span>
                       </div>
                       <div className="flex items-center gap-4 text-sm">
                         {/* Budget editable */}
                         <div className="text-right">
-                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Budget</span>
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Budget</span>
                           {editingBudget === category ? (
                             <div className="flex items-center gap-1">
                               <input
                                 type="number"
                                 value={budgetInput}
                                 onChange={e => setBudgetInput(e.target.value)}
-                                className="w-20 px-2 py-0.5 rounded border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-right"
+                                className="w-20 px-2 py-0.5 rounded border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-right"
                                 autoFocus
                                 onKeyDown={e => e.key === 'Enter' && handleSaveBudget(category)}
                               />
@@ -1751,7 +1751,7 @@ export default function Comptabilite() {
                             </div>
                           ) : (
                             <div
-                              className="font-medium text-[#111111] dark:text-white cursor-pointer hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                              className="font-medium text-mono-100 dark:text-white cursor-pointer hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
                               onClick={() => { setEditingBudget(category); setBudgetInput(String(budgets[category] || 0)); }}
                             >
                               {fmt(budget)}
@@ -1760,12 +1760,12 @@ export default function Comptabilite() {
                         </div>
                         {/* Actual */}
                         <div className="text-right">
-                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Reel</span>
-                          <div className="font-medium text-[#111111] dark:text-white">{fmt(actual)}</div>
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Reel</span>
+                          <div className="font-medium text-mono-100 dark:text-white">{fmt(actual)}</div>
                         </div>
                         {/* Variance */}
                         <div className="text-right w-20">
-                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Ecart</span>
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Ecart</span>
                           <div className={`font-semibold ${isOver ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
                             {variance >= 0 ? '+' : ''}{fmt(variance)}
                           </div>
@@ -1773,14 +1773,14 @@ export default function Comptabilite() {
                       </div>
                     </div>
                     {/* Progress bar */}
-                    <div className="h-3 bg-[#E5E7EB] dark:bg-[#171717] rounded-full overflow-hidden">
+                    <div className="h-3 bg-mono-900 dark:bg-[#171717] rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${barColor}`}
                         style={{ width: `${Math.min(pct, 100)}%` }}
                       />
                     </div>
                     <div className="flex justify-between mt-1">
-                      <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtPct(pct)} utilise</span>
+                      <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{fmtPct(pct)} utilise</span>
                       {isOver && (
                         <span className="text-[10px] text-red-500 font-medium flex items-center gap-0.5">
                           <AlertTriangle className="w-3 h-3" /> Depassement
@@ -1794,8 +1794,8 @@ export default function Comptabilite() {
           </div>
 
           {/* Budget vs Actual bar chart */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
-            <h3 className="font-semibold text-[#111111] dark:text-white mb-4">Comparaison visuelle</h3>
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
+            <h3 className="font-semibold text-mono-100 dark:text-white mb-4">Comparaison visuelle</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={budgetData} layout="vertical">
@@ -1820,21 +1820,21 @@ export default function Comptabilite() {
         <div className="space-y-6">
           {/* Summary row */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Total transactions</span>
-              <div className="text-xl font-bold text-[#111111] dark:text-white mt-1">{bankTransactions.length}</div>
+            <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Total transactions</span>
+              <div className="text-xl font-bold text-mono-100 dark:text-white mt-1">{bankTransactions.length}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
               <div className="flex items-center gap-1.5 mb-1">
                 <CheckCircle className="w-4 h-4 text-emerald-500" />
-                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Rapprochees</span>
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Rapprochees</span>
               </div>
               <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{reconciledCount}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
               <div className="flex items-center gap-1.5 mb-1">
                 <AlertTriangle className="w-4 h-4 text-amber-500" />
-                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Non rapprochees</span>
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Non rapprochees</span>
               </div>
               <div className="text-xl font-bold text-amber-600 dark:text-amber-400">{unreconciledCount}</div>
             </div>
@@ -1844,7 +1844,7 @@ export default function Comptabilite() {
           <div className="flex justify-end">
             <button
               onClick={() => setShowBankModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"
             >
               <Plus className="w-4 h-4" />
               Ajouter une transaction bancaire
@@ -1852,21 +1852,21 @@ export default function Comptabilite() {
           </div>
 
           {/* Transaction list */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
-            <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
-                <Landmark className="w-5 h-5 text-[#111111] dark:text-[#A3A3A3]" />
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
+            <div className="p-4 border-b border-mono-900 dark:border-mono-200">
+              <h3 className="font-semibold text-mono-100 dark:text-white flex items-center gap-2">
+                <Landmark className="w-5 h-5 text-mono-100 dark:text-mono-700" />
                 Transactions bancaires
               </h3>
             </div>
             {bankTransactions.length === 0 ? (
               <div className="p-8 text-center">
-                <Landmark className="w-10 h-10 mx-auto text-[#D1D5DB] dark:text-[#525252] mb-3" />
-                <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Aucune transaction bancaire.</p>
-                <p className="text-xs text-[#D1D5DB] dark:text-[#525252] mt-1">Ajoutez vos releves bancaires pour les rapprocher avec vos depenses.</p>
+                <Landmark className="w-10 h-10 mx-auto text-[#D1D5DB] dark:text-mono-400 mb-3" />
+                <p className="text-sm text-[#9CA3AF] dark:text-mono-500">Aucune transaction bancaire.</p>
+                <p className="text-xs text-[#D1D5DB] dark:text-mono-400 mt-1">Ajoutez vos releves bancaires pour les rapprocher avec vos depenses.</p>
               </div>
             ) : (
-              <div className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
+              <div className="divide-y divide-mono-950 dark:divide-mono-200">
                 {bankTransactions.map(tx => {
                   const matchedExpense = tx.matchedExpenseId ? expenses.find(e => e.id === tx.matchedExpenseId) : null;
                   return (
@@ -1876,8 +1876,8 @@ export default function Comptabilite() {
                           {tx.status === 'rapproche' ? <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />}
                         </div>
                         <div>
-                          <div className="text-sm font-medium text-[#111111] dark:text-white">{tx.label}</div>
-                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{fmtDate(tx.date)}</div>
+                          <div className="text-sm font-medium text-mono-100 dark:text-white">{tx.label}</div>
+                          <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{fmtDate(tx.date)}</div>
                           {matchedExpense && (
                             <div className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mt-0.5">
                               <Link2 className="w-3 h-3" /> {matchedExpense.fournisseur} - {matchedExpense.categorie}
@@ -1886,7 +1886,7 @@ export default function Comptabilite() {
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <span className="text-sm font-bold text-[#111111] dark:text-white">{fmt(tx.amount)}</span>
+                        <span className="text-sm font-bold text-mono-100 dark:text-white">{fmt(tx.amount)}</span>
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${tx.status === 'rapproche' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'}`}>
                           {tx.status === 'rapproche' ? 'Rapproche' : 'Non rapproche'}
                         </span>
@@ -1918,7 +1918,7 @@ export default function Comptabilite() {
                         ) : (
                           <button
                             onClick={() => handleUnreconcile(tx.id)}
-                            className="px-2 py-1 text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:text-red-500 transition-colors"
+                            className="px-2 py-1 text-xs font-medium text-[#6B7280] dark:text-mono-700 hover:text-red-500 transition-colors"
                           >
                             Annuler
                           </button>
@@ -1949,8 +1949,8 @@ export default function Comptabilite() {
           </div>
 
           {/* Comparison vs objectives */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
-            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-4">Comparaison vs objectifs</h3>
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
+            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-4">Comparaison vs objectifs</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { label: 'Cout matiere', actual: currentRatios.coutMatiere, target: 30 },
@@ -1962,8 +1962,8 @@ export default function Comptabilite() {
                 return (
                   <div key={item.label} className="flex items-center justify-between p-3 rounded-xl bg-[#F9FAFB] dark:bg-[#171717]/30">
                     <div>
-                      <div className="text-sm font-medium text-[#111111] dark:text-white">{item.label}</div>
-                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Objectif : {fmtPct(item.target)}</div>
+                      <div className="text-sm font-medium text-mono-100 dark:text-white">{item.label}</div>
+                      <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Objectif : {fmtPct(item.target)}</div>
                     </div>
                     <div className="text-right">
                       <div className={`text-lg font-bold ${isGood ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
@@ -1980,8 +1980,8 @@ export default function Comptabilite() {
           </div>
 
           {/* Line chart: evolution over 12 months */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
-            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-4">Evolution sur 12 mois</h3>
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
+            <h3 className="text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-4">Evolution sur 12 mois</h3>
             <ResponsiveContainer width="100%" height={350}>
               <LineChart data={ratiosEvolution} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
@@ -2005,22 +2005,22 @@ export default function Comptabilite() {
       {activeTab === 'export' && (
         <div className="grid md:grid-cols-2 gap-6">
           {/* FEC */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center">
-                <FileText className="w-5 h-5 text-[#111111] dark:text-[#A3A3A3]" />
+              <div className="w-10 h-10 rounded-xl bg-mono-950 dark:bg-[#171717] flex items-center justify-center">
+                <FileText className="w-5 h-5 text-mono-100 dark:text-mono-700" />
               </div>
               <div>
-                <h3 className="font-semibold text-[#111111] dark:text-white">Fichier des Ecritures Comptables</h3>
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Format FEC obligatoire (article A47 A-1 du LPF)</p>
+                <h3 className="font-semibold text-mono-100 dark:text-white">Fichier des Ecritures Comptables</h3>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Format FEC obligatoire (article A47 A-1 du LPF)</p>
               </div>
             </div>
-            <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mb-4">
+            <p className="text-sm text-[#6B7280] dark:text-mono-700 mb-4">
               Export au format reglementaire pour le controle fiscal. Contient toutes les ecritures de l'exercice.
             </p>
             <button
               onClick={handleExportFEC}
-              className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors w-full justify-center"
+              className="flex items-center gap-2 px-4 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors w-full justify-center"
             >
               <Download className="w-4 h-4" />
               Telecharger le FEC
@@ -2028,17 +2028,17 @@ export default function Comptabilite() {
           </div>
 
           {/* CSV */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                 <FileText className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-[#111111] dark:text-white">Exporter en CSV</h3>
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Compatible Pennylane, Sage, Cegid</p>
+                <h3 className="font-semibold text-mono-100 dark:text-white">Exporter en CSV</h3>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Compatible Pennylane, Sage, Cegid</p>
               </div>
             </div>
-            <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mb-4">
+            <p className="text-sm text-[#6B7280] dark:text-mono-700 mb-4">
               Exportez vos donnees dans un format compatible avec votre logiciel comptable.
             </p>
             <div className="flex gap-2">
@@ -2058,17 +2058,17 @@ export default function Comptabilite() {
           </div>
 
           {/* PDF */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
                 <FileText className="w-5 h-5 text-red-600 dark:text-red-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-[#111111] dark:text-white">Exporter en PDF</h3>
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Synthese complete du mois</p>
+                <h3 className="font-semibold text-mono-100 dark:text-white">Exporter en PDF</h3>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Synthese complete du mois</p>
               </div>
             </div>
-            <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mb-4">
+            <p className="text-sm text-[#6B7280] dark:text-mono-700 mb-4">
               Rapport synthetique avec CA, charges, TVA et ratios cles. Ideal pour votre expert-comptable.
             </p>
             <button
@@ -2081,17 +2081,17 @@ export default function Comptabilite() {
           </div>
 
           {/* Email to accountant */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                 <Mail className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-[#111111] dark:text-white">Envoyer au comptable (email)</h3>
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Envoi par email au cabinet comptable</p>
+                <h3 className="font-semibold text-mono-100 dark:text-white">Envoyer au comptable (email)</h3>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Envoi par email au cabinet comptable</p>
               </div>
             </div>
-            <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mb-4">
+            <p className="text-sm text-[#6B7280] dark:text-mono-700 mb-4">
               Envoyez les donnees du mois directement a votre comptable par email.
             </p>
             <button
@@ -2104,14 +2104,14 @@ export default function Comptabilite() {
           </div>
 
           {/* Print */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6 md:col-span-2">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6 md:col-span-2">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center">
-                <Printer className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
+              <div className="w-10 h-10 rounded-xl bg-mono-950 dark:bg-[#171717] flex items-center justify-center">
+                <Printer className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
               </div>
               <div>
-                <h3 className="font-semibold text-[#111111] dark:text-white">Imprimer</h3>
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Impression de la page courante</p>
+                <h3 className="font-semibold text-mono-100 dark:text-white">Imprimer</h3>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Impression de la page courante</p>
               </div>
             </div>
             <button
@@ -2129,45 +2129,45 @@ export default function Comptabilite() {
       <Modal isOpen={showBankModal} onClose={() => setShowBankModal(false)} title="Ajouter une transaction bancaire">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Date</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Date</label>
             <input
               type="date"
               value={newBankTx.date}
               onChange={e => setNewBankTx({ ...newBankTx, date: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white"
+              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Libelle *</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Libelle *</label>
             <input
               type="text"
               value={newBankTx.label}
               onChange={e => setNewBankTx({ ...newBankTx, label: e.target.value })}
               placeholder="Ex: VIREMENT METRO CASH&CARRY"
-              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373]"
+              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Montant *</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Montant *</label>
             <input
               type="number"
               step="0.01"
               value={newBankTx.amount}
               onChange={e => setNewBankTx({ ...newBankTx, amount: e.target.value })}
               placeholder="0,00"
-              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373]"
+              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500"
             />
           </div>
           <div className="flex gap-3 pt-2">
             <button
               onClick={() => setShowBankModal(false)}
-              className="flex-1 px-4 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
+              className="flex-1 px-4 py-2 border border-[#D1D5DB] dark:border-mono-200 rounded-xl text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
             >
               Annuler
             </button>
             <button
               onClick={handleAddBankTransaction}
-              className="flex-1 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"
+              className="flex-1 px-4 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"
             >
               Ajouter
             </button>
@@ -2180,20 +2180,20 @@ export default function Comptabilite() {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Date</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Date</label>
               <input
                 type="date"
                 value={newExpense.date}
                 onChange={(e) => setNewExpense({ ...newExpense, date: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white"
+                className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Categorie</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Categorie</label>
               <select
                 value={newExpense.categorie}
                 onChange={(e) => setNewExpense({ ...newExpense, categorie: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white"
+                className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white"
               >
                 {EXPENSE_CATEGORIES.map((c) => (
                   <option key={c} value={c}>{c}</option>
@@ -2203,7 +2203,7 @@ export default function Comptabilite() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Fournisseur *</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Fournisseur *</label>
             <input
               type="text"
               value={newExpense.fournisseur}
@@ -2213,7 +2213,7 @@ export default function Comptabilite() {
                 setNewExpense({ ...newExpense, fournisseur: val, categorie: suggestedCat });
               }}
               placeholder="Nom du fournisseur — categorie auto-detectee"
-              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373]"
+              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500"
             />
             {newExpense.fournisseur && (
               <div className="flex items-center gap-1.5 mt-1">
@@ -2225,22 +2225,22 @@ export default function Comptabilite() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Montant HT *</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Montant HT *</label>
               <input
                 type="number"
                 step="0.01"
                 value={newExpense.montantHT}
                 onChange={(e) => setNewExpense({ ...newExpense, montantHT: e.target.value })}
                 placeholder="0,00"
-                className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373]"
+                className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Taux TVA (%)</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Taux TVA (%)</label>
               <select
                 value={newExpense.tva}
                 onChange={(e) => setNewExpense({ ...newExpense, tva: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white"
+                className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white"
               >
                 <option value="0">0% (Exonere)</option>
                 <option value="5.5">5,5%</option>
@@ -2251,13 +2251,13 @@ export default function Comptabilite() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Description</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Description</label>
             <input
               type="text"
               value={newExpense.description}
               onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
               placeholder="Description de la depense"
-              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373]"
+              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-mono-200 bg-white dark:bg-[#171717] text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500"
             />
           </div>
 
@@ -2265,16 +2265,16 @@ export default function Comptabilite() {
           {newExpense.montantHT && (
             <div className="p-3 rounded-xl bg-[#F9FAFB] dark:bg-[#171717]/30 text-sm">
               <div className="flex justify-between">
-                <span className="text-[#9CA3AF] dark:text-[#737373]">Montant HT :</span>
-                <span className="text-[#111111] dark:text-white">{fmt(parseFloat(newExpense.montantHT) || 0)}</span>
+                <span className="text-[#9CA3AF] dark:text-mono-500">Montant HT :</span>
+                <span className="text-mono-100 dark:text-white">{fmt(parseFloat(newExpense.montantHT) || 0)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#9CA3AF] dark:text-[#737373]">TVA ({newExpense.tva}%) :</span>
-                <span className="text-[#111111] dark:text-[#A3A3A3]">{fmt(Math.round((parseFloat(newExpense.montantHT) || 0) * parseFloat(newExpense.tva) / 100))}</span>
+                <span className="text-[#9CA3AF] dark:text-mono-500">TVA ({newExpense.tva}%) :</span>
+                <span className="text-mono-100 dark:text-mono-700">{fmt(Math.round((parseFloat(newExpense.montantHT) || 0) * parseFloat(newExpense.tva) / 100))}</span>
               </div>
-              <div className="flex justify-between font-semibold border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-1 mt-1">
-                <span className="text-[#111111] dark:text-white">Total TTC :</span>
-                <span className="text-[#111111] dark:text-white">{fmt(Math.round((parseFloat(newExpense.montantHT) || 0) * (1 + parseFloat(newExpense.tva) / 100)))}</span>
+              <div className="flex justify-between font-semibold border-t border-mono-900 dark:border-mono-200 pt-1 mt-1">
+                <span className="text-mono-100 dark:text-white">Total TTC :</span>
+                <span className="text-mono-100 dark:text-white">{fmt(Math.round((parseFloat(newExpense.montantHT) || 0) * (1 + parseFloat(newExpense.tva) / 100)))}</span>
               </div>
             </div>
           )}
@@ -2282,13 +2282,13 @@ export default function Comptabilite() {
           <div className="flex gap-3 pt-2">
             <button
               onClick={() => setShowExpenseModal(false)}
-              className="flex-1 px-4 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
+              className="flex-1 px-4 py-2 border border-[#D1D5DB] dark:border-mono-200 rounded-xl text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
             >
               Annuler
             </button>
             <button
               onClick={handleAddExpense}
-              className="flex-1 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"
+              className="flex-1 px-4 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"
             >
               Ajouter
             </button>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Bell, TrendingUp, TrendingDown, X, Eye, ChevronRight } from 'lucide-react';
-import { getToken, getActiveRestaurantId } from '../services/api';
+import { useApiClient } from '../hooks/useApiClient';
 
 interface AffectedRecipe {
   id: number;
@@ -38,15 +38,7 @@ export default function AlertsBell() {
   const [loading, setLoading] = useState(false);
   const [expandedAlert, setExpandedAlert] = useState<number | null>(null);
   const ref = useRef<HTMLDivElement>(null);
-
-  function authHeaders(): Record<string, string> {
-    const token = getToken();
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    const rid = getActiveRestaurantId();
-    if (rid) headers['X-Restaurant-Id'] = rid;
-    return headers;
-  }
+  const { authHeaders } = useApiClient();
 
   async function fetchAlerts() {
     try {

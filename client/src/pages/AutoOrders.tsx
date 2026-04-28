@@ -154,7 +154,7 @@ const STATUS_CONFIG: Record<OrderStatus, {
   step: number;
 }> = {
   brouillon: {
-    badge: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#262626]',
+    badge: 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-300',
     dot: 'bg-[#9CA3AF]',
     label: 'Brouillon',
     icon: Clock,
@@ -182,7 +182,7 @@ const STATUS_CONFIG: Record<OrderStatus, {
     step: 3,
   },
   'annulé': {
-    badge: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] border border-[#E5E7EB] dark:border-[#262626] line-through',
+    badge: 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 border border-mono-900 dark:border-mono-300 line-through',
     dot: 'bg-[#6B7280]',
     label: 'Annule',
     icon: XCircle,
@@ -239,19 +239,19 @@ function KPICard({ icon, label, value, trend, trendLabel, accent }: {
       <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br from-black/[0.02] dark:from-white/[0.02] to-transparent -translate-y-8 translate-x-8" />
       <div className="flex items-start justify-between">
         <div className="space-y-2">
-          <p className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider">{label}</p>
-          <p className="text-2xl font-bold text-[#111111] dark:text-white tracking-tight">{value}</p>
+          <p className="text-xs font-medium text-[#6B7280] dark:text-mono-700 uppercase tracking-wider">{label}</p>
+          <p className="text-2xl font-bold text-mono-100 dark:text-white tracking-tight">{value}</p>
           {trendLabel && (
             <div className="flex items-center gap-1">
               {trend === 'up' && <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />}
               {trend === 'down' && <TrendingDown className="w-3.5 h-3.5 text-red-500" />}
-              <span className={`text-xs font-medium ${trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+              <span className={`text-xs font-medium ${trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-[#6B7280] dark:text-mono-700'}`}>
                 {trendLabel}
               </span>
             </div>
           )}
         </div>
-        <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] group-hover:scale-110 transition-transform">
+        <div className="p-2.5 rounded-xl bg-mono-950 dark:bg-[#171717] group-hover:scale-110 transition-transform">
           {icon}
         </div>
       </div>
@@ -319,14 +319,14 @@ function SmartReorderSection({ suggestions, onCreateOrder }: {
   if (suggestions.length === 0) return null;
 
   return (
-    <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl overflow-hidden">
-      <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center gap-3">
-        <div className="p-2 rounded-xl bg-gradient-to-br from-[#111111] dark:from-white to-[#333] dark:to-[#D4D4D4]">
+    <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-300 rounded-2xl overflow-hidden">
+      <div className="px-6 py-4 border-b border-mono-900 dark:border-mono-300 flex items-center gap-3">
+        <div className="p-2 rounded-xl bg-gradient-to-br from-mono-100 dark:from-white to-[#333] dark:to-mono-800">
           <Brain className="w-4 h-4 text-white dark:text-black" />
         </div>
         <div>
-          <h2 className="text-base font-bold text-[#111111] dark:text-white">Suggestions de reapprovisionnement</h2>
-          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Analyse IA : stock, consommation, delai de livraison</p>
+          <h2 className="text-base font-bold text-mono-100 dark:text-white">Suggestions de reapprovisionnement</h2>
+          <p className="text-xs text-[#6B7280] dark:text-mono-700">Analyse IA : stock, consommation, delai de livraison</p>
         </div>
         <Sparkles className="w-4 h-4 text-amber-400 ml-1" />
       </div>
@@ -335,16 +335,16 @@ function SmartReorderSection({ suggestions, onCreateOrder }: {
           {suggestions.slice(0, 3).map((s) => (
             <div
               key={s.ingredient.ingredientId}
-              className="border border-[#E5E7EB] dark:border-[#262626] rounded-xl p-4 hover:shadow-md transition-all duration-200 group bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 hover:bg-white dark:hover:bg-[#0A0A0A]"
+              className="border border-mono-900 dark:border-mono-300 rounded-xl p-4 hover:shadow-md transition-all duration-200 group bg-mono-1000 dark:bg-mono-50/60 hover:bg-white dark:hover:bg-mono-50"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-xs">
+                  <div className="w-8 h-8 rounded-lg bg-mono-100 dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-xs">
                     {s.ingredient.ingredient.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-[#111111] dark:text-white">{s.ingredient.ingredient.name}</p>
-                    <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">
+                    <p className="font-semibold text-sm text-mono-100 dark:text-white">{s.ingredient.ingredient.name}</p>
+                    <p className="text-[10px] text-[#6B7280] dark:text-mono-700">
                       {s.ingredient.ingredient.supplier || 'Fournisseur inconnu'}
                     </p>
                   </div>
@@ -354,13 +354,13 @@ function SmartReorderSection({ suggestions, onCreateOrder }: {
 
               <div className="space-y-2 mb-3">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#6B7280] dark:text-[#A3A3A3]">Stock actuel</span>
-                  <span className="font-medium text-[#111111] dark:text-white">
+                  <span className="text-[#6B7280] dark:text-mono-700">Stock actuel</span>
+                  <span className="font-medium text-mono-100 dark:text-white">
                     {s.ingredient.currentStock} / {s.ingredient.minStock} {s.ingredient.unit}
                   </span>
                 </div>
                 {/* Stock bar */}
-                <div className="w-full h-1.5 bg-[#E5E7EB] dark:bg-[#262626] rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-mono-900 dark:bg-mono-300 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${
                       s.urgency === 'urgent' ? 'bg-red-500' : s.urgency === 'normal' ? 'bg-amber-500' : 'bg-blue-500'
@@ -369,17 +369,17 @@ function SmartReorderSection({ suggestions, onCreateOrder }: {
                   />
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#6B7280] dark:text-[#A3A3A3] flex items-center gap-1">
+                  <span className="text-[#6B7280] dark:text-mono-700 flex items-center gap-1">
                     <Timer className="w-3 h-3" />
                     ~{s.daysUntilStockout}j avant rupture
                   </span>
-                  <span className="font-medium text-[#111111] dark:text-white">{fmtEuro(s.estimatedCost)}</span>
+                  <span className="font-medium text-mono-100 dark:text-white">{fmtEuro(s.estimatedCost)}</span>
                 </div>
               </div>
 
               <button
                 onClick={() => onCreateOrder(s.ingredient, s.suggestedQty)}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-lg text-xs font-semibold transition-all group-hover:shadow-md"
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-lg text-xs font-semibold transition-all group-hover:shadow-md"
               >
                 <ShoppingCart className="w-3.5 h-3.5" />
                 Commander {s.suggestedQty} {s.ingredient.unit}
@@ -424,11 +424,11 @@ function SupplierOrderCards({ orders, suppliers, onWhatsApp, onSendEmail, onExpa
   if (supplierGroups.length === 0) return null;
 
   return (
-    <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl overflow-hidden">
-      <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center gap-3">
-        <Truck className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
-        <h2 className="text-base font-bold text-[#111111] dark:text-white">Commandes par fournisseur</h2>
-        <span className="px-2 py-0.5 bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] rounded-full text-xs font-medium">
+    <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-300 rounded-2xl overflow-hidden">
+      <div className="px-6 py-4 border-b border-mono-900 dark:border-mono-300 flex items-center gap-3">
+        <Truck className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
+        <h2 className="text-base font-bold text-mono-100 dark:text-white">Commandes par fournisseur</h2>
+        <span className="px-2 py-0.5 bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 rounded-full text-xs font-medium">
           {supplierGroups.length} fournisseur{supplierGroups.length > 1 ? 's' : ''}
         </span>
       </div>
@@ -443,8 +443,8 @@ function SupplierOrderCards({ orders, suppliers, onWhatsApp, onSendEmail, onExpa
               key={name}
               className={`border rounded-xl overflow-hidden transition-all duration-200 ${
                 isExpanded
-                  ? 'border-[#111111] dark:border-white shadow-lg'
-                  : 'border-[#E5E7EB] dark:border-[#262626] hover:border-[#9CA3AF] dark:hover:border-[#525252]'
+                  ? 'border-mono-100 dark:border-white shadow-lg'
+                  : 'border-mono-900 dark:border-mono-300 hover:border-[#9CA3AF] dark:hover:border-mono-400'
               }`}
             >
               <div
@@ -452,18 +452,18 @@ function SupplierOrderCards({ orders, suppliers, onWhatsApp, onSendEmail, onExpa
                 onClick={() => onExpand(isExpanded ? null : name)}
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-sm shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-mono-100 dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-sm shrink-0">
                     {initials}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-[#111111] dark:text-white truncate">{name}</p>
-                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                    <p className="font-semibold text-mono-100 dark:text-white truncate">{name}</p>
+                    <p className="text-xs text-[#6B7280] dark:text-mono-700">
                       {totalItems} article{totalItems > 1 ? 's' : ''} / {group.orders.length} commande{group.orders.length > 1 ? 's' : ''}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-bold text-[#111111] dark:text-white">{fmtEuro(group.totalCost)}</p>
-                    <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] uppercase">HT</p>
+                    <p className="text-lg font-bold text-mono-100 dark:text-white">{fmtEuro(group.totalCost)}</p>
+                    <p className="text-[10px] text-[#6B7280] dark:text-mono-700 uppercase">HT</p>
                   </div>
                 </div>
 
@@ -471,7 +471,7 @@ function SupplierOrderCards({ orders, suppliers, onWhatsApp, onSendEmail, onExpa
                 <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                   <button
                     onClick={() => group.orders[0] && onSendEmail(group.orders[0])}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-lg text-xs font-semibold transition"
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-lg text-xs font-semibold transition"
                   >
                     <Send className="w-3.5 h-3.5" />
                     Commander
@@ -487,22 +487,22 @@ function SupplierOrderCards({ orders, suppliers, onWhatsApp, onSendEmail, onExpa
 
               {/* Expanded item details */}
               {isExpanded && (
-                <div className="border-t border-[#E5E7EB] dark:border-[#262626] bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 p-3 space-y-2">
+                <div className="border-t border-mono-900 dark:border-mono-300 bg-mono-1000 dark:bg-mono-50/60 p-3 space-y-2">
                   {group.orders.map((order) => (
                     <div key={order.id}>
                       {order.lines.map((line) => (
                         <div key={line.id} className="flex items-center justify-between py-1.5 text-xs">
-                          <span className="text-[#111111] dark:text-white font-medium">{line.name}</span>
+                          <span className="text-mono-100 dark:text-white font-medium">{line.name}</span>
                           <div className="flex items-center gap-3">
-                            <span className="text-[#6B7280] dark:text-[#A3A3A3]">{line.quantity} {line.unit}</span>
-                            <span className="font-medium text-[#111111] dark:text-white">{fmtEuro(line.total)}</span>
+                            <span className="text-[#6B7280] dark:text-mono-700">{line.quantity} {line.unit}</span>
+                            <span className="font-medium text-mono-100 dark:text-white">{fmtEuro(line.total)}</span>
                           </div>
                         </div>
                       ))}
                     </div>
                   ))}
                   {group.supplier?.phone && (
-                    <div className="flex items-center gap-2 pt-2 border-t border-[#E5E7EB] dark:border-[#262626] text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                    <div className="flex items-center gap-2 pt-2 border-t border-mono-900 dark:border-mono-300 text-xs text-[#6B7280] dark:text-mono-700">
                       <Phone className="w-3 h-3" />
                       {group.supplier.phone}
                     </div>
@@ -521,7 +521,7 @@ function SupplierOrderCards({ orders, suppliers, onWhatsApp, onSendEmail, onExpa
 
 function OrderTimeline({ status, date, expectedDelivery, receivedAt }: { status: OrderStatus; date: string; expectedDelivery?: string | null; receivedAt?: string | null }) {
   const timelineSteps: { key: string; label: string; date?: string; color: string; done: boolean; active: boolean }[] = [
-    { key: 'commandee', label: 'Commandee', date, color: 'bg-[#111111] dark:bg-white', done: true, active: status === 'brouillon' },
+    { key: 'commandee', label: 'Commandee', date, color: 'bg-mono-100 dark:bg-white', done: true, active: status === 'brouillon' },
     { key: 'confirmee', label: 'Confirmee', color: 'bg-blue-500', done: ['envoyé', 'confirmé', 'livré', 'réclamation'].includes(status), active: status === 'envoyé' },
     { key: 'expediee', label: 'Expediee', color: 'bg-amber-500', done: ['confirmé', 'livré', 'réclamation'].includes(status), active: status === 'confirmé' },
     { key: 'livree', label: 'Livree', date: receivedAt || undefined, color: 'bg-emerald-500', done: ['livré', 'réclamation'].includes(status), active: status === 'livré' },
@@ -531,8 +531,8 @@ function OrderTimeline({ status, date, expectedDelivery, receivedAt }: { status:
   if (status === 'annulé') {
     return (
       <div className="mt-4 px-2">
-        <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-2">Suivi de livraison</p>
-        <div className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+        <p className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider mb-2">Suivi de livraison</p>
+        <div className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-mono-700">
           <XCircle className="w-4 h-4 text-[#9CA3AF]" />
           Commande annulee
         </div>
@@ -542,11 +542,11 @@ function OrderTimeline({ status, date, expectedDelivery, receivedAt }: { status:
 
   return (
     <div className="mt-4 px-2">
-      <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-3">Suivi de livraison</p>
+      <p className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider mb-3">Suivi de livraison</p>
       {expectedDelivery && (
-        <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mb-3 flex items-center gap-1.5">
+        <p className="text-xs text-[#6B7280] dark:text-mono-700 mb-3 flex items-center gap-1.5">
           <Calendar className="w-3.5 h-3.5" />
-          Livraison prevue : <span className="font-medium text-[#111111] dark:text-white">{fmtDate(expectedDelivery)}</span>
+          Livraison prevue : <span className="font-medium text-mono-100 dark:text-white">{fmtDate(expectedDelivery)}</span>
         </p>
       )}
       <div className="flex items-start gap-0">
@@ -555,29 +555,29 @@ function OrderTimeline({ status, date, expectedDelivery, receivedAt }: { status:
           return (
             <div key={step.key} className="flex-1 flex flex-col items-center relative">
               {!isLast && (
-                <div className={`absolute top-3.5 left-1/2 w-full h-0.5 ${step.done && !step.active ? step.color : 'bg-[#F3F4F6] dark:bg-[#171717]'}`} />
+                <div className={`absolute top-3.5 left-1/2 w-full h-0.5 ${step.done && !step.active ? step.color : 'bg-mono-950 dark:bg-[#171717]'}`} />
               )}
               <div className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center border-2 transition-all ${
                 step.done
                   ? step.active
-                    ? 'border-[#111111] dark:border-white bg-[#111111]/20 dark:bg-white/20'
+                    ? 'border-mono-100 dark:border-white bg-mono-100/20 dark:bg-white/20'
                     : 'border-emerald-500 bg-emerald-500/20'
-                  : 'border-[#E5E7EB] dark:border-[#262626] bg-[#FAFAFA] dark:bg-[#0A0A0A]'
+                  : 'border-mono-900 dark:border-mono-300 bg-mono-1000 dark:bg-mono-50'
               }`}>
                 {step.done && !step.active ? (
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
                 ) : step.active ? (
-                  <CircleDot className="w-3.5 h-3.5 text-[#111111] dark:text-white" />
+                  <CircleDot className="w-3.5 h-3.5 text-mono-100 dark:text-white" />
                 ) : (
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#D4D4D4] dark:bg-[#4B5563]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-mono-800 dark:bg-[#4B5563]" />
                 )}
               </div>
               <div className="mt-2 text-center">
-                <p className={`text-xs font-semibold ${step.active ? 'text-[#111111] dark:text-white' : step.done ? 'text-emerald-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                <p className={`text-xs font-semibold ${step.active ? 'text-mono-100 dark:text-white' : step.done ? 'text-emerald-400' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                   {step.label}
                 </p>
                 {step.date && (
-                  <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">{fmtDate(step.date)}</p>
+                  <p className="text-[10px] text-[#6B7280] dark:text-mono-700 mt-0.5">{fmtDate(step.date)}</p>
                 )}
               </div>
             </div>
@@ -596,11 +596,11 @@ function BudgetTracker({ monthlySpend, budget }: { monthlySpend: number; budget:
   const remaining = budget - monthlySpend;
 
   return (
-    <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-5">
+    <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-300 rounded-2xl p-5">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Wallet className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
-          <h3 className="font-bold text-sm text-[#111111] dark:text-white">Budget mensuel</h3>
+          <Wallet className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
+          <h3 className="font-bold text-sm text-mono-100 dark:text-white">Budget mensuel</h3>
         </div>
         <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
           isOverBudget
@@ -613,8 +613,8 @@ function BudgetTracker({ monthlySpend, budget }: { monthlySpend: number; budget:
 
       <div className="flex items-end justify-between mb-2">
         <div>
-          <p className="text-2xl font-bold text-[#111111] dark:text-white">{fmtEuro(monthlySpend)}</p>
-          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">sur {fmtEuro(budget)} prevu</p>
+          <p className="text-2xl font-bold text-mono-100 dark:text-white">{fmtEuro(monthlySpend)}</p>
+          <p className="text-xs text-[#6B7280] dark:text-mono-700">sur {fmtEuro(budget)} prevu</p>
         </div>
         <p className={`text-sm font-semibold ${isOverBudget ? 'text-red-500' : 'text-emerald-500'}`}>
           {isOverBudget ? '+' : ''}{fmtEuro(remaining)}
@@ -622,7 +622,7 @@ function BudgetTracker({ monthlySpend, budget }: { monthlySpend: number; budget:
       </div>
 
       {/* Progress bar */}
-      <div className="w-full h-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden relative">
+      <div className="w-full h-3 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden relative">
         <div
           className={`h-full rounded-full transition-all duration-500 ${
             isOverBudget ? 'bg-red-500' : percentage > 80 ? 'bg-amber-500' : 'bg-emerald-500'
@@ -631,12 +631,12 @@ function BudgetTracker({ monthlySpend, budget }: { monthlySpend: number; budget:
         />
         {/* Budget line marker */}
         {percentage > 100 && (
-          <div className="absolute top-0 bottom-0 w-0.5 bg-[#111111] dark:bg-white" style={{ left: `${(100 / percentage) * 100}%` }} />
+          <div className="absolute top-0 bottom-0 w-0.5 bg-mono-100 dark:bg-white" style={{ left: `${(100 / percentage) * 100}%` }} />
         )}
       </div>
       <div className="flex justify-between mt-1">
-        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{formatCurrency(0)}</span>
-        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtEuro(budget)}</span>
+        <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{formatCurrency(0)}</span>
+        <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{fmtEuro(budget)}</span>
       </div>
     </div>
   );
@@ -728,7 +728,7 @@ function SpendingChart({ data }: { data: SpendingData | null }) {
 
   if (!data || Object.keys(data.spending).length === 0) {
     return (
-      <div className="text-center py-8 text-[#6B7280] dark:text-[#A3A3A3] text-sm">
+      <div className="text-center py-8 text-[#6B7280] dark:text-mono-700 text-sm">
         Aucune donnee de depenses disponible
       </div>
     );
@@ -744,7 +744,7 @@ function SpendingChart({ data }: { data: SpendingData | null }) {
       <canvas ref={canvasRef} width={600} height={280} className="w-full max-w-[600px]" />
       <div className="flex flex-wrap gap-3 mt-3 px-2">
         {data.suppliers.map((s, i) => (
-          <div key={s} className="flex items-center gap-1.5 text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+          <div key={s} className="flex items-center gap-1.5 text-xs text-[#6B7280] dark:text-mono-700">
             <div className="w-3 h-3 rounded" style={{ backgroundColor: colors[i % colors.length] }} />
             {s}
           </div>
@@ -1704,8 +1704,8 @@ export default function AutoOrders() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-[#374151] dark:text-[#D4D4D4]" />
-        <span className="ml-3 text-[#9CA3AF] dark:text-[#737373]">{t('common.loading')}</span>
+        <Loader2 className="w-8 h-8 animate-spin text-[#374151] dark:text-mono-800" />
+        <span className="ml-3 text-[#9CA3AF] dark:text-mono-500">{t('common.loading')}</span>
       </div>
     );
   }
@@ -1715,11 +1715,11 @@ export default function AutoOrders() {
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-2">
-            <ShoppingCart className="w-7 h-7 text-[#737373] dark:text-[#A3A3A3]" />
+          <h1 className="text-2xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-2">
+            <ShoppingCart className="w-7 h-7 text-mono-500 dark:text-mono-700" />
             {t('autoOrders.title')}
           </h1>
-          <p className="text-[#9CA3AF] dark:text-[#737373] mt-1">{t('autoOrders.subtitle')}</p>
+          <p className="text-[#9CA3AF] dark:text-mono-500 mt-1">{t('autoOrders.subtitle')}</p>
         </div>
         <div className="flex items-center gap-2">
           {lowStockItems.length > 0 && (
@@ -1733,7 +1733,7 @@ export default function AutoOrders() {
           )}
           <button
             onClick={openNewOrderForm}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium transition shadow-sm"
+            className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium transition shadow-sm"
           >
             <Plus className="w-4 h-4" />
             {t('autoOrders.newOrder')}
@@ -1742,7 +1742,7 @@ export default function AutoOrders() {
       </div>
 
       {/* ── Tab switcher ────────────────────────────────────────────────────── */}
-      <div className="flex gap-1 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 border border-[#E5E7EB] dark:border-[#262626] rounded-xl p-1 w-fit overflow-x-auto">
+      <div className="flex gap-1 bg-mono-1000 dark:bg-mono-50/60 border border-mono-900 dark:border-mono-300 rounded-xl p-1 w-fit overflow-x-auto">
         {[
           { key: 'dashboard' as const, icon: Target, label: 'Dashboard', count: null },
           { key: 'commandes' as const, icon: Package, label: t('autoOrders.ordersTab'), count: orders.length },
@@ -1754,14 +1754,14 @@ export default function AutoOrders() {
             onClick={() => setActiveTab(tab.key)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${
               activeTab === tab.key
-                ? 'bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
-                : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
+                ? 'bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
+                : 'text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'
             }`}
           >
             <tab.icon className="w-4 h-4" />
             {tab.label}
             {tab.count !== null && (
-              <span className="px-1.5 py-0.5 bg-[#E5E7EB] dark:bg-[#262626] text-[#6B7280] dark:text-[#A3A3A3] rounded text-xs">{tab.count}</span>
+              <span className="px-1.5 py-0.5 bg-mono-900 dark:bg-mono-300 text-[#6B7280] dark:text-mono-700 rounded text-xs">{tab.count}</span>
             )}
           </button>
         ))}
@@ -1773,12 +1773,12 @@ export default function AutoOrders() {
           {/* KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <KPICard
-              icon={<ShoppingCart className="w-5 h-5 text-[#111111] dark:text-white" />}
+              icon={<ShoppingCart className="w-5 h-5 text-mono-100 dark:text-white" />}
               label="Commandes en cours"
               value={String(activeOrders.length)}
               trend={activeOrders.length > 3 ? 'up' : 'neutral'}
               trendLabel={`${brouillonCount} brouillon, ${envoyeCount} envoye`}
-              accent="border-[#E5E7EB] dark:border-[#262626]"
+              accent="border-mono-900 dark:border-mono-300"
             />
             <KPICard
               icon={<Calendar className="w-5 h-5 text-blue-500" />}
@@ -1789,12 +1789,12 @@ export default function AutoOrders() {
               accent="border-blue-500/20"
             />
             <KPICard
-              icon={<Euro className="w-5 h-5 text-[#111111] dark:text-white" />}
+              icon={<Euro className="w-5 h-5 text-mono-100 dark:text-white" />}
               label="Montant total ce mois"
               value={fmtEuro(monthTotal)}
               trend={monthTrend > 0 ? 'up' : monthTrend < 0 ? 'down' : 'neutral'}
               trendLabel={`${monthTrend >= 0 ? '+' : ''}${monthTrend.toFixed(1)}% vs precedent`}
-              accent="border-[#111111]/20 dark:border-white/20"
+              accent="border-mono-100/20 dark:border-white/20"
             />
             <KPICard
               icon={<Sparkles className="w-5 h-5 text-emerald-500" />}
@@ -1815,10 +1815,10 @@ export default function AutoOrders() {
                 onCreateOrder={openQuickOrder}
               />
               {reorderSuggestions.length === 0 && (
-                <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-8 text-center">
+                <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-300 rounded-2xl p-8 text-center">
                   <CheckCircle2 className="w-10 h-10 mx-auto mb-3 text-emerald-400" />
-                  <p className="font-semibold text-[#111111] dark:text-white">Stock optimal</p>
-                  <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mt-1">Tous vos ingredients sont au-dessus du seuil minimum</p>
+                  <p className="font-semibold text-mono-100 dark:text-white">Stock optimal</p>
+                  <p className="text-sm text-[#6B7280] dark:text-mono-700 mt-1">Tous vos ingredients sont au-dessus du seuil minimum</p>
                 </div>
               )}
             </div>
@@ -1837,8 +1837,8 @@ export default function AutoOrders() {
                     <MessageCircle className="w-5 h-5 text-[#25D366]" />
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-[#111111] dark:text-white">Envoi groupé WhatsApp</p>
-                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                    <p className="font-semibold text-sm text-mono-100 dark:text-white">Envoi groupé WhatsApp</p>
+                    <p className="text-xs text-[#6B7280] dark:text-mono-700">
                       {orders.filter((o) => o.status === 'brouillon').length} commande(s) en brouillon prêtes à envoyer
                     </p>
                   </div>
@@ -1849,7 +1849,7 @@ export default function AutoOrders() {
                       <Loader2 className="w-4 h-4 animate-spin" />
                       {bulkProgress.sent}/{bulkProgress.total} commandes envoyées
                     </div>
-                    <div className="w-32 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                    <div className="w-32 h-2 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden">
                       <div
                         className="h-full bg-[#25D366] rounded-full transition-all"
                         style={{ width: `${bulkProgress.total > 0 ? (bulkProgress.sent / bulkProgress.total) * 100 : 0}%` }}
@@ -1883,15 +1883,15 @@ export default function AutoOrders() {
 
           {/* WhatsApp Order Confirmation Tracker */}
           {waTrackingList.length > 0 && (
-            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl overflow-hidden">
-              <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center justify-between">
+            <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-300 rounded-2xl overflow-hidden">
+              <div className="px-6 py-4 border-b border-mono-900 dark:border-mono-300 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-xl bg-[#25D366]/10">
                     <CheckCheck className="w-4 h-4 text-[#25D366]" />
                   </div>
                   <div>
-                    <h2 className="text-base font-bold text-[#111111] dark:text-white">Suivi confirmations WhatsApp</h2>
-                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                    <h2 className="text-base font-bold text-mono-100 dark:text-white">Suivi confirmations WhatsApp</h2>
+                    <p className="text-xs text-[#6B7280] dark:text-mono-700">
                       {waTrackingList.filter((t) => t.status === 'confirmee').length}/{waTrackingList.length} confirmées
                     </p>
                   </div>
@@ -1918,16 +1918,16 @@ export default function AutoOrders() {
                           ? 'border-red-500/30 bg-red-500/5'
                           : tracking.status === 'confirmee'
                             ? 'border-emerald-500/30 bg-emerald-500/5'
-                            : 'border-[#E5E7EB] dark:border-[#262626]'
+                            : 'border-mono-900 dark:border-mono-300'
                       }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-8 h-8 rounded-lg bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-mono-100 dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-xs shrink-0">
                           {tracking.supplierName.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-medium text-sm text-[#111111] dark:text-white truncate">{tracking.supplierName}</p>
-                          <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">
+                          <p className="font-medium text-sm text-mono-100 dark:text-white truncate">{tracking.supplierName}</p>
+                          <p className="text-[10px] text-[#6B7280] dark:text-mono-700">
                             Envoyée {fmtDate(tracking.sentAt)}
                             {matchedOrder ? ` - ${fmtEuro(matchedOrder.totalHT)} HT` : ''}
                           </p>
@@ -1955,7 +1955,7 @@ export default function AutoOrders() {
                           className={`px-2 py-1 text-[10px] font-bold rounded-lg transition border ${
                             tracking.status === 'confirmee'
                               ? 'text-emerald-500 bg-emerald-500/10 border-emerald-500/30 hover:bg-emerald-500/20'
-                              : 'text-[#6B7280] dark:text-[#A3A3A3] bg-[#F3F4F6] dark:bg-[#171717] border-[#E5E7EB] dark:border-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+                              : 'text-[#6B7280] dark:text-mono-700 bg-mono-950 dark:bg-[#171717] border-mono-900 dark:border-mono-300 hover:bg-mono-900 dark:hover:bg-mono-300'
                           }`}
                           title={tracking.status === 'confirmee' ? 'Marquer non confirmée' : 'Marquer confirmée'}
                         >
@@ -1978,17 +1978,17 @@ export default function AutoOrders() {
                     <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-[#111111] dark:text-white">
+                    <p className="text-sm font-semibold text-mono-100 dark:text-white">
                       {lowStockItems.length} article{lowStockItems.length > 1 ? 's' : ''} en rupture de stock
                     </p>
-                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">
+                    <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-0.5">
                       Cliquez sur un article pour creer une commande rapide
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={generateAutoOrders}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-semibold text-sm transition shadow-md hover:shadow-lg hover:scale-[1.02]"
+                  className="flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-semibold text-sm transition shadow-md hover:shadow-lg hover:scale-[1.02]"
                 >
                   <Zap className="w-4 h-4" />
                   {t('autoOrders.generateAutoOrders')}
@@ -1999,18 +1999,18 @@ export default function AutoOrders() {
                   <button
                     key={item.ingredientId}
                     onClick={() => openQuickOrder(item, Math.max(1, item.minStock * 2 - item.currentStock))}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white dark:bg-[#0A0A0A] border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-full transition-all"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white dark:bg-mono-50 border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-full transition-all"
                     title={`Stock: ${item.currentStock} / Min: ${item.minStock} ${item.unit}`}
                   >
                     <RefreshCw className="w-3 h-3" />
                     {item.ingredient.name}
-                    <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                    <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                       ({item.currentStock}/{item.minStock} {item.unit})
                     </span>
                   </button>
                 ))}
                 {lowStockItems.length > 8 && (
-                  <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] self-center ml-1">
+                  <span className="text-xs text-[#6B7280] dark:text-mono-700 self-center ml-1">
                     +{lowStockItems.length - 8} autres
                   </span>
                 )}
@@ -2022,23 +2022,23 @@ export default function AutoOrders() {
 
       {/* ── Orders list ─────────────────────────────────────────────────────── */}
       {activeTab === 'commandes' && (
-        <section className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex flex-wrap items-center gap-3">
-            <Package className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
-            <h2 className="text-lg font-semibold text-[#111111] dark:text-white">{t('autoOrders.ordersTab')}</h2>
-            <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{filteredOrders.length} {t('autoOrders.ordersCount')}</span>
+        <section className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-300 rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-mono-900 dark:border-mono-300 flex flex-wrap items-center gap-3">
+            <Package className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
+            <h2 className="text-lg font-semibold text-mono-100 dark:text-white">{t('autoOrders.ordersTab')}</h2>
+            <span className="text-sm text-[#6B7280] dark:text-mono-700">{filteredOrders.length} {t('autoOrders.ordersCount')}</span>
 
             {/* Status filter */}
             <div className="ml-auto flex items-center gap-2 flex-wrap">
-              <Filter className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+              <Filter className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
               {(['tous', 'brouillon', 'envoyé', 'confirmé', 'livré', 'annulé', 'réclamation'] as const).map((s) => (
                 <button
                   key={s}
                   onClick={() => setStatusFilter(s)}
                   className={`px-2.5 py-1 text-xs font-medium rounded-full transition ${
                     statusFilter === s
-                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                      : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626]'
+                      ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+                      : 'bg-mono-1000 dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] border border-mono-900 dark:border-mono-300'
                   }`}
                 >
                   {s === 'tous' ? 'Tous' : STATUS_CONFIG[s].label}
@@ -2048,14 +2048,14 @@ export default function AutoOrders() {
           </div>
 
           {filteredOrders.length === 0 ? (
-            <div className="p-8 text-center text-[#6B7280] dark:text-[#A3A3A3]">
-              <ShoppingCart className="w-10 h-10 mx-auto mb-2 text-[#374151] dark:text-[#D4D4D4]" />
+            <div className="p-8 text-center text-[#6B7280] dark:text-mono-700">
+              <ShoppingCart className="w-10 h-10 mx-auto mb-2 text-[#374151] dark:text-mono-800" />
               {orders.length === 0
                 ? t('autoOrders.noOrdersYet')
                 : t('autoOrders.noOrdersFilter')}
             </div>
           ) : (
-            <div className="divide-y divide-[#E5E7EB] dark:divide-[#262626]">
+            <div className="divide-y divide-mono-900 dark:divide-mono-300">
               {filteredOrders.map((order) => (
                 <OrderRow
                   key={order.id}
@@ -2085,37 +2085,37 @@ export default function AutoOrders() {
 
       {/* ── History tab ──────────────────────────────────────────────────────── */}
       {activeTab === 'historique' && (
-        <section className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center gap-3">
-            <History className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
-            <h2 className="text-lg font-semibold text-[#111111] dark:text-white">{t('autoOrders.orderHistory')}</h2>
-            <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{historyOrders.length} resultat(s)</span>
+        <section className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-300 rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-mono-900 dark:border-mono-300 flex items-center gap-3">
+            <History className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
+            <h2 className="text-lg font-semibold text-mono-100 dark:text-white">{t('autoOrders.orderHistory')}</h2>
+            <span className="text-sm text-[#6B7280] dark:text-mono-700">{historyOrders.length} resultat(s)</span>
           </div>
 
           {/* History filters */}
-          <div className="px-6 py-3 border-b border-[#E5E7EB] dark:border-[#262626] flex flex-wrap items-center gap-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/40">
+          <div className="px-6 py-3 border-b border-mono-900 dark:border-mono-300 flex flex-wrap items-center gap-3 bg-mono-1000 dark:bg-mono-50/40">
             <div className="flex items-center gap-2">
-              <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Du</label>
+              <label className="text-xs text-[#6B7280] dark:text-mono-700">Du</label>
               <input
                 type="date"
                 value={historyDateFrom}
                 onChange={(e) => setHistoryDateFrom(e.target.value)}
-                className="px-2 py-1 border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-xs bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white"
+                className="px-2 py-1 border border-mono-900 dark:border-mono-300 rounded-lg text-xs bg-white dark:bg-mono-50 text-mono-100 dark:text-white"
               />
             </div>
             <div className="flex items-center gap-2">
-              <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Au</label>
+              <label className="text-xs text-[#6B7280] dark:text-mono-700">Au</label>
               <input
                 type="date"
                 value={historyDateTo}
                 onChange={(e) => setHistoryDateTo(e.target.value)}
-                className="px-2 py-1 border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-xs bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white"
+                className="px-2 py-1 border border-mono-900 dark:border-mono-300 rounded-lg text-xs bg-white dark:bg-mono-50 text-mono-100 dark:text-white"
               />
             </div>
             <select
               value={historySupplier}
               onChange={(e) => setHistorySupplier(e.target.value)}
-              className="px-2 py-1 border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-xs bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white"
+              className="px-2 py-1 border border-mono-900 dark:border-mono-300 rounded-lg text-xs bg-white dark:bg-mono-50 text-mono-100 dark:text-white"
             >
               <option value="">Tous les fournisseurs</option>
               {uniqueSupplierNames.map((n) => (
@@ -2125,7 +2125,7 @@ export default function AutoOrders() {
             <select
               value={historyStatus}
               onChange={(e) => setHistoryStatus(e.target.value as any)}
-              className="px-2 py-1 border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-xs bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white"
+              className="px-2 py-1 border border-mono-900 dark:border-mono-300 rounded-lg text-xs bg-white dark:bg-mono-50 text-mono-100 dark:text-white"
             >
               <option value="tous">Tous les statuts</option>
               {(['envoyé', 'confirmé', 'livré', 'annulé', 'réclamation'] as const).map((s) => (
@@ -2135,7 +2135,7 @@ export default function AutoOrders() {
             {(historyDateFrom || historyDateTo || historySupplier || historyStatus !== 'tous') && (
               <button
                 onClick={() => { setHistoryDateFrom(''); setHistoryDateTo(''); setHistorySupplier(''); setHistoryStatus('tous'); }}
-                className="text-xs text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white transition"
+                className="text-xs text-[#9CA3AF] hover:text-mono-100 dark:hover:text-white transition"
               >
                 Effacer filtres
               </button>
@@ -2143,40 +2143,40 @@ export default function AutoOrders() {
           </div>
 
           {historyOrders.length === 0 ? (
-            <div className="p-8 text-center text-[#6B7280] dark:text-[#A3A3A3]">
-              <History className="w-10 h-10 mx-auto mb-2 text-[#374151] dark:text-[#D4D4D4]" />
+            <div className="p-8 text-center text-[#6B7280] dark:text-mono-700">
+              <History className="w-10 h-10 mx-auto mb-2 text-[#374151] dark:text-mono-800" />
               {t('autoOrders.noHistory')}
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/60">
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{t('autoOrders.date')}</th>
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{t('autoOrders.supplier')}</th>
-                    <th className="text-center py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{t('autoOrders.items')}</th>
-                    <th className="text-right py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{t('autoOrders.totalHT')}</th>
-                    <th className="text-right py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{t('autoOrders.totalTTC')}</th>
-                    <th className="text-center py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{t('autoOrders.status')}</th>
-                    <th className="text-center py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">Action</th>
+                  <tr className="bg-mono-1000 dark:bg-mono-50/60">
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wide">{t('autoOrders.date')}</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wide">{t('autoOrders.supplier')}</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wide">{t('autoOrders.items')}</th>
+                    <th className="text-right py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wide">{t('autoOrders.totalHT')}</th>
+                    <th className="text-right py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wide">{t('autoOrders.totalTTC')}</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wide">{t('autoOrders.status')}</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wide">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#262626]">
+                <tbody className="divide-y divide-mono-900 dark:divide-mono-300">
                   {historyOrders.map((order) => {
                     const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG['brouillon'];
                     const StatusIcon = cfg.icon;
                     return (
-                      <tr key={order.id} className="hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/30 transition">
-                        <td className="py-3 px-4 text-[#9CA3AF] dark:text-[#737373]">{fmtDate(order.date)}</td>
+                      <tr key={order.id} className="hover:bg-mono-950 dark:hover:bg-[#171717]/30 transition">
+                        <td className="py-3 px-4 text-[#9CA3AF] dark:text-mono-500">{fmtDate(order.date)}</td>
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-2">
-                            <Truck className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3] shrink-0" />
-                            <span className="font-medium text-[#111111] dark:text-white">{order.supplierName}</span>
+                            <Truck className="w-4 h-4 text-[#6B7280] dark:text-mono-700 shrink-0" />
+                            <span className="font-medium text-mono-100 dark:text-white">{order.supplierName}</span>
                           </div>
                         </td>
-                        <td className="py-3 px-4 text-center text-[#9CA3AF] dark:text-[#737373]">{order.lines.length}</td>
-                        <td className="py-3 px-4 text-right font-medium text-[#111111] dark:text-white">{fmtEuro(order.totalHT)}</td>
-                        <td className="py-3 px-4 text-right text-[#6B7280] dark:text-[#A3A3A3]">{fmtEuro(order.totalTTC)}</td>
+                        <td className="py-3 px-4 text-center text-[#9CA3AF] dark:text-mono-500">{order.lines.length}</td>
+                        <td className="py-3 px-4 text-right font-medium text-mono-100 dark:text-white">{fmtEuro(order.totalHT)}</td>
+                        <td className="py-3 px-4 text-right text-[#6B7280] dark:text-mono-700">{fmtEuro(order.totalTTC)}</td>
                         <td className="py-3 px-4 text-center">
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${cfg.badge}`}>
                             <StatusIcon className="w-3 h-3" />
@@ -2188,7 +2188,7 @@ export default function AutoOrders() {
                             {/* One-Click Reorder */}
                             <button
                               onClick={() => handleReorder(order)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#111111] dark:text-white bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] rounded-lg transition border border-[#E5E7EB] dark:border-[#262626]"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-mono-100 dark:text-white bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-mono-300 rounded-lg transition border border-mono-900 dark:border-mono-300"
                               title="Recommander les memes articles"
                             >
                               <RefreshCw className="w-3.5 h-3.5" />
@@ -2217,11 +2217,11 @@ export default function AutoOrders() {
 
       {/* ── Spending tab ─────────────────────────────────────────────────────── */}
       {activeTab === 'depenses' && (
-        <section className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center gap-3">
-            <BarChart3 className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
-            <h2 className="text-lg font-semibold text-[#111111] dark:text-white">Depenses par fournisseur</h2>
-            <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">12 derniers mois</span>
+        <section className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-300 rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-mono-900 dark:border-mono-300 flex items-center gap-3">
+            <BarChart3 className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
+            <h2 className="text-lg font-semibold text-mono-100 dark:text-white">Depenses par fournisseur</h2>
+            <span className="text-sm text-[#6B7280] dark:text-mono-700">12 derniers mois</span>
           </div>
           <div className="p-6">
             <SpendingChart data={spendingData} />
@@ -2238,12 +2238,12 @@ export default function AutoOrders() {
         <div className="space-y-4 max-h-[70vh] overflow-y-auto">
           {/* Supplier */}
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('autoOrders.supplier')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('autoOrders.supplier')}</label>
             {suppliers.length > 0 ? (
               <select
                 value={formSupplierId ?? '__custom__'}
                 onChange={(e) => handleSupplierChange(e.target.value)}
-                className="w-full px-3 py-2 border border-[#E5E7EB] dark:border-[#262626] rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111]"
+                className="w-full px-3 py-2 border border-mono-900 dark:border-mono-300 rounded-lg bg-mono-1000 dark:bg-mono-50 text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-mono-100"
               >
                 <option value="__custom__">-- Saisie libre --</option>
                 {suppliers.map((s) => (
@@ -2256,34 +2256,34 @@ export default function AutoOrders() {
               value={formSupplierName}
               onChange={(e) => { setFormSupplierName(e.target.value); setFormSupplierId(null); }}
               placeholder={t('autoOrders.supplierNamePlaceholder')}
-              className="mt-2 w-full px-3 py-2 border border-[#E5E7EB] dark:border-[#262626] rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111]"
+              className="mt-2 w-full px-3 py-2 border border-mono-900 dark:border-mono-300 rounded-lg bg-mono-1000 dark:bg-mono-50 text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-mono-100"
             />
           </div>
 
           {/* Expected delivery date */}
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Date de livraison prevue</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">Date de livraison prevue</label>
             <input
               type="date"
               value={formExpectedDelivery}
               onChange={(e) => setFormExpectedDelivery(e.target.value)}
-              className="w-full px-3 py-2 border border-[#E5E7EB] dark:border-[#262626] rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111]"
+              className="w-full px-3 py-2 border border-mono-900 dark:border-mono-300 rounded-lg bg-mono-1000 dark:bg-mono-50 text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-mono-100"
             />
           </div>
 
           {/* Line items */}
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-2">{t('autoOrders.items')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-2">{t('autoOrders.items')}</label>
             <div className="space-y-2">
               {formLines.map((line) => (
-                <div key={line.id} className="flex flex-wrap items-end gap-2 p-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 rounded-lg border border-[#E5E7EB] dark:border-[#262626]">
+                <div key={line.id} className="flex flex-wrap items-end gap-2 p-3 bg-mono-1000 dark:bg-mono-50/60 rounded-lg border border-mono-900 dark:border-mono-300">
                   <div className="flex-1 min-w-[160px]">
-                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Ingredient</label>
+                    <label className="text-xs text-[#6B7280] dark:text-mono-700">Ingredient</label>
                     {ingredients.length > 0 ? (
                       <select
                         value={line.ingredientId ?? ''}
                         onChange={(e) => handleIngredientSelect(line.id, e.target.value)}
-                        className="w-full px-2 py-1.5 border border-[#E5E7EB] dark:border-[#262626] rounded-md text-sm bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                        className="w-full px-2 py-1.5 border border-mono-900 dark:border-mono-300 rounded-md text-sm bg-mono-1000 dark:bg-mono-50 text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
                       >
                         <option value="">-- Selectionner --</option>
                         {ingredients.map((i) => (
@@ -2296,7 +2296,7 @@ export default function AutoOrders() {
                         value={line.name}
                         onChange={(e) => updateLine(line.id, 'name', e.target.value)}
                         placeholder="Nom"
-                        className="w-full px-2 py-1.5 border border-[#E5E7EB] dark:border-[#262626] rounded-md text-sm bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                        className="w-full px-2 py-1.5 border border-mono-900 dark:border-mono-300 rounded-md text-sm bg-mono-1000 dark:bg-mono-50 text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
                       />
                     )}
                     {ingredients.length > 0 && (
@@ -2305,44 +2305,44 @@ export default function AutoOrders() {
                         value={line.name}
                         onChange={(e) => updateLine(line.id, 'name', e.target.value)}
                         placeholder="ou saisir manuellement"
-                        className="mt-1 w-full px-2 py-1 border border-[#E5E7EB] dark:border-[#262626]/50 rounded-md text-xs bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#6B7280] dark:text-[#A3A3A3] focus:ring-1 focus:ring-[#111111] dark:focus:ring-white"
+                        className="mt-1 w-full px-2 py-1 border border-mono-900 dark:border-mono-300/50 rounded-md text-xs bg-mono-1000 dark:bg-mono-50/60 text-[#6B7280] dark:text-mono-700 focus:ring-1 focus:ring-mono-100 dark:focus:ring-white"
                       />
                     )}
                   </div>
                   <div className="w-20">
-                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Qte</label>
+                    <label className="text-xs text-[#6B7280] dark:text-mono-700">Qte</label>
                     <input
                       type="number"
                       min={0}
                       step="any"
                       value={line.quantity}
                       onChange={(e) => updateLine(line.id, 'quantity', Math.max(0, Number(e.target.value)))}
-                      className="w-full px-2 py-1.5 border border-[#E5E7EB] dark:border-[#262626] rounded-md text-sm bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                      className="w-full px-2 py-1.5 border border-mono-900 dark:border-mono-300 rounded-md text-sm bg-mono-1000 dark:bg-mono-50 text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
                     />
                   </div>
                   <div className="w-20">
-                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Unite</label>
+                    <label className="text-xs text-[#6B7280] dark:text-mono-700">Unite</label>
                     <input
                       type="text"
                       value={line.unit}
                       onChange={(e) => updateLine(line.id, 'unit', e.target.value)}
-                      className="w-full px-2 py-1.5 border border-[#E5E7EB] dark:border-[#262626] rounded-md text-sm bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                      className="w-full px-2 py-1.5 border border-mono-900 dark:border-mono-300 rounded-md text-sm bg-mono-1000 dark:bg-mono-50 text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
                     />
                   </div>
                   <div className="w-24">
-                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Prix unit.</label>
+                    <label className="text-xs text-[#6B7280] dark:text-mono-700">Prix unit.</label>
                     <input
                       type="number"
                       min={0}
                       step="0.01"
                       value={line.pricePerUnit}
                       onChange={(e) => updateLine(line.id, 'pricePerUnit', Math.max(0, Number(e.target.value)))}
-                      className="w-full px-2 py-1.5 border border-[#E5E7EB] dark:border-[#262626] rounded-md text-sm bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                      className="w-full px-2 py-1.5 border border-mono-900 dark:border-mono-300 rounded-md text-sm bg-mono-1000 dark:bg-mono-50 text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
                     />
                   </div>
                   <div className="w-24 text-right">
-                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Total</label>
-                    <p className="text-sm font-medium text-[#111111] dark:text-white py-1.5">{fmtEuro(line.total)}</p>
+                    <label className="text-xs text-[#6B7280] dark:text-mono-700">Total</label>
+                    <p className="text-sm font-medium text-mono-100 dark:text-white py-1.5">{fmtEuro(line.total)}</p>
                   </div>
                   <button
                     onClick={() => removeLine(line.id)}
@@ -2356,7 +2356,7 @@ export default function AutoOrders() {
             </div>
             <button
               onClick={addLine}
-              className="mt-2 flex items-center gap-1 px-3 py-1.5 text-sm text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition"
+              className="mt-2 flex items-center gap-1 px-3 py-1.5 text-sm text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition"
             >
               <Plus className="w-4 h-4" /> {t('autoOrders.addItem')}
             </button>
@@ -2364,27 +2364,27 @@ export default function AutoOrders() {
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('autoOrders.notes')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('autoOrders.notes')}</label>
             <textarea
               value={formNotes}
               onChange={(e) => setFormNotes(e.target.value)}
               rows={2}
-              className="w-full px-3 py-2 border border-[#E5E7EB] dark:border-[#262626] rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111] resize-none"
+              className="w-full px-3 py-2 border border-mono-900 dark:border-mono-300 rounded-lg bg-mono-1000 dark:bg-mono-50 text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-mono-100 resize-none"
               placeholder={t('autoOrders.notesPlaceholder')}
             />
           </div>
 
           {/* Totals */}
-          <div className="border-t border-[#E5E7EB] dark:border-[#262626] pt-3 space-y-1 text-sm">
-            <div className="flex justify-between text-[#9CA3AF] dark:text-[#737373]">
+          <div className="border-t border-mono-900 dark:border-mono-300 pt-3 space-y-1 text-sm">
+            <div className="flex justify-between text-[#9CA3AF] dark:text-mono-500">
               <span>Total HT</span>
               <span className="font-medium">{fmtEuro(formTotals.totalHT)}</span>
             </div>
-            <div className="flex justify-between text-[#9CA3AF] dark:text-[#737373]">
+            <div className="flex justify-between text-[#9CA3AF] dark:text-mono-500">
               <span>TVA (20%)</span>
               <span className="font-medium">{fmtEuro(formTotals.tva)}</span>
             </div>
-            <div className="flex justify-between text-[#111111] dark:text-white font-semibold text-base pt-1 border-t border-[#E5E7EB] dark:border-[#262626]">
+            <div className="flex justify-between text-mono-100 dark:text-white font-semibold text-base pt-1 border-t border-mono-900 dark:border-mono-300">
               <span>Total TTC</span>
               <span>{fmtEuro(formTotals.totalTTC)}</span>
             </div>
@@ -2394,13 +2394,13 @@ export default function AutoOrders() {
           <div className="flex justify-end gap-3 pt-2">
             <button
               onClick={() => setFormOpen(false)}
-              className="px-4 py-2 text-[#6B7280] dark:text-[#A3A3A3] bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#262626] rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
+              className="px-4 py-2 text-[#6B7280] dark:text-mono-700 bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-300 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition"
             >
               {t('common.cancel')}
             </button>
             <button
               onClick={saveOrder}
-              className="flex items-center gap-2 px-5 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium transition shadow-sm"
+              className="flex items-center gap-2 px-5 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium transition shadow-sm"
             >
               <Check className="w-4 h-4" />
               {editingOrderId ? t('common.save') : t('autoOrders.createDraft')}
@@ -2418,29 +2418,29 @@ export default function AutoOrders() {
         {emailOrder && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('autoOrders.recipient')}</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('autoOrders.recipient')}</label>
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3] shrink-0" />
+                <Mail className="w-4 h-4 text-[#6B7280] dark:text-mono-700 shrink-0" />
                 <input
                   type="email"
                   value={emailTo}
                   onChange={(e) => setEmailTo(e.target.value)}
                   placeholder="email@fournisseur.com"
-                  className="flex-1 px-3 py-2 border border-[#E5E7EB] dark:border-[#262626] rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111]"
+                  className="flex-1 px-3 py-2 border border-mono-900 dark:border-mono-300 rounded-lg bg-mono-1000 dark:bg-mono-50 text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-mono-100"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('autoOrders.emailSubject')}</label>
-              <p className="text-sm text-[#111111] dark:text-white bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2">
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('autoOrders.emailSubject')}</label>
+              <p className="text-sm text-mono-100 dark:text-white bg-mono-1000 dark:bg-mono-50/60 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2">
                 {buildEmailSubject(emailOrder)}
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('autoOrders.emailBody')}</label>
-              <pre className="text-xs text-[#6B7280] dark:text-[#A3A3A3] bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-3 max-h-64 overflow-y-auto whitespace-pre-wrap font-sans leading-relaxed">
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">{t('autoOrders.emailBody')}</label>
+              <pre className="text-xs text-[#6B7280] dark:text-mono-700 bg-mono-1000 dark:bg-mono-50/60 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-3 max-h-64 overflow-y-auto whitespace-pre-wrap font-sans leading-relaxed">
                 {buildEmailBody(emailOrder)}
               </pre>
             </div>
@@ -2448,7 +2448,7 @@ export default function AutoOrders() {
             <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2">
               <button
                 onClick={() => setEmailOrder(null)}
-                className="px-4 py-2 text-[#6B7280] dark:text-[#A3A3A3] bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#262626] rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition text-sm"
+                className="px-4 py-2 text-[#6B7280] dark:text-mono-700 bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-300 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition text-sm"
               >
                 {t('common.cancel')}
               </button>
@@ -2462,7 +2462,7 @@ export default function AutoOrders() {
               </button>
               <button
                 onClick={handleCopyToClipboard}
-                className="flex items-center justify-center gap-2 px-4 py-2 border border-[#E5E7EB] dark:border-[#262626] text-[#6B7280] dark:text-[#A3A3A3] bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition text-sm"
+                className="flex items-center justify-center gap-2 px-4 py-2 border border-mono-900 dark:border-mono-300 text-[#6B7280] dark:text-mono-700 bg-mono-1000 dark:bg-mono-50 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition text-sm"
               >
                 {emailCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                 {emailCopied ? t('autoOrders.copied') : t('autoOrders.copyToClipboard')}
@@ -2470,7 +2470,7 @@ export default function AutoOrders() {
               <button
                 onClick={() => emailOrder && handleSendOrderEmail(emailOrder)}
                 disabled={!!sendingEmail}
-                className="flex items-center justify-center gap-2 px-5 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium text-sm transition shadow-sm disabled:opacity-50"
+                className="flex items-center justify-center gap-2 px-5 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium text-sm transition shadow-sm disabled:opacity-50"
               >
                 {sendingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
                 {sendingEmail ? t('autoOrders.sendingEmail') : t('autoOrders.sendEmail')}
@@ -2488,33 +2488,33 @@ export default function AutoOrders() {
       >
         {receiveOrder && (
           <div className="space-y-4 max-h-[70vh] overflow-y-auto">
-            <div className="flex items-center gap-3 p-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 rounded-lg border border-[#E5E7EB] dark:border-[#262626]">
-              <Truck className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
+            <div className="flex items-center gap-3 p-3 bg-mono-1000 dark:bg-mono-50/60 rounded-lg border border-mono-900 dark:border-mono-300">
+              <Truck className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
               <div>
-                <p className="font-semibold text-[#111111] dark:text-white">{receiveOrder.supplierName}</p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Commande du {fmtDate(receiveOrder.date)}</p>
+                <p className="font-semibold text-mono-100 dark:text-white">{receiveOrder.supplierName}</p>
+                <p className="text-xs text-[#6B7280] dark:text-mono-700">Commande du {fmtDate(receiveOrder.date)}</p>
               </div>
             </div>
 
-            <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            <p className="text-sm text-[#6B7280] dark:text-mono-700">
               Cochez les articles recus et ajustez les quantites si necessaire. L'inventaire sera mis a jour automatiquement.
             </p>
 
             <div className="space-y-2">
               {receiveLines.map((line, idx) => (
-                <div key={line.itemId} className={`flex items-center gap-3 p-3 rounded-lg border transition ${line.checked ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 border-[#E5E7EB] dark:border-[#262626]'}`}>
+                <div key={line.itemId} className={`flex items-center gap-3 p-3 rounded-lg border transition ${line.checked ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-mono-1000 dark:bg-mono-50/60 border-mono-900 dark:border-mono-300'}`}>
                   <button
                     onClick={() => setReceiveLines((prev) => prev.map((l, i) => i === idx ? { ...l, checked: !l.checked } : l))}
-                    className={`w-6 h-6 rounded border-2 flex items-center justify-center transition ${line.checked ? 'bg-emerald-500 border-emerald-500' : 'border-[#E5E7EB] dark:border-[#262626]'}`}
+                    className={`w-6 h-6 rounded border-2 flex items-center justify-center transition ${line.checked ? 'bg-emerald-500 border-emerald-500' : 'border-mono-900 dark:border-mono-300'}`}
                   >
                     {line.checked && <Check className="w-4 h-4 text-white" />}
                   </button>
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium ${line.checked ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] line-through'}`}>{line.name}</p>
-                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Commande : {line.orderedQty} {line.unit}</p>
+                    <p className={`text-sm font-medium ${line.checked ? 'text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500 line-through'}`}>{line.name}</p>
+                    <p className="text-xs text-[#6B7280] dark:text-mono-700">Commande : {line.orderedQty} {line.unit}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Recu :</label>
+                    <label className="text-xs text-[#6B7280] dark:text-mono-700">Recu :</label>
                     <input
                       type="number"
                       min={0}
@@ -2522,9 +2522,9 @@ export default function AutoOrders() {
                       value={line.receivedQty}
                       onChange={(e) => setReceiveLines((prev) => prev.map((l, i) => i === idx ? { ...l, receivedQty: Math.max(0, Number(e.target.value)) } : l))}
                       disabled={!line.checked}
-                      className="w-20 px-2 py-1 border border-[#E5E7EB] dark:border-[#262626] rounded-md text-sm bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white disabled:opacity-40"
+                      className="w-20 px-2 py-1 border border-mono-900 dark:border-mono-300 rounded-md text-sm bg-white dark:bg-mono-50 text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white disabled:opacity-40"
                     />
-                    <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{line.unit}</span>
+                    <span className="text-xs text-[#6B7280] dark:text-mono-700">{line.unit}</span>
                   </div>
                   {line.checked && line.receivedQty !== line.orderedQty && (
                     <span className="text-xs text-amber-400 font-medium">
@@ -2535,10 +2535,10 @@ export default function AutoOrders() {
               ))}
             </div>
 
-            <div className="flex justify-end gap-3 pt-3 border-t border-[#E5E7EB] dark:border-[#262626]">
+            <div className="flex justify-end gap-3 pt-3 border-t border-mono-900 dark:border-mono-300">
               <button
                 onClick={() => setReceiveOrder(null)}
-                className="px-4 py-2 text-[#6B7280] dark:text-[#A3A3A3] bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#262626] rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
+                className="px-4 py-2 text-[#6B7280] dark:text-mono-700 bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-300 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition"
               >
                 Annuler
               </button>
@@ -2562,22 +2562,22 @@ export default function AutoOrders() {
         title={t('autoOrders.autoReviewTitle')}
       >
         <div className="space-y-4 max-h-[70vh] overflow-y-auto">
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500">
             {autoGeneratedOrders.length} commande(s) generee(s) a partir des articles en rupture de stock.
             Verifiez les quantites avant de confirmer.
           </p>
           {autoGeneratedOrders.map((order) => (
-            <div key={order.id} className="border border-[#E5E7EB] dark:border-[#262626] rounded-xl overflow-hidden">
-              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 px-4 py-3 flex items-center justify-between">
+            <div key={order.id} className="border border-mono-900 dark:border-mono-300 rounded-xl overflow-hidden">
+              <div className="bg-mono-1000 dark:bg-mono-50/60 px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Truck className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
-                  <span className="font-semibold text-[#111111] dark:text-white">{order.supplierName}</span>
+                  <Truck className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+                  <span className="font-semibold text-mono-100 dark:text-white">{order.supplierName}</span>
                 </div>
-                <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">{fmtEuro(order.totalHT)} HT</span>
+                <span className="text-sm font-medium text-[#6B7280] dark:text-mono-700">{fmtEuro(order.totalHT)} HT</span>
               </div>
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-xs text-[#6B7280] dark:text-[#A3A3A3] border-b border-[#E5E7EB] dark:border-[#262626]">
+                  <tr className="text-xs text-[#6B7280] dark:text-mono-700 border-b border-mono-900 dark:border-mono-300">
                     <th className="text-left py-2 px-4">Article</th>
                     <th className="text-center py-2 px-3">Qte</th>
                     <th className="text-center py-2 px-3">Unite</th>
@@ -2585,14 +2585,14 @@ export default function AutoOrders() {
                     <th className="text-right py-2 px-4">Total</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#262626]">
+                <tbody className="divide-y divide-mono-900 dark:divide-mono-300">
                   {order.lines.map((line) => (
                     <tr key={line.id}>
-                      <td className="py-2 px-4 text-[#111111] dark:text-white">{line.name}</td>
-                      <td className="py-2 px-3 text-center text-[#9CA3AF] dark:text-[#737373]">{line.quantity}</td>
-                      <td className="py-2 px-3 text-center text-[#9CA3AF] dark:text-[#737373]">{line.unit}</td>
-                      <td className="py-2 px-4 text-right text-[#9CA3AF] dark:text-[#737373]">{fmtEuro(line.pricePerUnit)}</td>
-                      <td className="py-2 px-4 text-right font-medium text-[#111111] dark:text-white">{fmtEuro(line.total)}</td>
+                      <td className="py-2 px-4 text-mono-100 dark:text-white">{line.name}</td>
+                      <td className="py-2 px-3 text-center text-[#9CA3AF] dark:text-mono-500">{line.quantity}</td>
+                      <td className="py-2 px-3 text-center text-[#9CA3AF] dark:text-mono-500">{line.unit}</td>
+                      <td className="py-2 px-4 text-right text-[#9CA3AF] dark:text-mono-500">{fmtEuro(line.pricePerUnit)}</td>
+                      <td className="py-2 px-4 text-right font-medium text-mono-100 dark:text-white">{fmtEuro(line.total)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -2600,16 +2600,16 @@ export default function AutoOrders() {
             </div>
           ))}
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-[#E5E7EB] dark:border-[#262626]">
+          <div className="flex justify-end gap-3 pt-3 border-t border-mono-900 dark:border-mono-300">
             <button
               onClick={() => { setShowAutoReviewModal(false); setAutoGeneratedOrders([]); }}
-              className="px-4 py-2 text-[#6B7280] dark:text-[#A3A3A3] bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#262626] rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
+              className="px-4 py-2 text-[#6B7280] dark:text-mono-700 bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-300 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition"
             >
               {t('common.cancel')}
             </button>
             <button
               onClick={confirmAutoOrders}
-              className="flex items-center gap-2 px-5 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium transition shadow-sm"
+              className="flex items-center gap-2 px-5 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium transition shadow-sm"
             >
               <Check className="w-4 h-4" />
               Confirmer ({autoGeneratedOrders.length} commande{autoGeneratedOrders.length > 1 ? 's' : ''})
@@ -2677,12 +2677,12 @@ function OrderRow({
 
     if (order.status === 'brouillon') {
       buttons.push(
-        <button key="edit" onClick={onEdit} title="Modifier" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+        <button key="edit" onClick={onEdit} title="Modifier" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition">
           <Edit3 className="w-3.5 h-3.5" /> Modifier
         </button>,
       );
       buttons.push(
-        <button key="email" onClick={onSend} title="Preparer email" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+        <button key="email" onClick={onSend} title="Preparer email" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition">
           <Mail className="w-3.5 h-3.5" /> Email
         </button>,
       );
@@ -2709,7 +2709,7 @@ function OrderRow({
         );
       }
       buttons.push(
-        <button key="cancel" onClick={() => onStatusChange('annulé')} title="Annuler" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+        <button key="cancel" onClick={() => onStatusChange('annulé')} title="Annuler" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition">
           <XCircle className="w-3.5 h-3.5" /> Annuler
         </button>,
       );
@@ -2723,14 +2723,14 @@ function OrderRow({
       );
       if (onRelance) {
         buttons.push(
-          <button key="relance" onClick={onRelance} disabled={isRelancing} title="Relancer le fournisseur" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition disabled:opacity-50">
+          <button key="relance" onClick={onRelance} disabled={isRelancing} title="Relancer le fournisseur" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition disabled:opacity-50">
             {isRelancing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
             Relancer
           </button>,
         );
       }
       buttons.push(
-        <button key="cancel" onClick={() => onStatusChange('annulé')} title="Annuler" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+        <button key="cancel" onClick={() => onStatusChange('annulé')} title="Annuler" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition">
           <XCircle className="w-3.5 h-3.5" /> Annuler
         </button>,
       );
@@ -2743,7 +2743,7 @@ function OrderRow({
         </button>,
       );
       buttons.push(
-        <button key="cancel" onClick={() => onStatusChange('annulé')} title="Annuler" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+        <button key="cancel" onClick={() => onStatusChange('annulé')} title="Annuler" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition">
           <XCircle className="w-3.5 h-3.5" /> Annuler
         </button>,
       );
@@ -2751,7 +2751,7 @@ function OrderRow({
 
     if (order.status === 'livré') {
       buttons.push(
-        <button key="reorder" onClick={onReorder} title="Recommander" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#111111] dark:text-white bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] rounded-lg transition border border-[#E5E7EB] dark:border-[#262626]">
+        <button key="reorder" onClick={onReorder} title="Recommander" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-mono-100 dark:text-white bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-mono-300 rounded-lg transition border border-mono-900 dark:border-mono-300">
           <RefreshCw className="w-3.5 h-3.5" /> Recommander
         </button>,
       );
@@ -2764,7 +2764,7 @@ function OrderRow({
 
     if (order.status === 'annulé') {
       buttons.push(
-        <button key="reopen" onClick={() => onStatusChange('brouillon')} title="Remettre en brouillon" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+        <button key="reopen" onClick={() => onStatusChange('brouillon')} title="Remettre en brouillon" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition">
           <RefreshCw className="w-3.5 h-3.5" /> Reouvrir
         </button>,
       );
@@ -2780,7 +2780,7 @@ function OrderRow({
 
     // Common: duplicate + delete
     buttons.push(
-      <button key="dup" onClick={onDuplicate} title="Dupliquer" className="p-1.5 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+      <button key="dup" onClick={onDuplicate} title="Dupliquer" className="p-1.5 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition">
         <CopyPlus className="w-4 h-4" />
       </button>,
     );
@@ -2794,10 +2794,10 @@ function OrderRow({
   }
 
   return (
-    <div className="hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/30 transition">
+    <div className="hover:bg-mono-950 dark:hover:bg-[#171717]/30 transition">
       {/* Main row */}
       <div className="flex flex-wrap items-center gap-3 px-6 py-4 cursor-pointer" onClick={onToggle}>
-        <div className="text-[#6B7280] dark:text-[#A3A3A3]">
+        <div className="text-[#6B7280] dark:text-mono-700">
           {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </div>
 
@@ -2805,16 +2805,16 @@ function OrderRow({
         <div className={`w-2 h-2 rounded-full ${cfg.dot} flex-shrink-0`} />
 
         <div className="flex items-center gap-2 min-w-[140px]">
-          <Truck className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3] shrink-0" />
-          <span className="font-medium text-[#111111] dark:text-white">{order.supplierName}</span>
+          <Truck className="w-4 h-4 text-[#6B7280] dark:text-mono-700 shrink-0" />
+          <span className="font-medium text-mono-100 dark:text-white">{order.supplierName}</span>
         </div>
 
-        <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+        <span className="text-sm text-[#6B7280] dark:text-mono-700">
           {order.lines.length} article{order.lines.length > 1 ? 's' : ''}
         </span>
 
-        <span className="font-semibold text-[#111111] dark:text-white">{fmtEuro(order.totalHT)}</span>
-        <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{fmtDate(order.date)}</span>
+        <span className="font-semibold text-mono-100 dark:text-white">{fmtEuro(order.totalHT)}</span>
+        <span className="text-sm text-[#6B7280] dark:text-mono-700">{fmtDate(order.date)}</span>
 
         {/* Status badge */}
         <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${cfg.badge}`}>
@@ -2831,7 +2831,7 @@ function OrderRow({
       {/* Expanded details */}
       {expanded && (
         <div className="px-6 pb-5">
-          <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/40 border border-[#E5E7EB] dark:border-[#262626]/50 rounded-xl p-4">
+          <div className="bg-mono-1000 dark:bg-mono-50/40 border border-mono-900 dark:border-mono-300/50 rounded-xl p-4">
             {/* Timeline */}
             <OrderTimeline status={order.status} date={order.date} expectedDelivery={order.expectedDelivery} receivedAt={order.receivedAt} />
 
@@ -2839,7 +2839,7 @@ function OrderRow({
             <div className="mt-5">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-[#6B7280] dark:text-[#A3A3A3] text-xs border-b border-[#E5E7EB] dark:border-[#262626]">
+                  <tr className="text-left text-[#6B7280] dark:text-mono-700 text-xs border-b border-mono-900 dark:border-mono-300">
                     <th className="pb-2 pr-4">Produit</th>
                     <th className="pb-2 pr-4">Commande</th>
                     {order.status === 'livré' || order.status === 'réclamation' ? <th className="pb-2 pr-4">Recu</th> : null}
@@ -2848,11 +2848,11 @@ function OrderRow({
                     <th className="pb-2 text-right">Total</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#262626]">
+                <tbody className="divide-y divide-mono-900 dark:divide-mono-300">
                   {order.lines.map((line) => (
                     <tr key={line.id}>
-                      <td className="py-2 pr-4 text-[#111111] dark:text-white">{line.name}</td>
-                      <td className="py-2 pr-4 text-[#9CA3AF] dark:text-[#737373]">{line.quantity}</td>
+                      <td className="py-2 pr-4 text-mono-100 dark:text-white">{line.name}</td>
+                      <td className="py-2 pr-4 text-[#9CA3AF] dark:text-mono-500">{line.quantity}</td>
                       {(order.status === 'livré' || order.status === 'réclamation') && (
                         <td className="py-2 pr-4">
                           <span className={`font-medium ${line.receivedQuantity != null && line.receivedQuantity !== line.quantity ? 'text-amber-400' : 'text-emerald-400'}`}>
@@ -2860,9 +2860,9 @@ function OrderRow({
                           </span>
                         </td>
                       )}
-                      <td className="py-2 pr-4 text-[#9CA3AF] dark:text-[#737373]">{line.unit}</td>
-                      <td className="py-2 pr-4 text-[#9CA3AF] dark:text-[#737373]">{fmtEuro(line.pricePerUnit)}</td>
-                      <td className="py-2 text-right font-medium text-[#111111] dark:text-white">{fmtEuro(line.total)}</td>
+                      <td className="py-2 pr-4 text-[#9CA3AF] dark:text-mono-500">{line.unit}</td>
+                      <td className="py-2 pr-4 text-[#9CA3AF] dark:text-mono-500">{fmtEuro(line.pricePerUnit)}</td>
+                      <td className="py-2 text-right font-medium text-mono-100 dark:text-white">{fmtEuro(line.total)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -2870,16 +2870,16 @@ function OrderRow({
             </div>
 
             {/* Totals */}
-            <div className="mt-3 pt-3 border-t border-[#E5E7EB] dark:border-[#262626] space-y-1 text-sm">
-              <div className="flex justify-between text-[#9CA3AF] dark:text-[#737373]">
+            <div className="mt-3 pt-3 border-t border-mono-900 dark:border-mono-300 space-y-1 text-sm">
+              <div className="flex justify-between text-[#9CA3AF] dark:text-mono-500">
                 <span>Total HT</span>
                 <span className="font-medium">{fmtEuro(order.totalHT)}</span>
               </div>
-              <div className="flex justify-between text-[#9CA3AF] dark:text-[#737373]">
+              <div className="flex justify-between text-[#9CA3AF] dark:text-mono-500">
                 <span>TVA (20%)</span>
                 <span className="font-medium">{fmtEuro(order.tva)}</span>
               </div>
-              <div className="flex justify-between text-[#111111] dark:text-white font-semibold">
+              <div className="flex justify-between text-mono-100 dark:text-white font-semibold">
                 <span>Total TTC</span>
                 <span>{fmtEuro(order.totalTTC)}</span>
               </div>
@@ -2887,13 +2887,13 @@ function OrderRow({
 
             {/* Notes */}
             {order.notes && (
-              <p className="mt-3 text-sm text-[#6B7280] dark:text-[#A3A3A3] italic border-t border-[#E5E7EB] dark:border-[#262626] pt-3">
+              <p className="mt-3 text-sm text-[#6B7280] dark:text-mono-700 italic border-t border-mono-900 dark:border-mono-300 pt-3">
                 Notes : {order.notes}
               </p>
             )}
 
             {/* Dates info + WhatsApp quick action */}
-            <div className="mt-3 pt-3 border-t border-[#E5E7EB] dark:border-[#262626] flex flex-wrap items-center gap-4 text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+            <div className="mt-3 pt-3 border-t border-mono-900 dark:border-mono-300 flex flex-wrap items-center gap-4 text-xs text-[#6B7280] dark:text-mono-700">
               <span>Creee : {fmtDate(order.date)}</span>
               {order.expectedDelivery && <span>Livraison prevue : {fmtDate(order.expectedDelivery)}</span>}
               {order.receivedAt && <span>Recue : {fmtDate(order.receivedAt)}</span>}

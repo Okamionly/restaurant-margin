@@ -188,13 +188,13 @@ function ScoreBar({ label, score, icon }: { label: string; score: number; icon: 
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-xs">
-        <span className="flex items-center gap-1.5 text-[#9CA3AF] dark:text-[#737373]">
+        <span className="flex items-center gap-1.5 text-[#9CA3AF] dark:text-mono-500">
           {icon}
           {label}
         </span>
         <span className={`font-bold ${textColor}`}>{score}/100</span>
       </div>
-      <div className="h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden">
+      <div className="h-2 bg-mono-900 dark:bg-mono-200 rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full ${color}`}
           style={{ width: `${Math.max(2, score)}%`, transition: 'width 0.8s ease-in-out' }}
@@ -217,14 +217,14 @@ function StarRating({ score, size = 16 }: { score: number; size?: number }) {
       ))}
       {hasHalf && (
         <div className="relative" style={{ width: size, height: size }}>
-          <Star style={{ width: size, height: size }} className="text-[#E5E7EB] dark:text-[#333] absolute inset-0" />
+          <Star style={{ width: size, height: size }} className="text-mono-900 dark:text-[#333] absolute inset-0" />
           <div className="absolute inset-0 overflow-hidden" style={{ width: '50%' }}>
             <Star style={{ width: size, height: size }} className="fill-amber-400 text-amber-400" />
           </div>
         </div>
       )}
       {Array.from({ length: emptyStars }).map((_, i) => (
-        <Star key={`e${i}`} style={{ width: size, height: size }} className="text-[#E5E7EB] dark:text-[#333]" />
+        <Star key={`e${i}`} style={{ width: size, height: size }} className="text-mono-900 dark:text-[#333]" />
       ))}
     </div>
   );
@@ -254,7 +254,7 @@ function HealthScoreBar({ score, compact = false }: { score: number; compact?: b
   if (compact) {
     return (
       <div className="flex items-center gap-1.5">
-        <div className="flex-1 h-1.5 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden" style={{ minWidth: 40 }}>
+        <div className="flex-1 h-1.5 bg-mono-900 dark:bg-mono-200 rounded-full overflow-hidden" style={{ minWidth: 40 }}>
           <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.max(3, clamped)}%`, transition: 'width 0.6s ease-in-out' }} />
         </div>
         <span className={`text-[10px] font-bold ${textColor}`}>{clamped}</span>
@@ -265,7 +265,7 @@ function HealthScoreBar({ score, compact = false }: { score: number; compact?: b
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-medium text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
+        <span className="text-[10px] font-medium text-[#9CA3AF] dark:text-mono-500 flex items-center gap-1">
           <ShieldCheck className="w-3 h-3" />
           Score sante
         </span>
@@ -273,7 +273,7 @@ function HealthScoreBar({ score, compact = false }: { score: number; compact?: b
           {clamped}/100
         </span>
       </div>
-      <div className="h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden">
+      <div className="h-2 bg-mono-900 dark:bg-mono-200 rounded-full overflow-hidden">
         <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.max(3, clamped)}%`, transition: 'width 0.8s ease-in-out' }} />
       </div>
     </div>
@@ -288,8 +288,8 @@ function SpendBarChart({ data, maxSpend }: { data: { name: string; spend: number
     <div className="space-y-2">
       {data.map((item, i) => (
         <div key={i} className="flex items-center gap-3">
-          <span className="text-xs font-medium text-[#374151] dark:text-[#D4D4D4] w-28 truncate">{item.name}</span>
-          <div className="flex-1 h-5 bg-[#F3F4F6] dark:bg-[#1A1A1A] rounded-full overflow-hidden relative">
+          <span className="text-xs font-medium text-[#374151] dark:text-mono-800 w-28 truncate">{item.name}</span>
+          <div className="flex-1 h-5 bg-mono-950 dark:bg-mono-200 rounded-full overflow-hidden relative">
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{
@@ -297,7 +297,7 @@ function SpendBarChart({ data, maxSpend }: { data: { name: string; spend: number
                 backgroundColor: item.color,
               }}
             />
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-[#374151] dark:text-[#D4D4D4]">
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-[#374151] dark:text-mono-800">
               {formatCurrency(item.spend)}
             </span>
           </div>
@@ -333,14 +333,14 @@ function OrderTimeline({ supplierId, supplierName }: { supplierId: number; suppl
         <div key={i} className="flex items-start gap-3 py-2">
           <div className="flex flex-col items-center">
             <div className={`w-2.5 h-2.5 rounded-full ${i === 0 ? 'bg-emerald-500' : 'bg-[#D1D5DB] dark:bg-[#333]'}`} />
-            {i < orders.length - 1 && <div className="w-px h-6 bg-[#E5E7EB] dark:bg-[#1A1A1A]" />}
+            {i < orders.length - 1 && <div className="w-px h-6 bg-mono-900 dark:bg-mono-200" />}
           </div>
           <div className="flex-1 flex items-center justify-between min-w-0">
             <div>
-              <span className="text-xs font-medium text-[#111111] dark:text-white">{order.date}</span>
-              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] ml-2">{order.items} articles</span>
+              <span className="text-xs font-medium text-mono-100 dark:text-white">{order.date}</span>
+              <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 ml-2">{order.items} articles</span>
             </div>
-            <span className="text-xs font-bold text-[#111111] dark:text-white">{formatCurrency(order.amount)}</span>
+            <span className="text-xs font-bold text-mono-100 dark:text-white">{formatCurrency(order.amount)}</span>
           </div>
         </div>
       ))}
@@ -1280,19 +1280,19 @@ export default function Suppliers() {
 
   // ── render ─────────────────────────────────────────────────────────────────
 
-  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.loading')}</div>;
+  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">{t('suppliers.loading')}</div>;
 
   return (
     <div>
       {/* Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <div className="flex gap-1 bg-[#F3F4F6] dark:bg-[#0A0A0A] rounded-lg p-1 w-full sm:w-fit overflow-x-auto">
+        <div className="flex gap-1 bg-mono-950 dark:bg-mono-50 rounded-lg p-1 w-full sm:w-fit overflow-x-auto">
           <button
             onClick={() => setActiveTab('mes-fournisseurs')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'mes-fournisseurs'
-                ? 'bg-white dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
-                : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:hover:text-[#A3A3A3]'
+                ? 'bg-white dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
+                : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] dark:hover:text-mono-700'
             }`}
           >
             <Truck className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
@@ -1302,8 +1302,8 @@ export default function Suppliers() {
             onClick={() => setActiveTab('annuaire')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'annuaire'
-                ? 'bg-white dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
-                : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:hover:text-[#A3A3A3]'
+                ? 'bg-white dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
+                : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] dark:hover:text-mono-700'
             }`}
           >
             <Globe className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
@@ -1313,8 +1313,8 @@ export default function Suppliers() {
             onClick={() => setActiveTab('comparateur')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'comparateur'
-                ? 'bg-white dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
-                : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:hover:text-[#A3A3A3]'
+                ? 'bg-white dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
+                : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] dark:hover:text-mono-700'
             }`}
           >
             <Scale className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
@@ -1335,13 +1335,13 @@ export default function Suppliers() {
         <>
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-[#111111] dark:text-white">{t('suppliers.title')}</h2>
+            <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-mono-100 dark:text-white">{t('suppliers.title')}</h2>
             <div className="flex flex-wrap items-center gap-2">
               {/* Export CSV button */}
               {suppliers.length > 0 && (
                 <button
                   onClick={exportSuppliersCSV}
-                  className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium border border-mono-900 dark:border-mono-200 rounded-xl text-[#6B7280] dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors"
                   title="Exporter CSV"
                 >
                   <Download className="w-4 h-4" />
@@ -1352,7 +1352,7 @@ export default function Suppliers() {
               {suppliers.length >= 2 && (
                 <button
                   onClick={() => setShowScoreCompare(true)}
-                  className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors"
                 >
                   <BarChart3 className="w-4 h-4" />
                   Comparer les fournisseurs
@@ -1360,7 +1360,7 @@ export default function Suppliers() {
               )}
               {/* Quick-add dropdown */}
               <div className="relative">
-                <button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#737373] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
+                <button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium border border-mono-900 dark:border-mono-200 rounded-xl text-mono-500 dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
                   <Zap className="w-4 h-4 text-amber-500" />
                   {t('suppliers.quickAdd')}
                   <ChevronDown className="w-3 h-3" />
@@ -1368,8 +1368,8 @@ export default function Suppliers() {
                 {showQuickAdd && (
                   <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowQuickAdd(false)} />
-                  <div className="absolute right-0 mt-1 w-64 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-lg border dark:border-[#1A1A1A] z-50 py-1">
-                    <div className="px-3 py-2 text-xs font-medium text-[#9CA3AF] dark:text-[#A3A3A3] uppercase tracking-wider">{t('suppliers.commonSuppliers')}</div>
+                  <div className="absolute right-0 mt-1 w-64 bg-white dark:bg-mono-50 rounded-lg shadow-lg border dark:border-mono-200 z-50 py-1">
+                    <div className="px-3 py-2 text-xs font-medium text-[#9CA3AF] dark:text-mono-700 uppercase tracking-wider">{t('suppliers.commonSuppliers')}</div>
                     {QUICK_ADD_TEMPLATES.map((tpl) => (
                       <button
                         key={tpl.name}
@@ -1379,9 +1379,9 @@ export default function Suppliers() {
                           setModalOpen(true);
                           setShowQuickAdd(false);
                         }}
-                        className="w-full text-left px-3 py-2 text-sm text-[#9CA3AF] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] flex items-center gap-2"
+                        className="w-full text-left px-3 py-2 text-sm text-[#9CA3AF] dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-[#171717] flex items-center gap-2"
                       >
-                        <Building2 className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                        <Building2 className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                         {tpl.name}
                       </button>
                     ))}
@@ -1398,41 +1398,41 @@ export default function Suppliers() {
 
           {/* Stats cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-4 sm:mb-6">
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('suppliers.totalSuppliers')}</span>
-                <div className="p-1.5 sm:p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-mono-500 dark:text-mono-700">{t('suppliers.totalSuppliers')}</span>
+                <div className="p-1.5 sm:p-2 rounded-xl bg-mono-950 dark:bg-[#171717]"><Truck className="w-4 h-4 sm:w-5 sm:h-5 text-mono-100 dark:text-white" /></div>
               </div>
-              <div className="text-xl sm:text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{stats.totalSuppliers}</div>
+              <div className="text-xl sm:text-2xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{stats.totalSuppliers}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('suppliers.linkedIngredients')}</span>
-                <div className="p-1.5 sm:p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Package className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-mono-500 dark:text-mono-700">{t('suppliers.linkedIngredients')}</span>
+                <div className="p-1.5 sm:p-2 rounded-xl bg-mono-950 dark:bg-[#171717]"><Package className="w-4 h-4 sm:w-5 sm:h-5 text-mono-100 dark:text-white" /></div>
               </div>
-              <div className="text-xl sm:text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{stats.totalLinked}</div>
+              <div className="text-xl sm:text-2xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{stats.totalLinked}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('suppliers.withDelivery')}</span>
-                <div className="p-1.5 sm:p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-mono-500 dark:text-mono-700">{t('suppliers.withDelivery')}</span>
+                <div className="p-1.5 sm:p-2 rounded-xl bg-mono-950 dark:bg-[#171717]"><Truck className="w-4 h-4 sm:w-5 sm:h-5 text-mono-100 dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{stats.withDelivery}</div>
+              <div className="text-2xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{stats.withDelivery}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('suppliers.withoutSupplier')}</span>
-                <div className="p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Package className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-mono-500 dark:text-mono-700">{t('suppliers.withoutSupplier')}</span>
+                <div className="p-2 rounded-xl bg-mono-950 dark:bg-[#171717]"><Package className="w-5 h-5 text-mono-100 dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{stats.withoutSupplier}</div>
+              <div className="text-2xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{stats.withoutSupplier}</div>
             </div>
           </div>
 
           {/* ── Smart Reorder Suggestions ─────────────────────────────── */}
           {reorderSuggestions.length > 0 && (
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 sm:p-5 mb-4 sm:mb-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4 sm:p-5 mb-4 sm:mb-6">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold text-[#111111] dark:text-white flex items-center gap-2">
+                <h3 className="text-sm font-bold text-mono-100 dark:text-white flex items-center gap-2">
                   <RefreshCw className="w-4 h-4 text-amber-500" />
                   Ingredients a commander
                 </h3>
@@ -1453,13 +1453,13 @@ export default function Suppliers() {
                     <div key={i} className={`rounded-xl p-3 ${urgencyStyles[item.urgency]}`}>
                       <div className="flex items-start justify-between gap-1">
                         <div className="min-w-0">
-                          <p className="text-xs font-bold text-[#111111] dark:text-white truncate">{item.ingredient.name}</p>
-                          <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">{item.supplier.name}</p>
+                          <p className="text-xs font-bold text-mono-100 dark:text-white truncate">{item.ingredient.name}</p>
+                          <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-0.5">{item.supplier.name}</p>
                         </div>
                         <span className={`text-[9px] font-bold ${urgencyColor[item.urgency]} shrink-0`}>{urgencyLabel[item.urgency]}</span>
                       </div>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(item.ingredient.pricePerUnit)}/{item.ingredient.unit}</span>
+                        <span className="text-[10px] text-[#6B7280] dark:text-mono-700">{formatCurrency(item.ingredient.pricePerUnit)}/{item.ingredient.unit}</span>
                         <button
                           onClick={() => {
                             const phone = item.supplier.whatsappPhone || item.supplier.phone;
@@ -1482,13 +1482,13 @@ export default function Suppliers() {
 
           {/* ── Monthly Spend Chart ───────────────────────────────────── */}
           {monthlySpendData.items.length > 0 && (
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 sm:p-5 mb-4 sm:mb-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4 sm:p-5 mb-4 sm:mb-6">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold text-[#111111] dark:text-white flex items-center gap-2">
+                <h3 className="text-sm font-bold text-mono-100 dark:text-white flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 text-purple-500" />
                   Depenses mensuelles par fournisseur
                 </h3>
-                <span className="text-xs font-bold text-[#111111] dark:text-white">
+                <span className="text-xs font-bold text-mono-100 dark:text-white">
                   Total: {formatCurrency(monthlySpendData.total)}
                 </span>
               </div>
@@ -1498,22 +1498,22 @@ export default function Suppliers() {
 
           {/* Comparer les prix bar */}
           {compareSupplierIds.size > 0 && (
-            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg p-3 mb-4 flex items-center justify-between">
-              <span className="text-sm text-[#111111] dark:text-white">
+            <div className="bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg p-3 mb-4 flex items-center justify-between">
+              <span className="text-sm text-mono-100 dark:text-white">
                 <ArrowRightLeft className="w-4 h-4 inline mr-1.5 -mt-0.5" />
                 {compareSupplierIds.size} {t('suppliers.suppliersSelected')}
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setCompareSupplierIds(new Set())}
-                  className="text-xs px-3 py-1.5 rounded border border-[#D1D5DB] dark:border-[#333] text-[#111111] dark:text-white hover:bg-[#FAFAFA] dark:hover:bg-[#171717]"
+                  className="text-xs px-3 py-1.5 rounded border border-[#D1D5DB] dark:border-[#333] text-mono-100 dark:text-white hover:bg-mono-1000 dark:hover:bg-[#171717]"
                 >
                   {t('suppliers.deselectAll')}
                 </button>
                 <button
                   onClick={() => setShowSupplierCompare(true)}
                   disabled={compareSupplierIds.size < 2}
-                  className="flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-lg bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <BarChart3 className="w-3.5 h-3.5" />
                   {t('suppliers.comparePrices')}
@@ -1536,21 +1536,21 @@ export default function Suppliers() {
               });
               const ingredientNames = Object.keys(ingredientMap).sort();
               if (ingredientNames.length === 0) {
-                return <p className="text-sm text-[#9CA3AF] dark:text-[#737373] py-4 text-center">{t('suppliers.noCommonIngredients')}</p>;
+                return <p className="text-sm text-[#9CA3AF] dark:text-mono-500 py-4 text-center">{t('suppliers.noCommonIngredients')}</p>;
               }
               return (
                 <div className="overflow-x-auto max-h-[60vh]">
                   <table className="w-full text-sm">
-                    <thead className="sticky top-0 bg-[#FAFAFA] dark:bg-[#171717] z-10">
+                    <thead className="sticky top-0 bg-mono-1000 dark:bg-[#171717] z-10">
                       <tr>
-                        <th className="text-left px-3 py-2 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">{t('suppliers.ingredient')}</th>
+                        <th className="text-left px-3 py-2 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">{t('suppliers.ingredient')}</th>
                         {comparedSuppliers.map(s => (
-                          <th key={s.id} className="text-right px-3 py-2 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">{s.name}</th>
+                          <th key={s.id} className="text-right px-3 py-2 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">{s.name}</th>
                         ))}
-                        <th className="text-right px-3 py-2 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">{t('suppliers.gapPercent')}</th>
+                        <th className="text-right px-3 py-2 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">{t('suppliers.gapPercent')}</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y dark:divide-[#1A1A1A]">
+                    <tbody className="divide-y dark:divide-mono-200">
                       {ingredientNames.map(name => {
                         const prices = comparedSuppliers.map(s => ingredientMap[name][s.name]?.price ?? null);
                         const validPrices = prices.filter((p): p is number => p !== null);
@@ -1558,18 +1558,18 @@ export default function Suppliers() {
                         const maxPrice = validPrices.length > 0 ? Math.max(...validPrices) : null;
                         const diff = minPrice && maxPrice && maxPrice > 0 ? Math.round(((maxPrice - minPrice) / minPrice) * 100) : null;
                         return (
-                          <tr key={name} className="hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30">
-                            <td className="px-3 py-2 text-[#9CA3AF] dark:text-[#A3A3A3] font-medium">{name}</td>
+                          <tr key={name} className="hover:bg-mono-1000 dark:hover:bg-[#171717]/30">
+                            <td className="px-3 py-2 text-[#9CA3AF] dark:text-mono-700 font-medium">{name}</td>
                             {comparedSuppliers.map(s => {
                               const entry = ingredientMap[name][s.name];
                               const isBest = entry && minPrice !== null && entry.price === minPrice && validPrices.length > 1;
                               return (
-                                <td key={s.id} className={`px-3 py-2 text-right font-medium ${isBest ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-[#6B7280] dark:text-[#737373]'}`}>
-                                  {entry ? `${formatCurrency(entry.price)}/${entry.unit}` : <span className="text-[#6B7280] dark:text-[#A3A3A3]">--</span>}
+                                <td key={s.id} className={`px-3 py-2 text-right font-medium ${isBest ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-[#6B7280] dark:text-mono-500'}`}>
+                                  {entry ? `${formatCurrency(entry.price)}/${entry.unit}` : <span className="text-[#6B7280] dark:text-mono-700">--</span>}
                                 </td>
                               );
                             })}
-                            <td className={`px-3 py-2 text-right text-xs font-bold ${diff !== null && diff > 15 ? 'text-red-600' : diff !== null && diff > 0 ? 'text-orange-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                            <td className={`px-3 py-2 text-right text-xs font-bold ${diff !== null && diff > 15 ? 'text-red-600' : diff !== null && diff > 0 ? 'text-orange-500' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                               {diff !== null ? `${diff}%` : '--'}
                             </td>
                           </tr>
@@ -1583,8 +1583,8 @@ export default function Suppliers() {
           </Modal>
 
           {/* Search / filter bar */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 mb-6">
-            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4 mb-6">
+            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-[#6B7280] dark:text-mono-700">
               <Filter className="w-4 h-4" />
               {t('suppliers.filters')}
             </div>
@@ -1597,7 +1597,7 @@ export default function Suppliers() {
                 suggestions={supplierSearchSuggestions}
               />
               <div className="relative">
-                <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
+                <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500 pointer-events-none" />
                 <select
                   value={filterRegion}
                   onChange={(e) => setFilterRegion(e.target.value)}
@@ -1610,7 +1610,7 @@ export default function Suppliers() {
                 </select>
               </div>
               <div className="relative">
-                <Tag className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
+                <Tag className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500 pointer-events-none" />
                 <select
                   value={filterCategory}
                   onChange={(e) => setFilterCategory(e.target.value)}
@@ -1633,18 +1633,18 @@ export default function Suppliers() {
 
           {/* View toggle */}
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{filtered.length} fournisseur{filtered.length > 1 ? 's' : ''}</span>
-            <div className="flex items-center gap-1 bg-[#F3F4F6] dark:bg-[#0A0A0A] rounded-lg p-0.5">
+            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{filtered.length} fournisseur{filtered.length > 1 ? 's' : ''}</span>
+            <div className="flex items-center gap-1 bg-mono-950 dark:bg-mono-50 rounded-lg p-0.5">
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-[#171717] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:hover:text-[#A3A3A3]'}`}
+                className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-[#171717] shadow-sm text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] dark:hover:text-mono-700'}`}
                 title="Vue liste"
               >
                 <List className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-[#171717] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:hover:text-[#A3A3A3]'}`}
+                className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-[#171717] shadow-sm text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] dark:hover:text-mono-700'}`}
                 title="Vue grille"
               >
                 <LayoutGrid className="w-4 h-4" />
@@ -1656,7 +1656,7 @@ export default function Suppliers() {
           {viewMode === 'grid' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
               {filtered.length === 0 ? (
-                <div className="col-span-full flex flex-col items-center justify-center py-16 text-[#9CA3AF] dark:text-[#737373]">
+                <div className="col-span-full flex flex-col items-center justify-center py-16 text-[#9CA3AF] dark:text-mono-500">
                   <Truck className="w-12 h-12 mb-3 opacity-30" />
                   <p className="text-sm">{t('suppliers.noSupplierFound')}</p>
                 </div>
@@ -1668,17 +1668,17 @@ export default function Suppliers() {
                   <div
                     key={supplier.id}
                     onClick={() => { setDetailSupplier(supplier); setViewMode('list'); }}
-                    className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 cursor-pointer hover:shadow-lg hover:border-[#111111]/20 dark:hover:border-white/20 transition-all group"
+                    className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4 cursor-pointer hover:shadow-lg hover:border-mono-100/20 dark:hover:border-white/20 transition-all group"
                   >
                     {/* Avatar + Name */}
                     <div className="flex items-start gap-3 mb-3">
-                      <div className="w-11 h-11 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-lg shrink-0">
+                      <div className="w-11 h-11 rounded-xl bg-mono-100 dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-lg shrink-0">
                         {supplier.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-sm font-bold text-[#111111] dark:text-white truncate group-hover:text-[#111111] dark:group-hover:text-white">{supplier.name}</h4>
+                        <h4 className="text-sm font-bold text-mono-100 dark:text-white truncate group-hover:text-mono-100 dark:group-hover:text-white">{supplier.name}</h4>
                         <div className="flex items-center gap-1.5 mt-0.5">
-                          {supplier.city && <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] flex items-center gap-0.5"><MapPin className="w-2.5 h-2.5" />{supplier.city}</span>}
+                          {supplier.city && <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 flex items-center gap-0.5"><MapPin className="w-2.5 h-2.5" />{supplier.city}</span>}
                           {supplier.delivery && <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">Livraison</span>}
                         </div>
                       </div>
@@ -1689,7 +1689,7 @@ export default function Suppliers() {
                       <div className="mb-3">
                         <div className="flex items-center gap-2 mb-1">
                           <StarRating score={starData.overall} size={13} />
-                          <span className="text-xs font-bold text-[#111111] dark:text-white">{starData.overall.toFixed(1)}</span>
+                          <span className="text-xs font-bold text-mono-100 dark:text-white">{starData.overall.toFixed(1)}</span>
                         </div>
                         <div className="flex flex-wrap gap-1">
                           <ScoreBadge score={starData.reliability} label="Fiabilite" />
@@ -1709,7 +1709,7 @@ export default function Suppliers() {
                       const daysAgo = supplierLastOrderDays[supplier.id] ?? 0;
                       const isOld = daysAgo > 30;
                       return (
-                        <div className={`mb-3 flex items-center gap-1.5 text-[10px] ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                        <div className={`mb-3 flex items-center gap-1.5 text-[10px] ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                           <Clock className="w-3 h-3" />
                           <span>
                             Derniere commande : il y a {daysAgo} jour{daysAgo > 1 ? 's' : ''}
@@ -1727,17 +1727,17 @@ export default function Suppliers() {
                     {/* Top 3 Products */}
                     {topProducts.length > 0 && (
                       <div className="mb-3">
-                        <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-1">Top produits</p>
+                        <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-1">Top produits</p>
                         <div className="space-y-0.5">
                           {topProducts.map(p => {
                             const ingKey = p.name.toLowerCase().trim();
                             const isBest = bestPriceMap[ingKey]?.bestSupplierId === supplier.id && (bestPriceMap[ingKey]?.otherPrices.length ?? 0) > 0;
                             return (
                               <div key={p.id} className="flex items-center justify-between text-xs">
-                                <span className="text-[#374151] dark:text-[#D4D4D4] truncate">{p.name}</span>
+                                <span className="text-[#374151] dark:text-mono-800 truncate">{p.name}</span>
                                 <span className="flex items-center gap-1 shrink-0">
                                   {isBest && <span className="text-[8px] px-1 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-bold">Meilleur prix</span>}
-                                  <span className="font-medium text-[#111111] dark:text-white">{formatCurrency(p.pricePerUnit)}</span>
+                                  <span className="font-medium text-mono-100 dark:text-white">{formatCurrency(p.pricePerUnit)}</span>
                                 </span>
                               </div>
                             );
@@ -1747,7 +1747,7 @@ export default function Suppliers() {
                     )}
 
                     {/* WhatsApp Quick Order + Contact Buttons */}
-                    <div className="flex flex-col gap-1.5 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                    <div className="flex flex-col gap-1.5 pt-2 border-t border-mono-900 dark:border-mono-200">
                       {/* Commander via WhatsApp — green CTA */}
                       {(supplier.whatsappPhone || supplier.phone) && (supplier._count?.ingredients ?? 0) > 0 && (
                         <button
@@ -1797,7 +1797,7 @@ export default function Suppliers() {
                               e.stopPropagation();
                               window.open(`tel:${supplier.phone}`, '_blank');
                             }}
-                            className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] text-[#6B7280] dark:text-[#A3A3A3] text-[10px] font-medium transition"
+                            className="flex items-center gap-1 px-2 py-1 rounded-md bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-mono-300 text-[#6B7280] dark:text-mono-700 text-[10px] font-medium transition"
                           >
                             <Phone className="w-3 h-3" />
                             Appeler
@@ -1807,7 +1807,7 @@ export default function Suppliers() {
                     </div>
 
                     {/* Product count footer */}
-                    <div className="flex items-center justify-between mt-2 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                    <div className="flex items-center justify-between mt-2 text-[10px] text-[#9CA3AF] dark:text-mono-500">
                       <span>{catalog?.count ?? 0} produits</span>
                       <span className="flex items-center gap-0.5">{(supplier.categories || []).length} categories</span>
                     </div>
@@ -1824,19 +1824,19 @@ export default function Suppliers() {
             <div className="w-full lg:w-80 xl:w-96 shrink-0 flex flex-col gap-2">
               {/* Search bar */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t('suppliers.searchByName')}
-                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm focus:outline-none focus:ring-1 focus:ring-[#111111] dark:focus:ring-white"
+                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-sm focus:outline-none focus:ring-1 focus:ring-mono-100 dark:focus:ring-white"
                 />
               </div>
               {/* Supplier slices */}
               <div className="flex-1 overflow-y-auto space-y-1">
                 {filtered.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full text-[#9CA3AF] dark:text-[#737373] py-12">
+                  <div className="flex flex-col items-center justify-center h-full text-[#9CA3AF] dark:text-mono-500 py-12">
                     <Truck className="w-10 h-10 mb-2 opacity-30" />
                     <p className="text-sm">{t('suppliers.noSupplierFound')}</p>
                   </div>
@@ -1850,8 +1850,8 @@ export default function Suppliers() {
                       onClick={() => setDetailSupplier(supplier)}
                       className={`cursor-pointer rounded-xl p-3 border transition-all ${
                         detailSupplier?.id === supplier.id
-                          ? 'border-l-4 border-[#111111] dark:border-white bg-[#FAFAFA] dark:bg-[#0A0A0A] shadow-sm'
-                          : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:bg-[#0F0F0F] dark:hover:bg-[#171717]'
+                          ? 'border-l-4 border-mono-100 dark:border-white bg-mono-1000 dark:bg-mono-50 shadow-sm'
+                          : 'border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:bg-[#0F0F0F] dark:hover:bg-[#171717]'
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2">
@@ -1859,7 +1859,7 @@ export default function Suppliers() {
                           <CircularScore score={globalScore} size={38} strokeWidth={3} />
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <span className="font-semibold text-sm text-[#111111] dark:text-white truncate">{supplier.name}</span>
+                              <span className="font-semibold text-sm text-mono-100 dark:text-white truncate">{supplier.name}</span>
                               {globalScore > 80 && (
                                 <span className="shrink-0 inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 font-bold">
                                   <Award className="w-2.5 h-2.5" /> Top
@@ -1871,7 +1871,7 @@ export default function Suppliers() {
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center gap-2 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                            <div className="flex items-center gap-2 text-xs text-[#9CA3AF] dark:text-mono-500">
                               {supplier.city && <span>{supplier.city}</span>}
                               {supplier.delivery && <span className="text-emerald-500">&#10003; Livraison</span>}
                             </div>
@@ -1885,7 +1885,7 @@ export default function Suppliers() {
                       <div className="mt-1.5 ml-[50px] space-y-1.5">
                         {/* Health score compact bar */}
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] flex items-center gap-0.5 shrink-0">
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 flex items-center gap-0.5 shrink-0">
                             <ShieldCheck className="w-3 h-3" /> Sante
                           </span>
                           <div className="flex-1">
@@ -1897,7 +1897,7 @@ export default function Suppliers() {
                           const daysAgo = supplierLastOrderDays[supplier.id] ?? 0;
                           const isOld = daysAgo > 30;
                           return (
-                            <div className={`flex items-center gap-1 text-[10px] ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                            <div className={`flex items-center gap-1 text-[10px] ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                               <Clock className="w-2.5 h-2.5" />
                               <span>Derniere commande : {daysAgo}j</span>
                               {isOld && (
@@ -1912,7 +1912,7 @@ export default function Suppliers() {
                         <div className="flex items-center justify-between">
                           <div className="flex flex-wrap gap-1">
                             {(supplier.categories || []).slice(0, 3).map(cat => (
-                              <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">{cat}</span>
+                              <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">{cat}</span>
                             ))}
                           </div>
                           <div className="flex items-center gap-1 shrink-0">
@@ -1964,7 +1964,7 @@ export default function Suppliers() {
             </div>
 
             {/* RIGHT: Detail panel */}
-            <div className="flex-1 bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-y-auto">
+            <div className="flex-1 bg-white dark:bg-black rounded-2xl border border-mono-900 dark:border-mono-200 overflow-y-auto">
               {detailSupplier ? (() => {
                 const globalScoreVal = backendScores[detailSupplier.id]?.scores?.global ?? 0;
                 const scoreColor = globalScoreVal > 70 ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300' : globalScoreVal >= 40 ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300';
@@ -1973,7 +1973,7 @@ export default function Suppliers() {
                     {/* Header with name + actions */}
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="text-xl font-bold text-[#111111] dark:text-white">{detailSupplier.name}</h3>
+                        <h3 className="text-xl font-bold text-mono-100 dark:text-white">{detailSupplier.name}</h3>
                         <div className="flex items-center gap-2 mt-1">
                           <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${scoreColor}`}>{globalScoreVal}/100</span>
                           {detailSupplier.delivery && (
@@ -1986,7 +1986,7 @@ export default function Suppliers() {
                       <div className="flex items-center gap-1.5 shrink-0">
                         <button
                           onClick={() => navigate(`/fournisseur/${detailSupplier.id}`)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-xs font-medium"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-xs font-medium"
                           title="Voir catalogue promotionnel"
                         >
                           <ShoppingBag className="w-3.5 h-3.5" />
@@ -1994,7 +1994,7 @@ export default function Suppliers() {
                         </button>
                         <button
                           onClick={() => openEdit(detailSupplier)}
-                          className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]"
+                          className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500"
                           title={t('suppliers.edit')}
                         >
                           <Edit2 className="w-4 h-4" />
@@ -2016,14 +2016,14 @@ export default function Suppliers() {
                         </button>
                         <button
                           onClick={openImportModal}
-                          className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#111111] dark:text-white"
+                          className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-mono-100 dark:text-white"
                           title="Importer tarif CSV"
                         >
                           <Upload className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => fetchSupplierBrief(detailSupplier.id)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] text-[#111111] dark:text-white text-xs font-medium transition-colors"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-mono-300 text-mono-100 dark:text-white text-xs font-medium transition-colors"
                           title="Brief negociation IA"
                         >
                           <Zap className="w-3.5 h-3.5" />
@@ -2043,13 +2043,13 @@ export default function Suppliers() {
                     {/* Health Score + Last Order Summary */}
                     <div className="grid grid-cols-2 gap-3">
                       {/* Health Score Card */}
-                      <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 p-4">
+                      <div className="bg-mono-950 dark:bg-[#0F0F0F] rounded-xl border border-mono-900 dark:border-mono-200/50 p-4">
                         <div className="flex items-center gap-2 mb-2">
                           <ShieldCheck className="w-4 h-4 text-teal-500" />
-                          <span className="text-sm font-bold text-[#111111] dark:text-white">Score Sante Fournisseur</span>
+                          <span className="text-sm font-bold text-mono-100 dark:text-white">Score Sante Fournisseur</span>
                         </div>
                         <HealthScoreBar score={supplierHealthScores[detailSupplier.id] ?? 0} />
-                        <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-2">
+                        <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-2">
                           Base sur le nombre d'ingredients ({detailSupplier._count?.ingredients ?? 0}) et la competitivite prix ({bestForIngredients[detailSupplier.id]?.length ?? 0} meilleur{(bestForIngredients[detailSupplier.id]?.length ?? 0) > 1 ? 's' : ''} prix)
                         </p>
                       </div>
@@ -2058,16 +2058,16 @@ export default function Suppliers() {
                         const daysAgo = supplierLastOrderDays[detailSupplier.id] ?? 0;
                         const isOld = daysAgo > 30;
                         return (
-                          <div className={`rounded-xl border p-4 ${isOld ? 'bg-amber-50 dark:bg-amber-950/10 border-amber-200 dark:border-amber-800/40' : 'bg-[#F3F4F6] dark:bg-[#0F0F0F] border-[#E5E7EB] dark:border-[#1A1A1A]/50'}`}>
+                          <div className={`rounded-xl border p-4 ${isOld ? 'bg-amber-50 dark:bg-amber-950/10 border-amber-200 dark:border-amber-800/40' : 'bg-mono-950 dark:bg-[#0F0F0F] border-mono-900 dark:border-mono-200/50'}`}>
                             <div className="flex items-center gap-2 mb-2">
                               <CalendarDays className={`w-4 h-4 ${isOld ? 'text-amber-500' : 'text-blue-500'}`} />
-                              <span className="text-sm font-bold text-[#111111] dark:text-white">Derniere Commande</span>
+                              <span className="text-sm font-bold text-mono-100 dark:text-white">Derniere Commande</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className={`text-2xl font-black ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-[#111111] dark:text-white'}`}>
+                              <span className={`text-2xl font-black ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-mono-100 dark:text-white'}`}>
                                 {daysAgo}
                               </span>
-                              <span className={`text-sm ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                              <span className={`text-sm ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                                 jour{daysAgo > 1 ? 's' : ''}
                               </span>
                             </div>
@@ -2108,12 +2108,12 @@ export default function Suppliers() {
                     )}
 
                     {/* Scoring Dashboard with Star Ratings */}
-                    <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 p-4">
+                    <div className="bg-mono-950 dark:bg-[#0F0F0F] rounded-2xl border border-mono-900 dark:border-mono-200/50 p-4">
                       <div className="flex items-center gap-4 mb-4">
                         <CircularScore score={detailScore?.scores?.global ?? 0} size={64} strokeWidth={5} />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-[#111111] dark:text-white">Score Global</span>
+                            <span className="text-lg font-bold text-mono-100 dark:text-white">Score Global</span>
                             {(detailScore?.scores?.global ?? 0) > 80 && (
                               <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 font-bold border border-teal-500/30">
                                 <Award className="w-3 h-3" /> Top fournisseur
@@ -2126,12 +2126,12 @@ export default function Suppliers() {
                             return starData ? (
                               <div className="flex items-center gap-2 mt-1">
                                 <StarRating score={starData.overall} size={16} />
-                                <span className="text-sm font-bold text-[#111111] dark:text-white">{starData.overall.toFixed(1)}/5</span>
+                                <span className="text-sm font-bold text-mono-100 dark:text-white">{starData.overall.toFixed(1)}/5</span>
                               </div>
                             ) : null;
                           })()}
                           {detailScore?.recommendation && (
-                            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{detailScore.recommendation}</p>
+                            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{detailScore.recommendation}</p>
                           )}
                           {detailScore?.note && (
                             <p className="text-[10px] text-amber-400/80 mt-1 flex items-center gap-1">
@@ -2154,7 +2154,7 @@ export default function Suppliers() {
                       })()}
                       {loadingScore ? (
                         <div className="flex items-center justify-center py-4">
-                          <span className="w-5 h-5 border-2 border-[#D1D5DB] dark:border-[#333] border-t-[#111111] dark:border-t-white rounded-full animate-spin" />
+                          <span className="w-5 h-5 border-2 border-[#D1D5DB] dark:border-[#333] border-t-mono-100 dark:border-t-white rounded-full animate-spin" />
                         </div>
                       ) : detailScore ? (
                         <div className="space-y-3">
@@ -2164,23 +2164,23 @@ export default function Suppliers() {
                           <ScoreBar label="Historique" score={detailScore.scores.historique} icon={<Clock className="w-3.5 h-3.5" />} />
                         </div>
                       ) : (
-                        <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] text-center py-2">Chargement des scores...</p>
+                        <p className="text-xs text-[#6B7280] dark:text-mono-700 text-center py-2">Chargement des scores...</p>
                       )}
                     </div>
 
                     {/* Contact info */}
                     <div className="grid grid-cols-2 gap-2 text-sm">
-                      {detailSupplier.contactName && <div className="text-[#6B7280] dark:text-[#A3A3A3]"><Building2 className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-[#737373]" />{detailSupplier.contactName}</div>}
-                      {detailSupplier.phone && <div className="text-[#6B7280] dark:text-[#A3A3A3]"><Phone className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-[#737373]" />{detailSupplier.phone}</div>}
-                      {detailSupplier.email && <div className="text-[#6B7280] dark:text-[#A3A3A3]"><Mail className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-[#737373]" />{detailSupplier.email}</div>}
-                      {detailSupplier.city && <div className="text-[#6B7280] dark:text-[#A3A3A3]"><MapPin className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-[#737373]" />{[detailSupplier.city, detailSupplier.postalCode].filter(Boolean).join(' ')}</div>}
+                      {detailSupplier.contactName && <div className="text-[#6B7280] dark:text-mono-700"><Building2 className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-mono-500" />{detailSupplier.contactName}</div>}
+                      {detailSupplier.phone && <div className="text-[#6B7280] dark:text-mono-700"><Phone className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-mono-500" />{detailSupplier.phone}</div>}
+                      {detailSupplier.email && <div className="text-[#6B7280] dark:text-mono-700"><Mail className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-mono-500" />{detailSupplier.email}</div>}
+                      {detailSupplier.city && <div className="text-[#6B7280] dark:text-mono-700"><MapPin className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-mono-500" />{[detailSupplier.city, detailSupplier.postalCode].filter(Boolean).join(' ')}</div>}
                       {detailSupplier.website && (
                         <div>
                           <a
                             href={detailSupplier.website.startsWith('http') ? detailSupplier.website : `https://${detailSupplier.website}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-sm text-[#111111] dark:text-white hover:underline"
+                            className="flex items-center gap-1 text-sm text-mono-100 dark:text-white hover:underline"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
                             {t('suppliers.website')}
@@ -2222,7 +2222,7 @@ export default function Suppliers() {
                       {detailSupplier.phone && (
                         <button
                           onClick={() => window.open(`tel:${detailSupplier.phone}`, '_blank')}
-                          className="flex items-center gap-2 px-4 py-2 bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] text-[#111111] dark:text-white rounded-lg text-sm font-medium transition"
+                          className="flex items-center gap-2 px-4 py-2 bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-mono-300 text-mono-100 dark:text-white rounded-lg text-sm font-medium transition"
                         >
                           <Phone className="w-4 h-4" />
                           Appeler
@@ -2236,13 +2236,13 @@ export default function Suppliers() {
                         <div className="flex items-center justify-between gap-3 mb-2">
                           <div className="flex items-center gap-2">
                             <RefreshCw className="w-4 h-4 text-[#25D366]" />
-                            <h4 className="text-sm font-bold text-[#111111] dark:text-white">Renouveler la commande</h4>
+                            <h4 className="text-sm font-bold text-mono-100 dark:text-white">Renouveler la commande</h4>
                           </div>
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#25D366]/10 text-[#25D366] font-bold border border-[#25D366]/30">
                             {ingredients.filter((ing) => ing.supplierId === detailSupplier.id).length} articles
                           </span>
                         </div>
-                        <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mb-3">
+                        <p className="text-xs text-[#6B7280] dark:text-mono-700 mb-3">
                           Envoyez une commande WhatsApp avec tous les ingredients liés à ce fournisseur
                         </p>
                         <div className="flex flex-wrap gap-2">
@@ -2271,7 +2271,7 @@ export default function Suppliers() {
                     {detailSupplier.categories.length > 0 && (
                       <div className="flex flex-wrap gap-1.5">
                         {detailSupplier.categories.map((cat) => (
-                          <span key={cat} className="px-2.5 py-1 rounded-lg text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] font-medium">
+                          <span key={cat} className="px-2.5 py-1 rounded-lg text-xs bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 font-medium">
                             {cat}
                           </span>
                         ))}
@@ -2279,8 +2279,8 @@ export default function Suppliers() {
                     )}
 
                     {/* Order History Timeline */}
-                    <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 p-4">
-                      <h4 className="text-sm font-bold text-[#111111] dark:text-white mb-3 flex items-center gap-2">
+                    <div className="bg-mono-950 dark:bg-[#0F0F0F] rounded-2xl border border-mono-900 dark:border-mono-200/50 p-4">
+                      <h4 className="text-sm font-bold text-mono-100 dark:text-white mb-3 flex items-center gap-2">
                         <CalendarDays className="w-4 h-4 text-blue-500" />
                         Historique des commandes
                       </h4>
@@ -2296,7 +2296,7 @@ export default function Suppliers() {
                             <Layers className="w-4 h-4 text-purple-500" />
                             Catalogue (0 produits)
                           </h4>
-                          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] italic">{t('suppliers.noIngredientLinkedToSupplier')}</p>
+                          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 italic">{t('suppliers.noIngredientLinkedToSupplier')}</p>
                         </div>
                       );
 
@@ -2323,39 +2323,39 @@ export default function Suppliers() {
                         <div>
                           {/* Stats bar */}
                           <div className="grid grid-cols-3 gap-2 mb-3">
-                            <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-lg px-3 py-2 text-center">
-                              <div className="text-lg font-bold text-[#111111] dark:text-white">{catalog.count}</div>
-                              <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Articles</div>
+                            <div className="bg-mono-950 dark:bg-[#0F0F0F] rounded-lg px-3 py-2 text-center">
+                              <div className="text-lg font-bold text-mono-100 dark:text-white">{catalog.count}</div>
+                              <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Articles</div>
                             </div>
-                            <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-lg px-3 py-2 text-center">
+                            <div className="bg-mono-950 dark:bg-[#0F0F0F] rounded-lg px-3 py-2 text-center">
                               <div className="text-lg font-bold text-purple-400">{sortedCategories.length}</div>
-                              <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Categories</div>
+                              <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Categories</div>
                             </div>
-                            <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-lg px-3 py-2 text-center">
+                            <div className="bg-mono-950 dark:bg-[#0F0F0F] rounded-lg px-3 py-2 text-center">
                               <div className="text-lg font-bold text-emerald-400">{formatCurrency(avgPrice)}</div>
-                              <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Prix moyen</div>
+                              <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Prix moyen</div>
                             </div>
                           </div>
 
                           {/* Search bar */}
                           <div className="relative mb-3">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-mono-700" />
                             <input
                               type="text"
                               placeholder="Rechercher dans le catalogue..."
                               value={catalogDetailSearch}
                               onChange={e => setCatalogDetailSearch(e.target.value)}
-                              className="w-full pl-9 pr-3 py-2 text-sm bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-[#E5E5E5] placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111]/30 dark:focus:ring-white/30 transition-colors"
+                              className="w-full pl-9 pr-3 py-2 text-sm bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg text-mono-100 dark:text-[#E5E5E5] placeholder-[#9CA3AF] dark:placeholder-mono-500 focus:outline-none focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100/30 dark:focus:ring-white/30 transition-colors"
                             />
                             {catalogDetailSearch && (
-                              <button onClick={() => setCatalogDetailSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded">
-                                <X className="w-3 h-3 text-[#9CA3AF] dark:text-[#737373]" />
+                              <button onClick={() => setCatalogDetailSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-mono-950 dark:hover:bg-[#171717] rounded">
+                                <X className="w-3 h-3 text-[#9CA3AF] dark:text-mono-500" />
                               </button>
                             )}
                           </div>
 
                           {searchLower && (
-                            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-2">
+                            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-2">
                               {filteredCount} resultat{filteredCount !== 1 ? 's' : ''} pour "{catalogDetailSearch}"
                             </p>
                           )}
@@ -2384,17 +2384,17 @@ export default function Suppliers() {
                               const hasSubGroups = !!subCatFn && Object.keys(subGroups).length > 1;
 
                               return (
-                                <div key={cat} className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+                                <div key={cat} className="border border-mono-900 dark:border-mono-200 rounded-xl overflow-hidden bg-mono-1000 dark:bg-mono-50">
                                   {/* Category header */}
                                   <button
                                     onClick={() => toggleCatCollapse(catKey)}
-                                    className="w-full flex items-center justify-between px-3 py-3 hover:bg-[#FAFAFA] dark:bg-[#0A0A0A]/70 transition-all duration-200 text-left group"
+                                    className="w-full flex items-center justify-between px-3 py-3 hover:bg-mono-1000 dark:bg-mono-50/70 transition-all duration-200 text-left group"
                                   >
                                     <div className="flex items-center gap-2.5">
-                                      <ChevronRight className={`w-4 h-4 text-[#111111] dark:text-white transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
+                                      <ChevronRight className={`w-4 h-4 text-mono-100 dark:text-white transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
                                       <span className="text-base" role="img">{emoji}</span>
-                                      <span className="text-sm font-semibold text-[#111111] dark:text-[#E5E5E5] group-hover:text-[#111111] dark:group-hover:text-white transition-colors">{cat}</span>
-                                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white font-medium">
+                                      <span className="text-sm font-semibold text-mono-100 dark:text-[#E5E5E5] group-hover:text-mono-100 dark:group-hover:text-white transition-colors">{cat}</span>
+                                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white font-medium">
                                         {catIngredients.length}
                                       </span>
                                     </div>
@@ -2407,31 +2407,31 @@ export default function Suppliers() {
                                   <div className={`transition-all duration-200 ease-in-out overflow-hidden ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                     {hasSubGroups ? (
                                       // Render subcategories
-                                      <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50">
+                                      <div className="border-t border-mono-900 dark:border-mono-200/50">
                                         {Object.entries(subGroups).sort(([a], [b]) => a.localeCompare(b)).map(([subCat, subIngs]) => {
                                           const subKey = `${catKey}-${subCat}`;
                                           const isSubExpanded = expandedSubCats.has(subKey);
                                           const subTotal = subIngs.reduce((s, i) => s + i.pricePerUnit, 0);
                                           return (
-                                            <div key={subCat} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50 last:border-b-0">
+                                            <div key={subCat} className="border-b border-mono-900 dark:border-mono-200/50 last:border-b-0">
                                               <button
                                                 onClick={() => toggleSubCatCollapse(subKey)}
-                                                className="w-full flex items-center justify-between pl-8 pr-3 py-2 hover:bg-[#FAFAFA] dark:bg-[#0A0A0A]/40 transition-colors text-left"
+                                                className="w-full flex items-center justify-between pl-8 pr-3 py-2 hover:bg-mono-1000 dark:bg-mono-50/40 transition-colors text-left"
                                               >
                                                 <div className="flex items-center gap-2">
-                                                  <ChevronRight className={`w-3 h-3 text-[#6B7280] dark:text-[#A3A3A3] transition-transform duration-150 ${isSubExpanded ? 'rotate-90' : ''}`} />
-                                                  <span className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">{subCat}</span>
-                                                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">
+                                                  <ChevronRight className={`w-3 h-3 text-[#6B7280] dark:text-mono-700 transition-transform duration-150 ${isSubExpanded ? 'rotate-90' : ''}`} />
+                                                  <span className="text-xs font-medium text-[#6B7280] dark:text-mono-700">{subCat}</span>
+                                                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500">
                                                     {subIngs.length}
                                                   </span>
                                                 </div>
-                                                <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{formatCurrency(subTotal)}</span>
+                                                <span className="text-[11px] text-[#9CA3AF] dark:text-mono-500">{formatCurrency(subTotal)}</span>
                                               </button>
                                               <div className={`transition-all duration-150 ease-in-out overflow-hidden ${isSubExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                                                <div className="divide-y divide-[#E5E7EB]/30">
+                                                <div className="divide-y divide-mono-900/30">
                                                   {subIngs.sort((a, b) => a.name.localeCompare(b.name)).map(ing => (
-                                                    <div key={ing.id} className="flex items-center gap-2 pl-12 pr-3 py-1.5 hover:bg-[#FAFAFA] dark:bg-[#0A0A0A]/30 transition-colors">
-                                                      <span className="flex-1 text-xs text-[#6B7280] dark:text-[#A3A3A3] truncate">{ing.name}</span>
+                                                    <div key={ing.id} className="flex items-center gap-2 pl-12 pr-3 py-1.5 hover:bg-mono-1000 dark:bg-mono-50/30 transition-colors">
+                                                      <span className="flex-1 text-xs text-[#6B7280] dark:text-mono-700 truncate">{ing.name}</span>
                                                       {(() => {
                                                         const ingKey = ing.name.toLowerCase().trim();
                                                         const bp = bestPriceMap[ingKey];
@@ -2443,7 +2443,7 @@ export default function Suppliers() {
                                                           </span>
                                                         ) : null;
                                                       })()}
-                                                      <span className="text-xs font-medium text-[#111111] dark:text-white whitespace-nowrap">
+                                                      <span className="text-xs font-medium text-mono-100 dark:text-white whitespace-nowrap">
                                                         {formatCurrency(ing.pricePerUnit)}/{ing.unit}
                                                       </span>
                                                       {priceAlerts[ing.id] && (
@@ -2465,10 +2465,10 @@ export default function Suppliers() {
                                       </div>
                                     ) : (
                                       // Flat list (no subcategories)
-                                      <div className="divide-y divide-[#E5E7EB]/30 border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50">
+                                      <div className="divide-y divide-mono-900/30 border-t border-mono-900 dark:border-mono-200/50">
                                         {catIngredients.sort((a, b) => a.name.localeCompare(b.name)).map(ing => (
-                                          <div key={ing.id} className="flex items-center gap-2 pl-9 pr-3 py-1.5 hover:bg-[#FAFAFA] dark:bg-[#0A0A0A]/30 transition-colors">
-                                            <span className="flex-1 text-xs text-[#6B7280] dark:text-[#A3A3A3] truncate">{ing.name}</span>
+                                          <div key={ing.id} className="flex items-center gap-2 pl-9 pr-3 py-1.5 hover:bg-mono-1000 dark:bg-mono-50/30 transition-colors">
+                                            <span className="flex-1 text-xs text-[#6B7280] dark:text-mono-700 truncate">{ing.name}</span>
                                             {(() => {
                                               const ingKey = ing.name.toLowerCase().trim();
                                               const bp = bestPriceMap[ingKey];
@@ -2480,7 +2480,7 @@ export default function Suppliers() {
                                                 </span>
                                               ) : null;
                                             })()}
-                                            <span className="text-xs font-medium text-[#111111] dark:text-white whitespace-nowrap">
+                                            <span className="text-xs font-medium text-mono-100 dark:text-white whitespace-nowrap">
                                               {formatCurrency(ing.pricePerUnit)}/{ing.unit}
                                             </span>
                                             {priceAlerts[ing.id] && (
@@ -2503,7 +2503,7 @@ export default function Suppliers() {
                           </div>
 
                           {filteredCount === 0 && searchLower && (
-                            <div className="text-center py-6 text-[#6B7280] dark:text-[#A3A3A3]">
+                            <div className="text-center py-6 text-[#6B7280] dark:text-mono-700">
                               <Search className="w-8 h-8 mx-auto mb-2 opacity-30" />
                               <p className="text-sm">Aucun article trouve pour "{catalogDetailSearch}"</p>
                             </div>
@@ -2514,7 +2514,7 @@ export default function Suppliers() {
                   </div>
                 );
               })() : (
-                <div className="flex flex-col items-center justify-center h-full text-[#9CA3AF] dark:text-[#737373] py-20">
+                <div className="flex flex-col items-center justify-center h-full text-[#9CA3AF] dark:text-mono-500 py-20">
                   <Truck className="w-12 h-12 mb-3 opacity-30" />
                   <p>{t('suppliers.noSupplierFound')}</p>
                 </div>
@@ -2532,7 +2532,7 @@ export default function Suppliers() {
         <>
           {/* Stats bar */}
           <div className="flex flex-wrap gap-3 mb-4 text-sm">
-            <span className="px-3 py-1.5 rounded-full bg-[#F3F4F6] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] font-medium">
+            <span className="px-3 py-1.5 rounded-full bg-mono-950 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 font-medium">
               {annuaireStats.total} {t('suppliers.suppliersFound')}
             </span>
             <span className="px-3 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 font-medium">
@@ -2549,14 +2549,14 @@ export default function Suppliers() {
           </div>
 
           {/* Filters */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 mb-6">
-            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4 mb-6">
+            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-[#6B7280] dark:text-mono-700">
               <Filter className="w-4 h-4" />
               {t('suppliers.filters')}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500" />
                 <input
                   type="text"
                   placeholder={t('suppliers.search')}
@@ -2566,7 +2566,7 @@ export default function Suppliers() {
                 />
               </div>
               <div className="relative">
-                <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
+                <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500 pointer-events-none" />
                 <select
                   value={annuaireRegion}
                   onChange={(e) => setAnnuaireRegion(e.target.value)}
@@ -2579,7 +2579,7 @@ export default function Suppliers() {
                 </select>
               </div>
               <div className="relative">
-                <Tag className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
+                <Tag className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500 pointer-events-none" />
                 <select
                   value={annuaireCategory}
                   onChange={(e) => setAnnuaireCategory(e.target.value)}
@@ -2592,7 +2592,7 @@ export default function Suppliers() {
                 </select>
               </div>
               <div className="relative">
-                <Building2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
+                <Building2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500 pointer-events-none" />
                 <select
                   value={annuaireType}
                   onChange={(e) => setAnnuaireType(e.target.value as '' | FrenchSupplier['type'])}
@@ -2605,24 +2605,24 @@ export default function Suppliers() {
                   <option value="national">{t('suppliers.typeNational')}</option>
                 </select>
               </div>
-              <label className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#1A1A1A] cursor-pointer select-none">
+              <label className="flex items-center gap-2 px-3 py-2 rounded-lg bg-mono-1000 dark:bg-mono-200 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={deliveryOnly}
                   onChange={(e) => setDeliveryOnly(e.target.checked)}
-                  className="rounded border-[#D1D5DB] dark:border-[#2A2A2A] text-[#111111] dark:text-white focus:ring-[#111111] dark:focus:ring-white"
+                  className="rounded border-[#D1D5DB] dark:border-[#2A2A2A] text-mono-100 dark:text-white focus:ring-mono-100 dark:focus:ring-white"
                 />
-                <Truck className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
-                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{t('suppliers.deliveryOnly')}</span>
+                <Truck className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
+                <span className="text-sm text-[#6B7280] dark:text-mono-700">{t('suppliers.deliveryOnly')}</span>
               </label>
             </div>
           </div>
 
           {/* Supplier Cards Grid */}
           {annuaireResults.length === 0 ? (
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-12 text-center">
-              <Search className="w-12 h-12 mx-auto text-[#737373] dark:text-[#A3A3A3] mb-3" />
-              <p className="text-[#9CA3AF] dark:text-[#A3A3A3]">{t('suppliers.noMatchingSupplier')}</p>
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-12 text-center">
+              <Search className="w-12 h-12 mx-auto text-mono-500 dark:text-mono-700 mb-3" />
+              <p className="text-[#9CA3AF] dark:text-mono-700">{t('suppliers.noMatchingSupplier')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -2631,22 +2631,22 @@ export default function Suppliers() {
                 return (
                   <div
                     key={supplier.name}
-                    className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow hover:shadow-md transition-shadow p-5 flex flex-col"
+                    className="bg-white dark:bg-mono-50 rounded-lg shadow hover:shadow-md transition-shadow p-5 flex flex-col"
                   >
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-semibold text-[#111111] dark:text-white leading-tight">
+                      <h3 className="font-semibold text-mono-100 dark:text-white leading-tight">
                         {supplier.name}
                       </h3>
                       <span className={`px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap ${tc.bg} ${tc.text}`}>
                         {({grossiste: t('suppliers.typeWholesaler'), specialiste: t('suppliers.typeSpecialist'), local: t('suppliers.typeLocal'), national: t('suppliers.typeNational')} as Record<string, string>)[supplier.type]}
                       </span>
                     </div>
-                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-3 line-clamp-2">
+                    <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mb-3 line-clamp-2">
                       {supplier.description}
                     </p>
                     <div className="flex flex-wrap gap-1 mb-3">
                       {supplier.categories.map((cat) => (
-                        <span key={cat} className="px-2 py-0.5 rounded text-[10px] bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] font-medium">
+                        <span key={cat} className="px-2 py-0.5 rounded text-[10px] bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 font-medium">
                           {cat}
                         </span>
                       ))}
@@ -2656,7 +2656,7 @@ export default function Suppliers() {
                         {supplier.speciality}
                       </p>
                     )}
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#A3A3A3] mb-3 flex items-start gap-1">
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-700 mb-3 flex items-start gap-1">
                       <MapPin className="w-3 h-3 mt-0.5 shrink-0" />
                       <span className="line-clamp-1">
                         {supplier.regions.length === FRENCH_REGIONS.length
@@ -2664,20 +2664,20 @@ export default function Suppliers() {
                           : supplier.regions.join(', ')}
                       </span>
                     </div>
-                    <div className="mt-auto pt-3 border-t dark:border-[#1A1A1A] flex flex-wrap items-center gap-3 text-xs">
+                    <div className="mt-auto pt-3 border-t dark:border-mono-200 flex flex-wrap items-center gap-3 text-xs">
                       <span className={`flex items-center gap-1 ${supplier.delivery ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
                         {supplier.delivery ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
                         Livraison
                       </span>
                       {supplier.minOrder && (
-                        <span className="text-[#9CA3AF] dark:text-[#737373]">Min: {supplier.minOrder}</span>
+                        <span className="text-[#9CA3AF] dark:text-mono-500">Min: {supplier.minOrder}</span>
                       )}
                       {supplier.website && (
                         <a
                           href={supplier.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="ml-auto flex items-center gap-1 text-[#111111] dark:text-white hover:underline"
+                          className="ml-auto flex items-center gap-1 text-mono-100 dark:text-white hover:underline"
                         >
                           <ExternalLink className="w-3 h-3" />
                           Site web
@@ -2695,8 +2695,8 @@ export default function Suppliers() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5 text-red-500" />
-                <h3 className="text-lg font-bold text-[#111111] dark:text-white">{t('suppliers.catalogTitle')}</h3>
-                <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-2">{catalogData.length} {t('suppliers.availableProducts')}</span>
+                <h3 className="text-lg font-bold text-mono-100 dark:text-white">{t('suppliers.catalogTitle')}</h3>
+                <span className="text-xs text-[#9CA3AF] dark:text-mono-500 ml-2">{catalogData.length} {t('suppliers.availableProducts')}</span>
               </div>
               {catalogSelected.size > 0 && (
                 <button
@@ -2721,7 +2721,7 @@ export default function Suppliers() {
                     showToast(`${added} ${t('suppliers.productsAdded')}`, 'success');
                     setAddingCatalog(false);
                   }}
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-lg disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-lg disabled:opacity-50"
                 >
                   <Plus className="w-4 h-4" />
                   {addingCatalog ? t('suppliers.addingInProgress') : `${t('suppliers.add')} ${catalogSelected.size} ${t('suppliers.products')}`}
@@ -2731,7 +2731,7 @@ export default function Suppliers() {
             {/* Filters */}
             <div className="flex gap-2 mb-3">
               <div className="relative flex-1">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500" />
                 <input
                   type="text" placeholder={t('suppliers.searchProduct')} value={catalogSearch}
                   onChange={e => { setCatalogSearch(e.target.value); setCatalogPage(0); }}
@@ -2760,10 +2760,10 @@ export default function Suppliers() {
               const existingNames = new Set(ingredients.map(i => i.name.toLowerCase()));
               return (
                 <>
-                  <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-hidden">
+                  <div className="bg-white dark:bg-mono-50 rounded-lg shadow overflow-hidden">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-[#FAFAFA] dark:bg-[#1A1A1A] text-left text-xs text-[#9CA3AF] dark:text-[#737373]">
+                        <tr className="bg-mono-1000 dark:bg-mono-200 text-left text-xs text-[#9CA3AF] dark:text-mono-500">
                           <th className="px-3 py-2 w-8">
                             <input type="checkbox"
                               checked={page.length > 0 && page.every((_, i) => catalogSelected.has(catalogPage * pageSize + i))}
@@ -2782,12 +2782,12 @@ export default function Suppliers() {
                           <th className="px-3 py-2 w-20">{t('suppliers.action')}</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y dark:divide-[#1A1A1A]">
+                      <tbody className="divide-y dark:divide-mono-200">
                         {page.map((p, i) => {
                           const globalIdx = catalogPage * pageSize + i;
                           const exists = existingNames.has(p.name.toLowerCase());
                           return (
-                            <tr key={globalIdx} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30 ${exists ? 'opacity-50' : ''}`}>
+                            <tr key={globalIdx} className={`hover:bg-mono-1000 dark:hover:bg-[#171717]/30 ${exists ? 'opacity-50' : ''}`}>
                               <td className="px-3 py-2">
                                 <input type="checkbox" disabled={exists}
                                   checked={catalogSelected.has(globalIdx)}
@@ -2799,10 +2799,10 @@ export default function Suppliers() {
                                   className="accent-neutral-900 dark:accent-white"
                                 />
                               </td>
-                              <td className="px-3 py-2 text-[#9CA3AF] dark:text-[#A3A3A3]">{p.name}</td>
-                              <td className="px-3 py-2"><span className="text-xs px-2 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">{p.category}</span></td>
-                              <td className="px-3 py-2 font-medium text-[#111111] dark:text-white">{formatCurrency(p.prixMoy)}</td>
-                              <td className="px-3 py-2 text-[#9CA3AF] dark:text-[#737373]">{p.unit}</td>
+                              <td className="px-3 py-2 text-[#9CA3AF] dark:text-mono-700">{p.name}</td>
+                              <td className="px-3 py-2"><span className="text-xs px-2 py-0.5 rounded bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500">{p.category}</span></td>
+                              <td className="px-3 py-2 font-medium text-mono-100 dark:text-white">{formatCurrency(p.prixMoy)}</td>
+                              <td className="px-3 py-2 text-[#9CA3AF] dark:text-mono-500">{p.unit}</td>
                               <td className="px-3 py-2">
                                 {exists ? (
                                   <span className="text-xs text-green-500">✓ {t('suppliers.added')}</span>
@@ -2815,7 +2815,7 @@ export default function Suppliers() {
                                         showToast(`${p.name} ${t('suppliers.added')}`, 'success');
                                       } catch { showToast(t('suppliers.error'), 'error'); }
                                     }}
-                                    className="text-xs px-2 py-1 rounded bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black"
+                                    className="text-xs px-2 py-1 rounded bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black"
                                   >
                                     + {t('suppliers.add')}
                                   </button>
@@ -2830,11 +2830,11 @@ export default function Suppliers() {
                   {/* Pagination */}
                   {totalPages > 1 && (
                     <div className="flex items-center justify-between mt-3">
-                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{filtered.length} {t('suppliers.results')}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{filtered.length} {t('suppliers.results')}</span>
                       <div className="flex gap-1">
-                        <button disabled={catalogPage === 0} onClick={() => setCatalogPage(p => p - 1)} className="px-3 py-1 text-xs rounded border dark:border-[#2A2A2A] disabled:opacity-30 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]">←</button>
-                        <span className="px-3 py-1 text-xs text-[#9CA3AF] dark:text-[#737373]">{catalogPage + 1}{" / "}{totalPages}</span>
-                        <button disabled={catalogPage >= totalPages - 1} onClick={() => setCatalogPage(p => p + 1)} className="px-3 py-1 text-xs rounded border dark:border-[#2A2A2A] disabled:opacity-30 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]">→</button>
+                        <button disabled={catalogPage === 0} onClick={() => setCatalogPage(p => p - 1)} className="px-3 py-1 text-xs rounded border dark:border-[#2A2A2A] disabled:opacity-30 hover:bg-mono-950 dark:hover:bg-[#171717]">←</button>
+                        <span className="px-3 py-1 text-xs text-[#9CA3AF] dark:text-mono-500">{catalogPage + 1}{" / "}{totalPages}</span>
+                        <button disabled={catalogPage >= totalPages - 1} onClick={() => setCatalogPage(p => p + 1)} className="px-3 py-1 text-xs rounded border dark:border-[#2A2A2A] disabled:opacity-30 hover:bg-mono-950 dark:hover:bg-[#171717]">→</button>
                       </div>
                     </div>
                   )}
@@ -2852,7 +2852,7 @@ export default function Suppliers() {
         <>
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-2">
               <Scale className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
               Comparateur de prix
             </h2>
@@ -2868,52 +2868,52 @@ export default function Suppliers() {
 
           {/* Stats cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-4 sm:mb-6">
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">Produits comparables</span>
-                <div className="p-1.5 sm:p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Scale className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-mono-500 dark:text-mono-700">Produits comparables</span>
+                <div className="p-1.5 sm:p-2 rounded-xl bg-mono-950 dark:bg-[#171717]"><Scale className="w-4 h-4 sm:w-5 sm:h-5 text-mono-100 dark:text-white" /></div>
               </div>
-              <div className="text-xl sm:text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{comparatorData.length}</div>
+              <div className="text-xl sm:text-2xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{comparatorData.length}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">Fournisseurs actifs</span>
-                <div className="p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-mono-500 dark:text-mono-700">Fournisseurs actifs</span>
+                <div className="p-2 rounded-xl bg-mono-950 dark:bg-[#171717]"><Truck className="w-5 h-5 text-mono-100 dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{suppliers.length}</div>
+              <div className="text-2xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{suppliers.length}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">Economie potentielle</span>
-                <div className="p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Euro className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-mono-500 dark:text-mono-700">Economie potentielle</span>
+                <div className="p-2 rounded-xl bg-mono-950 dark:bg-[#171717]"><Euro className="w-5 h-5 text-mono-100 dark:text-white" /></div>
               </div>
               <div className="text-2xl font-bold font-satoshi tabular-nums text-emerald-600 dark:text-emerald-400">{formatCurrency(totalPotentialSavings)}</div>
-              <div className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">par mois</div>
+              <div className="text-xs font-general-sans text-mono-500 dark:text-mono-700">par mois</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">Alertes prix</span>
-                <div className="p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><AlertTriangle className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-mono-500 dark:text-mono-700">Alertes prix</span>
+                <div className="p-2 rounded-xl bg-mono-950 dark:bg-[#171717]"><AlertTriangle className="w-5 h-5 text-mono-100 dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{Object.values(priceAlerts).filter(a => a.pctChange > 0).length}</div>
-              <div className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">hausses &gt; 5%</div>
+              <div className="text-2xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{Object.values(priceAlerts).filter(a => a.pctChange > 0).length}</div>
+              <div className="text-xs font-general-sans text-mono-500 dark:text-mono-700">hausses &gt; 5%</div>
             </div>
           </div>
 
           {comparatorData.length === 0 ? (
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-12 text-center">
-              <Scale className="w-12 h-12 mx-auto text-[#737373] dark:text-[#A3A3A3] mb-3" />
-              <p className="text-[#9CA3AF] dark:text-[#A3A3A3] mb-2">Aucun produit comparable</p>
-              <p className="text-sm text-[#9CA3AF] dark:text-[#A3A3A3]">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-12 text-center">
+              <Scale className="w-12 h-12 mx-auto text-mono-500 dark:text-mono-700 mb-3" />
+              <p className="text-[#9CA3AF] dark:text-mono-700 mb-2">Aucun produit comparable</p>
+              <p className="text-sm text-[#9CA3AF] dark:text-mono-700">
                 Liez le meme ingredient a plusieurs fournisseurs pour activer la comparaison des prix.
               </p>
             </div>
           ) : (
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-hidden -mx-4 sm:mx-0">
+            <div className="bg-white dark:bg-mono-50 rounded-lg shadow overflow-hidden -mx-4 sm:mx-0">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm min-w-[600px]">
                   <thead>
-                    <tr className="bg-[#FAFAFA] dark:bg-[#1A1A1A] text-left text-xs text-[#9CA3AF] dark:text-[#737373]">
+                    <tr className="bg-mono-1000 dark:bg-mono-200 text-left text-xs text-[#9CA3AF] dark:text-mono-500">
                       <th className="px-4 py-3 font-medium">Ingredient</th>
                       {suppliers.filter(s => (s.ingredients || []).length > 0).map(s => (
                         <th key={s.id} className="px-4 py-3 font-medium text-center whitespace-nowrap">
@@ -2930,26 +2930,26 @@ export default function Suppliers() {
                       <th className="px-4 py-3 font-medium text-right whitespace-nowrap">Economie/mois</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y dark:divide-[#1A1A1A]">
+                  <tbody className="divide-y dark:divide-mono-200">
                     {comparatorData.map((item) => {
                       const allSuppliers = suppliers.filter(s => (s.ingredients || []).length > 0);
                       const entryMap: Record<number, typeof item.entries[0]> = {};
                       item.entries.forEach(e => { entryMap[e.supplierId] = e; });
                       return (
-                        <tr key={item.key} className="hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30">
+                        <tr key={item.key} className="hover:bg-mono-1000 dark:hover:bg-[#171717]/30">
                           <td className="px-4 py-3">
                             <div className="font-medium text-[#9CA3AF] dark:text-[#E5E5E5]">{item.displayName}</div>
-                            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{item.entries.length} fournisseurs</div>
+                            <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{item.entries.length} fournisseurs</div>
                           </td>
                           {allSuppliers.map(s => {
                             const entry = entryMap[s.id];
                             if (!entry) {
-                              return <td key={s.id} className="px-4 py-3 text-center text-[#6B7280] dark:text-[#A3A3A3]">--</td>;
+                              return <td key={s.id} className="px-4 py-3 text-center text-[#6B7280] dark:text-mono-700">--</td>;
                             }
                             const isCheapest = entry.pricePerUnit === item.cheapestPrice;
                             return (
                               <td key={s.id} className={`px-4 py-3 text-center ${isCheapest ? 'bg-green-50 dark:bg-green-900/20' : ''}`}>
-                                <span className={`font-medium ${isCheapest ? 'text-green-600 dark:text-green-400' : 'text-[#6B7280] dark:text-[#737373]'}`}>
+                                <span className={`font-medium ${isCheapest ? 'text-green-600 dark:text-green-400' : 'text-[#6B7280] dark:text-mono-500'}`}>
                                   {formatCurrency(entry.pricePerUnit)}/{entry.unit}
                                 </span>
                                 {isCheapest && item.entries.length > 1 && (
@@ -2969,7 +2969,7 @@ export default function Suppliers() {
                                 {formatCurrency(item.savingsPerMonth)}
                               </span>
                             ) : (
-                              <span className="text-[#9CA3AF] dark:text-[#737373]">--</span>
+                              <span className="text-[#9CA3AF] dark:text-mono-500">--</span>
                             )}
                           </td>
                         </tr>
@@ -2977,7 +2977,7 @@ export default function Suppliers() {
                     })}
                   </tbody>
                   <tfoot>
-                    <tr className="bg-[#FAFAFA] dark:bg-[#1A1A1A] font-semibold">
+                    <tr className="bg-mono-1000 dark:bg-mono-200 font-semibold">
                       <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#E5E5E5]">Total</td>
                       {suppliers.filter(s => (s.ingredients || []).length > 0).map(s => (
                         <td key={s.id} className="px-4 py-3" />
@@ -2995,7 +2995,7 @@ export default function Suppliers() {
           {/* Price alerts section */}
           {Object.keys(priceAlerts).length > 0 && (
             <div className="mt-6">
-              <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
                 Alertes de prix
               </h3>
@@ -3018,7 +3018,7 @@ export default function Suppliers() {
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="font-medium text-sm text-[#9CA3AF] dark:text-[#E5E5E5]">{ing.name}</span>
-                            {supplier && <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-2">({supplier.name})</span>}
+                            {supplier && <span className="text-xs text-[#9CA3AF] dark:text-mono-500 ml-2">({supplier.name})</span>}
                           </div>
                           <span className={`text-sm font-bold px-2 py-0.5 rounded-full ${
                             isIncrease
@@ -3028,7 +3028,7 @@ export default function Suppliers() {
                             {isIncrease ? '↑' : '↓'} {isIncrease ? '+' : ''}{alert.pctChange}%
                           </span>
                         </div>
-                        <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+                        <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">
                           Prix actuel : {formatCurrency(ing.pricePerUnit)}/{ing.unit}
                         </div>
                       </div>
@@ -3051,7 +3051,7 @@ export default function Suppliers() {
         <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
           {/* Nom */}
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">
               {t('suppliers.supplierName')} <span className="text-red-500">*</span>
             </label>
             <input
@@ -3065,7 +3065,7 @@ export default function Suppliers() {
 
           {/* Contact name */}
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.contactName')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.contactName')}</label>
             <input
               type="text"
               value={form.contactName}
@@ -3077,7 +3077,7 @@ export default function Suppliers() {
           {/* Phone + Email */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.phone')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.phone')}</label>
               <input
                 type="tel"
                 value={form.phone}
@@ -3086,7 +3086,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.email')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.email')}</label>
               <input
                 type="email"
                 value={form.email}
@@ -3098,7 +3098,7 @@ export default function Suppliers() {
 
           {/* WhatsApp Phone */}
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">
               <span className="flex items-center gap-1.5">
                 <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
                 {t('suppliers.whatsappPhone')}
@@ -3111,12 +3111,12 @@ export default function Suppliers() {
               className="input w-full"
               placeholder="+33612345678"
             />
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Format international : +33612345678</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Format international : +33612345678</p>
           </div>
 
           {/* Address */}
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.address')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.address')}</label>
             <input
               type="text"
               value={form.address}
@@ -3128,7 +3128,7 @@ export default function Suppliers() {
           {/* Postal code + City */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.postalCode')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.postalCode')}</label>
               <input
                 type="text"
                 value={form.postalCode}
@@ -3137,7 +3137,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.city')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.city')}</label>
               <input
                 type="text"
                 value={form.city}
@@ -3150,7 +3150,7 @@ export default function Suppliers() {
           {/* Region + Country */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.region')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.region')}</label>
               <select
                 value={form.region}
                 onChange={(e) => setField('region', e.target.value)}
@@ -3163,7 +3163,7 @@ export default function Suppliers() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.country')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.country')}</label>
               <input
                 type="text"
                 value={form.country}
@@ -3176,7 +3176,7 @@ export default function Suppliers() {
           {/* SIRET + Website */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.siret')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.siret')}</label>
               <input
                 type="text"
                 value={form.siret}
@@ -3186,7 +3186,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.websiteLabel')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.websiteLabel')}</label>
               <input
                 type="url"
                 value={form.website}
@@ -3199,15 +3199,15 @@ export default function Suppliers() {
 
           {/* Categories multi-select */}
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-2">{t('suppliers.categories')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-2">{t('suppliers.categories')}</label>
             <div className="flex flex-wrap gap-2">
               {INGREDIENT_CATEGORIES.map((cat) => (
                 <label
                   key={cat}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm cursor-pointer select-none border transition-colors ${
                     form.categories.includes(cat)
-                      ? 'bg-[#111111] dark:bg-white border-[#111111] dark:border-white text-white dark:text-black'
-                      : 'bg-white dark:bg-[#171717] border-[#E5E7EB] dark:border-[#2A2A2A] text-[#6B7280] dark:text-[#737373] hover:bg-[#FAFAFA] dark:hover:bg-[#171717]'
+                      ? 'bg-mono-100 dark:bg-white border-mono-100 dark:border-white text-white dark:text-black'
+                      : 'bg-white dark:bg-[#171717] border-mono-900 dark:border-[#2A2A2A] text-[#6B7280] dark:text-mono-500 hover:bg-mono-1000 dark:hover:bg-[#171717]'
                   }`}
                 >
                   <input
@@ -3233,16 +3233,16 @@ export default function Suppliers() {
               >
                 {form.delivery
                   ? <ToggleRight className="w-8 h-8 text-green-500" />
-                  : <ToggleLeft className="w-8 h-8 text-[#9CA3AF] dark:text-[#737373]" />}
+                  : <ToggleLeft className="w-8 h-8 text-[#9CA3AF] dark:text-mono-500" />}
               </button>
-              <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3]">{t('suppliers.deliveryAvailable')}</span>
+              <span className="text-sm font-medium text-[#9CA3AF] dark:text-mono-700">{t('suppliers.deliveryAvailable')}</span>
             </label>
           </div>
 
           {/* Min order + Payment terms */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.minimumOrder')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.minimumOrder')}</label>
               <input
                 type="text"
                 value={form.minOrder}
@@ -3252,7 +3252,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.paymentTerms')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.paymentTerms')}</label>
               <input
                 type="text"
                 value={form.paymentTerms}
@@ -3265,7 +3265,7 @@ export default function Suppliers() {
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.notes')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-700 mb-1">{t('suppliers.notes')}</label>
             <textarea
               value={form.notes}
               onChange={(e) => setField('notes', e.target.value)}
@@ -3277,10 +3277,10 @@ export default function Suppliers() {
         </div>
 
         {/* Modal footer */}
-        <div className="flex justify-end gap-3 mt-6 pt-4 border-t dark:border-[#1A1A1A]">
+        <div className="flex justify-end gap-3 mt-6 pt-4 border-t dark:border-mono-200">
           <button
             onClick={() => setModalOpen(false)}
-            className="px-4 py-2 rounded-lg font-medium border border-[#D1D5DB] dark:border-[#2A2A2A] text-[#9CA3AF] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
+            className="px-4 py-2 rounded-lg font-medium border border-[#D1D5DB] dark:border-[#2A2A2A] text-[#9CA3AF] dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors"
           >
             {t('suppliers.cancel')}
           </button>
@@ -3312,43 +3312,43 @@ export default function Suppliers() {
             .sort((a, b) => (b.score?.scores?.global ?? 0) - (a.score?.scores?.global ?? 0));
 
           if (scoredSuppliers.length === 0) {
-            return <p className="text-sm text-[#9CA3AF] dark:text-[#737373] py-6 text-center">Aucun score disponible.</p>;
+            return <p className="text-sm text-[#9CA3AF] dark:text-mono-500 py-6 text-center">Aucun score disponible.</p>;
           }
 
           return (
             <div className="overflow-x-auto max-h-[70vh]">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-[#FAFAFA] dark:bg-[#0A0A0A] z-10">
+                <thead className="sticky top-0 bg-mono-1000 dark:bg-mono-50 z-10">
                   <tr>
-                    <th className="text-left px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Fournisseur</th>
-                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">
+                    <th className="text-left px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">Fournisseur</th>
+                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">
                       <div className="flex items-center justify-center gap-1"><Star className="w-3 h-3" /> Global</div>
                     </th>
-                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">
+                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">
                       <div className="flex items-center justify-center gap-1"><Truck className="w-3 h-3" /> Fiabilite</div>
                     </th>
-                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">
+                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">
                       <div className="flex items-center justify-center gap-1"><TrendingUp className="w-3 h-3" /> Prix</div>
                     </th>
-                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">
+                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">
                       <div className="flex items-center justify-center gap-1"><Package className="w-3 h-3" /> Catalogue</div>
                     </th>
-                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">
+                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">
                       <div className="flex items-center justify-center gap-1"><Clock className="w-3 h-3" /> Historique</div>
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E5E7EB]/50">
+                <tbody className="divide-y divide-mono-900/50">
                   {scoredSuppliers.map(({ supplier, score }, idx) => {
                     const g = score?.scores?.global ?? 0;
                     const isTop = g > 80;
                     return (
-                      <tr key={supplier.id} className={`hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/30 ${idx === 0 ? 'bg-[#FAFAFA] dark:bg-[#0A0A0A]' : ''}`}>
+                      <tr key={supplier.id} className={`hover:bg-mono-950 dark:hover:bg-[#171717]/30 ${idx === 0 ? 'bg-mono-1000 dark:bg-mono-50' : ''}`}>
                         <td className="px-3 py-3">
                           <div className="flex items-center gap-2">
                             <CircularScore score={g} size={32} strokeWidth={3} />
                             <div>
-                              <span className="font-medium text-[#111111] dark:text-white text-sm">{supplier.name}</span>
+                              <span className="font-medium text-mono-100 dark:text-white text-sm">{supplier.name}</span>
                               {isTop && (
                                 <span className="ml-1.5 inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 font-bold">
                                   <Award className="w-2.5 h-2.5" /> Top
@@ -3367,7 +3367,7 @@ export default function Suppliers() {
                             <td key={i} className="px-3 py-3 text-center">
                               <div className="flex flex-col items-center gap-1">
                                 <span className={`font-semibold text-xs ${c}`}>{v}</span>
-                                <div className="w-12 h-1.5 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden">
+                                <div className="w-12 h-1.5 bg-mono-900 dark:bg-mono-200 rounded-full overflow-hidden">
                                   <div className={`h-full rounded-full ${v > 70 ? 'bg-teal-500' : v >= 40 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${Math.max(2, v)}%` }} />
                                 </div>
                               </div>
@@ -3391,15 +3391,15 @@ export default function Suppliers() {
       <Modal isOpen={showImportModal} onClose={closeImportModal} title={`Importer tarif — ${detailSupplier?.name || ''}`}>
         <div className="space-y-5">
           {/* Template download */}
-          <div className="flex items-center justify-between px-4 py-3 bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <div className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
-              <FileSpreadsheet className="w-4 h-4 text-[#111111] dark:text-white" />
-              <span>Format attendu : CSV avec separateur <code className="font-mono bg-[#E5E7EB] dark:bg-[#1A1A1A] px-1.5 py-0.5 rounded text-xs text-[#111111] dark:text-white">;</code></span>
+          <div className="flex items-center justify-between px-4 py-3 bg-mono-950 dark:bg-[#0F0F0F] rounded-xl border border-mono-900 dark:border-mono-200">
+            <div className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-mono-700">
+              <FileSpreadsheet className="w-4 h-4 text-mono-100 dark:text-white" />
+              <span>Format attendu : CSV avec separateur <code className="font-mono bg-mono-900 dark:bg-mono-200 px-1.5 py-0.5 rounded text-xs text-mono-100 dark:text-white">;</code></span>
             </div>
             <a
               href="/templates/supplier-price-template.csv"
               download="modele-tarif-fournisseur.csv"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-xs font-medium transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-xs font-medium transition-colors"
             >
               <Download className="w-3.5 h-3.5" />
               Modele CSV
@@ -3414,7 +3414,7 @@ export default function Suppliers() {
               onDrop={handleImportDrop}
               className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
                 dragOver
-                  ? 'border-[#111111] dark:border-white bg-[#F3F4F6] dark:bg-[#0F0F0F]'
+                  ? 'border-mono-100 dark:border-white bg-mono-950 dark:bg-[#0F0F0F]'
                   : 'border-[#D1D5DB] dark:border-[#333] hover:border-[#9CA3AF] dark:hover:border-[#555]'
               }`}
               onClick={() => {
@@ -3428,16 +3428,16 @@ export default function Suppliers() {
                 input.click();
               }}
             >
-              <Upload className={`w-10 h-10 mx-auto mb-3 ${dragOver ? 'text-[#111111] dark:text-white' : 'text-[#D1D5DB] dark:text-[#555]'}`} />
+              <Upload className={`w-10 h-10 mx-auto mb-3 ${dragOver ? 'text-mono-100 dark:text-white' : 'text-[#D1D5DB] dark:text-[#555]'}`} />
               {importFile ? (
                 <div>
-                  <p className="text-sm font-medium text-[#111111] dark:text-white">{importFile.name}</p>
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">{(importFile.size / 1024).toFixed(1)} Ko</p>
+                  <p className="text-sm font-medium text-mono-100 dark:text-white">{importFile.name}</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">{(importFile.size / 1024).toFixed(1)} Ko</p>
                 </div>
               ) : (
                 <div>
-                  <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Glissez votre fichier CSV ici</p>
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">ou cliquez pour parcourir</p>
+                  <p className="text-sm text-[#6B7280] dark:text-mono-700">Glissez votre fichier CSV ici</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">ou cliquez pour parcourir</p>
                 </div>
               )}
             </div>
@@ -3446,21 +3446,21 @@ export default function Suppliers() {
           {/* Preview table */}
           {importPreview.length > 0 && !importResult && (
             <div>
-              <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-2">Apercu ({Math.min(importPreview.length - 1, 5)} premieres lignes)</h4>
-              <div className="overflow-x-auto rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-2">Apercu ({Math.min(importPreview.length - 1, 5)} premieres lignes)</h4>
+              <div className="overflow-x-auto rounded-lg border border-mono-900 dark:border-mono-200">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-[#F3F4F6] dark:bg-[#0F0F0F]">
+                    <tr className="bg-mono-950 dark:bg-[#0F0F0F]">
                       {importPreview[0]?.map((h, i) => (
-                        <th key={i} className="px-3 py-2 text-left text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{h}</th>
+                        <th key={i} className="px-3 py-2 text-left text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wide">{h}</th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+                  <tbody className="divide-y divide-mono-900 dark:divide-mono-200">
                     {importPreview.slice(1).map((row, i) => (
-                      <tr key={i} className="hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]">
+                      <tr key={i} className="hover:bg-mono-1000 dark:hover:bg-mono-50">
                         {row.map((cell, j) => (
-                          <td key={j} className="px-3 py-2 text-[#111111] dark:text-[#E5E5E5]">{cell}</td>
+                          <td key={j} className="px-3 py-2 text-mono-100 dark:text-[#E5E5E5]">{cell}</td>
                         ))}
                       </tr>
                     ))}
@@ -3475,7 +3475,7 @@ export default function Suppliers() {
             <button
               onClick={handleImportSubmit}
               disabled={importLoading}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black font-semibold text-sm disabled:opacity-50 transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black font-semibold text-sm disabled:opacity-50 transition-colors"
             >
               {importLoading ? (
                 <>
@@ -3544,13 +3544,13 @@ export default function Suppliers() {
               <div className="flex gap-3">
                 <button
                   onClick={closeImportModal}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black font-medium text-sm transition-colors"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black font-medium text-sm transition-colors"
                 >
                   Fermer
                 </button>
                 <button
                   onClick={resetImportState}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#333] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#111111] dark:text-white font-medium text-sm transition-colors"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-mono-900 dark:border-[#333] hover:bg-mono-950 dark:hover:bg-[#171717] text-mono-100 dark:text-white font-medium text-sm transition-colors"
                 >
                   Nouvel import
                 </button>
@@ -3564,23 +3564,23 @@ export default function Suppliers() {
       {showBriefModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowBriefModal(false)} />
-          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-hidden bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-2xl flex flex-col">
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-hidden bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 shadow-2xl flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-mono-900 dark:border-mono-200">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-[#111111] dark:bg-white rounded-lg">
+                <div className="p-2 bg-mono-100 dark:bg-white rounded-lg">
                   <Zap className="w-5 h-5 text-white dark:text-black" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[#111111] dark:text-white">Brief Negociation IA</h3>
+                  <h3 className="text-lg font-bold text-mono-100 dark:text-white">Brief Negociation IA</h3>
                   {briefData?.supplierName && (
-                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{briefData.supplierName}</p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{briefData.supplierName}</p>
                   )}
                 </div>
               </div>
               <button
                 onClick={() => setShowBriefModal(false)}
-                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               >
                 <X className="w-5 h-5 text-[#9CA3AF]" />
               </button>
@@ -3590,9 +3590,9 @@ export default function Suppliers() {
             <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
               {briefLoading ? (
                 <div className="flex flex-col items-center justify-center py-16 gap-3">
-                  <div className="w-8 h-8 border-2 border-[#111111] dark:border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-2 border-mono-100 dark:border-white border-t-transparent rounded-full animate-spin" />
                   <p className="text-sm text-[#9CA3AF]">Analyse fournisseur en cours...</p>
-                  <p className="text-xs text-[#D1D5DB] dark:text-[#525252]">Volumes, prix, alternatives...</p>
+                  <p className="text-xs text-[#D1D5DB] dark:text-mono-400">Volumes, prix, alternatives...</p>
                 </div>
               ) : briefData?.error ? (
                 <div className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/30 rounded-xl">
@@ -3604,13 +3604,13 @@ export default function Suppliers() {
                   {/* Points de negociation */}
                   {briefData.negotiationPoints?.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-2 flex items-center gap-2">
+                      <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-2 flex items-center gap-2">
                         <Star className="w-4 h-4" />
                         Points de negociation
                       </h4>
                       <ul className="space-y-2">
                         {briefData.negotiationPoints.map((point: string, i: number) => (
-                          <li key={i} className="flex items-start gap-2 text-sm text-[#374151] dark:text-[#D4D4D4]">
+                          <li key={i} className="flex items-start gap-2 text-sm text-[#374151] dark:text-mono-800">
                             <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                             {point}
                           </li>
@@ -3622,16 +3622,16 @@ export default function Suppliers() {
                   {/* Objectifs de prix */}
                   {briefData.priceTargets?.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-2 flex items-center gap-2">
+                      <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-2 flex items-center gap-2">
                         <TrendingUp className="w-4 h-4" />
                         Objectifs de prix
                       </h4>
                       <div className="space-y-2">
                         {briefData.priceTargets.map((t: any, i: number) => (
-                          <div key={i} className="flex items-center justify-between p-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-lg">
+                          <div key={i} className="flex items-center justify-between p-3 bg-mono-950 dark:bg-[#171717] rounded-lg">
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-[#111111] dark:text-white">{t.product}</p>
-                              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{t.argument}</p>
+                              <p className="text-sm font-medium text-mono-100 dark:text-white">{t.product}</p>
+                              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{t.argument}</p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0 ml-3">
                               <span className="text-xs text-[#9CA3AF] line-through">{formatCurrency(t.currentPrice ?? 0)}</span>
@@ -3646,14 +3646,14 @@ export default function Suppliers() {
                   {/* Alternatives */}
                   {briefData.alternatives?.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-2 flex items-center gap-2">
+                      <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-2 flex items-center gap-2">
                         <ArrowRightLeft className="w-4 h-4" />
                         Alternatives disponibles
                       </h4>
                       <div className="space-y-1.5">
                         {briefData.alternatives.map((a: any, i: number) => (
-                          <div key={i} className="flex items-center justify-between text-sm py-1.5 border-b border-[#F3F4F6] dark:border-[#1A1A1A] last:border-0">
-                            <span className="text-[#374151] dark:text-[#D4D4D4]">{a.product}</span>
+                          <div key={i} className="flex items-center justify-between text-sm py-1.5 border-b border-mono-950 dark:border-mono-200 last:border-0">
+                            <span className="text-[#374151] dark:text-mono-800">{a.product}</span>
                             <span className="text-xs text-[#9CA3AF]">{a.alternativeSupplier} - {formatCurrency(a.alternativePrice ?? 0)}</span>
                           </div>
                         ))}
@@ -3664,12 +3664,12 @@ export default function Suppliers() {
                   {/* Email Draft */}
                   {briefData.emailDraft && (
                     <div>
-                      <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-2 flex items-center gap-2">
+                      <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-2 flex items-center gap-2">
                         <Mail className="w-4 h-4" />
                         Email de negociation
                       </h4>
-                      <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-4 max-h-60 overflow-y-auto">
-                        <pre className="text-sm text-[#374151] dark:text-[#D4D4D4] whitespace-pre-wrap font-sans leading-relaxed">
+                      <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-4 max-h-60 overflow-y-auto">
+                        <pre className="text-sm text-[#374151] dark:text-mono-800 whitespace-pre-wrap font-sans leading-relaxed">
                           {briefData.emailDraft.replace(/\\n/g, '\n')}
                         </pre>
                       </div>
@@ -3681,10 +3681,10 @@ export default function Suppliers() {
 
             {/* Footer Actions */}
             {briefData && !briefLoading && !briefData.error && (
-              <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+              <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50">
                 <button
                   onClick={copyBriefEmail}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#262626] transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] border border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-mono-300 transition-colors"
                 >
                   {briefCopied ? <><CheckCircle className="w-4 h-4 text-emerald-500" /> Copie !</> : <><Download className="w-4 h-4" /> Copier l'email</>}
                 </button>
@@ -3695,7 +3695,7 @@ export default function Suppliers() {
                       const body = encodeURIComponent((briefData.emailDraft || '').replace(/\\n/g, '\n'));
                       window.open(`mailto:${detailSupplier.email}?subject=${subject}&body=${body}`, '_blank');
                     }}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
                   >
                     <Mail className="w-4 h-4" /> Envoyer
                   </button>

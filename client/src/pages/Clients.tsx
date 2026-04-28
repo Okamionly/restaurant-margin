@@ -161,7 +161,7 @@ const REGIMES = ['Vegetarien', 'Vegan', 'Halal', 'Casher', 'Sans gluten'];
 
 const BASIC_TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   VIP: { bg: 'bg-amber-100 dark:bg-amber-900/40', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-300 dark:border-amber-700' },
-  'Régulier': { bg: 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40', text: 'text-[#111111] dark:text-[#737373]', border: 'border-[#D1D5DB] dark:border-[#1A1A1A]' },
+  'Régulier': { bg: 'bg-mono-950 dark:bg-mono-50/40', text: 'text-mono-100 dark:text-mono-500', border: 'border-[#D1D5DB] dark:border-mono-200' },
   Nouveau: { bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', border: 'border-green-300 dark:border-green-700' },
   Inactif: { bg: 'bg-red-100 dark:bg-red-900/40', text: 'text-red-700 dark:text-red-300', border: 'border-red-300 dark:border-red-700' },
   Allergie: { bg: 'bg-orange-100 dark:bg-orange-900/40', text: 'text-orange-700 dark:text-orange-300', border: 'border-orange-300 dark:border-orange-700' },
@@ -173,7 +173,7 @@ const BASIC_TAG_COLORS: Record<string, { bg: string; text: string; border: strin
 };
 
 const TYPE_COLORS: Record<ClientType, { bg: string; text: string }> = {
-  Particulier: { bg: 'bg-[#F3F4F6] dark:bg-[#171717]', text: 'text-[#9CA3AF] dark:text-[#737373]' },
+  Particulier: { bg: 'bg-mono-950 dark:bg-[#171717]', text: 'text-[#9CA3AF] dark:text-mono-500' },
   Entreprise: { bg: 'bg-indigo-100 dark:bg-indigo-900/40', text: 'text-indigo-700 dark:text-indigo-300' },
   Association: { bg: 'bg-rose-100 dark:bg-rose-900/40', text: 'text-rose-700 dark:text-rose-300' },
 };
@@ -302,7 +302,7 @@ function getLoyaltyTier(caTotal: number): LoyaltyTier {
 function getLoyaltyColors(tier: LoyaltyTier) {
   switch (tier) {
     case 'Gold': return { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-300 dark:border-amber-700', icon: 'text-amber-500' };
-    case 'Silver': return { bg: 'bg-[#F3F4F6] dark:bg-[#1A1A1A]', text: 'text-[#6B7280] dark:text-[#A3A3A3]', border: 'border-[#D1D5DB] dark:border-[#333]', icon: 'text-[#9CA3AF]' };
+    case 'Silver': return { bg: 'bg-mono-950 dark:bg-mono-200', text: 'text-[#6B7280] dark:text-mono-700', border: 'border-[#D1D5DB] dark:border-[#333]', icon: 'text-[#9CA3AF]' };
     case 'Bronze': return { bg: 'bg-orange-50 dark:bg-orange-900/20', text: 'text-orange-700 dark:text-orange-400', border: 'border-orange-200 dark:border-orange-800', icon: 'text-orange-500' };
   }
 }
@@ -350,7 +350,7 @@ function getNPSCategory(score: number): { label: string; color: string } {
 }
 
 const interactionIcons: Record<string, { icon: string; color: string }> = {
-  devis: { icon: 'D', color: 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40 text-[#111111] dark:text-[#737373]' },
+  devis: { icon: 'D', color: 'bg-mono-950 dark:bg-mono-50/40 text-mono-100 dark:text-mono-500' },
   evenement: { icon: 'E', color: 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300' },
   facture: { icon: 'F', color: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' },
   email: { icon: 'M', color: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' },
@@ -1100,7 +1100,7 @@ export default function Clients() {
   };
 
   const segmentColors: Record<SegmentId, string> = {
-    tous: 'text-[#111111] dark:text-white',
+    tous: 'text-mono-100 dark:text-white',
     vip: 'text-amber-600 dark:text-amber-400',
     reguliers: 'text-blue-600 dark:text-blue-400',
     nouveaux: 'text-green-600 dark:text-green-400',
@@ -1126,7 +1126,7 @@ export default function Clients() {
       ? 'from-amber-500 to-amber-700'
       : c.type === 'Entreprise'
         ? 'from-indigo-500 to-indigo-700'
-        : 'from-[#111111] to-[#333]';
+        : 'from-mono-100 to-[#333]';
     return (
       <div className={`${size} rounded-full bg-gradient-to-br ${colors} flex items-center justify-center text-white font-bold flex-shrink-0 relative`}>
         {getInitials(c.nom, c.prenom)}
@@ -1155,7 +1155,7 @@ export default function Clients() {
       <div key={c.id} className="flex items-center gap-3 px-3 py-2 bg-pink-50 dark:bg-pink-900/20 rounded-xl border border-pink-200 dark:border-pink-800">
         {renderAvatar(c, 'w-8 h-8 text-xs')}
         <div className="flex-1 min-w-0">
-          <span className="text-sm font-medium text-[#111111] dark:text-white truncate block">{c.prenom} {c.nom}</span>
+          <span className="text-sm font-medium text-mono-100 dark:text-white truncate block">{c.prenom} {c.nom}</span>
           <span className="text-xs text-pink-600 dark:text-pink-400">
             {c.daysAway === 0 ? "Aujourd'hui !" : `Dans ${c.daysAway} jour${c.daysAway > 1 ? 's' : ''}`}
           </span>
@@ -1189,7 +1189,7 @@ export default function Clients() {
     const acqSource = acquisitionData[c.id]?.source || c.source;
 
     return (
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 hover:shadow-lg hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all cursor-pointer group"
+      <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 hover:shadow-lg hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all cursor-pointer group"
         onClick={() => openSidebar(c)}>
         {/* Risk banner */}
         {insights.risquePerte && (
@@ -1214,26 +1214,26 @@ export default function Clients() {
           {renderAvatar(c, 'w-12 h-12 text-base')}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-semibold text-[#111111] dark:text-white truncate">{c.prenom} {c.nom}</h3>
+              <h3 className="font-semibold text-mono-100 dark:text-white truncate">{c.prenom} {c.nom}</h3>
               {renderLoyaltyBadge(c)}
             </div>
             {c.entreprise && (
-              <div className="flex items-center gap-1.5 text-sm text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+              <div className="flex items-center gap-1.5 text-sm text-[#9CA3AF] dark:text-mono-500 mt-0.5">
                 <Building2 className="w-3.5 h-3.5" />
                 <span className="truncate">{c.entreprise}</span>
               </div>
             )}
-            <div className="flex items-center gap-3 mt-1.5 text-xs text-[#9CA3AF] dark:text-[#737373]">
+            <div className="flex items-center gap-3 mt-1.5 text-xs text-[#9CA3AF] dark:text-mono-500">
               {c.email && <span className="flex items-center gap-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</span>}
             </div>
             {c.telephone && (
-              <div className="flex items-center gap-1 mt-0.5 text-xs text-[#9CA3AF] dark:text-[#737373]">
+              <div className="flex items-center gap-1 mt-0.5 text-xs text-[#9CA3AF] dark:text-mono-500">
                 <Phone className="w-3 h-3" />{c.telephone}
               </div>
             )}
             <div className="flex items-center gap-2 mt-2 flex-wrap">
               {renderTags(c.tags.slice(0, 3))}
-              {c.tags.length > 3 && <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">+{c.tags.length - 3}</span>}
+              {c.tags.length > 3 && <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">+{c.tags.length - 3}</span>}
             </div>
           </div>
         </div>
@@ -1253,7 +1253,7 @@ export default function Clients() {
             </span>
           )}
           {acqSource && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500">
               {acqSource === 'Google' && <Globe className="w-3 h-3" />}
               {acqSource === 'Instagram' && <Instagram className="w-3 h-3" />}
               {acqSource === 'Bouche-a-oreille' && <Mic className="w-3 h-3" />}
@@ -1263,31 +1263,31 @@ export default function Clients() {
           )}
         </div>
 
-        <div className="grid grid-cols-4 gap-2 mt-4 pt-4 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
+        <div className="grid grid-cols-4 gap-2 mt-4 pt-4 border-t border-mono-950 dark:border-mono-200">
           <div className="text-center">
-            <div className="text-base font-bold text-[#111111] dark:text-white">{fmt(c.caTotal)}</div>
-            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Total</div>
+            <div className="text-base font-bold text-mono-100 dark:text-white">{fmt(c.caTotal)}</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Total</div>
           </div>
           <div className="text-center">
-            <div className="text-base font-bold text-[#111111] dark:text-white">{fmt(insights.panierMoyen)}</div>
-            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Panier moy.</div>
+            <div className="text-base font-bold text-mono-100 dark:text-white">{fmt(insights.panierMoyen)}</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Panier moy.</div>
           </div>
           <div className="text-center">
-            <div className="text-base font-bold text-[#111111] dark:text-white">{insights.frequence.toFixed(1)}</div>
-            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Visites/mois</div>
+            <div className="text-base font-bold text-mono-100 dark:text-white">{insights.frequence.toFixed(1)}</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Visites/mois</div>
           </div>
           <div className="text-center">
-            <div className={`text-sm font-medium ${insights.risquePerte ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+            <div className={`text-sm font-medium ${insights.risquePerte ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
               {insights.joursSanVisite < 999 ? `${insights.joursSanVisite}j` : '--'}
             </div>
-            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Dern. visite</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Dern. visite</div>
           </div>
         </div>
 
         {/* Quick Actions */}
         <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
           <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 transition-colors">
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-[#F9FAFB] dark:bg-mono-50/30 text-mono-100 dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-mono-50/50 transition-colors">
             <Send className="w-3.5 h-3.5" /> Email
           </button>
           <button onClick={(e) => { e.stopPropagation(); openLoyaltyPanel(c); }}
@@ -1305,14 +1305,14 @@ export default function Clients() {
 
   // ── Simple Bar Chart ──────────────────────────────────────────────────
 
-  function BarChartSimple({ data, color = 'from-[#111111] to-[#333]' }: { data: { label: string; value: number }[]; color?: string }) {
+  function BarChartSimple({ data, color = 'from-mono-100 to-[#333]' }: { data: { label: string; value: number }[]; color?: string }) {
     const max = Math.max(...data.map(d => d.value), 1);
     return (
       <div className="space-y-2">
         {data.map((d, i) => (
           <div key={i} className="flex items-center gap-3">
-            <div className="w-28 text-xs text-[#6B7280] dark:text-[#A3A3A3] truncate text-right">{d.label}</div>
-            <div className="flex-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-full h-5 overflow-hidden">
+            <div className="w-28 text-xs text-[#6B7280] dark:text-mono-700 truncate text-right">{d.label}</div>
+            <div className="flex-1 bg-mono-950 dark:bg-[#171717] rounded-full h-5 overflow-hidden">
               <div className={`h-full bg-gradient-to-r ${color} rounded-full transition-all duration-500 flex items-center justify-end pr-2`}
                 style={{ width: `${(d.value / max) * 100}%` }}>
                 {d.value > 0 && <span className="text-[10px] text-white font-medium">{fmt(d.value)}</span>}
@@ -1343,7 +1343,7 @@ export default function Clients() {
           {data.map((d, i) => (
             <div key={i} className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: d.color }} />
-              <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{d.label}: <strong>{d.value}</strong> ({total > 0 ? Math.round(d.value / total * 100) : 0}%)</span>
+              <span className="text-sm text-[#6B7280] dark:text-mono-700">{d.label}: <strong>{d.value}</strong> ({total > 0 ? Math.round(d.value / total * 100) : 0}%)</span>
             </div>
           ))}
         </div>
@@ -1417,29 +1417,29 @@ export default function Clients() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
-              <Users className="w-7 h-7 text-[#111111] dark:text-[#A3A3A3]" />
+            <h1 className="text-2xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-3">
+              <Users className="w-7 h-7 text-mono-100 dark:text-mono-700" />
               CRM Clients
             </h1>
-            <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+            <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
               {clients.length} clients &middot; {fmt(stats.totalCA)} CA total
             </p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <button onClick={() => setShowStats(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] text-sm font-medium transition-colors">
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-mono-900 dark:hover:bg-[#333] text-sm font-medium transition-colors">
               <BarChart3 className="w-4 h-4" /> Statistiques
             </button>
             <button onClick={handleCSVExport}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] text-sm font-medium transition-colors">
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-mono-900 dark:hover:bg-[#333] text-sm font-medium transition-colors">
               <Download className="w-4 h-4" /> Exporter la liste
             </button>
             <button onClick={handleCSVImport}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] text-sm font-medium transition-colors">
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-mono-900 dark:hover:bg-[#333] text-sm font-medium transition-colors">
               <Upload className="w-4 h-4" /> Import CSV
             </button>
             <button onClick={openAdd}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium transition-colors shadow-sm">
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium transition-colors shadow-sm">
               <Plus className="w-4 h-4" /> Nouveau client
             </button>
           </div>
@@ -1447,60 +1447,60 @@ export default function Clients() {
 
         {/* ── KPI Stats Header ──────────────────────────────────────── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
             <div className="flex items-center justify-between mb-3">
-              <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
-                <Users className="w-5 h-5 text-[#111111] dark:text-[#A3A3A3]" />
+              <div className="p-2.5 rounded-xl bg-mono-950 dark:bg-[#171717]">
+                <Users className="w-5 h-5 text-mono-100 dark:text-mono-700" />
               </div>
               <span className="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-0.5">
                 <ArrowUpRight className="w-3 h-3" />
                 actifs
               </span>
             </div>
-            <div className="text-3xl font-bold text-[#111111] dark:text-white">{kpis.totalClients}</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Total clients</div>
+            <div className="text-3xl font-bold text-mono-100 dark:text-white">{kpis.totalClients}</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Total clients</div>
           </div>
 
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="p-2.5 rounded-xl bg-green-50 dark:bg-green-900/20">
                 <UserPlus className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
-              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">ce mois</span>
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">ce mois</span>
             </div>
             <div className="text-3xl font-bold text-green-600 dark:text-green-400">{kpis.nouveauxCeMois}</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Nouveaux ce mois</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Nouveaux ce mois</div>
           </div>
 
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/20">
                 <Target className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               </div>
-              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">EUR/commande</span>
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">EUR/commande</span>
             </div>
             <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">{fmt(kpis.panierMoyen)}</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Panier moyen</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Panier moyen</div>
           </div>
 
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/20">
                 <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">2+ commandes</span>
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">2+ commandes</span>
             </div>
             <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">{kpis.tauxFidelisation}%</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Taux de fidelisation</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Taux de fidelisation</div>
           </div>
         </div>
 
         {/* ── Birthday Alerts ────────────────────────────────────────── */}
         {birthdayClients.length > 0 && (
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-pink-200 dark:border-pink-800 p-4">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-pink-200 dark:border-pink-800 p-4">
             <div className="flex items-center gap-2 mb-3">
               <Cake className="w-5 h-5 text-pink-500" />
-              <h3 className="text-sm font-semibold text-[#111111] dark:text-white">
+              <h3 className="text-sm font-semibold text-mono-100 dark:text-white">
                 Anniversaires cette semaine ({birthdayClients.length})
               </h3>
             </div>
@@ -1515,10 +1515,10 @@ export default function Clients() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* NPS Alerts */}
             {npsAlerts.length > 0 && (
-              <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-red-200 dark:border-red-900 p-4">
+              <div className="bg-white dark:bg-mono-50 rounded-2xl border border-red-200 dark:border-red-900 p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <ThumbsDown className="w-5 h-5 text-red-500" />
-                  <h3 className="text-sm font-semibold text-[#111111] dark:text-white">
+                  <h3 className="text-sm font-semibold text-mono-100 dark:text-white">
                     Alertes NPS ({npsAlerts.length})
                   </h3>
                 </div>
@@ -1527,7 +1527,7 @@ export default function Clients() {
                     <div key={alert.id} className="flex items-center gap-3 px-3 py-2 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
                       {alert.client && renderAvatar(alert.client, 'w-8 h-8 text-xs')}
                       <div className="flex-1 min-w-0">
-                        <span className="text-sm font-medium text-[#111111] dark:text-white truncate block">
+                        <span className="text-sm font-medium text-mono-100 dark:text-white truncate block">
                           {alert.client?.prenom} {alert.client?.nom}
                         </span>
                         <span className="text-xs text-red-600 dark:text-red-400">
@@ -1543,10 +1543,10 @@ export default function Clients() {
 
             {/* Risk Clients */}
             {riskClients.length > 0 && (
-              <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-amber-200 dark:border-amber-900 p-4">
+              <div className="bg-white dark:bg-mono-50 rounded-2xl border border-amber-200 dark:border-amber-900 p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <AlertCircle className="w-5 h-5 text-amber-500" />
-                  <h3 className="text-sm font-semibold text-[#111111] dark:text-white">
+                  <h3 className="text-sm font-semibold text-mono-100 dark:text-white">
                     Risque de perte ({riskClients.length})
                   </h3>
                 </div>
@@ -1555,7 +1555,7 @@ export default function Clients() {
                     <div key={c.id} className="flex items-center gap-3 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
                       {renderAvatar(c, 'w-8 h-8 text-xs')}
                       <div className="flex-1 min-w-0">
-                        <span className="text-sm font-medium text-[#111111] dark:text-white truncate block">
+                        <span className="text-sm font-medium text-mono-100 dark:text-white truncate block">
                           {c.prenom} {c.nom}
                         </span>
                         <span className="text-xs text-amber-600 dark:text-amber-400">
@@ -1580,73 +1580,73 @@ export default function Clients() {
         {clients.length > 0 && (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Global NPS */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 cursor-pointer hover:shadow-lg transition-all"
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 cursor-pointer hover:shadow-lg transition-all"
               onClick={() => setShowAcquisition(true)}>
               <div className="flex items-center justify-between mb-3">
                 <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-900/20">
                   <ThumbsUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
-                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">NPS</span>
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">NPS</span>
               </div>
               <div className={`text-3xl font-bold ${globalNPS.score >= 50 ? 'text-green-600 dark:text-green-400' : globalNPS.score >= 0 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                 {globalNPS.total > 0 ? globalNPS.score : '--'}
               </div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Score NPS global</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Score NPS global</div>
             </div>
 
             {/* Total Loyalty Points */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
               <div className="flex items-center justify-between mb-3">
                 <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/20">
                   <Gem className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 </div>
-                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">fidelite</span>
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">fidelite</span>
               </div>
               <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">
                 {Object.values(loyaltyData).reduce((s, d) => s + d.points, 0).toLocaleString('fr-FR')}
               </div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Points distribues</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Points distribues</div>
             </div>
 
             {/* Acquisition Channel Leader */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 cursor-pointer hover:shadow-lg transition-all"
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 cursor-pointer hover:shadow-lg transition-all"
               onClick={() => setShowAcquisition(true)}>
               <div className="flex items-center justify-between mb-3">
                 <div className="p-2.5 rounded-xl bg-teal-50 dark:bg-teal-900/20">
                   <Globe className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                 </div>
-                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">acquisition</span>
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">acquisition</span>
               </div>
               <div className="text-xl font-bold text-teal-600 dark:text-teal-400 truncate">
                 {Object.entries(acquisitionStats).filter(([k]) => k !== 'Non renseigne').sort((a, b) => b[1] - a[1])[0]?.[0] || '--'}
               </div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Canal principal</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Canal principal</div>
             </div>
 
             {/* Risk Count */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
               <div className="flex items-center justify-between mb-3">
                 <div className="p-2.5 rounded-xl bg-red-50 dark:bg-red-900/20">
                   <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
                 </div>
-                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">&gt;30j</span>
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">&gt;30j</span>
               </div>
               <div className="text-3xl font-bold text-red-600 dark:text-red-400">{riskClients.length}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Clients a risque</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Clients a risque</div>
             </div>
           </div>
         )}
 
         {/* ── Automated Campaigns Quick Actions ────────────────────────── */}
         {clients.length > 0 && (
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-mono-100 dark:text-white flex items-center gap-2">
                 <Zap className="w-4 h-4 text-amber-500" />
                 Campagnes automatisees
               </h3>
               <button onClick={() => setShowAutoCampaign(true)}
-                className="text-xs text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors">
+                className="text-xs text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors">
                 Voir tout
               </button>
             </div>
@@ -1666,14 +1666,14 @@ export default function Clients() {
                       setCampaignMessage(camp.body);
                       setShowCampaign(true);
                     }}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#F9FAFB] dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all text-left"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#F9FAFB] dark:bg-black border border-mono-900 dark:border-mono-200 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all text-left"
                   >
                     <Icon className={`w-5 h-5 ${camp.color} flex-shrink-0`} />
                     <div className="flex-1 min-w-0">
-                      <div className="text-xs font-medium text-[#111111] dark:text-white truncate">{camp.label}</div>
-                      <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] truncate">{camp.subject}</div>
+                      <div className="text-xs font-medium text-mono-100 dark:text-white truncate">{camp.label}</div>
+                      <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 truncate">{camp.subject}</div>
                     </div>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] font-medium">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 font-medium">
                       {recipientCount}
                     </span>
                   </button>
@@ -1684,7 +1684,7 @@ export default function Clients() {
         )}
 
         {/* ── Segment Filter Tabs ────────────────────────────────────── */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-1.5">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-1.5">
           <div className="flex gap-1 overflow-x-auto">
             {(['tous', 'vip', 'reguliers', 'nouveaux', 'inactifs'] as SegmentId[]).map(seg => (
               <button
@@ -1692,8 +1692,8 @@ export default function Clients() {
                 onClick={() => setActiveSegment(seg)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
                   activeSegment === seg
-                    ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-sm'
-                    : 'text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                    ? 'bg-mono-100 dark:bg-white text-white dark:text-black shadow-sm'
+                    : 'text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717]'
                 }`}
               >
                 {segmentIcons[seg]}
@@ -1701,7 +1701,7 @@ export default function Clients() {
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
                   activeSegment === seg
                     ? 'bg-white/20 dark:bg-black/20'
-                    : 'bg-[#F3F4F6] dark:bg-[#171717]'
+                    : 'bg-mono-950 dark:bg-[#171717]'
                 }`}>
                   {seg === 'tous' ? clients.length : localSegmentCounts[seg]}
                 </span>
@@ -1709,14 +1709,14 @@ export default function Clients() {
             ))}
           </div>
           {activeSegment !== 'tous' && (
-            <div className="px-4 py-1.5 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+            <div className="px-4 py-1.5 text-[10px] text-[#9CA3AF] dark:text-mono-500">
               {segmentDescriptions[activeSegment]}
             </div>
           )}
         </div>
 
         {/* Filters bar */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 space-y-3">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4 space-y-3">
           <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
             {/* Search */}
             <SearchBar
@@ -1730,7 +1730,7 @@ export default function Clients() {
 
             {/* Type filter */}
             <select value={filterType} onChange={e => setFilterType(e.target.value as ClientType | '')}
-              className="px-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#9CA3AF] dark:text-[#737373]">
+              className="px-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black text-sm text-[#9CA3AF] dark:text-mono-500">
               <option value="">Tous les types</option>
               <option value="Particulier">Particulier</option>
               <option value="Entreprise">Entreprise</option>
@@ -1740,33 +1740,33 @@ export default function Clients() {
             {/* Sort */}
             <div className="flex items-center gap-1">
               <select value={sortField} onChange={e => setSortField(e.target.value as SortField)}
-                className="px-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#9CA3AF] dark:text-[#737373]">
+                className="px-3 py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black text-sm text-[#9CA3AF] dark:text-mono-500">
                 <option value="nom">Tri par nom</option>
                 <option value="caTotal">Tri par CA</option>
                 <option value="derniereVisite">Tri par visite</option>
               </select>
               <button onClick={() => setSortAsc(!sortAsc)}
-                className="p-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-                {sortAsc ? <ChevronUp className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />}
+                className="p-2.5 rounded-xl border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
+                {sortAsc ? <ChevronUp className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />}
               </button>
             </div>
 
             {/* Campaign for current segment */}
             {activeSegment !== 'tous' && (
               <button onClick={() => openCampaign(activeSegment)}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
                 <Megaphone className="w-4 h-4" /> Campagne email
               </button>
             )}
 
             {/* View toggle */}
-            <div className="flex items-center bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-0.5">
+            <div className="flex items-center bg-mono-950 dark:bg-[#171717] rounded-xl p-0.5">
               <button onClick={() => setViewMode('cards')}
-                className={`p-2.5 rounded-lg transition-colors ${viewMode === 'cards' ? 'bg-white dark:bg-[#333] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]'}`}>
+                className={`p-2.5 rounded-lg transition-colors ${viewMode === 'cards' ? 'bg-white dark:bg-[#333] shadow-sm text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#4B5563]'}`}>
                 <LayoutGrid className="w-4 h-4" />
               </button>
               <button onClick={() => setViewMode('table')}
-                className={`p-2.5 rounded-lg transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-[#333] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]'}`}>
+                className={`p-2.5 rounded-lg transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-[#333] shadow-sm text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#4B5563]'}`}>
                 <List className="w-4 h-4" />
               </button>
             </div>
@@ -1781,7 +1781,7 @@ export default function Clients() {
 
         {/* Results count */}
         {filtered.length !== clients.length && (
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500">
             {filtered.length} resultat{filtered.length > 1 ? 's' : ''} sur {clients.length} clients
           </p>
         )}
@@ -1790,10 +1790,10 @@ export default function Clients() {
         {clients.length === 0 && (
           <div className="text-center py-16">
             <Users className="w-16 h-16 mx-auto mb-4 text-[#D1D5DB] dark:text-[#333]" />
-            <h3 className="text-lg font-semibold text-[#111111] dark:text-white mb-2">Aucun client</h3>
-            <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-6">Commencez par ajouter votre premier client pour activer le CRM.</p>
+            <h3 className="text-lg font-semibold text-mono-100 dark:text-white mb-2">Aucun client</h3>
+            <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mb-6">Commencez par ajouter votre premier client pour activer le CRM.</p>
             <button onClick={openAdd}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium transition-colors">
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium transition-colors">
               <Plus className="w-4 h-4" /> Ajouter un client
             </button>
           </div>
@@ -1808,20 +1808,20 @@ export default function Clients() {
 
         {/* Table view */}
         {viewMode === 'table' && clients.length > 0 && (
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black/50">
-                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Client</th>
-                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Fidelite</th>
-                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Tags</th>
-                  <th className="text-right px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">CA Total</th>
-                  <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Commandes</th>
-                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Derniere visite</th>
-                  <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Actions</th>
+                <tr className="border-b border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black/50">
+                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-mono-500">Client</th>
+                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-mono-500">Fidelite</th>
+                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-mono-500">Tags</th>
+                  <th className="text-right px-4 py-3 font-medium text-[#9CA3AF] dark:text-mono-500">CA Total</th>
+                  <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-mono-500">Commandes</th>
+                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-mono-500">Derniere visite</th>
+                  <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-mono-500">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
+              <tbody className="divide-y divide-mono-950 dark:divide-mono-200">
                 {filtered.map(c => (
                   <tr key={c.id} className="hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30 cursor-pointer transition-colors"
                     onClick={() => openSidebar(c)}>
@@ -1829,11 +1829,11 @@ export default function Clients() {
                       <div className="flex items-center gap-3">
                         {renderAvatar(c, 'w-9 h-9 text-xs')}
                         <div>
-                          <div className="font-medium text-[#111111] dark:text-white flex items-center gap-2">
+                          <div className="font-medium text-mono-100 dark:text-white flex items-center gap-2">
                             {c.prenom} {c.nom}
                             {isBirthdayThisWeek(c.dateNaissance) && <Cake className="w-3.5 h-3.5 text-pink-500" />}
                           </div>
-                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{c.email}</div>
+                          <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{c.email}</div>
                         </div>
                       </div>
                     </td>
@@ -1841,21 +1841,21 @@ export default function Clients() {
                     <td className="px-4 py-3">
                       <div className="flex gap-1 flex-wrap">{renderTags(c.tags.slice(0, 2))}{c.tags.length > 2 && <span className="text-[10px] text-[#9CA3AF]">+{c.tags.length - 2}</span>}</div>
                     </td>
-                    <td className="px-4 py-3 text-right font-medium text-[#111111] dark:text-white">{fmt(c.caTotal)}</td>
-                    <td className="px-4 py-3 text-center text-[#6B7280] dark:text-[#A3A3A3]">{c.nbCommandes}</td>
-                    <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{fmtDate(c.derniereVisite)}</td>
+                    <td className="px-4 py-3 text-right font-medium text-mono-100 dark:text-white">{fmt(c.caTotal)}</td>
+                    <td className="px-4 py-3 text-center text-[#6B7280] dark:text-mono-700">{c.nbCommandes}</td>
+                    <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700">{fmtDate(c.derniereVisite)}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-1">
                         <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
-                          className="p-1.5 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/30 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors" title="Envoyer email">
+                          className="p-1.5 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-mono-50/30 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors" title="Envoyer email">
                           <Send className="w-4 h-4" />
                         </button>
                         <button onClick={(e) => { e.stopPropagation(); openSidebar(c); }}
-                          className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] transition-colors" title="Ajouter note">
+                          className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] transition-colors" title="Ajouter note">
                           <StickyNote className="w-4 h-4" />
                         </button>
                         <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
-                          className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] transition-colors" title="Modifier">
+                          className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] transition-colors" title="Modifier">
                           <Edit2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -1865,7 +1865,7 @@ export default function Clients() {
               </tbody>
             </table>
             {filtered.length === 0 && (
-              <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+              <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">
                 <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
                 <p>Aucun client trouve</p>
               </div>
@@ -1877,23 +1877,23 @@ export default function Clients() {
       {/* ── Client Detail Sidebar ──────────────────────────────────────── */}
       {sidebarClient && (
         <div className="w-[380px] lg:w-[420px] flex-shrink-0 ml-6 hidden md:block">
-          <div className="sticky top-6 bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden max-h-[calc(100vh-120px)] overflow-y-auto">
+          <div className="sticky top-6 bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden max-h-[calc(100vh-120px)] overflow-y-auto">
             {/* Sidebar Header */}
-            <div className="relative p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+            <div className="relative p-5 border-b border-mono-950 dark:border-mono-200">
               <button onClick={closeSidebar}
-                className="absolute top-3 right-3 p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                className="absolute top-3 right-3 p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
                 <X className="w-4 h-4 text-[#9CA3AF]" />
               </button>
               <div className="flex items-start gap-4">
                 {renderAvatar(sidebarClient, 'w-14 h-14 text-lg')}
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-bold text-[#111111] dark:text-white">{sidebarClient.prenom} {sidebarClient.nom}</h3>
+                  <h3 className="text-lg font-bold text-mono-100 dark:text-white">{sidebarClient.prenom} {sidebarClient.nom}</h3>
                   <div className="flex items-center gap-2 mt-1">
                     <span className={`px-2 py-0.5 rounded text-xs font-medium ${(TYPE_COLORS[sidebarClient.type] || TYPE_COLORS['Particulier']).bg} ${(TYPE_COLORS[sidebarClient.type] || TYPE_COLORS['Particulier']).text}`}>{sidebarClient.type}</span>
                     {renderLoyaltyBadge(sidebarClient)}
                   </div>
                   {sidebarClient.entreprise && (
-                    <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+                    <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">
                       <Building2 className="w-3 h-3" /> {sidebarClient.entreprise}
                     </div>
                   )}
@@ -1912,59 +1912,59 @@ export default function Clients() {
             </div>
 
             {/* Contact Info */}
-            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A] space-y-2.5">
-              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3">Contact</h4>
+            <div className="p-5 border-b border-mono-950 dark:border-mono-200 space-y-2.5">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-3">Contact</h4>
               {sidebarClient.email && (
-                <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+                <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-mono-700">
                   <Mail className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
                   <span className="truncate">{sidebarClient.email}</span>
                 </div>
               )}
               {sidebarClient.telephone && (
-                <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+                <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-mono-700">
                   <Phone className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
                   <span>{sidebarClient.telephone}</span>
                 </div>
               )}
               {sidebarClient.adresse && (
-                <div className="flex items-start gap-2.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+                <div className="flex items-start gap-2.5 text-sm text-[#6B7280] dark:text-mono-700">
                   <Building2 className="w-4 h-4 text-[#9CA3AF] flex-shrink-0 mt-0.5" />
                   <span>{sidebarClient.adresse}</span>
                 </div>
               )}
               {sidebarClient.dateNaissance && (
-                <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+                <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-mono-700">
                   <Calendar className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
                   <span>Ne(e) le {fmtDate(sidebarClient.dateNaissance)}</span>
                 </div>
               )}
-              <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+              <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-mono-700">
                 <Clock className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
                 <span>Client depuis {fmtDate(sidebarClient.dateCreation)}</span>
               </div>
             </div>
 
             {/* Lifetime Value */}
-            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
-              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3">Valeur client</h4>
+            <div className="p-5 border-b border-mono-950 dark:border-mono-200">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-3">Valeur client</h4>
               <div className="grid grid-cols-3 gap-3">
                 <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
-                  <div className="text-lg font-bold text-[#111111] dark:text-white">{fmt(sidebarClient.caTotal)}</div>
-                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Lifetime Value</div>
+                  <div className="text-lg font-bold text-mono-100 dark:text-white">{fmt(sidebarClient.caTotal)}</div>
+                  <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Lifetime Value</div>
                 </div>
                 <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
-                  <div className="text-lg font-bold text-[#111111] dark:text-white">{sidebarClient.nbCommandes}</div>
-                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Commandes</div>
+                  <div className="text-lg font-bold text-mono-100 dark:text-white">{sidebarClient.nbCommandes}</div>
+                  <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Commandes</div>
                 </div>
                 <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
-                  <div className="text-lg font-bold text-[#111111] dark:text-white">
+                  <div className="text-lg font-bold text-mono-100 dark:text-white">
                     {sidebarClient.nbCommandes > 0 ? fmt(sidebarClient.caTotal / sidebarClient.nbCommandes) : '--'}
                   </div>
-                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Ticket moyen</div>
+                  <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Ticket moyen</div>
                 </div>
               </div>
               {sidebarClient.derniereVisite && (
-                <div className="mt-3 text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1.5">
+                <div className="mt-3 text-xs text-[#9CA3AF] dark:text-mono-500 flex items-center gap-1.5">
                   <Clock className="w-3 h-3" />
                   Derniere visite : {fmtDate(sidebarClient.derniereVisite)}
                 </div>
@@ -1973,8 +1973,8 @@ export default function Clients() {
 
             {/* Favorite Dishes */}
             {sidebarClient.platsFavoris.length > 0 && (
-              <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
-                <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-1.5">
+              <div className="p-5 border-b border-mono-950 dark:border-mono-200">
+                <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-1.5">
                   <Star className="w-3.5 h-3.5 text-amber-500" /> Plats favoris
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
@@ -1986,28 +1986,28 @@ export default function Clients() {
             )}
 
             {/* Order History Timeline */}
-            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
-              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3">Historique</h4>
+            <div className="p-5 border-b border-mono-950 dark:border-mono-200">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-3">Historique</h4>
               {sidebarClient.historique.length === 0 ? (
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center py-4">Aucune interaction</p>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500 text-center py-4">Aucune interaction</p>
               ) : (
-                <div className="relative pl-5 border-l-2 border-[#E5E7EB] dark:border-[#1A1A1A] space-y-3 max-h-48 overflow-y-auto">
+                <div className="relative pl-5 border-l-2 border-mono-900 dark:border-mono-200 space-y-3 max-h-48 overflow-y-auto">
                   {sidebarClient.historique.slice(0, 8).map(h => (
                     <div key={h.id} className="relative">
-                      <div className="absolute -left-[23px] w-3 h-3 rounded-full bg-white dark:bg-[#0A0A0A] border-2 border-[#D1D5DB] dark:border-[#333]" />
+                      <div className="absolute -left-[23px] w-3 h-3 rounded-full bg-white dark:bg-mono-50 border-2 border-[#D1D5DB] dark:border-[#333]" />
                       <div className="flex items-center justify-between">
                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${interactionIcons[h.type]?.color || ''}`}>
                           {h.type.charAt(0).toUpperCase() + h.type.slice(1)}
                         </span>
-                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtDate(h.date)}</span>
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{fmtDate(h.date)}</span>
                       </div>
-                      <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5 line-clamp-1">{h.description}</p>
-                      {h.montant && <p className="text-xs font-semibold text-[#111111] dark:text-white">{fmt(h.montant)}</p>}
+                      <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5 line-clamp-1">{h.description}</p>
+                      {h.montant && <p className="text-xs font-semibold text-mono-100 dark:text-white">{fmt(h.montant)}</p>}
                     </div>
                   ))}
                   {sidebarClient.historique.length > 8 && (
                     <button onClick={() => openDetail(sidebarClient)}
-                      className="text-xs text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors flex items-center gap-1">
+                      className="text-xs text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors flex items-center gap-1">
                       Voir tout <ChevronsRight className="w-3 h-3" />
                     </button>
                   )}
@@ -2016,39 +2016,39 @@ export default function Clients() {
             </div>
 
             {/* Notes (quick edit) */}
-            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
-              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-1.5">
+            <div className="p-5 border-b border-mono-950 dark:border-mono-200">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-1.5">
                 <StickyNote className="w-3.5 h-3.5" /> Notes
               </h4>
               <textarea
                 value={sidebarNotes}
                 onChange={e => setSidebarNotes(e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-xs text-[#111111] dark:text-white resize-none"
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black text-xs text-mono-100 dark:text-white resize-none"
                 placeholder="Notes internes sur ce client..."
               />
               {sidebarNotes !== (sidebarClient.notes || '') && (
                 <button
                   onClick={() => saveClientNotes(sidebarClient.id, sidebarNotes)}
-                  className="mt-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                  className="mt-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
                   Sauvegarder
                 </button>
               )}
             </div>
 
             {/* Tags */}
-            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
-              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3">Tags</h4>
+            <div className="p-5 border-b border-mono-950 dark:border-mono-200">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-3">Tags</h4>
               <div className="flex flex-wrap gap-1.5">
                 {sidebarClient.tags.length > 0 ? renderTags(sidebarClient.tags) : (
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Aucun tag</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Aucun tag</span>
                 )}
               </div>
             </div>
 
             {/* Loyalty Points */}
-            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
-              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-1.5">
+            <div className="p-5 border-b border-mono-950 dark:border-mono-200">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-1.5">
                 <Gem className="w-3.5 h-3.5 text-amber-500" /> Points de fidelite
               </h4>
               {(() => {
@@ -2061,7 +2061,7 @@ export default function Clients() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">{pts}</span>
-                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">points</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500">points</span>
                       </div>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${tierColors.bg} ${tierColors.text} ${tierColors.border}`}>
                         {tier === 'Gold' && <Trophy className="w-3 h-3 inline mr-0.5" />}
@@ -2070,11 +2070,11 @@ export default function Clients() {
                     </div>
                     {nextReward && (
                       <div>
-                        <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-[#737373] mb-1">
+                        <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-mono-500 mb-1">
                           <span>Prochain : {nextReward.label}</span>
                           <span>{pts}/{nextReward.points}</span>
                         </div>
-                        <div className="w-full bg-[#F3F4F6] dark:bg-[#171717] rounded-full h-2">
+                        <div className="w-full bg-mono-950 dark:bg-[#171717] rounded-full h-2">
                           <div className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all"
                             style={{ width: `${Math.min(100, (pts / nextReward.points) * 100)}%` }} />
                         </div>
@@ -2092,8 +2092,8 @@ export default function Clients() {
             </div>
 
             {/* Client Insights */}
-            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
-              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-1.5">
+            <div className="p-5 border-b border-mono-950 dark:border-mono-200">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-1.5">
                 <BarChart3 className="w-3.5 h-3.5 text-teal-500" /> Insights client
               </h4>
               {(() => {
@@ -2104,17 +2104,17 @@ export default function Clients() {
                   <div className="space-y-2">
                     <div className="grid grid-cols-2 gap-2">
                       <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-2.5 text-center">
-                        <div className="text-sm font-bold text-[#111111] dark:text-white">{fmt(insights.panierMoyen)}</div>
-                        <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Panier moyen</div>
+                        <div className="text-sm font-bold text-mono-100 dark:text-white">{fmt(insights.panierMoyen)}</div>
+                        <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Panier moyen</div>
                       </div>
                       <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-2.5 text-center">
-                        <div className="text-sm font-bold text-[#111111] dark:text-white">{insights.frequence.toFixed(1)}</div>
-                        <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Visites/mois</div>
+                        <div className="text-sm font-bold text-mono-100 dark:text-white">{insights.frequence.toFixed(1)}</div>
+                        <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Visites/mois</div>
                       </div>
                     </div>
                     {insights.commandeHabituelle.length > 0 && (
                       <div>
-                        <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mb-1">Commande habituelle</div>
+                        <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 mb-1">Commande habituelle</div>
                         <div className="flex flex-wrap gap-1">
                           {insights.commandeHabituelle.map(p => (
                             <span key={p} className="px-2 py-0.5 rounded-lg text-[10px] font-medium bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800">{p}</span>
@@ -2132,7 +2132,7 @@ export default function Clients() {
                     )}
                     {clientNpsEntries.length > 0 && (
                       <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#F9FAFB] dark:bg-black">
-                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">NPS moyen</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500">NPS moyen</span>
                         <span className={`text-sm font-bold ${getNPSCategory(avgNps).color}`}>{avgNps}/10</span>
                       </div>
                     )}
@@ -2143,9 +2143,9 @@ export default function Clients() {
 
             {/* Quick Actions */}
             <div className="p-5 space-y-2">
-              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3">Actions rapides</h4>
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-3">Actions rapides</h4>
               <button onClick={() => openEmailModal(sidebarClient)}
-                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
                 <Send className="w-4 h-4" /> Envoyer email
               </button>
               <button onClick={() => openLoyaltyPanel(sidebarClient)}
@@ -2161,11 +2161,11 @@ export default function Clients() {
                 <MessageSquare className="w-4 h-4" /> WhatsApp
               </button>
               <button onClick={() => { closeSidebar(); openEdit(sidebarClient); }}
-                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] transition-colors">
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white hover:bg-mono-900 dark:hover:bg-[#333] transition-colors">
                 <Edit2 className="w-4 h-4" /> Modifier le profil
               </button>
               <button onClick={() => openDetail(sidebarClient)}
-                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] transition-colors">
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white hover:bg-mono-900 dark:hover:bg-[#333] transition-colors">
                 <Eye className="w-4 h-4" /> Voir fiche complete
               </button>
               <button onClick={() => handleDelete(sidebarClient.id)}
@@ -2193,11 +2193,11 @@ export default function Clients() {
                   {renderTags(selectedClient.tags)}
                 </div>
                 {selectedClient.entreprise && (
-                  <div className="flex items-center gap-1.5 text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+                  <div className="flex items-center gap-1.5 text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
                     <Building2 className="w-4 h-4" /> {selectedClient.entreprise}
                   </div>
                 )}
-                <div className="flex items-center gap-4 mt-2 text-sm text-[#9CA3AF] dark:text-[#737373] flex-wrap">
+                <div className="flex items-center gap-4 mt-2 text-sm text-[#9CA3AF] dark:text-mono-500 flex-wrap">
                   <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {selectedClient.email}</span>
                   <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {selectedClient.telephone}</span>
                   {selectedClient.dateNaissance && (
@@ -2209,7 +2209,7 @@ export default function Clients() {
                 </div>
                 <div className="flex items-center gap-3 mt-3 flex-wrap">
                   <button onClick={() => openEmailModal(selectedClient)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
                     <Send className="w-3.5 h-3.5" /> Envoyer email
                   </button>
                   <button onClick={() => openWhatsApp(selectedClient.telephone)}
@@ -2217,7 +2217,7 @@ export default function Clients() {
                     <MessageSquare className="w-3.5 h-3.5" /> WhatsApp
                   </button>
                   <button onClick={() => { setShowDetail(false); openEdit(selectedClient); }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] transition-colors">
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-mono-900 dark:hover:bg-[#333] transition-colors">
                     <Edit2 className="w-3.5 h-3.5" /> Modifier
                   </button>
                   <button onClick={() => handleDelete(selectedClient.id)}
@@ -2227,17 +2227,17 @@ export default function Clients() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-[#111111] dark:text-white">{fmt(selectedClient.caTotal)}</div>
-                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Lifetime Value</div>
-                <div className="text-lg font-semibold text-[#6B7280] dark:text-[#A3A3A3] mt-1">
+                <div className="text-2xl font-bold text-mono-100 dark:text-white">{fmt(selectedClient.caTotal)}</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Lifetime Value</div>
+                <div className="text-lg font-semibold text-[#6B7280] dark:text-mono-700 mt-1">
                   {selectedClient.nbCommandes > 0 ? fmt(selectedClient.caTotal / selectedClient.nbCommandes) : '--'}
                 </div>
-                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Ticket moyen</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Ticket moyen</div>
               </div>
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-1 border-b border-[#E5E7EB] dark:border-[#1A1A1A] mb-4 overflow-x-auto">
+            <div className="flex gap-1 border-b border-mono-900 dark:border-mono-200 mb-4 overflow-x-auto">
               {([
                 { id: 'infos' as TabId, label: 'Informations' },
                 { id: 'preferences' as TabId, label: 'Preferences' },
@@ -2248,8 +2248,8 @@ export default function Clients() {
                 <button key={tab.id} onClick={() => setDetailTab(tab.id)}
                   className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                     detailTab === tab.id
-                      ? 'border-[#111111] text-[#111111] dark:text-[#A3A3A3] dark:border-[#333]'
-                      : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151]'
+                      ? 'border-mono-100 text-mono-100 dark:text-mono-700 dark:border-[#333]'
+                      : 'border-transparent text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151]'
                   }`}>
                   {tab.label}
                 </button>
@@ -2261,27 +2261,27 @@ export default function Clients() {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
-                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Nom complet</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.prenom} {selectedClient.nom}</p></div>
-                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Entreprise</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.entreprise || '--'}</p></div>
-                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">SIRET</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.siret || '--'}</p></div>
-                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Adresse</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.adresse || '--'}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">Nom complet</label><p className="text-sm text-mono-100 dark:text-white">{selectedClient.prenom} {selectedClient.nom}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">Entreprise</label><p className="text-sm text-mono-100 dark:text-white">{selectedClient.entreprise || '--'}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">SIRET</label><p className="text-sm text-mono-100 dark:text-white">{selectedClient.siret || '--'}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">Adresse</label><p className="text-sm text-mono-100 dark:text-white">{selectedClient.adresse || '--'}</p></div>
                   </div>
                   <div className="space-y-3">
-                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Email</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.email}</p></div>
-                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Telephone</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.telephone}</p></div>
-                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Date de naissance</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.dateNaissance ? fmtDate(selectedClient.dateNaissance) : '--'}</p></div>
-                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Client depuis</label><p className="text-sm text-[#111111] dark:text-white">{fmtDate(selectedClient.dateCreation)}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">Email</label><p className="text-sm text-mono-100 dark:text-white">{selectedClient.email}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">Telephone</label><p className="text-sm text-mono-100 dark:text-white">{selectedClient.telephone}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">Date de naissance</label><p className="text-sm text-mono-100 dark:text-white">{selectedClient.dateNaissance ? fmtDate(selectedClient.dateNaissance) : '--'}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">Client depuis</label><p className="text-sm text-mono-100 dark:text-white">{fmtDate(selectedClient.dateCreation)}</p></div>
                   </div>
                 </div>
 
                 {/* Editable Tags */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1.5">
+                    <label className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 flex items-center gap-1.5">
                       <Tag className="w-3.5 h-3.5" /> Tags
                     </label>
                     <button onClick={() => setEditingTags(!editingTags)}
-                      className="text-xs text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors">
+                      className="text-xs text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors">
                       {editingTags ? 'Terminer' : 'Modifier'}
                     </button>
                   </div>
@@ -2294,7 +2294,7 @@ export default function Clients() {
                           <button key={tag}
                             onClick={() => toggleClientTag(selectedClient.id, tag as ClientTag)}
                             className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                              active ? `${colors.bg} ${colors.text} ${colors.border}` : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#737373] border-[#E5E7EB] dark:border-[#1A1A1A]'
+                              active ? `${colors.bg} ${colors.text} ${colors.border}` : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-mono-500 border-mono-900 dark:border-mono-200'
                             }`}>
                             {active ? 'x ' : '+ '}{tag}
                           </button>
@@ -2304,7 +2304,7 @@ export default function Clients() {
                   ) : (
                     <div className="flex flex-wrap gap-2">
                       {selectedClient.tags.length > 0 ? renderTags(selectedClient.tags) : (
-                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Aucun tag</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Aucun tag</span>
                       )}
                     </div>
                   )}
@@ -2312,18 +2312,18 @@ export default function Clients() {
 
                 {/* Editable Notes */}
                 <div>
-                  <label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1 block">Notes</label>
+                  <label className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1 block">Notes</label>
                   <textarea
                     value={clientNotes}
                     onChange={e => setClientNotes(e.target.value)}
                     rows={3}
-                    className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#111111] dark:text-white resize-none"
+                    className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black text-sm text-mono-100 dark:text-white resize-none"
                     placeholder="Notes internes sur ce client..."
                   />
                   {clientNotes !== (selectedClient.notes || '') && (
                     <button
                       onClick={() => saveClientNotes(selectedClient.id, clientNotes)}
-                      className="mt-2 px-4 py-1.5 rounded-xl text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                      className="mt-2 px-4 py-1.5 rounded-xl text-xs font-medium bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
                       Sauvegarder notes
                     </button>
                   )}
@@ -2332,7 +2332,7 @@ export default function Clients() {
                 {/* Favorite dishes */}
                 {selectedClient.platsFavoris.length > 0 && (
                   <div>
-                    <label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2 block flex items-center gap-1.5">
+                    <label className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-2 block flex items-center gap-1.5">
                       <Star className="w-3.5 h-3.5 text-amber-500" /> Plats favoris
                     </label>
                     <div className="flex flex-wrap gap-2">
@@ -2349,7 +2349,7 @@ export default function Clients() {
             {detailTab === 'preferences' && (
               <div className="space-y-6">
                 <div>
-                  <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 text-amber-500" /> Allergenes
                   </h4>
                   <div className="flex flex-wrap gap-2">
@@ -2359,7 +2359,7 @@ export default function Clients() {
                         <span key={a.id} className={`px-3 py-1 rounded-full text-xs font-medium border ${
                           active
                             ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700'
-                            : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#A3A3A3] border-[#E5E7EB] dark:border-[#1A1A1A]'
+                            : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-mono-700 border-mono-900 dark:border-mono-200'
                         }`}>
                           {active && '! '}{a.nom}
                         </span>
@@ -2368,7 +2368,7 @@ export default function Clients() {
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-2">
                     <Heart className="w-4 h-4 text-green-500" /> Regime
                   </h4>
                   <div className="flex flex-wrap gap-2">
@@ -2378,7 +2378,7 @@ export default function Clients() {
                         <span key={r} className={`px-3 py-1 rounded-full text-xs font-medium border ${
                           active
                             ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700'
-                            : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#A3A3A3] border-[#E5E7EB] dark:border-[#1A1A1A]'
+                            : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-mono-700 border-mono-900 dark:border-mono-200'
                         }`}>
                           {r}
                         </span>
@@ -2395,28 +2395,28 @@ export default function Clients() {
                 {/* Summary bar */}
                 <div className="grid grid-cols-3 gap-4 mb-4">
                   <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold text-[#111111] dark:text-white">{fmt(selectedClient.caTotal)}</div>
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Total depense</div>
+                    <div className="text-lg font-bold text-mono-100 dark:text-white">{fmt(selectedClient.caTotal)}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Total depense</div>
                   </div>
                   <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold text-[#111111] dark:text-white">
+                    <div className="text-lg font-bold text-mono-100 dark:text-white">
                       {selectedClient.nbCommandes > 0 ? fmt(selectedClient.caTotal / selectedClient.nbCommandes) : '--'}
                     </div>
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Ticket moyen</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Ticket moyen</div>
                   </div>
                   <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold text-[#111111] dark:text-white">{selectedClient.nbCommandes}</div>
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Visites</div>
+                    <div className="text-lg font-bold text-mono-100 dark:text-white">{selectedClient.nbCommandes}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Visites</div>
                   </div>
                 </div>
 
                 {selectedClient.historique.length === 0 ? (
-                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-8">Aucune interaction enregistree</p>
+                  <p className="text-sm text-[#9CA3AF] dark:text-mono-500 text-center py-8">Aucune interaction enregistree</p>
                 ) : (
-                  <div className="relative pl-6 border-l-2 border-[#E5E7EB] dark:border-[#1A1A1A] space-y-4">
+                  <div className="relative pl-6 border-l-2 border-mono-900 dark:border-mono-200 space-y-4">
                     {selectedClient.historique.map(h => (
                       <div key={h.id} className="relative">
-                        <div className="absolute -left-[29px] w-4 h-4 rounded-full bg-white dark:bg-[#0A0A0A] border-2 border-[#D1D5DB] dark:border-[#1A1A1A] flex items-center justify-center text-[8px] font-bold">
+                        <div className="absolute -left-[29px] w-4 h-4 rounded-full bg-white dark:bg-mono-50 border-2 border-[#D1D5DB] dark:border-mono-200 flex items-center justify-center text-[8px] font-bold">
                           {interactionIcons[h.type]?.icon || '?'}
                         </div>
                         <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3">
@@ -2424,10 +2424,10 @@ export default function Clients() {
                             <span className={`px-2 py-0.5 rounded text-xs font-medium ${interactionIcons[h.type]?.color || ''}`}>
                               {h.type.charAt(0).toUpperCase() + h.type.slice(1)}
                             </span>
-                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{fmtDate(h.date)}</span>
+                            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{fmtDate(h.date)}</span>
                           </div>
-                          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">{h.description}</p>
-                          {h.montant && <p className="text-sm font-semibold text-[#111111] dark:text-white mt-1">{fmt(h.montant)}</p>}
+                          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">{h.description}</p>
+                          {h.montant && <p className="text-sm font-semibold text-mono-100 dark:text-white mt-1">{fmt(h.montant)}</p>}
                         </div>
                       </div>
                     ))}
@@ -2440,22 +2440,22 @@ export default function Clients() {
             {detailTab === 'documents' && (
               <div className="space-y-3">
                 {selectedClient.documents.length === 0 ? (
-                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-8">Aucun document</p>
+                  <p className="text-sm text-[#9CA3AF] dark:text-mono-500 text-center py-8">Aucun document</p>
                 ) : (
                   selectedClient.documents.map(d => (
                     <div key={d.id} className="flex items-center justify-between bg-[#F9FAFB] dark:bg-black rounded-xl p-3">
                       <div className="flex items-center gap-3">
-                        <FileText className={`w-5 h-5 ${d.type === 'facture' ? 'text-green-500' : 'text-[#374151] dark:text-[#D4D4D4]'}`} />
+                        <FileText className={`w-5 h-5 ${d.type === 'facture' ? 'text-green-500' : 'text-[#374151] dark:text-mono-800'}`} />
                         <div>
-                          <div className="text-sm font-medium text-[#111111] dark:text-white">{d.numero}</div>
-                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{d.type === 'facture' ? 'Facture' : 'Devis'} &middot; {fmtDate(d.date)}</div>
+                          <div className="text-sm font-medium text-mono-100 dark:text-white">{d.numero}</div>
+                          <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{d.type === 'facture' ? 'Facture' : 'Devis'} &middot; {fmtDate(d.date)}</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-semibold text-[#111111] dark:text-white">{fmt(d.montant)}</div>
+                        <div className="text-sm font-semibold text-mono-100 dark:text-white">{fmt(d.montant)}</div>
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                           d.statut === 'Payee' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' :
-                          d.statut === 'Accepte' ? 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40 text-[#111111] dark:text-[#737373]' :
+                          d.statut === 'Accepte' ? 'bg-mono-950 dark:bg-mono-50/40 text-mono-100 dark:text-mono-500' :
                           d.statut === 'Refuse' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300' :
                           'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'
                         }`}>{d.statut}</span>
@@ -2471,21 +2471,21 @@ export default function Clients() {
               <div className="space-y-4">
                 <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Shield className="w-5 h-5 text-[#374151] dark:text-[#D4D4D4]" />
-                    <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373]">Protection des donnees</h4>
+                    <Shield className="w-5 h-5 text-[#374151] dark:text-mono-800" />
+                    <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-mono-500">Protection des donnees</h4>
                   </div>
                   <div className="space-y-2 text-sm">
-                    <p className="text-[#6B7280] dark:text-[#A3A3A3]">
-                      Date de consentement RGPD : <strong className="text-[#111111] dark:text-white">{fmtDate(selectedClient.consentementRGPD)}</strong>
+                    <p className="text-[#6B7280] dark:text-mono-700">
+                      Date de consentement RGPD : <strong className="text-mono-100 dark:text-white">{fmtDate(selectedClient.consentementRGPD)}</strong>
                     </p>
-                    <p className="text-[#6B7280] dark:text-[#A3A3A3]">
+                    <p className="text-[#6B7280] dark:text-mono-700">
                       Donnees collectees : nom, coordonnees, preferences alimentaires, historique commercial
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <button onClick={() => exportClientData(selectedClient)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 text-sm font-medium transition-colors">
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F9FAFB] dark:bg-mono-50/30 text-mono-100 dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-mono-50/50 text-sm font-medium transition-colors">
                     <Download className="w-4 h-4" /> Exporter donnees
                   </button>
                   <button onClick={() => handleRGPDForget(selectedClient)}
@@ -2513,53 +2513,53 @@ export default function Clients() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Prenom</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Prenom</label>
               <input type="text" value={form.prenom} onChange={e => setForm({ ...form, prenom: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Nom</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Nom</label>
               <input type="text" value={form.nom}
                 onChange={e => { setForm({ ...form, nom: e.target.value }); checkDuplicate(e.target.value, form.email); }}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Email</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Email</label>
               <input type="email" value={form.email}
                 onChange={e => { setForm({ ...form, email: e.target.value }); checkDuplicate(form.nom, e.target.value); }}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Telephone</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Telephone</label>
               <input type="tel" value={form.telephone} onChange={e => setForm({ ...form, telephone: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Entreprise</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Entreprise</label>
               <input type="text" value={form.entreprise} onChange={e => setForm({ ...form, entreprise: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Date de naissance</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Date de naissance</label>
               <input type="date" value={form.dateNaissance} onChange={e => setForm({ ...form, dateNaissance: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">SIRET</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">SIRET</label>
               <input type="text" value={form.siret} onChange={e => setForm({ ...form, siret: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Type</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Type</label>
               <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as ClientType })}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white">
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white">
                 <option value="Particulier">Particulier</option>
                 <option value="Entreprise">Entreprise</option>
                 <option value="Association">Association</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Source d'acquisition</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Source d'acquisition</label>
               <select value={form.source || ''} onChange={e => {
                 const val = e.target.value as AcquisitionSource;
                 setForm({ ...form, source: val });
@@ -2567,7 +2567,7 @@ export default function Clients() {
                   setAcquisitionData(prev => ({ ...prev, [form.id]: { ...prev[form.id], source: val } }));
                 }
               }}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white">
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white">
                 <option value="">-- Selectionner --</option>
                 <option value="Google">Google</option>
                 <option value="Instagram">Instagram</option>
@@ -2576,12 +2576,12 @@ export default function Clients() {
               </select>
             </div>
             <div className="col-span-full">
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Adresse</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Adresse</label>
               <input type="text" value={form.adresse} onChange={e => setForm({ ...form, adresse: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
             </div>
             <div className="col-span-full">
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Tags</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Tags</label>
               <div className="flex gap-2 flex-wrap">
                 {Object.keys(BASIC_TAG_COLORS).map(tag => (
                   <button key={tag} type="button"
@@ -2594,7 +2594,7 @@ export default function Clients() {
                     className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition-colors ${
                       form.tags.includes(tag as ClientTag)
                         ? `${BASIC_TAG_COLORS[tag].bg} ${BASIC_TAG_COLORS[tag].text} ${BASIC_TAG_COLORS[tag].border}`
-                        : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#737373] border-[#E5E7EB] dark:border-[#1A1A1A]'
+                        : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-mono-500 border-mono-900 dark:border-mono-200'
                     }`}>
                     {tag}
                   </button>
@@ -2606,31 +2606,31 @@ export default function Clients() {
           {/* CA & Commandes (manual entry since localStorage) */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">CA Total (EUR)</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">CA Total (EUR)</label>
               <input type="number" value={form.caTotal} onChange={e => setForm({ ...form, caTotal: parseFloat(e.target.value) || 0 })}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Nb commandes</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Nb commandes</label>
               <input type="number" value={form.nbCommandes} onChange={e => setForm({ ...form, nbCommandes: parseInt(e.target.value) || 0 })}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Derniere visite</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Derniere visite</label>
               <input type="date" value={form.derniereVisite} onChange={e => setForm({ ...form, derniereVisite: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
             </div>
           </div>
 
           {/* Allergenes */}
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Allergenes (14 allergenes UE)</label>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-2">Allergenes (14 allergenes UE)</label>
             <div className="flex flex-wrap gap-2">
               {EU_ALLERGENES.map(a => (
                 <label key={a.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border cursor-pointer transition-colors ${
                   form.allergenes.includes(a.id)
                     ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700'
-                    : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#737373] border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                    : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-mono-500 border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717]'
                 }`}>
                   <input type="checkbox" className="sr-only"
                     checked={form.allergenes.includes(a.id)}
@@ -2648,13 +2648,13 @@ export default function Clients() {
 
           {/* Regime */}
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Regime alimentaire</label>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-2">Regime alimentaire</label>
             <div className="flex flex-wrap gap-2">
               {REGIMES.map(r => (
                 <label key={r} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border cursor-pointer transition-colors ${
                   form.regime.includes(r)
                     ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700'
-                    : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#737373] border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                    : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-mono-500 border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717]'
                 }`}>
                   <input type="checkbox" className="sr-only"
                     checked={form.regime.includes(r)}
@@ -2672,25 +2672,25 @@ export default function Clients() {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Notes</label>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Notes</label>
             <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
               rows={3}
-              className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white resize-none" />
+              className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white resize-none" />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center justify-between pt-4 border-t border-mono-900 dark:border-mono-200">
             <button onClick={handleCSVImport}
-              className="flex items-center gap-2 text-sm text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] transition-colors">
+              className="flex items-center gap-2 text-sm text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] transition-colors">
               <Upload className="w-4 h-4" /> Import CSV
             </button>
             <div className="flex gap-3">
               <button onClick={() => setShowForm(false)}
-                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
                 Annuler
               </button>
               <button onClick={handleSave}
-                className="px-6 py-2 rounded-xl text-sm font-medium bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
+                className="px-6 py-2 rounded-xl text-sm font-medium bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
                 {editingClient ? 'Sauvegarder' : 'Ajouter'}
               </button>
             </div>
@@ -2704,12 +2704,12 @@ export default function Clients() {
         {selectedClient && (
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Templates rapides</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-2">Templates rapides</label>
               <div className="flex flex-wrap gap-2">
                 {EMAIL_TEMPLATES.map(tpl => (
                   <button key={tpl.id}
                     onClick={() => applyTemplate(tpl)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${selectedTemplate === tpl.id ? 'border-[#111111] dark:border-white bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-white' : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'}`}>
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${selectedTemplate === tpl.id ? 'border-mono-100 dark:border-white bg-[#F9FAFB] dark:bg-mono-50/30 text-mono-100 dark:text-white' : 'border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333]'}`}>
                     {tpl.id === 'anniversaire' && <Cake className="w-3 h-3 inline mr-1" />}
                     {tpl.label}
                   </button>
@@ -2717,26 +2717,26 @@ export default function Clients() {
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Sujet</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Sujet</label>
               <input type="text" value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)}
                 placeholder="Sujet de l'email..."
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Message</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Message</label>
               <textarea value={emailMessage} onChange={(e) => setEmailMessage(e.target.value)}
                 placeholder="Votre message..."
                 rows={6}
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none resize-vertical" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none resize-vertical" />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button onClick={() => { setShowEmail(false); setEmailSubject(''); setEmailMessage(''); setSelectedTemplate(''); }}
-                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
                 Annuler
               </button>
               <button onClick={handleSendClientEmail}
                 disabled={sendingClientEmail || !emailSubject.trim() || !emailMessage.trim()}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50">
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50">
                 {sendingClientEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 Envoyer
               </button>
@@ -2754,12 +2754,12 @@ export default function Clients() {
           <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] ${segmentColors[campaignSegment]}`}>
+                <div className={`p-2 rounded-xl bg-mono-950 dark:bg-[#171717] ${segmentColors[campaignSegment]}`}>
                   {segmentIcons[campaignSegment]}
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-[#111111] dark:text-white">{segmentLabels[campaignSegment]}</div>
-                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="text-sm font-semibold text-mono-100 dark:text-white">{segmentLabels[campaignSegment]}</div>
+                  <div className="text-xs text-[#9CA3AF] dark:text-mono-500">
                     {getSegmentClients(campaignSegment).length} destinataires
                   </div>
                 </div>
@@ -2770,7 +2770,7 @@ export default function Clients() {
 
           {/* Segment selector */}
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Segment cible</label>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-2">Segment cible</label>
             <div className="flex flex-wrap gap-2">
               {(['tous', 'vip', 'reguliers', 'nouveaux', 'inactifs'] as SegmentId[]).map(seg => (
                 <button key={seg}
@@ -2782,8 +2782,8 @@ export default function Clients() {
                   }}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${
                     campaignSegment === seg
-                      ? 'border-[#111111] dark:border-white bg-[#111111] dark:bg-white text-white dark:text-black'
-                      : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                      ? 'border-mono-100 dark:border-white bg-mono-100 dark:bg-white text-white dark:text-black'
+                      : 'border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333]'
                   }`}>
                   {segmentIcons[seg]}
                   {segmentLabels[seg]}
@@ -2795,42 +2795,42 @@ export default function Clients() {
 
           {/* Subject */}
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Sujet</label>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Sujet</label>
             <input type="text" value={campaignSubject} onChange={e => setCampaignSubject(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white outline-none" />
+              className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:ring-white outline-none" />
           </div>
 
           {/* Message */}
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">
               Message <span className="text-[10px] opacity-60">(variables : [nom], [prenom], [entreprise])</span>
             </label>
             <textarea value={campaignMessage} onChange={e => setCampaignMessage(e.target.value)}
               rows={8}
-              className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white outline-none resize-vertical" />
+              className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:ring-white outline-none resize-vertical" />
           </div>
 
           {/* Preview */}
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Apercu</label>
-            <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-sm text-[#6B7280] dark:text-[#A3A3A3] whitespace-pre-wrap border border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Apercu</label>
+            <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-sm text-[#6B7280] dark:text-mono-700 whitespace-pre-wrap border border-mono-900 dark:border-mono-200">
               {campaignMessage.replace(/\[nom\]/gi, 'Dupont').replace(/\[prenom\]/gi, 'Jean').replace(/\[entreprise\]/gi, 'SARL Example')}
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-between items-center pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+          <div className="flex justify-between items-center pt-4 border-t border-mono-900 dark:border-mono-200">
+            <div className="text-xs text-[#9CA3AF] dark:text-mono-500">
               {getSegmentClients(campaignSegment).length} email{getSegmentClients(campaignSegment).length > 1 ? 's' : ''} seront envoye{getSegmentClients(campaignSegment).length > 1 ? 's' : ''}
             </div>
             <div className="flex gap-3">
               <button onClick={() => setShowCampaign(false)}
-                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
                 Annuler
               </button>
               <button onClick={handleSendCampaign}
                 disabled={sendingCampaign || !campaignSubject.trim() || !campaignMessage.trim() || getSegmentClients(campaignSegment).length === 0}
-                className="flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50">
+                className="flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-semibold bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50">
                 {sendingCampaign ? <Loader2 className="w-4 h-4 animate-spin" /> : <Megaphone className="w-4 h-4" />}
                 Envoyer la campagne
               </button>
@@ -2860,21 +2860,21 @@ export default function Clients() {
                 </div>
                 <div className="text-5xl font-bold text-amber-600 dark:text-amber-400">{pts}</div>
                 <div className="text-sm text-amber-700 dark:text-amber-300 mt-1">points de fidelite</div>
-                <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2">
+                <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-2">
                   1 EUR depense = 1 point &middot; Bronze (0-500) &middot; Silver (500-1000) &middot; Gold (1000+)
                 </div>
               </div>
 
               {/* Add Points */}
               <div>
-                <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-3 flex items-center gap-2">
+                <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-3 flex items-center gap-2">
                   <Plus className="w-4 h-4" /> Ajouter des points
                 </h4>
                 <div className="flex gap-2">
                   <input type="number" value={addPointsAmount}
                     onChange={e => setAddPointsAmount(e.target.value)}
                     placeholder="Montant depense (EUR)"
-                    className="flex-1 px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                    className="flex-1 px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white" />
                   <button onClick={() => {
                     const amount = Math.round(parseFloat(addPointsAmount) || 0);
                     if (amount > 0) {
@@ -2890,7 +2890,7 @@ export default function Clients() {
 
               {/* Recompenses disponibles */}
               <div>
-                <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-3 flex items-center gap-2">
+                <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-3 flex items-center gap-2">
                   <Gift className="w-4 h-4 text-amber-500" /> Recompenses disponibles
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -2902,14 +2902,14 @@ export default function Clients() {
                         disabled={!canRedeem}
                         className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-colors ${
                           canRedeem
-                            ? 'bg-white dark:bg-[#0A0A0A] border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20 cursor-pointer'
-                            : 'bg-[#F9FAFB] dark:bg-black border-[#E5E7EB] dark:border-[#1A1A1A] opacity-50 cursor-not-allowed'
+                            ? 'bg-white dark:bg-mono-50 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20 cursor-pointer'
+                            : 'bg-[#F9FAFB] dark:bg-black border-mono-900 dark:border-mono-200 opacity-50 cursor-not-allowed'
                         }`}>
                         <div>
-                          <div className={`text-sm font-medium ${canRedeem ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                          <div className={`text-sm font-medium ${canRedeem ? 'text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                             {reward.label}
                           </div>
-                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{reward.points} points</div>
+                          <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{reward.points} points</div>
                         </div>
                         {canRedeem && <Gift className="w-4 h-4 text-amber-500" />}
                       </button>
@@ -2920,23 +2920,23 @@ export default function Clients() {
 
               {/* Points History */}
               <div>
-                <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-3 flex items-center gap-2">
+                <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-3 flex items-center gap-2">
                   <Clock className="w-4 h-4" /> Historique des points
                 </h4>
                 {history.length === 0 ? (
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center py-4">Aucun historique</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500 text-center py-4">Aucun historique</p>
                 ) : (
                   <div className="relative pl-5 border-l-2 border-amber-200 dark:border-amber-800 space-y-3 max-h-48 overflow-y-auto">
                     {history.slice(0, 20).map(h => (
                       <div key={h.id} className="relative">
                         <div className={`absolute -left-[23px] w-3 h-3 rounded-full ${h.type === 'earned' ? 'bg-green-500' : 'bg-red-500'}`} />
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-[#111111] dark:text-white">{h.reason}</span>
+                          <span className="text-sm text-mono-100 dark:text-white">{h.reason}</span>
                           <span className={`text-sm font-bold ${h.type === 'earned' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                             {h.type === 'earned' ? '+' : ''}{h.points}
                           </span>
                         </div>
-                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtDate(h.date)}</span>
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{fmtDate(h.date)}</span>
                       </div>
                     ))}
                   </div>
@@ -2954,7 +2954,7 @@ export default function Clients() {
         {npsClient && (
           <div className="space-y-6">
             <div className="text-center">
-              <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mb-4">
+              <p className="text-sm text-[#6B7280] dark:text-mono-700 mb-4">
                 Recommanderiez-vous notre restaurant ?
               </p>
               {/* Score selector */}
@@ -2967,13 +2967,13 @@ export default function Clients() {
                         ? n >= 9 ? 'bg-green-500 text-white scale-110'
                           : n >= 7 ? 'bg-amber-500 text-white scale-110'
                           : 'bg-red-500 text-white scale-110'
-                        : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#333]'
+                        : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#333]'
                     }`}>
                     {n}
                   </button>
                 ))}
               </div>
-              <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-[#737373] px-1">
+              <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-mono-500 px-1">
                 <span>Pas du tout</span>
                 <span>Absolument</span>
               </div>
@@ -2988,10 +2988,10 @@ export default function Clients() {
 
             {/* Comment */}
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Commentaire (optionnel)</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Commentaire (optionnel)</label>
               <textarea value={npsComment} onChange={e => setNpsComment(e.target.value)}
                 rows={3} placeholder="Remarques du client..."
-                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white resize-none" />
+                className="w-full px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black text-sm text-mono-100 dark:text-white resize-none" />
             </div>
 
             {/* Previous scores */}
@@ -3000,7 +3000,7 @@ export default function Clients() {
               if (clientScores.length === 0) return null;
               return (
                 <div>
-                  <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Historique NPS</h4>
+                  <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-2">Historique NPS</h4>
                   <div className="flex items-end gap-1 h-16">
                     {clientScores.slice(0, 12).reverse().map((e, i) => (
                       <div key={e.id} className="flex-1 flex flex-col items-center gap-0.5">
@@ -3012,7 +3012,7 @@ export default function Clients() {
                     ))}
                   </div>
                   {clientScores.length > 0 && (
-                    <div className="flex items-center justify-between mt-2 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                    <div className="flex items-center justify-between mt-2 text-xs text-[#9CA3AF] dark:text-mono-500">
                       <span>Moyenne : <strong className={getNPSCategory(getNPSAverage(clientScores)).color}>{getNPSAverage(clientScores)}</strong></span>
                       <span>{clientScores.length} evaluation{clientScores.length > 1 ? 's' : ''}</span>
                     </div>
@@ -3024,7 +3024,7 @@ export default function Clients() {
             {/* Submit */}
             <div className="flex justify-end gap-3">
               <button onClick={() => setShowNPS(false)}
-                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
                 Annuler
               </button>
               <button onClick={submitNPS}
@@ -3042,7 +3042,7 @@ export default function Clients() {
         <div className="space-y-8">
           {/* Acquisition Channels Chart */}
           <div>
-            <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
               <Globe className="w-4 h-4 text-teal-500" /> Canaux d'acquisition
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-4">
@@ -3050,9 +3050,9 @@ export default function Clients() {
                 const total = clients.length || 1;
                 const pct = Math.round((count / total) * 100);
                 return (
-                  <div key={source} className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
-                    <div className="text-lg font-bold text-[#111111] dark:text-white">{count}</div>
-                    <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{source}</div>
+                  <div key={source} className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center border border-mono-900 dark:border-mono-200">
+                    <div className="text-lg font-bold text-mono-100 dark:text-white">{count}</div>
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{source}</div>
                     <div className="text-[10px] text-teal-600 dark:text-teal-400 font-medium">{pct}%</div>
                   </div>
                 );
@@ -3064,14 +3064,14 @@ export default function Clients() {
                 const max = Math.max(...Object.values(acquisitionStats), 1);
                 return (
                   <div key={source} className="flex items-center gap-3">
-                    <div className="w-32 text-xs text-[#6B7280] dark:text-[#A3A3A3] text-right flex items-center justify-end gap-1.5">
+                    <div className="w-32 text-xs text-[#6B7280] dark:text-mono-700 text-right flex items-center justify-end gap-1.5">
                       {source === 'Google' && <Globe className="w-3 h-3" />}
                       {source === 'Instagram' && <Instagram className="w-3 h-3" />}
                       {source === 'Bouche-a-oreille' && <Mic className="w-3 h-3" />}
                       {source === 'Walk-in' && <MapPin className="w-3 h-3" />}
                       {source}
                     </div>
-                    <div className="flex-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-full h-5 overflow-hidden">
+                    <div className="flex-1 bg-mono-950 dark:bg-[#171717] rounded-full h-5 overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-teal-500 to-teal-700 rounded-full transition-all flex items-center justify-end pr-2"
                         style={{ width: `${(count / max) * 100}%` }}>
                         {count > 0 && <span className="text-[10px] text-white font-medium">{count}</span>}
@@ -3085,15 +3085,15 @@ export default function Clients() {
 
           {/* NPS Summary */}
           <div>
-            <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
               <ThumbsUp className="w-4 h-4 text-purple-500" /> Score NPS global
             </h4>
             <div className="grid grid-cols-4 gap-3 mb-4">
-              <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center border border-mono-900 dark:border-mono-200">
                 <div className={`text-3xl font-bold ${globalNPS.score >= 50 ? 'text-green-600 dark:text-green-400' : globalNPS.score >= 0 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                   {globalNPS.total > 0 ? globalNPS.score : '--'}
                 </div>
-                <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">NPS Score</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">NPS Score</div>
               </div>
               <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 text-center border border-green-200 dark:border-green-800">
                 <div className="text-3xl font-bold text-green-600 dark:text-green-400">{globalNPS.promoters}</div>
@@ -3136,7 +3136,7 @@ export default function Clients() {
             {/* Recent NPS entries */}
             {npsData.length > 0 && (
               <div className="mt-4">
-                <h5 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Dernieres evaluations</h5>
+                <h5 className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-2">Dernieres evaluations</h5>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {npsData.slice(0, 10).map(e => {
                     const cl = clients.find(c => c.id === e.clientId);
@@ -3144,13 +3144,13 @@ export default function Clients() {
                       <div key={e.id} className="flex items-center gap-3 px-3 py-2 bg-[#F9FAFB] dark:bg-black rounded-xl">
                         {cl && renderAvatar(cl, 'w-7 h-7 text-[10px]')}
                         <div className="flex-1 min-w-0">
-                          <span className="text-xs font-medium text-[#111111] dark:text-white">{cl ? `${cl.prenom} ${cl.nom}` : 'Client'}</span>
-                          {e.comment && <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] block truncate">{e.comment}</span>}
+                          <span className="text-xs font-medium text-mono-100 dark:text-white">{cl ? `${cl.prenom} ${cl.nom}` : 'Client'}</span>
+                          {e.comment && <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 block truncate">{e.comment}</span>}
                         </div>
                         <span className={`text-sm font-bold ${e.score >= 9 ? 'text-green-600' : e.score >= 7 ? 'text-amber-600' : 'text-red-600'}`}>
                           {e.score}/10
                         </span>
-                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtDate(e.date)}</span>
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{fmtDate(e.date)}</span>
                       </div>
                     );
                   })}
@@ -3165,7 +3165,7 @@ export default function Clients() {
       <Modal isOpen={showAutoCampaign} onClose={() => setShowAutoCampaign(false)}
         title="Campagnes automatisees" className="max-w-2xl">
         <div className="space-y-4">
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700">
             Campagnes pre-configurees par segment. Cliquez pour personnaliser et envoyer via Resend.
           </p>
           {AUTOMATED_CAMPAIGNS.map(camp => {
@@ -3177,17 +3177,17 @@ export default function Clients() {
                 : clients.length;
             return (
               <div key={camp.id}
-                className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all">
+                className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all">
                 <div className="flex items-start gap-4">
-                  <div className={`p-3 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]`}>
+                  <div className={`p-3 rounded-xl bg-mono-950 dark:bg-[#171717]`}>
                     <Icon className={`w-6 h-6 ${camp.color}`} />
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-sm font-semibold text-[#111111] dark:text-white">{camp.label}</h4>
-                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">Sujet : {camp.subject}</p>
-                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 line-clamp-2">{camp.body.split('\n').slice(0, 2).join(' ')}</p>
+                    <h4 className="text-sm font-semibold text-mono-100 dark:text-white">{camp.label}</h4>
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">Sujet : {camp.subject}</p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1 line-clamp-2">{camp.body.split('\n').slice(0, 2).join(' ')}</p>
                     <div className="flex items-center gap-3 mt-3">
-                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{recipientCount} destinataire{recipientCount > 1 ? 's' : ''}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{recipientCount} destinataire{recipientCount > 1 ? 's' : ''}</span>
                       <button onClick={() => {
                         setShowAutoCampaign(false);
                         setCampaignSegment(camp.segment);
@@ -3195,7 +3195,7 @@ export default function Clients() {
                         setCampaignMessage(camp.body);
                         setShowCampaign(true);
                       }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
                         <Send className="w-3 h-3" /> Lancer
                       </button>
                     </div>
@@ -3213,26 +3213,26 @@ export default function Clients() {
           {/* KPIs */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-[#F9FAFB] dark:bg-black rounded-2xl p-4 text-center">
-              <div className="text-2xl font-bold text-[#111111] dark:text-white">{clients.length}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Total clients</div>
+              <div className="text-2xl font-bold text-mono-100 dark:text-white">{clients.length}</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Total clients</div>
             </div>
             <div className="bg-[#F9FAFB] dark:bg-black rounded-2xl p-4 text-center">
-              <div className="text-2xl font-bold text-[#111111] dark:text-[#A3A3A3]">{fmt(stats.totalCA)}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">CA Total</div>
+              <div className="text-2xl font-bold text-mono-100 dark:text-mono-700">{fmt(stats.totalCA)}</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">CA Total</div>
             </div>
             <div className="bg-[#F9FAFB] dark:bg-black rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">{fmt(stats.avgCA)}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">CA moyen/client</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">CA moyen/client</div>
             </div>
             <div className="bg-[#F9FAFB] dark:bg-black rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">{localSegmentCounts.vip}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Clients VIP</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Clients VIP</div>
             </div>
           </div>
 
           {/* Segment distribution pie chart */}
           <div>
-            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-2">
               <PieChart className="w-4 h-4 text-purple-500" /> Distribution par segment
             </h4>
             <PieChartSimple data={[
@@ -3245,8 +3245,8 @@ export default function Clients() {
 
           {/* Revenue by segment bar chart */}
           <div>
-            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-[#374151] dark:text-[#D4D4D4]" /> CA par segment
+            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-[#374151] dark:text-mono-800" /> CA par segment
             </h4>
             <BarChartSimple data={[
               { label: 'VIP', value: segments?.vip.totalRevenue || 0 },
@@ -3258,7 +3258,7 @@ export default function Clients() {
 
           {/* Top 10 by CA */}
           <div>
-            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-green-500" /> Top 10 clients par CA
             </h4>
             <BarChartSimple data={stats.top10.map(c => ({ label: `${c.prenom} ${c.nom}`, value: c.caTotal }))} />
@@ -3266,7 +3266,7 @@ export default function Clients() {
 
           {/* Type distribution */}
           <div>
-            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-2">
               <PieChart className="w-4 h-4 text-indigo-500" /> Distribution par type
             </h4>
             <PieChartSimple data={[

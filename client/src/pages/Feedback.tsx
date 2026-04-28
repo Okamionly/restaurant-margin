@@ -8,18 +8,9 @@ import {
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
+import { useApiClient } from '../hooks/useApiClient';
 
 const API = '';
-
-function authHeaders() {
-  const token = localStorage.getItem('token');
-  const restaurantId = localStorage.getItem('activeRestaurantId');
-  return {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-    'X-Restaurant-Id': restaurantId || '1',
-  };
-}
 
 interface Feedback {
   id: number;
@@ -127,6 +118,7 @@ function getRatingColor(rating: number): string {
 
 export default function FeedbackPage() {
   const { showToast } = useToast();
+  const { authHeaders } = useApiClient();
   const [stats, setStats] = useState<Stats | null>(null);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [total, setTotal] = useState(0);

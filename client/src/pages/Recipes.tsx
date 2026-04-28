@@ -109,7 +109,7 @@ function getCategoryBadgeColor(category: string): string {
     case 'Accompagnement':
       return 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300';
     default:
-      return 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]';
+      return 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700';
   }
 }
 
@@ -453,8 +453,8 @@ function CostDonut({ costPercent, marginPercent }: { costPercent: number; margin
           background: `conic-gradient(${costColor} 0deg, ${costColor} ${deg}deg, ${marginColor} ${deg}deg, ${marginColor} 360deg)`,
         }}
       >
-        <div className="absolute inset-[3px] rounded-full bg-white dark:bg-[#0A0A0A] flex items-center justify-center">
-          <span className="text-[9px] font-bold text-[#111111] dark:text-white leading-none">{marginPercent.toFixed(0)}%</span>
+        <div className="absolute inset-[3px] rounded-full bg-white dark:bg-mono-50 flex items-center justify-center">
+          <span className="text-[9px] font-bold text-mono-100 dark:text-white leading-none">{marginPercent.toFixed(0)}%</span>
         </div>
       </div>
     </div>
@@ -473,16 +473,16 @@ function MarginHealthBar({ recipes }: { recipes: Recipe[] }) {
   const badPct = (bad / total) * 100;
 
   return (
-    <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 mb-4 sm:mb-6">
+    <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4 mb-4 sm:mb-6">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Scale className="w-4 h-4 text-[#111111] dark:text-white" />
-          <span className="text-sm font-semibold text-[#111111] dark:text-white">Sante du portefeuille</span>
+          <Scale className="w-4 h-4 text-mono-100 dark:text-white" />
+          <span className="text-sm font-semibold text-mono-100 dark:text-white">Sante du portefeuille</span>
         </div>
-        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{total} recettes</span>
+        <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{total} recettes</span>
       </div>
       {/* Bar */}
-      <div className="w-full h-5 rounded-full overflow-hidden flex bg-[#F3F4F6] dark:bg-[#171717]">
+      <div className="w-full h-5 rounded-full overflow-hidden flex bg-mono-950 dark:bg-[#171717]">
         {goodPct > 0 && (
           <div
             className="h-full bg-emerald-500 flex items-center justify-center transition-all duration-500"
@@ -512,15 +512,15 @@ function MarginHealthBar({ recipes }: { recipes: Recipe[] }) {
       <div className="flex flex-wrap items-center gap-4 mt-2.5">
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-          <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Bonne marge &gt;70% ({good})</span>
+          <span className="text-xs text-[#6B7280] dark:text-mono-700">Bonne marge &gt;70% ({good})</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-          <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Moyenne 50-70% ({medium})</span>
+          <span className="text-xs text-[#6B7280] dark:text-mono-700">Moyenne 50-70% ({medium})</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-          <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Critique &lt;50% ({bad})</span>
+          <span className="text-xs text-[#6B7280] dark:text-mono-700">Critique &lt;50% ({bad})</span>
         </div>
       </div>
     </div>
@@ -539,7 +539,7 @@ function PriceSimulator({ recipe }: { recipe: Recipe }) {
     return (
       <button
         onClick={(e) => { e.stopPropagation(); setOpen(true); }}
-        className="flex items-center gap-1 text-[10px] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+        className="flex items-center gap-1 text-[10px] text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors"
         title="Simuler un nouveau prix"
       >
         <SlidersHorizontal className="w-3 h-3" /> Simuler prix
@@ -548,10 +548,10 @@ function PriceSimulator({ recipe }: { recipe: Recipe }) {
   }
 
   return (
-    <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg p-2.5 mt-2 border border-[#E5E7EB] dark:border-[#1A1A1A] space-y-2" onClick={e => e.stopPropagation()}>
+    <div className="bg-mono-1000 dark:bg-mono-50 rounded-lg p-2.5 mt-2 border border-mono-900 dark:border-mono-200 space-y-2" onClick={e => e.stopPropagation()}>
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-semibold uppercase text-[#9CA3AF] dark:text-[#737373]">Simulateur de prix</span>
-        <button onClick={() => { setSimPrice(recipe.sellingPrice); setOpen(false); }} className="p-0.5 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white">
+        <span className="text-[10px] font-semibold uppercase text-[#9CA3AF] dark:text-mono-500">Simulateur de prix</span>
+        <button onClick={() => { setSimPrice(recipe.sellingPrice); setOpen(false); }} className="p-0.5 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
           <X className="w-3 h-3" />
         </button>
       </div>
@@ -562,10 +562,10 @@ function PriceSimulator({ recipe }: { recipe: Recipe }) {
         step="0.5"
         value={simPrice}
         onChange={(e) => setSimPrice(parseFloat(e.target.value))}
-        className="w-full h-1.5 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-lg appearance-none cursor-pointer accent-[#111111] dark:accent-white"
+        className="w-full h-1.5 bg-mono-900 dark:bg-mono-200 rounded-lg appearance-none cursor-pointer accent-mono-100 dark:accent-white"
       />
       <div className="flex items-center justify-between text-xs">
-        <span className="font-mono text-[#111111] dark:text-white font-bold">{simPrice.toFixed(2)}{getCurrencySymbol()}</span>
+        <span className="font-mono text-mono-100 dark:text-white font-bold">{simPrice.toFixed(2)}{getCurrencySymbol()}</span>
         {diff !== 0 && (
           <span className={`font-mono text-[10px] ${diff > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
             {diff > 0 ? '+' : ''}{diff.toFixed(2)}
@@ -613,33 +613,33 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
         role="dialog"
         aria-modal="true"
         aria-labelledby="recipe-compare-title"
-        className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="flex items-center justify-between p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-mono-100 dark:bg-white flex items-center justify-center">
               <GitCompareArrows className="w-4.5 h-4.5 text-white dark:text-black" aria-hidden="true" />
             </div>
             <div>
-              <h3 id="recipe-compare-title" className="text-lg font-bold text-[#111111] dark:text-white">Comparaison de recettes</h3>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse cote a cote</p>
+              <h3 id="recipe-compare-title" className="text-lg font-bold text-mono-100 dark:text-white">Comparaison de recettes</h3>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Analyse cote a cote</p>
             </div>
           </div>
-          <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors">
+          <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors">
             <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-0 divide-x divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+        <div className="grid grid-cols-2 gap-0 divide-x divide-mono-900 dark:divide-mono-200">
           {/* Recipe headers with Gagnant badge */}
           {[a, b].map((r, i) => (
             <div key={i} className="p-5 pb-3">
               <div className="flex items-start justify-between">
                 <div>
-                  <h4 className="font-bold text-[#111111] dark:text-white text-base leading-tight">{r.name}</h4>
-                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">{r.category}</span>
+                  <h4 className="font-bold text-mono-100 dark:text-white text-base leading-tight">{r.name}</h4>
+                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">{r.category}</span>
                 </div>
                 {i === winnerIdx && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-lg shadow-amber-500/30 animate-pulse">
@@ -654,47 +654,47 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
           {[a, b].map((r, i) => (
             <div key={`m-${i}`} className="px-5 pb-4 space-y-3">
               {/* Selling Price */}
-              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3">
+              <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">Prix de vente</span>
-                  <span className="text-sm font-bold font-mono text-[#111111] dark:text-white">{r.sellingPrice.toFixed(2)}{getCurrencySymbol()}</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">Prix de vente</span>
+                  <span className="text-sm font-bold font-mono text-mono-100 dark:text-white">{r.sellingPrice.toFixed(2)}{getCurrencySymbol()}</span>
                 </div>
               </div>
 
               {/* Cost per portion */}
-              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3">
+              <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">Cout / portion</span>
-                  <span className="text-sm font-bold font-mono text-[#111111] dark:text-white">{r.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">Cout / portion</span>
+                  <span className="text-sm font-bold font-mono text-mono-100 dark:text-white">{r.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</span>
                 </div>
               </div>
 
               {/* Margin with visual bar */}
-              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3">
+              <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-3">
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">Marge</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">Marge</span>
                   <span className={`text-base font-bold ${marginColor(r.margin.marginPercent)}`}>
                     {r.margin.marginPercent.toFixed(1)}%
                   </span>
                 </div>
-                <div className="h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden">
+                <div className="h-2 bg-mono-900 dark:bg-mono-200 rounded-full overflow-hidden">
                   <div className={`h-full rounded-full transition-all ${marginBg(r.margin.marginPercent)}`} style={{ width: `${Math.min(r.margin.marginPercent, 100)}%` }} />
                 </div>
               </div>
 
               {/* Ingredient count */}
-              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3">
+              <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">Ingredients</span>
-                  <span className="text-sm font-bold text-[#111111] dark:text-white">{r.ingredients.length}</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">Ingredients</span>
+                  <span className="text-sm font-bold text-mono-100 dark:text-white">{r.ingredients.length}</span>
                 </div>
               </div>
 
               {/* Coefficient */}
-              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3">
+              <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">Coefficient</span>
-                  <span className="text-sm font-bold font-mono text-[#111111] dark:text-white">x{r.margin.coefficient.toFixed(2)}</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">Coefficient</span>
+                  <span className="text-sm font-bold font-mono text-mono-100 dark:text-white">x{r.margin.coefficient.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -703,14 +703,14 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
           {/* Ingredients detail */}
           {[{ ings: aIngs, r: a }, { ings: bIngs, r: b }].map(({ ings, r }, i) => (
             <div key={`ing-${i}`} className="px-5 pb-5">
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-2">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-2">
                 Detail ingredients ({r.ingredients.length})
               </div>
               <div className="space-y-1.5 max-h-[180px] overflow-y-auto">
                 {ings.map((ing, j) => (
-                  <div key={j} className="flex items-center justify-between text-xs py-1 border-b border-[#F3F4F6] dark:border-[#1A1A1A] last:border-0">
-                    <span className="text-[#6B7280] dark:text-[#A3A3A3] truncate mr-2">{ing.name}</span>
-                    <span className="font-mono text-[#111111] dark:text-white whitespace-nowrap">{ing.cost.toFixed(2)}{getCurrencySymbol()}</span>
+                  <div key={j} className="flex items-center justify-between text-xs py-1 border-b border-mono-950 dark:border-mono-200 last:border-0">
+                    <span className="text-[#6B7280] dark:text-mono-700 truncate mr-2">{ing.name}</span>
+                    <span className="font-mono text-mono-100 dark:text-white whitespace-nowrap">{ing.cost.toFixed(2)}{getCurrencySymbol()}</span>
                   </div>
                 ))}
               </div>
@@ -719,15 +719,15 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
         </div>
 
         {/* Winner footer */}
-        <div className="p-5 border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-gradient-to-r from-amber-50 to-emerald-50 dark:from-amber-950/20 dark:to-emerald-950/20 rounded-b-2xl">
+        <div className="p-5 border-t border-mono-900 dark:border-mono-200 bg-gradient-to-r from-amber-50 to-emerald-50 dark:from-amber-950/20 dark:to-emerald-950/20 rounded-b-2xl">
           <div className="flex items-center justify-center gap-3">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
               <Trophy className="w-4 h-4 text-white" />
             </div>
             <div className="text-center">
-              <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] font-medium">Plus rentable</div>
+              <div className="text-xs text-[#6B7280] dark:text-mono-700 font-medium">Plus rentable</div>
               <div className="flex items-center gap-2 mt-0.5">
-                <span className="font-bold text-[#111111] dark:text-white text-sm">
+                <span className="font-bold text-mono-100 dark:text-white text-sm">
                   {winnerIdx === 0 ? a.name : b.name}
                 </span>
                 <span className="text-emerald-600 dark:text-emerald-400 font-bold text-sm">
@@ -978,28 +978,28 @@ function IngredientCombobox({
         }}
       />
       {open && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg shadow-lg">
+        <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg shadow-lg">
           {filtered.length > 0 ? (
             filtered.slice(0, 30).map((i) => (
               <button
                 key={i.id}
                 type="button"
-                className="w-full text-left px-3 py-1.5 text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] flex justify-between items-center"
+                className="w-full text-left px-3 py-1.5 text-sm hover:bg-mono-950 dark:hover:bg-[#171717] flex justify-between items-center"
                 onClick={() => {
                   onSelect(i.id);
                   setInputValue(i.name);
                   setOpen(false);
                 }}
               >
-                <span className="text-[#111111] dark:text-white">{i.name}</span>
-                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{i.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{i.unit}</span>
+                <span className="text-mono-100 dark:text-white">{i.name}</span>
+                <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{i.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{i.unit}</span>
               </button>
             ))
           ) : null}
           {inputValue.trim() && !ingredients.some((i) => i.name.toLowerCase() === inputValue.toLowerCase()) && (
             <button
               type="button"
-              className="w-full text-left px-3 py-2 text-sm bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A] font-medium border-t border-[#E5E7EB] dark:border-[#1A1A1A]"
+              className="w-full text-left px-3 py-2 text-sm bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white hover:bg-mono-900 dark:hover:bg-mono-200 font-medium border-t border-mono-900 dark:border-mono-200"
               onClick={() => {
                 onNewName(inputValue.trim());
                 setOpen(false);
@@ -1009,7 +1009,7 @@ function IngredientCombobox({
             </button>
           )}
           {!inputValue.trim() && filtered.length === 0 && (
-            <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-[#737373]">Tapez un nom d&apos;ingredient</div>
+            <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-mono-500">Tapez un nom d&apos;ingredient</div>
           )}
         </div>
       )}
@@ -1020,7 +1020,7 @@ function IngredientCombobox({
 /** Category-based photo placeholder — now uses CSS art food illustration */
 function RecipePhotoPlaceholder({ category, name }: { category: string; name?: string }) {
   return (
-    <div className="relative h-36 bg-gradient-to-br from-[#F9FAFB] to-[#F3F4F6] dark:from-[#0A0A0A] dark:to-[#171717] flex items-center justify-center overflow-hidden group/photo">
+    <div className="relative h-36 bg-gradient-to-br from-[#F9FAFB] to-mono-950 dark:from-mono-50 dark:to-[#171717] flex items-center justify-center overflow-hidden group/photo">
       <FoodIllustration recipeName={name} category={category} size="lg" animated />
       {name && (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/40 to-transparent px-4 py-2">
@@ -1330,38 +1330,38 @@ function CostOptimizerPanel({
         role="dialog"
         aria-modal="true"
         aria-labelledby="recipe-optimization-title"
-        className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl"
+        className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="flex items-center justify-between p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
             </div>
             <div>
-              <h3 id="recipe-optimization-title" className="text-lg font-bold text-[#111111] dark:text-white">Optimisation : {recipe.name}</h3>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse du cout et suggestions d'economies</p>
+              <h3 id="recipe-optimization-title" className="text-lg font-bold text-mono-100 dark:text-white">Optimisation : {recipe.name}</h3>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Analyse du cout et suggestions d'economies</p>
             </div>
           </div>
-          <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-            <X className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373]" aria-hidden="true" />
+          <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
+            <X className="w-5 h-5 text-[#9CA3AF] dark:text-mono-500" aria-hidden="true" />
           </button>
         </div>
 
         {/* Margin Impact Summary */}
-        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Cout actuel</div>
-              <div className="text-lg font-bold font-mono text-[#111111] dark:text-white">{(totalCost / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()}</div>
+            <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Cout actuel</div>
+              <div className="text-lg font-bold font-mono text-mono-100 dark:text-white">{(totalCost / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()}</div>
             </div>
-            <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Cout optimise</div>
+            <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Cout optimise</div>
               <div className="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">{(optimizedCost / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()}</div>
             </div>
-            <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Marge actuelle</div>
+            <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Marge actuelle</div>
               <div className={`text-lg font-bold ${currentMargin >= 70 ? 'text-emerald-500' : currentMargin >= 50 ? 'text-amber-500' : 'text-red-500'}`}>{currentMargin.toFixed(1)}%</div>
             </div>
             <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-3 text-center border border-emerald-200 dark:border-emerald-800">
@@ -1378,10 +1378,10 @@ function CostOptimizerPanel({
         </div>
 
         {/* Cost Breakdown Bar Chart */}
-        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 mb-3">
-            <BarChart3 className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Repartition du cout par ingredient</h4>
+            <BarChart3 className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Repartition du cout par ingredient</h4>
           </div>
           <div className="space-y-2">
             {ingredientCosts.map((ic, idx) => {
@@ -1392,7 +1392,7 @@ function CostOptimizerPanel({
                   <div className="flex items-center justify-between text-xs mb-0.5">
                     <div className="flex items-center gap-1.5 min-w-0 flex-1">
                       {isTop3 && <span className="text-[9px] font-bold text-white bg-red-500 w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0">{idx + 1}</span>}
-                      <span className={`truncate ${isTop3 ? 'font-semibold text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                      <span className={`truncate ${isTop3 ? 'font-semibold text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-700'}`}>
                         {ic.ri.ingredient.name}
                       </span>
                       {ic.seasonal.seasonal && (
@@ -1401,11 +1401,11 @@ function CostOptimizerPanel({
                         </span>
                       )}
                     </div>
-                    <span className="font-mono text-[#111111] dark:text-white ml-2 flex-shrink-0">{ic.cost.toFixed(2)}{getCurrencySymbol()} ({pct.toFixed(0)}%)</span>
+                    <span className="font-mono text-mono-100 dark:text-white ml-2 flex-shrink-0">{ic.cost.toFixed(2)}{getCurrencySymbol()} ({pct.toFixed(0)}%)</span>
                   </div>
-                  <div className="w-full h-3 rounded-full bg-[#F3F4F6] dark:bg-[#171717] overflow-hidden">
+                  <div className="w-full h-3 rounded-full bg-mono-950 dark:bg-[#171717] overflow-hidden">
                     <div
-                      className={`h-full rounded-full transition-all duration-500 ${isTop3 ? 'bg-red-500' : 'bg-[#111111] dark:bg-white'}`}
+                      className={`h-full rounded-full transition-all duration-500 ${isTop3 ? 'bg-red-500' : 'bg-mono-100 dark:bg-white'}`}
                       style={{ width: `${Math.max(pct, 1)}%` }}
                     />
                   </div>
@@ -1416,24 +1416,24 @@ function CostOptimizerPanel({
         </div>
 
         {/* Top 3 Expensive — Substitution Suggestions */}
-        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 mb-3">
-            <RefreshCw className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Suggestions de substitution</h4>
+            <RefreshCw className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Suggestions de substitution</h4>
           </div>
           {top3.map((ic) => {
             if (!ic.alternatives || ic.alternatives.alternatives.length === 0) {
               return (
-                <div key={ic.ri.id} className="mb-3 p-3 rounded-xl bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A]">
-                  <div className="text-sm font-medium text-[#111111] dark:text-white">{ic.ri.ingredient.name}</div>
-                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Aucune alternative moins chere trouvee en base</div>
+                <div key={ic.ri.id} className="mb-3 p-3 rounded-xl bg-mono-1000 dark:bg-mono-100 border border-mono-900 dark:border-mono-200">
+                  <div className="text-sm font-medium text-mono-100 dark:text-white">{ic.ri.ingredient.name}</div>
+                  <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Aucune alternative moins chere trouvee en base</div>
                 </div>
               );
             }
             return (
-              <div key={ic.ri.id} className="mb-3 p-3 rounded-xl bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div key={ic.ri.id} className="mb-3 p-3 rounded-xl bg-mono-1000 dark:bg-mono-100 border border-mono-900 dark:border-mono-200">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="text-sm font-medium text-[#111111] dark:text-white">{ic.ri.ingredient.name}</div>
+                  <div className="text-sm font-medium text-mono-100 dark:text-white">{ic.ri.ingredient.name}</div>
                   <span className="text-xs font-mono text-red-500">{ic.cost.toFixed(2)}{getCurrencySymbol()}</span>
                 </div>
                 <div className="space-y-2">
@@ -1442,14 +1442,14 @@ function CostOptimizerPanel({
                     const newCostPerPortion = (totalCost - savings) / recipe.nbPortions;
                     const newMargin = recipe.sellingPrice > 0 ? ((recipe.sellingPrice - newCostPerPortion) / recipe.sellingPrice) * 100 : 0;
                     return (
-                      <div key={aIdx} className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                      <div key={aIdx} className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200">
                         <ArrowRight className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <div className="text-xs text-[#111111] dark:text-white">
+                          <div className="text-xs text-mono-100 dark:text-white">
                             Si vous remplacez <strong>{ic.ri.ingredient.name}</strong> par <strong>{alt.ingredient.name}</strong>, vous economisez <strong className="text-emerald-500">{(savings / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()}</strong>/portion
                           </div>
                           <div className="flex items-center gap-3 mt-1 text-[10px]">
-                            <span className="text-[#9CA3AF] dark:text-[#737373]">{alt.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{alt.ingredient.unit}</span>
+                            <span className="text-[#9CA3AF] dark:text-mono-500">{alt.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{alt.ingredient.unit}</span>
                             <span className={`font-medium ${newMargin >= 70 ? 'text-emerald-500' : newMargin >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
                               Marge → {newMargin.toFixed(1)}%
                             </span>
@@ -1468,10 +1468,10 @@ function CostOptimizerPanel({
         </div>
 
         {/* Seasonal Suggestions */}
-        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 mb-3">
             <SeasonIcon month={currentMonth} />
-            <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Ingredients de saison — {monthNames[currentMonth]}</h4>
+            <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Ingredients de saison — {monthNames[currentMonth]}</h4>
           </div>
           {seasonalIngredients.length > 0 ? (
             <div className="space-y-2">
@@ -1479,7 +1479,7 @@ function CostOptimizerPanel({
                 <div key={ic.ri.id} className="flex items-center gap-2 p-2 rounded-lg bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/50">
                   <Leaf className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <span className="text-xs text-[#111111] dark:text-white font-medium">{ic.ri.ingredient.name}</span>
+                    <span className="text-xs text-mono-100 dark:text-white font-medium">{ic.ri.ingredient.name}</span>
                     <span className="text-[10px] text-green-600 dark:text-green-400 ml-2">De saison — potentiellement {ic.seasonal.discount}% moins cher</span>
                   </div>
                   <span className="px-2 py-0.5 rounded-full text-[9px] font-medium bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300">{ic.seasonal.label}</span>
@@ -1488,7 +1488,7 @@ function CostOptimizerPanel({
             </div>
           ) : (
             <div className="space-y-2">
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Aucun ingredient de saison dans cette recette. Suggestions :</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Aucun ingredient de saison dans cette recette. Suggestions :</p>
               {(SEASONAL_CALENDAR[currentMonth] || []).slice(0, 2).map((group, gIdx) => (
                 <div key={gIdx} className="p-2 rounded-lg bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/50">
                   <div className="text-[10px] font-semibold text-green-700 dark:text-green-300 mb-1">{group.label} (-{group.discount}% ce mois)</div>
@@ -1505,7 +1505,7 @@ function CostOptimizerPanel({
 
         {/* Price Alerts */}
         {priceAlerts.length > 0 && (
-          <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="p-5 border-b border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle className="w-4 h-4 text-red-500" />
               <h4 className="text-sm font-semibold text-red-600 dark:text-red-400">Alertes prix</h4>
@@ -1518,10 +1518,10 @@ function CostOptimizerPanel({
                 return (
                   <div key={ic.ri.id} className="p-3 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/50">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-[#111111] dark:text-white">{ic.ri.ingredient.name}</span>
+                      <span className="text-xs font-medium text-mono-100 dark:text-white">{ic.ri.ingredient.name}</span>
                       <span className="text-xs font-mono text-red-500">+{pctAbove.toFixed(0)}% vs moyenne categorie</span>
                     </div>
-                    <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-1">
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-1">
                       Prix: {ic.ri.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{ic.ri.ingredient.unit} | Moyenne: {avgPrice.toFixed(2)}{getCurrencySymbol()}/{ic.ri.ingredient.unit}
                     </div>
                     {ic.alternatives && ic.alternatives.alternatives.length > 0 && (
@@ -1537,10 +1537,10 @@ function CostOptimizerPanel({
         )}
 
         {/* Footer */}
-        <div className="p-5 bg-[#FAFAFA] dark:bg-[#111111] rounded-b-2xl">
+        <div className="p-5 bg-mono-1000 dark:bg-mono-100 rounded-b-2xl">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Calcule a partir de vos donnees reelles — aucun appel IA</span>
-            <button onClick={onClose} className="px-4 py-2 text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-lg hover:opacity-90 transition-opacity">
+            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Calcule a partir de vos donnees reelles — aucun appel IA</span>
+            <button onClick={onClose} className="px-4 py-2 text-sm font-semibold bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-lg hover:opacity-90 transition-opacity">
               Fermer
             </button>
           </div>
@@ -1630,34 +1630,34 @@ function BatchOptimizerPanel({
         role="dialog"
         aria-modal="true"
         aria-labelledby="menu-optimization-title"
-        className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl"
+        className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="flex items-center justify-between p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white dark:text-[#111111]" aria-hidden="true" />
+            <div className="w-10 h-10 rounded-xl bg-mono-100 dark:bg-white flex items-center justify-center">
+              <Zap className="w-5 h-5 text-white dark:text-mono-100" aria-hidden="true" />
             </div>
             <div>
-              <h3 id="menu-optimization-title" className="text-lg font-bold text-[#111111] dark:text-white">Optimiser la carte ({recipes.length} recettes)</h3>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse croisee et substitutions groupees</p>
+              <h3 id="menu-optimization-title" className="text-lg font-bold text-mono-100 dark:text-white">Optimiser la carte ({recipes.length} recettes)</h3>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Analyse croisee et substitutions groupees</p>
             </div>
           </div>
-          <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-            <X className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373]" aria-hidden="true" />
+          <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
+            <X className="w-5 h-5 text-[#9CA3AF] dark:text-mono-500" aria-hidden="true" />
           </button>
         </div>
 
         {/* Summary KPIs */}
-        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Recettes</div>
-              <div className="text-xl font-bold text-[#111111] dark:text-white">{recipes.length}</div>
+            <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Recettes</div>
+              <div className="text-xl font-bold text-mono-100 dark:text-white">{recipes.length}</div>
             </div>
-            <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Marge moy. actuelle</div>
+            <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Marge moy. actuelle</div>
               <div className={`text-xl font-bold ${avgMarginBefore >= 70 ? 'text-emerald-500' : avgMarginBefore >= 50 ? 'text-amber-500' : 'text-red-500'}`}>{avgMarginBefore.toFixed(1)}%</div>
             </div>
             <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-3 text-center border border-emerald-200 dark:border-emerald-800">
@@ -1673,10 +1673,10 @@ function BatchOptimizerPanel({
 
         {/* Common Expensive Ingredients */}
         {commonExpensive.length > 0 && (
-          <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="p-5 border-b border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-3">
-              <BarChart3 className="w-4 h-4 text-[#111111] dark:text-white" />
-              <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Ingredients couteux communs ({commonExpensive.length})</h4>
+              <BarChart3 className="w-4 h-4 text-mono-100 dark:text-white" />
+              <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Ingredients couteux communs ({commonExpensive.length})</h4>
             </div>
             <div className="space-y-2">
               {commonExpensive.slice(0, 8).map((ing, idx) => {
@@ -1685,14 +1685,14 @@ function BatchOptimizerPanel({
                   <div key={idx}>
                     <div className="flex items-center justify-between text-xs mb-0.5">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-medium text-[#111111] dark:text-white">{ing.name}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">
+                        <span className="font-medium text-mono-100 dark:text-white">{ing.name}</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500">
                           {ing.recipeCount} recettes
                         </span>
                       </div>
-                      <span className="font-mono text-[#111111] dark:text-white">{ing.totalCost.toFixed(2)}{getCurrencySymbol()}</span>
+                      <span className="font-mono text-mono-100 dark:text-white">{ing.totalCost.toFixed(2)}{getCurrencySymbol()}</span>
                     </div>
-                    <div className="w-full h-2.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] overflow-hidden">
+                    <div className="w-full h-2.5 rounded-full bg-mono-950 dark:bg-[#171717] overflow-hidden">
                       <div className="h-full rounded-full bg-red-500 transition-all duration-500" style={{ width: `${Math.max(pct, 1)}%` }} />
                     </div>
                   </div>
@@ -1704,23 +1704,23 @@ function BatchOptimizerPanel({
 
         {/* Bulk Substitution Suggestions */}
         {savingsBreakdown.length > 0 && (
-          <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="p-5 border-b border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-3">
               <RefreshCw className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Substitutions groupees recommandees</h4>
+              <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Substitutions groupees recommandees</h4>
             </div>
             <div className="space-y-3">
               {savingsBreakdown.slice(0, 6).map((item, idx) => (
-                <div key={idx} className="p-3 rounded-xl bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div key={idx} className="p-3 rounded-xl bg-mono-1000 dark:bg-mono-100 border border-mono-900 dark:border-mono-200">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-[#111111] dark:text-white">{item.name}</span>
+                      <span className="text-sm font-medium text-mono-100 dark:text-white">{item.name}</span>
                       <ArrowRight className="w-3.5 h-3.5 text-emerald-500" />
                       <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">{item.bestAlt.ingredient.name}</span>
                     </div>
                     <span className="text-xs font-bold text-emerald-500">-{item.savings.toFixed(2)}{getCurrencySymbol()}</span>
                   </div>
-                  <div className="flex items-center gap-4 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="flex items-center gap-4 text-[10px] text-[#9CA3AF] dark:text-mono-500">
                     <span>Affecte {item.recipeCount} recettes</span>
                     <span>{item.ingredient.pricePerUnit.toFixed(2)} → {item.bestAlt.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{item.ingredient.unit}</span>
                     <span className={`px-1.5 py-0.5 rounded-full font-medium ${item.bestAlt.quality === 'aucun' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : item.bestAlt.quality === 'minimal' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'}`}>
@@ -1734,10 +1734,10 @@ function BatchOptimizerPanel({
         )}
 
         {/* Seasonal Suggestions */}
-        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 mb-3">
             <SeasonIcon month={currentMonth} />
-            <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Suggestions saisonnieres — {monthNames[currentMonth]}</h4>
+            <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Suggestions saisonnieres — {monthNames[currentMonth]}</h4>
           </div>
           <div className="space-y-2">
             {seasonalGroups.map((group, gIdx) => (
@@ -1748,22 +1748,22 @@ function BatchOptimizerPanel({
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {group.patterns.map((p, pIdx) => (
-                    <span key={pIdx} className="px-1.5 py-0.5 rounded text-[10px] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white border border-green-200 dark:border-green-800/50">{p}</span>
+                    <span key={pIdx} className="px-1.5 py-0.5 rounded text-[10px] bg-white dark:bg-mono-50 text-mono-100 dark:text-white border border-green-200 dark:border-green-800/50">{p}</span>
                   ))}
                 </div>
               </div>
             ))}
-            <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] italic">
+            <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 italic">
               Ce mois-ci, privilegiez les ingredients de saison pour reduire les couts et ameliorer la fraicheur.
             </p>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-5 bg-[#FAFAFA] dark:bg-[#111111] rounded-b-2xl">
+        <div className="p-5 bg-mono-1000 dark:bg-mono-100 rounded-b-2xl">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse basee sur {sortedIngredients.length} ingredients — {recipes.length} recettes</span>
-            <button onClick={onClose} className="px-4 py-2 text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-lg hover:opacity-90 transition-opacity">
+            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Analyse basee sur {sortedIngredients.length} ingredients — {recipes.length} recettes</span>
+            <button onClick={onClose} className="px-4 py-2 text-sm font-semibold bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-lg hover:opacity-90 transition-opacity">
               Fermer
             </button>
           </div>
@@ -2153,7 +2153,7 @@ export default function Recipes() {
   }
 
   function SortIcon({ col }: { col: string }) {
-    if (sortColumn !== col) return <ChevronsUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />;
+    if (sortColumn !== col) return <ChevronsUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />;
     return sortDirection === 'asc' ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />;
   }
 
@@ -2722,25 +2722,25 @@ export default function Recipes() {
     showToast(`${recipes.length} recettes exportees en CSV`, 'success');
   }
 
-  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">{t("recipes.loading")}</div>;
+  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">{t("recipes.loading")}</div>;
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-[#111111] dark:text-white">{t("recipes.title")}</h2>
+        <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-mono-100 dark:text-white">{t("recipes.title")}</h2>
         <div className="flex items-center gap-2 w-full sm:w-auto">
           {recipes.length > 0 && (
             <>
             <button
               onClick={exportRecipesCSV}
-              className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               title="Exporter CSV"
             >
               <Download className="w-4 h-4" /> Exporter CSV
             </button>
             <button
               onClick={() => printAllFichesTechniques(recipes, selectedRestaurant?.name || '')}
-              className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               title="Imprimer toutes les fiches techniques"
             >
               <Printer className="w-4 h-4" /> Imprimer toutes les fiches
@@ -2756,23 +2756,23 @@ export default function Recipes() {
       {/* ── KPI Summary Cards ──────────────────────────────────────────── */}
       {recipes.length > 0 && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-4 sm:mb-6">
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
-            <div className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3] mb-1">{t("recipes.kpiTotal")}</div>
-            <div className="text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{kpis.total}</div>
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
+            <div className="text-xs font-general-sans text-mono-500 dark:text-mono-700 mb-1">{t("recipes.kpiTotal")}</div>
+            <div className="text-2xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{kpis.total}</div>
           </div>
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
-            <div className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3] mb-1">{t("recipes.kpiAvgMargin")}</div>
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
+            <div className="text-xs font-general-sans text-mono-500 dark:text-mono-700 mb-1">{t("recipes.kpiAvgMargin")}</div>
             <div className={`text-2xl font-bold font-satoshi tabular-nums ${kpis.avgMargin >= 70 ? 'text-emerald-600 dark:text-emerald-400' : kpis.avgMargin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>{kpis.avgMargin.toFixed(1)}%</div>
           </div>
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
-            <div className="flex items-center gap-1 text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3] mb-1">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
+            <div className="flex items-center gap-1 text-xs font-general-sans text-mono-500 dark:text-mono-700 mb-1">
               <Trophy className="w-3 h-3" /> {t("recipes.kpiBestMargin")}
             </div>
             <div className="text-sm font-bold font-satoshi text-emerald-600 dark:text-emerald-400 truncate" title={kpis.bestName}>{kpis.bestName}</div>
-            <div className="text-xs font-general-sans tabular-nums text-[#737373] dark:text-[#A3A3A3]">{kpis.bestMargin.toFixed(1)}%</div>
+            <div className="text-xs font-general-sans tabular-nums text-mono-500 dark:text-mono-700">{kpis.bestMargin.toFixed(1)}%</div>
           </div>
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
-            <div className="flex items-center gap-1 text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3] mb-1">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
+            <div className="flex items-center gap-1 text-xs font-general-sans text-mono-500 dark:text-mono-700 mb-1">
               <ShieldAlert className="w-3 h-3" /> {t("recipes.kpiDanger")}
             </div>
             <div className={`text-2xl font-bold font-satoshi tabular-nums ${kpis.dangerCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>{kpis.dangerCount}</div>
@@ -2784,24 +2784,24 @@ export default function Recipes() {
       {recipes.length > 0 && <MarginHealthBar recipes={recipes} />}
 
       {/* ── Tabs: Mes recettes / Templates ──────────────────────────────── */}
-      <div className="flex items-center gap-1 mb-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div className="flex items-center gap-1 mb-4 border-b border-mono-900 dark:border-mono-200 overflow-x-auto scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
         <button
           onClick={() => setActiveTab('recipes')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'recipes' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'recipes' ? 'border-mono-100 dark:border-white text-mono-100 dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
         >
           <UtensilsCrossed className="w-4 h-4 shrink-0" />
           Mes recettes
         </button>
         <button
           onClick={() => setActiveTab('templates')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'templates' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'templates' ? 'border-mono-100 dark:border-white text-mono-100 dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
         >
           <BookOpen className="w-4 h-4 shrink-0" />
           Templates
         </button>
         <button
           onClick={() => setActiveTab('modeles')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'modeles' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'modeles' ? 'border-mono-100 dark:border-white text-mono-100 dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
         >
           <Package className="w-4 h-4 shrink-0" />
           Modeles
@@ -2825,7 +2825,7 @@ export default function Recipes() {
         {/* Sort dropdown for grid view */}
         {viewMode === 'grid' && (
           <div className="flex items-center gap-1.5">
-            <ArrowUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+            <ArrowUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
             <select
               value={gridSort}
               onChange={(e) => setGridSort(e.target.value as typeof gridSort)}
@@ -2852,7 +2852,7 @@ export default function Recipes() {
               }
             }}
             disabled={compareIds.length < 2}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${compareIds.length === 2 ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]'}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${compareIds.length === 2 ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500'}`}
           >
             <GitCompareArrows className="w-3.5 h-3.5" />
             Comparer ({compareIds.length}/2)
@@ -2865,10 +2865,10 @@ export default function Recipes() {
           </button>
         )}
 
-        <div className="flex items-center gap-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-mono-950 dark:bg-[#171717] rounded-lg p-1">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-[#171717] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-[#171717] shadow-sm text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
             title={t("recipes.gridView")}
             aria-label="Vue grille"
           >
@@ -2876,7 +2876,7 @@ export default function Recipes() {
           </button>
           <button
             onClick={() => setViewMode('table')}
-            className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-[#171717] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-[#171717] shadow-sm text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
             title={t("recipes.tableView")}
             aria-label="Vue tableau"
           >
@@ -2897,7 +2897,7 @@ export default function Recipes() {
         <div className="flex flex-wrap gap-2 mb-4">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#171717]'}`}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#171717]'}`}
           >
             {t("recipes.allCategories")} ({recipes.length})
           </button>
@@ -2905,7 +2905,7 @@ export default function Recipes() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#171717]'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#171717]'}`}
             >
               {cat} ({count})
             </button>
@@ -2915,16 +2915,16 @@ export default function Recipes() {
 
       {/* ── Table View ─────────────────────────────────────────────────── */}
       {viewMode === 'table' ? (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto">
+        <div className="bg-white dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 overflow-x-auto">
           <table className="w-full text-sm min-w-[700px]">
             <thead>
-              <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <tr className="border-b border-mono-900 dark:border-mono-200">
                 <th className="px-4 py-3 w-10">
                   <input
                     type="checkbox"
                     checked={filtered.length > 0 && selectedRecipeIds.size === filtered.length}
                     onChange={toggleSelectAllRecipes}
-                    className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer"
+                    className="w-4 h-4 rounded accent-mono-100 dark:accent-white cursor-pointer"
                     aria-label="Tout selectionner"
                   />
                 </th>
@@ -2939,7 +2939,7 @@ export default function Recipes() {
                   <th
                     key={col.key}
                     onClick={() => handleSort(col.key)}
-                    className="px-4 py-3 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider cursor-pointer hover:text-[#111111] dark:hover:text-white select-none"
+                    className="px-4 py-3 text-left text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider cursor-pointer hover:text-mono-100 dark:hover:text-white select-none"
                   >
                     <span className="inline-flex items-center gap-1">
                       {col.label}
@@ -2947,10 +2947,10 @@ export default function Recipes() {
                     </span>
                   </th>
                 ))}
-                <th className="px-4 py-3 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Actions</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+            <tbody className="divide-y divide-mono-900 dark:divide-mono-200">
               {sortedFiltered.length === 0 ? (
                 recipes.length === 0 ? (
                   <tr>
@@ -2959,22 +2959,22 @@ export default function Recipes() {
                         <div className="mb-4">
                           <FoodIllustration recipeName="steak" size="lg" />
                         </div>
-                        <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-1">
+                        <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-1">
                           Creez votre premiere fiche technique
                         </h3>
-                        <p className="text-sm text-[#9CA3AF] dark:text-[#737373] max-w-md mb-4">
+                        <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-md mb-4">
                           Composez vos recettes avec ingredients et prix de vente — RestauMargin calcule automatiquement vos marges, food cost et coefficient multiplicateur.
                         </p>
                         <div className="flex flex-wrap gap-3 justify-center">
                           <button
                             onClick={openNew}
-                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
                           >
                             <Plus className="w-4 h-4" /> Creer une recette
                           </button>
                           <button
                             onClick={() => setActiveTab('templates')}
-                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-sm font-medium rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white hover:text-[#111111] dark:hover:text-white transition-colors"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-colors"
                           >
                             <Package className="w-4 h-4" /> Ou importez un pack
                           </button>
@@ -2983,48 +2983,48 @@ export default function Recipes() {
                     </td>
                   </tr>
                 ) : (
-                  <tr><td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">{t("recipes.noResults")}</td></tr>
+                  <tr><td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-mono-500">{t("recipes.noResults")}</td></tr>
                 )
               ) : sortedFiltered.map((recipe) => (
-                <tr key={recipe.id} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors ${selectedRecipeIds.has(recipe.id) ? 'bg-[#F3F4F6] dark:bg-[#171717]' : ''}`}>
+                <tr key={recipe.id} className={`hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors ${selectedRecipeIds.has(recipe.id) ? 'bg-mono-950 dark:bg-[#171717]' : ''}`}>
                   <td className="px-4 py-3">
                     <input
                       type="checkbox"
                       checked={selectedRecipeIds.has(recipe.id)}
                       onChange={() => toggleSelectRecipe(recipe.id)}
-                      className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer"
+                      className="w-4 h-4 rounded accent-mono-100 dark:accent-white cursor-pointer"
                       aria-label={`Selectionner ${recipe.name}`}
                     />
                   </td>
-                  <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">
+                  <td className="px-4 py-3 font-medium text-mono-100 dark:text-white">
                     <span className="inline-flex items-center gap-2">
                       <FoodIllustration recipeName={recipe.name} category={recipe.category} size="sm" animated={false} />
                       {recipe.name}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{recipe.category}</td>
-                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</td>
-                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</td>
+                  <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700">{recipe.category}</td>
+                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-mono-700">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</td>
+                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-mono-700">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</td>
                   <td className="px-4 py-3"><MarginBadge percent={recipe.margin.marginPercent} /></td>
-                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">
+                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-mono-700">
                     {recipe.margin.coefficient.toFixed(2)}
-                    <span className="text-[10px] ml-1 text-[#6B7280] dark:text-[#A3A3A3]" title={`Coeff. catégorie ${recipe.category}`}>
+                    <span className="text-[10px] ml-1 text-[#6B7280] dark:text-mono-700" title={`Coeff. catégorie ${recipe.category}`}>
                       (obj. ×{getCoefficient(recipe.category, coefficients).toFixed(1)})
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1 justify-end">
-                      <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.view")}>
-                        <Eye className="w-4 h-4 text-[#111111] dark:text-white" />
+                      <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.view")}>
+                        <Eye className="w-4 h-4 text-mono-100 dark:text-white" />
                       </Link>
-                      <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
-                        <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                      <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
+                        <Pencil className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
                       </button>
                       <button onClick={() => handleQuickDuplicate(recipe)} className="p-1.5 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Dupliquer avec ingredients" aria-label="Dupliquer la recette">
                         <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       </button>
-                      <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
-                        <Printer className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                      <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-1.5 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
+                        <Printer className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
                       </button>
                       <button onClick={() => setOptimizingRecipe(recipe)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
                         <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
@@ -3048,29 +3048,29 @@ export default function Recipes() {
               <div className="mb-4">
                 <FoodIllustration recipeName="pizza" size="lg" />
               </div>
-              <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-1">
+              <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-1">
                 Creez votre premiere fiche technique
               </h3>
-              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] max-w-md mb-4">
+              <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-md mb-4">
                 Composez vos recettes avec ingredients et prix de vente — RestauMargin calcule automatiquement vos marges, food cost et coefficient multiplicateur.
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
                 <button
                   onClick={openNew}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
                 >
                   <Plus className="w-4 h-4" /> Creer une recette
                 </button>
                 <button
                   onClick={() => setActiveTab('templates')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-sm font-medium rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white hover:text-[#111111] dark:hover:text-white transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-colors"
                 >
                   <Package className="w-4 h-4" /> Ou importez un pack
                 </button>
               </div>
             </div>
           ) : (
-            <p className="text-[#9CA3AF] dark:text-[#737373] col-span-full text-center py-8">
+            <p className="text-[#9CA3AF] dark:text-mono-500 col-span-full text-center py-8">
               {t("recipes.noResults")}
             </p>
           )
@@ -3080,14 +3080,14 @@ export default function Recipes() {
             const costPct = recipe.sellingPrice > 0 ? (recipe.margin.costPerPortion / recipe.sellingPrice) * 100 : 100;
             const isComparing = compareIds.includes(recipe.id);
             return (
-            <div key={recipe.id} className={`bg-white dark:bg-[#0A0A0A] rounded-2xl shadow hover:shadow-lg sm:hover:-translate-y-1 transition-all duration-200 overflow-hidden group relative ${selectedRecipeIds.has(recipe.id) ? 'ring-2 ring-[#111111] dark:ring-white' : ''} ${isComparing ? 'ring-2 ring-blue-500' : ''}`}>
+            <div key={recipe.id} className={`bg-white dark:bg-mono-50 rounded-2xl shadow hover:shadow-lg sm:hover:-translate-y-1 transition-all duration-200 overflow-hidden group relative ${selectedRecipeIds.has(recipe.id) ? 'ring-2 ring-mono-100 dark:ring-white' : ''} ${isComparing ? 'ring-2 ring-blue-500' : ''}`}>
               {/* Bulk select checkbox */}
               <div className="absolute top-2 left-2 z-10 flex items-center gap-1.5">
                 <input
                   type="checkbox"
                   checked={selectedRecipeIds.has(recipe.id)}
                   onChange={() => toggleSelectRecipe(recipe.id)}
-                  className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity data-[checked]:opacity-100"
+                  className="w-4 h-4 rounded accent-mono-100 dark:accent-white cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity data-[checked]:opacity-100"
                   style={selectedRecipeIds.has(recipe.id) ? { opacity: 1 } : undefined}
                   aria-label={`Selectionner ${recipe.name}`}
                 />
@@ -3116,15 +3116,15 @@ export default function Recipes() {
                 {/* Header: name + category badge + price/margin line */}
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex-1 min-w-0 mr-2">
-                    <h3 className="font-bold text-lg text-[#111111] dark:text-white leading-tight">{recipe.name}</h3>
+                    <h3 className="font-bold text-lg text-mono-100 dark:text-white leading-tight">{recipe.name}</h3>
                     <div className="flex items-center gap-2 mt-1">
                       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${getCategoryBadgeColor(recipe.category)}`}>
                         <Tag className="w-2.5 h-2.5" /> {recipe.category}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 mt-1.5">
-                      <span className="text-sm font-semibold text-[#111111] dark:text-white">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</span>
-                      <span className="text-[#9CA3AF] dark:text-[#737373]">/</span>
+                      <span className="text-sm font-semibold text-mono-100 dark:text-white">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</span>
+                      <span className="text-[#9CA3AF] dark:text-mono-500">/</span>
                       <MarginBadge percent={recipe.margin.marginPercent} />
                     </div>
                   </div>
@@ -3134,16 +3134,16 @@ export default function Recipes() {
 
                 {/* Key stats row */}
                 <div className="grid grid-cols-3 gap-2 text-center mb-3">
-                  <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{t("recipes.sale")}</div>
-                    <div className="text-sm font-bold text-[#111111] dark:text-white">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</div>
+                  <div className="bg-mono-1000 dark:bg-mono-50 rounded-lg py-2 px-1">
+                    <div className="text-[11px] text-[#9CA3AF] dark:text-mono-500">{t("recipes.sale")}</div>
+                    <div className="text-sm font-bold text-mono-100 dark:text-white">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</div>
                   </div>
-                  <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{t("recipes.cost")}</div>
-                    <div className="text-sm font-bold text-[#111111] dark:text-white">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</div>
+                  <div className="bg-mono-1000 dark:bg-mono-50 rounded-lg py-2 px-1">
+                    <div className="text-[11px] text-[#9CA3AF] dark:text-mono-500">{t("recipes.cost")}</div>
+                    <div className="text-sm font-bold text-mono-100 dark:text-white">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</div>
                   </div>
-                  <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{t("recipes.margin")}</div>
+                  <div className="bg-mono-1000 dark:bg-mono-50 rounded-lg py-2 px-1">
+                    <div className="text-[11px] text-[#9CA3AF] dark:text-mono-500">{t("recipes.margin")}</div>
                     <div className={`text-sm font-bold tabular-nums ${recipe.margin.marginPercent >= 70 ? 'text-emerald-600 dark:text-emerald-400' : recipe.margin.marginPercent >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                       {recipe.margin.marginPercent.toFixed(1)}%
                     </div>
@@ -3151,7 +3151,7 @@ export default function Recipes() {
                 </div>
 
                 {/* Coefficient info */}
-                <div className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] font-mono mb-2">
+                <div className="text-[11px] text-[#6B7280] dark:text-mono-700 font-mono mb-2">
                   Coeff. x{recipe.margin.coefficient.toFixed(2)} (obj. x{getCoefficient(recipe.category, coefficients).toFixed(1)} {recipe.category})
                 </div>
 
@@ -3197,24 +3197,24 @@ export default function Recipes() {
                 {/* Description/Notes preview */}
                 {recipe.description && (
                   <div className="flex items-start gap-1.5 mb-2 px-1">
-                    <StickyNote className="w-3 h-3 text-[#9CA3AF] dark:text-[#737373] mt-0.5 shrink-0" />
-                    <p className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] line-clamp-2 leading-relaxed italic">{recipe.description}</p>
+                    <StickyNote className="w-3 h-3 text-[#9CA3AF] dark:text-mono-500 mt-0.5 shrink-0" />
+                    <p className="text-[11px] text-[#6B7280] dark:text-mono-700 line-clamp-2 leading-relaxed italic">{recipe.description}</p>
                   </div>
                 )}
 
                 {/* Actions */}
-                <div className="flex gap-1.5 pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A] mt-2">
+                <div className="flex gap-1.5 pt-3 border-t border-mono-900 dark:border-mono-200 mt-2">
                   <Link to={`/recipes/${recipe.id}`} className="btn-secondary text-sm flex items-center gap-1 flex-1 justify-center">
                     <Eye className="w-4 h-4" /> {t("recipes.view")}
                   </Link>
-                  <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
-                    <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                  <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
+                    <Pencil className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
                   </button>
                   <button onClick={() => handleQuickDuplicate(recipe)} className="p-2 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Dupliquer avec ingredients" aria-label="Dupliquer la recette">
                     <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   </button>
-                  <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-2 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
-                    <Printer className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                  <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-2 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
+                    <Printer className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
                   </button>
                   <button onClick={() => setOptimizingRecipe(recipe)} className="p-2 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
                     <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
@@ -3233,7 +3233,7 @@ export default function Recipes() {
 
       {/* ── Bulk Actions Floating Bar (Recipes) ──────────────────────── */}
       {selectedRecipeIds.size > 0 && (
-        <div className="fixed bottom-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 bg-[#111111] dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-4 justify-center">
+        <div className="fixed bottom-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 bg-mono-100 dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-4 justify-center">
           <span className="text-sm font-medium flex items-center gap-2">
             <CheckSquare className="w-4 h-4" />
             {selectedRecipeIds.size} selectionne{selectedRecipeIds.size > 1 ? 's' : ''}
@@ -3278,12 +3278,12 @@ export default function Recipes() {
               <ChevronDown className="w-3 h-3" />
             </button>
             {bulkRecipeCategoryOpen && (
-              <div className="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-56 overflow-y-auto">
+              <div className="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-mono-50 rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-56 overflow-y-auto">
                 {RECIPE_CATEGORIES.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => bulkChangeRecipeCategory(cat)}
-                    className="w-full text-left px-3 py-2 text-sm text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                    className="w-full text-left px-3 py-2 text-sm text-mono-100 dark:text-white hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
                   >
                     {cat}
                   </button>
@@ -3312,7 +3312,7 @@ export default function Recipes() {
         {/* Template search + category filter */}
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500" />
             <input
               type="text"
               placeholder="Rechercher un template..."
@@ -3327,7 +3327,7 @@ export default function Recipes() {
         <div className="flex flex-wrap gap-2 mb-6">
           <button
             onClick={() => setTemplateCategoryFilter('all')}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === 'all' ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A]'}`}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === 'all' ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-200'}`}
           >
             Toutes ({Object.values(templatesByCategory).reduce((s, arr) => s + arr.length, 0)})
           </button>
@@ -3338,7 +3338,7 @@ export default function Recipes() {
               <button
                 key={cat}
                 onClick={() => setTemplateCategoryFilter(cat)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === cat ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A]'}`}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === cat ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-200'}`}
               >
                 {cat === 'Entrée' ? 'Entrees' : cat === 'Plat' ? 'Plats' : cat === 'Dessert' ? 'Desserts' : cat === 'Accompagnement' ? 'Accompagnements' : cat} ({count})
               </button>
@@ -3348,7 +3348,7 @@ export default function Recipes() {
 
         {/* Template cards grid */}
         {filteredTemplates.length === 0 ? (
-          <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+          <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">
             Aucun template ne correspond a votre recherche.
           </div>
         ) : (
@@ -3359,27 +3359,27 @@ export default function Recipes() {
               return (
                 <div
                   key={`${tpl.name}-${idx}`}
-                  className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden hover:border-[#111111] dark:hover:border-white transition-colors group"
+                  className="bg-white dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 overflow-hidden hover:border-mono-100 dark:hover:border-white transition-colors group"
                 >
                   {/* Header */}
                   <div className="p-4 pb-3">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-[#111111] dark:text-white truncate">{tpl.name}</h3>
-                        <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                        <h3 className="font-semibold text-mono-100 dark:text-white truncate">{tpl.name}</h3>
+                        <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded-full bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
                           {catLabel}
                         </span>
                       </div>
-                      <span className="text-lg font-bold font-mono text-[#111111] dark:text-white ml-2 flex-shrink-0">
+                      <span className="text-lg font-bold font-mono text-mono-100 dark:text-white ml-2 flex-shrink-0">
                         {tpl.suggestedSellingPrice}{getCurrencySymbol()}
                       </span>
                     </div>
-                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] line-clamp-2">{tpl.description}</p>
+                    <p className="text-xs text-[#6B7280] dark:text-mono-700 line-clamp-2">{tpl.description}</p>
                   </div>
 
                   {/* Stats */}
                   <div className="px-4 pb-3">
-                    <div className="flex items-center gap-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                    <div className="flex items-center gap-3 text-xs text-[#9CA3AF] dark:text-mono-500">
                       <span className="flex items-center gap-1">
                         <Users className="w-3 h-3" /> {tpl.nbPortions} portion{tpl.nbPortions > 1 ? 's' : ''}
                       </span>
@@ -3394,7 +3394,7 @@ export default function Recipes() {
                     {/* Cost estimation from DB ingredients */}
                     {preview.foundCount > 0 && (
                       <div className="flex items-center gap-3 mt-2 text-xs">
-                        <span className="text-[#6B7280] dark:text-[#A3A3A3]">
+                        <span className="text-[#6B7280] dark:text-mono-700">
                           Cout estime : <strong className="font-mono">{preview.costPerPortion.toFixed(2)}{getCurrencySymbol()}</strong>
                         </span>
                         <span className={`font-medium ${preview.margin >= 70 ? 'text-green-600 dark:text-green-400' : preview.margin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
@@ -3411,12 +3411,12 @@ export default function Recipes() {
                     {/* Ingredients preview */}
                     <div className="mt-2 flex flex-wrap gap-1">
                       {tpl.suggestedIngredients.slice(0, 4).map((ing, i) => (
-                        <span key={i} className="px-1.5 py-0.5 text-[10px] rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                        <span key={i} className="px-1.5 py-0.5 text-[10px] rounded bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
                           {ing.name}
                         </span>
                       ))}
                       {tpl.suggestedIngredients.length > 4 && (
-                        <span className="px-1.5 py-0.5 text-[10px] rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">
+                        <span className="px-1.5 py-0.5 text-[10px] rounded bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500">
                           +{tpl.suggestedIngredients.length - 4}
                         </span>
                       )}
@@ -3424,10 +3424,10 @@ export default function Recipes() {
                   </div>
 
                   {/* Action */}
-                  <div className="px-4 py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="px-4 py-3 border-t border-mono-900 dark:border-mono-200">
                     <button
                       onClick={() => useTemplate(tpl)}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
                     >
                       <Plus className="w-4 h-4" />
                       Utiliser ce template
@@ -3472,7 +3472,7 @@ export default function Recipes() {
 
         {/* Pack description */}
         <div className="mb-6">
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700">
             Importez un pack complet de recettes en un clic. Chaque pack cree automatiquement les ingredients et les recettes avec des quantites et prix realistes.
           </p>
         </div>
@@ -3496,25 +3496,25 @@ export default function Recipes() {
             return (
               <div
                 key={pack.id}
-                className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden hover:border-[#111111] dark:hover:border-white transition-all hover:shadow-lg group"
+                className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden hover:border-mono-100 dark:hover:border-white transition-all hover:shadow-lg group"
               >
                 {/* Pack Header */}
                 <div className="p-5 pb-4">
                   <div className="flex items-start gap-3 mb-3">
                     <span className="text-4xl">{pack.emoji}</span>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-[#111111] dark:text-white">{pack.name}</h3>
+                      <h3 className="text-lg font-bold text-mono-100 dark:text-white">{pack.name}</h3>
                       <span className="inline-block mt-0.5 px-2 py-0.5 text-xs font-medium rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300">
                         Cuisine {pack.cuisine}
                       </span>
                     </div>
                   </div>
-                  <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] line-clamp-2">{pack.description}</p>
+                  <p className="text-sm text-[#6B7280] dark:text-mono-700 line-clamp-2">{pack.description}</p>
                 </div>
 
                 {/* Stats row */}
                 <div className="px-5 pb-3">
-                  <div className="flex items-center gap-4 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="flex items-center gap-4 text-xs text-[#9CA3AF] dark:text-mono-500">
                     <span className="flex items-center gap-1">
                       <UtensilsCrossed className="w-3 h-3" /> {pack.recipes.length} recettes
                     </span>
@@ -3535,16 +3535,16 @@ export default function Recipes() {
                       return (
                         <div
                           key={idx}
-                          className={`flex items-center justify-between py-1.5 px-2.5 rounded-lg text-sm ${alreadyExists ? 'bg-green-50 dark:bg-green-900/10' : 'bg-[#F5F5F5] dark:bg-[#171717]'}`}
+                          className={`flex items-center justify-between py-1.5 px-2.5 rounded-lg text-sm ${alreadyExists ? 'bg-green-50 dark:bg-green-900/10' : 'bg-mono-975 dark:bg-[#171717]'}`}
                         >
                           <div className="flex items-center gap-2 min-w-0">
-                            <span className="text-[#6B7280] dark:text-[#A3A3A3] text-xs font-mono w-5 flex-shrink-0">{recipe.category === 'Entrée' ? 'E' : recipe.category === 'Plat' ? 'P' : recipe.category === 'Dessert' ? 'D' : recipe.category === 'Accompagnement' ? 'A' : 'B'}</span>
-                            <span className={`truncate ${alreadyExists ? 'text-green-700 dark:text-green-400' : 'text-[#111111] dark:text-white'}`}>
+                            <span className="text-[#6B7280] dark:text-mono-700 text-xs font-mono w-5 flex-shrink-0">{recipe.category === 'Entrée' ? 'E' : recipe.category === 'Plat' ? 'P' : recipe.category === 'Dessert' ? 'D' : recipe.category === 'Accompagnement' ? 'A' : 'B'}</span>
+                            <span className={`truncate ${alreadyExists ? 'text-green-700 dark:text-green-400' : 'text-mono-100 dark:text-white'}`}>
                               {recipe.name}
                             </span>
                             {alreadyExists && <Check className="w-3 h-3 text-green-500 flex-shrink-0" />}
                           </div>
-                          <span className="text-xs font-mono text-[#9CA3AF] dark:text-[#737373] flex-shrink-0 ml-2">
+                          <span className="text-xs font-mono text-[#9CA3AF] dark:text-mono-500 flex-shrink-0 ml-2">
                             {recipe.sellingPrice}{getCurrencySymbol()}
                           </span>
                         </div>
@@ -3554,11 +3554,11 @@ export default function Recipes() {
                 </div>
 
                 {/* Import action */}
-                <div className="px-5 py-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div className="px-5 py-4 border-t border-mono-900 dark:border-mono-200">
                   <button
                     onClick={() => importPack(pack)}
                     disabled={isImporting}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isImporting ? (
                       <>
@@ -3592,7 +3592,7 @@ export default function Recipes() {
                     type="button"
                     onClick={handleAiSuggest}
                     disabled={aiSuggestionsLoading || form.name.trim().length < 2}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-black rounded-lg transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-black rounded-lg transition-colors"
                   >
                     {aiSuggestionsLoading ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -3614,8 +3614,8 @@ export default function Recipes() {
               />
               {/* Enhanced Suggestions dropdown with preview cards */}
               {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-[#171717] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-80 overflow-y-auto">
-                  <div className="px-3 py-2 text-xs font-medium text-[#111111] dark:text-white border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-1">
+                <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-[#171717] rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-80 overflow-y-auto">
+                  <div className="px-3 py-2 text-xs font-medium text-mono-100 dark:text-white border-b border-mono-900 dark:border-mono-200 flex items-center gap-1">
                     <Sparkles className="w-3 h-3" /> {t("recipes.recipeSuggestions")}
                   </div>
                   {suggestions.slice(0, 8).map((tpl, idx) => {
@@ -3625,24 +3625,24 @@ export default function Recipes() {
                         key={idx}
                         type="button"
                         onClick={() => applyTemplate(tpl)}
-                        className="w-full text-left px-3 py-3 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-0"
+                        className="w-full text-left px-3 py-3 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors border-b border-mono-900 dark:border-mono-200 last:border-0"
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <span className="font-medium text-[#111111] dark:text-white">{tpl.name}</span>
-                            <span className="ml-2 text-xs text-[#9CA3AF] dark:text-[#737373]">{tpl.category}</span>
+                            <span className="font-medium text-mono-100 dark:text-white">{tpl.name}</span>
+                            <span className="ml-2 text-xs text-[#9CA3AF] dark:text-mono-500">{tpl.category}</span>
                           </div>
-                          <span className="text-sm font-mono text-[#9CA3AF] dark:text-[#737373]">{tpl.suggestedSellingPrice} {getCurrencySymbol()}</span>
+                          <span className="text-sm font-mono text-[#9CA3AF] dark:text-mono-500">{tpl.suggestedSellingPrice} {getCurrencySymbol()}</span>
                         </div>
-                        <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{tpl.description}</div>
+                        <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{tpl.description}</div>
                         {/* Preview card with cost/margin estimates */}
                         <div className="flex items-center gap-3 mt-1.5 text-xs">
-                          <span className="px-1.5 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                          <span className="px-1.5 py-0.5 rounded bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
                             {tpl.suggestedIngredients.length} {t("recipes.ingredients")}
                           </span>
                           {preview.foundCount > 0 && (
                             <>
-                              <span className="text-[#9CA3AF] dark:text-[#737373]">
+                              <span className="text-[#9CA3AF] dark:text-mono-500">
                                 {t("recipes.estimatedCost")} : {preview.costPerPortion.toFixed(2)}{getCurrencySymbol()}
                               </span>
                               <span className={`font-medium ${preview.margin >= 70 ? 'text-green-600' : preview.margin >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
@@ -3662,7 +3662,7 @@ export default function Recipes() {
                   <button
                     type="button"
                     onClick={() => setShowSuggestions(false)}
-                    className="w-full text-center px-3 py-2 text-xs text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white"
+                    className="w-full text-center px-3 py-2 text-xs text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white"
                   >
                     {t("recipes.closeSuggestions")}
                   </button>
@@ -3673,26 +3673,26 @@ export default function Recipes() {
             {/* AI Mercuriale Suggestions Panel */}
             {showAiSuggestions && aiSuggestions.length > 0 && (
               <div className="col-span-2">
-                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg overflow-hidden">
+                <div className="bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg overflow-hidden">
                   {/* Header */}
-                  <div className="flex items-center justify-between px-4 py-3 bg-[#F3F4F6] dark:bg-[#171717] border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="flex items-center justify-between px-4 py-3 bg-mono-950 dark:bg-[#171717] border-b border-mono-900 dark:border-mono-200">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-[#111111] dark:text-white" />
-                      <span className="text-sm font-semibold text-[#111111] dark:text-white">
+                      <Sparkles className="w-4 h-4 text-mono-100 dark:text-white" />
+                      <span className="text-sm font-semibold text-mono-100 dark:text-white">
                         Ingredients suggeres par l'IA
                       </span>
-                      <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] bg-[#F3F4F6] dark:bg-[#171717] px-2 py-0.5 rounded-full">
+                      <span className="text-xs text-[#6B7280] dark:text-mono-700 bg-mono-950 dark:bg-[#171717] px-2 py-0.5 rounded-full">
                         {aiSuggestionsChecked.filter(Boolean).length}/{aiSuggestions.length} selectionnes
                       </span>
                     </div>
-                    <button type="button" onClick={() => setShowAiSuggestions(false)} aria-label="Fermer les suggestions IA" className="p-1 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white">
+                    <button type="button" onClick={() => setShowAiSuggestions(false)} aria-label="Fermer les suggestions IA" className="p-1 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                   {/* List */}
-                  <div className="max-h-64 overflow-y-auto divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+                  <div className="max-h-64 overflow-y-auto divide-y divide-mono-900 dark:divide-mono-200">
                     {aiSuggestions.map((s, idx) => (
-                      <label key={idx} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors cursor-pointer">
+                      <label key={idx} className="flex items-center gap-3 px-4 py-2.5 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors cursor-pointer">
                         <input
                           type="checkbox"
                           checked={aiSuggestionsChecked[idx]}
@@ -3701,27 +3701,27 @@ export default function Recipes() {
                             updated[idx] = !updated[idx];
                             setAiSuggestionsChecked(updated);
                           }}
-                          className="w-4 h-4 rounded border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-[#111111]"
+                          className="w-4 h-4 rounded border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white focus:ring-mono-100"
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-sm text-[#111111] dark:text-white font-medium">{s.name}</span>
-                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{s.quantity} {s.unit}</span>
+                            <span className="text-sm text-mono-100 dark:text-white font-medium">{s.name}</span>
+                            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{s.quantity} {s.unit}</span>
                           </div>
                           {s.priceMin != null && s.priceMax != null ? (
-                            <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                            <span className="text-xs text-[#6B7280] dark:text-mono-700">
                               {'📊'} Marche : {s.priceMin.toFixed(2)}-{s.priceMax.toFixed(2)}{getCurrencySymbol()}/{s.unit}
                               {s.supplier && ` (${s.supplier})`}
                               {s.trend === 'baisse' && <span className="text-emerald-400 ml-1">{'↘'} {s.trendDetail}</span>}
                               {s.trend === 'hausse' && <span className="text-red-400 ml-1">{'↗'} {s.trendDetail}</span>}
-                              {s.trend === 'stable' && <span className="text-[#9CA3AF] dark:text-[#737373] ml-1">{'→'} {s.trendDetail}</span>}
+                              {s.trend === 'stable' && <span className="text-[#9CA3AF] dark:text-mono-500 ml-1">{'→'} {s.trendDetail}</span>}
                             </span>
                           ) : (
-                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Prix marche non disponible</span>
+                            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Prix marche non disponible</span>
                           )}
                         </div>
                         {s.marketPrice != null && (
-                          <span className="text-sm text-[#111111] dark:text-white font-semibold flex-shrink-0">
+                          <span className="text-sm text-mono-100 dark:text-white font-semibold flex-shrink-0">
                             {s.marketPrice.toFixed(2)}{getCurrencySymbol()}
                           </span>
                         )}
@@ -3729,14 +3729,14 @@ export default function Recipes() {
                     ))}
                   </div>
                   {/* Footer actions */}
-                  <div className="flex items-center justify-between px-4 py-3 bg-[#F3F4F6] dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="flex items-center justify-between px-4 py-3 bg-mono-950 dark:bg-mono-50 border-t border-mono-900 dark:border-mono-200">
                     <button
                       type="button"
                       onClick={() => {
                         const allChecked = aiSuggestionsChecked.every(Boolean);
                         setAiSuggestionsChecked(aiSuggestions.map(() => !allChecked));
                       }}
-                      className="text-xs text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5]"
+                      className="text-xs text-mono-100 dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5]"
                     >
                       {aiSuggestionsChecked.every(Boolean) ? 'Tout decocher' : 'Tout cocher'}
                     </button>
@@ -3744,7 +3744,7 @@ export default function Recipes() {
                       type="button"
                       onClick={applyAiSuggestions}
                       disabled={!aiSuggestionsChecked.some(Boolean)}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-black text-sm font-semibold rounded-lg transition-colors"
+                      className="flex items-center gap-1.5 px-4 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-black text-sm font-semibold rounded-lg transition-colors"
                     >
                       <Plus className="w-4 h-4" />
                       Ajouter ({aiSuggestionsChecked.filter(Boolean).length})
@@ -3774,7 +3774,7 @@ export default function Recipes() {
                             <span className="text-amber-600 dark:text-amber-400 text-xs">{name}</span>
                             <Link
                               to="/ingredients"
-                              className="text-xs text-[#111111] dark:text-white hover:underline font-medium"
+                              className="text-xs text-mono-100 dark:text-white hover:underline font-medium"
                               onClick={() => setShowForm(false)}
                             >
                               {t("recipes.addMissing")}
@@ -3787,7 +3787,7 @@ export default function Recipes() {
                   <button
                     type="button"
                     onClick={() => setTemplateApplyInfo(null)}
-                    className="ml-auto p-0.5 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white flex-shrink-0"
+                    className="ml-auto p-0.5 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white flex-shrink-0"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -3821,7 +3821,7 @@ export default function Recipes() {
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
               />
-              <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-1">Visible sur la fiche technique imprimee</p>
+              <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-1">Visible sur la fiche technique imprimee</p>
             </div>
           </div>
 
@@ -3842,39 +3842,39 @@ export default function Recipes() {
           </div>
 
           {/* Live cost/margin preview - always visible */}
-          <div className="bg-gradient-to-r from-[#FAFAFA] to-[#F3F4F6] dark:from-[#0A0A0A] dark:to-[#0A0A0A] rounded-lg p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="bg-gradient-to-r from-mono-1000 to-mono-950 dark:from-mono-50 dark:to-mono-50 rounded-lg p-4 border border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-[#111111] dark:text-white" />
-              <span className="text-sm font-semibold text-[#111111] dark:text-white">{t("recipes.livePreview")}</span>
+              <TrendingUp className="w-4 h-4 text-mono-100 dark:text-white" />
+              <span className="text-sm font-semibold text-mono-100 dark:text-white">{t("recipes.livePreview")}</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm">
-              <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
+              <div className="flex justify-between text-[#6B7280] dark:text-mono-700">
                 <span>{t("recipes.materialCost")}</span>
                 <strong className="font-mono">{liveCost.toFixed(2)} {getCurrencySymbol()}</strong>
               </div>
-              <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
+              <div className="flex justify-between text-[#6B7280] dark:text-mono-700">
                 <span>{t("recipes.costPerPortion")}</span>
                 <strong className="font-mono">{liveCostPerPortion.toFixed(2)} {getCurrencySymbol()}</strong>
               </div>
               {liveLaborPerPortion > 0 && (
-                <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
+                <div className="flex justify-between text-[#6B7280] dark:text-mono-700">
                   <span>{t("recipes.laborPerPortion")}</span>
                   <strong className="font-mono">{liveLaborPerPortion.toFixed(2)} {getCurrencySymbol()}</strong>
                 </div>
               )}
-              <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
+              <div className="flex justify-between text-[#6B7280] dark:text-mono-700">
                 <span>{t("recipes.totalPerPortion")}</span>
                 <strong className="font-mono">{liveTotalPerPortion.toFixed(2)} {getCurrencySymbol()}</strong>
               </div>
             </div>
             {/* Suggested price based on coefficient */}
             {liveTotalPerPortion > 0 && (
-              <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-mono-900 dark:border-mono-200">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Prix suggéré</span>
+                  <span className="text-sm text-[#6B7280] dark:text-mono-700">Prix suggéré</span>
                   {editingCoeff ? (
                     <span className="flex items-center gap-1">
-                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">×</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500">×</span>
                       <input
                         type="number"
                         step="0.1"
@@ -3901,12 +3901,12 @@ export default function Recipes() {
                           }
                         }}
                       />
-                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">({form.category})</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500">({form.category})</span>
                     </span>
                   ) : (
                     <button
                       type="button"
-                      className="flex items-center gap-1 text-xs text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors"
+                      className="flex items-center gap-1 text-xs text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors"
                       onClick={() => { setTempCoeff(liveCoeff); setEditingCoeff(true); }}
                       title="Modifier le coefficient"
                     >
@@ -3918,7 +3918,7 @@ export default function Recipes() {
                 </div>
                 <button
                   type="button"
-                  className="text-sm font-bold font-mono text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] transition-colors cursor-pointer"
+                  className="text-sm font-bold font-mono text-mono-100 dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] transition-colors cursor-pointer"
                   onClick={() => setForm(prev => ({ ...prev, sellingPrice: liveSuggestedPrice.toFixed(2) }))}
                   title="Appliquer comme prix de vente"
                 >
@@ -3927,8 +3927,8 @@ export default function Recipes() {
               </div>
             )}
             {liveSellingPrice > 0 && (
-              <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-                <span className="text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3]">{t("recipes.estimatedMarginLabel")}</span>
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-mono-900 dark:border-mono-200">
+                <span className="text-sm font-semibold text-[#6B7280] dark:text-mono-700">{t("recipes.estimatedMarginLabel")}</span>
                 <span className={`text-lg font-bold ${liveMargin >= 70 ? 'text-green-600' : liveMargin >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
                   {liveMargin.toFixed(1)}%
                 </span>
@@ -3954,14 +3954,14 @@ export default function Recipes() {
               <label className="label mb-0">{t("recipes.ingredientsLabel")}</label>
               <div className="flex items-center gap-2">
                 {formIngredients.length > 0 && (
-                  <button type="button" onClick={() => { setShowBatchWeighing(true); setShowQuickWeighAdd(false); }} className="flex items-center gap-1 text-xs text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium px-2 py-1 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <button type="button" onClick={() => { setShowBatchWeighing(true); setShowQuickWeighAdd(false); }} className="flex items-center gap-1 text-xs text-mono-100 dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium px-2 py-1 rounded-lg bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200">
                     <Scale className="w-3 h-3" /> Peser tous
                   </button>
                 )}
-                <button type="button" onClick={() => { setShowQuickWeighAdd(true); setShowBatchWeighing(false); }} className="flex items-center gap-1 text-xs text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium px-2 py-1 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <button type="button" onClick={() => { setShowQuickWeighAdd(true); setShowBatchWeighing(false); }} className="flex items-center gap-1 text-xs text-mono-100 dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium px-2 py-1 rounded-lg bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200">
                   <Scale className="w-3 h-3" /> <Plus className="w-3 h-3" /> Peser et ajouter
                 </button>
-                <button type="button" onClick={addIngredientLine} className="text-sm text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium">
+                <button type="button" onClick={addIngredientLine} className="text-sm text-mono-100 dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium">
                   {t("recipes.addIngredient")}
                 </button>
               </div>
@@ -4009,7 +4009,7 @@ export default function Recipes() {
             )}
 
             {formIngredients.length === 0 ? (
-              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] py-2">{t("recipes.noIngredients")}</p>
+              <p className="text-sm text-[#9CA3AF] dark:text-mono-500 py-2">{t("recipes.noIngredients")}</p>
             ) : (
               <div className="space-y-3">
                 {formIngredients.map((fi, idx) => {
@@ -4025,7 +4025,7 @@ export default function Recipes() {
                   const convertedQty = convertToBaseUnit(effectiveQty, inputUnit, priceUnit);
                   const lineTotal = unitPrice * convertedQty;
                   return (
-                    <div key={idx} className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg p-3 space-y-2">
+                    <div key={idx} className="border border-mono-900 dark:border-mono-200 rounded-lg p-3 space-y-2">
                       {/* Row 1: Ingredient name combobox */}
                       <div className="flex items-center gap-2">
                         <IngredientCombobox
@@ -4052,7 +4052,7 @@ export default function Recipes() {
                       {isNewIngredient && fi.newName.trim() && (
                         <div className="grid grid-cols-3 gap-2 pl-1">
                           <div>
-                            <label className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Prix unitaire</label>
+                            <label className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Prix unitaire</label>
                             <input
                               type="number"
                               step="0.01"
@@ -4068,7 +4068,7 @@ export default function Recipes() {
                             />
                           </div>
                           <div>
-                            <label className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Unite</label>
+                            <label className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Unite</label>
                             <select
                               className="input w-full text-sm"
                               value={fi.newUnit}
@@ -4082,7 +4082,7 @@ export default function Recipes() {
                             </select>
                           </div>
                           <div>
-                            <label className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Categorie</label>
+                            <label className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Categorie</label>
                             <select
                               className="input w-full text-sm"
                               value={fi.newCategory}
@@ -4123,17 +4123,17 @@ export default function Recipes() {
                           onClick={() => { setWeighingLineIdx(weighingLineIdx === idx ? null : idx); setSimWeight(0); }}
                           className={`flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors flex-shrink-0 ${
                             weighingLineIdx === idx
-                              ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                              ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
                               : weighedLines.has(idx)
                               ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800'
-                              : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+                              : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-200 hover:bg-mono-900 dark:hover:bg-mono-300'
                           }`}
                           title="Peser cet ingredient"
                         >
                           <Scale className="w-3 h-3" />
                           {weighedLines.has(idx) ? <Check className="w-3 h-3" /> : 'Peser'}
                         </button>
-                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-10">{unitLabel}</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500 w-10">{unitLabel}</span>
                         <input
                           type="number"
                           step="1"
@@ -4149,11 +4149,11 @@ export default function Recipes() {
                           }}
                           title={t("recipes.wasteTooltip")}
                         />
-                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-4">%</span>
-                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-auto">
+                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500 w-4">%</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500 ml-auto">
                           {unitPrice > 0 && <>{unitPrice.toFixed(2)}{getCurrencySymbol()}/{unitLabel}</>}
                         </span>
-                        <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{lineTotal.toFixed(2)} {getCurrencySymbol()}</span>
+                        <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'}`}>{lineTotal.toFixed(2)} {getCurrencySymbol()}</span>
                       </div>
 
                       {/* Inline Weighing Panel */}
@@ -4178,16 +4178,16 @@ export default function Recipes() {
                 })}
 
                 {/* Running total of food cost */}
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-                  <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t("recipes.materialTotal")}</span>
-                  <span className="text-sm font-bold font-mono text-[#111111] dark:text-white">{liveCost.toFixed(2)} {getCurrencySymbol()}</span>
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-mono-900 dark:border-mono-200">
+                  <span className="text-sm text-[#9CA3AF] dark:text-mono-500">{t("recipes.materialTotal")}</span>
+                  <span className="text-sm font-bold font-mono text-mono-100 dark:text-white">{liveCost.toFixed(2)} {getCurrencySymbol()}</span>
                 </div>
               </div>
             )}
           </div>
 
           <div className="flex items-center justify-between pt-2">
-            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t("recipes.ctrlEnterSave")}</span>
+            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{t("recipes.ctrlEnterSave")}</span>
             <div className="flex gap-3">
               <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">{t("recipes.cancel")}</button>
               <button
@@ -4211,13 +4211,13 @@ export default function Recipes() {
       {/* ── Batch Margin Fixer Modal ──────────────────────────────────── */}
       {showBatchFixer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowBatchFixer(false)}>
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 border-b border-mono-900 dark:border-mono-200">
               <div className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-emerald-500" />
-                <h3 className="text-lg font-bold text-[#111111] dark:text-white">Optimiser les prix</h3>
+                <h3 className="text-lg font-bold text-mono-100 dark:text-white">Optimiser les prix</h3>
               </div>
-              <button onClick={() => setShowBatchFixer(false)} className="p-1 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white">
+              <button onClick={() => setShowBatchFixer(false)} className="p-1 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -4226,7 +4226,7 @@ export default function Recipes() {
               {/* Target margin slider */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-[#111111] dark:text-white">Marge cible</label>
+                  <label className="text-sm font-medium text-mono-100 dark:text-white">Marge cible</label>
                   <span className="text-lg font-bold text-emerald-500">{batchTargetMargin}%</span>
                 </div>
                 <input
@@ -4236,9 +4236,9 @@ export default function Recipes() {
                   step={5}
                   value={batchTargetMargin}
                   onChange={(e) => setBatchTargetMargin(parseInt(e.target.value))}
-                  className="w-full h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                  className="w-full h-2 bg-mono-900 dark:bg-mono-200 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                 />
-                <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-1">
+                <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-1">
                   <span>30%</span>
                   <span>60%</span>
                   <span>90%</span>
@@ -4251,20 +4251,20 @@ export default function Recipes() {
                   const priceDiff = r.suggestedPrice - r.currentPrice;
                   const needsChange = Math.abs(priceDiff) > 0.01;
                   return (
-                    <div key={r.id} className={`rounded-xl p-3 border ${needsChange ? 'border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10' : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]'}`}>
+                    <div key={r.id} className={`rounded-xl p-3 border ${needsChange ? 'border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10' : 'border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50'}`}>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium text-[#111111] dark:text-white truncate">{r.name}</span>
+                        <span className="text-sm font-medium text-mono-100 dark:text-white truncate">{r.name}</span>
                         <span className={`text-xs font-bold ${r.currentMargin >= batchTargetMargin ? 'text-emerald-500' : 'text-red-500'}`}>
                           {r.currentMargin.toFixed(1)}%
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                      <div className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-mono-700">
                         <span>Cout: {r.cost.toFixed(2)}{getCurrencySymbol()}</span>
-                        <span className="text-[#9CA3AF] dark:text-[#737373]">|</span>
+                        <span className="text-[#9CA3AF] dark:text-mono-500">|</span>
                         <span>Actuel: {r.currentPrice.toFixed(2)}{getCurrencySymbol()}</span>
                         {needsChange && (
                           <>
-                            <span className="text-[#111111] dark:text-white font-bold">
+                            <span className="text-mono-100 dark:text-white font-bold">
                               &rarr; {r.suggestedPrice.toFixed(2)}{getCurrencySymbol()}
                             </span>
                             <span className={`font-mono text-[10px] ${priceDiff > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
@@ -4284,8 +4284,8 @@ export default function Recipes() {
               </div>
 
               {/* Apply button */}
-              <div className="flex items-center justify-between pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+              <div className="flex items-center justify-between pt-2 border-t border-mono-900 dark:border-mono-200">
+                <span className="text-xs text-[#9CA3AF] dark:text-mono-500">
                   {batchFixerResults.filter(r => Math.abs(r.suggestedPrice - r.currentPrice) > 0.01).length} recette(s) a ajuster
                 </span>
                 <button

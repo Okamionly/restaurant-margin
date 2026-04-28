@@ -2,8 +2,8 @@ import { formatCurrency } from '../utils/currency';
 import { useState, useEffect } from 'react';
 import { ChefHat, Clock, Users, Flame, ShoppingCart, Plus, ArrowLeft, Truck, X } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
-import { getToken, getActiveRestaurantId } from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import { useApiClient } from '../hooks/useApiClient';
 
 interface EditorialIngredient {
   id: number;
@@ -37,15 +37,6 @@ interface EditorialRecipe {
   ingredients?: EditorialIngredient[];
 }
 
-function authHeaders(): Record<string, string> {
-  const token = getToken();
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  const rid = getActiveRestaurantId();
-  if (rid) headers['X-Restaurant-Id'] = rid;
-  return headers;
-}
-
 function getWeekNumber(d: Date): number {
   const oneJan = new Date(d.getFullYear(), 0, 1);
   const days = Math.floor((d.getTime() - oneJan.getTime()) / 86400000);
@@ -73,6 +64,7 @@ export default function EditorialRecipes() {
   const [orderingId, setOrderingId] = useState<number | null>(null);
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const { authHeaders } = useApiClient();
 
   const weekNum = getWeekNumber(new Date());
 

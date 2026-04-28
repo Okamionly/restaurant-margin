@@ -12,12 +12,7 @@
 
 import { useState } from 'react';
 import { Send, Mail, FileText, Plus, X, Check, AlertCircle, Sparkles } from 'lucide-react';
-
-// Reuse the same auth header pattern used elsewhere in the app
-function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token');
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
+import { useApiClient } from '../hooks/useApiClient';
 
 interface ArticleLink {
   title: string;
@@ -224,6 +219,7 @@ Disponible pour appel rapide si vous voulez en discuter.`,
 ];
 
 export default function OutreachMailer() {
+  const { authHeaders } = useApiClient();
   const [selectedTemplate, setSelectedTemplate] = useState<Template>(TEMPLATES[0]);
   const [to, setTo] = useState(TEMPLATES[0].to);
   const [subject, setSubject] = useState(TEMPLATES[0].subject);

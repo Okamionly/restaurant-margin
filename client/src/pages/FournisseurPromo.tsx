@@ -1,6 +1,7 @@
 import { formatCurrency } from '../utils/currency';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useApiClient } from '../hooks/useApiClient';
 import {
   Package, ShoppingCart, Truck, Phone, Mail, MapPin,
   Search, Plus, Minus, Send, Check,
@@ -50,15 +51,6 @@ type SupplierData = {
 /* ------------------------------------------------------------------ */
 /*  API helpers                                                        */
 /* ------------------------------------------------------------------ */
-
-function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token');
-  const rid = localStorage.getItem('activeRestaurantId');
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  if (rid) headers['X-Restaurant-Id'] = rid;
-  return headers;
-}
 
 const CATEGORY_ICONS: Record<string, string> = {
   'Tous': '📋',
@@ -114,6 +106,7 @@ const EMPTY_SUPPLIER: SupplierData = {
 export default function FournisseurPromo() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { authHeaders } = useApiClient();
 
   const [supplier, setSupplier] = useState<SupplierData>(EMPTY_SUPPLIER);
   const [loading, setLoading] = useState(true);

@@ -326,7 +326,7 @@ function getCourseColor(course: string): { bg: string; text: string; label: stri
     case 'entree': return { bg: 'bg-[#1e3a5f]', text: 'text-[#60a5fa]', label: 'ENTREE' };
     case 'plat': return { bg: 'bg-[#78350f]', text: 'text-[#fb923c]', label: 'PLAT' };
     case 'dessert': return { bg: 'bg-[#4a1942]', text: 'text-[#f0abfc]', label: 'DESSERT' };
-    default: return { bg: 'bg-[#262626]', text: 'text-[#a1a1aa]', label: 'AUTRE' };
+    default: return { bg: 'bg-mono-300', text: 'text-[#a1a1aa]', label: 'AUTRE' };
   }
 }
 
@@ -463,7 +463,7 @@ function DishProgressBar({ dish, now }: { dish: OrderDish; now: number }) {
   else if (ratio >= 0.8) barColor = '#f59e0b'; // amber
 
   return (
-    <div className="w-full h-2 bg-[#1a1a1a] rounded-full overflow-hidden mt-1.5">
+    <div className="w-full h-2 bg-mono-200 rounded-full overflow-hidden mt-1.5">
       <div
         className={`h-full rounded-full kds-progress-bar ${ratio >= 1.2 ? 'kds-flash-overtime' : ''}`}
         style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: barColor }}
@@ -476,13 +476,13 @@ function DishProgressBar({ dish, now }: { dish: OrderDish; now: number }) {
 // ██  DISH TIMER DISPLAY  ████████████████████████████████████████████████
 // ══════════════════════════════════════════════════════════════════════════
 function DishTimer({ dish, now }: { dish: OrderDish; now: number }) {
-  if (dish.status === 'servi') return <span className="text-[#404040] font-mono text-xl line-through">--:--</span>;
+  if (dish.status === 'servi') return <span className="text-mono-350 font-mono text-xl line-through">--:--</span>;
   if (dish.status === 'pret') return <span className="text-[#34d399] font-mono text-xl font-bold">PRET</span>;
   if (dish.status === 'attente') {
     return (
       <div className="text-right">
         <span className="text-[#71717a] font-mono text-xl">{dish.prepTimeMinutes}:00</span>
-        <div className="text-xs text-[#404040]">cible</div>
+        <div className="text-xs text-mono-350">cible</div>
       </div>
     );
   }
@@ -502,7 +502,7 @@ function DishTimer({ dish, now }: { dish: OrderDish; now: number }) {
       }`}>
         {isOvertime ? '+' : ''}{formatElapsed(Math.abs(remaining))}
       </span>
-      <div className="text-xs text-[#525252] font-mono">{dish.prepTimeMinutes}m cible</div>
+      <div className="text-xs text-mono-400 font-mono">{dish.prepTimeMinutes}m cible</div>
     </div>
   );
 }
@@ -575,7 +575,7 @@ function RecipeQuickView({ recipe, onClose }: { recipe: Recipe; onClose: () => v
         role="dialog"
         aria-modal="true"
         aria-labelledby="recipe-quickview-title"
-        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto p-6"
+        className="bg-mono-50 border-2 border-[#333333] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto p-6"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -588,7 +588,7 @@ function RecipeQuickView({ recipe, onClose }: { recipe: Recipe; onClose: () => v
               {recipe.cookTimeMinutes > 0 && <span className="text-lg text-[#f97316]">Cuisson {recipe.cookTimeMinutes}min</span>}
             </div>
           </div>
-          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white transition-colors min-w-[64px] min-h-[64px] flex items-center justify-center">
+          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] hover:text-white transition-colors min-w-[64px] min-h-[64px] flex items-center justify-center">
             <X className="w-7 h-7" />
           </button>
         </div>
@@ -609,13 +609,13 @@ function RecipeQuickView({ recipe, onClose }: { recipe: Recipe; onClose: () => v
         </h3>
         <div className="space-y-2 mb-6">
           {recipe.ingredients?.map((ri: any) => (
-            <div key={ri.id} className="flex justify-between items-center bg-[#1a1a1a] rounded-xl px-5 py-4">
+            <div key={ri.id} className="flex justify-between items-center bg-mono-200 rounded-xl px-5 py-4">
               <span className="text-xl font-semibold text-white">{ri.ingredient?.name || 'Ingredient'}</span>
               <span className="text-xl text-[#fbbf24] font-mono font-bold">{ri.quantity} {ri.ingredient?.unit || ''}</span>
             </div>
           ))}
         </div>
-        <div className="bg-[#1a1a1a] border border-[#262626] rounded-xl p-5">
+        <div className="bg-mono-200 border border-mono-300 rounded-xl p-5">
           <h3 className="text-xl font-bold text-white mb-3">Instructions de preparation</h3>
           <p className="text-lg text-[#71717a]">{recipe.description || 'Aucune instruction disponible.'}</p>
         </div>
@@ -682,12 +682,12 @@ function NewOrderModal({ recipes, onAdd, onClose }: { recipes: Recipe[]; onAdd: 
         role="dialog"
         aria-modal="true"
         aria-labelledby="new-order-title"
-        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6"
+        className="bg-mono-50 border-2 border-[#333333] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
           <h2 id="new-order-title" className="text-3xl font-bold text-white">Nouvelle Commande</h2>
-          <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[64px] min-h-[64px] flex items-center justify-center">
+          <button onClick={onClose} className="p-3 rounded-xl bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] hover:text-white kds-transition min-w-[64px] min-h-[64px] flex items-center justify-center">
             <X className="w-7 h-7" />
           </button>
         </div>
@@ -699,7 +699,7 @@ function NewOrderModal({ recipes, onAdd, onClose }: { recipes: Recipe[]; onAdd: 
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => (
                 <button key={n} onClick={() => setTableNumber(n)}
                   className={`min-w-[64px] min-h-[64px] rounded-xl text-2xl font-bold kds-transition
-                    ${tableNumber === n ? 'bg-[#0d9488] text-white' : 'bg-[#1a1a1a] text-[#a1a1aa] hover:bg-[#262626]'}`}>
+                    ${tableNumber === n ? 'bg-[#0d9488] text-white' : 'bg-mono-200 text-[#a1a1aa] hover:bg-mono-300'}`}>
                   {n}
                 </button>
               ))}
@@ -708,15 +708,15 @@ function NewOrderModal({ recipes, onAdd, onClose }: { recipes: Recipe[]; onAdd: 
           <div>
             <label className="text-lg text-[#a1a1aa] mb-2 block">Serveur</label>
             <input value={serverName} onChange={e => setServerName(e.target.value)} placeholder="Nom du serveur..."
-              className="w-full bg-[#1a1a1a] border border-[#333333] rounded-xl px-4 py-3 text-xl text-white placeholder-[#525252] focus:border-[#0d9488] focus:outline-none min-h-[64px] mb-4" />
+              className="w-full bg-mono-200 border border-[#333333] rounded-xl px-4 py-3 text-xl text-white placeholder-mono-400 focus:border-[#0d9488] focus:outline-none min-h-[64px] mb-4" />
             <label className="text-lg text-[#a1a1aa] mb-2 block">Priorite</label>
             <div className="flex gap-2">
               {(['normal', 'rush', 'vip'] as OrderPriority[]).map(p => (
                 <button key={p} onClick={() => setPriority(p)}
                   className={`flex-1 min-h-[64px] rounded-xl text-xl font-bold kds-transition uppercase
                     ${priority === p
-                      ? p === 'vip' ? 'bg-[#7c3aed] text-white' : p === 'rush' ? 'bg-[#ef4444] text-white' : 'bg-[#404040] text-white'
-                      : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626]'}`}>
+                      ? p === 'vip' ? 'bg-[#7c3aed] text-white' : p === 'rush' ? 'bg-[#ef4444] text-white' : 'bg-mono-350 text-white'
+                      : 'bg-mono-200 text-[#71717a] hover:bg-mono-300'}`}>
                   {p === 'vip' && <Star className="w-5 h-5 inline mr-1" />}{p}
                 </button>
               ))}
@@ -724,7 +724,7 @@ function NewOrderModal({ recipes, onAdd, onClose }: { recipes: Recipe[]; onAdd: 
             <div className="mt-4">
               <label className="text-lg text-[#a1a1aa] mb-2 block">Notes / Allergies</label>
               <input value={notes} onChange={e => setNotes(e.target.value)} placeholder="Allergies, cuisson speciale..."
-                className="w-full bg-[#1a1a1a] border border-[#333333] rounded-xl px-4 py-3 text-xl text-white placeholder-[#525252] focus:border-[#0d9488] focus:outline-none min-h-[64px]" />
+                className="w-full bg-mono-200 border border-[#333333] rounded-xl px-4 py-3 text-xl text-white placeholder-mono-400 focus:border-[#0d9488] focus:outline-none min-h-[64px]" />
               {detectedAllergens.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {detectedAllergens.map(a => (
@@ -743,7 +743,7 @@ function NewOrderModal({ recipes, onAdd, onClose }: { recipes: Recipe[]; onAdd: 
             <h3 className="text-xl font-bold text-white mb-3">Plats selectionnes ({selectedDishes.reduce((s, d) => s + d.quantity, 0)})</h3>
             <div className="space-y-2">
               {selectedDishes.map((d, i) => (
-                <div key={i} className="flex items-center justify-between bg-[#1a1a1a] rounded-xl px-4 py-3">
+                <div key={i} className="flex items-center justify-between bg-mono-200 rounded-xl px-4 py-3">
                   <span className="text-lg text-white font-semibold">{d.quantity > 1 && <span className="text-[#fbbf24] mr-2">x{d.quantity}</span>}{d.recipeName}</span>
                   <div className="flex items-center gap-3">
                     <span className={`text-sm px-2 py-0.5 rounded ${getCourseColor(detectCourse({ recipeName: d.recipeName, category: d.category })).bg} ${getCourseColor(detectCourse({ recipeName: d.recipeName, category: d.category })).text}`}>
@@ -763,13 +763,13 @@ function NewOrderModal({ recipes, onAdd, onClose }: { recipes: Recipe[]; onAdd: 
 
         <div className="mb-4">
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Chercher un plat..."
-            className="w-full bg-[#1a1a1a] border border-[#333333] rounded-xl px-4 py-3 text-xl text-white placeholder-[#525252] focus:border-[#0d9488] focus:outline-none min-h-[64px]" />
+            className="w-full bg-mono-200 border border-[#333333] rounded-xl px-4 py-3 text-xl text-white placeholder-mono-400 focus:border-[#0d9488] focus:outline-none min-h-[64px]" />
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[220px] overflow-y-auto mb-6">
           {filtered.map(recipe => (
             <button key={recipe.id} onClick={() => addDish(recipe)}
-              className="text-left p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] border border-[#262626] hover:border-[#0d9488] kds-transition min-h-[64px]">
+              className="text-left p-3 rounded-xl bg-mono-200 hover:bg-mono-300 border border-mono-300 hover:border-[#0d9488] kds-transition min-h-[64px]">
               <div className="text-white font-semibold text-lg truncate">{recipe.name}</div>
               <div className="text-[#71717a] text-sm">{recipe.category} - {(recipe.prepTimeMinutes || 0) + (recipe.cookTimeMinutes || 0)} min</div>
             </button>
@@ -778,7 +778,7 @@ function NewOrderModal({ recipes, onAdd, onClose }: { recipes: Recipe[]; onAdd: 
 
         <button onClick={handleSubmit} disabled={selectedDishes.length === 0}
           className={`w-full min-h-[72px] rounded-xl text-2xl font-bold kds-transition
-            ${selectedDishes.length > 0 ? 'bg-[#0d9488] hover:bg-[#14b8a6] text-white' : 'bg-[#1a1a1a] text-[#525252] cursor-not-allowed'}`}>
+            ${selectedDishes.length > 0 ? 'bg-[#0d9488] hover:bg-[#14b8a6] text-white' : 'bg-mono-200 text-mono-400 cursor-not-allowed'}`}>
           Envoyer en cuisine ({selectedDishes.reduce((s, d) => s + d.quantity, 0)} plats)
         </button>
       </div>
@@ -821,17 +821,17 @@ function OrderCard({
 
   // Table badge color by column
   const tableBadgeBg = isBumped || allServed
-    ? 'bg-[#1a1a1a]'
+    ? 'bg-mono-200'
     : isOnHold
       ? 'bg-[#78350f]'
       : allPretOrServed
         ? 'bg-[#059669]'
         : column === 'preparing'
           ? 'bg-[#78350f]'
-          : 'bg-[#1a1a1a]';
+          : 'bg-mono-200';
 
   const tableBadgeText = isBumped || allServed
-    ? 'text-[#525252]'
+    ? 'text-mono-400'
     : isOnHold
       ? 'text-[#fbbf24]'
       : allPretOrServed
@@ -851,8 +851,8 @@ function OrderCard({
         ${isArchiving ? 'opacity-0 scale-95 translate-y-4 transition-all duration-500' : ''}
         ${isWaitingLong ? 'kds-pulse-waiting border-[#ef4444]/70' :
           isOnHold ? 'border-[#f59e0b]/50 opacity-70' :
-          allServed || isBumped ? 'border-[#262626] opacity-40' :
-          column === 'new' ? 'border-[#525252]/40' :
+          allServed || isBumped ? 'border-mono-300 opacity-40' :
+          column === 'new' ? 'border-mono-400/40' :
           column === 'preparing' ? 'border-[#fbbf24]/40' :
           'border-[#34d399]/50'}
         ${order.priority !== 'normal' && !allServed && !isBumped ? `ring-2 ${prio.ring}` : ''}
@@ -861,7 +861,7 @@ function OrderCard({
       style={{ transition: 'all 0.2s ease, opacity 0.5s ease, transform 0.5s ease' }}
     >
       {/* ── Card Header: 72px table badge ── */}
-      <div className="px-4 py-3 flex items-center justify-between bg-[#0a0a0a]">
+      <div className="px-4 py-3 flex items-center justify-between bg-mono-50">
         <div className="flex items-center gap-4">
           {/* Table Number Badge */}
           <div className={`
@@ -909,30 +909,30 @@ function OrderCard({
           <div className="hidden group-hover:flex items-center gap-1.5">
             {!allServed && !isBumped && onEditOrder && (
               <button onClick={() => onEditOrder(order)} title="Modifier"
-                className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#14b8a6]/10 text-[#71717a] hover:text-[#14b8a6] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+                className="p-2 rounded-lg bg-mono-200 hover:bg-[#14b8a6]/10 text-[#71717a] hover:text-[#14b8a6] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
                 <Edit3 className="w-5 h-5" />
               </button>
             )}
             {!allServed && !isBumped && onSplitOrder && order.dishes.length > 1 && (
               <button onClick={() => onSplitOrder(order)} title="Scinder"
-                className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#a78bfa]/10 text-[#71717a] hover:text-[#a78bfa] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+                className="p-2 rounded-lg bg-mono-200 hover:bg-[#a78bfa]/10 text-[#71717a] hover:text-[#a78bfa] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
                 <Scissors className="w-5 h-5" />
               </button>
             )}
             <button onClick={() => onPrint(order)} title="Imprimer"
-              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#262626] text-[#71717a] hover:text-white kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+              className="p-2 rounded-lg bg-mono-200 hover:bg-mono-300 text-[#71717a] hover:text-white kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
               <Printer className="w-5 h-5" />
             </button>
             {!allServed && !isBumped && onDeleteOrder && (
               <button onClick={() => { if (confirm('Supprimer cette commande ?')) onDeleteOrder(order.id); }} title="Supprimer"
-                className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#71717a] hover:text-[#ef4444] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+                className="p-2 rounded-lg bg-mono-200 hover:bg-[#ef4444]/10 text-[#71717a] hover:text-[#ef4444] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
                 <Trash2 className="w-5 h-5" />
               </button>
             )}
           </div>
           {(allServed || isBumped) && (
             <button onClick={() => onRemoveOrder(order.id)}
-              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#525252] hover:text-[#ef4444] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+              className="p-2 rounded-lg bg-mono-200 hover:bg-[#ef4444]/10 text-mono-400 hover:text-[#ef4444] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
               <Trash2 className="w-5 h-5" />
             </button>
           )}
@@ -976,7 +976,7 @@ function OrderCard({
 
       {/* ── Dishes ── */}
       {!isBumped && (
-        <div className="divide-y divide-[#1a1a1a]">
+        <div className="divide-y divide-mono-200">
           {order.dishes.map(dish => {
             const course = dish.course || detectCourse(dish);
             const courseColor = getCourseColor(course);
@@ -988,7 +988,7 @@ function OrderCard({
 
             return (
               <div key={dish.id}
-                className={`px-4 py-3 kds-transition ${isDone ? 'bg-[#0a0a0a]/50 kds-dish-done' : 'bg-black hover:bg-[#0a0a0a]'}`}>
+                className={`px-4 py-3 kds-transition ${isDone ? 'bg-mono-50/50 kds-dish-done' : 'bg-black hover:bg-mono-50'}`}>
                 <div className="flex items-center gap-3">
                   {/* Status cycle button */}
                   <button
@@ -998,7 +998,7 @@ function OrderCard({
                       ${dish.status === 'attente' ? 'bg-[#27272a] hover:bg-[#78350f]/40 text-[#a1a1aa] hover:text-[#fbbf24] active:scale-95' : ''}
                       ${dish.status === 'preparation' ? 'bg-[#78350f]/50 hover:bg-[#064e3b]/50 text-[#fbbf24] hover:text-[#34d399] active:scale-95' : ''}
                       ${dish.status === 'pret' ? 'bg-[#064e3b]/50 hover:bg-[#27272a] text-[#34d399] hover:text-[#a1a1aa] active:scale-95' : ''}
-                      ${dish.status === 'servi' ? 'bg-[#0a0a0a] text-[#333333] cursor-default' : ''}
+                      ${dish.status === 'servi' ? 'bg-mono-50 text-[#333333] cursor-default' : ''}
                       ${isOnHold ? 'opacity-50 cursor-not-allowed' : ''}
                     `}>
                     {dish.status === 'attente' && <Clock className="w-6 h-6" />}
@@ -1009,7 +1009,7 @@ function OrderCard({
 
                   <div className="flex-1 min-w-0">
                     {/* Dish name - lg bold, 2-line clamp */}
-                    <div className={`text-lg font-bold line-clamp-2 ${isDone ? 'text-[#404040] line-through' : 'text-white'}`}>
+                    <div className={`text-lg font-bold line-clamp-2 ${isDone ? 'text-mono-350 line-through' : 'text-white'}`}>
                       {dish.quantity > 1 && <span className="text-[#fbbf24] mr-1">x{dish.quantity}</span>}
                       {dish.recipeName}
                     </div>
@@ -1036,7 +1036,7 @@ function OrderCard({
 
                   {dish.recipeId && !isDone && (
                     <button onClick={() => dish.recipeId && onDishView(dish.recipeId)}
-                      className="min-w-[56px] min-h-[56px] rounded-lg bg-[#1a1a1a] hover:bg-[#262626] text-[#71717a] hover:text-[#14b8a6] flex items-center justify-center kds-transition">
+                      className="min-w-[56px] min-h-[56px] rounded-lg bg-mono-200 hover:bg-mono-300 text-[#71717a] hover:text-[#14b8a6] flex items-center justify-center kds-transition">
                       <Eye className="w-5 h-5" />
                     </button>
                   )}
@@ -1057,7 +1057,7 @@ function OrderCard({
 
       {/* ── Action Buttons: BUMP / HOLD ── */}
       {!allServed && !isBumped && (
-        <div className="px-4 py-3 bg-[#0a0a0a] border-t border-[#1a1a1a] flex flex-col gap-2">
+        <div className="px-4 py-3 bg-mono-50 border-t border-mono-200 flex flex-col gap-2">
           {/* BUMP button - full width, tall, neon glow */}
           <button onClick={() => onBump(order.id)}
             aria-label="Marquer comme pret"
@@ -1070,7 +1070,7 @@ function OrderCard({
           <button onClick={() => onHold(order.id)}
             aria-label={isOnHold ? 'Reprendre la commande' : 'Mettre la commande en pause'}
             className={`w-full min-h-[48px] rounded-xl kds-transition flex items-center justify-center gap-2
-              ${isOnHold ? 'bg-[#f59e0b]/20 text-[#f59e0b] hover:bg-[#f59e0b]/30' : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626] hover:text-[#f59e0b]'}`}
+              ${isOnHold ? 'bg-[#f59e0b]/20 text-[#f59e0b] hover:bg-[#f59e0b]/30' : 'bg-mono-200 text-[#71717a] hover:bg-mono-300 hover:text-[#f59e0b]'}`}
             title={isOnHold ? 'Reprendre' : 'Mettre en pause'}>
             {isOnHold ? <Play className="w-5 h-5" /> : <PauseCircle className="w-5 h-5" />}
             <span className="text-sm font-bold">{isOnHold ? 'Reprendre' : 'Pause'}</span>
@@ -1197,7 +1197,7 @@ function PerformanceStatsModal({ stats, orders, onClose }: { stats: DailyStats; 
         role="dialog"
         aria-modal="true"
         aria-labelledby="perf-stats-title"
-        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6"
+        className="bg-mono-50 border-2 border-[#333333] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -1205,26 +1205,26 @@ function PerformanceStatsModal({ stats, orders, onClose }: { stats: DailyStats; 
             <BarChart3 className="w-8 h-8 text-[#14b8a6]" aria-hidden="true" />
             <h2 id="perf-stats-title" className="text-3xl font-bold text-white">Performance du jour</h2>
           </div>
-          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[64px] min-h-[64px] flex items-center justify-center">
+          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] hover:text-white kds-transition min-w-[64px] min-h-[64px] flex items-center justify-center">
             <X className="w-7 h-7" aria-hidden="true" />
           </button>
         </div>
 
         {/* Key metrics */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-          <div className="bg-[#1a1a1a] rounded-xl p-4 text-center">
+          <div className="bg-mono-200 rounded-xl p-4 text-center">
             <div className="text-4xl font-black text-[#22c55e] font-mono">{stats.platsServis}</div>
             <div className="text-base text-[#a1a1aa] mt-1">Plats servis</div>
           </div>
-          <div className="bg-[#1a1a1a] rounded-xl p-4 text-center">
+          <div className="bg-mono-200 rounded-xl p-4 text-center">
             <div className="text-4xl font-black text-[#14b8a6] font-mono">{formatElapsed(avgTime)}</div>
             <div className="text-base text-[#a1a1aa] mt-1">Temps moyen</div>
           </div>
-          <div className="bg-[#1a1a1a] rounded-xl p-4 text-center">
+          <div className="bg-mono-200 rounded-xl p-4 text-center">
             <div className="text-4xl font-black text-[#fbbf24] font-mono">{orders.filter(o => !o.dishes.every(d => d.status === 'servi') && !o.bumpedAt).length}</div>
             <div className="text-base text-[#a1a1aa] mt-1">Actives</div>
           </div>
-          <div className="bg-[#1a1a1a] rounded-xl p-4 text-center">
+          <div className="bg-mono-200 rounded-xl p-4 text-center">
             <div className="text-4xl font-black text-[#a78bfa] font-mono">{stats.revenueToday > 0 ? `${stats.revenueToday.toFixed(0)}` : '--'}</div>
             <div className="text-base text-[#a1a1aa] mt-1">Revenue est. (EUR)</div>
           </div>
@@ -1235,7 +1235,7 @@ function PerformanceStatsModal({ stats, orders, onClose }: { stats: DailyStats; 
           <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-[#f97316]" />Heures de pointe
           </h3>
-          <div className="bg-[#1a1a1a] rounded-xl p-4">
+          <div className="bg-mono-200 rounded-xl p-4">
             <div className="flex items-end gap-1 h-32">
               {Array.from({ length: 24 }, (_, h) => {
                 const count = hourlyData.hours[h] || 0;
@@ -1244,9 +1244,9 @@ function PerformanceStatsModal({ stats, orders, onClose }: { stats: DailyStats; 
                 const isPeak = count >= RUSH_THRESHOLD;
                 return (
                   <div key={h} className="flex-1 flex flex-col items-center gap-1" title={`${h}h: ${count} commandes`}>
-                    <div className={`w-full rounded-t kds-transition ${isPeak ? 'bg-[#ef4444]' : isNow ? 'bg-[#14b8a6]' : count > 0 ? 'bg-[#404040]' : 'bg-[#262626]'}`}
+                    <div className={`w-full rounded-t kds-transition ${isPeak ? 'bg-[#ef4444]' : isNow ? 'bg-[#14b8a6]' : count > 0 ? 'bg-mono-350' : 'bg-mono-300'}`}
                       style={{ height: `${height}%`, minHeight: '4px' }} />
-                    {(h % 3 === 0) && <span className="text-[10px] text-[#525252]">{h}h</span>}
+                    {(h % 3 === 0) && <span className="text-[10px] text-mono-400">{h}h</span>}
                   </div>
                 );
               })}
@@ -1262,10 +1262,10 @@ function PerformanceStatsModal({ stats, orders, onClose }: { stats: DailyStats; 
             </h3>
             <div className="space-y-2">
               {categoryTimes.map(ct => (
-                <div key={ct.category} className="flex items-center gap-3 bg-[#1a1a1a] rounded-xl px-4 py-3">
+                <div key={ct.category} className="flex items-center gap-3 bg-mono-200 rounded-xl px-4 py-3">
                   <span className="text-lg text-white font-semibold flex-1 capitalize">{ct.category}</span>
                   <span className="text-sm text-[#71717a]">{ct.count} plats</span>
-                  <div className="w-32 h-3 bg-[#262626] rounded-full overflow-hidden">
+                  <div className="w-32 h-3 bg-mono-300 rounded-full overflow-hidden">
                     <div className="h-full rounded-full bg-[#fbbf24] kds-transition"
                       style={{ width: `${Math.min(100, (ct.avgSeconds / (categoryTimes[0]?.avgSeconds || 1)) * 100)}%` }} />
                   </div>
@@ -1284,7 +1284,7 @@ function PerformanceStatsModal({ stats, orders, onClose }: { stats: DailyStats; 
             </h3>
             <div className="space-y-2">
               {dishNameTimes.map(dt => (
-                <div key={dt.name} className="flex items-center gap-3 bg-[#1a1a1a] rounded-xl px-4 py-3">
+                <div key={dt.name} className="flex items-center gap-3 bg-mono-200 rounded-xl px-4 py-3">
                   <span className="text-lg text-white font-semibold flex-1 truncate">{dt.name}</span>
                   <span className="text-sm text-[#71717a]">x{dt.count}</span>
                   <span className="text-lg font-mono font-bold text-[#14b8a6] w-20 text-right">{formatElapsed(dt.avgSeconds)}</span>
@@ -1313,7 +1313,7 @@ function PerformanceStatsModal({ stats, orders, onClose }: { stats: DailyStats; 
         </div>
 
         {(!fastSlow.fastest && !fastSlow.slowest) && (
-          <div className="text-center text-[#525252] text-lg py-4">
+          <div className="text-center text-mono-400 text-lg py-4">
             Aucune donnee de preparation encore. Les stats s'afficheront apres les premiers plats servis.
           </div>
         )}
@@ -1333,7 +1333,7 @@ function StatsBar({ orders, stats, onOpenStats }: { orders: Order[]; stats: Dail
     ? Math.round(stats.totalPrepTimes.reduce((a, b) => a + b, 0) / stats.totalPrepTimes.length) : 0;
 
   return (
-    <div className="bg-[#0a0a0a] border-t-2 border-[#262626] px-3 md:px-6 py-2 md:py-3 shrink-0 cursor-pointer hover:bg-[#111111] kds-transition"
+    <div className="bg-mono-50 border-t-2 border-mono-300 px-3 md:px-6 py-2 md:py-3 shrink-0 cursor-pointer hover:bg-mono-100 kds-transition"
       onClick={onOpenStats} title="Cliquer pour voir les stats detaillees">
       <div className="flex items-center justify-around gap-3 md:gap-6 max-w-full">
         <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
@@ -1406,14 +1406,14 @@ function StandaloneTimer({ onClose }: { onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="standalone-timer-title"
-        className={`bg-[#0a0a0a] border-2 rounded-2xl p-8 w-full max-w-md ${alarm ? 'border-[#ef4444] motion-reduce:animate-none animate-pulse' : 'border-[#333333]'}`}
+        className={`bg-mono-50 border-2 rounded-2xl p-8 w-full max-w-md ${alarm ? 'border-[#ef4444] motion-reduce:animate-none animate-pulse' : 'border-[#333333]'}`}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Timer className="w-8 h-8 text-[#14b8a6]" aria-hidden="true" /><h2 id="standalone-timer-title" className="text-2xl font-bold text-white">Timer Cuisine</h2>
           </div>
-          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white min-w-[64px] min-h-[64px] flex items-center justify-center">
+          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] hover:text-white min-w-[64px] min-h-[64px] flex items-center justify-center">
             <X className="w-7 h-7" aria-hidden="true" />
           </button>
         </div>
@@ -1422,7 +1422,7 @@ function StandaloneTimer({ onClose }: { onClose: () => void }) {
         <div className="flex flex-wrap gap-2 mb-6 justify-center">
           {[1, 3, 5, 10, 15, 20].map(m => (
             <button key={m} onClick={() => { setTargetMinutes(m); reset(); }}
-              className={`min-w-[64px] min-h-[64px] rounded-xl text-xl font-bold kds-transition ${targetMinutes === m ? 'bg-[#0d9488] text-white' : 'bg-[#1a1a1a] text-[#a1a1aa] hover:bg-[#262626]'}`}>
+              className={`min-w-[64px] min-h-[64px] rounded-xl text-xl font-bold kds-transition ${targetMinutes === m ? 'bg-[#0d9488] text-white' : 'bg-mono-200 text-[#a1a1aa] hover:bg-mono-300'}`}>
               {m}m
             </button>
           ))}
@@ -1432,7 +1432,7 @@ function StandaloneTimer({ onClose }: { onClose: () => void }) {
             className="flex items-center gap-2 px-8 min-h-[64px] rounded-xl text-xl font-bold bg-[#0d9488] hover:bg-[#14b8a6] text-white kds-transition">
             {running ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}{running ? 'Pause' : 'Lancer'}
           </button>
-          <button onClick={reset} className="flex items-center gap-2 px-6 min-h-[64px] rounded-xl text-xl font-bold bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] kds-transition">
+          <button onClick={reset} className="flex items-center gap-2 px-6 min-h-[64px] rounded-xl text-xl font-bold bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] kds-transition">
             <RotateCcw className="w-6 h-6" />
           </button>
         </div>
@@ -1516,11 +1516,11 @@ function StationViewTabs({ current, onChange }: { current: StationView; onChange
   ];
 
   return (
-    <div className="flex items-center gap-1.5 bg-[#0a0a0a] rounded-xl p-1">
+    <div className="flex items-center gap-1.5 bg-mono-50 rounded-xl p-1">
       {tabs.map(tab => (
         <button key={tab.key} onClick={() => onChange(tab.key)}
           className={`flex items-center gap-1.5 px-4 min-h-[48px] rounded-lg text-base font-bold kds-transition
-            ${current === tab.key ? 'text-white' : 'text-[#525252] hover:text-[#a1a1aa]'}`}
+            ${current === tab.key ? 'text-white' : 'text-mono-400 hover:text-[#a1a1aa]'}`}
           style={current === tab.key ? { backgroundColor: `${tab.color}22`, color: tab.color } : {}}>
           {tab.icon}
           <span className="hidden md:inline">{tab.label}</span>
@@ -1585,7 +1585,7 @@ function TablePanel({
   const occupiedCount = tableConfig.tables.filter(t => getTableStatus(t.number, orders).status !== 'libre').length;
 
   return (
-    <div className="bg-[#0a0a0a] border-b-2 border-[#262626] px-4 py-3">
+    <div className="bg-mono-50 border-b-2 border-mono-300 px-4 py-3">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <LayoutGrid className="w-5 h-5 text-[#14b8a6]" />
@@ -1600,18 +1600,18 @@ function TablePanel({
             </button>
           )}
           <button onClick={onAddTable}
-            className="px-3 py-1.5 rounded-lg bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] text-sm font-bold kds-transition">
+            className="px-3 py-1.5 rounded-lg bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] text-sm font-bold kds-transition">
             <Plus className="w-4 h-4 inline mr-1" />Table
           </button>
           <button onClick={onRemoveTable} disabled={tableConfig.tableCount <= 1}
-            className="px-3 py-1.5 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#a1a1aa] hover:text-[#ef4444] text-sm font-bold kds-transition disabled:opacity-30 disabled:cursor-not-allowed">
+            className="px-3 py-1.5 rounded-lg bg-mono-200 hover:bg-[#ef4444]/10 text-[#a1a1aa] hover:text-[#ef4444] text-sm font-bold kds-transition disabled:opacity-30 disabled:cursor-not-allowed">
             <Trash2 className="w-4 h-4 inline mr-1" />Table
           </button>
         </div>
       </div>
       {sections.salle.length > 0 && (
         <div className="mb-2">
-          <span className="text-xs text-[#525252] font-bold uppercase tracking-wider mb-1 block"><MapPin className="w-3 h-3 inline mr-1" />Salle</span>
+          <span className="text-xs text-mono-400 font-bold uppercase tracking-wider mb-1 block"><MapPin className="w-3 h-3 inline mr-1" />Salle</span>
           <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
             {sections.salle.map(renderTable)}
           </div>
@@ -1619,7 +1619,7 @@ function TablePanel({
       )}
       {sections.terrasse.length > 0 && (
         <div>
-          <span className="text-xs text-[#525252] font-bold uppercase tracking-wider mb-1 block"><MapPin className="w-3 h-3 inline mr-1" />Terrasse</span>
+          <span className="text-xs text-mono-400 font-bold uppercase tracking-wider mb-1 block"><MapPin className="w-3 h-3 inline mr-1" />Terrasse</span>
           <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
             {sections.terrasse.map(renderTable)}
           </div>
@@ -1653,12 +1653,12 @@ function EditOrderModal({ order, onSave, onClose }: {
         role="dialog"
         aria-modal="true"
         aria-labelledby="edit-order-title"
-        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg p-6"
+        className="bg-mono-50 border-2 border-[#333333] rounded-2xl w-full max-w-lg p-6"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
           <h2 id="edit-order-title" className="text-2xl font-bold text-white">Modifier {formatOrderNumber(order.orderNumber)}</h2>
-          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
+          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
             <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
@@ -1670,7 +1670,7 @@ function EditOrderModal({ order, onSave, onClose }: {
               {Array.from({ length: 20 }, (_, i) => i + 1).map(n => (
                 <button key={n} onClick={() => setTableNumber(n)}
                   className={`min-w-[52px] min-h-[52px] rounded-xl text-xl font-bold kds-transition
-                    ${tableNumber === n ? 'bg-[#0d9488] text-white' : 'bg-[#1a1a1a] text-[#a1a1aa] hover:bg-[#262626]'}`}>
+                    ${tableNumber === n ? 'bg-[#0d9488] text-white' : 'bg-mono-200 text-[#a1a1aa] hover:bg-mono-300'}`}>
                   {n}
                 </button>
               ))}
@@ -1684,8 +1684,8 @@ function EditOrderModal({ order, onSave, onClose }: {
                 <button key={p} onClick={() => setPriority(p)}
                   className={`flex-1 min-h-[52px] rounded-xl text-lg font-bold kds-transition uppercase
                     ${priority === p
-                      ? p === 'vip' ? 'bg-[#7c3aed] text-white' : p === 'rush' ? 'bg-[#ef4444] text-white' : 'bg-[#404040] text-white'
-                      : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626]'}`}>
+                      ? p === 'vip' ? 'bg-[#7c3aed] text-white' : p === 'rush' ? 'bg-[#ef4444] text-white' : 'bg-mono-350 text-white'
+                      : 'bg-mono-200 text-[#71717a] hover:bg-mono-300'}`}>
                   {p === 'vip' && <Star className="w-4 h-4 inline mr-1" />}{p}
                 </button>
               ))}
@@ -1695,7 +1695,7 @@ function EditOrderModal({ order, onSave, onClose }: {
           <div>
             <label className="text-base text-[#a1a1aa] mb-2 block">Notes / Allergies</label>
             <input value={notes} onChange={e => setNotes(e.target.value)} placeholder="Allergies, cuisson speciale..."
-              className="w-full bg-[#1a1a1a] border border-[#333333] rounded-xl px-4 py-3 text-lg text-white placeholder-[#525252] focus:border-[#0d9488] focus:outline-none min-h-[52px]" />
+              className="w-full bg-mono-200 border border-[#333333] rounded-xl px-4 py-3 text-lg text-white placeholder-mono-400 focus:border-[#0d9488] focus:outline-none min-h-[52px]" />
           </div>
         </div>
 
@@ -1741,12 +1741,12 @@ function SplitOrderModal({ order, onSplit, onClose }: {
         role="dialog"
         aria-modal="true"
         aria-labelledby="split-order-title"
-        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg p-6"
+        className="bg-mono-50 border-2 border-[#333333] rounded-2xl w-full max-w-lg p-6"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
           <h2 id="split-order-title" className="text-2xl font-bold text-white">Scinder {formatOrderNumber(order.orderNumber)}</h2>
-          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
+          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
             <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
@@ -1757,10 +1757,10 @@ function SplitOrderModal({ order, onSplit, onClose }: {
           {order.dishes.map(dish => (
             <button key={dish.id} onClick={() => toggleDish(dish.id)}
               className={`w-full flex items-center justify-between p-3 rounded-xl kds-transition border-2
-                ${selectedDishIds.has(dish.id) ? 'border-[#14b8a6] bg-[#14b8a6]/10' : 'border-[#262626] bg-[#1a1a1a] hover:bg-[#262626]'}`}>
+                ${selectedDishIds.has(dish.id) ? 'border-[#14b8a6] bg-[#14b8a6]/10' : 'border-mono-300 bg-mono-200 hover:bg-mono-300'}`}>
               <div className="flex items-center gap-3">
                 <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center kds-transition
-                  ${selectedDishIds.has(dish.id) ? 'border-[#14b8a6] bg-[#14b8a6]' : 'border-[#404040]'}`}>
+                  ${selectedDishIds.has(dish.id) ? 'border-[#14b8a6] bg-[#14b8a6]' : 'border-mono-350'}`}>
                   {selectedDishIds.has(dish.id) && <CheckCircle2 className="w-4 h-4 text-white" />}
                 </div>
                 <span className="text-lg text-white font-semibold">
@@ -1776,12 +1776,12 @@ function SplitOrderModal({ order, onSplit, onClose }: {
         </div>
 
         <div className="flex items-center gap-3 mb-4 text-sm">
-          <div className="flex-1 bg-[#1a1a1a] rounded-lg p-2 text-center">
+          <div className="flex-1 bg-mono-200 rounded-lg p-2 text-center">
             <span className="text-[#a1a1aa]">Commande originale: </span>
             <span className="text-white font-bold">{order.dishes.length - selectedDishIds.size} plats</span>
           </div>
-          <Scissors className="w-5 h-5 text-[#525252]" />
-          <div className="flex-1 bg-[#1a1a1a] rounded-lg p-2 text-center">
+          <Scissors className="w-5 h-5 text-mono-400" />
+          <div className="flex-1 bg-mono-200 rounded-lg p-2 text-center">
             <span className="text-[#a1a1aa]">Nouvelle: </span>
             <span className="text-[#14b8a6] font-bold">{selectedDishIds.size} plats</span>
           </div>
@@ -1790,7 +1790,7 @@ function SplitOrderModal({ order, onSplit, onClose }: {
         <button onClick={() => { if (canSplit) { onSplit(order.id, Array.from(selectedDishIds)); onClose(); } }}
           disabled={!canSplit}
           className={`w-full min-h-[60px] rounded-xl text-xl font-bold kds-transition
-            ${canSplit ? 'bg-[#0d9488] hover:bg-[#14b8a6] text-white' : 'bg-[#1a1a1a] text-[#525252] cursor-not-allowed'}`}>
+            ${canSplit ? 'bg-[#0d9488] hover:bg-[#14b8a6] text-white' : 'bg-mono-200 text-mono-400 cursor-not-allowed'}`}>
           <Scissors className="w-5 h-5 inline mr-2" />Scinder la commande
         </button>
       </div>
@@ -1836,7 +1836,7 @@ function TableConfigModal({ config, onSave, onClose }: {
         role="dialog"
         aria-modal="true"
         aria-labelledby="table-config-title"
-        className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto p-6"
+        className="bg-mono-50 border-2 border-[#333333] rounded-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto p-6"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -1844,7 +1844,7 @@ function TableConfigModal({ config, onSave, onClose }: {
             <Settings className="w-7 h-7 text-[#14b8a6]" aria-hidden="true" />
             <h2 id="table-config-title" className="text-2xl font-bold text-white">Configuration Tables</h2>
           </div>
-          <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
+          <button onClick={onClose} className="p-3 rounded-xl bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -1853,16 +1853,16 @@ function TableConfigModal({ config, onSave, onClose }: {
           <label className="text-base text-[#a1a1aa] mb-2 block">Nombre de tables</label>
           <div className="flex items-center gap-3">
             <button onClick={() => updateCount(tableCount - 1)}
-              className="min-w-[52px] min-h-[52px] rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-white text-2xl font-bold kds-transition">-</button>
+              className="min-w-[52px] min-h-[52px] rounded-xl bg-mono-200 hover:bg-mono-300 text-white text-2xl font-bold kds-transition">-</button>
             <span className="text-4xl font-black text-white font-mono w-20 text-center">{tableCount}</span>
             <button onClick={() => updateCount(tableCount + 1)}
-              className="min-w-[52px] min-h-[52px] rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-white text-2xl font-bold kds-transition">+</button>
+              className="min-w-[52px] min-h-[52px] rounded-xl bg-mono-200 hover:bg-mono-300 text-white text-2xl font-bold kds-transition">+</button>
           </div>
           <div className="flex gap-2 mt-3">
             {[8, 10, 12, 15, 20].map(n => (
               <button key={n} onClick={() => updateCount(n)}
                 className={`px-3 py-2 rounded-lg text-sm font-bold kds-transition
-                  ${tableCount === n ? 'bg-[#0d9488] text-white' : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626]'}`}>
+                  ${tableCount === n ? 'bg-[#0d9488] text-white' : 'bg-mono-200 text-[#71717a] hover:bg-mono-300'}`}>
                 {n}
               </button>
             ))}
@@ -1914,15 +1914,15 @@ function QuickActionsBar({
   }, [confirmClear]);
 
   return (
-    <div className="bg-[#0a0a0a]/80 border-b border-[#262626] px-4 py-2 flex items-center gap-3 shrink-0 overflow-x-auto">
+    <div className="bg-mono-50/80 border-b border-mono-300 px-4 py-2 flex items-center gap-3 shrink-0 overflow-x-auto">
       {/* Table counter */}
-      <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1a1a1a] text-sm shrink-0">
+      <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-mono-200 text-sm shrink-0">
         <LayoutGrid className="w-4 h-4 text-[#14b8a6]" />
         <span className="text-[#14b8a6] font-bold">{occupiedTables}/{tableConfig.tableCount}</span>
         <span className="text-[#71717a]">tables</span>
       </div>
       {/* Order counter */}
-      <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1a1a1a] text-sm shrink-0">
+      <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-mono-200 text-sm shrink-0">
         <ChefHat className="w-4 h-4 text-[#fbbf24]" />
         <span className="text-[#fbbf24] font-bold">{activeOrders}</span>
         <span className="text-[#71717a]">actives</span>
@@ -1931,15 +1931,15 @@ function QuickActionsBar({
       <div className="ml-auto relative shrink-0">
         <button onClick={() => setShowSettingsMenu(v => !v)}
           className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold kds-transition
-            ${showSettingsMenu ? 'bg-[#262626] text-white' : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626] hover:text-white'}`}>
+            ${showSettingsMenu ? 'bg-mono-300 text-white' : 'bg-mono-200 text-[#71717a] hover:bg-mono-300 hover:text-white'}`}>
           <Settings className="w-4 h-4" />
         </button>
         {showSettingsMenu && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => setShowSettingsMenu(false)} />
-            <div className="absolute right-0 bottom-full mb-1 z-50 bg-[#1a1a1a] border border-[#333333] rounded-xl shadow-2xl shadow-black/50 py-2 min-w-[200px]">
+            <div className="absolute right-0 bottom-full mb-1 z-50 bg-mono-200 border border-[#333333] rounded-xl shadow-2xl shadow-black/50 py-2 min-w-[200px]">
               <button onClick={() => { onOpenTableConfig(); setShowSettingsMenu(false); }}
-                className="w-full flex items-center gap-2 px-4 py-3 text-sm font-bold text-[#a1a1aa] hover:bg-[#262626] hover:text-white kds-transition">
+                className="w-full flex items-center gap-2 px-4 py-3 text-sm font-bold text-[#a1a1aa] hover:bg-mono-300 hover:text-white kds-transition">
                 <Settings className="w-4 h-4" />Config tables
               </button>
               <button onClick={() => { onLoadDemo(); setShowSettingsMenu(false); }}
@@ -2599,11 +2599,11 @@ export default function KitchenMode() {
       {isRushHour && <RushHourBanner />}
 
       {/* ── TOP BAR ── */}
-      <div className="bg-[#0a0a0a] border-b-2 border-[#262626] px-4 py-2 shrink-0">
+      <div className="bg-mono-50 border-b-2 border-mono-300 px-4 py-2 shrink-0">
         <div className="flex items-center gap-3">
           {!isFullscreen && (
             <button onClick={() => navigate('/dashboard')}
-              className="min-w-[56px] min-h-[56px] rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white flex items-center justify-center kds-transition shrink-0">
+              className="min-w-[56px] min-h-[56px] rounded-xl bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] hover:text-white flex items-center justify-center kds-transition shrink-0">
               <ArrowLeft className="w-6 h-6 flex-shrink-0" />
             </button>
           )}
@@ -2635,7 +2635,7 @@ export default function KitchenMode() {
 
             <button onClick={() => setShowTablePanel(v => !v)}
               className={`relative min-w-[56px] min-h-[56px] rounded-xl flex items-center justify-center gap-2 px-4 kds-transition
-                ${showTablePanel ? 'bg-[#14b8a6]/20 text-[#14b8a6]' : 'bg-[#1a1a1a] text-[#a1a1aa] hover:bg-[#262626]'}`}
+                ${showTablePanel ? 'bg-[#14b8a6]/20 text-[#14b8a6]' : 'bg-mono-200 text-[#a1a1aa] hover:bg-mono-300'}`}
               title="Gestion des tables">
               <LayoutGrid className="w-6 h-6 flex-shrink-0" /><span className="hidden sm:inline text-lg font-bold">Tables</span>
               {tableFilter !== null && (
@@ -2660,10 +2660,10 @@ export default function KitchenMode() {
             {/* Mobile station view toggle */}
             <button onClick={() => setStationView(v => v === 'complete' ? 'chaud' : v === 'chaud' ? 'froid' : v === 'froid' ? 'passe' : 'complete')}
               className={`min-w-[56px] min-h-[56px] rounded-xl flex items-center justify-center kds-transition lg:hidden relative
-                ${stationView !== 'complete' ? 'bg-[#14b8a6]/20 text-[#14b8a6]' : 'bg-[#1a1a1a] text-[#a1a1aa] hover:bg-[#262626]'}`}>
+                ${stationView !== 'complete' ? 'bg-[#14b8a6]/20 text-[#14b8a6]' : 'bg-mono-200 text-[#a1a1aa] hover:bg-mono-300'}`}>
               <SplitSquareHorizontal className="w-6 h-6 flex-shrink-0" />
               {stationView !== 'complete' && (
-                <span className="absolute -top-1 -right-1 text-[10px] font-black px-1.5 py-0.5 rounded-full bg-[#1a1a1a] border border-current uppercase">
+                <span className="absolute -top-1 -right-1 text-[10px] font-black px-1.5 py-0.5 rounded-full bg-mono-200 border border-current uppercase">
                   {stationView === 'chaud' ? 'HOT' : stationView === 'froid' ? 'COLD' : 'PASS'}
                 </span>
               )}
@@ -2671,12 +2671,12 @@ export default function KitchenMode() {
 
             <button onClick={() => setSoundEnabled(s => !s)}
               className={`min-w-[56px] min-h-[56px] rounded-xl flex items-center justify-center kds-transition
-                ${soundEnabled ? 'bg-[#0d9488]/20 text-[#14b8a6] hover:bg-[#0d9488]/30' : 'bg-[#1a1a1a] text-[#525252] hover:bg-[#262626]'}`}>
+                ${soundEnabled ? 'bg-[#0d9488]/20 text-[#14b8a6] hover:bg-[#0d9488]/30' : 'bg-mono-200 text-mono-400 hover:bg-mono-300'}`}>
               {soundEnabled ? <Volume2 className="w-6 h-6 flex-shrink-0" /> : <VolumeX className="w-6 h-6 flex-shrink-0" />}
             </button>
 
             <button onClick={toggleFullscreen}
-              className="min-w-[56px] min-h-[56px] rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white flex items-center justify-center kds-transition">
+              className="min-w-[56px] min-h-[56px] rounded-xl bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] hover:text-white flex items-center justify-center kds-transition">
               {isFullscreen ? <Minimize2 className="w-6 h-6 flex-shrink-0" /> : <Maximize2 className="w-6 h-6 flex-shrink-0" />}
             </button>
           </div>
@@ -2692,14 +2692,14 @@ export default function KitchenMode() {
                     ? sv === 'chaud' ? 'bg-[#f97316]/20 text-[#f97316] border border-[#f97316]/40'
                     : sv === 'froid' ? 'bg-[#60a5fa]/20 text-[#60a5fa] border border-[#60a5fa]/40'
                     : 'bg-[#34d399]/20 text-[#34d399] border border-[#34d399]/40'
-                    : 'bg-[#1a1a1a] text-[#525252]'}`}>
+                    : 'bg-mono-200 text-mono-400'}`}>
                 {sv === 'chaud' && <><Flame className="w-4 h-4 inline mr-1" />CHAUD</>}
                 {sv === 'froid' && <><UtensilsCrossed className="w-4 h-4 inline mr-1" />FROID</>}
                 {sv === 'passe' && <><CheckCircle2 className="w-4 h-4 inline mr-1" />PASSE</>}
               </button>
             ))}
             <button onClick={() => setStationView('complete')}
-              className="px-4 py-2 rounded-lg text-sm font-bold bg-[#1a1a1a] text-[#71717a] hover:text-white kds-transition">
+              className="px-4 py-2 rounded-lg text-sm font-bold bg-mono-200 text-[#71717a] hover:text-white kds-transition">
               <X className="w-4 h-4 inline" />
             </button>
           </div>
@@ -2745,9 +2745,9 @@ export default function KitchenMode() {
       <div className="flex-1 overflow-hidden">
         {!hasAnyOrders ? (
           <div className="flex flex-col items-center justify-center h-full gap-8 py-20">
-            <ChefHat className="w-24 h-24 text-[#262626] animate-pulse" />
-            <p className="text-3xl text-[#525252] font-black">Aucune commande en cours</p>
-            <p className="text-xl text-[#404040]">Ajoutez une commande ou chargez des donnees demo</p>
+            <ChefHat className="w-24 h-24 text-mono-300 animate-pulse" />
+            <p className="text-3xl text-mono-400 font-black">Aucune commande en cours</p>
+            <p className="text-xl text-mono-350">Ajoutez une commande ou chargez des donnees demo</p>
             <div className="flex gap-4">
               <button onClick={() => setShowNewOrder(true)}
                 className="min-h-[72px] px-10 rounded-xl bg-[#0d9488] hover:bg-[#14b8a6] text-white text-xl font-bold kds-transition"
@@ -2755,7 +2755,7 @@ export default function KitchenMode() {
                 <Plus className="w-7 h-7 inline mr-2" />Nouvelle Commande
               </button>
               <button onClick={addDemoOrders}
-                className="min-h-[72px] px-10 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] text-xl font-bold kds-transition border border-[#333333]">
+                className="min-h-[72px] px-10 rounded-xl bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] text-xl font-bold kds-transition border border-[#333333]">
                 <Flame className="w-6 h-6 inline mr-2" />Donnees demo
               </button>
             </div>
@@ -2776,14 +2776,14 @@ export default function KitchenMode() {
         ) : (
           /* FULL / CHAUD / FROID: 3 columns */
           <div className="grid grid-cols-1 lg:grid-cols-3 h-full">
-            <div className="border-r-0 lg:border-r-2 border-[#1a1a1a] flex flex-col overflow-hidden bg-red-950/30">
+            <div className="border-r-0 lg:border-r-2 border-mono-200 flex flex-col overflow-hidden bg-red-950/30">
               {renderColumn(
                 'Nouvelles', filterByStation(newOrders).length, '#ef4444',
                 <Clock className="w-6 h-6 text-[#ef4444]" />,
                 filterByStation(newOrders), 'new', 'Aucune commande en attente'
               )}
             </div>
-            <div className="border-r-0 lg:border-r-2 border-[#1a1a1a] flex flex-col overflow-hidden bg-amber-950/30">
+            <div className="border-r-0 lg:border-r-2 border-mono-200 flex flex-col overflow-hidden bg-amber-950/30">
               {renderColumn(
                 'En preparation', filterByStation(preparingOrders).length, '#fbbf24',
                 <Flame className="w-6 h-6 text-[#fbbf24]" />,

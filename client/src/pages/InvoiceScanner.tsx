@@ -10,6 +10,7 @@ import {
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
+import { useApiClient } from '../hooks/useApiClient';
 import Modal from '../components/Modal';
 import { fetchIngredients, updateIngredient } from '../services/api';
 import type { Ingredient } from '../types';
@@ -70,18 +71,6 @@ function today(): string {
 function formatEuro(n: number | null | undefined): string {
   if (n == null) return '--';
   return n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' \u20AC';
-}
-
-/* ─── Auth & API helpers ─── */
-
-function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token') || '';
-  const restaurantId = localStorage.getItem('activeRestaurantId') || '';
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-    'X-Restaurant-Id': restaurantId,
-  };
 }
 
 /* ─── OCR Types & Helpers ─── */
@@ -220,6 +209,7 @@ const PROGRESS_STEPS = [
 
 export default function InvoiceScanner() {
   const { showToast } = useToast();
+  const { authHeaders } = useApiClient();
   const { t } = useTranslation();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
 

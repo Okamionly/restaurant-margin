@@ -31,10 +31,24 @@ const router = Router();
 // Local helpers (mirror api/index.ts) — kept private to this module.
 function formatRecipe(recipe: any) {
   const allergenSet = new Set<string>();
+  // FIX 2026-04-28 (audit cohérence #11) : flag les recettes qui utilisent
+  // des ingrédients soft-deleted. Sans ça, la marge est calculée silencieusement
+  // sur des données fantômes (l'ingrédient existe encore en DB tant que
+  // RecipeIngredient.ingredientId pointe sur lui).
+  const deletedIngredients: string[] = [];
   for (const ri of recipe.ingredients) {
     for (const a of ri.ingredient.allergens) allergenSet.add(a);
+    if (ri.ingredient.deletedAt) {
+      deletedIngredients.push(ri.ingredient.name);
+    }
   }
-  return { ...recipe, margin: calculateRecipeMargin(recipe), allergens: Array.from(allergenSet).sort() };
+  return {
+    ...recipe,
+    margin: calculateRecipeMargin(recipe),
+    allergens: Array.from(allergenSet).sort(),
+    hasDeletedIngredients: deletedIngredients.length > 0,
+    deletedIngredients,
+  };
 }
 
 const recipeInclude = { ingredients: { include: { ingredient: true } } } as const;

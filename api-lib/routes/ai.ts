@@ -16,6 +16,41 @@ const aiRateLimitPerRestaurant = new Map<number, { count: number; resetAt: numbe
 const responseCache = new Map<string, { response: any; timestamp: number }>();
 const RESPONSE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
+/**
+ * FIX 2026-04-28 (audit cohérence #9) : Quota IA mensuel uniforme.
+ * Avant : enforced uniquement sur /chat, les autres endpoints (forecast,
+ * optimize-recipe, weekly-report, scan factures) bypassed le check —
+ * un user free pouvait consommer des tokens Sonnet sans limite via ces routes.
+ *
+ * Usage : await checkMonthlyQuota(restaurantId, res). Si dépassé → renvoie
+ * 429 et retourne true (le caller doit return immédiatement).
+ *
+ * @returns true si quota dépassé (response déjà envoyée), false sinon
+ */
+const MONTHLY_AI_LIMIT = 500;
+export async function checkMonthlyQuota(restaurantId: number, res: any): Promise<boolean> {
+  try {
+    const month = new Date().toISOString().slice(0, 7);
+    const usageRows: any[] = await prisma.$queryRaw`
+      SELECT requests_count FROM ai_usage
+      WHERE restaurant_id = ${restaurantId} AND month = ${month}
+    `;
+    const used = usageRows[0]?.requests_count || 0;
+    if (used >= MONTHLY_AI_LIMIT) {
+      res.status(429).json({
+        error: 'Quota IA mensuel atteint (500 requetes). Passez au plan Business pour plus.',
+        usage: { used, limit: MONTHLY_AI_LIMIT }
+      });
+      return true;
+    }
+    return false;
+  } catch (e) {
+    // Si le check quota plante, on ne bloque pas (graceful) mais on log
+    console.error('[checkMonthlyQuota]', e);
+    return false;
+  }
+}
+
 function getResponseCacheKey(restaurantId: number, message: string, intent: string): string {
   return `${restaurantId}:${intent}:${message.toLowerCase().trim().substring(0, 100)}`;
 }
@@ -111,19 +146,8 @@ router.post('/chat', authWithRestaurant, async (req: any, res) => {
 
     const restaurantId = req.restaurantId;
 
-    // ── Monthly AI quota check ──
-    const month = new Date().toISOString().slice(0, 7);
-    const MONTHLY_LIMIT = 500;
-    const usageRows: any[] = await prisma.$queryRaw`
-      SELECT requests_count FROM ai_usage
-      WHERE restaurant_id = ${restaurantId} AND month = ${month}
-    `;
-    if (usageRows[0]?.requests_count >= MONTHLY_LIMIT) {
-      return res.status(429).json({
-        error: 'Quota IA mensuel atteint (500 requetes). Passez au plan Business pour plus.',
-        usage: { used: usageRows[0].requests_count, limit: MONTHLY_LIMIT }
-      });
-    }
+    // ── Monthly AI quota check (extracted to checkMonthlyQuota helper) ──
+    if (await checkMonthlyQuota(restaurantId, res)) return;
 
     // ── Step 1: Classify intent with Haiku (fast, cheap) ──
     const intent = await classifyIntent(message.trim());
@@ -1321,6 +1345,8 @@ router.post('/forecast', authWithRestaurant, async (req: any, res) => {
     if (!checkAiRateLimit(req.restaurantId)) {
       return res.status(429).json({ error: 'Limite IA atteinte (10 requêtes/min). Réessayez dans 1 minute.' });
     }
+    // FIX 2026-04-28 (audit cohérence #9) : quota mensuel check uniforme.
+    if (await checkMonthlyQuota(req.restaurantId, res)) return;
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
@@ -1515,6 +1541,8 @@ router.post('/optimize-recipe', authWithRestaurant, async (req: any, res) => {
     if (!checkAiRateLimit(req.restaurantId)) {
       return res.status(429).json({ error: 'Limite IA atteinte (10 requetes/min). Reessayez dans 1 minute.' });
     }
+    // FIX 2026-04-28 (audit cohérence #9) : quota mensuel uniforme.
+    if (await checkMonthlyQuota(req.restaurantId, res)) return;
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
     }
@@ -1804,6 +1832,8 @@ router.post('/weekly-report', authWithRestaurant, async (req: any, res) => {
     }
 
     const restaurantId = req.restaurantId;
+    // FIX 2026-04-28 (audit cohérence #9) : quota mensuel uniforme.
+    if (await checkMonthlyQuota(restaurantId, res)) return;
 
     // Rate limit: 1 report per hour per restaurant
     if (!checkAiRateLimit(restaurantId)) {

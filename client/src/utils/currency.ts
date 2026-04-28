@@ -2,9 +2,9 @@
 // Reads the user's chosen currency from localStorage (restaumargin_settings)
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
-  EUR: '\u20ac',   // €
+  EUR: '€',   // €
   USD: '$',
-  GBP: '\u00a3',   // £
+  GBP: '£',   // £
   MAD: 'DH',
   CHF: 'CHF',
 };

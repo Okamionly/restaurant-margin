@@ -696,7 +696,7 @@ function SpendingChart({ data }: { data: SpendingData | null }) {
       ctx.fillStyle = isDark ? '#737373' : '#9CA3AF';
       ctx.font = '10px sans-serif';
       ctx.textAlign = 'right';
-      ctx.fillText(Math.round((maxVal * i) / 4) + ' \u20AC', padding.left - 8, y + 3);
+      ctx.fillText(Math.round((maxVal * i) / 4) + ' €', padding.left - 8, y + 3);
     }
 
     months.forEach((m, mi) => {

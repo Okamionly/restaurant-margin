@@ -6,16 +6,16 @@ import { fetchPublicRecipe } from '../services/api';
 const CATEGORY_EMOJI: Record<string, string> = {
   'Viandes': '\u{1F969}',
   'Poissons & Fruits de mer': '\u{1F41F}',
-  'L\u00e9gumes': '\u{1F96C}',
+  'Légumes': '\u{1F96C}',
   'Fruits': '\u{1F34E}',
   'Produits laitiers': '\u{1F9C0}',
-  '\u00c9pices & Condiments': '\u{1F336}\uFE0F',
-  'F\u00e9culents & C\u00e9r\u00e9ales': '\u{1F33E}',
-  'F\u00e9culents': '\u{1F33E}',
-  'Huiles & Mati\u00e8res grasses': '\u{1FAD2}',
+  'Épices & Condiments': '\u{1F336}️',
+  'Féculents & Céréales': '\u{1F33E}',
+  'Féculents': '\u{1F33E}',
+  'Huiles & Matières grasses': '\u{1FAD2}',
   'Boissons': '\u{1F377}',
   'Boulangerie': '\u{1F35E}',
-  'Surgel\u00e9s': '\u2744\uFE0F',
+  'Surgelés': '❄️',
   'Autres': '\u{1F4E6}',
 };
 

@@ -15,7 +15,7 @@ interface FAQItem {
 const faqs: FAQItem[] = [
   {
     question: "Comment fonctionne l'abonnement ?",
-    answer: "Choisissez votre plan (Pro 29\u20AC ou Business 79\u20AC/mois), payez par carte bancaire et recevez votre code d'activation par email. Sans engagement, vous annulez quand vous voulez.",
+    answer: "Choisissez votre plan (Pro 29€ ou Business 79€/mois), payez par carte bancaire et recevez votre code d'activation par email. Sans engagement, vous annulez quand vous voulez.",
   },
   {
     question: "Comment fonctionne la facturation annuelle ?",
@@ -117,7 +117,7 @@ const plans: Plan[] = [
       { text: 'Rapport IA hebdomadaire', included: false },
       { text: 'Analyse predictive des ventes', included: false },
     ],
-    cta: "S'abonner — 29\u20AC/mois",
+    cta: "S'abonner — 29€/mois",
     ctaLink: 'https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04',
     external: true,
   },
@@ -137,7 +137,7 @@ const plans: Plan[] = [
       { text: 'Support prioritaire', included: true },
       { text: 'Essai gratuit 7 jours — sans carte bancaire', included: true },
     ],
-    cta: "S'abonner — 79\u20AC/mois",
+    cta: "S'abonner — 79€/mois",
     ctaLink: 'https://buy.stripe.com/4gMbIU5Ki4cAfbe1b187K05',
     external: true,
   },
@@ -261,7 +261,7 @@ function ROICalculator() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="text-sm font-medium text-black">Prix moyen d'un plat</label>
-              <span className="text-sm font-bold text-black bg-mono-950 px-3 py-1 rounded-lg">{avgDishPrice}{'\u20AC'}</span>
+              <span className="text-sm font-bold text-black bg-mono-950 px-3 py-1 rounded-lg">{avgDishPrice}{'€'}</span>
             </div>
             <input
               type="range"
@@ -272,8 +272,8 @@ function ROICalculator() {
               className="w-full h-2 bg-mono-900 rounded-lg appearance-none cursor-pointer accent-black"
             />
             <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
-              <span>8{'\u20AC'}</span>
-              <span>50{'\u20AC'}</span>
+              <span>8{'€'}</span>
+              <span>50{'€'}</span>
             </div>
           </div>
 
@@ -309,13 +309,13 @@ function ROICalculator() {
               <div>
                 <p className="text-sm text-white/50 mb-1">Economie mensuelle</p>
                 <p className="text-3xl font-extrabold">
-                  {monthlySaving.toLocaleString('fr-FR', { maximumFractionDigits: 0 })}{'\u20AC'}
+                  {monthlySaving.toLocaleString('fr-FR', { maximumFractionDigits: 0 })}{'€'}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-white/50 mb-1">Economie annuelle</p>
                 <p className="text-4xl font-extrabold text-white">
-                  {annualSaving.toLocaleString('fr-FR', { maximumFractionDigits: 0 })}{'\u20AC'}
+                  {annualSaving.toLocaleString('fr-FR', { maximumFractionDigits: 0 })}{'€'}
                 </p>
               </div>
               <div className="pt-4 border-t border-white/10">
@@ -357,14 +357,14 @@ function ComparisonTable() {
                 <div className="flex flex-col items-center gap-1">
                   <Sparkles className="w-5 h-5 text-black" />
                   <span className="text-sm font-bold text-black">Pro</span>
-                  <span className="text-xs text-[#6B7280]">29{'\u20AC'}/mois</span>
+                  <span className="text-xs text-[#6B7280]">29{'€'}/mois</span>
                 </div>
               </th>
               <th className="text-center py-4 pl-4 w-32">
                 <div className="flex flex-col items-center gap-1">
                   <Building2 className="w-5 h-5 text-black" />
                   <span className="text-sm font-bold text-black">Business</span>
-                  <span className="text-xs text-[#6B7280]">79{'\u20AC'}/mois</span>
+                  <span className="text-xs text-[#6B7280]">79{'€'}/mois</span>
                 </div>
               </th>
             </tr>
@@ -428,7 +428,7 @@ export default function Pricing() {
     if (plan.priceMonthly === null) return plan.priceLabel || 'Sur mesure';
     if (plan.priceMonthly === 0) return 'Gratuit';
     const price = annual ? Math.round(plan.priceMonthly * 0.8) : plan.priceMonthly;
-    return `${price}\u20AC`;
+    return `${price}€`;
   }
 
   return (
@@ -552,12 +552,12 @@ export default function Pricing() {
                 )}
                 {plan.priceMonthly !== null && plan.priceMonthly > 0 && annual && (
                   <p className="text-black text-xs mt-2 font-medium">
-                    Facture {Math.round(plan.priceMonthly * 0.8 * 12)}{'\u20AC'}/an au lieu de <span className="line-through text-[#9CA3AF]">{plan.priceMonthly * 12}{'\u20AC'}</span>
+                    Facture {Math.round(plan.priceMonthly * 0.8 * 12)}{'€'}/an au lieu de <span className="line-through text-[#9CA3AF]">{plan.priceMonthly * 12}{'€'}</span>
                   </p>
                 )}
                 {plan.priceMonthly !== null && plan.priceMonthly > 0 && !annual && (
                   <p className="text-[#9CA3AF] text-xs mt-2">
-                    ou {Math.round(plan.priceMonthly * 0.8 * 12)}{'\u20AC'}/an (-20%)
+                    ou {Math.round(plan.priceMonthly * 0.8 * 12)}{'€'}/an (-20%)
                   </p>
                 )}
               </div>

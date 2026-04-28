@@ -318,7 +318,7 @@ export default function Subscription() {
                         </span>
                         <span className="hidden sm:inline w-1 h-1 rounded-full bg-[#D1D5DB] dark:bg-mono-350" />
                         <span className="hidden sm:inline">
-                          {isAnnual ? `${planInfo.priceAnnual}\u20AC/mois (annuel)` : `${planInfo.priceMonthly}\u20AC/mois`}
+                          {isAnnual ? `${planInfo.priceAnnual}€/mois (annuel)` : `${planInfo.priceMonthly}€/mois`}
                         </span>
                       </>
                     ) : (

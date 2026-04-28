@@ -41,7 +41,7 @@ export default function Login() {
   const [referralCode] = useState(searchParams.get('ref') || '');
 
   useEffect(() => {
-    document.title = 'Connexion \u2014 RestauMargin';
+    document.title = 'Connexion — RestauMargin';
   }, []);
 
   useEffect(() => {

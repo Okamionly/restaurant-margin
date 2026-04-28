@@ -38,7 +38,7 @@ const EMPTY_FORM: RestaurantFormData = {
 
 // ── Helpers ──
 function formatCurrency(n: number): string {
-  return n.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' \u20AC';
+  return n.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' €';
 }
 
 function formatPercent(n: number): string {

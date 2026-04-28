@@ -21,16 +21,16 @@ function emitToast(message: string, type: ApiToastEvent['type'] = 'error') {
 
 /** French user-friendly messages by HTTP status */
 const STATUS_MESSAGES: Record<number, string> = {
-  401: 'Session expiree \u2014 reconnectez-vous',
+  401: 'Session expiree — reconnectez-vous',
   403: 'Acces refuse',
   404: 'Ressource introuvable',
-  429: 'Trop de requetes \u2014 reessayez dans 1 minute',
-  500: 'Erreur serveur \u2014 reessayez plus tard',
-  502: 'Erreur serveur \u2014 reessayez plus tard',
-  503: 'Erreur serveur \u2014 reessayez plus tard',
+  429: 'Trop de requetes — reessayez dans 1 minute',
+  500: 'Erreur serveur — reessayez plus tard',
+  502: 'Erreur serveur — reessayez plus tard',
+  503: 'Erreur serveur — reessayez plus tard',
 };
 
-const NETWORK_ERROR_MSG = 'Connexion perdue \u2014 verifiez votre internet';
+const NETWORK_ERROR_MSG = 'Connexion perdue — verifiez votre internet';
 
 // --- Retry logic for GET requests ---
 

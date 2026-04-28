@@ -115,7 +115,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   companyPhone: '',
   companyEmail: '',
   companySiret: '',
-  cuisineType: 'fran\u00e7aise',
+  cuisineType: 'française',
   coversPerDay: 80,
   tvaRate: 10,
   defaultLaborCost: 15,
@@ -137,17 +137,17 @@ const DEFAULT_SETTINGS: AppSettings = {
   openingHours: DEFAULT_OPENING_HOURS,
 };
 
-const PLAN_LABELS: Record<string, string> = { basic: 'Basic -- 9\u20ac/mois', pro: 'Pro -- 29\u20ac/mois', business: 'Business -- 79\u20ac/mois' };
+const PLAN_LABELS: Record<string, string> = { basic: 'Basic -- 9€/mois', pro: 'Pro -- 29€/mois', business: 'Business -- 79€/mois' };
 const APP_VERSION = '1.0.0';
 
 const CUISINE_TYPES = [
-  { value: 'fran\u00e7aise', label: 'Cuisine fran\u00e7aise' },
+  { value: 'française', label: 'Cuisine française' },
   { value: 'italienne', label: 'Cuisine italienne' },
   { value: 'japonaise', label: 'Cuisine japonaise' },
   { value: 'chinoise', label: 'Cuisine chinoise' },
   { value: 'indienne', label: 'Cuisine indienne' },
   { value: 'mexicaine', label: 'Cuisine mexicaine' },
-  { value: 'm\u00e9diterran\u00e9enne', label: 'Cuisine m\u00e9diterran\u00e9enne' },
+  { value: 'méditerranéenne', label: 'Cuisine méditerranéenne' },
   { value: 'thai', label: 'Cuisine thai' },
   { value: 'bistronomique', label: 'Bistronomique' },
   { value: 'gastronomique', label: 'Gastronomique' },
@@ -407,7 +407,7 @@ export default function Settings() {
   const [financialGoals, setFinancialGoals] = useState<FinancialGoals>(loadFinancialGoals);
 
   // Category coefficients
-  const DEFAULT_COEFFICIENTS: Record<string, number> = { 'Entr\u00e9e': 3.0, 'Plat': 3.5, 'Dessert': 4.0, 'Boisson': 4.0, 'Accompagnement': 3.0 };
+  const DEFAULT_COEFFICIENTS: Record<string, number> = { 'Entrée': 3.0, 'Plat': 3.5, 'Dessert': 4.0, 'Boisson': 4.0, 'Accompagnement': 3.0 };
   const [coefficients, setCoefficients] = useState<Record<string, number>>(() => {
     try {
       const stored = localStorage.getItem('coefficients');
@@ -438,10 +438,10 @@ export default function Settings() {
   // FIX 2026-04-28 : retrait des fake data hardcodees (sessions/billing/usage).
   // Avant : 2 sessions Chrome+Safari fictives, 3 factures fictives, 847/2000 AI calls fictifs.
   // Apres : tableaux vides remplis depuis API reelle (ou empty state si pas dispo).
-  // Active sessions \u2014 TODO: GET /api/auth/sessions
+  // Active sessions — TODO: GET /api/auth/sessions
   const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
 
-  // Billing \u2014 TODO: GET /api/billing/history + GET /api/usage/current
+  // Billing — TODO: GET /api/billing/history + GET /api/usage/current
   const [currentPlan] = useState<'pro' | 'business'>('pro');
   const [billingHistory, setBillingHistory] = useState<BillingEntry[]>([]);
   const [usageStats, setUsageStats] = useState({ aiCalls: 0, aiLimit: 500, storageUsed: 0, storageLimit: 5 });
@@ -770,7 +770,7 @@ export default function Settings() {
       );
       const csv = [headers.join(';'), ...rows].join('\n');
 
-      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -850,11 +850,11 @@ export default function Settings() {
                   setLocale(e.target.value);
                 }}
               >
-                <option value="fr">Fran\u00e7ais</option>
+                <option value="fr">Français</option>
                 <option value="en">English</option>
-                <option value="es">Espa\u00f1ol</option>
+                <option value="es">Español</option>
                 <option value="de">Deutsch</option>
-                <option value="ar">\u0627\u0644\u0639\u0631\u0628\u064a\u0629</option>
+                <option value="ar">العربية</option>
               </select>
             </div>
 
@@ -878,9 +878,9 @@ export default function Settings() {
                 value={settings.currency}
                 onChange={(e) => handleChange('currency', e.target.value)}
               >
-                <option value="EUR">EUR (\u20ac)</option>
+                <option value="EUR">EUR (€)</option>
                 <option value="USD">USD ($)</option>
-                <option value="GBP">GBP (\u00a3)</option>
+                <option value="GBP">GBP (£)</option>
                 <option value="MAD">MAD (DH)</option>
                 <option value="CHF">CHF (CHF)</option>
               </select>
@@ -907,7 +907,7 @@ export default function Settings() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
               <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Langue</p>
-              <p className="text-sm font-medium text-mono-100 dark:text-white">{settings.language === 'fr' ? 'Fran\u00e7ais' : settings.language === 'en' ? 'English' : settings.language === 'es' ? 'Espa\u00f1ol' : settings.language === 'de' ? 'Deutsch' : 'Arabe'}</p>
+              <p className="text-sm font-medium text-mono-100 dark:text-white">{settings.language === 'fr' ? 'Français' : settings.language === 'en' ? 'English' : settings.language === 'es' ? 'Español' : settings.language === 'de' ? 'Deutsch' : 'Arabe'}</p>
             </div>
             <div>
               <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Fuseau</p>
@@ -1120,7 +1120,7 @@ export default function Settings() {
               <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Sur place : 10%</p>
             </div>
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Cout main d'oeuvre (\u20ac/h)</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Cout main d'oeuvre (€/h)</label>
               <input
                 type="number"
                 step="0.5"
@@ -1613,7 +1613,7 @@ export default function Settings() {
                   </span>
                 )}
               </div>
-              <p className="text-3xl font-bold text-mono-100 dark:text-white">29<span className="text-base font-normal text-[#9CA3AF]">\u20ac/mois</span></p>
+              <p className="text-3xl font-bold text-mono-100 dark:text-white">29<span className="text-base font-normal text-[#9CA3AF]">€/mois</span></p>
               <ul className="mt-3 space-y-1 text-xs text-[#6B7280] dark:text-mono-700">
                 <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />Recettes illimitees</li>
                 <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />2 000 appels IA/mois</li>
@@ -1632,7 +1632,7 @@ export default function Settings() {
                   </span>
                 )}
               </div>
-              <p className="text-3xl font-bold text-mono-100 dark:text-white">79<span className="text-base font-normal text-[#9CA3AF]">\u20ac/mois</span></p>
+              <p className="text-3xl font-bold text-mono-100 dark:text-white">79<span className="text-base font-normal text-[#9CA3AF]">€/mois</span></p>
               <ul className="mt-3 space-y-1 text-xs text-[#6B7280] dark:text-mono-700">
                 <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />Tout Pro +</li>
                 <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />10 000 appels IA/mois</li>

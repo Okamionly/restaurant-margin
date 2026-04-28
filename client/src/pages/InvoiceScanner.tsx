@@ -70,7 +70,7 @@ function today(): string {
 
 function formatEuro(n: number | null | undefined): string {
   if (n == null) return '--';
-  return n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' \u20AC';
+  return n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 }
 
 /* ─── OCR Types & Helpers ─── */
@@ -177,9 +177,9 @@ function parseOcrText(text: string): OcrItem[] {
   const lines = text.split('\n').filter((l) => l.trim());
   const items: OcrItem[] = [];
   const lineRegex =
-    /^(.+?)\s{2,}(\d+[.,]?\d*)\s+(kg|g|L|l|cl|ml|unite|unit\u00e9|u|pce|pi\u00e8ce|bte|boite|bo\u00eete|lot|carton|crt|sac)\s+(\d+[.,]?\d*)\s+(\d+[.,]?\d*)\s*$/i;
+    /^(.+?)\s{2,}(\d+[.,]?\d*)\s+(kg|g|L|l|cl|ml|unite|unité|u|pce|pièce|bte|boite|boîte|lot|carton|crt|sac)\s+(\d+[.,]?\d*)\s+(\d+[.,]?\d*)\s*$/i;
   const tabRegex =
-    /^(.+?)\t+(\d+[.,]?\d*)\t+(kg|g|L|l|cl|ml|unite|unit\u00e9|u|pce|pi\u00e8ce|bte|boite|bo\u00eete|lot|carton|crt|sac)\t+(\d+[.,]?\d*)\t+(\d+[.,]?\d*)\s*$/i;
+    /^(.+?)\t+(\d+[.,]?\d*)\t+(kg|g|L|l|cl|ml|unite|unité|u|pce|pièce|bte|boite|boîte|lot|carton|crt|sac)\t+(\d+[.,]?\d*)\t+(\d+[.,]?\d*)\s*$/i;
   for (const line of lines) {
     const m = line.match(lineRegex) || line.match(tabRegex);
     if (m) {

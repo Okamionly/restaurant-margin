@@ -177,7 +177,7 @@ function generateFicheHTML(recipe: Recipe, restaurantName: string): string {
       <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;font-weight:500">${emoji} ${name}${hasAllergens ? ' <span style="color:#f59e0b;font-size:9px;font-weight:700;vertical-align:super">*</span>' : ''}</td>
       <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;text-align:center;font-family:monospace">${qty}</td>
       <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;text-align:center;color:#64748b">${unit}</td>
-      <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;text-align:center;font-family:monospace;color:#94a3b8">${waste > 0 ? waste + '%' : '\u2014'}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;text-align:center;font-family:monospace;color:#94a3b8">${waste > 0 ? waste + '%' : '—'}</td>
       <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;text-align:right;font-family:monospace;color:#64748b">${unitPrice.toFixed(2)}</td>
       <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;text-align:right;font-family:monospace;font-weight:700">${costWithWaste.toFixed(2)} ${getCurrencySymbol()}</td>
     </tr>`;
@@ -319,7 +319,7 @@ ${recipe.description ? `<div style="margin:0;padding:10px 16px;border-top:1px so
 <!-- Footer -->
 <div style="padding:8px 16px;border-top:1px solid #cbd5e1;background:#f1f5f9;display:flex;justify-content:space-between;font-size:9px;color:#94a3b8">
   <span>Genere par RestauMargin &mdash; ${new Date().toLocaleDateString('fr-FR')}</span>
-  <span>${restaurantName || 'Mon Restaurant'} &mdash; Fiche N\u00B0${String(recipe.id).padStart(3, '0')}</span>
+  <span>${restaurantName || 'Mon Restaurant'} &mdash; Fiche N°${String(recipe.id).padStart(3, '0')}</span>
 </div>
 </div>`;
 }
@@ -1194,11 +1194,11 @@ function SeasonIcon({ month }: { month: number }) {
 
 /** Check if an ingredient name matches a seasonal pattern for the given month */
 function isIngredientSeasonal(name: string, month: number): { seasonal: boolean; discount: number; label: string } {
-  const n = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const n = name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   const groups = SEASONAL_CALENDAR[month] || [];
   for (const group of groups) {
     for (const pattern of group.patterns) {
-      const p = pattern.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const p = pattern.normalize('NFD').replace(/[̀-ͯ]/g, '');
       if (n.includes(p)) return { seasonal: true, discount: group.discount, label: group.label };
     }
   }
@@ -1210,16 +1210,16 @@ function findAlternatives(ingredientName: string, allIngredients: Ingredient[]):
   ruleName: string;
   alternatives: { ingredient: Ingredient; savingsPercent: number; quality: 'aucun' | 'minimal' | 'modere' }[];
 } | null {
-  const nameLower = ingredientName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const nameLower = ingredientName.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
   for (const rule of SUBSTITUTION_RULES) {
-    const patternNorm = rule.pattern.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const patternNorm = rule.pattern.normalize('NFD').replace(/[̀-ͯ]/g, '');
     if (nameLower.includes(patternNorm)) {
       const found: { ingredient: Ingredient; savingsPercent: number; quality: 'aucun' | 'minimal' | 'modere' }[] = [];
       for (const alt of rule.alternatives) {
-        const altNorm = alt.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const altNorm = alt.name.normalize('NFD').replace(/[̀-ͯ]/g, '');
         const match = allIngredients.find(ing => {
-          const ingNorm = ing.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          const ingNorm = ing.name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
           return ingNorm.includes(altNorm);
         });
         if (match) {
@@ -1928,9 +1928,9 @@ export default function Recipes() {
       templates = templatesByCategory[templateCategoryFilter] || [];
     }
     if (templateSearch.trim()) {
-      const q = templateSearch.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const q = templateSearch.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
       templates = templates.filter((t) => {
-        const name = t.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const name = t.name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
         return name.includes(q);
       });
     }
@@ -1974,7 +1974,7 @@ export default function Recipes() {
       label: 'Cout portion',
       type: 'range',
       step: 0.1,
-      unit: '\u20AC',
+      unit: '€',
     },
     {
       key: 'ingredientCount',
@@ -2638,7 +2638,7 @@ export default function Recipes() {
 
   function openVariantModal(recipe: Recipe) {
     setVariantTarget(recipe);
-    setVariantName(`${recipe.name} \u2014 Variante`);
+    setVariantName(`${recipe.name} — Variante`);
     setVariantCategory(recipe.category);
     setVariantPortions(String(recipe.nbPortions));
     setVariantLoading(false);
@@ -2712,7 +2712,7 @@ export default function Recipes() {
       String(r.cookTimeMinutes || ''),
     ]);
     const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';')).join('\n');
-    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['﻿' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

@@ -212,7 +212,7 @@ export default function Demo() {
   const recipeTrapRef = useFocusTrap<HTMLDivElement>(selectedRecipe !== null);
 
   useEffect(() => {
-    document.title = 'Demo \u2014 RestauMargin';
+    document.title = 'Demo — RestauMargin';
     window.scrollTo(0, 0);
   }, []);
 

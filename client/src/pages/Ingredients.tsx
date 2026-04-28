@@ -129,7 +129,7 @@ function PriceSparkline({ prices }: { prices: number[] }) {
 
 // ── Auto-categorization helper ────────────────────────────────────────
 const AUTO_CATEGORY_RULES: { pattern: RegExp; category: string }[] = [
-  { pattern: /poulet|boeuf|b\u0153uf|agneau|porc|veau|canard|dinde|lapin|steak|filet|entrecote|côte|saucisse/i, category: 'Viandes' },
+  { pattern: /poulet|boeuf|bœuf|agneau|porc|veau|canard|dinde|lapin|steak|filet|entrecote|côte|saucisse/i, category: 'Viandes' },
   { pattern: /saumon|cabillaud|thon|crevette|moule|huitre|huître|sardine|bar|lotte|sole|dorade|gambas|homard|langoustine|poulpe|calmar/i, category: 'Poissons & Fruits de mer' },
   { pattern: /tomate|carotte|oignon|salade|courgette|pomme de terre|aubergine|poivron|brocoli|chou|navet|radis|concombre|haricot vert|epinard|épinard|asperge|artichaut|fenouil|celeri|céleri|betterave|petit pois/i, category: 'Légumes' },
   { pattern: /pomme|fraise|citron|orange|banane|mangue|framboise|myrtille|poire|peche|pêche|abricot|cerise|kiwi|ananas|melon|pastèque|raisin|figue/i, category: 'Fruits' },
@@ -295,7 +295,7 @@ export default function Ingredients() {
       catPrices[i.category].sum += i.pricePerUnit;
       catPrices[i.category].count += 1;
     });
-    let expensiveCat = '\u2014';
+    let expensiveCat = '—';
     let maxAvg = 0;
     Object.entries(catPrices).forEach(([cat, { sum, count }]) => {
       const avg = sum / count;
@@ -427,7 +427,7 @@ export default function Ingredients() {
           const ing = data.find((i: Ingredient) => i.id === alert.ingredientId);
           if (ing && ing.pricePerUnit > alert.threshold) {
             showToast(
-              `Alerte prix : ${ing.name} a ${ing.pricePerUnit.toFixed(2)} \u20AC (seuil: ${alert.threshold.toFixed(2)} \u20AC)`,
+              `Alerte prix : ${ing.name} a ${ing.pricePerUnit.toFixed(2)} € (seuil: ${alert.threshold.toFixed(2)} €)`,
               'error'
             );
           }
@@ -483,7 +483,7 @@ export default function Ingredients() {
     const val = parseFloat(alertInput);
     if (val > 0) {
       setPriceAlert(trackerIngredient.id, val);
-      showToast(`Alerte configuree : ${trackerIngredient.name} > ${val.toFixed(2)} \u20AC`, 'success');
+      showToast(`Alerte configuree : ${trackerIngredient.name} > ${val.toFixed(2)} €`, 'success');
     } else {
       removePriceAlert(trackerIngredient.id);
       showToast(`Alerte supprimee pour ${trackerIngredient.name}`, 'success');
@@ -933,7 +933,7 @@ export default function Ingredients() {
       ing.barcode || '',
     ]);
     const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';')).join('\n');
-    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['﻿' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -958,7 +958,7 @@ export default function Ingredients() {
       ing.barcode || '',
     ]);
     const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';')).join('\n');
-    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['﻿' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -972,7 +972,7 @@ export default function Ingredients() {
     const header = ['Nom', 'Categorie', 'Prix unitaire', 'Unite', 'Fournisseur', 'Allergenes', 'Code-barres'];
     const exampleRow = ['Tomate cerise', 'Legumes', '3.50', 'kg', 'Metro', 'Aucun', ''];
     const csvContent = [header, exampleRow].map(row => row.map(cell => `"${cell}"`).join(';')).join('\n');
-    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['﻿' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -1699,7 +1699,7 @@ export default function Ingredients() {
                         fontSize: '12px',
                         color: '#FFFFFF',
                       }}
-                      formatter={(value: unknown) => [`${Number(value).toFixed(2)} \u20AC`, 'Prix']}
+                      formatter={(value: unknown) => [`${Number(value).toFixed(2)} €`, 'Prix']}
                       labelFormatter={(label: unknown) => {
                         const d = new Date(String(label));
                         return d.toLocaleDateString('fr-FR');
@@ -2000,7 +2000,7 @@ export default function Ingredients() {
       <Modal
         isOpen={!!trackerIngredient}
         onClose={() => { setTrackerIngredient(null); setTrackerData(null); }}
-        title={trackerIngredient ? `Historique des prix \u2014 ${trackerIngredient.name}` : 'Historique des prix'}
+        title={trackerIngredient ? `Historique des prix — ${trackerIngredient.name}` : 'Historique des prix'}
         className="max-w-2xl"
       >
         {trackerIngredient && (
@@ -2057,7 +2057,7 @@ export default function Ingredients() {
                         fontSize: '12px',
                         color: '#FFFFFF',
                       }}
-                      formatter={(value: unknown) => [`${Number(value).toFixed(2)} \u20AC`, 'Prix']}
+                      formatter={(value: unknown) => [`${Number(value).toFixed(2)} €`, 'Prix']}
                       labelFormatter={(label: unknown) => {
                         const d = new Date(String(label));
                         return d.toLocaleDateString('fr-FR');
@@ -2208,7 +2208,7 @@ export default function Ingredients() {
                   className="input flex-1"
                   value={alertInput}
                   onChange={(e) => setAlertInput(e.target.value)}
-                  placeholder={`Ex: ${(trackerIngredient.pricePerUnit * 1.1).toFixed(2)} \u20AC`}
+                  placeholder={`Ex: ${(trackerIngredient.pricePerUnit * 1.1).toFixed(2)} €`}
                 />
                 <span className="text-sm text-[#9CA3AF] dark:text-mono-500">{getCurrencySymbol()}/{trackerIngredient.unit}</span>
                 <button
@@ -2223,8 +2223,8 @@ export default function Ingredients() {
                   <AlertTriangle className={`w-3 h-3 ${trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0) ? 'text-red-500' : 'text-emerald-500'}`} />
                   <span className={trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0) ? 'text-red-500 font-semibold' : 'text-emerald-500'}>
                     {trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0)
-                      ? `Prix actuel (${trackerIngredient.pricePerUnit.toFixed(2)} \u20AC) depasse le seuil !`
-                      : `Prix sous le seuil (${getAlertForIngredient(trackerIngredient.id)?.toFixed(2)} \u20AC)`
+                      ? `Prix actuel (${trackerIngredient.pricePerUnit.toFixed(2)} €) depasse le seuil !`
+                      : `Prix sous le seuil (${getAlertForIngredient(trackerIngredient.id)?.toFixed(2)} €)`
                     }
                   </span>
                 </p>

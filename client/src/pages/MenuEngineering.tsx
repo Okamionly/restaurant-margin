@@ -606,14 +606,18 @@ export default function MenuEngineering() {
         };
       });
 
-      // Compute average margin for quadrant classification
-      const avgMarginAmount = engineeringItems.reduce((s, e) => s + e.margin, 0) / Math.max(engineeringItems.length, 1);
+      // Compute average margin % for quadrant classification.
+      // FIX 2026-04-28 (audit Sophie persona) : on classifie sur marginPercent, pas sur
+      // margin absolu (€). Logique Boston Consulting standard : compare profitabilité
+      // relative, pas valeur absolue. Une salade 60% marge bat un foie gras 30% marge,
+      // même si 2€ vs 10€ en valeur absolue.
+      const avgMarginPercentForQuadrant = engineeringItems.reduce((s, e) => s + e.marginPercent, 0) / Math.max(engineeringItems.length, 1);
 
       // Assign quadrants based on averages
       engineeringItems.forEach(item => {
-        if (item.margin >= avgMarginAmount && item.salesQty >= avgSalesQty) item.quadrant = 'star';
-        else if (item.margin >= avgMarginAmount && item.salesQty < avgSalesQty) item.quadrant = 'puzzle';
-        else if (item.margin < avgMarginAmount && item.salesQty >= avgSalesQty) item.quadrant = 'plow';
+        if (item.marginPercent >= avgMarginPercentForQuadrant && item.salesQty >= avgSalesQty) item.quadrant = 'star';
+        else if (item.marginPercent >= avgMarginPercentForQuadrant && item.salesQty < avgSalesQty) item.quadrant = 'puzzle';
+        else if (item.marginPercent < avgMarginPercentForQuadrant && item.salesQty >= avgSalesQty) item.quadrant = 'plow';
         else item.quadrant = 'dog';
       });
 

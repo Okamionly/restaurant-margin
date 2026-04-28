@@ -109,6 +109,8 @@ const ResetPassword = lazyRetry(() => import('./pages/ResetPassword'));
 const FoodCostCalculator = lazyRetry(() => import('./pages/FoodCostCalculator'));
 const LaunchPH = lazyRetry(() => import('./pages/LaunchPH'));
 const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
+const BlogPrixDeVente = lazyRetry(() => import('./pages/BlogPrixDeVente'));
+const LogicielMargeRestaurant = lazyRetry(() => import('./pages/LogicielMargeRestaurant'));
 const BlogIndex = lazyRetry(() => import('./pages/BlogIndex'));
 const APropos = lazyRetry(() => import('./pages/APropos'));
 const MesParrainages = lazyRetry(() => import('./pages/MesParrainages'));
@@ -1106,6 +1108,9 @@ function App() {
           <Route path="/a-propos" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><APropos /></Suspense>} />
           <Route path="/carrieres" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Careers /></Suspense>} />
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />
+          {/* FIX 2026-04-28 (audit cohérence) : pages orphelines BlogPrixDeVente + LogicielMargeRestaurant restaurées (SEO). */}
+          <Route path="/blog/prix-de-vente-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrixDeVente /></Suspense>} />
+          <Route path="/logiciel-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeRestaurant /></Suspense>} />
           <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-mono-100" /></div>}><Temoignages /></Suspense>} />
           <Route path="/demo" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Demo /></Suspense>} />
           <Route path="/blog/coefficient-multiplicateur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoefficient /></Suspense>} />
@@ -1122,7 +1127,9 @@ function App() {
           <Route path="/blog/kpi-restaurateur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogKpiGuide /></Suspense>} />
           <Route path="/blog/logiciel-caisse-enregistreuse-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogLogicielCaisse /></Suspense>} />
           <Route path="/blog/methode-fifo-gestion-stocks-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogMethodeFifo /></Suspense>} />
-          <Route path="/blog/menu-engineering-boston-matrix-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogMenuEngineering /></Suspense>} />
+          {/* FIX 2026-04-28 (audit cohérence) : redirect canonical pour éviter duplicate content SEO.
+              L'URL ...-restaurant pointait sur le même composant que le canonique. */}
+          <Route path="/blog/menu-engineering-boston-matrix-restaurant" element={<Navigate to="/blog/menu-engineering-boston-matrix" replace />} />
           <Route path="/blog/comment-ouvrir-restaurant-guide-complet" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogOuvrirRestaurant /></Suspense>} />
           <Route path="/blog/prime-cost-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrimeCost /></Suspense>} />
           <Route path="/blog/taux-occupation-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogTauxOccupation /></Suspense>} />

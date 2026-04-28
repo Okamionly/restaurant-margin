@@ -21,10 +21,13 @@ const variantClasses: Record<NonNullable<ButtonProps['variant']>, string> = {
   success: 'bg-emerald-600 hover:bg-emerald-500 text-white',
 };
 
+// FIX 2026-04-28 (audit Marc persona kiosk) : size sm passe de py-1.5 (~28px) a
+// py-2.5 + min-h-[44px] pour respecter WCAG 2.5.5 Target Size (44px min).
+// Critique pour usage tablette/kiosk avec doigts mouilles ou farinés.
 const sizeClasses: Record<NonNullable<ButtonProps['size']>, string> = {
-  sm: 'py-1.5 px-3 text-xs',
-  md: 'py-2 px-4 text-sm',
-  lg: 'py-3 px-6 text-base',
+  sm: 'py-2.5 px-4 text-xs min-h-[44px]',
+  md: 'py-2.5 px-5 text-sm min-h-[44px]',
+  lg: 'py-3 px-6 text-base min-h-[48px]',
 };
 
 export default function Button({

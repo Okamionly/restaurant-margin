@@ -24,7 +24,7 @@
 import { Router } from 'express';
 import { prisma } from '../prisma';
 import { sanitizeInput, validatePrice, logAudit, validatePositiveNumber } from '../middleware';
-import { calculateMargin } from '../utils/marginCalculator';
+import { calculateRecipeMargin } from '../utils/marginCalculator';
 
 const router = Router();
 
@@ -34,7 +34,7 @@ function formatRecipe(recipe: any) {
   for (const ri of recipe.ingredients) {
     for (const a of ri.ingredient.allergens) allergenSet.add(a);
   }
-  return { ...recipe, margin: calculateMargin(recipe), allergens: Array.from(allergenSet).sort() };
+  return { ...recipe, margin: calculateRecipeMargin(recipe), allergens: Array.from(allergenSet).sort() };
 }
 
 const recipeInclude = { ingredients: { include: { ingredient: true } } } as const;

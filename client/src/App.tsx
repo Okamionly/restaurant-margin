@@ -426,7 +426,8 @@ function AppLayout() {
       title: 'PRINCIPAL',
       items: [
         { to: '/dashboard', icon: BarChart3, label: 'Tableau de bord' },
-        { to: '/mon-score', icon: Trophy, label: 'Mon score' },
+        { to: '/messagerie', icon: MessageSquare, label: 'Messages' },
+        { to: '/commandes', icon: ShoppingCart, label: 'Commandes' },
         { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },
         { to: '/aide', icon: BookOpen, label: "Centre d'aide" },
       ],
@@ -476,7 +477,6 @@ function AppLayout() {
       title: 'OPERATIONS',
       items: [
         { to: '/service-tracker', icon: Timer, label: 'Suivi Service' },
-        { to: '/commandes', icon: ShoppingCart, label: 'Commandes' },
         { to: '/planning', icon: CalendarDays, label: 'Planning' },
         { to: '/seminaires', icon: PartyPopper, label: 'Séminaires' },
         { to: '/rfqs', icon: FileSearch, label: "Appels d'offres" },
@@ -486,7 +486,6 @@ function AppLayout() {
     {
       title: 'COMMUNICATION',
       items: [
-        { to: '/messagerie', icon: MessageSquare, label: 'Messages' },
         { to: '/feedback', icon: MessageSquare, label: 'Avis clients' },
         { to: '/clients', icon: Contact, label: 'Clients CRM' },
       ],

@@ -435,20 +435,16 @@ export default function Settings() {
   // 2FA
   const [twoFAEnabled, setTwoFAEnabled] = useState(false);
 
-  // Active sessions
-  const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([
-    { id: '1', device: 'Chrome -- Windows', location: 'Paris, France', lastActive: 'Maintenant', current: true },
-    { id: '2', device: 'Safari -- iPhone', location: 'Paris, France', lastActive: 'Il y a 2h', current: false },
-  ]);
+  // FIX 2026-04-28 : retrait des fake data hardcodees (sessions/billing/usage).
+  // Avant : 2 sessions Chrome+Safari fictives, 3 factures fictives, 847/2000 AI calls fictifs.
+  // Apres : tableaux vides remplis depuis API reelle (ou empty state si pas dispo).
+  // Active sessions \u2014 TODO: GET /api/auth/sessions
+  const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
 
-  // Billing
+  // Billing \u2014 TODO: GET /api/billing/history + GET /api/usage/current
   const [currentPlan] = useState<'pro' | 'business'>('pro');
-  const [billingHistory] = useState<BillingEntry[]>([
-    { id: '1', date: '2026-04-01', description: 'Plan Pro -- Avril 2026', amount: '29,00 \u20ac', status: 'paid' },
-    { id: '2', date: '2026-03-01', description: 'Plan Pro -- Mars 2026', amount: '29,00 \u20ac', status: 'paid' },
-    { id: '3', date: '2026-02-01', description: 'Plan Pro -- Fevrier 2026', amount: '29,00 \u20ac', status: 'paid' },
-  ]);
-  const [usageStats] = useState({ aiCalls: 847, aiLimit: 2000, storageUsed: 1.2, storageLimit: 5 });
+  const [billingHistory, setBillingHistory] = useState<BillingEntry[]>([]);
+  const [usageStats, setUsageStats] = useState({ aiCalls: 0, aiLimit: 500, storageUsed: 0, storageLimit: 5 });
 
   // Integration states
   const [stripeConnected, setStripeConnected] = useState(true);
@@ -1106,18 +1102,10 @@ export default function Settings() {
             Parametres financiers
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Objectif coefficient</label>
-              <input
-                type="number"
-                step="0.1"
-                min="1"
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
-                value={settings.coefficientObjective}
-                onChange={(e) => handleChange('coefficientObjective', parseFloat(e.target.value) || 0)}
-              />
-              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Recommande : x3.3</p>
-            </div>
+            {/* FIX 2026-04-28 : champ "Objectif coefficient" SUPPRIMÉ — il était stocké
+                en localStorage mais lu nulle part. Remplacé par les coefficients PAR
+                CATÉGORIE plus bas (Entrée 3.0, Plat 3.5, etc.) qui eux sont vraiment
+                appliqués dans Recipes.tsx (objectif vs actuel). */}
             <div>
               <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Taux de TVA (%)</label>
               <input

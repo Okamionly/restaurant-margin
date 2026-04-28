@@ -186,32 +186,22 @@ export default function RecipeDetail() {
     });
   }, [id]);
 
-  // History state (mock data based on recipe data)
-  const priceHistory = useMemo(() => {
-    if (!recipe) return [];
-    const base = recipe.margin.costPerPortion;
-    const now = new Date();
-    return Array.from({ length: 6 }, (_, i) => {
-      const date = new Date(now);
-      date.setMonth(date.getMonth() - (5 - i));
-      const variation = 1 + (Math.sin(i * 1.5) * 0.08);
-      return {
-        date: date.toISOString(),
-        costPerPortion: Math.round(base * variation * 100) / 100,
-        sellingPrice: recipe.sellingPrice,
-        event: i === 0 ? 'Creation de la recette' : i === 3 ? 'Mise a jour fournisseur' : i === 5 ? 'Prix actuel' : null,
-      };
-    });
-  }, [recipe]);
+  // FIX 2026-04-28 : priceHistory mock retire (sin(i * 1.5) * 0.08 = variations
+  // fictives autour du costPerPortion actuel). Empty array jusqu'a branchement
+  // de /api/recipes/:id/price-history reel.
+  const priceHistory: { date: string; costPerPortion: number; sellingPrice: number; event: string | null }[] = [];
 
+  // FIX 2026-04-28 : modificationLog mock retire ("Ajout photo", "Optimisation IA"
+  // hardcoded a -7j et -21j sans aucune base reelle). Garde uniquement les 2
+  // dates reelles (createdAt + updatedAt) issues de la DB.
   const modificationLog = useMemo(() => {
     if (!recipe) return [];
-    return [
-      { date: recipe.updatedAt, action: 'Derniere modification', detail: 'Mise a jour des quantites et prix' },
-      { date: new Date(new Date(recipe.updatedAt).getTime() - 7 * 86400000).toISOString(), action: 'Ajout photo', detail: 'Photo du plat ajoutee' },
-      { date: new Date(new Date(recipe.updatedAt).getTime() - 21 * 86400000).toISOString(), action: 'Optimisation IA', detail: 'Suggestions de reduction des couts appliquees' },
-      { date: recipe.createdAt, action: 'Creation', detail: 'Recette creee dans le systeme' },
-    ];
+    const log = [];
+    if (recipe.updatedAt && recipe.updatedAt !== recipe.createdAt) {
+      log.push({ date: recipe.updatedAt, action: 'Derniere modification', detail: 'Mise a jour des quantites et prix' });
+    }
+    log.push({ date: recipe.createdAt, action: 'Creation', detail: 'Recette creee dans le systeme' });
+    return log;
   }, [recipe]);
 
   const handlePhotoUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -310,22 +310,19 @@ function SpendBarChart({ data, maxSpend }: { data: { name: string; spend: number
 // ── Order History Mini Timeline ──────────────────────────────────────────
 
 function OrderTimeline({ supplierId, supplierName }: { supplierId: number; supplierName: string }) {
-  // Generate deterministic mock orders based on supplierId
-  const orders = useMemo(() => {
-    const base = supplierId * 17 + 3;
-    const now = new Date();
-    return Array.from({ length: 5 }).map((_, i) => {
-      const daysAgo = (base + i * 7 + (i * 3)) % 45 + i * 6;
-      const d = new Date(now);
-      d.setDate(d.getDate() - daysAgo);
-      const amount = ((base * (i + 1) * 23) % 800) + 120;
-      return {
-        date: d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }),
-        amount: amount,
-        items: ((base + i) % 8) + 2,
-      };
-    }).sort((a, b) => 0); // Keep chronological-ish order
-  }, [supplierId]);
+  // FIX 2026-04-28 : retrait des "5 commandes deterministic mock" generees depuis
+  // supplierId * 17. C'etait des dates + montants completement fictifs affiches
+  // comme un historique reel — induisait l'utilisateur en erreur. Empty state
+  // jusqu'a branchement endpoint /api/suppliers/:id/orders.
+  const orders: { date: string; amount: number; items: number }[] = [];
+
+  if (orders.length === 0) {
+    return (
+      <div className="text-xs text-[#9CA3AF] dark:text-mono-500 italic py-3">
+        Aucune commande passée chez ce fournisseur pour le moment.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-0">
@@ -902,23 +899,16 @@ export default function Suppliers() {
     return scores;
   }, [suppliers]);
 
-  // ── Price change badges (deterministic mock) ──────────────────────────────
-
-  const priceAlerts = useMemo(() => {
-    const alerts: Record<number, { pctChange: number }> = {};
-    ingredients.forEach(ing => {
-      if (!ing.supplierId) return;
-      const seed = ((ing.id * 7 + 13) % 20) - 10;
-      const pct = seed * 0.8;
-      if (Math.abs(pct) > 4) {
-        alerts[ing.id] = { pctChange: Math.round(pct * 10) / 10 };
-      }
-    });
-    return alerts;
-  }, [ingredients]);
+  // FIX 2026-04-28 : priceAlerts deterministic mock retire (calcul base sur
+  // (ing.id * 7 + 13) % 20 — pas un vrai diff). Empty Record jusqu'a ce qu'on
+  // branche /api/price-history pour calculer les vrais delta entre publications.
+  const priceAlerts: Record<number, { pctChange: number }> = {};
 
   // ── Monthly spend per supplier (inline bar chart data) ────────────────────
-
+  // FIX 2026-04-28 : la "monthly usage" deterministe (ing.id * 3 + 7) % 20
+  // generait des spends fictifs. Maintenant on utilise pricePerUnit * 1 (estimation
+  // unitaire honnete) — quand l'inventory consumption sera branchee, on remplacera
+  // par le vrai usage mensuel decremente.
   const monthlySpendData = useMemo(() => {
     const spendMap: Record<number, { name: string; spend: number }> = {};
     ingredients.forEach(ing => {
@@ -926,9 +916,8 @@ export default function Suppliers() {
       const supplier = suppliers.find(s => s.id === ing.supplierId);
       if (!supplier) return;
       if (!spendMap[ing.supplierId]) spendMap[ing.supplierId] = { name: supplier.name, spend: 0 };
-      // Estimate monthly spend: price * estimated monthly usage (deterministic mock)
-      const monthlyQty = ((ing.id * 3 + 7) % 20) + 2;
-      spendMap[ing.supplierId].spend += ing.pricePerUnit * monthlyQty;
+      // Estimation honnete : prix unitaire (base de calcul, pas de fake quantity)
+      spendMap[ing.supplierId].spend += ing.pricePerUnit;
     });
     const sorted = Object.values(spendMap).sort((a, b) => b.spend - a.spend);
     const maxSpend = sorted.length > 0 ? sorted[0].spend : 0;

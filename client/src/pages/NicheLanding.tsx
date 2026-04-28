@@ -255,6 +255,53 @@ const NICHES: Record<string, NicheConfig> = {
       },
     ],
   },
+  'burger-restaurant': {
+    slug: 'burger-restaurant',
+    title: 'Calcul de marge burger restaurant : guide complet 2026',
+    h1: 'Optimisez la marge de votre burger restaurant',
+    tagline: 'Logiciel de gestion pour burger restaurants et smash burgers',
+    description: 'Guide et outil pour calculer les marges de votre burger restaurant. Food cost steak hache, optimisation assemblage, gestion frites et boissons, rentabilite par formule.',
+    heroSubtitle: "Le burger : produit a fort potentiel de marge quand les grammages sont maitrise. Steak hache, bun, sauces, frites — chaque composant compte. RestauMargin vous donne la precision pour atteindre 70% de marge brute.",
+    avgMargin: '65-72%',
+    avgFoodCost: '28-35%',
+    avgCoef: '3 a 3,8',
+    challenges: [
+      'Prix de la viande hachee : volatile selon le cours du boeuf',
+      'Formules burger + frites + boisson : equilibre marge solide vs accompagnement',
+      'Livraison Uber Eats / Deliveroo : commission 25-30% qui efface la marge',
+      'Grammages non standardises : 100g vs 150g de steak change tout au food cost',
+      'Sauces maison vs industrielles : food cost difficile a calculer sans fiche technique',
+    ],
+    stats: [
+      { label: 'Food cost moyen', value: '32%', color: 'teal' },
+      { label: 'Marge brute cible', value: '68%', color: 'emerald' },
+      { label: 'Coefficient type', value: '3,5x', color: 'amber' },
+      { label: 'Ticket moyen', value: '14-20€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "Mes steaks haches representaient 45% du food cost global. Avec RestauMargin j'ai optimise les grammages par formule et negocie mon fournisseur viande. 9 points de marge gagnes en 6 semaines.",
+      author: 'Thomas',
+      role: 'Patron de burger restaurant, Toulouse',
+    },
+    faqs: [
+      {
+        q: 'Quelle est la marge moyenne d\'un burger restaurant ?',
+        a: 'La marge brute d\'un burger restaurant se situe entre 65% et 72%. Le food cost oscille entre 28% et 35%, principalement tire par le steak hache (cout matiere 6-9€/kg selon qualite), le bun (0,25-0,40€), les garnitures (cheddar, bacon, legumes) et les sauces. Les restaurants qui atteignent 70%+ de marge brute sont ceux qui maitrisent leurs grammages au gramme pres et qui vendent des formules equilibrees : le burger seul est moins rentable que la formule burger + frites + boisson, car les frites (food cost ~15%) et la boisson (food cost ~10-12%) compensent le food cost eleve de la viande. La marge nette apres charges (loyer, personnel, energie) oscille entre 5% et 10% selon l\'emplacement et le format (service a table vs comptoir).',
+      },
+      {
+        q: 'Comment calculer le food cost d\'un burger ?',
+        a: 'Le calcul se fait ingredient par ingredient : steak hache 150g (1,20-1,80€ selon qualite), bun (0,30€), cheddar 2 tranches (0,25€), salade + tomate + oignon (0,20€), sauce maison (0,10€). Total burger seul : 2,05-2,65€. Vendu 12€, le food cost est de 21%. En formule avec frites 150g (0,50€) et boisson (0,30€), le food cost total de la formule est de ~3,05€ pour un prix de vente de 14-16€, soit 19-22% — nettement meilleur. RestauMargin automatise ce calcul : renseignez une fois vos prix fournisseurs viande, buns et condiments, et toutes les fiches techniques se mettent a jour en temps reel si le prix du boeuf change.',
+      },
+      {
+        q: 'Comment preserver sa marge sur les livraisons Uber Eats et Deliveroo ?',
+        a: 'Les plateformes de livraison prennent 25 a 30% de commission sur le prix TTC, ce qui peut effacer toute la marge brute d\'un burger. La solution est triple : (1) appliquer une majoration de 12-15% sur les plateformes par rapport aux prix salle, (2) proposer des formules specifiques livraison avec un steak plus fin (smash burger 80g vs 150g en salle), (3) calculer la marge nette par canal de vente. RestauMargin vous permet de creer des fiches techniques avec deux prix distincts — prix salle et prix livraison — et calcule la marge reelle apres commission pour chaque plat sur chaque canal. Vous identifiez quels produits sont rentables en livraison et lesquels doivent etre exclus de votre menu plateforme.',
+      },
+      {
+        q: 'RestauMargin convient-il aux dark kitchens et smash burger ?',
+        a: 'Oui, RestauMargin est particulierement adapte aux dark kitchens et smash burgers. Ces formats ont des caracteristiques specifiques : volume eleve sur un menu court (5-15 references), forte dependance aux plateformes de livraison, besoin de controle precis des grammages pour proteger la marge. La fonctionnalite multi-canal vous permet de definir des marges cibles differentes selon le canal (click & collect, Uber Eats, Deliveroo) et de detecter automatiquement les articles sous le seuil de rentabilite par plateforme. Les dark kitchens qui gerent plusieurs marques depuis une meme cuisine peuvent creer autant de "restaurants virtuels" que necessaire dans un seul compte, avec fiches techniques et marges independantes par marque.',
+      },
+    ],
+  },
 };
 
 export default function NicheLanding() {

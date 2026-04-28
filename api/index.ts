@@ -351,18 +351,7 @@ app.post('/api/stripe/checkout', authMiddleware, async (req: any, res) => {
     console.error('[STRIPE CHECKOUT ERROR cause]', err.cause?.message || err.cause);
     console.error('[STRIPE CHECKOUT ERROR code]', err.code, err.type, err.statusCode);
     console.error('[STRIPE CHECKOUT ERROR stack]', err.stack);
-    res.status(500).json({
-      error: 'Erreur création session Stripe',
-      details: err.message,
-      debug: {
-        code: err.code,
-        type: err.type,
-        statusCode: err.statusCode,
-        causeMessage: err.cause?.message,
-        causeCode: err.cause?.code,
-        causeErrno: err.cause?.errno,
-      },
-    });
+    res.status(500).json({ error: 'Erreur création session Stripe' });
   }
 });
 

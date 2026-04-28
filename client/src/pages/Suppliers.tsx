@@ -794,9 +794,22 @@ export default function Suppliers() {
   }, [annuaireResults]);
 
   // ── Comparateur: group ingredients by name across suppliers ────────────────
+  // FIX 2026-04-28 (audit Suppliers↔Mercuriale) : on normalise les prix vers
+  // une unité de base (kg pour les solides, L pour les liquides) AVANT de comparer.
+  // Sinon : tomate 2€/kg vs tomate 2€/100g affichait "même prix" au lieu de 10x.
+  // Mapping : g → ÷1000 vers kg, mg → ÷1e6, ml/cl/dl → vers L.
+  const normalizeToBasePrice = (pricePerUnit: number, unit: string): number => {
+    const u = (unit || '').toLowerCase().trim();
+    if (u === 'g') return pricePerUnit * 1000;          // 5€/g → 5000€/kg
+    if (u === 'mg') return pricePerUnit * 1000000;
+    if (u === 'cl') return pricePerUnit * 100;          // 5€/cl → 500€/L
+    if (u === 'ml') return pricePerUnit * 1000;
+    if (u === 'dl') return pricePerUnit * 10;
+    return pricePerUnit;                                 // kg, L, piece : déjà base
+  };
 
   const comparatorData = useMemo(() => {
-    const map: Record<string, { supplierId: number; supplierName: string; pricePerUnit: number; unit: string; ingredientId: number }[]> = {};
+    const map: Record<string, { supplierId: number; supplierName: string; pricePerUnit: number; pricePerBase: number; unit: string; ingredientId: number }[]> = {};
     suppliers.forEach(s => {
       (s.ingredients || []).forEach((ing: SupplierIngredient) => {
         const key = ing.name.toLowerCase().trim();
@@ -805,6 +818,7 @@ export default function Suppliers() {
           supplierId: s.id,
           supplierName: s.name,
           pricePerUnit: ing.pricePerUnit,
+          pricePerBase: normalizeToBasePrice(ing.pricePerUnit, ing.unit), // normalisé pour comparaison
           unit: ing.unit,
           ingredientId: ing.id,
         });
@@ -813,11 +827,13 @@ export default function Suppliers() {
     return Object.entries(map)
       .filter(([, entries]) => entries.length >= 2)
       .map(([key, entries]) => {
-        const sorted = [...entries].sort((a, b) => a.pricePerUnit - b.pricePerUnit);
+        // Tri par prix normalisé (kg ou L), pas par pricePerUnit brut
+        const sorted = [...entries].sort((a, b) => a.pricePerBase - b.pricePerBase);
         const cheapest = sorted[0];
         const mostExpensive = sorted[sorted.length - 1];
         const avgMonthlyUsage = 10;
-        const savingsPerUnit = mostExpensive.pricePerUnit - cheapest.pricePerUnit;
+        // Économie calculée sur le prix normalisé (par kg/L)
+        const savingsPerUnit = mostExpensive.pricePerBase - cheapest.pricePerBase;
         const monthlySavings = savingsPerUnit * avgMonthlyUsage;
         let displayName = key;
         for (const s of suppliers) {

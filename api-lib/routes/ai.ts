@@ -62,7 +62,9 @@ type AiIntent = 'recipe' | 'ingredient' | 'order' | 'planning' | 'haccp' | 'anal
 async function classifyIntent(userMessage: string): Promise<AiIntent> {
   try {
     const intentResponse = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      // FIX 2026-04-28 : intent classification = output 1 mot, max_tokens 20.
+      // Aucune raison de payer Sonnet pour ça. Haiku 5x moins cher, output identique.
+      model: 'claude-haiku-4-5',
       max_tokens: 20,
       messages: [{ role: 'user', content: userMessage }],
       system: 'Classifie cette demande en UNE catégorie: recipe, ingredient, order, planning, haccp, analysis, general. Réponds UNIQUEMENT le mot.',
@@ -329,8 +331,12 @@ ${context}`;
     // Haiku for everything else (fast, cheap, good enough)
     const isWeeklyMenu = /menu.*(semaine|hebdo)|semaine.*menu|sugg[eè]re.*menu|fais.*moi.*un.*menu/i.test(message.trim());
     const hasImage = !!image;
+    // FIX 2026-04-28 (audit IA features) : les 2 branches étaient IDENTIQUES
+    // (sonnet partout), Haiku jamais utilisé. Économie estimée 60-80% sur les
+    // requêtes simples (chat conversationnel, intent classification).
+    // Sonnet réservé aux tâches complexes (menu hebdo, vision sur images).
     const useAdvancedModel = isWeeklyMenu || hasImage;
-    const aiModel = useAdvancedModel ? 'claude-sonnet-4-20250514' : 'claude-sonnet-4-20250514';
+    const aiModel = useAdvancedModel ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5';
     const maxTokens = isWeeklyMenu ? 4096 : ['analysis', 'recipe', 'planning'].includes(intent) ? 2048 : 1024;
 
     // Build messages with conversation history

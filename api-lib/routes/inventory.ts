@@ -36,7 +36,7 @@ router.get('/', async (req: any, res) => {
         prisma.inventoryItem.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredient: true }, orderBy: { ingredient: { name: 'asc' } }, take, skip }),
         prisma.inventoryItem.count({ where: { restaurantId: req.restaurantId } }),
       ]);
-      const data = rawData.map((item: any) => ({ ...item, lowStock: item.currentStock < item.minQuantity }));
+      const data = rawData.map((item: any) => ({ ...item, lowStock: item.currentStock < item.minStock }));
       return res.json({ data, total, limit: take, offset: skip });
     }
     const items = await prisma.inventoryItem.findMany({
@@ -44,7 +44,7 @@ router.get('/', async (req: any, res) => {
       include: { ingredient: true },
       orderBy: { ingredient: { name: 'asc' } },
     });
-    res.json(items.map((item: any) => ({ ...item, lowStock: item.currentStock < item.minQuantity })));
+    res.json(items.map((item: any) => ({ ...item, lowStock: item.currentStock < item.minStock })));
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération inventaire' }); }
 });
 
@@ -120,6 +120,9 @@ router.post('/', async (req: any, res) => {
 router.put('/:id', async (req: any, res) => {
   try {
     const id = parseInt(req.params.id);
+    // FIX 2026-04-28 (audit Recipes↔Inventory) : 'minQuantity' acceptait un champ
+    // qui n'existe PAS dans le schema Prisma (seul 'minStock' existe). Backward compat :
+    // si l'UI envoie encore minQuantity, on l'aliase vers minStock.
     const { currentStock, minStock, maxStock, minQuantity, unit, notes } = req.body;
     const data: any = {};
     if (currentStock !== undefined) {
@@ -128,8 +131,8 @@ router.put('/:id', async (req: any, res) => {
       data.currentStock = check.value;
     }
     if (minStock !== undefined) data.minStock = parseFloat(minStock);
+    else if (minQuantity !== undefined) data.minStock = parseFloat(minQuantity); // alias backward compat
     if (maxStock !== undefined) data.maxStock = maxStock === null ? null : parseFloat(maxStock);
-    if (minQuantity !== undefined) data.minQuantity = parseFloat(minQuantity);
     if (unit !== undefined) data.unit = unit;
     if (notes !== undefined) data.notes = notes ? sanitizeInput(notes) : null;
     const item = await prisma.inventoryItem.update({ where: { id }, data, include: { ingredient: true } });

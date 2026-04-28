@@ -19,6 +19,7 @@ import npsRoutes from '../api-lib/routes/nps';
 import clientsRoutes from '../api-lib/routes/clients';
 import ingredientsRoutes from '../api-lib/routes/ingredients';
 import recipesRoutes from '../api-lib/routes/recipes';
+import inventoryRoutes from '../api-lib/routes/inventory';
 import swaggerUi from 'swagger-ui-express';
 import { getOpenApiSpec } from '../api-lib/openapi/spec';
 import { getUnitDivisor } from '../api-lib/utils/unitConversion';
@@ -1015,6 +1016,7 @@ app.use('/api/nps', npsRoutes);
 app.use('/api/clients', authWithRestaurant, clientsRoutes);
 app.use('/api/ingredients', authWithRestaurant, ingredientsRoutes);
 app.use('/api/recipes', authWithRestaurant, recipesRoutes);
+app.use('/api/inventory', authWithRestaurant, inventoryRoutes);
 
 // ── OpenAPI 3.1 — spec + Swagger UI (Wave 3) ──────────────────────────────────
 // Swagger UI only mounted in development to:
@@ -1667,240 +1669,9 @@ app.post('/api/suppliers/:id/import-prices', authWithRestaurant, async (req: any
   } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur import CSV: ' + e.message }); }
 });
 
-// ============ INVENTORY ============
-app.get('/api/inventory', authWithRestaurant, async (req: any, res) => {
-  try {
-    const { limit, offset } = req.query;
-    if (limit !== undefined || offset !== undefined) {
-      const take = Math.min(parseInt(limit) || 100, 500);
-      const skip = parseInt(offset) || 0;
-      const [rawData, total] = await Promise.all([
-        prisma.inventoryItem.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredient: true }, orderBy: { ingredient: { name: 'asc' } }, take, skip }),
-        prisma.inventoryItem.count({ where: { restaurantId: req.restaurantId } }),
-      ]);
-      const data = rawData.map((item: any) => ({ ...item, lowStock: item.currentStock < item.minQuantity }));
-      return res.json({ data, total, limit: take, offset: skip });
-    }
-    const items = await prisma.inventoryItem.findMany({
-      where: { restaurantId: req.restaurantId },
-      include: { ingredient: true },
-      orderBy: { ingredient: { name: 'asc' } },
-    });
-    res.json(items.map((item: any) => ({ ...item, lowStock: item.currentStock < item.minQuantity })));
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération inventaire' }); }
-});
-
-app.get('/api/inventory/alerts', authWithRestaurant, async (req: any, res) => {
-  try {
-    const items = await prisma.inventoryItem.findMany({
-      where: { restaurantId: req.restaurantId },
-      include: { ingredient: true },
-      orderBy: { ingredient: { name: 'asc' } },
-    });
-    const alerts = items.filter((item: any) => item.currentStock < item.minStock);
-    res.json(alerts);
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur alertes' }); }
-});
-
-app.get('/api/inventory/value', authWithRestaurant, async (req: any, res) => {
-  try {
-    const items = await prisma.inventoryItem.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredient: true } });
-    const totalValue = items.reduce((sum: number, item: any) => sum + (item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit, 0);
-    const byCategory: Record<string, number> = {};
-    for (const item of items) {
-      const cat = (item as any).ingredient.category;
-      const val = (item.currentStock / getUnitDivisor((item as any).ingredient.unit)) * (item as any).ingredient.pricePerUnit;
-      byCategory[cat] = (byCategory[cat] || 0) + val;
-    }
-    res.json({
-      totalValue: Math.round(totalValue * 100) / 100,
-      byCategory: Object.entries(byCategory).map(([category, value]) => ({ category, value: Math.round(value * 100) / 100 })),
-      itemCount: items.length,
-    });
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur calcul valeur' }); }
-});
-
-app.post('/api/inventory/suggest', authWithRestaurant, async (req: any, res) => {
-  try {
-    const ingredients = await prisma.ingredient.findMany({
-      where: { restaurantId: req.restaurantId, deletedAt: null, inventoryItem: null },
-      orderBy: { name: 'asc' },
-    });
-    res.json(ingredients);
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suggestions' }); }
-});
-
-app.post('/api/inventory', authWithRestaurant, async (req, res) => {
-  try {
-    const { ingredientId, currentStock, unit, minStock, maxStock, notes } = req.body;
-    if (!ingredientId) return res.status(400).json({ error: 'Erreur ajout inventaire', details: 'ingredientId requis' });
-    if (currentStock !== undefined) {
-      const stockCheck = validatePositiveNumber(currentStock, 'Stock actuel');
-      if (!stockCheck.valid) return res.status(400).json({ error: 'Erreur ajout inventaire', details: stockCheck.error });
-    }
-    const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId, restaurantId: req.restaurantId, deletedAt: null } });
-    if (!ingredient) return res.status(404).json({ error: 'Ingrédient non trouvé' });
-    const safeNotes = notes ? sanitizeInput(notes) : null;
-    const item = await prisma.inventoryItem.create({
-      data: { ingredientId, currentStock: currentStock || 0, unit: unit || ingredient.unit, minStock: minStock || 0, maxStock: maxStock || null, notes: safeNotes, restaurantId: req.restaurantId },
-      include: { ingredient: true },
-    });
-    logAudit((req as any).user.userId, req.restaurantId, 'CREATE', 'inventory', item.id, { ingredientId, currentStock: currentStock || 0 });
-    res.status(201).json(item);
-  } catch (e: any) {
-    if (e.code === 'P2002') return res.status(409).json({ error: 'Déjà dans l\'inventaire' });
-    console.error(e); res.status(500).json({ error: 'Erreur ajout inventaire' });
-  }
-});
-
-app.put('/api/inventory/:id', authWithRestaurant, async (req, res) => {
-  try {
-    const id = parseInt(req.params.id);
-    const { currentStock, minStock, maxStock, minQuantity, unit, notes } = req.body;
-    const data: any = {};
-    if (currentStock !== undefined) {
-      const check = validatePositiveNumber(currentStock, 'Stock actuel');
-      if (!check.valid) return res.status(400).json({ error: 'Erreur mise à jour inventaire', details: check.error });
-      data.currentStock = check.value;
-    }
-    if (minStock !== undefined) data.minStock = parseFloat(minStock);
-    if (maxStock !== undefined) data.maxStock = maxStock === null ? null : parseFloat(maxStock);
-    if (minQuantity !== undefined) data.minQuantity = parseFloat(minQuantity);
-    if (unit !== undefined) data.unit = unit;
-    if (notes !== undefined) data.notes = notes ? sanitizeInput(notes) : null;
-    const item = await prisma.inventoryItem.update({ where: { id }, data, include: { ingredient: true } });
-    logAudit((req as any).user.userId, (req as any).restaurantId, 'UPDATE', 'inventory', id, data);
-    res.json(item);
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour inventaire' }); }
-});
-
-app.post('/api/inventory/:id/restock', authWithRestaurant, async (req, res) => {
-  try {
-    const id = parseInt(req.params.id);
-    const { quantity } = req.body;
-    const qtyCheck = validatePositiveNumber(quantity, 'Quantité');
-    if (!qtyCheck.valid || !qtyCheck.value || qtyCheck.value <= 0) return res.status(400).json({ error: 'Erreur réapprovisionnement', details: 'Quantité doit être supérieure à 0' });
-    const existing = await prisma.inventoryItem.findUnique({ where: { id } });
-    if (!existing) return res.status(404).json({ error: 'Item non trouvé' });
-    const item = await prisma.inventoryItem.update({
-      where: { id },
-      data: { currentStock: existing.currentStock + parseFloat(quantity), lastRestockDate: new Date(), lastRestockQuantity: parseFloat(quantity) },
-      include: { ingredient: true },
-    });
-    logAudit((req as any).user.userId, (req as any).restaurantId, 'UPDATE', 'inventory', id, { action: 'restock', quantity: parseFloat(quantity), oldStock: existing.currentStock, newStock: item.currentStock });
-    res.json(item);
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur réapprovisionnement' }); }
-});
-
-app.delete('/api/inventory/:id', authWithRestaurant, async (req: any, res) => {
-  try {
-    const existing = await prisma.inventoryItem.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId } });
-    if (!existing) return res.status(404).json({ error: 'Élément inventaire non trouvé' });
-    await prisma.inventoryItem.delete({ where: { id: existing.id } });
-    logAudit(req.user.userId, req.restaurantId, 'DELETE', 'inventory', existing.id);
-    res.status(204).send();
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression inventaire' }); }
-});
-
-// ============ INVENTORY AUTO-REORDER ============
-
-// GET /api/inventory/auto-reorder — Analyze inventory and suggest reorders
-app.get('/api/inventory/auto-reorder', authWithRestaurant, async (req: any, res) => {
-  try {
-    const items = await prisma.inventoryItem.findMany({
-      where: { restaurantId: req.restaurantId },
-      include: { ingredient: { include: { supplierRef: true } } },
-    });
-
-    // Filter items where currentStock < minStock (using minStock as the reorder threshold)
-    const lowStockItems = items.filter((item: any) => item.currentStock < item.minStock && item.minStock > 0);
-
-    // Group by supplier
-    const bySupplier: Record<string, {
-      supplierId: number | null;
-      supplier: string;
-      items: { ingredientId: number; ingredient: string; currentStock: number; minQuantity: number; unit: string; suggestedQty: number; estimatedCost: number }[];
-      totalCost: number;
-    }> = {};
-
-    for (const item of lowStockItems) {
-      const supplierName = (item as any).ingredient.supplierRef?.name || (item as any).ingredient.supplier || 'Sans fournisseur';
-      const supplierId = (item as any).ingredient.supplierId || null;
-      const key = supplierName;
-
-      if (!bySupplier[key]) {
-        bySupplier[key] = { supplierId, supplier: supplierName, items: [], totalCost: 0 };
-      }
-
-      const minQty = item.minStock;
-      const suggestedQty = Math.max(minQty * 2 - item.currentStock, 0);
-      const unitDivisor = getUnitDivisor((item as any).ingredient.unit);
-      const estimatedCost = (suggestedQty / unitDivisor) * (item as any).ingredient.pricePerUnit;
-
-      bySupplier[key].items.push({
-        ingredientId: (item as any).ingredient.id,
-        ingredient: (item as any).ingredient.name,
-        currentStock: item.currentStock,
-        minQuantity: minQty,
-        unit: item.unit || (item as any).ingredient.unit,
-        suggestedQty: Math.round(suggestedQty * 100) / 100,
-        estimatedCost: Math.round(estimatedCost * 100) / 100,
-      });
-      bySupplier[key].totalCost += estimatedCost;
-    }
-
-    // Round totals
-    const result = Object.values(bySupplier).map(group => ({
-      ...group,
-      totalCost: Math.round(group.totalCost * 100) / 100,
-    }));
-
-    res.json(result);
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur analyse réapprovisionnement auto' }); }
-});
-
-// POST /api/inventory/auto-reorder/confirm — Create marketplace orders from suggestions
-app.post('/api/inventory/auto-reorder/confirm', authWithRestaurant, async (req: any, res) => {
-  try {
-    const { orders } = req.body;
-    // orders: [{ supplier, supplierId?, items: [{ ingredientId, productName, quantity, unit, unitPrice }] }]
-    if (!orders || !Array.isArray(orders) || orders.length === 0) {
-      return res.status(400).json({ error: 'Aucune commande à créer' });
-    }
-
-    const createdIds: number[] = [];
-
-    for (const order of orders) {
-      const orderItems = order.items.map((item: any) => ({
-        productName: item.productName || item.ingredient || '',
-        quantity: item.quantity || 1,
-        unit: item.unit || '',
-        unitPrice: item.unitPrice || 0,
-        total: (item.quantity || 1) * (item.unitPrice || 0),
-        ingredientId: item.ingredientId || null,
-      }));
-
-      const totalHT = orderItems.reduce((sum: number, i: any) => sum + i.total, 0);
-
-      const created = await prisma.marketplaceOrder.create({
-        data: {
-          supplierName: order.supplier,
-          supplierId: order.supplierId || null,
-          totalHT,
-          notes: 'Commande auto-réapprovisionnement',
-          restaurantId: req.restaurantId,
-          items: { create: orderItems },
-        },
-        include: { items: true },
-      });
-
-      createdIds.push(created.id);
-    }
-
-    logAudit(req.user.userId, req.restaurantId, 'CREATE', 'auto-reorder', 0, { orderIds: createdIds, count: createdIds.length });
-    res.status(201).json({ orderIds: createdIds, count: createdIds.length });
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création commandes auto-réapprovisionnement' }); }
-});
+// ============ INVENTORY — moved to api-lib/routes/inventory.ts ============
+// Mounted at line ~1027: app.use('/api/inventory', authWithRestaurant, inventoryRoutes)
+// 10 routes : list, alerts, value, suggest, auto-reorder, create, update, restock, delete, auto-reorder confirm
 
 // ============ RFQ (APPELS D'OFFRES) — DISABLED: models not in Prisma schema ============
 // TODO: Add RFQ, RFQItem, RFQQuote models to schema.prisma before enabling

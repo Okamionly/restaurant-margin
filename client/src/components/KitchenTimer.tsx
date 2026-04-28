@@ -131,33 +131,33 @@ export default function KitchenTimer() {
     <>
       {/* Panel */}
       {isOpen && (
-        <div className="fixed bottom-36 right-4 sm:right-6 z-40 w-[calc(100vw-2rem)] sm:w-80 max-h-[70vh] flex flex-col bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-2xl shadow-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-36 right-4 sm:right-6 z-40 w-[calc(100vw-2rem)] sm:w-80 max-h-[70vh] flex flex-col bg-mono-1000 dark:bg-mono-50 rounded-2xl shadow-2xl border border-mono-900 dark:border-mono-200 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#262626] bg-white dark:bg-[#262626]/50">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-mono-300 bg-white dark:bg-mono-300/50">
             <div className="flex items-center gap-2">
               <Timer className="w-5 h-5 text-teal-400" />
-              <span className="font-semibold text-[#111111] dark:text-white text-sm">Kitchen Timer</span>
+              <span className="font-semibold text-mono-100 dark:text-white text-sm">Kitchen Timer</span>
               {timers.length > 0 && (
-                <span className="text-xs text-[#A3A3A3]">({timers.length})</span>
+                <span className="text-xs text-mono-700">({timers.length})</span>
               )}
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1 rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#404040] text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors"
+              className="p-1 rounded-lg hover:bg-mono-900 dark:hover:bg-mono-350 text-mono-500 dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Add new timer */}
-          <div className="px-4 py-3 border-b border-[#E5E7EB] dark:border-[#262626]/50 space-y-2">
+          <div className="px-4 py-3 border-b border-mono-900 dark:border-mono-300/50 space-y-2">
             <div className="flex gap-2">
               <input
                 type="text"
                 value={newLabel}
                 onChange={e => setNewLabel(e.target.value)}
                 placeholder="Nom (ex: Pates)"
-                className="flex-1 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-1.5 text-sm text-[#111111] dark:text-white placeholder-[#A3A3A3] dark:placeholder-[#737373] focus:outline-none focus:border-teal-500"
+                className="flex-1 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-1.5 text-sm text-mono-100 dark:text-white placeholder-mono-700 dark:placeholder-mono-500 focus:outline-none focus:border-teal-500"
                 onKeyDown={e => e.key === 'Enter' && addTimer()}
               />
             </div>
@@ -170,10 +170,10 @@ export default function KitchenTimer() {
                   step={0.5}
                   value={newMinutes}
                   onChange={e => setNewMinutes(parseFloat(e.target.value) || 0)}
-                  className="w-20 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-1.5 text-sm text-[#111111] dark:text-white text-center focus:outline-none focus:border-teal-500"
+                  className="w-20 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-1.5 text-sm text-mono-100 dark:text-white text-center focus:outline-none focus:border-teal-500"
                   onKeyDown={e => e.key === 'Enter' && addTimer()}
                 />
-                <span className="text-xs text-[#A3A3A3]">min</span>
+                <span className="text-xs text-mono-700">min</span>
               </div>
               <button
                 onClick={addTimer}
@@ -189,7 +189,7 @@ export default function KitchenTimer() {
           {/* Timer list */}
           <div className="flex-1 overflow-y-auto px-4 py-2 space-y-2">
             {timers.length === 0 && (
-              <div className="py-6 text-center text-[#737373] text-sm">
+              <div className="py-6 text-center text-mono-500 text-sm">
                 Aucun timer actif
               </div>
             )}
@@ -203,14 +203,14 @@ export default function KitchenTimer() {
                   className={`rounded-xl p-3 border transition-colors ${
                     t.isFinished
                       ? 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700/50 animate-pulse'
-                      : 'bg-[#F5F5F5] dark:bg-[#262626]/50 border-[#E5E7EB] dark:border-[#262626]/50'
+                      : 'bg-mono-975 dark:bg-mono-300/50 border-mono-900 dark:border-mono-300/50'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs text-[#737373] dark:text-[#A3A3A3] truncate max-w-[120px]">{t.label}</span>
+                    <span className="text-xs text-mono-500 dark:text-mono-700 truncate max-w-[120px]">{t.label}</span>
                     <button
                       onClick={() => removeTimer(t.id)}
-                      className="p-0.5 rounded hover:bg-[#E5E7EB] dark:hover:bg-[#404040] text-[#737373] hover:text-red-400 transition-colors"
+                      className="p-0.5 rounded hover:bg-mono-900 dark:hover:bg-mono-350 text-mono-500 hover:text-red-400 transition-colors"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -222,7 +222,7 @@ export default function KitchenTimer() {
                           ? 'text-red-400'
                           : t.remainingSeconds <= 60
                           ? 'text-amber-400'
-                          : 'text-[#111111] dark:text-white'
+                          : 'text-mono-100 dark:text-white'
                       }`}
                     >
                       {t.isFinished ? "00:00" : formatTime(t.remainingSeconds)}
@@ -233,7 +233,7 @@ export default function KitchenTimer() {
                         disabled={t.isFinished}
                         className={`p-1.5 rounded-lg transition-colors ${
                           t.isFinished
-                            ? 'text-[#525252] cursor-not-allowed'
+                            ? 'text-mono-400 cursor-not-allowed'
                             : t.isRunning
                             ? 'bg-amber-600/20 text-amber-400 hover:bg-amber-600/30'
                             : 'bg-teal-600/20 text-teal-400 hover:bg-teal-600/30'
@@ -243,14 +243,14 @@ export default function KitchenTimer() {
                       </button>
                       <button
                         onClick={() => resetTimer(t.id)}
-                        className="p-1.5 rounded-lg bg-[#E5E7EB]/50 dark:bg-[#404040]/50 text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#404040] transition-colors"
+                        className="p-1.5 rounded-lg bg-mono-900/50 dark:bg-mono-350/50 text-mono-500 dark:text-mono-700 hover:text-mono-100 dark:hover:text-white hover:bg-mono-900 dark:hover:bg-mono-350 transition-colors"
                       >
                         <RotateCcw className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
                   {/* Progress bar */}
-                  <div className="mt-2 h-1 bg-[#E5E7EB] dark:bg-[#404040] rounded-full overflow-hidden">
+                  <div className="mt-2 h-1 bg-mono-900 dark:bg-mono-350 rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-1000 ${
                         t.isFinished
@@ -274,18 +274,18 @@ export default function KitchenTimer() {
         onClick={() => setIsOpen(o => !o)}
         className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 no-print ${
           isOpen
-            ? 'bg-[#404040] hover:bg-[#525252] rotate-12'
+            ? 'bg-mono-350 hover:bg-mono-400 rotate-12'
             : finishedCount > 0
             ? 'bg-red-600 hover:bg-red-500 animate-bounce'
             : activeCount > 0
             ? 'bg-teal-600 hover:bg-teal-500'
-            : 'bg-[#E5E7EB] dark:bg-[#262626] hover:bg-[#D4D4D4] dark:hover:bg-[#404040] border border-[#D4D4D4] dark:border-[#404040]'
+            : 'bg-mono-900 dark:bg-mono-300 hover:bg-mono-800 dark:hover:bg-mono-350 border border-mono-800 dark:border-mono-350'
         }`}
         title="Kitchen Timer"
       >
         <Timer className="w-6 h-6 text-white" />
         {activeCount > 0 && !isOpen && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 bg-teal-400 text-[#111111] text-xs font-bold rounded-full flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-teal-400 text-mono-100 text-xs font-bold rounded-full flex items-center justify-center">
             {activeCount}
           </span>
         )}

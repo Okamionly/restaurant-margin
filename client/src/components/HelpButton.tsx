@@ -97,23 +97,23 @@ export default function HelpButton() {
     <div ref={panelRef} className="relative no-print">
       {/* Help panel */}
       {open && (
-        <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden animate-help-panel-in">
+        <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-white dark:bg-mono-50 rounded-2xl shadow-2xl border border-mono-900 dark:border-mono-200 overflow-hidden animate-help-panel-in">
           {/* Header */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <h3 className="text-base font-bold text-[#111111] dark:text-white font-satoshi">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-mono-900 dark:border-mono-200">
+            <h3 className="text-base font-bold text-mono-100 dark:text-white font-satoshi">
               Besoin d'aide ?
             </h3>
             <button
               onClick={() => setOpen(false)}
-              className="p-1 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="p-1 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               aria-label="Fermer"
             >
-              <X className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+              <X className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
             </button>
           </div>
 
           {/* Tabs */}
-          <div className="flex border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex border-b border-mono-900 dark:border-mono-200">
             {tabs.map(tab => {
               const Icon = tab.icon;
               return (
@@ -122,8 +122,8 @@ export default function HelpButton() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-1 flex flex-col items-center gap-1 px-2 py-2.5 text-center transition-colors ${
                     activeTab === tab.id
-                      ? 'text-[#111111] dark:text-white border-b-2 border-[#111111] dark:border-white -mb-[1px]'
-                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#6B7280] dark:hover:text-[#A3A3A3]'
+                      ? 'text-mono-100 dark:text-white border-b-2 border-mono-100 dark:border-white -mb-[1px]'
+                      : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#6B7280] dark:hover:text-mono-700'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -137,21 +137,21 @@ export default function HelpButton() {
           <div className="max-h-[360px] overflow-y-auto">
             {/* FAQ */}
             {activeTab === 'faq' && (
-              <div className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
+              <div className="divide-y divide-mono-950 dark:divide-mono-200">
                 {FAQ_ITEMS.map((item, i) => (
                   <div key={i}>
                     <button
                       onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
                       className="w-full flex items-center justify-between px-5 py-3 text-left hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
                     >
-                      <span className="text-sm font-medium text-[#111111] dark:text-white pr-4">{item.question}</span>
-                      <ChevronDown className={`w-4 h-4 text-[#9CA3AF] dark:text-[#737373] flex-shrink-0 transition-transform ${
+                      <span className="text-sm font-medium text-mono-100 dark:text-white pr-4">{item.question}</span>
+                      <ChevronDown className={`w-4 h-4 text-[#9CA3AF] dark:text-mono-500 flex-shrink-0 transition-transform ${
                         expandedFaq === i ? 'rotate-180' : ''
                       }`} />
                     </button>
                     {expandedFaq === i && (
                       <div className="px-5 pb-3">
-                        <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">{item.answer}</p>
+                        <p className="text-xs text-[#6B7280] dark:text-mono-700 leading-relaxed">{item.answer}</p>
                       </div>
                     )}
                   </div>
@@ -168,19 +168,19 @@ export default function HelpButton() {
                     href={video.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors group"
+                    className="flex items-center gap-3 p-3 rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center flex-shrink-0 group-hover:bg-[#111111] dark:group-hover:bg-white transition-colors">
-                      <PlayCircle className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3] group-hover:text-white dark:group-hover:text-[#111111] transition-colors" />
+                    <div className="w-10 h-10 rounded-lg bg-mono-950 dark:bg-[#171717] flex items-center justify-center flex-shrink-0 group-hover:bg-mono-100 dark:group-hover:bg-white transition-colors">
+                      <PlayCircle className="w-5 h-5 text-[#6B7280] dark:text-mono-700 group-hover:text-white dark:group-hover:text-mono-100 transition-colors" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-[#111111] dark:text-white">{video.title}</div>
-                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{video.duration}</div>
+                      <div className="text-sm font-medium text-mono-100 dark:text-white">{video.title}</div>
+                      <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{video.duration}</div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-[#D1D5DB] dark:text-[#555555] group-hover:text-[#111111] dark:group-hover:text-white transition-colors" />
+                    <ChevronRight className="w-4 h-4 text-[#D1D5DB] dark:text-[#555555] group-hover:text-mono-100 dark:group-hover:text-white transition-colors" />
                   </a>
                 ))}
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center pt-2">
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500 text-center pt-2">
                   Plus de tutoriels a venir...
                 </p>
               </div>
@@ -191,15 +191,15 @@ export default function HelpButton() {
               <div className="p-4 space-y-2">
                 {SHORTCUTS.map((shortcut, i) => (
                   <div key={i} className="flex items-center justify-between py-1.5">
-                    <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{shortcut.description}</span>
+                    <span className="text-sm text-[#6B7280] dark:text-mono-700">{shortcut.description}</span>
                     <div className="flex items-center gap-1">
                       {shortcut.keys.map((key, j) => (
                         <span key={j}>
-                          <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-medium bg-[#F3F4F6] dark:bg-[#171717] border border-[#D1D5DB] dark:border-[#333333] rounded text-[#111111] dark:text-white">
+                          <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-medium bg-mono-950 dark:bg-[#171717] border border-[#D1D5DB] dark:border-[#333333] rounded text-mono-100 dark:text-white">
                             {key}
                           </kbd>
                           {j < shortcut.keys.length - 1 && (
-                            <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mx-0.5">+</span>
+                            <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 mx-0.5">+</span>
                           )}
                         </span>
                       ))}
@@ -214,34 +214,34 @@ export default function HelpButton() {
               <div className="p-5 space-y-4">
                 <button
                   onClick={openCrisp}
-                  className="w-full flex items-center gap-3 p-4 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors text-left"
+                  className="w-full flex items-center gap-3 p-4 rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors text-left"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-[#111111] dark:bg-white flex items-center justify-center flex-shrink-0">
-                    <MessageCircle className="w-5 h-5 text-white dark:text-[#111111]" />
+                  <div className="w-10 h-10 rounded-lg bg-mono-100 dark:bg-white flex items-center justify-center flex-shrink-0">
+                    <MessageCircle className="w-5 h-5 text-white dark:text-mono-100" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-[#111111] dark:text-white">Chat en direct</div>
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Reponse en moins de 5 minutes</div>
+                    <div className="text-sm font-semibold text-mono-100 dark:text-white">Chat en direct</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Reponse en moins de 5 minutes</div>
                   </div>
                   <ExternalLink className="w-4 h-4 text-[#D1D5DB] dark:text-[#555555]" />
                 </button>
 
                 <a
                   href="mailto:support@restaumargin.fr"
-                  className="w-full flex items-center gap-3 p-4 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
+                  className="w-full flex items-center gap-3 p-4 rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
+                  <div className="w-10 h-10 rounded-lg bg-mono-950 dark:bg-[#171717] flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-[#111111] dark:text-white">Email</div>
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">support@restaumargin.fr</div>
+                    <div className="text-sm font-semibold text-mono-100 dark:text-white">Email</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500">support@restaumargin.fr</div>
                   </div>
                   <ExternalLink className="w-4 h-4 text-[#D1D5DB] dark:text-[#555555]" />
                 </a>
 
                 <div className="text-center pt-2">
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
                     Nous sommes la pour vous aider du lundi au samedi, 9h-18h
                   </p>
                 </div>
@@ -256,8 +256,8 @@ export default function HelpButton() {
         onClick={() => setOpen(!open)}
         className={`group flex items-center gap-2 w-12 h-12 justify-center rounded-full shadow-lg transition-all duration-300 ${
           open
-            ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] scale-95'
-            : 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] hover:shadow-xl hover:scale-105'
+            ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 scale-95'
+            : 'bg-white dark:bg-mono-50 text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 hover:shadow-xl hover:scale-105'
         }`}
         aria-label="Besoin d'aide ?"
       >

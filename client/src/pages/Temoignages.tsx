@@ -163,7 +163,7 @@ function StarRating({ rating }: { rating: number }) {
           className={`w-4 h-4 ${
             i < rating
               ? 'fill-black text-black'
-              : 'fill-[#E5E7EB] text-[#E5E7EB]'
+              : 'fill-mono-900 text-mono-900'
           }`}
         />
       ))}
@@ -183,7 +183,7 @@ export default function Temoignages() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="border-b border-[#E5E7EB]">
+      <header className="border-b border-mono-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center">
@@ -220,7 +220,7 @@ export default function Temoignages() {
             </h1>
 
             {/* Featured card */}
-            <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-8 sm:p-12 text-left relative">
+            <div className="bg-mono-1000 border border-mono-900 rounded-2xl p-8 sm:p-12 text-left relative">
               <Quote className="w-10 h-10 text-black/10 absolute top-6 left-6" />
               <div className="relative">
                 <StarRating rating={featured.rating} />
@@ -257,7 +257,7 @@ export default function Temoignages() {
       )}
 
       {/* Stats Bar */}
-      <section className="border-y border-[#E5E7EB] bg-black py-12 px-4 sm:px-6">
+      <section className="border-y border-mono-900 bg-black py-12 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
             <div className="flex items-center justify-center gap-2 mb-2">
@@ -309,7 +309,7 @@ export default function Temoignages() {
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                   activeCuisine === cuisine
                     ? 'bg-black text-white'
-                    : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB] hover:text-black'
+                    : 'bg-mono-950 text-[#6B7280] hover:bg-mono-900 hover:text-black'
                 }`}
               >
                 {cuisine}
@@ -337,11 +337,11 @@ export default function Temoignages() {
               {filteredTestimonials.map((t, i) => (
                 <div
                   key={i}
-                  className="break-inside-avoid p-6 rounded-2xl border border-[#E5E7EB] bg-white hover:border-black/30 transition-all duration-200 group"
+                  className="break-inside-avoid p-6 rounded-2xl border border-mono-900 bg-white hover:border-black/30 transition-all duration-200 group"
                 >
                   {/* Video placeholder */}
                   {t.hasVideo && (
-                    <div className="mb-4 rounded-xl bg-[#F3F4F6] aspect-video flex items-center justify-center group-hover:bg-[#E5E7EB] transition-colors cursor-pointer">
+                    <div className="mb-4 rounded-xl bg-mono-950 aspect-video flex items-center justify-center group-hover:bg-mono-900 transition-colors cursor-pointer">
                       <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center">
                         <Play className="w-5 h-5 text-white ml-0.5" />
                       </div>
@@ -353,7 +353,7 @@ export default function Temoignages() {
 
                   {/* Savings badge */}
                   {t.savings && (
-                    <div className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 bg-[#F3F4F6] rounded-lg text-xs font-semibold text-black">
+                    <div className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 bg-mono-950 rounded-lg text-xs font-semibold text-black">
                       <TrendingUp className="w-3 h-3" />
                       {t.savings}
                     </div>
@@ -365,7 +365,7 @@ export default function Temoignages() {
                   </p>
 
                   {/* Divider + Author */}
-                  <div className="border-t border-[#E5E7EB] pt-4 flex items-center gap-3">
+                  <div className="border-t border-mono-900 pt-4 flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                       {t.name.charAt(0)}
                     </div>
@@ -405,7 +405,7 @@ export default function Temoignages() {
                 href="https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-white hover:bg-[#F3F4F6] text-black font-semibold rounded-xl transition-colors"
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-white hover:bg-mono-950 text-black font-semibold rounded-xl transition-colors"
               >
                 Commencer l'essai gratuit
                 <ArrowRight className="w-5 h-5" />
@@ -426,7 +426,7 @@ export default function Temoignages() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#E5E7EB] py-8">
+      <footer className="border-t border-mono-900 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-[#9CA3AF]">RestauMargin &copy; 2026. Tous droits reserves.</p>
           <div className="flex items-center gap-6 text-xs text-[#9CA3AF]">

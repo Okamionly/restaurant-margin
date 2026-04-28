@@ -64,13 +64,13 @@ export default function BlogFormationPersonnel() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -113,7 +113,7 @@ export default function BlogFormationPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <Users className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Réduire le turnover</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Réduire le turnover</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Turnover en restauration française : 65 %/an pour la salle, 45 % pour la cuisine, contre 15 % toutes industries. Chaque départ coûte :
@@ -123,7 +123,7 @@ export default function BlogFormationPersonnel() {
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-orange-400 mt-2 flex-shrink-0" /><span><strong>Onboarding</strong> : 4-8 semaines à pleine productivité</span></li>
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-orange-400 mt-2 flex-shrink-0" /><span><strong>Productivité équipe</strong> : -10 à -20 % pendant la transition</span></li>
           </ul>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Coût total moyen d'un départ : 14 000 à 22 000 €
           </div>
           <p className="text-[#374151] leading-relaxed">
@@ -137,7 +137,7 @@ export default function BlogFormationPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
               <ClipboardCheck className="w-5 h-5 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Obligations légales 2026</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Obligations légales 2026</h2>
           </div>
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-red-400 mt-2 flex-shrink-0" /><span><strong>Adaptation au poste</strong> (L6321-1) : former à tout nouveau matériel et procédure</span></li>
@@ -154,12 +154,12 @@ export default function BlogFormationPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Euro className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Financements disponibles</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Financements disponibles</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>OPCO Mobilités (ex-AKTO/FAFIH HCR).</strong>
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>TPE/PME ({'<'}50) : 100 % dans la limite de 25 €/h</div>
             <div>Forfait alternance : 8 000-12 000 €/an</div>
             <div>Pro-A : jusqu'à 10 000 € de formation</div>
@@ -179,7 +179,7 @@ export default function BlogFormationPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <GraduationCap className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Formations prioritaires 2026</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Formations prioritaires 2026</h2>
           </div>
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-blue-400 mt-2 flex-shrink-0" /><span><strong>HACCP (obligatoire)</strong> : 14h, 200-400 €. À renouveler tous les 5 ans.</span></li>
@@ -196,19 +196,19 @@ export default function BlogFormationPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Euro className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. ROI : étude de cas chiffrée</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. ROI : étude de cas chiffrée</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Restaurant 60 cv, 580 000 € CA, 8 salariés. Plan formation 2026 :
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-xs text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-xs text-mono-100 space-y-1">
             <div>HACCP recyclage : 700 € → 100 % pris en charge</div>
             <div>Sommellerie 2 serveurs : 1 800 € → 100 %</div>
             <div>Food cost chef : 1 200 € → 100 %</div>
             <div>Upselling 3 serveurs : 2 100 € → 100 %</div>
             <div>Caisse manager : 400 € → 100 %</div>
             <div>Anglais 4 pers : 4 800 € → CPF 3 200 €</div>
-            <div className="pt-2 font-bold border-t border-[#E5E7EB]">Total : 11 000 € brut, reste 1 600 €</div>
+            <div className="pt-2 font-bold border-t border-mono-900">Total : 11 000 € brut, reste 1 600 €</div>
           </div>
           <div className="border-l-4 border-emerald-400 bg-emerald-50 rounded-r-xl p-4 mb-4">
             <p className="text-sm font-semibold text-emerald-700">Bénéfices 12 mois</p>
@@ -222,7 +222,7 @@ export default function BlogFormationPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center">
               <Calendar className="w-5 h-5 text-pink-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Onboarding 30 jours</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Onboarding 30 jours</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Étude Cornell 2024 : un onboarding structuré multiplie par 2,5 la rétention à 1 an.
@@ -241,7 +241,7 @@ export default function BlogFormationPersonnel() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -261,9 +261,9 @@ export default function BlogFormationPersonnel() {
                 a: "Pas d'obligation chiffrée mais bon ratio : 3 à 5 jours par an et par salarié, soit 21 à 35 heures."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -284,7 +284,7 @@ export default function BlogFormationPersonnel() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/strategie-digitale-restaurant" className="text-sm text-teal-600 hover:underline">Stratégie digitale →</Link>
         </div>

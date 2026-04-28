@@ -128,9 +128,9 @@ const typeConfig: Record<NotifType, {
     icon: Shield,
     label: 'Systeme',
     color: 'text-[#9CA3AF]',
-    bg: 'bg-[#F3F4F6] dark:bg-[#171717]',
+    bg: 'bg-mono-950 dark:bg-[#171717]',
     border: 'border-l-[#9CA3AF]',
-    badgeBg: 'bg-[#F3F4F6] dark:bg-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3]',
+    badgeBg: 'bg-mono-950 dark:bg-mono-200 text-[#6B7280] dark:text-mono-700',
   },
 };
 
@@ -433,7 +433,7 @@ export default function NotificationCenter() {
       <button
         ref={bellRef}
         onClick={() => { setOpen(!open); if (!open) fetchNotifications(); }}
-        className="relative p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors"
+        className="relative p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors"
         aria-label={`Centre de notifications${unreadCount > 0 ? ` (${unreadCount} non lues)` : ''}`}
       >
         <Bell className="w-5 h-5" />
@@ -456,18 +456,18 @@ export default function NotificationCenter() {
       {open && (
       <div
         ref={panelRef}
-        className="fixed top-14 right-4 w-[380px] max-h-[70vh] bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl shadow-black/20 z-[80] flex flex-col overflow-hidden"
+        className="fixed top-14 right-4 w-[380px] max-h-[70vh] bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl shadow-2xl shadow-black/20 z-[80] flex flex-col overflow-hidden"
       >
         {/* ── Header ── */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-mono-900 dark:border-mono-200 flex-shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#111111] dark:bg-white flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-mono-100 dark:bg-white flex items-center justify-center">
               <Bell className="w-4 h-4 text-white dark:text-black" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-[#111111] dark:text-white">Notifications</h2>
+              <h2 className="text-sm font-bold text-mono-100 dark:text-white">Notifications</h2>
               {unreadCount > 0 && (
-                <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{unreadCount} non lue{unreadCount > 1 ? 's' : ''}</p>
+                <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{unreadCount} non lue{unreadCount > 1 ? 's' : ''}</p>
               )}
             </div>
           </div>
@@ -475,7 +475,7 @@ export default function NotificationCenter() {
             {/* Sound toggle */}
             <button
               onClick={toggleSound}
-              className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+              className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors"
               title={soundEnabled ? 'Desactiver le son' : 'Activer le son'}
             >
               {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
@@ -483,7 +483,7 @@ export default function NotificationCenter() {
             {/* Preferences */}
             <button
               onClick={() => setShowPrefs(!showPrefs)}
-              className={`p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors ${showPrefs ? 'bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+              className={`p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors ${showPrefs ? 'bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
               title="Preferences"
             >
               <Settings className="w-4 h-4" />
@@ -492,7 +492,7 @@ export default function NotificationCenter() {
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
-                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+                className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors"
                 title="Tout marquer comme lu"
               >
                 <CheckCheck className="w-4 h-4" />
@@ -501,7 +501,7 @@ export default function NotificationCenter() {
             {/* Close */}
             <button
               onClick={() => { setOpen(false); setShowPrefs(false); }}
-              className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+              className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -510,8 +510,8 @@ export default function NotificationCenter() {
 
         {/* ── Preferences Panel ── */}
         {showPrefs && (
-          <div className="px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex-shrink-0">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-2">
+          <div className="px-5 py-3 border-b border-mono-900 dark:border-mono-200 flex-shrink-0">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-2">
               Types de notifications
             </p>
             <div className="grid grid-cols-2 gap-2">
@@ -523,8 +523,8 @@ export default function NotificationCenter() {
                     onClick={() => togglePref(type)}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
                       prefs[type]
-                        ? 'border-[#111111] dark:border-white bg-[#111111] dark:bg-white text-white dark:text-black'
-                        : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:border-[#9CA3AF] dark:hover:border-[#525252]'
+                        ? 'border-mono-100 dark:border-white bg-mono-100 dark:bg-white text-white dark:text-black'
+                        : 'border-mono-900 dark:border-mono-200 text-[#9CA3AF] dark:text-mono-500 hover:border-[#9CA3AF] dark:hover:border-mono-400'
                     }`}
                   >
                     <cfg.icon className="w-3.5 h-3.5" />
@@ -596,14 +596,14 @@ export default function NotificationCenter() {
 
         {/* ── Daily Briefing Card ── */}
         {briefing && briefing.totalAlerts > 0 && !showPrefs && (
-          <div className="mx-4 mt-4 mb-2 p-4 rounded-xl bg-gradient-to-br from-[#111111] to-[#1a1a2e] dark:from-white dark:to-[#f0f0f5] flex-shrink-0">
+          <div className="mx-4 mt-4 mb-2 p-4 rounded-xl bg-gradient-to-br from-mono-100 to-[#1a1a2e] dark:from-white dark:to-[#f0f0f5] flex-shrink-0">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-4 h-4 text-amber-400 dark:text-amber-600" />
               <span className="text-xs font-bold text-white dark:text-black uppercase tracking-wider">
                 Briefing du jour
               </span>
             </div>
-            <p className="text-sm text-[#E5E7EB] dark:text-[#374151] leading-relaxed">
+            <p className="text-sm text-mono-900 dark:text-[#374151] leading-relaxed">
               {briefing.summary}
             </p>
             <div className="flex items-center gap-3 mt-3">
@@ -631,7 +631,7 @@ export default function NotificationCenter() {
 
         {/* ── Category Tabs ── */}
         {!showPrefs && (
-          <div className="flex items-center gap-1 px-4 py-2 border-b border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto no-scrollbar flex-shrink-0">
+          <div className="flex items-center gap-1 px-4 py-2 border-b border-mono-900 dark:border-mono-200 overflow-x-auto no-scrollbar flex-shrink-0">
             <TabButton
               active={activeTab === 'all'}
               label="Tout"
@@ -655,17 +655,17 @@ export default function NotificationCenter() {
         <div className="flex-1 overflow-y-auto">
           {loading && notifications.length === 0 && (
             <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-5 h-5 animate-spin text-[#9CA3AF] dark:text-[#737373]" />
+              <Loader2 className="w-5 h-5 animate-spin text-[#9CA3AF] dark:text-mono-500" />
             </div>
           )}
 
           {!loading && visibleNotifications.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 px-6">
-              <div className="w-16 h-16 rounded-2xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-4">
-                <Bell className="w-7 h-7 text-[#D1D5DB] dark:text-[#525252]" />
+              <div className="w-16 h-16 rounded-2xl bg-mono-950 dark:bg-[#171717] flex items-center justify-center mb-4">
+                <Bell className="w-7 h-7 text-[#D1D5DB] dark:text-mono-400" />
               </div>
-              <p className="text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3]">Aucune notification</p>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 text-center">
+              <p className="text-sm font-semibold text-[#6B7280] dark:text-mono-700">Aucune notification</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1 text-center">
                 Tout est en ordre ! Les alertes stock, prix et marges apparaitront ici.
               </p>
             </div>
@@ -701,10 +701,10 @@ export default function NotificationCenter() {
                 return (
                   <div key={notif.id}>
                     {showDivider && (
-                      <div className="px-4 py-2 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                      <div className="px-4 py-2 border-b border-mono-900 dark:border-mono-200">
                         <div className="flex items-center gap-1.5">
-                          <Clock className="w-3 h-3 text-[#9CA3AF] dark:text-[#737373]" />
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">
+                          <Clock className="w-3 h-3 text-[#9CA3AF] dark:text-mono-500" />
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">
                             Autres notifications
                           </span>
                         </div>
@@ -712,12 +712,12 @@ export default function NotificationCenter() {
                     )}
                     <button
                       onClick={() => markAsRead(notif.id)}
-                      className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-all border-l-4 ${config.border} border-b border-[#F3F4F6] dark:border-[#0A0A0A] last:border-b-0 ${
+                      className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-all border-l-4 ${config.border} border-b border-mono-950 dark:border-mono-50 last:border-b-0 ${
                         isCritical
                           ? 'bg-red-500/[0.03] dark:bg-red-500/[0.03]'
                           : isUnread
-                            ? 'bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#111111]'
-                            : 'bg-white dark:bg-black hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] opacity-60'
+                            ? 'bg-mono-1000 dark:bg-mono-50 hover:bg-mono-950 dark:hover:bg-mono-100'
+                            : 'bg-white dark:bg-black hover:bg-mono-1000 dark:hover:bg-mono-50 opacity-60'
                       }`}
                     >
                       {/* Icon */}
@@ -728,18 +728,18 @@ export default function NotificationCenter() {
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className={`text-sm truncate ${isUnread ? 'font-semibold text-[#111111] dark:text-white' : 'font-medium text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                          <p className={`text-sm truncate ${isUnread ? 'font-semibold text-mono-100 dark:text-white' : 'font-medium text-[#6B7280] dark:text-mono-700'}`}>
                             {notif.title}
                           </p>
                           {isUnread && (
                             <span className={`w-2 h-2 rounded-full ${sev.dot} flex-shrink-0 ${isCritical ? sev.pulse : ''}`} />
                           )}
                         </div>
-                        <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-0.5 line-clamp-2">
+                        <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-0.5 line-clamp-2">
                           {notif.message}
                         </p>
                         <div className="flex items-center gap-2 mt-1.5">
-                          <span className="text-[10px] text-[#D1D5DB] dark:text-[#525252]">
+                          <span className="text-[10px] text-[#D1D5DB] dark:text-mono-400">
                             {timeAgo(notif.createdAt)}
                           </span>
                           <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${config.badgeBg}`}>
@@ -758,7 +758,7 @@ export default function NotificationCenter() {
                       {/* Read indicator */}
                       {isUnread && (
                         <div className="flex-shrink-0 mt-1">
-                          <Check className="w-3.5 h-3.5 text-[#D1D5DB] dark:text-[#525252]" />
+                          <Check className="w-3.5 h-3.5 text-[#D1D5DB] dark:text-mono-400" />
                         </div>
                       )}
                     </button>
@@ -770,10 +770,10 @@ export default function NotificationCenter() {
         </div>
 
         {/* ── Footer ── */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] px-4 py-3 flex items-center justify-between flex-shrink-0">
+        <div className="border-t border-mono-900 dark:border-mono-200 px-4 py-3 flex items-center justify-between flex-shrink-0">
           <button
             onClick={() => { setOpen(false); window.location.href = '/settings'; }}
-            className="flex items-center gap-1.5 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+            className="flex items-center gap-1.5 text-xs font-medium text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors"
           >
             <Settings className="w-3.5 h-3.5" />
             Preferences
@@ -781,7 +781,7 @@ export default function NotificationCenter() {
           {unreadCount > 0 && (
             <button
               onClick={markAllRead}
-              className="flex items-center gap-1.5 text-xs font-medium text-[#111111] dark:text-white hover:text-[#6B7280] dark:hover:text-[#A3A3A3] transition-colors px-3 py-1.5 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A]"
+              className="flex items-center gap-1.5 text-xs font-medium text-mono-100 dark:text-white hover:text-[#6B7280] dark:hover:text-mono-700 transition-colors px-3 py-1.5 rounded-lg bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-mono-200"
             >
               <CheckCheck className="w-3.5 h-3.5" />
               Tout marquer comme lu
@@ -820,8 +820,8 @@ function TabButton({ active, label, count, onClick, color }: {
       onClick={onClick}
       className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
         active
-          ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-          : 'text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#6B7280] dark:hover:text-[#A3A3A3]'
+          ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+          : 'text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] hover:text-[#6B7280] dark:hover:text-mono-700'
       }`}
     >
       {label}

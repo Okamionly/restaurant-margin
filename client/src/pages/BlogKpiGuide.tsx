@@ -68,13 +68,13 @@ export default function BlogKpiGuide() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -116,12 +116,12 @@ export default function BlogKpiGuide() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Food Cost %</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Food Cost %</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             LE KPI fondateur. Il mesure la part de votre CA absorbée par l'achat des ingrédients.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Food Cost % = (Coût matières / CA HT) × 100
           </div>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Benchmarks 2026 :</strong></p>
@@ -142,12 +142,12 @@ export default function BlogKpiGuide() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Prime Cost</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Prime Cost</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             L'indicateur ultime de rentabilité opérationnelle. La règle : <strong>prime cost ≤ 60 %</strong>, sinon le restaurant est en danger.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Prime Cost = Food Cost + Coût personnel (charges incluses)
           </div>
           <div className="border-l-4 border-red-400 bg-red-50 rounded-r-xl p-4 mb-4">
@@ -165,12 +165,12 @@ export default function BlogKpiGuide() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <Users className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Taux d'occupation des tables</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Taux d'occupation des tables</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Mesuré par service et par jour, ce KPI révèle votre capacité commerciale réelle.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Taux d'occupation = (Couverts / Capacité max) × 100
           </div>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -190,12 +190,12 @@ export default function BlogKpiGuide() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Star className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Ticket moyen et CA par couvert</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Ticket moyen et CA par couvert</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le <strong>ticket moyen</strong> reflète la stratégie de menu et l'upsell. Le <strong>CA par couvert</strong> intègre les groupes (par personne, pas par ticket).
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Ticket moyen = CA HT / Nombre de tickets</div>
             <div>CA/couvert = CA total HT / Nombre de personnes</div>
           </div>
@@ -217,12 +217,12 @@ export default function BlogKpiGuide() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <Clock className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. RevPASH et point mort</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. RevPASH et point mort</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le <strong>RevPASH</strong> (Revenue Per Available Seat Hour) mesure la rentabilité par siège et par heure d'ouverture.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             RevPASH = CA HT / (Nombre de places × Heures)
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
@@ -231,7 +231,7 @@ export default function BlogKpiGuide() {
           <p className="text-[#374151] leading-relaxed mb-4">
             Le <strong>point mort</strong> est le CA minimum pour ne pas perdre d'argent :
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Point mort = Charges fixes / Taux MCV
           </div>
           <p className="text-[#374151] leading-relaxed">
@@ -245,7 +245,7 @@ export default function BlogKpiGuide() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <Target className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Construire son tableau de bord</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Construire son tableau de bord</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-3"><strong>Quotidien (5 min, fin de service) :</strong></p>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -267,7 +267,7 @@ export default function BlogKpiGuide() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -291,9 +291,9 @@ export default function BlogKpiGuide() {
                 a: "Affichez 2-3 KPI clés en cuisine (food cost de la semaine, ticket moyen) et instaurez une prime trimestrielle indexée sur leur amélioration. La transparence motive davantage que le contrôle."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -314,7 +314,7 @@ export default function BlogKpiGuide() {
         </div>
 
         {/* Nav bas */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>

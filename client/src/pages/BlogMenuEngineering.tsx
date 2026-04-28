@@ -68,13 +68,13 @@ export default function BlogMenuEngineering() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -116,7 +116,7 @@ export default function BlogMenuEngineering() {
             <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center">
               <Star className="w-5 h-5 text-violet-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Qu'est-ce que le menu engineering</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Qu'est-ce que le menu engineering</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le menu engineering est l'analyse systématique de la rentabilité et de la popularité de chaque plat, dans le but de prendre des décisions éclairées sur : quels plats mettre en avant, lesquels reformuler, lesquels supprimer, quels prix ajuster.
@@ -124,7 +124,7 @@ export default function BlogMenuEngineering() {
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Pourquoi c'est révolutionnaire :</strong> la plupart des restaurateurs raisonnent en food cost % (le coût matières en pourcentage du prix de vente). C'est trompeur.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Plat A : 25 % food cost, vendu 12 € → marge 9 €</div>
             <div>Plat B : 35 % food cost, vendu 28 € → marge 18,20 €</div>
           </div>
@@ -139,12 +139,12 @@ export default function BlogMenuEngineering() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <Layout className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Les 4 quadrants Boston Matrix</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Les 4 quadrants Boston Matrix</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             La matrice BCG croise <strong>popularité (volume)</strong> et <strong>marge contribution (€)</strong> sur 4 quadrants.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>           Forte marge   |   Forte marge</div>
             <div>           Faible vol.   |   Forte vol.</div>
             <div>            PUZZLES      |    STARS</div>
@@ -179,7 +179,7 @@ export default function BlogMenuEngineering() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <Puzzle className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Méthode pas-à-pas</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Méthode pas-à-pas</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-3"><strong>Étape 1 — Récupérer les données sur 30 jours :</strong></p>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -188,12 +188,12 @@ export default function BlogMenuEngineering() {
             <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500 inline-block" /> Coût matières HT (fiche technique)</li>
           </ul>
           <p className="text-[#374151] leading-relaxed mb-3"><strong>Étape 2 — Calculer la marge contribution :</strong></p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Marge €/plat = PV HT - Coût matières HT</div>
             <div>Marge totale = Marge × Quantité vendue</div>
           </div>
           <p className="text-[#374151] leading-relaxed mb-3"><strong>Étape 3 — Calculer les seuils :</strong></p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Seuil pop. = (Total ventes / Nb plats) × 0,7</div>
             <div>Seuil marge = Marge moyenne pondérée</div>
           </div>
@@ -208,12 +208,12 @@ export default function BlogMenuEngineering() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Exemple chiffré : 20 plats</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Exemple chiffré : 20 plats</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Restaurant "Le Comptoir" — 28 600 € de CA HT, 1 000 plats vendus sur 30 jours, 20 plats à la carte.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Seuil popularité : (1000/20) × 0,7 = 35 ventes</div>
             <div>Marge contribution moyenne : 15,80 €</div>
           </div>
@@ -244,7 +244,7 @@ export default function BlogMenuEngineering() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <AlertCircle className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Actions concrètes par quadrant</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Actions concrètes par quadrant</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-3"><strong>STARS :</strong></p>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -277,12 +277,12 @@ export default function BlogMenuEngineering() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Layout className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Design de la carte : où placer les Stars</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Design de la carte : où placer les Stars</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Des études d'eye-tracking ont identifié les <strong>zones de focus</strong> sur une carte de restaurant.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>┌────────────────────────┐</div>
             <div>│ HOT ZONE  │ SWEET SPOT │</div>
             <div>│ haut G    │ haut D     │</div>
@@ -310,7 +310,7 @@ export default function BlogMenuEngineering() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -334,9 +334,9 @@ export default function BlogMenuEngineering() {
                 a: "Oui, et c'est même très puissant. Les boissons (vins au verre, cocktails, softs) ont souvent les plus belles marges contribution (12-22 €/cocktail) et méritent leur propre matrice."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -357,7 +357,7 @@ export default function BlogMenuEngineering() {
         </div>
 
         {/* Nav bas */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>

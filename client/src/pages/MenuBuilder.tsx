@@ -519,7 +519,7 @@ export default function MenuBuilder() {
       <div className="flex items-center justify-center h-96">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-[#9CA3AF] dark:text-[#737373] text-sm">Chargement des recettes...</span>
+          <span className="text-[#9CA3AF] dark:text-mono-500 text-sm">Chargement des recettes...</span>
         </div>
       </div>
     );
@@ -528,20 +528,20 @@ export default function MenuBuilder() {
   return (
     <div className="h-[calc(100vh-80px)] flex flex-col bg-white dark:bg-black -m-4 sm:-m-6">
       {/* ── Header ── */}
-      <div className="flex-none px-4 py-3 bg-white dark:bg-black border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-4">
+      <div className="flex-none px-4 py-3 bg-white dark:bg-black border-b border-mono-900 dark:border-mono-200 flex items-center gap-4">
         <div className="flex items-center gap-2">
           <ChefHat className="w-6 h-6 text-teal-400" />
-          <h1 className="text-lg font-bold font-satoshi text-[#111111] dark:text-white tracking-tight">Compositeur de Menu</h1>
+          <h1 className="text-lg font-bold font-satoshi text-mono-100 dark:text-white tracking-tight">Compositeur de Menu</h1>
         </div>
         <div className="flex-1" />
         <div className="flex items-center gap-3">
-          <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{stats.totalItems} plat{stats.totalItems !== 1 ? 's' : ''}</span>
+          <span className="text-xs text-[#6B7280] dark:text-mono-700">{stats.totalItems} plat{stats.totalItems !== 1 ? 's' : ''}</span>
           <button
             onClick={() => setPreviewMode(!previewMode)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               previewMode
-                ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
-                : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white'
+                ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100'
+                : 'bg-mono-1000 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white'
             }`}
           >
             {previewMode ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -550,7 +550,7 @@ export default function MenuBuilder() {
           <button
             onClick={handlePrintMenu}
             disabled={stats.totalItems === 0}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white transition-all disabled:opacity-40"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-mono-1000 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white transition-all disabled:opacity-40"
           >
             <Printer className="w-3.5 h-3.5" />
             Imprimer
@@ -558,7 +558,7 @@ export default function MenuBuilder() {
           <button
             onClick={handleExportPDF}
             disabled={stats.totalItems === 0}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white transition-all disabled:opacity-40"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-mono-1000 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white transition-all disabled:opacity-40"
           >
             <FileDown className="w-3.5 h-3.5" />
             PDF
@@ -569,28 +569,28 @@ export default function MenuBuilder() {
       {/* ── Main 3-panel layout ── */}
       <div className="flex-1 flex overflow-hidden">
         {/* ═══════ LEFT SIDEBAR — Recipe Pool ═══════ */}
-        <div className="w-72 xl:w-80 flex-none bg-white dark:bg-black border-r border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-col overflow-hidden">
+        <div className="w-72 xl:w-80 flex-none bg-white dark:bg-black border-r border-mono-900 dark:border-mono-200 flex flex-col overflow-hidden">
           {/* Search */}
-          <div className="flex-none p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex-none p-3 border-b border-mono-900 dark:border-mono-200">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-mono-700" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Rechercher une recette..."
-                className="w-full pl-9 pr-3 py-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280] dark:text-[#A3A3A3] focus:ring-2 focus:ring-[#111111] dark:ring-white/50 focus:border-teal-500 outline-none transition-all"
+                className="w-full pl-9 pr-3 py-2 bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280] dark:text-mono-700 focus:ring-2 focus:ring-mono-100 dark:ring-white/50 focus:border-teal-500 outline-none transition-all"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#6B7280] dark:text-[#A3A3A3]"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#6B7280] dark:text-mono-700 hover:text-[#6B7280] dark:text-mono-700"
                 >
                   <X className="w-4 h-4" />
                 </button>
               )}
             </div>
-            <p className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] mt-2 pl-1">
+            <p className="text-[11px] text-[#6B7280] dark:text-mono-700 mt-2 pl-1">
               Glissez les recettes vers le menu
             </p>
           </div>
@@ -600,12 +600,12 @@ export default function MenuBuilder() {
             {Array.from(poolRecipes.entries()).map(([category, categoryRecipes]) => {
               if (categoryRecipes.length === 0) return null;
               return (
-                <div key={category} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50">
+                <div key={category} className="border-b border-mono-900 dark:border-mono-200/50">
                   <div className="px-3 py-2 sticky top-0 bg-white dark:bg-black/95 backdrop-blur-sm z-10">
                     <h3 className="text-[11px] font-semibold text-teal-400 uppercase tracking-wider flex items-center gap-1.5">
                       <span>{getSectionIcon(category)}</span>
                       {getSectionLabel(category)}
-                      <span className="text-[#6B7280] dark:text-[#A3A3A3] font-normal ml-auto">{categoryRecipes.length}</span>
+                      <span className="text-[#6B7280] dark:text-mono-700 font-normal ml-auto">{categoryRecipes.length}</span>
                     </h3>
                   </div>
                   <div className="px-2 pb-2 space-y-1">
@@ -615,20 +615,20 @@ export default function MenuBuilder() {
                         draggable
                         onDragStart={(e) => handleDragStart(e, recipe.id, 'pool')}
                         onDragEnd={handleDragEnd}
-                        className={`group bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-teal-500/50 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/80 ${
+                        className={`group bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-teal-500/50 hover:bg-mono-950 dark:hover:bg-[#171717]/80 ${
                           draggedRecipeId === recipe.id ? 'opacity-40 scale-95' : ''
                         }`}
                       >
                         <div className="flex items-start gap-2">
-                          <GripVertical className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3] mt-0.5 shrink-0 group-hover:text-[#9CA3AF] dark:text-[#737373] transition-colors" />
+                          <GripVertical className="w-4 h-4 text-[#6B7280] dark:text-mono-700 mt-0.5 shrink-0 group-hover:text-[#9CA3AF] dark:text-mono-500 transition-colors" />
                           <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium text-[#111111] dark:text-white truncate">{recipe.name}</div>
+                            <div className="text-sm font-medium text-mono-100 dark:text-white truncate">{recipe.name}</div>
                             <div className="flex items-center gap-3 mt-1">
-                              <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] flex items-center gap-1">
+                              <span className="text-[11px] text-[#6B7280] dark:text-mono-700 flex items-center gap-1">
                                 <DollarSign className="w-3 h-3" />
                                 {(100 - recipe.margin.marginPercent).toFixed(1)}% cout
                               </span>
-                              <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">
+                              <span className="text-[11px] text-[#9CA3AF] dark:text-mono-500">
                                 {formatCurrency(recipe.sellingPrice)}
                               </span>
                               <span className={`text-[11px] font-semibold ${marginColor(recipe.margin.marginPercent)}`}>
@@ -654,7 +654,7 @@ export default function MenuBuilder() {
             {Array.from(poolRecipes.values()).every((arr) => arr.length === 0) && (
               <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
                 <CheckCircle2 className="w-10 h-10 text-teal-500/50 mb-3" />
-                <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+                <p className="text-sm text-[#6B7280] dark:text-mono-700">
                   {searchQuery ? 'Aucune recette trouvee' : 'Toutes les recettes sont sur le menu'}
                 </p>
               </div>
@@ -665,17 +665,17 @@ export default function MenuBuilder() {
         {/* ═══════ CENTER — Menu Canvas / Preview ═══════ */}
         <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-black">
           {/* Canvas header */}
-          <div className="flex-none px-6 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-3">
+          <div className="flex-none px-6 py-3 border-b border-mono-900 dark:border-mono-200 flex items-center gap-3">
             <Utensils className="w-5 h-5 text-teal-400" />
-            <span className="text-sm font-semibold text-[#111111] dark:text-white">
+            <span className="text-sm font-semibold text-mono-100 dark:text-white">
               {previewMode ? 'Apercu client' : 'Composition du menu'}
             </span>
             <div className="flex-1" />
-            <div className="flex items-center gap-4 text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">
+            <div className="flex items-center gap-4 text-[11px] text-[#6B7280] dark:text-mono-700">
               <span>{stats.totalItems} plats</span>
-              <span className="w-px h-3 bg-[#F3F4F6] dark:bg-[#171717]" />
+              <span className="w-px h-3 bg-mono-950 dark:bg-[#171717]" />
               <span>Food cost moy. {stats.avgFoodCostPercent.toFixed(1)}%</span>
-              <span className="w-px h-3 bg-[#F3F4F6] dark:bg-[#171717]" />
+              <span className="w-px h-3 bg-mono-950 dark:bg-[#171717]" />
               <span className={marginColor(stats.avgMarginPercent)}>
                 Marge moy. {stats.avgMarginPercent.toFixed(1)}%
               </span>
@@ -690,11 +690,11 @@ export default function MenuBuilder() {
               {previewMode ? (
                 <div className="space-y-8">
                   {/* Preview header */}
-                  <div className="text-center py-8 border-b-2 border-[#111111] dark:border-white">
-                    <h2 className="text-3xl font-bold text-[#111111] dark:text-white tracking-widest uppercase" style={{ fontFamily: 'Georgia, serif' }}>
+                  <div className="text-center py-8 border-b-2 border-mono-100 dark:border-white">
+                    <h2 className="text-3xl font-bold text-mono-100 dark:text-white tracking-widest uppercase" style={{ fontFamily: 'Georgia, serif' }}>
                       {menuName || 'Notre Menu'}
                     </h2>
-                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2 tracking-[0.3em] uppercase">Bonne degustation</p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-2 tracking-[0.3em] uppercase">Bonne degustation</p>
                   </div>
 
                   {canvasSections.filter(s => s.recipes.length > 0).map((section) => (
@@ -702,10 +702,10 @@ export default function MenuBuilder() {
                       {/* Preview section header */}
                       <div className="text-center">
                         <span className="text-2xl">{getSectionIcon(section.category)}</span>
-                        <h3 className="text-lg font-bold text-[#111111] dark:text-white uppercase tracking-[0.2em] mt-1" style={{ fontFamily: 'Georgia, serif' }}>
+                        <h3 className="text-lg font-bold text-mono-100 dark:text-white uppercase tracking-[0.2em] mt-1" style={{ fontFamily: 'Georgia, serif' }}>
                           {getSectionLabel(section.category)}
                         </h3>
-                        <div className="w-12 h-0.5 bg-[#111111] dark:bg-white mx-auto mt-2" />
+                        <div className="w-12 h-0.5 bg-mono-100 dark:bg-white mx-auto mt-2" />
                       </div>
 
                       {/* Preview cards grid */}
@@ -715,10 +715,10 @@ export default function MenuBuilder() {
                           return (
                             <div
                               key={recipe.id}
-                              className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden hover:shadow-lg transition-shadow"
+                              className="bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow"
                             >
                               {/* Photo placeholder */}
-                              <div className="h-32 bg-gradient-to-br from-[#F3F4F6] to-[#E5E7EB] dark:from-[#171717] dark:to-[#0A0A0A] flex items-center justify-center relative">
+                              <div className="h-32 bg-gradient-to-br from-mono-950 to-mono-900 dark:from-[#171717] dark:to-mono-50 flex items-center justify-center relative">
                                 <FoodIllustration recipeName={recipe.name} category={recipe.category} size="lg" />
                                 <span className={`absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full font-bold ${marginBg(recipe.margin.marginPercent)}`}>
                                   {recipe.margin.marginPercent.toFixed(0)}% marge
@@ -727,12 +727,12 @@ export default function MenuBuilder() {
                               <div className="p-4">
                                 <div className="flex items-start justify-between gap-2">
                                   <div className="flex-1 min-w-0">
-                                    <h4 className="text-sm font-bold text-[#111111] dark:text-white truncate">{recipe.name}</h4>
+                                    <h4 className="text-sm font-bold text-mono-100 dark:text-white truncate">{recipe.name}</h4>
                                     {recipe.description && (
-                                      <p className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] mt-1 line-clamp-2">{recipe.description}</p>
+                                      <p className="text-[11px] text-[#6B7280] dark:text-mono-700 mt-1 line-clamp-2">{recipe.description}</p>
                                     )}
                                   </div>
-                                  <span className="text-lg font-bold text-[#111111] dark:text-white shrink-0">
+                                  <span className="text-lg font-bold text-mono-100 dark:text-white shrink-0">
                                     {formatCurrency(recipe.sellingPrice)}
                                   </span>
                                 </div>
@@ -757,8 +757,8 @@ export default function MenuBuilder() {
 
                   {stats.totalItems === 0 && (
                     <div className="text-center py-16">
-                      <Utensils className="w-12 h-12 mx-auto mb-3 text-[#6B7280] dark:text-[#A3A3A3] opacity-30" />
-                      <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Le menu est vide. Ajoutez des plats pour voir l'apercu.</p>
+                      <Utensils className="w-12 h-12 mx-auto mb-3 text-[#6B7280] dark:text-mono-700 opacity-30" />
+                      <p className="text-sm text-[#6B7280] dark:text-mono-700">Le menu est vide. Ajoutez des plats pour voir l'apercu.</p>
                     </div>
                   )}
                 </div>
@@ -788,18 +788,18 @@ export default function MenuBuilder() {
                       isDragOver
                         ? 'border-teal-500 bg-teal-500/10 shadow-lg shadow-teal-500/5'
                         : isEmpty
-                        ? 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black/30'
-                        : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black/50'
+                        ? 'border-mono-900 dark:border-mono-200 bg-white dark:bg-black/30'
+                        : 'border-mono-900 dark:border-mono-200 bg-white dark:bg-black/50'
                     }`}
                   >
                     {/* Section header with gradient */}
                     <div className={`px-4 py-3 flex items-center gap-3 bg-gradient-to-r ${SECTION_GRADIENTS[section.category] || 'from-gray-500/10 via-transparent to-transparent'}`}>
                       <span className="text-xl">{getSectionIcon(section.category)}</span>
                       <div>
-                        <h3 className="text-sm font-bold text-[#111111] dark:text-white uppercase tracking-wider">
+                        <h3 className="text-sm font-bold text-mono-100 dark:text-white uppercase tracking-wider">
                           {getSectionLabel(section.category)}
                         </h3>
-                        <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">
+                        <span className="text-[10px] text-[#6B7280] dark:text-mono-700">
                           {section.recipes.length} plat{section.recipes.length !== 1 ? 's' : ''}
                         </span>
                       </div>
@@ -827,27 +827,27 @@ export default function MenuBuilder() {
                                 e.stopPropagation();
                                 handleDrop(e, section.category, idx);
                               }}
-                              className={`group flex items-center gap-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-[#D1D5DB] dark:hover:border-[#333] ${
+                              className={`group flex items-center gap-3 bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-[#D1D5DB] dark:hover:border-[#333] ${
                                 draggedRecipeId === recipe.id ? 'opacity-40 scale-95' : ''
                               } ${
                                 dragOverCategory === section.category && dragOverIndex === idx
-                                  ? 'ring-2 ring-[#111111] dark:ring-white/50 bg-teal-500/10 border-teal-500/30'
+                                  ? 'ring-2 ring-mono-100 dark:ring-white/50 bg-teal-500/10 border-teal-500/30'
                                   : ''
                               }`}
                             >
-                              <GripVertical className="w-4 h-4 text-[#D1D5DB] dark:text-[#333] shrink-0 group-hover:text-[#9CA3AF] dark:text-[#737373]" />
+                              <GripVertical className="w-4 h-4 text-[#D1D5DB] dark:text-[#333] shrink-0 group-hover:text-[#9CA3AF] dark:text-mono-500" />
                               {/* Photo placeholder */}
-                              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#F3F4F6] to-[#E5E7EB] dark:from-[#171717] dark:to-[#0A0A0A] flex items-center justify-center shrink-0 overflow-hidden">
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-mono-950 to-mono-900 dark:from-[#171717] dark:to-mono-50 flex items-center justify-center shrink-0 overflow-hidden">
                                 <FoodIllustration recipeName={recipe.name} category={recipe.category} size="sm" />
                               </div>
                               <div className="flex-1 min-w-0 flex items-center gap-3">
                                 <div className="flex-1 min-w-0">
-                                  <span className="text-sm font-medium text-[#111111] dark:text-white truncate block">
+                                  <span className="text-sm font-medium text-mono-100 dark:text-white truncate block">
                                     {recipe.name}
                                   </span>
                                   <div className="flex items-center gap-2 mt-0.5">
                                     {recipe.description && (
-                                      <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] truncate block max-w-[200px]">
+                                      <span className="text-[11px] text-[#6B7280] dark:text-mono-700 truncate block max-w-[200px]">
                                         {recipe.description}
                                       </span>
                                     )}
@@ -863,13 +863,13 @@ export default function MenuBuilder() {
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-3 shrink-0">
-                                  <span className="text-xs font-semibold text-[#111111] dark:text-white">
+                                  <span className="text-xs font-semibold text-mono-100 dark:text-white">
                                     {formatCurrency(recipe.sellingPrice)}
                                   </span>
                                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${marginBg(recipe.margin.marginPercent)}`}>
                                     {recipe.margin.marginPercent.toFixed(0)}%
                                   </span>
-                                  <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">
+                                  <span className="text-[10px] text-[#6B7280] dark:text-mono-700">
                                     FC {(100 - recipe.margin.marginPercent).toFixed(0)}%
                                   </span>
                                 </div>
@@ -891,10 +891,10 @@ export default function MenuBuilder() {
                           className={`flex items-center justify-center py-6 rounded-xl border border-dashed transition-all ${
                             isDragOver
                               ? 'border-teal-500/50 bg-teal-500/5'
-                              : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black/20'
+                              : 'border-mono-900 dark:border-mono-200 bg-white dark:bg-black/20'
                           }`}
                         >
-                          <span className={`text-xs ${isDragOver ? 'text-teal-400' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                          <span className={`text-xs ${isDragOver ? 'text-teal-400' : 'text-[#6B7280] dark:text-mono-700'}`}>
                             {isDragOver ? 'Deposer pour ajouter' : 'Glissez des recettes ici'}
                           </span>
                         </div>
@@ -910,9 +910,9 @@ export default function MenuBuilder() {
         </div>
 
         {/* ═══════ RIGHT SIDEBAR — Stats ═══════ */}
-        <div className="w-72 xl:w-80 flex-none bg-white dark:bg-black border-l border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-col overflow-hidden">
-          <div className="flex-none px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <h3 className="text-sm font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+        <div className="w-72 xl:w-80 flex-none bg-white dark:bg-black border-l border-mono-900 dark:border-mono-200 flex flex-col overflow-hidden">
+          <div className="flex-none px-4 py-3 border-b border-mono-900 dark:border-mono-200">
+            <h3 className="text-sm font-semibold text-mono-100 dark:text-white flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-teal-400" />
               Statistiques du menu
             </h3>
@@ -948,8 +948,8 @@ export default function MenuBuilder() {
             </div>
 
             {/* Covers estimate */}
-            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 backdrop-blur rounded-lg p-3">
-              <label className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider block mb-2">
+            <div className="bg-mono-1000 dark:bg-mono-50/50 backdrop-blur rounded-lg p-3">
+              <label className="text-[11px] text-[#6B7280] dark:text-mono-700 uppercase tracking-wider block mb-2">
                 Couverts estimes / service
               </label>
               <div className="flex items-center gap-2">
@@ -960,16 +960,16 @@ export default function MenuBuilder() {
                   step="5"
                   value={coversEstimate}
                   onChange={(e) => setCoversEstimate(Number(e.target.value))}
-                  className="flex-1 h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-teal-400 [&::-webkit-slider-thumb]:cursor-pointer"
+                  className="flex-1 h-1.5 bg-mono-950 dark:bg-[#171717] rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-teal-400 [&::-webkit-slider-thumb]:cursor-pointer"
                 />
-                <span className="text-sm font-semibold text-[#111111] dark:text-white w-10 text-right">{coversEstimate}</span>
+                <span className="text-sm font-semibold text-mono-100 dark:text-white w-10 text-right">{coversEstimate}</span>
               </div>
             </div>
 
             {/* Food Cost Distribution - CSS Donut */}
             {stats.categoryDistribution.length > 0 && (
-              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 backdrop-blur rounded-lg p-4">
-                <h4 className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <div className="bg-mono-1000 dark:bg-mono-50/50 backdrop-blur rounded-lg p-4">
+                <h4 className="text-[11px] text-[#6B7280] dark:text-mono-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
                   <PieChart className="w-3.5 h-3.5" />
                   Repartition Food Cost
                 </h4>
@@ -978,8 +978,8 @@ export default function MenuBuilder() {
             )}
 
             {/* Menu Balance Indicator */}
-            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 backdrop-blur rounded-lg p-4">
-              <h4 className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-3">
+            <div className="bg-mono-1000 dark:bg-mono-50/50 backdrop-blur rounded-lg p-4">
+              <h4 className="text-[11px] text-[#6B7280] dark:text-mono-700 uppercase tracking-wider mb-3">
                 Equilibre du menu
               </h4>
               <MenuBalanceIndicator balance={stats.menuBalance} />
@@ -987,15 +987,15 @@ export default function MenuBuilder() {
 
             {/* Per-category breakdown */}
             {stats.categoryDistribution.length > 0 && (
-              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 backdrop-blur rounded-lg p-4">
-                <h4 className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-3">
+              <div className="bg-mono-1000 dark:bg-mono-50/50 backdrop-blur rounded-lg p-4">
+                <h4 className="text-[11px] text-[#6B7280] dark:text-mono-700 uppercase tracking-wider mb-3">
                   Par categorie
                 </h4>
                 <div className="space-y-2">
                   {stats.categoryDistribution.map((d) => (
                     <div key={d.category} className="flex items-center gap-2">
                       <span className="text-xs">{getSectionIcon(d.category)}</span>
-                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373] flex-1">{getSectionLabel(d.category)}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500 flex-1">{getSectionLabel(d.category)}</span>
                       <span className="text-xs text-white font-medium">{d.count}</span>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded ${marginBg(100 - d.foodCost)}`}>
                         FC {d.foodCost.toFixed(0)}%
@@ -1010,19 +1010,19 @@ export default function MenuBuilder() {
       </div>
 
       {/* ── Bottom Bar ── */}
-      <div className="flex-none px-4 py-3 bg-white dark:bg-black border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-3">
+      <div className="flex-none px-4 py-3 bg-white dark:bg-black border-t border-mono-900 dark:border-mono-200 flex items-center gap-3">
         <input
           type="text"
           value={menuName}
           onChange={(e) => setMenuName(e.target.value)}
           placeholder="Nom du menu..."
-          className="w-64 px-3 py-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280] dark:text-[#A3A3A3] focus:ring-2 focus:ring-[#111111] dark:ring-white/50 focus:border-teal-500 outline-none transition-all"
+          className="w-64 px-3 py-2 bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280] dark:text-mono-700 focus:ring-2 focus:ring-mono-100 dark:ring-white/50 focus:border-teal-500 outline-none transition-all"
         />
         <div className="flex-1" />
         <button
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white text-sm font-medium transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white text-sm font-medium transition-colors disabled:opacity-50"
         >
           <Save className="w-4 h-4" />
           {saving ? 'Enregistrement...' : 'Enregistrer le menu'}
@@ -1074,7 +1074,7 @@ function StatCard({
   return (
     <div className={`${c.bg} backdrop-blur rounded-lg p-3`}>
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider leading-tight">{label}</span>
+        <span className="text-[10px] text-[#6B7280] dark:text-mono-700 uppercase tracking-wider leading-tight">{label}</span>
         <span className={c.icon}>{icon}</span>
       </div>
       <div className={`text-lg font-bold ${c.value}`}>{value}</div>
@@ -1123,9 +1123,9 @@ function DonutChart({
         }}
       >
         {/* Inner circle for donut effect */}
-        <div className="absolute inset-2.5 rounded-full bg-[#FAFAFA] dark:bg-[#0A0A0A]" />
+        <div className="absolute inset-2.5 rounded-full bg-mono-1000 dark:bg-mono-50" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs font-bold text-[#111111] dark:text-white">{total}</span>
+          <span className="text-xs font-bold text-mono-100 dark:text-white">{total}</span>
         </div>
       </div>
       <div className="space-y-1.5 flex-1 min-w-0">
@@ -1135,7 +1135,7 @@ function DonutChart({
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ backgroundColor: s.color }}
             />
-            <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373] truncate flex-1">
+            <span className="text-[11px] text-[#9CA3AF] dark:text-mono-500 truncate flex-1">
               {getSectionLabel(s.category)}
             </span>
             <span className="text-[11px] text-white font-medium">{s.pct.toFixed(0)}%</span>
@@ -1152,7 +1152,7 @@ function MenuBalanceIndicator({ balance }: { balance: 'empty' | 'poor' | 'fair' 
   const config: Record<string, { label: string; color: string; icon: React.ReactNode; description: string; width: string }> = {
     empty: {
       label: 'Vide',
-      color: 'text-[#6B7280] dark:text-[#A3A3A3]',
+      color: 'text-[#6B7280] dark:text-mono-700',
       icon: <AlertCircle className="w-4 h-4" />,
       description: 'Ajoutez des plats pour commencer',
       width: 'w-0',
@@ -1195,7 +1195,7 @@ function MenuBalanceIndicator({ balance }: { balance: 'empty' | 'poor' | 'fair' 
         <span className={c.color}>{c.icon}</span>
         <span className={`text-sm font-semibold ${c.color}`}>{c.label}</span>
       </div>
-      <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden mb-2">
+      <div className="h-1.5 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden mb-2">
         <div
           className={`h-full rounded-full transition-all duration-500 ${c.width} ${
             balance === 'excellent'
@@ -1206,11 +1206,11 @@ function MenuBalanceIndicator({ balance }: { balance: 'empty' | 'poor' | 'fair' 
               ? 'bg-amber-400'
               : balance === 'poor'
               ? 'bg-red-400'
-              : 'bg-[#F3F4F6] dark:bg-[#171717]'
+              : 'bg-mono-950 dark:bg-[#171717]'
           }`}
         />
       </div>
-      <p className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">{c.description}</p>
+      <p className="text-[11px] text-[#6B7280] dark:text-mono-700">{c.description}</p>
     </div>
   );
 }

@@ -64,13 +64,13 @@ export default function BlogBudgetPrevisionnel() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -113,7 +113,7 @@ export default function BlogBudgetPrevisionnel() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <Target className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Pourquoi le budget prévisionnel est la base</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Pourquoi le budget prévisionnel est la base</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Un restaurant brûle du cash en permanence : loyer, salaires, matières, énergie. Sans projection, vous découvrez les problèmes avec deux mois de retard, quand le tableau de bord comptable arrive. À ce moment-là, la perte est consommée. Le budget prévisionnel inverse cette logique : vous décidez à l'avance ce que doit être le mois prochain, puis vérifiez que la réalité s'y conforme.
@@ -132,13 +132,13 @@ export default function BlogBudgetPrevisionnel() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <FileSpreadsheet className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Business plan vs budget prévisionnel</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Business plan vs budget prévisionnel</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le <strong>business plan</strong> est un document de vente : il convainc une banque, couvre 3 à 5 ans, n'est jamais réactualisé. Le <strong>budget prévisionnel</strong> est un outil de pilotage : 12 mois glissants, révisé chaque mois, arbitre les décisions du quotidien.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 text-sm text-[#111111] space-y-2">
-            <div className="grid grid-cols-3 gap-2 font-bold pb-2 border-b border-[#E5E7EB]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 text-sm text-mono-100 space-y-2">
+            <div className="grid grid-cols-3 gap-2 font-bold pb-2 border-b border-mono-900">
               <span>Critère</span><span>Business plan</span><span>Budget prévisionnel</span>
             </div>
             <div className="grid grid-cols-3 gap-2"><span>Horizon</span><span>3-5 ans</span><span>12 mois glissants</span></div>
@@ -154,7 +154,7 @@ export default function BlogBudgetPrevisionnel() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <Calculator className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Structure d'un budget prévisionnel</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Structure d'un budget prévisionnel</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Un budget prévisionnel restaurant tient en cinq blocs, suivant la logique du compte de résultat.
@@ -174,19 +174,19 @@ export default function BlogBudgetPrevisionnel() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Calculator className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Top-down vs bottom-up</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Top-down vs bottom-up</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Bottom-up :</strong> partir de la capacité physique et estimer les couverts.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>60 couverts × 2 services × 26 jours = 3 120 capacité</div>
             <div>Taux 55 % = 1 716 couverts × 28 € = 48 048 € HT</div>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Top-down :</strong> partir des charges fixes et de l'objectif de marge.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Charges fixes 18 000 + Salaires 14 000 + EBE 5 000 = 37 000</div>
             <div>CA mini = 37 000 / 0,70 = 52 857 € HT</div>
           </div>
@@ -201,12 +201,12 @@ export default function BlogBudgetPrevisionnel() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <FileSpreadsheet className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Exemple sur 12 mois</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Exemple sur 12 mois</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Restaurant 60 couverts, urbain, bistronomie, ticket 28 €. Lecture : ce restaurant est juste à l'équilibre sur 12 mois. Janvier, février et août sont structurellement déficitaires. La trésorerie de juin et décembre doit financer ces creux.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-xs text-[#111111] space-y-1 overflow-x-auto">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-xs text-mono-100 space-y-1 overflow-x-auto">
             <div>Jan: 38 000 CA, EBE -4 700</div>
             <div>Fév: 42 000 CA, EBE -3 300</div>
             <div>Mar: 48 000 CA, EBE -1 200</div>
@@ -219,7 +219,7 @@ export default function BlogBudgetPrevisionnel() {
             <div>Oct: 56 000 CA, EBE +1 600</div>
             <div>Nov: 54 000 CA, EBE +900</div>
             <div>Déc: 64 000 CA, EBE +4 400</div>
-            <div className="pt-2 font-bold border-t border-[#E5E7EB]">TOTAL: 610 000 CA, EBE -2 500</div>
+            <div className="pt-2 font-bold border-t border-mono-900">TOTAL: 610 000 CA, EBE -2 500</div>
           </div>
         </section>
 
@@ -229,7 +229,7 @@ export default function BlogBudgetPrevisionnel() {
             <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center">
               <TrendingDown className="w-5 h-5 text-pink-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Pilotage budget vs réel</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Pilotage budget vs réel</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Rythme idéal :</strong></p>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -249,7 +249,7 @@ export default function BlogBudgetPrevisionnel() {
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">7. Les 5 postes qui dérivent</h2>
+            <h2 className="text-2xl font-bold text-mono-100">7. Les 5 postes qui dérivent</h2>
           </div>
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-red-400 mt-2 flex-shrink-0" /><span><strong>Énergie</strong> : 4-6 % du CA en saison. Audit énergétique avant ouverture.</span></li>
@@ -262,7 +262,7 @@ export default function BlogBudgetPrevisionnel() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -282,9 +282,9 @@ export default function BlogBudgetPrevisionnel() {
                 a: "Reforecast complet immédiat. Soit le budget était irréaliste (à corriger pour les 10 mois suivants), soit la réalité a changé (nouveau concurrent, perte d'un service midi entreprise) et il faut un plan d'action en 30 jours."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -305,7 +305,7 @@ export default function BlogBudgetPrevisionnel() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/prevision-ventes-restaurant" className="text-sm text-teal-600 hover:underline">Prévoir ses ventes →</Link>
         </div>

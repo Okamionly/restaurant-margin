@@ -68,7 +68,7 @@ export default function AdminMetrics() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center flex-col gap-3">
         <AlertTriangle className="w-10 h-10 text-rose-500" />
-        <p className="text-[#737373]">{error || 'Impossible de charger les metriques'}</p>
+        <p className="text-mono-500">{error || 'Impossible de charger les metriques'}</p>
       </div>
     );
   }
@@ -92,14 +92,14 @@ export default function AdminMetrics() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-full mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-full mb-3">
             <BarChart3 className="w-4 h-4" />
             <span className="text-xs font-bold uppercase tracking-wider">Cockpit admin</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-[#111111] dark:text-white">
+          <h1 className="text-3xl sm:text-4xl font-black text-mono-100 dark:text-white">
             Metriques RestauMargin
           </h1>
-          <p className="text-[#737373] dark:text-[#A3A3A3] mt-1">
+          <p className="text-mono-500 dark:text-mono-700 mt-1">
             Vue temps reel de l'activite, conversions et revenus.
           </p>
         </div>
@@ -145,17 +145,17 @@ export default function AdminMetrics() {
       </div>
 
       {/* Signups chart */}
-      <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 sm:p-8">
+      <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6 sm:p-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-xl font-bold text-[#111111] dark:text-white">
+            <h2 className="text-xl font-bold text-mono-100 dark:text-white">
               Signups 30 derniers jours
             </h2>
-            <p className="text-sm text-[#737373] dark:text-[#A3A3A3]">
+            <p className="text-sm text-mono-500 dark:text-mono-700">
               Total : {stats.signupsChart.reduce((s, d) => s + d.count, 0)} inscriptions
             </p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-[#737373] dark:text-[#A3A3A3]">
+          <div className="flex items-center gap-2 text-xs text-mono-500 dark:text-mono-700">
             <span className="inline-block w-3 h-3 bg-teal-600 rounded"></span>
             <span>Signups/jour</span>
           </div>
@@ -174,7 +174,7 @@ export default function AdminMetrics() {
                   style={{ height: `${Math.max(height, d.count > 0 ? 8 : 2)}%` }}
                 />
                 {i % 5 === 0 && (
-                  <div className="text-[9px] text-[#737373] dark:text-[#A3A3A3] mt-1 whitespace-nowrap overflow-hidden">
+                  <div className="text-[9px] text-mono-500 dark:text-mono-700 mt-1 whitespace-nowrap overflow-hidden">
                     {new Date(d.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}
                   </div>
                 )}
@@ -193,9 +193,9 @@ export default function AdminMetrics() {
       </div>
 
       {/* Recent signups */}
-      <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
-          <h2 className="text-lg font-bold text-[#111111] dark:text-white">
+      <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-mono-900 dark:border-mono-200 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-mono-100 dark:text-white">
             Dernieres inscriptions
           </h2>
           <Link
@@ -205,15 +205,15 @@ export default function AdminMetrics() {
             Tout voir <ArrowUpRight className="w-3 h-3" />
           </Link>
         </div>
-        <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+        <div className="divide-y divide-mono-900 dark:divide-mono-200">
           {stats.recentSignups.map((u) => (
             <div
               key={u.id}
-              className="px-6 py-3 flex items-center justify-between hover:bg-[#F5F5F5] dark:hover:bg-[#171717] transition-colors"
+              className="px-6 py-3 flex items-center justify-between hover:bg-mono-975 dark:hover:bg-[#171717] transition-colors"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-semibold text-[#111111] dark:text-white text-sm truncate">
+                  <span className="font-semibold text-mono-100 dark:text-white text-sm truncate">
                     {u.name}
                   </span>
                   <PlanBadge plan={u.plan} />
@@ -223,11 +223,11 @@ export default function AdminMetrics() {
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-[#737373] dark:text-[#A3A3A3] truncate">
+                <div className="text-xs text-mono-500 dark:text-mono-700 truncate">
                   {u.email}
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-xs text-[#737373] dark:text-[#A3A3A3] flex-shrink-0 ml-3">
+              <div className="flex items-center gap-2 text-xs text-mono-500 dark:text-mono-700 flex-shrink-0 ml-3">
                 <Clock className="w-3 h-3" />
                 {new Date(u.createdAt).toLocaleDateString('fr-FR')}
               </div>
@@ -240,36 +240,36 @@ export default function AdminMetrics() {
       <div className="grid grid-cols-2 gap-4">
         <Link
           to="/email-marketing"
-          className="group bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 hover:border-teal-500 transition-colors"
+          className="group bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 hover:border-teal-500 transition-colors"
         >
           <div className="flex items-center justify-between mb-2">
             <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/20 flex items-center justify-center">
               <MessageSquare className="w-5 h-5 text-violet-600" />
             </div>
-            <ArrowUpRight className="w-4 h-4 text-[#737373] group-hover:text-teal-600 transition-colors" />
+            <ArrowUpRight className="w-4 h-4 text-mono-500 group-hover:text-teal-600 transition-colors" />
           </div>
-          <div className="text-2xl font-black text-[#111111] dark:text-white">
+          <div className="text-2xl font-black text-mono-100 dark:text-white">
             {stats.newsletterCount}
           </div>
-          <div className="text-xs font-semibold text-[#737373] dark:text-[#A3A3A3] uppercase tracking-wider">
+          <div className="text-xs font-semibold text-mono-500 dark:text-mono-700 uppercase tracking-wider">
             Newsletter opt-ins
           </div>
         </Link>
 
         <Link
           to="/mes-parrainages"
-          className="group bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 hover:border-teal-500 transition-colors"
+          className="group bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 hover:border-teal-500 transition-colors"
         >
           <div className="flex items-center justify-between mb-2">
             <div className="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-900/20 flex items-center justify-center">
               <Gift className="w-5 h-5 text-rose-600" />
             </div>
-            <ArrowUpRight className="w-4 h-4 text-[#737373] group-hover:text-teal-600 transition-colors" />
+            <ArrowUpRight className="w-4 h-4 text-mono-500 group-hover:text-teal-600 transition-colors" />
           </div>
-          <div className="text-2xl font-black text-[#111111] dark:text-white">
+          <div className="text-2xl font-black text-mono-100 dark:text-white">
             Parrainage
           </div>
-          <div className="text-xs font-semibold text-[#737373] dark:text-[#A3A3A3] uppercase tracking-wider">
+          <div className="text-xs font-semibold text-mono-500 dark:text-mono-700 uppercase tracking-wider">
             Programme actif
           </div>
         </Link>
@@ -302,7 +302,7 @@ function BigKpi({
     amber: 'text-amber-600 bg-amber-100 dark:bg-amber-900/20',
   };
   return (
-    <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+    <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
       <div className="flex items-center justify-between mb-3">
         <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl ${colors[color]}`}>
           <Icon className="w-5 h-5" />
@@ -310,26 +310,26 @@ function BigKpi({
         {trend === 'up' && <TrendingUp className="w-4 h-4 text-emerald-600" />}
         {trend === 'down' && <TrendingDown className="w-4 h-4 text-rose-600" />}
       </div>
-      <div className="text-2xl sm:text-3xl font-black text-[#111111] dark:text-white mb-1">
+      <div className="text-2xl sm:text-3xl font-black text-mono-100 dark:text-white mb-1">
         {value}
       </div>
-      <div className="text-xs font-semibold text-[#737373] dark:text-[#A3A3A3] uppercase tracking-wider mb-1">
+      <div className="text-xs font-semibold text-mono-500 dark:text-mono-700 uppercase tracking-wider mb-1">
         {label}
       </div>
-      <div className="text-xs text-[#525252] dark:text-[#A3A3A3]">{subtitle}</div>
+      <div className="text-xs text-mono-400 dark:text-mono-700">{subtitle}</div>
     </div>
   );
 }
 
 function SmallKpi({ icon: Icon, label, value }: { icon: any; label: string; value: number }) {
   return (
-    <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 flex items-center gap-3">
-      <div className="w-9 h-9 rounded-lg bg-[#F5F5F5] dark:bg-[#171717] flex items-center justify-center">
-        <Icon className="w-4 h-4 text-[#525252] dark:text-[#A3A3A3]" />
+    <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4 flex items-center gap-3">
+      <div className="w-9 h-9 rounded-lg bg-mono-975 dark:bg-[#171717] flex items-center justify-center">
+        <Icon className="w-4 h-4 text-mono-400 dark:text-mono-700" />
       </div>
       <div>
-        <div className="text-lg font-bold text-[#111111] dark:text-white">{value}</div>
-        <div className="text-xs text-[#737373] dark:text-[#A3A3A3]">{label}</div>
+        <div className="text-lg font-bold text-mono-100 dark:text-white">{value}</div>
+        <div className="text-xs text-mono-500 dark:text-mono-700">{label}</div>
       </div>
     </div>
   );

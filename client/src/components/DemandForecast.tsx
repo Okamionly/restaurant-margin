@@ -88,15 +88,15 @@ export default function DemandForecast() {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
       {/* ── Prévisions de la semaine ─────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#262626] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#262626] p-5">
+      <div className="bg-white dark:bg-mono-300 rounded-xl shadow-sm border border-mono-900 dark:border-mono-300 p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <CalendarDays className="w-5 h-5 text-blue-500" />
-            <h3 className="text-lg font-semibold text-[#262626] dark:text-white">
+            <h3 className="text-lg font-semibold text-mono-300 dark:text-white">
               Prévisions de la semaine
             </h3>
           </div>
-          <div className="flex items-center gap-3 text-xs text-[#A3A3A3] dark:text-[#A3A3A3]">
+          <div className="flex items-center gap-3 text-xs text-mono-700 dark:text-mono-700">
             <span className="flex items-center gap-1">
               <Users className="w-3.5 h-3.5" />
               {totalCovers} couverts
@@ -108,7 +108,7 @@ export default function DemandForecast() {
           </div>
         </div>
 
-        <p className="text-xs text-[#737373] dark:text-[#A3A3A3] mb-4">
+        <p className="text-xs text-mono-500 dark:text-mono-700 mb-4">
           Estimation basée sur les tendances historiques par jour
         </p>
 
@@ -126,14 +126,14 @@ export default function DemandForecast() {
               >
                 {/* Day label */}
                 <div className="w-20 flex-shrink-0">
-                  <span className="text-sm font-semibold text-[#404040] dark:text-[#E5E7EB]">
+                  <span className="text-sm font-semibold text-mono-350 dark:text-mono-900">
                     {day.label}
                   </span>
                 </div>
 
                 {/* Bar */}
                 <div className="flex-1 min-w-0">
-                  <div className="h-6 bg-[#F5F5F5] dark:bg-[#262626] rounded-full overflow-hidden relative">
+                  <div className="h-6 bg-mono-975 dark:bg-mono-300 rounded-full overflow-hidden relative">
                     <div
                       className={`h-full rounded-full ${cfg.barColor} transition-all duration-700 ease-out flex items-center`}
                       style={{ width: `${pct}%` }}
@@ -152,10 +152,10 @@ export default function DemandForecast() {
 
                 {/* CA + Staff */}
                 <div className="flex-shrink-0 text-right w-24 hidden sm:block">
-                  <p className="text-xs font-semibold text-[#404040] dark:text-[#D4D4D4]">
+                  <p className="text-xs font-semibold text-mono-350 dark:text-mono-800">
                     {fmtEuro(caDay)}
                   </p>
-                  <p className="text-[10px] text-[#A3A3A3] dark:text-[#A3A3A3]">
+                  <p className="text-[10px] text-mono-700 dark:text-mono-700">
                     {day.staff} pers.
                   </p>
                 </div>
@@ -165,13 +165,13 @@ export default function DemandForecast() {
         </div>
 
         {/* Staff summary */}
-        <div className="mt-4 pt-3 border-t border-[#E5E7EB] dark:border-[#262626]">
+        <div className="mt-4 pt-3 border-t border-mono-900 dark:border-mono-300">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#737373] dark:text-[#A3A3A3] flex items-center gap-1">
+            <span className="text-mono-500 dark:text-mono-700 flex items-center gap-1">
               <Users className="w-3.5 h-3.5" />
               Personnel recommandé
             </span>
-            <span className="text-[#737373] dark:text-[#A3A3A3] flex items-center gap-1">
+            <span className="text-mono-500 dark:text-mono-700 flex items-center gap-1">
               <TrendingUp className="w-3.5 h-3.5" />
               CA estimé hebdo
             </span>
@@ -184,35 +184,35 @@ export default function DemandForecast() {
                   className="flex flex-col items-center"
                   title={`${day.label}: ${day.staff} personnes`}
                 >
-                  <span className="text-[10px] text-[#A3A3A3] dark:text-[#A3A3A3]">{day.short}</span>
-                  <span className="text-xs font-bold text-[#404040] dark:text-[#D4D4D4]">{day.staff}</span>
+                  <span className="text-[10px] text-mono-700 dark:text-mono-700">{day.short}</span>
+                  <span className="text-xs font-bold text-mono-350 dark:text-mono-800">{day.staff}</span>
                 </div>
               ))}
             </div>
-            <span className="text-lg font-bold text-[#262626] dark:text-white">{fmtEuro(totalCA)}</span>
+            <span className="text-lg font-bold text-mono-300 dark:text-white">{fmtEuro(totalCA)}</span>
           </div>
         </div>
       </div>
 
       {/* ── Commande suggérée ────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#262626] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#262626] p-5">
+      <div className="bg-white dark:bg-mono-300 rounded-xl shadow-sm border border-mono-900 dark:border-mono-300 p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5 text-green-500" />
-            <h3 className="text-lg font-semibold text-[#262626] dark:text-white">
+            <h3 className="text-lg font-semibold text-mono-300 dark:text-white">
               Commande suggérée
             </h3>
           </div>
           <button
             onClick={() => setOrderExpanded(!orderExpanded)}
-            className="text-xs text-[#A3A3A3] dark:text-[#A3A3A3] hover:text-[#525252] dark:hover:text-[#D4D4D4] flex items-center gap-1 transition-colors"
+            className="text-xs text-mono-700 dark:text-mono-700 hover:text-mono-400 dark:hover:text-mono-800 flex items-center gap-1 transition-colors"
           >
             {orderExpanded ? 'Réduire' : 'Voir tout'}
             {orderExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
         </div>
 
-        <p className="text-xs text-[#737373] dark:text-[#A3A3A3] mb-3">
+        <p className="text-xs text-mono-500 dark:text-mono-700 mb-3">
           Basée sur {totalCovers} couverts prévus cette semaine
         </p>
 
@@ -221,12 +221,12 @@ export default function DemandForecast() {
           {(orderExpanded ? SUGGESTED_ORDER : SUGGESTED_ORDER.slice(0, 5)).map(item => (
             <div
               key={item.id}
-              className="flex items-center gap-3 py-2 px-3 rounded-lg bg-[#FAFAFA] dark:bg-[#404040]/50 hover:bg-[#F5F5F5] dark:hover:bg-[#262626] transition-colors"
+              className="flex items-center gap-3 py-2 px-3 rounded-lg bg-mono-1000 dark:bg-mono-350/50 hover:bg-mono-975 dark:hover:bg-mono-300 transition-colors"
             >
-              <Package className="w-4 h-4 text-[#A3A3A3] dark:text-[#A3A3A3] flex-shrink-0" />
+              <Package className="w-4 h-4 text-mono-700 dark:text-mono-700 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-[#404040] dark:text-[#E5E7EB] truncate">
+                  <span className="text-sm font-medium text-mono-350 dark:text-mono-900 truncate">
                     {item.name}
                   </span>
                   {item.urgency === 'élevé' && (
@@ -235,15 +235,15 @@ export default function DemandForecast() {
                     </span>
                   )}
                 </div>
-                <span className="text-[10px] text-[#A3A3A3] dark:text-[#A3A3A3]">
+                <span className="text-[10px] text-mono-700 dark:text-mono-700">
                   {item.supplier}
                 </span>
               </div>
               <div className="text-right flex-shrink-0">
-                <p className="text-sm font-semibold text-[#404040] dark:text-[#D4D4D4]">
+                <p className="text-sm font-semibold text-mono-350 dark:text-mono-800">
                   {item.quantity} {item.unit}
                 </p>
-                <p className="text-[10px] text-[#A3A3A3] dark:text-[#A3A3A3]">
+                <p className="text-[10px] text-mono-700 dark:text-mono-700">
                   {fmtEuro(item.estimatedCost)}
                 </p>
               </div>
@@ -261,15 +261,15 @@ export default function DemandForecast() {
         )}
 
         {/* Total + Generate button */}
-        <div className="mt-4 pt-3 border-t border-[#E5E7EB] dark:border-[#262626]">
+        <div className="mt-4 pt-3 border-t border-mono-900 dark:border-mono-300">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="text-xs text-[#737373] dark:text-[#A3A3A3]">Coût total estimé</p>
-              <p className="text-xl font-bold text-[#262626] dark:text-white">{fmtEuro(totalOrderCost)}</p>
+              <p className="text-xs text-mono-500 dark:text-mono-700">Coût total estimé</p>
+              <p className="text-xl font-bold text-mono-300 dark:text-white">{fmtEuro(totalOrderCost)}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-[#737373] dark:text-[#A3A3A3]">{SUGGESTED_ORDER.length} articles</p>
-              <p className="text-xs text-[#A3A3A3] dark:text-[#A3A3A3]">
+              <p className="text-xs text-mono-500 dark:text-mono-700">{SUGGESTED_ORDER.length} articles</p>
+              <p className="text-xs text-mono-700 dark:text-mono-700">
                 {new Set(SUGGESTED_ORDER.map(i => i.supplier)).size} fournisseurs
               </p>
             </div>

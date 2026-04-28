@@ -69,13 +69,13 @@ export default function BlogChargesSociales() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -118,12 +118,12 @@ export default function BlogChargesSociales() {
             <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center">
               <Scale className="w-5 h-5 text-rose-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Vue d'ensemble : 40-45 % du brut</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Vue d'ensemble : 40-45 % du brut</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Pour 100 € de salaire brut versé en restauration :
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Net salarié reçu : ~78 € (après 22 % charges salariales)</div>
             <div>Coût employeur avant Fillon : 140-145 €</div>
             <div>Coût employeur après Fillon : 128-137 €</div>
@@ -140,12 +140,12 @@ export default function BlogChargesSociales() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <FileText className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Décomposition des cotisations patronales</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Décomposition des cotisations patronales</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Les <strong>9 grandes familles</strong> de cotisations payées par l'employeur en 2026 :
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Sécu maladie ≤ 2,5 SMIC : 7,00 % | {'>'} 2,5 SMIC : 13,00 %</div>
             <div>Vieillesse plafonnée : 8,55 % (tranche A)</div>
             <div>Vieillesse déplafonnée : 2,02 %</div>
@@ -168,12 +168,12 @@ export default function BlogChargesSociales() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Allégements et exonérations (Fillon)</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Allégements et exonérations (Fillon)</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             La <strong>réduction générale des cotisations patronales (ex-Fillon)</strong> est l'allégement le plus puissant. Elle s'applique automatiquement aux salaires inférieurs à <strong>1,6 SMIC</strong> (~2 882 € brut/mois en 2026).
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Réduction = (T / 0,6) × ((1,6 × SMIC × heures) / brut – 1)
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
@@ -194,12 +194,12 @@ export default function BlogChargesSociales() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Calculator className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Exemple de fiche de paie : cuisinier SMIC</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Exemple de fiche de paie : cuisinier SMIC</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Cas concret : cuisinier SMIC HCR, 35h/semaine, 169h mensuelles, 2026.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Salaire brut base (169h × 11,88 €) : 2 008 €</div>
             <div>Avantage repas (2 × 4,22 € × 22 j) : 185,68 €</div>
             <div>Brut total : 2 193,68 €</div>
@@ -222,12 +222,12 @@ export default function BlogChargesSociales() {
             <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
               <Users className="w-5 h-5 text-amber-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. CDI vs CDD vs extras vs apprentis</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. CDI vs CDD vs extras vs apprentis</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Pour un même brut de <strong>2 000 €</strong> mensuel :
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>CDI plein temps : ~25-28 % charges → 2 540 €</div>
             <div>CDD {'<'} 3 mois : ~30 % + prime précarité 10 % → 2 800 €</div>
             <div>Extra (CDD usage HCR) : ~28 % → 2 560 €</div>
@@ -246,7 +246,7 @@ export default function BlogChargesSociales() {
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Pièges juridiques à éviter</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Pièges juridiques à éviter</h2>
           </div>
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2">
@@ -274,7 +274,7 @@ export default function BlogChargesSociales() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -298,9 +298,9 @@ export default function BlogChargesSociales() {
                 a: "Le contrôleur peut remonter sur 3 ans (5 ans si travail dissimulé). Redressements moyens en restauration : 15 000 à 80 000 €. Préparez : DPAE, contrats, fiches de paie, plannings, livre de caisse, déclarations TVA."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -321,7 +321,7 @@ export default function BlogChargesSociales() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>

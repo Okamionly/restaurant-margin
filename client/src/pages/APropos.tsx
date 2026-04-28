@@ -59,9 +59,9 @@ export default function APropos() {
       />
 
       {/* ═══ Navbar ═══ */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -75,7 +75,7 @@ export default function APropos() {
             </Link>
             <Link
               to="/login"
-              className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors"
+              className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors"
             >
               Connexion
             </Link>
@@ -90,12 +90,12 @@ export default function APropos() {
           <span className="text-sm font-semibold text-teal-700 uppercase tracking-wider">Notre histoire</span>
         </div>
         <h1
-          className="text-4xl sm:text-5xl md:text-6xl font-black text-[#111111] mb-6 leading-tight"
+          className="text-4xl sm:text-5xl md:text-6xl font-black text-mono-100 mb-6 leading-tight"
          
         >
           Nous aidons les restaurateurs à maîtriser leurs marges
         </h1>
-        <p className="text-lg text-[#525252] max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg text-mono-400 max-w-2xl mx-auto leading-relaxed">
           RestauMargin est né d'une conviction : chaque restaurateur mérite des outils professionnels
           pour calculer ses marges, optimiser son food cost et gérer son activité avec précision.
         </p>
@@ -103,7 +103,7 @@ export default function APropos() {
 
       {/* ═══ Notre équipe ═══ */}
       <section className="pb-16 px-4 sm:px-6 max-w-4xl mx-auto">
-        <div className="bg-gradient-to-br from-[#f8fafb] to-white border border-[#E5E7EB] rounded-3xl p-8 sm:p-12">
+        <div className="bg-gradient-to-br from-[#f8fafb] to-white border border-mono-900 rounded-3xl p-8 sm:p-12">
           <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8">
             <div className="flex-shrink-0">
               <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-3xl sm:text-4xl shadow-lg">
@@ -116,21 +116,21 @@ export default function APropos() {
                 <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">Notre équipe</span>
               </div>
               <h2
-                className="text-2xl sm:text-3xl font-bold text-[#111111] mb-3"
+                className="text-2xl sm:text-3xl font-bold text-mono-100 mb-3"
                
               >
                 L'équipe RestauMargin
               </h2>
-              <p className="text-sm text-[#737373] mb-4 flex items-center gap-2">
+              <p className="text-sm text-mono-500 mb-4 flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
                 Montpellier, France
               </p>
-              <p className="text-base text-[#525252] leading-relaxed mb-4">
+              <p className="text-base text-mono-400 leading-relaxed mb-4">
                 Passionnés par la restauration et la technologie, nous avons fondé RestauMargin en 2025
                 avec une mission simple : rendre accessibles à tous les restaurateurs les outils de gestion
                 habituellement réservés aux grandes chaînes.
               </p>
-              <p className="text-base text-[#525252] leading-relaxed mb-6">
+              <p className="text-base text-mono-400 leading-relaxed mb-6">
                 Avec RestauMargin, un chef ou un gérant peut calculer ses marges en temps réel, créer
                 ses fiches techniques, suivre son food cost et automatiser ses commandes fournisseurs —
                 le tout depuis une interface claire, en français, conçue pour le quotidien d'un restaurant.
@@ -155,12 +155,12 @@ export default function APropos() {
             <span className="text-sm font-semibold text-teal-700 uppercase tracking-wider">Notre mission</span>
           </div>
           <h2
-            className="text-3xl sm:text-4xl font-black text-[#111111] mb-4"
+            className="text-3xl sm:text-4xl font-black text-mono-100 mb-4"
            
           >
             Démocratiser la gestion professionnelle en restauration
           </h2>
-          <p className="text-lg text-[#525252] max-w-2xl mx-auto">
+          <p className="text-lg text-mono-400 max-w-2xl mx-auto">
             72% des restaurants ferment dans les 5 ans. La gestion approximative des marges est l'une
             des premières causes. Nous changeons cela.
           </p>
@@ -186,13 +186,13 @@ export default function APropos() {
           ].map((item) => (
             <div
               key={item.title}
-              className="bg-white border border-[#E5E7EB] rounded-2xl p-6 hover:border-teal-500 hover:shadow-lg transition-all"
+              className="bg-white border border-mono-900 rounded-2xl p-6 hover:border-teal-500 hover:shadow-lg transition-all"
             >
               <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center mb-4">
                 <item.icon className="w-6 h-6 text-teal-600" />
               </div>
-              <h3 className="text-lg font-bold text-[#111111] mb-2">{item.title}</h3>
-              <p className="text-sm text-[#525252] leading-relaxed">{item.text}</p>
+              <h3 className="text-lg font-bold text-mono-100 mb-2">{item.title}</h3>
+              <p className="text-sm text-mono-400 leading-relaxed">{item.text}</p>
             </div>
           ))}
         </div>
@@ -201,7 +201,7 @@ export default function APropos() {
       {/* ═══ What makes us different ═══ */}
       <section className="py-16 px-4 sm:px-6 max-w-4xl mx-auto bg-[#f8fafb] rounded-3xl my-8">
         <h2
-          className="text-3xl sm:text-4xl font-black text-[#111111] mb-8 text-center"
+          className="text-3xl sm:text-4xl font-black text-mono-100 mb-8 text-center"
          
         >
           Ce qui nous distingue
@@ -217,7 +217,7 @@ export default function APropos() {
           ].map((feature) => (
             <div key={feature} className="flex items-start gap-3">
               <CheckCircle2 className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
-              <span className="text-sm text-[#525252] leading-relaxed">{feature}</span>
+              <span className="text-sm text-mono-400 leading-relaxed">{feature}</span>
             </div>
           ))}
         </div>
@@ -226,12 +226,12 @@ export default function APropos() {
       {/* ═══ Tech stack ═══ */}
       <section className="py-16 px-4 sm:px-6 max-w-4xl mx-auto">
         <h2
-          className="text-2xl sm:text-3xl font-bold text-[#111111] mb-6 text-center"
+          className="text-2xl sm:text-3xl font-bold text-mono-100 mb-6 text-center"
          
         >
           Notre expertise technique
         </h2>
-        <p className="text-center text-[#525252] mb-8 max-w-2xl mx-auto">
+        <p className="text-center text-mono-400 mb-8 max-w-2xl mx-auto">
           Nous développons RestauMargin avec les meilleures technologies modernes pour garantir
           rapidité, fiabilité et évolutivité.
         </p>
@@ -244,10 +244,10 @@ export default function APropos() {
           ].map((tech) => (
             <div
               key={tech.label}
-              className="flex flex-col items-center gap-2 p-4 border border-[#E5E7EB] rounded-xl text-center"
+              className="flex flex-col items-center gap-2 p-4 border border-mono-900 rounded-xl text-center"
             >
               <tech.icon className="w-6 h-6 text-teal-600" />
-              <span className="text-xs font-semibold text-[#525252]">{tech.label}</span>
+              <span className="text-xs font-semibold text-mono-400">{tech.label}</span>
             </div>
           ))}
         </div>
@@ -255,7 +255,7 @@ export default function APropos() {
 
       {/* ═══ CTA ═══ */}
       <section className="py-16 px-4 sm:px-6 max-w-4xl mx-auto">
-        <div className="bg-gradient-to-br from-[#111111] to-[#1f2937] rounded-3xl p-8 sm:p-12 text-center text-white">
+        <div className="bg-gradient-to-br from-mono-100 to-[#1f2937] rounded-3xl p-8 sm:p-12 text-center text-white">
           <h3
             className="text-2xl sm:text-3xl font-bold mb-3"
            
@@ -285,8 +285,8 @@ export default function APropos() {
       </section>
 
       {/* ═══ Footer ═══ */}
-      <footer className="border-t border-[#E5E7EB] py-8">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#737373]">
+      <footer className="border-t border-mono-900 py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-mono-500">
           <div className="flex items-center gap-2">
             <ChefHat className="w-5 h-5 text-teal-600" />
             <span>© 2026 RestauMargin — Tous droits réservés</span>

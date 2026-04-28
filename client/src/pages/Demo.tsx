@@ -171,7 +171,7 @@ function statusLabel(s: string) {
     case 'puzzle': return { text: 'Puzzle', color: 'bg-amber-100 text-amber-700', dotColor: 'bg-amber-500' };
     case 'workhorse': return { text: 'Cheval de labour', color: 'bg-blue-100 text-blue-700', dotColor: 'bg-blue-500' };
     case 'dog': return { text: 'Poids mort', color: 'bg-red-100 text-red-700', dotColor: 'bg-red-500' };
-    default: return { text: s, color: 'bg-[#F5F5F5] text-[#404040]', dotColor: 'bg-[#A3A3A3]' };
+    default: return { text: s, color: 'bg-mono-975 text-mono-350', dotColor: 'bg-mono-700' };
   }
 }
 
@@ -244,7 +244,7 @@ export default function Demo() {
       `}</style>
 
       {/* -- Demo Banner -- */}
-      <div className="sticky top-0 z-50 bg-[#111111] text-white px-4 py-3">
+      <div className="sticky top-0 z-50 bg-mono-100 text-white px-4 py-3">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
@@ -257,7 +257,7 @@ export default function Demo() {
           </div>
           <Link
             to="/login?mode=register"
-            className="inline-flex items-center gap-1.5 px-6 py-2 bg-white text-[#111111] font-bold text-sm rounded-full hover:bg-white/90 transition-colors shadow-lg shadow-white/10"
+            className="inline-flex items-center gap-1.5 px-6 py-2 bg-white text-mono-100 font-bold text-sm rounded-full hover:bg-white/90 transition-colors shadow-lg shadow-white/10"
           >
             <Sparkles className="w-4 h-4" />
             Creer mon compte gratuit
@@ -267,23 +267,23 @@ export default function Demo() {
       </div>
 
       {/* -- Navbar -- */}
-      <nav className="bg-white border-b border-[#E5E7EB]">
+      <nav className="bg-white border-b border-mono-900">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <div className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
-            <span className="ml-2 text-xs font-medium text-[#A3A3A3] bg-[#F5F5F5] px-2 py-0.5 rounded-full">DEMO</span>
+            <span className="ml-2 text-xs font-medium text-mono-700 bg-mono-975 px-2 py-0.5 rounded-full">DEMO</span>
           </div>
           <div className="flex items-center gap-3">
             <Link
               to="/pricing"
-              className="text-sm font-medium text-[#737373] hover:text-teal-600 transition-colors"
+              className="text-sm font-medium text-mono-500 hover:text-teal-600 transition-colors"
             >
               Tarifs
             </Link>
             <Link
               to="/login?mode=register"
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold rounded-full transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-mono-100 hover:bg-[#333333] text-white text-sm font-semibold rounded-full transition-colors"
             >
               Essai gratuit
             </Link>
@@ -292,7 +292,7 @@ export default function Demo() {
       </nav>
 
       {/* -- Restaurant Header -- */}
-      <header className="relative overflow-hidden bg-gradient-to-br from-[#FAFAFA] via-white to-[#FAFAFA] pt-10 pb-8 px-4 border-b border-[#F5F5F5]">
+      <header className="relative overflow-hidden bg-gradient-to-br from-mono-1000 via-white to-mono-1000 pt-10 pb-8 px-4 border-b border-mono-975">
         <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/[0.03] rounded-full blur-[80px]" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-500/[0.03] rounded-full blur-[60px]" />
         <div className="max-w-6xl mx-auto relative">
@@ -301,15 +301,15 @@ export default function Demo() {
               <UtensilsCrossed className="w-7 h-7 text-white" />
             </div>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-[#111111] font-satoshi">
+              <h1 className="text-2xl font-bold text-mono-100 font-satoshi">
                 Le Bistrot de Marie
               </h1>
-              <p className="text-sm text-[#737373] mt-0.5">Bistrot traditionnel -- Paris 11e -- 45 couverts/service</p>
+              <p className="text-sm text-mono-500 mt-0.5">Bistrot traditionnel -- Paris 11e -- 45 couverts/service</p>
             </div>
             <div className="flex items-center gap-2">
               <div className="text-right">
-                <p className="text-[10px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Derniere MAJ</p>
-                <p className="text-sm font-bold text-[#111111]">Aujourd'hui, 14h32</p>
+                <p className="text-[10px] text-mono-700 uppercase tracking-wider font-semibold">Derniere MAJ</p>
+                <p className="text-sm font-bold text-mono-100">Aujourd'hui, 14h32</p>
               </div>
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             </div>
@@ -321,52 +321,52 @@ export default function Demo() {
 
         {/* -- KPI Cards with animated numbers -- */}
         <section className="anim-slide-up">
-          <h2 className="text-lg font-bold text-[#111111] mb-4 flex items-center gap-2 font-satoshi">
+          <h2 className="text-lg font-bold text-mono-100 mb-4 flex items-center gap-2 font-satoshi">
             <BarChart3 className="w-5 h-5 text-teal-600" />
             Tableau de bord
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div ref={foodCostAnim.ref} className="bg-white border border-[#E5E7EB] rounded-2xl p-5 relative overflow-hidden">
+            <div ref={foodCostAnim.ref} className="bg-white border border-mono-900 rounded-2xl p-5 relative overflow-hidden">
               <div className="shimmer-bg absolute inset-0 rounded-2xl" />
               <div className="relative">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Food cost global</span>
+                  <span className="text-xs font-semibold text-mono-700 uppercase tracking-wider">Food cost global</span>
                   <Percent className="w-5 h-5 text-teal-600" />
                 </div>
-                <p className="text-3xl font-extrabold text-[#111111]">{(foodCostAnim.value / 10).toFixed(1)}%</p>
+                <p className="text-3xl font-extrabold text-mono-100">{(foodCostAnim.value / 10).toFixed(1)}%</p>
                 <p className="text-xs text-emerald-600 mt-1 font-semibold flex items-center gap-1">
                   <TrendingUp className="w-3 h-3" /> Sous l'objectif de {FAKE_KPIS.foodCostTarget}%
                 </p>
               </div>
             </div>
-            <div ref={marginAnim.ref} className="bg-white border border-[#E5E7EB] rounded-2xl p-5 relative overflow-hidden">
+            <div ref={marginAnim.ref} className="bg-white border border-mono-900 rounded-2xl p-5 relative overflow-hidden">
               <div className="shimmer-bg absolute inset-0 rounded-2xl" />
               <div className="relative">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Marge brute</span>
+                  <span className="text-xs font-semibold text-mono-700 uppercase tracking-wider">Marge brute</span>
                   <TrendingUp className="w-5 h-5 text-emerald-600" />
                 </div>
-                <p className="text-3xl font-extrabold text-[#111111]">{(marginAnim.value / 10).toFixed(1)}%</p>
+                <p className="text-3xl font-extrabold text-mono-100">{(marginAnim.value / 10).toFixed(1)}%</p>
                 <p className="text-xs text-emerald-600 mt-1 font-semibold flex items-center gap-1">
                   <TrendingUp className="w-3 h-3" /> +4.7 pts en 6 mois
                 </p>
               </div>
             </div>
-            <div ref={caAnim.ref} className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+            <div ref={caAnim.ref} className="bg-white border border-mono-900 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">CA HT / mois</span>
+                <span className="text-xs font-semibold text-mono-700 uppercase tracking-wider">CA HT / mois</span>
                 <DollarSign className="w-5 h-5 text-emerald-600" />
               </div>
-              <p className="text-3xl font-extrabold text-[#111111]">{formatCurrency(caAnim.value)}</p>
+              <p className="text-3xl font-extrabold text-mono-100">{formatCurrency(caAnim.value)}</p>
               <p className="text-xs text-emerald-600 mt-1 font-semibold">+12% vs mois dernier</p>
             </div>
-            <div ref={couvertsAnim.ref} className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+            <div ref={couvertsAnim.ref} className="bg-white border border-mono-900 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Couverts / mois</span>
-                <UtensilsCrossed className="w-5 h-5 text-[#737373]" />
+                <span className="text-xs font-semibold text-mono-700 uppercase tracking-wider">Couverts / mois</span>
+                <UtensilsCrossed className="w-5 h-5 text-mono-500" />
               </div>
-              <p className="text-3xl font-extrabold text-[#111111]">{couvertsAnim.value.toLocaleString('fr-FR')}</p>
-              <p className="text-xs text-[#A3A3A3] mt-1">{FAKE_KPIS.recipeCount} recettes / {FAKE_KPIS.ingredientCount} ingredients</p>
+              <p className="text-3xl font-extrabold text-mono-100">{couvertsAnim.value.toLocaleString('fr-FR')}</p>
+              <p className="text-xs text-mono-700 mt-1">{FAKE_KPIS.recipeCount} recettes / {FAKE_KPIS.ingredientCount} ingredients</p>
             </div>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
@@ -374,13 +374,13 @@ export default function Demo() {
               label="Fournisseurs"
               value={String(FAKE_KPIS.fournisseurs)}
               sub="Fournisseurs actifs"
-              icon={<Truck className="w-5 h-5 text-[#737373]" />}
+              icon={<Truck className="w-5 h-5 text-mono-500" />}
             />
             <KPICard
               label="Commandes"
               value={String(FAKE_KPIS.commandesMois)}
               sub="Ce mois"
-              icon={<ClipboardList className="w-5 h-5 text-[#737373]" />}
+              icon={<ClipboardList className="w-5 h-5 text-mono-500" />}
             />
             <KPICard
               label="Alertes prix"
@@ -402,15 +402,15 @@ export default function Demo() {
         <section className="grid lg:grid-cols-3 gap-6">
           {/* Margin Evolution Chart */}
           <div className="lg:col-span-2">
-            <h2 className="text-lg font-bold text-[#111111] mb-4 font-satoshi">
+            <h2 className="text-lg font-bold text-mono-100 mb-4 font-satoshi">
               Evolution de la marge (6 derniers mois)
             </h2>
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+            <div className="bg-white border border-mono-900 rounded-2xl p-6">
               <div className="flex items-end gap-3 h-52">
                 {MARGIN_EVOLUTION.map((m, i) => (
                   <div key={m.month} className="flex-1 flex flex-col items-center gap-2">
                     <span className="text-xs font-bold text-emerald-600">{m.margin}%</span>
-                    <div className="w-full bg-[#F5F5F5] rounded-t-lg relative" style={{ height: '100%' }}>
+                    <div className="w-full bg-mono-975 rounded-t-lg relative" style={{ height: '100%' }}>
                       <div
                         className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-teal-600 to-teal-400 rounded-t-lg anim-bar"
                         style={{
@@ -419,11 +419,11 @@ export default function Demo() {
                         }}
                       />
                     </div>
-                    <span className="text-xs text-[#737373] font-medium">{m.month}</span>
+                    <span className="text-xs text-mono-500 font-medium">{m.month}</span>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 flex items-center justify-between text-xs text-[#A3A3A3]">
+              <div className="mt-4 flex items-center justify-between text-xs text-mono-700">
                 <span>Marge brute en progression constante</span>
                 <span className="flex items-center gap-1 text-emerald-600 font-semibold">
                   <TrendingUp className="w-3.5 h-3.5" /> +4.7 pts en 6 mois
@@ -434,18 +434,18 @@ export default function Demo() {
 
           {/* Category Distribution */}
           <div>
-            <h2 className="text-lg font-bold text-[#111111] mb-4 font-satoshi">
+            <h2 className="text-lg font-bold text-mono-100 mb-4 font-satoshi">
               Repartition par categorie
             </h2>
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 h-[calc(100%-2rem)]">
+            <div className="bg-white border border-mono-900 rounded-2xl p-6 h-[calc(100%-2rem)]">
               <div className="space-y-3">
                 {CATEGORY_DIST.map((cat, i) => (
                   <div key={cat.name} className="anim-fade" style={{ animationDelay: `${i * 100}ms` }}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-[#404040]">{cat.name}</span>
-                      <span className="text-sm font-bold text-[#111111]">{cat.pct}%</span>
+                      <span className="text-sm font-medium text-mono-350">{cat.name}</span>
+                      <span className="text-sm font-bold text-mono-100">{cat.pct}%</span>
                     </div>
-                    <div className="h-3 bg-[#F5F5F5] rounded-full overflow-hidden">
+                    <div className="h-3 bg-mono-975 rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all duration-1000 ease-out"
                         style={{
@@ -458,8 +458,8 @@ export default function Demo() {
                   </div>
                 ))}
               </div>
-              <div className="mt-4 pt-4 border-t border-[#F5F5F5]">
-                <p className="text-xs text-[#A3A3A3]">Base: {FAKE_KPIS.recipeCount} recettes actives</p>
+              <div className="mt-4 pt-4 border-t border-mono-975">
+                <p className="text-xs text-mono-700">Base: {FAKE_KPIS.recipeCount} recettes actives</p>
               </div>
             </div>
           </div>
@@ -468,7 +468,7 @@ export default function Demo() {
         {/* -- Recipes with FoodIllustration -- */}
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-[#111111] flex items-center gap-2 font-satoshi">
+            <h2 className="text-lg font-bold text-mono-100 flex items-center gap-2 font-satoshi">
               <ClipboardList className="w-5 h-5 text-teal-600" />
               Fiches techniques ({FAKE_RECIPES.length} recettes)
             </h2>
@@ -491,7 +491,7 @@ export default function Demo() {
                 <button
                   key={r.name}
                   onClick={() => setSelectedRecipe(idx)}
-                  className="bg-white border border-[#E5E7EB] rounded-2xl p-4 hover:shadow-lg hover:border-teal-200 transition-all relative group text-left anim-slide-up cursor-pointer"
+                  className="bg-white border border-mono-900 rounded-2xl p-4 hover:shadow-lg hover:border-teal-200 transition-all relative group text-left anim-slide-up cursor-pointer"
                   style={{ animationDelay: `${idx * 80}ms` }}
                 >
                   {/* FoodIllustration */}
@@ -500,25 +500,25 @@ export default function Demo() {
                   </div>
 
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-semibold text-[#A3A3A3] uppercase tracking-wider">{r.category}</span>
+                    <span className="text-[10px] font-semibold text-mono-700 uppercase tracking-wider">{r.category}</span>
                     <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex items-center gap-1 ${st.color}`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${st.dotColor}`} />
                       {st.text}
                     </span>
                   </div>
-                  <h3 className="text-sm font-bold text-[#111111] mb-2 line-clamp-2">{r.name}</h3>
+                  <h3 className="text-sm font-bold text-mono-100 mb-2 line-clamp-2">{r.name}</h3>
                   <div className="grid grid-cols-2 gap-2 mb-3">
                     <div>
-                      <p className="text-[10px] text-[#A3A3A3]">Food cost</p>
-                      <p className="text-base font-bold text-[#111111]">{r.foodCost}%</p>
+                      <p className="text-[10px] text-mono-700">Food cost</p>
+                      <p className="text-base font-bold text-mono-100">{r.foodCost}%</p>
                     </div>
                     <div>
-                      <p className="text-[10px] text-[#A3A3A3]">Marge</p>
+                      <p className="text-[10px] text-mono-700">Marge</p>
                       <p className="text-base font-bold text-emerald-600">{formatCurrency(r.margin)}</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="text-[10px] text-[#A3A3A3]">PV: {formatCurrency(r.sellingPrice)}</p>
+                    <p className="text-[10px] text-mono-700">PV: {formatCurrency(r.sellingPrice)}</p>
                     <span className="text-[10px] text-teal-600 font-semibold group-hover:underline">
                       Voir details
                     </span>
@@ -550,32 +550,32 @@ export default function Demo() {
                 const totalCost = r.ingredients.reduce((sum, ing) => sum + ing.cost, 0);
                 return (
                   <>
-                    <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-[#F5F5F5] px-6 py-4 rounded-t-3xl flex items-center justify-between">
+                    <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-mono-975 px-6 py-4 rounded-t-3xl flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <FoodIllustration recipeName={r.name} category={r.category} size="sm" />
                         <div>
-                          <h3 id="demo-recipe-title" className="text-lg font-bold text-[#111111]">{r.name}</h3>
+                          <h3 id="demo-recipe-title" className="text-lg font-bold text-mono-100">{r.name}</h3>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-xs text-[#A3A3A3]">{r.category}</span>
+                            <span className="text-xs text-mono-700">{r.category}</span>
                             <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${st.color}`}>{st.text}</span>
                           </div>
                         </div>
                       </div>
-                      <button onClick={() => setSelectedRecipe(null)} aria-label="Fermer" className="p-2 hover:bg-[#F5F5F5] rounded-full transition-colors">
-                        <X className="w-5 h-5 text-[#737373]" aria-hidden="true" />
+                      <button onClick={() => setSelectedRecipe(null)} aria-label="Fermer" className="p-2 hover:bg-mono-975 rounded-full transition-colors">
+                        <X className="w-5 h-5 text-mono-500" aria-hidden="true" />
                       </button>
                     </div>
 
                     <div className="px-6 py-5 space-y-6">
                       {/* Key metrics */}
                       <div className="grid grid-cols-3 gap-3">
-                        <div className="bg-[#F5F5F5] rounded-xl p-3 text-center">
-                          <p className="text-[10px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Prix de vente</p>
-                          <p className="text-xl font-bold text-[#111111] mt-1">{formatCurrency(r.sellingPrice)}</p>
+                        <div className="bg-mono-975 rounded-xl p-3 text-center">
+                          <p className="text-[10px] text-mono-700 uppercase tracking-wider font-semibold">Prix de vente</p>
+                          <p className="text-xl font-bold text-mono-100 mt-1">{formatCurrency(r.sellingPrice)}</p>
                         </div>
-                        <div className="bg-[#F5F5F5] rounded-xl p-3 text-center">
-                          <p className="text-[10px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Cout matiere</p>
-                          <p className="text-xl font-bold text-[#111111] mt-1">{formatCurrency(totalCost)}</p>
+                        <div className="bg-mono-975 rounded-xl p-3 text-center">
+                          <p className="text-[10px] text-mono-700 uppercase tracking-wider font-semibold">Cout matiere</p>
+                          <p className="text-xl font-bold text-mono-100 mt-1">{formatCurrency(totalCost)}</p>
                         </div>
                         <div className="bg-emerald-50 rounded-xl p-3 text-center">
                           <p className="text-[10px] text-emerald-600 uppercase tracking-wider font-semibold">Marge</p>
@@ -586,10 +586,10 @@ export default function Demo() {
                       {/* Food cost visual bar */}
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-semibold text-[#404040]">Food cost</span>
-                          <span className="text-sm font-bold text-[#111111]">{r.foodCost}%</span>
+                          <span className="text-sm font-semibold text-mono-350">Food cost</span>
+                          <span className="text-sm font-bold text-mono-100">{r.foodCost}%</span>
                         </div>
-                        <div className="h-4 bg-[#F5F5F5] rounded-full overflow-hidden">
+                        <div className="h-4 bg-mono-975 rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full transition-all duration-700"
                             style={{
@@ -598,7 +598,7 @@ export default function Demo() {
                             }}
                           />
                         </div>
-                        <div className="flex justify-between mt-1 text-[10px] text-[#A3A3A3]">
+                        <div className="flex justify-between mt-1 text-[10px] text-mono-700">
                           <span>0%</span>
                           <span className="text-amber-500 font-semibold">Objectif: 28%</span>
                           <span>50%</span>
@@ -607,11 +607,11 @@ export default function Demo() {
 
                       {/* Ingredients table */}
                       <div>
-                        <h4 className="text-sm font-bold text-[#111111] mb-3">Ingredients ({r.ingredients.length})</h4>
-                        <div className="bg-[#FAFAFA] rounded-xl overflow-hidden border border-[#E5E7EB]">
+                        <h4 className="text-sm font-bold text-mono-100 mb-3">Ingredients ({r.ingredients.length})</h4>
+                        <div className="bg-mono-1000 rounded-xl overflow-hidden border border-mono-900">
                           <table className="w-full text-sm">
                             <thead>
-                              <tr className="text-[10px] text-[#A3A3A3] uppercase tracking-wider">
+                              <tr className="text-[10px] text-mono-700 uppercase tracking-wider">
                                 <th className="text-left px-4 py-2 font-semibold">Ingredient</th>
                                 <th className="text-right px-4 py-2 font-semibold">Quantite</th>
                                 <th className="text-right px-4 py-2 font-semibold">Cout</th>
@@ -620,19 +620,19 @@ export default function Demo() {
                             </thead>
                             <tbody>
                               {r.ingredients.map((ing, i) => (
-                                <tr key={i} className="border-t border-[#E5E7EB]">
-                                  <td className="px-4 py-2 font-medium text-[#111111]">{ing.name}</td>
-                                  <td className="px-4 py-2 text-right text-[#737373]">{ing.qty}</td>
-                                  <td className="px-4 py-2 text-right font-semibold text-[#404040]">{formatCurrency(ing.cost)}</td>
-                                  <td className="px-4 py-2 text-right text-[#A3A3A3]">{((ing.cost / totalCost) * 100).toFixed(0)}%</td>
+                                <tr key={i} className="border-t border-mono-900">
+                                  <td className="px-4 py-2 font-medium text-mono-100">{ing.name}</td>
+                                  <td className="px-4 py-2 text-right text-mono-500">{ing.qty}</td>
+                                  <td className="px-4 py-2 text-right font-semibold text-mono-350">{formatCurrency(ing.cost)}</td>
+                                  <td className="px-4 py-2 text-right text-mono-700">{((ing.cost / totalCost) * 100).toFixed(0)}%</td>
                                 </tr>
                               ))}
                             </tbody>
                             <tfoot>
-                              <tr className="border-t-2 border-[#E5E7EB] bg-white">
-                                <td className="px-4 py-2 font-bold text-[#111111]" colSpan={2}>Total</td>
-                                <td className="px-4 py-2 text-right font-bold text-[#111111]">{formatCurrency(totalCost)}</td>
-                                <td className="px-4 py-2 text-right font-bold text-[#111111]">100%</td>
+                              <tr className="border-t-2 border-mono-900 bg-white">
+                                <td className="px-4 py-2 font-bold text-mono-100" colSpan={2}>Total</td>
+                                <td className="px-4 py-2 text-right font-bold text-mono-100">{formatCurrency(totalCost)}</td>
+                                <td className="px-4 py-2 text-right font-bold text-mono-100">100%</td>
                               </tr>
                             </tfoot>
                           </table>
@@ -641,7 +641,7 @@ export default function Demo() {
 
                       {/* Cost breakdown mini-chart */}
                       <div>
-                        <h4 className="text-sm font-bold text-[#111111] mb-3">Repartition des couts</h4>
+                        <h4 className="text-sm font-bold text-mono-100 mb-3">Repartition des couts</h4>
                         <div className="flex gap-1 h-6 rounded-full overflow-hidden">
                           {r.ingredients.map((ing, i) => {
                             const pct = (ing.cost / totalCost) * 100;
@@ -660,23 +660,23 @@ export default function Demo() {
                           {r.ingredients.slice(0, 4).map((ing, i) => {
                             const colors = ['#0d9488', '#111111', '#6B7280', '#9CA3AF'];
                             return (
-                              <span key={i} className="flex items-center gap-1 text-[10px] text-[#737373]">
+                              <span key={i} className="flex items-center gap-1 text-[10px] text-mono-500">
                                 <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors[i] }} />
                                 {ing.name}
                               </span>
                             );
                           })}
                           {r.ingredients.length > 4 && (
-                            <span className="text-[10px] text-[#A3A3A3]">+{r.ingredients.length - 4} autres</span>
+                            <span className="text-[10px] text-mono-700">+{r.ingredients.length - 4} autres</span>
                           )}
                         </div>
                       </div>
 
                       {/* Popularity indicator */}
-                      <div className="bg-[#F5F5F5] rounded-xl p-4 flex items-center justify-between">
+                      <div className="bg-mono-975 rounded-xl p-4 flex items-center justify-between">
                         <div>
-                          <p className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Popularite</p>
-                          <p className="text-lg font-bold text-[#111111]">{r.popularity} ventes/mois</p>
+                          <p className="text-xs font-semibold text-mono-700 uppercase tracking-wider">Popularite</p>
+                          <p className="text-lg font-bold text-mono-100">{r.popularity} ventes/mois</p>
                         </div>
                         <div className={`text-xs font-semibold px-3 py-1.5 rounded-full ${st.color}`}>
                           {st.text}
@@ -684,8 +684,8 @@ export default function Demo() {
                       </div>
                     </div>
 
-                    <div className="px-6 py-4 border-t border-[#F5F5F5] bg-[#FAFAFA] rounded-b-3xl">
-                      <div className="flex items-center gap-2 text-xs text-[#A3A3A3]">
+                    <div className="px-6 py-4 border-t border-mono-975 bg-mono-1000 rounded-b-3xl">
+                      <div className="flex items-center gap-2 text-xs text-mono-700">
                         <Lock className="w-3 h-3" />
                         <span>Mode demo -- Donnees fictives. <Link to="/login?mode=register" className="text-teal-600 font-semibold hover:underline">Creez votre compte</Link> pour gerer vos propres recettes.</span>
                       </div>
@@ -699,14 +699,14 @@ export default function Demo() {
 
         {/* -- Ingredients -- */}
         <section>
-          <h2 className="text-lg font-bold text-[#111111] mb-4 font-satoshi">
+          <h2 className="text-lg font-bold text-mono-100 mb-4 font-satoshi">
             Ingredients ({FAKE_INGREDIENTS.length})
           </h2>
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden">
+          <div className="bg-white border border-mono-900 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-[#FAFAFA] text-[#737373] text-xs uppercase tracking-wider">
+                  <tr className="bg-mono-1000 text-mono-500 text-xs uppercase tracking-wider">
                     <th className="text-left px-5 py-3 font-semibold">Ingredient</th>
                     <th className="text-right px-5 py-3 font-semibold">Prix unitaire</th>
                     <th className="text-right px-5 py-3 font-semibold">Unite</th>
@@ -716,11 +716,11 @@ export default function Demo() {
                 </thead>
                 <tbody>
                   {FAKE_INGREDIENTS.map((ing) => (
-                    <tr key={ing.name} className="border-t border-[#F5F5F5] hover:bg-[#FAFAFA]/50 transition-colors">
-                      <td className="px-5 py-2.5 font-medium text-[#111111]">{ing.name}</td>
-                      <td className="px-5 py-2.5 text-right text-[#404040]">{formatCurrency(ing.price)}</td>
-                      <td className="px-5 py-2.5 text-right text-[#737373]">{ing.unit}</td>
-                      <td className="px-5 py-2.5 text-right text-[#404040]">{ing.stock}</td>
+                    <tr key={ing.name} className="border-t border-mono-975 hover:bg-mono-1000/50 transition-colors">
+                      <td className="px-5 py-2.5 font-medium text-mono-100">{ing.name}</td>
+                      <td className="px-5 py-2.5 text-right text-mono-350">{formatCurrency(ing.price)}</td>
+                      <td className="px-5 py-2.5 text-right text-mono-500">{ing.unit}</td>
+                      <td className="px-5 py-2.5 text-right text-mono-350">{ing.stock}</td>
                       <td className="px-5 py-2.5 text-center">
                         {ing.alert && (
                           <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
@@ -738,14 +738,14 @@ export default function Demo() {
 
         {/* -- Menu Engineering Matrix -- */}
         <section>
-          <h2 className="text-lg font-bold text-[#111111] mb-4 font-satoshi">
+          <h2 className="text-lg font-bold text-mono-100 mb-4 font-satoshi">
             Matrice Menu Engineering
           </h2>
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+          <div className="bg-white border border-mono-900 rounded-2xl p-6">
             <div className="grid grid-cols-2 gap-4 h-64 relative">
               {/* Axes */}
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 -rotate-90 text-[10px] font-semibold text-[#A3A3A3] uppercase tracking-wider">Marge</div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-[10px] font-semibold text-[#A3A3A3] uppercase tracking-wider">Popularite</div>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 -rotate-90 text-[10px] font-semibold text-mono-700 uppercase tracking-wider">Marge</div>
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-[10px] font-semibold text-mono-700 uppercase tracking-wider">Popularite</div>
 
               {/* Quadrants */}
               <div className="bg-amber-50 rounded-tl-xl border border-amber-100 p-3 flex flex-col items-center justify-center text-center">
@@ -794,7 +794,7 @@ export default function Demo() {
 
         {/* -- CTA Section — Stunning -- */}
         <section className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#111111] to-[#1a1a1a] rounded-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-br from-mono-100 to-mono-200 rounded-3xl" />
           <div className="absolute top-0 right-0 w-80 h-80 bg-teal-500/10 rounded-full blur-[100px]" />
           <div className="absolute bottom-0 left-0 w-60 h-60 bg-emerald-500/10 rounded-full blur-[80px]" />
           <div className="relative text-center py-16 px-6 rounded-3xl">
@@ -811,7 +811,7 @@ export default function Demo() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/login?mode=register"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-white/90 text-[#111111] font-bold text-lg rounded-xl transition-colors shadow-lg shadow-white/10"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-white/90 text-mono-100 font-bold text-lg rounded-xl transition-colors shadow-lg shadow-white/10"
               >
                 Creer mon compte gratuit
                 <ArrowRight className="w-5 h-5" />
@@ -833,7 +833,7 @@ export default function Demo() {
       </main>
 
       {/* -- Footer -- */}
-      <footer className="border-t border-[#E5E7EB] py-8 text-center text-sm text-[#A3A3A3]">
+      <footer className="border-t border-mono-900 py-8 text-center text-sm text-mono-700">
         <p>&copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.</p>
       </footer>
     </div>
@@ -850,15 +850,15 @@ function KPICard({ label, value, sub, icon, good, warning }: {
   warning?: boolean;
 }) {
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+    <div className="bg-white border border-mono-900 rounded-2xl p-5">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-semibold text-mono-700 uppercase tracking-wider">{label}</span>
         {icon}
       </div>
-      <p className={`text-2xl font-bold ${warning ? 'text-amber-500' : good ? 'text-[#111111]' : 'text-[#111111]'}`}>
+      <p className={`text-2xl font-bold ${warning ? 'text-amber-500' : good ? 'text-mono-100' : 'text-mono-100'}`}>
         {value}
       </p>
-      <p className="text-xs text-[#A3A3A3] mt-1">{sub}</p>
+      <p className="text-xs text-mono-700 mt-1">{sub}</p>
     </div>
   );
 }

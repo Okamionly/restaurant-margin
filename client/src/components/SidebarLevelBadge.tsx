@@ -28,7 +28,7 @@ export default function SidebarLevelBadge() {
         </div>
         <div className="flex-1 min-w-0">
           <div className={`text-xs font-semibold ${level.textClass} truncate sidebar-label`}>{level.name}</div>
-          <div className="w-full h-1 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A] mt-1 sidebar-label">
+          <div className="w-full h-1 rounded-full bg-mono-900 dark:bg-mono-200 mt-1 sidebar-label">
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{ width: `${Math.min(progress * 100, 100)}%`, backgroundColor: level.color }}

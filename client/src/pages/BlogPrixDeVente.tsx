@@ -97,9 +97,9 @@ export default function BlogPrixDeVente() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -113,7 +113,7 @@ export default function BlogPrixDeVente() {
             </Link>
             <Link
               to="/login"
-              className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors"
+              className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors"
             >
               Connexion
             </Link>
@@ -169,12 +169,12 @@ export default function BlogPrixDeVente() {
         </div>
 
         {/* ── Sommaire ── */}
-        <nav className="my-12 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
-          <h2 className="text-lg font-bold text-[#111111] mb-4 flex items-center gap-2">
+        <nav className="my-12 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
+          <h2 className="text-lg font-bold text-mono-100 mb-4 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-teal-600" />
             Sommaire
           </h2>
-          <ol className="space-y-2 text-sm sm:text-base text-[#404040]">
+          <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
               { href: '#pourquoi', label: "Pourquoi le bon prix change tout" },
               { href: '#coefficient', label: 'Methode du coefficient multiplicateur' },
@@ -246,26 +246,26 @@ export default function BlogPrixDeVente() {
               Tout l'enjeu est de choisir le bon coefficient.
             </p>
 
-            <h3 className="text-xl font-bold text-[#111111] mb-3 mt-6">Formule</h3>
-            <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 my-4 font-mono text-sm">
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-6">Formule</h3>
+            <div className="bg-mono-1000 border border-mono-900 rounded-xl p-5 my-4 font-mono text-sm">
               Prix de vente HT = Cout matieres x Coefficient<br />
               Coefficient = 1 / Food cost cible
             </div>
 
-            <h3 className="text-xl font-bold text-[#111111] mb-3 mt-6">Coefficients de reference</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-6">Coefficients de reference</h3>
           </div>
 
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-[#F5F5F5] text-[#404040]">
+                <tr className="bg-mono-975 text-mono-350">
                   <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Type d'etablissement</th>
                   <th className="text-center py-3 px-4 font-semibold">Coefficient</th>
                   <th className="text-center py-3 px-4 font-semibold">Food cost</th>
                   <th className="text-left py-3 px-4 font-semibold rounded-tr-xl">Quand l'utiliser</th>
                 </tr>
               </thead>
-              <tbody className="text-[#404040]">
+              <tbody className="text-mono-350">
                 {[
                   { type: 'Pizzeria / Coffee shop', coef: '4,5 - 6,5', fc: '15 - 22 %', use: 'Ingredients tres peu couteux, ticket moyen bas' },
                   { type: 'Brasserie / Restaurant rapide', coef: '3,3 - 4,0', fc: '25 - 30 %', use: 'Carte large, volume eleve, prix accessibles' },
@@ -274,8 +274,8 @@ export default function BlogPrixDeVente() {
                   { type: 'Boissons (vin, alcool)', coef: '3,5 - 5,0', fc: '20 - 28 %', use: 'Coefficient plus eleve sur les liquides' },
                   { type: 'Cafe / Boisson chaude', coef: '6,0 - 10,0', fc: '10 - 17 %', use: 'Cout matiere derisoire (cafe, the, infusion)' },
                 ].map((row, i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}>
-                    <td className="py-3 px-4 font-medium text-[#111111]">{row.type}</td>
+                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
+                    <td className="py-3 px-4 font-medium text-mono-100">{row.type}</td>
                     <td className="py-3 px-4 text-center font-bold">{row.coef}</td>
                     <td className="py-3 px-4 text-center">{row.fc}</td>
                     <td className="py-3 px-4 text-sm">{row.use}</td>
@@ -286,15 +286,15 @@ export default function BlogPrixDeVente() {
           </div>
 
           <div className="prose-content mt-8">
-            <h3 className="text-xl font-bold text-[#111111] mb-3">Avantages de la methode</h3>
-            <ul className="list-disc list-inside space-y-2 text-[#404040]">
+            <h3 className="text-xl font-bold text-mono-100 mb-3">Avantages de la methode</h3>
+            <ul className="list-disc list-inside space-y-2 text-mono-350">
               <li><strong>Rapidite :</strong> applicable en 30 secondes par plat.</li>
               <li><strong>Simplicite :</strong> une seule formule, tout le monde la comprend.</li>
               <li><strong>Coherence :</strong> garantit un food cost regulier sur l'ensemble de la carte.</li>
             </ul>
 
-            <h3 className="text-xl font-bold text-[#111111] mb-3 mt-6">Limites de la methode</h3>
-            <ul className="list-disc list-inside space-y-2 text-[#404040]">
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-6">Limites de la methode</h3>
+            <ul className="list-disc list-inside space-y-2 text-mono-350">
               <li>Ignore le temps de preparation : un plat avec 2 minutes de cuisson et un plat avec 1h de mijotage ont la meme rentabilite apparente alors que la realite est tres differente.</li>
               <li>Ne tient pas compte du marche : un coefficient mecanique peut produire un prix decale par rapport a la concurrence.</li>
               <li>Ignore la psychologie : 19,90 et 19,50 ont le meme coefficient mais pas le meme impact commercial.</li>
@@ -320,19 +320,19 @@ export default function BlogPrixDeVente() {
               temps de preparation, complexite, positionnement.
             </p>
 
-            <h3 className="text-xl font-bold text-[#111111] mb-3 mt-6">Formule</h3>
-            <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 my-4 font-mono text-sm">
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-6">Formule</h3>
+            <div className="bg-mono-1000 border border-mono-900 rounded-xl p-5 my-4 font-mono text-sm">
               Prix de vente HT = Cout matieres / (1 - Marge cible en %)<br />
               <br />
               Si marge brute cible = 70 %, alors :<br />
               Prix de vente HT = Cout matieres / 0,30
             </div>
 
-            <h3 className="text-xl font-bold text-[#111111] mb-3 mt-6">Exemple chiffre</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-6">Exemple chiffre</h3>
             <p>
               Vous voulez une marge brute de 72 % sur votre nouveau plat. Le cout matieres est de 6,30 EUR.
             </p>
-            <ul className="list-disc list-inside space-y-1.5 text-[#404040] mt-3">
+            <ul className="list-disc list-inside space-y-1.5 text-mono-350 mt-3">
               <li>Prix HT = 6,30 / (1 - 0,72) = 6,30 / 0,28 = <strong>22,50 EUR HT</strong></li>
               <li>Prix TTC (TVA 10 %) = 22,50 x 1,10 = <strong>24,75 EUR TTC</strong></li>
               <li>Marge brute en EUR = 22,50 - 6,30 = <strong>16,20 EUR par plat</strong></li>
@@ -348,7 +348,7 @@ export default function BlogPrixDeVente() {
           </Callout>
 
           <div className="prose-content mt-6">
-            <h3 className="text-xl font-bold text-[#111111] mb-3">Combiner les deux methodes</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3">Combiner les deux methodes</h3>
             <p>
               En pratique, les restaurateurs experimentes combinent les deux : ils utilisent le coefficient
               multiplicateur comme reference, puis ajustent vers la marge cible sur certains plats
@@ -419,31 +419,31 @@ export default function BlogPrixDeVente() {
               5,00 EUR. Vous devez fixer le prix de vente. Voici la demarche complete, etape par etape.
             </p>
 
-            <h3 className="text-xl font-bold text-[#111111] mb-3 mt-6">Etape 1 : prix mathematique selon votre coefficient</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-6">Etape 1 : prix mathematique selon votre coefficient</h3>
           </div>
 
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-[#F5F5F5] text-[#404040]">
+                <tr className="bg-mono-975 text-mono-350">
                   <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Coefficient applique</th>
                   <th className="text-center py-3 px-4 font-semibold">Food cost</th>
                   <th className="text-center py-3 px-4 font-semibold">Prix HT</th>
                   <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Prix TTC</th>
                 </tr>
               </thead>
-              <tbody className="text-[#404040]">
+              <tbody className="text-mono-350">
                 <tr className="bg-white"><td className="py-3 px-4 font-medium">3,0 (gastronomique)</td><td className="py-3 px-4 text-center">33 %</td><td className="py-3 px-4 text-center">15,00 EUR</td><td className="py-3 px-4 text-center">16,50 EUR</td></tr>
-                <tr className="bg-[#FAFAFA]"><td className="py-3 px-4 font-medium">3,33 (bistrot)</td><td className="py-3 px-4 text-center">30 %</td><td className="py-3 px-4 text-center">16,65 EUR</td><td className="py-3 px-4 text-center">18,32 EUR</td></tr>
+                <tr className="bg-mono-1000"><td className="py-3 px-4 font-medium">3,33 (bistrot)</td><td className="py-3 px-4 text-center">30 %</td><td className="py-3 px-4 text-center">16,65 EUR</td><td className="py-3 px-4 text-center">18,32 EUR</td></tr>
                 <tr className="bg-white"><td className="py-3 px-4 font-medium">3,5 (brasserie)</td><td className="py-3 px-4 text-center">28,5 %</td><td className="py-3 px-4 text-center">17,50 EUR</td><td className="py-3 px-4 text-center">19,25 EUR</td></tr>
-                <tr className="bg-[#FAFAFA]"><td className="py-3 px-4 font-medium">4,0 (rapide)</td><td className="py-3 px-4 text-center">25 %</td><td className="py-3 px-4 text-center">20,00 EUR</td><td className="py-3 px-4 text-center">22,00 EUR</td></tr>
+                <tr className="bg-mono-1000"><td className="py-3 px-4 font-medium">4,0 (rapide)</td><td className="py-3 px-4 text-center">25 %</td><td className="py-3 px-4 text-center">20,00 EUR</td><td className="py-3 px-4 text-center">22,00 EUR</td></tr>
                 <tr className="bg-white"><td className="py-3 px-4 font-medium">5,0 (pizzeria)</td><td className="py-3 px-4 text-center">20 %</td><td className="py-3 px-4 text-center">25,00 EUR</td><td className="py-3 px-4 text-center">27,50 EUR</td></tr>
               </tbody>
             </table>
           </div>
 
           <div className="prose-content mt-8">
-            <h3 className="text-xl font-bold text-[#111111] mb-3">Etape 2 : verification marche</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3">Etape 2 : verification marche</h3>
             <p>
               Vous etes une brasserie. Coefficient cible : 3,33 a 3,5. Prix mathematique : 16,65 a 17,50 EUR HT.
               Verifiez maintenant que ce prix est coherent avec votre marche. Regardez 5 a 10 restaurants
@@ -451,13 +451,13 @@ export default function BlogPrixDeVente() {
               la cible. Si vous etes a 22 EUR alors qu'ils sont tous a 16, vous prenez un risque.
             </p>
 
-            <h3 className="text-xl font-bold text-[#111111] mb-3 mt-6">Etape 3 : ajustement psychologique</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-6">Etape 3 : ajustement psychologique</h3>
             <p>
               Vous avez calcule 16,65 EUR HT, soit 18,32 EUR TTC. Vous l'arrondissez a <strong>18,50 EUR TTC</strong>
               (prix de charme : ne pas afficher 18,30, qui semble bizarre, mais 18,50 ou 18,90).
               Verifiez votre marge reelle :
             </p>
-            <ul className="list-disc list-inside space-y-1.5 text-[#404040] mt-3">
+            <ul className="list-disc list-inside space-y-1.5 text-mono-350 mt-3">
               <li>Prix TTC affiche : 18,50 EUR</li>
               <li>Prix HT recalcule : 18,50 / 1,10 = 16,82 EUR</li>
               <li>Marge brute (EUR) : 16,82 - 5,00 = <strong>11,82 EUR</strong></li>
@@ -496,13 +496,13 @@ export default function BlogPrixDeVente() {
               { type: 'Food truck', coef: '3,5 - 5,0', exemple: 'Burger maison : 3 EUR cout -> 12 EUR TTC', conseil: 'Coefficient eleve pour compenser les volumes limites et la mobilite.' },
               { type: 'Coffee shop', coef: '5,0 - 10,0', exemple: 'Cappuccino : 0,40 EUR cout -> 4,50 EUR TTC', conseil: 'Coefficient extreme sur les boissons, coefficient bas (3-3,5) sur les snacks pour equilibrer.' },
             ].map((row, i) => (
-              <div key={i} className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+              <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-bold text-[#111111]">{row.type}</h3>
+                  <h3 className="font-bold text-mono-100">{row.type}</h3>
                   <span className="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full font-semibold">{row.coef}</span>
                 </div>
-                <p className="text-xs text-[#737373] mb-2"><strong>Exemple :</strong> {row.exemple}</p>
-                <p className="text-sm text-[#525252] leading-relaxed">{row.conseil}</p>
+                <p className="text-xs text-mono-500 mb-2"><strong>Exemple :</strong> {row.exemple}</p>
+                <p className="text-sm text-mono-400 leading-relaxed">{row.conseil}</p>
               </div>
             ))}
           </div>
@@ -541,8 +541,8 @@ export default function BlogPrixDeVente() {
               <div className="w-10 h-10 bg-teal-600 text-white rounded-lg flex items-center justify-center mb-3">
                 <Calculator className="w-5 h-5" />
               </div>
-              <h3 className="font-bold text-[#111111] mb-2 group-hover:text-teal-700 transition-colors">Calculateur food cost RestauMargin</h3>
-              <p className="text-sm text-[#525252] leading-relaxed mb-3">
+              <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">Calculateur food cost RestauMargin</h3>
+              <p className="text-sm text-mono-400 leading-relaxed mb-3">
                 Outil en ligne gratuit. Entrez vos ingredients, grammages et prix : food cost,
                 marge brute et coefficient s'affichent instantanement. Pas d'inscription requise.
               </p>
@@ -551,12 +551,12 @@ export default function BlogPrixDeVente() {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
-              <div className="w-10 h-10 bg-[#111111] text-white rounded-lg flex items-center justify-center mb-3">
+            <div className="bg-white border border-mono-900 rounded-2xl p-6">
+              <div className="w-10 h-10 bg-mono-100 text-white rounded-lg flex items-center justify-center mb-3">
                 <BookOpen className="w-5 h-5" />
               </div>
-              <h3 className="font-bold text-[#111111] mb-2">Tableur Excel ou Google Sheets</h3>
-              <p className="text-sm text-[#525252] leading-relaxed">
+              <h3 className="font-bold text-mono-100 mb-2">Tableur Excel ou Google Sheets</h3>
+              <p className="text-sm text-mono-400 leading-relaxed">
                 Pour ceux qui aiment garder le controle. Solution gratuite mais chronophage : il faut
                 tout saisir manuellement et mettre a jour les prix a chaque variation fournisseur.
                 Adapte aux petites cartes (moins de 30 plats).
@@ -578,7 +578,7 @@ export default function BlogPrixDeVente() {
 
         {/* ═════════════ FAQ ═════════════ */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions frequentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes</h2>
           <div className="space-y-4">
             {faqItems.map((item, i) => (
               <FAQItem key={i} q={item.question} a={item.answer} />
@@ -620,19 +620,19 @@ export default function BlogPrixDeVente() {
 
         {/* ═════════════ Articles complementaires ═════════════ */}
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Pour aller plus loin</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Pour aller plus loin</h2>
           <div className="grid sm:grid-cols-3 gap-4">
-            <Link to="/blog/calcul-marge-restaurant" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Calcul marge restaurant : guide complet</h3>
-              <p className="text-xs text-[#737373]">Marge brute, marge nette, food cost et formules expliquees.</p>
+            <Link to="/blog/calcul-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calcul marge restaurant : guide complet</h3>
+              <p className="text-xs text-mono-500">Marge brute, marge nette, food cost et formules expliquees.</p>
             </Link>
-            <Link to="/blog/coefficient-multiplicateur" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Coefficient multiplicateur</h3>
-              <p className="text-xs text-[#737373]">Tableaux par categorie, erreurs courantes et cas pratiques.</p>
+            <Link to="/blog/coefficient-multiplicateur" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Coefficient multiplicateur</h3>
+              <p className="text-xs text-mono-500">Tableaux par categorie, erreurs courantes et cas pratiques.</p>
             </Link>
-            <Link to="/pricing" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Tarifs RestauMargin</h3>
-              <p className="text-xs text-[#737373]">Voir les plans Pro et Business, et l'essai gratuit 7 jours.</p>
+            <Link to="/pricing" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Tarifs RestauMargin</h3>
+              <p className="text-xs text-mono-500">Voir les plans Pro et Business, et l'essai gratuit 7 jours.</p>
             </Link>
           </div>
         </section>
@@ -642,20 +642,20 @@ export default function BlogPrixDeVente() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#FAFAFA] border-t border-[#E5E7EB] py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center text-sm text-[#737373]">
-          <Link to="/landing" className="flex items-center justify-center gap-2 text-[#111111] font-bold text-lg mb-4">
+      <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
+        <div className="max-w-4xl mx-auto text-center text-sm text-mono-500">
+          <Link to="/landing" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
             <ChefHat className="w-6 h-6 text-teal-600" />
             RestauMargin
           </Link>
           <p className="mb-4">La plateforme de gestion de marge pour les restaurateurs.</p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-[#A3A3A3]">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
             <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
             <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
           </div>
-          <p className="mt-6 text-xs text-[#A3A3A3]">
+          <p className="mt-6 text-xs text-mono-700">
             &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
           </p>
         </div>
@@ -672,7 +672,7 @@ function SectionHeading({ icon, number, children }: { icon: React.ReactNode; num
       <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
         {icon}
       </div>
-      <h2 className="text-2xl font-bold text-[#111111]">
+      <h2 className="text-2xl font-bold text-mono-100">
         <span className="text-teal-600 mr-2">{number}.</span>
         {children}
       </h2>
@@ -682,25 +682,25 @@ function SectionHeading({ icon, number, children }: { icon: React.ReactNode; num
 
 function PricingTechnique({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 hover:border-teal-300 transition-colors">
+    <div className="bg-white border border-mono-900 rounded-2xl p-5 hover:border-teal-300 transition-colors">
       <div className="w-10 h-10 bg-teal-50 text-teal-700 rounded-lg flex items-center justify-center mb-3">
         {icon}
       </div>
-      <h3 className="font-bold text-[#111111] mb-2">{title}</h3>
-      <p className="text-sm text-[#525252] leading-relaxed">{desc}</p>
+      <h3 className="font-bold text-mono-100 mb-2">{title}</h3>
+      <p className="text-sm text-mono-400 leading-relaxed">{desc}</p>
     </div>
   );
 }
 
 function ErreurCard({ number, title, desc }: { number: number; title: string; desc: string }) {
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 sm:p-6 flex gap-4">
+    <div className="bg-white border border-mono-900 rounded-xl p-5 sm:p-6 flex gap-4">
       <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center shrink-0 font-bold text-lg">
         {number}
       </div>
       <div>
-        <h3 className="font-semibold text-[#111111] mb-1.5">{title}</h3>
-        <p className="text-sm text-[#525252] leading-relaxed">{desc}</p>
+        <h3 className="font-semibold text-mono-100 mb-1.5">{title}</h3>
+        <p className="text-sm text-mono-400 leading-relaxed">{desc}</p>
       </div>
     </div>
   );
@@ -721,12 +721,12 @@ function Callout({ type, children }: { type: 'info' | 'warning'; children: React
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   return (
-    <details className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl group">
-      <summary className="px-5 py-4 font-semibold text-[#111111] cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
+    <details className="bg-mono-1000 border border-mono-900 rounded-xl group">
+      <summary className="px-5 py-4 font-semibold text-mono-100 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
         {q}
-        <ArrowRight className="w-4 h-4 text-[#A3A3A3] group-open:rotate-90 transition-transform" />
+        <ArrowRight className="w-4 h-4 text-mono-700 group-open:rotate-90 transition-transform" />
       </summary>
-      <p className="px-5 pb-4 text-sm text-[#525252] leading-relaxed">{a}</p>
+      <p className="px-5 pb-4 text-sm text-mono-400 leading-relaxed">{a}</p>
     </details>
   );
 }

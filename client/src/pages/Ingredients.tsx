@@ -994,20 +994,20 @@ export default function Ingredients() {
 
   function SortHeader({ label, field }: { label: string; field: SortKey }) {
     return (
-      <button onClick={() => toggleSort(field)} className="flex items-center gap-1 font-medium hover:text-[#111111] dark:hover:text-white">
+      <button onClick={() => toggleSort(field)} className="flex items-center gap-1 font-medium hover:text-mono-100 dark:hover:text-white">
         {label}
-        <ArrowUpDown className={`w-3 h-3 ${sortKey === field ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+        <ArrowUpDown className={`w-3 h-3 ${sortKey === field ? 'text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
       </button>
     );
   }
 
-  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.loading')}</div>;
+  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">{t('ingredients.loading')}</div>;
 
   return (
     <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-[#111111] dark:text-white">{t('ingredients.title')}</h2>
+        <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-mono-100 dark:text-white">{t('ingredients.title')}</h2>
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <button onClick={exportCSV} className="hidden sm:flex btn-secondary items-center gap-2 text-sm no-print" title="Exporter CSV">
             <Download className="w-4 h-4" /> Exporter CSV
@@ -1033,13 +1033,13 @@ export default function Ingredients() {
             <button
               key={cat}
               onClick={() => setFilterCategory(filterCategory === cat ? '' : cat)}
-              className={`${colors.bg} ${colors.darkBg} rounded-2xl border-l-4 ${colors.border} ${colors.darkBorder} p-3 text-left transition-all hover:scale-[1.02] ${filterCategory === cat ? 'ring-2 ring-[#111111] dark:ring-white' : ''}`}
+              className={`${colors.bg} ${colors.darkBg} rounded-2xl border-l-4 ${colors.border} ${colors.darkBorder} p-3 text-left transition-all hover:scale-[1.02] ${filterCategory === cat ? 'ring-2 ring-mono-100 dark:ring-white' : ''}`}
             >
               <p className={`text-xs font-semibold ${colors.text} dark:text-white/70 truncate`}>{cat}</p>
-              <p className="text-lg font-bold font-satoshi tabular-nums text-[#111111] dark:text-white mt-0.5">{summary.count}</p>
+              <p className="text-lg font-bold font-satoshi tabular-nums text-mono-100 dark:text-white mt-0.5">{summary.count}</p>
               <div className="flex items-center justify-between mt-1">
-                <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">Moy. {summary.avgPrice.toFixed(2)}{getCurrencySymbol()}</span>
-                <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Tot. {summary.totalSpend.toFixed(0)}{getCurrencySymbol()}</span>
+                <span className="text-[10px] text-[#6B7280] dark:text-mono-700">Moy. {summary.avgPrice.toFixed(2)}{getCurrencySymbol()}</span>
+                <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Tot. {summary.totalSpend.toFixed(0)}{getCurrencySymbol()}</span>
               </div>
             </button>
           );
@@ -1048,40 +1048,40 @@ export default function Ingredients() {
 
       {/* KPI Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-4 sm:mb-6">
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
-          <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
-            <Package className="w-5 h-5 text-[#111111] dark:text-white" />
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
+          <div className="p-2 sm:p-2.5 rounded-xl bg-mono-950 dark:bg-[#171717]">
+            <Package className="w-5 h-5 text-mono-100 dark:text-white" />
           </div>
           <div>
-            <p className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('ingredients.totalIngredients')}</p>
-            <p className="text-xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{summaryStats.total}</p>
+            <p className="text-xs font-general-sans text-mono-500 dark:text-mono-700">{t('ingredients.totalIngredients')}</p>
+            <p className="text-xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{summaryStats.total}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
-          <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
-            <Euro className="w-5 h-5 text-[#111111] dark:text-white" />
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
+          <div className="p-2 sm:p-2.5 rounded-xl bg-mono-950 dark:bg-[#171717]">
+            <Euro className="w-5 h-5 text-mono-100 dark:text-white" />
           </div>
           <div>
-            <p className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('ingredients.avgPrice')}</p>
-            <p className="text-xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{summaryStats.avgPrice.toFixed(2)} {getCurrencySymbol()}</p>
+            <p className="text-xs font-general-sans text-mono-500 dark:text-mono-700">{t('ingredients.avgPrice')}</p>
+            <p className="text-xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{summaryStats.avgPrice.toFixed(2)} {getCurrencySymbol()}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
-          <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
-            <Tag className="w-5 h-5 text-[#111111] dark:text-white" />
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
+          <div className="p-2 sm:p-2.5 rounded-xl bg-mono-950 dark:bg-[#171717]">
+            <Tag className="w-5 h-5 text-mono-100 dark:text-white" />
           </div>
           <div>
-            <p className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('ingredients.expensiveCategory')}</p>
-            <p className="text-lg font-bold font-satoshi text-[#111111] dark:text-white truncate">{summaryStats.expensiveCat}</p>
+            <p className="text-xs font-general-sans text-mono-500 dark:text-mono-700">{t('ingredients.expensiveCategory')}</p>
+            <p className="text-lg font-bold font-satoshi text-mono-100 dark:text-white truncate">{summaryStats.expensiveCat}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
-          <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
-            <Truck className="w-5 h-5 text-[#111111] dark:text-white" />
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
+          <div className="p-2 sm:p-2.5 rounded-xl bg-mono-950 dark:bg-[#171717]">
+            <Truck className="w-5 h-5 text-mono-100 dark:text-white" />
           </div>
           <div>
-            <p className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('ingredients.linkedSuppliers')}</p>
-            <p className="text-xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{summaryStats.uniqueSuppliers}</p>
+            <p className="text-xs font-general-sans text-mono-500 dark:text-mono-700">{t('ingredients.linkedSuppliers')}</p>
+            <p className="text-xl font-bold font-satoshi tabular-nums text-mono-100 dark:text-white">{summaryStats.uniqueSuppliers}</p>
           </div>
         </div>
       </div>
@@ -1093,7 +1093,7 @@ export default function Ingredients() {
             <div className="w-7 h-7 rounded-lg bg-teal-600 flex items-center justify-center">
               <Bell className="w-3.5 h-3.5 text-white" />
             </div>
-            <h3 className="text-sm font-bold text-[#111111] dark:text-white">Prix surveilles</h3>
+            <h3 className="text-sm font-bold text-mono-100 dark:text-white">Prix surveilles</h3>
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300">
               {watchedIngredients.length}
             </span>
@@ -1106,7 +1106,7 @@ export default function Ingredients() {
               return (
                 <div
                   key={ing.id}
-                  className={`relative bg-white dark:bg-[#0A0A0A] rounded-xl border p-3 flex items-center gap-3 transition-all ${hasAlert ? 'border-red-300 dark:border-red-800 shadow-sm shadow-red-100 dark:shadow-red-950/20' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'}`}
+                  className={`relative bg-white dark:bg-mono-50 rounded-xl border p-3 flex items-center gap-3 transition-all ${hasAlert ? 'border-red-300 dark:border-red-800 shadow-sm shadow-red-100 dark:shadow-red-950/20' : 'border-mono-900 dark:border-mono-200'}`}
                 >
                   {hasAlert && (
                     <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center animate-pulse">
@@ -1116,10 +1116,10 @@ export default function Ingredients() {
                   <IngredientAvatar name={ing.name} category={ing.category} size="sm" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-semibold text-[#111111] dark:text-white truncate">{ing.name}</span>
+                      <span className="text-xs font-semibold text-mono-100 dark:text-white truncate">{ing.name}</span>
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="text-xs font-mono text-[#6B7280] dark:text-[#A3A3A3]">{ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}/{ing.unit}</span>
+                      <span className="text-xs font-mono text-[#6B7280] dark:text-mono-700">{ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}/{ing.unit}</span>
                       {change && change.direction !== 'stable' && (
                         <span
                           aria-label={`Prix en ${change.direction === 'up' ? 'hausse' : 'baisse'} de ${change.percent.toFixed(1)}%`}
@@ -1176,8 +1176,8 @@ export default function Ingredients() {
           onClick={() => setFilterCategory('')}
           className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
             !filterCategory
-              ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-              : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+              ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+              : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
           }`}
         >
           {t('ingredients.allCategories')} ({ingredients.length})
@@ -1188,8 +1188,8 @@ export default function Ingredients() {
             onClick={() => setFilterCategory(filterCategory === cat ? '' : cat)}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
               filterCategory === cat
-                ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+                ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+                : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
             }`}
           >
             {cat} ({categoryCounts[cat] || 0})
@@ -1208,16 +1208,16 @@ export default function Ingredients() {
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl shadow overflow-x-auto border border-[#E5E7EB] dark:border-[#1A1A1A] -mx-4 sm:mx-0">
+      <div className="bg-white dark:bg-mono-50 rounded-2xl shadow overflow-x-auto border border-mono-900 dark:border-mono-200 -mx-4 sm:mx-0">
         <table className="w-full text-sm min-w-[740px]">
-          <thead className="bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-left">
+          <thead className="bg-mono-1000 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 text-left">
             <tr>
               <th scope="col" className="px-4 py-3 w-10">
                 <input
                   type="checkbox"
                   checked={filtered.length > 0 && selectedIds.size === filtered.length}
                   onChange={toggleSelectAll}
-                  className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer"
+                  className="w-4 h-4 rounded accent-mono-100 dark:accent-white cursor-pointer"
                   aria-label="Tout selectionner"
                 />
               </th>
@@ -1231,7 +1231,7 @@ export default function Ingredients() {
               <th scope="col" className="px-4 py-3 font-medium w-32">{t('ingredients.actionsColumn')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+          <tbody className="divide-y divide-mono-900 dark:divide-mono-200">
             {filtered.length === 0 ? (
               ingredients.length === 0 ? (
                 <tr>
@@ -1240,23 +1240,23 @@ export default function Ingredients() {
                       <div className="mb-4">
                         <FoodIllustration recipeName="tomate" size="lg" />
                       </div>
-                      <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-1">
+                      <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-1">
                         Ajoutez votre premier ingredient
                       </h3>
-                      <p className="text-sm text-[#9CA3AF] dark:text-[#737373] max-w-sm mb-2">
+                      <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-sm mb-2">
                         Commencez par ajouter vos ingredients avec leurs prix fournisseur. L'IA peut suggerer les prix du marche.
                       </p>
                       <div className="flex flex-wrap gap-2 justify-center my-3">
-                        <span className="text-xs px-3 py-1 rounded-full bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3]">
+                        <span className="text-xs px-3 py-1 rounded-full bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700">
                           Ex: Poulet (filet) — 9.50 EUR/kg
                         </span>
-                        <span className="text-xs px-3 py-1 rounded-full bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3]">
+                        <span className="text-xs px-3 py-1 rounded-full bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700">
                           Ex: Tomates — 2.80 EUR/kg
                         </span>
                       </div>
                       <button
                         onClick={openNew}
-                        className="mt-3 inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+                        className="mt-3 inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
                       >
                         <Plus className="w-4 h-4" /> Ajouter un ingredient
                       </button>
@@ -1265,7 +1265,7 @@ export default function Ingredients() {
                 </tr>
               ) : (
                 <tr>
-                  <td colSpan={9} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
+                  <td colSpan={9} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-mono-500">
                     {t('ingredients.noResults')}
                   </td>
                 </tr>
@@ -1279,17 +1279,17 @@ export default function Ingredients() {
                 const isStable = costAlertIds.stableIds.has(ing.id);
 
                 return (
-                  <tr key={ing.id} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] ${selectedIds.has(ing.id) ? 'bg-[#F3F4F6] dark:bg-[#171717]' : ''}`}>
+                  <tr key={ing.id} className={`hover:bg-mono-1000 dark:hover:bg-mono-50 ${selectedIds.has(ing.id) ? 'bg-mono-950 dark:bg-[#171717]' : ''}`}>
                     <td className="px-4 py-3">
                       <input
                         type="checkbox"
                         checked={selectedIds.has(ing.id)}
                         onChange={() => toggleSelectOne(ing.id)}
-                        className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer"
+                        className="w-4 h-4 rounded accent-mono-100 dark:accent-white cursor-pointer"
                         aria-label={`Selectionner ${ing.name}`}
                       />
                     </td>
-                    <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">
+                    <td className="px-4 py-3 font-medium text-mono-100 dark:text-white">
                       <div className="flex items-center gap-2.5">
                         <IngredientAvatar name={ing.name} category={ing.category} size="sm" />
                         <span>
@@ -1301,12 +1301,12 @@ export default function Ingredients() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="px-2 py-1 rounded-full text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white">{ing.category}</span>
+                      <span className="px-2 py-1 rounded-full text-xs bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white">{ing.category}</span>
                     </td>
                     <td className="px-4 py-3">
                       <button
                         onClick={() => openPriceTracker(ing)}
-                        className="inline-flex items-center gap-1.5 font-mono text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors group"
+                        className="inline-flex items-center gap-1.5 font-mono text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors group"
                         title="Voir l'historique des prix"
                       >
                         {ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}
@@ -1330,7 +1330,7 @@ export default function Ingredients() {
                         })()}
                         <BarChart3 className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                         {getAlertForIngredient(ing.id) !== null && (
-                          <Bell className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                          <Bell className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
                         )}
                       </button>
                     </td>
@@ -1339,10 +1339,10 @@ export default function Ingredients() {
                       {sparklinePrices && sparklinePrices.length >= 2 ? (
                         <PriceSparkline prices={sparklinePrices} />
                       ) : (
-                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">--</span>
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">--</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{ing.unit}</td>
+                    <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700">{ing.unit}</td>
                     {/* Supplier Badge */}
                     <td className="px-4 py-3">
                       {supplierName && badgeColor ? (
@@ -1355,7 +1355,7 @@ export default function Ingredients() {
                           {supplierName}
                         </button>
                       ) : (
-                        <span className="text-[#9CA3AF] dark:text-[#737373] italic text-xs">{t('ingredients.notAssigned')}</span>
+                        <span className="text-[#9CA3AF] dark:text-mono-500 italic text-xs">{t('ingredients.notAssigned')}</span>
                       )}
                     </td>
                     {/* Cost Alert */}
@@ -1369,7 +1369,7 @@ export default function Ingredients() {
                           <CheckCircle className="w-4 h-4" />
                         </span>
                       ) : (
-                        <span className="text-[#9CA3AF] dark:text-[#737373]">
+                        <span className="text-[#9CA3AF] dark:text-mono-500">
                           <Minus className="w-4 h-4" />
                         </span>
                       )}
@@ -1382,13 +1382,13 @@ export default function Ingredients() {
                           title={watchedIds.has(ing.id) ? 'Retirer la surveillance' : 'Surveiller le prix'}
                           aria-label={watchedIds.has(ing.id) ? 'Ne plus surveiller' : 'Surveiller le prix'}
                         >
-                          <Bell aria-hidden="true" className={`w-4 h-4 ${watchedIds.has(ing.id) ? 'text-teal-600 dark:text-teal-400 fill-teal-600 dark:fill-teal-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                          <Bell aria-hidden="true" className={`w-4 h-4 ${watchedIds.has(ing.id) ? 'text-teal-600 dark:text-teal-400 fill-teal-600 dark:fill-teal-400' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
                         </button>
                         <button onClick={() => openWeigh(ing)} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title={t('ingredients.weighTooltip')} aria-label="Peser l'ingredient">
                           <Scale aria-hidden="true" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         </button>
-                        <button onClick={() => openEdit(ing)} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t('ingredients.editTooltip')} aria-label="Modifier l'ingredient">
-                          <Pencil aria-hidden="true" className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                        <button onClick={() => openEdit(ing)} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t('ingredients.editTooltip')} aria-label="Modifier l'ingredient">
+                          <Pencil aria-hidden="true" className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
                         </button>
                         <button onClick={() => setDeleteTarget(ing.id)} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t('ingredients.deleteTooltip')} aria-label="Supprimer l'ingredient">
                           <Trash2 aria-hidden="true" className="w-4 h-4 text-red-500" />
@@ -1403,7 +1403,7 @@ export default function Ingredients() {
         </table>
       </div>
 
-      <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-3">{t('ingredients.ingredientCount').replace('{count}', String(filtered.length))}</p>
+      <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-3">{t('ingredients.ingredientCount').replace('{count}', String(filtered.length))}</p>
 
       {/* Hidden file input for CSV import */}
       <input type="file" ref={fileInputRef} accept=".csv" className="hidden" onChange={(e) => {
@@ -1450,7 +1450,7 @@ export default function Ingredients() {
 
       {/* ── Bulk Actions Floating Bar ──────────────────────────────────── */}
       {selectedIds.size > 0 && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-[#111111] dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-4 animate-in slide-in-from-bottom-4 max-w-[95vw]">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-mono-100 dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-4 animate-in slide-in-from-bottom-4 max-w-[95vw]">
           <span className="text-sm font-medium flex items-center gap-2">
             <CheckSquare className="w-4 h-4" />
             {selectedIds.size} ingredient{selectedIds.size > 1 ? 's' : ''} selectionne{selectedIds.size > 1 ? 's' : ''}
@@ -1498,12 +1498,12 @@ export default function Ingredients() {
               <ChevronDown className="w-3 h-3" />
             </button>
             {bulkCategoryOpen && (
-              <div className="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-56 overflow-y-auto">
+              <div className="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-mono-50 rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-56 overflow-y-auto">
                 {INGREDIENT_CATEGORIES.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => bulkChangeCategory(cat)}
-                    className="w-full text-left px-3 py-2 text-sm text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                    className="w-full text-left px-3 py-2 text-sm text-mono-100 dark:text-white hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
                   >
                     {cat}
                   </button>
@@ -1523,14 +1523,14 @@ export default function Ingredients() {
               <ChevronDown className="w-3 h-3" />
             </button>
             {bulkSupplierOpen && (
-              <div className="absolute bottom-full left-0 mb-2 w-56 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-56 overflow-y-auto">
+              <div className="absolute bottom-full left-0 mb-2 w-56 bg-white dark:bg-mono-50 rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-56 overflow-y-auto">
                 {suppliers.length === 0 ? (
-                  <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-[#737373]">Aucun fournisseur</div>
+                  <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-mono-500">Aucun fournisseur</div>
                 ) : suppliers.map((sup) => (
                   <button
                     key={sup.id}
                     onClick={() => bulkChangeSupplier(sup.id, sup.name)}
-                    className="w-full text-left px-3 py-2 text-sm text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                    className="w-full text-left px-3 py-2 text-sm text-mono-100 dark:text-white hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
                   >
                     {sup.name}
                   </button>
@@ -1553,21 +1553,21 @@ export default function Ingredients() {
       {/* ── Bulk Price Update Modal ──────────────────────────────────── */}
       <Modal isOpen={showBulkPriceModal} onClose={() => setShowBulkPriceModal(false)} title="Mettre a jour les prix en lot">
         <div className="space-y-4">
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
-            Appliquer un ajustement de prix a <strong className="text-[#111111] dark:text-white">{selectedIds.size}</strong> ingredient(s) selectionne(s).
+          <p className="text-sm text-[#6B7280] dark:text-mono-700">
+            Appliquer un ajustement de prix a <strong className="text-mono-100 dark:text-white">{selectedIds.size}</strong> ingredient(s) selectionne(s).
           </p>
 
           <div className="flex items-center gap-3">
-            <div className="flex rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+            <div className="flex rounded-lg border border-mono-900 dark:border-mono-200 overflow-hidden">
               <button
                 onClick={() => setBulkPriceDirection('increase')}
-                className={`px-4 py-2 text-sm font-medium transition-colors ${bulkPriceDirection === 'increase' ? 'bg-red-500 text-white' : 'bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3]'}`}
+                className={`px-4 py-2 text-sm font-medium transition-colors ${bulkPriceDirection === 'increase' ? 'bg-red-500 text-white' : 'bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700'}`}
               >
                 <TrendingUp className="w-4 h-4 inline mr-1" /> Hausse
               </button>
               <button
                 onClick={() => setBulkPriceDirection('decrease')}
-                className={`px-4 py-2 text-sm font-medium transition-colors ${bulkPriceDirection === 'decrease' ? 'bg-emerald-500 text-white' : 'bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3]'}`}
+                className={`px-4 py-2 text-sm font-medium transition-colors ${bulkPriceDirection === 'decrease' ? 'bg-emerald-500 text-white' : 'bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700'}`}
               >
                 <TrendingDown className="w-4 h-4 inline mr-1" /> Baisse
               </button>
@@ -1583,27 +1583,27 @@ export default function Ingredients() {
                 className="input w-24 text-center"
                 placeholder="5"
               />
-              <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3] font-medium">%</span>
+              <span className="text-sm text-[#6B7280] dark:text-mono-700 font-medium">%</span>
             </div>
           </div>
 
           {/* Preview table */}
           {bulkPricePreview.length > 0 && (
-            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden max-h-64 overflow-y-auto">
+            <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 overflow-hidden max-h-64 overflow-y-auto">
               <table className="w-full text-sm">
-                <thead className="bg-[#F3F4F6] dark:bg-[#171717]">
+                <thead className="bg-mono-950 dark:bg-[#171717]">
                   <tr>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">Ingredient</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">Avant</th>
-                    <th className="px-3 py-2 text-center text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]"></th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">Apres</th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-[#6B7280] dark:text-mono-700">Ingredient</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-[#6B7280] dark:text-mono-700">Avant</th>
+                    <th className="px-3 py-2 text-center text-xs font-medium text-[#6B7280] dark:text-mono-700"></th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-[#6B7280] dark:text-mono-700">Apres</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+                <tbody className="divide-y divide-mono-900 dark:divide-mono-200">
                   {bulkPricePreview.map((item) => (
                     <tr key={item.id}>
-                      <td className="px-3 py-2 font-medium text-[#111111] dark:text-white">{item.name}</td>
-                      <td className="px-3 py-2 text-right font-mono text-[#6B7280] dark:text-[#A3A3A3]">{item.oldPrice.toFixed(2)}{getCurrencySymbol()}/{item.unit}</td>
+                      <td className="px-3 py-2 font-medium text-mono-100 dark:text-white">{item.name}</td>
+                      <td className="px-3 py-2 text-right font-mono text-[#6B7280] dark:text-mono-700">{item.oldPrice.toFixed(2)}{getCurrencySymbol()}/{item.unit}</td>
                       <td className="px-3 py-2 text-center">
                         {bulkPriceDirection === 'increase'
                           ? <TrendingUp className="w-3.5 h-3.5 text-red-500 mx-auto" />
@@ -1637,9 +1637,9 @@ export default function Ingredients() {
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? t('ingredients.editModalTitle') : t('ingredients.newModalTitle')}>
         {/* Price History Chart (edit mode only) */}
         {editingId && (
-          <div className="mb-4 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
+          <div className="mb-4 bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-3">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider">
+              <span className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider">
                 Historique des prix (30j)
               </span>
               {priceHistory.length >= 2 && (() => {
@@ -1652,7 +1652,7 @@ export default function Ingredients() {
                 return (
                   <span
                     aria-label={isUp ? `Prix en hausse de ${pct}%` : isDown ? `Prix en baisse de ${pct}%` : `Prix stable`}
-                    className={`flex items-center gap-1 text-xs font-semibold ${isUp ? 'text-red-500' : isDown ? 'text-emerald-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`}
+                    className={`flex items-center gap-1 text-xs font-semibold ${isUp ? 'text-red-500' : isDown ? 'text-emerald-500' : 'text-[#9CA3AF] dark:text-mono-500'}`}
                   >
                     {isUp && <TrendingUp className="w-3.5 h-3.5" aria-hidden="true" />}
                     {isDown && <TrendingDown className="w-3.5 h-3.5" aria-hidden="true" />}
@@ -1663,10 +1663,10 @@ export default function Ingredients() {
             </div>
             {priceHistoryLoading ? (
               <div className="flex items-center justify-center py-4">
-                <Loader2 className="w-4 h-4 animate-spin text-[#9CA3AF] dark:text-[#737373]" />
+                <Loader2 className="w-4 h-4 animate-spin text-[#9CA3AF] dark:text-mono-500" />
               </div>
             ) : priceHistory.length === 0 ? (
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center py-3">
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 text-center py-3">
                 Pas d'historique disponible
               </p>
             ) : (
@@ -1744,10 +1744,10 @@ export default function Ingredients() {
             )}
             {/* Name suggestions dropdown */}
             {showNameSuggestions && (nameSuggestions.length > 0 || catalogSuggestions.length > 0) && (
-              <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-64 overflow-y-auto">
+              <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-mono-50 rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-64 overflow-y-auto">
                 {nameSuggestions.length > 0 && (
                   <>
-                    <div className="px-3 py-1.5 text-xs text-[#9CA3AF] dark:text-[#737373] border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+                    <div className="px-3 py-1.5 text-xs text-[#9CA3AF] dark:text-mono-500 border-b border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50">
                       {t('ingredients.existingIngredients')}
                     </div>
                     {nameSuggestions.map((ing) => (
@@ -1755,20 +1755,20 @@ export default function Ingredients() {
                         key={ing.id}
                         type="button"
                         onClick={() => selectNameSuggestion(ing)}
-                        className="w-full text-left px-3 py-2 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-0"
+                        className="w-full text-left px-3 py-2 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors border-b border-mono-900 dark:border-mono-200 last:border-0"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-[#111111] dark:text-white">{ing.name}</span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ing.category} - {ing.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{ing.unit}</span>
+                          <span className="font-medium text-mono-100 dark:text-white">{ing.name}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{ing.category} - {ing.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{ing.unit}</span>
                         </div>
-                        {ing.supplier && <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{t('ingredients.supplierPrefix')}{ing.supplier}</div>}
+                        {ing.supplier && <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{t('ingredients.supplierPrefix')}{ing.supplier}</div>}
                       </button>
                     ))}
                   </>
                 )}
                 {catalogSuggestions.length > 0 && (
                   <>
-                    <div className="px-3 py-1.5 text-xs text-[#111111] dark:text-white border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F3F4F6] dark:bg-[#171717] flex items-center gap-1.5">
+                    <div className="px-3 py-1.5 text-xs text-mono-100 dark:text-white border-b border-mono-900 dark:border-mono-200 bg-mono-950 dark:bg-[#171717] flex items-center gap-1.5">
                       <BookOpen className="w-3 h-3" /> {t('ingredients.catalogTitle')}
                     </div>
                     {catalogSuggestions.map((product, idx) => (
@@ -1776,19 +1776,19 @@ export default function Ingredients() {
                         key={`cat-${idx}`}
                         type="button"
                         onClick={() => selectCatalogProduct(product)}
-                        className="w-full text-left px-3 py-2 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-0"
+                        className="w-full text-left px-3 py-2 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors border-b border-mono-900 dark:border-mono-200 last:border-0"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-[#111111] dark:text-white">{product.name}</span>
-                          <span className="text-xs font-semibold text-[#111111] dark:text-white">{product.prixMoy.toFixed(2)}{getCurrencySymbol()}/{product.unit}</span>
+                          <span className="font-medium text-mono-100 dark:text-white">{product.name}</span>
+                          <span className="text-xs font-semibold text-mono-100 dark:text-white">{product.prixMoy.toFixed(2)}{getCurrencySymbol()}/{product.unit}</span>
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{product.category}</span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">|</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{product.category}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">|</span>
                           <span className="text-xs text-green-600">{product.prixMin.toFixed(2)}{getCurrencySymbol()}</span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">&mdash;</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">&mdash;</span>
                           <span className="text-xs text-red-500">{product.prixMax.toFixed(2)}{getCurrencySymbol()}</span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-auto">{product.fournisseurs.join(', ')}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500 ml-auto">{product.fournisseurs.join(', ')}</span>
                         </div>
                       </button>
                     ))}
@@ -1817,7 +1817,7 @@ export default function Ingredients() {
               />
               {formErrors.pricePerUnit && <p className="text-xs text-red-500 mt-1">{t('ingredients.priceRequired')}</p>}
               {editingId && lastPrice !== null && (
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">
+                <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-1">
                   {t('ingredients.lastPrice').replace('{price}', lastPrice.toFixed(2))}
                 </p>
               )}
@@ -1859,7 +1859,7 @@ export default function Ingredients() {
               <button
                 type="button"
                 onClick={() => setShowNewSupplierForm(!showNewSupplierForm)}
-                className="text-xs text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium"
+                className="text-xs text-mono-100 dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium"
               >
                 {showNewSupplierForm ? t('ingredients.cancelCreateSupplier') : t('ingredients.createSupplier')}
               </button>
@@ -1894,21 +1894,21 @@ export default function Ingredients() {
                   placeholder={t('ingredients.supplierSelectPlaceholder')}
                   autoComplete="off"
                 />
-                <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
+                <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500 pointer-events-none" />
                 {form.supplier && (
                   <button
                     type="button"
                     onClick={() => { setForm({ ...form, supplier: '', supplierId: null }); setSupplierQuery(''); }}
                     aria-label="Effacer le fournisseur"
-                    className="absolute right-8 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]"
+                    className="absolute right-8 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-mono-950 dark:hover:bg-[#171717]"
                   >
-                    <X className="w-3 h-3 text-[#9CA3AF] dark:text-[#737373]" />
+                    <X className="w-3 h-3 text-[#9CA3AF] dark:text-mono-500" />
                   </button>
                 )}
                 {showSupplierDropdown && (
-                  <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-48 overflow-y-auto">
+                  <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-mono-50 rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-48 overflow-y-auto">
                     {filteredSuppliersList.length === 0 ? (
-                      <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-[#737373]">
+                      <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-mono-500">
                         {suppliers.length === 0 ? t('ingredients.noExistingSuppliers') : t('ingredients.noMatch')}
                       </div>
                     ) : (
@@ -1917,7 +1917,7 @@ export default function Ingredients() {
                           key={s.id}
                           type="button"
                           onClick={() => selectSupplier(s)}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors ${form.supplierId === s.id ? 'bg-[#F3F4F6] dark:bg-[#171717] font-medium text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}
+                          className={`w-full text-left px-3 py-2 text-sm hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors ${form.supplierId === s.id ? 'bg-mono-950 dark:bg-[#171717] font-medium text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-700'}`}
                         >
                           {s.name}
                         </button>
@@ -1933,12 +1933,12 @@ export default function Ingredients() {
             <label className="label">{t('ingredients.allergensLabel')}</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
               {ALLERGENS.map((allergen) => (
-                <label key={allergen} className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-[#A3A3A3] cursor-pointer">
+                <label key={allergen} className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-mono-700 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={form.allergens.includes(allergen)}
                     onChange={() => toggleAllergen(allergen)}
-                    className="rounded border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] focus:ring-[#111111] dark:focus:ring-white"
+                    className="rounded border-mono-900 dark:border-mono-200 text-mono-100 focus:ring-mono-100 dark:focus:ring-white"
                   />
                   {allergen}
                 </label>
@@ -1957,12 +1957,12 @@ export default function Ingredients() {
               placeholder="Ex: 3017620422003"
               inputMode="numeric"
             />
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Optionnel. Permet le scan rapide en inventaire.</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Optionnel. Permet le scan rapide en inventaire.</p>
           </div>
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.saveShortcut')}</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{t('ingredients.saveShortcut')}</span>
               {editingId && (
                 <button
                   type="button"
@@ -1970,7 +1970,7 @@ export default function Ingredients() {
                     const ing = ingredients.find(i => i.id === editingId);
                     if (ing) { setShowForm(false); openWeigh(ing); }
                   }}
-                  className="flex items-center gap-1 px-2 py-1 text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white rounded border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors"
+                  className="flex items-center gap-1 px-2 py-1 text-xs bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white rounded border border-mono-900 dark:border-mono-200 hover:bg-mono-900 dark:hover:bg-mono-300 transition-colors"
                 >
                   <Scale className="w-3 h-3" /> {t('ingredients.weigh')}
                 </button>
@@ -2013,8 +2013,8 @@ export default function Ingredients() {
                   onClick={() => changeTrackerPeriod(p)}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                     trackerPeriod === p
-                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                      : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+                      ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+                      : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
                   }`}
                 >
                   {p === 30 ? '30 jours' : p === 90 ? '90 jours' : '1 an'}
@@ -2025,10 +2025,10 @@ export default function Ingredients() {
             {/* Chart */}
             {trackerLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF] dark:text-[#737373]" />
+                <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF] dark:text-mono-500" />
               </div>
             ) : trackerData && trackerData.data.length > 0 ? (
-              <div className="h-56 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
+              <div className="h-56 bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-3">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trackerData.data} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
                     <XAxis
@@ -2092,7 +2092,7 @@ export default function Ingredients() {
                 </ResponsiveContainer>
               </div>
             ) : (
-              <div className="text-center py-8 text-[#9CA3AF] dark:text-[#737373]">
+              <div className="text-center py-8 text-[#9CA3AF] dark:text-mono-500">
                 <BarChart3 className="w-8 h-8 mx-auto mb-2 opacity-40" />
                 <p className="text-sm">Pas d'historique de prix disponible</p>
                 <p className="text-xs mt-1">L'historique s'enregistre a chaque modification de prix.</p>
@@ -2102,25 +2102,25 @@ export default function Ingredients() {
             {/* Stats cards */}
             {trackerData && trackerData.data.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
-                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Min</p>
-                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.minPrice.toFixed(2)} {getCurrencySymbol()}</p>
+                <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-semibold">Min</p>
+                  <p className="text-lg font-bold text-mono-100 dark:text-white">{trackerData.minPrice.toFixed(2)} {getCurrencySymbol()}</p>
                 </div>
-                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
-                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Max</p>
-                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.maxPrice.toFixed(2)} {getCurrencySymbol()}</p>
+                <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-semibold">Max</p>
+                  <p className="text-lg font-bold text-mono-100 dark:text-white">{trackerData.maxPrice.toFixed(2)} {getCurrencySymbol()}</p>
                 </div>
-                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
-                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Moyenne</p>
-                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.avgPrice.toFixed(2)} {getCurrencySymbol()}</p>
+                <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-semibold">Moyenne</p>
+                  <p className="text-lg font-bold text-mono-100 dark:text-white">{trackerData.avgPrice.toFixed(2)} {getCurrencySymbol()}</p>
                 </div>
-                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
-                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Actuel</p>
+                <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-semibold">Actuel</p>
                   <div className="flex items-center gap-1.5">
-                    <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.currentPrice.toFixed(2)} {getCurrencySymbol()}</p>
+                    <p className="text-lg font-bold text-mono-100 dark:text-white">{trackerData.currentPrice.toFixed(2)} {getCurrencySymbol()}</p>
                     {trackerData.trend === 'up' && <TrendingUp className="w-4 h-4 text-red-500" />}
                     {trackerData.trend === 'down' && <TrendingDown className="w-4 h-4 text-emerald-500" />}
-                    {trackerData.trend === 'stable' && <Minus className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />}
+                    {trackerData.trend === 'stable' && <Minus className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />}
                   </div>
                 </div>
               </div>
@@ -2128,11 +2128,11 @@ export default function Ingredients() {
 
             {/* Volatility indicator */}
             {trackerData && trackerData.data.length > 1 && (
-              <div className="flex items-center gap-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
+              <div className="flex items-center gap-3 bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-3">
                 <div className="flex-1">
-                  <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-1">Volatilite</p>
+                  <p className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider mb-1">Volatilite</p>
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-2 bg-[#E5E7EB] dark:bg-[#262626] rounded-full overflow-hidden">
+                    <div className="flex-1 h-2 bg-mono-900 dark:bg-mono-300 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all ${
                           trackerData.volatility > 15 ? 'bg-red-500' : trackerData.volatility > 5 ? 'bg-yellow-500' : 'bg-emerald-500'
@@ -2153,8 +2153,8 @@ export default function Ingredients() {
 
             {/* Supplier comparison */}
             {trackerData && trackerData.supplierPrices.length > 1 && (
-              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
-                <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-2">
+              <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-3">
+                <p className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider mb-2">
                   Comparaison fournisseurs
                 </p>
                 <div className="space-y-2">
@@ -2167,8 +2167,8 @@ export default function Ingredients() {
                       return (
                         <div key={idx} className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <Truck className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
-                            <span className={`text-sm ${isCheapest ? 'font-semibold text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                            <Truck className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
+                            <span className={`text-sm ${isCheapest ? 'font-semibold text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-700'}`}>
                               {sp.supplierName}
                             </span>
                             {isCheapest && (
@@ -2178,7 +2178,7 @@ export default function Ingredients() {
                             )}
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className={`text-sm font-mono ${isCheapest ? 'font-bold text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                            <span className={`text-sm font-mono ${isCheapest ? 'font-bold text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-700'}`}>
                               {sp.price.toFixed(2)} {getCurrencySymbol()}
                             </span>
                             {!isCheapest && pctDiff > 0 && (
@@ -2193,10 +2193,10 @@ export default function Ingredients() {
             )}
 
             {/* Price alert threshold */}
-            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
+            <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-3">
               <div className="flex items-center gap-2 mb-2">
-                <Bell className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
-                <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider">
+                <Bell className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+                <p className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider">
                   Alerte si prix depasse
                 </p>
               </div>
@@ -2210,7 +2210,7 @@ export default function Ingredients() {
                   onChange={(e) => setAlertInput(e.target.value)}
                   placeholder={`Ex: ${(trackerIngredient.pricePerUnit * 1.1).toFixed(2)} \u20AC`}
                 />
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{getCurrencySymbol()}/{trackerIngredient.unit}</span>
+                <span className="text-sm text-[#9CA3AF] dark:text-mono-500">{getCurrencySymbol()}/{trackerIngredient.unit}</span>
                 <button
                   onClick={saveAlertThreshold}
                   className="btn-primary text-sm px-4"

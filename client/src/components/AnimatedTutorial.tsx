@@ -156,17 +156,17 @@ export default function AnimatedTutorial({ tutorialId, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] w-[340px] overflow-hidden" onClick={e => e.stopPropagation()}>
+      <div className="bg-white dark:bg-mono-50 rounded-2xl shadow-2xl border border-mono-900 dark:border-mono-200 w-[340px] overflow-hidden" onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[#111111] dark:text-white">{tutorial.title}</h3>
-          <span className="text-[10px] text-[#9CA3AF] px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717]">
+        <div className="px-4 py-3 border-b border-mono-900 dark:border-mono-200 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-mono-100 dark:text-white">{tutorial.title}</h3>
+          <span className="text-[10px] text-[#9CA3AF] px-2 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717]">
             {stepIdx + 1}/{tutorial.steps.length}
           </span>
         </div>
 
         {/* Animation viewport */}
-        <div className="relative w-[340px] h-[220px] bg-[#F9FAFB] dark:bg-[#111111] overflow-hidden">
+        <div className="relative w-[340px] h-[220px] bg-[#F9FAFB] dark:bg-mono-100 overflow-hidden">
           <svg viewBox="0 0 300 200" className="w-full h-full">
             {step.elements.map((el, i) => {
               const delay = el.delay || 0;
@@ -308,8 +308,8 @@ export default function AnimatedTutorial({ tutorialId, onClose }: Props) {
         </div>
 
         {/* Step label */}
-        <div className="px-4 py-2 bg-[#F3F4F6] dark:bg-[#171717] border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <p className="text-xs font-medium text-[#111111] dark:text-white text-center">{step.label}</p>
+        <div className="px-4 py-2 bg-mono-950 dark:bg-[#171717] border-t border-mono-900 dark:border-mono-200">
+          <p className="text-xs font-medium text-mono-100 dark:text-white text-center">{step.label}</p>
         </div>
 
         {/* Progress + nav */}
@@ -317,13 +317,13 @@ export default function AnimatedTutorial({ tutorialId, onClose }: Props) {
           <button
             onClick={prevStep}
             disabled={stepIdx === 0}
-            className="text-xs font-medium text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white disabled:opacity-30 transition-colors"
+            className="text-xs font-medium text-[#9CA3AF] hover:text-mono-100 dark:hover:text-white disabled:opacity-30 transition-colors"
           >
             Precedent
           </button>
           <div className="flex gap-1.5">
             {tutorial.steps.map((_, i) => (
-              <div key={i} className={`w-2 h-2 rounded-full transition-colors ${i === stepIdx ? 'bg-teal-500' : i < stepIdx ? 'bg-teal-300' : 'bg-[#E5E7EB] dark:bg-[#1A1A1A]'}`} />
+              <div key={i} className={`w-2 h-2 rounded-full transition-colors ${i === stepIdx ? 'bg-teal-500' : i < stepIdx ? 'bg-teal-300' : 'bg-mono-900 dark:bg-mono-200'}`} />
             ))}
           </div>
           <button

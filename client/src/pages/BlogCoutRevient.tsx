@@ -69,13 +69,13 @@ export default function BlogCoutRevient() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -118,12 +118,12 @@ export default function BlogCoutRevient() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Calculator className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Définition : coût de revient vs food cost</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Définition : coût de revient vs food cost</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le <strong>coût de revient</strong> est le coût matière brut d'une portion vendue. Le <strong>food cost</strong> est le pourcentage qu'il représente par rapport au prix de vente HT.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Coût de revient = Σ (Quantité nette × Prix d'achat ingrédient)</div>
             <div>Food cost % = (Coût de revient / Prix de vente HT) × 100</div>
           </div>
@@ -147,7 +147,7 @@ export default function BlogCoutRevient() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <ClipboardList className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Méthode pas à pas en 5 étapes</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Méthode pas à pas en 5 étapes</h2>
           </div>
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2">
@@ -179,9 +179,9 @@ export default function BlogCoutRevient() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <Table className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Exemple complet : boeuf bourguignon (4 personnes)</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Exemple complet : boeuf bourguignon (4 personnes)</h2>
           </div>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Bœuf paleron 1056 g net × 14,90 €/kg : 15,73 €</div>
             <div>Lardons fumés 190 g × 11,50 €/kg : 2,19 €</div>
             <div>Carottes 328 g × 1,80 €/kg : 0,59 €</div>
@@ -213,12 +213,12 @@ export default function BlogCoutRevient() {
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
               <Scissors className="w-5 h-5 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Le ratio de perte (parage, cuisson, déchets)</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Le ratio de perte (parage, cuisson, déchets)</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             On n'achète <strong>jamais</strong> la quantité finalement servie. Pertes typiques par produit :
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Filet de bœuf entier : 40-50 % perte totale</div>
             <div>Magret de canard : 25-33 %</div>
             <div>Filet de poisson entier (dorade) : 60-70 %</div>
@@ -242,12 +242,12 @@ export default function BlogCoutRevient() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <RefreshCw className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Fiche technique standardisée</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Fiche technique standardisée</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Fréquence de mise à jour recommandée :</strong>
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Viandes / Poissons : MENSUELLE</div>
             <div>Légumes saisonniers : MENSUELLE</div>
             <div>Fromages, charcuterie : trimestrielle</div>
@@ -265,7 +265,7 @@ export default function BlogCoutRevient() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Seuils d'alerte et décisions à prendre</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Seuils d'alerte et décisions à prendre</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Matrice de décision</strong> à appliquer plat par plat :
@@ -285,7 +285,7 @@ export default function BlogCoutRevient() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -309,9 +309,9 @@ export default function BlogCoutRevient() {
                 a: "Pour 25 plats : 8-12 heures la première fois (avec pesées et photos). Ensuite 1-2 heures de mise à jour mensuelle. Un logiciel comme RestauMargin réduit ce temps de 70 %."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -332,7 +332,7 @@ export default function BlogCoutRevient() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>

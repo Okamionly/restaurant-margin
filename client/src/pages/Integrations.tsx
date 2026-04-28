@@ -403,7 +403,7 @@ export default function Integrations() {
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-3">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
               <Plug className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>

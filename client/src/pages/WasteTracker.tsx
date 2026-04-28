@@ -1699,7 +1699,7 @@ export default function WasteTracker() {
           </div>
         ) : (
           <div className="text-center py-8">
-            <ShieldCheck className="w-10 h-10 text-[#D1D5DB] dark:text-[#404040] mx-auto mb-3" />
+            <ShieldCheck className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
             <p className="text-sm text-[#9CA3AF] dark:text-mono-500">
               Aucune cause racine enregistree. Selectionnez une cause racine lors de chaque declaration pour activer l'analyse.
             </p>
@@ -1774,7 +1774,7 @@ export default function WasteTracker() {
           </div>
         ) : (
           <div className="text-center py-6">
-            <Target className="w-10 h-10 text-[#D1D5DB] dark:text-[#404040] mx-auto mb-3" />
+            <Target className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
             <p className="text-sm text-[#9CA3AF] dark:text-mono-500">
               Aucun objectif defini. Definissez un objectif de reduction pour suivre vos progres.
             </p>
@@ -2003,7 +2003,7 @@ export default function WasteTracker() {
                       const intensity = Math.round((val / maxVal) * 4);
                       const bgClasses = [
                         'bg-mono-950 dark:bg-[#171717]',
-                        'bg-[#D1D5DB] dark:bg-[#404040]',
+                        'bg-[#D1D5DB] dark:bg-mono-350',
                         'bg-[#9CA3AF] dark:bg-mono-500',
                         'bg-[#6B7280] dark:bg-mono-700',
                         'bg-mono-100 dark:bg-white',
@@ -2084,7 +2084,7 @@ export default function WasteTracker() {
                 const priorityStyles: Record<string, string> = {
                   haute: 'bg-mono-100 dark:bg-white text-white dark:text-black',
                   moyenne: 'bg-[#6B7280] dark:bg-mono-700 text-white dark:text-black',
-                  basse: 'bg-mono-900 dark:bg-[#404040] text-[#374151] dark:text-mono-800',
+                  basse: 'bg-mono-900 dark:bg-mono-350 text-[#374151] dark:text-mono-800',
                 };
                 return (
                   <div
@@ -2222,7 +2222,7 @@ export default function WasteTracker() {
                           ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
                           : pred.confidence === 'moyenne'
                           ? 'bg-[#9CA3AF] dark:bg-mono-500 text-white dark:text-black'
-                          : 'bg-mono-900 dark:bg-[#404040] text-[#6B7280] dark:text-mono-700'
+                          : 'bg-mono-900 dark:bg-mono-350 text-[#6B7280] dark:text-mono-700'
                       }`}>
                         {pred.confidence}
                       </span>
@@ -2440,7 +2440,7 @@ export default function WasteTracker() {
                               {ROOT_CAUSE_LABELS[e.rootCause]}
                             </span>
                           ) : (
-                            <span className="text-xs text-[#D1D5DB] dark:text-[#404040]">--</span>
+                            <span className="text-xs text-[#D1D5DB] dark:text-mono-350">--</span>
                           )}
                         </td>
                         <td className="py-2.5 px-3 text-center">
@@ -2452,7 +2452,7 @@ export default function WasteTracker() {
                               <img src={photo} alt="waste" className="w-full h-full object-cover" />
                             </button>
                           ) : (
-                            <span className="text-[#D1D5DB] dark:text-[#404040]">
+                            <span className="text-[#D1D5DB] dark:text-mono-350">
                               <Image className="w-3.5 h-3.5 mx-auto" />
                             </span>
                           )}

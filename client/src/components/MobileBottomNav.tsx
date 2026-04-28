@@ -73,16 +73,16 @@ export default function MobileBottomNav() {
           role="dialog"
           aria-modal="true"
           aria-label="Plus de pages"
-          className="md:hidden fixed bottom-[calc(56px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-[101] bg-white dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] rounded-t-2xl shadow-2xl animate-slide-up max-h-[60vh] overflow-y-auto"
+          className="md:hidden fixed bottom-[calc(56px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-[101] bg-white dark:bg-mono-50 border-t border-mono-900 dark:border-mono-200 rounded-t-2xl shadow-2xl animate-slide-up max-h-[60vh] overflow-y-auto"
         >
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <span className="text-sm font-semibold text-[#111111] dark:text-white">Plus de pages</span>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-mono-200">
+            <span className="text-sm font-semibold text-mono-100 dark:text-white">Plus de pages</span>
             <button
               onClick={() => setDrawerOpen(false)}
-              className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               aria-label="Fermer"
             >
-              <X className="w-4 h-4 text-[#737373]" aria-hidden="true" />
+              <X className="w-4 h-4 text-mono-500" aria-hidden="true" />
             </button>
           </div>
           <div className="grid grid-cols-3 gap-1 p-3">
@@ -94,7 +94,7 @@ export default function MobileBottomNav() {
                   `flex items-center justify-center px-2 py-3 rounded-xl text-xs font-medium transition-all duration-200 ${
                     isActive
                       ? 'bg-teal-600/10 text-teal-600 dark:text-teal-400'
-                      : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                      : 'text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717]'
                   }`
                 }
               >
@@ -106,7 +106,7 @@ export default function MobileBottomNav() {
       )}
 
       {/* Bottom navigation bar */}
-      <nav aria-label="Navigation mobile" className="md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white/95 dark:bg-[#0A0A0A]/95 backdrop-blur-lg border-t border-[#E5E7EB] dark:border-[#1A1A1A] no-print" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+      <nav aria-label="Navigation mobile" className="md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white/95 dark:bg-mono-50/95 backdrop-blur-lg border-t border-mono-900 dark:border-mono-200 no-print" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
         <div className="flex items-center justify-around h-14">
           {MAIN_TABS.map(tab => (
             <NavLink
@@ -118,7 +118,7 @@ export default function MobileBottomNav() {
                 `flex flex-col items-center justify-center flex-1 h-full gap-0.5 transition-all duration-200 ${
                   isActive
                     ? 'text-teal-600 dark:text-teal-400'
-                    : 'text-[#9CA3AF] dark:text-[#737373]'
+                    : 'text-[#9CA3AF] dark:text-mono-500'
                 }`
               }
             >
@@ -144,7 +144,7 @@ export default function MobileBottomNav() {
             className={`flex flex-col items-center justify-center flex-1 h-full gap-0.5 transition-all duration-200 ${
               isMoreActive || drawerOpen
                 ? 'text-teal-600 dark:text-teal-400'
-                : 'text-[#9CA3AF] dark:text-[#737373]'
+                : 'text-[#9CA3AF] dark:text-mono-500'
             }`}
           >
             <MoreHorizontal className={`w-5 h-5 transition-transform duration-200 ${drawerOpen ? 'rotate-90' : ''}`} aria-hidden="true" />

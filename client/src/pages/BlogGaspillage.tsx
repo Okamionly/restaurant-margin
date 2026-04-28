@@ -44,9 +44,9 @@ export default function BlogGaspillage() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -60,7 +60,7 @@ export default function BlogGaspillage() {
             </Link>
             <Link
               to="/login"
-              className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors"
+              className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors"
             >
               Connexion
             </Link>
@@ -84,12 +84,12 @@ export default function BlogGaspillage() {
         <BlogAuthor publishedDate="2026-04-14" readTime="9 min" variant="header" />
 
         {/* ── Sommaire ── */}
-        <nav className="my-12 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
-          <h2 className="text-lg font-bold text-[#111111] mb-4 flex items-center gap-2">
+        <nav className="my-12 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
+          <h2 className="text-lg font-bold text-mono-100 mb-4 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-teal-600" />
             Sommaire
           </h2>
-          <ol className="space-y-2 text-sm sm:text-base text-[#404040]">
+          <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
               { href: '#chiffres', label: 'Le gaspillage alimentaire en restauration : les chiffres cles' },
               { href: '#causes', label: 'Les principales causes du gaspillage en cuisine' },
@@ -398,7 +398,7 @@ export default function BlogGaspillage() {
             </p>
 
             <div className="mt-6 mb-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
-              <h3 className="font-bold text-[#111111] mb-4 flex items-center gap-2">
+              <h3 className="font-bold text-mono-100 mb-4 flex items-center gap-2">
                 <Recycle className="w-5 h-5 text-emerald-600" />
                 Idees de valorisation par type de dechet
               </h3>
@@ -446,26 +446,26 @@ export default function BlogGaspillage() {
 
         {/* ═════════════ Articles lies ═════════════ */}
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Articles complementaires</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Articles complementaires</h2>
           <div className="grid sm:grid-cols-3 gap-4">
-            <Link to="/blog/fiches-techniques" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Fiche technique de cuisine : le guide complet</h3>
-              <p className="text-sm text-[#737373]">Creez des fiches techniques precises pour maitriser vos portions et couts.</p>
+            <Link to="/blog/fiches-techniques" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Fiche technique de cuisine : le guide complet</h3>
+              <p className="text-sm text-mono-500">Creez des fiches techniques precises pour maitriser vos portions et couts.</p>
             </Link>
-            <Link to="/blog/haccp" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Guide HACCP pour les restaurants</h3>
-              <p className="text-sm text-[#737373]">Temperatures, principes et checklist pour respecter l'hygiene alimentaire.</p>
+            <Link to="/blog/haccp" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Guide HACCP pour les restaurants</h3>
+              <p className="text-sm text-mono-500">Temperatures, principes et checklist pour respecter l'hygiene alimentaire.</p>
             </Link>
-            <Link to="/blog/reduire-food-cost" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">5 methodes pour reduire votre food cost</h3>
-              <p className="text-sm text-[#737373]">Fiches techniques, negociation fournisseurs, menu engineering et plus.</p>
+            <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">5 methodes pour reduire votre food cost</h3>
+              <p className="text-sm text-mono-500">Fiches techniques, negociation fournisseurs, menu engineering et plus.</p>
             </Link>
           </div>
         </section>
 
         {/* ═════════════ FAQ ═════════════ */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions frequentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes</h2>
           <div className="space-y-4">
             <FAQItem
               q="Quel est le taux de gaspillage moyen dans un restaurant ?"
@@ -530,22 +530,22 @@ export default function BlogGaspillage() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#FAFAFA] border-t border-[#E5E7EB] py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center text-sm text-[#737373]">
-          <Link to="/landing" className="flex items-center justify-center gap-2 text-[#111111] font-bold text-lg mb-4">
+      <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
+        <div className="max-w-4xl mx-auto text-center text-sm text-mono-500">
+          <Link to="/landing" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
             <ChefHat className="w-6 h-6 text-teal-600" />
             RestauMargin
           </Link>
           <p className="mb-4">
             La plateforme de gestion de marge pour les restaurateurs.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-[#A3A3A3]">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
             <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
             <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
           </div>
-          <p className="mt-6 text-xs text-[#A3A3A3]">
+          <p className="mt-6 text-xs text-mono-700">
             &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
           </p>
         </div>
@@ -653,15 +653,15 @@ function GaspillageCalculator() {
   const economie30 = pertes * 0.3;
 
   return (
-    <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
-      <h3 className="font-bold text-[#111111] mb-6 flex items-center gap-2">
+    <div className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
+      <h3 className="font-bold text-mono-100 mb-6 flex items-center gap-2">
         <Calculator className="w-5 h-5 text-teal-600" />
         Calculez votre gaspillage annuel
       </h3>
 
       <div className="grid gap-4 sm:grid-cols-3 mb-8">
         <div>
-          <label className="block text-sm font-medium text-[#404040] mb-1.5">
+          <label className="block text-sm font-medium text-mono-350 mb-1.5">
             Chiffre d'affaires annuel (EUR)
           </label>
           <input
@@ -669,11 +669,11 @@ function GaspillageCalculator() {
             value={ca}
             onChange={(e) => setCa(e.target.value)}
             placeholder="500000"
-            className="w-full px-4 py-2.5 bg-white border border-[#E5E7EB] rounded-lg text-[#111111] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            className="w-full px-4 py-2.5 bg-white border border-mono-900 rounded-lg text-mono-100 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[#404040] mb-1.5">
+          <label className="block text-sm font-medium text-mono-350 mb-1.5">
             Food cost (%)
           </label>
           <input
@@ -681,11 +681,11 @@ function GaspillageCalculator() {
             value={foodCost}
             onChange={(e) => setFoodCost(e.target.value)}
             placeholder="30"
-            className="w-full px-4 py-2.5 bg-white border border-[#E5E7EB] rounded-lg text-[#111111] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            className="w-full px-4 py-2.5 bg-white border border-mono-900 rounded-lg text-mono-100 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[#404040] mb-1.5">
+          <label className="block text-sm font-medium text-mono-350 mb-1.5">
             Taux de gaspillage (%)
           </label>
           <input
@@ -693,7 +693,7 @@ function GaspillageCalculator() {
             value={tauxGaspillage}
             onChange={(e) => setTauxGaspillage(e.target.value)}
             placeholder="14"
-            className="w-full px-4 py-2.5 bg-white border border-[#E5E7EB] rounded-lg text-[#111111] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            className="w-full px-4 py-2.5 bg-white border border-mono-900 rounded-lg text-mono-100 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -703,7 +703,7 @@ function GaspillageCalculator() {
           <ResultCard
             label="Achats alimentaires annuels"
             value={`${achats.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} EUR`}
-            color="text-[#111111]"
+            color="text-mono-100"
           />
           <ResultCard
             label="Pertes liees au gaspillage"
@@ -729,7 +729,7 @@ function SectionHeading({ icon, number, children }: { icon: React.ReactNode; num
       <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
         {icon}
       </div>
-      <h2 className="text-2xl font-bold text-[#111111]">{children}</h2>
+      <h2 className="text-2xl font-bold text-mono-100">{children}</h2>
     </div>
   );
 }
@@ -748,20 +748,20 @@ function StatCard({ value, label, color }: { value: string; label: string; color
   return (
     <div className={`${colors[color]} border rounded-2xl p-5 text-center`}>
       <div className={`text-2xl font-extrabold ${textColors[color]} mb-1`}>{value}</div>
-      <div className="text-sm text-[#525252]">{label}</div>
+      <div className="text-sm text-mono-400">{label}</div>
     </div>
   );
 }
 
 function CauseCard({ number, title, desc }: { number: number; title: string; desc: string }) {
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 sm:p-6 flex gap-4">
+    <div className="bg-white border border-mono-900 rounded-xl p-5 sm:p-6 flex gap-4">
       <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center shrink-0 font-bold text-lg">
         {number}
       </div>
       <div>
-        <h3 className="font-semibold text-[#111111] mb-1.5">{title}</h3>
-        <p className="text-sm text-[#525252] leading-relaxed">{desc}</p>
+        <h3 className="font-semibold text-mono-100 mb-1.5">{title}</h3>
+        <p className="text-sm text-mono-400 leading-relaxed">{desc}</p>
       </div>
     </div>
   );
@@ -770,16 +770,16 @@ function CauseCard({ number, title, desc }: { number: number; title: string; des
 function ValorizationCard({ item, idea }: { item: string; idea: string }) {
   return (
     <div className="bg-white rounded-lg p-3 border border-emerald-100">
-      <div className="font-semibold text-sm text-[#111111] mb-0.5">{item}</div>
-      <div className="text-xs text-[#525252]">{idea}</div>
+      <div className="font-semibold text-sm text-mono-100 mb-0.5">{item}</div>
+      <div className="text-xs text-mono-400">{idea}</div>
     </div>
   );
 }
 
 function ResultCard({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 text-center">
-      <div className="text-xs text-[#737373] mb-1">{label}</div>
+    <div className="bg-white border border-mono-900 rounded-xl p-4 text-center">
+      <div className="text-xs text-mono-500 mb-1">{label}</div>
       <div className={`text-xl font-extrabold ${color}`}>{value}</div>
     </div>
   );
@@ -800,12 +800,12 @@ function Callout({ type, children }: { type: 'info' | 'warning'; children: React
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   return (
-    <details className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl group">
-      <summary className="px-5 py-4 font-semibold text-[#111111] cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
+    <details className="bg-mono-1000 border border-mono-900 rounded-xl group">
+      <summary className="px-5 py-4 font-semibold text-mono-100 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
         {q}
-        <ArrowRight className="w-4 h-4 text-[#A3A3A3] group-open:rotate-90 transition-transform" />
+        <ArrowRight className="w-4 h-4 text-mono-700 group-open:rotate-90 transition-transform" />
       </summary>
-      <p className="px-5 pb-4 text-sm text-[#525252] leading-relaxed">{a}</p>
+      <p className="px-5 pb-4 text-sm text-mono-400 leading-relaxed">{a}</p>
     </details>
   );
 }

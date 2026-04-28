@@ -1,0 +1,113 @@
+/**
+ * @file client/src/components/landing/CurvesBackground.tsx
+ * Wavy green lines wallpaper for the landing page background.
+ *
+ * Inspired by the claude.ai/design "Shader wallpapers" curves variant —
+ * rebuilt as a self-contained React + SVG component with subtle GSAP-free
+ * CSS keyframes drift so it stays under 5 KB and never blocks the main thread.
+ *
+ * Visual:
+ *   - ~10 wavy emerald lines, evenly spaced vertically
+ *   - Each line is a smooth cubic-bezier wave that drifts horizontally over time
+ *   - Stroke opacity stepped so foreground lines look bolder, background ones fade
+ *   - Honours prefers-reduced-motion (renders a single static frame)
+ *   - position: absolute + pointer-events: none → never blocks UI
+ *
+ * Why SVG and not WebGL?
+ *   - 5x lighter, no GPU init cost
+ *   - Crisp at any DPR (vector)
+ *   - Zero risk of WebGL2 fallback
+ *   - Trivial to tweak colors / spacing without recompiling shaders
+ */
+
+import { useId } from 'react';
+
+interface Props {
+  /** Stroke colour for the wavy lines. Default: emerald-500 #10B981. */
+  color?: string;
+  /** Number of wave lines stacked vertically. Default: 12. */
+  count?: number;
+  /** Extra Tailwind classes for the wrapper. */
+  className?: string;
+}
+
+export default function CurvesBackground({
+  color = '#10B981',
+  count = 12,
+  className = '',
+}: Props) {
+  // Stable unique id so multiple instances on a page never collide on <defs>.
+  const uid = useId().replace(/:/g, '');
+
+  // Pre-compute line offsets so the render is purely declarative.
+  // amplitude ramps slightly so lines feel natural (slight perspective).
+  const lines = Array.from({ length: count }, (_, i) => {
+    const yPct = (i + 0.5) / count; // 0..1 vertical position
+    const amplitude = 22 + (i % 3) * 6; // varies a little per line
+    const phaseDeg = i * 47; // pseudo-random phase per line
+    const opacity = 0.18 + 0.32 * Math.sin((i / count) * Math.PI); // brighter mid-page
+    const strokeWidth = 1.5 + (i % 4 === 0 ? 0.6 : 0);
+    const driftDur = 22 + (i % 5) * 4; // 22..38s per line so they don't sync
+    return { yPct, amplitude, phaseDeg, opacity, strokeWidth, driftDur };
+  });
+
+  return (
+    <div
+      aria-hidden="true"
+      className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}
+      style={{
+        // CSS fallback gradient — visible if SVG fails or while it parses.
+        background:
+          'radial-gradient(ellipse at 30% 30%, #ECFDF5 0%, transparent 55%), radial-gradient(ellipse at 70% 70%, #DCFCE7 0%, transparent 60%)',
+      }}
+    >
+      <svg
+        className="block w-full h-full"
+        viewBox="0 0 1600 1000"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <style>{`
+          @keyframes curveDrift_${uid} {
+            from { transform: translateX(0); }
+            to { transform: translateX(-200px); }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .curve-${uid} { animation: none !important; }
+          }
+        `}</style>
+        {lines.map((l, i) => {
+          // Build a smooth horizontal wave path with 4 segments using cubic beziers.
+          // The path extends past the viewBox left/right so the drift never reveals an edge.
+          const yMid = l.yPct * 1000;
+          const a = l.amplitude;
+          const phase = (l.phaseDeg * Math.PI) / 180;
+          const y = (offsetX: number) => yMid + a * Math.sin(phase + offsetX / 220);
+          const path = `
+            M -200 ${y(-200)}
+            C 0 ${y(-100)}, 200 ${y(100)}, 400 ${y(300)}
+            S 800 ${y(700)}, 1000 ${y(900)}
+            S 1400 ${y(1300)}, 1800 ${y(1700)}
+          `;
+          return (
+            <path
+              key={i}
+              className={`curve-${uid}`}
+              d={path}
+              fill="none"
+              stroke={color}
+              strokeOpacity={l.opacity}
+              strokeWidth={l.strokeWidth}
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+              style={{
+                animation: `curveDrift_${uid} ${l.driftDur}s linear infinite`,
+                animationDelay: `${-i * 1.3}s`,
+              }}
+            />
+          );
+        })}
+      </svg>
+    </div>
+  );
+}

@@ -69,10 +69,10 @@ function EmptyIllustration({ type }: { type: string }) {
     },
     default: {
       emoji: '✨',
-      bg: 'from-[#F9FAFB] to-[#F3F4F6] dark:from-[#111111]/40 dark:to-[#171717]/40',
+      bg: 'from-[#F9FAFB] to-mono-950 dark:from-mono-100/40 dark:to-[#171717]/40',
       shapes: [
         { color: 'bg-gray-200/50 dark:bg-gray-800/30', size: 'w-14 h-14', pos: 'top-3 left-6' },
-        { color: 'bg-[#E5E7EB]/40 dark:bg-[#262626]/20', size: 'w-10 h-10', pos: 'bottom-2 right-8' },
+        { color: 'bg-mono-900/40 dark:bg-mono-300/20', size: 'w-10 h-10', pos: 'bottom-2 right-8' },
         { color: 'bg-zinc-200/30 dark:bg-zinc-800/20', size: 'w-6 h-6', pos: 'top-8 right-4' },
       ],
     },
@@ -111,15 +111,15 @@ export default function EmptyState({ icon, title, description, action, secondary
           <EmptyIllustration type={illustration} />
         </div>
       ) : (
-        <div aria-hidden="true" className="w-16 h-16 rounded-2xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-4 text-[#9CA3AF] dark:text-[#737373]">
+        <div aria-hidden="true" className="w-16 h-16 rounded-2xl bg-mono-950 dark:bg-[#171717] flex items-center justify-center mb-4 text-[#9CA3AF] dark:text-mono-500">
           {icon}
         </div>
       )}
 
-      <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-2 font-satoshi">
+      <h3 className="text-lg font-bold text-mono-100 dark:text-white mb-2 font-satoshi">
         {title}
       </h3>
-      <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] max-w-sm mb-6 leading-relaxed">
+      <p className="text-sm text-[#6B7280] dark:text-mono-700 max-w-sm mb-6 leading-relaxed">
         {description}
       </p>
 
@@ -128,7 +128,7 @@ export default function EmptyState({ icon, title, description, action, secondary
           <button
             type="button"
             onClick={action.onClick}
-            className="inline-flex items-center gap-2 py-2.5 px-5 text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#0A0A0A]"
+            className="inline-flex items-center gap-2 py-2.5 px-5 text-sm font-semibold bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-mono-50"
           >
             <Plus className="w-4 h-4" />
             {action.label}
@@ -138,7 +138,7 @@ export default function EmptyState({ icon, title, description, action, secondary
           <button
             type="button"
             onClick={secondaryAction.onClick}
-            className="inline-flex items-center gap-2 py-2.5 px-5 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#333333] rounded-xl hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#0A0A0A]"
+            className="inline-flex items-center gap-2 py-2.5 px-5 text-sm font-medium text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-[#333333] rounded-xl hover:bg-mono-950 dark:hover:bg-[#171717] hover:text-mono-100 dark:hover:text-white transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-mono-50"
           >
             {secondaryAction.label}
             <ArrowRight className="w-4 h-4" />

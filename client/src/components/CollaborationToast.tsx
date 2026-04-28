@@ -59,17 +59,17 @@ export default function CollaborationToast() {
       {visibleEntries.map(entry => (
         <div
           key={entry.id}
-          className="flex items-center gap-3 px-3 py-2.5 bg-white dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-lg animate-toast-in"
+          className="flex items-center gap-3 px-3 py-2.5 bg-white dark:bg-mono-100 border border-mono-900 dark:border-mono-200 rounded-xl shadow-lg animate-toast-in"
         >
-          <div className="w-7 h-7 rounded-full bg-[#F3F4F6] dark:bg-[#1A1A1A] flex items-center justify-center flex-shrink-0">
-            <Activity className="w-3.5 h-3.5 text-[#6B7280] dark:text-[#A3A3A3]" />
+          <div className="w-7 h-7 rounded-full bg-mono-950 dark:bg-mono-200 flex items-center justify-center flex-shrink-0">
+            <Activity className="w-3.5 h-3.5 text-[#6B7280] dark:text-mono-700" />
           </div>
-          <span className="text-[12px] text-[#374151] dark:text-[#D4D4D4] flex-1 min-w-0 truncate">
+          <span className="text-[12px] text-[#374151] dark:text-mono-800 flex-1 min-w-0 truncate">
             {formatAuditMessage(entry)}
           </span>
           <button
             onClick={() => handleDismiss(entry.id)}
-            className="p-0.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] flex-shrink-0 transition-colors"
+            className="p-0.5 rounded hover:bg-mono-950 dark:hover:bg-mono-200 text-[#9CA3AF] dark:text-mono-500 flex-shrink-0 transition-colors"
           >
             <X className="w-3.5 h-3.5" />
           </button>

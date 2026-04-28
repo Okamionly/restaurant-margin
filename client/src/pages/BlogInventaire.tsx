@@ -69,13 +69,13 @@ export default function BlogInventaire() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -119,7 +119,7 @@ export default function BlogInventaire() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Package className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Pourquoi l'inventaire est fondamental</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Pourquoi l'inventaire est fondamental</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Les 5 raisons :</strong></p>
           <ul className="space-y-3 text-[#374151] mb-4">
@@ -144,7 +144,7 @@ export default function BlogInventaire() {
               <span><strong>Optimiser les achats.</strong> Quels produits dorment en stock, quels fournisseurs sont en retard.</span>
             </li>
           </ul>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Sans inventaire : food cost réel souvent 33-36%<br />
             Avec inventaire mensuel : 30-32%<br />
             Gain : 2 à 4 points = 1 200 à 2 400€/mois
@@ -160,7 +160,7 @@ export default function BlogInventaire() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <Calendar className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Quelle fréquence selon les produits</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Quelle fréquence selon les produits</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">Plus le produit est fragile et rotatif, plus l'inventaire doit être fréquent.</p>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -183,7 +183,7 @@ export default function BlogInventaire() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <ListChecks className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. La méthode pas à pas</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. La méthode pas à pas</h2>
           </div>
           <ol className="space-y-3 text-[#374151] list-decimal pl-5 mb-4">
             <li><strong>Préparer les fiches d'inventaire.</strong> Classer par ordre physique de rangement (gauche → droite, haut → bas). Gain : 30% de temps.</li>
@@ -193,7 +193,7 @@ export default function BlogInventaire() {
             <li><strong>Saisir et vérifier.</strong> Total par zone, par famille, comparaison avec l'inventaire précédent. +200% ou -80% sur une ligne = recompter.</li>
             <li><strong>Calculer et analyser les écarts.</strong> Stock théorique vs stock physique = écart à expliquer (casse, vol, gaspillage).</li>
           </ol>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Écart = Stock physique - Stock théorique<br />
             Seuil acceptable : {'<'}1% du CA mensuel<br />
             {'>'}2% : alerte · {'>'}3% : intervention immédiate
@@ -206,9 +206,9 @@ export default function BlogInventaire() {
             <div className="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center">
               <RefreshCw className="w-5 h-5 text-cyan-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Calculer la rotation des stocks</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Calculer la rotation des stocks</h2>
           </div>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Rotation = Achats du mois / Stock moyen<br />
             Stock moyen = (Stock initial + Stock final) / 2
           </div>
@@ -234,12 +234,12 @@ export default function BlogInventaire() {
             <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-rose-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Cas chiffré : 2 000€ d'écart par mois</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Cas chiffré : 2 000€ d'écart par mois</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Restaurant Le Marais : CA 65 000€, achats 22 000€, stock initial 4 500€, stock final attendu 4 800€, stock final compté 2 800€ → <strong>écart -2 000€</strong>.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Food cost théorique : 21 700€ → 33,4%</div>
             <div>Food cost réel : 23 700€ → 36,5%</div>
             <div>Écart : <strong>3,1 points perdus</strong></div>
@@ -258,7 +258,7 @@ export default function BlogInventaire() {
             <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
               <Smartphone className="w-5 h-5 text-indigo-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Inventaire digital vs papier</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Inventaire digital vs papier</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Papier / Excel :</strong> coût zéro, mais saisie manuelle (erreurs), calculs lents, pas d'historique exploitable, pas d'alertes. Acceptable pour un petit établissement (&lt; 30 couverts).
@@ -281,7 +281,7 @@ export default function BlogInventaire() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <UserCheck className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">7. L'inventaire comme outil de management</h2>
+            <h2 className="text-2xl font-bold text-mono-100">7. L'inventaire comme outil de management</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Ce qui marche :</strong></p>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -298,7 +298,7 @@ export default function BlogInventaire() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -322,9 +322,9 @@ export default function BlogInventaire() {
                 a: "Tracez-les obligatoirement dans une fiche 'consommation interne' mensuelle (en valeur ou quantités). Cette consommation s'ajoute à la sortie de stock théorique et réduit l'écart d'inventaire apparent. Sans cette traçabilité, vos calculs sont biaisés."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -345,7 +345,7 @@ export default function BlogInventaire() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/prime-cost-restaurant" className="text-sm text-teal-600 hover:underline">Maîtriser le prime cost →</Link>
         </div>

@@ -239,7 +239,7 @@ function renderRatingBar(rating: number) {
   const pct = (rating / 5) * 100;
   return (
     <div className="flex items-center gap-2">
-      <div className="w-16 h-1.5 rounded-full bg-mono-900 dark:bg-[#262626] overflow-hidden">
+      <div className="w-16 h-1.5 rounded-full bg-mono-900 dark:bg-mono-300 overflow-hidden">
         <div className="h-full rounded-full bg-amber-400 transition-all" style={{ width: `${pct}%` }} />
       </div>
       <span className="text-[11px] font-bold text-[#6B7280] dark:text-mono-700">{rating.toFixed(1)}</span>
@@ -251,7 +251,7 @@ function renderRatingBar(rating: number) {
 
 function SupplierCard({ supplier, onContact }: { supplier: Supplier; onContact: (s: Supplier) => void }) {
   return (
-    <div className="group relative bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-5 hover:border-[#111111] dark:hover:border-white/20 transition-all hover:shadow-lg">
+    <div className="group relative bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-5 hover:border-mono-100 dark:hover:border-white/20 transition-all hover:shadow-lg">
       {/* Premium badge */}
       <div className="absolute -top-2.5 right-4">
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-sm">
@@ -261,11 +261,11 @@ function SupplierCard({ supplier, onContact }: { supplier: Supplier; onContact: 
       </div>
 
       <div className="flex gap-4">
-        <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] flex items-center justify-center text-lg font-bold text-[#111111] dark:text-white">
+        <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 flex items-center justify-center text-lg font-bold text-mono-100 dark:text-white">
           {supplier.logo}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-[#111111] dark:text-white text-sm">{supplier.name}</h3>
+          <h3 className="font-bold text-mono-100 dark:text-white text-sm">{supplier.name}</h3>
           <div className="flex items-center gap-2 mt-1">
             {renderStars(supplier.rating)}
             <span className="text-[11px] text-[#9CA3AF] dark:text-mono-500">
@@ -293,7 +293,7 @@ function SupplierCard({ supplier, onContact }: { supplier: Supplier; onContact: 
             )}
             <button
               onClick={() => onContact(supplier)}
-              className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+              className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
             >
               <Phone className="w-3 h-3" />
               Contacter
@@ -322,17 +322,17 @@ function ProductCard({ product, onAddToCart, viewMode }: {
 
   if (viewMode === 'list') {
     return (
-      <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl hover:border-[#111111]/20 dark:hover:border-white/10 transition-all hover:shadow-md">
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl hover:border-mono-100/20 dark:hover:border-white/10 transition-all hover:shadow-md">
         <div className="flex items-center gap-4 p-4">
           {/* Icon */}
-          <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] flex items-center justify-center text-xl">
+          <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#F9FAFB] dark:bg-mono-50 flex items-center justify-center text-xl">
             {catConfig.icon}
           </div>
 
           {/* Info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-[#111111] dark:text-white text-sm truncate">{product.name}</h3>
+              <h3 className="font-semibold text-mono-100 dark:text-white text-sm truncate">{product.name}</h3>
               <span className={`px-2 py-0.5 rounded-lg text-[10px] font-medium border ${catConfig.color}`}>
                 {product.category}
               </span>
@@ -350,7 +350,7 @@ function ProductCard({ product, onAddToCart, viewMode }: {
           <div className="text-right flex-shrink-0">
             {bestPrice < Infinity ? (
               <>
-                <div className="text-sm font-bold text-[#111111] dark:text-white">
+                <div className="text-sm font-bold text-mono-100 dark:text-white">
                   {formatCurrency(bestPrice)}
                 </div>
                 {sortedOffers.length > 1 && (
@@ -378,7 +378,7 @@ function ProductCard({ product, onAddToCart, viewMode }: {
 
         {/* Expanded offers */}
         {expanded && (
-          <div className="border-t border-mono-900 dark:border-[#1A1A1A] px-4 pb-4 pt-3 space-y-2">
+          <div className="border-t border-mono-900 dark:border-mono-200 px-4 pb-4 pt-3 space-y-2">
             {sortedOffers.map(offer => {
               const supplier = getSupplier(offer.supplierId);
               const isBest = offer.price === bestPrice && offer.inStock;
@@ -394,13 +394,13 @@ function ProductCard({ product, onAddToCart, viewMode }: {
 
   // Grid view
   return (
-    <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl overflow-hidden hover:border-[#111111]/20 dark:hover:border-white/10 transition-all hover:shadow-lg group">
+    <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden hover:border-mono-100/20 dark:hover:border-white/10 transition-all hover:shadow-lg group">
       {/* Card header */}
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-bold text-[#111111] dark:text-white text-sm">
+              <h3 className="font-bold text-mono-100 dark:text-white text-sm">
                 {product.name}
               </h3>
               {savings && Number(savings) >= 10 && (
@@ -420,7 +420,7 @@ function ProductCard({ product, onAddToCart, viewMode }: {
               {product.description}
             </p>
           </div>
-          <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] flex items-center justify-center text-2xl border border-mono-900 dark:border-[#1A1A1A]">
+          <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-[#F9FAFB] dark:bg-mono-50 flex items-center justify-center text-2xl border border-mono-900 dark:border-mono-200">
             {catConfig.icon}
           </div>
         </div>
@@ -433,7 +433,7 @@ function ProductCard({ product, onAddToCart, viewMode }: {
           {bestPrice < Infinity && (
             <div className="text-right">
               <span className="text-xs text-[#9CA3AF] dark:text-mono-500">a partir de </span>
-              <span className="text-sm font-bold text-[#111111] dark:text-white">{formatCurrency(bestPrice)}</span>
+              <span className="text-sm font-bold text-mono-100 dark:text-white">{formatCurrency(bestPrice)}</span>
             </div>
           )}
         </div>
@@ -444,7 +444,7 @@ function ProductCard({ product, onAddToCart, viewMode }: {
         <div className="px-4 pb-2">
           <div className="flex items-center gap-2">
             <BarChart3 className="w-3 h-3 text-[#9CA3AF] dark:text-mono-500" />
-            <div className="flex-1 h-1.5 rounded-full bg-mono-900 dark:bg-[#262626] overflow-hidden">
+            <div className="flex-1 h-1.5 rounded-full bg-mono-900 dark:bg-mono-300 overflow-hidden">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-amber-400"
                 style={{ width: '100%' }}
@@ -505,17 +505,17 @@ function OfferRow({ offer, supplier, isBest, productId, onAdd }: {
     <div className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all ${
       isBest
         ? 'bg-emerald-50/50 dark:bg-emerald-950/10 border-emerald-200 dark:border-emerald-800/30'
-        : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border-mono-900 dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+        : 'bg-[#F9FAFB] dark:bg-mono-50 border-mono-900 dark:border-mono-200 hover:border-[#D1D5DB] dark:hover:border-[#333]'
     }`}>
       {/* Supplier avatar */}
-      <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white dark:bg-[#171717] border border-mono-900 dark:border-[#262626] flex items-center justify-center text-xs font-bold text-[#6B7280] dark:text-mono-700">
+      <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-300 flex items-center justify-center text-xs font-bold text-[#6B7280] dark:text-mono-700">
         {supplier.logo}
       </div>
 
       {/* Supplier info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className="text-xs font-medium text-[#111111] dark:text-white truncate">
+          <span className="text-xs font-medium text-mono-100 dark:text-white truncate">
             {supplier.name}
           </span>
           {isBest && (
@@ -541,7 +541,7 @@ function OfferRow({ offer, supplier, isBest, productId, onAdd }: {
       {/* Price + action */}
       <div className="flex items-center gap-2 flex-shrink-0">
         <div className="text-right">
-          <div className={`text-sm font-bold tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'}`}>
+          <div className={`text-sm font-bold tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400' : 'text-mono-100 dark:text-white'}`}>
             {formatCurrency(offer.price)}
           </div>
           <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">/ {offer.unit}</div>
@@ -551,7 +551,7 @@ function OfferRow({ offer, supplier, isBest, productId, onAdd }: {
           disabled={!offer.inStock}
           className={`p-2 rounded-xl transition-all ${
             offer.inStock
-              ? 'bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] hover:scale-105 active:scale-95'
+              ? 'bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] hover:scale-105 active:scale-95'
               : 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 cursor-not-allowed'
           }`}
         >
@@ -578,10 +578,10 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
   const itemCount = cart.reduce((s, c) => s + c.quantity, 0);
 
   return (
-    <div className="bg-white dark:bg-black rounded-2xl border border-mono-900 dark:border-[#1A1A1A] overflow-hidden shadow-lg">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-[#1A1A1A]">
-        <h3 className="font-bold text-[#111111] dark:text-white flex items-center gap-2">
-          <ShoppingBag className="w-5 h-5 text-[#111111] dark:text-white" />
+    <div className="bg-white dark:bg-black rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden shadow-lg">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-mono-200">
+        <h3 className="font-bold text-mono-100 dark:text-white flex items-center gap-2">
+          <ShoppingBag className="w-5 h-5 text-mono-100 dark:text-white" />
           Panier
           <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">({itemCount} article{itemCount > 1 ? 's' : ''})</span>
         </h3>
@@ -598,7 +598,7 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
         </div>
       ) : (
         <>
-          <div className="max-h-[50vh] overflow-y-auto divide-y divide-mono-900 dark:divide-[#1A1A1A]">
+          <div className="max-h-[50vh] overflow-y-auto divide-y divide-mono-900 dark:divide-mono-200">
             {Object.entries(cartBySupplier).map(([supplierId, { items, total }]) => {
               const supplier = getSupplier(supplierId);
               return (
@@ -607,34 +607,34 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
                     <div className="w-6 h-6 rounded-lg bg-mono-950 dark:bg-[#171717] flex items-center justify-center text-[10px] font-bold text-[#6B7280] dark:text-mono-700">
                       {supplier.logo}
                     </div>
-                    <span className="text-xs font-bold text-[#111111] dark:text-white">{supplier.name}</span>
-                    <span className="ml-auto text-xs font-bold text-[#111111] dark:text-white tabular-nums">{formatCurrency(total)}</span>
+                    <span className="text-xs font-bold text-mono-100 dark:text-white">{supplier.name}</span>
+                    <span className="ml-auto text-xs font-bold text-mono-100 dark:text-white tabular-nums">{formatCurrency(total)}</span>
                   </div>
                   <div className="space-y-1.5">
                     {items.map(item => {
                       const product = PRODUCTS.find(p => p.id === item.productId);
                       return (
-                        <div key={`${item.productId}-${item.supplierId}`} className="flex items-center gap-2 py-1 px-2 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A] transition-colors">
+                        <div key={`${item.productId}-${item.supplierId}`} className="flex items-center gap-2 py-1 px-2 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-mono-50 transition-colors">
                           <div className="flex-1 min-w-0">
-                            <div className="text-xs font-medium text-[#111111] dark:text-white truncate">{product?.name || item.productId}</div>
+                            <div className="text-xs font-medium text-mono-100 dark:text-white truncate">{product?.name || item.productId}</div>
                             <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 tabular-nums">{formatCurrency(item.price)} / {item.unit}</div>
                           </div>
                           <div className="flex items-center gap-0.5 bg-mono-950 dark:bg-[#171717] rounded-lg p-0.5">
                             <button
                               onClick={() => onUpdateQty(item.productId, item.supplierId, -1)}
-                              className="p-1 rounded-md hover:bg-white dark:hover:bg-[#262626] transition-colors"
+                              className="p-1 rounded-md hover:bg-white dark:hover:bg-mono-300 transition-colors"
                             >
                               <Minus className="w-3 h-3 text-[#6B7280] dark:text-mono-700" />
                             </button>
-                            <span className="text-xs font-semibold w-6 text-center text-[#111111] dark:text-white tabular-nums">{item.quantity}</span>
+                            <span className="text-xs font-semibold w-6 text-center text-mono-100 dark:text-white tabular-nums">{item.quantity}</span>
                             <button
                               onClick={() => onUpdateQty(item.productId, item.supplierId, 1)}
-                              className="p-1 rounded-md hover:bg-white dark:hover:bg-[#262626] transition-colors"
+                              className="p-1 rounded-md hover:bg-white dark:hover:bg-mono-300 transition-colors"
                             >
                               <Plus className="w-3 h-3 text-[#6B7280] dark:text-mono-700" />
                             </button>
                           </div>
-                          <span className="text-xs font-bold text-[#111111] dark:text-white tabular-nums w-14 text-right">
+                          <span className="text-xs font-bold text-mono-100 dark:text-white tabular-nums w-14 text-right">
                             {(item.price * item.quantity).toFixed(2)}
                           </span>
                           <button
@@ -652,15 +652,15 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
             })}
           </div>
 
-          <div className="border-t border-mono-900 dark:border-[#1A1A1A] p-4 space-y-3">
+          <div className="border-t border-mono-900 dark:border-mono-200 p-4 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-[#111111] dark:text-white">Total HT</span>
-              <span className="text-xl font-black text-[#111111] dark:text-white tabular-nums">{formatCurrency(cartTotal)}</span>
+              <span className="text-sm font-bold text-mono-100 dark:text-white">Total HT</span>
+              <span className="text-xl font-black text-mono-100 dark:text-white tabular-nums">{formatCurrency(cartTotal)}</span>
             </div>
             <button
               onClick={onSubmit}
               disabled={submitting}
-              className="w-full py-3 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 text-white dark:text-black rounded-xl text-sm font-bold transition-all hover:shadow-md active:scale-[0.98]"
+              className="w-full py-3 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 text-white dark:text-black rounded-xl text-sm font-bold transition-all hover:shadow-md active:scale-[0.98]"
             >
               {submitting ? (
                 <span className="flex items-center justify-center gap-2">
@@ -700,18 +700,18 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
           <BarChart3 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
         </div>
         <div>
-          <h2 className="font-bold text-[#111111] dark:text-white text-lg">Comparateur de prix</h2>
+          <h2 className="font-bold text-mono-100 dark:text-white text-lg">Comparateur de prix</h2>
           <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Comparez les prix de tous vos fournisseurs cote a cote</p>
         </div>
       </div>
 
       {/* Product selector */}
-      <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4">
+      <div className="bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
         <label className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2 block">Choisir un ingredient</label>
         <select
           value={selectedProduct || ''}
           onChange={e => setSelectedProduct(e.target.value || null)}
-          className="w-full py-2.5 px-3 bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+          className="w-full py-2.5 px-3 bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-xl text-sm text-mono-100 dark:text-white outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
         >
           <option value="">-- Selectionnez un produit --</option>
           {products.filter(p => p.offers.length > 1).map(p => (
@@ -722,18 +722,18 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
 
       {/* Comparison table */}
       {product && (
-        <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-mono-900 dark:border-[#1A1A1A] flex items-center justify-between">
+        <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-xl">{CATEGORY_CONFIG[product.category]?.icon || '📦'}</span>
               <div>
-                <h3 className="font-bold text-[#111111] dark:text-white">{product.name}</h3>
+                <h3 className="font-bold text-mono-100 dark:text-white">{product.name}</h3>
                 <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{product.offers.length} fournisseurs comparés</p>
               </div>
             </div>
           </div>
 
-          <div className="divide-y divide-mono-900 dark:divide-[#1A1A1A]">
+          <div className="divide-y divide-mono-900 dark:divide-mono-200">
             {[...product.offers].sort((a, b) => a.price - b.price).map((offer, idx) => {
               const supplier = getSupplier(offer.supplierId);
               const bestPrice = getBestPrice(product.offers);
@@ -743,21 +743,21 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
                 : '0';
 
               return (
-                <div key={offer.supplierId} className={`px-5 py-4 flex items-center gap-4 transition-colors ${isBest ? 'bg-emerald-50/50 dark:bg-emerald-950/10' : 'hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]'}`}>
+                <div key={offer.supplierId} className={`px-5 py-4 flex items-center gap-4 transition-colors ${isBest ? 'bg-emerald-50/50 dark:bg-emerald-950/10' : 'hover:bg-[#F9FAFB] dark:hover:bg-mono-50'}`}>
                   {/* Rank */}
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black ${
-                    idx === 0 ? 'bg-emerald-500 text-white' : idx === 1 ? 'bg-mono-900 dark:bg-[#262626] text-[#111111] dark:text-white' : 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500'
+                    idx === 0 ? 'bg-emerald-500 text-white' : idx === 1 ? 'bg-mono-900 dark:bg-mono-300 text-mono-100 dark:text-white' : 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500'
                   }`}>
                     #{idx + 1}
                   </div>
 
                   {/* Supplier info */}
-                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] flex items-center justify-center text-sm font-bold text-[#6B7280] dark:text-mono-700">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 flex items-center justify-center text-sm font-bold text-[#6B7280] dark:text-mono-700">
                     {supplier.logo}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-sm text-[#111111] dark:text-white">{supplier.name}</span>
+                      <span className="font-semibold text-sm text-mono-100 dark:text-white">{supplier.name}</span>
                       {isBest && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/30">
                           <CheckCircle className="w-3 h-3" />
@@ -778,7 +778,7 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
 
                   {/* Price + savings */}
                   <div className="text-right flex-shrink-0">
-                    <div className={`text-lg font-black tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'}`}>
+                    <div className={`text-lg font-black tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400' : 'text-mono-100 dark:text-white'}`}>
                       {formatCurrency(offer.price)}
                     </div>
                     <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">/ {offer.unit}</div>
@@ -800,7 +800,7 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
 
                   {/* Price bar visualization */}
                   <div className="hidden sm:block flex-shrink-0 w-32">
-                    <div className="h-2 rounded-full bg-mono-900 dark:bg-[#262626] overflow-hidden">
+                    <div className="h-2 rounded-full bg-mono-900 dark:bg-mono-300 overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all ${isBest ? 'bg-emerald-500' : 'bg-amber-400'}`}
                         style={{ width: `${(getBestPrice(product.offers) / offer.price) * 100}%` }}
@@ -813,7 +813,7 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
           </div>
 
           {/* Summary */}
-          <div className="px-5 py-4 bg-[#F9FAFB] dark:bg-[#0A0A0A] border-t border-mono-900 dark:border-[#1A1A1A] flex items-center justify-between">
+          <div className="px-5 py-4 bg-[#F9FAFB] dark:bg-mono-50 border-t border-mono-900 dark:border-mono-200 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-emerald-500" />
               <span className="text-xs font-medium text-[#6B7280] dark:text-mono-700">
@@ -828,7 +828,7 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
       )}
 
       {!selectedProduct && (
-        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
+        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
           <BarChart3 className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
           <p className="text-sm text-[#9CA3AF] dark:text-mono-500 font-medium">Selectionnez un produit pour comparer les prix</p>
         </div>
@@ -885,7 +885,7 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
           <Star className="w-5 h-5 text-amber-600 dark:text-amber-400" />
         </div>
         <div>
-          <h2 className="font-bold text-[#111111] dark:text-white text-lg">Evaluation des fournisseurs</h2>
+          <h2 className="font-bold text-mono-100 dark:text-white text-lg">Evaluation des fournisseurs</h2>
           <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Notez vos fournisseurs sur 4 criteres — les meilleurs obtiennent le badge Recommande</p>
         </div>
       </div>
@@ -897,7 +897,7 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
 
           return (
             <div key={item.supplierId} className={`bg-white dark:bg-black border rounded-2xl overflow-hidden transition-all ${
-              isRecommended ? 'border-amber-300 dark:border-amber-800/40' : 'border-mono-900 dark:border-[#1A1A1A]'
+              isRecommended ? 'border-amber-300 dark:border-amber-800/40' : 'border-mono-900 dark:border-mono-200'
             }`}>
               {/* Header */}
               <div className="px-5 py-4 flex items-center gap-4">
@@ -906,12 +906,12 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
                 }`}>
                   #{idx + 1}
                 </div>
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] flex items-center justify-center text-lg font-bold text-[#6B7280] dark:text-mono-700">
+                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 flex items-center justify-center text-lg font-bold text-[#6B7280] dark:text-mono-700">
                   {item.supplier.logo}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-sm text-[#111111] dark:text-white">{item.supplier.name}</h3>
+                    <h3 className="font-bold text-sm text-mono-100 dark:text-white">{item.supplier.name}</h3>
                     {isRecommended && (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-gradient-to-r from-amber-400 to-orange-400 text-white">
                         <ThumbsUp className="w-3 h-3" />
@@ -920,7 +920,7 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
                     )}
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-2xl font-black text-[#111111] dark:text-white">{item.overall}</span>
+                    <span className="text-2xl font-black text-mono-100 dark:text-white">{item.overall}</span>
                     <span className="text-xs text-[#9CA3AF] dark:text-mono-500">/ 5</span>
                     <div className="flex gap-0.5 ml-1">
                       {Array.from({ length: 5 }).map((_, i) => (
@@ -934,7 +934,7 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
                   className={`px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${
                     isEditing
                       ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
-                      : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#262626]'
+                      : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
                   }`}
                 >
                   {isEditing ? 'Sauvegarder' : 'Modifier'}
@@ -963,13 +963,13 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
                         </div>
                       ) : (
                         <>
-                          <div className="flex-1 h-2 rounded-full bg-mono-900 dark:bg-[#262626] overflow-hidden">
+                          <div className="flex-1 h-2 rounded-full bg-mono-900 dark:bg-mono-300 overflow-hidden">
                             <div
                               className={`h-full rounded-full transition-all ${value >= 4 ? 'bg-emerald-500' : value >= 3 ? 'bg-amber-400' : 'bg-red-400'}`}
                               style={{ width: `${(value / 5) * 100}%` }}
                             />
                           </div>
-                          <span className="text-xs font-bold text-[#111111] dark:text-white w-6 text-right tabular-nums">{value}</span>
+                          <span className="text-xs font-bold text-mono-100 dark:text-white w-6 text-right tabular-nums">{value}</span>
                         </>
                       )}
                     </div>
@@ -982,7 +982,7 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
       </div>
 
       {suppliers.length === 0 && (
-        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
+        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
           <Star className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
           <p className="text-sm text-[#9CA3AF] dark:text-mono-500 font-medium">Aucun fournisseur a evaluer</p>
         </div>
@@ -1020,7 +1020,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
   }, [orders]);
 
   const statusColors: Record<string, string> = {
-    draft: 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 border-mono-900 dark:border-[#262626]',
+    draft: 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 border-mono-900 dark:border-mono-300',
     sent: 'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/30',
     confirmed: 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/30',
     received: 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/30',
@@ -1037,7 +1037,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
           <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
         </div>
         <div>
-          <h2 className="font-bold text-[#111111] dark:text-white text-lg">Historique par fournisseur</h2>
+          <h2 className="font-bold text-mono-100 dark:text-white text-lg">Historique par fournisseur</h2>
           <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Timeline de vos commandes avec montants, dates et articles</p>
         </div>
       </div>
@@ -1047,7 +1047,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
         <button
           onClick={() => setSelectedSupplier(null)}
           className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-            !selectedSupplier ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] text-[#6B7280] dark:text-mono-700'
+            !selectedSupplier ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700'
           }`}
         >
           Tous ({orders.length})
@@ -1057,7 +1057,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
             key={name}
             onClick={() => setSelectedSupplier(selectedSupplier === name ? null : name)}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-              selectedSupplier === name ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] text-[#6B7280] dark:text-mono-700'
+              selectedSupplier === name ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700'
             }`}
           >
             {name} ({orders.filter(o => o.supplierName === name).length})
@@ -1068,17 +1068,17 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
       {/* Supplier stats cards */}
       {selectedSupplier && supplierStats[selectedSupplier] && (
         <div className="grid grid-cols-3 gap-3">
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
             <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Total depense</span>
-            <p className="text-xl font-black text-[#111111] dark:text-white mt-1 tabular-nums">{formatCurrency(supplierStats[selectedSupplier].totalSpent)}</p>
+            <p className="text-xl font-black text-mono-100 dark:text-white mt-1 tabular-nums">{formatCurrency(supplierStats[selectedSupplier].totalSpent)}</p>
           </div>
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
             <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Commandes</span>
-            <p className="text-xl font-black text-[#111111] dark:text-white mt-1">{supplierStats[selectedSupplier].orderCount}</p>
+            <p className="text-xl font-black text-mono-100 dark:text-white mt-1">{supplierStats[selectedSupplier].orderCount}</p>
           </div>
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
             <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Derniere commande</span>
-            <p className="text-sm font-bold text-[#111111] dark:text-white mt-1">{new Date(supplierStats[selectedSupplier].lastOrder).toLocaleDateString('fr-FR')}</p>
+            <p className="text-sm font-bold text-mono-100 dark:text-white mt-1">{new Date(supplierStats[selectedSupplier].lastOrder).toLocaleDateString('fr-FR')}</p>
           </div>
         </div>
       )}
@@ -1087,7 +1087,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
       {sortedOrders.length > 0 ? (
         <div className="relative pl-6">
           {/* Timeline line */}
-          <div className="absolute left-[11px] top-2 bottom-2 w-px bg-mono-900 dark:bg-[#1A1A1A]" />
+          <div className="absolute left-[11px] top-2 bottom-2 w-px bg-mono-900 dark:bg-mono-200" />
 
           <div className="space-y-4">
             {sortedOrders.map((order, idx) => (
@@ -1100,16 +1100,16 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
                   'bg-white dark:bg-black border-[#D1D5DB] dark:border-mono-350'
                 }`} />
 
-                <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-colors">
+                <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-4 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-colors">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
-                      <span className="font-bold text-sm text-[#111111] dark:text-white">{order.supplierName}</span>
+                      <span className="font-bold text-sm text-mono-100 dark:text-white">{order.supplierName}</span>
                       <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border ${statusColors[order.status] || statusColors.draft}`}>
                         {statusLabels[order.status] || 'Brouillon'}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-sm font-bold text-[#111111] dark:text-white tabular-nums">{formatCurrency(order.totalHT)}</span>
+                      <span className="text-sm font-bold text-mono-100 dark:text-white tabular-nums">{formatCurrency(order.totalHT)}</span>
                       <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                         {new Date(order.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
                       </span>
@@ -1117,7 +1117,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {order.items.map(item => (
-                      <span key={item.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-medium bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-[#262626]">
+                      <span key={item.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-medium bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-300">
                         {item.quantity}x {item.productName}
                         <span className="text-[#9CA3AF] dark:text-mono-400">({formatCurrency(item.unitPrice * item.quantity)})</span>
                       </span>
@@ -1129,7 +1129,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
           </div>
         </div>
       ) : (
-        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
+        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
           <Inbox className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
           <p className="text-sm text-[#9CA3AF] dark:text-mono-500 font-medium">Aucune commande dans l'historique</p>
         </div>
@@ -1183,13 +1183,13 @@ function PriceAlertSetup() {
             <BellRing className="w-5 h-5 text-violet-600 dark:text-violet-400" />
           </div>
           <div>
-            <h2 className="font-bold text-[#111111] dark:text-white text-lg">Alertes de prix</h2>
+            <h2 className="font-bold text-mono-100 dark:text-white text-lg">Alertes de prix</h2>
             <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Soyez notifie quand un ingredient passe sous votre seuil</p>
           </div>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] rounded-xl text-sm font-semibold transition-all"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] rounded-xl text-sm font-semibold transition-all"
         >
           <Plus className="w-4 h-4" />
           Nouvelle alerte
@@ -1198,12 +1198,12 @@ function PriceAlertSetup() {
 
       {/* New alert form */}
       {showForm && (
-        <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
+        <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-5 space-y-4">
           <div className="flex items-center gap-2 mb-1">
             <Bell className="w-4 h-4 text-violet-500" />
-            <span className="text-sm font-bold text-[#111111] dark:text-white">Creer une alerte</span>
+            <span className="text-sm font-bold text-mono-100 dark:text-white">Creer une alerte</span>
           </div>
-          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 italic mb-3 px-3 py-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-xl border border-mono-900 dark:border-[#1A1A1A]">
+          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 italic mb-3 px-3 py-2 bg-[#F9FAFB] dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200">
             Exemple : "Alertez-moi quand le saumon passe sous 15 EUR/kg"
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1214,7 +1214,7 @@ function PriceAlertSetup() {
                 value={newAlert.ingredientName}
                 onChange={e => setNewAlert({ ...newAlert, ingredientName: e.target.value })}
                 placeholder="Ex: Saumon frais"
-                className="w-full px-3 py-2.5 bg-mono-975 dark:bg-[#262626] border border-mono-900 dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2.5 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
             <div>
@@ -1226,7 +1226,7 @@ function PriceAlertSetup() {
                 placeholder="15"
                 min="0"
                 step="0.5"
-                className="w-full px-3 py-2.5 bg-mono-975 dark:bg-[#262626] border border-mono-900 dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2.5 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
             <div>
@@ -1234,7 +1234,7 @@ function PriceAlertSetup() {
               <select
                 value={newAlert.unit}
                 onChange={e => setNewAlert({ ...newAlert, unit: e.target.value })}
-                className="w-full px-3 py-2.5 bg-mono-975 dark:bg-[#262626] border border-mono-900 dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2.5 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg text-sm text-mono-100 dark:text-white outline-none focus:ring-2 focus:ring-violet-500"
               >
                 <option value="kg">kg</option>
                 <option value="L">L</option>
@@ -1256,7 +1256,7 @@ function PriceAlertSetup() {
             </button>
             <button
               onClick={() => { setShowForm(false); setNewAlert({ ingredientName: '', threshold: '', unit: 'kg' }); }}
-              className="px-4 py-2.5 text-sm text-[#9CA3AF] dark:text-mono-500 hover:text-[#111111] dark:hover:text-white transition-colors font-medium"
+              className="px-4 py-2.5 text-sm text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors font-medium"
             >
               Annuler
             </button>
@@ -1270,20 +1270,20 @@ function PriceAlertSetup() {
           <div key={alert.id} className={`bg-white dark:bg-black border rounded-2xl px-5 py-4 flex items-center gap-4 transition-all ${
             alert.active
               ? 'border-violet-200 dark:border-violet-900/30 bg-violet-50/30 dark:bg-violet-950/10'
-              : 'border-mono-900 dark:border-[#1A1A1A] opacity-60'
+              : 'border-mono-900 dark:border-mono-200 opacity-60'
           }`}>
             <div className={`p-2 rounded-xl ${alert.active ? 'bg-violet-100 dark:bg-violet-900/30' : 'bg-mono-950 dark:bg-[#171717]'}`}>
               <Bell className={`w-5 h-5 ${alert.active ? 'text-violet-600 dark:text-violet-400' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm text-[#111111] dark:text-white">{alert.ingredientName}</span>
+                <span className="font-semibold text-sm text-mono-100 dark:text-white">{alert.ingredientName}</span>
                 {alert.active && (
                   <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400">Active</span>
                 )}
               </div>
               <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">
-                Alerter quand le prix passe sous <span className="font-bold text-[#111111] dark:text-white">{formatCurrency(alert.threshold)}/{alert.unit}</span>
+                Alerter quand le prix passe sous <span className="font-bold text-mono-100 dark:text-white">{formatCurrency(alert.threshold)}/{alert.unit}</span>
               </p>
               <span className="text-[10px] text-[#D1D5DB] dark:text-mono-400">Creee le {alert.createdAt}</span>
             </div>
@@ -1310,7 +1310,7 @@ function PriceAlertSetup() {
       </div>
 
       {alerts.length === 0 && !showForm && (
-        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
+        <div className="text-center py-12 bg-[#F9FAFB] dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
           <BellRing className="w-10 h-10 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-3" />
           <p className="text-sm text-[#9CA3AF] dark:text-mono-500 font-medium">Aucune alerte de prix configuree</p>
           <p className="text-xs text-[#D1D5DB] dark:text-mono-400 mt-1">Cliquez sur "Nouvelle alerte" pour commencer</p>
@@ -1332,13 +1332,13 @@ function SeasonalPriceCalendar() {
           <Calendar className="w-5 h-5 text-teal-600 dark:text-teal-400" />
         </div>
         <div>
-          <h2 className="font-bold text-[#111111] dark:text-white text-lg">Calendrier saisonnier des prix</h2>
+          <h2 className="font-bold text-mono-100 dark:text-white text-lg">Calendrier saisonnier des prix</h2>
           <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Identifiez les mois les moins chers pour chaque ingredient</p>
         </div>
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-3 px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
+      <div className="flex items-center gap-3 px-4 py-3 bg-[#F9FAFB] dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
         <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Legende :</span>
         <div className="flex items-center gap-2 flex-wrap">
           {[1, 2, 3, 4, 5].map(v => (
@@ -1351,14 +1351,14 @@ function SeasonalPriceCalendar() {
       </div>
 
       {/* Heatmap grid */}
-      <div className="bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
         {/* Header row */}
-        <div className="grid gap-px bg-mono-900 dark:bg-[#1A1A1A]" style={{ gridTemplateColumns: '160px repeat(12, 1fr)' }}>
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] px-4 py-3">
+        <div className="grid gap-px bg-mono-900 dark:bg-mono-200" style={{ gridTemplateColumns: '160px repeat(12, 1fr)' }}>
+          <div className="bg-[#F9FAFB] dark:bg-mono-50 px-4 py-3">
             <span className="text-[10px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Ingredient</span>
           </div>
           {MONTH_LABELS.map((month, idx) => (
-            <div key={month} className={`bg-[#F9FAFB] dark:bg-[#0A0A0A] px-1 py-3 text-center ${idx === currentMonth ? 'bg-[#111111] dark:bg-white' : ''}`}>
+            <div key={month} className={`bg-[#F9FAFB] dark:bg-mono-50 px-1 py-3 text-center ${idx === currentMonth ? 'bg-mono-100 dark:bg-white' : ''}`}>
               <span className={`text-[10px] font-bold uppercase tracking-wider ${idx === currentMonth ? 'text-white dark:text-black' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                 {month}
               </span>
@@ -1367,13 +1367,13 @@ function SeasonalPriceCalendar() {
         </div>
 
         {/* Data rows */}
-        <div className="divide-y divide-mono-900 dark:divide-[#1A1A1A]">
+        <div className="divide-y divide-mono-900 dark:divide-mono-200">
           {SEASONAL_DATA.map(item => {
             const cheapestMonth = item.months.indexOf(Math.min(...item.months));
             return (
-              <div key={item.ingredient} className="grid gap-px bg-mono-900 dark:bg-[#1A1A1A]" style={{ gridTemplateColumns: '160px repeat(12, 1fr)' }}>
+              <div key={item.ingredient} className="grid gap-px bg-mono-900 dark:bg-mono-200" style={{ gridTemplateColumns: '160px repeat(12, 1fr)' }}>
                 <div className="bg-white dark:bg-black px-4 py-3 flex items-center gap-2">
-                  <span className="text-xs font-semibold text-[#111111] dark:text-white truncate">{item.ingredient}</span>
+                  <span className="text-xs font-semibold text-mono-100 dark:text-white truncate">{item.ingredient}</span>
                   {cheapestMonth === currentMonth && (
                     <span className="flex-shrink-0 px-1.5 py-0.5 rounded text-[8px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400">
                       Optimal !
@@ -1383,7 +1383,7 @@ function SeasonalPriceCalendar() {
                 {item.months.map((value, monthIdx) => (
                   <div
                     key={monthIdx}
-                    className={`bg-white dark:bg-black flex items-center justify-center py-3 ${monthIdx === currentMonth ? 'ring-2 ring-inset ring-[#111111] dark:ring-white' : ''}`}
+                    className={`bg-white dark:bg-black flex items-center justify-center py-3 ${monthIdx === currentMonth ? 'ring-2 ring-inset ring-mono-100 dark:ring-white' : ''}`}
                   >
                     <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold ${getSeasonalColor(value)} transition-transform hover:scale-110`} title={`${item.ingredient} - ${MONTH_LABELS[monthIdx]}: ${getSeasonalLabel(value)}`}>
                       {value === 1 ? '$$' : value}
@@ -1655,9 +1655,9 @@ export default function Marketplace() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-[#111111] dark:text-white flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A]">
-                <Store className="w-6 h-6 text-[#111111] dark:text-white" />
+            <h1 className="text-2xl font-black text-mono-100 dark:text-white flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200">
+                <Store className="w-6 h-6 text-mono-100 dark:text-white" />
               </div>
               {t('marketplace.title')}
             </h1>
@@ -1668,19 +1668,19 @@ export default function Marketplace() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => { setShowOrders(!showOrders); if (!showOrders) fetchOrders(); }}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333] text-[#111111] dark:text-white rounded-xl font-medium text-sm transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 hover:border-[#D1D5DB] dark:hover:border-[#333] text-mono-100 dark:text-white rounded-xl font-medium text-sm transition-all"
             >
               <History className="w-4 h-4" />
               <span className="hidden sm:inline">{t('marketplace.orders')}</span>
               {orders.length > 0 && (
-                <span className="w-5 h-5 bg-[#111111] dark:bg-white text-white dark:text-black text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="w-5 h-5 bg-mono-100 dark:bg-white text-white dark:text-black text-[10px] font-bold rounded-full flex items-center justify-center">
                   {orders.length}
                 </span>
               )}
             </button>
             <button
               onClick={() => setCartOpen(!cartOpen)}
-              className="relative inline-flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] rounded-xl font-semibold text-sm transition-all hover:shadow-md"
+              className="relative inline-flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] rounded-xl font-semibold text-sm transition-all hover:shadow-md"
             >
               <ShoppingCart className="w-4 h-4" />
               <span className="hidden sm:inline">{t('marketplace.myCart')}</span>
@@ -1696,17 +1696,17 @@ export default function Marketplace() {
         {/* Quick Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'Fournisseurs', value: totalSuppliers, icon: Store, color: 'text-[#111111] dark:text-white' },
-            { label: 'Produits', value: totalProductsCount, icon: Package, color: 'text-[#111111] dark:text-white' },
+            { label: 'Fournisseurs', value: totalSuppliers, icon: Store, color: 'text-mono-100 dark:text-white' },
+            { label: 'Produits', value: totalProductsCount, icon: Package, color: 'text-mono-100 dark:text-white' },
             { label: 'Note moyenne', value: avgRating, icon: Star, color: 'text-amber-500' },
-            { label: 'Dans le panier', value: cart.reduce((s, c) => s + c.quantity, 0), icon: ShoppingBag, color: 'text-[#111111] dark:text-white' },
+            { label: 'Dans le panier', value: cart.reduce((s, c) => s + c.quantity, 0), icon: ShoppingBag, color: 'text-mono-100 dark:text-white' },
           ].map((stat, i) => (
-            <div key={i} className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-4">
+            <div key={i} className="bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-1.5">
                 <stat.icon className={`w-4 h-4 ${stat.color}`} />
                 <span className="text-[11px] font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">{stat.label}</span>
               </div>
-              <p className="text-2xl font-black text-[#111111] dark:text-white">{stat.value}</p>
+              <p className="text-2xl font-black text-mono-100 dark:text-white">{stat.value}</p>
             </div>
           ))}
         </div>
@@ -1725,8 +1725,8 @@ export default function Marketplace() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'bg-white dark:bg-black text-[#111111] dark:text-white shadow-sm'
-                  : 'text-[#6B7280] dark:text-mono-700 hover:text-[#111111] dark:hover:text-white'
+                  ? 'bg-white dark:bg-black text-mono-100 dark:text-white shadow-sm'
+                  : 'text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white'
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -1760,16 +1760,16 @@ export default function Marketplace() {
 
         {/* Search bar */}
         <div className="relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#D1D5DB] dark:text-mono-400 group-focus-within:text-[#111111] dark:group-focus-within:text-white transition-colors" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#D1D5DB] dark:text-mono-400 group-focus-within:text-mono-100 dark:group-focus-within:text-white transition-colors" />
           <input
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder={t('marketplace.searchPlaceholder')}
-            className="w-full pl-12 pr-4 py-3.5 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-2xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent focus:bg-white dark:focus:bg-black outline-none transition-all"
+            className="w-full pl-12 pr-4 py-3.5 bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent focus:bg-white dark:focus:bg-black outline-none transition-all"
           />
           {searchQuery && (
-            <button onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-mono-900 dark:hover:bg-[#262626]">
+            <button onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-mono-900 dark:hover:bg-mono-300">
               <X className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
             </button>
           )}
@@ -1781,8 +1781,8 @@ export default function Marketplace() {
             onClick={() => setSelectedCategory(null)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
               !selectedCategory
-                ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-md'
-                : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333] hover:text-[#111111] dark:hover:text-white'
+                ? 'bg-mono-100 dark:bg-white text-white dark:text-black shadow-md'
+                : 'bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333] hover:text-mono-100 dark:hover:text-white'
             }`}
           >
             <Grid3x3 className="w-3.5 h-3.5" />
@@ -1798,8 +1798,8 @@ export default function Marketplace() {
                 onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
                   selectedCategory === cat
-                    ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-md'
-                    : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333] hover:text-[#111111] dark:hover:text-white'
+                    ? 'bg-mono-100 dark:bg-white text-white dark:text-black shadow-md'
+                    : 'bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333] hover:text-mono-100 dark:hover:text-white'
                 }`}
               >
                 <span>{cfg?.icon || '📦'}</span>
@@ -1813,12 +1813,12 @@ export default function Marketplace() {
         {/* Sort & Filters toolbar */}
         <div className="flex flex-wrap items-center gap-3">
           {/* Sort */}
-          <div className="flex items-center gap-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-xl px-3 py-2">
+          <div className="flex items-center gap-2 bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl px-3 py-2">
             <ArrowUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value as SortOption)}
-              className="text-xs font-medium bg-transparent text-[#111111] dark:text-white outline-none cursor-pointer"
+              className="text-xs font-medium bg-transparent text-mono-100 dark:text-white outline-none cursor-pointer"
             >
               <option value="price_asc">{t('marketplace.priceAsc')}</option>
               <option value="price_desc">{t('marketplace.priceDesc')}</option>
@@ -1832,8 +1832,8 @@ export default function Marketplace() {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl border transition-all ${
               showFilters || showBioOnly || showLocalOnly
-                ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-transparent'
-                : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border-mono-900 dark:border-[#1A1A1A] text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                ? 'bg-mono-100 dark:bg-white text-white dark:text-black border-transparent'
+                : 'bg-[#F9FAFB] dark:bg-mono-50 border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333]'
             }`}
           >
             <Filter className="w-3.5 h-3.5" />
@@ -1845,7 +1845,7 @@ export default function Marketplace() {
 
           {showFilters && (
             <>
-              <label className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-mono-700 cursor-pointer px-3 py-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-xl hover:border-green-300 dark:hover:border-green-800 transition-colors">
+              <label className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-mono-700 cursor-pointer px-3 py-2 bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl hover:border-green-300 dark:hover:border-green-800 transition-colors">
                 <input
                   type="checkbox"
                   checked={showBioOnly}
@@ -1855,7 +1855,7 @@ export default function Marketplace() {
                 <Leaf className="w-3.5 h-3.5 text-green-500" />
                 Bio
               </label>
-              <label className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-mono-700 cursor-pointer px-3 py-2 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-mono-900 dark:border-[#1A1A1A] rounded-xl hover:border-teal-300 dark:hover:border-teal-800 transition-colors">
+              <label className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-mono-700 cursor-pointer px-3 py-2 bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl hover:border-teal-300 dark:hover:border-teal-800 transition-colors">
                 <input
                   type="checkbox"
                   checked={showLocalOnly}
@@ -1872,13 +1872,13 @@ export default function Marketplace() {
           <div className="ml-auto flex items-center gap-1 bg-mono-950 dark:bg-[#171717] rounded-xl p-0.5">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-[#262626] shadow-sm' : 'text-[#9CA3AF] dark:text-mono-500'}`}
+              className={`p-1.5 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-mono-300 shadow-sm' : 'text-[#9CA3AF] dark:text-mono-500'}`}
             >
               <Grid3x3 className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-1.5 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-[#262626] shadow-sm' : 'text-[#9CA3AF] dark:text-mono-500'}`}
+              className={`p-1.5 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-mono-300 shadow-sm' : 'text-[#9CA3AF] dark:text-mono-500'}`}
             >
               <List className="w-4 h-4" />
             </button>
@@ -1913,16 +1913,16 @@ export default function Marketplace() {
           {/* Product grid */}
           <div className="flex-1 min-w-0">
             {filteredProducts.length === 0 ? (
-              <div className="text-center py-20 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-mono-900 dark:border-[#1A1A1A]">
-                <div className="w-16 h-16 rounded-2xl bg-white dark:bg-black border border-mono-900 dark:border-[#1A1A1A] flex items-center justify-center mx-auto mb-4">
+              <div className="text-center py-20 bg-[#F9FAFB] dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
+                <div className="w-16 h-16 rounded-2xl bg-white dark:bg-black border border-mono-900 dark:border-mono-200 flex items-center justify-center mx-auto mb-4">
                   <Package className="w-8 h-8 text-[#D1D5DB] dark:text-mono-350" />
                 </div>
-                <p className="text-[#111111] dark:text-white font-semibold">{t('marketplace.noProducts')}</p>
+                <p className="text-mono-100 dark:text-white font-semibold">{t('marketplace.noProducts')}</p>
                 <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">{t('marketplace.tryFilters')}</p>
                 {(selectedCategory || searchQuery || showBioOnly || showLocalOnly) && (
                   <button
                     onClick={() => { setSelectedCategory(null); setSearchQuery(''); setShowBioOnly(false); setShowLocalOnly(false); }}
-                    className="mt-4 px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl text-sm font-semibold hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                    className="mt-4 px-4 py-2 bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl text-sm font-semibold hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
                   >
                     Effacer les filtres
                   </button>
@@ -1986,9 +1986,9 @@ export default function Marketplace() {
 
         {/* Order history (with timeline for 'products' tab, standalone for order button) */}
         {showOrders && activeTab === 'products' && (
-          <div className="bg-white dark:bg-black rounded-2xl border border-mono-900 dark:border-[#1A1A1A] overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-mono-900 dark:border-[#1A1A1A]">
-              <h2 className="font-bold text-[#111111] dark:text-white flex items-center gap-2">
+          <div className="bg-white dark:bg-black rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-mono-900 dark:border-mono-200">
+              <h2 className="font-bold text-mono-100 dark:text-white flex items-center gap-2">
                 <History className="w-5 h-5" />
                 {t('marketplace.orderHistory')}
               </h2>
@@ -1999,7 +1999,7 @@ export default function Marketplace() {
 
             {ordersLoading ? (
               <div className="p-12 text-center">
-                <div className="w-8 h-8 border-2 border-mono-900 dark:border-[#262626] border-t-[#111111] dark:border-t-white rounded-full animate-spin mx-auto mb-3" />
+                <div className="w-8 h-8 border-2 border-mono-900 dark:border-mono-300 border-t-mono-100 dark:border-t-white rounded-full animate-spin mx-auto mb-3" />
                 <p className="text-sm text-[#9CA3AF] dark:text-mono-500">{t('common.loading')}</p>
               </div>
             ) : orders.length === 0 ? (
@@ -2008,7 +2008,7 @@ export default function Marketplace() {
                 <p className="text-sm text-[#9CA3AF] dark:text-mono-500 font-medium">{t('marketplace.noOrders')}</p>
               </div>
             ) : (
-              <div className="divide-y divide-mono-900 dark:divide-[#1A1A1A]">
+              <div className="divide-y divide-mono-900 dark:divide-mono-200">
                 {orders.map(order => {
                   const statusConfig: Record<string, { label: string; color: string }> = {
                     draft: { label: 'Brouillon', color: 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700' },
@@ -2019,10 +2019,10 @@ export default function Marketplace() {
                   const sc = statusConfig[order.status] || statusConfig.draft;
 
                   return (
-                    <div key={order.id} className="p-4 hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A] transition-colors">
+                    <div key={order.id} className="p-4 hover:bg-[#F9FAFB] dark:hover:bg-mono-50 transition-colors">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-3">
-                          <span className="font-bold text-sm text-[#111111] dark:text-white">
+                          <span className="font-bold text-sm text-mono-100 dark:text-white">
                             {order.supplierName}
                           </span>
                           <span className={`px-2.5 py-0.5 rounded-lg text-[10px] font-bold ${sc.color}`}>
@@ -2030,7 +2030,7 @@ export default function Marketplace() {
                           </span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-sm font-bold text-[#111111] dark:text-white tabular-nums">
+                          <span className="text-sm font-bold text-mono-100 dark:text-white tabular-nums">
                             {formatCurrency(order.totalHT)}
                           </span>
                           <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
@@ -2052,7 +2052,7 @@ export default function Marketplace() {
                         {order.status === 'draft' && (
                           <button
                             onClick={() => updateOrderStatus(order.id, 'sent')}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
                           >
                             <Send className="w-3 h-3" /> Envoyer
                           </button>

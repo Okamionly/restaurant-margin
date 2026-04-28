@@ -111,7 +111,7 @@ function CircularScore({ score, size = 200 }: { score: number; size?: number }) 
           fill="none"
           stroke="currentColor"
           strokeWidth="8"
-          className="text-[#E5E7EB] dark:text-[#1A1A1A]"
+          className="text-mono-900 dark:text-mono-200"
         />
         {/* Progress circle */}
         <circle
@@ -131,10 +131,10 @@ function CircularScore({ score, size = 200 }: { score: number; size?: number }) 
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="text-4xl font-bold text-[#111111] dark:text-white font-satoshi">
+        <div className="text-4xl font-bold text-mono-100 dark:text-white font-satoshi">
           <AnimatedCounter target={score} />
         </div>
-        <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">/ 1000</div>
+        <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">/ 1000</div>
         <div className={`text-sm font-semibold mt-1 ${level.textClass}`}>
           {level.name}
         </div>
@@ -444,7 +444,7 @@ export function SidebarLevelBadge() {
         </div>
         <div className="flex-1 min-w-0">
           <div className={`text-xs font-semibold ${level.textClass} truncate sidebar-label`}>{level.name}</div>
-          <div className="w-full h-1 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A] mt-1 sidebar-label">
+          <div className="w-full h-1 rounded-full bg-mono-900 dark:bg-mono-200 mt-1 sidebar-label">
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{ width: `${Math.min(progress * 100, 100)}%`, backgroundColor: level.color }}
@@ -480,7 +480,7 @@ export default function GamificationPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-8 h-8 border-2 border-[#111111] dark:border-white border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-mono-100 dark:border-white border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -494,8 +494,8 @@ export default function GamificationPage() {
     <div className="space-y-6 pb-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">Mon Score</h1>
-        <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+        <h1 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">Mon Score</h1>
+        <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
           Suivez votre performance et debloquez des badges
         </p>
       </div>
@@ -503,7 +503,7 @@ export default function GamificationPage() {
       {/* Score + Level Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Score Circle */}
-        <div className="lg:col-span-1 flex flex-col items-center justify-center bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8">
+        <div className="lg:col-span-1 flex flex-col items-center justify-center bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-8">
           <CircularScore score={scoreResult.total} size={200} />
           <div className="mt-4 text-center">
             <div className="flex items-center justify-center gap-2">
@@ -519,7 +519,7 @@ export default function GamificationPage() {
               <span className={`font-bold text-lg ${level.textClass}`}>Niveau: {level.name}</span>
             </div>
             {levelIdx < LEVELS.length - 1 && (
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2">
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-2">
                 Encore {LEVELS[levelIdx + 1].min - scoreResult.total} pts pour {LEVELS[levelIdx + 1].name}
               </p>
             )}
@@ -532,8 +532,8 @@ export default function GamificationPage() {
         </div>
 
         {/* Score Breakdown */}
-        <div className="lg:col-span-2 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
-          <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-4 flex items-center gap-2">
+        <div className="lg:col-span-2 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
+          <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-4 flex items-center gap-2">
             <BarChart className="w-5 h-5" />
             Detail du score
           </h2>
@@ -541,13 +541,13 @@ export default function GamificationPage() {
             {scoreResult.breakdown.map((item, i) => (
               <div key={i}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{item.label}</span>
+                  <span className="text-sm text-[#6B7280] dark:text-mono-700">{item.label}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{item.detail}</span>
-                    <span className="text-sm font-bold text-[#111111] dark:text-white">{item.points}/{item.max}</span>
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{item.detail}</span>
+                    <span className="text-sm font-bold text-mono-100 dark:text-white">{item.points}/{item.max}</span>
                   </div>
                 </div>
-                <div className="w-full h-2 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A]">
+                <div className="w-full h-2 rounded-full bg-mono-900 dark:bg-mono-200">
                   <div
                     className="h-full rounded-full transition-all duration-700"
                     style={{
@@ -563,13 +563,13 @@ export default function GamificationPage() {
       </div>
 
       {/* Achievements Grid */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi flex items-center gap-2">
+          <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi flex items-center gap-2">
             <Trophy className="w-5 h-5 text-yellow-500" />
             Badges
           </h2>
-          <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+          <span className="text-sm text-[#9CA3AF] dark:text-mono-500">
             {unlockedCount}/{achievements.length} debloques
           </span>
         </div>
@@ -579,8 +579,8 @@ export default function GamificationPage() {
               key={achievement.id}
               className={`relative flex flex-col items-center p-4 rounded-xl border transition-all duration-300 ${
                 achievement.unlocked
-                  ? 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#0A0A0A] hover:border-[#111111] dark:hover:border-[#333333] hover:shadow-lg'
-                  : 'border-[#E5E7EB] dark:border-[#1A1A1A]/50 bg-[#F9FAFB]/50 dark:bg-[#0A0A0A]/30 opacity-50'
+                  ? 'border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-mono-50 hover:border-mono-100 dark:hover:border-[#333333] hover:shadow-lg'
+                  : 'border-mono-900 dark:border-mono-200/50 bg-[#F9FAFB]/50 dark:bg-mono-50/30 opacity-50'
               }`}
             >
               {/* Badge icon */}
@@ -599,7 +599,7 @@ export default function GamificationPage() {
                     <achievement.icon className="w-7 h-7" />
                   </div>
                 ) : (
-                  <Lock className="w-6 h-6 text-[#9CA3AF] dark:text-[#737373]" />
+                  <Lock className="w-6 h-6 text-[#9CA3AF] dark:text-mono-500" />
                 )}
               </div>
 
@@ -612,25 +612,25 @@ export default function GamificationPage() {
 
               <span className={`text-xs font-semibold text-center ${
                 achievement.unlocked
-                  ? 'text-[#111111] dark:text-white'
-                  : 'text-[#9CA3AF] dark:text-[#737373]'
+                  ? 'text-mono-100 dark:text-white'
+                  : 'text-[#9CA3AF] dark:text-mono-500'
               }`}>
                 {achievement.name}
               </span>
-              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] text-center mt-1 leading-tight">
+              <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 text-center mt-1 leading-tight">
                 {achievement.description}
               </span>
 
               {/* Progress bar for partial achievements */}
               {achievement.maxProgress && !achievement.unlocked && (
                 <div className="w-full mt-2">
-                  <div className="w-full h-1 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A]">
+                  <div className="w-full h-1 rounded-full bg-mono-900 dark:bg-mono-200">
                     <div
-                      className="h-full rounded-full bg-[#9CA3AF] dark:bg-[#737373]"
+                      className="h-full rounded-full bg-[#9CA3AF] dark:bg-mono-500"
                       style={{ width: `${((achievement.progress || 0) / achievement.maxProgress) * 100}%` }}
                     />
                   </div>
-                  <div className="text-[9px] text-[#9CA3AF] dark:text-[#737373] text-center mt-0.5">
+                  <div className="text-[9px] text-[#9CA3AF] dark:text-mono-500 text-center mt-0.5">
                     {achievement.progress || 0}/{achievement.maxProgress}
                   </div>
                 </div>
@@ -641,8 +641,8 @@ export default function GamificationPage() {
       </div>
 
       {/* Weekly Challenges */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
-        <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-5 flex items-center gap-2">
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
+        <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-5 flex items-center gap-2">
           <Flame className="w-5 h-5 text-orange-500" />
           Defi de la semaine
         </h2>
@@ -655,40 +655,40 @@ export default function GamificationPage() {
                 className={`flex items-start gap-4 p-4 rounded-xl border transition-all duration-300 ${
                   isComplete
                     ? 'border-emerald-500/30 bg-emerald-500/5'
-                    : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#0A0A0A]'
+                    : 'border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-mono-50'
                 }`}
               >
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                  isComplete ? 'bg-emerald-500/20' : 'bg-[#E5E7EB] dark:bg-[#1A1A1A]'
+                  isComplete ? 'bg-emerald-500/20' : 'bg-mono-900 dark:bg-mono-200'
                 }`}>
-                  <challenge.icon className={`w-5 h-5 ${isComplete ? 'text-emerald-500' : 'text-[#6B7280] dark:text-[#737373]'}`} />
+                  <challenge.icon className={`w-5 h-5 ${isComplete ? 'text-emerald-500' : 'text-[#6B7280] dark:text-mono-500'}`} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <span className={`text-sm font-semibold ${
-                      isComplete ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'
+                      isComplete ? 'text-emerald-600 dark:text-emerald-400' : 'text-mono-100 dark:text-white'
                     }`}>
                       {challenge.title}
                     </span>
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                       isComplete
                         ? 'bg-emerald-500/20 text-emerald-500'
-                        : 'bg-[#E5E7EB] dark:bg-[#1A1A1A] text-[#6B7280] dark:text-[#737373]'
+                        : 'bg-mono-900 dark:bg-mono-200 text-[#6B7280] dark:text-mono-500'
                     }`}>
                       +{challenge.reward} pts
                     </span>
                   </div>
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-2">{challenge.description}</p>
-                  <div className="w-full h-2 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A]">
+                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-2">{challenge.description}</p>
+                  <div className="w-full h-2 rounded-full bg-mono-900 dark:bg-mono-200">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
-                        isComplete ? 'bg-emerald-500' : 'bg-[#111111] dark:bg-white'
+                        isComplete ? 'bg-emerald-500' : 'bg-mono-100 dark:bg-white'
                       }`}
                       style={{ width: `${Math.min((challenge.progress / challenge.target) * 100, 100)}%` }}
                     />
                   </div>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                    <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                       {challenge.progress}/{challenge.target}
                     </span>
                     {isComplete && (
@@ -705,8 +705,8 @@ export default function GamificationPage() {
       </div>
 
       {/* Classement — Donnees du restaurant */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
-        <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-5 flex items-center gap-2">
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
+        <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-5 flex items-center gap-2">
           <Users className="w-5 h-5 text-blue-500" />
           Performance de votre restaurant
         </h2>
@@ -716,36 +716,36 @@ export default function GamificationPage() {
             const pct = metric.max > 0 ? (metric.points / metric.max) * 100 : 0;
             const color = pct >= 75 ? 'text-emerald-500' : pct >= 50 ? 'text-amber-500' : 'text-red-500';
             return (
-              <div key={metric.label} className="flex items-center gap-3 p-3 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div key={metric.label} className="flex items-center gap-3 p-3 rounded-xl border border-mono-900 dark:border-mono-200">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-[#111111] dark:text-white">{metric.label}</span>
+                    <span className="text-sm font-medium text-mono-100 dark:text-white">{metric.label}</span>
                     <span className={`text-sm font-bold ${color}`}>{metric.points}/{metric.max} pts</span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A] overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-mono-900 dark:bg-mono-200 overflow-hidden">
                     <div className={`h-full rounded-full transition-all duration-700 ${pct >= 75 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${Math.min(pct, 100)}%` }} />
                   </div>
-                  <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-1">{metric.detail}</p>
+                  <p className="text-[11px] text-[#9CA3AF] dark:text-mono-500 mt-1">{metric.detail}</p>
                 </div>
               </div>
             );
           })}
           {/* Total */}
-          <div className="flex items-center justify-between p-4 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#111111]/10 dark:border-white/10">
-            <span className="text-base font-bold text-[#111111] dark:text-white">Score Total</span>
+          <div className="flex items-center justify-between p-4 rounded-xl bg-[#F9FAFB] dark:bg-mono-50 border border-mono-100/10 dark:border-white/10">
+            <span className="text-base font-bold text-mono-100 dark:text-white">Score Total</span>
             <span className={`text-2xl font-black ${level.textClass}`}>{scoreResult.total}/1000</span>
           </div>
         </div>
       </div>
 
       {/* Position vs communaute */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
-        <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
+        <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-4 flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-teal-500" />
           Votre position vs la communaute
         </h2>
         <div className="px-2 py-3">
-          <div className="flex items-center justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mb-2">
+          <div className="flex items-center justify-between text-xs text-[#9CA3AF] dark:text-mono-500 mb-2">
             <span>{scoreResult.total} pts — {level.name}</span>
             <span>
               {scoreResult.total > 420 ? (
@@ -757,13 +757,13 @@ export default function GamificationPage() {
               )}
             </span>
           </div>
-          <div className="relative w-full h-4 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A] overflow-hidden">
+          <div className="relative w-full h-4 rounded-full bg-mono-900 dark:bg-mono-200 overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{ width: `${Math.min((scoreResult.total / 1000) * 100, 100)}%`, backgroundColor: level.color }}
             />
           </div>
-          <div className="flex items-center justify-between text-[9px] text-[#9CA3AF] dark:text-[#737373] mt-1">
+          <div className="flex items-center justify-between text-[9px] text-[#9CA3AF] dark:text-mono-500 mt-1">
             <span>0</span>
             <span>500</span>
             <span>1000</span>
@@ -772,8 +772,8 @@ export default function GamificationPage() {
       </div>
 
       {/* Level Progression */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
-        <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-5 flex items-center gap-2">
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
+        <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-5 flex items-center gap-2">
           <Target className="w-5 h-5 text-teal-500" />
           Progression des niveaux
         </h2>
@@ -786,17 +786,17 @@ export default function GamificationPage() {
                 key={i}
                 className={`flex-1 min-w-[100px] text-center p-3 rounded-xl border transition-all duration-300 ${
                   isCurrent
-                    ? `${lvl.borderClass} ${lvl.bgClass} ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#0A0A0A]`
+                    ? `${lvl.borderClass} ${lvl.bgClass} ring-2 ring-offset-2 ring-offset-white dark:ring-offset-mono-50`
                     : isCurrentOrPast
                     ? `${lvl.borderClass} ${lvl.bgClass}`
-                    : 'border-[#E5E7EB] dark:border-[#1A1A1A] opacity-40'
+                    : 'border-mono-900 dark:border-mono-200 opacity-40'
                 }`}
                 style={isCurrent ? { ['--tw-ring-color' as any]: lvl.color } : undefined}
               >
-                <div className={`text-xs font-bold mb-1 ${isCurrentOrPast ? lvl.textClass : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                <div className={`text-xs font-bold mb-1 ${isCurrentOrPast ? lvl.textClass : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                   {lvl.name}
                 </div>
-                <div className={`text-[10px] ${isCurrentOrPast ? 'text-[#6B7280] dark:text-[#A3A3A3]' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                <div className={`text-[10px] ${isCurrentOrPast ? 'text-[#6B7280] dark:text-mono-700' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                   {lvl.min}-{lvl.max}
                 </div>
                 {isCurrent && (

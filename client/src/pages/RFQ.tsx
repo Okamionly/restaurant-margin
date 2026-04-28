@@ -51,8 +51,8 @@ const INITIAL_RFQS: MockRFQ[] = [];
 const STATUS_CONFIG: Record<RFQStatus, { label: string; color: string; bgColor: string; icon: typeof FileText }> = {
   brouillon: {
     label: 'Brouillon',
-    color: 'text-[#6B7280] dark:text-[#A3A3A3]',
-    bgColor: 'bg-[#F3F4F6] dark:bg-[#171717] border-[#E5E7EB] dark:border-[#262626]',
+    color: 'text-[#6B7280] dark:text-mono-700',
+    bgColor: 'bg-mono-950 dark:bg-[#171717] border-mono-900 dark:border-mono-300',
     icon: FileText,
   },
   envoyee: {
@@ -201,21 +201,21 @@ function CreateModal({ isOpen, onClose, onCreate }: {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl">
+      <div className="relative w-full max-w-lg bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-mono-900 dark:border-mono-200">
           <div>
-            <h2 className="text-lg font-bold text-[#111111] dark:text-white">Nouvel appel d'offres</h2>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">Etape {step}/2</p>
+            <h2 className="text-lg font-bold text-mono-100 dark:text-white">Nouvel appel d'offres</h2>
+            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">Etape {step}/2</p>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] transition-colors">
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Progress bar */}
-        <div className="h-1 bg-[#F3F4F6] dark:bg-[#171717]">
-          <div className="h-full bg-[#111111] dark:bg-white transition-all" style={{ width: `${(step / 2) * 100}%` }} />
+        <div className="h-1 bg-mono-950 dark:bg-[#171717]">
+          <div className="h-full bg-mono-100 dark:bg-white transition-all" style={{ width: `${(step / 2) * 100}%` }} />
         </div>
 
         {/* Body */}
@@ -230,7 +230,7 @@ function CreateModal({ isOpen, onClose, onCreate }: {
           {step === 1 && (
             <>
               <div>
-                <label className="block text-sm font-semibold text-[#111111] dark:text-white mb-1.5">
+                <label className="block text-sm font-semibold text-mono-100 dark:text-white mb-1.5">
                   Titre <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -238,26 +238,26 @@ function CreateModal({ isOpen, onClose, onCreate }: {
                   value={form.title}
                   onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                   placeholder="Ex : Commande legumes -- Semaine 16"
-                  className="w-full px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent transition-all"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-semibold text-[#111111] dark:text-white mb-1.5">
-                    <Calendar className="inline w-3.5 h-3.5 mr-1 text-[#9CA3AF] dark:text-[#737373]" />
+                  <label className="block text-sm font-semibold text-mono-100 dark:text-white mb-1.5">
+                    <Calendar className="inline w-3.5 h-3.5 mr-1 text-[#9CA3AF] dark:text-mono-500" />
                     Date limite
                   </label>
                   <input
                     type="date"
                     value={form.dueDate}
                     onChange={e => setForm(f => ({ ...f, dueDate: e.target.value }))}
-                    className="w-full px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#111111] dark:text-white mb-1.5">
-                    <Users className="inline w-3.5 h-3.5 mr-1 text-[#9CA3AF] dark:text-[#737373]" />
+                  <label className="block text-sm font-semibold text-mono-100 dark:text-white mb-1.5">
+                    <Users className="inline w-3.5 h-3.5 mr-1 text-[#9CA3AF] dark:text-mono-500" />
                     Fournisseurs <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -265,7 +265,7 @@ function CreateModal({ isOpen, onClose, onCreate }: {
                     value={form.suppliers}
                     onChange={e => setForm(f => ({ ...f, suppliers: e.target.value }))}
                     placeholder="Metro, Pomona, ..."
-                    className="w-full px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent transition-all"
                   />
                 </div>
               </div>
@@ -275,8 +275,8 @@ function CreateModal({ isOpen, onClose, onCreate }: {
           {step === 2 && (
             <>
               <div>
-                <label className="block text-sm font-semibold text-[#111111] dark:text-white mb-1.5">
-                  <Package className="inline w-3.5 h-3.5 mr-1 text-[#9CA3AF] dark:text-[#737373]" />
+                <label className="block text-sm font-semibold text-mono-100 dark:text-white mb-1.5">
+                  <Package className="inline w-3.5 h-3.5 mr-1 text-[#9CA3AF] dark:text-mono-500" />
                   Produits <span className="text-red-400">*</span>
                 </label>
                 <textarea
@@ -284,18 +284,18 @@ function CreateModal({ isOpen, onClose, onCreate }: {
                   onChange={e => setForm(f => ({ ...f, products: e.target.value }))}
                   rows={4}
                   placeholder="Ex : Tomates 20kg, Courgettes 15kg, ..."
-                  className="w-full px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent resize-none transition-all"
+                  className="w-full px-4 py-3 bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent resize-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#111111] dark:text-white mb-1.5">Notes</label>
+                <label className="block text-sm font-semibold text-mono-100 dark:text-white mb-1.5">Notes</label>
                 <textarea
                   value={form.notes}
                   onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                   rows={2}
                   placeholder="Instructions pour les fournisseurs..."
-                  className="w-full px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent resize-none transition-all"
+                  className="w-full px-4 py-3 bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent resize-none transition-all"
                 />
               </div>
             </>
@@ -303,11 +303,11 @@ function CreateModal({ isOpen, onClose, onCreate }: {
         </div>
 
         {/* Footer */}
-        <div className="flex gap-3 px-6 py-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="flex gap-3 px-6 py-4 border-t border-mono-900 dark:border-mono-200">
           {step > 1 && (
             <button
               onClick={() => setStep(s => s - 1)}
-              className="px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A] transition-colors"
+              className="px-4 py-2.5 border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 rounded-xl text-sm font-medium hover:bg-[#F9FAFB] dark:hover:bg-mono-50 transition-colors"
             >
               Retour
             </button>
@@ -315,7 +315,7 @@ function CreateModal({ isOpen, onClose, onCreate }: {
           <div className="flex-1" />
           <button
             onClick={onClose}
-            className="px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A] transition-colors"
+            className="px-4 py-2.5 border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 rounded-xl text-sm font-medium hover:bg-[#F9FAFB] dark:hover:bg-mono-50 transition-colors"
           >
             Annuler
           </button>
@@ -327,14 +327,14 @@ function CreateModal({ isOpen, onClose, onCreate }: {
                 setError('');
                 setStep(2);
               }}
-              className="px-6 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl text-sm font-bold hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors flex items-center gap-2"
+              className="px-6 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl text-sm font-bold hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors flex items-center gap-2"
             >
               Suivant <ArrowRight className="w-4 h-4" />
             </button>
           ) : (
             <button
               onClick={handleSubmit}
-              className="px-6 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl text-sm font-bold hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors flex items-center gap-2"
+              className="px-6 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl text-sm font-bold hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors flex items-center gap-2"
             >
               <Plus className="w-4 h-4" /> Creer
             </button>
@@ -359,26 +359,26 @@ function QuoteComparisonTable({ rfq, onAward }: {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <th className="text-left py-3 px-3 text-[11px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Produit</th>
-            <th className="text-left py-3 px-3 text-[11px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Qte</th>
+          <tr className="border-b border-mono-900 dark:border-mono-200">
+            <th className="text-left py-3 px-3 text-[11px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Produit</th>
+            <th className="text-left py-3 px-3 text-[11px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Qte</th>
             {allSuppliers.map(s => (
-              <th key={s} className="text-center py-3 px-3 text-[11px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{s}</th>
+              <th key={s} className="text-center py-3 px-3 text-[11px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">{s}</th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+        <tbody className="divide-y divide-mono-900 dark:divide-mono-200">
           {rfq.items.map(item => {
             const bestPrice = getBestPrice(item);
             return (
-              <tr key={item.id} className="hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A] transition-colors">
+              <tr key={item.id} className="hover:bg-[#F9FAFB] dark:hover:bg-mono-50 transition-colors">
                 <td className="py-3 px-3">
                   <div className="flex items-center gap-2">
-                    <Tag className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
-                    <span className="font-medium text-[#111111] dark:text-white">{item.product}</span>
+                    <Tag className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
+                    <span className="font-medium text-mono-100 dark:text-white">{item.product}</span>
                   </div>
                 </td>
-                <td className="py-3 px-3 text-[#6B7280] dark:text-[#A3A3A3]">
+                <td className="py-3 px-3 text-[#6B7280] dark:text-mono-700">
                   {item.quantity} {item.unit}
                 </td>
                 {allSuppliers.map(supplierName => {
@@ -386,7 +386,7 @@ function QuoteComparisonTable({ rfq, onAward }: {
                   if (!quote || quote.unitPrice === null) {
                     return (
                       <td key={supplierName} className="py-3 px-3 text-center">
-                        <span className="text-xs text-[#D1D5DB] dark:text-[#525252] italic">--</span>
+                        <span className="text-xs text-[#D1D5DB] dark:text-mono-400 italic">--</span>
                       </td>
                     );
                   }
@@ -395,11 +395,11 @@ function QuoteComparisonTable({ rfq, onAward }: {
                   return (
                     <td key={supplierName} className="py-3 px-3 text-center">
                       <div className="flex flex-col items-center gap-1">
-                        <div className={`text-sm font-bold tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'}`}>
+                        <div className={`text-sm font-bold tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400' : 'text-mono-100 dark:text-white'}`}>
                           {formatCurrency(quote.unitPrice)}
                         </div>
                         <ScoreBadge score={score} />
-                        <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] tabular-nums">
+                        <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 tabular-nums">
                           Total: {formatCurrency(quote.unitPrice * item.quantity)}
                         </div>
                         {!quote.selected && rfq.status === 'reponses' && (
@@ -454,28 +454,28 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
   const next = nextStatus[rfq.status];
 
   return (
-    <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all">
+    <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all">
       {/* Header */}
       <div
-        className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A] transition-colors"
+        className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-[#F9FAFB] dark:hover:bg-mono-50 transition-colors"
         onClick={() => setExpanded(e => !e)}
       >
         <div className="flex items-center gap-3 min-w-0">
           <StatusBadge status={rfq.status} />
           <div className="min-w-0">
-            <p className="font-bold text-[#111111] dark:text-white truncate">{rfq.title}</p>
+            <p className="font-bold text-mono-100 dark:text-white truncate">{rfq.title}</p>
             <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500 flex items-center gap-1">
                 <Users className="w-3 h-3" /> {rfq.suppliers.join(', ')}
               </span>
-              <span className="text-[#D1D5DB] dark:text-[#404040]">|</span>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
+              <span className="text-[#D1D5DB] dark:text-mono-350">|</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500 flex items-center gap-1">
                 <Package className="w-3 h-3" /> {totalItems} produit{totalItems > 1 ? 's' : ''}
               </span>
               {rfq.dueDate && (
                 <>
-                  <span className="text-[#D1D5DB] dark:text-[#404040]">|</span>
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
+                  <span className="text-[#D1D5DB] dark:text-mono-350">|</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     {new Date(rfq.dueDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                   </span>
@@ -496,13 +496,13 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
 
           {/* Progress */}
           <div className="hidden sm:flex items-center gap-2">
-            <div className="w-20 h-2 rounded-full bg-[#F3F4F6] dark:bg-[#171717] overflow-hidden">
+            <div className="w-20 h-2 rounded-full bg-mono-950 dark:bg-[#171717] overflow-hidden">
               <div
-                className="h-full rounded-full bg-[#111111] dark:bg-white transition-all"
+                className="h-full rounded-full bg-mono-100 dark:bg-white transition-all"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
-            <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] tabular-nums font-medium">{quotedItems}/{totalItems}</span>
+            <span className="text-[11px] text-[#6B7280] dark:text-mono-700 tabular-nums font-medium">{quotedItems}/{totalItems}</span>
           </div>
 
           {/* Actions */}
@@ -511,46 +511,46 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
               <button
                 onClick={() => onStatusChange(rfq.id, next.status)}
                 title={next.label}
-                className="p-2 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white/20 transition-colors"
+                className="p-2 rounded-xl bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white/20 transition-colors"
               >
-                <next.icon className="w-4 h-4 text-[#111111] dark:text-white" />
+                <next.icon className="w-4 h-4 text-mono-100 dark:text-white" />
               </button>
             )}
             <button
               onClick={() => onDelete(rfq.id)}
-              className="p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/20 text-[#D1D5DB] dark:text-[#525252] hover:text-red-500 transition-colors"
+              className="p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/20 text-[#D1D5DB] dark:text-mono-400 hover:text-red-500 transition-colors"
             >
               <Trash2 className="w-4 h-4" />
             </button>
           </div>
 
           {expanded ? (
-            <ChevronUp className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+            <ChevronUp className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+            <ChevronDown className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
           )}
         </div>
       </div>
 
       {/* Expanded content */}
       {expanded && (
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="border-t border-mono-900 dark:border-mono-200">
           {/* Meta */}
           {rfq.notes && (
-            <p className="px-5 py-3 text-sm text-[#6B7280] dark:text-[#A3A3A3] italic border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <p className="px-5 py-3 text-sm text-[#6B7280] dark:text-mono-700 italic border-b border-mono-900 dark:border-mono-200">
               {rfq.notes}
             </p>
           )}
 
           {/* Toggle comparison view */}
           {rfq.items.some(item => item.quotes.length > 0) && (
-            <div className="px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="px-5 py-3 border-b border-mono-900 dark:border-mono-200">
               <button
                 onClick={() => setShowComparison(!showComparison)}
                 className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                   showComparison
-                    ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-transparent'
-                    : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                    ? 'bg-mono-100 dark:bg-white text-white dark:text-black border-transparent'
+                    : 'bg-[#F9FAFB] dark:bg-mono-50 border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333]'
                 }`}
               >
                 <BarChart3 className="w-3.5 h-3.5" />
@@ -561,7 +561,7 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
 
           {/* Comparison table */}
           {showComparison && (
-            <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
               <QuoteComparisonTable rfq={rfq} onAward={onAward} />
             </div>
           )}
@@ -571,21 +571,21 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
             {rfq.items.map(item => {
               const bestPrice = getBestPrice(item);
               return (
-                <div key={item.id} className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden">
+                <div key={item.id} className="border border-mono-900 dark:border-mono-200 rounded-xl overflow-hidden">
                   {/* Item header */}
-                  <div className="flex items-center justify-between px-4 py-2.5 bg-[#F9FAFB] dark:bg-[#0A0A0A]">
+                  <div className="flex items-center justify-between px-4 py-2.5 bg-[#F9FAFB] dark:bg-mono-50">
                     <div className="flex items-center gap-2">
-                      <Tag className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
-                      <span className="font-semibold text-[#111111] dark:text-white text-sm">{item.product}</span>
-                      <span className="text-[#9CA3AF] dark:text-[#737373] text-xs">-- {item.quantity} {item.unit}</span>
+                      <Tag className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
+                      <span className="font-semibold text-mono-100 dark:text-white text-sm">{item.product}</span>
+                      <span className="text-[#9CA3AF] dark:text-mono-500 text-xs">-- {item.quantity} {item.unit}</span>
                     </div>
-                    <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider font-bold">{item.category}</span>
+                    <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider font-bold">{item.category}</span>
                   </div>
 
                   {/* Quote rows */}
-                  <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+                  <div className="divide-y divide-mono-900 dark:divide-mono-200">
                     {item.quotes.length === 0 ? (
-                      <div className="px-4 py-4 text-center text-xs text-[#9CA3AF] dark:text-[#737373] italic">
+                      <div className="px-4 py-4 text-center text-xs text-[#9CA3AF] dark:text-mono-500 italic">
                         Aucun devis recu pour ce produit
                       </div>
                     ) : (
@@ -611,13 +611,13 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
                                 {idx === 0 && quote.unitPrice !== null ? (
                                   <Trophy className="w-4 h-4 text-amber-500 mx-auto" />
                                 ) : (
-                                  <span className="text-xs text-[#D1D5DB] dark:text-[#525252] font-bold">#{idx + 1}</span>
+                                  <span className="text-xs text-[#D1D5DB] dark:text-mono-400 font-bold">#{idx + 1}</span>
                                 )}
                               </div>
 
                               {/* Supplier */}
                               <div className="w-28 shrink-0">
-                                <p className="text-sm font-semibold text-[#111111] dark:text-white">{quote.supplier}</p>
+                                <p className="text-sm font-semibold text-mono-100 dark:text-white">{quote.supplier}</p>
                                 {quote.selected && (
                                   <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-0.5">
                                     <CheckCircle className="w-2.5 h-2.5" /> Attribue
@@ -630,7 +630,7 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
                                 {quote.unitPrice !== null ? (
                                   <div className="flex items-center gap-3">
                                     <span className={`text-sm font-bold tabular-nums ${
-                                      isBest ? 'text-emerald-600 dark:text-emerald-400' : quote.selected ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'
+                                      isBest ? 'text-emerald-600 dark:text-emerald-400' : quote.selected ? 'text-emerald-600 dark:text-emerald-400' : 'text-mono-100 dark:text-white'
                                     }`}>
                                       {formatCurrency(quote.unitPrice)} / {item.unit}
                                     </span>
@@ -641,10 +641,10 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
                                     )}
                                   </div>
                                 ) : (
-                                  <span className="text-sm text-[#9CA3AF] dark:text-[#737373] italic">En attente</span>
+                                  <span className="text-sm text-[#9CA3AF] dark:text-mono-500 italic">En attente</span>
                                 )}
                                 {quote.notes && (
-                                  <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">{quote.notes}</p>
+                                  <p className="text-[11px] text-[#9CA3AF] dark:text-mono-500 mt-0.5">{quote.notes}</p>
                                 )}
                               </div>
 
@@ -656,8 +656,8 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
                               {/* Total */}
                               {quote.unitPrice !== null && (
                                 <div className="text-right hidden sm:block w-24">
-                                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Total</p>
-                                  <p className="text-sm font-bold text-[#111111] dark:text-white tabular-nums">
+                                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Total</p>
+                                  <p className="text-sm font-bold text-mono-100 dark:text-white tabular-nums">
                                     {formatCurrency(quote.unitPrice * item.quantity)}
                                   </p>
                                 </div>
@@ -713,8 +713,8 @@ function KanbanColumn({ status, rfqs, onDelete, onStatusChange, onAward }: {
       {/* Cards */}
       <div className="space-y-2">
         {rfqs.length === 0 ? (
-          <div className="py-8 text-center border border-dashed border-[#E5E7EB] dark:border-[#262626] rounded-xl">
-            <p className="text-xs text-[#D1D5DB] dark:text-[#525252]">Aucun appel d'offres</p>
+          <div className="py-8 text-center border border-dashed border-mono-900 dark:border-mono-300 rounded-xl">
+            <p className="text-xs text-[#D1D5DB] dark:text-mono-400">Aucun appel d'offres</p>
           </div>
         ) : (
           rfqs.map(rfq => {
@@ -725,32 +725,32 @@ function KanbanColumn({ status, rfqs, onDelete, onStatusChange, onAward }: {
             return (
               <div
                 key={rfq.id}
-                className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-3.5 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all cursor-pointer group"
+                className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-xl p-3.5 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all cursor-pointer group"
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <p className="font-semibold text-[#111111] dark:text-white text-sm truncate">{rfq.title}</p>
+                  <p className="font-semibold text-mono-100 dark:text-white text-sm truncate">{rfq.title}</p>
                   <button
                     onClick={() => onDelete(rfq.id)}
-                    className="p-1 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-950/20 text-[#D1D5DB] dark:text-[#525252] hover:text-red-500 transition-all"
+                    className="p-1 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-950/20 text-[#D1D5DB] dark:text-mono-400 hover:text-red-500 transition-all"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2 text-[11px] text-[#9CA3AF] dark:text-[#737373] mb-2">
+                <div className="flex items-center gap-2 text-[11px] text-[#9CA3AF] dark:text-mono-500 mb-2">
                   <Users className="w-3 h-3" />
                   <span className="truncate">{rfq.suppliers.join(', ')}</span>
                 </div>
 
                 {/* Progress */}
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="flex-1 h-1.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] overflow-hidden">
+                  <div className="flex-1 h-1.5 rounded-full bg-mono-950 dark:bg-[#171717] overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-[#111111] dark:bg-white transition-all"
+                      className="h-full rounded-full bg-mono-100 dark:bg-white transition-all"
                       style={{ width: totalItems > 0 ? `${(quotedItems / totalItems) * 100}%` : '0%' }}
                     />
                   </div>
-                  <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] tabular-nums font-medium">{quotedItems}/{totalItems}</span>
+                  <span className="text-[10px] text-[#6B7280] dark:text-mono-700 tabular-nums font-medium">{quotedItems}/{totalItems}</span>
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap">
@@ -760,12 +760,12 @@ function KanbanColumn({ status, rfqs, onDelete, onStatusChange, onAward }: {
                     </span>
                   )}
                   {rfq.dueDate && (
-                    <span className="inline-flex items-center gap-0.5 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                    <span className="inline-flex items-center gap-0.5 text-[10px] text-[#9CA3AF] dark:text-mono-500">
                       <Clock className="w-2.5 h-2.5" />
                       {new Date(rfq.dueDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                     </span>
                   )}
-                  <span className="ml-auto text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                  <span className="ml-auto text-[10px] text-[#9CA3AF] dark:text-mono-500">
                     {totalItems} produit{totalItems > 1 ? 's' : ''}
                   </span>
                 </div>
@@ -899,7 +899,7 @@ export default function RFQPage() {
         {toast && (
           <div className={`fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-xl shadow-xl text-sm font-semibold transition-all ${
             toast.type === 'success'
-              ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+              ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
               : 'bg-red-500 text-white'
           }`}>
             {toast.type === 'success' ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
@@ -910,19 +910,19 @@ export default function RFQPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-[#111111] dark:text-white flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
-                <FileText className="w-6 h-6 text-[#111111] dark:text-white" />
+            <h1 className="text-2xl font-black text-mono-100 dark:text-white flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200">
+                <FileText className="w-6 h-6 text-mono-100 dark:text-white" />
               </div>
               Appels d'offres
             </h1>
-            <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+            <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
               Comparez les prix fournisseurs et optimisez vos achats
             </p>
           </div>
           <button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl font-bold text-sm transition-all hover:bg-[#333] dark:hover:bg-[#E5E5E5] hover:shadow-md active:scale-[0.98] shrink-0"
+            className="flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl font-bold text-sm transition-all hover:bg-[#333] dark:hover:bg-[#E5E5E5] hover:shadow-md active:scale-[0.98] shrink-0"
           >
             <Plus className="w-4 h-4" />
             Creer un appel d'offres
@@ -931,40 +931,40 @@ export default function RFQPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-1.5">
-              <FileText className="w-4 h-4 text-[#111111] dark:text-white" />
-              <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide font-bold">Total</span>
+              <FileText className="w-4 h-4 text-mono-100 dark:text-white" />
+              <span className="text-[11px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide font-bold">Total</span>
             </div>
-            <p className="text-3xl font-black text-[#111111] dark:text-white">{stats.total}</p>
-            <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">appels d'offres</p>
+            <p className="text-3xl font-black text-mono-100 dark:text-white">{stats.total}</p>
+            <p className="text-[11px] text-[#9CA3AF] dark:text-mono-500 mt-0.5">appels d'offres</p>
           </div>
 
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-1.5">
               <Send className="w-4 h-4 text-blue-500" />
-              <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide font-bold">En cours</span>
+              <span className="text-[11px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide font-bold">En cours</span>
             </div>
-            <p className="text-3xl font-black text-[#111111] dark:text-white">{(stats.byStatus['envoyee'] || 0) + (stats.byStatus['reponses'] || 0)}</p>
-            <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">en negociation</p>
+            <p className="text-3xl font-black text-mono-100 dark:text-white">{(stats.byStatus['envoyee'] || 0) + (stats.byStatus['reponses'] || 0)}</p>
+            <p className="text-[11px] text-[#9CA3AF] dark:text-mono-500 mt-0.5">en negociation</p>
           </div>
 
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-1.5">
               <BarChart3 className="w-4 h-4 text-purple-500" />
-              <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide font-bold">Devis recus</span>
+              <span className="text-[11px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide font-bold">Devis recus</span>
             </div>
-            <p className="text-3xl font-black text-[#111111] dark:text-white">{stats.nbSoumissions}</p>
-            <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">soumissions</p>
+            <p className="text-3xl font-black text-mono-100 dark:text-white">{stats.nbSoumissions}</p>
+            <p className="text-[11px] text-[#9CA3AF] dark:text-mono-500 mt-0.5">soumissions</p>
           </div>
 
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-1.5">
               <TrendingDown className="w-4 h-4 text-emerald-500" />
-              <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide font-bold">Economies</span>
+              <span className="text-[11px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide font-bold">Economies</span>
             </div>
             <p className="text-3xl font-black text-emerald-600 dark:text-emerald-400">{formatCurrency(stats.totalSavings)}</p>
-            <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">estimees vs. prix max</p>
+            <p className="text-[11px] text-[#9CA3AF] dark:text-mono-500 mt-0.5">estimees vs. prix max</p>
           </div>
         </div>
 
@@ -972,13 +972,13 @@ export default function RFQPage() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           {/* Search */}
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#D1D5DB] dark:text-[#525252]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#D1D5DB] dark:text-mono-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Rechercher par titre, fournisseur, produit..."
-              className="w-full pl-10 pr-4 py-2.5 bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent outline-none transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent outline-none transition-all"
             />
           </div>
 
@@ -993,8 +993,8 @@ export default function RFQPage() {
                     onClick={() => setFilterStatus(f)}
                     className={`px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${
                       filterStatus === f
-                        ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-sm'
-                        : 'bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                        ? 'bg-mono-100 dark:bg-white text-white dark:text-black shadow-sm'
+                        : 'bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:border-[#D1D5DB] dark:hover:border-[#333]'
                     }`}
                   >
                     {f === 'tous' ? 'Tous' : STATUS_CONFIG[f].label}
@@ -1006,11 +1006,11 @@ export default function RFQPage() {
           )}
 
           {/* View toggle */}
-          <div className="flex items-center gap-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-0.5 ml-auto">
+          <div className="flex items-center gap-1 bg-mono-950 dark:bg-[#171717] rounded-xl p-0.5 ml-auto">
             <button
               onClick={() => setViewMode('kanban')}
               className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all ${
-                viewMode === 'kanban' ? 'bg-white dark:bg-[#262626] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'
+                viewMode === 'kanban' ? 'bg-white dark:bg-mono-300 shadow-sm text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'
               }`}
             >
               Kanban
@@ -1018,7 +1018,7 @@ export default function RFQPage() {
             <button
               onClick={() => setViewMode('list')}
               className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all ${
-                viewMode === 'list' ? 'bg-white dark:bg-[#262626] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'
+                viewMode === 'list' ? 'bg-white dark:bg-mono-300 shadow-sm text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'
               }`}
             >
               Liste
@@ -1044,18 +1044,18 @@ export default function RFQPage() {
         ) : (
           /* ── List View ─────────────────────────────────────────────────── */
           filteredRfqs.length === 0 ? (
-            <div className="text-center py-20 bg-[#F9FAFB] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <div className="w-16 h-16 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-center mx-auto mb-4">
-                <FileText className="w-8 h-8 text-[#D1D5DB] dark:text-[#404040]" />
+            <div className="text-center py-20 bg-[#F9FAFB] dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
+              <div className="w-16 h-16 rounded-2xl bg-white dark:bg-black border border-mono-900 dark:border-mono-200 flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-[#D1D5DB] dark:text-mono-350" />
               </div>
-              <p className="text-[#111111] dark:text-white font-semibold">Aucun appel d'offres</p>
-              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+              <p className="text-mono-100 dark:text-white font-semibold">Aucun appel d'offres</p>
+              <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
                 {filterStatus !== 'tous' || searchQuery ? 'Aucun resultat pour ces filtres.' : 'Creez votre premier appel d\'offres pour comparer les prix.'}
               </p>
               {filterStatus === 'tous' && !searchQuery && (
                 <button
                   onClick={() => setShowCreate(true)}
-                  className="mt-4 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl text-sm font-bold hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                  className="mt-4 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl text-sm font-bold hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
                 >
                   Creer un appel d'offres
                 </button>

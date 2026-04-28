@@ -887,7 +887,7 @@ export default function AIAssistant() {
                 <p className={`text-sm font-medium ${action.success ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                   {getActionLabel(action.type)}
                 </p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] truncate">{action.message}</p>
+                <p className="text-xs text-[#6B7280] dark:text-mono-700 truncate">{action.message}</p>
               </div>
               {action.success && route && (
                 <button
@@ -929,7 +929,7 @@ export default function AIAssistant() {
         )}
         <button
           onClick={() => handleExportConversation()}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-[#6B7280] dark:text-[#A3A3A3] border border-black/10 dark:border-white/10 rounded-full transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-[#6B7280] dark:text-mono-700 border border-black/10 dark:border-white/10 rounded-full transition-colors"
         >
           <FileDown className="w-3 h-3" />
           Exporter
@@ -939,7 +939,7 @@ export default function AIAssistant() {
             setInput('');
             inputRef.current?.focus();
           }}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-[#6B7280] dark:text-[#A3A3A3] border border-black/10 dark:border-white/10 rounded-full transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-[#6B7280] dark:text-mono-700 border border-black/10 dark:border-white/10 rounded-full transition-colors"
         >
           <ArrowRight className="w-3 h-3" />
           Poser une autre question
@@ -961,15 +961,15 @@ export default function AIAssistant() {
           <Sparkles className="w-5 h-5 text-white dark:text-black" />
         </div>
         <div className="flex-1 min-w-0">
-          <h1 className="text-xl font-bold font-satoshi text-[#111111] dark:text-white tracking-tight">Assistant IA</h1>
-          <p className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">Votre copilote restaurant intelligent</p>
+          <h1 className="text-xl font-bold font-satoshi text-mono-100 dark:text-white tracking-tight">Assistant IA</h1>
+          <p className="text-xs font-general-sans text-mono-500 dark:text-mono-700">Votre copilote restaurant intelligent</p>
         </div>
 
         {/* Mode selector */}
         <div className="relative" ref={modeDropdownRef}>
           <button
             onClick={() => setModeDropdownOpen(!modeDropdownOpen)}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-black/30 dark:hover:border-white/30 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 hover:border-black/30 dark:hover:border-white/30 transition-colors"
           >
             <CurrentModeIcon className="w-4 h-4 text-black dark:text-white" />
             <span className="text-xs font-medium text-black dark:text-white hidden sm:inline">{currentModeInfo.label}</span>
@@ -977,7 +977,7 @@ export default function AIAssistant() {
           </button>
 
           {modeDropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-60 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl z-50 overflow-hidden">
+            <div className="absolute right-0 top-full mt-2 w-60 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl shadow-2xl z-50 overflow-hidden">
               {AI_MODES.map(mode => {
                 const Icon = mode.icon;
                 const isActive = aiMode === mode.key;
@@ -988,7 +988,7 @@ export default function AIAssistant() {
                     className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
                       isActive
                         ? 'bg-black dark:bg-white text-white dark:text-black'
-                        : 'hover:bg-[#F5F5F5] dark:hover:bg-[#111111] text-black dark:text-white'
+                        : 'hover:bg-mono-975 dark:hover:bg-mono-100 text-black dark:text-white'
                     }`}
                   >
                     <Icon className="w-4 h-4 flex-shrink-0" />
@@ -1009,7 +1009,7 @@ export default function AIAssistant() {
           className={`p-2 rounded-xl border transition-colors ${
             showHistory
               ? 'bg-black dark:bg-white border-black dark:border-white text-white dark:text-black'
-              : 'bg-white dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-black/30 dark:hover:border-white/30 text-[#6B7280]'
+              : 'bg-white dark:bg-mono-50 border-mono-900 dark:border-mono-200 hover:border-black/30 dark:hover:border-white/30 text-[#6B7280]'
           }`}
           title="Historique"
         >
@@ -1019,7 +1019,7 @@ export default function AIAssistant() {
         {/* New conversation */}
         <button
           onClick={handleNewConversation}
-          className="p-2 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-black/30 dark:hover:border-white/30 text-[#6B7280] transition-colors"
+          className="p-2 rounded-xl bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 hover:border-black/30 dark:hover:border-white/30 text-[#6B7280] transition-colors"
           title="Nouvelle conversation"
         >
           <Plus className="w-4 h-4" />
@@ -1029,19 +1029,19 @@ export default function AIAssistant() {
       {/* ===== CONTEXT BADGES ===== */}
       {restaurantContext && (
         <div className="flex flex-wrap gap-2 mb-3 px-1">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-full">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-full">
             <Database className="w-3 h-3 text-emerald-500" />
             <span className="text-[11px] font-medium text-black dark:text-white">{restaurantContext.totalRecipes} recettes</span>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-full">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-full">
             <Package className="w-3 h-3 text-blue-500" />
             <span className="text-[11px] font-medium text-black dark:text-white">{restaurantContext.totalIngredients} ingredients</span>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-full">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-full">
             <ShoppingCart className="w-3 h-3 text-purple-500" />
             <span className="text-[11px] font-medium text-black dark:text-white">{restaurantContext.totalSuppliers} fournisseurs</span>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-full">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-full">
             <Ratio className="w-3 h-3 text-amber-500" />
             <span className="text-[11px] font-medium text-black dark:text-white">Marge moy. {restaurantContext.avgMargin}%</span>
           </div>
@@ -1058,7 +1058,7 @@ export default function AIAssistant() {
       {aiUsage && (
         <div className="mb-3 px-1">
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-1.5 bg-[#F5F5F5] dark:bg-[#111111] rounded-full overflow-hidden">
+            <div className="flex-1 h-1.5 bg-mono-975 dark:bg-mono-100 rounded-full overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-700 ${
                   aiUsage.percentage > 80 ? 'bg-red-500' : aiUsage.percentage > 50 ? 'bg-amber-500' : 'bg-black dark:bg-white'
@@ -1076,16 +1076,16 @@ export default function AIAssistant() {
 
       {/* ===== HISTORY PANEL (overlay-style) ===== */}
       {showHistory && (
-        <div className="mb-3 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden max-h-72 shadow-lg">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] sticky top-0 bg-white dark:bg-[#0A0A0A] z-10">
+        <div className="mb-3 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden max-h-72 shadow-lg">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-mono-200 sticky top-0 bg-white dark:bg-mono-50 z-10">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-black dark:text-white" />
               <p className="text-sm font-semibold text-black dark:text-white">Historique</p>
-              <span className="text-[10px] text-[#6B7280] bg-[#F5F5F5] dark:bg-[#111111] px-2 py-0.5 rounded-full">{conversations.length}</span>
+              <span className="text-[10px] text-[#6B7280] bg-mono-975 dark:bg-mono-100 px-2 py-0.5 rounded-full">{conversations.length}</span>
             </div>
             <button
               onClick={() => setShowHistory(false)}
-              className="p-1 rounded-lg hover:bg-[#F5F5F5] dark:hover:bg-[#111111] text-[#6B7280] transition-colors"
+              className="p-1 rounded-lg hover:bg-mono-975 dark:hover:bg-mono-100 text-[#6B7280] transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -1093,7 +1093,7 @@ export default function AIAssistant() {
           <div className="overflow-y-auto max-h-56">
             {conversations.length === 0 ? (
               <div className="px-4 py-8 text-center">
-                <MessageSquare className="w-8 h-8 text-[#E5E7EB] dark:text-[#1A1A1A] mx-auto mb-2" />
+                <MessageSquare className="w-8 h-8 text-mono-900 dark:text-mono-200 mx-auto mb-2" />
                 <p className="text-sm text-[#6B7280]">Aucune conversation sauvegardee</p>
               </div>
             ) : (
@@ -1101,8 +1101,8 @@ export default function AIAssistant() {
                 <button
                   key={conv.id}
                   onClick={() => handleLoadConversation(conv)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#F5F5F5] dark:hover:bg-[#111111] transition-colors border-b border-[#E5E7EB]/50 dark:border-[#1A1A1A]/50 last:border-b-0 group ${
-                    conv.id === currentConversationId ? 'bg-[#F5F5F5] dark:bg-[#111111]' : ''
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-mono-975 dark:hover:bg-mono-100 transition-colors border-b border-mono-900/50 dark:border-mono-200/50 last:border-b-0 group ${
+                    conv.id === currentConversationId ? 'bg-mono-975 dark:bg-mono-100' : ''
                   }`}
                 >
                   <MessageSquare className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
@@ -1128,7 +1128,7 @@ export default function AIAssistant() {
       )}
 
       {/* ===== MAIN CHAT AREA ===== */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden min-h-0">
+      <div className="flex-1 flex flex-col bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden min-h-0">
         <div className="flex-1 overflow-y-auto p-4">
           {/* EMPTY STATE: Prompt Cards Grid */}
           {isEmptyChat && !isTyping ? (
@@ -1152,10 +1152,10 @@ export default function AIAssistant() {
                       key={card.title}
                       onClick={() => handleSend(card.prompt)}
                       disabled={quotaReached}
-                      className={`group text-left p-4 rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-gradient-to-br ${card.gradient} hover:border-black/30 dark:hover:border-white/30 hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed`}
+                      className={`group text-left p-4 rounded-2xl border border-mono-900 dark:border-mono-200 bg-gradient-to-br ${card.gradient} hover:border-black/30 dark:hover:border-white/30 hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       <div className="flex items-start gap-3">
-                        <div className="p-2 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] group-hover:border-black/20 dark:group-hover:border-white/20 transition-colors">
+                        <div className="p-2 rounded-xl bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 group-hover:border-black/20 dark:group-hover:border-white/20 transition-colors">
                           <Icon className="w-4 h-4 text-black dark:text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -1201,7 +1201,7 @@ export default function AIAssistant() {
                       className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                         msg.role === 'user'
                           ? 'bg-black dark:bg-white text-white dark:text-black rounded-tr-md'
-                          : 'bg-[#FAFAFA] dark:bg-[#111111] text-[#374151] dark:text-[#D4D4D4] rounded-tl-md border-l-2 border-l-emerald-500'
+                          : 'bg-mono-1000 dark:bg-mono-100 text-[#374151] dark:text-mono-800 rounded-tl-md border-l-2 border-l-emerald-500'
                       }`}
                     >
                       {msg.image && (
@@ -1229,25 +1229,25 @@ export default function AIAssistant() {
                         <div className="flex items-center gap-1 mt-1 ml-1">
                           <button
                             onClick={() => handleCopyMessage(msg.content, msg.id)}
-                            className="p-1.5 rounded-lg hover:bg-[#F5F5F5] dark:hover:bg-[#1A1A1A] text-[#9CA3AF] hover:text-black dark:hover:text-white transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-mono-975 dark:hover:bg-mono-200 text-[#9CA3AF] hover:text-black dark:hover:text-white transition-colors"
                             title="Copier"
                           >
                             {copiedMessageId === msg.id ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                           </button>
                           <button
                             onClick={() => handleShareMessage(msg.content)}
-                            className="p-1.5 rounded-lg hover:bg-[#F5F5F5] dark:hover:bg-[#1A1A1A] text-[#9CA3AF] hover:text-black dark:hover:text-white transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-mono-975 dark:hover:bg-mono-200 text-[#9CA3AF] hover:text-black dark:hover:text-white transition-colors"
                             title="Partager"
                           >
                             <Share2 className="w-3.5 h-3.5" />
                           </button>
-                          <div className="w-px h-3 bg-[#E5E7EB] dark:bg-[#1A1A1A] mx-0.5" />
+                          <div className="w-px h-3 bg-mono-900 dark:bg-mono-200 mx-0.5" />
                           <button
                             onClick={() => handleFeedback(msg.id, 'up')}
                             className={`p-1.5 rounded-lg transition-colors ${
                               msg.feedback === 'up'
                                 ? 'bg-emerald-500/10 text-emerald-500'
-                                : 'hover:bg-[#F5F5F5] dark:hover:bg-[#1A1A1A] text-[#9CA3AF] hover:text-black dark:hover:text-white'
+                                : 'hover:bg-mono-975 dark:hover:bg-mono-200 text-[#9CA3AF] hover:text-black dark:hover:text-white'
                             }`}
                             title="Bonne reponse"
                           >
@@ -1258,7 +1258,7 @@ export default function AIAssistant() {
                             className={`p-1.5 rounded-lg transition-colors ${
                               msg.feedback === 'down'
                                 ? 'bg-red-500/10 text-red-500'
-                                : 'hover:bg-[#F5F5F5] dark:hover:bg-[#1A1A1A] text-[#9CA3AF] hover:text-black dark:hover:text-white'
+                                : 'hover:bg-mono-975 dark:hover:bg-mono-200 text-[#9CA3AF] hover:text-black dark:hover:text-white'
                             }`}
                             title="Mauvaise reponse"
                           >
@@ -1280,7 +1280,7 @@ export default function AIAssistant() {
                   <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-500 mt-0.5">
                     <Bot className="w-4 h-4 text-white" />
                   </div>
-                  <div className="bg-[#FAFAFA] dark:bg-[#111111] border-l-2 border-l-emerald-500 rounded-2xl rounded-tl-md px-4 py-3">
+                  <div className="bg-mono-1000 dark:bg-mono-100 border-l-2 border-l-emerald-500 rounded-2xl rounded-tl-md px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="flex gap-1 items-center">
                         <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0ms]" />
@@ -1309,7 +1309,7 @@ export default function AIAssistant() {
                     key={s.label}
                     onClick={() => handleSend(s.prompt)}
                     disabled={isTyping || isStreaming}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black rounded-full transition-all whitespace-nowrap flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-[#6B7280]"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] border border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black rounded-full transition-all whitespace-nowrap flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-[#6B7280]"
                   >
                     <Icon className="w-3 h-3" />
                     {s.label}
@@ -1321,11 +1321,11 @@ export default function AIAssistant() {
         )}
 
         {/* ===== INPUT BAR ===== */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
+        <div className="border-t border-mono-900 dark:border-mono-200 p-3">
           {/* Pending image preview */}
           {pendingImage && (
-            <div className="flex items-center gap-3 mb-2 py-2 px-3 bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl">
-              <img src={pendingImage} alt="Apercu" className="w-12 h-12 object-cover rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A]" loading="lazy" />
+            <div className="flex items-center gap-3 mb-2 py-2 px-3 bg-mono-1000 dark:bg-mono-100 border border-mono-900 dark:border-mono-200 rounded-xl">
+              <img src={pendingImage} alt="Apercu" className="w-12 h-12 object-cover rounded-lg border border-mono-900 dark:border-mono-200" loading="lazy" />
               <span className="text-sm text-[#6B7280] flex-1">Photo prete a envoyer</span>
               <button
                 onClick={() => setPendingImage(null)}
@@ -1362,7 +1362,7 @@ export default function AIAssistant() {
 
           {/* Auto-send countdown */}
           {autoSendCountdown !== null && (
-            <div className="flex items-center justify-center gap-2 mb-2 py-1.5 px-3 bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl">
+            <div className="flex items-center justify-center gap-2 mb-2 py-1.5 px-3 bg-mono-1000 dark:bg-mono-100 border border-mono-900 dark:border-mono-200 rounded-xl">
               <Zap className="w-3 h-3 text-amber-500" />
               <span className="text-xs text-[#6B7280]">Envoi dans {autoSendCountdown}s...</span>
               <button
@@ -1387,7 +1387,7 @@ export default function AIAssistant() {
                 disabled={quotaReached}
                 placeholder={quotaReached ? 'Quota IA mensuel atteint' : isListening ? 'Parlez maintenant...' : 'Posez une question ou donnez une instruction...'}
                 rows={1}
-                className="w-full bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl px-4 py-3 text-sm text-black dark:text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/30 dark:focus:border-white/30 resize-none transition-all"
+                className="w-full bg-mono-1000 dark:bg-mono-100 border border-mono-900 dark:border-mono-200 rounded-2xl px-4 py-3 text-sm text-black dark:text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/30 dark:focus:border-white/30 resize-none transition-all"
                 style={{ minHeight: '46px', maxHeight: '140px' }}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement;
@@ -1402,7 +1402,7 @@ export default function AIAssistant() {
               onClick={handlePhotoCapture}
               disabled={quotaReached || isTyping || isStreaming}
               title="Photo d'ingredient"
-              className="flex-shrink-0 p-3 bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black disabled:opacity-40 disabled:cursor-not-allowed text-[#6B7280] rounded-2xl transition-all"
+              className="flex-shrink-0 p-3 bg-mono-1000 dark:bg-mono-100 border border-mono-900 dark:border-mono-200 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black disabled:opacity-40 disabled:cursor-not-allowed text-[#6B7280] rounded-2xl transition-all"
             >
               <Camera className="w-5 h-5" />
             </button>
@@ -1415,7 +1415,7 @@ export default function AIAssistant() {
                 className={`relative flex-shrink-0 p-3 rounded-2xl transition-all ${
                   isListening
                     ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20'
-                    : 'bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black text-[#6B7280]'
+                    : 'bg-mono-1000 dark:bg-mono-100 border border-mono-900 dark:border-mono-200 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black text-[#6B7280]'
                 }`}
               >
                 {isListening && (
@@ -1427,7 +1427,7 @@ export default function AIAssistant() {
               <button
                 disabled
                 title="Non supporte par votre navigateur"
-                className="flex-shrink-0 p-3 rounded-2xl bg-[#FAFAFA] dark:bg-[#111111] text-[#D4D4D4] dark:text-[#333] cursor-not-allowed"
+                className="flex-shrink-0 p-3 rounded-2xl bg-mono-1000 dark:bg-mono-100 text-mono-800 dark:text-[#333] cursor-not-allowed"
               >
                 <MicOff className="w-5 h-5" />
               </button>
@@ -1440,7 +1440,7 @@ export default function AIAssistant() {
                 handleSend();
               }}
               disabled={(!input.trim() && !pendingImage) || isTyping || isStreaming || quotaReached}
-              className="flex-shrink-0 p-3 bg-black dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:bg-[#E5E7EB] dark:disabled:bg-[#1A1A1A] disabled:text-[#9CA3AF] text-white dark:text-black rounded-2xl transition-all disabled:cursor-not-allowed"
+              className="flex-shrink-0 p-3 bg-black dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:bg-mono-900 dark:disabled:bg-mono-200 disabled:text-[#9CA3AF] text-white dark:text-black rounded-2xl transition-all disabled:cursor-not-allowed"
             >
               <Send className="w-5 h-5" />
             </button>

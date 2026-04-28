@@ -110,7 +110,7 @@ export default function LaunchPH() {
               sur <span className="text-emerald-600">Product Hunt</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-[#525252] max-w-2xl mx-auto leading-relaxed mb-10">
+            <p className="text-lg sm:text-xl text-mono-400 max-w-2xl mx-auto leading-relaxed mb-10">
               Le 6 mai 2026 à 9h01, RestauMargin sera officiellement lancé sur la plus grosse
               plateforme tech au monde. <strong className="text-[#0F172A]">Aide-nous à atteindre le Top 5 du jour.</strong>
             </p>
@@ -126,12 +126,12 @@ export default function LaunchPH() {
                 ].map((unit) => (
                   <div
                     key={unit.label}
-                    className="bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-2xl p-4 sm:p-6 shadow-lg"
+                    className="bg-white/90 backdrop-blur border border-mono-900 rounded-2xl p-4 sm:p-6 shadow-lg"
                   >
                     <div className="text-3xl sm:text-5xl font-black text-emerald-600 tabular-nums">
                       {String(unit.value).padStart(2, '0')}
                     </div>
-                    <div className="text-xs sm:text-sm text-[#737373] uppercase tracking-wider mt-1 font-semibold">
+                    <div className="text-xs sm:text-sm text-mono-500 uppercase tracking-wider mt-1 font-semibold">
                       {unit.label}
                     </div>
                   </div>
@@ -163,7 +163,7 @@ export default function LaunchPH() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="ton-email@restaurant.fr"
-                  className="flex-1 px-5 py-4 rounded-xl border-2 border-[#E5E7EB] bg-white text-[#0F172A] placeholder:text-[#A3A3A3] focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 transition-all"
+                  className="flex-1 px-5 py-4 rounded-xl border-2 border-mono-900 bg-white text-[#0F172A] placeholder:text-mono-700 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 transition-all"
                 />
                 <button
                   type="submit"
@@ -185,7 +185,7 @@ export default function LaunchPH() {
               </div>
             )}
 
-            <p className="text-sm text-[#737373]">
+            <p className="text-sm text-mono-500">
               On t'envoie 1 seul email — le jour du launch. Promis, pas de spam.
             </p>
           </div>
@@ -197,7 +197,7 @@ export default function LaunchPH() {
             <h2 className="text-3xl sm:text-4xl font-black text-[#0F172A] text-center mb-4 tracking-tight">
               Pourquoi ton upvote change tout
             </h2>
-            <p className="text-center text-[#525252] text-lg mb-12 max-w-2xl mx-auto">
+            <p className="text-center text-mono-400 text-lg mb-12 max-w-2xl mx-auto">
               Sur Product Hunt, c'est les premières heures qui décident. Top 5 du jour = 10 000 visiteurs sur RestauMargin.
             </p>
 
@@ -207,21 +207,21 @@ export default function LaunchPH() {
                   <Users className="w-8 h-8 text-emerald-600" />
                 </div>
                 <div className="text-4xl font-black text-[#0F172A] mb-2 tabular-nums">10 000</div>
-                <div className="text-sm text-[#525252]">visiteurs si Top 5</div>
+                <div className="text-sm text-mono-400">visiteurs si Top 5</div>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto mb-4">
                   <Zap className="w-8 h-8 text-emerald-600" />
                 </div>
                 <div className="text-4xl font-black text-[#0F172A] mb-2 tabular-nums">100+</div>
-                <div className="text-sm text-[#525252]">upvotes pour Top 5</div>
+                <div className="text-sm text-mono-400">upvotes pour Top 5</div>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto mb-4">
                   <Clock className="w-8 h-8 text-emerald-600" />
                 </div>
                 <div className="text-4xl font-black text-[#0F172A] mb-2 tabular-nums">24h</div>
-                <div className="text-sm text-[#525252]">de fenêtre de vote</div>
+                <div className="text-sm text-mono-400">de fenêtre de vote</div>
               </div>
             </div>
           </div>
@@ -233,7 +233,7 @@ export default function LaunchPH() {
             <h2 className="text-3xl sm:text-4xl font-black text-[#0F172A] text-center mb-4 tracking-tight">
               Ce qu'on lance, en 30 secondes
             </h2>
-            <p className="text-center text-[#525252] text-lg mb-12 max-w-2xl mx-auto">
+            <p className="text-center text-mono-400 text-lg mb-12 max-w-2xl mx-auto">
               RestauMargin automatise le calcul des marges restaurant grâce à l'IA et à la dictée vocale.
             </p>
 
@@ -262,13 +262,13 @@ export default function LaunchPH() {
               ].map((feature) => (
                 <div
                   key={feature.title}
-                  className="bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-2xl p-6 hover:shadow-lg hover:border-emerald-300 transition-all"
+                  className="bg-white/90 backdrop-blur border border-mono-900 rounded-2xl p-6 hover:shadow-lg hover:border-emerald-300 transition-all"
                 >
                   <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center mb-4">
                     <feature.icon className="w-6 h-6 text-emerald-600" />
                   </div>
                   <h3 className="text-lg font-bold text-[#0F172A] mb-2">{feature.title}</h3>
-                  <p className="text-sm text-[#525252] leading-relaxed">{feature.text}</p>
+                  <p className="text-sm text-mono-400 leading-relaxed">{feature.text}</p>
                 </div>
               ))}
             </div>
@@ -291,7 +291,7 @@ export default function LaunchPH() {
             <h2 className="text-3xl sm:text-4xl font-black text-[#0F172A] text-center mb-4 tracking-tight">
               90 secondes pour comprendre
             </h2>
-            <p className="text-center text-[#525252] text-lg mb-12 max-w-2xl mx-auto">
+            <p className="text-center text-mono-400 text-lg mb-12 max-w-2xl mx-auto">
               Démo rapide : dictée vocale recette → fiche technique générée + coût + marge en temps réel.
             </p>
 
@@ -304,8 +304,8 @@ export default function LaunchPH() {
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 </div>
-                <p className="text-[#525252] font-semibold mb-2">Vidéo démo — bientôt disponible</p>
-                <p className="text-sm text-[#737373] max-w-md">
+                <p className="text-mono-400 font-semibold mb-2">Vidéo démo — bientôt disponible</p>
+                <p className="text-sm text-mono-500 max-w-md">
                   En attendant, va voir le site live ou découvre les fonctionnalités sur Product Hunt.
                 </p>
               </div>
@@ -319,7 +319,7 @@ export default function LaunchPH() {
             <h2 className="text-3xl sm:text-4xl font-black text-[#0F172A] text-center mb-4 tracking-tight">
               Premiers retours du terrain
             </h2>
-            <p className="text-center text-[#525252] text-lg mb-12 max-w-2xl mx-auto">
+            <p className="text-center text-mono-400 text-lg mb-12 max-w-2xl mx-auto">
               Phase pilote en cours avec des restaurants indépendants français.
             </p>
 
@@ -343,7 +343,7 @@ export default function LaunchPH() {
               ].map((t) => (
                 <figure
                   key={t.author}
-                  className="bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow"
+                  className="bg-white/90 backdrop-blur border border-mono-900 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow"
                 >
                   <svg className="w-8 h-8 text-emerald-200 mb-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
@@ -353,13 +353,13 @@ export default function LaunchPH() {
                   </blockquote>
                   <figcaption className="text-sm">
                     <div className="font-bold text-[#0F172A]">{t.author}</div>
-                    <div className="text-[#737373]">{t.role}</div>
+                    <div className="text-mono-500">{t.role}</div>
                   </figcaption>
                 </figure>
               ))}
             </div>
 
-            <p className="mt-8 text-center text-xs text-[#A3A3A3]">
+            <p className="mt-8 text-center text-xs text-mono-700">
               Témoignages issus de la phase pilote — RestauMargin peut afficher de vrais témoignages clients dès le launch officiel.
             </p>
           </div>
@@ -371,7 +371,7 @@ export default function LaunchPH() {
             <h2 className="text-3xl sm:text-4xl font-black text-[#0F172A] text-center mb-4 tracking-tight">
               Questions fréquentes
             </h2>
-            <p className="text-center text-[#525252] text-lg mb-12 max-w-2xl mx-auto">
+            <p className="text-center text-mono-400 text-lg mb-12 max-w-2xl mx-auto">
               Tout ce que tu veux savoir sur RestauMargin avant le launch.
             </p>
 
@@ -400,7 +400,7 @@ export default function LaunchPH() {
               ].map((item) => (
                 <details
                   key={item.q}
-                  className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden hover:border-emerald-300 transition-colors group"
+                  className="bg-white border border-mono-900 rounded-xl overflow-hidden hover:border-emerald-300 transition-colors group"
                 >
                   <summary className="px-6 py-4 cursor-pointer font-bold text-[#0F172A] hover:bg-emerald-50 transition-colors flex items-center justify-between gap-4 list-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 rounded-xl">
                     <span>{item.q}</span>
@@ -408,7 +408,7 @@ export default function LaunchPH() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                     </svg>
                   </summary>
-                  <div className="px-6 pb-5 text-[#525252] leading-relaxed">
+                  <div className="px-6 pb-5 text-mono-400 leading-relaxed">
                     {item.a}
                   </div>
                 </details>

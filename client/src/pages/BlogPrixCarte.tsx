@@ -69,13 +69,13 @@ export default function BlogPrixCarte() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -118,7 +118,7 @@ export default function BlogPrixCarte() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Pourquoi la tarification est l'acte le plus stratégique</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Pourquoi la tarification est l'acte le plus stratégique</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Dans un restaurant indépendant, la marge nette moyenne se situe entre 3 % et 6 % du chiffre d'affaires. Un restaurant qui réalise 500 000 € de CA annuel ne dégage que 15 000 à 30 000 € de bénéfice net. À ce niveau, <strong>chaque euro de prix mal positionné se paie cash</strong>.
@@ -139,12 +139,12 @@ export default function BlogPrixCarte() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <Calculator className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Méthode 1 — Par le coût (coefficient multiplicateur)</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Méthode 1 — Par le coût (coefficient multiplicateur)</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             La méthode de base, celle qu'on apprend en école hôtelière : appliquer un coefficient multiplicateur sur le coût de revient matière du plat.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Prix HT = Coût matière × Coefficient multiplicateur</div>
             <div>Prix TTC = Prix HT × 1,10 (TVA restauration)</div>
           </div>
@@ -166,7 +166,7 @@ export default function BlogPrixCarte() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Eye className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Méthode 2 — Par la valeur perçue</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Méthode 2 — Par la valeur perçue</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Ici, le prix n'est pas dérivé du coût mais de <strong>ce que le client est prêt à payer pour l'expérience</strong>. Trois facteurs : positionnement, expérience, localisation.
@@ -185,7 +185,7 @@ export default function BlogPrixCarte() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <Brain className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Psychologie des prix sur la carte</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Psychologie des prix sur la carte</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le prix affiché est un <strong>signal</strong>. Voici les leviers validés par la recherche en behavioral pricing.
@@ -220,12 +220,12 @@ export default function BlogPrixCarte() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <Users className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Coefficients multiplicateurs par poste</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Coefficients multiplicateurs par poste</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             On <strong>module le coefficient par poste</strong> car la cible est un mix global food cost à 28-30 %, pas plat par plat.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Apéritifs / softs : 5 à 6 (food cost 17-20 %)</div>
             <div>Entrées froides : 4,5 à 5 (food cost 20-22 %)</div>
             <div>Plats viande nobles : 3 à 3,5 (food cost 28-33 %)</div>
@@ -246,7 +246,7 @@ export default function BlogPrixCarte() {
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Quand et comment augmenter ses prix</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Quand et comment augmenter ses prix</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Quand :</strong> inflation matières {'>'} 5 % sur 6 mois, hausse SMIC annuelle, hausse énergie {'>'} 10 %, loyer indexé ILC en hausse, food cost qui dépasse 32 %.
@@ -266,7 +266,7 @@ export default function BlogPrixCarte() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -290,9 +290,9 @@ export default function BlogPrixCarte() {
                 a: "Pas automatiquement. Vérifiez d'abord : ont-ils la même qualité ? Mêmes origines ? Même service ? Si oui, regardez votre food cost. Si non, assumez votre positionnement supérieur."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -313,7 +313,7 @@ export default function BlogPrixCarte() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>

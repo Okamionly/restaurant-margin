@@ -90,7 +90,7 @@ export default function TrialReactivate() {
       />
 
       {/* Banner countdown */}
-      <div className="bg-gradient-to-r from-[#111111] to-[#1f2937] text-white px-4 py-3 text-center text-sm font-semibold">
+      <div className="bg-gradient-to-r from-mono-100 to-[#1f2937] text-white px-4 py-3 text-center text-sm font-semibold">
         <div className="flex items-center justify-center gap-2 flex-wrap">
           <Clock className="w-4 h-4" />
           <span>Offre limitee — Expire dans</span>
@@ -107,16 +107,16 @@ export default function TrialReactivate() {
           <span className="text-sm font-semibold text-rose-700 uppercase tracking-wider">Offre speciale retour</span>
         </div>
         <h1
-          className="text-4xl sm:text-5xl md:text-6xl font-black text-[#111111] mb-6 leading-tight"
+          className="text-4xl sm:text-5xl md:text-6xl font-black text-mono-100 mb-6 leading-tight"
          
         >
           {user?.name ? `${user.name}, ` : ''}on vous offre <span className="text-teal-600">-30%</span><br />
           pour revenir
         </h1>
-        <p className="text-lg text-[#525252] max-w-2xl mx-auto leading-relaxed mb-2">
+        <p className="text-lg text-mono-400 max-w-2xl mx-auto leading-relaxed mb-2">
           Votre essai gratuit est termine, mais vous avez goute a RestauMargin.
         </p>
-        <p className="text-lg text-[#111111] font-semibold max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg text-mono-100 font-semibold max-w-2xl mx-auto leading-relaxed">
           Profitez de <span className="text-teal-600">-30% sur les 3 premiers mois</span> pour reactiver votre compte.
         </p>
       </section>
@@ -134,10 +134,10 @@ export default function TrialReactivate() {
               <span className="text-sm font-semibold text-teal-600 uppercase tracking-wider">Pro</span>
             </div>
             <div className="mb-4">
-              <span className="text-4xl font-black text-[#111111]">20,30 €</span>
-              <span className="text-[#737373]">/mois</span>
-              <div className="text-xs text-[#737373] mt-1">
-                pendant 3 mois, puis <s className="text-[#525252]">29€</s> 29€/mois
+              <span className="text-4xl font-black text-mono-100">20,30 €</span>
+              <span className="text-mono-500">/mois</span>
+              <div className="text-xs text-mono-500 mt-1">
+                pendant 3 mois, puis <s className="text-mono-400">29€</s> 29€/mois
               </div>
             </div>
             <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full mb-6">
@@ -153,7 +153,7 @@ export default function TrialReactivate() {
                 '5 utilisateurs',
                 'Support prioritaire',
               ].map((f) => (
-                <li key={f} className="flex items-start gap-2 text-sm text-[#525252]">
+                <li key={f} className="flex items-start gap-2 text-sm text-mono-400">
                   <CheckCircle2 className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
                   <span>{f}</span>
                 </li>
@@ -171,16 +171,16 @@ export default function TrialReactivate() {
           </div>
 
           {/* Business */}
-          <div className="bg-white border border-[#E5E7EB] rounded-3xl p-8 relative">
+          <div className="bg-white border border-mono-900 rounded-3xl p-8 relative">
             <div className="flex items-center gap-2 mb-3">
-              <Scale className="w-5 h-5 text-[#111111]" />
-              <span className="text-sm font-semibold text-[#111111] uppercase tracking-wider">Business</span>
+              <Scale className="w-5 h-5 text-mono-100" />
+              <span className="text-sm font-semibold text-mono-100 uppercase tracking-wider">Business</span>
             </div>
             <div className="mb-4">
-              <span className="text-4xl font-black text-[#111111]">55,30 €</span>
-              <span className="text-[#737373]">/mois</span>
-              <div className="text-xs text-[#737373] mt-1">
-                pendant 3 mois, puis <s className="text-[#525252]">79€</s> 79€/mois
+              <span className="text-4xl font-black text-mono-100">55,30 €</span>
+              <span className="text-mono-500">/mois</span>
+              <div className="text-xs text-mono-500 mt-1">
+                pendant 3 mois, puis <s className="text-mono-400">79€</s> 79€/mois
               </div>
             </div>
             <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full mb-6">
@@ -198,7 +198,7 @@ export default function TrialReactivate() {
                 'Utilisateurs illimites',
                 'Support 24/7',
               ].map((f) => (
-                <li key={f} className="flex items-start gap-2 text-sm text-[#525252]">
+                <li key={f} className="flex items-start gap-2 text-sm text-mono-400">
                   <CheckCircle2 className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
                   <span>{f}</span>
                 </li>
@@ -207,7 +207,7 @@ export default function TrialReactivate() {
             <button
               onClick={() => reactivate('business')}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#111111] hover:bg-[#1f2937] disabled:opacity-50 text-white font-semibold rounded-xl transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-mono-100 hover:bg-[#1f2937] disabled:opacity-50 text-white font-semibold rounded-xl transition-colors"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Gift className="w-4 h-4" />}
               Reactiver Business avec -30%
@@ -220,7 +220,7 @@ export default function TrialReactivate() {
       {/* Reminder why */}
       <section className="py-16 px-4 sm:px-6 max-w-4xl mx-auto bg-[#f8fafb] rounded-3xl my-8">
         <h2
-          className="text-2xl sm:text-3xl font-bold text-[#111111] mb-8 text-center"
+          className="text-2xl sm:text-3xl font-bold text-mono-100 mb-8 text-center"
          
         >
           Ce que vous ratez depuis la fin de votre essai
@@ -232,9 +232,9 @@ export default function TrialReactivate() {
             { icon: TrendingUp, text: 'Menu Engineering et optimisation IA' },
             { icon: Scale, text: 'Pesee connectee pour fiches techniques precises' },
           ].map((item) => (
-            <div key={item.text} className="flex items-start gap-3 bg-white p-4 rounded-xl border border-[#E5E7EB]">
+            <div key={item.text} className="flex items-start gap-3 bg-white p-4 rounded-xl border border-mono-900">
               <item.icon className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
-              <span className="text-sm text-[#525252]">{item.text}</span>
+              <span className="text-sm text-mono-400">{item.text}</span>
             </div>
           ))}
         </div>
@@ -243,7 +243,7 @@ export default function TrialReactivate() {
       {/* FAQ */}
       <section className="py-16 px-4 sm:px-6 max-w-3xl mx-auto">
         <h2
-          className="text-2xl sm:text-3xl font-bold text-[#111111] mb-8 text-center"
+          className="text-2xl sm:text-3xl font-bold text-mono-100 mb-8 text-center"
          
         >
           Questions frequentes
@@ -269,13 +269,13 @@ export default function TrialReactivate() {
           ].map((item) => (
             <details
               key={item.q}
-              className="group border border-[#E5E7EB] rounded-xl p-4 hover:border-teal-500 transition-colors"
+              className="group border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors"
             >
-              <summary className="cursor-pointer font-semibold text-[#111111] flex items-center justify-between">
+              <summary className="cursor-pointer font-semibold text-mono-100 flex items-center justify-between">
                 {item.q}
-                <span className="ml-2 text-[#737373] group-open:rotate-180 transition-transform">▾</span>
+                <span className="ml-2 text-mono-500 group-open:rotate-180 transition-transform">▾</span>
               </summary>
-              <p className="mt-3 text-sm text-[#525252] leading-relaxed">{item.a}</p>
+              <p className="mt-3 text-sm text-mono-400 leading-relaxed">{item.a}</p>
             </details>
           ))}
         </div>
@@ -283,7 +283,7 @@ export default function TrialReactivate() {
 
       {/* Back link */}
       <section className="py-8 px-4 sm:px-6 text-center">
-        <Link to="/abonnement" className="text-sm text-[#737373] hover:text-teal-600 transition-colors">
+        <Link to="/abonnement" className="text-sm text-mono-500 hover:text-teal-600 transition-colors">
           Voir tous les tarifs sans reduction
         </Link>
       </section>

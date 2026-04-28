@@ -26,16 +26,16 @@ function StatCard({
     <div className={`rounded-2xl border p-5 flex flex-col gap-1 ${
       accent
         ? 'bg-teal-600 border-teal-500 text-white'
-        : 'bg-white dark:bg-[#0A0A0A]/50 border-[#E5E7EB] dark:border-[#1A1A1A]'
+        : 'bg-white dark:bg-mono-50/50 border-mono-900 dark:border-mono-200'
     }`}>
-      <span className={`text-xs font-semibold uppercase tracking-wider ${accent ? 'text-teal-100' : 'text-[#737373] dark:text-[#A3A3A3]'}`}>
+      <span className={`text-xs font-semibold uppercase tracking-wider ${accent ? 'text-teal-100' : 'text-mono-500 dark:text-mono-700'}`}>
         {label}
       </span>
-      <span className={`text-2xl font-bold font-satoshi ${accent ? 'text-white' : 'text-[#111111] dark:text-white'}`}>
+      <span className={`text-2xl font-bold font-satoshi ${accent ? 'text-white' : 'text-mono-100 dark:text-white'}`}>
         {value}
       </span>
       {sub && (
-        <span className={`text-xs ${accent ? 'text-teal-100' : 'text-[#737373] dark:text-[#A3A3A3]'}`}>
+        <span className={`text-xs ${accent ? 'text-teal-100' : 'text-mono-500 dark:text-mono-700'}`}>
           {sub}
         </span>
       )}
@@ -87,17 +87,17 @@ export default function BreakevenCalculator() {
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-2">
+            <h1 className="text-2xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-2">
               <Activity className="w-6 h-6 text-teal-600" />
               Seuil de rentabilité
             </h1>
-            <p className="text-sm text-[#737373] dark:text-[#A3A3A3] mt-1">
+            <p className="text-sm text-mono-500 dark:text-mono-700 mt-1">
               Calculez le chiffre d'affaires minimum pour couvrir toutes vos charges.
             </p>
           </div>
           <button
             onClick={reset}
-            className="flex items-center gap-1.5 text-xs text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2"
+            className="flex items-center gap-1.5 text-xs text-mono-500 dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2"
           >
             <RotateCcw className="w-3.5 h-3.5" /> Réinitialiser
           </button>
@@ -109,18 +109,18 @@ export default function BreakevenCalculator() {
           <div className="space-y-4">
 
             {/* Charges fixes */}
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+            <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
               <button
                 className="flex items-center justify-between w-full text-left"
                 onClick={() => setShowDetail(v => !v)}
               >
-                <span className="font-semibold text-[#111111] dark:text-white font-satoshi flex items-center gap-2">
+                <span className="font-semibold text-mono-100 dark:text-white font-satoshi flex items-center gap-2">
                   <Euro className="w-4 h-4 text-teal-600" />
                   Charges fixes mensuelles
                 </span>
                 <div className="flex items-center gap-2">
                   <span className="text-teal-600 font-bold">{fmt(totalChargesFixes)}</span>
-                  {showDetail ? <ChevronUp className="w-4 h-4 text-[#737373]" /> : <ChevronDown className="w-4 h-4 text-[#737373]" />}
+                  {showDetail ? <ChevronUp className="w-4 h-4 text-mono-500" /> : <ChevronDown className="w-4 h-4 text-mono-500" />}
                 </div>
               </button>
 
@@ -131,16 +131,16 @@ export default function BreakevenCalculator() {
                       <input
                         value={c.label}
                         onChange={e => updateCharge(i, 'label', e.target.value)}
-                        className="flex-1 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-1.5 text-sm text-[#111111] dark:text-white"
+                        className="flex-1 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-1.5 text-sm text-mono-100 dark:text-white"
                       />
                       <input
                         type="number"
                         min={0}
                         value={c.montant}
                         onChange={e => updateCharge(i, 'montant', Number(e.target.value))}
-                        className="w-28 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-1.5 text-sm text-right text-[#111111] dark:text-white"
+                        className="w-28 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-1.5 text-sm text-right text-mono-100 dark:text-white"
                       />
-                      <button onClick={() => removeCharge(i)} className="text-[#737373] hover:text-red-500 transition-colors">
+                      <button onClick={() => removeCharge(i)} className="text-mono-500 hover:text-red-500 transition-colors">
                         <AlertCircle className="w-4 h-4" />
                       </button>
                     </div>
@@ -156,14 +156,14 @@ export default function BreakevenCalculator() {
             </div>
 
             {/* Params */}
-            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
-              <h2 className="font-semibold text-[#111111] dark:text-white font-satoshi flex items-center gap-2">
+            <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 space-y-4">
+              <h2 className="font-semibold text-mono-100 dark:text-white font-satoshi flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-teal-600" />
                 Paramètres
               </h2>
 
               <div>
-                <label className="text-xs font-medium text-[#737373] dark:text-[#A3A3A3] mb-1 flex items-center gap-1">
+                <label className="text-xs font-medium text-mono-500 dark:text-mono-700 mb-1 flex items-center gap-1">
                   Taux de marge sur coût variable
                   <span title="(CA - coûts variables) / CA. Typiquement 60-75% en restauration." className="cursor-help">
                     <Info className="w-3 h-3" />
@@ -180,24 +180,24 @@ export default function BreakevenCalculator() {
               </div>
 
               <div>
-                <label className="text-xs font-medium text-[#737373] dark:text-[#A3A3A3] mb-1 block">
+                <label className="text-xs font-medium text-mono-500 dark:text-mono-700 mb-1 block">
                   Ticket moyen par couvert (€)
                 </label>
                 <input
                   type="number" min={1} value={ticketMoyen}
                   onChange={e => setTicketMoyen(Number(e.target.value))}
-                  className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white"
+                  className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-medium text-[#737373] dark:text-[#A3A3A3] mb-1 block">
+                <label className="text-xs font-medium text-mono-500 dark:text-mono-700 mb-1 block">
                   Jours d'ouverture par mois
                 </label>
                 <input
                   type="number" min={1} max={31} value={joursOuverture}
                   onChange={e => setJoursOuverture(Number(e.target.value))}
-                  className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white"
+                  className="w-full bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white"
                 />
               </div>
             </div>
@@ -216,17 +216,17 @@ export default function BreakevenCalculator() {
                 </div>
 
                 {/* Progress bar */}
-                <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+                <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#737373] dark:text-[#A3A3A3]">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-mono-500 dark:text-mono-700">
                       Charges couvertes à l'équilibre
                     </span>
                     <CheckCircle className="w-4 h-4 text-emerald-500" />
                   </div>
-                  <div className="h-2 bg-[#F5F5F5] dark:bg-[#262626] rounded-full overflow-hidden">
+                  <div className="h-2 bg-mono-975 dark:bg-mono-300 rounded-full overflow-hidden">
                     <div className="h-2 bg-gradient-to-r from-teal-600 to-emerald-500 rounded-full" style={{ width: '100%' }} />
                   </div>
-                  <p className="text-xs text-[#737373] dark:text-[#A3A3A3] mt-2">
+                  <p className="text-xs text-mono-500 dark:text-mono-700 mt-2">
                     Au-delà de {fmt(results.caSeuil)}/mois, chaque euro de CA supplémentaire génère <strong className="text-teal-600">{tauxMargeVariable}c de marge nette</strong>.
                   </p>
                 </div>
@@ -240,9 +240,9 @@ export default function BreakevenCalculator() {
                 </div>
               </>
             ) : (
-              <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-10 flex flex-col items-center gap-3 text-center">
-                <AlertCircle className="w-10 h-10 text-[#E5E7EB] dark:text-[#262626]" />
-                <p className="text-sm text-[#737373] dark:text-[#A3A3A3]">
+              <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-10 flex flex-col items-center gap-3 text-center">
+                <AlertCircle className="w-10 h-10 text-mono-900 dark:text-mono-300" />
+                <p className="text-sm text-mono-500 dark:text-mono-700">
                   Vérifiez vos paramètres pour afficher les résultats.
                 </p>
               </div>
@@ -251,7 +251,7 @@ export default function BreakevenCalculator() {
         </div>
 
         {/* Methodology note */}
-        <div className="text-xs text-[#737373] dark:text-[#525252] text-center">
+        <div className="text-xs text-mono-500 dark:text-mono-400 text-center">
           Formule : Seuil de rentabilité = Charges fixes ÷ Taux de marge sur coût variable
         </div>
       </div>

@@ -207,7 +207,7 @@ export default function SearchBar({
   return (
     <div ref={containerRef} className={`relative ${className}`}>
       {/* Input */}
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373] pointer-events-none z-10" />
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500 pointer-events-none z-10" />
       <input
         ref={inputRef}
         type="search"
@@ -221,14 +221,14 @@ export default function SearchBar({
         spellCheck={false}
         className={`
           w-full pl-10 pr-20 py-2.5 text-sm
-          bg-[#F9FAFB] dark:bg-[#0A0A0A]
-          border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl
-          text-[#111111] dark:text-white
-          placeholder-[#9CA3AF] dark:placeholder-[#525252]
+          bg-[#F9FAFB] dark:bg-mono-50
+          border border-mono-900 dark:border-mono-200 rounded-xl
+          text-mono-100 dark:text-white
+          placeholder-[#9CA3AF] dark:placeholder-mono-400
           outline-none
           transition-all duration-200
           ${isFocused
-            ? 'ring-2 ring-[#111111] dark:ring-white border-transparent shadow-sm'
+            ? 'ring-2 ring-mono-100 dark:ring-white border-transparent shadow-sm'
             : 'hover:border-[#D1D5DB] dark:hover:border-[#2A2A2A]'
           }
         `}
@@ -243,13 +243,13 @@ export default function SearchBar({
               onChange('');
               inputRef.current?.focus();
             }}
-            className="p-1 rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+            className="p-1 rounded-lg hover:bg-mono-900 dark:hover:bg-mono-200 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors"
           >
             <X className="w-3.5 h-3.5" />
           </button>
         )}
         {showShortcutHint && !isFocused && !value && (
-          <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium text-[#9CA3AF] dark:text-[#525252] bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-md">
+          <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium text-[#9CA3AF] dark:text-mono-400 bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-md">
             /
           </kbd>
         )}
@@ -257,17 +257,17 @@ export default function SearchBar({
 
       {/* Dropdown */}
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 z-50 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-xl shadow-black/5 dark:shadow-black/30 overflow-hidden animate-[sbSlideDown_150ms_ease-out]">
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-50 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl shadow-xl shadow-black/5 dark:shadow-black/30 overflow-hidden animate-[sbSlideDown_150ms_ease-out]">
           {/* Recent searches */}
           {showHistory && (
             <>
-              <div className="flex items-center justify-between px-3.5 py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
-                <span className="text-[11px] font-semibold uppercase tracking-widest text-[#9CA3AF] dark:text-[#525252]">
+              <div className="flex items-center justify-between px-3.5 py-2 border-b border-mono-950 dark:border-mono-200">
+                <span className="text-[11px] font-semibold uppercase tracking-widest text-[#9CA3AF] dark:text-mono-400">
                   Recherches recentes
                 </span>
                 <button
                   onClick={handleClearHistory}
-                  className="text-[10px] text-[#9CA3AF] dark:text-[#525252] hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                  className="text-[10px] text-[#9CA3AF] dark:text-mono-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                 >
                   Effacer
                 </button>
@@ -284,13 +284,13 @@ export default function SearchBar({
                     onMouseEnter={() => setActiveIndex(i)}
                     className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-left text-sm transition-colors ${
                       isActive
-                        ? 'bg-[#F3F4F6] dark:bg-[#171717]'
-                        : 'hover:bg-[#F9FAFB] dark:hover:bg-[#111111]'
+                        ? 'bg-mono-950 dark:bg-[#171717]'
+                        : 'hover:bg-[#F9FAFB] dark:hover:bg-mono-100'
                     }`}
                   >
-                    <Clock className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#525252] flex-shrink-0" />
-                    <span className="text-[#374151] dark:text-[#A3A3A3] truncate">{h}</span>
-                    <ArrowRight className={`w-3 h-3 ml-auto flex-shrink-0 transition-opacity ${isActive ? 'opacity-100 text-[#111111] dark:text-white' : 'opacity-0'}`} />
+                    <Clock className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-400 flex-shrink-0" />
+                    <span className="text-[#374151] dark:text-mono-700 truncate">{h}</span>
+                    <ArrowRight className={`w-3 h-3 ml-auto flex-shrink-0 transition-opacity ${isActive ? 'opacity-100 text-mono-100 dark:text-white' : 'opacity-0'}`} />
                   </button>
                 );
               })}
@@ -302,8 +302,8 @@ export default function SearchBar({
             <>
               {groupedSuggestions.map((group) => (
                 <div key={group.category}>
-                  <div className="px-3.5 py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
-                    <span className="text-[11px] font-semibold uppercase tracking-widest text-[#9CA3AF] dark:text-[#525252]">
+                  <div className="px-3.5 py-2 border-b border-mono-950 dark:border-mono-200">
+                    <span className="text-[11px] font-semibold uppercase tracking-widest text-[#9CA3AF] dark:text-mono-400">
                       {group.category}
                     </span>
                   </div>
@@ -321,15 +321,15 @@ export default function SearchBar({
                         onMouseEnter={() => setActiveIndex(flatIdx)}
                         className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-left text-sm transition-colors ${
                           isActive
-                            ? 'bg-[#F3F4F6] dark:bg-[#171717]'
-                            : 'hover:bg-[#F9FAFB] dark:hover:bg-[#111111]'
+                            ? 'bg-mono-950 dark:bg-[#171717]'
+                            : 'hover:bg-[#F9FAFB] dark:hover:bg-mono-100'
                         }`}
                       >
-                        {Icon && <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-[#9CA3AF] dark:text-[#525252]'}`} />}
-                        <span className="text-[#374151] dark:text-[#A3A3A3] truncate">
+                        {Icon && <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-[#9CA3AF] dark:text-mono-400'}`} />}
+                        <span className="text-[#374151] dark:text-mono-700 truncate">
                           <HighlightMatch text={item.label} query={value} />
                         </span>
-                        {isActive && <ArrowRight className="w-3 h-3 ml-auto flex-shrink-0 text-[#111111] dark:text-white" />}
+                        {isActive && <ArrowRight className="w-3 h-3 ml-auto flex-shrink-0 text-mono-100 dark:text-white" />}
                       </button>
                     );
                   })}

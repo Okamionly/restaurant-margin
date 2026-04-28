@@ -204,11 +204,11 @@ export default function UserManagement() {
   if (user?.role !== 'admin') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
-        <div className="w-20 h-20 rounded-full bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-6">
-          <Shield className="w-10 h-10 text-[#9CA3AF] dark:text-[#737373]" />
+        <div className="w-20 h-20 rounded-full bg-mono-950 dark:bg-[#171717] flex items-center justify-center mb-6">
+          <Shield className="w-10 h-10 text-[#9CA3AF] dark:text-mono-500" />
         </div>
-        <h3 className="text-xl font-bold text-[#111111] dark:text-white mb-2">Acces reserve</h3>
-        <p className="text-[#6B7280] dark:text-[#A3A3A3] text-center max-w-sm">
+        <h3 className="text-xl font-bold text-mono-100 dark:text-white mb-2">Acces reserve</h3>
+        <p className="text-[#6B7280] dark:text-mono-700 text-center max-w-sm">
           Seuls les administrateurs peuvent gerer les utilisateurs.
         </p>
       </div>
@@ -218,7 +218,7 @@ export default function UserManagement() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-8 h-8 border-2 border-[#111111] dark:border-white border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-mono-100 dark:border-white border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -228,17 +228,17 @@ export default function UserManagement() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi flex items-center gap-3">
             <Users className="w-7 h-7" />
             Gestion des utilisateurs
           </h1>
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mt-1">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700 mt-1">
             Gerez votre equipe et les permissions d'acces
           </p>
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
         >
           <UserPlus className="w-4 h-4" />
           Inviter un membre
@@ -247,74 +247,74 @@ export default function UserManagement() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-4">
+        <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl p-4">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center">
-              <Users className="w-4.5 h-4.5 text-[#111111] dark:text-white" />
+            <div className="w-9 h-9 rounded-xl bg-mono-950 dark:bg-[#171717] flex items-center justify-center">
+              <Users className="w-4.5 h-4.5 text-mono-100 dark:text-white" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{stats.total}</p>
-          <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-0.5">Membres total</p>
+          <p className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{stats.total}</p>
+          <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-0.5">Membres total</p>
         </div>
-        <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-4">
+        <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl p-4">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
               <Crown className="w-4.5 h-4.5 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{stats.admins}</p>
-          <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-0.5">Administrateurs</p>
+          <p className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{stats.admins}</p>
+          <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-0.5">Administrateurs</p>
         </div>
-        <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-4">
+        <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl p-4">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
               <ChefHat className="w-4.5 h-4.5 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{stats.chefs}</p>
-          <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-0.5">Chefs de cuisine</p>
+          <p className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{stats.chefs}</p>
+          <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-0.5">Chefs de cuisine</p>
         </div>
-        <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-4">
+        <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl p-4">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
               <TrendingUp className="w-4.5 h-4.5 text-emerald-600 dark:text-emerald-400" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{stats.recentWeek}</p>
-          <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-0.5">Nouveaux (7j)</p>
+          <p className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{stats.recentWeek}</p>
+          <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-0.5">Nouveaux (7j)</p>
         </div>
       </div>
 
       {/* Search + Controls */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
           <input
             type="text"
             placeholder="Rechercher un membre..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white transition-shadow"
+            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500 focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white transition-shadow"
           />
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setSortBy(sortBy === 'name' ? 'date' : sortBy === 'date' ? 'role' : 'name')}
-            className="flex items-center gap-2 px-3.5 py-2.5 border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors bg-white dark:bg-black"
+            className="flex items-center gap-2 px-3.5 py-2.5 border border-mono-900 dark:border-mono-300 rounded-xl text-sm text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors bg-white dark:bg-black"
           >
             <ArrowUpDown className="w-3.5 h-3.5" />
             {sortBy === 'name' ? 'Nom' : sortBy === 'date' ? 'Date' : 'Role'}
           </button>
-          <div className="flex border border-[#E5E7EB] dark:border-[#262626] rounded-xl overflow-hidden">
+          <div className="flex border border-mono-900 dark:border-mono-300 rounded-xl overflow-hidden">
             <button
               onClick={() => setViewMode('grid')}
-              className={`px-3 py-2.5 text-sm transition-colors ${viewMode === 'grid' ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]' : 'bg-white dark:bg-black text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'}`}
+              className={`px-3 py-2.5 text-sm transition-colors ${viewMode === 'grid' ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100' : 'bg-white dark:bg-black text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717]'}`}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`px-3 py-2.5 text-sm transition-colors ${viewMode === 'list' ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]' : 'bg-white dark:bg-black text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'}`}
+              className={`px-3 py-2.5 text-sm transition-colors ${viewMode === 'list' ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100' : 'bg-white dark:bg-black text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717]'}`}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
             </button>
@@ -324,14 +324,14 @@ export default function UserManagement() {
 
       {/* Bulk Actions Bar */}
       {selectedUsers.size > 0 && (
-        <div className="flex items-center gap-3 px-4 py-3 bg-[#111111] dark:bg-white rounded-2xl">
-          <span className="text-sm font-medium text-white dark:text-[#111111]">
+        <div className="flex items-center gap-3 px-4 py-3 bg-mono-100 dark:bg-white rounded-2xl">
+          <span className="text-sm font-medium text-white dark:text-mono-100">
             {selectedUsers.size} selectionne{selectedUsers.size > 1 ? 's' : ''}
           </span>
           <div className="flex-1" />
           <button
             onClick={() => setSelectedUsers(new Set())}
-            className="text-sm text-white/70 dark:text-[#111111]/70 hover:text-white dark:hover:text-[#111111] transition-colors"
+            className="text-sm text-white/70 dark:text-mono-100/70 hover:text-white dark:hover:text-mono-100 transition-colors"
           >
             Deselectionner
           </button>
@@ -356,8 +356,8 @@ export default function UserManagement() {
                 key={u.id}
                 className={`group relative bg-white dark:bg-black border rounded-2xl p-5 transition-all hover:shadow-lg ${
                   isSelected
-                    ? 'border-[#111111] dark:border-white ring-1 ring-[#111111] dark:ring-white'
-                    : 'border-[#E5E7EB] dark:border-[#262626] hover:border-[#111111]/30 dark:hover:border-white/30'
+                    ? 'border-mono-100 dark:border-white ring-1 ring-mono-100 dark:ring-white'
+                    : 'border-mono-900 dark:border-mono-300 hover:border-mono-100/30 dark:hover:border-white/30'
                 }`}
               >
                 {/* Selection checkbox */}
@@ -367,9 +367,9 @@ export default function UserManagement() {
                     className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     {isSelected ? (
-                      <CheckSquare className="w-5 h-5 text-[#111111] dark:text-white" />
+                      <CheckSquare className="w-5 h-5 text-mono-100 dark:text-white" />
                     ) : (
-                      <Square className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373]" />
+                      <Square className="w-5 h-5 text-[#9CA3AF] dark:text-mono-500" />
                     )}
                   </button>
                 )}
@@ -385,8 +385,8 @@ export default function UserManagement() {
                     {getInitials(u.name)}
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-semibold text-[#111111] dark:text-white truncate">{u.name}</h3>
-                    <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] truncate flex items-center gap-1.5">
+                    <h3 className="font-semibold text-mono-100 dark:text-white truncate">{u.name}</h3>
+                    <p className="text-sm text-[#6B7280] dark:text-mono-700 truncate flex items-center gap-1.5">
                       <Mail className="w-3 h-3 flex-shrink-0" />
                       {u.email}
                     </p>
@@ -406,7 +406,7 @@ export default function UserManagement() {
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="flex items-center gap-1.5 text-xs text-[#9CA3AF] dark:text-mono-500">
                     <Calendar className="w-3 h-3" />
                     {timeAgo(u.createdAt)}
                   </div>
@@ -414,7 +414,7 @@ export default function UserManagement() {
 
                 {/* Quick Actions */}
                 {!isMe && (
-                  <div className="mt-4 pt-4 border-t border-[#E5E7EB] dark:border-[#262626] flex items-center gap-2">
+                  <div className="mt-4 pt-4 border-t border-mono-900 dark:border-mono-300 flex items-center gap-2">
                     <button
                       onClick={() => setDeleteTarget(u.id)}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
@@ -430,23 +430,23 @@ export default function UserManagement() {
         </div>
       ) : (
         /* List View */
-        <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl overflow-hidden">
+        <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl overflow-hidden">
           {/* List Header */}
-          <div className="hidden sm:grid grid-cols-[auto_1fr_1fr_120px_100px_80px] gap-4 items-center px-5 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border-b border-[#E5E7EB] dark:border-[#262626]">
+          <div className="hidden sm:grid grid-cols-[auto_1fr_1fr_120px_100px_80px] gap-4 items-center px-5 py-3 bg-[#F9FAFB] dark:bg-mono-50 border-b border-mono-900 dark:border-mono-300">
             <button onClick={toggleSelectAll} className="w-5 h-5">
               {selectedUsers.size === filteredUsers.length && filteredUsers.length > 0 ? (
-                <CheckSquare className="w-5 h-5 text-[#111111] dark:text-white" />
+                <CheckSquare className="w-5 h-5 text-mono-100 dark:text-white" />
               ) : (
-                <Square className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373]" />
+                <Square className="w-5 h-5 text-[#9CA3AF] dark:text-mono-500" />
               )}
             </button>
-            <span className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Membre</span>
-            <span className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Email</span>
-            <span className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Role</span>
-            <span className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Inscription</span>
-            <span className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-[#737373] text-center">Actions</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Membre</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Email</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Role</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Inscription</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-mono-500 text-center">Actions</span>
           </div>
-          <div className="divide-y divide-[#E5E7EB] dark:divide-[#262626]">
+          <div className="divide-y divide-mono-900 dark:divide-mono-300">
             {filteredUsers.map(u => {
               const isMe = u.id === user?.id;
               const isSelected = selectedUsers.has(u.id);
@@ -454,7 +454,7 @@ export default function UserManagement() {
                 <div
                   key={u.id}
                   className={`grid grid-cols-1 sm:grid-cols-[auto_1fr_1fr_120px_100px_80px] gap-3 sm:gap-4 items-center px-5 py-4 transition-colors ${
-                    isSelected ? 'bg-[#F3F4F6] dark:bg-[#171717]' : 'hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]'
+                    isSelected ? 'bg-mono-950 dark:bg-[#171717]' : 'hover:bg-[#F9FAFB] dark:hover:bg-mono-50'
                   }`}
                 >
                   {/* Checkbox */}
@@ -462,9 +462,9 @@ export default function UserManagement() {
                     {isMe ? (
                       <div className="w-5 h-5" />
                     ) : isSelected ? (
-                      <CheckSquare className="w-5 h-5 text-[#111111] dark:text-white" />
+                      <CheckSquare className="w-5 h-5 text-mono-100 dark:text-white" />
                     ) : (
-                      <Square className="w-5 h-5 text-[#D1D5DB] dark:text-[#404040]" />
+                      <Square className="w-5 h-5 text-[#D1D5DB] dark:text-mono-350" />
                     )}
                   </button>
 
@@ -473,7 +473,7 @@ export default function UserManagement() {
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold flex-shrink-0 ${getAvatarColor(u.name)}`}>
                       {getInitials(u.name)}
                     </div>
-                    <span className="font-medium text-sm text-[#111111] dark:text-white truncate">
+                    <span className="font-medium text-sm text-mono-100 dark:text-white truncate">
                       {u.name}
                       {isMe && (
                         <span className="ml-2 text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">
@@ -484,7 +484,7 @@ export default function UserManagement() {
                   </div>
 
                   {/* Email */}
-                  <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3] truncate">{u.email}</span>
+                  <span className="text-sm text-[#6B7280] dark:text-mono-700 truncate">{u.email}</span>
 
                   {/* Role */}
                   <div>
@@ -500,7 +500,7 @@ export default function UserManagement() {
                   </div>
 
                   {/* Date */}
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500">
                     {timeAgo(u.createdAt)}
                   </span>
 
@@ -526,41 +526,41 @@ export default function UserManagement() {
       {/* Empty State */}
       {filteredUsers.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16">
-          <div className="w-16 h-16 rounded-full bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-4">
-            <Users className="w-8 h-8 text-[#D1D5DB] dark:text-[#404040]" />
+          <div className="w-16 h-16 rounded-full bg-mono-950 dark:bg-[#171717] flex items-center justify-center mb-4">
+            <Users className="w-8 h-8 text-[#D1D5DB] dark:text-mono-350" />
           </div>
-          <p className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Aucun membre trouve</p>
-          <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+          <p className="text-sm font-medium text-[#6B7280] dark:text-mono-700 mb-1">Aucun membre trouve</p>
+          <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
             {search ? 'Essayez une autre recherche' : 'Invitez votre premier membre'}
           </p>
         </div>
       )}
 
       {/* Footer count */}
-      <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+      <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
         {filteredUsers.length} membre{filteredUsers.length > 1 ? 's' : ''}
         {search && ` sur ${users.length}`}
       </p>
 
       {/* Activity Log Section */}
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl">
-        <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center gap-2">
-          <Activity className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
-          <h2 className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">Activite recente</h2>
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl">
+        <div className="px-6 py-4 border-b border-mono-900 dark:border-mono-300 flex items-center gap-2">
+          <Activity className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+          <h2 className="text-sm font-semibold text-mono-100 dark:text-white font-satoshi">Activite recente</h2>
         </div>
-        <div className="divide-y divide-[#E5E7EB] dark:divide-[#262626]">
+        <div className="divide-y divide-mono-900 dark:divide-mono-300">
           {users.slice(0, 5).map(u => (
             <div key={`activity-${u.id}`} className="px-6 py-3 flex items-center gap-3">
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${getAvatarColor(u.name)}`}>
                 {getInitials(u.name)}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-[#111111] dark:text-white">
+                <p className="text-sm text-mono-100 dark:text-white">
                   <span className="font-medium">{u.name}</span>{' '}
-                  <span className="text-[#6B7280] dark:text-[#A3A3A3]">a rejoint l'equipe</span>
+                  <span className="text-[#6B7280] dark:text-mono-700">a rejoint l'equipe</span>
                 </p>
               </div>
-              <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373] flex-shrink-0">
+              <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-mono-500 flex-shrink-0">
                 <Clock className="w-3 h-3" />
                 {timeAgo(u.createdAt)}
               </div>
@@ -570,21 +570,21 @@ export default function UserManagement() {
       </div>
 
       {/* Role Permission Matrix */}
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl">
-        <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center gap-2">
-          <Shield className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
-          <h2 className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">Matrice des permissions</h2>
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl">
+        <div className="px-6 py-4 border-b border-mono-900 dark:border-mono-300 flex items-center gap-2">
+          <Shield className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+          <h2 className="text-sm font-semibold text-mono-100 dark:text-white font-satoshi">Matrice des permissions</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E7EB] dark:border-[#262626]">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-[#737373]">Permission</th>
+              <tr className="border-b border-mono-900 dark:border-mono-300">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Permission</th>
                 <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-purple-600 dark:text-purple-400">Admin</th>
                 <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-blue-600 dark:text-blue-400">Chef</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#262626]">
+            <tbody className="divide-y divide-mono-900 dark:divide-mono-300">
               {[
                 { label: 'Voir le tableau de bord', admin: true, chef: true },
                 { label: 'Gerer les ingredients', admin: true, chef: true },
@@ -595,16 +595,16 @@ export default function UserManagement() {
                 { label: 'Exporter les donnees', admin: true, chef: false },
                 { label: 'Facturation & abonnement', admin: true, chef: false },
               ].map((perm, i) => (
-                <tr key={i} className="hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A] transition-colors">
-                  <td className="px-6 py-3 text-[#111111] dark:text-white">{perm.label}</td>
+                <tr key={i} className="hover:bg-[#F9FAFB] dark:hover:bg-mono-50 transition-colors">
+                  <td className="px-6 py-3 text-mono-100 dark:text-white">{perm.label}</td>
                   <td className="px-6 py-3 text-center">
                     {perm.admin ? (
                       <span className="inline-flex w-6 h-6 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
                         <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
                       </span>
                     ) : (
-                      <span className="inline-flex w-6 h-6 items-center justify-center rounded-full bg-[#F3F4F6] dark:bg-[#171717]">
-                        <X className="w-3.5 h-3.5 text-[#D1D5DB] dark:text-[#404040]" />
+                      <span className="inline-flex w-6 h-6 items-center justify-center rounded-full bg-mono-950 dark:bg-[#171717]">
+                        <X className="w-3.5 h-3.5 text-[#D1D5DB] dark:text-mono-350" />
                       </span>
                     )}
                   </td>
@@ -614,8 +614,8 @@ export default function UserManagement() {
                         <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
                       </span>
                     ) : (
-                      <span className="inline-flex w-6 h-6 items-center justify-center rounded-full bg-[#F3F4F6] dark:bg-[#171717]">
-                        <X className="w-3.5 h-3.5 text-[#D1D5DB] dark:text-[#404040]" />
+                      <span className="inline-flex w-6 h-6 items-center justify-center rounded-full bg-mono-950 dark:bg-[#171717]">
+                        <X className="w-3.5 h-3.5 text-[#D1D5DB] dark:text-mono-350" />
                       </span>
                     )}
                   </td>
@@ -630,68 +630,68 @@ export default function UserManagement() {
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title="Inviter un nouveau membre">
         <form onSubmit={handleCreateUser} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-[#111111] dark:text-white mb-1.5">Nom complet</label>
+            <label className="block text-sm font-medium text-mono-100 dark:text-white mb-1.5">Nom complet</label>
             <input
               required
               placeholder="Ex: Jean Dupont"
-              className="w-full px-4 py-2.5 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white transition-shadow"
+              className="w-full px-4 py-2.5 bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500 focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white transition-shadow"
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#111111] dark:text-white mb-1.5">Adresse email</label>
+            <label className="block text-sm font-medium text-mono-100 dark:text-white mb-1.5">Adresse email</label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
               <input
                 required
                 type="email"
                 placeholder="jean@restaurant.fr"
-                className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white transition-shadow"
+                className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500 focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white transition-shadow"
                 value={form.email}
                 onChange={e => setForm({ ...form, email: e.target.value })}
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#111111] dark:text-white mb-1.5">Mot de passe (min. 6 car.)</label>
+            <label className="block text-sm font-medium text-mono-100 dark:text-white mb-1.5">Mot de passe (min. 6 car.)</label>
             <div className="relative">
               <input
                 required
                 type={showPassword ? 'text' : 'password'}
                 minLength={6}
                 placeholder="••••••••"
-                className="w-full px-4 py-2.5 pr-11 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white transition-shadow"
+                className="w-full px-4 py-2.5 pr-11 bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500 focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white transition-shadow"
                 value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#111111] dark:text-white mb-3">Role</label>
+            <label className="block text-sm font-medium text-mono-100 dark:text-white mb-3">Role</label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setForm({ ...form, role: 'chef' })}
                 className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all ${
                   form.role === 'chef'
-                    ? 'border-[#111111] dark:border-white bg-[#F9FAFB] dark:bg-[#0A0A0A]'
-                    : 'border-[#E5E7EB] dark:border-[#262626] hover:border-[#111111]/30 dark:hover:border-white/30'
+                    ? 'border-mono-100 dark:border-white bg-[#F9FAFB] dark:bg-mono-50'
+                    : 'border-mono-900 dark:border-mono-300 hover:border-mono-100/30 dark:hover:border-white/30'
                 }`}
               >
                 <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                   <ChefHat className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className="text-center">
-                  <p className="text-sm font-semibold text-[#111111] dark:text-white">Chef de cuisine</p>
-                  <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-0.5">Acces recettes et ingredients</p>
+                  <p className="text-sm font-semibold text-mono-100 dark:text-white">Chef de cuisine</p>
+                  <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-0.5">Acces recettes et ingredients</p>
                 </div>
               </button>
               <button
@@ -699,31 +699,31 @@ export default function UserManagement() {
                 onClick={() => setForm({ ...form, role: 'admin' })}
                 className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all ${
                   form.role === 'admin'
-                    ? 'border-[#111111] dark:border-white bg-[#F9FAFB] dark:bg-[#0A0A0A]'
-                    : 'border-[#E5E7EB] dark:border-[#262626] hover:border-[#111111]/30 dark:hover:border-white/30'
+                    ? 'border-mono-100 dark:border-white bg-[#F9FAFB] dark:bg-mono-50'
+                    : 'border-mono-900 dark:border-mono-300 hover:border-mono-100/30 dark:hover:border-white/30'
                 }`}
               >
                 <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                   <Crown className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div className="text-center">
-                  <p className="text-sm font-semibold text-[#111111] dark:text-white">Administrateur</p>
-                  <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-0.5">Acces complet au systeme</p>
+                  <p className="text-sm font-semibold text-mono-100 dark:text-white">Administrateur</p>
+                  <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-0.5">Acces complet au systeme</p>
                 </div>
               </button>
             </div>
           </div>
-          <div className="flex justify-end gap-3 pt-3 border-t border-[#E5E7EB] dark:border-[#262626]">
+          <div className="flex justify-end gap-3 pt-3 border-t border-mono-900 dark:border-mono-300">
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="px-5 py-2.5 rounded-xl text-sm font-medium border border-[#E5E7EB] dark:border-[#262626] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="px-5 py-2.5 rounded-xl text-sm font-medium border border-mono-900 dark:border-mono-300 text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             >
               Annuler
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+              className="px-5 py-2.5 rounded-xl text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
             >
               Creer le compte
             </button>

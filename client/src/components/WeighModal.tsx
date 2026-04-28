@@ -101,17 +101,17 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
       <div className="space-y-5">
 
         {/* Ingredient info */}
-        <div className="flex items-center justify-between bg-[#FAFAFA] dark:bg-[#404040]/50 rounded-lg px-4 py-3">
+        <div className="flex items-center justify-between bg-mono-1000 dark:bg-mono-350/50 rounded-lg px-4 py-3">
           <div>
-            <p className="text-sm text-[#737373] dark:text-[#A3A3A3]">Ingrédient</p>
-            <p className="font-semibold text-[#262626] dark:text-white">{ingredientName}</p>
+            <p className="text-sm text-mono-500 dark:text-mono-700">Ingrédient</p>
+            <p className="font-semibold text-mono-300 dark:text-white">{ingredientName}</p>
             <p className="text-xs text-teal-600 dark:text-teal-400 font-medium mt-0.5">
               Prix unitaire : {formatCurrency(pricePerUnit)}/{unit}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-[#737373] dark:text-[#A3A3A3]">Stock actuel</p>
-            <p className="font-semibold text-[#262626] dark:text-white">{currentStock} {unit}</p>
+            <p className="text-sm text-mono-500 dark:text-mono-700">Stock actuel</p>
+            <p className="font-semibold text-mono-300 dark:text-white">{currentStock} {unit}</p>
           </div>
         </div>
 
@@ -122,7 +122,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
             className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
               useSimulation
                 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
-                : 'bg-[#F5F5F5] dark:bg-[#262626] text-[#525252] dark:text-[#D4D4D4] border border-[#E5E7EB] dark:border-[#404040]'
+                : 'bg-mono-975 dark:bg-mono-300 text-mono-400 dark:text-mono-800 border border-mono-900 dark:border-mono-350'
             }`}
           >
             {useSimulation ? 'Simulation' : 'Balance'}
@@ -152,7 +152,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
 
           {/* Status dot */}
           <div className={`w-2.5 h-2.5 rounded-full ${
-            isConnected ? 'bg-green-500' : status === 'connecting' ? 'bg-teal-500 animate-pulse' : 'bg-[#A3A3A3]'
+            isConnected ? 'bg-green-500' : status === 'connecting' ? 'bg-teal-500 animate-pulse' : 'bg-mono-700'
           }`} />
         </div>
 
@@ -181,11 +181,11 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
             <span className={`text-6xl sm:text-5xl font-black tabular-nums tracking-tight transition-colors ${
               netWeight > 0 && isStable ? 'text-emerald-400' :
               netWeight > 0 ? 'text-teal-300' :
-              'text-[#525252]'
+              'text-mono-400'
             }`}>
               {displayWeight(netWeight)}
             </span>
-            <span className={`text-xl font-bold ${netWeight > 0 ? 'text-[#A3A3A3]' : 'text-[#404040]'}`}>
+            <span className={`text-xl font-bold ${netWeight > 0 ? 'text-mono-700' : 'text-mono-350'}`}>
               {displayUnit}
             </span>
           </div>
@@ -214,7 +214,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
         {/* Controls row: unit toggle + tare */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
           {/* Unit toggle */}
-          <div className="flex items-center gap-1 p-1 bg-[#F5F5F5] dark:bg-[#262626] rounded-lg">
+          <div className="flex items-center gap-1 p-1 bg-mono-975 dark:bg-mono-300 rounded-lg">
             {(['g', 'kg', 'L', 'pièce'] as DisplayUnit[]).map(u => (
               <button
                 key={u}
@@ -222,7 +222,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
                 className={`px-4 py-1.5 rounded-md text-sm font-bold transition-colors ${
                   displayUnit === u
                     ? 'bg-teal-600 text-white'
-                    : 'text-[#737373] hover:text-[#404040] dark:hover:text-[#D4D4D4]'
+                    : 'text-mono-500 hover:text-mono-350 dark:hover:text-mono-800'
                 }`}
               >
                 {u}
@@ -234,7 +234,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
           <button
             onClick={handleTare}
             disabled={currentWeight <= 0}
-            className="flex items-center gap-1.5 px-4 py-2 bg-[#F5F5F5] dark:bg-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#404040] disabled:opacity-30 rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 bg-mono-975 dark:bg-mono-300 hover:bg-mono-900 dark:hover:bg-mono-350 disabled:opacity-30 rounded-lg text-sm font-medium transition-colors"
           >
             <RotateCcw className="w-4 h-4" /> Tare
           </button>
@@ -246,14 +246,14 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
             <span className="text-amber-600 dark:text-amber-400 text-xs font-medium uppercase tracking-wider">Simulation</span>
             <button
               onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))}
-              className="w-12 h-12 rounded-lg bg-[#E5E7EB] dark:bg-[#262626] hover:bg-[#D4D4D4] dark:hover:bg-[#404040] flex items-center justify-center transition-colors"
+              className="w-12 h-12 rounded-lg bg-mono-900 dark:bg-mono-300 hover:bg-mono-800 dark:hover:bg-mono-350 flex items-center justify-center transition-colors"
             >
               <Minus className="w-5 h-5" />
             </button>
             <span className="font-mono text-sm w-20 text-center tabular-nums">{simWeight.toFixed(3)} kg</span>
             <button
               onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))}
-              className="w-12 h-12 rounded-lg bg-[#E5E7EB] dark:bg-[#262626] hover:bg-[#D4D4D4] dark:hover:bg-[#404040] flex items-center justify-center transition-colors"
+              className="w-12 h-12 rounded-lg bg-mono-900 dark:bg-mono-300 hover:bg-mono-800 dark:hover:bg-mono-350 flex items-center justify-center transition-colors"
             >
               <Plus className="w-5 h-5" />
             </button>
@@ -276,7 +276,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
           <button
             onClick={handleSetStock}
             disabled={weightInUnit <= 0}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#525252] hover:bg-[#404040] disabled:opacity-30 disabled:cursor-not-allowed text-white rounded-lg font-medium text-sm transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-mono-400 hover:bg-mono-350 disabled:opacity-30 disabled:cursor-not-allowed text-white rounded-lg font-medium text-sm transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             Mettre à jour le stock

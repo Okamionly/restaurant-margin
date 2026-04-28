@@ -69,13 +69,13 @@ export default function BlogLogicielGestion() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -118,7 +118,7 @@ export default function BlogLogicielGestion() {
             <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-amber-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Pourquoi un logiciel est devenu incontournable</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Pourquoi un logiciel est devenu incontournable</h2>
           </div>
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2">
@@ -142,9 +142,9 @@ export default function BlogLogicielGestion() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <Layers className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Les 5 catégories d'outils</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Les 5 catégories d'outils</h2>
           </div>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>1. Caisse POS (NF525 obligatoire)</div>
             <div>2. Gestion des stocks (FIFO, alertes seuil)</div>
             <div>3. Comptabilité (multi-TVA, FACTUR-X)</div>
@@ -168,9 +168,9 @@ export default function BlogLogicielGestion() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Package className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Comparatif de 8 solutions</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Comparatif de 8 solutions</h2>
           </div>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Lightspeed (POS) : 89-149 €/mois — multi-sites mature</div>
             <div>L'Addition (POS) : 49-89 €/mois — indépendants FR</div>
             <div>Progirest (ERP) : 150-300 €/mois — tout-en-un</div>
@@ -191,12 +191,12 @@ export default function BlogLogicielGestion() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Server className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Stack idéal selon la taille</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Stack idéal selon la taille</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Restaurant solo</strong> ({'<'} 50 couverts/jour, 1-3 salariés) — Budget : <strong>80-150 €/mois</strong>
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>POS : L'Addition (49 €) ou Tiller</div>
             <div>Compta : Pennylane ou Tiime (49 €)</div>
             <div>Marges : RestauMargin gratuit ou 19 €</div>
@@ -205,7 +205,7 @@ export default function BlogLogicielGestion() {
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Restaurant PME</strong> (50-150 couverts/jour, 4-15 salariés) — Budget : <strong>300-500 €/mois</strong>
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>POS : Lightspeed (99 €) ou L'Addition Pro (79 €)</div>
             <div>Compta : Pennylane (79 €)</div>
             <div>Marges : RestauMargin Pro (49 €) ou Inpulse (129 €)</div>
@@ -223,7 +223,7 @@ export default function BlogLogicielGestion() {
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Points de vigilance avant d'acheter</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Points de vigilance avant d'acheter</h2>
           </div>
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2">
@@ -255,12 +255,12 @@ export default function BlogLogicielGestion() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <ShieldCheck className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. ROI : exemple sur 12 mois</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. ROI : exemple sur 12 mois</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Cas concret : restaurant indépendant, 80 couverts/jour, <strong>600 000 € CA annuel</strong>.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>AVANT (sans stack)</div>
             <div>Food cost à la louche : 33 % réel</div>
             <div>Pertes stock non détectées : 2 % CA</div>
@@ -278,7 +278,7 @@ export default function BlogLogicielGestion() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -302,9 +302,9 @@ export default function BlogLogicielGestion() {
                 a: "Pas en remplacement, mais en complément. L'IA est utile pour : prévoir la fréquentation, générer des descriptions de plats, suggérer des accords vins, automatiser le scoring de revues clients. Plusieurs solutions intègrent ces fonctions en 2026 (Skello, Lightspeed AI, RestauMargin)."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -325,7 +325,7 @@ export default function BlogLogicielGestion() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>

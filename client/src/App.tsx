@@ -170,7 +170,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const location = useLocation();
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center text-[#9CA3AF] dark:text-[#737373]">Chargement...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-[#9CA3AF] dark:text-mono-500">Chargement...</div>;
   }
 
   if (!isAuthenticated) {
@@ -200,7 +200,7 @@ function SidebarRestaurantSelector() {
     <div ref={ref} className="relative px-3 mb-4">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A] text-[#111111] dark:text-white text-sm font-medium transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A]"
+        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-mono-200 text-mono-100 dark:text-white text-sm font-medium transition-colors border border-mono-900 dark:border-mono-200"
       >
         <Building2 className="w-4 h-4 flex-shrink-0 text-teal-400" />
         <span className="truncate flex-1 text-left sidebar-label">{selectedRestaurant.name}</span>
@@ -208,30 +208,30 @@ function SidebarRestaurantSelector() {
         <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform sidebar-label ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="absolute left-3 right-3 top-full mt-1 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] z-50 py-1">
+        <div className="absolute left-3 right-3 top-full mt-1 bg-white dark:bg-mono-50 rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 z-50 py-1">
           {restaurants.map((r) => (
             <button
               key={r.id}
               onClick={() => { switchRestaurant(r.id); setOpen(false); }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors ${
                 r.id === selectedRestaurant.id
-                  ? 'bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white font-semibold'
-                  : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                  ? 'bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white font-semibold'
+                  : 'text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717]'
               }`}
             >
               <Building2 className="w-4 h-4 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="font-medium truncate">{r.name}</div>
-                <div className="text-xs text-[#9CA3AF] dark:text-[#737373] truncate">{r.cuisineType || ''}</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-mono-500 truncate">{r.cuisineType || ''}</div>
               </div>
-              {r.id === selectedRestaurant.id && <Check className="w-4 h-4 text-[#111111] dark:text-white flex-shrink-0" />}
+              {r.id === selectedRestaurant.id && <Check className="w-4 h-4 text-mono-100 dark:text-white flex-shrink-0" />}
             </button>
           ))}
-          <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] mt-1 pt-1">
+          <div className="border-t border-mono-900 dark:border-mono-200 mt-1 pt-1">
             <NavLink
               to="/restaurants"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-3 py-2 text-sm text-[#6B7280] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="flex items-center gap-3 px-3 py-2 text-sm text-[#6B7280] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             >
               <Settings className="w-4 h-4" />
               Gerer les restaurants
@@ -531,7 +531,7 @@ function AppLayout() {
           onClick={() => alert('Cette fonctionnalité sera disponible prochainement')}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group w-full opacity-50 cursor-not-allowed ${
             collapsed ? 'justify-center nav-tooltip-premium' : ''
-          } text-[#9CA3AF] dark:text-[#737373]`}
+          } text-[#9CA3AF] dark:text-mono-500`}
         >
           <span className="relative flex-shrink-0">
             <item.icon className="w-5 h-5" />
@@ -540,7 +540,7 @@ function AppLayout() {
             <>
               <span className="sidebar-label truncate">{item.label}</span>
               {item.badgeText && (
-                <span className="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-[#E5E7EB] text-[#6B7280] dark:bg-[#1A1A1A] dark:text-[#737373] px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                <span className="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-mono-900 text-[#6B7280] dark:bg-mono-200 dark:text-mono-500 px-1.5 py-0.5 rounded-full whitespace-nowrap">
                   {item.badgeText}
                 </span>
               )}
@@ -562,8 +562,8 @@ function AppLayout() {
             collapsed ? 'justify-center' : ''
           } ${
             isActive
-              ? 'bg-[#111111] text-white dark:bg-white dark:text-[#000000] nav-item-active'
-              : 'text-[#6B7280] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
+              ? 'bg-mono-100 text-white dark:bg-white dark:text-[#000000] nav-item-active'
+              : 'text-[#6B7280] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'
           }`
         }
       >
@@ -589,7 +589,7 @@ function AppLayout() {
 
       {/* Logo */}
       <div className={`flex items-center gap-3 px-4 py-5 border-b border-white/10 dark:border-white/5 ${collapsed ? 'justify-center px-2' : ''}`}>
-        <ChefHat className="w-8 h-8 text-[#111111] dark:text-white flex-shrink-0" />
+        <ChefHat className="w-8 h-8 text-mono-100 dark:text-white flex-shrink-0" />
         {!collapsed && <span className="text-lg font-bold logo-shimmer sidebar-label font-satoshi tracking-tight flex-1">RestauMargin</span>}
         <NotificationCenter />
 
@@ -624,7 +624,7 @@ function AppLayout() {
         <NavLink
           to="/kitchen-mode"
           title={collapsed ? 'Cuisine KDS' : undefined}
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-[#111111] text-sm font-semibold transition-colors active:scale-95 w-full overflow-hidden ${collapsed ? 'justify-center' : ''}`}
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-mono-100 text-sm font-semibold transition-colors active:scale-95 w-full overflow-hidden ${collapsed ? 'justify-center' : ''}`}
         >
           <ChefHat className="w-5 h-5 flex-shrink-0" />
           {!collapsed && <span className="sidebar-label truncate">Cuisine KDS</span>}
@@ -636,13 +636,13 @@ function AppLayout() {
         {/* Essential sections — always visible */}
         {essentialSections.map((section, idx) => (
           <div key={section.title} className={idx > 0 ? 'pt-4' : ''}>
-            {!collapsed && idx > 0 && <div className="border-t border-[#E5E7EB]/60 dark:border-white/5 mb-3" />}
+            {!collapsed && idx > 0 && <div className="border-t border-mono-900/60 dark:border-white/5 mb-3" />}
             {!collapsed && (
-              <div className="px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-[#9CA3AF] dark:text-[#525252] uppercase sidebar-label font-satoshi">
+              <div className="px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-[#9CA3AF] dark:text-mono-400 uppercase sidebar-label font-satoshi">
                 {section.title}
               </div>
             )}
-            {collapsed && <div className="border-t border-[#E5E7EB]/60 dark:border-white/5 my-2" />}
+            {collapsed && <div className="border-t border-mono-900/60 dark:border-white/5 my-2" />}
             <div className="space-y-0.5">
               {section.items.map((item) => renderNavItem(item, collapsed))}
             </div>
@@ -652,13 +652,13 @@ function AppLayout() {
         {/* Progressive disclosure toggle */}
         {!collapsed && (
           <div className="pt-4">
-            <div className="border-t border-[#E5E7EB]/60 dark:border-white/5 mb-3" />
+            <div className="border-t border-mono-900/60 dark:border-white/5 mb-3" />
             <button
               type="button"
               onClick={toggleAdvancedMode}
               aria-expanded={advancedMode}
               aria-controls="sidebar-advanced-tools"
-              className="flex items-center gap-2 w-full px-3 py-1.5 text-[11px] font-medium text-[#9CA3AF] dark:text-[#525252] hover:text-[#111111] dark:hover:text-white transition-colors rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1 group"
+              className="flex items-center gap-2 w-full px-3 py-1.5 text-[11px] font-medium text-[#9CA3AF] dark:text-mono-400 hover:text-mono-100 dark:hover:text-white transition-colors rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1 group"
             >
               <ChevronDown
                 className={`w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 ${advancedMode ? 'rotate-180' : ''}`}
@@ -667,7 +667,7 @@ function AppLayout() {
                 {advancedMode ? 'Masquer les outils' : 'Outils avancés'}
               </span>
               {!advancedMode && (
-                <span className="ml-auto text-[9px] font-semibold bg-[#F3F4F6] dark:bg-[#1A1A1A] text-[#9CA3AF] dark:text-[#525252] px-1.5 py-0.5 rounded-full">
+                <span className="ml-auto text-[9px] font-semibold bg-mono-950 dark:bg-mono-200 text-[#9CA3AF] dark:text-mono-400 px-1.5 py-0.5 rounded-full">
                   +{advancedSections.reduce((acc, s) => acc + s.items.length, 0)}
                 </span>
               )}
@@ -680,13 +680,13 @@ function AppLayout() {
           <div id="sidebar-advanced-tools">
             {advancedSections.map((section, idx) => (
               <div key={section.title} className="pt-4">
-                {!collapsed && <div className="border-t border-[#E5E7EB]/40 dark:border-white/[0.04] mb-3" />}
+                {!collapsed && <div className="border-t border-mono-900/40 dark:border-white/[0.04] mb-3" />}
                 {!collapsed && (
-                  <div className="px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-[#C4C4C4] dark:text-[#404040] uppercase sidebar-label font-satoshi">
+                  <div className="px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-[#C4C4C4] dark:text-mono-350 uppercase sidebar-label font-satoshi">
                     {section.title}
                   </div>
                 )}
-                {collapsed && idx === 0 && <div className="border-t border-[#E5E7EB]/60 dark:border-white/5 my-2" />}
+                {collapsed && idx === 0 && <div className="border-t border-mono-900/60 dark:border-white/5 my-2" />}
                 <div className="space-y-0.5 opacity-90">
                   {section.items.map((item) => renderNavItem(item, collapsed))}
                 </div>
@@ -697,7 +697,7 @@ function AppLayout() {
       </nav>
 
       {/* Bottom section */}
-      <div className="border-t border-[#E5E7EB]/60 dark:border-white/5 px-3 py-3 space-y-1">
+      <div className="border-t border-mono-900/60 dark:border-white/5 px-3 py-3 space-y-1">
         {/* Bottom nav items */}
         {bottomNavItems.map((item) => renderNavItem(item, collapsed))}
 
@@ -706,7 +706,7 @@ function AppLayout() {
           onClick={() => setDarkMode(!darkMode)}
           title={darkMode ? 'Mode clair' : 'Mode sombre'}
           aria-label={darkMode ? 'Activer le mode clair' : 'Activer le mode sombre'}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white transition-colors w-full nav-item-premium ${collapsed ? 'justify-center' : ''}`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] hover:text-mono-100 dark:hover:text-white transition-colors w-full nav-item-premium ${collapsed ? 'justify-center' : ''}`}
         >
           <span className="dark-mode-icon flex-shrink-0" key={darkMode ? 'sun' : 'moon'}>
             {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -718,7 +718,7 @@ function AppLayout() {
         {installPrompt && !isInstalled && (
           <button
             onClick={handleInstall}
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-semibold bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
             title="Installer l'application"
           >
             <Download className="w-5 h-5 flex-shrink-0" />
@@ -728,7 +728,7 @@ function AppLayout() {
 
         {/* Status bar */}
         {!collapsed && (
-          <div className="flex items-center gap-2 px-4 py-2 text-[10px] text-[#9CA3AF] dark:text-[#525252] font-medium tracking-wide">
+          <div className="flex items-center gap-2 px-4 py-2 text-[10px] text-[#9CA3AF] dark:text-mono-400 font-medium tracking-wide">
             <span className="status-dot-online flex-shrink-0" />
             <span>Connecte</span>
             <span className="mx-1 text-[#D1D5DB] dark:text-[#333333]">&middot;</span>
@@ -737,14 +737,14 @@ function AppLayout() {
         )}
 
         {/* User profile */}
-        <div className={`flex items-center gap-3 px-3 py-3 mt-1 rounded-xl bg-[#F3F4F6]/80 dark:bg-[#171717]/80 border border-[#E5E7EB] dark:border-[#1A1A1A] backdrop-blur-sm ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-10 h-10 rounded-full bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black text-sm font-bold flex-shrink-0">
+        <div className={`flex items-center gap-3 px-3 py-3 mt-1 rounded-xl bg-mono-950/80 dark:bg-[#171717]/80 border border-mono-900 dark:border-mono-200 backdrop-blur-sm ${collapsed ? 'justify-center' : ''}`}>
+          <div className="w-10 h-10 rounded-full bg-mono-100 dark:bg-white flex items-center justify-center text-white dark:text-black text-sm font-bold flex-shrink-0">
             {userInitials}
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0 sidebar-label">
-              <div className="text-sm font-semibold text-[#111111] dark:text-white truncate">{user?.name || user?.email}</div>
-              <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373] truncate">
+              <div className="text-sm font-semibold text-mono-100 dark:text-white truncate">{user?.name || user?.email}</div>
+              <div className="text-[11px] text-[#9CA3AF] dark:text-mono-500 truncate">
                 {user?.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
               </div>
             </div>
@@ -753,7 +753,7 @@ function AppLayout() {
             onClick={logout}
             title="Deconnexion"
             aria-label="Déconnexion"
-            className="p-1.5 rounded-lg hover:bg-red-500/10 text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 transition-all duration-200 flex-shrink-0"
+            className="p-1.5 rounded-lg hover:bg-red-500/10 text-[#9CA3AF] dark:text-mono-500 hover:text-red-400 transition-all duration-200 flex-shrink-0"
           >
             <LogOut className="w-4 h-4" />
           </button>
@@ -763,7 +763,7 @@ function AppLayout() {
   );
 
   return (
-    <div className="min-h-screen flex bg-white dark:bg-black text-[#111111] dark:text-white">
+    <div className="min-h-screen flex bg-white dark:bg-black text-mono-100 dark:text-white">
       {/* Premium top gradient line */}
       <div className="fixed top-0 left-0 right-0 z-[60] premium-top-line" />
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:bg-teal-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-teal-600 focus:font-semibold focus:text-sm">
@@ -787,7 +787,7 @@ function AppLayout() {
             <button
               onClick={() => setMobileMenuOpen(false)}
               aria-label="Fermer le menu"
-              className="absolute top-3 right-3 inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
+              className="absolute top-3 right-3 inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
             >
               <X className="w-5 h-5" />
             </button>
@@ -799,20 +799,20 @@ function AppLayout() {
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-h-screen md:ml-64 ml-0" style={{ paddingTop: '2px' }}>
         {/* Mobile top bar */}
-        <header className="md:hidden bg-white/90 dark:bg-[#0A0A0A]/90 backdrop-blur-lg border-b border-[#E5E7EB] dark:border-[#1A1A1A] px-4 py-3 flex items-center justify-between no-print">
+        <header className="md:hidden bg-white/90 dark:bg-mono-50/90 backdrop-blur-lg border-b border-mono-900 dark:border-mono-200 px-4 py-3 flex items-center justify-between no-print">
           <button
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Ouvrir le menu"
-            className="inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
+            className="inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
           >
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
-            <ChefHat className="w-6 h-6 text-[#111111] dark:text-white" />
-            <span className="font-bold text-[#111111] dark:text-white">RestauMargin</span>
+            <ChefHat className="w-6 h-6 text-mono-100 dark:text-white" />
+            <span className="font-bold text-mono-100 dark:text-white">RestauMargin</span>
           </div>
           <div className="flex items-center gap-1">
-              <button onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", ctrlKey: true }); window.dispatchEvent(e); }} aria-label="Rechercher" className="inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"><Search className="w-5 h-5 text-[#6B7280] dark:text-[#737373]" /></button>
+              <button onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", ctrlKey: true }); window.dispatchEvent(e); }} aria-label="Rechercher" className="inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"><Search className="w-5 h-5 text-[#6B7280] dark:text-mono-500" /></button>
               <NotificationCenter />
             </div>
         </header>
@@ -852,7 +852,7 @@ function AppLayout() {
           }
 
           return (
-            <div className="bg-[#111111] dark:bg-[#0A0A0A] border-b border-[#333333] dark:border-[#1A1A1A] text-white px-4 py-3 text-sm">
+            <div className="bg-mono-100 dark:bg-mono-50 border-b border-[#333333] dark:border-mono-200 text-white px-4 py-3 text-sm">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-teal-600/20">
@@ -861,10 +861,10 @@ function AppLayout() {
                   <div className="min-w-0">
                     <div className="font-semibold truncate">Installer RestauMargin</div>
                     {subMessage && (
-                      <div className="text-xs text-[#A3A3A3] mt-0.5">{subMessage}</div>
+                      <div className="text-xs text-mono-700 mt-0.5">{subMessage}</div>
                     )}
                     {!subMessage && (
-                      <div className="text-xs text-[#A3A3A3] mt-0.5">Acces rapide, fonctionne hors connexion</div>
+                      <div className="text-xs text-mono-700 mt-0.5">Acces rapide, fonctionne hors connexion</div>
                     )}
                   </div>
                 </div>
@@ -882,7 +882,7 @@ function AppLayout() {
                     className="p-1.5 hover:bg-[#333333] rounded-lg transition-colors"
                     aria-label="Fermer"
                   >
-                    <X className="w-4 h-4 text-[#A3A3A3]" />
+                    <X className="w-4 h-4 text-mono-700" />
                   </button>
                 </div>
               </div>
@@ -1025,7 +1025,7 @@ function AppLayout() {
         </main>
 
         {/* Footer */}
-        <footer className="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-sm border-t border-[#E5E7EB] dark:border-[#1A1A1A] py-3 pb-16 md:pb-3 text-center text-xs text-[#9CA3AF] dark:text-[#737373] no-print">
+        <footer className="bg-white/80 dark:bg-mono-50/80 backdrop-blur-sm border-t border-mono-900 dark:border-mono-200 py-3 pb-16 md:pb-3 text-center text-xs text-[#9CA3AF] dark:text-mono-500 no-print">
           RestauMargin &copy; {new Date().getFullYear()} &mdash; Gestion de marge pour la restauration
         </footer>
       </div>
@@ -1063,7 +1063,7 @@ function PublicHome() {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center text-[#9CA3AF] dark:text-[#737373]">Chargement...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-[#9CA3AF] dark:text-mono-500">Chargement...</div>;
   }
 
   if (isAuthenticated) {
@@ -1071,7 +1071,7 @@ function PublicHome() {
   }
 
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-[#9CA3AF] dark:text-[#737373]">Chargement...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-[#9CA3AF] dark:text-mono-500">Chargement...</div>}>
       <Landing />
     </Suspense>
   );
@@ -1088,8 +1088,8 @@ function App() {
           <Route path="/landing" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>}><Landing /></Suspense>} />
           <Route path="/login" element={<Login />} />
           <Route path="/menu-public" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>}><PublicMenu /></Suspense>} />
-          <Route path="/feedback/:id" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-[#0A0A0A] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" /></div>}><PublicFeedback /></Suspense>} />
-          <Route path="/r/:token" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111]" /></div>}><PublicRecipe /></Suspense>} />
+          <Route path="/feedback/:id" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-mono-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-mono-100 dark:text-white" /></div>}><PublicFeedback /></Suspense>} />
+          <Route path="/r/:token" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-mono-100" /></div>}><PublicRecipe /></Suspense>} />
           <Route path="/station-produit" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>}><StationLanding /></Suspense>} />
           <Route path="/dev-corp" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><DevCorp /></Suspense>} />
           <Route path="/mentions-legales" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><MentionsLegales /></Suspense>} />
@@ -1106,7 +1106,7 @@ function App() {
           <Route path="/a-propos" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><APropos /></Suspense>} />
           <Route path="/carrieres" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Careers /></Suspense>} />
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />
-          <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111]" /></div>}><Temoignages /></Suspense>} />
+          <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-mono-100" /></div>}><Temoignages /></Suspense>} />
           <Route path="/demo" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Demo /></Suspense>} />
           <Route path="/blog/coefficient-multiplicateur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoefficient /></Suspense>} />
           <Route path="/blog/reduire-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFoodCost /></Suspense>} />

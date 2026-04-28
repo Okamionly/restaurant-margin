@@ -38,9 +38,9 @@ export default function OfflineSyncBar() {
   };
 
   return (
-    <div className="bg-[#F5F5F5] dark:bg-[#0A0A0A] border-b border-[#E5E7EB] dark:border-[#1A1A1A] px-4 py-2 flex items-center justify-center gap-3 text-sm no-print">
+    <div className="bg-mono-975 dark:bg-mono-50 border-b border-mono-900 dark:border-mono-200 px-4 py-2 flex items-center justify-center gap-3 text-sm no-print">
       <CloudOff className="w-4 h-4 text-amber-500" />
-      <span className="text-[#737373] dark:text-[#A3A3A3]">
+      <span className="text-mono-500 dark:text-mono-700">
         {pendingCount} action{pendingCount > 1 ? 's' : ''} en attente de synchronisation
       </span>
       <button

@@ -266,10 +266,10 @@ const COLOR_MAP: Record<string, { bg: string; text: string; border: string; icon
     iconBg: 'bg-purple-100 dark:bg-purple-900/40',
   },
   gray: {
-    bg: 'bg-[#F9FAFB] dark:bg-[#0A0A0A]',
+    bg: 'bg-[#F9FAFB] dark:bg-mono-50',
     text: 'text-[#374151] dark:text-[#D1D5DB]',
-    border: 'border-[#E5E7EB] dark:border-[#1A1A1A]',
-    iconBg: 'bg-[#F3F4F6] dark:bg-[#171717]',
+    border: 'border-mono-900 dark:border-mono-200',
+    iconBg: 'bg-mono-950 dark:bg-[#171717]',
   },
 };
 
@@ -282,15 +282,15 @@ function ArticleCard({ article, onClick }: { article: Article; onClick: () => vo
   return (
     <button
       onClick={onClick}
-      className="w-full text-left bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 hover:border-teal-300 dark:hover:border-teal-700 hover:shadow-sm transition-all duration-200 group"
+      className="w-full text-left bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 hover:border-teal-300 dark:hover:border-teal-700 hover:shadow-sm transition-all duration-200 group"
     >
       <div className="flex items-start justify-between gap-3 mb-2">
-        <h3 className="text-sm font-semibold text-[#111111] dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors leading-snug">
+        <h3 className="text-sm font-semibold text-mono-100 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors leading-snug">
           {article.title}
         </h3>
-        <ChevronRight className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373] flex-shrink-0 mt-0.5 group-hover:text-teal-500 transition-colors" />
+        <ChevronRight className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500 flex-shrink-0 mt-0.5 group-hover:text-teal-500 transition-colors" />
       </div>
-      <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed mb-3">
+      <p className="text-xs text-[#6B7280] dark:text-mono-700 leading-relaxed mb-3">
         {article.summary}
       </p>
       <div className="flex items-center gap-2 flex-wrap">
@@ -298,7 +298,7 @@ function ArticleCard({ article, onClick }: { article: Article; onClick: () => vo
           <FileText className="w-3 h-3" />
           {cat?.label}
         </span>
-        <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{article.readTime} de lecture</span>
+        <span className="text-[11px] text-[#9CA3AF] dark:text-mono-500">{article.readTime} de lecture</span>
       </div>
     </button>
   );
@@ -313,7 +313,7 @@ function ArticleDetail({ article, onBack }: { article: Article; onBack: () => vo
     const parts = line.split(/(\*\*[^*]+\*\*)/g);
     return parts.map((part, i) =>
       part.startsWith('**') && part.endsWith('**') ? (
-        <strong key={i} className="font-semibold text-[#111111] dark:text-white">
+        <strong key={i} className="font-semibold text-mono-100 dark:text-white">
           {part.slice(2, -2)}
         </strong>
       ) : (
@@ -323,10 +323,10 @@ function ArticleDetail({ article, onBack }: { article: Article; onBack: () => vo
   };
 
   return (
-    <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 sm:p-8">
+    <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6 sm:p-8">
       <button
         onClick={onBack}
-        className="inline-flex items-center gap-1.5 text-sm text-[#6B7280] dark:text-[#A3A3A3] hover:text-teal-600 dark:hover:text-teal-400 mb-6 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-[#6B7280] dark:text-mono-700 hover:text-teal-600 dark:hover:text-teal-400 mb-6 transition-colors"
       >
         <ChevronRight className="w-4 h-4 rotate-180" />
         Retour aux articles
@@ -337,10 +337,10 @@ function ArticleDetail({ article, onBack }: { article: Article; onBack: () => vo
         {cat?.label}
       </div>
 
-      <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white mb-2 font-satoshi">
+      <h2 className="text-xl sm:text-2xl font-bold text-mono-100 dark:text-white mb-2 font-satoshi">
         {article.title}
       </h2>
-      <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mb-6">{article.readTime} de lecture</p>
+      <p className="text-sm text-[#6B7280] dark:text-mono-700 mb-6">{article.readTime} de lecture</p>
 
       <div className="space-y-4">
         {article.content.map((line, i) => (
@@ -406,28 +406,28 @@ export default function Help() {
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-teal-100 dark:bg-teal-900/40 mb-2">
           <BookOpen className="w-7 h-7 text-teal-600 dark:text-teal-400" />
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#111111] dark:text-white font-satoshi">
+        <h1 className="text-2xl sm:text-3xl font-bold text-mono-100 dark:text-white font-satoshi">
           Centre d'aide RestauMargin
         </h1>
-        <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm max-w-md mx-auto">
+        <p className="text-[#6B7280] dark:text-mono-700 text-sm max-w-md mx-auto">
           Trouvez les réponses à vos questions. Réponse humaine sous 24h si besoin.
         </p>
       </div>
 
       {/* ── Search ── */}
       <div className="relative max-w-xl mx-auto">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher un article... (ex: food cost, fournisseur, mot de passe)"
-          className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-400 transition-all"
+          className="w-full pl-11 pr-4 py-3 rounded-xl bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-400 transition-all"
         />
         {query && (
           <button
             onClick={() => setQuery('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white transition-colors text-xs px-1.5 py-0.5 rounded bg-[#E5E7EB] dark:bg-[#333333]"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-mono-100 dark:hover:text-white transition-colors text-xs px-1.5 py-0.5 rounded bg-mono-900 dark:bg-[#333333]"
           >
             Effacer
           </button>
@@ -441,8 +441,8 @@ export default function Help() {
             onClick={() => setSelectedCategory(null)}
             className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
               !selectedCategory
-                ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
-                : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#222222]'
+                ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100'
+                : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#222222]'
             }`}
           >
             Tous les articles
@@ -456,8 +456,8 @@ export default function Help() {
                 onClick={() => setSelectedCategory(active ? null : cat.id)}
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                   active
-                    ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
-                    : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#222222]'
+                    ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100'
+                    : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#222222]'
                 }`}
               >
                 <Icon className="w-3 h-3" />
@@ -485,10 +485,10 @@ export default function Help() {
                   <Icon className={`w-5 h-5 ${colors.text}`} />
                 </div>
                 <h3 className={`text-sm font-semibold ${colors.text} mb-1`}>{cat.label}</h3>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed mb-3">
+                <p className="text-xs text-[#6B7280] dark:text-mono-700 leading-relaxed mb-3">
                   {cat.description}
                 </p>
-                <span className="inline-flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373] group-hover:text-teal-500 transition-colors">
+                <span className="inline-flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-mono-500 group-hover:text-teal-500 transition-colors">
                   {count} article{count > 1 ? 's' : ''}
                   <ArrowRight className="w-3 h-3" />
                 </span>
@@ -501,7 +501,7 @@ export default function Help() {
       {/* ── Articles list ── */}
       {(query || selectedCategory) && (
         <div>
-          <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-4">
+          <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-4">
             {filtered.length} article{filtered.length !== 1 ? 's' : ''} trouvé
             {filtered.length !== 1 ? 's' : ''}
             {query ? ` pour "${query}"` : ''}
@@ -512,7 +512,7 @@ export default function Help() {
               <p className="text-sm font-medium text-[#374151] dark:text-[#D1D5DB] mb-1">
                 Aucun article trouvé
               </p>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-4">
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-4">
                 Essayez d'autres mots-clés ou contactez-nous directement.
               </p>
               <a
@@ -542,7 +542,7 @@ export default function Help() {
         <div>
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb className="w-4 h-4 text-teal-500" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">
               Articles populaires
             </h2>
           </div>
@@ -559,15 +559,15 @@ export default function Help() {
       )}
 
       {/* ── Contact block ── */}
-      <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div className="bg-[#F9FAFB] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center flex-shrink-0">
           <MessageSquare className="w-6 h-6 text-teal-600 dark:text-teal-400" />
         </div>
         <div className="flex-1">
-          <h3 className="text-sm font-semibold text-[#111111] dark:text-white mb-1">
+          <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-1">
             Vous ne trouvez pas la réponse ?
           </h3>
-          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">
+          <p className="text-xs text-[#6B7280] dark:text-mono-700 leading-relaxed">
             Notre équipe répond sous{' '}
             <span className="font-semibold text-teal-600 dark:text-teal-400">24h en semaine</span>.
             Utilisez le chat en bas à droite ou écrivez-nous par email.
@@ -576,7 +576,7 @@ export default function Help() {
         <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
           <a
             href="mailto:contact@restaumargin.fr"
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
           >
             <Mail className="w-3.5 h-3.5" />
             Envoyer un email
@@ -590,7 +590,7 @@ export default function Help() {
         <p className="text-sm font-medium text-[#374151] dark:text-[#D1D5DB] mb-1">
           Tutoriels vidéo Loom — bientôt disponibles
         </p>
-        <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+        <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
           Des vidéos de 60-90 secondes par fonctionnalité seront ajoutées ici prochainement.
         </p>
       </div>

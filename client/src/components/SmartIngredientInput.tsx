@@ -210,29 +210,29 @@ export default function SmartIngredientInput({
     <div ref={wrapperRef} className={`relative ${className}`}>
       {/* Search input */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A3A3A3] pointer-events-none" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-mono-700 pointer-events-none" />
         <input
           type="text"
           value={query}
           onChange={(e) => handleChange(e.target.value)}
           onFocus={() => { if (searched && query.trim().length >= 2) setOpen(true); }}
           placeholder={placeholder}
-          className="w-full pl-10 pr-10 py-2.5 bg-[#262626] dark:bg-[#262626] bg-white border border-[#262626] dark:border-[#262626] rounded-lg text-sm text-white dark:text-white placeholder-[#A3A3A3] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
+          className="w-full pl-10 pr-10 py-2.5 bg-mono-300 dark:bg-mono-300 bg-white border border-mono-300 dark:border-mono-300 rounded-lg text-sm text-white dark:text-white placeholder-mono-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
         />
         {loading && (
           <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-400 animate-spin" />
         )}
         {!loading && query && (
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A3A3A3]" />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-mono-700" />
         )}
       </div>
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-[#0A0A0A] dark:bg-[#0A0A0A] border border-[#262626] rounded-lg shadow-xl overflow-hidden">
+        <div className="absolute z-50 mt-1 w-full bg-mono-50 dark:bg-mono-50 border border-mono-300 rounded-lg shadow-xl overflow-hidden">
           {/* Existing results */}
           {results.length > 0 && (
-            <ul className="max-h-60 overflow-y-auto divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+            <ul className="max-h-60 overflow-y-auto divide-y divide-mono-900 dark:divide-mono-200">
               {results.map((ing) => {
                 const mp = findMercurialePrice(ing.name);
                 return (
@@ -240,23 +240,23 @@ export default function SmartIngredientInput({
                   <button
                     type="button"
                     onClick={() => handleSelect(ing)}
-                    className="w-full text-left px-4 py-2.5 hover:bg-[#F5F5F5] dark:hover:bg-[#262626] transition-colors"
+                    className="w-full text-left px-4 py-2.5 hover:bg-mono-975 dark:hover:bg-mono-300 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-lg flex-shrink-0">
                         {CATEGORY_EMOJIS[ing.category ?? ''] ?? '📦'}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-[#111111] dark:text-white font-medium truncate">{ing.name}</p>
+                        <p className="text-sm text-mono-100 dark:text-white font-medium truncate">{ing.name}</p>
                         {ing.supplier && (
-                          <p className="text-xs text-[#A3A3A3] truncate">{ing.supplier}</p>
+                          <p className="text-xs text-mono-700 truncate">{ing.supplier}</p>
                         )}
                       </div>
                       <div className="text-right flex-shrink-0">
                         <p className="text-sm text-teal-400 font-semibold">
                           {typeof ing.price === 'number' ? ing.price.toFixed(2) : '0.00'} &euro;
                         </p>
-                        <p className="text-xs text-[#A3A3A3]">/{ing.unit}</p>
+                        <p className="text-xs text-mono-700">/{ing.unit}</p>
                       </div>
                     </div>
                     {mp && mp.priceMin != null && mp.priceMax != null && (
@@ -265,7 +265,7 @@ export default function SmartIngredientInput({
                           {'📊'} Marche : {mp.priceMin.toFixed(2)}-{mp.priceMax.toFixed(2)}&euro;/{mp.unit} ({mp.supplier})
                           {mp.trend === 'baisse' && <span className="text-emerald-400 ml-1">{'↘'} {mp.trendDetail}</span>}
                           {mp.trend === 'hausse' && <span className="text-red-400 ml-1">{'↗'} {mp.trendDetail}</span>}
-                          {mp.trend === 'stable' && <span className="text-[#A3A3A3] ml-1">{'→'} {mp.trendDetail}</span>}
+                          {mp.trend === 'stable' && <span className="text-mono-700 ml-1">{'→'} {mp.trendDetail}</span>}
                         </span>
                       </div>
                     )}
@@ -298,7 +298,7 @@ export default function SmartIngredientInput({
                     {mercurialeForNew.supplier && ` (${mercurialeForNew.supplier})`}
                     {mercurialeForNew.trend === 'baisse' && <span className="text-emerald-400 ml-1">{'↘'} {mercurialeForNew.trendDetail}</span>}
                     {mercurialeForNew.trend === 'hausse' && <span className="text-red-400 ml-1">{'↗'} {mercurialeForNew.trendDetail}</span>}
-                    {mercurialeForNew.trend === 'stable' && <span className="text-[#A3A3A3] ml-1">{'→'} {mercurialeForNew.trendDetail}</span>}
+                    {mercurialeForNew.trend === 'stable' && <span className="text-mono-700 ml-1">{'→'} {mercurialeForNew.trendDetail}</span>}
                   </span>
                 </div>
               )}
@@ -308,7 +308,7 @@ export default function SmartIngredientInput({
                 <div className="grid grid-cols-2 gap-3">
                   {/* Price */}
                   <div>
-                    <label className="block text-xs text-[#A3A3A3] mb-1">Prix unitaire</label>
+                    <label className="block text-xs text-mono-700 mb-1">Prix unitaire</label>
                     <input
                       type="number"
                       step="0.01"
@@ -316,17 +316,17 @@ export default function SmartIngredientInput({
                       value={newPrice}
                       onChange={(e) => setNewPrice(e.target.value)}
                       placeholder="0.00 &euro;"
-                      className="w-full px-3 py-2 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#A3A3A3] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full px-3 py-2 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg text-sm text-mono-100 dark:text-white placeholder-mono-700 dark:placeholder-mono-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
 
                   {/* Unit */}
                   <div>
-                    <label className="block text-xs text-[#A3A3A3] mb-1">Unite</label>
+                    <label className="block text-xs text-mono-700 mb-1">Unite</label>
                     <select
                       value={newUnit}
                       onChange={(e) => setNewUnit(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full px-3 py-2 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                     >
                       {UNITS.map((u) => (
                         <option key={u} value={u}>{u}</option>
@@ -338,11 +338,11 @@ export default function SmartIngredientInput({
                 <div className="grid grid-cols-2 gap-3">
                   {/* Category */}
                   <div>
-                    <label className="block text-xs text-[#A3A3A3] mb-1">Categorie</label>
+                    <label className="block text-xs text-mono-700 mb-1">Categorie</label>
                     <select
                       value={newCategory}
                       onChange={(e) => setNewCategory(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full px-3 py-2 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                     >
                       {CATEGORIES.map((c) => (
                         <option key={c} value={c}>
@@ -354,13 +354,13 @@ export default function SmartIngredientInput({
 
                   {/* Supplier */}
                   <div>
-                    <label className="block text-xs text-[#A3A3A3] mb-1">Fournisseur</label>
+                    <label className="block text-xs text-mono-700 mb-1">Fournisseur</label>
                     <input
                       type="text"
                       value={newSupplier}
                       onChange={(e) => setNewSupplier(e.target.value)}
                       placeholder="Optionnel"
-                      className="w-full px-3 py-2 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#A3A3A3] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full px-3 py-2 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg text-sm text-mono-100 dark:text-white placeholder-mono-700 dark:placeholder-mono-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
                 </div>

@@ -49,17 +49,17 @@ interface ThemeStyle {
 
 const THEME_STYLES: Record<MenuTheme, ThemeStyle> = {
   classic: {
-    bg: 'bg-white', bgSecondary: 'bg-[#FAFAFA]',
-    text: 'text-[#111111]', textSecondary: 'text-[#737373]',
-    card: 'bg-white', cardBorder: 'border-[#E5E7EB]',
-    accent: 'bg-[#111111] text-white',
+    bg: 'bg-white', bgSecondary: 'bg-mono-1000',
+    text: 'text-mono-100', textSecondary: 'text-mono-500',
+    card: 'bg-white', cardBorder: 'border-mono-900',
+    accent: 'bg-mono-100 text-white',
     headerBg: 'bg-white/90',
     font: "'Inter', system-ui, sans-serif",
   },
   dark: {
-    bg: 'bg-black', bgSecondary: 'bg-[#0A0A0A]',
-    text: 'text-white', textSecondary: 'text-[#A3A3A3]',
-    card: 'bg-[#111111]', cardBorder: 'border-[#262626]',
+    bg: 'bg-black', bgSecondary: 'bg-mono-50',
+    text: 'text-white', textSecondary: 'text-mono-700',
+    card: 'bg-mono-100', cardBorder: 'border-mono-300',
     accent: 'bg-white text-black',
     headerBg: 'bg-black/90',
     font: "'Inter', system-ui, sans-serif",
@@ -258,7 +258,7 @@ export default function PublicMenu() {
   // Allergen color by theme
   const getAllergenColor = useCallback((normalized: string) => {
     const info = ALLERGEN_ICONS[normalized];
-    if (!info) return theme === 'dark' ? 'bg-[#262626] text-[#A3A3A3]' : theme === 'elegant' ? 'bg-[#F5F0E8] text-[#8B7355]' : 'bg-[#F5F5F5] text-[#737373]';
+    if (!info) return theme === 'dark' ? 'bg-mono-300 text-mono-700' : theme === 'elegant' ? 'bg-[#F5F0E8] text-[#8B7355]' : 'bg-mono-975 text-mono-500';
     if (theme === 'dark') return info.colorDark;
     if (theme === 'elegant') return info.colorElegant;
     return info.color;
@@ -299,7 +299,7 @@ export default function PublicMenu() {
       dir={isRtl ? 'rtl' : 'ltr'}
     >
       {/* ── Restaurant Branding Header ── */}
-      <div className={`relative overflow-hidden ${theme === 'dark' ? 'bg-[#111111]' : theme === 'elegant' ? 'bg-[#3D2B1F]' : 'bg-[#111111]'}`}>
+      <div className={`relative overflow-hidden ${theme === 'dark' ? 'bg-mono-100' : theme === 'elegant' ? 'bg-[#3D2B1F]' : 'bg-mono-100'}`}>
         <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-white/20 to-transparent" />
         <div className="relative max-w-2xl mx-auto px-5 pt-10 pb-8">
           {/* Logo placeholder */}

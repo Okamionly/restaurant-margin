@@ -941,7 +941,7 @@ function PricingSection() {
             </ul>
             <Link
               to="/login?mode=register"
-              className="block w-full text-center py-3.5 rounded-xl font-bold text-sm transition-all hover:bg-[#F5F5F5] hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              className="block w-full text-center py-3.5 rounded-xl font-bold text-sm transition-all hover:bg-mono-975 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
               style={{ background: 'white', color: TEXT, border: `2px solid ${BORDER}`, '--tw-ring-color': ACCENT } as React.CSSProperties}
             >Commencer l'essai gratuit</Link>
           </div>
@@ -2046,12 +2046,12 @@ function Navbar() {
         </button>
       </div>
       {open && (
-        <div className="lg:hidden bg-white border-t border-[#E5E7EB] px-6 py-6 space-y-4 text-base font-medium">
+        <div className="lg:hidden bg-white border-t border-mono-900 px-6 py-6 space-y-4 text-base font-medium">
           <a href="#fonctionnalites" className="block py-2" onClick={() => setOpen(false)}>Fonctionnalités</a>
           <a href="#tarifs" className="block py-2" onClick={() => setOpen(false)}>Tarifs</a>
           <a href="#temoignages" className="block py-2" onClick={() => setOpen(false)}>Témoignages</a>
           <Link to="/blog" className="block py-2" onClick={() => setOpen(false)}>Blog</Link>
-          <hr className="border-[#E5E7EB]" />
+          <hr className="border-mono-900" />
           <Link to="/login" className="block py-2" onClick={() => setOpen(false)}>Se connecter</Link>
           <Link to="/login?mode=register" className="block text-center px-5 py-3 rounded-xl text-white font-semibold shadow-md" style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})` }} onClick={() => setOpen(false)}>
             Essai 7 jours

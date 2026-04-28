@@ -64,13 +64,13 @@ export default function BlogStrategieDigitale() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -114,7 +114,7 @@ export default function BlogStrategieDigitale() {
             <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center">
               <Globe className="w-5 h-5 text-pink-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Le digital en 2026</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Le digital en 2026</h2>
           </div>
           <ul className="space-y-2 text-[#374151] mb-4">
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-pink-400 mt-2 flex-shrink-0" /><span><strong>85 %</strong> cherchent sur Google Maps avant de réserver</span></li>
@@ -131,7 +131,7 @@ export default function BlogStrategieDigitale() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <MapPin className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Google Business Profile</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Google Business Profile</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le pilier numéro un. Si vous ne deviez en faire qu'un, ce serait celui-ci.
@@ -155,7 +155,7 @@ export default function BlogStrategieDigitale() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Globe className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Site web et réservation</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Site web et réservation</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Pas besoin d'un site à 8 000 €. Un site simple et rapide vaut 100 fois mieux qu'un site sophistiqué qui charge en 6 secondes.
@@ -167,7 +167,7 @@ export default function BlogStrategieDigitale() {
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-emerald-400 mt-2 flex-shrink-0" /><span>Mentions ville/quartier 3-5 fois pour SEO local</span></li>
           </ul>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Outils 2026 :</strong></p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Wix Restaurants / Square : 15-30 €/mois</div>
             <div>Site sur mesure freelance : 1 500-4 000 € one-shot</div>
             <div>Zenchef / TheFork Manager : mini-site inclus</div>
@@ -180,7 +180,7 @@ export default function BlogStrategieDigitale() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Instagram className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Instagram</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Instagram</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Réseau privilégié pour la restauration en 2026, devant Facebook (en déclin {'<'} 40 ans).
@@ -202,7 +202,7 @@ export default function BlogStrategieDigitale() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <Video className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. TikTok</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. TikTok</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Moteur de découverte n°1 pour les 18-30 ans. Une vidéo virale peut amener 200 couverts en 2 semaines.
@@ -224,14 +224,14 @@ export default function BlogStrategieDigitale() {
             <div className="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center">
               <Star className="w-5 h-5 text-yellow-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Avis Google : méthode CARE</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Avis Google : méthode CARE</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Note 4,5+, volume 200+, 100 % de réponse : seuils psychologiques pour être choisi.
           </p>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Collecter plus d'avis :</strong> QR code sur addition + email post-visite à J+1 + formation équipe à demander.</p>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Méthode CARE pour répondre aux négatifs :</strong></p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div><strong>C</strong>onstater : "Nous sommes désolés que..."</div>
             <div><strong>A</strong>ssumer : "Vous avez raison sur..."</div>
             <div><strong>R</strong>emédier : "Nous avons ajusté X pour..."</div>
@@ -248,7 +248,7 @@ export default function BlogStrategieDigitale() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <Mail className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">7. Email/SMS fidélisation</h2>
+            <h2 className="text-2xl font-bold text-mono-100">7. Email/SMS fidélisation</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Acquérir un nouveau client coûte 5-7 fois plus cher que faire revenir un client. Mine d'or oubliée.
@@ -266,7 +266,7 @@ export default function BlogStrategieDigitale() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -286,9 +286,9 @@ export default function BlogStrategieDigitale() {
                 a: "3 indicateurs simples : (1) évolution mensuelle des couverts, (2) demandes d'itinéraire Google Business, (3) réservations en ligne directes. Comparer à N-1 mensuel pour neutraliser la saisonnalité."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -309,7 +309,7 @@ export default function BlogStrategieDigitale() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/chiffre-affaires-restaurant-comment-calculer" className="text-sm text-teal-600 hover:underline">Calculer son CA →</Link>
         </div>

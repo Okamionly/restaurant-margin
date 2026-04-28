@@ -79,7 +79,7 @@ export default function BlogArticleHero({
 
       <div className="relative z-10 max-w-4xl mx-auto">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-sm text-[#737373] mb-6" aria-label="Breadcrumb">
+        <nav className="flex items-center gap-1.5 text-sm text-mono-500 mb-6" aria-label="Breadcrumb">
           <Link to="/" className="hover:text-emerald-600 transition-colors">Accueil</Link>
           <ChevronRight className="w-3.5 h-3.5" />
           <Link to="/blog" className="hover:text-emerald-600 transition-colors flex items-center gap-1">
@@ -95,11 +95,11 @@ export default function BlogArticleHero({
           <span className="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
             {category}
           </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-[#525252] bg-white/80 backdrop-blur border border-[#E5E7EB] rounded-full">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-mono-400 bg-white/80 backdrop-blur border border-mono-900 rounded-full">
             <Clock className="w-3.5 h-3.5" />
             {readTime}
           </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-[#525252] bg-white/80 backdrop-blur border border-[#E5E7EB] rounded-full">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-mono-400 bg-white/80 backdrop-blur border border-mono-900 rounded-full">
             <Calendar className="w-3.5 h-3.5" />
             {date}
           </span>
@@ -112,7 +112,7 @@ export default function BlogArticleHero({
 
         {/* Subtitle */}
         {subtitle && (
-          <p className="text-base sm:text-lg lg:text-xl text-[#525252] leading-relaxed max-w-3xl">
+          <p className="text-base sm:text-lg lg:text-xl text-mono-400 leading-relaxed max-w-3xl">
             {subtitle}
           </p>
         )}

@@ -579,8 +579,8 @@ export default function CommandPalette() {
         className="
           relative w-full max-w-[600px] mx-4 mt-[15vh]
           sm:rounded-2xl rounded-none
-          border border-[#1A1A1A]
-          bg-[#0A0A0A]
+          border border-mono-200
+          bg-mono-50
           shadow-2xl shadow-black/60
           overflow-hidden
           animate-[cpSlideDown_180ms_ease-out]
@@ -589,20 +589,20 @@ export default function CommandPalette() {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search input - large */}
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-[#1A1A1A]">
-          <Search className="w-5 h-5 text-[#737373] flex-shrink-0" />
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-mono-200">
+          <Search className="w-5 h-5 text-mono-500 flex-shrink-0" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Tapez une commande ou recherchez..."
-            className="flex-1 bg-transparent text-white placeholder-[#525252] text-base outline-none caret-teal-400"
+            className="flex-1 bg-transparent text-white placeholder-mono-400 text-base outline-none caret-teal-400"
             autoComplete="off"
             spellCheck={false}
           />
           {loadingData && <Loader2 className="w-4 h-4 animate-spin text-teal-400 flex-shrink-0" />}
-          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-1 text-[11px] font-medium text-[#525252] bg-[#171717] border border-[#262626] rounded-lg">
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-1 text-[11px] font-medium text-mono-400 bg-[#171717] border border-mono-300 rounded-lg">
             ESC
           </kbd>
         </div>
@@ -612,7 +612,7 @@ export default function CommandPalette() {
           {displayGroups.length === 0 && query.trim() && (
             <div className="py-12 text-center">
               <Search className="w-8 h-8 text-[#333333] mx-auto mb-3" />
-              <p className="text-sm text-[#525252]">
+              <p className="text-sm text-mono-400">
                 Aucun resultat pour &laquo;&nbsp;{query}&nbsp;&raquo;
               </p>
             </div>
@@ -622,8 +622,8 @@ export default function CommandPalette() {
             <div key={group.label} className="mb-1">
               {/* Category header */}
               <div className="flex items-center gap-2 px-5 py-2 mt-1">
-                <group.icon className="w-3.5 h-3.5 text-[#525252]" />
-                <span className="text-[11px] font-semibold uppercase tracking-widest text-[#525252]">
+                <group.icon className="w-3.5 h-3.5 text-mono-400" />
+                <span className="text-[11px] font-semibold uppercase tracking-widest text-mono-400">
                   {group.label}
                 </span>
               </div>
@@ -645,7 +645,7 @@ export default function CommandPalette() {
                       ${
                         isActive
                           ? 'bg-teal-500/10'
-                          : 'hover:bg-[#111111]'
+                          : 'hover:bg-mono-100'
                       }
                     `}
                   >
@@ -657,13 +657,13 @@ export default function CommandPalette() {
                     >
                       <item.icon
                         className={`w-4 h-4 transition-colors duration-75 ${
-                          isActive ? 'text-teal-400' : 'text-[#737373]'
+                          isActive ? 'text-teal-400' : 'text-mono-500'
                         }`}
                       />
                     </div>
                     <span
                       className={`flex-1 truncate text-sm transition-colors duration-75 ${
-                        isActive ? 'text-white' : 'text-[#A3A3A3]'
+                        isActive ? 'text-white' : 'text-mono-700'
                       }`}
                     >
                       {item.name}
@@ -678,7 +678,7 @@ export default function CommandPalette() {
                               text-[10px] font-medium rounded-md
                               ${isActive
                                 ? 'text-teal-300 bg-teal-500/15 border border-teal-500/20'
-                                : 'text-[#525252] bg-[#171717] border border-[#262626]'
+                                : 'text-mono-400 bg-[#171717] border border-mono-300'
                               }
                             `}
                           >
@@ -698,32 +698,32 @@ export default function CommandPalette() {
         </div>
 
         {/* Footer hints */}
-        <div className="flex items-center gap-5 px-5 py-3 border-t border-[#1A1A1A] text-[11px] text-[#525252]">
+        <div className="flex items-center gap-5 px-5 py-3 border-t border-mono-200 text-[11px] text-mono-400">
           <span className="flex items-center gap-1.5">
-            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-[#262626] rounded-md text-[#525252] text-[10px]">
+            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-mono-300 rounded-md text-mono-400 text-[10px]">
               {'\u2191\u2193'}
             </kbd>
             naviguer
           </span>
           <span className="flex items-center gap-1.5">
-            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-[#262626] rounded-md text-[#525252] text-[10px]">
+            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-mono-300 rounded-md text-mono-400 text-[10px]">
               {'\u23CE'}
             </kbd>
             ouvrir
           </span>
           <span className="flex items-center gap-1.5">
-            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-[#262626] rounded-md text-[#525252] text-[10px]">
+            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-mono-300 rounded-md text-mono-400 text-[10px]">
               esc
             </kbd>
             fermer
           </span>
           <span className="flex items-center gap-1.5">
-            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-[#262626] rounded-md text-[#525252] text-[10px]">
+            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-mono-300 rounded-md text-mono-400 text-[10px]">
               ?
             </kbd>
             raccourcis
           </span>
-          <span className="ml-auto flex items-center gap-1.5 text-[#525252]">
+          <span className="ml-auto flex items-center gap-1.5 text-mono-400">
             <Command className="w-3 h-3" />
             <span className="text-[10px] font-medium">K</span>
           </span>

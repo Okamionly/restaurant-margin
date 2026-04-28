@@ -243,7 +243,7 @@ export default function FirstRunTour({ onClose }: FirstRunTourProps) {
       {/* Tooltip */}
       <div
         ref={tooltipRef}
-        className="absolute w-[320px] max-w-[calc(100vw-24px)] bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-2xl p-5"
+        className="absolute w-[320px] max-w-[calc(100vw-24px)] bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 shadow-2xl p-5"
         style={{ ...tooltipStyle, zIndex: 3 }}
         onClick={e => e.stopPropagation()}
       >
@@ -260,16 +260,16 @@ export default function FirstRunTour({ onClose }: FirstRunTourProps) {
           <button
             onClick={handleClose}
             aria-label="Fermer la visite guidee"
-            className="text-[#9CA3AF] hover:text-[#6B7280] dark:hover:text-[#A3A3A3] transition-colors p-0.5 rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="text-[#9CA3AF] hover:text-[#6B7280] dark:hover:text-mono-700 transition-colors p-0.5 rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <X className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
 
-        <h3 className="text-base font-bold text-[#111111] dark:text-white font-satoshi mb-1.5">
+        <h3 className="text-base font-bold text-mono-100 dark:text-white font-satoshi mb-1.5">
           {currentStep.title}
         </h3>
-        <p className="text-sm text-[#525252] dark:text-[#A3A3A3] leading-relaxed mb-4">
+        <p className="text-sm text-mono-400 dark:text-mono-700 leading-relaxed mb-4">
           {currentStep.description}
         </p>
 
@@ -295,7 +295,7 @@ export default function FirstRunTour({ onClose }: FirstRunTourProps) {
             <button
               onClick={handlePrev}
               aria-label="Etape precedente"
-              className="flex items-center gap-1 text-sm font-medium text-[#9CA3AF] hover:text-[#6B7280] dark:hover:text-[#A3A3A3] transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 rounded px-1"
+              className="flex items-center gap-1 text-sm font-medium text-[#9CA3AF] hover:text-[#6B7280] dark:hover:text-mono-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 rounded px-1"
             >
               <ChevronLeft className="w-4 h-4" aria-hidden="true" />
               Precedent

@@ -24,12 +24,12 @@ export default function WorkingIndicator() {
   }
 
   return (
-    <div className="flex items-center gap-2 px-3 py-2 mb-3 rounded-lg bg-[#F3F4F6] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[12px] text-[#6B7280] dark:text-[#A3A3A3]">
+    <div className="flex items-center gap-2 px-3 py-2 mb-3 rounded-lg bg-mono-950 dark:bg-mono-100 border border-mono-900 dark:border-mono-200 text-[12px] text-[#6B7280] dark:text-mono-700">
       <div className="flex items-center gap-1.5">
         <Pencil className="w-3.5 h-3.5 animate-pulse" />
         <span>{text}</span>
       </div>
-      <span className="text-[10px] text-[#9CA3AF] dark:text-[#525252]">
+      <span className="text-[10px] text-[#9CA3AF] dark:text-mono-400">
         ({pageName})
       </span>
     </div>

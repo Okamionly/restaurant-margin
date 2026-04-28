@@ -363,9 +363,9 @@ export default function NicheLanding() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -377,7 +377,7 @@ export default function NicheLanding() {
               <Calculator className="w-4 h-4" />
               Calculer ma marge
             </Link>
-            <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+            <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
               Connexion
             </Link>
           </div>
@@ -391,12 +391,12 @@ export default function NicheLanding() {
           <span className="text-xs font-semibold text-teal-700 uppercase tracking-wider">{config.tagline}</span>
         </div>
         <h1
-          className="text-4xl sm:text-5xl md:text-6xl font-black text-[#111111] mb-6 leading-tight"
+          className="text-4xl sm:text-5xl md:text-6xl font-black text-mono-100 mb-6 leading-tight"
          
         >
           {config.h1}
         </h1>
-        <p className="text-lg text-[#525252] max-w-2xl leading-relaxed mb-8">
+        <p className="text-lg text-mono-400 max-w-2xl leading-relaxed mb-8">
           {config.heroSubtitle}
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
@@ -409,7 +409,7 @@ export default function NicheLanding() {
           </Link>
           <Link
             to="/pricing"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-[#E5E7EB] hover:border-teal-500 text-[#111111] font-semibold rounded-full transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-mono-900 hover:border-teal-500 text-mono-100 font-semibold rounded-full transition-colors"
           >
             Voir les tarifs
           </Link>
@@ -439,18 +439,18 @@ export default function NicheLanding() {
       {/* Challenges */}
       <section className="py-16 px-4 sm:px-6 max-w-4xl mx-auto">
         <h2
-          className="text-3xl sm:text-4xl font-black text-[#111111] mb-8 text-center"
+          className="text-3xl sm:text-4xl font-black text-mono-100 mb-8 text-center"
          
         >
           Les enjeux specifiques de votre {config.slug.replace('-', ' ')}
         </h2>
         <div className="grid sm:grid-cols-2 gap-4">
           {config.challenges.map((c) => (
-            <div key={c} className="flex items-start gap-3 p-5 bg-white border border-[#E5E7EB] rounded-xl">
+            <div key={c} className="flex items-start gap-3 p-5 bg-white border border-mono-900 rounded-xl">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center">
                 <span className="text-rose-600 font-bold text-sm">!</span>
               </div>
-              <p className="text-sm text-[#525252] leading-relaxed">{c}</p>
+              <p className="text-sm text-mono-400 leading-relaxed">{c}</p>
             </div>
           ))}
         </div>
@@ -459,12 +459,12 @@ export default function NicheLanding() {
       {/* Features solving those challenges */}
       <section className="py-16 px-4 sm:px-6 max-w-5xl mx-auto bg-[#f8fafb] rounded-3xl">
         <h2
-          className="text-3xl sm:text-4xl font-black text-[#111111] mb-4 text-center"
+          className="text-3xl sm:text-4xl font-black text-mono-100 mb-4 text-center"
          
         >
           Comment RestauMargin repond a ces enjeux
         </h2>
-        <p className="text-center text-[#525252] mb-10 max-w-2xl mx-auto">
+        <p className="text-center text-mono-400 mb-10 max-w-2xl mx-auto">
           Un outil pense pour les contraintes reelles du terrain, pas un ERP complique.
         </p>
         <div className="grid md:grid-cols-2 gap-6">
@@ -476,12 +476,12 @@ export default function NicheLanding() {
             { icon: TrendingUp, title: 'Menu Engineering', text: 'Classification Boston Matrix : plats vedettes, puzzles, plow-horses, dogs. Optimisez la carte.' },
             { icon: Euro, title: 'Tarifs accessibles', text: 'Pro 29€/mois, Business 79€/mois. Sans engagement. Essai gratuit 7 jours.' },
           ].map((f) => (
-            <div key={f.title} className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+            <div key={f.title} className="bg-white border border-mono-900 rounded-2xl p-6">
               <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center mb-3">
                 <f.icon className="w-5 h-5 text-teal-600" />
               </div>
-              <h3 className="font-bold text-[#111111] mb-2">{f.title}</h3>
-              <p className="text-sm text-[#525252] leading-relaxed">{f.text}</p>
+              <h3 className="font-bold text-mono-100 mb-2">{f.title}</h3>
+              <p className="text-sm text-mono-400 leading-relaxed">{f.text}</p>
             </div>
           ))}
         </div>
@@ -489,7 +489,7 @@ export default function NicheLanding() {
 
       {/* Testimonial */}
       <section className="py-16 px-4 sm:px-6 max-w-3xl mx-auto">
-        <div className="bg-gradient-to-br from-[#111111] to-[#1f2937] rounded-3xl p-8 sm:p-12 text-white text-center">
+        <div className="bg-gradient-to-br from-mono-100 to-[#1f2937] rounded-3xl p-8 sm:p-12 text-white text-center">
           <Quote className="w-8 h-8 text-teal-400 mx-auto mb-4" />
           <blockquote className="text-xl sm:text-2xl font-medium mb-6 leading-relaxed italic">
             « {config.testimonial.quote} »
@@ -511,19 +511,19 @@ export default function NicheLanding() {
       {/* FAQ */}
       <section className="py-16 px-4 sm:px-6 max-w-3xl mx-auto">
         <h2
-          className="text-3xl sm:text-4xl font-black text-[#111111] mb-8 text-center"
+          className="text-3xl sm:text-4xl font-black text-mono-100 mb-8 text-center"
          
         >
           Questions frequentes
         </h2>
         <div className="space-y-3">
           {config.faqs.map((f) => (
-            <details key={f.q} className="group border border-[#E5E7EB] rounded-xl p-4 hover:border-teal-500 transition-colors">
-              <summary className="cursor-pointer font-semibold text-[#111111] flex items-center justify-between">
+            <details key={f.q} className="group border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors">
+              <summary className="cursor-pointer font-semibold text-mono-100 flex items-center justify-between">
                 {f.q}
-                <span className="ml-2 text-[#737373] group-open:rotate-180 transition-transform">▾</span>
+                <span className="ml-2 text-mono-500 group-open:rotate-180 transition-transform">▾</span>
               </summary>
-              <p className="mt-3 text-sm text-[#525252] leading-relaxed">{f.a}</p>
+              <p className="mt-3 text-sm text-mono-400 leading-relaxed">{f.a}</p>
             </details>
           ))}
         </div>
@@ -534,12 +534,12 @@ export default function NicheLanding() {
         <div className="bg-teal-50 border border-teal-200 rounded-3xl p-8 sm:p-12 text-center">
           <Clock className="w-8 h-8 text-teal-600 mx-auto mb-3" />
           <h2
-            className="text-2xl sm:text-3xl font-bold text-[#111111] mb-3"
+            className="text-2xl sm:text-3xl font-bold text-mono-100 mb-3"
            
           >
             Ne perdez plus de marge sur votre {config.slug.replace('-', ' ')}
           </h2>
-          <p className="text-[#525252] mb-6 max-w-xl mx-auto">
+          <p className="text-mono-400 mb-6 max-w-xl mx-auto">
             Essayez RestauMargin gratuitement pendant 7 jours. Sans carte bancaire. Sans engagement.
           </p>
           <Link
@@ -553,14 +553,14 @@ export default function NicheLanding() {
       </section>
 
       {/* Cross-links to other niches */}
-      <section className="py-8 px-4 sm:px-6 max-w-4xl mx-auto border-t border-[#E5E7EB]">
-        <p className="text-sm text-[#737373] mb-3 text-center">Autres guides par type de restaurant :</p>
+      <section className="py-8 px-4 sm:px-6 max-w-4xl mx-auto border-t border-mono-900">
+        <p className="text-sm text-mono-500 mb-3 text-center">Autres guides par type de restaurant :</p>
         <div className="flex flex-wrap gap-2 justify-center">
           {Object.values(NICHES).filter((n) => n.slug !== config.slug).map((n) => (
             <Link
               key={n.slug}
               to={`/guide-marge/${n.slug}`}
-              className="px-3 py-1.5 bg-[#F5F5F5] hover:bg-teal-50 hover:text-teal-700 text-[#525252] text-sm rounded-full transition-colors capitalize"
+              className="px-3 py-1.5 bg-mono-975 hover:bg-teal-50 hover:text-teal-700 text-mono-400 text-sm rounded-full transition-colors capitalize"
             >
               {n.slug.replace('-', ' ')}
             </Link>
@@ -569,8 +569,8 @@ export default function NicheLanding() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#E5E7EB] py-8 mt-8">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#737373]">
+      <footer className="border-t border-mono-900 py-8 mt-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-mono-500">
           <div className="flex items-center gap-2">
             <ChefHat className="w-5 h-5 text-teal-600" />
             <span>© 2026 RestauMargin — Tous droits reserves</span>

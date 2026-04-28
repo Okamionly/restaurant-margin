@@ -41,14 +41,14 @@ export default function BlogFoodCost() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">Connexion</Link>
+            <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">Connexion</Link>
           </div>
         </div>
       </nav>
@@ -68,7 +68,7 @@ export default function BlogFoodCost() {
 
         <BlogAuthor publishedDate="2026-04-14" readTime="10 min" variant="header" />
 
-        <p className="text-lg text-[#525252] leading-relaxed mb-8">
+        <p className="text-lg text-mono-400 leading-relaxed mb-8">
           Un food cost de 35 % au lieu de 30 % peut sembler anodin. Pourtant, pour un restaurant qui fait 500 000 EUR de chiffre d'affaires annuel, cette difference represente <strong>25 000 EUR de marge brute perdue</strong>. Chaque annee.
         </p>
 
@@ -137,11 +137,11 @@ export default function BlogFoodCost() {
         <div className="overflow-x-auto my-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#FAFAFA]">
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Categorie</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Popularite</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Marge</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Action</th>
+              <tr className="bg-mono-1000">
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Categorie</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Popularite</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Marge</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -151,11 +151,11 @@ export default function BlogFoodCost() {
                 ['Cheval de labour','Haute','Basse','Optimiser le cout matiere'],
                 ['Poids mort','Basse','Basse','Reformuler ou retirer'],
               ].map(([cat, pop, marge, action]) => (
-                <tr key={cat} className="border-t border-[#F5F5F5]">
-                  <td className="px-4 py-2.5 font-medium text-[#111111]">{cat}</td>
-                  <td className="px-4 py-2.5 text-[#404040]">{pop}</td>
-                  <td className="px-4 py-2.5 text-[#404040]">{marge}</td>
-                  <td className="px-4 py-2.5 text-[#737373]">{action}</td>
+                <tr key={cat} className="border-t border-mono-975">
+                  <td className="px-4 py-2.5 font-medium text-mono-100">{cat}</td>
+                  <td className="px-4 py-2.5 text-mono-350">{pop}</td>
+                  <td className="px-4 py-2.5 text-mono-350">{marge}</td>
+                  <td className="px-4 py-2.5 text-mono-500">{action}</td>
                 </tr>
               ))}
             </tbody>
@@ -188,10 +188,10 @@ export default function BlogFoodCost() {
         <div className="overflow-x-auto my-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#FAFAFA]">
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Methode</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Reduction</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Economies/an</th>
+              <tr className="bg-mono-1000">
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Methode</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Reduction</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Economies/an</th>
               </tr>
             </thead>
             <tbody>
@@ -202,14 +202,14 @@ export default function BlogFoodCost() {
                 ['Menu engineering','-2 a -5 %','3 300 - 8 250 EUR'],
                 ['Mercuriale','-2 a -5 %','3 300 - 8 250 EUR'],
               ].map(([m, r, e]) => (
-                <tr key={m} className="border-t border-[#F5F5F5]">
-                  <td className="px-4 py-2.5 font-medium text-[#111111]">{m}</td>
-                  <td className="px-4 py-2.5 text-[#404040]">{r}</td>
-                  <td className="px-4 py-2.5 text-[#404040]">{e}</td>
+                <tr key={m} className="border-t border-mono-975">
+                  <td className="px-4 py-2.5 font-medium text-mono-100">{m}</td>
+                  <td className="px-4 py-2.5 text-mono-350">{r}</td>
+                  <td className="px-4 py-2.5 text-mono-350">{e}</td>
                 </tr>
               ))}
-              <tr className="border-t-2 border-[#D4D4D4] bg-teal-50">
-                <td className="px-4 py-2.5 font-bold text-[#111111]">Total cumule</td>
+              <tr className="border-t-2 border-mono-800 bg-teal-50">
+                <td className="px-4 py-2.5 font-bold text-mono-100">Total cumule</td>
                 <td className="px-4 py-2.5 font-bold text-teal-700">-14 a -29 %</td>
                 <td className="px-4 py-2.5 font-bold text-teal-700">~24 750 EUR</td>
               </tr>
@@ -218,9 +218,9 @@ export default function BlogFoodCost() {
         </div>
 
         {/* ── Plan d'action ── */}
-        <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-6 my-8">
-          <h3 className="text-base font-bold text-[#111111] mb-3">Votre plan d'action en 5 etapes</h3>
-          <ol className="space-y-1.5 text-sm text-[#404040]">
+        <div className="bg-mono-1000 border border-mono-900 rounded-xl p-6 my-8">
+          <h3 className="text-base font-bold text-mono-100 mb-3">Votre plan d'action en 5 etapes</h3>
+          <ol className="space-y-1.5 text-sm text-mono-350">
             <li>1. <strong>Semaine 1-2 :</strong> Creez les fiches techniques de vos 10 plats les plus vendus.</li>
             <li>2. <strong>Semaine 3 :</strong> Demandez des devis a 2 fournisseurs alternatifs.</li>
             <li>3. <strong>Semaine 4 :</strong> Systeme de pesee des dechets + top 5 des produits gaspilles.</li>
@@ -242,13 +242,13 @@ export default function BlogFoodCost() {
             { step: '5', title: 'Additionnez pour obtenir le cout total', desc: 'La somme de tous les couts ingredients donne le cout matiere total du plat. N\'oubliez pas les petits ingredients (epices, beurre, herbes).' },
             { step: '6', title: 'Divisez par le prix de vente HT', desc: 'Food cost (%) = (Cout matiere total / Prix de vente HT) x 100. Si le resultat depasse votre objectif, ajustez les portions ou le prix.' },
           ].map((item) => (
-            <div key={item.step} className="flex gap-4 bg-white border border-[#E5E7EB] rounded-xl p-4">
+            <div key={item.step} className="flex gap-4 bg-white border border-mono-900 rounded-xl p-4">
               <div className="w-9 h-9 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0 text-teal-700 font-bold text-sm">
                 {item.step}
               </div>
               <div>
-                <h3 className="text-sm font-bold text-[#111111] !mt-0 !mb-1">{item.title}</h3>
-                <p className="text-sm text-[#525252] !mb-0">{item.desc}</p>
+                <h3 className="text-sm font-bold text-mono-100 !mt-0 !mb-1">{item.title}</h3>
+                <p className="text-sm text-mono-400 !mb-0">{item.desc}</p>
               </div>
             </div>
           ))}
@@ -259,11 +259,11 @@ export default function BlogFoodCost() {
         <div className="overflow-x-auto my-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#FAFAFA]">
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Ingredient</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Quantite nette</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Prix/kg</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Cout</th>
+              <tr className="bg-mono-1000">
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Ingredient</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Quantite nette</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Prix/kg</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Cout</th>
               </tr>
             </thead>
             <tbody>
@@ -275,15 +275,15 @@ export default function BlogFoodCost() {
                 ['Haricots verts','80 g','4,50 EUR','0,36 EUR'],
                 ['Epices + sel','5 g','—','0,10 EUR'],
               ].map(([ing, qty, prix, cout]) => (
-                <tr key={ing} className="border-t border-[#F5F5F5]">
-                  <td className="px-4 py-2.5 font-medium text-[#111111]">{ing}</td>
-                  <td className="px-4 py-2.5 text-[#404040]">{qty}</td>
-                  <td className="px-4 py-2.5 text-[#404040]">{prix}</td>
-                  <td className="px-4 py-2.5 text-[#404040]">{cout}</td>
+                <tr key={ing} className="border-t border-mono-975">
+                  <td className="px-4 py-2.5 font-medium text-mono-100">{ing}</td>
+                  <td className="px-4 py-2.5 text-mono-350">{qty}</td>
+                  <td className="px-4 py-2.5 text-mono-350">{prix}</td>
+                  <td className="px-4 py-2.5 text-mono-350">{cout}</td>
                 </tr>
               ))}
-              <tr className="border-t-2 border-[#D4D4D4] bg-teal-50">
-                <td className="px-4 py-2.5 font-bold text-[#111111]" colSpan={3}>Cout matiere total</td>
+              <tr className="border-t-2 border-mono-800 bg-teal-50">
+                <td className="px-4 py-2.5 font-bold text-mono-100" colSpan={3}>Cout matiere total</td>
                 <td className="px-4 py-2.5 font-bold text-teal-700">5,11 EUR</td>
               </tr>
             </tbody>
@@ -301,10 +301,10 @@ export default function BlogFoodCost() {
         <div className="overflow-x-auto my-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#FAFAFA]">
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Type d'etablissement</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Food cost cible</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Explication</th>
+              <tr className="bg-mono-1000">
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Type d'etablissement</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Food cost cible</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Explication</th>
               </tr>
             </thead>
             <tbody>
@@ -317,10 +317,10 @@ export default function BlogFoodCost() {
                 ['Dark kitchen','28-35 %','Commissions plateformes a ajouter (25-35 %)'],
                 ['Traiteur / Evenementiel','30-38 %','Economies d\'echelle mais logistique'],
               ].map(([type, fc, expl]) => (
-                <tr key={type} className="border-t border-[#F5F5F5]">
-                  <td className="px-4 py-2.5 font-medium text-[#111111]">{type}</td>
+                <tr key={type} className="border-t border-mono-975">
+                  <td className="px-4 py-2.5 font-medium text-mono-100">{type}</td>
                   <td className="px-4 py-2.5 text-teal-700 font-semibold">{fc}</td>
-                  <td className="px-4 py-2.5 text-[#737373]">{expl}</td>
+                  <td className="px-4 py-2.5 text-mono-500">{expl}</td>
                 </tr>
               ))}
             </tbody>
@@ -343,17 +343,17 @@ export default function BlogFoodCost() {
         {/* ── Articles complementaires ── */}
         <h2>Articles complementaires</h2>
         <div className="grid sm:grid-cols-3 gap-4 my-6">
-          <Link to="/blog/calcul-marge-restaurant" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
-            <h3 className="text-sm font-bold text-[#111111] mb-1 group-hover:text-teal-700 transition-colors !mt-0">Calcul de marge restaurant : guide complet 2026</h3>
-            <p className="text-xs text-[#737373] !mb-0">Formules, benchmarks et erreurs courantes.</p>
+          <Link to="/blog/calcul-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-mono-100 mb-1 group-hover:text-teal-700 transition-colors !mt-0">Calcul de marge restaurant : guide complet 2026</h3>
+            <p className="text-xs text-mono-500 !mb-0">Formules, benchmarks et erreurs courantes.</p>
           </Link>
-          <Link to="/blog/coefficient-multiplicateur" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
-            <h3 className="text-sm font-bold text-[#111111] mb-1 group-hover:text-teal-700 transition-colors !mt-0">Coefficient multiplicateur en restauration</h3>
-            <p className="text-xs text-[#737373] !mb-0">Tableaux complets par categorie de plat.</p>
+          <Link to="/blog/coefficient-multiplicateur" className="bg-mono-1000 border border-mono-900 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-mono-100 mb-1 group-hover:text-teal-700 transition-colors !mt-0">Coefficient multiplicateur en restauration</h3>
+            <p className="text-xs text-mono-500 !mb-0">Tableaux complets par categorie de plat.</p>
           </Link>
-          <Link to="/blog/ia-restauration" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
-            <h3 className="text-sm font-bold text-[#111111] mb-1 group-hover:text-teal-700 transition-colors !mt-0">L'IA en restauration</h3>
-            <p className="text-xs text-[#737373] !mb-0">Comment l'IA optimise vos couts automatiquement.</p>
+          <Link to="/blog/ia-restauration" className="bg-mono-1000 border border-mono-900 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-mono-100 mb-1 group-hover:text-teal-700 transition-colors !mt-0">L'IA en restauration</h3>
+            <p className="text-xs text-mono-500 !mb-0">Comment l'IA optimise vos couts automatiquement.</p>
           </Link>
         </div>
 
@@ -370,12 +370,12 @@ export default function BlogFoodCost() {
             { q: 'A quelle frequence recalculer le food cost ?', a: 'Le food cost global doit etre suivi chaque semaine minimum. Les fiches techniques doivent etre mises a jour a chaque changement de prix fournisseur. Avec un outil comme RestauMargin, ce suivi est automatise en temps reel grace au scan des factures.' },
             { q: 'Le food cost inclut-il les boissons ?', a: 'En general, on distingue le food cost (nourriture seule) du beverage cost (boissons). Le food cost se situe entre 25-35 % tandis que le beverage cost est plus bas (18-25 % pour les boissons, 20-30 % pour les vins). Pour une vision globale, calculez le cost of goods sold (COGS) qui combine les deux.' },
           ].map((item) => (
-            <details key={item.q} className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl group">
-              <summary className="px-5 py-4 font-semibold text-[#111111] cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors text-sm">
+            <details key={item.q} className="bg-mono-1000 border border-mono-900 rounded-xl group">
+              <summary className="px-5 py-4 font-semibold text-mono-100 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors text-sm">
                 {item.q}
-                <ArrowRight className="w-4 h-4 text-[#A3A3A3] group-open:rotate-90 transition-transform flex-shrink-0 ml-2" />
+                <ArrowRight className="w-4 h-4 text-mono-700 group-open:rotate-90 transition-transform flex-shrink-0 ml-2" />
               </summary>
-              <p className="px-5 pb-4 text-sm text-[#525252] leading-relaxed">{item.a}</p>
+              <p className="px-5 pb-4 text-sm text-mono-400 leading-relaxed">{item.a}</p>
             </details>
           ))}
         </div>
@@ -385,10 +385,10 @@ export default function BlogFoodCost() {
       {/* ── CTA ── */}
       <section className="bg-teal-50 py-14 px-4 text-center">
         <div className="max-w-lg mx-auto">
-          <h2 className="text-2xl font-bold text-[#111111] mb-3 font-satoshi">
+          <h2 className="text-2xl font-bold text-mono-100 mb-3 font-satoshi">
             Automatisez ces 5 methodes avec RestauMargin
           </h2>
-          <p className="text-[#525252] mb-6">
+          <p className="text-mono-400 mb-6">
             Fiches techniques, menu engineering, mercuriale, alertes : tout est integre dans un seul outil.
           </p>
           <Link
@@ -402,8 +402,8 @@ export default function BlogFoodCost() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-[#E5E7EB] py-8 px-4">
-        <div className="max-w-[720px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#A3A3A3]">
+      <footer className="border-t border-mono-900 py-8 px-4">
+        <div className="max-w-[720px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-mono-700">
           <Link to="/landing" className="flex items-center gap-1.5 hover:text-teal-600 transition-colors">
             <ArrowLeft className="w-4 h-4" />
             Retour a l'accueil

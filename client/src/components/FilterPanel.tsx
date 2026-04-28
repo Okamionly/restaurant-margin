@@ -102,7 +102,7 @@ function FilterField({
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
           placeholder={filter.placeholder || filter.label}
-          className="w-full px-3 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent transition-all"
+          className="w-full px-3 py-2 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent transition-all"
         />
       );
 
@@ -111,7 +111,7 @@ function FilterField({
         <select
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full px-3 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-[#111111] dark:text-white outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent transition-all appearance-none"
+          className="w-full px-3 py-2 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black text-mono-100 dark:text-white outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent transition-all appearance-none"
         >
           <option value="">{filter.placeholder || `Tous`}</option>
           {filter.options?.map((opt) => (
@@ -132,19 +132,19 @@ function FilterField({
             onChange={(e) => onChange({ ...rangeVal, min: e.target.value })}
             placeholder="Min"
             step={filter.step || 0.01}
-            className="flex-1 px-3 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent transition-all"
+            className="flex-1 px-3 py-2 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent transition-all"
           />
-          <span className="text-[#9CA3AF] dark:text-[#525252] text-xs">-</span>
+          <span className="text-[#9CA3AF] dark:text-mono-400 text-xs">-</span>
           <input
             type="number"
             value={rangeVal.max}
             onChange={(e) => onChange({ ...rangeVal, max: e.target.value })}
             placeholder="Max"
             step={filter.step || 0.01}
-            className="flex-1 px-3 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent transition-all"
+            className="flex-1 px-3 py-2 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent transition-all"
           />
           {filter.unit && (
-            <span className="text-[#9CA3AF] dark:text-[#525252] text-xs whitespace-nowrap">{filter.unit}</span>
+            <span className="text-[#9CA3AF] dark:text-mono-400 text-xs whitespace-nowrap">{filter.unit}</span>
           )}
         </div>
       );
@@ -158,14 +158,14 @@ function FilterField({
             type="date"
             value={dateVal.from}
             onChange={(e) => onChange({ ...dateVal, from: e.target.value })}
-            className="flex-1 px-3 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-[#111111] dark:text-white outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent transition-all"
+            className="flex-1 px-3 py-2 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black text-mono-100 dark:text-white outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent transition-all"
           />
-          <span className="text-[#9CA3AF] dark:text-[#525252] text-xs">au</span>
+          <span className="text-[#9CA3AF] dark:text-mono-400 text-xs">au</span>
           <input
             type="date"
             value={dateVal.to}
             onChange={(e) => onChange({ ...dateVal, to: e.target.value })}
-            className="flex-1 px-3 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-[#111111] dark:text-white outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent transition-all"
+            className="flex-1 px-3 py-2 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black text-mono-100 dark:text-white outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:border-transparent transition-all"
           />
         </div>
       );
@@ -190,8 +190,8 @@ function FilterField({
                 }}
                 className={`px-2.5 py-1 text-xs font-medium rounded-lg border transition-all ${
                   isChecked
-                    ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-[#111111] dark:border-white'
-                    : 'bg-[#F9FAFB] dark:bg-black text-[#6B7280] dark:text-[#737373] border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                    ? 'bg-mono-100 dark:bg-white text-white dark:text-black border-mono-100 dark:border-white'
+                    : 'bg-[#F9FAFB] dark:bg-black text-[#6B7280] dark:text-mono-500 border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717]'
                 }`}
               >
                 {opt.label}
@@ -222,7 +222,7 @@ function FilterField({
                 className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full border transition-all ${
                   isChecked
                     ? 'bg-teal-600 dark:bg-teal-500 text-white border-teal-600 dark:border-teal-500'
-                    : 'bg-[#F9FAFB] dark:bg-black text-[#6B7280] dark:text-[#737373] border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                    : 'bg-[#F9FAFB] dark:bg-black text-[#6B7280] dark:text-mono-500 border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717]'
                 }`}
               >
                 <Tag className="w-3 h-3" />
@@ -327,8 +327,8 @@ export default function FilterPanel({
           onClick={() => setIsOpen(!isOpen)}
           className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-all duration-200 ${
             isOpen || activeCount > 0
-              ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-[#111111] dark:border-white shadow-sm'
-              : 'bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+              ? 'bg-mono-100 dark:bg-white text-white dark:text-black border-mono-100 dark:border-white shadow-sm'
+              : 'bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717]'
           }`}
         >
           <SlidersHorizontal className="w-4 h-4" />
@@ -336,7 +336,7 @@ export default function FilterPanel({
           {activeCount > 0 && (
             <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold ${
               isOpen || activeCount > 0
-                ? 'bg-white dark:bg-black text-[#111111] dark:text-white'
+                ? 'bg-white dark:bg-black text-mono-100 dark:text-white'
                 : 'bg-red-500 text-white'
             }`}>
               {activeCount}
@@ -351,26 +351,26 @@ export default function FilterPanel({
             <button
               type="button"
               onClick={() => setShowPresetDropdown(!showPresetDropdown)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-sm font-medium hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 text-sm font-medium hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             >
               <Bookmark className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Presets</span>
             </button>
             {showPresetDropdown && (
-              <div className="absolute top-full left-0 mt-1.5 z-40 w-64 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-xl overflow-hidden animate-[fpSlideDown_150ms_ease-out]">
-                <div className="px-3 py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
-                  <span className="text-[11px] font-semibold uppercase tracking-widest text-[#9CA3AF] dark:text-[#525252]">
+              <div className="absolute top-full left-0 mt-1.5 z-40 w-64 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl shadow-xl overflow-hidden animate-[fpSlideDown_150ms_ease-out]">
+                <div className="px-3 py-2 border-b border-mono-950 dark:border-mono-200">
+                  <span className="text-[11px] font-semibold uppercase tracking-widest text-[#9CA3AF] dark:text-mono-400">
                     Filtres sauvegardes
                   </span>
                 </div>
                 {presets.map((p) => (
                   <div
                     key={p.name}
-                    className="flex items-center gap-2 px-3 py-2.5 hover:bg-[#F9FAFB] dark:hover:bg-[#111111] transition-colors group"
+                    className="flex items-center gap-2 px-3 py-2.5 hover:bg-[#F9FAFB] dark:hover:bg-mono-100 transition-colors group"
                   >
                     <button
                       onClick={() => handleLoadPreset(p)}
-                      className="flex-1 text-left text-sm text-[#374151] dark:text-[#A3A3A3] truncate"
+                      className="flex-1 text-left text-sm text-[#374151] dark:text-mono-700 truncate"
                     >
                       {p.name}
                     </button>
@@ -410,11 +410,11 @@ export default function FilterPanel({
           isOpen ? 'max-h-[800px] opacity-100 mt-3' : 'max-h-0 opacity-0 mt-0'
         }`}
       >
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filters.map((f) => (
               <div key={f.key}>
-                <label className="block text-xs font-semibold text-[#6B7280] dark:text-[#737373] mb-1.5 uppercase tracking-wide">
+                <label className="block text-xs font-semibold text-[#6B7280] dark:text-mono-500 mb-1.5 uppercase tracking-wide">
                   {f.label}
                 </label>
                 <FilterField
@@ -427,12 +427,12 @@ export default function FilterPanel({
           </div>
 
           {/* Bottom bar: save preset */}
-          <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
+          <div className="flex items-center justify-between mt-4 pt-3 border-t border-mono-950 dark:border-mono-200">
             {!showSaveDialog ? (
               <button
                 type="button"
                 onClick={() => setShowSaveDialog(true)}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#9CA3AF] dark:text-[#525252] hover:text-[#111111] dark:hover:text-white transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#9CA3AF] dark:text-mono-400 hover:text-mono-100 dark:hover:text-white transition-colors"
               >
                 <Save className="w-3.5 h-3.5" />
                 Sauvegarder ce filtre
@@ -446,27 +446,27 @@ export default function FilterPanel({
                   onKeyDown={(e) => e.key === 'Enter' && handleSavePreset()}
                   placeholder="Nom du preset..."
                   autoFocus
-                  className="flex-1 px-3 py-1.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#525252] outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                  className="flex-1 px-3 py-1.5 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-400 outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
                 />
                 <button
                   type="button"
                   onClick={handleSavePreset}
                   disabled={!presetName.trim()}
-                  className="px-3 py-1.5 text-xs font-semibold bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333333] dark:hover:bg-[#E5E7EB] disabled:opacity-40 transition-colors"
+                  className="px-3 py-1.5 text-xs font-semibold bg-mono-100 dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333333] dark:hover:bg-mono-900 disabled:opacity-40 transition-colors"
                 >
                   Sauvegarder
                 </button>
                 <button
                   type="button"
                   onClick={() => { setShowSaveDialog(false); setPresetName(''); }}
-                  className="p-1.5 rounded-lg text-[#9CA3AF] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                  className="p-1.5 rounded-lg text-[#9CA3AF] hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
 
-            <div className="text-[11px] text-[#9CA3AF] dark:text-[#525252]">
+            <div className="text-[11px] text-[#9CA3AF] dark:text-mono-400">
               {activeCount > 0 ? `${activeCount} filtre${activeCount > 1 ? 's' : ''} actif${activeCount > 1 ? 's' : ''}` : 'Aucun filtre actif'}
             </div>
           </div>
@@ -475,20 +475,20 @@ export default function FilterPanel({
 
       {/* Mobile: full-screen overlay when open on small screens */}
       {isOpen && (
-        <div className="fixed inset-0 z-[100] bg-white dark:bg-[#0A0A0A] sm:hidden overflow-y-auto">
-          <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-white dark:bg-[#0A0A0A] border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <h3 className="text-base font-semibold text-[#111111] dark:text-white">Filtres avances</h3>
+        <div className="fixed inset-0 z-[100] bg-white dark:bg-mono-50 sm:hidden overflow-y-auto">
+          <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-white dark:bg-mono-50 border-b border-mono-900 dark:border-mono-200">
+            <h3 className="text-base font-semibold text-mono-100 dark:text-white">Filtres avances</h3>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-2 rounded-xl hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="p-2 rounded-xl hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             >
-              <X className="w-5 h-5 text-[#111111] dark:text-white" />
+              <X className="w-5 h-5 text-mono-100 dark:text-white" />
             </button>
           </div>
           <div className="p-4 space-y-4">
             {filters.map((f) => (
               <div key={f.key}>
-                <label className="block text-xs font-semibold text-[#6B7280] dark:text-[#737373] mb-2 uppercase tracking-wide">
+                <label className="block text-xs font-semibold text-[#6B7280] dark:text-mono-500 mb-2 uppercase tracking-wide">
                   {f.label}
                 </label>
                 <FilterField
@@ -499,16 +499,16 @@ export default function FilterPanel({
               </div>
             ))}
           </div>
-          <div className="sticky bottom-0 p-4 bg-white dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex gap-3">
+          <div className="sticky bottom-0 p-4 bg-white dark:bg-mono-50 border-t border-mono-900 dark:border-mono-200 flex gap-3">
             <button
               onClick={handleClearAll}
-              className="flex-1 py-3 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]"
+              className="flex-1 py-3 text-sm font-medium text-[#6B7280] dark:text-mono-700 rounded-xl border border-mono-900 dark:border-mono-200"
             >
               Effacer tout
             </button>
             <button
               onClick={() => setIsOpen(false)}
-              className="flex-1 py-3 text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl"
+              className="flex-1 py-3 text-sm font-semibold bg-mono-100 dark:bg-white text-white dark:text-black rounded-xl"
             >
               Appliquer ({activeCount})
             </button>

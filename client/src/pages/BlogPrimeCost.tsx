@@ -69,13 +69,13 @@ export default function BlogPrimeCost() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -119,12 +119,12 @@ export default function BlogPrimeCost() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <Calculator className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Définition du prime cost</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Définition du prime cost</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le prime cost est la somme du coût des matières premières et de la masse salariale, exprimée en pourcentage du chiffre d'affaires.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Prime Cost = (Food Cost + Labour Cost) / CA × 100
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
@@ -145,7 +145,7 @@ export default function BlogPrimeCost() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Target className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Pourquoi c'est l'indicateur n°1</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Pourquoi c'est l'indicateur n°1</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">Trois raisons font du prime cost la référence absolue :</p>
           <ul className="space-y-3 text-[#374151] mb-4">
@@ -170,12 +170,12 @@ export default function BlogPrimeCost() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. La formule détaillée avec exemple</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. La formule détaillée avec exemple</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Cas du Bistrot Léon : CA 65 000€, achats 20 800€, stock initial 4 200€, stock final 3 900€, masse salariale 15 600€ + 6 552€ de charges (42%).
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-2">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-2">
             <div>Food cost = 4 200 + 20 800 - 3 900 = 21 100€ → 32,5%</div>
             <div>Labour cost = 15 600 + 6 552 = 22 152€ → 34,1%</div>
             <div>Prime cost = 43 252€ → <strong>66,5%</strong></div>
@@ -191,7 +191,7 @@ export default function BlogPrimeCost() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Benchmarks par type de restaurant</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Benchmarks par type de restaurant</h2>
           </div>
           <ul className="space-y-2 text-[#374151] mb-4">
             <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500 inline-block" /> Fast-food : prime cost optimal 52-58%, zone rouge {'>'}62%</li>
@@ -213,7 +213,7 @@ export default function BlogPrimeCost() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <Zap className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Les 2 leviers : food cost et labour cost</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Les 2 leviers : food cost et labour cost</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Réduire le food cost :</strong></p>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -229,7 +229,7 @@ export default function BlogPrimeCost() {
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-orange-400 mt-2 flex-shrink-0" /> Préparation à J-1 (moins de monde au coup de feu)</li>
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-orange-400 mt-2 flex-shrink-0" /> Réduction des amplitudes (fermer 14h30-18h)</li>
           </ul>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             CA par heure travaillée : Bistrot 45-55€/h · Fast casual 60-80€/h · Gastronomique 80-120€/h
           </div>
         </section>
@@ -240,7 +240,7 @@ export default function BlogPrimeCost() {
             <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-rose-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Cas pratique : passer de 72% à 62%</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Cas pratique : passer de 72% à 62%</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Bistrot Léon en perte (-1 200€/mois). Plan sur 90 jours pour gagner 10 points de prime cost.
@@ -250,7 +250,7 @@ export default function BlogPrimeCost() {
           <p className="text-[#374151] leading-relaxed mb-2"><strong>Mois 2 — Refonte carte + plannings</strong></p>
           <p className="text-[#374151] leading-relaxed mb-4">Carte réduite de 30 à 18 plats. Suppression d'un poste de plonge (lave-vaisselle plus performant + polyvalence). Économie : 2 200€/mois.</p>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Mois 3 — Mesure</strong> : food cost à 31%, labour cost à 31%, prime cost à 62%. Résultat : +5 300€/mois (gain net : <strong>+78 000€/an</strong>).</p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 font-mono text-sm text-mono-100">
             Avant : Prime cost 72%, résultat -1 200€/mois<br />
             Après : Prime cost 62%, résultat +5 300€/mois
           </div>
@@ -262,7 +262,7 @@ export default function BlogPrimeCost() {
             <div className="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center">
               <LineChart className="w-5 h-5 text-cyan-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">7. Suivi mensuel vs annuel</h2>
+            <h2 className="text-2xl font-bold text-mono-100">7. Suivi mensuel vs annuel</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Calculer le prime cost une fois par an, c'est trop tard. Si vous découvrez en janvier que votre prime cost de l'année dernière était à 71%, vous avez perdu 12 mois et 30 000 à 60 000€ de marge.
@@ -280,7 +280,7 @@ export default function BlogPrimeCost() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -304,9 +304,9 @@ export default function BlogPrimeCost() {
                 a: "Si le dirigeant se rémunère en salaire (gérant majoritaire EURL ou SASU), oui. S'il se rémunère en dividendes ou TNS forfait, non — mais ajoutez une rémunération de gérant théorique pour comparer avec d'autres restaurants."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -327,7 +327,7 @@ export default function BlogPrimeCost() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/taux-occupation-restaurant" className="text-sm text-teal-600 hover:underline">Optimiser le taux d'occupation →</Link>
         </div>

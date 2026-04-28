@@ -64,13 +64,13 @@ export default function BlogChiffreAffaires() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -114,7 +114,7 @@ export default function BlogChiffreAffaires() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <Calculator className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. CA HT vs CA TTC</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. CA HT vs CA TTC</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             En France, la restauration applique deux taux de TVA simultanément :
@@ -126,7 +126,7 @@ export default function BlogChiffreAffaires() {
           <p className="text-[#374151] leading-relaxed mb-4">
             Exemple addition typique 49 € TTC : entrée 9 + plat 22 + dessert 8 + vin 7 + café 3.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>CA TTC = 49 €</div>
             <div>CA HT = 44,01 €</div>
             <div>TVA collectée = 4,99 €</div>
@@ -143,7 +143,7 @@ export default function BlogChiffreAffaires() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <PieChart className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Les 3 composantes</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Les 3 composantes</h2>
           </div>
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-blue-400 mt-2 flex-shrink-0" /><span><strong>Salle (60-85 %)</strong> : canal historique, le plus rentable (vins, desserts, cafés, pas de commission)</span></li>
@@ -158,15 +158,15 @@ export default function BlogChiffreAffaires() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Calculator className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. La formule du CA</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. La formule du CA</h2>
           </div>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             CA = Couverts × Ticket moyen × Services × Jours d'ouverture
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Pour la livraison :</strong>
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             CA livraison = Commandes × Panier moyen × Jours d'activité
           </div>
           <p className="text-[#374151] leading-relaxed">
@@ -180,16 +180,16 @@ export default function BlogChiffreAffaires() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Exemple complet</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Exemple complet</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Restaurant urbain 50 cv, midi + soir, 6/7. Taux remplissage 60 %, ticket 32 € TTC (28,80 € HT), 25 jours/mois.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>CA salle = 60 × 28,80 × 25 = 43 200 €/mois</div>
             <div>CA livraison net (35 cmd × 20 € × 25 j × 0,72) = 12 600 €</div>
             <div>CA événements (2 × 1 800 €) = 3 600 €/mois</div>
-            <div className="pt-2 font-bold border-t border-[#E5E7EB]">Total mensuel : 59 400 € HT</div>
+            <div className="pt-2 font-bold border-t border-mono-900">Total mensuel : 59 400 € HT</div>
             <div className="font-bold">Total annuel : 712 800 € HT</div>
           </div>
           <p className="text-[#374151] leading-relaxed">
@@ -203,10 +203,10 @@ export default function BlogChiffreAffaires() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Analyser par service et jour</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Analyser par service et jour</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Analyse horaire</strong> (créneaux faibles à activer) :</p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-xs text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-xs text-mono-100 space-y-1">
             <div>12h-13h : 28 cv, 728 € → saturé</div>
             <div>14h-15h : 4 cv, 92 € → fermer ?</div>
             <div>20h-21h : 32 cv, 1 088 € → saturé</div>
@@ -227,18 +227,18 @@ export default function BlogChiffreAffaires() {
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
               <Target className="w-5 h-5 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Gros CA peut perdre</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Gros CA peut perdre</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Cas réel :</strong> 950 K€ CA, déficit -38 K€. Food cost à 40 %, salaires à 38 %, charges à 26 %.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-xs text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-xs text-mono-100 space-y-1">
             <div className="font-bold">Restaurant A (gros CA) vs B (petit CA)</div>
             <div>CA : 950 K€ vs 380 K€</div>
             <div>Marge brute : 60 % vs 70 %</div>
             <div>Salaires : 38 % vs 32 %</div>
             <div>Charges fixes : 26 % vs 18 %</div>
-            <div className="pt-2 font-bold border-t border-[#E5E7EB]">EBE : -38 K€ vs +76 K€</div>
+            <div className="pt-2 font-bold border-t border-mono-900">EBE : -38 K€ vs +76 K€</div>
           </div>
           <div className="border-l-4 border-amber-400 bg-amber-50 rounded-r-xl p-4 mb-4">
             <p className="text-sm font-semibold text-amber-700">Lecture</p>
@@ -252,7 +252,7 @@ export default function BlogChiffreAffaires() {
             <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center">
               <Zap className="w-5 h-5 text-pink-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">7. Les 5 leviers d'augmentation</h2>
+            <h2 className="text-2xl font-bold text-mono-100">7. Les 5 leviers d'augmentation</h2>
           </div>
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-pink-400 mt-2 flex-shrink-0" /><span><strong>1. Nouveau créneau</strong> (brunch dimanche) : +12-18 % CA. Ex : 35 cv × 28 € × 50 = +49 K€/an</span></li>
@@ -261,14 +261,14 @@ export default function BlogChiffreAffaires() {
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-pink-400 mt-2 flex-shrink-0" /><span><strong>4. Livraison</strong> : carte adaptée. Ex : 12 cmd × 22 € × 365 = 96 K€ brut → 69 K€ net</span></li>
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-pink-400 mt-2 flex-shrink-0" /><span><strong>5. Privatisations</strong> : 1/mois × 2 500 € = +30 K€/an quasi-pure marge</span></li>
           </ul>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Combo 3 leviers : +151 K€ CA, +75 K€ EBE, ROI 4,7×
           </div>
         </section>
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -288,9 +288,9 @@ export default function BlogChiffreAffaires() {
                 a: "Trois causes possibles : (1) inflation matières non répercutée sur les prix, (2) salaires qui dérapent (extras, heures sup), (3) charges fixes en hausse (loyer indexé, énergie). Audit poste par poste obligatoire."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -311,7 +311,7 @@ export default function BlogChiffreAffaires() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/budget-previsionnel-restaurant" className="text-sm text-teal-600 hover:underline">Budget prévisionnel →</Link>
         </div>

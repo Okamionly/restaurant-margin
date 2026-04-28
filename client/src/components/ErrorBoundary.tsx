@@ -44,19 +44,19 @@ export default class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-6">
-          <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8 max-w-lg w-full text-center shadow-lg">
+          <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-8 max-w-lg w-full text-center shadow-lg">
             {/* Error icon */}
             <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
               <AlertTriangle className="w-8 h-8 text-amber-500" />
             </div>
 
-            <h2 className="text-xl font-bold text-[#111111] dark:text-white mb-2">
+            <h2 className="text-xl font-bold text-mono-100 dark:text-white mb-2">
               Une erreur est survenue
             </h2>
 
             {/* Error message */}
-            <div className="bg-[#F5F5F5] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 mb-6 text-left">
-              <p className="text-sm text-[#111111] dark:text-[#E5E7EB] font-mono break-words">
+            <div className="bg-mono-975 dark:bg-mono-100 border border-mono-900 dark:border-mono-200 rounded-xl p-4 mb-6 text-left">
+              <p className="text-sm text-mono-100 dark:text-mono-900 font-mono break-words">
                 {this.state.error?.message || 'Erreur inattendue. Veuillez rafraichir la page.'}
               </p>
             </div>
@@ -68,7 +68,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                   this.setState({ hasError: false, error: null, showStack: false });
                   window.location.reload();
                 }}
-                className="flex-1 inline-flex items-center justify-center gap-2 bg-[#111111] dark:bg-white text-white dark:text-[#111111] px-5 py-2.5 rounded-xl font-medium hover:opacity-90 transition-opacity"
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-mono-100 dark:bg-white text-white dark:text-mono-100 px-5 py-2.5 rounded-xl font-medium hover:opacity-90 transition-opacity"
               >
                 <RefreshCw className="w-4 h-4" />
                 Rafraichir la page
@@ -76,7 +76,7 @@ export default class ErrorBoundary extends Component<Props, State> {
 
               <button
                 onClick={this.handleOpenCrisp}
-                className="flex-1 inline-flex items-center justify-center gap-2 border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white px-5 py-2.5 rounded-xl font-medium hover:bg-[#F5F5F5] dark:hover:bg-[#111111] transition-colors"
+                className="flex-1 inline-flex items-center justify-center gap-2 border border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white px-5 py-2.5 rounded-xl font-medium hover:bg-mono-975 dark:hover:bg-mono-100 transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
                 Signaler le probleme
@@ -88,13 +88,13 @@ export default class ErrorBoundary extends Component<Props, State> {
               <div className="text-left">
                 <button
                   onClick={() => this.setState({ showStack: !this.state.showStack })}
-                  className="inline-flex items-center gap-1.5 text-xs text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors mb-2"
+                  className="inline-flex items-center gap-1.5 text-xs text-mono-500 dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors mb-2"
                 >
                   {this.state.showStack ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                   Stack trace (dev)
                 </button>
                 {this.state.showStack && (
-                  <pre className="bg-[#F5F5F5] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-xs text-[#737373] dark:text-[#A3A3A3] font-mono overflow-x-auto max-h-48 whitespace-pre-wrap break-words">
+                  <pre className="bg-mono-975 dark:bg-mono-100 border border-mono-900 dark:border-mono-200 rounded-xl p-4 text-xs text-mono-500 dark:text-mono-700 font-mono overflow-x-auto max-h-48 whitespace-pre-wrap break-words">
                     {this.state.error.stack}
                   </pre>
                 )}

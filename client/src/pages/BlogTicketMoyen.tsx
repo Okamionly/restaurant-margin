@@ -69,13 +69,13 @@ export default function BlogTicketMoyen() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -118,9 +118,9 @@ export default function BlogTicketMoyen() {
             <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
               <Calculator className="w-5 h-5 text-amber-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Définition et calcul du ticket moyen</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Définition et calcul du ticket moyen</h2>
           </div>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Ticket moyen = CA HT (ou TTC) / Nombre de couverts servis
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
@@ -142,7 +142,7 @@ export default function BlogTicketMoyen() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Pourquoi c'est plus actionnable que le volume</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Pourquoi c'est plus actionnable que le volume</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Augmenter le volume (+10%)</strong> : coût marketing important, charges variables proportionnelles, risque de saturation cuisine, investissement capacité.
@@ -162,12 +162,12 @@ export default function BlogTicketMoyen() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Calcul d'impact d'une hausse de 3€</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Calcul d'impact d'une hausse de 3€</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Restaurant L'Olivier : 800 couverts/mois, ticket 31€, food cost 32%.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>+3€ → CA annuel : +28 800€</div>
             <div>Food cost incrémental (30%) : -0,90€/couvert</div>
             <div>Marge nette par couvert : 2,10€</div>
@@ -184,49 +184,49 @@ export default function BlogTicketMoyen() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Wine className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Les 10 techniques à mettre en place</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Les 10 techniques à mettre en place</h2>
           </div>
 
           <div className="space-y-5">
-            <div className="border border-[#E5E7EB] rounded-xl p-5">
-              <p className="font-semibold text-[#111111] mb-2 flex items-center gap-2"><Wine className="w-4 h-4 text-purple-600" /> 1. Upselling boissons : carafe → bouteille</p>
-              <p className="text-[#525252] text-sm leading-relaxed">"Une grande bouteille pour la table ?" Impact : +1,50 à +3€/couvert. Une bouteille à 32€ = même CA que 4 verres mais marge supérieure et réincitation.</p>
+            <div className="border border-mono-900 rounded-xl p-5">
+              <p className="font-semibold text-mono-100 mb-2 flex items-center gap-2"><Wine className="w-4 h-4 text-purple-600" /> 1. Upselling boissons : carafe → bouteille</p>
+              <p className="text-mono-400 text-sm leading-relaxed">"Une grande bouteille pour la table ?" Impact : +1,50 à +3€/couvert. Une bouteille à 32€ = même CA que 4 verres mais marge supérieure et réincitation.</p>
             </div>
-            <div className="border border-[#E5E7EB] rounded-xl p-5">
-              <p className="font-semibold text-[#111111] mb-2 flex items-center gap-2"><Utensils className="w-4 h-4 text-purple-600" /> 2. Suggérer entrées et desserts systématiquement</p>
-              <p className="text-[#525252] text-sm leading-relaxed">La règle des 70% : viser 70% de prise d'entrée et 60% de prise de dessert. Impact : +4 à +7€/couvert.</p>
+            <div className="border border-mono-900 rounded-xl p-5">
+              <p className="font-semibold text-mono-100 mb-2 flex items-center gap-2"><Utensils className="w-4 h-4 text-purple-600" /> 2. Suggérer entrées et desserts systématiquement</p>
+              <p className="text-mono-400 text-sm leading-relaxed">La règle des 70% : viser 70% de prise d'entrée et 60% de prise de dessert. Impact : +4 à +7€/couvert.</p>
             </div>
-            <div className="border border-[#E5E7EB] rounded-xl p-5">
-              <p className="font-semibold text-[#111111] mb-2">3. Construire une formule "offre complète"</p>
-              <p className="text-[#525252] text-sm leading-relaxed">Plat 22€ + dessert 8€ + café 3€ = 33€ → formule à 32€. L'addition gonfle, food cost incrémental faible. +6 à +12€/couvert.</p>
+            <div className="border border-mono-900 rounded-xl p-5">
+              <p className="font-semibold text-mono-100 mb-2">3. Construire une formule "offre complète"</p>
+              <p className="text-mono-400 text-sm leading-relaxed">Plat 22€ + dessert 8€ + café 3€ = 33€ → formule à 32€. L'addition gonfle, food cost incrémental faible. +6 à +12€/couvert.</p>
             </div>
-            <div className="border border-[#E5E7EB] rounded-xl p-5">
-              <p className="font-semibold text-[#111111] mb-2">4. Carte des vins intelligente</p>
-              <p className="text-[#525252] text-sm leading-relaxed">3 niveaux de prix, accords mets-vins, vins au verre de qualité (15cl à 8-12€), 3 coups de cœur. Impact : +3 à +6€/couvert.</p>
+            <div className="border border-mono-900 rounded-xl p-5">
+              <p className="font-semibold text-mono-100 mb-2">4. Carte des vins intelligente</p>
+              <p className="text-mono-400 text-sm leading-relaxed">3 niveaux de prix, accords mets-vins, vins au verre de qualité (15cl à 8-12€), 3 coups de cœur. Impact : +3 à +6€/couvert.</p>
             </div>
-            <div className="border border-[#E5E7EB] rounded-xl p-5">
-              <p className="font-semibold text-[#111111] mb-2">5. Formule déjeuner premium</p>
-              <p className="text-[#525252] text-sm leading-relaxed">Ajouter une formule 24-29€ à côté du 15-19€ habituel. Effet "ancrage" : 30-40% des clients basculent. +4 à +7€/couvert midi.</p>
+            <div className="border border-mono-900 rounded-xl p-5">
+              <p className="font-semibold text-mono-100 mb-2">5. Formule déjeuner premium</p>
+              <p className="text-mono-400 text-sm leading-relaxed">Ajouter une formule 24-29€ à côté du 15-19€ habituel. Effet "ancrage" : 30-40% des clients basculent. +4 à +7€/couvert midi.</p>
             </div>
-            <div className="border border-[#E5E7EB] rounded-xl p-5">
-              <p className="font-semibold text-[#111111] mb-2">6. Plats du jour à marge élevée</p>
-              <p className="text-[#525252] text-sm leading-relaxed">Annoncé oralement, taux de prise 35-50%. Choisissez-le pour sa marge. Impact : +1 à +2€ de marge/couvert.</p>
+            <div className="border border-mono-900 rounded-xl p-5">
+              <p className="font-semibold text-mono-100 mb-2">6. Plats du jour à marge élevée</p>
+              <p className="text-mono-400 text-sm leading-relaxed">Annoncé oralement, taux de prise 35-50%. Choisissez-le pour sa marge. Impact : +1 à +2€ de marge/couvert.</p>
             </div>
-            <div className="border border-[#E5E7EB] rounded-xl p-5">
-              <p className="font-semibold text-[#111111] mb-2 flex items-center gap-2"><Coffee className="w-4 h-4 text-purple-600" /> 7. Café et digestif systématiques</p>
-              <p className="text-[#525252] text-sm leading-relaxed">Marges 80-92%. Café avec mignardise = ticket 5-6€ pour 80 centimes de food cost. +3 à +6€/couvert.</p>
+            <div className="border border-mono-900 rounded-xl p-5">
+              <p className="font-semibold text-mono-100 mb-2 flex items-center gap-2"><Coffee className="w-4 h-4 text-purple-600" /> 7. Café et digestif systématiques</p>
+              <p className="text-mono-400 text-sm leading-relaxed">Marges 80-92%. Café avec mignardise = ticket 5-6€ pour 80 centimes de food cost. +3 à +6€/couvert.</p>
             </div>
-            <div className="border border-[#E5E7EB] rounded-xl p-5">
-              <p className="font-semibold text-[#111111] mb-2 flex items-center gap-2"><BookIcon className="w-4 h-4 text-purple-600" /> 8. Design de carte (menu engineering)</p>
-              <p className="text-[#525252] text-sm leading-relaxed">Lecture en Z, plats Stars en haut-gauche/bas-droite, prix sans le €, descriptions de 12-18 mots (+28% de prise). +2 à +4€/couvert.</p>
+            <div className="border border-mono-900 rounded-xl p-5">
+              <p className="font-semibold text-mono-100 mb-2 flex items-center gap-2"><BookIcon className="w-4 h-4 text-purple-600" /> 8. Design de carte (menu engineering)</p>
+              <p className="text-mono-400 text-sm leading-relaxed">Lecture en Z, plats Stars en haut-gauche/bas-droite, prix sans le €, descriptions de 12-18 mots (+28% de prise). +2 à +4€/couvert.</p>
             </div>
-            <div className="border border-[#E5E7EB] rounded-xl p-5">
-              <p className="font-semibold text-[#111111] mb-2 flex items-center gap-2"><GraduationCap className="w-4 h-4 text-purple-600" /> 9. Former intensivement la salle</p>
-              <p className="text-[#525252] text-sm leading-relaxed">4 sessions de 2h : produits, scripts upselling, vins, gestion d'objections. Incentive sur ventes additionnelles. +3 à +6€/couvert.</p>
+            <div className="border border-mono-900 rounded-xl p-5">
+              <p className="font-semibold text-mono-100 mb-2 flex items-center gap-2"><GraduationCap className="w-4 h-4 text-purple-600" /> 9. Former intensivement la salle</p>
+              <p className="text-mono-400 text-sm leading-relaxed">4 sessions de 2h : produits, scripts upselling, vins, gestion d'objections. Incentive sur ventes additionnelles. +3 à +6€/couvert.</p>
             </div>
-            <div className="border border-[#E5E7EB] rounded-xl p-5">
-              <p className="font-semibold text-[#111111] mb-2 flex items-center gap-2"><Star className="w-4 h-4 text-purple-600" /> 10. Offres spéciales premium</p>
-              <p className="text-[#525252] text-sm leading-relaxed">Plateau anniversaire (45€), magnum du chef, soirée accord mets-vins (65€), menu dégustation (48€). +1 à +3€/couvert moyen.</p>
+            <div className="border border-mono-900 rounded-xl p-5">
+              <p className="font-semibold text-mono-100 mb-2 flex items-center gap-2"><Star className="w-4 h-4 text-purple-600" /> 10. Offres spéciales premium</p>
+              <p className="text-mono-400 text-sm leading-relaxed">Plateau anniversaire (45€), magnum du chef, soirée accord mets-vins (65€), menu dégustation (48€). +1 à +3€/couvert moyen.</p>
             </div>
           </div>
         </section>
@@ -237,7 +237,7 @@ export default function BlogTicketMoyen() {
             <div className="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-cyan-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Tableau d'impact selon volume</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Tableau d'impact selon volume</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Marge nette additionnelle par an</strong> (food cost incrémental 30%) :</p>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -258,7 +258,7 @@ export default function BlogTicketMoyen() {
             <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center">
               <Shield className="w-5 h-5 text-rose-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Upselling éthique : la frontière</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Upselling éthique : la frontière</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             L'upselling agressif détruit la fidélisation. Un client qui sort en ayant l'impression qu'on lui a "vendu" ne revient pas.
@@ -278,7 +278,7 @@ export default function BlogTicketMoyen() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -302,9 +302,9 @@ export default function BlogTicketMoyen() {
                 a: "Oui, énormément. La commande au QR code ou tablette montre toujours les options et boissons, suggère automatiquement des desserts. Augmente le ticket de 8 à 15% par rapport à une prise de commande traditionnelle."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -325,7 +325,7 @@ export default function BlogTicketMoyen() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/inventaire-restaurant-guide" className="text-sm text-teal-600 hover:underline">Maîtriser ses inventaires →</Link>
         </div>

@@ -177,7 +177,7 @@ export function AnimatedDonut({
         />
         {/* Inner hole */}
         <div
-          className="absolute rounded-full bg-white dark:bg-[#0A0A0A] flex flex-col items-center justify-center"
+          className="absolute rounded-full bg-white dark:bg-mono-50 flex flex-col items-center justify-center"
           style={{
             width: holeSize,
             height: holeSize,
@@ -185,18 +185,18 @@ export function AnimatedDonut({
             left: (size - holeSize) / 2,
           }}
         >
-          <span className="text-2xl font-black font-satoshi text-[#111111] dark:text-white tabular-nums">
+          <span className="text-2xl font-black font-satoshi text-mono-100 dark:text-white tabular-nums">
             {animated ? animatedCenter.toFixed(0) : formatValue(centerValue ?? total)}{centerSuffix}
           </span>
           {centerLabel && (
-            <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-general-sans">{centerLabel}</span>
+            <span className="text-xs text-[#9CA3AF] dark:text-mono-500 font-general-sans">{centerLabel}</span>
           )}
         </div>
 
         {/* Hover tooltip */}
         {hoveredIndex !== null && data[hoveredIndex] && (
           <div
-            className="absolute z-50 pointer-events-none bg-white dark:bg-[#0A0A0A] shadow-xl rounded-lg px-3 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm whitespace-nowrap"
+            className="absolute z-50 pointer-events-none bg-white dark:bg-mono-50 shadow-xl rounded-lg px-3 py-2 border border-mono-900 dark:border-mono-200 text-sm whitespace-nowrap"
             style={{
               left: tooltipPos.x + 12,
               top: tooltipPos.y - 8,
@@ -205,9 +205,9 @@ export function AnimatedDonut({
           >
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: data[hoveredIndex].color }} />
-              <span className="font-semibold text-[#111111] dark:text-white">{data[hoveredIndex].label}</span>
+              <span className="font-semibold text-mono-100 dark:text-white">{data[hoveredIndex].label}</span>
             </div>
-            <div className="text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">
+            <div className="text-[#6B7280] dark:text-mono-700 mt-0.5">
               {formatValue(data[hoveredIndex].value)} ({total > 0 ? ((data[hoveredIndex].value / total) * 100).toFixed(1) : 0}%)
             </div>
           </div>
@@ -227,8 +227,8 @@ export function AnimatedDonut({
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
-              <span className="text-[#6B7280] dark:text-[#A3A3A3] font-general-sans">{d.label}</span>
-              <span className="font-semibold text-[#111111] dark:text-white tabular-nums">{formatValue(d.value)}</span>
+              <span className="text-[#6B7280] dark:text-mono-700 font-general-sans">{d.label}</span>
+              <span className="font-semibold text-mono-100 dark:text-white tabular-nums">{formatValue(d.value)}</span>
             </div>
           ))}
         </div>
@@ -329,7 +329,7 @@ export function SparklineChart({
       {/* Tooltip */}
       {showTooltip && hoverIdx !== null && points[hoverIdx] && (
         <div
-          className="absolute z-50 pointer-events-none bg-white dark:bg-[#0A0A0A] shadow-lg rounded px-2 py-1 border border-[#E5E7EB] dark:border-[#1A1A1A] text-[10px] font-semibold tabular-nums whitespace-nowrap"
+          className="absolute z-50 pointer-events-none bg-white dark:bg-mono-50 shadow-lg rounded px-2 py-1 border border-mono-900 dark:border-mono-200 text-[10px] font-semibold tabular-nums whitespace-nowrap"
           style={{
             left: points[hoverIdx].x,
             top: points[hoverIdx].y - 28,
@@ -397,7 +397,7 @@ export function ProgressRing({
             fill="none"
             stroke="#E5E7EB"
             strokeWidth={strokeWidth}
-            className="dark:stroke-[#262626]"
+            className="dark:stroke-mono-300"
           />
           {/* Progress */}
           <circle
@@ -429,7 +429,7 @@ export function ProgressRing({
         )}
       </div>
       {label && (
-        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] font-general-sans text-center leading-tight max-w-[80px] truncate">
+        <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 font-general-sans text-center leading-tight max-w-[80px] truncate">
           {label}
         </span>
       )}
@@ -495,7 +495,7 @@ export function CSSBarChart({
           >
             <div className="flex items-center justify-between mb-1">
               <span className={`text-xs font-medium transition-colors duration-200 ${
-                isHovered ? 'text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'
+                isHovered ? 'text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-700'
               } font-general-sans truncate max-w-[60%]`}>
                 {item.label}
               </span>
@@ -509,7 +509,7 @@ export function CSSBarChart({
               )}
             </div>
             <div
-              className="w-full rounded-full overflow-hidden bg-[#F3F4F6] dark:bg-[#171717]"
+              className="w-full rounded-full overflow-hidden bg-mono-950 dark:bg-[#171717]"
               style={{ height: barHeight > 20 ? 8 : 6 }}
             >
               <div
@@ -576,9 +576,9 @@ export function TrendIndicator({
         />
       )}
       <div className="flex flex-col">
-        {label && <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] font-general-sans">{label}</span>}
+        {label && <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 font-general-sans">{label}</span>}
         <div className="flex items-center gap-1">
-          <span className="text-sm font-bold text-[#111111] dark:text-white tabular-nums font-satoshi">
+          <span className="text-sm font-bold text-mono-100 dark:text-white tabular-nums font-satoshi">
             {formatVal(current)}
           </span>
           <div className={`flex items-center gap-0.5 text-xs font-semibold ${colorClass}`}>
@@ -713,7 +713,7 @@ export function HeatmapGrid({
               onMouseEnter={(e) => handleMouseEnter(e, day.date)}
               onMouseLeave={() => setHoveredDate(null)}
               className={`relative flex flex-col items-center justify-center rounded-lg transition-all duration-200 ${
-                isSelected ? 'ring-2 ring-[#111111] dark:ring-white scale-110 z-10' :
+                isSelected ? 'ring-2 ring-mono-100 dark:ring-white scale-110 z-10' :
                 isHovered ? 'scale-105 z-10' : ''
               }`}
               style={{
@@ -739,7 +739,7 @@ export function HeatmapGrid({
                 </>
               )}
               {isToday && (
-                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#111111] dark:bg-white" />
+                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-mono-100 dark:bg-white" />
               )}
             </button>
           );
@@ -749,21 +749,21 @@ export function HeatmapGrid({
       {/* Tooltip */}
       {hoveredDate && (
         <div
-          className="absolute z-50 pointer-events-none bg-white dark:bg-[#0A0A0A] shadow-xl rounded-lg px-3 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] text-xs whitespace-nowrap"
+          className="absolute z-50 pointer-events-none bg-white dark:bg-mono-50 shadow-xl rounded-lg px-3 py-2 border border-mono-900 dark:border-mono-200 text-xs whitespace-nowrap"
           style={{
             left: tooltipPos.x + 12,
             top: tooltipPos.y - 8,
             transform: 'translateY(-100%)',
           }}
         >
-          <span className="text-[#111111] dark:text-white font-medium">
+          <span className="text-mono-100 dark:text-white font-medium">
             {tooltipFn(hoveredDate, dataMap[hoveredDate] || 0)}
           </span>
         </div>
       )}
 
       {/* Legend */}
-      <div className="flex items-center gap-3 mt-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
+      <div className="flex items-center gap-3 mt-3 text-xs text-[#9CA3AF] dark:text-mono-500">
         <span>Intensite :</span>
         {['0', 'Bas', 'Moyen', 'Eleve', 'Critique'].map((label, i) => (
           <div key={label} className="flex items-center gap-1">

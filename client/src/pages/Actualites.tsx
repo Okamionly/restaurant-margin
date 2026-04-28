@@ -435,7 +435,7 @@ export default function Actualites() {
             <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-xl">
               <Newspaper className="w-6 h-6 text-teal-600 dark:text-teal-400" />
             </div>
-            <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white">Actualites</h1>
+            <h1 className="text-2xl font-bold font-satoshi text-mono-100 dark:text-white">Actualites</h1>
             {highCount > 0 && (
               <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-600 text-white animate-pulse">
                 {highCount} urgent{highCount > 1 ? 's' : ''}
@@ -753,7 +753,7 @@ export default function Actualites() {
                   <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   <h3 className="text-sm font-bold text-black dark:text-white">Resume IA du marche</h3>
                 </div>
-                <p className="text-sm text-[#374151] dark:text-[#D4D4D4] leading-relaxed">
+                <p className="text-sm text-[#374151] dark:text-mono-800 leading-relaxed">
                   {marketIntel.answer}
                 </p>
                 <p className="text-[10px] text-[#9CA3AF] mt-3">
@@ -771,12 +771,12 @@ export default function Actualites() {
                     href={article.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all group"
+                    className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-4 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all group"
                   >
                     <h4 className="text-sm font-semibold text-black dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       {article.title}
                     </h4>
-                    <p className="text-xs text-[#737373] dark:text-[#A3A3A3] leading-relaxed line-clamp-3 mb-3">
+                    <p className="text-xs text-mono-500 dark:text-mono-700 leading-relaxed line-clamp-3 mb-3">
                       {article.snippet}
                     </p>
                     <div className="flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 font-medium">
@@ -789,10 +789,10 @@ export default function Actualites() {
             )}
           </div>
         ) : (
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8 text-center">
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-8 text-center">
             <Globe className="w-10 h-10 text-[#D1D5DB] dark:text-[#333] mx-auto mb-3" />
-            <p className="text-sm text-[#737373] dark:text-[#A3A3A3] mb-1">Aucune donnee marche disponible</p>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+            <p className="text-sm text-mono-500 dark:text-mono-700 mb-1">Aucune donnee marche disponible</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
               Cliquez sur "Rafraichir les actualites" pour charger les dernieres tendances du marche
             </p>
           </div>
@@ -806,31 +806,31 @@ export default function Actualites() {
             <BarChart3 className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             Tendances de vos ingredients
           </h2>
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#737373] dark:text-[#A3A3A3]">Ingredient</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#737373] dark:text-[#A3A3A3]">Categorie</th>
-                    <th className="text-right px-4 py-3 text-xs font-semibold text-[#737373] dark:text-[#A3A3A3]">Prix actuel</th>
-                    <th className="text-right px-4 py-3 text-xs font-semibold text-[#737373] dark:text-[#A3A3A3]">Prix precedent</th>
-                    <th className="text-right px-4 py-3 text-xs font-semibold text-[#737373] dark:text-[#A3A3A3]">Evolution</th>
+                  <tr className="border-b border-mono-900 dark:border-mono-200">
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-mono-500 dark:text-mono-700">Ingredient</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-mono-500 dark:text-mono-700">Categorie</th>
+                    <th className="text-right px-4 py-3 text-xs font-semibold text-mono-500 dark:text-mono-700">Prix actuel</th>
+                    <th className="text-right px-4 py-3 text-xs font-semibold text-mono-500 dark:text-mono-700">Prix precedent</th>
+                    <th className="text-right px-4 py-3 text-xs font-semibold text-mono-500 dark:text-mono-700">Evolution</th>
                   </tr>
                 </thead>
                 <tbody>
                   {ingredientTrends.map((trend, i) => (
-                    <tr key={i} className="border-b border-[#E5E7EB]/50 dark:border-[#1A1A1A]/50 last:border-0 hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors">
+                    <tr key={i} className="border-b border-mono-900/50 dark:border-mono-200/50 last:border-0 hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors">
                       <td className="px-4 py-3 font-medium text-black dark:text-white">{trend.name}</td>
-                      <td className="px-4 py-3 text-[#737373] dark:text-[#A3A3A3]">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F5F5F5] dark:bg-[#1A1A1A] text-[#737373] dark:text-[#A3A3A3]">
+                      <td className="px-4 py-3 text-mono-500 dark:text-mono-700">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-mono-975 dark:bg-mono-200 text-mono-500 dark:text-mono-700">
                           {trend.category}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right font-medium text-black dark:text-white">
                         {formatCurrency(trend.currentPrice)}/{trend.unit}
                       </td>
-                      <td className="px-4 py-3 text-right text-[#737373] dark:text-[#A3A3A3]">
+                      <td className="px-4 py-3 text-right text-mono-500 dark:text-mono-700">
                         {formatCurrency(trend.previousPrice)}/{trend.unit}
                       </td>
                       <td className="px-4 py-3 text-right">

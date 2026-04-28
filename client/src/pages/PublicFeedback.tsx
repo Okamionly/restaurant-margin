@@ -68,19 +68,19 @@ export default function PublicFeedback() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-[#0A0A0A] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" />
+      <div className="min-h-screen bg-white dark:bg-mono-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-mono-100 dark:text-white" />
       </div>
     );
   }
 
   if (notFound) {
     return (
-      <div className="min-h-screen bg-white dark:bg-[#0A0A0A] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-white dark:bg-mono-50 flex items-center justify-center px-4">
         <div className="text-center">
-          <AlertTriangle className="w-16 h-16 text-[#D1D5DB] dark:text-[#404040] mx-auto mb-4" />
-          <h1 className="text-xl font-bold text-[#111111] dark:text-white mb-2">Restaurant introuvable</h1>
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <AlertTriangle className="w-16 h-16 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-4" />
+          <h1 className="text-xl font-bold text-mono-100 dark:text-white mb-2">Restaurant introuvable</h1>
+          <p className="text-sm text-[#6B7280] dark:text-mono-700">
             Ce lien ne correspond a aucun restaurant.
           </p>
         </div>
@@ -91,26 +91,26 @@ export default function PublicFeedback() {
   // Thank you screen
   if (submitted) {
     return (
-      <div className="min-h-screen bg-white dark:bg-[#0A0A0A] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-white dark:bg-mono-50 flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
-          <div className="w-20 h-20 bg-[#111111] dark:bg-white rounded-full flex items-center justify-center mx-auto mb-6">
-            <Check className="w-10 h-10 text-white dark:text-[#111111]" />
+          <div className="w-20 h-20 bg-mono-100 dark:bg-white rounded-full flex items-center justify-center mx-auto mb-6">
+            <Check className="w-10 h-10 text-white dark:text-mono-100" />
           </div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi mb-3">
+          <h1 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi mb-3">
             Merci pour votre avis !
           </h1>
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed mb-6">
-            Votre retour est precieux et nous aide a ameliorer nos services chez <span className="font-semibold text-[#111111] dark:text-white">{restaurantName}</span>.
+          <p className="text-sm text-[#6B7280] dark:text-mono-700 leading-relaxed mb-6">
+            Votre retour est precieux et nous aide a ameliorer nos services chez <span className="font-semibold text-mono-100 dark:text-white">{restaurantName}</span>.
           </p>
           <div className="flex items-center justify-center gap-1 mb-4">
             {[1, 2, 3, 4, 5].map(i => (
               <Star
                 key={i}
-                className={`w-8 h-8 ${i <= rating ? 'fill-[#111111] dark:fill-white text-[#111111] dark:text-white' : 'text-[#D1D5DB] dark:text-[#404040]'}`}
+                className={`w-8 h-8 ${i <= rating ? 'fill-mono-100 dark:fill-white text-mono-100 dark:text-white' : 'text-[#D1D5DB] dark:text-mono-350'}`}
               />
             ))}
           </div>
-          <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+          <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
             Propulse par RestauMargin
           </p>
         </div>
@@ -120,17 +120,17 @@ export default function PublicFeedback() {
 
   // Feedback form
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0A0A0A] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-white dark:bg-mono-50 flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full">
         {/* Restaurant branding */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-[#111111] dark:bg-white rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <ChefHat className="w-8 h-8 text-white dark:text-[#111111]" />
+          <div className="w-16 h-16 bg-mono-100 dark:bg-white rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <ChefHat className="w-8 h-8 text-white dark:text-mono-100" />
           </div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi mb-1">
+          <h1 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi mb-1">
             {restaurantName}
           </h1>
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700">
             Votre avis compte pour nous
           </p>
         </div>
@@ -138,7 +138,7 @@ export default function PublicFeedback() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Star rating */}
           <div className="flex flex-col items-center">
-            <p className="text-sm font-medium text-[#111111] dark:text-white mb-4">
+            <p className="text-sm font-medium text-mono-100 dark:text-white mb-4">
               Comment evaluez-vous votre experience ?
             </p>
             <div className="flex items-center gap-2">
@@ -154,15 +154,15 @@ export default function PublicFeedback() {
                   <Star
                     className={`w-10 h-10 transition-colors ${
                       i <= (hoveredRating || rating)
-                        ? 'fill-[#111111] dark:fill-white text-[#111111] dark:text-white'
-                        : 'text-[#D1D5DB] dark:text-[#404040] hover:text-[#9CA3AF] dark:hover:text-[#737373]'
+                        ? 'fill-mono-100 dark:fill-white text-mono-100 dark:text-white'
+                        : 'text-[#D1D5DB] dark:text-mono-350 hover:text-[#9CA3AF] dark:hover:text-mono-500'
                     }`}
                   />
                 </button>
               ))}
             </div>
             {rating > 0 && (
-              <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-2">
+              <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-2">
                 {rating === 1 && 'Tres insatisfait'}
                 {rating === 2 && 'Insatisfait'}
                 {rating === 3 && 'Correct'}
@@ -174,8 +174,8 @@ export default function PublicFeedback() {
 
           {/* Comment */}
           <div>
-            <label className="block text-sm font-medium text-[#111111] dark:text-white mb-2">
-              Un commentaire ? <span className="text-[#9CA3AF] dark:text-[#737373] font-normal">(optionnel)</span>
+            <label className="block text-sm font-medium text-mono-100 dark:text-white mb-2">
+              Un commentaire ? <span className="text-[#9CA3AF] dark:text-mono-500 font-normal">(optionnel)</span>
             </label>
             <textarea
               value={comment}
@@ -183,10 +183,10 @@ export default function PublicFeedback() {
               placeholder="Dites-nous ce qui vous a plu ou ce que nous pouvons ameliorer..."
               rows={4}
               maxLength={2000}
-              className="w-full px-4 py-3 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] resize-none focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+              className="w-full px-4 py-3 bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500 resize-none focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
             />
             <div className="flex justify-end mt-1">
-              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+              <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                 {comment.length}/2000
               </span>
             </div>
@@ -204,7 +204,7 @@ export default function PublicFeedback() {
           <button
             type="submit"
             disabled={submitting || rating === 0}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-semibold hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-xl text-sm font-semibold hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {submitting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -216,7 +216,7 @@ export default function PublicFeedback() {
         </form>
 
         {/* Powered by */}
-        <p className="text-center text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-8">
+        <p className="text-center text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-8">
           Propulse par RestauMargin
         </p>
       </div>

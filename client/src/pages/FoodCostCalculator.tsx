@@ -172,7 +172,7 @@ export default function FoodCostCalculator() {
         </Suspense>
 
         <div className="relative z-10 text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur text-[#000000] text-xs font-semibold mb-6 border border-[#E5E7EB]">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur text-[#000000] text-xs font-semibold mb-6 border border-mono-900">
             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Outil 100% gratuit — aucun compte requis
           </div>
 
@@ -180,22 +180,22 @@ export default function FoodCostCalculator() {
             Calculateur de <span className="text-emerald-600">Food Cost</span> Restaurant
           </h1>
 
-          <p className="text-base sm:text-lg lg:text-xl text-[#525252] max-w-2xl mx-auto leading-relaxed mb-8">
+          <p className="text-base sm:text-lg lg:text-xl text-mono-400 max-w-2xl mx-auto leading-relaxed mb-8">
             Ajoutez vos ingredients, visualisez votre food cost avec une jauge interactive,
             comparez-vous aux standards du secteur et simulez votre profit mensuel.
           </p>
 
           {/* Stats badges cinematic */}
           <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-mono-900 rounded-full">
               <Zap className="w-4 h-4 text-emerald-600" />
               <strong className="text-[#0F172A]">Calcul instantane</strong>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-mono-900 rounded-full">
               <Target className="w-4 h-4 text-emerald-600" />
               Benchmark <strong className="text-[#0F172A]">6 secteurs</strong>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-mono-900 rounded-full">
               <Sparkles className="w-4 h-4 text-emerald-600" />
               <strong className="text-[#0F172A]">100% gratuit</strong>
             </span>
@@ -220,7 +220,7 @@ export default function FoodCostCalculator() {
 
           <div className="space-y-3">
             {ingredients.map((ing) => (
-              <div key={ing.id} className="grid grid-cols-1 sm:grid-cols-[1fr_100px_120px_110px_40px] gap-2 sm:gap-3 items-end bg-[#fafafa] rounded-2xl p-3 sm:p-2 sm:bg-transparent sm:rounded-none border sm:border-0 border-[#e5e5e5]">
+              <div key={ing.id} className="grid grid-cols-1 sm:grid-cols-[1fr_100px_120px_110px_40px] gap-2 sm:gap-3 items-end bg-mono-1000 rounded-2xl p-3 sm:p-2 sm:bg-transparent sm:rounded-none border sm:border-0 border-[#e5e5e5]">
                 <div>
                   <label className="sm:hidden text-xs text-[#999999] font-medium mb-1 block">Ingredient</label>
                   <input
@@ -284,7 +284,7 @@ export default function FoodCostCalculator() {
               </button>
               <button
                 onClick={reset}
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-[#f5f5f5] hover:bg-[#eeeeee] text-[#000000] text-sm font-semibold rounded-2xl transition-colors"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-mono-975 hover:bg-[#eeeeee] text-[#000000] text-sm font-semibold rounded-2xl transition-colors"
               >
                 <RotateCcw className="w-4 h-4" /> Reset
               </button>
@@ -308,7 +308,7 @@ export default function FoodCostCalculator() {
                 min={1}
                 value={portions || ''}
                 onChange={e => setPortions(parseInt(e.target.value) || 0)}
-                className="w-full px-4 py-3 bg-[#fafafa] border border-[#e5e5e5] rounded-2xl text-sm text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#000000]/10 focus:border-[#000000] transition"
+                className="w-full px-4 py-3 bg-mono-1000 border border-[#e5e5e5] rounded-2xl text-sm text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#000000]/10 focus:border-[#000000] transition"
               />
             </div>
             <div>
@@ -319,12 +319,12 @@ export default function FoodCostCalculator() {
                 step="0.01"
                 value={prixVente || ''}
                 onChange={e => setPrixVente(parseFloat(e.target.value) || 0)}
-                className="w-full px-4 py-3 bg-[#fafafa] border border-[#e5e5e5] rounded-2xl text-sm text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#000000]/10 focus:border-[#000000] transition"
+                className="w-full px-4 py-3 bg-mono-1000 border border-[#e5e5e5] rounded-2xl text-sm text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#000000]/10 focus:border-[#000000] transition"
               />
             </div>
             <div>
               <label className="text-sm text-[#666666] font-medium mb-1.5 block">Prix suggere (30%)</label>
-              <div className="w-full px-4 py-3 bg-[#f5f5f5] border border-[#e5e5e5] rounded-2xl text-sm text-[#000000] font-bold">
+              <div className="w-full px-4 py-3 bg-mono-975 border border-[#e5e5e5] rounded-2xl text-sm text-[#000000] font-bold">
                 {prixVenteSuggere > 0 ? `${formatCurrency(prixVenteSuggere)}` : '--'}
               </div>
             </div>
@@ -402,7 +402,7 @@ export default function FoodCostCalculator() {
             <select
               value={cuisineType}
               onChange={e => setCuisineType(e.target.value)}
-              className="px-3 py-2 bg-[#fafafa] border border-[#e5e5e5] rounded-2xl text-sm text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#000000]/10 focus:border-[#000000] transition w-full sm:w-auto"
+              className="px-3 py-2 bg-mono-1000 border border-[#e5e5e5] rounded-2xl text-sm text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#000000]/10 focus:border-[#000000] transition w-full sm:w-auto"
             >
               {BENCHMARKS.map(b => <option key={b.label} value={b.label}>{b.label}</option>)}
             </select>
@@ -418,7 +418,7 @@ export default function FoodCostCalculator() {
                   <div className={`w-32 sm:w-40 text-right text-sm font-medium ${isUser ? 'text-[#000000] font-bold' : 'text-[#666666]'}`}>
                     {item.label}
                   </div>
-                  <div className="flex-1 h-8 bg-[#f5f5f5] rounded-full overflow-hidden relative">
+                  <div className="flex-1 h-8 bg-mono-975 rounded-full overflow-hidden relative">
                     <div
                       className="h-full rounded-full transition-all duration-700 ease-out flex items-center justify-end pr-3"
                       style={{
@@ -436,7 +436,7 @@ export default function FoodCostCalculator() {
           </div>
 
           {foodCostPct > 0 && (
-            <div className="mt-4 p-3 rounded-2xl bg-[#fafafa] border border-[#e5e5e5]">
+            <div className="mt-4 p-3 rounded-2xl bg-mono-1000 border border-[#e5e5e5]">
               {(() => {
                 const selectedBenchmark = BENCHMARKS.find(b => b.label === cuisineType);
                 if (!selectedBenchmark) return null;
@@ -527,21 +527,21 @@ export default function FoodCostCalculator() {
 
           {/* Profit KPIs */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <div className="bg-[#fafafa] rounded-2xl border border-[#e5e5e5] p-4 text-center">
+            <div className="bg-mono-1000 rounded-2xl border border-[#e5e5e5] p-4 text-center">
               <div className="text-xs text-[#999999] font-medium mb-1">CA / mois</div>
               <div className="text-xl sm:text-2xl font-extrabold text-[#000000]">{formatCurrency(caMois)}</div>
             </div>
-            <div className="bg-[#fafafa] rounded-2xl border border-[#e5e5e5] p-4 text-center">
+            <div className="bg-mono-1000 rounded-2xl border border-[#e5e5e5] p-4 text-center">
               <div className="text-xs text-[#999999] font-medium mb-1">Profit brut / mois</div>
               <div className="text-xl sm:text-2xl font-extrabold text-[#10b981]">{formatCurrency(profitBrutMois)}</div>
             </div>
-            <div className="bg-[#fafafa] rounded-2xl border border-[#e5e5e5] p-4 text-center">
+            <div className="bg-mono-1000 rounded-2xl border border-[#e5e5e5] p-4 text-center">
               <div className="text-xs text-[#999999] font-medium mb-1">Profit net estime</div>
               <div className="text-xl sm:text-2xl font-extrabold" style={{ color: profitNetMois > 0 ? '#10b981' : '#ef4444' }}>
                 {formatCurrency(profitNetMois)}
               </div>
             </div>
-            <div className="bg-[#fafafa] rounded-2xl border border-[#e5e5e5] p-4 text-center">
+            <div className="bg-mono-1000 rounded-2xl border border-[#e5e5e5] p-4 text-center">
               <div className="text-xs text-[#999999] font-medium mb-1">Profit net / an</div>
               <div className="text-xl sm:text-2xl font-extrabold" style={{ color: profitNetMois > 0 ? '#000000' : '#ef4444' }}>
                 {formatCurrency(profitNetMois * 12)}
@@ -631,7 +631,7 @@ export default function FoodCostCalculator() {
         </section>
 
         {/* ── Bottom CTA ── */}
-        <section className="rounded-2xl border border-[#e5e5e5] bg-[#fafafa] p-6 sm:p-10 text-center">
+        <section className="rounded-2xl border border-[#e5e5e5] bg-mono-1000 p-6 sm:p-10 text-center">
           <h2
             className="text-xl sm:text-2xl font-extrabold text-[#000000] mb-3"
            
@@ -664,7 +664,7 @@ export default function FoodCostCalculator() {
           </p>
           <Link
             to="/login?mode=register"
-            className="flex-shrink-0 inline-flex items-center gap-1.5 px-4 py-2 bg-white text-[#000000] text-sm font-bold rounded-full hover:bg-[#f5f5f5] transition-colors"
+            className="flex-shrink-0 inline-flex items-center gap-1.5 px-4 py-2 bg-white text-[#000000] text-sm font-bold rounded-full hover:bg-mono-975 transition-colors"
           >
             Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
           </Link>
@@ -687,7 +687,7 @@ export default function FoodCostCalculator() {
 
 function KPICard({ icon, label, value, sub, color }: { icon?: React.ReactNode; label: string; value: string; sub?: string; color?: string }) {
   return (
-    <div className="bg-[#fafafa] rounded-2xl border border-[#e5e5e5] p-4 text-center">
+    <div className="bg-mono-1000 rounded-2xl border border-[#e5e5e5] p-4 text-center">
       {icon && <div className="flex justify-center mb-1.5 text-[#999999]">{icon}</div>}
       <div className="text-xs text-[#999999] font-medium mb-1">{label}</div>
       <div className="text-xl sm:text-2xl font-extrabold" style={{ color: color || '#000000' }}>{value}</div>

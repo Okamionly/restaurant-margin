@@ -41,14 +41,14 @@ export default function BlogCoefficient() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">Connexion</Link>
+            <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">Connexion</Link>
           </div>
         </div>
       </nav>
@@ -68,7 +68,7 @@ export default function BlogCoefficient() {
 
         <BlogAuthor publishedDate="2026-04-14" readTime="8 min" variant="header" />
 
-        <p className="text-lg text-[#525252] leading-relaxed mb-8">
+        <p className="text-lg text-mono-400 leading-relaxed mb-8">
           Fixer le prix de vente de vos plats au hasard est la premiere cause de faillite en restauration. En France, un restaurant sur deux ferme dans les trois premieres annees. Le point commun de ceux qui survivent ? Ils maitrisent leur coefficient multiplicateur.
         </p>
 
@@ -85,23 +85,23 @@ export default function BlogCoefficient() {
 
         <h3>La relation entre coefficient et food cost</h3>
         <p>Le coefficient multiplicateur et le food cost sont inversement lies :</p>
-        <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 my-6">
-          <p className="text-center text-lg font-bold text-[#262626]">Coefficient = 1 / Food cost</p>
+        <div className="bg-mono-1000 border border-mono-900 rounded-xl p-5 my-6">
+          <p className="text-center text-lg font-bold text-mono-300">Coefficient = 1 / Food cost</p>
         </div>
 
         <div className="overflow-x-auto my-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#FAFAFA]">
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Food cost cible</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Coefficient multiplicateur</th>
+              <tr className="bg-mono-1000">
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Food cost cible</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Coefficient multiplicateur</th>
               </tr>
             </thead>
             <tbody>
               {[['20 %','5,00'],['25 %','4,00'],['28 %','3,57'],['30 %','3,33'],['33 %','3,03'],['35 %','2,86']].map(([fc, coef]) => (
-                <tr key={fc} className="border-t border-[#F5F5F5]">
-                  <td className="px-4 py-2.5 text-[#404040]">{fc}</td>
-                  <td className="px-4 py-2.5 font-semibold text-[#111111]">{coef}</td>
+                <tr key={fc} className="border-t border-mono-975">
+                  <td className="px-4 py-2.5 text-mono-350">{fc}</td>
+                  <td className="px-4 py-2.5 font-semibold text-mono-100">{coef}</td>
                 </tr>
               ))}
             </tbody>
@@ -114,10 +114,10 @@ export default function BlogCoefficient() {
         <div className="overflow-x-auto my-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#FAFAFA]">
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Categorie</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Coefficient</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Food cost</th>
+              <tr className="bg-mono-1000">
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Categorie</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Coefficient</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Food cost</th>
               </tr>
             </thead>
             <tbody>
@@ -134,10 +134,10 @@ export default function BlogCoefficient() {
                 ['Vins au verre','x 3,0 a 4,0','25-33 %'],
                 ['Vins en bouteille','x 2,5 a 3,5','29-40 %'],
               ].map(([cat, coef, fc]) => (
-                <tr key={cat} className="border-t border-[#F5F5F5]">
-                  <td className="px-4 py-2.5 font-medium text-[#111111]">{cat}</td>
-                  <td className="px-4 py-2.5 text-[#404040]">{coef}</td>
-                  <td className="px-4 py-2.5 text-[#737373]">{fc}</td>
+                <tr key={cat} className="border-t border-mono-975">
+                  <td className="px-4 py-2.5 font-medium text-mono-100">{cat}</td>
+                  <td className="px-4 py-2.5 text-mono-350">{coef}</td>
+                  <td className="px-4 py-2.5 text-mono-500">{fc}</td>
                 </tr>
               ))}
             </tbody>
@@ -175,18 +175,18 @@ export default function BlogCoefficient() {
         <div className="overflow-x-auto my-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#FAFAFA]">
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Element</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Budget matiere</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Coefficient</th>
+              <tr className="bg-mono-1000">
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Element</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Budget matiere</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Coefficient</th>
               </tr>
             </thead>
             <tbody>
               {[['Entree','2,00 EUR','x 3,5'],['Plat principal','5,50 EUR','x 3,0'],['Dessert','1,41 EUR','x 5,9'],['Total','8,91 EUR','x 3,57 (moyen)']].map(([el, budget, coef]) => (
-                <tr key={el} className="border-t border-[#F5F5F5]">
-                  <td className={`px-4 py-2.5 ${el === 'Total' ? 'font-bold' : 'font-medium'} text-[#111111]`}>{el}</td>
-                  <td className="px-4 py-2.5 text-[#404040]">{budget}</td>
-                  <td className="px-4 py-2.5 text-[#404040]">{coef}</td>
+                <tr key={el} className="border-t border-mono-975">
+                  <td className={`px-4 py-2.5 ${el === 'Total' ? 'font-bold' : 'font-medium'} text-mono-100`}>{el}</td>
+                  <td className="px-4 py-2.5 text-mono-350">{budget}</td>
+                  <td className="px-4 py-2.5 text-mono-350">{coef}</td>
                 </tr>
               ))}
             </tbody>
@@ -207,11 +207,11 @@ export default function BlogCoefficient() {
         <div className="overflow-x-auto my-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#FAFAFA]">
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Type de cuisine</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Coefficient moyen</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Food cost resultant</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Pourquoi</th>
+              <tr className="bg-mono-1000">
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Type de cuisine</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Coefficient moyen</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Food cost resultant</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Pourquoi</th>
               </tr>
             </thead>
             <tbody>
@@ -227,11 +227,11 @@ export default function BlogCoefficient() {
                 ['Cuisine vegetarienne','x 4,0 a 5,0','20-25 %','Legumes, legumineuses accessibles'],
                 ['Sushi / Japonais','x 3,0 a 4,0','25-33 %','Poisson cru de qualite, riz peu couteux'],
               ].map(([type, coef, fc, why]) => (
-                <tr key={type} className="border-t border-[#F5F5F5]">
-                  <td className="px-4 py-2.5 font-medium text-[#111111]">{type}</td>
+                <tr key={type} className="border-t border-mono-975">
+                  <td className="px-4 py-2.5 font-medium text-mono-100">{type}</td>
                   <td className="px-4 py-2.5 text-teal-700 font-semibold">{coef}</td>
-                  <td className="px-4 py-2.5 text-[#404040]">{fc}</td>
-                  <td className="px-4 py-2.5 text-[#737373] text-xs">{why}</td>
+                  <td className="px-4 py-2.5 text-mono-350">{fc}</td>
+                  <td className="px-4 py-2.5 text-mono-500 text-xs">{why}</td>
                 </tr>
               ))}
             </tbody>
@@ -244,11 +244,11 @@ export default function BlogCoefficient() {
         <div className="overflow-x-auto my-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#FAFAFA]">
-                <th className="text-left px-3 py-2.5 font-semibold text-[#525252]">Coefficient</th>
-                <th className="text-left px-3 py-2.5 font-semibold text-[#525252]">Food cost</th>
-                <th className="text-left px-3 py-2.5 font-semibold text-[#525252]">Marge brute</th>
-                <th className="text-left px-3 py-2.5 font-semibold text-[#525252]">Exemple (cout 5 EUR)</th>
+              <tr className="bg-mono-1000">
+                <th className="text-left px-3 py-2.5 font-semibold text-mono-400">Coefficient</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-mono-400">Food cost</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-mono-400">Marge brute</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-mono-400">Exemple (cout 5 EUR)</th>
               </tr>
             </thead>
             <tbody>
@@ -263,11 +263,11 @@ export default function BlogCoefficient() {
                 ['x 4,5','22,2 %','77,8 %','22,50 EUR'],
                 ['x 5,0','20,0 %','80,0 %','25,00 EUR'],
               ].map(([coef, fc, mb, ex]) => (
-                <tr key={coef} className="border-t border-[#F5F5F5]">
+                <tr key={coef} className="border-t border-mono-975">
                   <td className="px-3 py-2.5 font-bold text-teal-700">{coef}</td>
-                  <td className="px-3 py-2.5 text-[#404040]">{fc}</td>
-                  <td className="px-3 py-2.5 text-[#404040]">{mb}</td>
-                  <td className="px-3 py-2.5 text-[#737373]">{ex}</td>
+                  <td className="px-3 py-2.5 text-mono-350">{fc}</td>
+                  <td className="px-3 py-2.5 text-mono-350">{mb}</td>
+                  <td className="px-3 py-2.5 text-mono-500">{ex}</td>
                 </tr>
               ))}
             </tbody>
@@ -288,9 +288,9 @@ export default function BlogCoefficient() {
         </div>
 
         {/* ── Points cles ── */}
-        <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-6 my-8">
-          <h3 className="text-base font-bold text-[#111111] mb-3">Points cles a retenir</h3>
-          <ol className="space-y-1.5 text-sm text-[#404040]">
+        <div className="bg-mono-1000 border border-mono-900 rounded-xl p-6 my-8">
+          <h3 className="text-base font-bold text-mono-100 mb-3">Points cles a retenir</h3>
+          <ol className="space-y-1.5 text-sm text-mono-350">
             <li>1. Le coefficient convertit le cout matiere en prix de vente HT.</li>
             <li>2. N'appliquez jamais un coefficient unique a toute la carte.</li>
             <li>3. Les desserts et boissons meritent les coefficients les plus eleves.</li>
@@ -303,17 +303,17 @@ export default function BlogCoefficient() {
         {/* ── Articles complementaires ── */}
         <h2>Articles complementaires</h2>
         <div className="grid sm:grid-cols-3 gap-4 my-6">
-          <Link to="/blog/calcul-marge-restaurant" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
-            <h3 className="text-sm font-bold text-[#111111] mb-1 group-hover:text-teal-700 transition-colors !mt-0">Calcul de marge restaurant : guide 2026</h3>
-            <p className="text-xs text-[#737373] !mb-0">Marge brute, marge nette, food cost — toutes les formules.</p>
+          <Link to="/blog/calcul-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-mono-100 mb-1 group-hover:text-teal-700 transition-colors !mt-0">Calcul de marge restaurant : guide 2026</h3>
+            <p className="text-xs text-mono-500 !mb-0">Marge brute, marge nette, food cost — toutes les formules.</p>
           </Link>
-          <Link to="/blog/reduire-food-cost" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
-            <h3 className="text-sm font-bold text-[#111111] mb-1 group-hover:text-teal-700 transition-colors !mt-0">5 methodes pour reduire le food cost de 15 %</h3>
-            <p className="text-xs text-[#737373] !mb-0">Fiches techniques, negociation, gaspillage.</p>
+          <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-mono-100 mb-1 group-hover:text-teal-700 transition-colors !mt-0">5 methodes pour reduire le food cost de 15 %</h3>
+            <p className="text-xs text-mono-500 !mb-0">Fiches techniques, negociation, gaspillage.</p>
           </Link>
-          <Link to="/blog/ia-restauration" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
-            <h3 className="text-sm font-bold text-[#111111] mb-1 group-hover:text-teal-700 transition-colors !mt-0">L'IA en restauration</h3>
-            <p className="text-xs text-[#737373] !mb-0">Scanner de factures, fiches techniques vocales, alertes.</p>
+          <Link to="/blog/ia-restauration" className="bg-mono-1000 border border-mono-900 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-mono-100 mb-1 group-hover:text-teal-700 transition-colors !mt-0">L'IA en restauration</h3>
+            <p className="text-xs text-mono-500 !mb-0">Scanner de factures, fiches techniques vocales, alertes.</p>
           </Link>
         </div>
 
@@ -328,12 +328,12 @@ export default function BlogCoefficient() {
             { q: 'Coefficient multiplicateur : avec ou sans TVA ?', a: 'Le coefficient s\'applique au cout matiere HT pour donner un prix de vente HT. La TVA est ajoutee ensuite. En France, la TVA sur la restauration sur place est de 10 %. Si votre calcul donne 15,00 EUR HT, le prix TTC sera 16,50 EUR (arrondi a 16,50 EUR sur la carte).' },
             { q: 'Comment optimiser son coefficient multiplicateur ?', a: 'Trois strategies : 1) Augmenter la valeur percue du plat (presentation, garniture, storytelling menu) pour justifier un prix plus eleve. 2) Reduire le cout matiere en negociant fournisseurs ou en optimisant les rendements. 3) Utiliser le menu engineering pour promouvoir les plats a fort coefficient.' },
           ].map((item) => (
-            <details key={item.q} className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl group">
-              <summary className="px-5 py-4 font-semibold text-[#111111] cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors text-sm">
+            <details key={item.q} className="bg-mono-1000 border border-mono-900 rounded-xl group">
+              <summary className="px-5 py-4 font-semibold text-mono-100 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors text-sm">
                 {item.q}
-                <ArrowRight className="w-4 h-4 text-[#A3A3A3] group-open:rotate-90 transition-transform flex-shrink-0 ml-2" />
+                <ArrowRight className="w-4 h-4 text-mono-700 group-open:rotate-90 transition-transform flex-shrink-0 ml-2" />
               </summary>
-              <p className="px-5 pb-4 text-sm text-[#525252] leading-relaxed">{item.a}</p>
+              <p className="px-5 pb-4 text-sm text-mono-400 leading-relaxed">{item.a}</p>
             </details>
           ))}
         </div>
@@ -343,10 +343,10 @@ export default function BlogCoefficient() {
       {/* ── CTA ── */}
       <section className="bg-teal-50 py-14 px-4 text-center">
         <div className="max-w-lg mx-auto">
-          <h2 className="text-2xl font-bold text-[#111111] mb-3 font-satoshi">
+          <h2 className="text-2xl font-bold text-mono-100 mb-3 font-satoshi">
             Calculez vos coefficients en 5 minutes
           </h2>
-          <p className="text-[#525252] mb-6">
+          <p className="text-mono-400 mb-6">
             Testez RestauMargin gratuitement et voyez la marge reelle de chacun de vos plats.
           </p>
           <Link
@@ -360,8 +360,8 @@ export default function BlogCoefficient() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-[#E5E7EB] py-8 px-4">
-        <div className="max-w-[720px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#A3A3A3]">
+      <footer className="border-t border-mono-900 py-8 px-4">
+        <div className="max-w-[720px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-mono-700">
           <Link to="/landing" className="flex items-center gap-1.5 hover:text-teal-600 transition-colors">
             <ArrowLeft className="w-4 h-4" />
             Retour a l'accueil

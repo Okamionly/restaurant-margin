@@ -86,7 +86,7 @@ const statusConfig: Record<AllergenStatus, { bg: string; text: string; border: s
     border: 'border-[#9CA3AF]',
     label: 'Inconnu',
     darkBg: 'bg-[#333]',
-    darkText: 'text-[#737373]',
+    darkText: 'text-mono-500',
     darkBorder: 'border-[#444]',
   },
 };
@@ -100,13 +100,13 @@ function SafetyBar({ score, total }: { score: number; total: number }) {
 
   return (
     <div className="flex items-center gap-1.5 min-w-[90px]">
-      <div className="flex-1 h-2 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A] overflow-hidden">
+      <div className="flex-1 h-2 rounded-full bg-mono-900 dark:bg-mono-200 overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-500 ${color}`}
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="text-[10px] font-bold text-[#111111] dark:text-white tabular-nums w-[28px] text-right">
+      <span className="text-[10px] font-bold text-mono-100 dark:text-white tabular-nums w-[28px] text-right">
         {score}/{total}
       </span>
     </div>
@@ -267,8 +267,8 @@ export default function AllergenMatrix() {
     return (
       <div className="text-center py-20">
         <Shield className="w-12 h-12 mx-auto mb-3 text-[#D1D5DB] dark:text-[#333]" />
-        <h2 className="text-lg font-bold text-[#111111] dark:text-white mb-1">Aucune recette</h2>
-        <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Creez des recettes pour voir la matrice allergenes.</p>
+        <h2 className="text-lg font-bold text-mono-100 dark:text-white mb-1">Aucune recette</h2>
+        <p className="text-sm text-[#9CA3AF] dark:text-mono-500">Creez des recettes pour voir la matrice allergenes.</p>
       </div>
     );
   }
@@ -278,11 +278,11 @@ export default function AllergenMatrix() {
       {/* ── Header ────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-2">
+          <h1 className="text-xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-2">
             <Shield className="w-5 h-5" />
             Matrice allergenes
           </h1>
-          <p className="text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3] mt-0.5">
+          <p className="text-sm font-general-sans text-mono-500 dark:text-mono-700 mt-0.5">
             {data.recipes.length} recettes &times; 14 allergenes majeurs UE
           </p>
         </div>
@@ -291,8 +291,8 @@ export default function AllergenMatrix() {
             onClick={() => setShowClientChecker(v => !v)}
             className={`flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-2xl border transition-colors ${
               showClientChecker
-                ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] border-[#111111] dark:border-white'
-                : 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 border-mono-100 dark:border-white'
+                : 'bg-white dark:bg-mono-50 text-mono-100 dark:text-white border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717]'
             }`}
           >
             <Users className="w-4 h-4" />
@@ -300,14 +300,14 @@ export default function AllergenMatrix() {
           </button>
           <button
             onClick={() => setShowLegend(v => !v)}
-            className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-2xl bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+            className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-2xl bg-white dark:bg-mono-50 text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
           >
             {showLegend ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             Legende
           </button>
           <button
             onClick={handlePrint}
-            className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-2xl bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors"
+            className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-2xl bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors"
           >
             <Printer className="w-4 h-4" />
             Imprimer la matrice
@@ -317,36 +317,36 @@ export default function AllergenMatrix() {
 
       {/* ── Legend ─────────────────────────────────────────────────────── */}
       {showLegend && (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4">
           <div className="flex flex-wrap items-center gap-4 text-xs">
-            <span className="font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Legende :</span>
+            <span className="font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Legende :</span>
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-4 rounded bg-red-500 inline-block" />
-              <span className="text-[#111111] dark:text-white">Contient</span>
+              <span className="text-mono-100 dark:text-white">Contient</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-4 rounded bg-amber-400 inline-block" />
-              <span className="text-[#111111] dark:text-white">Traces possibles</span>
+              <span className="text-mono-100 dark:text-white">Traces possibles</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-4 rounded bg-emerald-500 inline-block" />
-              <span className="text-[#111111] dark:text-white">Sans allergene</span>
+              <span className="text-mono-100 dark:text-white">Sans allergene</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-4 rounded bg-[#D1D5DB] dark:bg-[#333] inline-block" />
-              <span className="text-[#111111] dark:text-white">Non renseigne</span>
+              <span className="text-mono-100 dark:text-white">Non renseigne</span>
             </div>
             <div className="flex items-center gap-1.5 ml-4">
               <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-[9px] font-semibold">
                 <Sparkles className="w-2.5 h-2.5" /> IA
               </span>
-              <span className="text-[#111111] dark:text-white">Detection IA</span>
+              <span className="text-mono-100 dark:text-white">Detection IA</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#737373] text-[9px] font-semibold">
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-500 text-[9px] font-semibold">
                 <PenLine className="w-2.5 h-2.5" /> Manuel
               </span>
-              <span className="text-[#111111] dark:text-white">Saisie manuelle</span>
+              <span className="text-mono-100 dark:text-white">Saisie manuelle</span>
             </div>
           </div>
         </div>
@@ -373,10 +373,10 @@ export default function AllergenMatrix() {
 
       {/* ── Client Allergen Checker ───────────────────────────────────── */}
       {showClientChecker && (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 space-y-3 no-print">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4 space-y-3 no-print">
           <div className="flex items-center gap-2 mb-2">
-            <Users className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h3 className="text-sm font-bold text-[#111111] dark:text-white">Mon client est allergique a :</h3>
+            <Users className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h3 className="text-sm font-bold text-mono-100 dark:text-white">Mon client est allergique a :</h3>
           </div>
           <div className="flex flex-wrap gap-2">
             {EU_ALLERGENS.map(a => {
@@ -388,7 +388,7 @@ export default function AllergenMatrix() {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
                     selected
                       ? 'bg-red-500 text-white border-red-600 shadow-sm'
-                      : 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                      : 'bg-white dark:bg-mono-50 text-mono-100 dark:text-white border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717]'
                   }`}
                 >
                   <span className="text-sm">{a.icon}</span>
@@ -457,7 +457,7 @@ export default function AllergenMatrix() {
       )}
 
       {/* ── Filters ───────────────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 no-print">
+      <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4 no-print">
         <div className="flex flex-wrap gap-3">
           {/* Search */}
           <div className="relative flex-1 min-w-[200px]">
@@ -467,7 +467,7 @@ export default function AllergenMatrix() {
               placeholder="Rechercher une recette..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+              className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
             />
           </div>
 
@@ -475,7 +475,7 @@ export default function AllergenMatrix() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 text-sm rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+            className="px-3 py-2 text-sm rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
           >
             <option value="all">Toutes categories</option>
             {categories.map((cat) => (
@@ -497,7 +497,7 @@ export default function AllergenMatrix() {
                 title={allergen.description}
                 className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-semibold border transition-all ${
                   isActive
-                    ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] border-[#111111] dark:border-white shadow-sm scale-105'
+                    ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 border-mono-100 dark:border-white shadow-sm scale-105'
                     : containsCount > 0
                       ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/30'
                       : 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/30'
@@ -513,13 +513,13 @@ export default function AllergenMatrix() {
       </div>
 
       {/* ── Matrix Grid ───────────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto print-matrix">
+      <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-x-auto print-matrix">
         <table className="w-full text-[11px] border-collapse min-w-[1000px]">
           <thead>
-            <tr className="border-b-2 border-[#E5E7EB] dark:border-[#333]">
+            <tr className="border-b-2 border-mono-900 dark:border-[#333]">
               {/* Recipe column header */}
               <th
-                className="text-left py-3 px-3 font-semibold text-[#6B7280] dark:text-[#737373] sticky left-0 bg-white dark:bg-[#0A0A0A] z-10 min-w-[200px] cursor-pointer hover:text-[#111111] dark:hover:text-white transition-colors"
+                className="text-left py-3 px-3 font-semibold text-[#6B7280] dark:text-mono-500 sticky left-0 bg-white dark:bg-mono-50 z-10 min-w-[200px] cursor-pointer hover:text-mono-100 dark:hover:text-white transition-colors"
                 onClick={() => toggleSort('name')}
               >
                 <div className="flex items-center gap-1">
@@ -530,7 +530,7 @@ export default function AllergenMatrix() {
 
               {/* Safety score column */}
               <th
-                className="text-center py-3 px-2 font-semibold text-[#6B7280] dark:text-[#737373] min-w-[100px] cursor-pointer hover:text-[#111111] dark:hover:text-white transition-colors"
+                className="text-center py-3 px-2 font-semibold text-[#6B7280] dark:text-mono-500 min-w-[100px] cursor-pointer hover:text-mono-100 dark:hover:text-white transition-colors"
                 onClick={() => toggleSort('safety')}
               >
                 <div className="flex items-center justify-center gap-1">
@@ -549,7 +549,7 @@ export default function AllergenMatrix() {
                     className={`text-center py-3 px-1 min-w-[52px] cursor-pointer transition-all ${
                       isHighlighted
                         ? 'bg-amber-50 dark:bg-amber-900/20'
-                        : 'hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                        : 'hover:bg-mono-950 dark:hover:bg-[#171717]'
                     }`}
                     onClick={() => setHighlightAllergen(isHighlighted ? null : allergen.key)}
                     title={`${allergen.label}: ${allergen.description}`}
@@ -557,7 +557,7 @@ export default function AllergenMatrix() {
                     <div className="flex flex-col items-center gap-0.5">
                       <span className="text-base leading-none">{allergen.icon}</span>
                       <span className={`text-[8px] font-bold leading-tight ${
-                        isHighlighted ? 'text-amber-700 dark:text-amber-300' : 'text-[#6B7280] dark:text-[#737373]'
+                        isHighlighted ? 'text-amber-700 dark:text-amber-300' : 'text-[#6B7280] dark:text-mono-500'
                       }`}>
                         {allergen.label.length > 7 ? allergen.label.substring(0, 6) + '.' : allergen.label}
                       </span>
@@ -581,7 +581,7 @@ export default function AllergenMatrix() {
               return (
                 <tr
                   key={recipe.id}
-                  className={`border-b border-[#F3F4F6] dark:border-[#1A1A1A] transition-all ${
+                  className={`border-b border-mono-950 dark:border-mono-200 transition-all ${
                     highlightAllergen && !matchesHighlight
                       ? 'opacity-30'
                       : ''
@@ -589,19 +589,19 @@ export default function AllergenMatrix() {
                     matchesHighlight
                       ? 'bg-amber-50/50 dark:bg-amber-900/10'
                       : idx % 2 === 0
-                        ? 'bg-white dark:bg-[#0A0A0A]'
-                        : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/60'
-                  } hover:bg-[#F3F4F6] dark:hover:bg-[#171717]`}
+                        ? 'bg-white dark:bg-mono-50'
+                        : 'bg-mono-1000 dark:bg-mono-50/60'
+                  } hover:bg-mono-950 dark:hover:bg-[#171717]`}
                 >
                   {/* Recipe name */}
                   <td className="py-2 px-3 sticky left-0 bg-inherit z-10">
                     <Link
                       to={`/recipes/${recipe.id}`}
-                      className="font-medium text-[#111111] dark:text-white hover:text-teal-600 dark:hover:text-teal-400 transition-colors text-xs"
+                      className="font-medium text-mono-100 dark:text-white hover:text-teal-600 dark:hover:text-teal-400 transition-colors text-xs"
                     >
                       {recipe.name}
                     </Link>
-                    <span className="ml-1.5 text-[9px] text-[#9CA3AF] dark:text-[#737373] bg-[#F3F4F6] dark:bg-[#171717] px-1.5 py-0.5 rounded">
+                    <span className="ml-1.5 text-[9px] text-[#9CA3AF] dark:text-mono-500 bg-mono-950 dark:bg-[#171717] px-1.5 py-0.5 rounded">
                       {recipe.category}
                     </span>
                   </td>
@@ -665,7 +665,7 @@ export default function AllergenMatrix() {
 
         {filteredRecipes.length === 0 && (
           <div className="text-center py-8">
-            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+            <p className="text-sm text-[#9CA3AF] dark:text-mono-500">
               Aucune recette trouvee
             </p>
           </div>
@@ -673,12 +673,12 @@ export default function AllergenMatrix() {
       </div>
 
       {/* ── Summary Stats ─────────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
-        <h3 className="text-xs font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3">Resume</h3>
+      <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4">
+        <h3 className="text-xs font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-3">Resume</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="text-center p-3 rounded-2xl bg-[#F3F4F6] dark:bg-[#171717]">
-            <div className="text-2xl font-black text-[#111111] dark:text-white">{data.recipes.length}</div>
-            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Recettes analysees</div>
+          <div className="text-center p-3 rounded-2xl bg-mono-950 dark:bg-[#171717]">
+            <div className="text-2xl font-black text-mono-100 dark:text-white">{data.recipes.length}</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Recettes analysees</div>
           </div>
           <div className="text-center p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20">
             <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
@@ -711,8 +711,8 @@ export default function AllergenMatrix() {
       </div>
 
       {/* ── Allergen Breakdown ────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
-        <h3 className="text-xs font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3">Repartition par allergene</h3>
+      <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4">
+        <h3 className="text-xs font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-3">Repartition par allergene</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-2">
           {EU_ALLERGENS.map(allergen => {
             const stats = allergenStats[allergen.key];
@@ -724,12 +724,12 @@ export default function AllergenMatrix() {
             return (
               <div
                 key={allergen.key}
-                className="rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-2.5 hover:border-[#111111] dark:hover:border-white transition-colors cursor-pointer"
+                className="rounded-xl border border-mono-900 dark:border-mono-200 p-2.5 hover:border-mono-100 dark:hover:border-white transition-colors cursor-pointer"
                 onClick={() => setHighlightAllergen(highlightAllergen === allergen.key ? null : allergen.key)}
               >
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <span className="text-sm">{allergen.icon}</span>
-                  <span className="text-[10px] font-bold text-[#111111] dark:text-white truncate">{allergen.label}</span>
+                  <span className="text-[10px] font-bold text-mono-100 dark:text-white truncate">{allergen.label}</span>
                 </div>
                 <div className="flex gap-0.5 h-2 rounded-full overflow-hidden bg-emerald-100 dark:bg-emerald-900/30">
                   {containsPct > 0 && (

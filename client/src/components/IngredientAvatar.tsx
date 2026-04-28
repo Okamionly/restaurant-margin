@@ -21,7 +21,7 @@ export default function IngredientAvatar({ name, category, size = 'md', classNam
         <img
           src={imageUrl}
           alt={name}
-          className={`${sizes[size]} rounded-full object-cover bg-[#F5F5F5] dark:bg-[#262626]`}
+          className={`${sizes[size]} rounded-full object-cover bg-mono-975 dark:bg-mono-300`}
           onError={() => setImgError(true)}
         />
       </div>
@@ -29,7 +29,7 @@ export default function IngredientAvatar({ name, category, size = 'md', classNam
   }
 
   return (
-    <div className={`${sizes[size]} rounded-full bg-[#F5F5F5] dark:bg-[#262626] flex items-center justify-center flex-shrink-0 ${className}`}>
+    <div className={`${sizes[size]} rounded-full bg-mono-975 dark:bg-mono-300 flex items-center justify-center flex-shrink-0 ${className}`}>
       <span className={textSizes[size]}>{emoji}</span>
     </div>
   );

@@ -69,13 +69,13 @@ export default function BlogTauxOccupation() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -119,12 +119,12 @@ export default function BlogTauxOccupation() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <Calculator className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Définition du taux d'occupation</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Définition du taux d'occupation</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le taux d'occupation mesure le ratio entre les couverts effectivement servis et la capacité maximale théorique sur une période donnée.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Taux d'occupation = (Couverts servis / Couverts disponibles) × 100
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
@@ -141,12 +141,12 @@ export default function BlogTauxOccupation() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. La formule RevPASH</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. La formule RevPASH</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le taux d'occupation seul ne tient pas compte de la valeur générée. Le <strong>RevPASH</strong> (Revenue Per Available Seat Hour) le complète.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             RevPASH = CA / (Nombre de places × Heures d'ouverture)
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
@@ -167,7 +167,7 @@ export default function BlogTauxOccupation() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Benchmarks par type de restaurant</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Benchmarks par type de restaurant</h2>
           </div>
           <ul className="space-y-2 text-[#374151] mb-4">
             <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Gastronomique : moyen 45-55%, excellent 65%+</li>
@@ -189,7 +189,7 @@ export default function BlogTauxOccupation() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <Users className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Les 8 leviers pour améliorer le taux</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Les 8 leviers pour améliorer le taux</h2>
           </div>
           <ol className="space-y-3 text-[#374151] list-decimal pl-5 mb-4">
             <li><strong>Optimiser les réservations.</strong> Système en ligne (TheFork, Resy) + confirmation SMS J-1 → no-shows de 20% à 8%. Impact : +5 à +15%.</li>
@@ -209,12 +209,12 @@ export default function BlogTauxOccupation() {
             <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center">
               <Sun className="w-5 h-5 text-rose-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Cas chiffré : impact d'une hausse de 10%</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Cas chiffré : impact d'une hausse de 10%</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Bistrot 50 places, 9 services/semaine, rotation 1,4, ticket 32€. Taux actuel 60% → 378 couverts/semaine, CA 605 000€/an.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-2">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-2">
             <div>Hausse à 70% → 441 couverts/semaine</div>
             <div>CA additionnel : +100 800€/an</div>
             <div>Coûts incrémentaux (food cost + extras) : -42 336€</div>
@@ -231,7 +231,7 @@ export default function BlogTauxOccupation() {
             <div className="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center">
               <Clock className="w-5 h-5 text-cyan-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Taux d'occupation et rentabilité</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Taux d'occupation et rentabilité</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>La courbe en S :</strong></p>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -242,7 +242,7 @@ export default function BlogTauxOccupation() {
             <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> 85-95% : rendement décroissant</li>
             <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" /> 95%+ : risque qualité</li>
           </ul>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Taux occupation min = Charges fixes / (Couverts dispo × Marge unitaire)<br />
             Marge unitaire = Ticket × (1 - Food cost %)
           </div>
@@ -257,7 +257,7 @@ export default function BlogTauxOccupation() {
             <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
               <Smartphone className="w-5 h-5 text-indigo-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">7. Suivre son taux au quotidien</h2>
+            <h2 className="text-2xl font-bold text-mono-100">7. Suivre son taux au quotidien</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Tableau de bord minimum (quotidien) :</strong></p>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -273,7 +273,7 @@ export default function BlogTauxOccupation() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -297,9 +297,9 @@ export default function BlogTauxOccupation() {
                 a: "Non. Le taux se calcule sur les couverts effectivement servis, pas sur les réservations. Mais suivez séparément le taux de no-show pour optimiser la politique de réservation."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -320,7 +320,7 @@ export default function BlogTauxOccupation() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/augmenter-ticket-moyen-restaurant" className="text-sm text-teal-600 hover:underline">Augmenter le ticket moyen →</Link>
         </div>

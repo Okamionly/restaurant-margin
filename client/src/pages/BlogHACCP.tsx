@@ -43,9 +43,9 @@ export default function BlogHACCP() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -59,7 +59,7 @@ export default function BlogHACCP() {
             </Link>
             <Link
               to="/login"
-              className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors"
+              className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors"
             >
               Connexion
             </Link>
@@ -83,12 +83,12 @@ export default function BlogHACCP() {
         <BlogAuthor publishedDate="2026-04-14" readTime="14 min" variant="header" />
 
         {/* ── Sommaire ── */}
-        <nav className="my-12 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
-          <h2 className="text-lg font-bold text-[#111111] mb-4 flex items-center gap-2">
+        <nav className="my-12 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
+          <h2 className="text-lg font-bold text-mono-100 mb-4 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-teal-600" />
             Sommaire
           </h2>
-          <ol className="space-y-2 text-sm sm:text-base text-[#404040]">
+          <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
               { href: '#definition', label: 'Qu\'est-ce que le HACCP et pourquoi c\'est obligatoire ?' },
               { href: '#temperatures', label: 'Tableau des temperatures de reference en restauration' },
@@ -174,10 +174,10 @@ export default function BlogHACCP() {
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className="bg-blue-50">
-                  <th className="text-left px-4 py-3 font-bold text-[#111111] border-b border-[#E5E7EB]">Equipement / Etape</th>
-                  <th className="text-left px-4 py-3 font-bold text-[#111111] border-b border-[#E5E7EB]">Temperature reglementaire</th>
-                  <th className="text-left px-4 py-3 font-bold text-[#111111] border-b border-[#E5E7EB]">Tolerance</th>
-                  <th className="text-left px-4 py-3 font-bold text-[#111111] border-b border-[#E5E7EB]">Frequence de controle</th>
+                  <th className="text-left px-4 py-3 font-bold text-mono-100 border-b border-mono-900">Equipement / Etape</th>
+                  <th className="text-left px-4 py-3 font-bold text-mono-100 border-b border-mono-900">Temperature reglementaire</th>
+                  <th className="text-left px-4 py-3 font-bold text-mono-100 border-b border-mono-900">Tolerance</th>
+                  <th className="text-left px-4 py-3 font-bold text-mono-100 border-b border-mono-900">Frequence de controle</th>
                 </tr>
               </thead>
               <tbody>
@@ -285,8 +285,8 @@ export default function BlogHACCP() {
             </p>
           </div>
 
-          <div className="mt-6 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
-            <h3 className="font-bold text-[#111111] mb-6 flex items-center gap-2">
+          <div className="mt-6 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
+            <h3 className="font-bold text-mono-100 mb-6 flex items-center gap-2">
               <ClipboardList className="w-5 h-5 text-blue-600" />
               Checklist quotidienne
             </h3>
@@ -343,8 +343,8 @@ export default function BlogHACCP() {
                 <Download className="w-6 h-6" />
               </div>
               <div className="flex-1">
-                <h4 className="font-semibold text-[#111111] mb-0.5">Telecharger la checklist HACCP (PDF)</h4>
-                <p className="text-sm text-[#525252]">
+                <h4 className="font-semibold text-mono-100 mb-0.5">Telecharger la checklist HACCP (PDF)</h4>
+                <p className="text-sm text-mono-400">
                   Version imprimable avec cases a cocher, prete a afficher en cuisine.
                 </p>
               </div>
@@ -441,26 +441,26 @@ export default function BlogHACCP() {
 
         {/* ═════════════ Articles lies ═════════════ */}
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Articles complementaires</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Articles complementaires</h2>
           <div className="grid sm:grid-cols-3 gap-4">
-            <Link to="/blog/gaspillage" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le gaspillage alimentaire</h3>
-              <p className="text-sm text-[#737373]">5 astuces concretes et un calculateur de pertes pour votre restaurant.</p>
+            <Link to="/blog/gaspillage" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le gaspillage alimentaire</h3>
+              <p className="text-sm text-mono-500">5 astuces concretes et un calculateur de pertes pour votre restaurant.</p>
             </Link>
-            <Link to="/blog/fiches-techniques" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Fiche technique de cuisine : le guide</h3>
-              <p className="text-sm text-[#737373]">Creez des fiches techniques precises pour maitriser food cost et qualite.</p>
+            <Link to="/blog/fiches-techniques" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Fiche technique de cuisine : le guide</h3>
+              <p className="text-sm text-mono-500">Creez des fiches techniques precises pour maitriser food cost et qualite.</p>
             </Link>
-            <Link to="/blog/calcul-marge-restaurant" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Calculer la marge de votre restaurant</h3>
-              <p className="text-sm text-[#737373]">Formules, benchmarks par type de restaurant et erreurs courantes.</p>
+            <Link to="/blog/calcul-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculer la marge de votre restaurant</h3>
+              <p className="text-sm text-mono-500">Formules, benchmarks par type de restaurant et erreurs courantes.</p>
             </Link>
           </div>
         </section>
 
         {/* ═════════════ FAQ ═════════════ */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions frequentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes</h2>
           <div className="space-y-4">
             <FAQItem
               q="Le HACCP est-il obligatoire pour tous les restaurants ?"
@@ -492,22 +492,22 @@ export default function BlogHACCP() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#FAFAFA] border-t border-[#E5E7EB] py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center text-sm text-[#737373]">
-          <Link to="/landing" className="flex items-center justify-center gap-2 text-[#111111] font-bold text-lg mb-4">
+      <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
+        <div className="max-w-4xl mx-auto text-center text-sm text-mono-500">
+          <Link to="/landing" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
             <ChefHat className="w-6 h-6 text-teal-600" />
             RestauMargin
           </Link>
           <p className="mb-4">
             La plateforme de gestion de marge pour les restaurateurs.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-[#A3A3A3]">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
             <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
             <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
           </div>
-          <p className="mt-6 text-xs text-[#A3A3A3]">
+          <p className="mt-6 text-xs text-mono-700">
             &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
           </p>
         </div>
@@ -607,7 +607,7 @@ function SectionHeading({ icon, number, children }: { icon: React.ReactNode; num
       <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
         {icon}
       </div>
-      <h2 className="text-2xl font-bold text-[#111111]">{children}</h2>
+      <h2 className="text-2xl font-bold text-mono-100">{children}</h2>
     </div>
   );
 }
@@ -615,24 +615,24 @@ function SectionHeading({ icon, number, children }: { icon: React.ReactNode; num
 function TempRow({ equip, temp, tolerance, freq, color }: { equip: string; temp: string; tolerance: string; freq: string; color: string }) {
   return (
     <tr className={color}>
-      <td className="px-4 py-3 border-b border-[#E5E7EB] font-medium text-[#111111]">{equip}</td>
-      <td className="px-4 py-3 border-b border-[#E5E7EB] text-[#525252]">{temp}</td>
-      <td className="px-4 py-3 border-b border-[#E5E7EB] text-[#525252]">{tolerance}</td>
-      <td className="px-4 py-3 border-b border-[#E5E7EB] text-[#525252]">{freq}</td>
+      <td className="px-4 py-3 border-b border-mono-900 font-medium text-mono-100">{equip}</td>
+      <td className="px-4 py-3 border-b border-mono-900 text-mono-400">{temp}</td>
+      <td className="px-4 py-3 border-b border-mono-900 text-mono-400">{tolerance}</td>
+      <td className="px-4 py-3 border-b border-mono-900 text-mono-400">{freq}</td>
     </tr>
   );
 }
 
 function PrincipeCard({ number, title, desc, example }: { number: number; title: string; desc: string; example: string }) {
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 sm:p-6">
+    <div className="bg-white border border-mono-900 rounded-xl p-5 sm:p-6">
       <div className="flex items-start gap-4">
         <div className="w-10 h-10 bg-blue-50 text-blue-700 rounded-xl flex items-center justify-center shrink-0 font-bold text-lg">
           {number}
         </div>
         <div>
-          <h3 className="font-bold text-[#111111] mb-2">{title}</h3>
-          <p className="text-sm text-[#525252] leading-relaxed mb-3">{desc}</p>
+          <h3 className="font-bold text-mono-100 mb-2">{title}</h3>
+          <p className="text-sm text-mono-400 leading-relaxed mb-3">{desc}</p>
           <div className="bg-blue-50 rounded-lg px-4 py-2.5 text-xs text-blue-800 flex items-start gap-2">
             <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{example}</span>
@@ -646,13 +646,13 @@ function PrincipeCard({ number, title, desc, example }: { number: number; title:
 function ChecklistSection({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
-      <h4 className="font-semibold text-[#111111] mb-3 flex items-center gap-2">
+      <h4 className="font-semibold text-mono-100 mb-3 flex items-center gap-2">
         <ListChecks className="w-4 h-4 text-blue-600" />
         {title}
       </h4>
       <ul className="space-y-2">
         {items.map((item, i) => (
-          <li key={i} className="flex items-start gap-2.5 text-sm text-[#404040]">
+          <li key={i} className="flex items-start gap-2.5 text-sm text-mono-350">
             <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
             <span>{item}</span>
           </li>
@@ -688,12 +688,12 @@ function Callout({ type, children }: { type: 'info' | 'warning'; children: React
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   return (
-    <details className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl group">
-      <summary className="px-5 py-4 font-semibold text-[#111111] cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
+    <details className="bg-mono-1000 border border-mono-900 rounded-xl group">
+      <summary className="px-5 py-4 font-semibold text-mono-100 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
         {q}
-        <ArrowRight className="w-4 h-4 text-[#A3A3A3] group-open:rotate-90 transition-transform" />
+        <ArrowRight className="w-4 h-4 text-mono-700 group-open:rotate-90 transition-transform" />
       </summary>
-      <p className="px-5 pb-4 text-sm text-[#525252] leading-relaxed">{a}</p>
+      <p className="px-5 pb-4 text-sm text-mono-400 leading-relaxed">{a}</p>
     </details>
   );
 }

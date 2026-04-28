@@ -74,15 +74,15 @@ export function InlineWeighPanel({
   }
 
   return (
-    <div className="mt-2 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] p-3 space-y-3 animate-in slide-in-from-top-2">
+    <div className="mt-2 border border-mono-900 dark:border-mono-200 rounded-lg bg-mono-1000 dark:bg-mono-50 p-3 space-y-3 animate-in slide-in-from-top-2">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Scale className="w-4 h-4 text-[#111111] dark:text-white" />
-          <span className="text-xs font-semibold text-[#111111] dark:text-white uppercase tracking-wider">Pesee</span>
+          <Scale className="w-4 h-4 text-mono-100 dark:text-white" />
+          <span className="text-xs font-semibold text-mono-100 dark:text-white uppercase tracking-wider">Pesee</span>
           {filled && <Check className="w-4 h-4 text-green-500" />}
         </div>
-        <button type="button" onClick={onClose} className="p-0.5 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white">
+        <button type="button" onClick={onClose} className="p-0.5 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
           <X className="w-4 h-4" />
         </button>
       </div>
@@ -93,7 +93,7 @@ export function InlineWeighPanel({
           type="button"
           onClick={connect}
           disabled={scaleStatus === 'connecting'}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 transition-colors"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-mono-100 dark:bg-white text-white dark:text-black rounded-lg text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 transition-colors"
         >
           {scaleStatus === 'connecting' ? (
             <><Loader2 className="w-4 h-4 animate-spin" /> Connexion...</>
@@ -120,11 +120,11 @@ export function InlineWeighPanel({
             <span className={`text-3xl font-black tabular-nums tracking-tight transition-colors ${
               netWeight > 0 && isStable ? 'text-emerald-400' :
               netWeight > 0 ? 'text-teal-300' :
-              'text-[#525252]'
+              'text-mono-400'
             }`}>
               {displayGrams}
             </span>
-            <span className={`text-sm font-bold ${netWeight > 0 ? 'text-[#A3A3A3]' : 'text-[#404040]'}`}>g</span>
+            <span className={`text-sm font-bold ${netWeight > 0 ? 'text-mono-700' : 'text-mono-350'}`}>g</span>
             {netWeight > 0 && isStable && (
               <Check className="w-5 h-5 text-emerald-400" />
             )}
@@ -132,8 +132,8 @@ export function InlineWeighPanel({
 
           {/* Converted value */}
           {weightInUnit > 0 && (
-            <div className="text-center text-sm text-[#6B7280] dark:text-[#A3A3A3]">
-              = <strong className="text-[#111111] dark:text-white">{weightInUnit}</strong> {ingredientUnit}
+            <div className="text-center text-sm text-[#6B7280] dark:text-mono-700">
+              = <strong className="text-mono-100 dark:text-white">{weightInUnit}</strong> {ingredientUnit}
             </div>
           )}
 
@@ -142,12 +142,12 @@ export function InlineWeighPanel({
             <div className="flex items-center justify-center gap-3 py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
               <span className="text-amber-600 dark:text-amber-400 text-[10px] font-medium uppercase tracking-wider">Sim</span>
               <button type="button" onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))}
-                className="w-8 h-8 rounded-lg bg-[#E5E7EB] dark:bg-[#262626] hover:bg-[#D1D5DB] dark:hover:bg-[#404040] flex items-center justify-center transition-colors">
+                className="w-8 h-8 rounded-lg bg-mono-900 dark:bg-mono-300 hover:bg-[#D1D5DB] dark:hover:bg-mono-350 flex items-center justify-center transition-colors">
                 <Minus className="w-4 h-4" />
               </button>
               <span className="font-mono text-xs w-16 text-center tabular-nums">{simWeight.toFixed(3)} kg</span>
               <button type="button" onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))}
-                className="w-8 h-8 rounded-lg bg-[#E5E7EB] dark:bg-[#262626] hover:bg-[#D1D5DB] dark:hover:bg-[#404040] flex items-center justify-center transition-colors">
+                className="w-8 h-8 rounded-lg bg-mono-900 dark:bg-mono-300 hover:bg-[#D1D5DB] dark:hover:bg-mono-350 flex items-center justify-center transition-colors">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
@@ -156,11 +156,11 @@ export function InlineWeighPanel({
           {/* Actions */}
           <div className="flex items-center gap-2">
             <button type="button" onClick={handleTare} disabled={currentWeight <= 0}
-              className="flex items-center gap-1 px-2 py-1.5 bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] disabled:opacity-30 rounded-lg text-xs font-medium transition-colors">
+              className="flex items-center gap-1 px-2 py-1.5 bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-mono-300 disabled:opacity-30 rounded-lg text-xs font-medium transition-colors">
               <RotateCcw className="w-3 h-3" /> Tare
             </button>
             <button type="button" onClick={handleConfirm} disabled={weightInUnit <= 0 || !isStable}
-              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-30 disabled:cursor-not-allowed rounded-lg text-xs font-medium transition-colors">
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-30 disabled:cursor-not-allowed rounded-lg text-xs font-medium transition-colors">
               <Check className="w-3.5 h-3.5" /> Valider {weightInUnit > 0 ? `(${weightInUnit} ${ingredientUnit})` : ''}
             </button>
           </div>
@@ -198,30 +198,30 @@ export function ModePeseeBar({
   return (
     <div className={`flex items-center gap-3 px-3 py-2 rounded-lg border transition-colors ${
       enabled
-        ? 'bg-[#111111] dark:bg-white border-[#111111] dark:border-white'
-        : 'bg-[#F3F4F6] dark:bg-[#171717] border-[#E5E7EB] dark:border-[#1A1A1A]'
+        ? 'bg-mono-100 dark:bg-white border-mono-100 dark:border-white'
+        : 'bg-mono-950 dark:bg-[#171717] border-mono-900 dark:border-mono-200'
     }`}>
       {/* Toggle */}
       <button type="button" onClick={onToggle} className="flex items-center gap-2">
-        <Scale className={`w-4 h-4 ${enabled ? 'text-white dark:text-black' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`} />
-        <span className={`text-sm font-semibold ${enabled ? 'text-white dark:text-black' : 'text-[#111111] dark:text-white'}`}>
+        <Scale className={`w-4 h-4 ${enabled ? 'text-white dark:text-black' : 'text-[#6B7280] dark:text-mono-700'}`} />
+        <span className={`text-sm font-semibold ${enabled ? 'text-white dark:text-black' : 'text-mono-100 dark:text-white'}`}>
           Mode Pesee
         </span>
-        <div className={`relative w-9 h-5 rounded-full transition-colors ${enabled ? 'bg-green-500' : 'bg-[#D1D5DB] dark:bg-[#404040]'}`}>
+        <div className={`relative w-9 h-5 rounded-full transition-colors ${enabled ? 'bg-green-500' : 'bg-[#D1D5DB] dark:bg-mono-350'}`}>
           <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${enabled ? 'translate-x-4' : 'translate-x-0.5'}`} />
         </div>
       </button>
 
       {enabled && (
         <>
-          <div className="w-px h-5 bg-[#404040] dark:bg-[#737373]" />
+          <div className="w-px h-5 bg-mono-350 dark:bg-mono-500" />
 
           {/* Simulation toggle */}
           <button type="button" onClick={onToggleSimulation}
             className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider transition-colors ${
               useSimulation
                 ? 'bg-amber-500 text-white'
-                : 'bg-[#333] dark:bg-[#E5E5E5] text-[#9CA3AF] dark:text-[#737373]'
+                : 'bg-[#333] dark:bg-[#E5E5E5] text-[#9CA3AF] dark:text-mono-500'
             }`}>
             {useSimulation ? 'Sim ON' : 'Sim'}
           </button>
@@ -333,25 +333,25 @@ export function BatchWeighingPanel({
   }
 
   return (
-    <div className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] p-4 space-y-4">
+    <div className="border border-mono-900 dark:border-mono-200 rounded-xl bg-mono-1000 dark:bg-mono-50 p-4 space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Scale className="w-5 h-5 text-[#111111] dark:text-white" />
-          <span className="text-sm font-bold text-[#111111] dark:text-white">Pesee de tous les ingredients</span>
+          <Scale className="w-5 h-5 text-mono-100 dark:text-white" />
+          <span className="text-sm font-bold text-mono-100 dark:text-white">Pesee de tous les ingredients</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs font-mono text-[#6B7280] dark:text-[#A3A3A3]">
+          <span className="text-xs font-mono text-[#6B7280] dark:text-mono-700">
             {doneCount}/{totalCount} peses
           </span>
-          <button type="button" onClick={onClose} className="p-1 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white">
+          <button type="button" onClick={onClose} className="p-1 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
             <X className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="w-full h-2 bg-[#E5E7EB] dark:bg-[#262626] rounded-full overflow-hidden">
+      <div className="w-full h-2 bg-mono-900 dark:bg-mono-300 rounded-full overflow-hidden">
         <div className="h-full bg-green-500 transition-all duration-500 rounded-full" style={{ width: `${(doneCount / totalCount) * 100}%` }} />
       </div>
 
@@ -367,7 +367,7 @@ export function BatchWeighingPanel({
       {/* Connection */}
       {!isConnected && (
         <button type="button" onClick={connect} disabled={scaleStatus === 'connecting'}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 transition-colors">
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-mono-100 dark:bg-white text-white dark:text-black rounded-lg text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 transition-colors">
           {scaleStatus === 'connecting' ? (
             <><Loader2 className="w-4 h-4 animate-spin" /> Connexion...</>
           ) : (
@@ -392,10 +392,10 @@ export function BatchWeighingPanel({
             onClick={() => !item.done && setCurrentIdx(idx)}
             className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-sm transition-colors ${
               idx === currentIdx && !item.done
-                ? 'bg-[#111111] dark:bg-white text-white dark:text-black font-semibold'
+                ? 'bg-mono-100 dark:bg-white text-white dark:text-black font-semibold'
                 : item.done
                 ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'
-                : 'bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#262626]'
+                : 'bg-white dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-mono-300'
             }`}
           >
             {item.done ? (
@@ -416,8 +416,8 @@ export function BatchWeighingPanel({
       {/* Current weighing */}
       {isConnected && current && !allDone && (
         <>
-          <div className="text-center text-xs text-[#6B7280] dark:text-[#A3A3A3]">
-            Pesez: <strong className="text-[#111111] dark:text-white">{current.name}</strong>
+          <div className="text-center text-xs text-[#6B7280] dark:text-mono-700">
+            Pesez: <strong className="text-mono-100 dark:text-white">{current.name}</strong>
           </div>
 
           {/* Weight display */}
@@ -428,18 +428,18 @@ export function BatchWeighingPanel({
             <span className={`text-4xl font-black tabular-nums tracking-tight transition-colors ${
               netWeight > 0 && isStable ? 'text-emerald-400' :
               netWeight > 0 ? 'text-teal-300' :
-              'text-[#525252]'
+              'text-mono-400'
             }`}>
               {Math.round(netWeight * 1000)}
             </span>
-            <span className={`text-sm font-bold ${netWeight > 0 ? 'text-[#A3A3A3]' : 'text-[#404040]'}`}>g</span>
+            <span className={`text-sm font-bold ${netWeight > 0 ? 'text-mono-700' : 'text-mono-350'}`}>g</span>
             {netWeight > 0 && isStable && <Check className="w-5 h-5 text-emerald-400" />}
           </div>
 
           {/* Converted */}
           {convertKgToUnit(netWeight, current.unit) > 0 && (
-            <div className="text-center text-sm text-[#6B7280] dark:text-[#A3A3A3]">
-              = <strong className="text-[#111111] dark:text-white">{convertKgToUnit(netWeight, current.unit)}</strong> {current.unit}
+            <div className="text-center text-sm text-[#6B7280] dark:text-mono-700">
+              = <strong className="text-mono-100 dark:text-white">{convertKgToUnit(netWeight, current.unit)}</strong> {current.unit}
             </div>
           )}
 
@@ -448,12 +448,12 @@ export function BatchWeighingPanel({
             <div className="flex items-center justify-center gap-3 py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
               <span className="text-amber-600 dark:text-amber-400 text-[10px] font-medium uppercase tracking-wider">Sim</span>
               <button type="button" onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))}
-                className="w-8 h-8 rounded-lg bg-[#E5E7EB] dark:bg-[#262626] hover:bg-[#D1D5DB] dark:hover:bg-[#404040] flex items-center justify-center transition-colors">
+                className="w-8 h-8 rounded-lg bg-mono-900 dark:bg-mono-300 hover:bg-[#D1D5DB] dark:hover:bg-mono-350 flex items-center justify-center transition-colors">
                 <Minus className="w-4 h-4" />
               </button>
               <span className="font-mono text-xs w-16 text-center tabular-nums">{simWeight.toFixed(3)} kg</span>
               <button type="button" onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))}
-                className="w-8 h-8 rounded-lg bg-[#E5E7EB] dark:bg-[#262626] hover:bg-[#D1D5DB] dark:hover:bg-[#404040] flex items-center justify-center transition-colors">
+                className="w-8 h-8 rounded-lg bg-mono-900 dark:bg-mono-300 hover:bg-[#D1D5DB] dark:hover:bg-mono-350 flex items-center justify-center transition-colors">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
@@ -462,12 +462,12 @@ export function BatchWeighingPanel({
           {/* Actions */}
           <div className="flex items-center gap-2">
             <button type="button" onClick={() => setTare(currentWeight)} disabled={currentWeight <= 0}
-              className="flex items-center gap-1 px-2 py-1.5 bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] disabled:opacity-30 rounded-lg text-xs font-medium transition-colors">
+              className="flex items-center gap-1 px-2 py-1.5 bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-mono-300 disabled:opacity-30 rounded-lg text-xs font-medium transition-colors">
               <RotateCcw className="w-3 h-3" /> Tare
             </button>
             <button type="button" onClick={handleConfirmCurrent}
               disabled={convertKgToUnit(netWeight, current.unit) <= 0 || !isStable}
-              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-30 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors">
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-30 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors">
               <Check className="w-4 h-4" /> Valider et suivant
             </button>
           </div>
@@ -530,19 +530,19 @@ export function QuickWeighAdd({
   }
 
   return (
-    <div className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] p-4 space-y-3">
+    <div className="border border-mono-900 dark:border-mono-200 rounded-xl bg-mono-1000 dark:bg-mono-50 p-4 space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Scale className="w-5 h-5 text-[#111111] dark:text-white" />
-          <span className="text-sm font-bold text-[#111111] dark:text-white">Peser et ajouter</span>
+          <Scale className="w-5 h-5 text-mono-100 dark:text-white" />
+          <span className="text-sm font-bold text-mono-100 dark:text-white">Peser et ajouter</span>
           {addedCount > 0 && (
             <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full font-mono">
               +{addedCount}
             </span>
           )}
         </div>
-        <button type="button" onClick={onClose} className="p-1 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white">
+        <button type="button" onClick={onClose} className="p-1 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
           <X className="w-4 h-4" />
         </button>
       </div>
@@ -550,7 +550,7 @@ export function QuickWeighAdd({
       {/* Connection */}
       {!isConnected && (
         <button type="button" onClick={connect} disabled={scaleStatus === 'connecting'}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 transition-colors">
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-mono-100 dark:bg-white text-white dark:text-black rounded-lg text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 transition-colors">
           {scaleStatus === 'connecting' ? (
             <><Loader2 className="w-4 h-4 animate-spin" /> Connexion...</>
           ) : (
@@ -583,26 +583,26 @@ export function QuickWeighAdd({
                 key={ing.id}
                 type="button"
                 onClick={() => { setSelectedIng(ing); setSearch(''); }}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-left text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-left text-sm hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               >
-                <span className="text-[#111111] dark:text-white">{ing.name}</span>
-                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ing.unit}</span>
+                <span className="text-mono-100 dark:text-white">{ing.name}</span>
+                <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{ing.unit}</span>
               </button>
             ))}
             {filtered.length === 0 && (
-              <p className="text-center text-xs text-[#9CA3AF] dark:text-[#737373] py-2">Aucun ingredient trouve</p>
+              <p className="text-center text-xs text-[#9CA3AF] dark:text-mono-500 py-2">Aucun ingredient trouve</p>
             )}
           </div>
         </div>
       ) : (
         <>
           {/* Selected ingredient info */}
-          <div className="flex items-center justify-between bg-white dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2">
+          <div className="flex items-center justify-between bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2">
             <div>
-              <span className="text-sm font-semibold text-[#111111] dark:text-white">{selectedIng.name}</span>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-2">({selectedIng.unit})</span>
+              <span className="text-sm font-semibold text-mono-100 dark:text-white">{selectedIng.name}</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500 ml-2">({selectedIng.unit})</span>
             </div>
-            <button type="button" onClick={() => setSelectedIng(null)} className="text-xs text-[#111111] dark:text-white hover:text-red-500 font-medium">
+            <button type="button" onClick={() => setSelectedIng(null)} className="text-xs text-mono-100 dark:text-white hover:text-red-500 font-medium">
               Changer
             </button>
           </div>
@@ -617,17 +617,17 @@ export function QuickWeighAdd({
                 <span className={`text-3xl font-black tabular-nums tracking-tight transition-colors ${
                   netWeight > 0 && isStable ? 'text-emerald-400' :
                   netWeight > 0 ? 'text-teal-300' :
-                  'text-[#525252]'
+                  'text-mono-400'
                 }`}>
                   {Math.round(netWeight * 1000)}
                 </span>
-                <span className={`text-sm font-bold ${netWeight > 0 ? 'text-[#A3A3A3]' : 'text-[#404040]'}`}>g</span>
+                <span className={`text-sm font-bold ${netWeight > 0 ? 'text-mono-700' : 'text-mono-350'}`}>g</span>
                 {netWeight > 0 && isStable && <Check className="w-5 h-5 text-emerald-400" />}
               </div>
 
               {convertKgToUnit(netWeight, selectedIng.unit) > 0 && (
-                <div className="text-center text-sm text-[#6B7280] dark:text-[#A3A3A3]">
-                  = <strong className="text-[#111111] dark:text-white">{convertKgToUnit(netWeight, selectedIng.unit)}</strong> {selectedIng.unit}
+                <div className="text-center text-sm text-[#6B7280] dark:text-mono-700">
+                  = <strong className="text-mono-100 dark:text-white">{convertKgToUnit(netWeight, selectedIng.unit)}</strong> {selectedIng.unit}
                 </div>
               )}
 
@@ -636,12 +636,12 @@ export function QuickWeighAdd({
                 <div className="flex items-center justify-center gap-3 py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                   <span className="text-amber-600 dark:text-amber-400 text-[10px] font-medium uppercase tracking-wider">Sim</span>
                   <button type="button" onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))}
-                    className="w-8 h-8 rounded-lg bg-[#E5E7EB] dark:bg-[#262626] hover:bg-[#D1D5DB] dark:hover:bg-[#404040] flex items-center justify-center transition-colors">
+                    className="w-8 h-8 rounded-lg bg-mono-900 dark:bg-mono-300 hover:bg-[#D1D5DB] dark:hover:bg-mono-350 flex items-center justify-center transition-colors">
                     <Minus className="w-4 h-4" />
                   </button>
                   <span className="font-mono text-xs w-16 text-center tabular-nums">{simWeight.toFixed(3)} kg</span>
                   <button type="button" onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))}
-                    className="w-8 h-8 rounded-lg bg-[#E5E7EB] dark:bg-[#262626] hover:bg-[#D1D5DB] dark:hover:bg-[#404040] flex items-center justify-center transition-colors">
+                    className="w-8 h-8 rounded-lg bg-mono-900 dark:bg-mono-300 hover:bg-[#D1D5DB] dark:hover:bg-mono-350 flex items-center justify-center transition-colors">
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
@@ -649,12 +649,12 @@ export function QuickWeighAdd({
 
               <div className="flex items-center gap-2">
                 <button type="button" onClick={() => setTare(currentWeight)} disabled={currentWeight <= 0}
-                  className="flex items-center gap-1 px-2 py-1.5 bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] disabled:opacity-30 rounded-lg text-xs font-medium transition-colors">
+                  className="flex items-center gap-1 px-2 py-1.5 bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-mono-300 disabled:opacity-30 rounded-lg text-xs font-medium transition-colors">
                   <RotateCcw className="w-3 h-3" /> Tare
                 </button>
                 <button type="button" onClick={handleConfirmAdd}
                   disabled={convertKgToUnit(netWeight, selectedIng.unit) <= 0 || !isStable}
-                  className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-30 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors">
+                  className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-30 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors">
                   <Plus className="w-4 h-4" /> Ajouter a la recette
                 </button>
               </div>

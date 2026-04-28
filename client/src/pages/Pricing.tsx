@@ -177,7 +177,7 @@ function FAQSection() {
         {faqs.map((faq, index) => (
           <div
             key={index}
-            className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden shadow-sm hover:border-black/20 transition-colors"
+            className="bg-white border border-mono-900 rounded-2xl overflow-hidden shadow-sm hover:border-black/20 transition-colors"
           >
             <button
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
@@ -238,11 +238,11 @@ function ROICalculator() {
 
       <div className="grid md:grid-cols-2 gap-8">
         {/* Sliders */}
-        <div className="space-y-8 p-8 bg-white border border-[#E5E7EB] rounded-2xl">
+        <div className="space-y-8 p-8 bg-white border border-mono-900 rounded-2xl">
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="text-sm font-medium text-black">Nombre de plats a la carte</label>
-              <span className="text-sm font-bold text-black bg-[#F3F4F6] px-3 py-1 rounded-lg">{dishCount}</span>
+              <span className="text-sm font-bold text-black bg-mono-950 px-3 py-1 rounded-lg">{dishCount}</span>
             </div>
             <input
               type="range"
@@ -250,7 +250,7 @@ function ROICalculator() {
               max={120}
               value={dishCount}
               onChange={(e) => setDishCount(Number(e.target.value))}
-              className="w-full h-2 bg-[#E5E7EB] rounded-lg appearance-none cursor-pointer accent-black"
+              className="w-full h-2 bg-mono-900 rounded-lg appearance-none cursor-pointer accent-black"
             />
             <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
               <span>10</span>
@@ -261,7 +261,7 @@ function ROICalculator() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="text-sm font-medium text-black">Prix moyen d'un plat</label>
-              <span className="text-sm font-bold text-black bg-[#F3F4F6] px-3 py-1 rounded-lg">{avgDishPrice}{'\u20AC'}</span>
+              <span className="text-sm font-bold text-black bg-mono-950 px-3 py-1 rounded-lg">{avgDishPrice}{'\u20AC'}</span>
             </div>
             <input
               type="range"
@@ -269,7 +269,7 @@ function ROICalculator() {
               max={50}
               value={avgDishPrice}
               onChange={(e) => setAvgDishPrice(Number(e.target.value))}
-              className="w-full h-2 bg-[#E5E7EB] rounded-lg appearance-none cursor-pointer accent-black"
+              className="w-full h-2 bg-mono-900 rounded-lg appearance-none cursor-pointer accent-black"
             />
             <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
               <span>8{'\u20AC'}</span>
@@ -280,7 +280,7 @@ function ROICalculator() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="text-sm font-medium text-black">Couverts par jour</label>
-              <span className="text-sm font-bold text-black bg-[#F3F4F6] px-3 py-1 rounded-lg">{coversPerDay}</span>
+              <span className="text-sm font-bold text-black bg-mono-950 px-3 py-1 rounded-lg">{coversPerDay}</span>
             </div>
             <input
               type="range"
@@ -288,7 +288,7 @@ function ROICalculator() {
               max={200}
               value={coversPerDay}
               onChange={(e) => setCoversPerDay(Number(e.target.value))}
-              className="w-full h-2 bg-[#E5E7EB] rounded-lg appearance-none cursor-pointer accent-black"
+              className="w-full h-2 bg-mono-900 rounded-lg appearance-none cursor-pointer accent-black"
             />
             <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
               <span>20</span>
@@ -380,7 +380,7 @@ function ComparisonTable() {
                 {comparisonData
                   .filter(r => r.category === cat)
                   .map((row, idx) => (
-                    <tr key={`${cat}-${idx}`} className="border-b border-[#F3F4F6] hover:bg-[#FAFAFA] transition-colors">
+                    <tr key={`${cat}-${idx}`} className="border-b border-mono-950 hover:bg-mono-1000 transition-colors">
                       <td className="py-3.5 pr-4 text-sm text-[#374151]">{row.feature}</td>
                       <td className="py-3.5 px-4 text-center">
                         {typeof row.pro === 'boolean' ? (
@@ -439,7 +439,7 @@ export default function Pricing() {
         path="/pricing"
       />
       {/* Header */}
-      <header className="border-b border-[#E5E7EB]">
+      <header className="border-b border-mono-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center">
@@ -467,7 +467,7 @@ export default function Pricing() {
 
       {/* Hero */}
       <section className="pt-20 pb-12 px-4 sm:px-6 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#F3F4F6] rounded-full mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-mono-950 rounded-full mb-6">
           <BadgePercent className="w-4 h-4 text-black" />
           <span className="text-xs font-semibold text-black">150+ restaurants — essai 7j sans carte bancaire</span>
         </div>
@@ -518,7 +518,7 @@ export default function Pricing() {
               className={`relative flex flex-col rounded-2xl border p-8 transition-all duration-200 hover:-translate-y-1 ${
                 plan.popular
                   ? 'border-black shadow-[0_8px_40px_-12px_rgba(0,0,0,0.15)] bg-white'
-                  : 'border-[#E5E7EB] bg-white hover:border-[#9CA3AF]'
+                  : 'border-mono-900 bg-white hover:border-[#9CA3AF]'
               }`}
             >
               {plan.popular && (
@@ -531,7 +531,7 @@ export default function Pricing() {
 
               {/* Plan header */}
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-mono-950 flex items-center justify-center">
                   {plan.icon}
                 </div>
                 <h3 className="text-xl font-bold text-black">{plan.name}</h3>
@@ -622,7 +622,7 @@ export default function Pricing() {
                       value={devisForm.name}
                       onChange={(e) => setDevisForm({ ...devisForm, name: e.target.value })}
                       placeholder="Votre nom"
-                      className="w-full px-3 py-2 rounded-lg bg-[#F3F4F6] border border-[#E5E7EB] text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                      className="w-full px-3 py-2 rounded-lg bg-mono-950 border border-mono-900 text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                     />
                     <input
                       type="email"
@@ -630,21 +630,21 @@ export default function Pricing() {
                       value={devisForm.email}
                       onChange={(e) => setDevisForm({ ...devisForm, email: e.target.value })}
                       placeholder="votre@email.com"
-                      className="w-full px-3 py-2 rounded-lg bg-[#F3F4F6] border border-[#E5E7EB] text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                      className="w-full px-3 py-2 rounded-lg bg-mono-950 border border-mono-900 text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                     />
                     <input
                       type="tel"
                       value={devisForm.phone}
                       onChange={(e) => setDevisForm({ ...devisForm, phone: e.target.value })}
                       placeholder="Telephone (optionnel)"
-                      className="w-full px-3 py-2 rounded-lg bg-[#F3F4F6] border border-[#E5E7EB] text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                      className="w-full px-3 py-2 rounded-lg bg-mono-950 border border-mono-900 text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                     />
                     <textarea
                       rows={2}
                       value={devisForm.message}
                       onChange={(e) => setDevisForm({ ...devisForm, message: e.target.value })}
                       placeholder="Votre besoin (nb. de sites, etc.)"
-                      className="w-full px-3 py-2 rounded-lg bg-[#F3F4F6] border border-[#E5E7EB] text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent resize-none"
+                      className="w-full px-3 py-2 rounded-lg bg-mono-950 border border-mono-900 text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent resize-none"
                     />
                     {devisError && (
                       <p className="text-xs text-red-500">{devisError}</p>
@@ -669,7 +669,7 @@ export default function Pricing() {
                 ) : (
                   <button
                     onClick={() => setShowDevisForm(true)}
-                    className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-[#F3F4F6] hover:bg-[#E5E7EB] text-black border border-[#E5E7EB]"
+                    className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-mono-950 hover:bg-mono-900 text-black border border-mono-900"
                   >
                     {plan.cta}
                     <ArrowRight className="w-4 h-4" />
@@ -683,7 +683,7 @@ export default function Pricing() {
                   className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors ${
                     plan.popular
                       ? 'bg-black hover:bg-[#333333] text-white'
-                      : 'bg-white hover:bg-[#F3F4F6] text-black border-2 border-black'
+                      : 'bg-white hover:bg-mono-950 text-black border-2 border-black'
                   }`}
                 >
                   {plan.cta}
@@ -692,7 +692,7 @@ export default function Pricing() {
               ) : (
                 <Link
                   to={plan.ctaLink}
-                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-[#F3F4F6] hover:bg-[#E5E7EB] text-black border border-[#E5E7EB]"
+                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-mono-950 hover:bg-mono-900 text-black border border-mono-900"
                 >
                   {plan.cta}
                   <ArrowRight className="w-4 h-4" />
@@ -713,7 +713,7 @@ export default function Pricing() {
       </section>
 
       {/* Social Proof Bar */}
-      <section className="border-y border-[#E5E7EB] bg-[#FAFAFA] py-12 px-4 sm:px-6">
+      <section className="border-y border-mono-900 bg-mono-1000 py-12 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
             <p className="text-3xl font-extrabold text-black">150+</p>
@@ -746,7 +746,7 @@ export default function Pricing() {
       </section>
 
       {/* ROI Calculator */}
-      <section className="bg-[#FAFAFA] border-y border-[#E5E7EB] py-24 px-4 sm:px-6">
+      <section className="bg-mono-1000 border-y border-mono-900 py-24 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <ROICalculator />
         </div>
@@ -760,7 +760,7 @@ export default function Pricing() {
       </section>
 
       {/* Footer CTA */}
-      <section className="border-t border-[#E5E7EB] bg-black py-20 px-4 sm:px-6 text-center">
+      <section className="border-t border-mono-900 bg-black py-20 px-4 sm:px-6 text-center">
         <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
           Pret a reprendre le controle de vos marges ?
         </h2>
@@ -772,7 +772,7 @@ export default function Pricing() {
             href="https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-white hover:bg-[#F3F4F6] text-black font-semibold rounded-xl transition-colors"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-white hover:bg-mono-950 text-black font-semibold rounded-xl transition-colors"
           >
             Commencer l'essai gratuit
             <ArrowRight className="w-5 h-5" />

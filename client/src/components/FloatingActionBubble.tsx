@@ -13,8 +13,8 @@ const ACTIONS = [
   { id: 'recipe', icon: FileText, label: 'Nouvelle recette', color: 'bg-teal-500 hover:bg-teal-400', route: '/recipes?action=new' },
   { id: 'order', icon: ShoppingCart, label: 'Commande', color: 'bg-blue-500 hover:bg-blue-400', route: '/commandes' },
   { id: 'report', icon: BarChart3, label: 'Rapport IA', color: 'bg-amber-500 hover:bg-amber-400', route: '/analytics' },
-  { id: 'help', icon: HelpCircle, label: 'Aide', color: 'bg-[#6B7280] hover:bg-[#525252]', action: 'help' },
-  { id: 'shortcuts', icon: Keyboard, label: 'Ctrl+K', color: 'bg-[#111111] dark:bg-white dark:text-black hover:bg-[#333]', action: 'palette' },
+  { id: 'help', icon: HelpCircle, label: 'Aide', color: 'bg-[#6B7280] hover:bg-mono-400', action: 'help' },
+  { id: 'shortcuts', icon: Keyboard, label: 'Ctrl+K', color: 'bg-mono-100 dark:bg-white dark:text-black hover:bg-[#333]', action: 'palette' },
 ];
 
 export default function FloatingActionBubble() {
@@ -93,10 +93,10 @@ export default function FloatingActionBubble() {
 
       {/* Help panel */}
       {showHelp && (
-        <div className="absolute bottom-16 right-0 w-80 bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden mb-2">
-          <div className="px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
-            <h3 className="text-sm font-bold text-[#111111] dark:text-white">Aide & Tutoriels</h3>
-            <button onClick={() => setShowHelp(false)} aria-label="Fermer l'aide" className="p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg">
+        <div className="absolute bottom-16 right-0 w-80 bg-white dark:bg-mono-50 rounded-2xl shadow-2xl border border-mono-900 dark:border-mono-200 overflow-hidden mb-2">
+          <div className="px-4 py-3 border-b border-mono-900 dark:border-mono-200 flex items-center justify-between">
+            <h3 className="text-sm font-bold text-mono-100 dark:text-white">Aide & Tutoriels</h3>
+            <button onClick={() => setShowHelp(false)} aria-label="Fermer l'aide" className="p-1 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg">
               <X className="w-4 h-4 text-[#9CA3AF]" />
             </button>
           </div>
@@ -113,15 +113,15 @@ export default function FloatingActionBubble() {
               <div key={tuto.title} className="flex items-center gap-2">
                 <button
                   onClick={() => { navigate(tuto.route); setOpen(false); setShowHelp(false); }}
-                  className="flex-1 text-left p-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors group"
+                  className="flex-1 text-left p-2.5 rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500/20 to-purple-500/20 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-110 transition-transform">
                       {tuto.emoji}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#111111] dark:text-white">{tuto.title}</p>
-                      <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{tuto.desc}</p>
+                      <p className="text-sm font-semibold text-mono-100 dark:text-white">{tuto.title}</p>
+                      <p className="text-[11px] text-[#9CA3AF] dark:text-mono-500">{tuto.desc}</p>
                     </div>
                   </div>
                 </button>
@@ -153,18 +153,18 @@ export default function FloatingActionBubble() {
 
       {/* Voice listening card */}
       {listening && (
-        <div className="absolute bottom-16 right-0 w-72 bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-2xl border border-red-200 dark:border-red-800/30 p-4 mb-2">
+        <div className="absolute bottom-16 right-0 w-72 bg-white dark:bg-mono-50 rounded-2xl shadow-2xl border border-red-200 dark:border-red-800/30 p-4 mb-2">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center animate-pulse">
               <Mic className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="text-sm font-bold text-[#111111] dark:text-white">Ecoute en cours...</p>
+              <p className="text-sm font-bold text-mono-100 dark:text-white">Ecoute en cours...</p>
               <p className="text-[11px] text-[#9CA3AF]">Parlez maintenant</p>
             </div>
           </div>
           {transcript && (
-            <p className="text-sm text-[#111111] dark:text-white bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-2 italic">"{transcript}"</p>
+            <p className="text-sm text-mono-100 dark:text-white bg-mono-950 dark:bg-[#171717] rounded-lg p-2 italic">"{transcript}"</p>
           )}
           <button onClick={stopListening} className="mt-2 w-full py-2 text-xs font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
             Arreter
@@ -199,7 +199,7 @@ export default function FloatingActionBubble() {
         aria-expanded={open}
         className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 ${
           open
-            ? 'bg-[#111111] dark:bg-white text-white dark:text-black rotate-45 scale-95'
+            ? 'bg-mono-100 dark:bg-white text-white dark:text-black rotate-45 scale-95'
             : 'bg-teal-600 hover:bg-teal-500 text-white hover:scale-110 hover:shadow-2xl'
         }`}
       >

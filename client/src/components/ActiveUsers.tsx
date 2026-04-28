@@ -46,15 +46,15 @@ export default function ActiveUsers() {
               {/* Online dot */}
               <span
                 className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-black ${
-                  samePage ? 'bg-emerald-500' : 'bg-[#9CA3AF] dark:bg-[#737373]'
+                  samePage ? 'bg-emerald-500' : 'bg-[#9CA3AF] dark:bg-mono-500'
                 }`}
               />
 
               {/* Tooltip */}
               {hoveredUserId === u.userId && (
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-[#111111] dark:bg-white text-white dark:text-black text-[11px] font-medium rounded-lg whitespace-nowrap z-50 shadow-lg pointer-events-none">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-mono-100 dark:bg-white text-white dark:text-black text-[11px] font-medium rounded-lg whitespace-nowrap z-50 shadow-lg pointer-events-none">
                   {u.name} — {pageName}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#111111] dark:border-t-white" />
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-mono-100 dark:border-t-white" />
                 </div>
               )}
             </div>
@@ -64,14 +64,14 @@ export default function ActiveUsers() {
 
       {/* Overflow count */}
       {activeUsers.length > 5 && (
-        <span className="text-[11px] font-medium text-[#9CA3AF] dark:text-[#737373]">
+        <span className="text-[11px] font-medium text-[#9CA3AF] dark:text-mono-500">
           +{activeUsers.length - 5}
         </span>
       )}
 
       {/* Connected count badge */}
       {activeCount > 0 && (
-        <span className="ml-auto flex items-center gap-1 text-[11px] font-medium text-[#6B7280] dark:text-[#A3A3A3] bg-[#F3F4F6] dark:bg-[#171717] px-2 py-0.5 rounded-full">
+        <span className="ml-auto flex items-center gap-1 text-[11px] font-medium text-[#6B7280] dark:text-mono-700 bg-mono-950 dark:bg-[#171717] px-2 py-0.5 rounded-full">
           <Users className="w-3 h-3" />
           {activeCount}
         </span>

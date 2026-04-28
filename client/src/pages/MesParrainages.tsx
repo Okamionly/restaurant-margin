@@ -81,7 +81,7 @@ export default function MesParrainages() {
 
   if (!data) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center text-[#737373]">
+      <div className="min-h-[60vh] flex items-center justify-center text-mono-500">
         Impossible de charger les parrainages.
       </div>
     );
@@ -95,10 +95,10 @@ export default function MesParrainages() {
           <Gift className="w-4 h-4 text-teal-600" />
           <span className="text-xs font-semibold text-teal-700 dark:text-teal-400 uppercase tracking-wider">Programme parrainage</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-[#111111] dark:text-white mb-2">
+        <h1 className="text-3xl sm:text-4xl font-black text-mono-100 dark:text-white mb-2">
           Parrainez vos pairs, gagnez ensemble
         </h1>
-        <p className="text-[#737373] dark:text-[#A3A3A3]">
+        <p className="text-mono-500 dark:text-mono-700">
           Pour chaque restaurateur que vous parrainez, vous gagnez <strong className="text-teal-600">1 mois Pro gratuit</strong> et il reçoit <strong className="text-teal-600">20% de réduction</strong> sur son premier mois.
         </p>
       </div>
@@ -191,8 +191,8 @@ export default function MesParrainages() {
       </div>
 
       {/* How it works */}
-      <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 sm:p-8">
-        <h3 className="text-xl font-bold text-[#111111] dark:text-white mb-6">Comment ça marche ?</h3>
+      <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6 sm:p-8">
+        <h3 className="text-xl font-bold text-mono-100 dark:text-white mb-6">Comment ça marche ?</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <Step number={1} title="Partagez votre lien" text="Envoyez votre code ou lien par email, WhatsApp ou SMS à vos pairs restaurateurs." />
           <Step number={2} title="Ils s'inscrivent" text="Vos filleuls reçoivent automatiquement 20% de réduction sur leur premier mois." />
@@ -202,19 +202,19 @@ export default function MesParrainages() {
 
       {/* History */}
       {data.referrals.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 sm:p-8">
-          <h3 className="text-xl font-bold text-[#111111] dark:text-white mb-4">Historique ({data.referrals.length})</h3>
+        <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6 sm:p-8">
+          <h3 className="text-xl font-bold text-mono-100 dark:text-white mb-4">Historique ({data.referrals.length})</h3>
           <div className="space-y-2">
             {data.referrals.map((r) => (
               <div
                 key={r.id}
-                className="flex items-center justify-between p-3 bg-[#F5F5F5] dark:bg-[#171717] rounded-xl"
+                className="flex items-center justify-between p-3 bg-mono-975 dark:bg-[#171717] rounded-xl"
               >
                 <div>
-                  <div className="text-sm font-semibold text-[#111111] dark:text-white">
+                  <div className="text-sm font-semibold text-mono-100 dark:text-white">
                     Filleul #{r.id}
                   </div>
-                  <div className="text-xs text-[#737373] dark:text-[#A3A3A3]">
+                  <div className="text-xs text-mono-500 dark:text-mono-700">
                     Inscrit le {new Date(r.createdAt).toLocaleDateString('fr-FR')}
                   </div>
                 </div>
@@ -226,7 +226,7 @@ export default function MesParrainages() {
       )}
 
       {data.referrals.length === 0 && (
-        <div className="text-center py-12 text-[#737373] dark:text-[#A3A3A3]">
+        <div className="text-center py-12 text-mono-500 dark:text-mono-700">
           <Gift className="w-12 h-12 mx-auto mb-3 opacity-30" />
           <p className="text-sm">Aucun parrainage pour le moment. Partagez votre lien pour commencer !</p>
         </div>
@@ -244,12 +244,12 @@ function StatCard({ icon: Icon, label, value, color, suffix }: { icon: any; labe
     amber: 'text-amber-600 bg-amber-100 dark:bg-amber-900/20',
   };
   return (
-    <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+    <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
       <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl ${colors[color]} mb-3`}>
         <Icon className="w-5 h-5" />
       </div>
-      <div className="text-3xl font-black text-[#111111] dark:text-white mb-1">{value}</div>
-      <div className="text-xs font-semibold text-[#737373] dark:text-[#A3A3A3] uppercase tracking-wider">{label}</div>
+      <div className="text-3xl font-black text-mono-100 dark:text-white mb-1">{value}</div>
+      <div className="text-xs font-semibold text-mono-500 dark:text-mono-700 uppercase tracking-wider">{label}</div>
       {suffix && <div className="text-xs text-emerald-600 font-semibold mt-1">{suffix}</div>}
     </div>
   );
@@ -261,8 +261,8 @@ function Step({ number, title, text }: { number: number; title: string; text: st
       <div className="flex items-center justify-center w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 font-bold text-sm mb-3">
         {number}
       </div>
-      <div className="font-semibold text-[#111111] dark:text-white mb-1">{title}</div>
-      <div className="text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">{text}</div>
+      <div className="font-semibold text-mono-100 dark:text-white mb-1">{title}</div>
+      <div className="text-sm text-mono-500 dark:text-mono-700 leading-relaxed">{text}</div>
     </div>
   );
 }

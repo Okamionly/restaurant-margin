@@ -112,8 +112,8 @@ const STATUS_KEYS: Record<DocStatus, string> = {
 };
 
 const STATUS_CONFIG: Record<DocStatus, { label: string; bg: string; text: string; icon: React.ComponentType<{ className?: string }> }> = {
-  brouillon: { label: 'Brouillon', bg: 'bg-[#F3F4F6] dark:bg-[#171717]', text: 'text-[#6B7280] dark:text-[#A3A3A3]', icon: Edit2 },
-  envoye: { label: 'Envoyé', bg: 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40', text: 'text-[#111111] dark:text-[#737373]', icon: Send },
+  brouillon: { label: 'Brouillon', bg: 'bg-mono-950 dark:bg-[#171717]', text: 'text-[#6B7280] dark:text-mono-700', icon: Edit2 },
+  envoye: { label: 'Envoyé', bg: 'bg-mono-950 dark:bg-mono-50/40', text: 'text-mono-100 dark:text-mono-500', icon: Send },
   accepte: { label: 'Accepté', bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', icon: CheckCircle },
   refuse: { label: 'Refusé', bg: 'bg-red-100 dark:bg-red-900/40', text: 'text-red-700 dark:text-red-300', icon: XCircle },
   paye: { label: 'Payé', bg: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-300', icon: CreditCard },
@@ -196,7 +196,7 @@ const QUOTE_TEMPLATES: QuoteTemplate[] = [
 
 const KANBAN_STATUSES: DocStatus[] = ['brouillon', 'envoye', 'accepte', 'refuse'];
 const KANBAN_COLORS: Record<string, { bg: string; text: string; border: string; dot: string }> = {
-  brouillon: { bg: 'bg-[#F3F4F6] dark:bg-[#171717]/50', text: 'text-[#6B7280] dark:text-[#A3A3A3]', border: 'border-[#E5E7EB] dark:border-[#1A1A1A]', dot: 'bg-[#D1D5DB] dark:bg-[#525252]' },
+  brouillon: { bg: 'bg-mono-950 dark:bg-[#171717]/50', text: 'text-[#6B7280] dark:text-mono-700', border: 'border-mono-900 dark:border-mono-200', dot: 'bg-[#D1D5DB] dark:bg-mono-400' },
   envoye: { bg: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-200 dark:border-amber-800', dot: 'bg-amber-400' },
   accepte: { bg: 'bg-green-50 dark:bg-green-900/20', text: 'text-green-700 dark:text-green-300', border: 'border-green-200 dark:border-green-800', dot: 'bg-green-400' },
   refuse: { bg: 'bg-red-50 dark:bg-red-900/20', text: 'text-red-700 dark:text-red-300', border: 'border-red-200 dark:border-red-800', dot: 'bg-red-400' },
@@ -376,13 +376,13 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
   const typeLabel = doc.type === 'devis' ? 'DEVIS' : doc.type === 'facture' ? 'FACTURE' : 'AVOIR';
 
   return (
-    <div className="bg-white text-[#111111] dark:text-white p-8 rounded-lg shadow-inner border border-[#E5E7EB] text-sm leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
+    <div className="bg-white text-mono-100 dark:text-white p-8 rounded-lg shadow-inner border border-mono-900 text-sm leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
       {/* Header bar */}
-      <div className="flex items-start justify-between mb-6 pb-4 border-b-4 border-[#111111]">
+      <div className="flex items-start justify-between mb-6 pb-4 border-b-4 border-mono-100">
         <div>
-          <div className="w-16 h-16 bg-gradient-to-br from-[#111111] to-[#333] rounded-xl flex items-center justify-center text-white font-bold text-xl mb-2">RM</div>
+          <div className="w-16 h-16 bg-gradient-to-br from-mono-100 to-[#333] rounded-xl flex items-center justify-center text-white font-bold text-xl mb-2">RM</div>
           <div className="font-bold text-base">{entreprise.nom}</div>
-          <div className="text-xs text-[#9CA3AF] dark:text-[#737373] space-y-0.5 mt-1">
+          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 space-y-0.5 mt-1">
             <div>{entreprise.adresse}</div>
             <div>{entreprise.codePostal} {entreprise.ville}</div>
             <div>Tél : {entreprise.telephone}</div>
@@ -390,9 +390,9 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
           </div>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-[#111111] dark:text-white">{typeLabel}</div>
+          <div className="text-2xl font-bold text-mono-100 dark:text-white">{typeLabel}</div>
           <div className="text-lg font-semibold mt-1">{doc.numero}</div>
-          <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2">
+          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-2">
             <div>Date : {formatDate(doc.dateCreation)}</div>
             {doc.type === 'devis' && <div>Valide jusqu'au : {formatDate(doc.dateValidite)}</div>}
             {doc.refDevis && <div>Réf. devis : {doc.refDevis}</div>}
@@ -403,9 +403,9 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
 
       {/* Client info */}
       <div className="bg-[#F9FAFB] rounded-lg p-4 mb-6">
-        <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1 uppercase tracking-wider font-semibold">Destinataire</div>
+        <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-1 uppercase tracking-wider font-semibold">Destinataire</div>
         <div className="font-bold">{doc.client.raisonSociale || doc.client.nom}</div>
-        <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] space-y-0.5">
+        <div className="text-xs text-[#6B7280] dark:text-mono-700 space-y-0.5">
           {doc.client.nom !== doc.client.raisonSociale && <div>{doc.client.nom}</div>}
           <div>{doc.client.adresse}</div>
           <div>{doc.client.codePostal} {doc.client.ville}</div>
@@ -416,7 +416,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
       {/* Lines table */}
       <table className="w-full mb-6 text-xs">
         <thead>
-          <tr className="bg-[#111111] dark:bg-white text-white dark:text-black">
+          <tr className="bg-mono-100 dark:bg-white text-white dark:text-black">
             <th className="text-left py-2 px-3 rounded-tl-lg">Description</th>
             <th className="text-center py-2 px-2">Qté</th>
             <th className="text-center py-2 px-2">Unité</th>
@@ -447,12 +447,12 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
             <span className="font-semibold">{formatEuro(doc.totalHT)}</span>
           </div>
           {Object.entries(doc.tvaVentilee).map(([rate, amount]) => (
-            <div key={rate} className="flex justify-between py-1 text-[#9CA3AF] dark:text-[#737373]">
+            <div key={rate} className="flex justify-between py-1 text-[#9CA3AF] dark:text-mono-500">
               <span>TVA {rate}</span>
               <span>{formatEuro(amount)}</span>
             </div>
           ))}
-          <div className="flex justify-between py-2 border-t-2 border-[#111111] font-bold text-base text-[#111111] dark:text-white">
+          <div className="flex justify-between py-2 border-t-2 border-mono-100 font-bold text-base text-mono-100 dark:text-white">
             <span>Total TTC</span>
             <span>{formatEuro(doc.totalTTC)}</span>
           </div>
@@ -460,28 +460,28 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
       </div>
 
       {/* Conditions */}
-      <div className="border-t border-[#E5E7EB] pt-4 space-y-2 text-xs text-[#9CA3AF] dark:text-[#737373]">
-        <div><span className="font-semibold text-[#9CA3AF] dark:text-[#737373]">Conditions de paiement :</span> {doc.conditionsPaiement}</div>
+      <div className="border-t border-mono-900 pt-4 space-y-2 text-xs text-[#9CA3AF] dark:text-mono-500">
+        <div><span className="font-semibold text-[#9CA3AF] dark:text-mono-500">Conditions de paiement :</span> {doc.conditionsPaiement}</div>
         {doc.type === 'devis' && (
-          <div><span className="font-semibold text-[#9CA3AF] dark:text-[#737373]">Durée de validité :</span> {doc.dureeValidite} jours</div>
+          <div><span className="font-semibold text-[#9CA3AF] dark:text-mono-500">Durée de validité :</span> {doc.dureeValidite} jours</div>
         )}
-        {doc.notes && <div><span className="font-semibold text-[#9CA3AF] dark:text-[#737373]">Notes :</span> {doc.notes}</div>}
+        {doc.notes && <div><span className="font-semibold text-[#9CA3AF] dark:text-mono-500">Notes :</span> {doc.notes}</div>}
       </div>
 
       {/* Mentions légales */}
-      <div className="mt-6 pt-4 border-t border-[#E5E7EB] text-[10px] text-[#9CA3AF] dark:text-[#737373] whitespace-pre-line">
+      <div className="mt-6 pt-4 border-t border-mono-900 text-[10px] text-[#9CA3AF] dark:text-mono-500 whitespace-pre-line">
         {doc.mentionsLegales}
       </div>
 
       {/* Footer */}
-      <div className="mt-4 pt-3 border-t border-[#D1D5DB] text-[9px] text-[#9CA3AF] dark:text-[#737373] text-center">
+      <div className="mt-4 pt-3 border-t border-[#D1D5DB] text-[9px] text-[#9CA3AF] dark:text-mono-500 text-center">
         {entreprise.nom} - {entreprise.rcs} - Capital social : {entreprise.capitalSocial}€ - SIRET : {entreprise.siret} - TVA : {entreprise.tvaIntracommunautaire}
       </div>
 
       {/* Signature zone for devis */}
       {doc.type === 'devis' && (
         <div className="mt-6 pt-4 border-t border-dashed border-[#D1D5DB]">
-          <div className="text-xs text-[#9CA3AF] dark:text-[#737373] italic">
+          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 italic">
             Bon pour accord - Date et signature du client :
           </div>
           <div className="h-16 mt-2 border border-dashed border-[#D1D5DB] rounded-lg" />
@@ -510,7 +510,7 @@ function LigneRow({
           value={ligne.description}
           onChange={e => onUpdate(ligne.id, 'description', e.target.value)}
           placeholder="Description..."
-          className="w-full px-2 py-1.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
+          className="w-full px-2 py-1.5 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none"
         />
       </div>
       <div className="col-span-3 sm:col-span-1">
@@ -519,14 +519,14 @@ function LigneRow({
           value={ligne.quantite}
           min={1}
           onChange={e => onUpdate(ligne.id, 'quantite', Number(e.target.value))}
-          className="w-full px-2 py-1.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none text-center"
+          className="w-full px-2 py-1.5 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none text-center"
         />
       </div>
       <div className="col-span-3 sm:col-span-2">
         <select
           value={ligne.unite}
           onChange={e => onUpdate(ligne.id, 'unite', e.target.value)}
-          className="w-full px-2 py-1.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
+          className="w-full px-2 py-1.5 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none"
         >
           {UNITES.map(u => <option key={u} value={u}>{u}</option>)}
         </select>
@@ -539,16 +539,16 @@ function LigneRow({
             min={0}
             step={0.01}
             onChange={e => onUpdate(ligne.id, 'prixUnitaireHT', Number(e.target.value))}
-            className="w-full px-2 py-1.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none text-right pr-7"
+            className="w-full px-2 py-1.5 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none text-right pr-7"
           />
-          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-[#9CA3AF] dark:text-[#737373]">€</span>
+          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-[#9CA3AF] dark:text-mono-500">€</span>
         </div>
       </div>
       <div className="col-span-3 sm:col-span-1">
         <select
           value={ligne.tauxTVA}
           onChange={e => onUpdate(ligne.id, 'tauxTVA', Number(e.target.value) as TVARate)}
-          className="w-full px-1 py-1.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none text-center"
+          className="w-full px-1 py-1.5 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none text-center"
         >
           <option value={5.5}>5,5%</option>
           <option value={10}>10%</option>
@@ -562,7 +562,7 @@ function LigneRow({
         {canRemove && (
           <button
             onClick={() => onRemove(ligne.id)}
-            className="p-1 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            className="p-1 rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -586,20 +586,20 @@ function PaymentModal({ isOpen, onClose, onConfirm, t }: {
     <Modal isOpen={isOpen} onClose={onClose} title={t('devis.registerPayment')}>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('devis.paymentDate')}</label>
+          <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">{t('devis.paymentDate')}</label>
           <input
             type="date"
             value={date}
             onChange={e => setDate(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
+            className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('devis.paymentMode')}</label>
+          <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">{t('devis.paymentMode')}</label>
           <select
             value={mode}
             onChange={e => setMode(e.target.value as PaymentMode)}
-            className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
+            className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none"
           >
             <option value="virement">{t('devis.bankTransfer')}</option>
             <option value="cb">{t('devis.creditCard')}</option>
@@ -608,7 +608,7 @@ function PaymentModal({ isOpen, onClose, onConfirm, t }: {
           </select>
         </div>
         <div className="flex justify-end gap-3 pt-2">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
             {t('common.cancel')}
           </button>
           <button
@@ -1011,24 +1011,24 @@ export default function Devis() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
-            <div className="p-2 bg-[#F3F4F6] dark:bg-[#0A0A0A]/40 rounded-xl">
-              <FileText className="w-6 h-6 text-[#111111] dark:text-[#A3A3A3]" />
+          <h1 className="text-2xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-3">
+            <div className="p-2 bg-mono-950 dark:bg-mono-50/40 rounded-xl">
+              <FileText className="w-6 h-6 text-mono-100 dark:text-mono-700" />
             </div>
             {t('devis.title')}
           </h1>
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
             {t('devis.subtitle')}
           </p>
         </div>
         <div className="flex items-center gap-3">
           {/* View toggle */}
           {activeTab === 'devis' && (
-            <div className="flex bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-0.5">
+            <div className="flex bg-mono-950 dark:bg-[#171717] rounded-lg p-0.5">
               <button
                 onClick={() => setViewMode('list')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === 'list' ? 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373]'
+                  viewMode === 'list' ? 'bg-white dark:bg-mono-50 text-mono-100 dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-mono-500'
                 }`}
               >
                 <List className="w-4 h-4" /> Liste
@@ -1036,7 +1036,7 @@ export default function Devis() {
               <button
                 onClick={() => setViewMode('kanban')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === 'kanban' ? 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373]'
+                  viewMode === 'kanban' ? 'bg-white dark:bg-mono-50 text-mono-100 dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-mono-500'
                 }`}
               >
                 <LayoutGrid className="w-4 h-4" /> Kanban
@@ -1045,7 +1045,7 @@ export default function Devis() {
           )}
           <button
             onClick={() => handleOpenCreate(activeTab === 'avoirs' ? 'avoir' : activeTab === 'factures' ? 'facture' : 'devis')}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-semibold transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-semibold transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" />
             {activeTab === 'avoirs' ? t('devis.newCreditNote') : activeTab === 'factures' ? t('devis.newInvoice') : t('devis.newQuote')}
@@ -1056,8 +1056,8 @@ export default function Devis() {
       {/* Loading */}
       {loading && (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-[#374151] dark:text-[#D4D4D4]" />
-          <span className="ml-3 text-[#9CA3AF] dark:text-[#737373]">{t('devis.loadingDocuments')}</span>
+          <Loader2 className="w-8 h-8 animate-spin text-[#374151] dark:text-mono-800" />
+          <span className="ml-3 text-[#9CA3AF] dark:text-mono-500">{t('devis.loadingDocuments')}</span>
         </div>
       )}
 
@@ -1065,15 +1065,15 @@ export default function Devis() {
       {/* Stats cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: t('devis.pendingQuotes'), value: formatEuro(stats.enAttente), icon: Clock, color: 'text-[#111111] dark:text-[#A3A3A3]', bg: 'bg-[#F9FAFB] dark:bg-[#0A0A0A]/20' },
+          { label: t('devis.pendingQuotes'), value: formatEuro(stats.enAttente), icon: Clock, color: 'text-mono-100 dark:text-mono-700', bg: 'bg-[#F9FAFB] dark:bg-mono-50/20' },
           { label: t('devis.invoicedRevenue'), value: formatEuro(stats.caFacture), icon: Euro, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
           { label: t('devis.unpaid'), value: formatEuro(stats.impaye), icon: AlertTriangle, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20' },
           { label: t('devis.conversionRate'), value: `${stats.tauxConversion}%`, icon: Receipt, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20' },
         ].map(stat => (
-          <div key={stat.label} className={`${stat.bg} rounded-xl p-4 border border-[#E5E7EB]/50 dark:border-[#1A1A1A]/50`}>
+          <div key={stat.label} className={`${stat.bg} rounded-xl p-4 border border-mono-900/50 dark:border-mono-200/50`}>
             <div className="flex items-center gap-2 mb-2">
               <stat.icon className={`w-4 h-4 ${stat.color}`} />
-              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">{stat.label}</span>
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">{stat.label}</span>
             </div>
             <div className={`text-xl font-bold ${stat.color}`}>{stat.value}</div>
           </div>
@@ -1082,8 +1082,8 @@ export default function Devis() {
 
       {/* Tabs — List view (or always for factures/avoirs) */}
       {(viewMode === 'list' || activeTab !== 'devis') && (
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
-        <div className="flex border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+      <div className="bg-white dark:bg-mono-50 rounded-2xl shadow-sm border border-mono-900 dark:border-mono-200 overflow-hidden">
+        <div className="flex border-b border-mono-900 dark:border-mono-200">
           {([
             { id: 'devis' as TabId, label: t('devis.tabQuotes'), count: tabCounts.devis },
             { id: 'factures' as TabId, label: t('devis.tabInvoices'), count: tabCounts.factures },
@@ -1094,15 +1094,15 @@ export default function Devis() {
               onClick={() => { setActiveTab(tab.id); setStatusFilter('all'); }}
               className={`flex-1 sm:flex-none px-6 py-3 text-sm font-semibold transition-colors relative ${
                 activeTab === tab.id
-                  ? 'text-[#111111] dark:text-[#A3A3A3] border-b-2 border-[#111111] dark:border-[#333] bg-[#F9FAFB]/50 dark:bg-[#0A0A0A]/10'
-                  : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:text-[#D4D4D4] dark:hover:text-[#111111] hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/50'
+                  ? 'text-mono-100 dark:text-mono-700 border-b-2 border-mono-100 dark:border-[#333] bg-[#F9FAFB]/50 dark:bg-mono-50/10'
+                  : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] dark:text-mono-800 dark:hover:text-mono-100 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/50'
               }`}
             >
               {tab.label}
               <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
                 activeTab === tab.id
-                  ? 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40 text-[#111111] dark:text-[#A3A3A3]'
-                  : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]'
+                  ? 'bg-mono-950 dark:bg-mono-50/40 text-mono-100 dark:text-mono-700'
+                  : 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500'
               }`}>
                 {tab.count}
               </span>
@@ -1111,24 +1111,24 @@ export default function Devis() {
         </div>
 
         {/* Search & Filters */}
-        <div className="p-4 border-b border-[#F3F4F6] dark:border-[#1A1A1A]/50">
+        <div className="p-4 border-b border-mono-950 dark:border-mono-200/50">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
               <input
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder={t('devis.searchPlaceholder')}
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none"
               />
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
                 showFilters
-                  ? 'border-[#D1D5DB] dark:border-[#1A1A1A] text-[#111111] dark:text-[#A3A3A3] bg-[#F9FAFB] dark:bg-[#0A0A0A]/20'
-                  : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F9FAFB] dark:hover:bg-[#171717]'
+                  ? 'border-[#D1D5DB] dark:border-mono-200 text-mono-100 dark:text-mono-700 bg-[#F9FAFB] dark:bg-mono-50/20'
+                  : 'border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]'
               }`}
             >
               <Filter className="w-4 h-4" />
@@ -1137,16 +1137,16 @@ export default function Devis() {
           </div>
 
           {showFilters && (
-            <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-[#F3F4F6] dark:border-[#1A1A1A]/50">
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] self-center mr-1">{t('devis.status')} :</span>
+            <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-mono-950 dark:border-mono-200/50">
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500 self-center mr-1">{t('devis.status')} :</span>
               {['all', 'brouillon', 'envoye', 'accepte', 'refuse', 'paye', 'en_retard'].map(s => (
                 <button
                   key={s}
                   onClick={() => setStatusFilter(s as DocStatus | 'all')}
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                     statusFilter === s
-                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                      : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563]'
+                      ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+                      : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#4B5563]'
                   }`}
                 >
                   {s === 'all' ? t('common.all') : t(STATUS_KEYS[s as DocStatus] || STATUS_KEYS['brouillon'])}
@@ -1160,52 +1160,52 @@ export default function Devis() {
         <div className="overflow-x-auto">
           {filteredDocs.length === 0 ? (
             <div className="text-center py-16">
-              <FileText className="w-12 h-12 text-[#6B7280] dark:text-[#A3A3A3] mx-auto mb-3" />
-              <p className="text-[#9CA3AF] dark:text-[#737373] font-medium">{t('devis.noDocuments')}</p>
-              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">{t('devis.createFirstDocument')}</p>
+              <FileText className="w-12 h-12 text-[#6B7280] dark:text-mono-700 mx-auto mb-3" />
+              <p className="text-[#9CA3AF] dark:text-mono-500 font-medium">{t('devis.noDocuments')}</p>
+              <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">{t('devis.createFirstDocument')}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-[#F9FAFB] dark:bg-[#171717]/50">
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{t('devis.colNumber')}</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{t('devis.colClient')}</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider hidden md:table-cell">{t('devis.colDate')}</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{t('devis.colAmountHT')}</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider hidden sm:table-cell">{t('devis.colAmountTTC')}</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{t('devis.status')}</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{t('devis.colActions')}</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">{t('devis.colNumber')}</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">{t('devis.colClient')}</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider hidden md:table-cell">{t('devis.colDate')}</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">{t('devis.colAmountHT')}</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider hidden sm:table-cell">{t('devis.colAmountTTC')}</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">{t('devis.status')}</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">{t('devis.colActions')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]/50">
+              <tbody className="divide-y divide-mono-950 dark:divide-mono-200/50">
                 {filteredDocs.map(doc => (
                   <tr
                     key={doc.id}
                     className="hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30 transition-colors group"
                   >
                     <td className="py-3 px-4">
-                      <span className="font-mono font-semibold text-[#111111] dark:text-white">{doc.numero}</span>
+                      <span className="font-mono font-semibold text-mono-100 dark:text-white">{doc.numero}</span>
                       {doc.refDevis && (
-                        <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Réf: {doc.refDevis}</div>
+                        <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Réf: {doc.refDevis}</div>
                       )}
                       {doc.refFacture && (
-                        <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Réf: {doc.refFacture}</div>
+                        <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Réf: {doc.refFacture}</div>
                       )}
                     </td>
                     <td className="py-3 px-4">
                       <div className="font-medium text-[#1F2937] dark:text-white">{doc.client.raisonSociale || doc.client.nom}</div>
-                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{doc.client.nom}</div>
+                      <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{doc.client.nom}</div>
                     </td>
-                    <td className="py-3 px-4 text-[#6B7280] dark:text-[#A3A3A3] hidden md:table-cell">
+                    <td className="py-3 px-4 text-[#6B7280] dark:text-mono-700 hidden md:table-cell">
                       {formatDate(doc.dateCreation)}
                       {doc.datePaiement && (
                         <div className="text-xs text-emerald-500">Payé le {formatDate(doc.datePaiement)}</div>
                       )}
                     </td>
-                    <td className="py-3 px-4 text-right font-semibold text-[#111111] dark:text-white">
+                    <td className="py-3 px-4 text-right font-semibold text-mono-100 dark:text-white">
                       {formatEuro(doc.totalHT)}
                     </td>
-                    <td className="py-3 px-4 text-right text-[#6B7280] dark:text-[#A3A3A3] hidden sm:table-cell">
+                    <td className="py-3 px-4 text-right text-[#6B7280] dark:text-mono-700 hidden sm:table-cell">
                       {formatEuro(doc.totalTTC)}
                     </td>
                     <td className="py-3 px-4 text-center">
@@ -1213,19 +1213,19 @@ export default function Devis() {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center justify-end gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => handlePreview(doc)} title={t('devis.preview')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/20 transition-colors">
+                        <button onClick={() => handlePreview(doc)} title={t('devis.preview')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white hover:bg-[#F9FAFB] dark:hover:bg-mono-50/20 transition-colors">
                           <Eye className="w-4 h-4" />
                         </button>
                         {doc.statut === 'brouillon' && (
-                          <button onClick={() => handleEdit(doc)} title={t('devis.edit')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors">
+                          <button onClick={() => handleEdit(doc)} title={t('devis.edit')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors">
                             <Edit2 className="w-4 h-4" />
                           </button>
                         )}
-                        <button onClick={() => handleDuplicate(doc)} title={t('devis.duplicate')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                        <button onClick={() => handleDuplicate(doc)} title={t('devis.duplicate')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
                           <Copy className="w-4 h-4" />
                         </button>
                         {doc.statut === 'brouillon' && (
-                          <button onClick={() => handleSendEmail(doc)} disabled={sendingEmailId === doc.id} title={t('devis.sendByEmail')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/20 transition-colors disabled:opacity-50">
+                          <button onClick={() => handleSendEmail(doc)} disabled={sendingEmailId === doc.id} title={t('devis.sendByEmail')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white hover:bg-[#F9FAFB] dark:hover:bg-mono-50/20 transition-colors disabled:opacity-50">
                             {sendingEmailId === doc.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                           </button>
                         )}
@@ -1240,7 +1240,7 @@ export default function Devis() {
                           </button>
                         )}
                         {doc.type === 'devis' && doc.statut === 'envoye' && (
-                          <button onClick={() => handleConvertToFacture(doc)} title={t('devis.convertToInvoice')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                          <button onClick={() => handleConvertToFacture(doc)} title={t('devis.convertToInvoice')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
                             <ArrowRight className="w-4 h-4" />
                           </button>
                         )}
@@ -1257,18 +1257,18 @@ export default function Devis() {
                         {doc.type === 'facture' && doc.statut !== 'paye' && (
                           <button
                             onClick={() => { setPaymentDocId(doc.id); setShowPaymentModal(true); }}
-                            title={t('devis.markAsPaid')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
+                            title={t('devis.markAsPaid')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
                           >
                             <CreditCard className="w-4 h-4" />
                           </button>
                         )}
                         {doc.type === 'facture' && (
-                          <button onClick={() => handleCreateAvoir(doc)} title={t('devis.createCreditNote')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
+                          <button onClick={() => handleCreateAvoir(doc)} title={t('devis.createCreditNote')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
                             <RotateCcw className="w-4 h-4" />
                           </button>
                         )}
                         {doc.statut === 'brouillon' && (
-                          <button onClick={() => handleDelete(doc.id)} title={t('devis.delete')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                          <button onClick={() => handleDelete(doc.id)} title={t('devis.delete')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         )}
@@ -1307,53 +1307,53 @@ export default function Devis() {
                   </span>
                 </div>
                 {/* Cards */}
-                <div className={`border-x border-b ${col.border} rounded-b-xl bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 p-2 space-y-2 min-h-[240px]`}>
+                <div className={`border-x border-b ${col.border} rounded-b-xl bg-mono-1000 dark:bg-mono-50/50 p-2 space-y-2 min-h-[240px]`}>
                   {columnDocs.length === 0 && (
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center py-10">Aucun devis</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500 text-center py-10">Aucun devis</div>
                   )}
                   {columnDocs.map(doc => (
                     <div
                       key={doc.id}
                       onClick={() => handlePreview(doc)}
-                      className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3 cursor-pointer hover:shadow-md hover:border-[#111111]/30 dark:hover:border-white/30 transition-all group"
+                      className="bg-white dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-3 cursor-pointer hover:shadow-md hover:border-mono-100/30 dark:hover:border-white/30 transition-all group"
                     >
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-mono text-xs font-semibold text-[#9CA3AF] dark:text-[#737373]">{doc.numero}</span>
-                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{formatDate(doc.dateCreation)}</span>
+                        <span className="font-mono text-xs font-semibold text-[#9CA3AF] dark:text-mono-500">{doc.numero}</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{formatDate(doc.dateCreation)}</span>
                       </div>
-                      <h4 className="text-sm font-semibold text-[#111111] dark:text-white truncate">{doc.client.raisonSociale || doc.client.nom}</h4>
+                      <h4 className="text-sm font-semibold text-mono-100 dark:text-white truncate">{doc.client.raisonSociale || doc.client.nom}</h4>
                       {doc.client.nom && doc.client.raisonSociale && doc.client.nom !== doc.client.raisonSociale && (
-                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5 truncate">{doc.client.nom}</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5 truncate">{doc.client.nom}</p>
                       )}
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F3F4F6] dark:border-[#1A1A1A]/50">
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-mono-950 dark:border-mono-200/50">
                         <div>
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">HT</span>
-                          <span className="ml-1 text-sm font-bold text-[#111111] dark:text-white">{formatEuro(doc.totalHT)}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">HT</span>
+                          <span className="ml-1 text-sm font-bold text-mono-100 dark:text-white">{formatEuro(doc.totalHT)}</span>
                         </div>
                         <div>
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">TTC</span>
-                          <span className="ml-1 text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3]">{formatEuro(doc.totalTTC)}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">TTC</span>
+                          <span className="ml-1 text-sm font-semibold text-[#6B7280] dark:text-mono-700">{formatEuro(doc.totalTTC)}</span>
                         </div>
                       </div>
                       {/* Quick actions on hover */}
                       <div className="flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={e2 => { e2.stopPropagation(); handleEdit(doc); }}
-                          className="p-1 rounded text-[#9CA3AF] dark:text-[#737373] hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                          className="p-1 rounded text-[#9CA3AF] dark:text-mono-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
                           title={t('devis.edit')}
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={e2 => { e2.stopPropagation(); handleSendEmail(doc); }}
-                          className="p-1 rounded text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]"
+                          className="p-1 rounded text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white hover:bg-mono-950 dark:hover:bg-[#171717]"
                           title={t('devis.sendByEmail')}
                         >
                           <Send className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={e2 => { e2.stopPropagation(); handleDuplicate(doc); }}
-                          className="p-1 rounded text-[#9CA3AF] dark:text-[#737373] hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20"
+                          className="p-1 rounded text-[#9CA3AF] dark:text-mono-500 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20"
                           title={t('devis.duplicate')}
                         >
                           <Copy className="w-3.5 h-3.5" />
@@ -1361,7 +1361,7 @@ export default function Devis() {
                         {doc.statut === 'brouillon' && (
                           <button
                             onClick={e2 => { e2.stopPropagation(); handleDelete(doc.id); }}
-                            className="p-1 rounded text-[#9CA3AF] dark:text-[#737373] hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 ml-auto"
+                            className="p-1 rounded text-[#9CA3AF] dark:text-mono-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 ml-auto"
                             title={t('devis.delete')}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -1404,16 +1404,16 @@ export default function Devis() {
                       onClick={() => isPast && setWizardStep(step)}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all w-full justify-center ${
                         isActive
-                          ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                          ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
                           : isPast
                             ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 cursor-pointer hover:bg-green-200 dark:hover:bg-green-900/50'
-                            : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]'
+                            : 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500'
                       }`}
                     >
                       <StepIcon className="w-3.5 h-3.5" />
                       <span className="hidden sm:inline">{labels[step]}</span>
                     </button>
-                    {i < 4 && <ChevronRight className="w-3.5 h-3.5 text-[#D1D5DB] dark:text-[#525252] flex-shrink-0" />}
+                    {i < 4 && <ChevronRight className="w-3.5 h-3.5 text-[#D1D5DB] dark:text-mono-400 flex-shrink-0" />}
                   </div>
                 );
               })}
@@ -1423,8 +1423,8 @@ export default function Devis() {
           {/* ── Wizard Step: Template Selection ── */}
           {!editingDoc && createType === 'devis' && wizardStep === 'template' && (
             <div>
-              <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-1">Choisir un template de devis</h4>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-4">Selectionnez un modele pour pre-remplir les lignes, ou partez de zero.</p>
+              <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-1">Choisir un template de devis</h4>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-4">Selectionnez un modele pour pre-remplir les lignes, ou partez de zero.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {QUOTE_TEMPLATES.map(tmpl => {
                   const TmplIcon = tmpl.icon;
@@ -1433,25 +1433,25 @@ export default function Devis() {
                     <button
                       key={tmpl.id}
                       onClick={() => handleSelectTemplate(tmpl.id)}
-                      className="text-left p-4 rounded-xl border-2 border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white bg-white dark:bg-[#0A0A0A] transition-all group"
+                      className="text-left p-4 rounded-xl border-2 border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white bg-white dark:bg-mono-50 transition-all group"
                     >
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center group-hover:bg-[#111111] dark:group-hover:bg-white transition-colors">
-                          <TmplIcon className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3] group-hover:text-white dark:group-hover:text-black transition-colors" />
+                        <div className="w-10 h-10 rounded-lg bg-mono-950 dark:bg-[#171717] flex items-center justify-center group-hover:bg-mono-100 dark:group-hover:bg-white transition-colors">
+                          <TmplIcon className="w-5 h-5 text-[#6B7280] dark:text-mono-700 group-hover:text-white dark:group-hover:text-black transition-colors" />
                         </div>
                         <div>
-                          <h5 className="text-sm font-bold text-[#111111] dark:text-white">{tmpl.label}</h5>
-                          <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{tmpl.lignes.length} lignes - {formatEuro(templateTotals.totalTTC)} TTC/pers.</p>
+                          <h5 className="text-sm font-bold text-mono-100 dark:text-white">{tmpl.label}</h5>
+                          <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{tmpl.lignes.length} lignes - {formatEuro(templateTotals.totalTTC)} TTC/pers.</p>
                         </div>
                       </div>
-                      <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{tmpl.description}</p>
+                      <p className="text-xs text-[#6B7280] dark:text-mono-700">{tmpl.description}</p>
                     </button>
                   );
                 })}
               </div>
               <button
                 onClick={handleSkipTemplate}
-                className="mt-4 w-full py-3 border-2 border-dashed border-[#D1D5DB] dark:border-[#333] rounded-xl text-sm font-medium text-[#9CA3AF] dark:text-[#737373] hover:border-[#111111] dark:hover:border-white hover:text-[#111111] dark:hover:text-white transition-colors"
+                className="mt-4 w-full py-3 border-2 border-dashed border-[#D1D5DB] dark:border-[#333] rounded-xl text-sm font-medium text-[#9CA3AF] dark:text-mono-500 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-colors"
               >
                 <Plus className="w-4 h-4 inline mr-2" />
                 Devis vierge (sans template)
@@ -1465,12 +1465,12 @@ export default function Devis() {
 
           {/* Show entreprise info */}
           {(editingDoc || createType !== 'devis' || wizardStep === 'client') && (
-          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A]/20 rounded-xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="bg-[#F9FAFB] dark:bg-mono-50/20 rounded-xl p-4 border border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-2">
-              <Building2 className="w-4 h-4 text-[#111111] dark:text-[#A3A3A3]" />
-              <span className="text-sm font-semibold text-[#111111] dark:text-[#737373]">{t('devis.sender')}</span>
+              <Building2 className="w-4 h-4 text-mono-100 dark:text-mono-700" />
+              <span className="text-sm font-semibold text-mono-100 dark:text-mono-500">{t('devis.sender')}</span>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-xs text-[#111111] dark:text-[#737373]">
+            <div className="grid grid-cols-2 gap-2 text-xs text-mono-100 dark:text-mono-500">
               <div><span className="font-medium">{ENTREPRISE.nom}</span></div>
               <div>SIRET : {ENTREPRISE.siret}</div>
               <div>{ENTREPRISE.adresse}, {ENTREPRISE.codePostal} {ENTREPRISE.ville}</div>
@@ -1482,7 +1482,7 @@ export default function Devis() {
           {/* Client section — show on client step or always for edit */}
           {(editingDoc || createType !== 'devis' || wizardStep === 'client') && (
           <div>
-            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-2">
               <Building2 className="w-4 h-4" />
               {t('devis.clientInfo')}
             </h4>
@@ -1498,13 +1498,13 @@ export default function Devis() {
                 { key: 'siret', label: 'SIRET (B2B)', placeholder: '123 456 789 00012' },
               ].map(field => (
                 <div key={field.key}>
-                  <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{field.label}</label>
+                  <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">{field.label}</label>
                   <input
                     type="text"
                     value={(client as any)[field.key]}
                     onChange={e => setClient(prev => ({ ...prev, [field.key]: e.target.value }))}
                     placeholder={field.placeholder}
-                    className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
+                    className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none"
                   />
                 </div>
               ))}
@@ -1515,10 +1515,10 @@ export default function Devis() {
           {/* Wizard nav: client -> lines */}
           {!editingDoc && createType === 'devis' && wizardStep === 'client' && (
             <div className="flex justify-between pt-2">
-              <button onClick={() => setWizardStep('template')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+              <button onClick={() => setWizardStep('template')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
                 <ChevronLeft className="w-4 h-4" /> Retour
               </button>
-              <button onClick={() => setWizardStep('lines')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
+              <button onClick={() => setWizardStep('lines')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
                 Suivant <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -1527,17 +1527,17 @@ export default function Devis() {
           {/* Lignes de devis — show on lines step or always for edit */}
           {(editingDoc || createType !== 'devis' || wizardStep === 'lines' || wizardStep === 'extras' || wizardStep === 'preview') && (<>
           <div>
-            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-mono-500 mb-3 flex items-center gap-2">
               <FileText className="w-4 h-4" />
               {t('devis.documentLines')}
             </h4>
             <div className="hidden sm:grid grid-cols-12 gap-2 px-2 mb-1">
-              <div className="col-span-4 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Description</div>
-              <div className="col-span-1 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium text-center">Qté</div>
-              <div className="col-span-2 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium text-center">Unité</div>
-              <div className="col-span-2 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium text-right">P.U. HT</div>
-              <div className="col-span-1 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium text-center">TVA</div>
-              <div className="col-span-1 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium text-right">Total HT</div>
+              <div className="col-span-4 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">Description</div>
+              <div className="col-span-1 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium text-center">Qté</div>
+              <div className="col-span-2 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium text-center">Unité</div>
+              <div className="col-span-2 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium text-right">P.U. HT</div>
+              <div className="col-span-1 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium text-center">TVA</div>
+              <div className="col-span-1 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium text-right">Total HT</div>
               <div className="col-span-1" />
             </div>
             <div className="space-y-2">
@@ -1554,7 +1554,7 @@ export default function Devis() {
             </div>
             <button
               onClick={addLigne}
-              className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-[#D1D5DB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:border-[#D1D5DB] hover:text-[#333] dark:hover:text-[#E5E5E5] dark:hover:border-[#333] dark:hover:text-[#333] dark:hover:text-[#E5E5E5] transition-colors text-sm font-medium w-full justify-center"
+              className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-[#D1D5DB] dark:border-mono-200 text-[#9CA3AF] dark:text-mono-500 hover:border-[#D1D5DB] hover:text-[#333] dark:hover:text-[#E5E5E5] dark:hover:border-[#333] dark:hover:text-[#333] dark:hover:text-[#E5E5E5] transition-colors text-sm font-medium w-full justify-center"
             >
               <Plus className="w-4 h-4" />
               {t('devis.addLine')}
@@ -1563,23 +1563,23 @@ export default function Devis() {
 
           {/* Totals — live price calculator */}
           <div className="flex justify-end">
-            <div className="w-80 space-y-2 bg-[#F9FAFB] dark:bg-[#171717]/30 rounded-xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <h5 className="text-xs font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <div className="w-80 space-y-2 bg-[#F9FAFB] dark:bg-[#171717]/30 rounded-xl p-4 border border-mono-900 dark:border-mono-200">
+              <h5 className="text-xs font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <Euro className="w-3.5 h-3.5" /> Calcul en direct
               </h5>
               <div className="flex justify-between text-sm">
-                <span className="text-[#9CA3AF] dark:text-[#737373]">Total HT</span>
-                <span className="font-semibold text-[#111111] dark:text-white">{formatEuro(formTotals.totalHT)}</span>
+                <span className="text-[#9CA3AF] dark:text-mono-500">Total HT</span>
+                <span className="font-semibold text-mono-100 dark:text-white">{formatEuro(formTotals.totalHT)}</span>
               </div>
               {Object.entries(formTotals.tvaVentilee).map(([rate, amount]) => (
                 <div key={rate} className="flex justify-between text-sm">
-                  <span className="text-[#9CA3AF] dark:text-[#737373]">TVA {rate}</span>
-                  <span className="text-[#6B7280] dark:text-[#A3A3A3]">{formatEuro(amount)}</span>
+                  <span className="text-[#9CA3AF] dark:text-mono-500">TVA {rate}</span>
+                  <span className="text-[#6B7280] dark:text-mono-700">{formatEuro(amount)}</span>
                 </div>
               ))}
-              <div className="flex justify-between text-base font-bold pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div className="flex justify-between text-base font-bold pt-2 border-t border-mono-900 dark:border-mono-200">
                 <span className="text-[#9CA3AF] dark:text-white">Total TTC</span>
-                <span className="text-[#111111] dark:text-[#A3A3A3]">{formatEuro(formTotals.totalTTC)}</span>
+                <span className="text-mono-100 dark:text-mono-700">{formatEuro(formTotals.totalTTC)}</span>
               </div>
             </div>
           </div>
@@ -1588,10 +1588,10 @@ export default function Devis() {
           {/* Wizard nav: lines -> extras */}
           {!editingDoc && createType === 'devis' && wizardStep === 'lines' && (
             <div className="flex justify-between pt-2">
-              <button onClick={() => setWizardStep('client')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+              <button onClick={() => setWizardStep('client')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
                 <ChevronLeft className="w-4 h-4" /> Retour
               </button>
-              <button onClick={() => setWizardStep('extras')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
+              <button onClick={() => setWizardStep('extras')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
                 Suivant <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -1602,22 +1602,22 @@ export default function Devis() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {createType === 'devis' && (
               <div>
-                <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('devis.validityDuration')}</label>
+                <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">{t('devis.validityDuration')}</label>
                 <input
                   type="number"
                   value={dureeValidite}
                   min={1}
                   onChange={e => setDureeValidite(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
+                  className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none"
                 />
               </div>
             )}
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('devis.paymentTerms')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">{t('devis.paymentTerms')}</label>
               <select
                 value={conditionsPaiement}
                 onChange={e => setConditionsPaiement(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none"
               >
                 {CONDITIONS_PAIEMENT.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -1626,20 +1626,20 @@ export default function Devis() {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('devis.notes')}</label>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">{t('devis.notes')}</label>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
               rows={3}
               placeholder={t('devis.notesPlaceholder')}
-              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none resize-none"
+              className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-mono-100 dark:text-white text-sm focus:ring-2 focus:ring-mono-100 dark:ring-white focus:border-mono-100 outline-none resize-none"
             />
           </div>
 
           {/* Mentions legales (read-only) */}
           <div className="bg-[#F9FAFB] dark:bg-[#171717]/30 rounded-xl p-4">
-            <div className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] mb-2">{t('devis.legalNotices')}</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] whitespace-pre-line">
+            <div className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 mb-2">{t('devis.legalNotices')}</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-mono-500 whitespace-pre-line">
               {createType === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE}
             </div>
           </div>
@@ -1648,10 +1648,10 @@ export default function Devis() {
           {/* Wizard nav: extras -> preview */}
           {!editingDoc && createType === 'devis' && wizardStep === 'extras' && (
             <div className="flex justify-between pt-2">
-              <button onClick={() => setWizardStep('lines')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+              <button onClick={() => setWizardStep('lines')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
                 <ChevronLeft className="w-4 h-4" /> Retour
               </button>
-              <button onClick={() => setWizardStep('preview')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
+              <button onClick={() => setWizardStep('preview')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
                 Apercu <Eye className="w-4 h-4" />
               </button>
             </div>
@@ -1660,7 +1660,7 @@ export default function Devis() {
           {/* ── Wizard Step: Preview ── */}
           {!editingDoc && createType === 'devis' && wizardStep === 'preview' && (
             <div>
-              <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-3 flex items-center gap-2">
+              <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-3 flex items-center gap-2">
                 <Eye className="w-4 h-4" /> Apercu du devis
               </h4>
               <PDFPreview
@@ -1684,15 +1684,15 @@ export default function Devis() {
           )}
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex justify-end gap-3 pt-2 border-t border-mono-900 dark:border-mono-200">
             {!editingDoc && createType === 'devis' && wizardStep === 'preview' && (
-              <button onClick={() => setWizardStep('extras')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors mr-auto">
+              <button onClick={() => setWizardStep('extras')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors mr-auto">
                 <ChevronLeft className="w-4 h-4" /> Retour
               </button>
             )}
             <button
               onClick={() => { setShowCreateModal(false); resetForm(); }}
-              className="px-4 py-2.5 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="px-4 py-2.5 rounded-lg text-sm font-medium text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             >
               {t('common.cancel')}
             </button>
@@ -1700,7 +1700,7 @@ export default function Devis() {
             <button
               onClick={handleSaveDocument}
               disabled={saving}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
               {editingDoc ? t('devis.update') : t('devis.save')}
@@ -1720,11 +1720,11 @@ export default function Devis() {
         {previewDoc && (
           <div className="space-y-4">
             <PDFPreview doc={previewDoc} entreprise={ENTREPRISE} />
-            <div className="flex flex-wrap justify-end gap-3 pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="flex flex-wrap justify-end gap-3 pt-4 border-t border-mono-900 dark:border-mono-200">
               {previewDoc.statut === 'brouillon' && (
                 <button
                   onClick={() => { handleSendEmail(previewDoc); setShowPreviewModal(false); }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors"
                 >
                   <Send className="w-4 h-4" />
                   {t('devis.sendByEmail')}
@@ -1732,7 +1732,7 @@ export default function Devis() {
               )}
               <button
                 onClick={() => handleDownloadPDF(previewDoc)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563] transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-mono-900 dark:hover:bg-[#4B5563] transition-colors"
               >
                 <Download className="w-4 h-4" />
                 {t('devis.downloadPDF')}

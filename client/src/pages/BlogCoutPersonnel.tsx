@@ -39,13 +39,13 @@ export default function BlogCoutPersonnel() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -87,17 +87,17 @@ export default function BlogCoutPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <TrendingDown className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. La structure réelle du coût personnel</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. La structure réelle du coût personnel</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             La majorité des restaurateurs connaissent leur masse salariale brute — mais pas leur coût total employé, qui inclut les charges patronales (42–45 % du brut), les repas, les heures supplémentaires majorées et les coûts indirects.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-5 mb-4 text-sm text-[#374151] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-5 mb-4 text-sm text-[#374151] space-y-1">
             <div className="flex justify-between"><span>Salaire brut annuel</span><span className="font-mono font-semibold">22 000 €</span></div>
             <div className="flex justify-between"><span>Charges patronales (43 %)</span><span className="font-mono font-semibold">9 460 €</span></div>
             <div className="flex justify-between"><span>Repas (180 j × 4,15 €)</span><span className="font-mono font-semibold">747 €</span></div>
             <div className="flex justify-between"><span>Heures supp. moyennes</span><span className="font-mono font-semibold">1 200 €</span></div>
-            <div className="flex justify-between border-t border-[#E5E7EB] pt-2 mt-2 font-bold text-[#111111]"><span>Coût total employé</span><span className="font-mono">≈ 33 400 €</span></div>
+            <div className="flex justify-between border-t border-mono-900 pt-2 mt-2 font-bold text-mono-100"><span>Coût total employé</span><span className="font-mono">≈ 33 400 €</span></div>
           </div>
           <p className="text-[#374151] leading-relaxed">
             Soit <strong>37 % de plus</strong> que le brut affiché. Un restaurant de 6 employés représente environ 200 000 € de coût réel annuel. Le ratio à surveiller : <strong>coût personnel / CA HT</strong>. Objectif : 30–35 % pour une brasserie, 28–32 % pour le fast-casual, 35–40 % pour la gastronomie.
@@ -110,7 +110,7 @@ export default function BlogCoutPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <Calendar className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Optimiser le planning par tranches</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Optimiser le planning par tranches</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             La plupart des restaurateurs construisent leur planning par habitude plutôt que par analyse des flux réels. Trois étapes :
@@ -144,7 +144,7 @@ export default function BlogCoutPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
               <Users className="w-5 h-5 text-red-500" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Réduire le turnover</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Réduire le turnover</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             La restauration affiche un turnover de 80 à 120 % par an dans certains segments. Chaque départ coûte entre <strong>2 000 et 4 000 €</strong> (annonce, tri, entretiens, formation, ralentissements). Un restaurant de 8 employés avec 80 % de rotation dépense jusqu'à <strong>25 600 € par an</strong> en coûts de remplacement — souvent sans s'en rendre compte.
@@ -171,14 +171,14 @@ export default function BlogCoutPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <BookOpen className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Former pour gagner en productivité</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Former pour gagner en productivité</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Un employé bien formé accomplit la même tâche en moins de temps, fait moins d'erreurs et génère moins de gaspillage. Pourtant, la formation est souvent sacrifiée au profit de l'opérationnel immédiat — créant un cercle vicieux.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-5 mb-4">
-            <p className="text-sm font-semibold text-[#111111] mb-2">Calcul du ROI d'une formation</p>
-            <p className="text-sm text-[#525252]">Un commis qui passe de 8 à 5 minutes pour une garniture économise 3 min × 30 garnitures × 5 services = <strong>75 min/semaine</strong>, soit 65 heures/an ≈ <strong>700 € de valeur créée</strong> pour 30 minutes de formation.</p>
+          <div className="bg-mono-975 rounded-xl p-5 mb-4">
+            <p className="text-sm font-semibold text-mono-100 mb-2">Calcul du ROI d'une formation</p>
+            <p className="text-sm text-mono-400">Un commis qui passe de 8 à 5 minutes pour une garniture économise 3 min × 30 garnitures × 5 services = <strong>75 min/semaine</strong>, soit 65 heures/an ≈ <strong>700 € de valeur créée</strong> pour 30 minutes de formation.</p>
           </div>
           <p className="text-[#374151] leading-relaxed mb-3"><strong>Formations les plus rentables :</strong></p>
           <ul className="space-y-2 text-[#374151]">
@@ -205,7 +205,7 @@ export default function BlogCoutPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Wrench className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Outils et process qui font gagner du temps</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Outils et process qui font gagner du temps</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Des process bien conçus permettent de faire la même quantité de travail avec moins d'heures — sans toucher aux effectifs.
@@ -228,7 +228,7 @@ export default function BlogCoutPersonnel() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -248,9 +248,9 @@ export default function BlogCoutPersonnel() {
                 a: "Pas toujours. Un extra en CDDU coûte parfois plus à l'heure (majoration de précarité de 10 %). Mais il évite de payer des heures creuses. L'équilibre dépend de votre profil de fréquentation — analysez vos données avant de décider."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -271,7 +271,7 @@ export default function BlogCoutPersonnel() {
         </div>
 
         {/* Nav bas */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/kpi-essentiels-restaurateur" className="text-sm text-teal-600 hover:underline">Les KPI essentiels →</Link>
         </div>

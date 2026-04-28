@@ -41,14 +41,14 @@ export default function BlogIA() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">Connexion</Link>
+            <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">Connexion</Link>
           </div>
         </div>
       </nav>
@@ -68,7 +68,7 @@ export default function BlogIA() {
 
         <BlogAuthor publishedDate="2026-04-14" readTime="15 min" variant="header" />
 
-        <p className="text-lg text-[#525252] leading-relaxed mb-8">
+        <p className="text-lg text-mono-400 leading-relaxed mb-8">
           L'intelligence artificielle est partout. Mais dans votre cuisine ? Derriere vos fourneaux ? Cet article fait le tri entre les promesses marketing et la realite du terrain.
         </p>
 
@@ -150,12 +150,12 @@ export default function BlogIA() {
             { icon: <User className="w-5 h-5 text-blue-500" />, title: "Le contact humain", desc: "Un sourire, une recommandation personnalisee : l'hospitalite est humaine." },
             { icon: <ShieldAlert className="w-5 h-5 text-amber-500" />, title: "La gestion d'equipe", desc: "Manager une brigade, gerer un coup de feu : competences irreductiblement humaines." },
           ].map((item) => (
-            <div key={item.title} className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4">
+            <div key={item.title} className="bg-mono-1000 border border-mono-900 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 {item.icon}
-                <h3 className="text-sm font-bold text-[#111111] !mt-0 !mb-0">{item.title}</h3>
+                <h3 className="text-sm font-bold text-mono-100 !mt-0 !mb-0">{item.title}</h3>
               </div>
-              <p className="text-sm text-[#737373] !mb-0">{item.desc}</p>
+              <p className="text-sm text-mono-500 !mb-0">{item.desc}</p>
             </div>
           ))}
         </div>
@@ -177,18 +177,18 @@ export default function BlogIA() {
         <h2>Exemples concrets avec RestauMargin</h2>
 
         <div className="space-y-6 my-6">
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-            <h3 className="text-base font-bold text-[#111111] !mt-0 mb-2">Bistrot parisien : -7 points de food cost</h3>
+          <div className="bg-white border border-mono-900 rounded-xl p-5">
+            <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">Bistrot parisien : -7 points de food cost</h3>
             <p className="text-sm !mb-1">Food cost estime a 30 %, reel a 36 %. Causes : hausse du beurre non repercutee, portions de frites 40 % trop genereuses, entrecote-frites a 42 % de food cost.</p>
             <p className="text-sm font-semibold text-emerald-600 !mb-0">Resultat : food cost de 36 % a 29 % en 8 semaines. Gain : ~25 000 EUR/an.</p>
           </div>
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-            <h3 className="text-base font-bold text-[#111111] !mt-0 mb-2">Traiteur : formule cocktail a 45 % de food cost</h3>
+          <div className="bg-white border border-mono-900 rounded-xl p-5">
+            <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">Traiteur : formule cocktail a 45 % de food cost</h3>
             <p className="text-sm !mb-1">Reformulation de 3 pieces couteuses + augmentation de prix de 8 %.</p>
             <p className="text-sm font-semibold text-emerald-600 !mb-0">Resultat : food cost de 45 % a 28 %. Marge par evenement +35 %.</p>
           </div>
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-            <h3 className="text-base font-bold text-[#111111] !mt-0 mb-2">Dark kitchen : de 2 % a 11 % de marge nette</h3>
+          <div className="bg-white border border-mono-900 rounded-xl p-5">
+            <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">Dark kitchen : de 2 % a 11 % de marge nette</h3>
             <p className="text-sm !mb-1">4 plats deficitaires identifies et remplaces par des plats a food cost &lt; 22 %.</p>
             <p className="text-sm font-semibold text-emerald-600 !mb-0">Resultat : marge nette x5 sur le canal livraison en 6 semaines.</p>
           </div>
@@ -201,10 +201,10 @@ export default function BlogIA() {
         <div className="overflow-x-auto my-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#FAFAFA]">
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Tache</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Avant (manuel)</th>
-                <th className="text-left px-4 py-2.5 font-semibold text-[#525252]">Apres (avec IA)</th>
+              <tr className="bg-mono-1000">
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Tache</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Avant (manuel)</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-mono-400">Apres (avec IA)</th>
               </tr>
             </thead>
             <tbody>
@@ -217,8 +217,8 @@ export default function BlogIA() {
                 ['Commande fournisseur','Estimation au feeling','Suggestion basee sur l\'historique'],
                 ['Revision des prix','Annuelle, au doigt mouille','Continue, basee sur les donnees'],
               ].map(([tache, avant, apres]) => (
-                <tr key={tache} className="border-t border-[#F5F5F5]">
-                  <td className="px-4 py-2.5 font-medium text-[#111111]">{tache}</td>
+                <tr key={tache} className="border-t border-mono-975">
+                  <td className="px-4 py-2.5 font-medium text-mono-100">{tache}</td>
                   <td className="px-4 py-2.5 text-red-600">{avant}</td>
                   <td className="px-4 py-2.5 text-emerald-600">{apres}</td>
                 </tr>
@@ -237,24 +237,24 @@ export default function BlogIA() {
         <h2>5 cas d'usage concrets de l'IA en restaurant</h2>
 
         <div className="space-y-4 my-6">
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-            <h3 className="text-base font-bold text-[#111111] !mt-0 mb-2">1. Optimisation des achats</h3>
+          <div className="bg-white border border-mono-900 rounded-xl p-5">
+            <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">1. Optimisation des achats</h3>
             <p className="text-sm !mb-1">L'IA analyse vos historiques de consommation, croise avec les prix du marche et les saisons pour vous suggerer le meilleur moment d'acheter chaque ingredient. Resultat : <strong>economies de 5 a 10 % sur le poste achats</strong>.</p>
           </div>
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-            <h3 className="text-base font-bold text-[#111111] !mt-0 mb-2">2. Prevision de frequentation</h3>
+          <div className="bg-white border border-mono-900 rounded-xl p-5">
+            <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">2. Prevision de frequentation</h3>
             <p className="text-sm !mb-1">En croisant meteo, evenements locaux, vacances scolaires et historique, l'IA prevoit le nombre de couverts a +/- 10 %. Vous commandez juste ce qu'il faut. Resultat : <strong>reduction du gaspillage de 20 a 30 %</strong>.</p>
           </div>
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-            <h3 className="text-base font-bold text-[#111111] !mt-0 mb-2">3. Controle des portions</h3>
+          <div className="bg-white border border-mono-900 rounded-xl p-5">
+            <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">3. Controle des portions</h3>
             <p className="text-sm !mb-1">L'IA compare le food cost theorique (fiches techniques) et le food cost reel (achats). Un ecart anormal declenche une alerte : sur-portions, pertes anormales, erreurs de recette. Resultat : <strong>food cost reel aligne sur le theorique a 2 points pres</strong>.</p>
           </div>
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-            <h3 className="text-base font-bold text-[#111111] !mt-0 mb-2">4. Pricing dynamique intelligent</h3>
+          <div className="bg-white border border-mono-900 rounded-xl p-5">
+            <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">4. Pricing dynamique intelligent</h3>
             <p className="text-sm !mb-1">L'IA analyse la sensibilite prix de vos clients, les prix de votre zone de chalandise et votre structure de couts pour suggerer des ajustements de prix. Resultat : <strong>augmentation du ticket moyen de 3 a 8 %</strong> sans perte de frequentation.</p>
           </div>
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-            <h3 className="text-base font-bold text-[#111111] !mt-0 mb-2">5. Analyse de rentabilite en temps reel</h3>
+          <div className="bg-white border border-mono-900 rounded-xl p-5">
+            <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">5. Analyse de rentabilite en temps reel</h3>
             <p className="text-sm !mb-1">Chaque plat est suivi en continu : food cost, marge, popularite, tendance. L'IA genere un tableau de bord avec des recommandations actionnables (retirer un poids mort, promouvoir une enigme). Resultat : <strong>+3 a 5 points de marge brute globale</strong>.</p>
           </div>
         </div>
@@ -275,17 +275,17 @@ export default function BlogIA() {
         {/* ── Articles complementaires ── */}
         <h2>Articles complementaires</h2>
         <div className="grid sm:grid-cols-3 gap-4 my-6">
-          <Link to="/blog/calcul-marge-restaurant" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
-            <h3 className="text-sm font-bold text-[#111111] mb-1 group-hover:text-teal-700 transition-colors !mt-0">Calcul de marge restaurant : guide 2026</h3>
-            <p className="text-xs text-[#737373] !mb-0">Formules, benchmarks et erreurs courantes.</p>
+          <Link to="/blog/calcul-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-mono-100 mb-1 group-hover:text-teal-700 transition-colors !mt-0">Calcul de marge restaurant : guide 2026</h3>
+            <p className="text-xs text-mono-500 !mb-0">Formules, benchmarks et erreurs courantes.</p>
           </Link>
-          <Link to="/blog/reduire-food-cost" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
-            <h3 className="text-sm font-bold text-[#111111] mb-1 group-hover:text-teal-700 transition-colors !mt-0">5 methodes pour reduire le food cost de 15 %</h3>
-            <p className="text-xs text-[#737373] !mb-0">Fiches techniques, negociation, gaspillage.</p>
+          <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-mono-100 mb-1 group-hover:text-teal-700 transition-colors !mt-0">5 methodes pour reduire le food cost de 15 %</h3>
+            <p className="text-xs text-mono-500 !mb-0">Fiches techniques, negociation, gaspillage.</p>
           </Link>
-          <Link to="/blog/coefficient-multiplicateur" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
-            <h3 className="text-sm font-bold text-[#111111] mb-1 group-hover:text-teal-700 transition-colors !mt-0">Coefficient multiplicateur en restauration</h3>
-            <p className="text-xs text-[#737373] !mb-0">Tableaux complets, exemples et erreurs a eviter.</p>
+          <Link to="/blog/coefficient-multiplicateur" className="bg-mono-1000 border border-mono-900 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-mono-100 mb-1 group-hover:text-teal-700 transition-colors !mt-0">Coefficient multiplicateur en restauration</h3>
+            <p className="text-xs text-mono-500 !mb-0">Tableaux complets, exemples et erreurs a eviter.</p>
           </Link>
         </div>
 
@@ -300,20 +300,20 @@ export default function BlogIA() {
             { q: 'Faut-il des competences techniques pour utiliser l\'IA ?', a: 'Non. Les outils modernes comme RestauMargin sont concus pour etre utilises par des restaurateurs, pas des informaticiens. L\'interface est simple : photographiez vos factures, dictez vos recettes, consultez vos tableaux de bord. L\'IA travaille en coulisses.' },
             { q: 'Quels sont les resultats concrets de l\'IA en restauration ?', a: 'D\'apres les cas clients de RestauMargin : reduction du food cost de 3 a 7 points, gain de 8 a 12 heures/semaine sur les taches administratives, augmentation du ticket moyen de 3 a 8 %, reduction du gaspillage de 20 a 30 %. Le ROI est generalement atteint en 2-3 mois.' },
           ].map((item) => (
-            <details key={item.q} className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl group">
-              <summary className="px-5 py-4 font-semibold text-[#111111] cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors text-sm">
+            <details key={item.q} className="bg-mono-1000 border border-mono-900 rounded-xl group">
+              <summary className="px-5 py-4 font-semibold text-mono-100 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors text-sm">
                 {item.q}
-                <ArrowRight className="w-4 h-4 text-[#A3A3A3] group-open:rotate-90 transition-transform flex-shrink-0 ml-2" />
+                <ArrowRight className="w-4 h-4 text-mono-700 group-open:rotate-90 transition-transform flex-shrink-0 ml-2" />
               </summary>
-              <p className="px-5 pb-4 text-sm text-[#525252] leading-relaxed">{item.a}</p>
+              <p className="px-5 pb-4 text-sm text-mono-400 leading-relaxed">{item.a}</p>
             </details>
           ))}
         </div>
 
         {/* ── Conviction ── */}
-        <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-6 my-8">
-          <h3 className="text-base font-bold text-[#111111] mb-3">Notre conviction</h3>
-          <p className="text-sm text-[#404040] !mb-0">
+        <div className="bg-mono-1000 border border-mono-900 rounded-xl p-6 my-8">
+          <h3 className="text-base font-bold text-mono-100 mb-3">Notre conviction</h3>
+          <p className="text-sm text-mono-350 !mb-0">
             L'IA n'est ni un gadget ni une revolution. C'est un outil puissant quand il est bien utilise. La vraie revolution, c'est le passage d'une gestion intuitive a une gestion informee. Les restaurateurs qui reussiront ne seront pas ceux qui auront le plus de technologie, mais ceux qui utiliseront la bonne technologie pour se liberer du temps et de l'energie mentale.
           </p>
         </div>
@@ -323,10 +323,10 @@ export default function BlogIA() {
       {/* ── CTA ── */}
       <section className="bg-teal-50 py-14 px-4 text-center">
         <div className="max-w-lg mx-auto">
-          <h2 className="text-2xl font-bold text-[#111111] mb-3 font-satoshi">
+          <h2 className="text-2xl font-bold text-mono-100 mb-3 font-satoshi">
             Essayez l'IA gratuitement avec RestauMargin
           </h2>
-          <p className="text-[#525252] mb-6">
+          <p className="text-mono-400 mb-6">
             Notre IA fait le travail ingrat (saisie, calcul, analyse) pour que vous puissiez faire le travail noble (cuisiner, accueillir, creer).
           </p>
           <Link
@@ -340,8 +340,8 @@ export default function BlogIA() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-[#E5E7EB] py-8 px-4">
-        <div className="max-w-[720px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#A3A3A3]">
+      <footer className="border-t border-mono-900 py-8 px-4">
+        <div className="max-w-[720px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-mono-700">
           <Link to="/landing" className="flex items-center gap-1.5 hover:text-teal-600 transition-colors">
             <ArrowLeft className="w-4 h-4" />
             Retour a l'accueil

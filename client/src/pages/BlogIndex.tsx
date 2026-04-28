@@ -287,9 +287,9 @@ export default function BlogIndex() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -303,7 +303,7 @@ export default function BlogIndex() {
             </Link>
             <Link
               to="/login"
-              className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors"
+              className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors"
             >
               Connexion
             </Link>
@@ -322,27 +322,27 @@ export default function BlogIndex() {
             <BookOpen className="w-5 h-5 text-teal-600" />
             <span className="text-sm font-semibold text-teal-600 uppercase tracking-wider">Blog RestauMargin</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-[#111111] mb-6 leading-tight tracking-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-mono-100 mb-6 leading-tight tracking-tight">
             Guides et conseils pour <span className="text-teal-600">restaurateurs</span>
           </h1>
-          <p className="text-lg sm:text-xl text-[#525252] max-w-2xl leading-relaxed mb-8">
+          <p className="text-lg sm:text-xl text-mono-400 max-w-2xl leading-relaxed mb-8">
             {posts.length} articles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost,
             et gerer votre restaurant au quotidien.
           </p>
 
           {/* Stats badges */}
           <div className="flex flex-wrap items-center gap-3 text-sm">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-mono-900 rounded-full">
               <BookOpen className="w-4 h-4 text-teal-600" />
-              <strong className="text-[#111111]">{posts.length} articles</strong>
+              <strong className="text-mono-100">{posts.length} articles</strong>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-mono-900 rounded-full">
               <Clock className="w-4 h-4 text-teal-600" />
-              Lecture moyenne <strong className="text-[#111111]">12 min</strong>
+              Lecture moyenne <strong className="text-mono-100">12 min</strong>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-[#E5E7EB] rounded-full">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-mono-900 rounded-full">
               <Sparkles className="w-4 h-4 text-teal-600" />
-              Mis a jour <strong className="text-[#111111]">avril 2026</strong>
+              Mis a jour <strong className="text-mono-100">avril 2026</strong>
             </span>
           </div>
         </div>
@@ -354,7 +354,7 @@ export default function BlogIndex() {
         {posts[0] && (
           <Link
             to={`/blog/${posts[0].slug}`}
-            className="group relative block bg-gradient-to-br from-emerald-50 via-white to-teal-50 border border-[#E5E7EB] rounded-3xl p-8 sm:p-12 mb-8 overflow-hidden transition-all duration-500 hover:scale-[1.01] hover:shadow-2xl hover:shadow-emerald-500/30 hover:border-emerald-500"
+            className="group relative block bg-gradient-to-br from-emerald-50 via-white to-teal-50 border border-mono-900 rounded-3xl p-8 sm:p-12 mb-8 overflow-hidden transition-all duration-500 hover:scale-[1.01] hover:shadow-2xl hover:shadow-emerald-500/30 hover:border-emerald-500"
           >
             {/* Numero decoratif geant */}
             <div className="pointer-events-none absolute -top-8 -right-8 text-[16rem] font-black leading-none select-none text-emerald-100 group-hover:text-emerald-200 transition-colors duration-500">
@@ -376,21 +376,21 @@ export default function BlogIndex() {
                 <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${categoryColors[posts[0].category] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
                   {posts[0].category}
                 </span>
-                <span className="flex items-center gap-1 text-xs text-[#737373]">
+                <span className="flex items-center gap-1 text-xs text-mono-500">
                   <Clock className="w-3.5 h-3.5" />
                   {posts[0].readTime}
                 </span>
               </div>
 
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111111] mb-4 leading-tight tracking-tight group-hover:text-emerald-600 transition-colors max-w-3xl">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-mono-100 mb-4 leading-tight tracking-tight group-hover:text-emerald-600 transition-colors max-w-3xl">
                 {posts[0].title}
               </h2>
 
-              <p className="text-base sm:text-lg text-[#525252] leading-relaxed mb-6 max-w-2xl">
+              <p className="text-base sm:text-lg text-mono-400 leading-relaxed mb-6 max-w-2xl">
                 {posts[0].excerpt}
               </p>
 
-              <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] group-hover:bg-emerald-600 text-white text-sm font-bold rounded-full transition-all">
+              <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 group-hover:bg-emerald-600 text-white text-sm font-bold rounded-full transition-all">
                 Lire l'article
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -406,7 +406,7 @@ export default function BlogIndex() {
               <Link
                 key={post.slug}
                 to={`/blog/${post.slug}`}
-                className="group relative block bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-8 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20 hover:border-emerald-500"
+                className="group relative block bg-white border border-mono-900 rounded-3xl p-6 sm:p-8 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20 hover:border-emerald-500"
               >
                 {/* Numero decoratif en background */}
                 <div className="pointer-events-none absolute -top-4 -right-4 text-[7rem] font-black leading-none select-none text-[#F0FDF4] group-hover:text-emerald-100 transition-colors duration-500">
@@ -424,19 +424,19 @@ export default function BlogIndex() {
                     <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${categoryColors[post.category] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
                       {post.category}
                     </span>
-                    <span className="flex items-center gap-1 text-xs text-[#737373]">
+                    <span className="flex items-center gap-1 text-xs text-mono-500">
                       <Clock className="w-3.5 h-3.5" />
                       {post.readTime}
                     </span>
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-xl sm:text-2xl font-bold text-[#111111] mb-3 leading-tight tracking-tight group-hover:text-emerald-600 transition-colors">
+                  <h2 className="text-xl sm:text-2xl font-bold text-mono-100 mb-3 leading-tight tracking-tight group-hover:text-emerald-600 transition-colors">
                     {post.title}
                   </h2>
 
                   {/* Excerpt */}
-                  <p className="text-sm text-[#525252] leading-relaxed mb-6 line-clamp-3">
+                  <p className="text-sm text-mono-400 leading-relaxed mb-6 line-clamp-3">
                     {post.excerpt}
                   </p>
 
@@ -452,7 +452,7 @@ export default function BlogIndex() {
         </div>
 
         {/* CTA */}
-        <div className="mt-20 bg-gradient-to-br from-[#111111] to-[#1f2937] rounded-3xl p-8 sm:p-12 text-center text-white">
+        <div className="mt-20 bg-gradient-to-br from-mono-100 to-[#1f2937] rounded-3xl p-8 sm:p-12 text-center text-white">
           <h3
             className="text-2xl sm:text-3xl font-bold mb-3"
 
@@ -482,8 +482,8 @@ export default function BlogIndex() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#E5E7EB] py-8">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#737373]">
+      <footer className="border-t border-mono-900 py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-mono-500">
           <div className="flex items-center gap-2">
             <ChefHat className="w-5 h-5 text-teal-600" />
             <span>© 2026 RestauMargin — Tous droits reserves</span>

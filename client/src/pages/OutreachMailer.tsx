@@ -278,19 +278,19 @@ export default function OutreachMailer() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] py-8 px-4 sm:px-6">
+    <div className="min-h-screen bg-mono-1000 py-8 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center gap-3 mb-2">
           <Mail className="w-7 h-7 text-emerald-600" />
           <h1 className="text-3xl font-black text-[#0F172A]">Outreach Mailer</h1>
         </div>
-        <p className="text-sm text-[#525252] mb-8">
+        <p className="text-sm text-mono-400 mb-8">
           Envoi d'emails branded depuis <strong>contact@restaumargin.fr</strong> avec template HTML pro
           (logo, couleurs, signature). Pour SEO link building, partenariats, journalistes.
         </p>
 
         {/* Templates */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 mb-6">
+        <div className="bg-white border border-mono-900 rounded-2xl p-5 mb-6">
           <h2 className="text-sm font-bold text-[#0F172A] uppercase tracking-wider mb-3 flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-emerald-600" />
             Templates pretes
@@ -303,7 +303,7 @@ export default function OutreachMailer() {
                 className={`px-3 py-2 text-sm rounded-full border transition ${
                   selectedTemplate.id === t.id
                     ? 'bg-emerald-600 text-white border-emerald-600'
-                    : 'bg-white text-[#0F172A] border-[#E5E7EB] hover:border-emerald-500'
+                    : 'bg-white text-[#0F172A] border-mono-900 hover:border-emerald-500'
                 }`}
               >
                 {t.label}
@@ -313,7 +313,7 @@ export default function OutreachMailer() {
         </div>
 
         {/* Form */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-8 space-y-5">
+        <div className="bg-white border border-mono-900 rounded-2xl p-6 sm:p-8 space-y-5">
           {/* To */}
           <div>
             <label className="block text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-2">
@@ -323,7 +323,7 @@ export default function OutreachMailer() {
               type="email"
               value={to}
               onChange={e => setTo(e.target.value)}
-              className="w-full px-4 py-2.5 bg-[#FAFAFA] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-4 py-2.5 bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               placeholder="redaction@example.com"
             />
           </div>
@@ -337,7 +337,7 @@ export default function OutreachMailer() {
               type="text"
               value={subject}
               onChange={e => setSubject(e.target.value)}
-              className="w-full px-4 py-2.5 bg-[#FAFAFA] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-4 py-2.5 bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             />
           </div>
 
@@ -350,7 +350,7 @@ export default function OutreachMailer() {
               type="text"
               value={recipientName}
               onChange={e => setRecipientName(e.target.value)}
-              className="w-full px-4 py-2.5 bg-[#FAFAFA] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-4 py-2.5 bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               placeholder="Bonjour, ou Madame, Monsieur,"
             />
           </div>
@@ -364,7 +364,7 @@ export default function OutreachMailer() {
               value={intro}
               onChange={e => setIntro(e.target.value)}
               rows={4}
-              className="w-full px-4 py-2.5 bg-[#FAFAFA] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none font-mono text-sm"
+              className="w-full px-4 py-2.5 bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none font-mono text-sm"
               placeholder="Je viens de lancer RestauMargin..."
             />
             <p className="text-xs text-[#94A3B8] mt-1">Markdown : **bold** + saut de ligne</p>
@@ -403,18 +403,18 @@ export default function OutreachMailer() {
                     value={a.title}
                     onChange={e => updateArticle(idx, 'title', e.target.value)}
                     placeholder="Titre"
-                    className="flex-1 px-3 py-2 text-sm bg-[#FAFAFA] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="flex-1 px-3 py-2 text-sm bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                   <input
                     type="url"
                     value={a.url}
                     onChange={e => updateArticle(idx, 'url', e.target.value)}
                     placeholder="https://..."
-                    className="flex-[2] px-3 py-2 text-sm bg-[#FAFAFA] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="flex-[2] px-3 py-2 text-sm bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                   <button
                     onClick={() => removeArticle(idx)}
-                    className="px-2 py-2 text-[#737373] hover:text-red-500"
+                    className="px-2 py-2 text-mono-500 hover:text-red-500"
                     title="Supprimer"
                   >
                     <X className="w-4 h-4" />
@@ -433,7 +433,7 @@ export default function OutreachMailer() {
               value={pitch}
               onChange={e => setPitch(e.target.value)}
               rows={14}
-              className="w-full px-4 py-2.5 bg-[#FAFAFA] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none font-mono text-sm"
+              className="w-full px-4 py-2.5 bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none font-mono text-sm"
               placeholder="Je propose..."
             />
             <p className="text-xs text-[#94A3B8] mt-1">Markdown : **bold** + sauts de ligne preserves</p>
@@ -450,7 +450,7 @@ export default function OutreachMailer() {
           )}
 
           {/* Send button */}
-          <div className="pt-4 border-t border-[#E5E7EB]">
+          <div className="pt-4 border-t border-mono-900">
             <button
               onClick={handleSend}
               disabled={sending}

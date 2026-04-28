@@ -48,9 +48,9 @@ export default function BlogFicheTechnique() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -62,7 +62,7 @@ export default function BlogFicheTechnique() {
               <Calculator className="w-4 h-4" />
               Calculer mon food cost
             </Link>
-            <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+            <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
               Connexion
             </Link>
           </div>
@@ -85,12 +85,12 @@ export default function BlogFicheTechnique() {
         <BlogAuthor publishedDate="2026-04-14" readTime="11 min" variant="header" />
 
         {/* ── Sommaire ── */}
-        <nav className="my-12 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
-          <h2 className="text-lg font-bold text-[#111111] mb-4 flex items-center gap-2">
+        <nav className="my-12 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
+          <h2 className="text-lg font-bold text-mono-100 mb-4 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-teal-600" />
             Sommaire
           </h2>
-          <ol className="space-y-2 text-sm sm:text-base text-[#404040]">
+          <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
               { href: '#definition', label: "Qu'est-ce qu'une fiche technique de cuisine ?" },
               { href: '#elements', label: 'Les elements essentiels d\'une fiche technique' },
@@ -170,12 +170,12 @@ export default function BlogFicheTechnique() {
                 desc: 'En croisant fiches techniques et couverts servis, vous prevoyez vos commandes avec precision et reduisez les pertes.',
               },
             ].map((b, i) => (
-              <div key={i} className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+              <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5">
                 <div className="flex items-center gap-2 mb-2">
                   {b.icon}
-                  <span className="font-bold text-[#111111]">{b.title}</span>
+                  <span className="font-bold text-mono-100">{b.title}</span>
                 </div>
-                <p className="text-sm text-[#525252] leading-relaxed">{b.desc}</p>
+                <p className="text-sm text-mono-400 leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
@@ -285,13 +285,13 @@ export default function BlogFicheTechnique() {
                 desc: 'Un filet de volaille de 200 g (cru) peut perdre 20 a 25% de son poids a la cuisson. Votre portion servie sera de 150 a 160 g — mais vous avez paye 200 g. Cette perte doit figurer dans la fiche.',
               },
             ].map((s) => (
-              <div key={s.step} className="flex gap-4 bg-white border border-[#E5E7EB] rounded-2xl p-5">
+              <div key={s.step} className="flex gap-4 bg-white border border-mono-900 rounded-2xl p-5">
                 <div className="w-9 h-9 bg-teal-600 text-white rounded-xl flex items-center justify-center font-bold text-sm shrink-0">
                   {s.step}
                 </div>
                 <div>
-                  <p className="font-bold text-[#111111] mb-1">{s.title}</p>
-                  <p className="text-sm text-[#525252] leading-relaxed">{s.desc}</p>
+                  <p className="font-bold text-mono-100 mb-1">{s.title}</p>
+                  <p className="text-sm text-mono-400 leading-relaxed">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -299,14 +299,14 @@ export default function BlogFicheTechnique() {
 
           {/* Formule */}
           <div className="mt-8 bg-teal-50 border border-teal-200 rounded-2xl p-6 sm:p-8">
-            <h3 className="font-bold text-[#111111] mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-mono-100 mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-teal-600" />
               Formule du food cost
             </h3>
             <div className="bg-white rounded-xl p-4 text-center font-mono text-base sm:text-lg font-semibold text-teal-700 border border-teal-100 mb-4">
               Food cost (%) = (Coût matiere par portion / Prix de vente HT) × 100
             </div>
-            <div className="text-sm text-[#525252] space-y-1">
+            <div className="text-sm text-mono-400 space-y-1">
               <p><strong>Exemple :</strong> Coût matiere = 4,63 € / Portion vendue = 28 € → Food cost = <strong>16,5%</strong></p>
               <p>En restauration traditionnelle, visez un food cost entre <strong>28% et 35%</strong>.</p>
               <p>En dessous de 25%, vos portions sont peut-etre trop reduites et nuisent a la satisfaction client.</p>
@@ -328,15 +328,15 @@ export default function BlogFicheTechnique() {
             </p>
           </div>
 
-          <div className="border-2 border-dashed border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
+          <div className="border-2 border-dashed border-mono-900 rounded-2xl p-6 sm:p-8">
             {/* Header */}
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#E5E7EB]">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-mono-900">
               <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
                 <FileText className="w-5 h-5 text-teal-600" />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wider text-[#737373] font-medium">Fiche Technique</p>
-                <p className="font-bold text-[#111111]">[NOM DU PLAT]</p>
+                <p className="text-xs uppercase tracking-wider text-mono-500 font-medium">Fiche Technique</p>
+                <p className="font-bold text-mono-100">[NOM DU PLAT]</p>
               </div>
             </div>
 
@@ -350,21 +350,21 @@ export default function BlogFicheTechnique() {
                 { label: 'Cout / portion', value: 'X,XX €' },
                 { label: 'Food cost', value: 'XX%' },
               ].map((f, i) => (
-                <div key={i} className="bg-[#FAFAFA] rounded-xl p-3 text-sm">
-                  <p className="text-[#737373] text-xs mb-1">{f.label}</p>
-                  <p className="font-semibold text-[#111111]">{f.value}</p>
+                <div key={i} className="bg-mono-1000 rounded-xl p-3 text-sm">
+                  <p className="text-mono-500 text-xs mb-1">{f.label}</p>
+                  <p className="font-semibold text-mono-100">{f.value}</p>
                 </div>
               ))}
             </div>
 
             {/* Ingredients table */}
-            <p className="text-xs font-bold uppercase tracking-wider text-[#737373] mb-2">Ingredients</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-mono-500 mb-2">Ingredients</p>
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-sm border-collapse">
                 <thead>
-                  <tr className="bg-[#F5F5F5]">
+                  <tr className="bg-mono-975">
                     {['Ingredient', 'Qte brute', 'Coeff. perte', 'Qte nette', 'Prix/kg', 'Cout'].map((h) => (
-                      <th key={h} className="text-left px-3 py-2 font-semibold text-[#111111] border-b border-[#E5E7EB]">{h}</th>
+                      <th key={h} className="text-left px-3 py-2 font-semibold text-mono-100 border-b border-mono-900">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -375,14 +375,14 @@ export default function BlogFicheTechnique() {
                     ['Beurre', '30 g', '1,00', '30 g', '8 €/kg', '0,24 €'],
                     ['...', '...', '...', '...', '...', '...'],
                   ].map((row, i) => (
-                    <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}>
+                    <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
                       {row.map((cell, j) => (
-                        <td key={j} className="px-3 py-2 text-[#404040] border-b border-[#F0F0F0]">{cell}</td>
+                        <td key={j} className="px-3 py-2 text-mono-350 border-b border-[#F0F0F0]">{cell}</td>
                       ))}
                     </tr>
                   ))}
                   <tr className="bg-teal-50">
-                    <td colSpan={5} className="px-3 py-2 font-bold text-right text-[#111111]">TOTAL</td>
+                    <td colSpan={5} className="px-3 py-2 font-bold text-right text-mono-100">TOTAL</td>
                     <td className="px-3 py-2 font-bold text-teal-700">X,XX €</td>
                   </tr>
                 </tbody>
@@ -392,18 +392,18 @@ export default function BlogFicheTechnique() {
             {/* Other sections */}
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-[#737373] mb-2">Procedure</p>
-                <div className="space-y-1 text-sm text-[#525252]">
+                <p className="text-xs font-bold uppercase tracking-wider text-mono-500 mb-2">Procedure</p>
+                <div className="space-y-1 text-sm text-mono-400">
                   {['1. Mise en place...', '2. Cuisson...', '3. Dressage...'].map((s, i) => (
-                    <p key={i} className="bg-[#FAFAFA] rounded-lg px-3 py-2">{s}</p>
+                    <p key={i} className="bg-mono-1000 rounded-lg px-3 py-2">{s}</p>
                   ))}
                 </div>
               </div>
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-[#737373] mb-2">Allergenes &amp; Conservation</p>
-                <div className="space-y-1 text-sm text-[#525252]">
-                  <p className="bg-[#FAFAFA] rounded-lg px-3 py-2">Allergenes : gluten, lait, oeuf...</p>
-                  <p className="bg-[#FAFAFA] rounded-lg px-3 py-2">Conservation : 48h sous vide a +3°C</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-mono-500 mb-2">Allergenes &amp; Conservation</p>
+                <div className="space-y-1 text-sm text-mono-400">
+                  <p className="bg-mono-1000 rounded-lg px-3 py-2">Allergenes : gluten, lait, oeuf...</p>
+                  <p className="bg-mono-1000 rounded-lg px-3 py-2">Conservation : 48h sous vide a +3°C</p>
                 </div>
               </div>
             </div>
@@ -446,11 +446,11 @@ export default function BlogFicheTechnique() {
                 desc: 'En croisant le nombre de couverts prevus avec les quantites par portion, vous passez des commandes precises et reduisez les pertes de stock.',
               },
             ].map((bp, i) => (
-              <div key={i} className="flex gap-3 bg-white border border-[#E5E7EB] rounded-xl p-4">
+              <div key={i} className="flex gap-3 bg-white border border-mono-900 rounded-xl p-4">
                 <CheckCircle className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-[#111111] mb-0.5">{bp.title}</p>
-                  <p className="text-sm text-[#525252] leading-relaxed">{bp.desc}</p>
+                  <p className="font-semibold text-mono-100 mb-0.5">{bp.title}</p>
+                  <p className="text-sm text-mono-400 leading-relaxed">{bp.desc}</p>
                 </div>
               </div>
             ))}
@@ -494,8 +494,8 @@ export default function BlogFicheTechnique() {
               <div key={err.n} className="flex gap-4 bg-red-50 border border-red-100 rounded-2xl p-5">
                 <span className="text-2xl font-extrabold text-red-200 min-w-[40px]">{err.n}</span>
                 <div>
-                  <p className="font-bold text-[#111111] mb-1">{err.title}</p>
-                  <p className="text-sm text-[#525252] leading-relaxed">{err.desc}</p>
+                  <p className="font-bold text-mono-100 mb-1">{err.title}</p>
+                  <p className="text-sm text-mono-400 leading-relaxed">{err.desc}</p>
                 </div>
               </div>
             ))}
@@ -530,9 +530,9 @@ export default function BlogFicheTechnique() {
               { icon: <BarChart3 className="w-5 h-5 text-teal-600" />, label: 'Analyse de rentabilite de chaque plat et de votre carte' },
               { icon: <AlertTriangle className="w-5 h-5 text-teal-600" />, label: 'Alertes automatiques en cas de derive du food cost' },
             ].map((f, i) => (
-              <div key={i} className="flex items-center gap-3 bg-white border border-[#E5E7EB] rounded-xl p-4 text-sm">
+              <div key={i} className="flex items-center gap-3 bg-white border border-mono-900 rounded-xl p-4 text-sm">
                 {f.icon}
-                <span className="text-[#111111] font-medium">{f.label}</span>
+                <span className="text-mono-100 font-medium">{f.label}</span>
               </div>
             ))}
           </div>
@@ -562,7 +562,7 @@ export default function BlogFicheTechnique() {
 
         {/* ── Articles lies ── */}
         <section>
-          <h2 className="text-xl font-bold text-[#111111] mb-6">Articles qui pourraient vous interesser</h2>
+          <h2 className="text-xl font-bold text-mono-100 mb-6">Articles qui pourraient vous interesser</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { to: '/blog/coefficient-multiplicateur', label: 'Le coefficient multiplicateur', tag: 'Pricing' },
@@ -572,10 +572,10 @@ export default function BlogFicheTechnique() {
               <Link
                 key={i}
                 to={a.to}
-                className="group bg-white border border-[#E5E7EB] hover:border-teal-300 rounded-2xl p-5 transition-colors"
+                className="group bg-white border border-mono-900 hover:border-teal-300 rounded-2xl p-5 transition-colors"
               >
                 <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">{a.tag}</span>
-                <p className="font-semibold text-[#111111] mt-1 group-hover:text-teal-600 transition-colors text-sm">
+                <p className="font-semibold text-mono-100 mt-1 group-hover:text-teal-600 transition-colors text-sm">
                   {a.label}
                   <ArrowRight className="w-4 h-4 inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </p>
@@ -663,7 +663,7 @@ function SectionHeading({ icon, number, children }: { icon: React.ReactNode; num
       <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
         {icon}
       </div>
-      <h2 className="text-2xl font-bold text-[#111111]">{children}</h2>
+      <h2 className="text-2xl font-bold text-mono-100">{children}</h2>
     </div>
   );
 }
@@ -682,14 +682,14 @@ function Callout({ type, children }: { type: 'info' | 'warning'; children: React
 
 function ElementCard({ number, title, items }: { number: number; title: string; items: string[] }) {
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+    <div className="bg-white border border-mono-900 rounded-2xl p-5">
       <div className="flex items-center gap-3 mb-3">
         <span className="w-7 h-7 bg-teal-600 text-white rounded-lg flex items-center justify-center text-sm font-bold shrink-0">{number}</span>
-        <h3 className="font-bold text-[#111111]">{title}</h3>
+        <h3 className="font-bold text-mono-100">{title}</h3>
       </div>
       <ul className="space-y-1.5">
         {items.map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm text-[#525252]">
+          <li key={i} className="flex items-start gap-2 text-sm text-mono-400">
             <CheckCircle className="w-4 h-4 text-teal-500 shrink-0 mt-0.5" />
             {item}
           </li>

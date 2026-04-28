@@ -361,7 +361,7 @@ function getTempColor(zone: string, temp: number): 'emerald' | 'amber' | 'red' |
 }
 
 const TEMP_TEXT: Record<string, string> = { emerald: 'text-emerald-400', amber: 'text-amber-400', red: 'text-red-400', slate: 'text-[#9CA3AF] dark:text-mono-500' };
-const TEMP_BADGE: Record<string, string> = { emerald: 'bg-emerald-900/40 text-emerald-300', amber: 'bg-amber-900/40 text-amber-300', red: 'bg-red-900/40 text-red-300', slate: 'bg-[#FAFAFA] dark:bg-mono-50 text-[#6B7280] dark:text-mono-700' };
+const TEMP_BADGE: Record<string, string> = { emerald: 'bg-emerald-900/40 text-emerald-300', amber: 'bg-amber-900/40 text-amber-300', red: 'bg-red-900/40 text-red-300', slate: 'bg-mono-1000 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700' };
 const TEMP_STATUS: Record<string, string> = { emerald: 'OK', amber: 'Attention', red: 'Danger', slate: '-' };
 
 const ZONE_CHART_COLORS: Record<string, string> = {
@@ -847,7 +847,7 @@ export default function HACCP() {
   const TempChartTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload?.length) return null;
     return (
-      <div className="bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg p-3 shadow-xl text-xs">
+      <div className="bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg p-3 shadow-xl text-xs">
         <div className="text-[#9CA3AF] dark:text-mono-500 mb-1.5 font-medium">{label}</div>
         {payload.map((p: any) => {
           const temp = p.value as number;
@@ -1425,7 +1425,7 @@ export default function HACCP() {
         </div>
         <div className="flex gap-2">
           <button onClick={exportRegistreCSV}
-            className="flex items-center gap-2 px-4 py-2.5 border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:bg-[#FAFAFA] dark:hover:bg-[#171717] rounded-xl text-sm font-medium transition-colors">
+            className="flex items-center gap-2 px-4 py-2.5 border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-[#171717] rounded-xl text-sm font-medium transition-colors">
             <Download className="w-4 h-4" />
             Exporter registre
           </button>
@@ -1467,7 +1467,7 @@ export default function HACCP() {
                   <span>Progression du jour</span>
                   <span>{checklistProgress.done}/{checklistProgress.total}</span>
                 </div>
-                <div className="h-2 bg-[#FAFAFA] dark:bg-mono-50 rounded-full overflow-hidden">
+                <div className="h-2 bg-mono-1000 dark:bg-mono-50 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
@@ -1555,7 +1555,7 @@ export default function HACCP() {
               </div>
               <div className={`text-3xl font-bold ${stats.rate >= 90 ? 'text-emerald-400' : stats.rate >= 70 ? 'text-amber-400' : 'text-red-400'}`}>{stats.rate}%</div>
               <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">{stats.total} {t('haccp.readings')}</div>
-              <div className="mt-3 h-2 bg-[#FAFAFA] dark:bg-mono-50 rounded-full overflow-hidden">
+              <div className="mt-3 h-2 bg-mono-1000 dark:bg-mono-50 rounded-full overflow-hidden">
                 <div className={`h-full rounded-full ${stats.rate >= 90 ? 'bg-emerald-500' : stats.rate >= 70 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${stats.rate}%` }} />
               </div>
             </div>
@@ -1577,7 +1577,7 @@ export default function HACCP() {
               </div>
               <div className={`text-3xl font-bold ${stats.cleanRate === 100 ? 'text-emerald-400' : stats.cleanRate >= 50 ? 'text-amber-400' : 'text-red-400'}`}>{stats.cleanRate}%</div>
               <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">{stats.cleanDone}/{stats.cleanTotal} zones</div>
-              <div className="mt-3 h-2 bg-[#FAFAFA] dark:bg-mono-50 rounded-full overflow-hidden">
+              <div className="mt-3 h-2 bg-mono-1000 dark:bg-mono-50 rounded-full overflow-hidden">
                 <div className={`h-full rounded-full ${stats.cleanRate === 100 ? 'bg-emerald-500' : stats.cleanRate >= 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${stats.cleanRate}%` }} />
               </div>
             </div>
@@ -1741,7 +1741,7 @@ export default function HACCP() {
                 type="date"
                 value={checklistDate}
                 onChange={(e) => setChecklistDate(e.target.value)}
-                className="bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-1.5 text-sm text-mono-100 dark:text-white"
+                className="bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-1.5 text-sm text-mono-100 dark:text-white"
               />
               {checklistDate !== today && (
                 <button onClick={() => setChecklistDate(today)} className="text-xs text-teal-400 hover:text-teal-300 font-medium">
@@ -1756,7 +1756,7 @@ export default function HACCP() {
                 </span>
                 <span className="text-[#9CA3AF] dark:text-mono-500 ml-1">controles</span>
               </div>
-              <div className="w-32 h-2.5 bg-[#FAFAFA] dark:bg-mono-50 rounded-full overflow-hidden">
+              <div className="w-32 h-2.5 bg-mono-1000 dark:bg-mono-50 rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{
@@ -1779,7 +1779,7 @@ export default function HACCP() {
 
             return (
               <div key={category} className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
-                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200">
+                <div className="flex items-center justify-between px-5 py-3 bg-mono-1000 dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200">
                   <div className="flex items-center gap-2">
                     {getCategoryIcon(category)}
                     <span className="text-mono-100 dark:text-white font-semibold text-sm">{category}</span>
@@ -1829,7 +1829,7 @@ export default function HACCP() {
                               value={item.temperature}
                               onChange={(e) => updateCheckItemTemp(item.id, e.target.value)}
                               placeholder="°C"
-                              className={`w-20 bg-[#FAFAFA] dark:bg-mono-50 border rounded-lg px-2 py-1.5 text-sm text-center font-mono font-bold ${tempWarning ? 'border-red-500 text-red-400' : 'border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white'} placeholder:text-[#6B7280]`}
+                              className={`w-20 bg-mono-1000 dark:bg-mono-50 border rounded-lg px-2 py-1.5 text-sm text-center font-mono font-bold ${tempWarning ? 'border-red-500 text-red-400' : 'border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white'} placeholder:text-[#6B7280]`}
                             />
                             <span className="text-xs text-[#9CA3AF] dark:text-mono-500">°C</span>
                           </div>
@@ -1886,15 +1886,15 @@ export default function HACCP() {
               <h3 className="text-mono-100 dark:text-white font-semibold">{t('haccp.recordReading')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.zone')}</label>
-                  <select value={tempForm.zone} onChange={e => setTempForm(f => ({ ...f, zone: e.target.value as TemperatureRecord['zone'] }))} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white">
+                  <select value={tempForm.zone} onChange={e => setTempForm(f => ({ ...f, zone: e.target.value as TemperatureRecord['zone'] }))} className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white">
                     {Object.entries(ZONE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select></div>
                 <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.temperatureLabel')}</label>
-                  <input type="number" step="0.1" value={tempForm.temperature} onChange={e => setTempForm(f => ({ ...f, temperature: e.target.value }))} placeholder="Ex: 3.5" className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
+                  <input type="number" step="0.1" value={tempForm.temperature} onChange={e => setTempForm(f => ({ ...f, temperature: e.target.value }))} placeholder="Ex: 3.5" className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
                 <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.agent')}</label>
-                  <input type="text" value={tempForm.agent} onChange={e => setTempForm(f => ({ ...f, agent: e.target.value }))} placeholder={t('haccp.yourName')} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
+                  <input type="text" value={tempForm.agent} onChange={e => setTempForm(f => ({ ...f, agent: e.target.value }))} placeholder={t('haccp.yourName')} className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
                 <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.notes')}</label>
-                  <input type="text" value={tempForm.notes} onChange={e => setTempForm(f => ({ ...f, notes: e.target.value }))} placeholder={t('haccp.optional')} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
+                  <input type="text" value={tempForm.notes} onChange={e => setTempForm(f => ({ ...f, notes: e.target.value }))} placeholder={t('haccp.optional')} className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
               </div>
 
               {/* Live temperature alert preview */}
@@ -1923,7 +1923,7 @@ export default function HACCP() {
           <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
+                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-mono-1000 dark:bg-mono-50/50">
                   <th className="text-left py-3 px-4">{t('haccp.zone')}</th><th className="text-left py-3 px-4">{t('haccp.temp')}</th><th className="text-left py-3 px-4">{t('haccp.status')}</th><th className="text-left py-3 px-4">{t('haccp.dateTime')}</th><th className="text-left py-3 px-4">{t('haccp.agent')}</th><th className="text-left py-3 px-4">{t('haccp.notes')}</th>
                 </tr></thead>
                 <tbody>{temperatures.map(t => {
@@ -1955,7 +1955,7 @@ export default function HACCP() {
           <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
+                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-mono-1000 dark:bg-mono-50/50">
                   <th className="text-left py-3 px-4 w-8">{t('haccp.done')}</th><th className="text-left py-3 px-4">{t('haccp.zone')}</th><th className="text-left py-3 px-4">{t('haccp.time')}</th><th className="text-left py-3 px-4">{t('haccp.agent')}</th><th className="text-left py-3 px-4">{t('haccp.status')}</th>
                 </tr></thead>
                 <tbody>{cleaning.map(c => (
@@ -1971,7 +1971,7 @@ export default function HACCP() {
                     <td className="py-3 px-4">
                       {c.verified
                         ? <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-emerald-900/40 text-emerald-300"><CheckCircle2 className="w-3 h-3" />{t('haccp.cleaned')}</span>
-                        : <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-[#FAFAFA] dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500"><Clock className="w-3 h-3" />{t('haccp.pending')}</span>}
+                        : <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-mono-1000 dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500"><Clock className="w-3 h-3" />{t('haccp.pending')}</span>}
                     </td>
                   </tr>
                 ))}</tbody>
@@ -2197,7 +2197,7 @@ export default function HACCP() {
                 <div>
                   <label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Type</label>
                   <select value={actionForm.type} onChange={e => setActionForm(f => ({ ...f, type: e.target.value as CorrectiveAction['type'] }))}
-                    className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white">
+                    className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white">
                     {Object.entries(ACTION_TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
                 </div>
@@ -2205,18 +2205,18 @@ export default function HACCP() {
                   <label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Description</label>
                   <input type="text" value={actionForm.description} onChange={e => setActionForm(f => ({ ...f, description: e.target.value }))}
                     placeholder="Decrire la non-conformite..."
-                    className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
                 <div>
                   <label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Responsable</label>
                   <input type="text" value={actionForm.responsiblePerson} onChange={e => setActionForm(f => ({ ...f, responsiblePerson: e.target.value }))}
                     placeholder="Nom du responsable"
-                    className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
+                    className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
                 </div>
                 <div>
                   <label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Echeance</label>
                   <input type="date" value={actionForm.deadline} onChange={e => setActionForm(f => ({ ...f, deadline: e.target.value }))}
-                    className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white" />
+                    className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white" />
                 </div>
               </div>
               <div className="flex gap-3">
@@ -2230,7 +2230,7 @@ export default function HACCP() {
           <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
+                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-mono-1000 dark:bg-mono-50/50">
                   <th className="text-left py-3 px-4">Type</th>
                   <th className="text-left py-3 px-4">Description</th>
                   <th className="text-left py-3 px-4">Responsable</th>
@@ -2241,7 +2241,7 @@ export default function HACCP() {
                 <tbody>{correctiveActions.map(a => (
                   <tr key={a.id} className={`border-t border-mono-900 dark:border-mono-200/50 hover:bg-mono-950 dark:hover:bg-[#171717]/30 transition-colors ${getDeadlineBg(a.deadline)}`}>
                     <td className="py-3 px-4">
-                      <span className="px-2 py-0.5 rounded-lg text-xs font-medium bg-[#FAFAFA] dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-200">
+                      <span className="px-2 py-0.5 rounded-lg text-xs font-medium bg-mono-1000 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-200">
                         {ACTION_TYPE_LABELS[a.type] || a.type}
                       </span>
                     </td>
@@ -2399,7 +2399,7 @@ export default function HACCP() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-mono-500 dark:text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
+                  <tr className="text-mono-500 dark:text-mono-500 text-xs uppercase tracking-wider bg-mono-1000 dark:bg-mono-50/50">
                     <th className="text-left py-3 px-4 font-semibold">Equipement</th>
                     <th className="text-left py-3 px-4 font-semibold">Limite</th>
                     {TEMP_LOG_TIMES.map(time => (
@@ -2518,7 +2518,7 @@ export default function HACCP() {
                 {cleaningScheduleProgress.done}/{cleaningScheduleProgress.total} ({cleaningScheduleProgress.pct}%)
               </span>
             </div>
-            <div className="h-2.5 bg-[#FAFAFA] dark:bg-mono-50 rounded-full overflow-hidden">
+            <div className="h-2.5 bg-mono-1000 dark:bg-mono-50 rounded-full overflow-hidden">
               <div className="h-full rounded-full transition-all duration-500"
                 style={{
                   width: `${cleaningScheduleProgress.pct}%`,
@@ -2541,7 +2541,7 @@ export default function HACCP() {
 
             return (
               <div key={cat} className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden print-report">
-                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200">
+                <div className="flex items-center justify-between px-5 py-3 bg-mono-1000 dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200">
                   <div className="flex items-center gap-2">
                     {freqIcon}
                     <span className="text-mono-100 dark:text-white font-semibold text-sm">{cat}</span>
@@ -2727,7 +2727,7 @@ export default function HACCP() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
+                  <tr className="text-mono-500 text-xs uppercase tracking-wider bg-mono-1000 dark:bg-mono-50/50">
                     <th className="text-left py-3 px-4">Fournisseur</th>
                     <th className="text-left py-3 px-4">Date</th>
                     <th className="text-left py-3 px-4">Produits</th>
@@ -2878,7 +2878,7 @@ export default function HACCP() {
 
             return (
               <div key={category} className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden print-report">
-                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200">
+                <div className="flex items-center justify-between px-5 py-3 bg-mono-1000 dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200">
                   <div className="flex items-center gap-2">
                     <FileCheck className="w-4 h-4 text-teal-400" />
                     <span className="text-mono-100 dark:text-white font-semibold text-sm">{category}</span>
@@ -3029,7 +3029,7 @@ export default function HACCP() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
+                    <tr className="text-mono-500 text-xs uppercase tracking-wider bg-mono-1000 dark:bg-mono-50/50">
                       <th className="text-left py-3 px-4">Date</th>
                       <th className="text-left py-3 px-4">Description</th>
                       <th className="text-left py-3 px-4">Gravite</th>
@@ -3176,7 +3176,7 @@ export default function HACCP() {
           <div className="flex flex-col sm:flex-row gap-3 justify-between">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
-              <input type="text" value={searchLots} onChange={e => setSearchLots(e.target.value)} placeholder={t('haccp.searchLots')} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg pl-10 pr-3 py-2.5 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
+              <input type="text" value={searchLots} onChange={e => setSearchLots(e.target.value)} placeholder={t('haccp.searchLots')} className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg pl-10 pr-3 py-2.5 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" />
             </div>
             <button onClick={() => setShowLotForm(!showLotForm)} className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"><Plus className="w-4 h-4" />{t('haccp.newLot')}</button>
           </div>
@@ -3185,12 +3185,12 @@ export default function HACCP() {
             <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5 space-y-4">
               <h3 className="text-mono-100 dark:text-white font-semibold">{t('haccp.recordLot')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.lotNumber')}</label><input type="text" value={lotForm.lotNumber} onChange={e => setLotForm(f => ({ ...f, lotNumber: e.target.value }))} placeholder="LOT-XXXX" className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.product')}</label><input type="text" value={lotForm.product} onChange={e => setLotForm(f => ({ ...f, product: e.target.value }))} placeholder={t('haccp.productName')} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.supplier')}</label><input type="text" value={lotForm.supplier} onChange={e => setLotForm(f => ({ ...f, supplier: e.target.value }))} placeholder={t('haccp.supplier')} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.dlc')}</label><input type="date" value={lotForm.dlc} onChange={e => setLotForm(f => ({ ...f, dlc: e.target.value }))} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.ddm')}</label><input type="date" value={lotForm.ddm} onChange={e => setLotForm(f => ({ ...f, ddm: e.target.value }))} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white" /></div>
-                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.status')}</label><select value={lotForm.status} onChange={e => setLotForm(f => ({ ...f, status: e.target.value as LotRecord['status'] }))} className="w-full bg-[#FAFAFA] dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white"><option value="en_attente">{t('haccp.pending')}</option><option value="conforme">{t('haccp.compliantStatus')}</option><option value="non_conforme">{t('haccp.nonCompliantStatus')}</option></select></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.lotNumber')}</label><input type="text" value={lotForm.lotNumber} onChange={e => setLotForm(f => ({ ...f, lotNumber: e.target.value }))} placeholder="LOT-XXXX" className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.product')}</label><input type="text" value={lotForm.product} onChange={e => setLotForm(f => ({ ...f, product: e.target.value }))} placeholder={t('haccp.productName')} className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.supplier')}</label><input type="text" value={lotForm.supplier} onChange={e => setLotForm(f => ({ ...f, supplier: e.target.value }))} placeholder={t('haccp.supplier')} className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280]" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.dlc')}</label><input type="date" value={lotForm.dlc} onChange={e => setLotForm(f => ({ ...f, dlc: e.target.value }))} className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.ddm')}</label><input type="date" value={lotForm.ddm} onChange={e => setLotForm(f => ({ ...f, ddm: e.target.value }))} className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white" /></div>
+                <div><label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">{t('haccp.status')}</label><select value={lotForm.status} onChange={e => setLotForm(f => ({ ...f, status: e.target.value as LotRecord['status'] }))} className="w-full bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg px-3 py-2 text-sm text-mono-100 dark:text-white"><option value="en_attente">{t('haccp.pending')}</option><option value="conforme">{t('haccp.compliantStatus')}</option><option value="non_conforme">{t('haccp.nonCompliantStatus')}</option></select></div>
               </div>
               <div className="flex gap-3">
                 <button onClick={addLot} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">{t('haccp.save')}</button>
@@ -3202,7 +3202,7 @@ export default function HACCP() {
           <div className="bg-white dark:bg-black/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-mono-50/50">
+                <thead><tr className="text-[#9CA3AF] dark:text-mono-500 text-xs uppercase tracking-wider bg-mono-1000 dark:bg-mono-50/50">
                   <th className="text-left py-3 px-4">{t('haccp.lotNumber')}</th><th className="text-left py-3 px-4">{t('haccp.product')}</th><th className="text-left py-3 px-4">{t('haccp.supplier')}</th><th className="text-left py-3 px-4">{t('haccp.reception')}</th><th className="text-left py-3 px-4">{t('haccp.dlc')}</th><th className="text-left py-3 px-4">{t('haccp.ddm')}</th><th className="text-left py-3 px-4">{t('haccp.status')}</th>
                 </tr></thead>
                 <tbody>{filteredLots.map(l => (

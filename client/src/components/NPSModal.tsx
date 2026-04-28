@@ -109,7 +109,7 @@ export default function NPSModal() {
 
   return (
     <div className="fixed bottom-6 right-6 z-50 w-full max-w-sm">
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/40 p-5 animate-slide-up">
+      <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/40 p-5 animate-slide-up">
 
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
@@ -119,7 +119,7 @@ export default function NPSModal() {
                 <p className="text-xs font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-400 mb-1">
                   Votre avis compte
                 </p>
-                <p className="text-sm font-semibold text-[#111111] dark:text-white leading-snug">
+                <p className="text-sm font-semibold text-mono-100 dark:text-white leading-snug">
                   Recommanderiez-vous RestauMargin a un collegue restaurateur ?
                 </p>
               </>
@@ -129,7 +129,7 @@ export default function NPSModal() {
                 <p className="text-xs font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-400 mb-1">
                   Merci pour votre note !
                 </p>
-                <p className="text-sm font-semibold text-[#111111] dark:text-white leading-snug">
+                <p className="text-sm font-semibold text-mono-100 dark:text-white leading-snug">
                   {score !== null && score >= 9
                     ? "Qu'est-ce qui vous a le plus aide ?"
                     : score !== null && score >= 7
@@ -139,14 +139,14 @@ export default function NPSModal() {
               </>
             )}
             {step === 'thanks' && (
-              <p className="text-sm font-semibold text-[#111111] dark:text-white">
+              <p className="text-sm font-semibold text-mono-100 dark:text-white">
                 Merci pour votre retour !
               </p>
             )}
           </div>
           <button
             onClick={dismiss}
-            className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+            className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-[#9CA3AF] hover:text-mono-100 dark:hover:text-white hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             aria-label="Fermer"
           >
             <X className="w-4 h-4" />
@@ -156,7 +156,7 @@ export default function NPSModal() {
         {/* Step: score */}
         {step === 'score' && (
           <div>
-            <div className="flex items-center justify-between text-[10px] text-[#9CA3AF] dark:text-[#737373] mb-2">
+            <div className="flex items-center justify-between text-[10px] text-[#9CA3AF] dark:text-mono-500 mb-2">
               <span>Pas du tout</span>
               <span>Absolument !</span>
             </div>
@@ -176,7 +176,7 @@ export default function NPSModal() {
               ))}
             </div>
             {score !== null && (
-              <p className="text-center text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-2">
+              <p className="text-center text-xs text-[#6B7280] dark:text-mono-700 mt-2">
                 {SCORE_LABELS[score]}
               </p>
             )}
@@ -186,8 +186,8 @@ export default function NPSModal() {
         {/* Step: comment */}
         {step === 'comment' && (
           <div className="space-y-3">
-            <div className="flex items-center gap-2 p-2 rounded-lg bg-[#F9FAFB] dark:bg-[#111111]">
-              <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Votre note :</span>
+            <div className="flex items-center gap-2 p-2 rounded-lg bg-[#F9FAFB] dark:bg-mono-100">
+              <span className="text-xs text-[#6B7280] dark:text-mono-700">Votre note :</span>
               <span className={`text-sm font-bold px-2 py-0.5 rounded-md ${score !== null ? getScoreActiveColor(score) : ''}`}>
                 {score}/10
               </span>
@@ -197,19 +197,19 @@ export default function NPSModal() {
               onChange={(e) => setComment(e.target.value)}
               placeholder="Votre commentaire (optionnel)..."
               rows={3}
-              className="w-full text-sm px-3 py-2.5 rounded-xl bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] resize-none focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-400 transition-all"
+              className="w-full text-sm px-3 py-2.5 rounded-xl bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500 resize-none focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-400 transition-all"
             />
             <div className="flex gap-2">
               <button
                 onClick={() => setStep('score')}
-                className="flex-1 py-2 text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#333333] rounded-xl hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                className="flex-1 py-2 text-xs font-medium text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-[#333333] rounded-xl hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               >
                 Retour
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="flex-1 py-2 text-xs font-semibold bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
+                className="flex-1 py-2 text-xs font-semibold bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
               >
                 {submitting ? (
                   <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -226,7 +226,7 @@ export default function NPSModal() {
         {step === 'thanks' && (
           <div className="flex items-center gap-3 py-1">
             <CheckCircle className="w-8 h-8 text-teal-500 flex-shrink-0" />
-            <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            <p className="text-sm text-[#6B7280] dark:text-mono-700">
               Votre avis nous aide a ameliorer RestauMargin chaque semaine.
             </p>
           </div>

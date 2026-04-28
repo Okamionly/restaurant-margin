@@ -168,7 +168,7 @@ function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
         <circle
           cx={size / 2} cy={size / 2} r={radius}
           fill="none" stroke="#E5E7EB" strokeWidth="8"
-          className="dark:stroke-[#262626]"
+          className="dark:stroke-mono-300"
         />
         <circle
           cx={size / 2} cy={size / 2} r={radius}
@@ -183,8 +183,8 @@ function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-bold text-[#111111] dark:text-white">{score}</span>
-        <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">/100</span>
+        <span className="text-3xl font-bold text-mono-100 dark:text-white">{score}</span>
+        <span className="text-xs text-[#6B7280] dark:text-mono-700">/100</span>
       </div>
     </div>
   );
@@ -192,9 +192,9 @@ function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
 
 // ── Change indicator ──
 function ChangeIndicator({ value, suffix = '%' }: { value: number; suffix?: string }) {
-  if (value === 0) return <span className="flex items-center gap-1 text-xs text-[#6B7280] dark:text-[#A3A3A3]"><Minus className="w-3 h-3" /> 0{suffix}</span>;
-  if (value > 0) return <span className="flex items-center gap-1 text-xs text-[#111111] dark:text-white font-medium"><ArrowUpRight className="w-3 h-3" /> +{value.toFixed(1)}{suffix}</span>;
-  return <span className="flex items-center gap-1 text-xs text-[#6B7280] dark:text-[#737373]"><ArrowDownRight className="w-3 h-3" /> {value.toFixed(1)}{suffix}</span>;
+  if (value === 0) return <span className="flex items-center gap-1 text-xs text-[#6B7280] dark:text-mono-700"><Minus className="w-3 h-3" /> 0{suffix}</span>;
+  if (value > 0) return <span className="flex items-center gap-1 text-xs text-mono-100 dark:text-white font-medium"><ArrowUpRight className="w-3 h-3" /> +{value.toFixed(1)}{suffix}</span>;
+  return <span className="flex items-center gap-1 text-xs text-[#6B7280] dark:text-mono-500"><ArrowDownRight className="w-3 h-3" /> {value.toFixed(1)}{suffix}</span>;
 }
 
 export default function Analytics() {
@@ -590,8 +590,8 @@ export default function Analytics() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <RefreshCw className="w-8 h-8 animate-spin text-[#6B7280] dark:text-[#A3A3A3]" />
-          <p className="text-[#6B7280] dark:text-[#A3A3A3]">Chargement du rapport...</p>
+          <RefreshCw className="w-8 h-8 animate-spin text-[#6B7280] dark:text-mono-700" />
+          <p className="text-[#6B7280] dark:text-mono-700">Chargement du rapport...</p>
         </div>
       </div>
     );
@@ -601,10 +601,10 @@ export default function Analytics() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <AlertTriangle className="w-12 h-12 text-[#6B7280] dark:text-[#737373] mx-auto mb-4" />
-          <p className="text-[#111111] dark:text-white font-medium mb-2">Erreur</p>
-          <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm mb-4">{error}</p>
-          <button onClick={() => fetchReport(period)} className="px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+          <AlertTriangle className="w-12 h-12 text-[#6B7280] dark:text-mono-500 mx-auto mb-4" />
+          <p className="text-mono-100 dark:text-white font-medium mb-2">Erreur</p>
+          <p className="text-[#6B7280] dark:text-mono-700 text-sm mb-4">{error}</p>
+          <button onClick={() => fetchReport(period)} className="px-4 py-2 bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
             Reessayer
           </button>
         </div>
@@ -637,25 +637,25 @@ export default function Analytics() {
          ══════════════════════════════════════════════ */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold font-satoshi text-mono-100 dark:text-white flex items-center gap-3">
             <BarChart3 className="w-7 h-7" />
             Analytiques
           </h1>
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mt-1">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700 mt-1">
             Rapport de performance — {selectedRestaurant?.name}
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           {/* Period selector */}
-          <div className="flex bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-0.5">
+          <div className="flex bg-mono-950 dark:bg-[#171717] rounded-lg p-0.5">
             {PERIODS.map(p => (
               <button
                 key={p.value}
                 onClick={() => setPeriod(p.value)}
                 className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
                   period === p.value
-                    ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] shadow-sm'
-                    : 'text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white'
+                    ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 shadow-sm'
+                    : 'text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white'
                 }`}
               >
                 {p.label}
@@ -667,8 +667,8 @@ export default function Analytics() {
             onClick={() => setCompareMode(!compareMode)}
             className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-all ${
               compareMode
-                ? 'border-[#111111] dark:border-white bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
-                : 'border-[#E5E7EB] dark:border-[#262626] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#111111] dark:hover:border-white'
+                ? 'border-mono-100 dark:border-white bg-mono-100 dark:bg-white text-white dark:text-mono-100'
+                : 'border-mono-900 dark:border-mono-300 text-[#6B7280] dark:text-mono-700 hover:border-mono-100 dark:hover:border-white'
             }`}
           >
             Comparer
@@ -676,7 +676,7 @@ export default function Analytics() {
           {/* Export PDF (print) */}
           <button
             onClick={handleExportPDF}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg border border-[#E5E7EB] dark:border-[#262626] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#111111] dark:hover:border-white hover:text-[#111111] dark:hover:text-white transition-all print:hidden"
+            className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg border border-mono-900 dark:border-mono-300 text-[#6B7280] dark:text-mono-700 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-all print:hidden"
           >
             <Printer className="w-4 h-4" />
             Imprimer
@@ -684,7 +684,7 @@ export default function Analytics() {
           {/* 6. EXPORT REPORT BUTTON — Downloads .txt */}
           <button
             onClick={handleDownloadReport}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:opacity-90 transition-all print:hidden"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:opacity-90 transition-all print:hidden"
           >
             <Download className="w-4 h-4" />
             Telecharger le rapport
@@ -753,10 +753,10 @@ export default function Analytics() {
            PERFORMANCE SCORE
          ══════════════════════════════════════════════ */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 flex flex-col items-center justify-center">
-          <p className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-4">Score de performance</p>
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6 flex flex-col items-center justify-center">
+          <p className="text-xs font-medium text-[#6B7280] dark:text-mono-700 uppercase tracking-wider mb-4">Score de performance</p>
           <ScoreRing score={performanceScore} />
-          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-3">
+          <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-3">
             {performanceScore >= 75 ? 'Excellent' : performanceScore >= 50 ? 'Bon' : performanceScore >= 25 ? 'A ameliorer' : 'Critique'}
           </p>
         </div>
@@ -764,10 +764,10 @@ export default function Analytics() {
         {/* ══════════════════════════════════════════════
              3. MARGIN DISTRIBUTION HISTOGRAM
            ══════════════════════════════════════════════ */}
-        <div className="lg:col-span-2 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <div className="lg:col-span-2 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-5">
-            <Layers className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Distribution des marges</h2>
+            <Layers className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Distribution des marges</h2>
           </div>
           <div className="grid grid-cols-4 gap-3">
             <MarginBucket
@@ -807,7 +807,7 @@ export default function Analytics() {
               borderClass="border-emerald-200 dark:border-emerald-900/30"
             />
           </div>
-          <div className="mt-4 flex items-center gap-2 text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+          <div className="mt-4 flex items-center gap-2 text-xs text-[#6B7280] dark:text-mono-700">
             <Activity className="w-3 h-3" />
             <span>Base: {summary.totalRecipes} recettes actives</span>
           </div>
@@ -818,23 +818,23 @@ export default function Analytics() {
            7. AI INSIGHTS PANEL
          ══════════════════════════════════════════════ */}
       {aiInsights.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-5">
-            <Sparkles className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Insights IA</h2>
-            <span className="ml-auto text-xs text-[#6B7280] dark:text-[#A3A3A3] bg-[#F3F4F6] dark:bg-[#171717] px-2 py-0.5 rounded-full">Auto-genere</span>
+            <Sparkles className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Insights IA</h2>
+            <span className="ml-auto text-xs text-[#6B7280] dark:text-mono-700 bg-mono-950 dark:bg-[#171717] px-2 py-0.5 rounded-full">Auto-genere</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {aiInsights.map((insight, i) => (
-              <div key={i} className="p-4 rounded-xl bg-[#F9FAFB] dark:bg-[#111111] border border-[#F3F4F6] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white/20 transition-all">
+              <div key={i} className="p-4 rounded-xl bg-[#F9FAFB] dark:bg-mono-100 border border-mono-950 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white/20 transition-all">
                 <div className="flex items-center gap-2 mb-2">
-                  {insight.icon === 'flame' && <Flame className="w-4 h-4 text-[#111111] dark:text-white" />}
-                  {insight.icon === 'alert' && <AlertTriangle className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />}
-                  {insight.icon === 'zap' && <Zap className="w-4 h-4 text-[#111111] dark:text-white" />}
-                  <span className="text-xs font-semibold text-[#111111] dark:text-white uppercase tracking-wide">Insight {i + 1}</span>
+                  {insight.icon === 'flame' && <Flame className="w-4 h-4 text-mono-100 dark:text-white" />}
+                  {insight.icon === 'alert' && <AlertTriangle className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />}
+                  {insight.icon === 'zap' && <Zap className="w-4 h-4 text-mono-100 dark:text-white" />}
+                  <span className="text-xs font-semibold text-mono-100 dark:text-white uppercase tracking-wide">Insight {i + 1}</span>
                 </div>
-                <p className="text-sm font-medium text-[#111111] dark:text-white mb-1">{insight.title}</p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">{insight.description}</p>
+                <p className="text-sm font-medium text-mono-100 dark:text-white mb-1">{insight.title}</p>
+                <p className="text-xs text-[#6B7280] dark:text-mono-700 leading-relaxed">{insight.description}</p>
               </div>
             ))}
           </div>
@@ -845,11 +845,11 @@ export default function Analytics() {
            MARGIN TREND — CSS BAR CHART (last 6 points)
          ══════════════════════════════════════════════ */}
       {marginTrendBars.length > 1 && (
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-5">
-            <TrendingUp className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Tendance marge — 6 derniers points</h2>
-            <span className="ml-auto text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+            <TrendingUp className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Tendance marge — 6 derniers points</h2>
+            <span className="ml-auto text-xs text-[#6B7280] dark:text-mono-700">
               {marginTrendBars[marginTrendBars.length - 1].value > marginTrendBars[0].value
                 ? 'En hausse'
                 : marginTrendBars[marginTrendBars.length - 1].value < marginTrendBars[0].value
@@ -876,12 +876,12 @@ export default function Analytics() {
                       opacity: 0.85,
                     }}
                   />
-                  <span className="text-[10px] font-medium text-[#6B7280] dark:text-[#A3A3A3]">{bar.label}</span>
+                  <span className="text-[10px] font-medium text-[#6B7280] dark:text-mono-700">{bar.label}</span>
                 </div>
               );
             })}
           </div>
-          <p className="text-[10px] text-[#9CA3AF] dark:text-[#525252] mt-3 text-center">
+          <p className="text-[10px] text-[#9CA3AF] dark:text-mono-400 mt-3 text-center">
             Vert = marge en hausse vs point precedent — Rouge = marge en baisse
           </p>
         </div>
@@ -891,10 +891,10 @@ export default function Analytics() {
            TOP INSIGHTS — Auto-generated text insights
          ══════════════════════════════════════════════ */}
       {topInsightsText.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Lightbulb className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Insights cles</h2>
+            <Lightbulb className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Insights cles</h2>
           </div>
           <div className="space-y-2">
             {topInsightsText.map((ins, i) => (
@@ -905,15 +905,15 @@ export default function Analytics() {
                     ? 'bg-green-50 dark:bg-green-950/10 border-green-200 dark:border-green-900/30'
                     : ins.type === 'warning'
                       ? 'bg-amber-50 dark:bg-amber-950/10 border-amber-200 dark:border-amber-900/30'
-                      : 'bg-[#F9FAFB] dark:bg-[#111111] border-[#F3F4F6] dark:border-[#1A1A1A]'
+                      : 'bg-[#F9FAFB] dark:bg-mono-100 border-mono-950 dark:border-mono-200'
                 }`}
               >
                 <span className="flex-shrink-0 mt-0.5">
                   {ins.type === 'success' && <TrendingUp className="w-4 h-4 text-[#22C55E]" />}
                   {ins.type === 'warning' && <AlertTriangle className="w-4 h-4 text-[#F59E0B]" />}
-                  {ins.type === 'info' && <Eye className="w-4 h-4 text-[#111111] dark:text-white" />}
+                  {ins.type === 'info' && <Eye className="w-4 h-4 text-mono-100 dark:text-white" />}
                 </span>
-                <p className="text-sm text-[#111111] dark:text-white font-medium">{ins.text}</p>
+                <p className="text-sm text-mono-100 dark:text-white font-medium">{ins.text}</p>
               </div>
             ))}
           </div>
@@ -924,8 +924,8 @@ export default function Analytics() {
            MARGIN OVER TIME CHART
          ══════════════════════════════════════════════ */}
       {marginTimeline.length > 1 && (
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
-          <h2 className="text-sm font-semibold text-[#111111] dark:text-white mb-4">Evolution des marges</h2>
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
+          <h2 className="text-sm font-semibold text-mono-100 dark:text-white mb-4">Evolution des marges</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={marginTimeline}>
@@ -958,15 +958,15 @@ export default function Analytics() {
            5. WEEKLY TREND SECTION — 7-DAY MINI CHARTS
          ══════════════════════════════════════════════ */}
       {weeklyTrend.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-5">
-            <Activity className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Tendance hebdomadaire</h2>
+            <Activity className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Tendance hebdomadaire</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Weighings per day */}
             <div>
-              <p className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-3 flex items-center gap-1.5">
+              <p className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-3 flex items-center gap-1.5">
                 <Scale className="w-3.5 h-3.5" /> Pesees / jour
               </p>
               <div className="flex items-end gap-1.5 h-24">
@@ -975,12 +975,12 @@ export default function Analytics() {
                   const h = max > 0 ? (d.weighings / max) * 100 : 10;
                   return (
                     <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                      <span className="text-[10px] font-medium text-[#111111] dark:text-white">{d.weighings}</span>
+                      <span className="text-[10px] font-medium text-mono-100 dark:text-white">{d.weighings}</span>
                       <div
-                        className="w-full rounded-t-md bg-[#111111] dark:bg-white transition-all"
+                        className="w-full rounded-t-md bg-mono-100 dark:bg-white transition-all"
                         style={{ height: `${h}%`, minHeight: 4 }}
                       />
-                      <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">{d.day}</span>
+                      <span className="text-[10px] text-[#6B7280] dark:text-mono-700">{d.day}</span>
                     </div>
                   );
                 })}
@@ -988,7 +988,7 @@ export default function Analytics() {
             </div>
             {/* Daily cost estimate */}
             <div>
-              <p className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-3 flex items-center gap-1.5">
+              <p className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-3 flex items-center gap-1.5">
                 <DollarSign className="w-3.5 h-3.5" /> Cout estime / jour
               </p>
               <div className="flex items-end gap-1.5 h-24">
@@ -997,12 +997,12 @@ export default function Analytics() {
                   const h = max > 0 ? (d.cost / max) * 100 : 10;
                   return (
                     <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                      <span className="text-[10px] font-medium text-[#111111] dark:text-white">{d.cost}</span>
+                      <span className="text-[10px] font-medium text-mono-100 dark:text-white">{d.cost}</span>
                       <div
-                        className="w-full rounded-t-md bg-[#6B7280] dark:bg-[#A3A3A3] transition-all"
+                        className="w-full rounded-t-md bg-[#6B7280] dark:bg-mono-700 transition-all"
                         style={{ height: `${h}%`, minHeight: 4 }}
                       />
-                      <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">{d.day}</span>
+                      <span className="text-[10px] text-[#6B7280] dark:text-mono-700">{d.day}</span>
                     </div>
                   );
                 })}
@@ -1010,7 +1010,7 @@ export default function Analytics() {
             </div>
             {/* Orders per day */}
             <div>
-              <p className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-3 flex items-center gap-1.5">
+              <p className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-3 flex items-center gap-1.5">
                 <ShoppingCart className="w-3.5 h-3.5" /> Commandes / jour
               </p>
               <div className="flex items-end gap-1.5 h-24">
@@ -1019,12 +1019,12 @@ export default function Analytics() {
                   const h = max > 0 ? (d.orders / max) * 100 : 10;
                   return (
                     <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                      <span className="text-[10px] font-medium text-[#111111] dark:text-white">{d.orders}</span>
+                      <span className="text-[10px] font-medium text-mono-100 dark:text-white">{d.orders}</span>
                       <div
-                        className="w-full rounded-t-md bg-[#D4D4D4] dark:bg-[#525252] transition-all"
+                        className="w-full rounded-t-md bg-mono-800 dark:bg-mono-400 transition-all"
                         style={{ height: `${h}%`, minHeight: 4 }}
                       />
-                      <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">{d.day}</span>
+                      <span className="text-[10px] text-[#6B7280] dark:text-mono-700">{d.day}</span>
                     </div>
                   );
                 })}
@@ -1038,10 +1038,10 @@ export default function Analytics() {
            2. CATEGORY BREAKDOWN CHART — HORIZONTAL BARS
          ══════════════════════════════════════════════ */}
       {categorySpend.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-5">
-            <Layers className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Repartition des depenses par categorie</h2>
+            <Layers className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Repartition des depenses par categorie</h2>
           </div>
           <div className="space-y-3">
             {categorySpend.map((cat, i) => {
@@ -1049,8 +1049,8 @@ export default function Analytics() {
               const barWidth = (cat.percent / maxPercent) * 100;
               return (
                 <div key={cat.category} className="flex items-center gap-3">
-                  <span className="text-xs font-medium text-[#111111] dark:text-white w-32 flex-shrink-0 truncate">{cat.category}</span>
-                  <div className="flex-1 h-6 bg-[#F3F4F6] dark:bg-[#171717] rounded-lg overflow-hidden relative">
+                  <span className="text-xs font-medium text-mono-100 dark:text-white w-32 flex-shrink-0 truncate">{cat.category}</span>
+                  <div className="flex-1 h-6 bg-mono-950 dark:bg-[#171717] rounded-lg overflow-hidden relative">
                     <div
                       className="h-full rounded-lg transition-all duration-500"
                       style={{
@@ -1067,7 +1067,7 @@ export default function Analytics() {
                       {cat.percent}%
                     </span>
                   </div>
-                  <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] w-20 text-right flex-shrink-0">{formatCurrency(cat.spend)}</span>
+                  <span className="text-xs text-[#6B7280] dark:text-mono-700 w-20 text-right flex-shrink-0">{formatCurrency(cat.spend)}</span>
                 </div>
               );
             })}
@@ -1080,27 +1080,27 @@ export default function Analytics() {
          ══════════════════════════════════════════════ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Top 5 Most Profitable */}
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Star className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Top 5 — Plus rentables</h2>
+            <Star className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Top 5 — Plus rentables</h2>
           </div>
           <div className="space-y-2">
             {topProfitable.length === 0 && (
-              <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Aucune recette</p>
+              <p className="text-sm text-[#6B7280] dark:text-mono-700">Aucune recette</p>
             )}
             {topProfitable.map((r, i) => (
-              <div key={r.id} className="flex items-center gap-3 p-3 rounded-lg bg-[#F9FAFB] dark:bg-[#111111] border border-[#F3F4F6] dark:border-[#1A1A1A]">
-                <span className="w-6 h-6 flex items-center justify-center rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs font-bold flex-shrink-0">
+              <div key={r.id} className="flex items-center gap-3 p-3 rounded-lg bg-[#F9FAFB] dark:bg-mono-100 border border-mono-950 dark:border-mono-200">
+                <span className="w-6 h-6 flex items-center justify-center rounded-full bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-xs font-bold flex-shrink-0">
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{r.name}</p>
-                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{r.category} — {formatCurrency(r.sellingPrice)}</p>
+                  <p className="text-sm font-medium text-mono-100 dark:text-white truncate">{r.name}</p>
+                  <p className="text-xs text-[#6B7280] dark:text-mono-700">{r.category} — {formatCurrency(r.sellingPrice)}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-bold text-[#111111] dark:text-white">{r.marginPercent.toFixed(1)}%</p>
-                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(r.marginAmount)}</p>
+                  <p className="text-sm font-bold text-mono-100 dark:text-white">{r.marginPercent.toFixed(1)}%</p>
+                  <p className="text-xs text-[#6B7280] dark:text-mono-700">{formatCurrency(r.marginAmount)}</p>
                 </div>
               </div>
             ))}
@@ -1108,29 +1108,29 @@ export default function Analytics() {
         </div>
 
         {/* Bottom 5 Worst Margin */}
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-4">
-            <AlertTriangle className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Top 5 — Marges faibles</h2>
+            <AlertTriangle className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Top 5 — Marges faibles</h2>
           </div>
           <div className="space-y-2">
             {bottomMargin.length === 0 && (
-              <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Aucune recette</p>
+              <p className="text-sm text-[#6B7280] dark:text-mono-700">Aucune recette</p>
             )}
             {bottomMargin.map((r, i) => (
-              <div key={r.id} className="flex items-center gap-3 p-3 rounded-lg bg-[#F9FAFB] dark:bg-[#111111] border border-[#F3F4F6] dark:border-[#1A1A1A]">
-                <span className="w-6 h-6 flex items-center justify-center rounded-full bg-[#D4D4D4] dark:bg-[#404040] text-[#111111] dark:text-[#D4D4D4] text-xs font-bold flex-shrink-0">
+              <div key={r.id} className="flex items-center gap-3 p-3 rounded-lg bg-[#F9FAFB] dark:bg-mono-100 border border-mono-950 dark:border-mono-200">
+                <span className="w-6 h-6 flex items-center justify-center rounded-full bg-mono-800 dark:bg-mono-350 text-mono-100 dark:text-mono-800 text-xs font-bold flex-shrink-0">
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{r.name}</p>
-                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{r.category} — {formatCurrency(r.sellingPrice)}</p>
+                  <p className="text-sm font-medium text-mono-100 dark:text-white truncate">{r.name}</p>
+                  <p className="text-xs text-[#6B7280] dark:text-mono-700">{r.category} — {formatCurrency(r.sellingPrice)}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className={`text-sm font-bold ${r.marginPercent < 30 ? 'text-[#6B7280] dark:text-[#737373]' : 'text-[#111111] dark:text-white'}`}>
+                  <p className={`text-sm font-bold ${r.marginPercent < 30 ? 'text-[#6B7280] dark:text-mono-500' : 'text-mono-100 dark:text-white'}`}>
                     {r.marginPercent.toFixed(1)}%
                   </p>
-                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(r.marginAmount)}</p>
+                  <p className="text-xs text-[#6B7280] dark:text-mono-700">{formatCurrency(r.marginAmount)}</p>
                 </div>
               </div>
             ))}
@@ -1142,40 +1142,40 @@ export default function Analytics() {
            4. TOP 10 MOST EXPENSIVE INGREDIENTS
          ══════════════════════════════════════════════ */}
       {topExpensiveIngredients.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-5">
-            <Flame className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Top 10 — Ingredients les plus couteux</h2>
+            <Flame className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Top 10 — Ingredients les plus couteux</h2>
           </div>
           <div className="space-y-2">
             {topExpensiveIngredients.map((ing, i) => {
               const maxPrice = topExpensiveIngredients[0]?.pricePerUnit || 1;
               const barWidth = (ing.pricePerUnit / maxPrice) * 100;
               return (
-                <div key={`${ing.name}-${i}`} className="flex items-center gap-3 p-3 rounded-lg bg-[#F9FAFB] dark:bg-[#111111] border border-[#F3F4F6] dark:border-[#1A1A1A]">
-                  <span className="w-6 h-6 flex items-center justify-center rounded-full bg-[#F3F4F6] dark:bg-[#262626] text-[#111111] dark:text-white text-xs font-bold flex-shrink-0">
+                <div key={`${ing.name}-${i}`} className="flex items-center gap-3 p-3 rounded-lg bg-[#F9FAFB] dark:bg-mono-100 border border-mono-950 dark:border-mono-200">
+                  <span className="w-6 h-6 flex items-center justify-center rounded-full bg-mono-950 dark:bg-mono-300 text-mono-100 dark:text-white text-xs font-bold flex-shrink-0">
                     {i + 1}
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{ing.name}</p>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#262626] text-[#6B7280] dark:text-[#A3A3A3] flex-shrink-0">{ing.category}</span>
+                      <p className="text-sm font-medium text-mono-100 dark:text-white truncate">{ing.name}</p>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-mono-950 dark:bg-mono-300 text-[#6B7280] dark:text-mono-700 flex-shrink-0">{ing.category}</span>
                     </div>
                     {/* Cost bar */}
-                    <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-[#111111] dark:bg-white transition-all duration-500"
+                        className="h-full rounded-full bg-mono-100 dark:bg-white transition-all duration-500"
                         style={{ width: `${barWidth}%`, minWidth: 2 }}
                       />
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-sm font-bold text-[#111111] dark:text-white">{formatCurrency(ing.pricePerUnit)}</p>
-                    <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">/{ing.unit}</p>
+                    <p className="text-sm font-bold text-mono-100 dark:text-white">{formatCurrency(ing.pricePerUnit)}</p>
+                    <p className="text-[10px] text-[#6B7280] dark:text-mono-700">/{ing.unit}</p>
                   </div>
                   <div className="text-right flex-shrink-0 hidden sm:block">
-                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">~{formatCurrency(ing.estimatedMonthlySpend)}</p>
-                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#525252]">/mois estime</p>
+                    <p className="text-xs text-[#6B7280] dark:text-mono-700">~{formatCurrency(ing.estimatedMonthlySpend)}</p>
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-mono-400">/mois estime</p>
                   </div>
                 </div>
               );
@@ -1188,12 +1188,12 @@ export default function Analytics() {
            CATEGORY PERFORMANCE (EXISTING, ENHANCED)
          ══════════════════════════════════════════════ */}
       {categoryPerformance.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
-          <h2 className="text-sm font-semibold text-[#111111] dark:text-white mb-4">Performance par categorie</h2>
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
+          <h2 className="text-sm font-semibold text-mono-100 dark:text-white mb-4">Performance par categorie</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* CSS Bar chart — margin by category */}
             <div>
-              <h3 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-3 font-general-sans">Marge moyenne par categorie</h3>
+              <h3 className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-3 font-general-sans">Marge moyenne par categorie</h3>
               <CSSBarChart
                 data={categoryPerformance.map((cat, i) => ({
                   label: cat.category,
@@ -1226,7 +1226,7 @@ export default function Analytics() {
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs text-[#6B7280] dark:text-[#A3A3A3] border-b border-[#E5E7EB] dark:border-[#262626]">
+                <tr className="text-left text-xs text-[#6B7280] dark:text-mono-700 border-b border-mono-900 dark:border-mono-300">
                   <th className="pb-2 font-medium">Categorie</th>
                   <th className="pb-2 font-medium text-right">Recettes</th>
                   <th className="pb-2 font-medium text-right">Marge moy.</th>
@@ -1236,12 +1236,12 @@ export default function Analytics() {
               </thead>
               <tbody>
                 {categoryPerformance.map(cat => (
-                  <tr key={cat.category} className="border-b border-[#F3F4F6] dark:border-[#1A1A1A] last:border-0">
-                    <td className="py-2.5 text-[#111111] dark:text-white font-medium">{cat.category}</td>
-                    <td className="py-2.5 text-right text-[#6B7280] dark:text-[#A3A3A3]">{cat.recipeCount}</td>
-                    <td className="py-2.5 text-right font-medium text-[#111111] dark:text-white">{cat.avgMarginPercent}%</td>
-                    <td className="py-2.5 text-right text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(cat.totalRevenue)}</td>
-                    <td className="py-2.5 text-right text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(cat.totalCost)}</td>
+                  <tr key={cat.category} className="border-b border-mono-950 dark:border-mono-200 last:border-0">
+                    <td className="py-2.5 text-mono-100 dark:text-white font-medium">{cat.category}</td>
+                    <td className="py-2.5 text-right text-[#6B7280] dark:text-mono-700">{cat.recipeCount}</td>
+                    <td className="py-2.5 text-right font-medium text-mono-100 dark:text-white">{cat.avgMarginPercent}%</td>
+                    <td className="py-2.5 text-right text-[#6B7280] dark:text-mono-700">{formatCurrency(cat.totalRevenue)}</td>
+                    <td className="py-2.5 text-right text-[#6B7280] dark:text-mono-700">{formatCurrency(cat.totalCost)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1254,17 +1254,17 @@ export default function Analytics() {
            INGREDIENT COST TRENDS
          ══════════════════════════════════════════════ */}
       {ingredientTrends.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
-          <h2 className="text-sm font-semibold text-[#111111] dark:text-white mb-4">Tendances prix ingredients</h2>
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
+          <h2 className="text-sm font-semibold text-mono-100 dark:text-white mb-4">Tendances prix ingredients</h2>
           <div className="space-y-2">
             {ingredientTrends.map(tr => (
-              <div key={tr.ingredientId} className="flex items-center gap-3 p-3 rounded-lg bg-[#F9FAFB] dark:bg-[#111111] border border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <div key={tr.ingredientId} className="flex items-center gap-3 p-3 rounded-lg bg-[#F9FAFB] dark:bg-mono-100 border border-mono-950 dark:border-mono-200">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{tr.name}</p>
-                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{tr.category}</p>
+                  <p className="text-sm font-medium text-mono-100 dark:text-white truncate">{tr.name}</p>
+                  <p className="text-xs text-[#6B7280] dark:text-mono-700">{tr.category}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                  <p className="text-xs text-[#6B7280] dark:text-mono-700">
                     {formatCurrency(tr.oldPrice)} &rarr; {formatCurrency(tr.newPrice)}
                   </p>
                   <ChangeIndicator value={tr.changePercent} />
@@ -1280,50 +1280,50 @@ export default function Analytics() {
          ══════════════════════════════════════════════ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Labor Analysis */}
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Clock className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Main d'oeuvre</h2>
+            <Clock className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Main d'oeuvre</h2>
           </div>
           {laborAnalysis ? (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-2xl font-bold text-[#111111] dark:text-white">{laborAnalysis.totalHours}h</p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Heures totales</p>
+                <p className="text-2xl font-bold text-mono-100 dark:text-white">{laborAnalysis.totalHours}h</p>
+                <p className="text-xs text-[#6B7280] dark:text-mono-700">Heures totales</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-[#111111] dark:text-white">{formatCurrency(laborAnalysis.totalCost)}</p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Cout total</p>
+                <p className="text-2xl font-bold text-mono-100 dark:text-white">{formatCurrency(laborAnalysis.totalCost)}</p>
+                <p className="text-xs text-[#6B7280] dark:text-mono-700">Cout total</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-[#111111] dark:text-white">{formatCurrency(laborAnalysis.avgCostPerHour)}</p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Cout/heure</p>
+                <p className="text-2xl font-bold text-mono-100 dark:text-white">{formatCurrency(laborAnalysis.avgCostPerHour)}</p>
+                <p className="text-xs text-[#6B7280] dark:text-mono-700">Cout/heure</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-[#111111] dark:text-white">{laborAnalysis.entryCount}</p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Entrees</p>
+                <p className="text-2xl font-bold text-mono-100 dark:text-white">{laborAnalysis.entryCount}</p>
+                <p className="text-xs text-[#6B7280] dark:text-mono-700">Entrees</p>
               </div>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Clock className="w-8 h-8 text-[#D4D4D4] dark:text-[#404040] mb-2" />
-              <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Aucune donnee de temps</p>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#525252] mt-1">Utilisez le planning pour suivre les heures</p>
+              <Clock className="w-8 h-8 text-mono-800 dark:text-mono-350 mb-2" />
+              <p className="text-sm text-[#6B7280] dark:text-mono-700">Aucune donnee de temps</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-400 mt-1">Utilisez le planning pour suivre les heures</p>
             </div>
           )}
         </div>
 
         {/* Food Waste */}
-        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Trash2 className="w-4 h-4 text-[#111111] dark:text-white" />
-            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Impact gaspillage</h2>
+            <Trash2 className="w-4 h-4 text-mono-100 dark:text-white" />
+            <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Impact gaspillage</h2>
           </div>
           {wasteImpact.entryCount > 0 ? (
             <div className="space-y-4">
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-[#111111] dark:text-white">{formatCurrency(wasteImpact.totalCost)}</span>
-                <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">perdu sur {wasteImpact.entryCount} incidents</span>
+                <span className="text-2xl font-bold text-mono-100 dark:text-white">{formatCurrency(wasteImpact.totalCost)}</span>
+                <span className="text-xs text-[#6B7280] dark:text-mono-700">perdu sur {wasteImpact.entryCount} incidents</span>
               </div>
               {/* By reason */}
               <div className="space-y-1.5">
@@ -1331,23 +1331,23 @@ export default function Analytics() {
                   const pct = wasteImpact.totalCost > 0 ? (r.cost / wasteImpact.totalCost) * 100 : 0;
                   return (
                     <div key={r.reason} className="flex items-center gap-2">
-                      <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] w-28 flex-shrink-0">{WASTE_LABELS[r.reason] || r.reason}</span>
-                      <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
-                        <div className="h-full bg-[#111111] dark:bg-white rounded-full transition-all" style={{ width: `${pct}%` }} />
+                      <span className="text-xs text-[#6B7280] dark:text-mono-700 w-28 flex-shrink-0">{WASTE_LABELS[r.reason] || r.reason}</span>
+                      <div className="flex-1 h-2 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden">
+                        <div className="h-full bg-mono-100 dark:bg-white rounded-full transition-all" style={{ width: `${pct}%` }} />
                       </div>
-                      <span className="text-xs font-medium text-[#111111] dark:text-white w-16 text-right">{formatCurrency(r.cost)}</span>
+                      <span className="text-xs font-medium text-mono-100 dark:text-white w-16 text-right">{formatCurrency(r.cost)}</span>
                     </div>
                   );
                 })}
               </div>
               {/* Top wasted */}
               {wasteImpact.topWastedIngredients.length > 0 && (
-                <div className="pt-3 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
-                  <p className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-2">Plus gaspilles</p>
+                <div className="pt-3 border-t border-mono-950 dark:border-mono-200">
+                  <p className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-2">Plus gaspilles</p>
                   {wasteImpact.topWastedIngredients.slice(0, 3).map(w => (
                     <div key={w.name} className="flex justify-between text-xs py-1">
-                      <span className="text-[#111111] dark:text-white">{w.name}</span>
-                      <span className="text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(w.cost)} ({w.count}x)</span>
+                      <span className="text-mono-100 dark:text-white">{w.name}</span>
+                      <span className="text-[#6B7280] dark:text-mono-700">{formatCurrency(w.cost)} ({w.count}x)</span>
                     </div>
                   ))}
                 </div>
@@ -1355,16 +1355,16 @@ export default function Analytics() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Trash2 className="w-8 h-8 text-[#D4D4D4] dark:text-[#404040] mb-2" />
-              <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Aucun gaspillage enregistre</p>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#525252] mt-1">Utilisez le suivi gaspillage</p>
+              <Trash2 className="w-8 h-8 text-mono-800 dark:text-mono-350 mb-2" />
+              <p className="text-sm text-[#6B7280] dark:text-mono-700">Aucun gaspillage enregistre</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-400 mt-1">Utilisez le suivi gaspillage</p>
             </div>
           )}
         </div>
       </div>
 
       {/* ── Print Footer ── */}
-      <div className="hidden print:block text-center text-xs text-[#9CA3AF] mt-8 pt-4 border-t border-[#E5E7EB]">
+      <div className="hidden print:block text-center text-xs text-[#9CA3AF] mt-8 pt-4 border-t border-mono-900">
         <p>RestauMargin — Rapport analytique genere le {new Date().toLocaleDateString('fr-FR')}</p>
         <p>{selectedRestaurant?.name} — Periode: {report.periodDays} jours</p>
       </div>
@@ -1388,22 +1388,22 @@ function KPICard({ icon, label, value, unit, trend, trendLabel, invertTrend, hig
   // For costs, a decrease is good (invert the color logic)
   const isPositive = invertTrend ? trend <= 0 : trend >= 0;
   const trendColor = trend === 0
-    ? 'text-[#6B7280] dark:text-[#A3A3A3]'
+    ? 'text-[#6B7280] dark:text-mono-700'
     : isPositive
-      ? 'text-[#111111] dark:text-white'
-      : 'text-[#9CA3AF] dark:text-[#525252]';
+      ? 'text-mono-100 dark:text-white'
+      : 'text-[#9CA3AF] dark:text-mono-400';
 
   return (
-    <div className={`bg-white dark:bg-[#0A0A0A] border rounded-2xl p-4 transition-all hover:shadow-sm ${
-      highlight ? 'border-[#111111] dark:border-white' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
+    <div className={`bg-white dark:bg-mono-50 border rounded-2xl p-4 transition-all hover:shadow-sm ${
+      highlight ? 'border-mono-100 dark:border-white' : 'border-mono-900 dark:border-mono-200'
     }`}>
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-[#6B7280] dark:text-[#A3A3A3]">{icon}</span>
-        <span className="text-[10px] font-medium text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider leading-tight">{label}</span>
+        <span className="text-[#6B7280] dark:text-mono-700">{icon}</span>
+        <span className="text-[10px] font-medium text-[#6B7280] dark:text-mono-700 uppercase tracking-wider leading-tight">{label}</span>
       </div>
       <div className="flex items-baseline gap-1.5 mb-2">
-        <span className="text-2xl font-bold text-[#111111] dark:text-white leading-none">{value}</span>
-        {unit && <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">{unit}</span>}
+        <span className="text-2xl font-bold text-mono-100 dark:text-white leading-none">{value}</span>
+        {unit && <span className="text-sm font-medium text-[#6B7280] dark:text-mono-700">{unit}</span>}
       </div>
       <div className={`flex items-center gap-1 ${trendColor}`}>
         {trend > 0 && <ArrowUpRight className="w-3 h-3 flex-shrink-0" />}
@@ -1412,7 +1412,7 @@ function KPICard({ icon, label, value, unit, trend, trendLabel, invertTrend, hig
         <span className="text-[10px] font-medium">
           {trend > 0 ? '+' : ''}{trend.toFixed(1)}%
         </span>
-        <span className="text-[10px] text-[#9CA3AF] dark:text-[#525252] truncate ml-0.5">{trendLabel}</span>
+        <span className="text-[10px] text-[#9CA3AF] dark:text-mono-400 truncate ml-0.5">{trendLabel}</span>
       </div>
     </div>
   );
@@ -1443,9 +1443,9 @@ function MarginBucket({ label, count, total, colorClass, textClass, bgClass, bor
         />
       </div>
       <span className={`text-2xl font-bold ${textClass}`}>{count}</span>
-      <span className="text-[10px] font-medium text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">recettes</span>
+      <span className="text-[10px] font-medium text-[#6B7280] dark:text-mono-700 mt-0.5">recettes</span>
       <span className={`text-xs font-semibold mt-1 ${textClass}`}>{label}</span>
-      <span className="text-[10px] text-[#9CA3AF] dark:text-[#525252]">{percent.toFixed(0)}% du total</span>
+      <span className="text-[10px] text-[#9CA3AF] dark:text-mono-400">{percent.toFixed(0)}% du total</span>
     </div>
   );
 }

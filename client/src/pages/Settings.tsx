@@ -251,13 +251,13 @@ interface ToggleSwitchProps {
   color?: string;
 }
 
-function ToggleSwitch({ enabled, onChange, color = 'bg-[#111111] dark:bg-white' }: ToggleSwitchProps) {
+function ToggleSwitch({ enabled, onChange, color = 'bg-mono-100 dark:bg-white' }: ToggleSwitchProps) {
   return (
     <button
       type="button"
       onClick={() => onChange(!enabled)}
       className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${
-        enabled ? color : 'bg-[#D1D5DB] dark:bg-[#262626]'
+        enabled ? color : 'bg-[#D1D5DB] dark:bg-mono-300'
       }`}
     >
       <span
@@ -275,8 +275,8 @@ function ToggleSwitch({ enabled, onChange, color = 'bg-[#111111] dark:bg-white' 
 
 function SectionSaveButton({ onClick, label = 'Sauvegarder' }: { onClick: () => void; label?: string }) {
   return (
-    <div className="flex justify-end pt-5 mt-5 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-      <button onClick={onClick} className="flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-xl transition-colors">
+    <div className="flex justify-end pt-5 mt-5 border-t border-mono-900 dark:border-mono-200">
+      <button onClick={onClick} className="flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-xl transition-colors">
         <Save className="w-4 h-4" />
         {label}
       </button>
@@ -811,7 +811,7 @@ export default function Settings() {
       <div className="space-y-8">
         {/* Theme */}
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <Palette className="w-5 h-5 text-pink-500" />
             Apparence
           </h3>
@@ -826,8 +826,8 @@ export default function Settings() {
                 onClick={() => handleChange('theme', opt.value)}
                 className={`flex-1 flex flex-col items-center gap-2 px-4 py-4 rounded-2xl border-2 text-sm font-medium transition-all ${
                   settings.theme === opt.value
-                    ? 'border-[#111111] dark:border-white bg-[#FAFAFA] dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
-                    : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                    ? 'border-mono-100 dark:border-white bg-mono-1000 dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
+                    : 'border-mono-900 dark:border-mono-200 text-[#9CA3AF] dark:text-mono-500 hover:border-[#D1D5DB] dark:hover:border-[#333]'
                 }`}
               >
                 {opt.icon}
@@ -839,15 +839,15 @@ export default function Settings() {
 
         {/* Language, Timezone, Currency, Date Format */}
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <Globe className="w-5 h-5 text-teal-500" />
             Localisation
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Langue</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Langue</label>
               <select
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.language}
                 onChange={(e) => {
                   handleChange('language', e.target.value);
@@ -863,9 +863,9 @@ export default function Settings() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Fuseau horaire</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Fuseau horaire</label>
               <select
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.timezone}
                 onChange={(e) => handleChange('timezone', e.target.value)}
               >
@@ -876,9 +876,9 @@ export default function Settings() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Devise</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Devise</label>
               <select
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.currency}
                 onChange={(e) => handleChange('currency', e.target.value)}
               >
@@ -891,9 +891,9 @@ export default function Settings() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Format de date</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Format de date</label>
               <select
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.dateFormat}
                 onChange={(e) => handleChange('dateFormat', e.target.value)}
               >
@@ -906,32 +906,32 @@ export default function Settings() {
         </div>
 
         {/* Current values summary */}
-        <div className="p-4 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <h4 className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3">Valeurs actuelles</h4>
+        <div className="p-4 bg-mono-1000 dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
+          <h4 className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-3">Valeurs actuelles</h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Langue</p>
-              <p className="text-sm font-medium text-[#111111] dark:text-white">{settings.language === 'fr' ? 'Fran\u00e7ais' : settings.language === 'en' ? 'English' : settings.language === 'es' ? 'Espa\u00f1ol' : settings.language === 'de' ? 'Deutsch' : 'Arabe'}</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Langue</p>
+              <p className="text-sm font-medium text-mono-100 dark:text-white">{settings.language === 'fr' ? 'Fran\u00e7ais' : settings.language === 'en' ? 'English' : settings.language === 'es' ? 'Espa\u00f1ol' : settings.language === 'de' ? 'Deutsch' : 'Arabe'}</p>
             </div>
             <div>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Fuseau</p>
-              <p className="text-sm font-medium text-[#111111] dark:text-white">{settings.timezone.split('/')[1] || settings.timezone}</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Fuseau</p>
+              <p className="text-sm font-medium text-mono-100 dark:text-white">{settings.timezone.split('/')[1] || settings.timezone}</p>
             </div>
             <div>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Devise</p>
-              <p className="text-sm font-medium text-[#111111] dark:text-white">{settings.currency}</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Devise</p>
+              <p className="text-sm font-medium text-mono-100 dark:text-white">{settings.currency}</p>
             </div>
             <div>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Format date</p>
-              <p className="text-sm font-medium text-[#111111] dark:text-white">{settings.dateFormat}</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Format date</p>
+              <p className="text-sm font-medium text-mono-100 dark:text-white">{settings.dateFormat}</p>
             </div>
           </div>
         </div>
 
         {/* Version & PWA */}
-        <div className="flex items-center justify-between py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Version</span>
-          <span className="text-sm font-mono bg-[#F3F4F6] dark:bg-[#171717] px-2.5 py-0.5 rounded text-[#9CA3AF] dark:text-[#A3A3A3]">
+        <div className="flex items-center justify-between py-3 border-t border-mono-900 dark:border-mono-200">
+          <span className="text-sm text-[#6B7280] dark:text-mono-700">Version</span>
+          <span className="text-sm font-mono bg-mono-950 dark:bg-[#171717] px-2.5 py-0.5 rounded text-[#9CA3AF] dark:text-mono-700">
             v{APP_VERSION}
           </span>
         </div>
@@ -946,27 +946,27 @@ export default function Settings() {
       <div className="space-y-8">
         {/* Basic info */}
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <Building2 className="w-5 h-5 text-teal-500" />
             Informations
           </h3>
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Nom du restaurant</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Nom du restaurant</label>
               <input
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.companyName}
                 onChange={(e) => handleChange('companyName', e.target.value)}
                 placeholder="Mon Restaurant"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block flex items-center gap-1.5">
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5" />
                 Adresse
               </label>
               <input
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.companyAddress}
                 onChange={(e) => handleChange('companyAddress', e.target.value)}
                 placeholder="123 Rue de la Cuisine, 75001 Paris"
@@ -974,25 +974,25 @@ export default function Settings() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block flex items-center gap-1.5">
+                <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block flex items-center gap-1.5">
                   <Phone className="w-3.5 h-3.5" />
                   Telephone
                 </label>
                 <input
-                  className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                   value={settings.companyPhone}
                   onChange={(e) => handleChange('companyPhone', e.target.value)}
                   placeholder="01 23 45 67 89"
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block flex items-center gap-1.5">
+                <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5" />
                   Email
                 </label>
                 <input
                   type="email"
-                  className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                   value={settings.companyEmail}
                   onChange={(e) => handleChange('companyEmail', e.target.value)}
                   placeholder="contact@monrestaurant.fr"
@@ -1002,13 +1002,13 @@ export default function Settings() {
 
             {/* Logo upload */}
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Logo du restaurant</label>
-              <div className="border-2 border-dashed border-[#D1D5DB] dark:border-[#262626] rounded-2xl p-8 text-center hover:border-[#111111] dark:hover:border-white transition-colors cursor-pointer group">
-                <Upload className="w-10 h-10 mx-auto text-[#D1D5DB] dark:text-[#404040] mb-3 group-hover:text-[#111111] dark:group-hover:text-white transition-colors" />
-                <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Logo du restaurant</label>
+              <div className="border-2 border-dashed border-[#D1D5DB] dark:border-mono-300 rounded-2xl p-8 text-center hover:border-mono-100 dark:hover:border-white transition-colors cursor-pointer group">
+                <Upload className="w-10 h-10 mx-auto text-[#D1D5DB] dark:text-mono-350 mb-3 group-hover:text-mono-100 dark:group-hover:text-white transition-colors" />
+                <p className="text-sm text-[#6B7280] dark:text-mono-700">
                   Cliquer ou glisser-deposer pour ajouter un logo
                 </p>
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">PNG, JPG, SVG -- max 2 Mo</p>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">PNG, JPG, SVG -- max 2 Mo</p>
               </div>
             </div>
           </div>
@@ -1016,15 +1016,15 @@ export default function Settings() {
 
         {/* Cuisine type & covers */}
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <ChefHat className="w-5 h-5 text-amber-500" />
             Type & Capacite
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Type de cuisine</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Type de cuisine</label>
               <select
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.cuisineType}
                 onChange={(e) => handleChange('cuisineType', e.target.value)}
               >
@@ -1034,20 +1034,20 @@ export default function Settings() {
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Nombre de couverts/jour</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Nombre de couverts/jour</label>
               <input
                 type="number"
                 min="0"
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.coversPerDay}
                 onChange={(e) => handleChange('coversPerDay', parseInt(e.target.value) || 0)}
                 placeholder="80"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">N SIRET</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">N SIRET</label>
               <input
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.companySiret}
                 onChange={(e) => handleChange('companySiret', e.target.value)}
                 placeholder="123 456 789 00012"
@@ -1058,7 +1058,7 @@ export default function Settings() {
 
         {/* Opening hours */}
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <Clock className="w-5 h-5 text-blue-500" />
             Horaires d'ouverture
           </h3>
@@ -1066,15 +1066,15 @@ export default function Settings() {
             {DAYS_FR.map((day) => {
               const hours = settings.openingHours?.[day] || DEFAULT_OPENING_HOURS[day];
               return (
-                <div key={day} className={`flex items-center gap-3 py-2.5 px-4 rounded-xl transition-colors ${hours.closed ? 'bg-[#FAFAFA] dark:bg-[#0A0A0A] opacity-60' : 'bg-white dark:bg-[#0A0A0A]'} border border-[#E5E7EB] dark:border-[#1A1A1A]`}>
-                  <span className="w-24 text-sm font-medium text-[#111111] dark:text-white capitalize">{day}</span>
+                <div key={day} className={`flex items-center gap-3 py-2.5 px-4 rounded-xl transition-colors ${hours.closed ? 'bg-mono-1000 dark:bg-mono-50 opacity-60' : 'bg-white dark:bg-mono-50'} border border-mono-900 dark:border-mono-200`}>
+                  <span className="w-24 text-sm font-medium text-mono-100 dark:text-white capitalize">{day}</span>
                   <div className="flex items-center gap-2 flex-1">
                     <input
                       type="time"
                       value={hours.open}
                       onChange={(e) => handleOpeningHourChange(day, 'open', e.target.value)}
                       disabled={hours.closed}
-                      className="px-2 py-1.5 text-sm bg-[#FAFAFA] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-[#111111] dark:text-white disabled:opacity-40"
+                      className="px-2 py-1.5 text-sm bg-mono-1000 dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-lg text-mono-100 dark:text-white disabled:opacity-40"
                     />
                     <span className="text-[#9CA3AF] text-xs">a</span>
                     <input
@@ -1082,11 +1082,11 @@ export default function Settings() {
                       value={hours.close}
                       onChange={(e) => handleOpeningHourChange(day, 'close', e.target.value)}
                       disabled={hours.closed}
-                      className="px-2 py-1.5 text-sm bg-[#FAFAFA] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-[#111111] dark:text-white disabled:opacity-40"
+                      className="px-2 py-1.5 text-sm bg-mono-1000 dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-lg text-mono-100 dark:text-white disabled:opacity-40"
                     />
                   </div>
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Ferme</span>
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Ferme</span>
                     <ToggleSwitch
                       enabled={hours.closed}
                       onChange={(val) => handleOpeningHourChange(day, 'closed', val)}
@@ -1101,43 +1101,43 @@ export default function Settings() {
 
         {/* Financial params */}
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <Calculator className="w-5 h-5 text-emerald-500" />
             Parametres financiers
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Objectif coefficient</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Objectif coefficient</label>
               <input
                 type="number"
                 step="0.1"
                 min="1"
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.coefficientObjective}
                 onChange={(e) => handleChange('coefficientObjective', parseFloat(e.target.value) || 0)}
               />
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Recommande : x3.3</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Recommande : x3.3</p>
             </div>
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Taux de TVA (%)</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Taux de TVA (%)</label>
               <input
                 type="number"
                 step="0.1"
                 min="0"
                 max="30"
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.tvaRate}
                 onChange={(e) => handleChange('tvaRate', parseFloat(e.target.value) || 0)}
               />
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Sur place : 10%</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Sur place : 10%</p>
             </div>
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Cout main d'oeuvre (\u20ac/h)</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Cout main d'oeuvre (\u20ac/h)</label>
               <input
                 type="number"
                 step="0.5"
                 min="0"
-                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                 value={settings.defaultLaborCost}
                 onChange={(e) => handleChange('defaultLaborCost', parseFloat(e.target.value) || 0)}
               />
@@ -1155,20 +1155,20 @@ export default function Settings() {
       <div className="space-y-8">
         {/* Invite member */}
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <UserPlus className="w-5 h-5 text-violet-500" />
             Inviter un membre
           </h3>
           <div className="flex flex-col sm:flex-row gap-3">
             <input
               type="email"
-              className="flex-1 px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+              className="flex-1 px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
               placeholder="email@exemple.com"
             />
             <select
-              className="px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white outline-none transition-colors"
+              className="px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white outline-none transition-colors"
               value={inviteRole}
               onChange={(e) => setInviteRole(e.target.value as any)}
             >
@@ -1179,7 +1179,7 @@ export default function Settings() {
             <button
               onClick={handleInviteMember}
               disabled={inviteLoading || !inviteEmail}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              className="flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
             >
               {inviteLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
               Inviter
@@ -1189,26 +1189,26 @@ export default function Settings() {
 
         {/* Team list */}
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <Users className="w-5 h-5 text-teal-500" />
             Membres de l'equipe
-            <span className="text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] px-2 py-0.5 rounded-full ml-2">
+            <span className="text-xs bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] px-2 py-0.5 rounded-full ml-2">
               {teamMembers.length}
             </span>
           </h3>
 
           {teamMembers.length === 0 ? (
-            <div className="text-center py-12 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <Users className="w-10 h-10 mx-auto text-[#D1D5DB] dark:text-[#404040] mb-3" />
-              <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Aucun membre dans l'equipe</p>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Invitez vos collaborateurs par email</p>
+            <div className="text-center py-12 bg-mono-1000 dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
+              <Users className="w-10 h-10 mx-auto text-[#D1D5DB] dark:text-mono-350 mb-3" />
+              <p className="text-sm text-[#9CA3AF] dark:text-mono-500">Aucun membre dans l'equipe</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Invitez vos collaborateurs par email</p>
             </div>
           ) : (
             <div className="space-y-2">
               {teamMembers.map((member, idx) => (
                 <div
                   key={member.id}
-                  className="flex items-center gap-4 py-3 px-4 bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333] transition-colors"
+                  className="flex items-center gap-4 py-3 px-4 bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-colors"
                 >
                   {/* Avatar */}
                   <div className={`w-10 h-10 rounded-full ${ROLE_COLORS[idx % ROLE_COLORS.length]} flex items-center justify-center text-white text-sm font-bold flex-shrink-0`}>
@@ -1217,17 +1217,17 @@ export default function Settings() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{member.name}</p>
-                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] truncate">{member.email}</p>
+                    <p className="text-sm font-medium text-mono-100 dark:text-white truncate">{member.name}</p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500 truncate">{member.email}</p>
                   </div>
 
                   {/* Role badge */}
-                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${ROLE_LABELS[member.role]?.color || 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280]'}`}>
+                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${ROLE_LABELS[member.role]?.color || 'bg-mono-950 dark:bg-[#171717] text-[#6B7280]'}`}>
                     {ROLE_LABELS[member.role]?.label || member.role}
                   </span>
 
                   {/* Last active */}
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] hidden sm:block">
+                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500 hidden sm:block">
                     {member.lastActive}
                   </span>
 
@@ -1255,11 +1255,11 @@ export default function Settings() {
       <div className="space-y-8">
         {/* In-app notifications */}
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-1 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-1 flex items-center gap-2">
             <Bell className="w-5 h-5 text-amber-500" />
             Alertes application
           </h3>
-          <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-5">Configurez les notifications que vous recevez dans l'application.</p>
+          <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-5">Configurez les notifications que vous recevez dans l'application.</p>
 
           <div className="space-y-1">
             {[
@@ -1296,21 +1296,21 @@ export default function Settings() {
             ].map((item, idx) => (
               <div
                 key={item.key}
-                className={`flex items-center justify-between py-4 px-4 rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors ${
+                className={`flex items-center justify-between py-4 px-4 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors ${
                   idx > 0 ? '' : ''
                 }`}
               >
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5">{item.icon}</span>
                   <div>
-                    <p className="text-sm font-medium text-[#111111] dark:text-white">{item.label}</p>
-                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{item.desc}</p>
+                    <p className="text-sm font-medium text-mono-100 dark:text-white">{item.label}</p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{item.desc}</p>
                   </div>
                 </div>
                 <ToggleSwitch
                   enabled={settings[item.key]}
                   onChange={(val) => handleChange(item.key, val)}
-                  color="bg-[#111111] dark:bg-white"
+                  color="bg-mono-100 dark:bg-white"
                 />
               </div>
             ))}
@@ -1318,20 +1318,20 @@ export default function Settings() {
         </div>
 
         {/* Email notifications */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-6">
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-1 flex items-center gap-2">
+        <div className="border-t border-mono-900 dark:border-mono-200 pt-6">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-1 flex items-center gap-2">
             <Mail className="w-5 h-5 text-blue-500" />
             Notifications par email
           </h3>
-          <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-5">Recevez des emails pour les evenements importants.</p>
+          <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-5">Recevez des emails pour les evenements importants.</p>
 
           <div className="space-y-1">
-            <div className="flex items-center justify-between py-4 px-4 rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors">
+            <div className="flex items-center justify-between py-4 px-4 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors">
               <div className="flex items-start gap-3">
                 <AlertTriangle className="w-4 h-4 text-orange-500 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium text-[#111111] dark:text-white">Email alertes stock bas</p>
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">Recevoir un email quand un ingredient passe sous le seuil</p>
+                  <p className="text-sm font-medium text-mono-100 dark:text-white">Email alertes stock bas</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">Recevoir un email quand un ingredient passe sous le seuil</p>
                 </div>
               </div>
               <ToggleSwitch
@@ -1341,12 +1341,12 @@ export default function Settings() {
               />
             </div>
 
-            <div className="flex items-center justify-between py-4 px-4 rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors">
+            <div className="flex items-center justify-between py-4 px-4 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors">
               <div className="flex items-start gap-3">
                 <BarChart3 className="w-4 h-4 text-emerald-500 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium text-[#111111] dark:text-white">Rapport hebdomadaire</p>
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">Recevoir un resume hebdomadaire par email chaque lundi</p>
+                  <p className="text-sm font-medium text-mono-100 dark:text-white">Rapport hebdomadaire</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">Recevoir un resume hebdomadaire par email chaque lundi</p>
                 </div>
               </div>
               <ToggleSwitch
@@ -1356,12 +1356,12 @@ export default function Settings() {
               />
             </div>
 
-            <div className="flex items-center justify-between py-4 px-4 rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors">
+            <div className="flex items-center justify-between py-4 px-4 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors">
               <div className="flex items-start gap-3">
                 <UtensilsCrossed className="w-4 h-4 text-teal-500 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium text-[#111111] dark:text-white">Nouvelles commandes</p>
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">Recevoir un email a chaque nouvelle commande fournisseur</p>
+                  <p className="text-sm font-medium text-mono-100 dark:text-white">Nouvelles commandes</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">Recevoir un email a chaque nouvelle commande fournisseur</p>
                 </div>
               </div>
               <ToggleSwitch
@@ -1374,13 +1374,13 @@ export default function Settings() {
         </div>
 
         {/* Push notifications */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-6">
-          <div className="flex items-center justify-between py-4 px-4 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="border-t border-mono-900 dark:border-mono-200 pt-6">
+          <div className="flex items-center justify-between py-4 px-4 rounded-xl bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200">
             <div className="flex items-start gap-3">
               <Smartphone className="w-5 h-5 text-pink-500 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-[#111111] dark:text-white">Notifications push</p>
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">Recevoir des notifications push sur votre navigateur ou appareil mobile</p>
+                <p className="text-sm font-medium text-mono-100 dark:text-white">Notifications push</p>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">Recevoir des notifications push sur votre navigateur ou appareil mobile</p>
               </div>
             </div>
             <ToggleSwitch
@@ -1401,7 +1401,7 @@ export default function Settings() {
       <div className="space-y-8">
         {/* Profile section */}
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <UserIcon className="w-5 h-5 text-violet-500" />
             Mon profil
           </h3>
@@ -1417,19 +1417,19 @@ export default function Settings() {
             <div className="flex-1">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Nom complet</label>
+                  <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Nom complet</label>
                   <input
-                    className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                    className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                     value={profileName}
                     onChange={(e) => setProfileName(e.target.value)}
                     placeholder="Votre nom"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Adresse email</label>
+                  <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Adresse email</label>
                   <input
                     type="email"
-                    className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                    className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                     value={profileEmail}
                     onChange={(e) => setProfileEmail(e.target.value)}
                     placeholder="email@exemple.com"
@@ -1437,7 +1437,7 @@ export default function Settings() {
                 </div>
               </div>
               <div className="flex justify-end mt-3">
-                <button onClick={handleSaveProfile} className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-xl transition-colors">
+                <button onClick={handleSaveProfile} className="flex items-center gap-2 px-4 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-xl transition-colors">
                   <Save className="w-4 h-4" />
                   Mettre a jour
                 </button>
@@ -1447,18 +1447,18 @@ export default function Settings() {
         </div>
 
         {/* Change password */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-6">
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+        <div className="border-t border-mono-900 dark:border-mono-200 pt-6">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <Lock className="w-5 h-5 text-orange-500" />
             Changer le mot de passe
           </h3>
           <div className="space-y-3 max-w-lg">
             <div>
-              <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Ancien mot de passe</label>
+              <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Ancien mot de passe</label>
               <div className="relative">
                 <input
                   type={showOldPw ? 'text' : 'password'}
-                  className="w-full px-3 py-2.5 pr-10 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                  className="w-full px-3 py-2.5 pr-10 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
                   placeholder="Mot de passe actuel"
@@ -1466,7 +1466,7 @@ export default function Settings() {
                 <button
                   type="button"
                   onClick={() => setShowOldPw(!showOldPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500 hover:text-[#4B5563]"
                 >
                   {showOldPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -1474,11 +1474,11 @@ export default function Settings() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Nouveau mot de passe</label>
+                <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Nouveau mot de passe</label>
                 <div className="relative">
                   <input
                     type={showNewPw ? 'text' : 'password'}
-                    className="w-full px-3 py-2.5 pr-10 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                    className="w-full px-3 py-2.5 pr-10 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="Minimum 6 caracteres"
@@ -1486,17 +1486,17 @@ export default function Settings() {
                   <button
                     type="button"
                     onClick={() => setShowNewPw(!showNewPw)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500 hover:text-[#4B5563]"
                   >
                     {showNewPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
               <div>
-                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">Confirmer</label>
+                <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">Confirmer</label>
                 <input
                   type="password"
-                  className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                  className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirmer"
@@ -1507,7 +1507,7 @@ export default function Settings() {
               <button
                 onClick={handleChangePassword}
                 disabled={!oldPassword || !newPassword || !confirmPassword}
-                className="flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#111111] dark:text-white text-sm font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-4 py-2 border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] text-mono-100 dark:text-white text-sm font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Lock className="w-4 h-4" />
                 Modifier le mot de passe
@@ -1517,22 +1517,22 @@ export default function Settings() {
         </div>
 
         {/* 2FA */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-6">
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+        <div className="border-t border-mono-900 dark:border-mono-200 pt-6">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-emerald-500" />
             Authentification a deux facteurs (2FA)
           </h3>
-          <div className="flex items-center justify-between py-4 px-4 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center justify-between py-4 px-4 bg-mono-1000 dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
             <div>
-              <p className="text-sm font-medium text-[#111111] dark:text-white">
+              <p className="text-sm font-medium text-mono-100 dark:text-white">
                 {twoFAEnabled ? 'Authentification 2FA activee' : 'Activer l\'authentification 2FA'}
               </p>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">
                 Ajoutez une couche de securite supplementaire avec un code a usage unique
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] italic">Prochainement</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500 italic">Prochainement</span>
               <ToggleSwitch
                 enabled={false}
                 onChange={() => {}}
@@ -1543,9 +1543,9 @@ export default function Settings() {
         </div>
 
         {/* Active sessions */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-6">
+        <div className="border-t border-mono-900 dark:border-mono-200 pt-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+            <h3 className="text-base font-semibold text-mono-100 dark:text-white flex items-center gap-2">
               <Smartphone className="w-5 h-5 text-blue-500" />
               Sessions actives
             </h3>
@@ -1565,12 +1565,12 @@ export default function Settings() {
                 className={`flex items-center gap-4 py-3 px-4 rounded-2xl border transition-colors ${
                   session.current
                     ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-900/30'
-                    : 'bg-white dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A]'
+                    : 'bg-white dark:bg-mono-50 border-mono-900 dark:border-mono-200'
                 }`}
               >
-                <Smartphone className={`w-5 h-5 flex-shrink-0 ${session.current ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                <Smartphone className={`w-5 h-5 flex-shrink-0 ${session.current ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#111111] dark:text-white flex items-center gap-2">
+                  <p className="text-sm font-medium text-mono-100 dark:text-white flex items-center gap-2">
                     {session.device}
                     {session.current && (
                       <span className="text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full">
@@ -1578,7 +1578,7 @@ export default function Settings() {
                       </span>
                     )}
                   </p>
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{session.location} -- {session.lastActive}</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{session.location} -- {session.lastActive}</p>
                 </div>
               </div>
             ))}
@@ -1586,7 +1586,7 @@ export default function Settings() {
         </div>
 
         {/* Danger zone */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-6">
+        <div className="border-t border-mono-900 dark:border-mono-200 pt-6">
           <h3 className="text-base font-semibold text-red-600 dark:text-red-400 mb-4 flex items-center gap-2">
             <AlertTriangle className="w-5 h-5" />
             Zone de danger
@@ -1610,23 +1610,23 @@ export default function Settings() {
       <div className="space-y-8">
         {/* Current plan */}
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <CreditCard className="w-5 h-5 text-violet-500" />
             Plan actuel
           </h3>
           <div className="flex flex-col sm:flex-row gap-4">
             {/* Pro plan */}
-            <div className={`flex-1 p-5 rounded-2xl border-2 transition-colors ${currentPlan === 'pro' ? 'border-[#111111] dark:border-white bg-[#FAFAFA] dark:bg-[#0A0A0A]' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'}`}>
+            <div className={`flex-1 p-5 rounded-2xl border-2 transition-colors ${currentPlan === 'pro' ? 'border-mono-100 dark:border-white bg-mono-1000 dark:bg-mono-50' : 'border-mono-900 dark:border-mono-200'}`}>
               <div className="flex items-center justify-between mb-2">
-                <h4 className="text-lg font-bold text-[#111111] dark:text-white">Pro</h4>
+                <h4 className="text-lg font-bold text-mono-100 dark:text-white">Pro</h4>
                 {currentPlan === 'pro' && (
-                  <span className="text-xs bg-[#111111] dark:bg-white text-white dark:text-black px-2.5 py-1 rounded-full font-medium">
+                  <span className="text-xs bg-mono-100 dark:bg-white text-white dark:text-black px-2.5 py-1 rounded-full font-medium">
                     Actuel
                   </span>
                 )}
               </div>
-              <p className="text-3xl font-bold text-[#111111] dark:text-white">29<span className="text-base font-normal text-[#9CA3AF]">\u20ac/mois</span></p>
-              <ul className="mt-3 space-y-1 text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+              <p className="text-3xl font-bold text-mono-100 dark:text-white">29<span className="text-base font-normal text-[#9CA3AF]">\u20ac/mois</span></p>
+              <ul className="mt-3 space-y-1 text-xs text-[#6B7280] dark:text-mono-700">
                 <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />Recettes illimitees</li>
                 <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />2 000 appels IA/mois</li>
                 <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />5 Go stockage</li>
@@ -1635,17 +1635,17 @@ export default function Settings() {
             </div>
 
             {/* Business plan */}
-            <div className={`flex-1 p-5 rounded-2xl border-2 transition-colors ${currentPlan === 'business' ? 'border-[#111111] dark:border-white bg-[#FAFAFA] dark:bg-[#0A0A0A]' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'}`}>
+            <div className={`flex-1 p-5 rounded-2xl border-2 transition-colors ${currentPlan === 'business' ? 'border-mono-100 dark:border-white bg-mono-1000 dark:bg-mono-50' : 'border-mono-900 dark:border-mono-200'}`}>
               <div className="flex items-center justify-between mb-2">
-                <h4 className="text-lg font-bold text-[#111111] dark:text-white">Business</h4>
+                <h4 className="text-lg font-bold text-mono-100 dark:text-white">Business</h4>
                 {currentPlan === 'business' && (
-                  <span className="text-xs bg-[#111111] dark:bg-white text-white dark:text-black px-2.5 py-1 rounded-full font-medium">
+                  <span className="text-xs bg-mono-100 dark:bg-white text-white dark:text-black px-2.5 py-1 rounded-full font-medium">
                     Actuel
                   </span>
                 )}
               </div>
-              <p className="text-3xl font-bold text-[#111111] dark:text-white">79<span className="text-base font-normal text-[#9CA3AF]">\u20ac/mois</span></p>
-              <ul className="mt-3 space-y-1 text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+              <p className="text-3xl font-bold text-mono-100 dark:text-white">79<span className="text-base font-normal text-[#9CA3AF]">\u20ac/mois</span></p>
+              <ul className="mt-3 space-y-1 text-xs text-[#6B7280] dark:text-mono-700">
                 <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />Tout Pro +</li>
                 <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />10 000 appels IA/mois</li>
                 <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />50 Go stockage</li>
@@ -1657,7 +1657,7 @@ export default function Settings() {
           <div className="mt-4">
             <button
               onClick={() => showToast('Redirection vers le portail Stripe...', 'info')}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-xl transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-xl transition-colors"
             >
               <ExternalLink className="w-4 h-4" />
               Gerer mon abonnement
@@ -1666,74 +1666,74 @@ export default function Settings() {
         </div>
 
         {/* Usage stats */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-6">
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+        <div className="border-t border-mono-900 dark:border-mono-200 pt-6">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <BarChart3 className="w-5 h-5 text-teal-500" />
             Utilisation
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* IA calls */}
-            <div className="p-4 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="p-4 bg-mono-1000 dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-medium text-[#111111] dark:text-white flex items-center gap-2">
+                <p className="text-sm font-medium text-mono-100 dark:text-white flex items-center gap-2">
                   <Zap className="w-4 h-4 text-amber-500" />
                   Appels IA
                 </p>
                 <span className="text-xs text-[#9CA3AF]">{usageStats.aiCalls}/{usageStats.aiLimit}</span>
               </div>
-              <div className="w-full h-2 bg-[#E5E7EB] dark:bg-[#262626] rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-mono-900 dark:bg-mono-300 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-amber-500 rounded-full transition-all"
                   style={{ width: `${(usageStats.aiCalls / usageStats.aiLimit) * 100}%` }}
                 />
               </div>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1.5">{Math.round((usageStats.aiCalls / usageStats.aiLimit) * 100)}% utilise ce mois</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1.5">{Math.round((usageStats.aiCalls / usageStats.aiLimit) * 100)}% utilise ce mois</p>
             </div>
 
             {/* Storage */}
-            <div className="p-4 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="p-4 bg-mono-1000 dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-medium text-[#111111] dark:text-white flex items-center gap-2">
+                <p className="text-sm font-medium text-mono-100 dark:text-white flex items-center gap-2">
                   <HardDrive className="w-4 h-4 text-blue-500" />
                   Stockage
                 </p>
                 <span className="text-xs text-[#9CA3AF]">{usageStats.storageUsed} Go/{usageStats.storageLimit} Go</span>
               </div>
-              <div className="w-full h-2 bg-[#E5E7EB] dark:bg-[#262626] rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-mono-900 dark:bg-mono-300 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-blue-500 rounded-full transition-all"
                   style={{ width: `${(usageStats.storageUsed / usageStats.storageLimit) * 100}%` }}
                 />
               </div>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1.5">{Math.round((usageStats.storageUsed / usageStats.storageLimit) * 100)}% utilise</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1.5">{Math.round((usageStats.storageUsed / usageStats.storageLimit) * 100)}% utilise</p>
             </div>
           </div>
         </div>
 
         {/* Billing history */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-6">
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+        <div className="border-t border-mono-900 dark:border-mono-200 pt-6">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <FileText className="w-5 h-5 text-indigo-500" />
             Historique de facturation
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-                  <th className="text-left py-2.5 px-3 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Date</th>
-                  <th className="text-left py-2.5 px-3 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Description</th>
-                  <th className="text-right py-2.5 px-3 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Montant</th>
-                  <th className="text-right py-2.5 px-3 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Statut</th>
+                <tr className="border-b border-mono-900 dark:border-mono-200">
+                  <th className="text-left py-2.5 px-3 text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Date</th>
+                  <th className="text-left py-2.5 px-3 text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Description</th>
+                  <th className="text-right py-2.5 px-3 text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Montant</th>
+                  <th className="text-right py-2.5 px-3 text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Statut</th>
                 </tr>
               </thead>
               <tbody>
                 {billingHistory.map((entry) => (
-                  <tr key={entry.id} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors">
-                    <td className="py-3 px-3 text-[#6B7280] dark:text-[#A3A3A3]">
+                  <tr key={entry.id} className="border-b border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors">
+                    <td className="py-3 px-3 text-[#6B7280] dark:text-mono-700">
                       {new Date(entry.date).toLocaleDateString('fr-FR')}
                     </td>
-                    <td className="py-3 px-3 text-[#111111] dark:text-white font-medium">{entry.description}</td>
-                    <td className="py-3 px-3 text-right text-[#111111] dark:text-white font-mono">{entry.amount}</td>
+                    <td className="py-3 px-3 text-mono-100 dark:text-white font-medium">{entry.description}</td>
+                    <td className="py-3 px-3 text-right text-mono-100 dark:text-white font-mono">{entry.amount}</td>
                     <td className="py-3 px-3 text-right">
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                         entry.status === 'paid'
@@ -1814,17 +1814,17 @@ export default function Settings() {
     return (
       <div className="space-y-8">
         <div>
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-1 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-1 flex items-center gap-2">
             <Zap className="w-5 h-5 text-amber-500" />
             Services connectes
           </h3>
-          <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-5">Connectez vos outils pour enrichir votre experience RestauMargin.</p>
+          <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-5">Connectez vos outils pour enrichir votre experience RestauMargin.</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {integrations.map((integ) => (
               <div
                 key={integ.id}
-                className="p-5 bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all"
+                className="p-5 bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all"
               >
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-2xl ${integ.bgColor} flex items-center justify-center flex-shrink-0 ${integ.color}`}>
@@ -1832,22 +1832,22 @@ export default function Settings() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <h4 className="text-sm font-semibold text-[#111111] dark:text-white">{integ.name}</h4>
+                      <h4 className="text-sm font-semibold text-mono-100 dark:text-white">{integ.name}</h4>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                         integ.connected
                           ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
-                          : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]'
+                          : 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500'
                       }`}>
                         {integ.connected ? 'Connecte' : 'Non connecte'}
                       </span>
                     </div>
-                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-3">{integ.description}</p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-3">{integ.description}</p>
                     <button
                       onClick={integ.onToggle}
                       className={`w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-xl transition-colors ${
                         integ.connected
                           ? 'border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
-                          : 'bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black'
+                          : 'bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black'
                       }`}
                     >
                       {integ.connected ? (
@@ -1870,19 +1870,19 @@ export default function Settings() {
         </div>
 
         {/* Printer */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-6">
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+        <div className="border-t border-mono-900 dark:border-mono-200 pt-6">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <Printer className="w-5 h-5 text-[#9CA3AF]" />
             Peripheriques
           </h3>
-          <div className="flex items-center justify-between py-4 px-5 bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center justify-between py-4 px-5 bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${printerConnected ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-[#F3F4F6] dark:bg-[#171717]'}`}>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${printerConnected ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-mono-950 dark:bg-[#171717]'}`}>
                 <Printer className={`w-5 h-5 ${printerConnected ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#9CA3AF]'}`} />
               </div>
               <div>
-                <p className="text-sm font-medium text-[#111111] dark:text-white">Imprimante thermique</p>
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
+                <p className="text-sm font-medium text-mono-100 dark:text-white">Imprimante thermique</p>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500 flex items-center gap-1">
                   {printerConnected ? (
                     <><Wifi className="w-3 h-3 text-emerald-500" /> Configuree</>
                   ) : (
@@ -1896,7 +1896,7 @@ export default function Settings() {
                 setPrinterConnected(!printerConnected);
                 showToast(printerConnected ? 'Imprimante deconnectee' : 'Imprimante configuree', printerConnected ? 'info' : 'success');
               }}
-              className="flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#111111] dark:text-white text-sm font-medium rounded-xl transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] text-mono-100 dark:text-white text-sm font-medium rounded-xl transition-colors"
             >
               {printerConnected ? 'Deconnecter' : 'Configurer'}
             </button>
@@ -1904,22 +1904,22 @@ export default function Settings() {
         </div>
 
         {/* Data exports */}
-        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-6">
-          <h3 className="text-base font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+        <div className="border-t border-mono-900 dark:border-mono-200 pt-6">
+          <h3 className="text-base font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
             <Download className="w-5 h-5 text-teal-500" />
             Export de donnees
           </h3>
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleExportCSV}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#111111] dark:text-white text-sm font-medium rounded-xl transition-colors flex-1"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] text-mono-100 dark:text-white text-sm font-medium rounded-xl transition-colors flex-1"
             >
               <FileSpreadsheet className="w-4 h-4" />
               Export CSV
             </button>
             <button
               onClick={() => window.print()}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#111111] dark:text-white text-sm font-medium rounded-xl transition-colors flex-1"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] text-mono-100 dark:text-white text-sm font-medium rounded-xl transition-colors flex-1"
             >
               <FileText className="w-4 h-4" />
               Export PDF
@@ -1938,7 +1938,7 @@ export default function Settings() {
                 URL.revokeObjectURL(url);
                 showToast('Donnees exportees avec succes', 'success');
               }}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#111111] dark:text-white text-sm font-medium rounded-xl transition-colors flex-1"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] text-mono-100 dark:text-white text-sm font-medium rounded-xl transition-colors flex-1"
             >
               <Download className="w-4 h-4" />
               Export JSON
@@ -1970,7 +1970,7 @@ export default function Settings() {
     <div className="max-w-4xl mx-auto pb-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-mono-100 dark:text-white flex items-center gap-2">
           <SettingsIcon className="w-7 h-7" />
           Parametres
         </h2>
@@ -1979,15 +1979,15 @@ export default function Settings() {
       {/* Tab navigation */}
       <div className="mb-6 -mx-1">
         {/* Desktop tabs */}
-        <div className="hidden md:flex items-center gap-1 p-1 bg-[#F3F4F6] dark:bg-[#0A0A0A] rounded-2xl">
+        <div className="hidden md:flex items-center gap-1 p-1 bg-mono-950 dark:bg-mono-50 rounded-2xl">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'bg-white dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
-                  : 'text-[#6B7280] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
+                  ? 'bg-white dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
+                  : 'text-[#6B7280] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'
               }`}
             >
               {tab.icon}
@@ -1998,15 +1998,15 @@ export default function Settings() {
 
         {/* Mobile tabs - horizontal scroll */}
         <div className="md:hidden overflow-x-auto scrollbar-hide">
-          <div className="flex items-center gap-1 p-1 bg-[#F3F4F6] dark:bg-[#0A0A0A] rounded-2xl min-w-max">
+          <div className="flex items-center gap-1 p-1 bg-mono-950 dark:bg-mono-50 rounded-2xl min-w-max">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'bg-white dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
-                    : 'text-[#6B7280] dark:text-[#737373]'
+                    ? 'bg-white dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
+                    : 'text-[#6B7280] dark:text-mono-500'
                 }`}
               >
                 {tab.icon}
@@ -2018,7 +2018,7 @@ export default function Settings() {
       </div>
 
       {/* Tab content */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6 sm:p-8">
+      <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6 sm:p-8">
         {renderTabContent()}
       </div>
 
@@ -2043,11 +2043,11 @@ export default function Settings() {
             </div>
           </div>
           <div>
-            <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">
+            <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">
               Tapez <span className="font-mono font-bold">SUPPRIMER</span> pour confirmer
             </label>
             <input
-              className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+              className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
               value={deleteConfirmText}
               onChange={(e) => setDeleteConfirmText(e.target.value)}
               placeholder="SUPPRIMER"
@@ -2056,7 +2056,7 @@ export default function Settings() {
           <div className="flex justify-end gap-3">
             <button
               onClick={() => setShowDeleteDataModal(false)}
-              className="px-4 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#111111] dark:text-white text-sm font-medium rounded-xl transition-colors"
+              className="px-4 py-2 border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] text-mono-100 dark:text-white text-sm font-medium rounded-xl transition-colors"
             >
               Annuler
             </button>
@@ -2093,11 +2093,11 @@ export default function Settings() {
             </div>
           </div>
           <div>
-            <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">
+            <label className="text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1.5 block">
               Tapez <span className="font-mono font-bold">SUPPRIMER MON COMPTE</span> pour confirmer
             </label>
             <input
-              className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+              className="w-full px-3 py-2.5 text-sm bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-mono-100 dark:text-white focus:border-mono-100 dark:focus:border-white focus:ring-1 focus:ring-mono-100 dark:focus:ring-white outline-none transition-colors"
               value={deleteConfirmText}
               onChange={(e) => setDeleteConfirmText(e.target.value)}
               placeholder="SUPPRIMER MON COMPTE"
@@ -2106,7 +2106,7 @@ export default function Settings() {
           <div className="flex justify-end gap-3">
             <button
               onClick={() => setShowDeleteAccountModal(false)}
-              className="px-4 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#111111] dark:text-white text-sm font-medium rounded-xl transition-colors"
+              className="px-4 py-2 border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] text-mono-100 dark:text-white text-sm font-medium rounded-xl transition-colors"
             >
               Annuler
             </button>

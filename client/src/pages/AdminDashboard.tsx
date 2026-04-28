@@ -144,14 +144,14 @@ function MiniChart({ data }: { data: Array<{ date: string; count: number }> }) {
 // ── KPI Card ──
 function KpiCard({ label, value, icon: Icon, sub }: { label: string; value: number | string; icon: any; sub?: string }) {
   return (
-    <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-5 flex items-start gap-4">
-      <div className="p-2.5 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]">
-        <Icon className="w-5 h-5 text-[#111111] dark:text-white" />
+    <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl p-5 flex items-start gap-4">
+      <div className="p-2.5 rounded-lg bg-mono-950 dark:bg-[#171717]">
+        <Icon className="w-5 h-5 text-mono-100 dark:text-white" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{value}</div>
-        <div className="text-xs text-[#6B7280] dark:text-[#737373] mt-0.5">{label}</div>
-        {sub && <div className="text-xs text-[#9CA3AF] dark:text-[#525252] mt-1">{sub}</div>}
+        <div className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{value}</div>
+        <div className="text-xs text-[#6B7280] dark:text-mono-500 mt-0.5">{label}</div>
+        {sub && <div className="text-xs text-[#9CA3AF] dark:text-mono-400 mt-1">{sub}</div>}
       </div>
     </div>
   );
@@ -160,7 +160,7 @@ function KpiCard({ label, value, icon: Icon, sub }: { label: string; value: numb
 // ── Badge ──
 function Badge({ text, variant = 'default' }: { text: string; variant?: 'default' | 'success' | 'warning' | 'danger' }) {
   const colors = {
-    default: 'bg-[#F3F4F6] text-[#374151] dark:bg-[#171717] dark:text-[#A3A3A3]',
+    default: 'bg-mono-950 text-[#374151] dark:bg-[#171717] dark:text-mono-700',
     success: 'bg-[#D1FAE5] text-[#065F46] dark:bg-[#022C22] dark:text-[#6EE7B7]',
     warning: 'bg-[#FEF3C7] text-[#92400E] dark:bg-[#422006] dark:text-[#FCD34D]',
     danger: 'bg-[#FEE2E2] text-[#991B1B] dark:bg-[#450A0A] dark:text-[#FCA5A5]',
@@ -400,17 +400,17 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#111111] dark:bg-white">
-            <Shield className="w-6 h-6 text-white dark:text-[#111111]" />
+          <div className="p-2.5 rounded-xl bg-mono-100 dark:bg-white">
+            <Shield className="w-6 h-6 text-white dark:text-mono-100" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">Administration</h1>
-            <p className="text-sm text-[#6B7280] dark:text-[#737373]">Panneau de controle RestauMargin</p>
+            <h1 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">Administration</h1>
+            <p className="text-sm text-[#6B7280] dark:text-mono-500">Panneau de controle RestauMargin</p>
           </div>
         </div>
         <button
           onClick={() => { loadStats(); if (tab === 'users') loadUsers(); if (tab === 'messages') loadMessages(); if (tab === 'activity') loadActivity(); if (tab === 'newsletter') loadNewsletter(); }}
-          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#6B7280] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-colors"
+          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#6B7280] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg transition-colors"
         >
           <RefreshCw className="w-4 h-4" />
           Actualiser
@@ -418,15 +418,15 @@ export default function AdminDashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-[#F3F4F6] dark:bg-[#0A0A0A] p-1 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto">
+      <div className="flex gap-1 bg-mono-950 dark:bg-mono-50 p-1 rounded-xl border border-mono-900 dark:border-mono-200 overflow-x-auto">
         {tabs.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
               tab === t.id
-                ? 'bg-white dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
-                : 'text-[#6B7280] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
+                ? 'bg-white dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
+                : 'text-[#6B7280] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'
             }`}
           >
             <t.icon className="w-4 h-4" />
@@ -437,7 +437,7 @@ export default function AdminDashboard() {
 
       {loading && !stats ? (
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" />
+          <Loader2 className="w-8 h-8 animate-spin text-mono-100 dark:text-white" />
         </div>
       ) : (
         <>
@@ -460,39 +460,39 @@ export default function AdminDashboard() {
               </div>
 
               {/* Signups Chart */}
-              <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-5">
-                <h3 className="text-sm font-semibold text-[#111111] dark:text-white mb-3">Inscriptions (30 derniers jours)</h3>
+              <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl p-5">
+                <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-3">Inscriptions (30 derniers jours)</h3>
                 <MiniChart data={stats.signupsChart} />
-                <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-[#525252] mt-1 px-1">
+                <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-mono-400 mt-1 px-1">
                   <span>{stats.signupsChart[0]?.date || ''}</span>
                   <span>{stats.signupsChart[stats.signupsChart.length - 1]?.date || ''}</span>
                 </div>
               </div>
 
               {/* Recent Signups Table */}
-              <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden">
-                <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-                  <h3 className="text-sm font-semibold text-[#111111] dark:text-white">Dernieres inscriptions</h3>
+              <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl overflow-hidden">
+                <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
+                  <h3 className="text-sm font-semibold text-mono-100 dark:text-white">Dernieres inscriptions</h3>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] text-left">
-                        <th className="px-5 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Nom</th>
-                        <th className="px-5 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Email</th>
-                        <th className="px-5 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Plan</th>
-                        <th className="px-5 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Role</th>
-                        <th className="px-5 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Date</th>
+                      <tr className="border-b border-mono-900 dark:border-mono-200 text-left">
+                        <th className="px-5 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Nom</th>
+                        <th className="px-5 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Email</th>
+                        <th className="px-5 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Plan</th>
+                        <th className="px-5 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Role</th>
+                        <th className="px-5 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Date</th>
                       </tr>
                     </thead>
                     <tbody>
                       {stats.recentSignups.map(u => (
-                        <tr key={u.id} className="border-b border-[#F3F4F6] dark:border-[#171717] hover:bg-[#F9FAFB] dark:hover:bg-[#0F0F0F] transition-colors">
-                          <td className="px-5 py-3 font-medium text-[#111111] dark:text-white">{u.name}</td>
-                          <td className="px-5 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{u.email}</td>
+                        <tr key={u.id} className="border-b border-mono-950 dark:border-[#171717] hover:bg-[#F9FAFB] dark:hover:bg-[#0F0F0F] transition-colors">
+                          <td className="px-5 py-3 font-medium text-mono-100 dark:text-white">{u.name}</td>
+                          <td className="px-5 py-3 text-[#6B7280] dark:text-mono-700">{u.email}</td>
                           <td className="px-5 py-3">{planBadge(u.plan)}</td>
                           <td className="px-5 py-3">{roleBadge(u.role)}</td>
-                          <td className="px-5 py-3 text-[#9CA3AF] dark:text-[#737373]">{formatDate(u.createdAt)}</td>
+                          <td className="px-5 py-3 text-[#9CA3AF] dark:text-mono-500">{formatDate(u.createdAt)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -514,13 +514,13 @@ export default function AdminDashboard() {
                     placeholder="Rechercher par nom ou email..."
                     value={usersSearch}
                     onChange={e => { setUsersSearch(e.target.value); setUsersPage(1); }}
-                    className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
                   />
                 </div>
                 <select
                   value={usersPlanFilter}
                   onChange={e => { setUsersPlanFilter(e.target.value); setUsersPage(1); }}
-                  className="px-3 py-2.5 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white"
+                  className="px-3 py-2.5 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg text-sm text-mono-100 dark:text-white"
                 >
                   <option value="">Tous les plans</option>
                   <option value="basic">Basic</option>
@@ -530,7 +530,7 @@ export default function AdminDashboard() {
                 <select
                   value={usersRoleFilter}
                   onChange={e => { setUsersRoleFilter(e.target.value); setUsersPage(1); }}
-                  className="px-3 py-2.5 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white"
+                  className="px-3 py-2.5 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg text-sm text-mono-100 dark:text-white"
                 >
                   <option value="">Tous les roles</option>
                   <option value="admin">Admin</option>
@@ -538,7 +538,7 @@ export default function AdminDashboard() {
                 </select>
                 <button
                   onClick={exportUsersCSV}
-                  className="flex items-center gap-2 px-3 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+                  className="flex items-center gap-2 px-3 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
                 >
                   <Download className="w-4 h-4" />
                   Export CSV
@@ -546,24 +546,24 @@ export default function AdminDashboard() {
               </div>
 
               {/* Info bar */}
-              <div className="text-xs text-[#6B7280] dark:text-[#737373]">
+              <div className="text-xs text-[#6B7280] dark:text-mono-500">
                 {usersTotal} utilisateur{usersTotal > 1 ? 's' : ''} &middot; Page {usersPage}/{usersTotalPages}
               </div>
 
               {/* Users Table */}
-              <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden">
+              <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] text-left">
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">ID</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Nom</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Email</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Role</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Plan</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Restaurants</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Inscription</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Actions</th>
+                      <tr className="border-b border-mono-900 dark:border-mono-200 text-left">
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">ID</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Nom</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Email</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Role</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Plan</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Restaurants</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Inscription</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -571,20 +571,20 @@ export default function AdminDashboard() {
                         <>
                           <tr
                             key={u.id}
-                            className="border-b border-[#F3F4F6] dark:border-[#171717] hover:bg-[#F9FAFB] dark:hover:bg-[#0F0F0F] transition-colors cursor-pointer"
+                            className="border-b border-mono-950 dark:border-[#171717] hover:bg-[#F9FAFB] dark:hover:bg-[#0F0F0F] transition-colors cursor-pointer"
                             onClick={() => setExpandedUser(expandedUser === u.id ? null : u.id)}
                           >
-                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#525252] font-mono text-xs">#{u.id}</td>
-                            <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">{u.name}</td>
-                            <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{u.email}</td>
+                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-mono-400 font-mono text-xs">#{u.id}</td>
+                            <td className="px-4 py-3 font-medium text-mono-100 dark:text-white">{u.name}</td>
+                            <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700">{u.email}</td>
                             <td className="px-4 py-3">{roleBadge(u.role)}</td>
                             <td className="px-4 py-3">{planBadge(u.plan)}</td>
-                            <td className="px-4 py-3 text-center text-[#6B7280] dark:text-[#A3A3A3]">{u.restaurantCount}</td>
-                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373] whitespace-nowrap">{formatDate(u.createdAt)}</td>
+                            <td className="px-4 py-3 text-center text-[#6B7280] dark:text-mono-700">{u.restaurantCount}</td>
+                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-mono-500 whitespace-nowrap">{formatDate(u.createdAt)}</td>
                             <td className="px-4 py-3">
                               <button
                                 onClick={e => { e.stopPropagation(); setEditingUser({ id: u.id, plan: u.plan, role: u.role }); }}
-                                className="text-xs font-medium text-[#111111] dark:text-white hover:underline"
+                                className="text-xs font-medium text-mono-100 dark:text-white hover:underline"
                               >
                                 Modifier
                               </button>
@@ -595,20 +595,20 @@ export default function AdminDashboard() {
                               <td colSpan={8} className="px-6 py-4">
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
                                   <div>
-                                    <span className="text-[#9CA3AF] dark:text-[#525252]">Email verifie:</span>{' '}
+                                    <span className="text-[#9CA3AF] dark:text-mono-400">Email verifie:</span>{' '}
                                     <span className={u.emailVerified ? 'text-emerald-600' : 'text-red-500'}>{u.emailVerified ? 'Oui' : 'Non'}</span>
                                   </div>
                                   <div>
-                                    <span className="text-[#9CA3AF] dark:text-[#525252]">Trial expire:</span>{' '}
-                                    <span className="text-[#111111] dark:text-white">{u.trialEndsAt ? formatDate(u.trialEndsAt) : 'N/A'}</span>
+                                    <span className="text-[#9CA3AF] dark:text-mono-400">Trial expire:</span>{' '}
+                                    <span className="text-mono-100 dark:text-white">{u.trialEndsAt ? formatDate(u.trialEndsAt) : 'N/A'}</span>
                                   </div>
                                   <div>
-                                    <span className="text-[#9CA3AF] dark:text-[#525252]">Restaurants:</span>{' '}
-                                    <span className="text-[#111111] dark:text-white">{u.restaurantCount}</span>
+                                    <span className="text-[#9CA3AF] dark:text-mono-400">Restaurants:</span>{' '}
+                                    <span className="text-mono-100 dark:text-white">{u.restaurantCount}</span>
                                   </div>
                                   <div>
-                                    <span className="text-[#9CA3AF] dark:text-[#525252]">Memberships:</span>{' '}
-                                    <span className="text-[#111111] dark:text-white">{u.membershipCount}</span>
+                                    <span className="text-[#9CA3AF] dark:text-mono-400">Memberships:</span>{' '}
+                                    <span className="text-mono-100 dark:text-white">{u.membershipCount}</span>
                                   </div>
                                 </div>
                               </td>
@@ -617,7 +617,7 @@ export default function AdminDashboard() {
                         </>
                       ))}
                       {users.length === 0 && (
-                        <tr><td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#525252]">Aucun utilisateur trouve</td></tr>
+                        <tr><td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-mono-400">Aucun utilisateur trouve</td></tr>
                       )}
                     </tbody>
                   </table>
@@ -630,19 +630,19 @@ export default function AdminDashboard() {
                   <button
                     onClick={() => setUsersPage(p => Math.max(1, p - 1))}
                     disabled={usersPage <= 1}
-                    className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 transition-colors"
+                    className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30 transition-colors"
                   >
-                    <ChevronLeft className="w-4 h-4 text-[#111111] dark:text-white" />
+                    <ChevronLeft className="w-4 h-4 text-mono-100 dark:text-white" />
                   </button>
-                  <span className="text-sm text-[#6B7280] dark:text-[#737373]">
+                  <span className="text-sm text-[#6B7280] dark:text-mono-500">
                     {usersPage} / {usersTotalPages}
                   </span>
                   <button
                     onClick={() => setUsersPage(p => Math.min(usersTotalPages, p + 1))}
                     disabled={usersPage >= usersTotalPages}
-                    className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 transition-colors"
+                    className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30 transition-colors"
                   >
-                    <ChevronRight className="w-4 h-4 text-[#111111] dark:text-white" />
+                    <ChevronRight className="w-4 h-4 text-mono-100 dark:text-white" />
                   </button>
                 </div>
               )}
@@ -659,22 +659,22 @@ export default function AdminDashboard() {
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="admin-edit-user-title"
-                    className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-6 w-full max-w-md shadow-xl"
+                    className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl p-6 w-full max-w-md shadow-xl"
                     onClick={e => e.stopPropagation()}
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <h3 id="admin-edit-user-title" className="text-lg font-semibold text-[#111111] dark:text-white">Modifier utilisateur #{editingUser.id}</h3>
-                      <button onClick={() => setEditingUser(null)} aria-label="Fermer" className="p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg">
+                      <h3 id="admin-edit-user-title" className="text-lg font-semibold text-mono-100 dark:text-white">Modifier utilisateur #{editingUser.id}</h3>
+                      <button onClick={() => setEditingUser(null)} aria-label="Fermer" className="p-1 hover:bg-mono-950 dark:hover:bg-[#171717] rounded-lg">
                         <X className="w-4 h-4 text-[#6B7280]" aria-hidden="true" />
                       </button>
                     </div>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider mb-1">Plan</label>
+                        <label className="block text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider mb-1">Plan</label>
                         <select
                           value={editingUser.plan}
                           onChange={e => setEditingUser({ ...editingUser, plan: e.target.value })}
-                          className="w-full px-3 py-2.5 bg-white dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white"
+                          className="w-full px-3 py-2.5 bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-200 rounded-lg text-sm text-mono-100 dark:text-white"
                         >
                           <option value="basic">Basic</option>
                           <option value="pro">Pro</option>
@@ -682,11 +682,11 @@ export default function AdminDashboard() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider mb-1">Role</label>
+                        <label className="block text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider mb-1">Role</label>
                         <select
                           value={editingUser.role}
                           onChange={e => setEditingUser({ ...editingUser, role: e.target.value })}
-                          className="w-full px-3 py-2.5 bg-white dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white"
+                          className="w-full px-3 py-2.5 bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-200 rounded-lg text-sm text-mono-100 dark:text-white"
                         >
                           <option value="chef">Chef</option>
                           <option value="admin">Admin</option>
@@ -695,13 +695,13 @@ export default function AdminDashboard() {
                       <div className="flex gap-3 pt-2">
                         <button
                           onClick={() => setEditingUser(null)}
-                          className="flex-1 px-4 py-2.5 text-sm font-medium border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#6B7280] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                          className="flex-1 px-4 py-2.5 text-sm font-medium border border-mono-900 dark:border-mono-200 rounded-lg text-[#6B7280] hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
                         >
                           Annuler
                         </button>
                         <button
                           onClick={saveUserEdit}
-                          className="flex-1 px-4 py-2.5 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-lg hover:opacity-90 transition-opacity"
+                          className="flex-1 px-4 py-2.5 text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-lg hover:opacity-90 transition-opacity"
                         >
                           Enregistrer
                         </button>
@@ -716,36 +716,36 @@ export default function AdminDashboard() {
           {/* ═══ TAB: MESSAGES ═══ */}
           {tab === 'messages' && (
             <div className="space-y-4">
-              <div className="text-xs text-[#6B7280] dark:text-[#737373]">
+              <div className="text-xs text-[#6B7280] dark:text-mono-500">
                 {messagesTotal} message{messagesTotal > 1 ? 's' : ''} au total
               </div>
 
-              <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden">
+              <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] text-left">
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Expediteur</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Conversation</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Message</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Lu</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Date</th>
+                      <tr className="border-b border-mono-900 dark:border-mono-200 text-left">
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Expediteur</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Conversation</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Message</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Lu</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Date</th>
                       </tr>
                     </thead>
                     <tbody>
                       {messages.map(m => (
-                        <tr key={m.id} className="border-b border-[#F3F4F6] dark:border-[#171717] hover:bg-[#F9FAFB] dark:hover:bg-[#0F0F0F] transition-colors">
-                          <td className="px-4 py-3 font-medium text-[#111111] dark:text-white whitespace-nowrap">{m.senderName}</td>
-                          <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{m.conversation.name}</td>
-                          <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3] max-w-xs truncate">{m.content}</td>
+                        <tr key={m.id} className="border-b border-mono-950 dark:border-[#171717] hover:bg-[#F9FAFB] dark:hover:bg-[#0F0F0F] transition-colors">
+                          <td className="px-4 py-3 font-medium text-mono-100 dark:text-white whitespace-nowrap">{m.senderName}</td>
+                          <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700">{m.conversation.name}</td>
+                          <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700 max-w-xs truncate">{m.content}</td>
                           <td className="px-4 py-3">
                             {m.read ? <Eye className="w-4 h-4 text-emerald-500" /> : <EyeOff className="w-4 h-4 text-[#9CA3AF]" />}
                           </td>
-                          <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373] whitespace-nowrap">{formatDateTime(m.createdAt)}</td>
+                          <td className="px-4 py-3 text-[#9CA3AF] dark:text-mono-500 whitespace-nowrap">{formatDateTime(m.createdAt)}</td>
                         </tr>
                       ))}
                       {messages.length === 0 && (
-                        <tr><td colSpan={5} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#525252]">Aucun message</td></tr>
+                        <tr><td colSpan={5} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-mono-400">Aucun message</td></tr>
                       )}
                     </tbody>
                   </table>
@@ -754,12 +754,12 @@ export default function AdminDashboard() {
 
               {messagesTotalPages > 1 && (
                 <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setMessagesPage(p => Math.max(1, p - 1))} disabled={messagesPage <= 1} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30">
-                    <ChevronLeft className="w-4 h-4 text-[#111111] dark:text-white" />
+                  <button onClick={() => setMessagesPage(p => Math.max(1, p - 1))} disabled={messagesPage <= 1} className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30">
+                    <ChevronLeft className="w-4 h-4 text-mono-100 dark:text-white" />
                   </button>
-                  <span className="text-sm text-[#6B7280] dark:text-[#737373]">{messagesPage} / {messagesTotalPages}</span>
-                  <button onClick={() => setMessagesPage(p => Math.min(messagesTotalPages, p + 1))} disabled={messagesPage >= messagesTotalPages} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30">
-                    <ChevronRight className="w-4 h-4 text-[#111111] dark:text-white" />
+                  <span className="text-sm text-[#6B7280] dark:text-mono-500">{messagesPage} / {messagesTotalPages}</span>
+                  <button onClick={() => setMessagesPage(p => Math.min(messagesTotalPages, p + 1))} disabled={messagesPage >= messagesTotalPages} className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30">
+                    <ChevronRight className="w-4 h-4 text-mono-100 dark:text-white" />
                   </button>
                 </div>
               )}
@@ -770,36 +770,36 @@ export default function AdminDashboard() {
           {tab === 'newsletter' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="text-xs text-[#6B7280] dark:text-[#737373]">
+                <div className="text-xs text-[#6B7280] dark:text-mono-500">
                   {newsletterTotal} abonne{newsletterTotal > 1 ? 's' : ''}
                 </div>
                 <button
                   onClick={exportNewsletterCSV}
-                  className="flex items-center gap-2 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+                  className="flex items-center gap-2 px-3 py-2 bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
                 >
                   <Download className="w-4 h-4" />
                   Export CSV
                 </button>
               </div>
 
-              <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden">
+              <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] text-left">
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">ID</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Email</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Date</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Statut</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Actions</th>
+                      <tr className="border-b border-mono-900 dark:border-mono-200 text-left">
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">ID</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Email</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Date</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Statut</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {newsletter.map(s => (
-                        <tr key={s.id} className="border-b border-[#F3F4F6] dark:border-[#171717] hover:bg-[#F9FAFB] dark:hover:bg-[#0F0F0F] transition-colors">
-                          <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#525252] font-mono text-xs">#{s.id}</td>
-                          <td className="px-4 py-3 text-[#111111] dark:text-white">{s.email}</td>
-                          <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373]">{formatDate(s.subscribedAt)}</td>
+                        <tr key={s.id} className="border-b border-mono-950 dark:border-[#171717] hover:bg-[#F9FAFB] dark:hover:bg-[#0F0F0F] transition-colors">
+                          <td className="px-4 py-3 text-[#9CA3AF] dark:text-mono-400 font-mono text-xs">#{s.id}</td>
+                          <td className="px-4 py-3 text-mono-100 dark:text-white">{s.email}</td>
+                          <td className="px-4 py-3 text-[#9CA3AF] dark:text-mono-500">{formatDate(s.subscribedAt)}</td>
                           <td className="px-4 py-3">
                             {s.unsubscribed
                               ? <Badge text="Desinscrit" variant="danger" />
@@ -819,7 +819,7 @@ export default function AdminDashboard() {
                         </tr>
                       ))}
                       {newsletter.length === 0 && (
-                        <tr><td colSpan={5} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#525252]">Aucun abonne</td></tr>
+                        <tr><td colSpan={5} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-mono-400">Aucun abonne</td></tr>
                       )}
                     </tbody>
                   </table>
@@ -828,12 +828,12 @@ export default function AdminDashboard() {
 
               {newsletterTotalPages > 1 && (
                 <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setNewsletterPage(p => Math.max(1, p - 1))} disabled={newsletterPage <= 1} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30">
-                    <ChevronLeft className="w-4 h-4 text-[#111111] dark:text-white" />
+                  <button onClick={() => setNewsletterPage(p => Math.max(1, p - 1))} disabled={newsletterPage <= 1} className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30">
+                    <ChevronLeft className="w-4 h-4 text-mono-100 dark:text-white" />
                   </button>
-                  <span className="text-sm text-[#6B7280] dark:text-[#737373]">{newsletterPage} / {newsletterTotalPages}</span>
-                  <button onClick={() => setNewsletterPage(p => Math.min(newsletterTotalPages, p + 1))} disabled={newsletterPage >= newsletterTotalPages} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30">
-                    <ChevronRight className="w-4 h-4 text-[#111111] dark:text-white" />
+                  <span className="text-sm text-[#6B7280] dark:text-mono-500">{newsletterPage} / {newsletterTotalPages}</span>
+                  <button onClick={() => setNewsletterPage(p => Math.min(newsletterTotalPages, p + 1))} disabled={newsletterPage >= newsletterTotalPages} className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30">
+                    <ChevronRight className="w-4 h-4 text-mono-100 dark:text-white" />
                   </button>
                 </div>
               )}
@@ -847,7 +847,7 @@ export default function AdminDashboard() {
                 <select
                   value={activityFilter}
                   onChange={e => { setActivityFilter(e.target.value); setActivityPage(1); }}
-                  className="px-3 py-2.5 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white"
+                  className="px-3 py-2.5 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-lg text-sm text-mono-100 dark:text-white"
                 >
                   <option value="">Tous les types</option>
                   <option value="ingredient">Ingredients</option>
@@ -856,42 +856,42 @@ export default function AdminDashboard() {
                   <option value="inventory">Inventaire</option>
                   <option value="order">Commandes</option>
                 </select>
-                <div className="text-xs text-[#6B7280] dark:text-[#737373]">
+                <div className="text-xs text-[#6B7280] dark:text-mono-500">
                   {activityTotal} entree{activityTotal > 1 ? 's' : ''}
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden">
+              <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] text-left">
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Date</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">User ID</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Action</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Type</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Entity ID</th>
-                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider">Restaurant</th>
+                      <tr className="border-b border-mono-900 dark:border-mono-200 text-left">
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Date</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">User ID</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Action</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Type</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Entity ID</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider">Restaurant</th>
                       </tr>
                     </thead>
                     <tbody>
                       {activity.map(log => (
-                        <tr key={log.id} className="border-b border-[#F3F4F6] dark:border-[#171717] hover:bg-[#F9FAFB] dark:hover:bg-[#0F0F0F] transition-colors">
-                          <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373] whitespace-nowrap text-xs">{formatDateTime(log.createdAt)}</td>
-                          <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3] font-mono text-xs">#{log.userId}</td>
+                        <tr key={log.id} className="border-b border-mono-950 dark:border-[#171717] hover:bg-[#F9FAFB] dark:hover:bg-[#0F0F0F] transition-colors">
+                          <td className="px-4 py-3 text-[#9CA3AF] dark:text-mono-500 whitespace-nowrap text-xs">{formatDateTime(log.createdAt)}</td>
+                          <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700 font-mono text-xs">#{log.userId}</td>
                           <td className="px-4 py-3">
                             <Badge
                               text={log.action}
                               variant={log.action === 'CREATE' ? 'success' : log.action === 'DELETE' ? 'danger' : log.action === 'UPDATE' ? 'warning' : 'default'}
                             />
                           </td>
-                          <td className="px-4 py-3 text-[#111111] dark:text-white capitalize">{log.entityType}</td>
-                          <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3] font-mono text-xs">#{log.entityId}</td>
-                          <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3] font-mono text-xs">#{log.restaurantId}</td>
+                          <td className="px-4 py-3 text-mono-100 dark:text-white capitalize">{log.entityType}</td>
+                          <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700 font-mono text-xs">#{log.entityId}</td>
+                          <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700 font-mono text-xs">#{log.restaurantId}</td>
                         </tr>
                       ))}
                       {activity.length === 0 && (
-                        <tr><td colSpan={6} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#525252]">Aucune activite enregistree</td></tr>
+                        <tr><td colSpan={6} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-mono-400">Aucune activite enregistree</td></tr>
                       )}
                     </tbody>
                   </table>
@@ -900,12 +900,12 @@ export default function AdminDashboard() {
 
               {activityTotalPages > 1 && (
                 <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setActivityPage(p => Math.max(1, p - 1))} disabled={activityPage <= 1} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30">
-                    <ChevronLeft className="w-4 h-4 text-[#111111] dark:text-white" />
+                  <button onClick={() => setActivityPage(p => Math.max(1, p - 1))} disabled={activityPage <= 1} className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30">
+                    <ChevronLeft className="w-4 h-4 text-mono-100 dark:text-white" />
                   </button>
-                  <span className="text-sm text-[#6B7280] dark:text-[#737373]">{activityPage} / {activityTotalPages}</span>
-                  <button onClick={() => setActivityPage(p => Math.min(activityTotalPages, p + 1))} disabled={activityPage >= activityTotalPages} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30">
-                    <ChevronRight className="w-4 h-4 text-[#111111] dark:text-white" />
+                  <span className="text-sm text-[#6B7280] dark:text-mono-500">{activityPage} / {activityTotalPages}</span>
+                  <button onClick={() => setActivityPage(p => Math.min(activityTotalPages, p + 1))} disabled={activityPage >= activityTotalPages} className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30">
+                    <ChevronRight className="w-4 h-4 text-mono-100 dark:text-white" />
                   </button>
                 </div>
               )}

@@ -64,13 +64,13 @@ export default function BlogPrevisionVentes() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -113,7 +113,7 @@ export default function BlogPrevisionVentes() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <Target className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. L'enjeu : commander et staffer juste</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. L'enjeu : commander et staffer juste</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Une mauvaise prévision coûte sur trois fronts simultanément :
@@ -134,12 +134,12 @@ export default function BlogPrevisionVentes() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Les 3 méthodes de prévision</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Les 3 méthodes de prévision</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Méthode 1 : Historique N-1 ajusté.</strong> La plus simple avec 18 mois d'historique.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Prévision = CA jour N-1 × (1 + inflation) × (1 + croissance)
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
@@ -148,13 +148,13 @@ export default function BlogPrevisionVentes() {
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Méthode 2 : Moyennes mobiles.</strong> Idéale sans 12 mois d'historique.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Prévision = moyenne (CA des 4 derniers vendredis)
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Méthode 3 : Régression par facteurs.</strong> La plus puissante mais complexe.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             CA prévu = CA base × coef météo × coef saison × coef événement
           </div>
           <p className="text-[#374151] leading-relaxed">
@@ -168,7 +168,7 @@ export default function BlogPrevisionVentes() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Calendar className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Facteurs qui influencent les ventes</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Facteurs qui influencent les ventes</h2>
           </div>
           <ul className="space-y-2 text-[#374151] mb-4">
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-purple-400 mt-2 flex-shrink-0" /><span><strong>Météo (terrasse été)</strong> : -25 % à +20 %</span></li>
@@ -189,16 +189,16 @@ export default function BlogPrevisionVentes() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <CloudRain className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Vendredi soleil vs vendredi pluie</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Vendredi soleil vs vendredi pluie</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Restaurant urbain avec terrasse 30 places + salle 60 places.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 text-sm text-[#111111] space-y-2">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 text-sm text-mono-100 space-y-2">
             <div className="font-bold text-emerald-700">Scénario A — Soleil 24 °C</div>
             <div>Prévision : 180 couverts (terrasse + salle 90 %)</div>
             <div>Planning : 1 chef + 2 commis + 1 plongeur, 1 chef de rang + 3 serveurs</div>
-            <div className="font-bold text-blue-700 pt-2 border-t border-[#E5E7EB]">Scénario B — Pluie</div>
+            <div className="font-bold text-blue-700 pt-2 border-t border-mono-900">Scénario B — Pluie</div>
             <div>Prévision : 120 couverts (salle 70 %)</div>
             <div>Planning : -1 serveur</div>
           </div>
@@ -214,12 +214,12 @@ export default function BlogPrevisionVentes() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Tableau hebdomadaire</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Tableau hebdomadaire</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             À remplir tous les dimanches soir pour la semaine suivante.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-xs text-[#111111] space-y-1 overflow-x-auto">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-xs text-mono-100 space-y-1 overflow-x-auto">
             <div>Lun 19 : 18° nuageux | 60 cv | 1 680 € | -1 commis</div>
             <div>Mar 20 : 20° beau | 80 cv | 2 240 € | Standard</div>
             <div>Mer 21 : 22° marché | 100 cv | 2 800 € | +1 serveur</div>
@@ -227,7 +227,7 @@ export default function BlogPrevisionVentes() {
             <div>Ven 23 : 24° concert | 180 cv | 5 040 € | +1 serv +1 commis</div>
             <div>Sam 24 : 25° soleil | 200 cv | 5 600 € | Maxi</div>
             <div>Dim 25 : 26° orage soir | 110 cv | 3 080 € | -1 serveur soir</div>
-            <div className="pt-2 font-bold border-t border-[#E5E7EB]">TOTAL : 850 cv, 23 800 €</div>
+            <div className="pt-2 font-bold border-t border-mono-900">TOTAL : 850 cv, 23 800 €</div>
           </div>
         </section>
 
@@ -237,12 +237,12 @@ export default function BlogPrevisionVentes() {
             <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-pink-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Calculer l'écart MAPE</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Calculer l'écart MAPE</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Indicateur de précision : <strong>MAPE</strong> (Mean Absolute Percentage Error).
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             MAPE = moyenne des écarts absolus en %
           </div>
           <p className="text-[#374151] leading-relaxed mb-4"><strong>Objectifs réalistes :</strong></p>
@@ -258,7 +258,7 @@ export default function BlogPrevisionVentes() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -278,9 +278,9 @@ export default function BlogPrevisionVentes() {
                 a: "Utilisez les ratios sectoriels (ticket moyen, taux remplissage) de votre format. Au bout de 4 semaines, basculez en moyennes mobiles. Au bout de 12 semaines, vous aurez vos propres patterns."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -301,7 +301,7 @@ export default function BlogPrevisionVentes() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/budget-previsionnel-restaurant" className="text-sm text-teal-600 hover:underline">Budget prévisionnel →</Link>
         </div>

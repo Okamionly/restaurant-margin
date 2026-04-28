@@ -82,18 +82,18 @@ const SEASONAL_INGREDIENTS: Record<number, string[]> = {
 // ── Season tags by month ──
 
 const SEASON_TAGS: Record<number, { label: string; icon: string; color: string }> = {
-  1: { label: 'Hiver', icon: '❄', color: 'bg-[#E5E7EB] dark:bg-[#1A1A1A] text-[#374151] dark:text-[#D1D5DB]' },
-  2: { label: 'Hiver', icon: '❄', color: 'bg-[#E5E7EB] dark:bg-[#1A1A1A] text-[#374151] dark:text-[#D1D5DB]' },
-  3: { label: 'Printemps', icon: '🌱', color: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#374151] dark:text-[#D1D5DB]' },
-  4: { label: 'Printemps', icon: '🌱', color: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#374151] dark:text-[#D1D5DB]' },
-  5: { label: 'Printemps', icon: '🌱', color: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#374151] dark:text-[#D1D5DB]' },
-  6: { label: 'Ete', icon: '☀', color: 'bg-[#F9FAFB] dark:bg-[#0F0F0F] text-[#111111] dark:text-white' },
-  7: { label: 'Ete', icon: '☀', color: 'bg-[#F9FAFB] dark:bg-[#0F0F0F] text-[#111111] dark:text-white' },
-  8: { label: 'Ete', icon: '☀', color: 'bg-[#F9FAFB] dark:bg-[#0F0F0F] text-[#111111] dark:text-white' },
-  9: { label: 'Automne', icon: '🍂', color: 'bg-[#F3F4F6] dark:bg-[#1A1A1A] text-[#374151] dark:text-[#D1D5DB]' },
-  10: { label: 'Automne', icon: '🍂', color: 'bg-[#F3F4F6] dark:bg-[#1A1A1A] text-[#374151] dark:text-[#D1D5DB]' },
-  11: { label: 'Automne', icon: '🍂', color: 'bg-[#F3F4F6] dark:bg-[#1A1A1A] text-[#374151] dark:text-[#D1D5DB]' },
-  12: { label: 'Hiver', icon: '❄', color: 'bg-[#E5E7EB] dark:bg-[#1A1A1A] text-[#374151] dark:text-[#D1D5DB]' },
+  1: { label: 'Hiver', icon: '❄', color: 'bg-mono-900 dark:bg-mono-200 text-[#374151] dark:text-[#D1D5DB]' },
+  2: { label: 'Hiver', icon: '❄', color: 'bg-mono-900 dark:bg-mono-200 text-[#374151] dark:text-[#D1D5DB]' },
+  3: { label: 'Printemps', icon: '🌱', color: 'bg-mono-950 dark:bg-[#171717] text-[#374151] dark:text-[#D1D5DB]' },
+  4: { label: 'Printemps', icon: '🌱', color: 'bg-mono-950 dark:bg-[#171717] text-[#374151] dark:text-[#D1D5DB]' },
+  5: { label: 'Printemps', icon: '🌱', color: 'bg-mono-950 dark:bg-[#171717] text-[#374151] dark:text-[#D1D5DB]' },
+  6: { label: 'Ete', icon: '☀', color: 'bg-[#F9FAFB] dark:bg-[#0F0F0F] text-mono-100 dark:text-white' },
+  7: { label: 'Ete', icon: '☀', color: 'bg-[#F9FAFB] dark:bg-[#0F0F0F] text-mono-100 dark:text-white' },
+  8: { label: 'Ete', icon: '☀', color: 'bg-[#F9FAFB] dark:bg-[#0F0F0F] text-mono-100 dark:text-white' },
+  9: { label: 'Automne', icon: '🍂', color: 'bg-mono-950 dark:bg-mono-200 text-[#374151] dark:text-[#D1D5DB]' },
+  10: { label: 'Automne', icon: '🍂', color: 'bg-mono-950 dark:bg-mono-200 text-[#374151] dark:text-[#D1D5DB]' },
+  11: { label: 'Automne', icon: '🍂', color: 'bg-mono-950 dark:bg-mono-200 text-[#374151] dark:text-[#D1D5DB]' },
+  12: { label: 'Hiver', icon: '❄', color: 'bg-mono-900 dark:bg-mono-200 text-[#374151] dark:text-[#D1D5DB]' },
 };
 
 // ── Margin color coding ──
@@ -128,11 +128,11 @@ function getMarginColor(marginPercent: number): { bg: string; border: string; te
 // ── Category color mapping (monochrome W&B with subtle accents) ──
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  'Entree':         { bg: 'bg-[#F3F4F6] dark:bg-[#1A1A1A]', text: 'text-[#111111] dark:text-[#E5E7EB]', border: 'border-[#D1D5DB] dark:border-[#333333]' },
-  'Plat':           { bg: 'bg-[#E5E7EB] dark:bg-[#262626]', text: 'text-[#111111] dark:text-white', border: 'border-[#9CA3AF] dark:border-[#404040]' },
-  'Dessert':        { bg: 'bg-[#F9FAFB] dark:bg-[#171717]', text: 'text-[#374151] dark:text-[#D1D5DB]', border: 'border-[#E5E7EB] dark:border-[#2A2A2A]' },
-  'Boisson':        { bg: 'bg-white dark:bg-[#0F0F0F]', text: 'text-[#6B7280] dark:text-[#9CA3AF]', border: 'border-[#E5E7EB] dark:border-[#1A1A1A]' },
-  'Accompagnement': { bg: 'bg-[#F3F4F6] dark:bg-[#1F1F1F]', text: 'text-[#4B5563] dark:text-[#D1D5DB]', border: 'border-[#D1D5DB] dark:border-[#333333]' },
+  'Entree':         { bg: 'bg-mono-950 dark:bg-mono-200', text: 'text-mono-100 dark:text-mono-900', border: 'border-[#D1D5DB] dark:border-[#333333]' },
+  'Plat':           { bg: 'bg-mono-900 dark:bg-mono-300', text: 'text-mono-100 dark:text-white', border: 'border-[#9CA3AF] dark:border-mono-350' },
+  'Dessert':        { bg: 'bg-[#F9FAFB] dark:bg-[#171717]', text: 'text-[#374151] dark:text-[#D1D5DB]', border: 'border-mono-900 dark:border-[#2A2A2A]' },
+  'Boisson':        { bg: 'bg-white dark:bg-[#0F0F0F]', text: 'text-[#6B7280] dark:text-[#9CA3AF]', border: 'border-mono-900 dark:border-mono-200' },
+  'Accompagnement': { bg: 'bg-mono-950 dark:bg-[#1F1F1F]', text: 'text-[#4B5563] dark:text-[#D1D5DB]', border: 'border-[#D1D5DB] dark:border-[#333333]' },
 };
 
 function getCategoryStyle(cat: string) {
@@ -616,9 +616,9 @@ export default function MenuCalendar() {
     return (
       <div
         key={dateKey}
-        className={`${isWeekView ? 'min-h-[200px]' : 'min-h-[110px] sm:min-h-[120px]'} border-b border-r border-[#F3F4F6] dark:border-[#1A1A1A] p-1.5 transition-colors ${
-          isWeekend ? 'bg-[#FAFAFA] dark:bg-[#050505]' : 'bg-white dark:bg-black'
-        } ${isDragOver ? 'bg-[#F0F0F0] dark:bg-[#171717] ring-2 ring-inset ring-[#111111] dark:ring-white' : ''} ${
+        className={`${isWeekView ? 'min-h-[200px]' : 'min-h-[110px] sm:min-h-[120px]'} border-b border-r border-mono-950 dark:border-mono-200 p-1.5 transition-colors ${
+          isWeekend ? 'bg-mono-1000 dark:bg-[#050505]' : 'bg-white dark:bg-black'
+        } ${isDragOver ? 'bg-[#F0F0F0] dark:bg-[#171717] ring-2 ring-inset ring-mono-100 dark:ring-white' : ''} ${
           !isCurrentMonth ? 'opacity-40' : ''
         }`}
         onDragOver={(e) => handleDragOver(e, dateKey)}
@@ -631,14 +631,14 @@ export default function MenuCalendar() {
             <span
               className={`inline-flex items-center justify-center w-7 h-7 text-xs font-semibold rounded-full transition-colors ${
                 isToday
-                  ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                  ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
                   : 'text-[#374151] dark:text-[#D1D5DB]'
               }`}
             >
               {day.getDate()}
             </span>
             {isWeekView && (
-              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] font-medium">
+              <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 font-medium">
                 {WEEKDAYS_FULL[(day.getDay() + 6) % 7]}
               </span>
             )}
@@ -650,9 +650,9 @@ export default function MenuCalendar() {
               setSearchQuery('');
               setSelectedCategory('all');
             }}
-            className="p-1 rounded-md hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors no-print"
+            className="p-1 rounded-md hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors no-print"
           >
-            <Plus className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+            <Plus className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
           </button>
         </div>
 
@@ -667,7 +667,7 @@ export default function MenuCalendar() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-8 h-8 border-2 border-[#111111] dark:border-white border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-mono-100 dark:border-white border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -676,21 +676,21 @@ export default function MenuCalendar() {
     <div className="flex gap-4">
       {/* ── Sidebar (recipe panel for drag-drop) ── */}
       {sidebarOpen && (
-        <div className="hidden lg:flex flex-col w-72 flex-shrink-0 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden no-print h-fit sticky top-4">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <h3 className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">
+        <div className="hidden lg:flex flex-col w-72 flex-shrink-0 bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden no-print h-fit sticky top-4">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-mono-200">
+            <h3 className="text-sm font-semibold text-mono-100 dark:text-white font-satoshi">
               Recettes
             </h3>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="p-1 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="p-1 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             >
               <X className="w-4 h-4 text-[#6B7280]" />
             </button>
           </div>
 
           {/* Sidebar search */}
-          <div className="px-3 py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+          <div className="px-3 py-2 border-b border-mono-950 dark:border-mono-200">
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
               <input
@@ -698,19 +698,19 @@ export default function MenuCalendar() {
                 value={sidebarSearch}
                 onChange={e => setSidebarSearch(e.target.value)}
                 placeholder="Rechercher..."
-                className="w-full pl-8 pr-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#333333] bg-white dark:bg-black text-[#111111] dark:text-white text-xs placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                className="w-full pl-8 pr-3 py-2 rounded-xl border border-mono-900 dark:border-[#333333] bg-white dark:bg-black text-mono-100 dark:text-white text-xs placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
               />
             </div>
           </div>
 
           {/* Sidebar category filter */}
-          <div className="px-3 py-2 flex flex-wrap gap-1 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+          <div className="px-3 py-2 flex flex-wrap gap-1 border-b border-mono-950 dark:border-mono-200">
             <button
               onClick={() => setSidebarCategory('all')}
               className={`px-2 py-1 rounded-lg text-[10px] font-medium transition-colors ${
                 sidebarCategory === 'all'
-                  ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                  : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] hover:text-[#111111] dark:hover:text-white'
+                  ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+                  : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] hover:text-mono-100 dark:hover:text-white'
               }`}
             >
               Tous
@@ -721,8 +721,8 @@ export default function MenuCalendar() {
                 onClick={() => setSidebarCategory(cat)}
                 className={`px-2 py-1 rounded-lg text-[10px] font-medium transition-colors ${
                   sidebarCategory === cat
-                    ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                    : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] hover:text-[#111111] dark:hover:text-white'
+                    ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+                    : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] hover:text-mono-100 dark:hover:text-white'
                 }`}
               >
                 {cat}
@@ -745,13 +745,13 @@ export default function MenuCalendar() {
                     key={recipe.id}
                     draggable
                     onDragStart={(e) => handleSidebarDragStart(e, recipe)}
-                    className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors cursor-grab active:cursor-grabbing group"
+                    className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors cursor-grab active:cursor-grabbing group"
                   >
                     {marginColor && (
                       <span className={`w-2 h-2 rounded-full flex-shrink-0 ${marginColor.indicator}`} />
                     )}
                     <div className="flex-1 min-w-0">
-                      <div className="text-xs font-medium text-[#111111] dark:text-white truncate">
+                      <div className="text-xs font-medium text-mono-100 dark:text-white truncate">
                         {recipe.name}
                       </div>
                       <div className="text-[10px] text-[#9CA3AF]">
@@ -773,7 +773,7 @@ export default function MenuCalendar() {
         {/* ── Header ── */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+            <h1 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
               Menu Calendrier
             </h1>
             {seasonTag && (
@@ -789,8 +789,8 @@ export default function MenuCalendar() {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className={`hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm transition-colors no-print ${
                 sidebarOpen
-                  ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-[#111111] dark:border-white'
-                  : 'border-[#E5E7EB] dark:border-[#333333] text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                  ? 'bg-mono-100 dark:bg-white text-white dark:text-black border-mono-100 dark:border-white'
+                  : 'border-mono-900 dark:border-[#333333] text-mono-100 dark:text-white hover:bg-mono-950 dark:hover:bg-[#171717]'
               }`}
             >
               <Sparkles className="w-4 h-4" />
@@ -802,8 +802,8 @@ export default function MenuCalendar() {
               onClick={() => setShoppingListOpen(!shoppingListOpen)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm transition-colors no-print ${
                 shoppingListOpen
-                  ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-[#111111] dark:border-white'
-                  : 'border-[#E5E7EB] dark:border-[#333333] text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                  ? 'bg-mono-100 dark:bg-white text-white dark:text-black border-mono-100 dark:border-white'
+                  : 'border-mono-900 dark:border-[#333333] text-mono-100 dark:text-white hover:bg-mono-950 dark:hover:bg-[#171717]'
               }`}
             >
               <ShoppingCart className="w-4 h-4" />
@@ -815,8 +815,8 @@ export default function MenuCalendar() {
               onClick={() => setRotationOpen(!rotationOpen)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm transition-colors no-print ${
                 rotationOpen
-                  ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-[#111111] dark:border-white'
-                  : 'border-[#E5E7EB] dark:border-[#333333] text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                  ? 'bg-mono-100 dark:bg-white text-white dark:text-black border-mono-100 dark:border-white'
+                  : 'border-mono-900 dark:border-[#333333] text-mono-100 dark:text-white hover:bg-mono-950 dark:hover:bg-[#171717]'
               }`}
             >
               <RotateCcw className="w-4 h-4" />
@@ -826,7 +826,7 @@ export default function MenuCalendar() {
             {/* Print */}
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#333333] text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors text-sm no-print"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-mono-900 dark:border-[#333333] text-mono-100 dark:text-white hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors text-sm no-print"
             >
               <Printer className="w-4 h-4" />
               <span className="hidden sm:inline">Imprimer</span>
@@ -836,24 +836,24 @@ export default function MenuCalendar() {
 
         {/* ── Stats Row ── */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 no-print">
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-3">
-            <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-medium">Jours planifies</div>
-            <div className="text-xl font-bold text-[#111111] dark:text-white mt-1 font-satoshi">
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-3">
+            <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-medium">Jours planifies</div>
+            <div className="text-xl font-bold text-mono-100 dark:text-white mt-1 font-satoshi">
               {monthStats.daysWithMenu}<span className="text-sm font-normal text-[#9CA3AF]">/{monthStats.totalDays}</span>
             </div>
           </div>
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-3">
-            <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-medium">Recettes uniques</div>
-            <div className="text-xl font-bold text-[#111111] dark:text-white mt-1 font-satoshi">{monthStats.uniqueRecipes}</div>
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-3">
+            <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-medium">Recettes uniques</div>
+            <div className="text-xl font-bold text-mono-100 dark:text-white mt-1 font-satoshi">{monthStats.uniqueRecipes}</div>
           </div>
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-3">
-            <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-medium">Total plats</div>
-            <div className="text-xl font-bold text-[#111111] dark:text-white mt-1 font-satoshi">{monthStats.totalRecipes}</div>
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-3">
+            <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-medium">Total plats</div>
+            <div className="text-xl font-bold text-mono-100 dark:text-white mt-1 font-satoshi">{monthStats.totalRecipes}</div>
           </div>
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-3">
-            <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-medium">Marge moyenne</div>
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-3">
+            <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-medium">Marge moyenne</div>
             <div className="flex items-center gap-1.5 mt-1">
-              <span className="text-xl font-bold text-[#111111] dark:text-white font-satoshi">
+              <span className="text-xl font-bold text-mono-100 dark:text-white font-satoshi">
                 {monthStats.avgMargin > 0 ? `${monthStats.avgMargin.toFixed(0)}%` : '--'}
               </span>
               {monthStats.avgMargin >= 60 && <TrendingUp className="w-4 h-4 text-[#22C55E]" />}
@@ -869,24 +869,24 @@ export default function MenuCalendar() {
           <div className="flex items-center gap-2">
             <button
               onClick={viewMode === 'month' ? goToPrevMonth : goToPrevWeek}
-              className="p-2 rounded-xl border border-[#E5E7EB] dark:border-[#333333] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="p-2 rounded-xl border border-mono-900 dark:border-[#333333] hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             >
-              <ChevronLeft className="w-4 h-4 text-[#111111] dark:text-white" />
+              <ChevronLeft className="w-4 h-4 text-mono-100 dark:text-white" />
             </button>
-            <div className="text-base font-semibold text-[#111111] dark:text-white font-satoshi min-w-[180px] text-center">
+            <div className="text-base font-semibold text-mono-100 dark:text-white font-satoshi min-w-[180px] text-center">
               {viewMode === 'month'
                 ? `${MONTH_NAMES[currentMonth]} ${currentYear}`
                 : `Sem. du ${weekDays[0].getDate()} ${MONTH_NAMES[weekDays[0].getMonth()]}` }
             </div>
             <button
               onClick={viewMode === 'month' ? goToNextMonth : goToNextWeek}
-              className="p-2 rounded-xl border border-[#E5E7EB] dark:border-[#333333] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="p-2 rounded-xl border border-mono-900 dark:border-[#333333] hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             >
-              <ChevronRight className="w-4 h-4 text-[#111111] dark:text-white" />
+              <ChevronRight className="w-4 h-4 text-mono-100 dark:text-white" />
             </button>
             <button
               onClick={goToToday}
-              className="px-3 py-1.5 text-xs font-medium rounded-xl border border-[#E5E7EB] dark:border-[#333333] text-[#6B7280] dark:text-[#9CA3AF] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="px-3 py-1.5 text-xs font-medium rounded-xl border border-mono-900 dark:border-[#333333] text-[#6B7280] dark:text-[#9CA3AF] hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             >
               Aujourd&apos;hui
             </button>
@@ -895,13 +895,13 @@ export default function MenuCalendar() {
           {/* Right: view toggle + meal toggle */}
           <div className="flex items-center gap-2">
             {/* View mode toggle */}
-            <div className="flex items-center gap-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-1">
+            <div className="flex items-center gap-1 bg-mono-950 dark:bg-[#171717] rounded-xl p-1">
               <button
                 onClick={() => setViewMode('month')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   viewMode === 'month'
-                    ? 'bg-white dark:bg-black text-[#111111] dark:text-white shadow-sm'
-                    : 'text-[#6B7280] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
+                    ? 'bg-white dark:bg-black text-mono-100 dark:text-white shadow-sm'
+                    : 'text-[#6B7280] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'
                 }`}
               >
                 <CalendarDays className="w-3.5 h-3.5" />
@@ -911,8 +911,8 @@ export default function MenuCalendar() {
                 onClick={() => setViewMode('week')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   viewMode === 'week'
-                    ? 'bg-white dark:bg-black text-[#111111] dark:text-white shadow-sm'
-                    : 'text-[#6B7280] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
+                    ? 'bg-white dark:bg-black text-mono-100 dark:text-white shadow-sm'
+                    : 'text-[#6B7280] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'
                 }`}
               >
                 <CalendarRange className="w-3.5 h-3.5" />
@@ -921,13 +921,13 @@ export default function MenuCalendar() {
             </div>
 
             {/* Meal type toggle */}
-            <div className="flex items-center gap-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-1">
+            <div className="flex items-center gap-1 bg-mono-950 dark:bg-[#171717] rounded-xl p-1">
               <button
                 onClick={() => setMealType('lunch')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   mealType === 'lunch'
-                    ? 'bg-white dark:bg-black text-[#111111] dark:text-white shadow-sm'
-                    : 'text-[#6B7280] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
+                    ? 'bg-white dark:bg-black text-mono-100 dark:text-white shadow-sm'
+                    : 'text-[#6B7280] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'
                 }`}
               >
                 <Sun className="w-3.5 h-3.5" />
@@ -937,8 +937,8 @@ export default function MenuCalendar() {
                 onClick={() => setMealType('dinner')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   mealType === 'dinner'
-                    ? 'bg-white dark:bg-black text-[#111111] dark:text-white shadow-sm'
-                    : 'text-[#6B7280] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
+                    ? 'bg-white dark:bg-black text-mono-100 dark:text-white shadow-sm'
+                    : 'text-[#6B7280] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'
                 }`}
               >
                 <MoonIcon className="w-3.5 h-3.5" />
@@ -950,31 +950,31 @@ export default function MenuCalendar() {
 
         {/* ── Shopping List Panel ── */}
         {shoppingListOpen && (
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden no-print">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden no-print">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-mono-900 dark:border-mono-200">
               <div className="flex items-center gap-2">
-                <ShoppingCart className="w-4 h-4 text-[#111111] dark:text-white" />
-                <h3 className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">
+                <ShoppingCart className="w-4 h-4 text-mono-100 dark:text-white" />
+                <h3 className="text-sm font-semibold text-mono-100 dark:text-white font-satoshi">
                   Liste de courses — {MONTH_NAMES[currentMonth]}
                 </h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280]">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-mono-950 dark:bg-[#171717] text-[#6B7280]">
                   {shoppingList.length} ingredients
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-[#111111] dark:text-white">
+                <span className="text-sm font-semibold text-mono-100 dark:text-white">
                   {formatCurrency(totalShoppingCost)}
                 </span>
                 <button
                   onClick={exportShoppingList}
-                  className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
                   title="Exporter"
                 >
                   <Download className="w-4 h-4 text-[#6B7280]" />
                 </button>
                 <button
                   onClick={() => setShoppingListOpen(false)}
-                  className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
                 >
                   <X className="w-4 h-4 text-[#6B7280]" />
                 </button>
@@ -989,11 +989,11 @@ export default function MenuCalendar() {
                 {shoppingList.map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between px-4 py-2.5 border-b border-r border-[#F3F4F6] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors"
+                    className="flex items-center justify-between px-4 py-2.5 border-b border-r border-mono-950 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors"
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <Check className="w-3.5 h-3.5 text-[#D1D5DB] dark:text-[#333333] flex-shrink-0" />
-                      <span className="text-sm text-[#111111] dark:text-white truncate">{item.ingredientName}</span>
+                      <span className="text-sm text-mono-100 dark:text-white truncate">{item.ingredientName}</span>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0 ml-2">
                       <span className="text-xs font-mono text-[#6B7280] dark:text-[#9CA3AF]">
@@ -1012,17 +1012,17 @@ export default function MenuCalendar() {
 
         {/* ── Rotation Tracker Panel ── */}
         {rotationOpen && (
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden no-print">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden no-print">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-mono-900 dark:border-mono-200">
               <div className="flex items-center gap-2">
-                <RotateCcw className="w-4 h-4 text-[#111111] dark:text-white" />
-                <h3 className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">
+                <RotateCcw className="w-4 h-4 text-mono-100 dark:text-white" />
+                <h3 className="text-sm font-semibold text-mono-100 dark:text-white font-satoshi">
                   Rotation des recettes
                 </h3>
               </div>
               <button
                 onClick={() => setRotationOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               >
                 <X className="w-4 h-4 text-[#6B7280]" />
               </button>
@@ -1036,12 +1036,12 @@ export default function MenuCalendar() {
                 {rotationData.map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between px-5 py-2.5 border-b border-[#F3F4F6] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors"
+                    className="flex items-center justify-between px-5 py-2.5 border-b border-mono-950 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="text-xs font-mono text-[#9CA3AF] w-6 text-right flex-shrink-0">#{i + 1}</span>
                       <div className="min-w-0">
-                        <div className="text-sm font-medium text-[#111111] dark:text-white truncate">{item.name}</div>
+                        <div className="text-sm font-medium text-mono-100 dark:text-white truncate">{item.name}</div>
                         <div className="text-[10px] text-[#9CA3AF]">{item.category}</div>
                       </div>
                     </div>
@@ -1049,13 +1049,13 @@ export default function MenuCalendar() {
                       <div className="flex items-center gap-1.5">
                         <div className="flex gap-0.5">
                           {Array.from({ length: Math.min(item.count, 7) }, (_, j) => (
-                            <div key={j} className="w-2 h-2 rounded-full bg-[#111111] dark:bg-white" />
+                            <div key={j} className="w-2 h-2 rounded-full bg-mono-100 dark:bg-white" />
                           ))}
                           {item.count > 7 && (
                             <span className="text-[10px] text-[#9CA3AF] ml-0.5">+{item.count - 7}</span>
                           )}
                         </div>
-                        <span className="text-xs font-medium text-[#111111] dark:text-white">{item.count}x</span>
+                        <span className="text-xs font-medium text-mono-100 dark:text-white">{item.count}x</span>
                       </div>
                       {item.count >= 5 && (
                         <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#FEF2F2] dark:bg-[#450A0A] text-[#991B1B] dark:text-[#FCA5A5]">
@@ -1077,17 +1077,17 @@ export default function MenuCalendar() {
 
         {/* ── Season Banner ── */}
         {seasonalItems.length > 0 && seasonBannerOpen && (
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 no-print">
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-4 no-print">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Leaf className="w-4 h-4 text-[#111111] dark:text-white" />
-                <span className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">
+                <Leaf className="w-4 h-4 text-mono-100 dark:text-white" />
+                <span className="text-sm font-semibold text-mono-100 dark:text-white font-satoshi">
                   Produits de saison — {MONTH_NAMES[currentMonth]}
                 </span>
               </div>
               <button
                 onClick={() => setSeasonBannerOpen(false)}
-                className="p-1 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                className="p-1 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               >
                 <ChevronUp className="w-4 h-4 text-[#9CA3AF]" />
               </button>
@@ -1096,7 +1096,7 @@ export default function MenuCalendar() {
               {seasonalItems.map(item => (
                 <span
                   key={item}
-                  className="px-2.5 py-1 text-xs rounded-full bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#333333] text-[#374151] dark:text-[#D1D5DB]"
+                  className="px-2.5 py-1 text-xs rounded-full bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-[#333333] text-[#374151] dark:text-[#D1D5DB]"
                 >
                   {item}
                 </span>
@@ -1108,7 +1108,7 @@ export default function MenuCalendar() {
         {!seasonBannerOpen && (
           <button
             onClick={() => setSeasonBannerOpen(true)}
-            className="flex items-center gap-2 text-xs text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white transition-colors no-print"
+            className="flex items-center gap-2 text-xs text-[#9CA3AF] hover:text-mono-100 dark:hover:text-white transition-colors no-print"
           >
             <Leaf className="w-3.5 h-3.5" />
             Produits de saison
@@ -1117,13 +1117,13 @@ export default function MenuCalendar() {
         )}
 
         {/* ── Calendar Grid ── */}
-        <div ref={calendarRef} className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden print-calendar">
+        <div ref={calendarRef} className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden print-calendar">
           {/* Weekday headers */}
-          <div className="grid grid-cols-7 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="grid grid-cols-7 border-b border-mono-900 dark:border-mono-200">
             {WEEKDAYS.map(day => (
               <div
                 key={day}
-                className="px-2 py-3 text-center text-xs font-semibold text-[#6B7280] dark:text-[#737373] uppercase tracking-wider"
+                className="px-2 py-3 text-center text-xs font-semibold text-[#6B7280] dark:text-mono-500 uppercase tracking-wider"
               >
                 {day}
               </div>
@@ -1134,7 +1134,7 @@ export default function MenuCalendar() {
             /* ── Month view ── */
             <div className="grid grid-cols-7">
               {paddingDays.map(i => (
-                <div key={`pad-${i}`} className="min-h-[110px] sm:min-h-[120px] border-b border-r border-[#F3F4F6] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#050505]" />
+                <div key={`pad-${i}`} className="min-h-[110px] sm:min-h-[120px] border-b border-r border-mono-950 dark:border-mono-200 bg-mono-1000 dark:bg-[#050505]" />
               ))}
               {days.map(day => renderDayCell(day, false))}
             </div>
@@ -1147,9 +1147,9 @@ export default function MenuCalendar() {
         </div>
 
         {/* ── Legend ── */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-xs text-[#6B7280] dark:text-[#737373] no-print">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-xs text-[#6B7280] dark:text-mono-500 no-print">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="font-semibold text-[#111111] dark:text-white">Marge :</span>
+            <span className="font-semibold text-mono-100 dark:text-white">Marge :</span>
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-[#22C55E]" />
               <span>70%+</span>
@@ -1168,7 +1168,7 @@ export default function MenuCalendar() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <span className="font-semibold text-[#111111] dark:text-white">Categorie :</span>
+            <span className="font-semibold text-mono-100 dark:text-white">Categorie :</span>
             {Object.entries(CATEGORY_COLORS).filter(([key], index, arr) =>
               arr.findIndex(([k]) => k === key) === arr.indexOf(arr.find(([k]) => k === key)!)
             ).slice(0, 5).map(([cat, style]) => (
@@ -1193,29 +1193,29 @@ export default function MenuCalendar() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="menu-calendar-modal-title"
-            className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl w-full max-w-lg mx-4 max-h-[80vh] flex flex-col shadow-2xl"
+            className="bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl w-full max-w-lg mx-4 max-h-[80vh] flex flex-col shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
             {/* Modal header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-mono-900 dark:border-mono-200">
               <div>
-                <h3 id="menu-calendar-modal-title" className="text-base font-semibold text-[#111111] dark:text-white font-satoshi">
+                <h3 id="menu-calendar-modal-title" className="text-base font-semibold text-mono-100 dark:text-white font-satoshi">
                   Ajouter au {modalDate.getDate()} {MONTH_NAMES[modalDate.getMonth()]}
                 </h3>
-                <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-0.5">
+                <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-0.5">
                   {mealType === 'lunch' ? 'Dejeuner' : 'Diner'}
                 </p>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="p-2 rounded-xl hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                className="p-2 rounded-xl hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               >
                 <X className="w-5 h-5 text-[#6B7280]" />
               </button>
             </div>
 
             {/* Search + filter */}
-            <div className="px-5 py-3 space-y-3 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+            <div className="px-5 py-3 space-y-3 border-b border-mono-950 dark:border-mono-200">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
                 <input
@@ -1223,7 +1223,7 @@ export default function MenuCalendar() {
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Rechercher une recette..."
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#333333] bg-white dark:bg-black text-[#111111] dark:text-white text-sm placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-mono-900 dark:border-[#333333] bg-white dark:bg-black text-mono-100 dark:text-white text-sm placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
                   autoFocus
                 />
               </div>
@@ -1232,8 +1232,8 @@ export default function MenuCalendar() {
                   onClick={() => setSelectedCategory('all')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
                     selectedCategory === 'all'
-                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                      : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white'
+                      ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+                      : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-[#9CA3AF] hover:text-mono-100 dark:hover:text-white'
                   }`}
                 >
                   Tous
@@ -1244,8 +1244,8 @@ export default function MenuCalendar() {
                     onClick={() => setSelectedCategory(cat)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
                       selectedCategory === cat
-                        ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                        : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white'
+                        ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
+                        : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-[#9CA3AF] hover:text-mono-100 dark:hover:text-white'
                     }`}
                   >
                     {cat}
@@ -1273,7 +1273,7 @@ export default function MenuCalendar() {
                           addRecipeToDate(recipe, modalDate);
                           setModalOpen(false);
                         }}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors text-left group"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors text-left group"
                       >
                         {marginColor ? (
                           <span className={`inline-block w-2.5 h-2.5 rounded-full flex-shrink-0 ${marginColor.indicator}`} />
@@ -1281,10 +1281,10 @@ export default function MenuCalendar() {
                           <span className={`inline-block w-2 h-2 rounded-full border ${catStyle.bg} ${catStyle.border}`} />
                         )}
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-[#111111] dark:text-white truncate">
+                          <div className="text-sm font-medium text-mono-100 dark:text-white truncate">
                             {recipe.name}
                           </div>
-                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                          <div className="text-xs text-[#9CA3AF] dark:text-mono-500">
                             {recipe.category}
                             {margin !== undefined && (
                               <span className={`ml-1 ${margin >= 60 ? 'text-[#22C55E]' : margin >= 40 ? 'text-[#6B7280]' : 'text-[#EF4444]'}`}>

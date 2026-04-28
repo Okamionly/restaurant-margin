@@ -61,20 +61,20 @@ function BreakEvenGauge({ current, target }: { current: number; target: number }
   const color = isAbove ? '#10b981' : pct >= 70 ? '#f59e0b' : '#ef4444';
   return (
     <div className="relative w-full">
-      <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mb-1.5">
+      <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-mono-500 mb-1.5">
         <span>{formatCurrency(0)}</span>
-        <span className="font-semibold text-[#111111] dark:text-white">
+        <span className="font-semibold text-mono-100 dark:text-white">
           Seuil: {formatCurrency(target)}/jour
         </span>
       </div>
-      <div className="w-full h-4 rounded-full bg-[#F3F4F6] dark:bg-[#171717] overflow-hidden relative">
+      <div className="w-full h-4 rounded-full bg-mono-950 dark:bg-[#171717] overflow-hidden relative">
         <div
           className="h-full rounded-full transition-all duration-1000 ease-out"
           style={{ width: `${clampedPct}%`, backgroundColor: color }}
         />
         {/* Marker at break-even */}
         <div
-          className="absolute top-0 bottom-0 w-0.5 bg-[#111111] dark:bg-white"
+          className="absolute top-0 bottom-0 w-0.5 bg-mono-100 dark:bg-white"
           style={{ left: `${Math.min(100, (target / (Math.max(current, target) * 1.2)) * 100)}%` }}
         />
       </div>
@@ -109,14 +109,14 @@ interface DotData {
 }
 
 function BCGMatrix({ dots, onDotClick }: { dots: DotData[]; onDotClick: (d: DotData) => void }) {
-  if (!dots.length) return <div className="text-center text-[#9CA3AF] dark:text-[#737373] py-12">Aucune recette</div>;
+  if (!dots.length) return <div className="text-center text-[#9CA3AF] dark:text-mono-500 py-12">Aucune recette</div>;
 
   const maxRev = Math.max(...dots.map(d => d.revenue), 1);
   const maxMargin = Math.max(...dots.map(d => d.margin), 1);
   const maxPop = Math.max(...dots.map(d => d.popularity), 1);
 
   return (
-    <div className="relative w-full aspect-square max-h-[400px] bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+    <div className="relative w-full aspect-square max-h-[400px] bg-mono-1000 dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
       {/* Quadrant labels */}
       <div className="absolute top-3 left-3 text-[10px] font-semibold text-amber-500 uppercase tracking-wide">Enigmes</div>
       <div className="absolute top-3 right-3 text-[10px] font-semibold text-emerald-500 uppercase tracking-wide">Stars</div>
@@ -124,14 +124,14 @@ function BCGMatrix({ dots, onDotClick }: { dots: DotData[]; onDotClick: (d: DotD
       <div className="absolute bottom-3 right-3 text-[10px] font-semibold text-blue-500 uppercase tracking-wide">Vaches a lait</div>
 
       {/* Grid lines */}
-      <div className="absolute left-1/2 top-0 bottom-0 w-px bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
-      <div className="absolute top-1/2 left-0 right-0 h-px bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
+      <div className="absolute left-1/2 top-0 bottom-0 w-px bg-mono-900 dark:bg-mono-200" />
+      <div className="absolute top-1/2 left-0 right-0 h-px bg-mono-900 dark:bg-mono-200" />
 
       {/* Axis labels */}
-      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-[#9CA3AF] dark:text-[#737373] font-medium">
+      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-[#9CA3AF] dark:text-mono-500 font-medium">
         Popularite (volume) &rarr;
       </div>
-      <div className="absolute left-1 top-1/2 -translate-y-1/2 -rotate-90 text-[9px] text-[#9CA3AF] dark:text-[#737373] font-medium whitespace-nowrap">
+      <div className="absolute left-1 top-1/2 -translate-y-1/2 -rotate-90 text-[9px] text-[#9CA3AF] dark:text-mono-500 font-medium whitespace-nowrap">
         Marge (%) &rarr;
       </div>
 
@@ -158,7 +158,7 @@ function BCGMatrix({ dots, onDotClick }: { dots: DotData[]; onDotClick: (d: DotD
             }}
             title={d.name}
           >
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-[#111111] dark:bg-white text-white dark:text-black text-[10px] px-2 py-1 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-medium shadow-lg">
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-mono-100 dark:bg-white text-white dark:text-black text-[10px] px-2 py-1 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-medium shadow-lg">
               {d.name}
               <br />
               Marge: {fmtDec(d.margin)}% | CA: {formatCurrency(d.revenue)}
@@ -191,14 +191,14 @@ function CashFlowChart({ data }: { data: { day: string; balance: number }[] }) {
                 }`}
                 style={{ height: `${Math.max(h, 2)}%` }}
               />
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-[#111111] dark:bg-white text-white dark:text-black text-[9px] px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-medium">
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-mono-100 dark:bg-white text-white dark:text-black text-[9px] px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-medium">
                 J{d.day}: {formatCurrency(d.balance)}
               </div>
             </div>
           );
         })}
       </div>
-      <div className="flex justify-between text-[9px] text-[#9CA3AF] dark:text-[#737373] mt-1 px-1">
+      <div className="flex justify-between text-[9px] text-[#9CA3AF] dark:text-mono-500 mt-1 px-1">
         <span>J1</span>
         <span>J15</span>
         <span>J30</span>
@@ -227,15 +227,15 @@ function SeasonalChart({ data }: { data: { month: string; value: number; isCurre
               <div
                 className={`w-full rounded-t-sm transition-all duration-300 ${
                   d.isCurrent
-                    ? 'bg-[#111111] dark:bg-white'
-                    : 'bg-[#E5E7EB] dark:bg-[#333333]'
+                    ? 'bg-mono-100 dark:bg-white'
+                    : 'bg-mono-900 dark:bg-[#333333]'
                 }`}
                 style={{ height: `${Math.max(h, 3)}%` }}
               />
-              <span className={`text-[8px] mt-1 ${d.isCurrent ? 'font-bold text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+              <span className={`text-[8px] mt-1 ${d.isCurrent ? 'font-bold text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'}`}>
                 {d.month}
               </span>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-[#111111] dark:bg-white text-white dark:text-black text-[9px] px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-medium">
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-mono-100 dark:bg-white text-white dark:text-black text-[9px] px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-medium">
                 {formatCurrency(d.value)}
               </div>
             </div>
@@ -512,7 +512,7 @@ export default function FinancialIntelligence() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" />
+        <Loader2 className="w-8 h-8 animate-spin text-mono-100 dark:text-white" />
       </div>
     );
   }
@@ -522,24 +522,24 @@ export default function FinancialIntelligence() {
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-[#111111] dark:text-white font-satoshi tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-bold text-mono-100 dark:text-white font-satoshi tracking-tight">
             Intelligence Financiere
           </h1>
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
             Tableau de bord strategique — Donnees en temps reel
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => window.location.reload()}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             <span className="hidden sm:inline">Actualiser</span>
           </button>
           <button
             onClick={handlePrint}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors"
           >
             <Printer className="w-4 h-4" />
             Generer rapport financier
@@ -549,9 +549,9 @@ export default function FinancialIntelligence() {
 
       {!computations ? (
         <div className="text-center py-20">
-          <PieChart className="w-12 h-12 mx-auto text-[#9CA3AF] dark:text-[#737373] mb-4" />
-          <p className="text-lg font-semibold text-[#111111] dark:text-white">Aucune donnee disponible</p>
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+          <PieChart className="w-12 h-12 mx-auto text-[#9CA3AF] dark:text-mono-500 mb-4" />
+          <p className="text-lg font-semibold text-mono-100 dark:text-white">Aucune donnee disponible</p>
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
             Ajoutez des recettes et ingredients pour voir vos projections financieres
           </p>
         </div>
@@ -562,14 +562,14 @@ export default function FinancialIntelligence() {
           ══════════════════════════════════════════════════════════════════ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {/* Projected Revenue */}
-            <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+            <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">CA projete</span>
+                <span className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">CA projete</span>
                 <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                   <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
               </div>
-              <div className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+              <div className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
                 {formatCurrency(computations.projectedMonthly)}
               </div>
               <div className={`flex items-center gap-1 mt-1 text-sm font-medium ${
@@ -585,49 +585,49 @@ export default function FinancialIntelligence() {
             </div>
 
             {/* Daily Revenue */}
-            <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+            <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">CA / jour</span>
+                <span className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">CA / jour</span>
                 <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                   <DollarSign className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
-              <div className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+              <div className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
                 {formatCurrency(computations.dailyRevenue)}
               </div>
-              <div className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+              <div className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
                 Jour {computations.dayOfMonth}/{computations.daysInMonth}
               </div>
             </div>
 
             {/* Overall Margin */}
-            <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+            <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Marge moyenne</span>
+                <span className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Marge moyenne</span>
                 <div className="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
                   <Percent className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                 </div>
               </div>
-              <div className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+              <div className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
                 {fmtDec(computations.overallMargin)}%
               </div>
-              <div className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+              <div className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
                 Sur {recipes.length} recettes
               </div>
             </div>
 
             {/* Fixed Costs */}
-            <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+            <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Charges fixes</span>
+                <span className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Charges fixes</span>
                 <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
                   <CircleDollarSign className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                 </div>
               </div>
-              <div className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+              <div className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
                 {formatCurrency(computations.fixedCosts)}
               </div>
-              <div className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+              <div className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
                 /mois (modifiable ci-dessous)
               </div>
             </div>
@@ -638,17 +638,17 @@ export default function FinancialIntelligence() {
           ══════════════════════════════════════════════════════════════════ */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Revenue Projection */}
-            <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+            <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-4">
                 <TrendingUp className="w-5 h-5 text-emerald-500" />
-                <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">
+                <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">
                   Projection de chiffre d'affaires
                 </h2>
               </div>
 
-              <div className="bg-[#F9FAFB] dark:bg-[#111111] rounded-xl p-4 mb-4">
+              <div className="bg-[#F9FAFB] dark:bg-mono-100 rounded-xl p-4 mb-4">
                 <p className="text-sm text-[#6B7280] dark:text-[#999999] mb-1">A ce rythme, votre CA ce mois sera de</p>
-                <p className="text-3xl font-bold text-[#111111] dark:text-white font-satoshi">
+                <p className="text-3xl font-bold text-mono-100 dark:text-white font-satoshi">
                   {formatCurrency(computations.projectedMonthly)}
                 </p>
                 <p className={`text-sm font-semibold mt-1 ${
@@ -659,7 +659,7 @@ export default function FinancialIntelligence() {
               </div>
 
               <div className="mb-2">
-                <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">
+                <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">
                   <span>Evolution journaliere</span>
                   <span>Jour {computations.dayOfMonth}</span>
                 </div>
@@ -667,22 +667,22 @@ export default function FinancialIntelligence() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 mt-4">
-                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
-                  <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-[#737373] font-semibold mb-1">Realise</p>
-                  <p className="text-lg font-bold text-[#111111] dark:text-white">{formatCurrency(computations.revenueToDate)}</p>
+                <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3">
+                  <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-mono-500 font-semibold mb-1">Realise</p>
+                  <p className="text-lg font-bold text-mono-100 dark:text-white">{formatCurrency(computations.revenueToDate)}</p>
                 </div>
-                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
-                  <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-[#737373] font-semibold mb-1">Restant estime</p>
-                  <p className="text-lg font-bold text-[#111111] dark:text-white">{formatCurrency(computations.projectedMonthly - computations.revenueToDate)}</p>
+                <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3">
+                  <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-mono-500 font-semibold mb-1">Restant estime</p>
+                  <p className="text-lg font-bold text-mono-100 dark:text-white">{formatCurrency(computations.projectedMonthly - computations.revenueToDate)}</p>
                 </div>
               </div>
             </div>
 
             {/* Break-Even Calculator */}
-            <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+            <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Target className="w-5 h-5 text-amber-500" />
-                <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">
+                <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">
                   Seuil de rentabilite
                 </h2>
               </div>
@@ -696,34 +696,34 @@ export default function FinancialIntelligence() {
                   { label: 'Autres charges', value: otherCharges, setter: setOtherCharges },
                 ].map(({ label, value, setter }) => (
                   <div key={label}>
-                    <label className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-[#737373] font-semibold">
+                    <label className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-mono-500 font-semibold">
                       {label} ({getCurrencySymbol()}/mois)
                     </label>
                     <input
                       type="number"
                       value={value}
                       onChange={e => setter(Number(e.target.value) || 0)}
-                      className="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#333333] bg-white dark:bg-[#111111] text-[#111111] dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                      className="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-mono-900 dark:border-[#333333] bg-white dark:bg-mono-100 text-mono-100 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
                     />
                   </div>
                 ))}
               </div>
 
               {/* Results */}
-              <div className="bg-[#F9FAFB] dark:bg-[#111111] rounded-xl p-4 mb-4">
+              <div className="bg-[#F9FAFB] dark:bg-mono-100 rounded-xl p-4 mb-4">
                 <p className="text-sm text-[#6B7280] dark:text-[#999999] mb-1">
                   Vous devez faire au minimum
                 </p>
-                <p className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+                <p className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
                   {formatCurrency(computations.breakEvenDaily)} / jour
                 </p>
-                <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
-                  Soit <span className="font-semibold text-[#111111] dark:text-white">{computations.coversPerDay} couverts/jour</span> a{' '}
+                <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">
+                  Soit <span className="font-semibold text-mono-100 dark:text-white">{computations.coversPerDay} couverts/jour</span> a{' '}
                   <input
                     type="number"
                     value={avgTicket}
                     onChange={e => setAvgTicket(Number(e.target.value) || 1)}
-                    className="inline-block w-16 px-2 py-0.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#333333] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-center"
+                    className="inline-block w-16 px-2 py-0.5 text-sm rounded-lg border border-mono-900 dark:border-[#333333] bg-white dark:bg-mono-50 text-mono-100 dark:text-white text-center"
                   />{' '}
                   {getCurrencySymbol()} de panier moyen
                 </p>
@@ -739,11 +739,11 @@ export default function FinancialIntelligence() {
           ══════════════════════════════════════════════════════════════════ */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* BCG Matrix */}
-            <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+            <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <PieChart className="w-5 h-5 text-blue-500" />
-                  <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">
+                  <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">
                     Matrice de rentabilite
                   </h2>
                 </div>
@@ -765,35 +765,35 @@ export default function FinancialIntelligence() {
                 onDotClick={(d) => setSelectedDot(d)}
               />
 
-              <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-3 text-center">
+              <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-3 text-center">
                 Taille du point = contribution au CA &bull; Cliquez pour voir les details
               </p>
             </div>
 
             {/* Cash Flow Forecast */}
-            <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+            <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-4">
                 <BarChart3 className="w-5 h-5 text-teal-500" />
-                <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">
+                <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">
                   Prevision de tresorerie — 30 jours
                 </h2>
               </div>
 
               <div className="grid grid-cols-3 gap-3 mb-4">
-                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3 text-center">
-                  <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-[#737373] font-semibold">Entrees</p>
+                <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3 text-center">
+                  <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-mono-500 font-semibold">Entrees</p>
                   <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400 mt-1">
                     +{formatCurrency(computations.dailyRevenue * 30)}
                   </p>
                 </div>
-                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3 text-center">
-                  <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-[#737373] font-semibold">Sorties</p>
+                <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3 text-center">
+                  <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-mono-500 font-semibold">Sorties</p>
                   <p className="text-sm font-bold text-red-500 mt-1">
                     -{formatCurrency(computations.fixedCosts)}
                   </p>
                 </div>
-                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3 text-center">
-                  <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-[#737373] font-semibold">Solde J30</p>
+                <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3 text-center">
+                  <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-mono-500 font-semibold">Solde J30</p>
                   <p className={`text-sm font-bold mt-1 ${
                     (computations.cashFlowData[29]?.balance || 0) >= 0
                       ? 'text-emerald-600 dark:text-emerald-400'
@@ -806,7 +806,7 @@ export default function FinancialIntelligence() {
 
               <CashFlowChart data={computations.cashFlowData} />
 
-              <div className="mt-4 bg-[#F9FAFB] dark:bg-[#111111] rounded-xl p-3">
+              <div className="mt-4 bg-[#F9FAFB] dark:bg-mono-100 rounded-xl p-3">
                 <div className="flex items-start gap-2">
                   <Info className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
                   <p className="text-xs text-[#6B7280] dark:text-[#999999]">
@@ -822,25 +822,25 @@ export default function FinancialIntelligence() {
           ══════════════════════════════════════════════════════════════════ */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Cost Optimization Suggestions */}
-            <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+            <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Lightbulb className="w-5 h-5 text-amber-500" />
-                <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">
+                <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">
                   Optimisation des couts
                 </h2>
               </div>
 
               {computations.suggestions.length === 0 ? (
                 <div className="text-center py-8">
-                  <Zap className="w-8 h-8 mx-auto text-[#D1D5DB] dark:text-[#404040] mb-2" />
-                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Ajoutez plus de recettes pour des suggestions</p>
+                  <Zap className="w-8 h-8 mx-auto text-[#D1D5DB] dark:text-mono-350 mb-2" />
+                  <p className="text-sm text-[#9CA3AF] dark:text-mono-500">Ajoutez plus de recettes pour des suggestions</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {computations.suggestions.map((s, i) => (
                     <div
                       key={i}
-                      className="flex items-start gap-3 p-3 bg-[#F9FAFB] dark:bg-[#111111] rounded-xl border border-[#F3F4F6] dark:border-[#1A1A1A] hover:border-teal-500/30 transition-colors"
+                      className="flex items-start gap-3 p-3 bg-[#F9FAFB] dark:bg-mono-100 rounded-xl border border-mono-950 dark:border-mono-200 hover:border-teal-500/30 transition-colors"
                     >
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
                         s.icon === 'swap' ? 'bg-blue-100 dark:bg-blue-900/30' :
@@ -856,14 +856,14 @@ export default function FinancialIntelligence() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-[#111111] dark:text-white leading-relaxed">
+                        <p className="text-sm text-mono-100 dark:text-white leading-relaxed">
                           {s.text}
                         </p>
                         <div className="flex items-center gap-3 mt-2">
                           <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full">
                             {s.saving}
                           </span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">
                             {s.impact}
                           </span>
                         </div>
@@ -875,10 +875,10 @@ export default function FinancialIntelligence() {
             </div>
 
             {/* Seasonal Trends */}
-            <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+            <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Calendar className="w-5 h-5 text-purple-500" />
-                <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">
+                <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">
                   Tendances saisonnieres
                 </h2>
               </div>
@@ -930,33 +930,33 @@ export default function FinancialIntelligence() {
       {selectedDot && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setSelectedDot(null)}>
           <div
-            className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6 w-full max-w-md shadow-2xl"
+            className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-6 w-full max-w-md shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">{selectedDot.name}</h3>
+              <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">{selectedDot.name}</h3>
               <button
                 onClick={() => setSelectedDot(null)}
-                className="p-1 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                className="p-1 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               >
                 <X className="w-5 h-5 text-[#9CA3AF]" />
               </button>
             </div>
 
             <div className="space-y-3">
-              <div className="flex justify-between items-center py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <div className="flex justify-between items-center py-2 border-b border-mono-950 dark:border-mono-200">
                 <span className="text-sm text-[#6B7280] dark:text-[#999999]">Categorie</span>
-                <span className="text-sm font-semibold text-[#111111] dark:text-white">{selectedDot.category}</span>
+                <span className="text-sm font-semibold text-mono-100 dark:text-white">{selectedDot.category}</span>
               </div>
-              <div className="flex justify-between items-center py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <div className="flex justify-between items-center py-2 border-b border-mono-950 dark:border-mono-200">
                 <span className="text-sm text-[#6B7280] dark:text-[#999999]">Prix de vente</span>
-                <span className="text-sm font-semibold text-[#111111] dark:text-white">{formatCurrency(selectedDot.sellingPrice)}</span>
+                <span className="text-sm font-semibold text-mono-100 dark:text-white">{formatCurrency(selectedDot.sellingPrice)}</span>
               </div>
-              <div className="flex justify-between items-center py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <div className="flex justify-between items-center py-2 border-b border-mono-950 dark:border-mono-200">
                 <span className="text-sm text-[#6B7280] dark:text-[#999999]">Cout par portion</span>
-                <span className="text-sm font-semibold text-[#111111] dark:text-white">{formatCurrency(selectedDot.costPerPortion)}</span>
+                <span className="text-sm font-semibold text-mono-100 dark:text-white">{formatCurrency(selectedDot.costPerPortion)}</span>
               </div>
-              <div className="flex justify-between items-center py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <div className="flex justify-between items-center py-2 border-b border-mono-950 dark:border-mono-200">
                 <span className="text-sm text-[#6B7280] dark:text-[#999999]">Marge</span>
                 <span className={`text-sm font-semibold ${
                   selectedDot.margin >= 60 ? 'text-emerald-600 dark:text-emerald-400' :
@@ -966,16 +966,16 @@ export default function FinancialIntelligence() {
                   {fmtDec(selectedDot.margin)}%
                 </span>
               </div>
-              <div className="flex justify-between items-center py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <div className="flex justify-between items-center py-2 border-b border-mono-950 dark:border-mono-200">
                 <span className="text-sm text-[#6B7280] dark:text-[#999999]">Contribution CA</span>
-                <span className="text-sm font-semibold text-[#111111] dark:text-white">{formatCurrency(selectedDot.revenue)}</span>
+                <span className="text-sm font-semibold text-mono-100 dark:text-white">{formatCurrency(selectedDot.revenue)}</span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="text-sm text-[#6B7280] dark:text-[#999999]">Tendance</span>
                 <span className={`flex items-center gap-1 text-sm font-semibold ${
                   selectedDot.trend === 'up' ? 'text-emerald-600 dark:text-emerald-400' :
                   selectedDot.trend === 'down' ? 'text-red-500' :
-                  'text-[#9CA3AF] dark:text-[#737373]'
+                  'text-[#9CA3AF] dark:text-mono-500'
                 }`}>
                   {selectedDot.trend === 'up' ? <TrendingUp className="w-3.5 h-3.5" /> :
                    selectedDot.trend === 'down' ? <TrendingDown className="w-3.5 h-3.5" /> :
@@ -989,7 +989,7 @@ export default function FinancialIntelligence() {
               onClick={() => {
                 window.location.href = `/recipes/${selectedDot.id}`;
               }}
-              className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors"
+              className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors"
             >
               Voir la fiche technique
               <ChevronRight className="w-4 h-4" />

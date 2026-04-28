@@ -69,13 +69,13 @@ export default function BlogRotationStocks() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -118,12 +118,12 @@ export default function BlogRotationStocks() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <Calculator className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Définition et formule</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Définition et formule</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             La rotation des stocks mesure le nombre de fois où votre stock est entièrement renouvelé sur une période donnée (généralement le mois).
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Rotation = Achats de la période / Stock moyen</div>
             <div>Jours de stock = (Stock moyen / Achats) × Nb jours</div>
             <div>Stock moyen = (Stock début + Stock fin) / 2</div>
@@ -139,7 +139,7 @@ export default function BlogRotationStocks() {
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Pourquoi la rotation est cruciale</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Pourquoi la rotation est cruciale</h2>
           </div>
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2">
@@ -166,12 +166,12 @@ export default function BlogRotationStocks() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <RefreshCw className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Calcul détaillé avec exemple</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Calcul détaillé avec exemple</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Restaurant bistronomique, avril 2026 :
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Stock 1er avril : 4 200 €</div>
             <div>Stock 30 avril : 4 800 €</div>
             <div>Achats du mois : 13 000 €</div>
@@ -183,7 +183,7 @@ export default function BlogRotationStocks() {
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Aller plus loin : rotation par catégorie.</strong> L'analyse globale masque souvent des problèmes locaux.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Viandes : 4,0x — 7,5 j ✅</div>
             <div>Poissons : 5,1x — 5,9 j ✅</div>
             <div>Légumes : 3,5x — 8,6 j ✅</div>
@@ -203,12 +203,12 @@ export default function BlogRotationStocks() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Benchmarks par catégorie de produits</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Benchmarks par catégorie de produits</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Rotations cibles observées dans les restaurants performants en France :
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Poissons frais : 12-15x — 1-2 jours</div>
             <div>Viandes fraîches : 7-10x — 3-4 jours</div>
             <div>Légumes fragiles : 8-12x — 2-4 jours</div>
@@ -231,7 +231,7 @@ export default function BlogRotationStocks() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Settings className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Les 6 leviers d'optimisation</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Les 6 leviers d'optimisation</h2>
           </div>
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2">
@@ -267,12 +267,12 @@ export default function BlogRotationStocks() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Impact d'une mauvaise rotation</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Impact d'une mauvaise rotation</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Deux restaurants identiques (CA 600 000 €, food cost 30 %, achats annuels 180 000 €) avec des rotations différentes :
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111] space-y-1">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>RESTAURANT A — Rotation 2x/mois</div>
             <div>Stock moyen : 7 500 €</div>
             <div>Pertes annuelles (5 %) : 9 000 €</div>
@@ -294,7 +294,7 @@ export default function BlogRotationStocks() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -318,9 +318,9 @@ export default function BlogRotationStocks() {
                 a: "Trois options : suggestion du jour (mettre en avant le plat qui les utilise), prix plat du jour réduit pour écouler, dons à des associations (Restos du Cœur, ANDES) déductible fiscalement à 60 %. Jamais de jet pur, c'est un échec de planification."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -341,7 +341,7 @@ export default function BlogRotationStocks() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>

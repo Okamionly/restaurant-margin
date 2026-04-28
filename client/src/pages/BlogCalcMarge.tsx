@@ -97,9 +97,9 @@ export default function BlogCalcMarge() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -113,7 +113,7 @@ export default function BlogCalcMarge() {
             </Link>
             <Link
               to="/login"
-              className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors"
+              className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors"
             >
               Connexion
             </Link>
@@ -122,13 +122,13 @@ export default function BlogCalcMarge() {
       </nav>
 
       {/* ── Breadcrumbs visibles ── */}
-      <div className="bg-[#FAFAFA] border-b border-[#E5E7EB] py-3 px-4">
-        <div className="max-w-4xl mx-auto text-xs text-[#737373] flex items-center gap-2 flex-wrap">
+      <div className="bg-mono-1000 border-b border-mono-900 py-3 px-4">
+        <div className="max-w-4xl mx-auto text-xs text-mono-500 flex items-center gap-2 flex-wrap">
           <Link to="/" className="hover:text-teal-600">Accueil</Link>
           <span>/</span>
           <Link to="/blog" className="hover:text-teal-600">Blog</Link>
           <span>/</span>
-          <span className="text-[#111111] font-medium">Calcul marge restaurant</span>
+          <span className="text-mono-100 font-medium">Calcul marge restaurant</span>
         </div>
       </div>
 
@@ -180,12 +180,12 @@ export default function BlogCalcMarge() {
         </div>
 
         {/* ── Table des matieres ── */}
-        <nav className="my-12 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
-          <h2 className="text-lg font-bold text-[#111111] mb-4 flex items-center gap-2">
+        <nav className="my-12 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
+          <h2 className="text-lg font-bold text-mono-100 mb-4 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-teal-600" />
             Sommaire
           </h2>
-          <ol className="space-y-2 text-sm sm:text-base text-[#404040]">
+          <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
               { href: '#pourquoi', label: 'Pourquoi la marge est critique pour votre restaurant' },
               { href: '#trois-marges', label: 'Les 3 types de marges a connaitre' },
@@ -347,13 +347,13 @@ export default function BlogCalcMarge() {
                 body: "Comparez votre food cost aux benchmarks (tableau plus bas). Si vous etes au-dessus de la cible, plusieurs leviers : reduire les portions, negocier avec les fournisseurs, substituer un ingredient, ajuster le prix de vente. Refaites le calcul a chaque changement de prix fournisseur.",
               },
             ].map((step, i) => (
-              <li key={i} className="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-7 flex gap-5">
+              <li key={i} className="bg-white border border-mono-900 rounded-2xl p-6 sm:p-7 flex gap-5">
                 <div className="w-12 h-12 bg-teal-600 text-white rounded-xl flex items-center justify-center shrink-0 font-extrabold text-lg shadow-md">
                   {i + 1}
                 </div>
                 <div>
-                  <h3 className="font-bold text-[#111111] text-lg mb-2">{step.title}</h3>
-                  <p className="text-sm text-[#525252] leading-relaxed">{step.body}</p>
+                  <h3 className="font-bold text-mono-100 text-lg mb-2">{step.title}</h3>
+                  <p className="text-sm text-mono-400 leading-relaxed">{step.body}</p>
                 </div>
               </li>
             ))}
@@ -415,7 +415,7 @@ export default function BlogCalcMarge() {
           </div>
 
           <div className="prose-content mt-8">
-            <h3 className="text-xl font-bold text-[#111111] mb-3">Exemple concret de passage marge brute -- marge nette</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3">Exemple concret de passage marge brute -- marge nette</h3>
             <p>
               Prenons un bistrot avec 600 000 EUR de CA HT et un food cost a 30 %. Voici la repartition typique :
             </p>
@@ -424,21 +424,21 @@ export default function BlogCalcMarge() {
           <div className="mt-6 overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-[#F5F5F5] text-[#404040]">
+                <tr className="bg-mono-975 text-mono-350">
                   <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Poste</th>
                   <th className="text-right py-3 px-4 font-semibold">Montant</th>
                   <th className="text-right py-3 px-4 font-semibold">% du CA</th>
                   <th className="text-right py-3 px-4 font-semibold rounded-tr-xl">Cumul</th>
                 </tr>
               </thead>
-              <tbody className="text-[#404040]">
-                <tr className="bg-white"><td className="py-3 px-4 font-medium text-[#111111]">Chiffre d'affaires HT</td><td className="py-3 px-4 text-right">600 000 EUR</td><td className="py-3 px-4 text-right">100 %</td><td className="py-3 px-4 text-right">100 %</td></tr>
-                <tr className="bg-[#FAFAFA]"><td className="py-3 px-4 text-red-700">- Cout matieres</td><td className="py-3 px-4 text-right text-red-700">-180 000 EUR</td><td className="py-3 px-4 text-right text-red-700">-30 %</td><td className="py-3 px-4 text-right">70 %</td></tr>
+              <tbody className="text-mono-350">
+                <tr className="bg-white"><td className="py-3 px-4 font-medium text-mono-100">Chiffre d'affaires HT</td><td className="py-3 px-4 text-right">600 000 EUR</td><td className="py-3 px-4 text-right">100 %</td><td className="py-3 px-4 text-right">100 %</td></tr>
+                <tr className="bg-mono-1000"><td className="py-3 px-4 text-red-700">- Cout matieres</td><td className="py-3 px-4 text-right text-red-700">-180 000 EUR</td><td className="py-3 px-4 text-right text-red-700">-30 %</td><td className="py-3 px-4 text-right">70 %</td></tr>
                 <tr className="bg-emerald-50"><td className="py-3 px-4 font-bold text-emerald-900">= Marge brute</td><td className="py-3 px-4 text-right font-bold text-emerald-900">420 000 EUR</td><td className="py-3 px-4 text-right font-bold text-emerald-900">70 %</td><td className="py-3 px-4 text-right">70 %</td></tr>
                 <tr className="bg-white"><td className="py-3 px-4 text-red-700">- Personnel (charges incluses)</td><td className="py-3 px-4 text-right text-red-700">-210 000 EUR</td><td className="py-3 px-4 text-right text-red-700">-35 %</td><td className="py-3 px-4 text-right">35 %</td></tr>
-                <tr className="bg-[#FAFAFA]"><td className="py-3 px-4 text-red-700">- Loyer + charges locatives</td><td className="py-3 px-4 text-right text-red-700">-60 000 EUR</td><td className="py-3 px-4 text-right text-red-700">-10 %</td><td className="py-3 px-4 text-right">25 %</td></tr>
+                <tr className="bg-mono-1000"><td className="py-3 px-4 text-red-700">- Loyer + charges locatives</td><td className="py-3 px-4 text-right text-red-700">-60 000 EUR</td><td className="py-3 px-4 text-right text-red-700">-10 %</td><td className="py-3 px-4 text-right">25 %</td></tr>
                 <tr className="bg-white"><td className="py-3 px-4 text-red-700">- Energie + fluides</td><td className="py-3 px-4 text-right text-red-700">-30 000 EUR</td><td className="py-3 px-4 text-right text-red-700">-5 %</td><td className="py-3 px-4 text-right">20 %</td></tr>
-                <tr className="bg-[#FAFAFA]"><td className="py-3 px-4 text-red-700">- Marketing + assurances + divers</td><td className="py-3 px-4 text-right text-red-700">-48 000 EUR</td><td className="py-3 px-4 text-right text-red-700">-8 %</td><td className="py-3 px-4 text-right">12 %</td></tr>
+                <tr className="bg-mono-1000"><td className="py-3 px-4 text-red-700">- Marketing + assurances + divers</td><td className="py-3 px-4 text-right text-red-700">-48 000 EUR</td><td className="py-3 px-4 text-right text-red-700">-8 %</td><td className="py-3 px-4 text-right">12 %</td></tr>
                 <tr className="bg-white"><td className="py-3 px-4 text-red-700">- Amortissements + frais financiers</td><td className="py-3 px-4 text-right text-red-700">-24 000 EUR</td><td className="py-3 px-4 text-right text-red-700">-4 %</td><td className="py-3 px-4 text-right">8 %</td></tr>
                 <tr className="bg-blue-50"><td className="py-3 px-4 font-bold text-blue-900">= Marge nette</td><td className="py-3 px-4 text-right font-bold text-blue-900">48 000 EUR</td><td className="py-3 px-4 text-right font-bold text-blue-900">8 %</td><td className="py-3 px-4 text-right">8 %</td></tr>
               </tbody>
@@ -472,16 +472,16 @@ export default function BlogCalcMarge() {
           </div>
 
           {/* Exemple concret */}
-          <div className="mt-8 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
-            <h3 className="font-bold text-[#111111] mb-4 text-lg">Exemple : Entrecote grillee</h3>
-            <div className="grid sm:grid-cols-2 gap-4 text-sm text-[#404040] mb-6">
+          <div className="mt-8 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
+            <h3 className="font-bold text-mono-100 mb-4 text-lg">Exemple : Entrecote grillee</h3>
+            <div className="grid sm:grid-cols-2 gap-4 text-sm text-mono-350 mb-6">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-teal-500 rounded-full" />
-                Prix de vente HT : <strong className="text-[#111111]">24,00 EUR</strong>
+                Prix de vente HT : <strong className="text-mono-100">24,00 EUR</strong>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-amber-500 rounded-full" />
-                Cout matieres premieres : <strong className="text-[#111111]">7,20 EUR</strong>
+                Cout matieres premieres : <strong className="text-mono-100">7,20 EUR</strong>
               </div>
             </div>
 
@@ -522,7 +522,7 @@ export default function BlogCalcMarge() {
           </div>
 
           <div className="prose-content mt-8">
-            <h3 className="text-xl font-bold text-[#111111] mb-3">
+            <h3 className="text-xl font-bold text-mono-100 mb-3">
               La methode du coefficient multiplicateur
             </h3>
             <p>
@@ -556,32 +556,32 @@ export default function BlogCalcMarge() {
             </p>
           </div>
 
-          <div className="mt-8 overflow-x-auto bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
-            <h3 className="font-bold text-[#111111] mb-4 text-lg">Decomposition du cout matieres</h3>
+          <div className="mt-8 overflow-x-auto bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
+            <h3 className="font-bold text-mono-100 mb-4 text-lg">Decomposition du cout matieres</h3>
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-white text-[#404040] border-b border-[#E5E7EB]">
+                <tr className="bg-white text-mono-350 border-b border-mono-900">
                   <th className="text-left py-2 px-3 font-semibold">Ingredient</th>
                   <th className="text-right py-2 px-3 font-semibold">Quantite</th>
                   <th className="text-right py-2 px-3 font-semibold">Prix au kg/L</th>
                   <th className="text-right py-2 px-3 font-semibold">Cout</th>
                 </tr>
               </thead>
-              <tbody className="text-[#404040]">
+              <tbody className="text-mono-350">
                 <tr><td className="py-2 px-3">Pate (farine, eau, levure, sel, huile)</td><td className="py-2 px-3 text-right">230 g</td><td className="py-2 px-3 text-right">1,20 EUR/kg</td><td className="py-2 px-3 text-right font-medium">0,28 EUR</td></tr>
                 <tr><td className="py-2 px-3">Sauce tomate</td><td className="py-2 px-3 text-right">80 g</td><td className="py-2 px-3 text-right">3,50 EUR/kg</td><td className="py-2 px-3 text-right font-medium">0,28 EUR</td></tr>
                 <tr><td className="py-2 px-3">Mozzarella fior di latte</td><td className="py-2 px-3 text-right">100 g</td><td className="py-2 px-3 text-right">8,80 EUR/kg</td><td className="py-2 px-3 text-right font-medium">0,88 EUR</td></tr>
                 <tr><td className="py-2 px-3">Basilic frais</td><td className="py-2 px-3 text-right">3 feuilles</td><td className="py-2 px-3 text-right">25 EUR/kg</td><td className="py-2 px-3 text-right font-medium">0,05 EUR</td></tr>
                 <tr><td className="py-2 px-3">Huile d'olive vierge</td><td className="py-2 px-3 text-right">5 ml</td><td className="py-2 px-3 text-right">7 EUR/L</td><td className="py-2 px-3 text-right font-medium">0,04 EUR</td></tr>
                 <tr><td className="py-2 px-3">Sel + origan + assaisonnement</td><td className="py-2 px-3 text-right">~</td><td className="py-2 px-3 text-right">~</td><td className="py-2 px-3 text-right font-medium">0,05 EUR</td></tr>
-                <tr className="border-t-2 border-[#E5E7EB] bg-amber-50"><td className="py-3 px-3 font-bold text-[#111111]">Total cout matieres</td><td className="py-3 px-3 text-right">-</td><td className="py-3 px-3 text-right">-</td><td className="py-3 px-3 text-right font-bold text-amber-900">1,58 EUR</td></tr>
+                <tr className="border-t-2 border-mono-900 bg-amber-50"><td className="py-3 px-3 font-bold text-mono-100">Total cout matieres</td><td className="py-3 px-3 text-right">-</td><td className="py-3 px-3 text-right">-</td><td className="py-3 px-3 text-right font-bold text-amber-900">1,58 EUR</td></tr>
               </tbody>
             </table>
           </div>
 
           <div className="prose-content mt-8">
             <p><strong>Calculs :</strong></p>
-            <ul className="list-disc list-inside space-y-1.5 text-[#404040]">
+            <ul className="list-disc list-inside space-y-1.5 text-mono-350">
               <li>Food cost = 1,58 / 10,00 x 100 = <strong>15,8 %</strong></li>
               <li>Marge brute (EUR) = 10,00 - 1,58 = <strong>8,42 EUR</strong></li>
               <li>Marge brute (%) = 8,42 / 10,00 x 100 = <strong>84,2 %</strong></li>
@@ -609,32 +609,32 @@ export default function BlogCalcMarge() {
             </p>
           </div>
 
-          <div className="mt-8 overflow-x-auto bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
-            <h3 className="font-bold text-[#111111] mb-4 text-lg">Decomposition du cout matieres</h3>
+          <div className="mt-8 overflow-x-auto bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
+            <h3 className="font-bold text-mono-100 mb-4 text-lg">Decomposition du cout matieres</h3>
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-white text-[#404040] border-b border-[#E5E7EB]">
+                <tr className="bg-white text-mono-350 border-b border-mono-900">
                   <th className="text-left py-2 px-3 font-semibold">Ingredient</th>
                   <th className="text-right py-2 px-3 font-semibold">Quantite</th>
                   <th className="text-right py-2 px-3 font-semibold">Prix au kg/L</th>
                   <th className="text-right py-2 px-3 font-semibold">Cout</th>
                 </tr>
               </thead>
-              <tbody className="text-[#404040]">
+              <tbody className="text-mono-350">
                 <tr><td className="py-2 px-3">Entrecote bovin charolais (parage 92 %)</td><td className="py-2 px-3 text-right">220 g</td><td className="py-2 px-3 text-right">28 EUR/kg</td><td className="py-2 px-3 text-right font-medium">6,70 EUR</td></tr>
                 <tr><td className="py-2 px-3">Frites maison</td><td className="py-2 px-3 text-right">200 g</td><td className="py-2 px-3 text-right">2,80 EUR/kg</td><td className="py-2 px-3 text-right font-medium">0,56 EUR</td></tr>
                 <tr><td className="py-2 px-3">Beurre de cuisson</td><td className="py-2 px-3 text-right">15 g</td><td className="py-2 px-3 text-right">8 EUR/kg</td><td className="py-2 px-3 text-right font-medium">0,12 EUR</td></tr>
                 <tr><td className="py-2 px-3">Sauce au poivre (creme + cognac + poivre)</td><td className="py-2 px-3 text-right">60 g</td><td className="py-2 px-3 text-right">~6 EUR/kg</td><td className="py-2 px-3 text-right font-medium">0,36 EUR</td></tr>
                 <tr><td className="py-2 px-3">Salade verte + tomate cerise</td><td className="py-2 px-3 text-right">50 g</td><td className="py-2 px-3 text-right">5 EUR/kg</td><td className="py-2 px-3 text-right font-medium">0,25 EUR</td></tr>
                 <tr><td className="py-2 px-3">Sel, poivre, fleur de sel</td><td className="py-2 px-3 text-right">~</td><td className="py-2 px-3 text-right">~</td><td className="py-2 px-3 text-right font-medium">0,06 EUR</td></tr>
-                <tr className="border-t-2 border-[#E5E7EB] bg-amber-50"><td className="py-3 px-3 font-bold text-[#111111]">Total cout matieres</td><td className="py-3 px-3 text-right">-</td><td className="py-3 px-3 text-right">-</td><td className="py-3 px-3 text-right font-bold text-amber-900">8,05 EUR</td></tr>
+                <tr className="border-t-2 border-mono-900 bg-amber-50"><td className="py-3 px-3 font-bold text-mono-100">Total cout matieres</td><td className="py-3 px-3 text-right">-</td><td className="py-3 px-3 text-right">-</td><td className="py-3 px-3 text-right font-bold text-amber-900">8,05 EUR</td></tr>
               </tbody>
             </table>
           </div>
 
           <div className="prose-content mt-8">
             <p><strong>Calculs :</strong></p>
-            <ul className="list-disc list-inside space-y-1.5 text-[#404040]">
+            <ul className="list-disc list-inside space-y-1.5 text-mono-350">
               <li>Food cost = 8,05 / 25,45 x 100 = <strong>31,6 %</strong></li>
               <li>Marge brute (EUR) = 25,45 - 8,05 = <strong>17,40 EUR</strong></li>
               <li>Marge brute (%) = 17,40 / 25,45 x 100 = <strong>68,4 %</strong></li>
@@ -680,13 +680,13 @@ export default function BlogCalcMarge() {
               { type: 'Coffee shop', mb: '78 - 88 %', fc: '12 - 22 %', notes: 'Boisson + snacking. Marge tres elevee mais ticket moyen bas (4-8 EUR).' },
               { type: 'Bistrot', mb: '65 - 72 %', fc: '28 - 35 %', notes: 'Cuisine traditionnelle. Carte courte, ticket moyen 18-30 EUR.' },
             ].map((b, i) => (
-              <div key={i} className="bg-white border border-[#E5E7EB] rounded-2xl p-5 hover:border-teal-300 transition-colors">
+              <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5 hover:border-teal-300 transition-colors">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-bold text-[#111111]">{b.type}</h3>
+                  <h3 className="font-bold text-mono-100">{b.type}</h3>
                   <span className="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full font-semibold">{b.mb}</span>
                 </div>
-                <div className="text-xs text-[#737373] mb-2"><strong>Food cost cible :</strong> {b.fc}</div>
-                <p className="text-sm text-[#525252] leading-relaxed">{b.notes}</p>
+                <div className="text-xs text-mono-500 mb-2"><strong>Food cost cible :</strong> {b.fc}</div>
+                <p className="text-sm text-mono-400 leading-relaxed">{b.notes}</p>
               </div>
             ))}
           </div>
@@ -716,7 +716,7 @@ export default function BlogCalcMarge() {
           <div className="mt-8 overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-[#F5F5F5] text-[#404040]">
+                <tr className="bg-mono-975 text-mono-350">
                   <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Type de restaurant</th>
                   <th className="text-center py-3 px-4 font-semibold">Food Cost cible</th>
                   <th className="text-center py-3 px-4 font-semibold">Marge brute cible</th>
@@ -724,7 +724,7 @@ export default function BlogCalcMarge() {
                   <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Marge nette</th>
                 </tr>
               </thead>
-              <tbody className="text-[#404040]">
+              <tbody className="text-mono-350">
                 {[
                   { type: 'Restauration rapide / Fast-food', fc: '25 - 30 %', mb: '70 - 75 %', coef: '3,3 - 4,0', mn: '8 - 15 %' },
                   { type: 'Bistrot / Brasserie', fc: '28 - 33 %', mb: '67 - 72 %', coef: '3,0 - 3,6', mn: '5 - 12 %' },
@@ -736,8 +736,8 @@ export default function BlogCalcMarge() {
                   { type: 'Dark kitchen / Livraison', fc: '28 - 35 %', mb: '65 - 72 %', coef: '2,9 - 3,6', mn: '5 - 12 %' },
                   { type: 'Traiteur / Banquet', fc: '30 - 38 %', mb: '62 - 70 %', coef: '2,6 - 3,3', mn: '8 - 15 %' },
                 ].map((row, i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}>
-                    <td className="py-3 px-4 font-medium text-[#111111]">{row.type}</td>
+                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
+                    <td className="py-3 px-4 font-medium text-mono-100">{row.type}</td>
                     <td className="py-3 px-4 text-center">{row.fc}</td>
                     <td className="py-3 px-4 text-center">{row.mb}</td>
                     <td className="py-3 px-4 text-center">{row.coef}</td>
@@ -752,7 +752,7 @@ export default function BlogCalcMarge() {
             <p>
               Quelques observations cles :
             </p>
-            <ul className="list-disc list-inside space-y-2 text-[#404040] mt-4">
+            <ul className="list-disc list-inside space-y-2 text-mono-350 mt-4">
               <li>
                 <strong>Pizzerias et coffee shops</strong> ont les meilleurs ratios mais des tickets
                 moyens bas. Le defi est le volume.
@@ -870,12 +870,12 @@ export default function BlogCalcMarge() {
                 desc: 'Testez l\'impact d\'un changement de prix ou de fournisseur sur votre marge avant de prendre la decision.'
               },
             ].map((feat, i) => (
-              <div key={i} className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all">
+              <div key={i} className="bg-white border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all">
                 <div className="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center text-teal-600 mb-3">
                   {feat.icon}
                 </div>
-                <h3 className="font-semibold text-[#111111] mb-1.5">{feat.title}</h3>
-                <p className="text-sm text-[#525252] leading-relaxed">{feat.desc}</p>
+                <h3 className="font-semibold text-mono-100 mb-1.5">{feat.title}</h3>
+                <p className="text-sm text-mono-400 leading-relaxed">{feat.desc}</p>
               </div>
             ))}
           </div>
@@ -903,7 +903,7 @@ export default function BlogCalcMarge() {
 
         {/* ═════════════ FAQ visible ═════════════ */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions frequentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes</h2>
           <div className="space-y-4">
             {faqItems.map((item, i) => (
               <FAQItem key={i} q={item.question} a={item.answer} />
@@ -945,23 +945,23 @@ export default function BlogCalcMarge() {
 
         {/* ═════════════ Articles complementaires ═════════════ */}
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Pour aller plus loin</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Pour aller plus loin</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link to="/blog/reduire-food-cost" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le food cost en 10 strategies</h3>
-              <p className="text-xs text-[#737373]">Fiches techniques, negociation, gaspillage, menu engineering.</p>
+            <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le food cost en 10 strategies</h3>
+              <p className="text-xs text-mono-500">Fiches techniques, negociation, gaspillage, menu engineering.</p>
             </Link>
-            <Link to="/blog/coefficient-multiplicateur" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Le coefficient multiplicateur</h3>
-              <p className="text-xs text-[#737373]">Tableaux par categorie, erreurs courantes et cas pratique.</p>
+            <Link to="/blog/coefficient-multiplicateur" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Le coefficient multiplicateur</h3>
+              <p className="text-xs text-mono-500">Tableaux par categorie, erreurs courantes et cas pratique.</p>
             </Link>
-            <Link to="/blog/prix-de-vente-restaurant" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Calculer le prix de vente d'un plat</h3>
-              <p className="text-xs text-[#737373]">Methodes coefficient, marge cible, pricing psychologique.</p>
+            <Link to="/blog/prix-de-vente-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculer le prix de vente d'un plat</h3>
+              <p className="text-xs text-mono-500">Methodes coefficient, marge cible, pricing psychologique.</p>
             </Link>
-            <Link to="/outils/calculateur-food-cost" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Calculateur food cost gratuit</h3>
-              <p className="text-xs text-[#737373]">Outil en ligne pour calculer votre marge en 30 secondes.</p>
+            <Link to="/outils/calculateur-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculateur food cost gratuit</h3>
+              <p className="text-xs text-mono-500">Outil en ligne pour calculer votre marge en 30 secondes.</p>
             </Link>
           </div>
         </section>
@@ -971,22 +971,22 @@ export default function BlogCalcMarge() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#FAFAFA] border-t border-[#E5E7EB] py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center text-sm text-[#737373]">
-          <Link to="/landing" className="flex items-center justify-center gap-2 text-[#111111] font-bold text-lg mb-4">
+      <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
+        <div className="max-w-4xl mx-auto text-center text-sm text-mono-500">
+          <Link to="/landing" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
             <ChefHat className="w-6 h-6 text-teal-600" />
             RestauMargin
           </Link>
           <p className="mb-4">
             La plateforme de gestion de marge pour les restaurateurs.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-[#A3A3A3]">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
             <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
             <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
           </div>
-          <p className="mt-6 text-xs text-[#A3A3A3]">
+          <p className="mt-6 text-xs text-mono-700">
             &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
           </p>
         </div>
@@ -1003,7 +1003,7 @@ function SectionHeading({ icon, number, children }: { icon: React.ReactNode; num
       <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
         {icon}
       </div>
-      <h2 className="text-2xl font-bold text-[#111111]">
+      <h2 className="text-2xl font-bold text-mono-100">
         <span className="text-teal-600 mr-2">{number}.</span>
         {children}
       </h2>
@@ -1022,19 +1022,19 @@ function MargeCard({ icon, title, color, desc, formula, target }: {
   const c = colors[color] || colors.emerald;
 
   return (
-    <div className={`${c.bg} rounded-2xl p-6 border border-[#F5F5F5]`}>
+    <div className={`${c.bg} rounded-2xl p-6 border border-mono-975`}>
       <div className={`w-10 h-10 ${c.badge} rounded-lg flex items-center justify-center mb-3`}>
         {icon}
       </div>
-      <h3 className="font-bold text-[#111111] mb-2">{title}</h3>
-      <p className="text-sm text-[#525252] leading-relaxed mb-4">{desc}</p>
+      <h3 className="font-bold text-mono-100 mb-2">{title}</h3>
+      <p className="text-sm text-mono-400 leading-relaxed mb-4">{desc}</p>
       <div className="space-y-1.5 text-xs">
         <div className="flex items-center gap-2">
-          <span className="text-[#737373] font-medium">Formule :</span>
-          <code className="bg-white/70 px-2 py-0.5 rounded text-[#404040]">{formula}</code>
+          <span className="text-mono-500 font-medium">Formule :</span>
+          <code className="bg-white/70 px-2 py-0.5 rounded text-mono-350">{formula}</code>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[#737373] font-medium">Objectif :</span>
+          <span className="text-mono-500 font-medium">Objectif :</span>
           <span className={`${c.badge} px-2 py-0.5 rounded font-semibold`}>{target}</span>
         </div>
       </div>
@@ -1047,16 +1047,16 @@ function FormulaBlock({ label, formula, calcul, resultat, verdict, color }: {
 }) {
   const verdictColor = color === 'emerald' ? 'text-emerald-600' : 'text-amber-600';
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 sm:p-5">
-      <h4 className="font-semibold text-[#111111] mb-2">{label}</h4>
-      <div className="text-sm text-[#737373] mb-1">
+    <div className="bg-white border border-mono-900 rounded-xl p-4 sm:p-5">
+      <h4 className="font-semibold text-mono-100 mb-2">{label}</h4>
+      <div className="text-sm text-mono-500 mb-1">
         <span className="font-medium">Formule :</span> {formula}
       </div>
-      <div className="text-sm text-[#737373] mb-2">
+      <div className="text-sm text-mono-500 mb-2">
         <span className="font-medium">Calcul :</span> {calcul}
       </div>
       <div className="flex items-center gap-3">
-        <span className="text-xl font-extrabold text-[#111111]">{resultat}</span>
+        <span className="text-xl font-extrabold text-mono-100">{resultat}</span>
         <span className={`text-sm font-semibold ${verdictColor} flex items-center gap-1`}>
           <CheckCircle className="w-4 h-4" />
           {verdict}
@@ -1068,13 +1068,13 @@ function FormulaBlock({ label, formula, calcul, resultat, verdict, color }: {
 
 function ErreurCard({ number, title, desc }: { number: number; title: string; desc: string }) {
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 sm:p-6 flex gap-4">
+    <div className="bg-white border border-mono-900 rounded-xl p-5 sm:p-6 flex gap-4">
       <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center shrink-0 font-bold text-lg">
         {number}
       </div>
       <div>
-        <h3 className="font-semibold text-[#111111] mb-1.5">{title}</h3>
-        <p className="text-sm text-[#525252] leading-relaxed">{desc}</p>
+        <h3 className="font-semibold text-mono-100 mb-1.5">{title}</h3>
+        <p className="text-sm text-mono-400 leading-relaxed">{desc}</p>
       </div>
     </div>
   );
@@ -1095,12 +1095,12 @@ function Callout({ type, children }: { type: 'info' | 'warning'; children: React
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   return (
-    <details className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl group">
-      <summary className="px-5 py-4 font-semibold text-[#111111] cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
+    <details className="bg-mono-1000 border border-mono-900 rounded-xl group">
+      <summary className="px-5 py-4 font-semibold text-mono-100 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
         {q}
-        <ArrowRight className="w-4 h-4 text-[#A3A3A3] group-open:rotate-90 transition-transform" />
+        <ArrowRight className="w-4 h-4 text-mono-700 group-open:rotate-90 transition-transform" />
       </summary>
-      <p className="px-5 pb-4 text-sm text-[#525252] leading-relaxed">{a}</p>
+      <p className="px-5 pb-4 text-sm text-mono-400 leading-relaxed">{a}</p>
     </details>
   );
 }

@@ -199,17 +199,17 @@ export default function OnboardingChecklist({
   if (variant === 'sidebar') {
     return (
       <div className={`mx-3 mb-3 ${className}`} role="complementary" aria-label="Progression de la configuration">
-        <div className="rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717] overflow-hidden">
+        <div className="rounded-xl border border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-[#171717] overflow-hidden">
           <button
             onClick={() => setExpanded(!expanded)}
             aria-expanded={expanded}
             aria-controls="onboarding-checklist-steps"
-            className="w-full flex items-center gap-2 px-3 py-2.5 text-left hover:bg-[#F3F4F6] dark:hover:bg-[#1A1A1A] transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2.5 text-left hover:bg-mono-950 dark:hover:bg-mono-200 transition-colors"
           >
             {allDone && showCelebration ? (
               <>
                 <Trophy className="w-4 h-4 text-amber-500 flex-shrink-0" aria-hidden="true" />
-                <span className="flex-1 text-xs font-semibold text-[#111111] dark:text-white">
+                <span className="flex-1 text-xs font-semibold text-mono-100 dark:text-white">
                   Bravo ! Tout est configure !
                 </span>
               </>
@@ -217,7 +217,7 @@ export default function OnboardingChecklist({
               <>
                 <div className="relative w-5 h-5 flex-shrink-0" aria-hidden="true">
                   <svg className="w-5 h-5 -rotate-90" viewBox="0 0 20 20">
-                    <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="2" className="text-[#E5E7EB] dark:text-[#333333]" />
+                    <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="2" className="text-mono-900 dark:text-[#333333]" />
                     <circle
                       cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="2"
                       strokeDasharray={`${(progressPercent / 100) * 50.27} 50.27`}
@@ -226,18 +226,18 @@ export default function OnboardingChecklist({
                     />
                   </svg>
                 </div>
-                <span className="flex-1 text-xs font-semibold text-[#111111] dark:text-white">
+                <span className="flex-1 text-xs font-semibold text-mono-100 dark:text-white">
                   {progressCount}/{totalCount} etapes
                 </span>
-                <span className="text-[10px] font-medium text-[#9CA3AF] dark:text-[#737373]">{progressPercent}%</span>
+                <span className="text-[10px] font-medium text-[#9CA3AF] dark:text-mono-500">{progressPercent}%</span>
                 {expanded
-                  ? <ChevronUp className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" aria-hidden="true" />
-                  : <ChevronDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" aria-hidden="true" />}
+                  ? <ChevronUp className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" aria-hidden="true" />
+                  : <ChevronDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" aria-hidden="true" />}
               </>
             )}
           </button>
 
-          <div className="h-1 bg-[#E5E7EB] dark:bg-[#1A1A1A]">
+          <div className="h-1 bg-mono-900 dark:bg-mono-200">
             <div
               className="h-full bg-teal-600 transition-all duration-500 ease-out rounded-r-full"
               style={{ width: `${progressPercent}%` }}
@@ -260,7 +260,7 @@ export default function OnboardingChecklist({
                     onClick={() => handleStepClick(step)}
                     aria-label={done ? `${step.label} — complete` : `${step.label} — Aller a ${step.route}`}
                     className={`w-full flex items-center gap-2 py-1.5 px-1 text-left rounded transition-colors ${
-                      !done ? 'hover:bg-[#F3F4F6] dark:hover:bg-[#1A1A1A] cursor-pointer' : 'cursor-default'
+                      !done ? 'hover:bg-mono-950 dark:hover:bg-mono-200 cursor-pointer' : 'cursor-default'
                     }`}
                   >
                     <div className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 transition-all ${
@@ -272,8 +272,8 @@ export default function OnboardingChecklist({
                     </div>
                     <span className={`text-[11px] leading-tight ${
                       done
-                        ? 'text-[#9CA3AF] dark:text-[#737373] line-through'
-                        : 'text-[#111111] dark:text-white font-medium'
+                        ? 'text-[#9CA3AF] dark:text-mono-500 line-through'
+                        : 'text-mono-100 dark:text-white font-medium'
                     }`}>
                       {step.label}
                     </span>
@@ -283,7 +283,7 @@ export default function OnboardingChecklist({
               <button
                 onClick={handleDismiss}
                 aria-label="Masquer la checklist d'onboarding"
-                className="text-[10px] text-[#9CA3AF] dark:text-[#737373] hover:text-[#6B7280] dark:hover:text-[#A3A3A3] transition-colors mt-1 flex items-center gap-1"
+                className="text-[10px] text-[#9CA3AF] dark:text-mono-500 hover:text-[#6B7280] dark:hover:text-mono-700 transition-colors mt-1 flex items-center gap-1"
               >
                 <X className="w-3 h-3" aria-hidden="true" /> Masquer
               </button>
@@ -297,13 +297,13 @@ export default function OnboardingChecklist({
   // ── Dashboard / Full variant ──────────────────────────────────────────────
   return (
     <section
-      className={`rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black overflow-hidden ${className}`}
+      className={`rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black overflow-hidden ${className}`}
       aria-label="Checklist de demarrage"
     >
       {/* Header */}
       <div className="px-6 pt-6 pb-4 flex items-start justify-between">
         <div>
-          <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi flex items-center gap-2">
+          <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi flex items-center gap-2">
             {allDone && showCelebration ? (
               <>
                 <Trophy className="w-5 h-5 text-amber-500" aria-hidden="true" />
@@ -315,7 +315,7 @@ export default function OnboardingChecklist({
               </>
             )}
           </h2>
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-0.5">
             {allDone
               ? 'Toutes les etapes sont completees. Explorez vos marges !'
               : `${progressCount} sur ${totalCount} etapes completees`}
@@ -324,7 +324,7 @@ export default function OnboardingChecklist({
         <button
           onClick={handleDismiss}
           aria-label="Masquer la checklist"
-          className="text-[#9CA3AF] hover:text-[#6B7280] transition-colors p-1 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717]"
+          className="text-[#9CA3AF] hover:text-[#6B7280] transition-colors p-1 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717]"
         >
           <X className="w-4 h-4" aria-hidden="true" />
         </button>
@@ -333,11 +333,11 @@ export default function OnboardingChecklist({
       {/* Progress bar */}
       <div className="mx-6 mb-5">
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">{progressPercent}% complete</span>
+          <span className="text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">{progressPercent}% complete</span>
           <span className="text-xs text-teal-600 font-semibold">{progressCount}/{totalCount}</span>
         </div>
         <div
-          className="h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden"
+          className="h-2 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden"
           role="progressbar"
           aria-valuenow={progressPercent}
           aria-valuemin={0}
@@ -366,8 +366,8 @@ export default function OnboardingChecklist({
                   done
                     ? 'bg-teal-50 dark:bg-teal-900/10 border-teal-200/50 dark:border-teal-800/30'
                     : isNext
-                    ? 'bg-white dark:bg-[#0A0A0A] border-teal-400/60 dark:border-teal-600/40 shadow-sm'
-                    : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/30 border-[#E5E7EB]/50 dark:border-[#1A1A1A]/50 opacity-55'
+                    ? 'bg-white dark:bg-mono-50 border-teal-400/60 dark:border-teal-600/40 shadow-sm'
+                    : 'bg-mono-1000 dark:bg-mono-50/30 border-mono-900/50 dark:border-mono-200/50 opacity-55'
                 }`}
               >
                 {/* Step number + check */}
@@ -376,7 +376,7 @@ export default function OnboardingChecklist({
                     ? 'bg-teal-500 text-white'
                     : isNext
                     ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-600'
-                    : 'bg-[#E5E7EB] dark:bg-[#1A1A1A] text-[#9CA3AF]'
+                    : 'bg-mono-900 dark:bg-mono-200 text-[#9CA3AF]'
                 }`} aria-hidden="true">
                   {done ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
                 </div>
@@ -384,7 +384,7 @@ export default function OnboardingChecklist({
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">
                       Etape {index + 1}
                     </span>
                     {done && (
@@ -399,12 +399,12 @@ export default function OnboardingChecklist({
                     )}
                   </div>
                   <p className={`text-sm font-semibold mt-0.5 ${
-                    done ? 'text-teal-700 dark:text-teal-300 line-through' : 'text-[#111111] dark:text-white'
+                    done ? 'text-teal-700 dark:text-teal-300 line-through' : 'text-mono-100 dark:text-white'
                   }`}>
                     {step.label}
                   </p>
                   {isNext && !done && (
-                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5 leading-snug">
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5 leading-snug">
                       {step.description}
                     </p>
                   )}

@@ -271,7 +271,7 @@ export default function FournisseurPromo() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-96 text-[#9CA3AF] dark:text-[#737373]">
+      <div className="flex flex-col items-center justify-center h-96 text-[#9CA3AF] dark:text-mono-500">
         <Loader2 className="w-8 h-8 animate-spin mb-4" />
         <p>Chargement des promotions...</p>
       </div>
@@ -283,15 +283,15 @@ export default function FournisseurPromo() {
       <div className="space-y-6">
         <button
           onClick={() => navigate('/suppliers')}
-          className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors text-sm"
+          className="flex items-center gap-2 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
           Retour aux fournisseurs
         </button>
-        <div className="flex flex-col items-center justify-center h-64 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl">
-          <Package className="w-12 h-12 text-[#6B7280] dark:text-[#A3A3A3] mb-4 opacity-40" />
-          <p className="text-[#9CA3AF] dark:text-[#737373] font-medium mb-2">Aucune promotion disponible</p>
-          <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm">{error || 'Ce fournisseur n\'a pas de promotions en cours.'}</p>
+        <div className="flex flex-col items-center justify-center h-64 bg-mono-1000/50 dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl">
+          <Package className="w-12 h-12 text-[#6B7280] dark:text-mono-700 mb-4 opacity-40" />
+          <p className="text-[#9CA3AF] dark:text-mono-500 font-medium mb-2">Aucune promotion disponible</p>
+          <p className="text-[#6B7280] dark:text-mono-700 text-sm">{error || 'Ce fournisseur n\'a pas de promotions en cours.'}</p>
         </div>
       </div>
     );
@@ -302,7 +302,7 @@ export default function FournisseurPromo() {
       {/* Back button */}
       <button
         onClick={() => navigate('/suppliers')}
-        className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors text-sm"
+        className="flex items-center gap-2 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors text-sm"
       >
         <ArrowLeft className="w-4 h-4" />
         Retour aux fournisseurs
@@ -323,7 +323,7 @@ export default function FournisseurPromo() {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-3.5 h-3.5 ${i < Math.floor(supplier.rating) ? 'fill-amber-400 text-amber-400' : 'text-[#111111] dark:text-white/30'}`}
+                      className={`w-3.5 h-3.5 ${i < Math.floor(supplier.rating) ? 'fill-amber-400 text-amber-400' : 'text-mono-100 dark:text-white/30'}`}
                     />
                   ))}
                   <span className="text-xs text-teal-200 ml-1">{supplier.rating}</span>
@@ -370,12 +370,12 @@ export default function FournisseurPromo() {
           { label: 'Reduction moyenne', value: `-${avgDiscount}%`, icon: Percent, color: 'text-amber-400', bg: 'bg-amber-500/10' },
           { label: 'Economies potentielles', value: formatCurrency(totalPotentialSavings), icon: TrendingDown, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
           { label: 'Produits au catalogue', value: `${supplier.products.length}`, icon: Package, color: 'text-teal-400', bg: 'bg-teal-500/10' },
-          { label: 'Fin prochaine', value: `${urgentPromos.length}`, icon: Clock, color: urgentPromos.length > 0 ? 'text-red-400' : 'text-[#9CA3AF]', bg: urgentPromos.length > 0 ? 'bg-red-500/10' : 'bg-[#F3F4F6] dark:bg-[#171717]' },
+          { label: 'Fin prochaine', value: `${urgentPromos.length}`, icon: Clock, color: urgentPromos.length > 0 ? 'text-red-400' : 'text-[#9CA3AF]', bg: urgentPromos.length > 0 ? 'bg-red-500/10' : 'bg-mono-950 dark:bg-[#171717]' },
         ].map(stat => (
-          <div key={stat.label} className={`${stat.bg} border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 text-center`}>
+          <div key={stat.label} className={`${stat.bg} border border-mono-900 dark:border-mono-200 rounded-2xl p-4 text-center`}>
             <stat.icon className={`w-5 h-5 mx-auto mb-1 ${stat.color}`} />
-            <p className="text-xl font-bold text-[#111111] dark:text-white">{stat.value}</p>
-            <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{stat.label}</p>
+            <p className="text-xl font-bold text-mono-100 dark:text-white">{stat.value}</p>
+            <p className="text-[11px] text-[#9CA3AF] dark:text-mono-500">{stat.label}</p>
           </div>
         ))}
       </div>
@@ -415,11 +415,11 @@ export default function FournisseurPromo() {
                   alert.type === 'deal' ? 'text-emerald-800 dark:text-emerald-300' :
                   'text-amber-800 dark:text-amber-300'
                 }`}>{alert.message}</p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">{alert.detail}</p>
+                <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-0.5">{alert.detail}</p>
               </div>
               <button
                 onClick={() => dismissAlert(alert.id)}
-                className="p-1 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors shrink-0"
+                className="p-1 rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -441,16 +441,16 @@ export default function FournisseurPromo() {
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
-              <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Total commande</p>
-              <p className="text-xl font-bold text-[#111111] dark:text-white mt-1">{formatCurrency(cartTotal)}</p>
+            <div className="bg-white dark:bg-mono-50 rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
+              <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Total commande</p>
+              <p className="text-xl font-bold text-mono-100 dark:text-white mt-1">{formatCurrency(cartTotal)}</p>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
-              <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Vous economisez</p>
+            <div className="bg-white dark:bg-mono-50 rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
+              <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Vous economisez</p>
               <p className="text-xl font-bold text-emerald-500 mt-1">-{formatCurrency(cartSavings)}</p>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
-              <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Reduction moy.</p>
+            <div className="bg-white dark:bg-mono-50 rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
+              <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Reduction moy.</p>
               <p className="text-xl font-bold text-emerald-500 mt-1">
                 -{cartTotal + cartSavings > 0 ? ((cartSavings / (cartTotal + cartSavings)) * 100).toFixed(0) : 0}%
               </p>
@@ -465,8 +465,8 @@ export default function FournisseurPromo() {
           onClick={() => setActiveView('promos')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
             activeView === 'promos'
-              ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
-              : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white'
+              ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100'
+              : 'bg-mono-1000 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white'
           }`}
         >
           <Tag className="w-4 h-4" />
@@ -476,8 +476,8 @@ export default function FournisseurPromo() {
           onClick={() => setActiveView('history')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
             activeView === 'history'
-              ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
-              : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white'
+              ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100'
+              : 'bg-mono-1000 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white'
           }`}
         >
           <History className="w-4 h-4" />
@@ -487,34 +487,34 @@ export default function FournisseurPromo() {
 
       {/* ── History View ─────────────────────────────────────────────── */}
       {activeView === 'history' && (
-        <div className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <h3 className="text-sm font-bold text-[#111111] dark:text-white flex items-center gap-2">
+        <div className="bg-mono-1000/50 dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
+            <h3 className="text-sm font-bold text-mono-100 dark:text-white flex items-center gap-2">
               <History className="w-4 h-4 text-teal-400" />
               Promotions utilisees recemment
             </h3>
           </div>
           {pastPromos.length > 0 ? (
-            <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+            <div className="divide-y divide-mono-900 dark:divide-mono-200">
               {pastPromos.map(promo => (
-                <div key={promo.id} className="px-5 py-3 flex items-center gap-4 hover:bg-white dark:hover:bg-[#0A0A0A] transition-colors">
-                  <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center text-lg">
+                <div key={promo.id} className="px-5 py-3 flex items-center gap-4 hover:bg-white dark:hover:bg-mono-50 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-mono-950 dark:bg-[#171717] flex items-center justify-center text-lg">
                     {CATEGORY_ICONS[promo.category] || '\u{1F4E6}'}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-[#111111] dark:text-white">{promo.name}</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                      <span className="text-sm font-medium text-mono-100 dark:text-white">{promo.name}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
                         -{promo.discount}%
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+                    <p className="text-[11px] text-[#9CA3AF] dark:text-mono-500 mt-0.5">
                       {promo.quantity} {promo.unit} commande{promo.quantity > 1 ? 's' : ''} le {formatDate(promo.usedDate)}
                     </p>
                   </div>
                   <div className="text-right shrink-0">
                     <span className="text-sm font-bold text-emerald-500">-{formatCurrency(parseFloat(promo.savedAmount))}</span>
-                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">economise</p>
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">economise</p>
                   </div>
                 </div>
               ))}
@@ -522,12 +522,12 @@ export default function FournisseurPromo() {
           ) : (
             <div className="py-12 text-center">
               <History className="w-10 h-10 mx-auto mb-3 text-[#D1D5DB] dark:text-[#333]" />
-              <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Aucune promotion utilisee</p>
+              <p className="text-sm text-[#9CA3AF] dark:text-mono-500">Aucune promotion utilisee</p>
             </div>
           )}
           {/* Total savings summary */}
-          <div className="px-5 py-3 bg-white dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
-            <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">Total economies</span>
+          <div className="px-5 py-3 bg-white dark:bg-mono-50 border-t border-mono-900 dark:border-mono-200 flex items-center justify-between">
+            <span className="text-sm font-medium text-[#6B7280] dark:text-mono-700">Total economies</span>
             <span className="text-lg font-bold text-emerald-500">
               -{formatCurrency(pastPromos.reduce((sum, p) => sum + parseFloat(p.savedAmount), 0))}
             </span>
@@ -542,21 +542,21 @@ export default function FournisseurPromo() {
       <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
             <input
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Rechercher un produit..."
-              className="w-full pl-10 pr-4 py-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280] dark:text-[#A3A3A3] focus:ring-2 focus:ring-[#111111] dark:ring-white focus:outline-none"
+              className="w-full pl-10 pr-4 py-2.5 bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-sm text-mono-100 dark:text-white placeholder:text-[#6B7280] dark:text-mono-700 focus:ring-2 focus:ring-mono-100 dark:ring-white focus:outline-none"
             />
           </div>
           <div className="relative">
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-mono-500 pointer-events-none" />
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value as any)}
-              className="appearance-none pl-4 pr-10 py-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:outline-none cursor-pointer"
+              className="appearance-none pl-4 pr-10 py-2.5 bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-sm text-mono-100 dark:text-white focus:ring-2 focus:ring-mono-100 dark:ring-white focus:outline-none cursor-pointer"
             >
               <option value="discount">Meilleure réduction</option>
               <option value="price">Prix croissant</option>
@@ -572,8 +572,8 @@ export default function FournisseurPromo() {
               onClick={() => setSelectedCat(cat)}
               className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
                 selectedCat === cat
-                  ? 'bg-[#111111] dark:bg-white text-white'
-                  : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                  ? 'bg-mono-100 dark:bg-white text-white'
+                  : 'bg-mono-1000 dark:bg-mono-50 text-[#9CA3AF] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717]'
               }`}
             >
               {CATEGORY_ICONS[cat] || ''} {cat}
@@ -592,23 +592,23 @@ export default function FournisseurPromo() {
           return (
             <div
               key={product.id}
-              className={`bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border rounded-2xl p-4 transition-all flex flex-col justify-between ${
+              className={`bg-mono-1000/50 dark:bg-mono-50/50 border rounded-2xl p-4 transition-all flex flex-col justify-between ${
                 inCart > 0
-                  ? 'border-teal-500/50 ring-1 ring-[#111111] dark:ring-white/20'
+                  ? 'border-teal-500/50 ring-1 ring-mono-100 dark:ring-white/20'
                   : product.stock === 'rupture'
-                  ? 'border-[#E5E7EB] dark:border-[#1A1A1A] opacity-50'
-                  : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                  ? 'border-mono-900 dark:border-mono-200 opacity-50'
+                  : 'border-mono-900 dark:border-mono-200 hover:border-[#D1D5DB] dark:hover:border-[#333]'
               }`}
             >
               {/* Top: name, badge, origin */}
               <div>
                 <div className="flex items-start justify-between mb-1">
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-[#111111] dark:text-white text-sm truncate">{product.name}</p>
+                    <p className="font-medium text-mono-100 dark:text-white text-sm truncate">{product.name}</p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{CATEGORY_ICONS[product.category] || ''} {product.category}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{CATEGORY_ICONS[product.category] || ''} {product.category}</span>
                       {product.origin && (
-                        <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">· {product.origin}</span>
+                        <span className="text-[10px] text-[#6B7280] dark:text-mono-700">· {product.origin}</span>
                       )}
                     </div>
                   </div>
@@ -626,7 +626,7 @@ export default function FournisseurPromo() {
                     <Percent className="w-3 h-3" />
                     -{product.discount}%
                   </span>
-                  <div className="flex items-center gap-1 text-[11px] text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="flex items-center gap-1 text-[11px] text-[#9CA3AF] dark:text-mono-500">
                     <Calendar className="w-3 h-3" />
                     Jusqu'au {formatDate(product.endDate)}
                     {days <= 3 && days > 0 && (
@@ -650,10 +650,10 @@ export default function FournisseurPromo() {
               {/* Bottom: prices + cart */}
               <div className="flex items-end justify-between mt-2">
                 <div>
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] line-through">{formatCurrency(product.normalPrice)}</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500 line-through">{formatCurrency(product.normalPrice)}</span>
                   <p className="text-lg font-bold text-emerald-400">
                     {formatCurrency(product.promoPrice)}
-                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-normal">/{product.unit}</span>
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500 font-normal">/{product.unit}</span>
                   </p>
                 </div>
                 {product.stock !== 'rupture' && (
@@ -661,14 +661,14 @@ export default function FournisseurPromo() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => removeFromCart(product.id)}
-                        className="w-8 h-8 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] flex items-center justify-center text-[#6B7280] dark:text-[#A3A3A3]"
+                        className="w-8 h-8 rounded-lg bg-mono-1000 dark:bg-mono-50 hover:bg-mono-950 dark:hover:bg-[#171717] flex items-center justify-center text-[#6B7280] dark:text-mono-700"
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </button>
-                      <span className="text-sm font-bold text-[#111111] dark:text-white w-6 text-center">{inCart}</span>
+                      <span className="text-sm font-bold text-mono-100 dark:text-white w-6 text-center">{inCart}</span>
                       <button
                         onClick={() => addToCart(product.id)}
-                        className="w-8 h-8 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] flex items-center justify-center text-white"
+                        className="w-8 h-8 rounded-lg bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] flex items-center justify-center text-white"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
@@ -676,7 +676,7 @@ export default function FournisseurPromo() {
                   ) : (
                     <button
                       onClick={() => addToCart(product.id)}
-                      className="px-3 py-1.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white text-xs font-medium rounded-lg transition-colors flex items-center gap-1"
+                      className="px-3 py-1.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white text-xs font-medium rounded-lg transition-colors flex items-center gap-1"
                     >
                       <Zap className="w-3.5 h-3.5" />Profiter
                     </button>
@@ -689,7 +689,7 @@ export default function FournisseurPromo() {
       </div>
 
       {filtered.length === 0 && (
-        <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+        <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">
           <Package className="w-12 h-12 mx-auto mb-3 opacity-40" />
           <p>Aucun produit trouvé</p>
         </div>
@@ -699,13 +699,13 @@ export default function FournisseurPromo() {
 
       {/* ── Floating Cart ────────────────────────────────────────────── */}
       {cartCount > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl px-6 py-4 flex items-center gap-6 max-w-lg w-[calc(100%-2rem)]">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl shadow-2xl px-6 py-4 flex items-center gap-6 max-w-lg w-[calc(100%-2rem)]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center">
-              <ShoppingCart className="w-5 h-5 text-[#111111] dark:text-white" />
+            <div className="w-10 h-10 rounded-xl bg-mono-100 dark:bg-white flex items-center justify-center">
+              <ShoppingCart className="w-5 h-5 text-mono-100 dark:text-white" />
             </div>
             <div>
-              <p className="text-[#111111] dark:text-white font-bold">{cartCount} article{cartCount > 1 ? 's' : ''}</p>
+              <p className="text-mono-100 dark:text-white font-bold">{cartCount} article{cartCount > 1 ? 's' : ''}</p>
               <p className="text-teal-400 text-sm font-semibold">{formatCurrency(cartTotal)} HT</p>
               {cartSavings > 0 && (
                 <p className="text-emerald-400 text-[11px]">Économie : {formatCurrency(cartSavings)}</p>

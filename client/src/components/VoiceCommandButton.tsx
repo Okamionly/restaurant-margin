@@ -391,8 +391,8 @@ export default function VoiceCommandButton() {
           isListening
             ? 'bg-red-500 hover:bg-red-600 text-white scale-110'
             : isProcessing
-            ? 'bg-[#E5E7EB] dark:bg-[#262626] text-[#9CA3AF] dark:text-[#737373] cursor-wait'
-            : 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E7EB] hover:scale-105'
+            ? 'bg-mono-900 dark:bg-mono-300 text-[#9CA3AF] dark:text-mono-500 cursor-wait'
+            : 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:bg-[#333333] dark:hover:bg-mono-900 hover:scale-105'
         }`}
         title="Commande vocale"
         aria-label={isListening ? 'Arreter l\'ecoute vocale' : 'Activer la commande vocale'}
@@ -416,12 +416,12 @@ export default function VoiceCommandButton() {
       {/* Live Transcript Bubble */}
       {isListening && liveTranscript && (
         <div className="fixed z-[9999] right-5 bottom-40 max-w-xs animate-in fade-in slide-in-from-bottom-2">
-          <div className="bg-white dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-2xl px-4 py-3 shadow-xl">
+          <div className="bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-2xl px-4 py-3 shadow-xl">
             <div className="flex items-center gap-2 mb-1">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Ecoute en cours...</span>
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500">Ecoute en cours...</span>
             </div>
-            <p className="text-sm text-[#111111] dark:text-white font-medium leading-relaxed">{liveTranscript}</p>
+            <p className="text-sm text-mono-100 dark:text-white font-medium leading-relaxed">{liveTranscript}</p>
           </div>
         </div>
       )}
@@ -429,10 +429,10 @@ export default function VoiceCommandButton() {
       {/* Listening indicator (no transcript yet) */}
       {isListening && !liveTranscript && (
         <div className="fixed z-[9999] right-5 bottom-40 max-w-xs">
-          <div className="bg-white dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-2xl px-4 py-3 shadow-xl">
+          <div className="bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-2xl px-4 py-3 shadow-xl">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-sm text-[#111111] dark:text-white">Parlez maintenant...</span>
+              <span className="text-sm text-mono-100 dark:text-white">Parlez maintenant...</span>
             </div>
           </div>
         </div>
@@ -456,7 +456,7 @@ export default function VoiceCommandButton() {
       {/* Result Card */}
       {showResult && lastResult && !isListening && (
         <div className="fixed z-[9999] right-5 bottom-40 w-80 animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#262626] rounded-2xl shadow-2xl overflow-hidden">
+          <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-300 rounded-2xl shadow-2xl overflow-hidden">
             {/* Header */}
             <div className={`px-4 py-3 flex items-center gap-3 ${
               lastResult.success
@@ -473,10 +473,10 @@ export default function VoiceCommandButton() {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">
+                <p className="text-xs font-medium text-[#6B7280] dark:text-mono-700">
                   {lastResult.success ? 'Commande executee' : 'Erreur'}
                 </p>
-                <p className="text-sm font-semibold text-[#111111] dark:text-white truncate">
+                <p className="text-sm font-semibold text-mono-100 dark:text-white truncate">
                   {describeAction(lastResult.action)}
                 </p>
               </div>
@@ -489,36 +489,36 @@ export default function VoiceCommandButton() {
             </div>
 
             {/* Transcript */}
-            <div className="px-4 py-3 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
-              <p className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Transcription</p>
-              <p className="text-sm text-[#374151] dark:text-[#D4D4D4] italic">"{lastResult.transcript}"</p>
+            <div className="px-4 py-3 border-b border-mono-950 dark:border-mono-200">
+              <p className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Transcription</p>
+              <p className="text-sm text-[#374151] dark:text-mono-800 italic">"{lastResult.transcript}"</p>
             </div>
 
             {/* Result */}
             <div className="px-4 py-3">
               <div className="flex items-start gap-2">
                 <ActionIcon className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#111111] dark:text-white whitespace-pre-line">{lastResult.result}</p>
+                <p className="text-sm text-mono-100 dark:text-white whitespace-pre-line">{lastResult.result}</p>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border-t border-[#F3F4F6] dark:border-[#1A1A1A] flex items-center gap-2">
+            <div className="px-4 py-3 bg-[#F9FAFB] dark:bg-mono-50 border-t border-mono-950 dark:border-mono-200 flex items-center gap-2">
               {lastResult.undoable && !lastResult.undone && (
                 <button
                   onClick={handleUndo}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] bg-white dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#262626] transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#6B7280] dark:text-mono-700 bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-lg hover:bg-mono-950 dark:hover:bg-mono-300 transition-colors"
                 >
                   <Undo2 className="w-3 h-3" />
                   Annuler
                 </button>
               )}
               {lastResult.undone && (
-                <span className="text-xs text-[#9CA3AF] dark:text-[#737373] italic">Action annulee</span>
+                <span className="text-xs text-[#9CA3AF] dark:text-mono-500 italic">Action annulee</span>
               )}
               <button
                 onClick={() => setShowHistory(!showHistory)}
-                className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] bg-white dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#262626] transition-colors"
+                className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#6B7280] dark:text-mono-700 bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-lg hover:bg-mono-950 dark:hover:bg-mono-300 transition-colors"
               >
                 {showHistory ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                 Historique
@@ -527,20 +527,20 @@ export default function VoiceCommandButton() {
 
             {/* History Panel */}
             {showHistory && history.length > 0 && (
-              <div className="max-h-48 overflow-y-auto border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <div className="max-h-48 overflow-y-auto border-t border-mono-950 dark:border-mono-200">
                 {history.map((cmd) => {
                   const CmdIcon = getActionIcon(cmd.action.type);
                   return (
                     <div
                       key={cmd.id}
-                      className="px-4 py-2.5 border-b border-[#F3F4F6] dark:border-[#1A1A1A] last:border-b-0 hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
+                      className="px-4 py-2.5 border-b border-mono-950 dark:border-mono-200 last:border-b-0 hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
                     >
                       <div className="flex items-center gap-2">
                         <CmdIcon className={`w-3.5 h-3.5 flex-shrink-0 ${cmd.success ? 'text-teal-500' : 'text-red-400'}`} />
-                        <span className="text-xs text-[#111111] dark:text-white font-medium truncate flex-1">
+                        <span className="text-xs text-mono-100 dark:text-white font-medium truncate flex-1">
                           {cmd.transcript}
                         </span>
-                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] flex-shrink-0">
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 flex-shrink-0">
                           {cmd.timestamp.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>

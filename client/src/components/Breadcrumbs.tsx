@@ -51,7 +51,7 @@ export default function Breadcrumbs() {
         <li>
           <Link
             to="/dashboard"
-            className="breadcrumb-link text-[#9CA3AF] dark:text-[#737373] hover:text-teal-500 dark:hover:text-teal-400 transition-colors flex items-center gap-1"
+            className="breadcrumb-link text-[#9CA3AF] dark:text-mono-500 hover:text-teal-500 dark:hover:text-teal-400 transition-colors flex items-center gap-1"
           >
             <Home className="w-3.5 h-3.5" />
             <span>Accueil</span>
@@ -65,15 +65,15 @@ export default function Breadcrumbs() {
 
           return (
             <li key={path} className="flex items-center gap-2">
-              <ChevronRight className="w-3 h-3 text-[#D1D5DB] dark:text-[#404040] flex-shrink-0" />
+              <ChevronRight className="w-3 h-3 text-[#D1D5DB] dark:text-mono-350 flex-shrink-0" />
               {isLast ? (
-                <span className="text-[#111111] dark:text-white font-semibold truncate max-w-[200px]">
+                <span className="text-mono-100 dark:text-white font-semibold truncate max-w-[200px]">
                   {label}
                 </span>
               ) : (
                 <Link
                   to={path}
-                  className="breadcrumb-link text-[#9CA3AF] dark:text-[#737373] hover:text-teal-500 dark:hover:text-teal-400 transition-colors truncate max-w-[150px]"
+                  className="breadcrumb-link text-[#9CA3AF] dark:text-mono-500 hover:text-teal-500 dark:hover:text-teal-400 transition-colors truncate max-w-[150px]"
                 >
                   {label}
                 </Link>

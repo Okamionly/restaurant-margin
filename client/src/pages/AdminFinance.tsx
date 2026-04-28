@@ -67,14 +67,14 @@ function MetricCard({
   };
 
   return (
-    <div className={`bg-white dark:bg-[#0A0A0A]/50 border rounded-2xl p-5 flex items-start gap-4 ${alert ? 'border-rose-300 dark:border-rose-800' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'}`}>
+    <div className={`bg-white dark:bg-mono-50/50 border rounded-2xl p-5 flex items-start gap-4 ${alert ? 'border-rose-300 dark:border-rose-800' : 'border-mono-900 dark:border-mono-200'}`}>
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${colorMap[color]}`}>
         <Icon className="w-5 h-5" />
       </div>
       <div className="min-w-0">
-        <p className="text-xs text-[#737373] dark:text-[#A3A3A3] font-medium mb-0.5 uppercase tracking-wide">{label}</p>
-        <p className="text-2xl font-bold text-[#111111] dark:text-white leading-tight">{value}</p>
-        {sub && <p className="text-xs text-[#737373] dark:text-[#A3A3A3] mt-0.5">{sub}</p>}
+        <p className="text-xs text-mono-500 dark:text-mono-700 font-medium mb-0.5 uppercase tracking-wide">{label}</p>
+        <p className="text-2xl font-bold text-mono-100 dark:text-white leading-tight">{value}</p>
+        {sub && <p className="text-xs text-mono-500 dark:text-mono-700 mt-0.5">{sub}</p>}
       </div>
     </div>
   );
@@ -93,11 +93,11 @@ function MiniBar({ label, value, max, color }: { label: string; value: number; m
   const pct = max > 0 ? Math.min(100, (value / max) * 100) : 0;
   return (
     <div className="flex items-center gap-3">
-      <span className="text-xs text-[#737373] dark:text-[#A3A3A3] w-28 flex-shrink-0">{label}</span>
-      <div className="flex-1 h-1.5 bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded-full overflow-hidden">
+      <span className="text-xs text-mono-500 dark:text-mono-700 w-28 flex-shrink-0">{label}</span>
+      <div className="flex-1 h-1.5 bg-mono-975 dark:bg-mono-200 rounded-full overflow-hidden">
         <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
-      <span className="text-xs font-medium text-[#111111] dark:text-white w-8 text-right">{value}</span>
+      <span className="text-xs font-medium text-mono-100 dark:text-white w-8 text-right">{value}</span>
     </div>
   );
 }
@@ -147,7 +147,7 @@ export default function AdminFinance() {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3">
         <AlertTriangle className="w-10 h-10 text-rose-500" />
-        <p className="text-[#737373]">{error || 'Impossible de charger le dashboard finance'}</p>
+        <p className="text-mono-500">{error || 'Impossible de charger le dashboard finance'}</p>
         <button
           onClick={fetchFinance}
           className="mt-2 px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm rounded-xl transition-colors"
@@ -168,22 +168,22 @@ export default function AdminFinance() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white tracking-tight">
+          <h1 className="text-2xl font-bold text-mono-100 dark:text-white tracking-tight">
             Finance Dashboard
           </h1>
-          <p className="text-sm text-[#737373] dark:text-[#A3A3A3] mt-0.5">
+          <p className="text-sm text-mono-500 dark:text-mono-700 mt-0.5">
             Metriques SaaS en temps reel — lecture seule Supabase
           </p>
         </div>
         <div className="flex items-center gap-3">
           {lastRefresh && (
-            <span className="text-xs text-[#737373] dark:text-[#A3A3A3]">
+            <span className="text-xs text-mono-500 dark:text-mono-700">
               Actualise {lastRefresh.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
             </span>
           )}
           <button
             onClick={fetchFinance}
-            className="flex items-center gap-2 px-3 py-2 text-sm bg-[#F5F5F5] dark:bg-[#1A1A1A] text-[#111111] dark:text-white rounded-xl hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-sm bg-mono-975 dark:bg-mono-200 text-mono-100 dark:text-white rounded-xl hover:bg-mono-900 dark:hover:bg-mono-300 transition-colors"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             Rafraichir
@@ -226,7 +226,7 @@ export default function AdminFinance() {
 
       {/* Core SaaS metrics */}
       <section>
-        <h2 className="text-sm font-semibold text-[#737373] dark:text-[#A3A3A3] uppercase tracking-wider mb-4">
+        <h2 className="text-sm font-semibold text-mono-500 dark:text-mono-700 uppercase tracking-wider mb-4">
           Metriques SaaS core
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -264,7 +264,7 @@ export default function AdminFinance() {
 
       {/* Unit economics */}
       <section>
-        <h2 className="text-sm font-semibold text-[#737373] dark:text-[#A3A3A3] uppercase tracking-wider mb-4">
+        <h2 className="text-sm font-semibold text-mono-500 dark:text-mono-700 uppercase tracking-wider mb-4">
           Unit economics
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -302,29 +302,29 @@ export default function AdminFinance() {
       {/* User funnel */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Plan breakdown */}
-        <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-          <h3 className="text-sm font-semibold text-[#111111] dark:text-white mb-4">Repartition par plan</h3>
+        <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+          <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-4">Repartition par plan</h3>
           <div className="space-y-3">
-            <MiniBar label="Basic (gratuit)" value={data.totalBasic} max={data.totalUsers} color="bg-[#E5E7EB] dark:bg-[#262626]" />
+            <MiniBar label="Basic (gratuit)" value={data.totalBasic} max={data.totalUsers} color="bg-mono-900 dark:bg-mono-300" />
             <MiniBar label="Pro (29€/mois)" value={data.totalPro} max={data.totalUsers} color="bg-teal-500" />
             <MiniBar label="Business (79€/mois)" value={data.totalBusiness} max={data.totalUsers} color="bg-violet-500" />
             <MiniBar label="Trials actifs" value={data.trialUsersCount} max={data.totalUsers} color="bg-amber-400" />
           </div>
-          <div className="mt-4 pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <div className="flex justify-between text-xs text-[#737373] dark:text-[#A3A3A3]">
+          <div className="mt-4 pt-4 border-t border-mono-900 dark:border-mono-200">
+            <div className="flex justify-between text-xs text-mono-500 dark:text-mono-700">
               <span>Total inscrits</span>
-              <span className="font-semibold text-[#111111] dark:text-white">{data.totalUsers}</span>
+              <span className="font-semibold text-mono-100 dark:text-white">{data.totalUsers}</span>
             </div>
-            <div className="flex justify-between text-xs text-[#737373] dark:text-[#A3A3A3] mt-1">
+            <div className="flex justify-between text-xs text-mono-500 dark:text-mono-700 mt-1">
               <span>Nouveaux ce mois</span>
-              <span className="font-semibold text-[#111111] dark:text-white">{data.newUsersThisMonth}</span>
+              <span className="font-semibold text-mono-100 dark:text-white">{data.newUsersThisMonth}</span>
             </div>
           </div>
         </div>
 
         {/* Stack costs */}
-        <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-          <h3 className="text-sm font-semibold text-[#111111] dark:text-white mb-4">Couts stack mensuel</h3>
+        <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+          <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-4">Couts stack mensuel</h3>
           <div className="space-y-2.5">
             {[
               { label: 'Vercel', value: data.stackCostMonthly.vercel },
@@ -334,15 +334,15 @@ export default function AdminFinance() {
               { label: 'Stripe fees', value: data.stackCostMonthly.stripe_fees },
             ].map((item) => (
               <div key={item.label} className="flex justify-between items-center text-sm">
-                <span className="text-[#737373] dark:text-[#A3A3A3]">{item.label}</span>
-                <span className={`font-medium ${item.value === 0 ? 'text-emerald-600' : 'text-[#111111] dark:text-white'}`}>
+                <span className="text-mono-500 dark:text-mono-700">{item.label}</span>
+                <span className={`font-medium ${item.value === 0 ? 'text-emerald-600' : 'text-mono-100 dark:text-white'}`}>
                   {item.value === 0 ? 'Gratuit' : fmtEur(item.value)}
                 </span>
               </div>
             ))}
-            <div className="flex justify-between items-center text-sm font-semibold border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-2.5 mt-2">
-              <span className="text-[#111111] dark:text-white">Total fixe</span>
-              <span className="text-[#111111] dark:text-white">{fmtEur(data.stackCostMonthly.total)}</span>
+            <div className="flex justify-between items-center text-sm font-semibold border-t border-mono-900 dark:border-mono-200 pt-2.5 mt-2">
+              <span className="text-mono-100 dark:text-white">Total fixe</span>
+              <span className="text-mono-100 dark:text-white">{fmtEur(data.stackCostMonthly.total)}</span>
             </div>
           </div>
           {data.aiCostThisMonth === null && (
@@ -354,24 +354,24 @@ export default function AdminFinance() {
       </div>
 
       {/* Monthly signup chart (text-based since no chart lib) */}
-      <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
-        <h3 className="text-sm font-semibold text-[#111111] dark:text-white mb-4">Inscriptions par mois (12 mois)</h3>
+      <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
+        <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-4">Inscriptions par mois (12 mois)</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-                <th className="text-left py-2 pr-4 text-xs text-[#737373] dark:text-[#A3A3A3] font-medium">Mois</th>
-                <th className="text-right py-2 px-3 text-xs text-[#737373] dark:text-[#A3A3A3] font-medium">Inscrits</th>
-                <th className="text-right py-2 pl-3 text-xs text-[#737373] dark:text-[#A3A3A3] font-medium">Payants</th>
+              <tr className="border-b border-mono-900 dark:border-mono-200">
+                <th className="text-left py-2 pr-4 text-xs text-mono-500 dark:text-mono-700 font-medium">Mois</th>
+                <th className="text-right py-2 px-3 text-xs text-mono-500 dark:text-mono-700 font-medium">Inscrits</th>
+                <th className="text-right py-2 pl-3 text-xs text-mono-500 dark:text-mono-700 font-medium">Payants</th>
               </tr>
             </thead>
             <tbody>
               {data.mrrChart.slice(-6).map((row) => (
-                <tr key={row.month} className="border-b border-[#F5F5F5] dark:border-[#111111] last:border-0">
-                  <td className="py-2 pr-4 text-[#111111] dark:text-white font-medium">{row.month}</td>
-                  <td className="py-2 px-3 text-right text-[#737373] dark:text-[#A3A3A3]">{row.signups}</td>
+                <tr key={row.month} className="border-b border-mono-975 dark:border-mono-100 last:border-0">
+                  <td className="py-2 pr-4 text-mono-100 dark:text-white font-medium">{row.month}</td>
+                  <td className="py-2 px-3 text-right text-mono-500 dark:text-mono-700">{row.signups}</td>
                   <td className="py-2 pl-3 text-right">
-                    <span className={`font-medium ${row.paid > 0 ? 'text-emerald-600' : 'text-[#737373] dark:text-[#A3A3A3]'}`}>
+                    <span className={`font-medium ${row.paid > 0 ? 'text-emerald-600' : 'text-mono-500 dark:text-mono-700'}`}>
                       {row.paid}
                     </span>
                   </td>
@@ -383,24 +383,24 @@ export default function AdminFinance() {
       </div>
 
       {/* AI cost section */}
-      <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+      <div className="bg-white dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
         <div className="flex items-center gap-2 mb-4">
           <Zap className="w-4 h-4 text-violet-500" />
-          <h3 className="text-sm font-semibold text-[#111111] dark:text-white">Instrumentation cout IA (Anthropic)</h3>
+          <h3 className="text-sm font-semibold text-mono-100 dark:text-white">Instrumentation cout IA (Anthropic)</h3>
         </div>
         {data.aiCostThisMonth !== null ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div>
-              <p className="text-xs text-[#737373] dark:text-[#A3A3A3]">Cout ce mois</p>
-              <p className="text-xl font-bold text-[#111111] dark:text-white">{fmtEur(data.aiCostThisMonth)}</p>
+              <p className="text-xs text-mono-500 dark:text-mono-700">Cout ce mois</p>
+              <p className="text-xl font-bold text-mono-100 dark:text-white">{fmtEur(data.aiCostThisMonth)}</p>
             </div>
             <div>
-              <p className="text-xs text-[#737373] dark:text-[#A3A3A3]">Appels IA ce mois</p>
-              <p className="text-xl font-bold text-[#111111] dark:text-white">{data.aiCallsThisMonth ?? 0}</p>
+              <p className="text-xs text-mono-500 dark:text-mono-700">Appels IA ce mois</p>
+              <p className="text-xl font-bold text-mono-100 dark:text-white">{data.aiCallsThisMonth ?? 0}</p>
             </div>
             <div>
-              <p className="text-xs text-[#737373] dark:text-[#A3A3A3]">Cout/appel moyen</p>
-              <p className="text-xl font-bold text-[#111111] dark:text-white">
+              <p className="text-xs text-mono-500 dark:text-mono-700">Cout/appel moyen</p>
+              <p className="text-xl font-bold text-mono-100 dark:text-white">
                 {data.aiCallsThisMonth && data.aiCallsThisMonth > 0
                   ? fmtEur(data.aiCostThisMonth / data.aiCallsThisMonth)
                   : 'N/A'}
@@ -440,7 +440,7 @@ export default function AdminFinance() {
       )}
 
       {/* Footer */}
-      <div className="text-xs text-[#A3A3A3] dark:text-[#737373] text-center pb-4">
+      <div className="text-xs text-mono-700 dark:text-mono-500 text-center pb-4">
         Donnees extraites de Supabase (read-only) — {data.generatedAt ? new Date(data.generatedAt).toLocaleString('fr-FR') : ''}
         {' | '}Les MRR/ARR reels necessitent Stripe Live + webhooks actifs
       </div>

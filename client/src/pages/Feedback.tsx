@@ -43,8 +43,8 @@ function StarRating({ rating, size = 'md', interactive = false, onChange }: {
           key={i}
           className={`${sizeMap[size]} transition-colors ${
             i <= (hover || rating)
-              ? 'fill-[#111111] dark:fill-white text-[#111111] dark:text-white'
-              : 'text-[#D1D5DB] dark:text-[#404040]'
+              ? 'fill-mono-100 dark:fill-white text-mono-100 dark:text-white'
+              : 'text-[#D1D5DB] dark:text-mono-350'
           } ${interactive ? 'cursor-pointer' : ''}`}
           onMouseEnter={() => interactive && setHover(i)}
           onMouseLeave={() => interactive && setHover(0)}
@@ -268,7 +268,7 @@ export default function FeedbackPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" />
+        <Loader2 className="w-8 h-8 animate-spin text-mono-100 dark:text-white" />
       </div>
     );
   }
@@ -278,17 +278,17 @@ export default function FeedbackPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+          <h1 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
             Avis clients
           </h1>
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mt-1">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700 mt-1">
             Suivez la satisfaction de vos clients en temps reel
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={exportCSV}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border border-[#E5E7EB] dark:border-[#262626] bg-white dark:bg-black text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border border-mono-900 dark:border-mono-300 bg-white dark:bg-black text-mono-100 dark:text-white hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
           >
             <Download className="w-4 h-4" />
             Export CSV
@@ -297,21 +297,21 @@ export default function FeedbackPage() {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors border ${
               showFilters
-                ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] border-[#111111] dark:border-white'
-                : 'bg-white dark:bg-black text-[#111111] dark:text-white border-[#E5E7EB] dark:border-[#262626] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 border-mono-100 dark:border-white'
+                : 'bg-white dark:bg-black text-mono-100 dark:text-white border-mono-900 dark:border-mono-300 hover:bg-mono-950 dark:hover:bg-[#171717]'
             }`}
           >
             <Filter className="w-4 h-4" />
             Filtres
             {activeFilters > 0 && (
-              <span className="w-5 h-5 flex items-center justify-center rounded-full bg-white dark:bg-[#111111] text-[#111111] dark:text-white text-[10px] font-bold">
+              <span className="w-5 h-5 flex items-center justify-center rounded-full bg-white dark:bg-mono-100 text-mono-100 dark:text-white text-[10px] font-bold">
                 {activeFilters}
               </span>
             )}
           </button>
           <button
             onClick={() => setShowLinkModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
           >
             <Send className="w-4 h-4" />
             Demander un avis
@@ -321,11 +321,11 @@ export default function FeedbackPage() {
 
       {/* Filters */}
       {showFilters && (
-        <div className="flex flex-wrap items-center gap-3 p-4 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl">
+        <div className="flex flex-wrap items-center gap-3 p-4 bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl">
           <select
             value={period}
             onChange={e => setPeriod(e.target.value)}
-            className="px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+            className="px-3 py-2 bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-xl text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
           >
             <option value="">Toute la periode</option>
             <option value="7">7 derniers jours</option>
@@ -336,7 +336,7 @@ export default function FeedbackPage() {
           <select
             value={ratingFilter}
             onChange={e => setRatingFilter(e.target.value)}
-            className="px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+            className="px-3 py-2 bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-xl text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
           >
             <option value="">Toutes les notes</option>
             <option value="5">5 etoiles</option>
@@ -348,7 +348,7 @@ export default function FeedbackPage() {
           <select
             value={sourceFilter}
             onChange={e => setSourceFilter(e.target.value)}
-            className="px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+            className="px-3 py-2 bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-xl text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
           >
             <option value="">Toutes les sources</option>
             <option value="app">Application</option>
@@ -359,7 +359,7 @@ export default function FeedbackPage() {
           <select
             value={sortOrder}
             onChange={e => setSortOrder(e.target.value as any)}
-            className="px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+            className="px-3 py-2 bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-xl text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
           >
             <option value="newest">Plus recents</option>
             <option value="oldest">Plus anciens</option>
@@ -369,7 +369,7 @@ export default function FeedbackPage() {
           {activeFilters > 0 && (
             <button
               onClick={() => { setPeriod(''); setRatingFilter(''); setSourceFilter(''); setSortOrder('newest'); }}
-              className="flex items-center gap-1.5 px-3 py-2 text-sm text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors"
             >
               <X className="w-3.5 h-3.5" />
               Reinitialiser
@@ -382,65 +382,65 @@ export default function FeedbackPage() {
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {/* Average Rating */}
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-5 flex flex-col items-center justify-center">
-            <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-3">
-              <Star className="w-5 h-5 fill-[#111111] dark:fill-white text-[#111111] dark:text-white" />
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl p-5 flex flex-col items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-mono-950 dark:bg-[#171717] flex items-center justify-center mb-3">
+              <Star className="w-5 h-5 fill-mono-100 dark:fill-white text-mono-100 dark:text-white" />
             </div>
-            <p className="text-3xl font-bold text-[#111111] dark:text-white font-satoshi">
+            <p className="text-3xl font-bold text-mono-100 dark:text-white font-satoshi">
               {stats.avgRating.toFixed(1)}
             </p>
             <StarRating rating={Math.round(stats.avgRating)} size="sm" />
-            <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-1.5">Note moyenne</p>
+            <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-1.5">Note moyenne</p>
           </div>
 
           {/* Total Reviews */}
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-5 flex flex-col items-center justify-center">
-            <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-3">
-              <MessageCircle className="w-5 h-5 text-[#111111] dark:text-white" />
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl p-5 flex flex-col items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-mono-950 dark:bg-[#171717] flex items-center justify-center mb-3">
+              <MessageCircle className="w-5 h-5 text-mono-100 dark:text-white" />
             </div>
-            <p className="text-3xl font-bold text-[#111111] dark:text-white font-satoshi">
+            <p className="text-3xl font-bold text-mono-100 dark:text-white font-satoshi">
               {stats.totalCount}
             </p>
-            <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-1.5">Avis au total</p>
+            <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-1.5">Avis au total</p>
           </div>
 
           {/* NPS Score */}
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-5 flex flex-col items-center justify-center">
-            <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-3">
-              <Award className="w-5 h-5 text-[#111111] dark:text-white" />
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl p-5 flex flex-col items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-mono-950 dark:bg-[#171717] flex items-center justify-center mb-3">
+              <Award className="w-5 h-5 text-mono-100 dark:text-white" />
             </div>
             <p className={`text-3xl font-bold font-satoshi ${
               nps !== null && nps >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
             }`}>
               {nps !== null ? (nps >= 0 ? `+${nps}` : nps) : '--'}
             </p>
-            <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-1.5">Score NPS</p>
+            <p className="text-xs text-[#6B7280] dark:text-mono-500 mt-1.5">Score NPS</p>
           </div>
 
           {/* Sentiment */}
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-3 text-center">Sentiment</p>
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl p-5">
+            <p className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-mono-500 mb-3 text-center">Sentiment</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Smile className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                <div className="flex-1 h-2 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden">
                   <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${stats.totalCount > 0 ? (sentimentBreakdown.positive / stats.totalCount) * 100 : 0}%` }} />
                 </div>
-                <span className="text-xs font-medium text-[#111111] dark:text-white w-8 text-right">{sentimentBreakdown.positive}</span>
+                <span className="text-xs font-medium text-mono-100 dark:text-white w-8 text-right">{sentimentBreakdown.positive}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Meh className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                <div className="flex-1 h-2 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden">
                   <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${stats.totalCount > 0 ? (sentimentBreakdown.neutral / stats.totalCount) * 100 : 0}%` }} />
                 </div>
-                <span className="text-xs font-medium text-[#111111] dark:text-white w-8 text-right">{sentimentBreakdown.neutral}</span>
+                <span className="text-xs font-medium text-mono-100 dark:text-white w-8 text-right">{sentimentBreakdown.neutral}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Frown className="w-4 h-4 text-red-500 flex-shrink-0" />
-                <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                <div className="flex-1 h-2 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden">
                   <div className="h-full bg-red-500 rounded-full transition-all" style={{ width: `${stats.totalCount > 0 ? (sentimentBreakdown.negative / stats.totalCount) * 100 : 0}%` }} />
                 </div>
-                <span className="text-xs font-medium text-[#111111] dark:text-white w-8 text-right">{sentimentBreakdown.negative}</span>
+                <span className="text-xs font-medium text-mono-100 dark:text-white w-8 text-right">{sentimentBreakdown.negative}</span>
               </div>
             </div>
           </div>
@@ -451,10 +451,10 @@ export default function FeedbackPage() {
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Distribution */}
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-6">
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">Repartition des notes</p>
-              <BarChart3 className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+              <p className="text-sm font-semibold text-mono-100 dark:text-white font-satoshi">Repartition des notes</p>
+              <BarChart3 className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
             </div>
             <div className="space-y-3">
               {[5, 4, 3, 2, 1].map(rating => {
@@ -463,18 +463,18 @@ export default function FeedbackPage() {
                 return (
                   <div key={rating} className="flex items-center gap-3">
                     <div className="flex items-center gap-1 w-12">
-                      <span className="text-sm font-semibold text-[#111111] dark:text-white">{rating}</span>
-                      <Star className="w-3.5 h-3.5 fill-[#111111] dark:fill-white text-[#111111] dark:text-white" />
+                      <span className="text-sm font-semibold text-mono-100 dark:text-white">{rating}</span>
+                      <Star className="w-3.5 h-3.5 fill-mono-100 dark:fill-white text-mono-100 dark:text-white" />
                     </div>
-                    <div className="flex-1 h-4 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                    <div className="flex-1 h-4 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-700 ${getRatingColor(rating)}`}
                         style={{ width: `${maxDistrib > 0 ? (count / maxDistrib) * 100 : 0}%` }}
                       />
                     </div>
                     <div className="w-16 text-right">
-                      <span className="text-xs font-medium text-[#111111] dark:text-white">{count}</span>
-                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-1">({pct}%)</span>
+                      <span className="text-xs font-medium text-mono-100 dark:text-white">{count}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500 ml-1">({pct}%)</span>
                     </div>
                   </div>
                 );
@@ -483,69 +483,69 @@ export default function FeedbackPage() {
           </div>
 
           {/* Trend */}
-          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-6">
+          <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">Tendance (12 semaines)</p>
-              <TrendingUp className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+              <p className="text-sm font-semibold text-mono-100 dark:text-white font-satoshi">Tendance (12 semaines)</p>
+              <TrendingUp className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
             </div>
             <div className="flex items-end gap-1 h-36">
               {stats.trend.map((t, i) => {
                 const height = t.avg > 0 ? (t.avg / 5) * 100 : 0;
-                const color = t.avg >= 4 ? 'bg-emerald-500' : t.avg >= 3 ? 'bg-amber-500' : t.avg > 0 ? 'bg-red-500' : 'bg-[#E5E7EB] dark:bg-[#262626]';
+                const color = t.avg >= 4 ? 'bg-emerald-500' : t.avg >= 3 ? 'bg-amber-500' : t.avg > 0 ? 'bg-red-500' : 'bg-mono-900 dark:bg-mono-300';
                 return (
                   <div key={i} className="flex-1 flex flex-col items-center justify-end h-full group relative">
                     <div
                       className={`w-full ${color} rounded-t-sm transition-all duration-500 min-h-[2px]`}
                       style={{ height: `${height}%` }}
                     />
-                    <div className="absolute bottom-full mb-2 hidden group-hover:block bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs py-1.5 px-2.5 rounded-lg whitespace-nowrap z-10 shadow-lg">
+                    <div className="absolute bottom-full mb-2 hidden group-hover:block bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-xs py-1.5 px-2.5 rounded-lg whitespace-nowrap z-10 shadow-lg">
                       <p className="font-semibold">{t.avg > 0 ? `${t.avg.toFixed(1)}/5` : 'Aucun avis'}</p>
-                      <p className="text-white/70 dark:text-[#111111]/70">{t.count} avis</p>
-                      <p className="text-white/50 dark:text-[#111111]/50">Sem. du {new Date(t.week).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</p>
+                      <p className="text-white/70 dark:text-mono-100/70">{t.count} avis</p>
+                      <p className="text-white/50 dark:text-mono-100/50">Sem. du {new Date(t.week).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</p>
                     </div>
                   </div>
                 );
               })}
             </div>
             <div className="flex justify-between mt-2">
-              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">-12 sem.</span>
-              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Aujourd'hui</span>
+              <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">-12 sem.</span>
+              <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Aujourd'hui</span>
             </div>
           </div>
         </div>
       )}
 
       {/* Feedback Cards */}
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl">
-        <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">
+      <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl">
+        <div className="px-6 py-4 border-b border-mono-900 dark:border-mono-300 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-mono-100 dark:text-white font-satoshi">
             Avis recents
           </h2>
-          <span className="text-xs px-2.5 py-1 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] font-medium">
+          <span className="text-xs px-2.5 py-1 rounded-lg bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 font-medium">
             {total} resultats
           </span>
         </div>
 
         {sortedFeedbacks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-6">
-            <div className="w-16 h-16 rounded-full bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-4">
-              <MessageSquare className="w-8 h-8 text-[#D1D5DB] dark:text-[#404040]" />
+            <div className="w-16 h-16 rounded-full bg-mono-950 dark:bg-[#171717] flex items-center justify-center mb-4">
+              <MessageSquare className="w-8 h-8 text-[#D1D5DB] dark:text-mono-350" />
             </div>
-            <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm font-medium mb-1">
+            <p className="text-[#6B7280] dark:text-mono-700 text-sm font-medium mb-1">
               Aucun avis pour le moment
             </p>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-4 text-center max-w-xs">
+            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-4 text-center max-w-xs">
               Partagez le lien de votre formulaire pour commencer a collecter des avis
             </p>
             <button
               onClick={() => setShowLinkModal(true)}
-              className="px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-medium hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+              className="px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-xl text-sm font-medium hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
             >
               Partager le formulaire
             </button>
           </div>
         ) : (
-          <div className="divide-y divide-[#E5E7EB] dark:divide-[#262626]">
+          <div className="divide-y divide-mono-900 dark:divide-mono-300">
             {sortedFeedbacks.map(fb => {
               const sentiment = getSentiment(fb.rating);
               const SentimentIcon = sentiment.icon;
@@ -554,7 +554,7 @@ export default function FeedbackPage() {
               const hasLongComment = fb.comment && fb.comment.length > 150;
 
               return (
-                <div key={fb.id} className="px-6 py-5 hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A] transition-colors">
+                <div key={fb.id} className="px-6 py-5 hover:bg-[#F9FAFB] dark:hover:bg-mono-50 transition-colors">
                   {/* Card Header */}
                   <div className="flex items-start gap-4">
                     {/* Rating Circle */}
@@ -568,7 +568,7 @@ export default function FeedbackPage() {
                         fb.rating === 3 ? 'text-amber-700 dark:text-amber-400' :
                         'text-red-700 dark:text-red-400'
                       }`}>{fb.rating}</span>
-                      <span className="text-[8px] font-medium text-[#9CA3AF] dark:text-[#737373]">/5</span>
+                      <span className="text-[8px] font-medium text-[#9CA3AF] dark:text-mono-500">/5</span>
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -581,7 +581,7 @@ export default function FeedbackPage() {
                           {sentiment.label}
                         </span>
                         {/* Source badge */}
-                        <span className="text-xs px-2 py-0.5 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                        <span className="text-xs px-2 py-0.5 rounded-lg bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
                           {sourceIcon(fb.source)} {sourceLabel(fb.source)}
                         </span>
                       </div>
@@ -589,7 +589,7 @@ export default function FeedbackPage() {
                       {/* Comment */}
                       {fb.comment ? (
                         <div>
-                          <p className="text-sm text-[#111111] dark:text-white leading-relaxed">
+                          <p className="text-sm text-mono-100 dark:text-white leading-relaxed">
                             {hasLongComment && !isExpanded
                               ? fb.comment.slice(0, 150) + '...'
                               : fb.comment
@@ -598,7 +598,7 @@ export default function FeedbackPage() {
                           {hasLongComment && (
                             <button
                               onClick={() => toggleExpand(fb.id)}
-                              className="flex items-center gap-1 mt-1 text-xs text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors"
+                              className="flex items-center gap-1 mt-1 text-xs text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors"
                             >
                               {isExpanded ? (
                                 <><ChevronUp className="w-3 h-3" /> Voir moins</>
@@ -609,7 +609,7 @@ export default function FeedbackPage() {
                           )}
                         </div>
                       ) : (
-                        <p className="text-sm text-[#9CA3AF] dark:text-[#737373] italic">
+                        <p className="text-sm text-[#9CA3AF] dark:text-mono-500 italic">
                           Aucun commentaire
                         </p>
                       )}
@@ -620,14 +620,14 @@ export default function FeedbackPage() {
                           onClick={() => { setReplyingTo(isReplying ? null : fb.id); setReplyText(''); }}
                           className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
                             isReplying
-                              ? 'text-[#111111] dark:text-white'
-                              : 'text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white'
+                              ? 'text-mono-100 dark:text-white'
+                              : 'text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white'
                           }`}
                         >
                           <Reply className="w-3.5 h-3.5" />
                           Repondre
                         </button>
-                        <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                        <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-mono-500">
                           <Clock className="w-3 h-3" />
                           {relativeDate(fb.createdAt)}
                         </div>
@@ -641,20 +641,20 @@ export default function FeedbackPage() {
                             value={replyText}
                             onChange={e => setReplyText(e.target.value)}
                             placeholder="Ecrivez votre reponse..."
-                            className="flex-1 px-3.5 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white transition-shadow"
+                            className="flex-1 px-3.5 py-2 bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-xl text-sm text-mono-100 dark:text-white placeholder-[#9CA3AF] dark:placeholder-mono-500 focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white transition-shadow"
                             onKeyDown={e => e.key === 'Enter' && handleReply(fb.id)}
                             autoFocus
                           />
                           <button
                             onClick={() => handleReply(fb.id)}
                             disabled={!replyText.trim()}
-                            className="px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-medium hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="px-4 py-2 bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-xl text-sm font-medium hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             <Send className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => { setReplyingTo(null); setReplyText(''); }}
-                            className="p-2 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+                            className="p-2 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -670,24 +670,24 @@ export default function FeedbackPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-[#E5E7EB] dark:border-[#262626] flex items-center justify-between">
-            <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+          <div className="px-6 py-4 border-t border-mono-900 dark:border-mono-300 flex items-center justify-between">
+            <span className="text-xs text-[#6B7280] dark:text-mono-700">
               Page {page} sur {totalPages}
             </span>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setPage(1)}
                 disabled={page <= 1}
-                className="px-2.5 py-1.5 rounded-lg text-xs font-medium hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 transition-colors text-[#6B7280] dark:text-[#A3A3A3]"
+                className="px-2.5 py-1.5 rounded-lg text-xs font-medium hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30 transition-colors text-[#6B7280] dark:text-mono-700"
               >
                 Debut
               </button>
               <button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page <= 1}
-                className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 transition-colors"
+                className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30 transition-colors"
               >
-                <ChevronLeft className="w-4 h-4 text-[#111111] dark:text-white" />
+                <ChevronLeft className="w-4 h-4 text-mono-100 dark:text-white" />
               </button>
               {/* Page numbers */}
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -700,8 +700,8 @@ export default function FeedbackPage() {
                     onClick={() => setPage(p)}
                     className={`w-8 h-8 rounded-lg text-xs font-medium transition-colors ${
                       p === page
-                        ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
-                        : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                        ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100'
+                        : 'text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717]'
                     }`}
                   >
                     {p}
@@ -711,14 +711,14 @@ export default function FeedbackPage() {
               <button
                 onClick={() => setPage(Math.min(totalPages, page + 1))}
                 disabled={page >= totalPages}
-                className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 transition-colors"
+                className="p-1.5 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30 transition-colors"
               >
-                <ChevronRight className="w-4 h-4 text-[#111111] dark:text-white" />
+                <ChevronRight className="w-4 h-4 text-mono-100 dark:text-white" />
               </button>
               <button
                 onClick={() => setPage(totalPages)}
                 disabled={page >= totalPages}
-                className="px-2.5 py-1.5 rounded-lg text-xs font-medium hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 transition-colors text-[#6B7280] dark:text-[#A3A3A3]"
+                className="px-2.5 py-1.5 rounded-lg text-xs font-medium hover:bg-mono-950 dark:hover:bg-[#171717] disabled:opacity-30 transition-colors text-[#6B7280] dark:text-mono-700"
               >
                 Fin
               </button>
@@ -730,18 +730,18 @@ export default function FeedbackPage() {
       {/* Link / QR Modal */}
       <Modal isOpen={showLinkModal} onClose={() => setShowLinkModal(false)} title="Demander un avis">
         <div className="space-y-5">
-          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <p className="text-sm text-[#6B7280] dark:text-mono-700">
             Partagez ce lien avec vos clients pour recueillir leurs avis. Le formulaire est accessible sans inscription.
           </p>
 
           {/* Link */}
           <div className="flex items-center gap-2">
-            <div className="flex-1 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl px-3.5 py-2.5 text-sm text-[#111111] dark:text-white truncate font-mono">
+            <div className="flex-1 bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-xl px-3.5 py-2.5 text-sm text-mono-100 dark:text-white truncate font-mono">
               {feedbackLink}
             </div>
             <button
               onClick={copyLink}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-medium hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors flex-shrink-0"
+              className="flex items-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-xl text-sm font-medium hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors flex-shrink-0"
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               {copied ? 'Copie' : 'Copier'}
@@ -750,10 +750,10 @@ export default function FeedbackPage() {
 
           {/* QR Code placeholder */}
           <div className="flex flex-col items-center gap-3 py-4">
-            <div className="w-48 h-48 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-2xl flex items-center justify-center">
-              <QrCode className="w-24 h-24 text-[#D1D5DB] dark:text-[#404040]" />
+            <div className="w-48 h-48 bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-2xl flex items-center justify-center">
+              <QrCode className="w-24 h-24 text-[#D1D5DB] dark:text-mono-350" />
             </div>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+            <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
               Scannez ou partagez le QR code
             </p>
           </div>
@@ -764,7 +764,7 @@ export default function FeedbackPage() {
               href={feedbackLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm font-medium text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-mono-900 dark:border-mono-300 rounded-xl text-sm font-medium text-mono-100 dark:text-white hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
             >
               <ExternalLink className="w-4 h-4" />
               Ouvrir le formulaire

@@ -138,17 +138,17 @@ export default function LogicielMargeRestaurant() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link to="/pricing" className="hidden sm:inline-flex text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+            <Link to="/pricing" className="hidden sm:inline-flex text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
               Tarifs
             </Link>
-            <Link to="/demo" className="hidden sm:inline-flex text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+            <Link to="/demo" className="hidden sm:inline-flex text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
               Demo
             </Link>
             <Link
@@ -163,11 +163,11 @@ export default function LogicielMargeRestaurant() {
       </nav>
 
       {/* ── Breadcrumbs ── */}
-      <div className="bg-[#FAFAFA] border-b border-[#E5E7EB] py-3 px-4">
-        <div className="max-w-6xl mx-auto text-xs text-[#737373] flex items-center gap-2 flex-wrap">
+      <div className="bg-mono-1000 border-b border-mono-900 py-3 px-4">
+        <div className="max-w-6xl mx-auto text-xs text-mono-500 flex items-center gap-2 flex-wrap">
           <Link to="/" className="hover:text-teal-600">Accueil</Link>
           <span>/</span>
-          <span className="text-[#111111] font-medium">Logiciel marge restaurant</span>
+          <span className="text-mono-100 font-medium">Logiciel marge restaurant</span>
         </div>
       </div>
 
@@ -178,10 +178,10 @@ export default function LogicielMargeRestaurant() {
             <Sparkles className="w-3.5 h-3.5" />
             #1 Logiciel marge restaurant France
           </span>
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#111111] leading-tight mb-6 max-w-4xl mx-auto">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-mono-100 leading-tight mb-6 max-w-4xl mx-auto">
             Logiciel de marge restaurant : calcul automatique 2026
           </h1>
-          <p className="text-lg sm:text-xl text-[#525252] max-w-3xl mx-auto leading-relaxed mb-8">
+          <p className="text-lg sm:text-xl text-mono-400 max-w-3xl mx-auto leading-relaxed mb-8">
             Le logiciel SaaS qui automatise vos fiches techniques, vos prix fournisseurs et vos
             calculs de marge. <strong>+5 points de marge brute en 6 mois en moyenne.</strong>
           </p>
@@ -196,13 +196,13 @@ export default function LogicielMargeRestaurant() {
             </Link>
             <Link
               to="/demo"
-              className="inline-flex items-center gap-2 px-8 py-4 border-2 border-[#111111] text-[#111111] font-semibold rounded-full hover:bg-[#111111] hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-4 border-2 border-mono-100 text-mono-100 font-semibold rounded-full hover:bg-mono-100 hover:text-white transition-colors"
             >
               Voir la demo
             </Link>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-[#737373]">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-mono-500">
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans carte bancaire</span>
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans engagement</span>
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> 500+ restaurants clients</span>
@@ -212,21 +212,21 @@ export default function LogicielMargeRestaurant() {
       </header>
 
       {/* ── Section comparative ── */}
-      <section className="py-16 px-4 bg-[#FAFAFA]">
+      <section className="py-16 px-4 bg-mono-1000">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
               RestauMargin vs alternatives du marche
             </h2>
-            <p className="text-lg text-[#525252] max-w-2xl mx-auto">
+            <p className="text-lg text-mono-400 max-w-2xl mx-auto">
               Comparatif factuel des principaux logiciels de marge restaurant en France
             </p>
           </div>
 
-          <div className="overflow-x-auto bg-white rounded-2xl border border-[#E5E7EB] shadow-sm">
+          <div className="overflow-x-auto bg-white rounded-2xl border border-mono-900 shadow-sm">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#F5F5F5] text-[#404040]">
+                <tr className="bg-mono-975 text-mono-350">
                   <th className="text-left py-4 px-4 font-semibold">Fonctionnalite</th>
                   <th className="text-center py-4 px-4 font-bold text-teal-700 bg-teal-50">RestauMargin</th>
                   <th className="text-center py-4 px-4 font-semibold">Ratatool</th>
@@ -234,7 +234,7 @@ export default function LogicielMargeRestaurant() {
                   <th className="text-center py-4 px-4 font-semibold">Excel</th>
                 </tr>
               </thead>
-              <tbody className="text-[#404040]">
+              <tbody className="text-mono-350">
                 {[
                   { f: 'Fiches techniques automatisees', r: true, ra: true, y: true, e: false },
                   { f: 'Calcul food cost temps reel', r: true, ra: true, y: true, e: false },
@@ -252,8 +252,8 @@ export default function LogicielMargeRestaurant() {
                   { f: 'Engagement', r: 'Aucun', ra: '12 mois', y: '12 mois', e: 'N/A' },
                   { f: 'Essai gratuit', r: '7 jours', ra: '14 jours', y: 'Demo seulement', e: 'N/A' },
                 ].map((row, i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}>
-                    <td className="py-3 px-4 font-medium text-[#111111]">{row.f}</td>
+                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
+                    <td className="py-3 px-4 font-medium text-mono-100">{row.f}</td>
                     <td className="py-3 px-4 text-center bg-teal-50/50">
                       {typeof row.r === 'boolean' ? (row.r ? <Check className="w-5 h-5 text-emerald-600 mx-auto" /> : <X className="w-5 h-5 text-red-500 mx-auto" />) : <strong className="text-teal-700">{row.r}</strong>}
                     </td>
@@ -271,7 +271,7 @@ export default function LogicielMargeRestaurant() {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-[#737373] mt-4 text-center">
+          <p className="text-xs text-mono-500 mt-4 text-center">
             Comparatif etabli en avril 2026 sur la base des informations publiees par les editeurs.
           </p>
         </div>
@@ -281,10 +281,10 @@ export default function LogicielMargeRestaurant() {
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
               Pourquoi un logiciel et pas Excel ?
             </h2>
-            <p className="text-lg text-[#525252] max-w-2xl mx-auto">
+            <p className="text-lg text-mono-400 max-w-2xl mx-auto">
               5 raisons pour lesquelles les restaurateurs serieux passent au logiciel des qu'ils ont plus de 30 plats.
             </p>
           </div>
@@ -322,12 +322,12 @@ export default function LogicielMargeRestaurant() {
                 desc: 'Modifiez vos fiches depuis votre cuisine sur tablette, votre comptable depuis son bureau. Sauvegardes automatiques. Excel = fichier local fragile.',
               },
             ].map((reason, i) => (
-              <div key={i} className="bg-white border border-[#E5E7EB] rounded-2xl p-6 hover:border-teal-300 hover:shadow-md transition-all">
+              <div key={i} className="bg-white border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-md transition-all">
                 <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center mb-4">
                   {reason.icon}
                 </div>
-                <h3 className="font-bold text-[#111111] mb-2 text-lg">{reason.title}</h3>
-                <p className="text-sm text-[#525252] leading-relaxed">{reason.desc}</p>
+                <h3 className="font-bold text-mono-100 mb-2 text-lg">{reason.title}</h3>
+                <p className="text-sm text-mono-400 leading-relaxed">{reason.desc}</p>
               </div>
             ))}
           </div>
@@ -335,13 +335,13 @@ export default function LogicielMargeRestaurant() {
       </section>
 
       {/* ── Fonctionnalites RestauMargin ── */}
-      <section className="py-16 px-4 bg-[#FAFAFA]">
+      <section className="py-16 px-4 bg-mono-1000">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
               Fonctionnalites RestauMargin
             </h2>
-            <p className="text-lg text-[#525252] max-w-2xl mx-auto">
+            <p className="text-lg text-mono-400 max-w-2xl mx-auto">
               Le logiciel le plus complet du marche, concu par des restaurateurs pour des restaurateurs.
             </p>
           </div>
@@ -357,18 +357,18 @@ export default function LogicielMargeRestaurant() {
               { icon: <TrendingUp className="w-6 h-6" />, title: 'Mercuriale fournisseurs', desc: 'Suivi historique des prix, comparaison fournisseurs, negociation IA des hausses.' },
               { icon: <Cloud className="w-6 h-6" />, title: 'Multi-restaurants', desc: 'Pilotage centralise de plusieurs etablissements. Comparatifs et reporting consolide.' },
             ].map((feat, i) => (
-              <div key={i} className="bg-white border border-[#E5E7EB] rounded-2xl p-5 hover:border-teal-300 transition-colors">
+              <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5 hover:border-teal-300 transition-colors">
                 <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-lg flex items-center justify-center mb-3">
                   {feat.icon}
                 </div>
-                <h3 className="font-bold text-[#111111] mb-2">{feat.title}</h3>
-                <p className="text-sm text-[#525252] leading-relaxed">{feat.desc}</p>
+                <h3 className="font-bold text-mono-100 mb-2">{feat.title}</h3>
+                <p className="text-sm text-mono-400 leading-relaxed">{feat.desc}</p>
               </div>
             ))}
           </div>
 
           <div className="text-center mt-12">
-            <Link to="/demo" className="inline-flex items-center gap-2 px-6 py-3 bg-[#111111] text-white font-semibold rounded-full hover:bg-[#333] transition-colors">
+            <Link to="/demo" className="inline-flex items-center gap-2 px-6 py-3 bg-mono-100 text-white font-semibold rounded-full hover:bg-[#333] transition-colors">
               Voir la demo interactive
               <ArrowRight className="w-4 h-4" />
             </Link>
@@ -379,10 +379,10 @@ export default function LogicielMargeRestaurant() {
       {/* ── Tarifs ── */}
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
             Tarifs simples, sans engagement
           </h2>
-          <p className="text-lg text-[#525252] mb-12">
+          <p className="text-lg text-mono-400 mb-12">
             Choisissez le plan qui correspond a votre etablissement. Resiliable a tout moment.
           </p>
 
@@ -391,11 +391,11 @@ export default function LogicielMargeRestaurant() {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-teal-600 text-white text-xs font-bold px-4 py-1 rounded-full">
                 LE PLUS POPULAIRE
               </div>
-              <h3 className="font-extrabold text-[#111111] text-2xl mb-2">Pro</h3>
-              <p className="text-sm text-[#525252] mb-4">Pour un restaurant independant</p>
+              <h3 className="font-extrabold text-mono-100 text-2xl mb-2">Pro</h3>
+              <p className="text-sm text-mono-400 mb-4">Pour un restaurant independant</p>
               <div className="mb-6">
-                <span className="text-5xl font-extrabold text-[#111111]">29 EUR</span>
-                <span className="text-[#737373]">/mois</span>
+                <span className="text-5xl font-extrabold text-mono-100">29 EUR</span>
+                <span className="text-mono-500">/mois</span>
               </div>
               <ul className="space-y-2 text-sm mb-8">
                 {['Fiches techniques illimitees', 'Scan de factures OCR', '19 actions IA', 'Menu engineering', 'Alertes temps reel', 'Support email <24h'].map((f, i) => (
@@ -410,12 +410,12 @@ export default function LogicielMargeRestaurant() {
               </Link>
             </div>
 
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 text-left">
-              <h3 className="font-extrabold text-[#111111] text-2xl mb-2">Business</h3>
-              <p className="text-sm text-[#525252] mb-4">Pour les groupes multi-restaurants</p>
+            <div className="bg-white border border-mono-900 rounded-2xl p-8 text-left">
+              <h3 className="font-extrabold text-mono-100 text-2xl mb-2">Business</h3>
+              <p className="text-sm text-mono-400 mb-4">Pour les groupes multi-restaurants</p>
               <div className="mb-6">
-                <span className="text-5xl font-extrabold text-[#111111]">79 EUR</span>
-                <span className="text-[#737373]">/mois</span>
+                <span className="text-5xl font-extrabold text-mono-100">79 EUR</span>
+                <span className="text-mono-500">/mois</span>
               </div>
               <ul className="space-y-2 text-sm mb-8">
                 {['Tout le plan Pro', 'Multi-restaurants illimites', 'Reporting consolide', 'API & integrations', 'Onboarding personnalise', 'Support prioritaire <2h'].map((f, i) => (
@@ -424,43 +424,43 @@ export default function LogicielMargeRestaurant() {
               </ul>
               <Link
                 to="/login?mode=register"
-                className="block text-center w-full py-3 bg-[#111111] hover:bg-[#333] text-white font-bold rounded-full transition-colors"
+                className="block text-center w-full py-3 bg-mono-100 hover:bg-[#333] text-white font-bold rounded-full transition-colors"
               >
                 Essai gratuit 7 jours
               </Link>
             </div>
           </div>
 
-          <p className="text-sm text-[#737373] mt-8">
+          <p className="text-sm text-mono-500 mt-8">
             Voir le <Link to="/pricing" className="text-teal-700 underline hover:text-teal-800">detail complet des plans</Link> et la grille tarifaire.
           </p>
         </div>
       </section>
 
       {/* ── Temoignages ── */}
-      <section className="py-16 px-4 bg-[#FAFAFA]">
+      <section className="py-16 px-4 bg-mono-1000">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
               Ce que disent nos clients
             </h2>
-            <p className="text-lg text-[#525252]">
+            <p className="text-lg text-mono-400">
               500+ restaurants utilisent RestauMargin au quotidien.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
-              <div key={i} className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+              <div key={i} className="bg-white border border-mono-900 rounded-2xl p-6">
                 <div className="flex items-center gap-1 mb-3">
                   {[...Array(t.rating)].map((_, k) => (
                     <Star key={k} className="w-4 h-4 text-amber-500 fill-amber-500" />
                   ))}
                 </div>
-                <p className="text-sm text-[#404040] leading-relaxed mb-4 italic">"{t.text}"</p>
+                <p className="text-sm text-mono-350 leading-relaxed mb-4 italic">"{t.text}"</p>
                 <div>
-                  <div className="font-bold text-[#111111] text-sm">{t.name}</div>
-                  <div className="text-xs text-[#737373]">{t.role}</div>
+                  <div className="font-bold text-mono-100 text-sm">{t.name}</div>
+                  <div className="text-xs text-mono-500">{t.role}</div>
                   <div className="text-xs text-teal-700 font-medium">{t.company}</div>
                 </div>
               </div>
@@ -480,10 +480,10 @@ export default function LogicielMargeRestaurant() {
       <section className="py-16 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
               FAQ logiciel marge restaurant
             </h2>
-            <p className="text-lg text-[#525252]">
+            <p className="text-lg text-mono-400">
               Les questions frequentes des restaurateurs avant de choisir.
             </p>
           </div>
@@ -533,42 +533,42 @@ export default function LogicielMargeRestaurant() {
       {/* ── Maillage interne ── */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold text-[#111111] mb-8 text-center">Pour aller plus loin</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-8 text-center">Pour aller plus loin</h2>
           <div className="grid sm:grid-cols-3 gap-6">
-            <Link to="/blog/calcul-marge-restaurant" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/calcul-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <Calculator className="w-8 h-8 text-teal-600 mb-3" />
-              <h3 className="font-bold text-[#111111] mb-2 group-hover:text-teal-700 transition-colors">Calcul marge restaurant : guide complet</h3>
-              <p className="text-sm text-[#737373]">Formules, benchmarks, cas pratiques chiffres pour maitriser le calcul de marge.</p>
+              <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">Calcul marge restaurant : guide complet</h3>
+              <p className="text-sm text-mono-500">Formules, benchmarks, cas pratiques chiffres pour maitriser le calcul de marge.</p>
             </Link>
-            <Link to="/blog/prix-de-vente-restaurant" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/prix-de-vente-restaurant" className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <TrendingUp className="w-8 h-8 text-teal-600 mb-3" />
-              <h3 className="font-bold text-[#111111] mb-2 group-hover:text-teal-700 transition-colors">Calculer le prix de vente d'un plat</h3>
-              <p className="text-sm text-[#737373]">Methodes coefficient, marge cible, pricing psychologique. Cas pratique chiffre.</p>
+              <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">Calculer le prix de vente d'un plat</h3>
+              <p className="text-sm text-mono-500">Methodes coefficient, marge cible, pricing psychologique. Cas pratique chiffre.</p>
             </Link>
-            <Link to="/pricing" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/pricing" className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <Target className="w-8 h-8 text-teal-600 mb-3" />
-              <h3 className="font-bold text-[#111111] mb-2 group-hover:text-teal-700 transition-colors">Tarifs RestauMargin</h3>
-              <p className="text-sm text-[#737373]">Detail des plans Pro et Business. Voir l'essai gratuit 7 jours.</p>
+              <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">Tarifs RestauMargin</h3>
+              <p className="text-sm text-mono-500">Detail des plans Pro et Business. Voir l'essai gratuit 7 jours.</p>
             </Link>
           </div>
         </div>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#FAFAFA] border-t border-[#E5E7EB] py-12 px-4">
-        <div className="max-w-6xl mx-auto text-center text-sm text-[#737373]">
-          <Link to="/landing" className="flex items-center justify-center gap-2 text-[#111111] font-bold text-lg mb-4">
+      <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
+        <div className="max-w-6xl mx-auto text-center text-sm text-mono-500">
+          <Link to="/landing" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
             <ChefHat className="w-6 h-6 text-teal-600" />
             RestauMargin
           </Link>
           <p className="mb-4">Le logiciel de marge restaurant le plus complet du marche francais.</p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-[#A3A3A3]">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
             <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
             <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
           </div>
-          <p className="mt-6 text-xs text-[#A3A3A3]">
+          <p className="mt-6 text-xs text-mono-700">
             &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
           </p>
         </div>
@@ -594,12 +594,12 @@ function Callout({ type, children }: { type: 'info' | 'warning'; children: React
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   return (
-    <details className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl group">
-      <summary className="px-5 py-4 font-semibold text-[#111111] cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
+    <details className="bg-mono-1000 border border-mono-900 rounded-xl group">
+      <summary className="px-5 py-4 font-semibold text-mono-100 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
         {q}
-        <ArrowRight className="w-4 h-4 text-[#A3A3A3] group-open:rotate-90 transition-transform" />
+        <ArrowRight className="w-4 h-4 text-mono-700 group-open:rotate-90 transition-transform" />
       </summary>
-      <p className="px-5 pb-4 text-sm text-[#525252] leading-relaxed">{a}</p>
+      <p className="px-5 pb-4 text-sm text-mono-400 leading-relaxed">{a}</p>
     </details>
   );
 }

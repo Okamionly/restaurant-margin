@@ -1144,7 +1144,7 @@ export default function Inventory() {
                   {lowCount} stock bas
                 </span>
               )}
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-1">Cliquez pour filtrer</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-mono-500 ml-1">Cliquez pour filtrer</span>
             </div>
           </div>
           <button
@@ -1160,16 +1160,16 @@ export default function Inventory() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold font-satoshi flex items-center gap-2 text-[#111111] dark:text-white">
+          <h1 className="text-xl sm:text-2xl font-bold font-satoshi flex items-center gap-2 text-mono-100 dark:text-white">
             <Package className="w-6 h-6 sm:w-7 sm:h-7 text-teal-600" />
             Inventaire
           </h1>
-          <p className="text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3] mt-1">
+          <p className="text-sm font-general-sans text-mono-500 dark:text-mono-700 mt-1">
             Gestion des stocks d'ingredients
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button onClick={openReorderModal} className="relative flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+          <button onClick={openReorderModal} className="relative flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-mono-100 dark:bg-white text-white dark:text-black text-sm rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
             <ShoppingCart className="w-4 h-4" /> Reappro auto
             {reorderBelowCount > 0 && (
               <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 flex items-center justify-center px-1 text-[11px] font-bold rounded-full bg-red-600 text-white">
@@ -1177,10 +1177,10 @@ export default function Inventory() {
               </span>
             )}
           </button>
-          <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+          <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-mono-100 dark:bg-white text-white dark:text-black text-sm rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
             <Plus className="w-4 h-4" /> Ajouter
           </button>
-          <button onClick={startScanner} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+          <button onClick={startScanner} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-mono-100 dark:bg-white text-white dark:text-black text-sm rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
             <ScanBarcode className="w-4 h-4" /> Scanner
           </button>
           {suggestions.length > 0 && (
@@ -1189,10 +1189,10 @@ export default function Inventory() {
               Inventaire complet
             </button>
           )}
-          <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-[#F3F4F6] dark:bg-[#171717] text-[#737373] dark:text-[#A3A3A3] text-sm rounded-xl hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors">
+          <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-mono-950 dark:bg-[#171717] text-mono-500 dark:text-mono-700 text-sm rounded-xl hover:bg-mono-900 dark:hover:bg-[#171717] transition-colors">
             <Download className="w-4 h-4" /> Export CSV
           </button>
-          <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-[#F3F4F6] dark:bg-[#171717] text-[#737373] dark:text-[#A3A3A3] text-sm rounded-xl hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors no-print">
+          <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-mono-950 dark:bg-[#171717] text-mono-500 dark:text-mono-700 text-sm rounded-xl hover:bg-mono-900 dark:hover:bg-[#171717] transition-colors no-print">
             <Printer className="w-4 h-4" /> Imprimer
           </button>
         </div>
@@ -1201,11 +1201,11 @@ export default function Inventory() {
       {/* ══════ INVENTORY VALUE DASHBOARD ══════ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Total Value - Hero Card with CSS Pie Chart */}
-        <div className="col-span-2 bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 relative overflow-hidden">
+        <div className="col-span-2 bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-emerald-50 dark:from-emerald-900/10 to-transparent rounded-bl-full" />
           <div className="relative flex items-start justify-between gap-4">
             <div className="flex-1">
-              <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-2">
+              <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-mono-500 text-sm mb-2">
                 <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                   <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
@@ -1215,14 +1215,14 @@ export default function Inventory() {
                 {formatCurrency(computedTotalValue)}
               </div>
               <div className="flex items-center gap-4 mt-3">
-                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                <div className="text-xs text-[#9CA3AF] dark:text-mono-500">
                   <span className="font-semibold text-black dark:text-white">{items.length}</span> articles
                 </div>
-                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                <div className="text-xs text-[#9CA3AF] dark:text-mono-500">
                   <span className="font-semibold text-black dark:text-white">{categoriesWithCounts.length}</span> categories
                 </div>
                 {lastUpdate && (
-                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="text-xs text-[#9CA3AF] dark:text-mono-500">
                     MaJ {lastUpdate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                   </div>
                 )}
@@ -1232,7 +1232,7 @@ export default function Inventory() {
                 {categoryValues.slice(0, 5).map((cat, i) => (
                   <div key={cat.category} className="flex items-center gap-1">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: pieColors[i % pieColors.length] }} />
-                    <span className="text-[10px] text-[#737373] dark:text-[#A3A3A3]">{cat.category}</span>
+                    <span className="text-[10px] text-mono-500 dark:text-mono-700">{cat.category}</span>
                   </div>
                 ))}
                 {categoryValues.length > 5 && (
@@ -1244,7 +1244,7 @@ export default function Inventory() {
             {categoryValues.length > 0 && (
               <div className="flex-shrink-0 hidden sm:block">
                 <div
-                  className="w-20 h-20 rounded-full border-2 border-white dark:border-[#1A1A1A] shadow-sm"
+                  className="w-20 h-20 rounded-full border-2 border-white dark:border-mono-200 shadow-sm"
                   style={{ background: pieGradient }}
                   title={categoryValues.map(c => `${c.category}: ${formatCurrency(c.value)}`).join('\n')}
                 />
@@ -1254,8 +1254,8 @@ export default function Inventory() {
         </div>
 
         {/* Alerts Card */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
-          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-xs sm:text-sm mb-2">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4">
+          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-mono-500 text-xs sm:text-sm mb-2">
             <div className="w-7 h-7 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
               <AlertTriangle className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
             </div>
@@ -1289,8 +1289,8 @@ export default function Inventory() {
         </div>
 
         {/* Expiring Soon + Predictions Card */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
-          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-xs sm:text-sm mb-2">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4">
+          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-mono-500 text-xs sm:text-sm mb-2">
             <div className="w-7 h-7 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
               <Timer className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400" />
             </div>
@@ -1306,11 +1306,11 @@ export default function Inventory() {
                   <span className={`font-semibold ${(days ?? 0) <= 0 ? 'text-red-600 dark:text-red-400' : (days ?? 0) <= 3 ? 'text-red-500' : 'text-orange-500'}`}>
                     {(days ?? 0) <= 0 ? 'Expire' : `${days}j`}
                   </span>
-                  <span className="text-[#9CA3AF] dark:text-[#737373] ml-1">{item.ingredient.name}</span>
+                  <span className="text-[#9CA3AF] dark:text-mono-500 ml-1">{item.ingredient.name}</span>
                 </div>
               ))}
               {expiringItems.length > 2 && (
-                <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">+{expiringItems.length - 2} autres</div>
+                <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">+{expiringItems.length - 2} autres</div>
               )}
             </div>
           ) : (
@@ -1323,10 +1323,10 @@ export default function Inventory() {
 
       {/* ══════ SMART AUTO-REORDER DASHBOARD ══════ */}
       {reorderItems.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
           <button
             onClick={() => setShowSmartDashboard(!showSmartDashboard)}
-            className="w-full flex items-center justify-between px-5 py-4 hover:bg-[#FAFAFA] dark:hover:bg-[#111111] transition-colors"
+            className="w-full flex items-center justify-between px-5 py-4 hover:bg-mono-1000 dark:hover:bg-mono-100 transition-colors"
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
@@ -1336,7 +1336,7 @@ export default function Inventory() {
                 <h3 className="font-bold text-sm sm:text-base">
                   {reorderItems.length} ingredient{reorderItems.length > 1 ? 's' : ''} a commander
                 </h3>
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
                   {reorderBySupplier.length} fournisseur{reorderBySupplier.length > 1 ? 's' : ''} — Cout estime : {formatCurrency(reorderItems.reduce((s, r) => s + r.estimatedCost, 0))}
                 </p>
               </div>
@@ -1348,20 +1348,20 @@ export default function Inventory() {
           </button>
 
           {showSmartDashboard && (
-            <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="border-t border-mono-900 dark:border-mono-200">
               {/* Per-supplier reorder cards */}
               <div className="p-4 space-y-3">
                 {reorderBySupplier.map(([supplier, supplierItems]) => (
-                  <div key={supplier} className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden">
+                  <div key={supplier} className="border border-mono-900 dark:border-mono-200 rounded-xl overflow-hidden">
                     {/* Supplier header */}
-                    <div className="flex items-center justify-between px-4 py-3 bg-[#FAFAFA] dark:bg-[#171717]">
+                    <div className="flex items-center justify-between px-4 py-3 bg-mono-1000 dark:bg-[#171717]">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-[#111111] dark:bg-white text-white dark:text-black flex items-center justify-center text-xs font-bold">
+                        <div className="w-7 h-7 rounded-full bg-mono-100 dark:bg-white text-white dark:text-black flex items-center justify-center text-xs font-bold">
                           {supplier.charAt(0).toUpperCase()}
                         </div>
                         <div>
                           <p className="font-semibold text-sm">{supplier}</p>
-                          <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                          <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                             {supplierItems.length} article{supplierItems.length > 1 ? 's' : ''} — {formatCurrency(supplierItems.reduce((s, r) => s + r.estimatedCost, 0))}
                           </p>
                         </div>
@@ -1377,7 +1377,7 @@ export default function Inventory() {
                       </div>
                     </div>
                     {/* Items list */}
-                    <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+                    <div className="divide-y divide-mono-900 dark:divide-mono-200">
                       {supplierItems.map(ri => {
                         const pct = ri.item.minStock > 0 ? Math.round((ri.item.currentStock / ri.item.minStock) * 100) : 0;
                         return (
@@ -1386,13 +1386,13 @@ export default function Inventory() {
                               <span className="text-base">{CATEGORY_EMOJIS[ri.item.ingredient.category] || '📦'}</span>
                               <div className="min-w-0">
                                 <p className="font-medium truncate">{ri.item.ingredient.name}</p>
-                                <div className="flex items-center gap-2 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                                <div className="flex items-center gap-2 text-[10px] text-[#9CA3AF] dark:text-mono-500">
                                   <span className={ri.item.currentStock <= 0 ? 'text-red-600 dark:text-red-400 font-bold' : 'text-amber-600 dark:text-amber-400 font-semibold'}>
                                     {ri.item.currentStock} {ri.item.unit}
                                   </span>
                                   <span>/</span>
                                   <span>min {ri.item.minStock}</span>
-                                  <span className="text-[#D1D5DB] dark:text-[#404040]">|</span>
+                                  <span className="text-[#D1D5DB] dark:text-mono-350">|</span>
                                   <span>{pct}%</span>
                                 </div>
                               </div>
@@ -1400,7 +1400,7 @@ export default function Inventory() {
                             <div className="flex items-center gap-3 flex-shrink-0 text-right">
                               <div>
                                 <p className="text-xs font-semibold">+{ri.suggestedQty} {ri.item.unit}</p>
-                                <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">~{formatCurrency(ri.estimatedCost)}</p>
+                                <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">~{formatCurrency(ri.estimatedCost)}</p>
                               </div>
                             </div>
                           </div>
@@ -1415,7 +1415,7 @@ export default function Inventory() {
               <div className="px-4 pb-4 flex flex-wrap gap-2">
                 <button
                   onClick={openReorderModal}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-semibold rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-semibold rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
                 >
                   <ShoppingCart className="w-4 h-4" /> Commander tout
                 </button>
@@ -1433,7 +1433,7 @@ export default function Inventory() {
 
       {/* ══════ SMART STOCK PREDICTIONS ══════ */}
       {stockPredictions.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4">
           <h3 className="font-semibold flex items-center gap-2 mb-3">
             <CalendarClock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             Predictions de rupture
@@ -1460,13 +1460,13 @@ export default function Inventory() {
                       {daysLeft === 0 ? 'Rupture !' : `${daysLeft}j restant${(daysLeft ?? 0) > 1 ? 's' : ''}`}
                     </span>
                     {dailyRate && (
-                      <span className="text-[#9CA3AF] dark:text-[#737373]">
+                      <span className="text-[#9CA3AF] dark:text-mono-500">
                         ({dailyRate.toFixed(1)} {item.unit}/j)
                       </span>
                     )}
                   </div>
                   {depletionDate && daysLeft !== null && daysLeft > 0 && (
-                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                       Epuise le {depletionDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                     </p>
                   )}
@@ -1475,7 +1475,7 @@ export default function Inventory() {
             ))}
           </div>
           {stockPredictions.length > 6 && (
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2 text-center">
+            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-2 text-center">
               +{stockPredictions.length - 6} autre{stockPredictions.length - 6 > 1 ? 's' : ''} en alerte
             </p>
           )}
@@ -1494,12 +1494,12 @@ export default function Inventory() {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {fifoAlerts.map(({ item, daysLeft }) => (
-              <div key={item.id} className="flex items-center justify-between bg-white dark:bg-[#0A0A0A] rounded-lg px-3 py-2 border border-purple-100 dark:border-purple-900/30">
+              <div key={item.id} className="flex items-center justify-between bg-white dark:bg-mono-50 rounded-lg px-3 py-2 border border-purple-100 dark:border-purple-900/30">
                 <div className="flex items-center gap-2">
                   <span className="text-base">{CATEGORY_EMOJIS[item.ingredient.category] || '📦'}</span>
                   <div>
                     <span className="text-sm font-medium">{item.ingredient.name}</span>
-                    <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                       {daysLeft <= 0 ? (
                         <span className="text-red-600 dark:text-red-400 font-bold animate-pulse">EXPIRE</span>
                       ) : (
@@ -1530,14 +1530,14 @@ export default function Inventory() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             {alerts.map(item => (
-              <div key={item.id} className="flex items-center justify-between bg-white dark:bg-[#0A0A0A] rounded-lg px-3 py-2 border dark:border-[#1A1A1A]">
+              <div key={item.id} className="flex items-center justify-between bg-white dark:bg-mono-50 rounded-lg px-3 py-2 border dark:border-mono-200">
                 <div>
                   <span className="text-sm font-medium">{CATEGORY_EMOJIS[item.ingredient.category] || '📦'} {item.ingredient.name}</span>
-                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  <div className="text-xs text-[#9CA3AF] dark:text-mono-500">
                     {item.currentStock}{" / "}{item.minStock} {item.unit}
                   </div>
                 </div>
-                <button onClick={() => openRestock(item)} className="px-2 py-1 text-xs bg-[#111111] dark:bg-white text-white dark:text-black rounded hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                <button onClick={() => openRestock(item)} className="px-2 py-1 text-xs bg-mono-100 dark:bg-white text-white dark:text-black rounded hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
                   Reapprovisionner
                 </button>
               </div>
@@ -1548,7 +1548,7 @@ export default function Inventory() {
 
       {/* Value by category with CSS pie chart */}
       {categoryValues.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+        <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4">
           <h3 className="font-semibold flex items-center gap-2 mb-3">
             <PieChart className="w-5 h-5 text-teal-600" />
             Valeur par categorie
@@ -1557,7 +1557,7 @@ export default function Inventory() {
             {/* Pie Chart */}
             <div className="flex-shrink-0 flex items-center justify-center">
               <div
-                className="w-28 h-28 rounded-full shadow-inner border-2 border-[#E5E7EB] dark:border-[#262626]"
+                className="w-28 h-28 rounded-full shadow-inner border-2 border-mono-900 dark:border-mono-300"
                 style={{ background: pieGradient }}
               />
             </div>
@@ -1567,14 +1567,14 @@ export default function Inventory() {
                 const totalVal = categoryValues.reduce((s, c) => s + c.value, 0);
                 const pct = totalVal > 0 ? (cat.value / totalVal * 100) : 0;
                 return (
-                  <div key={cat.category} className="flex items-center gap-2 bg-[#FAFAFA] dark:bg-[#171717] rounded-lg px-3 py-2">
+                  <div key={cat.category} className="flex items-center gap-2 bg-mono-1000 dark:bg-[#171717] rounded-lg px-3 py-2">
                     <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ backgroundColor: pieColors[i % pieColors.length] }} />
                     <span className="text-sm">{CATEGORY_EMOJIS[cat.category] || '📦'}</span>
                     <div>
                       <div className="text-sm font-medium">{cat.category}</div>
-                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{formatCurrency(cat.value)} ({pct.toFixed(1)}%)</div>
+                      <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{formatCurrency(cat.value)} ({pct.toFixed(1)}%)</div>
                     </div>
-                    <div className="w-16 h-2 bg-[#E5E7EB] dark:bg-[#262626] rounded-full overflow-hidden">
+                    <div className="w-16 h-2 bg-mono-900 dark:bg-mono-300 rounded-full overflow-hidden">
                       <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: pieColors[i % pieColors.length] }} />
                     </div>
                   </div>
@@ -1591,14 +1591,14 @@ export default function Inventory() {
           onClick={() => setFilterCategory('')}
           className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
             filterCategory === ''
-              ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-sm'
-              : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+              ? 'bg-mono-100 dark:bg-white text-white dark:text-black shadow-sm'
+              : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
           }`}
         >
           <Package className="w-3.5 h-3.5" />
           Tout
           <span className={`ml-0.5 text-[11px] px-1.5 py-0 rounded-full ${
-            filterCategory === '' ? 'bg-white/20 dark:bg-black/20' : 'bg-[#E5E7EB] dark:bg-[#262626]'
+            filterCategory === '' ? 'bg-white/20 dark:bg-black/20' : 'bg-mono-900 dark:bg-mono-300'
           }`}>
             {items.length}
           </span>
@@ -1609,14 +1609,14 @@ export default function Inventory() {
             onClick={() => setFilterCategory(filterCategory === cat ? '' : cat)}
             className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
               filterCategory === cat
-                ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-sm'
-                : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+                ? 'bg-mono-100 dark:bg-white text-white dark:text-black shadow-sm'
+                : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
             }`}
           >
             <span className="text-sm">{CATEGORY_EMOJIS[cat] || '📦'}</span>
             {cat}
             <span className={`ml-0.5 text-[11px] px-1.5 py-0 rounded-full ${
-              filterCategory === cat ? 'bg-white/20 dark:bg-black/20' : 'bg-[#E5E7EB] dark:bg-[#262626]'
+              filterCategory === cat ? 'bg-white/20 dark:bg-black/20' : 'bg-mono-900 dark:bg-mono-300'
             }`}>
               {count}
             </span>
@@ -1638,7 +1638,7 @@ export default function Inventory() {
           <select
             value={filterLocation}
             onChange={e => setFilterLocation(e.target.value as LocationType)}
-            className="px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+            className="px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
           >
             <option value="">Tous emplacements</option>
             {LOCATIONS.map(loc => (
@@ -1670,13 +1670,13 @@ export default function Inventory() {
           <div className="flex-1" />
           <button
             onClick={handleBulkReorder}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111111] dark:bg-white text-white dark:text-black text-xs font-medium rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-mono-100 dark:bg-white text-white dark:text-black text-xs font-medium rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
           >
             <ShoppingCart className="w-3.5 h-3.5" /> Commander tout
           </button>
           <button
             onClick={handleBulkExportCSV}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] text-xs font-medium rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 text-xs font-medium rounded-lg hover:bg-mono-900 dark:hover:bg-mono-300 transition-colors"
           >
             <Download className="w-3.5 h-3.5" /> Exporter CSV
           </button>
@@ -1690,41 +1690,41 @@ export default function Inventory() {
       )}
 
       {/* ══════ INVENTORY TABLE ══════ */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+      <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
         <div className="overflow-x-auto -mx-3 sm:mx-0">
           <table className="w-full text-sm min-w-[800px]">
             <thead>
-              <tr className="bg-[#FAFAFA] dark:bg-[#171717] text-left">
+              <tr className="bg-mono-1000 dark:bg-[#171717] text-left">
                 {/* Checkbox column */}
                 <th className="px-3 py-3 w-10">
-                  <button onClick={toggleSelectAll} className="p-0.5 rounded hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors">
+                  <button onClick={toggleSelectAll} className="p-0.5 rounded hover:bg-mono-900 dark:hover:bg-mono-300 transition-colors">
                     {selectedIds.size === filteredItems.length && filteredItems.length > 0
                       ? <CheckSquare className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                      : <Square className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                      : <Square className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
                     }
                   </button>
                 </th>
-                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('name')}>
+                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-mono-950 dark:hover:bg-[#171717]" onClick={() => toggleSort('name')}>
                   <span className="flex items-center gap-1">Ingredient <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
-                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('currentStock')}>
+                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-mono-950 dark:hover:bg-[#171717]" onClick={() => toggleSort('currentStock')}>
                   <span className="flex items-center gap-1">Stock <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
                 <th className="px-3 py-3 font-medium w-40">Niveau</th>
                 <th className="px-3 py-3 font-medium hidden md:table-cell">Expiration</th>
-                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hidden sm:table-cell" onClick={() => toggleSort('value')}>
+                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-mono-950 dark:hover:bg-[#171717] hidden sm:table-cell" onClick={() => toggleSort('value')}>
                   <span className="flex items-center gap-1">Valeur <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
-                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('status')}>
+                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-mono-950 dark:hover:bg-[#171717]" onClick={() => toggleSort('status')}>
                   <span className="flex items-center gap-1">Statut <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
                 <th className="px-3 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+            <tbody className="divide-y divide-mono-900 dark:divide-mono-200">
               {filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
+                  <td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-mono-500">
                     {items.length === 0 ? 'Aucun article dans l\'inventaire. Ajoutez des ingredients pour commencer.' : 'Aucun resultat pour cette recherche.'}
                   </td>
                 </tr>
@@ -1739,16 +1739,16 @@ export default function Inventory() {
                 return (
                   <tr
                     key={item.id}
-                    className={`hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30 transition-colors ${
+                    className={`hover:bg-mono-1000 dark:hover:bg-[#171717]/30 transition-colors ${
                       expStatus === 'expired' ? 'bg-red-50/50 dark:bg-red-900/10' : ''
                     } ${isSelected ? 'bg-teal-50/50 dark:bg-teal-900/10' : ''}`}
                   >
                     {/* Checkbox */}
                     <td className="px-3 py-3">
-                      <button onClick={() => toggleSelect(item.id)} className="p-0.5 rounded hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors">
+                      <button onClick={() => toggleSelect(item.id)} className="p-0.5 rounded hover:bg-mono-900 dark:hover:bg-mono-300 transition-colors">
                         {isSelected
                           ? <CheckSquare className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                          : <Square className="w-4 h-4 text-[#D1D5DB] dark:text-[#404040]" />
+                          : <Square className="w-4 h-4 text-[#D1D5DB] dark:text-mono-350" />
                         }
                       </button>
                     </td>
@@ -1761,12 +1761,12 @@ export default function Inventory() {
                           <div className="font-medium flex items-center gap-1.5 flex-wrap">
                             {item.ingredient.name}
                             {meta.location && (
-                              <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${LOCATION_COLORS[meta.location] || 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                              <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${LOCATION_COLORS[meta.location] || 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700'}`}>
                                 <MapPin className="w-2.5 h-2.5" /> {meta.location}
                               </span>
                             )}
                           </div>
-                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{item.ingredient.category}</div>
+                          <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{item.ingredient.category}</div>
                         </div>
                       </div>
                     </td>
@@ -1780,14 +1780,14 @@ export default function Inventory() {
                             value={inlineStock}
                             onChange={e => setInlineStock(e.target.value)}
                             onKeyDown={e => { if (e.key === 'Enter') handleInlineStockSave(item.id); if (e.key === 'Escape') setEditingStockId(null); }}
-                            className="w-20 px-2 py-1 text-sm border rounded border-[#E5E7EB] dark:border-[#1A1A1A] dark:bg-[#171717] focus:ring-2 focus:ring-teal-500 outline-none"
+                            className="w-20 px-2 py-1 text-sm border rounded border-mono-900 dark:border-mono-200 dark:bg-[#171717] focus:ring-2 focus:ring-teal-500 outline-none"
                             autoFocus
                             step="0.01"
                           />
                           <button onClick={() => handleInlineStockSave(item.id)} className="text-emerald-600 hover:text-emerald-700">
                             <CheckCircle2 className="w-4 h-4" />
                           </button>
-                          <button onClick={() => setEditingStockId(null)} className="text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]">
+                          <button onClick={() => setEditingStockId(null)} className="text-[#9CA3AF] dark:text-mono-500 hover:text-[#4B5563]">
                             <XCircle className="w-4 h-4" />
                           </button>
                         </div>
@@ -1798,9 +1798,9 @@ export default function Inventory() {
                             onClick={() => { setEditingStockId(item.id); setInlineStock(String(item.currentStock)); }}
                             title="Cliquer pour modifier"
                           >
-                            {item.currentStock} <span className="text-xs font-normal text-[#9CA3AF] dark:text-[#737373]">{item.unit}</span>
+                            {item.currentStock} <span className="text-xs font-normal text-[#9CA3AF] dark:text-mono-500">{item.unit}</span>
                           </span>
-                          <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                          <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                             min {item.minStock}{item.maxStock ? ` / max ${item.maxStock}` : ''}
                           </div>
                         </div>
@@ -1831,7 +1831,7 @@ export default function Inventory() {
                               <span className={`text-[9px] font-medium ${
                                 urgLevel === 'critical' ? 'text-red-600 dark:text-red-400' :
                                 urgLevel === 'warning' ? 'text-amber-600 dark:text-amber-400' :
-                                'text-[#9CA3AF] dark:text-[#737373]'
+                                'text-[#9CA3AF] dark:text-mono-500'
                               }`}>
                                 {daysRem === 0 ? 'Rupture !' : `~${daysRem}j restant${(daysRem ?? 0) > 1 ? 's' : ''}`}
                               </span>
@@ -1845,7 +1845,7 @@ export default function Inventory() {
                                 value={quickRestockQty}
                                 onChange={e => setQuickRestockQty(e.target.value)}
                                 onKeyDown={e => { if (e.key === 'Enter') handleQuickRestock(item.id); if (e.key === 'Escape') { setQuickRestockId(null); setQuickRestockQty(''); } }}
-                                className="w-14 px-1.5 py-0.5 text-[11px] border rounded border-[#E5E7EB] dark:border-[#1A1A1A] dark:bg-[#171717] focus:ring-1 focus:ring-teal-500 outline-none"
+                                className="w-14 px-1.5 py-0.5 text-[11px] border rounded border-mono-900 dark:border-mono-200 dark:bg-[#171717] focus:ring-1 focus:ring-teal-500 outline-none"
                                 placeholder="qty"
                                 autoFocus
                                 step="0.1"
@@ -1901,7 +1901,7 @@ export default function Inventory() {
                           )}
                           {/* Mini progress bar for expiry */}
                           {daysLeft !== null && daysLeft > 0 && (
-                            <div className="w-20 h-1.5 rounded-full bg-[#E5E7EB] dark:bg-[#262626] overflow-hidden">
+                            <div className="w-20 h-1.5 rounded-full bg-mono-900 dark:bg-mono-300 overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all ${
                                   daysLeft <= 3 ? 'bg-red-500' : daysLeft <= 7 ? 'bg-amber-500' : 'bg-emerald-500'
@@ -1910,12 +1910,12 @@ export default function Inventory() {
                               />
                             </div>
                           )}
-                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
                             {new Date(meta.expirationDate).toLocaleDateString('fr-FR')}
                           </span>
                         </div>
                       ) : (
-                        <span className="text-xs text-[#D1D5DB] dark:text-[#404040]">---</span>
+                        <span className="text-xs text-[#D1D5DB] dark:text-mono-350">---</span>
                       )}
                     </td>
 
@@ -1953,7 +1953,7 @@ export default function Inventory() {
                         <button onClick={() => openRestock(item)} className="p-1.5 rounded hover:bg-teal-50 dark:hover:bg-teal-900/30 text-teal-600 dark:text-teal-400 transition-colors" title="Reapprovisionner">
                           <RefreshCw className="w-4 h-4" />
                         </button>
-                        <button onClick={() => openEdit(item)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] transition-colors" title="Modifier">
+                        <button onClick={() => openEdit(item)} className="p-1.5 rounded hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 transition-colors" title="Modifier">
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button onClick={() => setDeleteTarget(item.id)} className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 text-red-500 transition-colors" title="Supprimer">
@@ -1981,7 +1981,7 @@ export default function Inventory() {
                 const ing = suggestions.find(s => s.id === id);
                 setAddForm(f => ({ ...f, ingredientId: id, unit: ing?.unit || '' }));
               }}
-              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
             >
               <option value={0}>-- Selectionner --</option>
               {suggestions.map(ing => (
@@ -1989,7 +1989,7 @@ export default function Inventory() {
               ))}
             </select>
             {suggestions.length === 0 && (
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Tous les ingredients sont deja dans l'inventaire.</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Tous les ingredients sont deja dans l'inventaire.</p>
             )}
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -1999,7 +1999,7 @@ export default function Inventory() {
                 type="number"
                 value={addForm.currentStock}
                 onChange={e => setAddForm(f => ({ ...f, currentStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 placeholder="0"
                 step="0.01"
               />
@@ -2010,7 +2010,7 @@ export default function Inventory() {
                 type="number"
                 value={addForm.minStock}
                 onChange={e => setAddForm(f => ({ ...f, minStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 placeholder="0"
                 step="0.01"
               />
@@ -2023,7 +2023,7 @@ export default function Inventory() {
                 type="date"
                 value={addForm.expirationDate}
                 onChange={e => setAddForm(f => ({ ...f, expirationDate: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
             <div>
@@ -2031,7 +2031,7 @@ export default function Inventory() {
               <select
                 value={addForm.location}
                 onChange={e => setAddForm(f => ({ ...f, location: e.target.value as LocationType }))}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               >
                 <option value="">-- Aucun --</option>
                 {LOCATIONS.map(loc => (
@@ -2041,10 +2041,10 @@ export default function Inventory() {
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm rounded-lg border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
-            <button onClick={handleAdd} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+            <button onClick={handleAdd} className="px-4 py-2 text-sm bg-mono-100 dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
               Ajouter
             </button>
           </div>
@@ -2060,17 +2060,17 @@ export default function Inventory() {
               type="number"
               value={restockForm.quantity}
               onChange={e => setRestockForm(f => ({ ...f, quantity: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               placeholder="Quantite"
               step="0.01"
               autoFocus
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowRestockModal(false)} className="px-4 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowRestockModal(false)} className="px-4 py-2 text-sm rounded-lg border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
-            <button onClick={handleRestock} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+            <button onClick={handleRestock} className="px-4 py-2 text-sm bg-mono-100 dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
               Reapprovisionner
             </button>
           </div>
@@ -2087,7 +2087,7 @@ export default function Inventory() {
                 type="number"
                 value={editForm.currentStock}
                 onChange={e => setEditForm(f => ({ ...f, currentStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
               />
             </div>
@@ -2097,7 +2097,7 @@ export default function Inventory() {
                 type="text"
                 value={editForm.unit}
                 onChange={e => setEditForm(f => ({ ...f, unit: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
           </div>
@@ -2108,7 +2108,7 @@ export default function Inventory() {
                 type="number"
                 value={editForm.minStock}
                 onChange={e => setEditForm(f => ({ ...f, minStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
               />
             </div>
@@ -2118,7 +2118,7 @@ export default function Inventory() {
                 type="number"
                 value={editForm.maxStock}
                 onChange={e => setEditForm(f => ({ ...f, maxStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
                 placeholder="Optionnel"
               />
@@ -2131,7 +2131,7 @@ export default function Inventory() {
                 type="date"
                 value={editForm.expirationDate}
                 onChange={e => setEditForm(f => ({ ...f, expirationDate: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
             <div>
@@ -2139,7 +2139,7 @@ export default function Inventory() {
               <select
                 value={editForm.location}
                 onChange={e => setEditForm(f => ({ ...f, location: e.target.value as LocationType }))}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               >
                 <option value="">-- Aucun --</option>
                 {LOCATIONS.map(loc => (
@@ -2153,16 +2153,16 @@ export default function Inventory() {
             <textarea
               value={editForm.notes}
               onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               rows={2}
               placeholder="Notes optionnelles..."
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowEditModal(false)} className="px-4 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowEditModal(false)} className="px-4 py-2 text-sm rounded-lg border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
-            <button onClick={handleEdit} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+            <button onClick={handleEdit} className="px-4 py-2 text-sm bg-mono-100 dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
               Enregistrer
             </button>
           </div>
@@ -2178,7 +2178,7 @@ export default function Inventory() {
               type="number"
               value={wasteForm.quantity}
               onChange={e => setWasteForm(f => ({ ...f, quantity: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               placeholder="Quantite"
               step="0.01"
               autoFocus
@@ -2189,7 +2189,7 @@ export default function Inventory() {
             <select
               value={wasteForm.reason}
               onChange={e => setWasteForm(f => ({ ...f, reason: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
             >
               {WASTE_REASONS.map(r => (
                 <option key={r.value} value={r.value}>{r.label}</option>
@@ -2201,13 +2201,13 @@ export default function Inventory() {
             <textarea
               value={wasteForm.notes}
               onChange={e => setWasteForm(f => ({ ...f, notes: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               rows={2}
               placeholder="Details supplementaires..."
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowWasteModal(false)} className="px-4 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowWasteModal(false)} className="px-4 py-2 text-sm rounded-lg border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
             <button onClick={handleWasteSubmit} className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-1.5">
@@ -2234,12 +2234,12 @@ export default function Inventory() {
       {/* Barcode Scanner Modal */}
       {showScanner && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80">
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] w-full max-w-lg mx-4 overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 w-full max-w-lg mx-4 overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-mono-900 dark:border-mono-200">
               <h3 className="font-semibold flex items-center gap-2">
                 <Camera className="w-5 h-5" /> Scanner un code-barres
               </h3>
-              <button onClick={closeScanner} className="p-1 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+              <button onClick={closeScanner} className="p-1 rounded hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -2250,7 +2250,7 @@ export default function Inventory() {
                   <p className="text-sm text-center text-red-600 dark:text-red-400">{scannerError}</p>
                   {!scannerSupported && (
                     <div className="text-center space-y-2">
-                      <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                      <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
                         Navigateurs compatibles : Chrome 83+, Edge 83+, Opera 69+
                       </p>
                       <div className="mt-3">
@@ -2262,13 +2262,13 @@ export default function Inventory() {
                             placeholder="Ex: 3017620422003"
                             value={lastScannedBarcode}
                             onChange={e => setLastScannedBarcode(e.target.value)}
-                            className="flex-1 px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                            className="flex-1 px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
                             autoFocus
                             onKeyDown={e => { if (e.key === 'Enter' && lastScannedBarcode.trim()) { closeScanner(); handleBarcodeDetected(lastScannedBarcode.trim()); } }}
                           />
                           <button
                             onClick={() => { if (lastScannedBarcode.trim()) { closeScanner(); handleBarcodeDetected(lastScannedBarcode.trim()); } }}
-                            className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                            className="px-4 py-2 text-sm bg-mono-100 dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
                           >
                             Rechercher
                           </button>
@@ -2293,17 +2293,17 @@ export default function Inventory() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-xs text-center text-[#9CA3AF] dark:text-[#737373]">
+                  <p className="text-xs text-center text-[#9CA3AF] dark:text-mono-500">
                     Placez le code-barres dans le cadre. La detection est automatique.
                   </p>
                   {lastScannedBarcode && (
-                    <div className="text-center text-sm font-mono bg-[#F3F4F6] dark:bg-[#171717] rounded-lg px-3 py-2">
+                    <div className="text-center text-sm font-mono bg-mono-950 dark:bg-[#171717] rounded-lg px-3 py-2">
                       Dernier code : {lastScannedBarcode}
                     </div>
                   )}
                   {/* Manual fallback input */}
-                  <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-3 mt-2">
-                    <label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Ou saisir manuellement</label>
+                  <div className="border-t border-mono-900 dark:border-mono-200 pt-3 mt-2">
+                    <label className="block text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Ou saisir manuellement</label>
                     <div className="flex gap-2">
                       <input
                         type="text"
@@ -2311,13 +2311,13 @@ export default function Inventory() {
                         placeholder="Code-barres..."
                         value={lastScannedBarcode}
                         onChange={e => setLastScannedBarcode(e.target.value)}
-                        className="flex-1 px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                        className="flex-1 px-3 py-2 rounded-lg border border-mono-900 dark:border-mono-200 bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
                         onKeyDown={e => { if (e.key === 'Enter' && lastScannedBarcode.trim()) { closeScanner(); handleBarcodeDetected(lastScannedBarcode.trim()); } }}
                       />
                       <button
                         onClick={() => { if (lastScannedBarcode.trim()) { closeScanner(); handleBarcodeDetected(lastScannedBarcode.trim()); } }}
                         disabled={!lastScannedBarcode.trim()}
-                        className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
+                        className="px-4 py-2 text-sm bg-mono-100 dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
                       >
                         OK
                       </button>
@@ -2334,45 +2334,45 @@ export default function Inventory() {
       <Modal isOpen={showReorderModal} onClose={() => setShowReorderModal(false)} title="Reapprovisionnement automatique" className="max-w-3xl">
         {reorderLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" />
+            <Loader2 className="w-8 h-8 animate-spin text-mono-100 dark:text-white" />
           </div>
         ) : reorderGroups.length === 0 ? (
           <div className="text-center py-12">
             <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-emerald-600 dark:text-emerald-400" />
             <p className="text-lg font-semibold">Tous les stocks sont suffisants</p>
-            <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">Aucun article en dessous du seuil minimum</p>
+            <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1">Aucun article en dessous du seuil minimum</p>
           </div>
         ) : (
           <div className="space-y-4">
             {/* Summary */}
-            <div className="flex items-center justify-between px-4 py-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-xl">
+            <div className="flex items-center justify-between px-4 py-3 bg-mono-950 dark:bg-[#171717] rounded-xl">
               <div>
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Total estime</span>
+                <span className="text-sm text-[#9CA3AF] dark:text-mono-500">Total estime</span>
                 <p className="text-xl font-bold">
                   {formatCurrency(reorderGroups.reduce((sum, g) => sum + getGroupEstimatedCost(g), 0))}
                 </p>
               </div>
               <div className="text-right">
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{reorderGroups.length} fournisseur{reorderGroups.length > 1 ? 's' : ''}</span>
+                <span className="text-sm text-[#9CA3AF] dark:text-mono-500">{reorderGroups.length} fournisseur{reorderGroups.length > 1 ? 's' : ''}</span>
                 <p className="text-sm font-medium">{reorderGroups.reduce((sum, g) => sum + g.items.length, 0)} article{reorderGroups.reduce((sum, g) => sum + g.items.length, 0) > 1 ? 's' : ''}</p>
               </div>
             </div>
 
             {/* Per-supplier groups */}
             {reorderGroups.map(group => (
-              <div key={group.supplier} className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden">
+              <div key={group.supplier} className="border border-mono-900 dark:border-mono-200 rounded-xl overflow-hidden">
                 {/* Supplier header */}
                 <button
                   onClick={() => toggleSupplier(group.supplier)}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-[#0A0A0A] hover:bg-[#F9FAFB] dark:hover:bg-[#111111] transition-colors"
+                  className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-mono-50 hover:bg-[#F9FAFB] dark:hover:bg-mono-100 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#111111] dark:bg-white text-white dark:text-black flex items-center justify-center text-sm font-bold">
+                    <div className="w-8 h-8 rounded-full bg-mono-100 dark:bg-white text-white dark:text-black flex items-center justify-center text-sm font-bold">
                       {group.supplier.charAt(0).toUpperCase()}
                     </div>
                     <div className="text-left">
                       <p className="font-semibold text-sm">{group.supplier}</p>
-                      <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{group.items.length} article{group.items.length > 1 ? 's' : ''}</p>
+                      <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{group.items.length} article{group.items.length > 1 ? 's' : ''}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -2383,10 +2383,10 @@ export default function Inventory() {
 
                 {/* Items table */}
                 {expandedSuppliers.has(group.supplier) && (
-                  <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="border-t border-mono-900 dark:border-mono-200">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="text-[#9CA3AF] dark:text-[#737373] text-xs border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                        <tr className="text-[#9CA3AF] dark:text-mono-500 text-xs border-b border-mono-900 dark:border-mono-200">
                           <th className="text-left px-4 py-2 font-medium">Ingredient</th>
                           <th className="text-right px-2 py-2 font-medium">Stock</th>
                           <th className="text-right px-2 py-2 font-medium">Min</th>
@@ -2400,17 +2400,17 @@ export default function Inventory() {
                           const ratio = item.suggestedQty > 0 ? editedQty / item.suggestedQty : 0;
                           const cost = item.estimatedCost * ratio;
                           return (
-                            <tr key={item.ingredientId} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-b-0">
+                            <tr key={item.ingredientId} className="border-b border-mono-900 dark:border-mono-200 last:border-b-0">
                               <td className="px-4 py-2.5">
                                 <span className="font-medium">{item.ingredient}</span>
-                                <span className="text-[#9CA3AF] dark:text-[#737373] ml-1 text-xs">({item.unit})</span>
+                                <span className="text-[#9CA3AF] dark:text-mono-500 ml-1 text-xs">({item.unit})</span>
                               </td>
                               <td className="text-right px-2 py-2.5">
                                 <span className={item.currentStock <= 0 ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-amber-600 dark:text-amber-400'}>
                                   {item.currentStock}
                                 </span>
                               </td>
-                              <td className="text-right px-2 py-2.5 text-[#9CA3AF] dark:text-[#737373]">{item.minQuantity}</td>
+                              <td className="text-right px-2 py-2.5 text-[#9CA3AF] dark:text-mono-500">{item.minQuantity}</td>
                               <td className="text-center px-2 py-2.5">
                                 <input
                                   type="number"
@@ -2418,7 +2418,7 @@ export default function Inventory() {
                                   step="0.1"
                                   value={editedQty}
                                   onChange={e => setEditedQty(group.supplier, item.ingredientId, parseFloat(e.target.value) || 0)}
-                                  className="w-20 text-center px-2 py-1 rounded-lg border border-[#E5E7EB] dark:border-[#333333] bg-white dark:bg-[#171717] text-sm font-medium focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                                  className="w-20 text-center px-2 py-1 rounded-lg border border-mono-900 dark:border-[#333333] bg-white dark:bg-[#171717] text-sm font-medium focus:ring-2 focus:ring-mono-100 dark:focus:ring-white outline-none"
                                 />
                               </td>
                               <td className="text-right px-4 py-2.5 font-medium">{formatCurrency(cost)}</td>
@@ -2429,12 +2429,12 @@ export default function Inventory() {
                     </table>
 
                     {/* Per-supplier order button */}
-                    <div className="px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+                    <div className="px-4 py-3 bg-[#F9FAFB] dark:bg-mono-50 border-t border-mono-900 dark:border-mono-200 flex items-center justify-between">
                       <span className="text-sm font-semibold">Sous-total : {formatCurrency(getGroupEstimatedCost(group))}</span>
                       <button
                         onClick={() => handleConfirmReorder(group.supplier)}
                         disabled={reorderConfirming}
-                        className="flex items-center gap-1.5 px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
+                        className="flex items-center gap-1.5 px-4 py-2 bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-medium rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
                       >
                         {reorderConfirming ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
                         Commander
@@ -2446,11 +2446,11 @@ export default function Inventory() {
             ))}
 
             {/* Global order all button */}
-            <div className="pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="pt-2 border-t border-mono-900 dark:border-mono-200">
               <button
                 onClick={() => handleConfirmReorder()}
                 disabled={reorderConfirming}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-semibold rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-semibold rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
               >
                 {reorderConfirming ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
                 Commander tout ({formatCurrency(reorderGroups.reduce((sum, g) => sum + getGroupEstimatedCost(g), 0))})

@@ -69,13 +69,13 @@ export default function BlogOuvrirRestaurant() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
-          <Link to="/login" className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors">
+          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
             Connexion
           </Link>
         </div>
@@ -123,7 +123,7 @@ export default function BlogOuvrirRestaurant() {
             <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
               <Lightbulb className="w-5 h-5 text-teal-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">1. Définir votre concept</h2>
+            <h2 className="text-2xl font-bold text-mono-100">1. Définir votre concept</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Tout commence par une promesse claire. Un concept de restaurant tient en une phrase courte qu'un client peut répéter à un ami : <em>"un bistrot de quartier qui sert les meilleurs burgers maison à moins de 18€"</em>.
@@ -148,7 +148,7 @@ export default function BlogOuvrirRestaurant() {
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <MapPin className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">2. Réaliser une étude de marché</h2>
+            <h2 className="text-2xl font-bold text-mono-100">2. Réaliser une étude de marché</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Une étude sérieuse coûte entre 0€ (en autonomie) et 5 000€ (cabinet). Elle doit répondre à 4 questions concrètes : zone de chalandise, concurrence directe, concurrence indirecte, et flux de passants.
@@ -164,12 +164,12 @@ export default function BlogOuvrirRestaurant() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <FileText className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">3. Construire votre business plan</h2>
+            <h2 className="text-2xl font-bold text-mono-100">3. Construire votre business plan</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le business plan est votre boussole et votre meilleur argument pour décrocher un financement. Comptez 30 à 60 pages, avec une partie financière sur 3 ans.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Le ratio à présenter dès la page 2 : Prime cost prévisionnel
           </div>
           <p className="text-[#374151] leading-relaxed">
@@ -183,12 +183,12 @@ export default function BlogOuvrirRestaurant() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Building2 className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">4. Choisir le local idéal</h2>
+            <h2 className="text-2xl font-bold text-mono-100">4. Choisir le local idéal</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Le local représente entre 40% et 60% du succès d'un restaurant. Un mauvais emplacement avec une cuisine excellente peut couler le projet.
           </p>
-          <div className="bg-[#F5F5F5] rounded-xl p-4 mb-4 font-mono text-sm text-[#111111]">
+          <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
             Loyer max ≤ 8 à 10% du CA prévisionnel
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
@@ -203,7 +203,7 @@ export default function BlogOuvrirRestaurant() {
             <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
               <Banknote className="w-5 h-5 text-amber-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">5. Trouver le financement</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. Trouver le financement</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             La structure type : 25-35% d'apport personnel, 40-50% de prêt bancaire, 5-10% de prêt d'honneur, 5-15% de crowdfunding, 3-8% d'aides régionales.
@@ -223,7 +223,7 @@ export default function BlogOuvrirRestaurant() {
             <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
               <Scale className="w-5 h-5 text-indigo-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">6. Choisir le statut juridique</h2>
+            <h2 className="text-2xl font-bold text-mono-100">6. Choisir le statut juridique</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Trois statuts dominent en restauration : <strong>EURL</strong> (solo, premier projet, charges optimisées), <strong>SARL</strong> (familial, gérance partagée), <strong>SAS/SASU</strong> (associés, levée de fonds).
@@ -239,7 +239,7 @@ export default function BlogOuvrirRestaurant() {
             <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center">
               <FileCheck className="w-5 h-5 text-rose-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">7. Obtenir licences et permis</h2>
+            <h2 className="text-2xl font-bold text-mono-100">7. Obtenir licences et permis</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             C'est l'étape la plus chronophage : 2 à 4 mois pour l'ensemble. <strong>Le permis d'exploitation</strong> est obligatoire avant l'ouverture (formation 20h, 250-400€).
@@ -259,7 +259,7 @@ export default function BlogOuvrirRestaurant() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
               <Wrench className="w-5 h-5 text-orange-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">8. Équiper la cuisine</h2>
+            <h2 className="text-2xl font-bold text-mono-100">8. Équiper la cuisine</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Budget total pour 60 couverts : 30 000€ à 120 000€. La répartition typique : piano 6-15K€, four mixte 4-12K€, chambre froide 5-15K€, plonge + lave-vaisselle 4-8K€, mobilier salle 5-25K€.
@@ -275,7 +275,7 @@ export default function BlogOuvrirRestaurant() {
             <div className="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center">
               <Users className="w-5 h-5 text-cyan-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">9. Recruter votre équipe</h2>
+            <h2 className="text-2xl font-bold text-mono-100">9. Recruter votre équipe</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Pénurie réelle : 250 000 postes vacants en France en 2026. Pour un bistrot 50 couverts, comptez chef (3 200-4 200€), commis (2 100-2 800€), plongeur (1 800-2 100€), chef de rang (2 200-2 800€), serveur (1 800-2 100€) — soit ~16 800€/mois chargé.
@@ -292,7 +292,7 @@ export default function BlogOuvrirRestaurant() {
             <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center">
               <Megaphone className="w-5 h-5 text-pink-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">10. Lancer et communiquer</h2>
+            <h2 className="text-2xl font-bold text-mono-100">10. Lancer et communiquer</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             <strong>Les 4 phases :</strong> soft opening (2 semaines avant), friends & family (semaine -1), pré-lancement digital (Instagram + Google Business), lancement officiel avec presse locale.
@@ -308,7 +308,7 @@ export default function BlogOuvrirRestaurant() {
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111111]">Les 7 erreurs à éviter</h2>
+            <h2 className="text-2xl font-bold text-mono-100">Les 7 erreurs à éviter</h2>
           </div>
           <ol className="space-y-3 text-[#374151] list-decimal pl-5">
             <li><strong>Sous-estimer le BFR.</strong> Sans 3 mois de trésorerie d'avance, le moindre ralentissement tue le projet.</li>
@@ -323,7 +323,7 @@ export default function BlogOuvrirRestaurant() {
 
         {/* FAQ */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-5">
             {[
               {
@@ -347,9 +347,9 @@ export default function BlogOuvrirRestaurant() {
                 a: "Si à la fin du mois 6 vous tournez à plus de 70% du CA prévisionnel et que votre prime cost est sous 65%, le projet est viable. Sinon, plan de redressement immédiat."
               }
             ].map(({ q, a }) => (
-              <div key={q} className="border border-[#E5E7EB] rounded-xl p-5">
-                <p className="font-semibold text-[#111111] mb-2">{q}</p>
-                <p className="text-[#525252] text-sm leading-relaxed">{a}</p>
+              <div key={q} className="border border-mono-900 rounded-xl p-5">
+                <p className="font-semibold text-mono-100 mb-2">{q}</p>
+                <p className="text-mono-400 text-sm leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -370,7 +370,7 @@ export default function BlogOuvrirRestaurant() {
         </div>
 
         {/* Nav bas de page */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] flex justify-between items-center">
+        <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/prime-cost-restaurant" className="text-sm text-teal-600 hover:underline">Maîtriser le prime cost →</Link>
         </div>

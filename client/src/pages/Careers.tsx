@@ -118,15 +118,15 @@ const OPEN_ROLES = [
 
 function JobCard({ role }: { role: typeof OPEN_ROLES[0] }) {
   return (
-    <div className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8 bg-white dark:bg-[#0A0A0A]/50 hover:border-teal-500 dark:hover:border-teal-600 transition-colors">
+    <div className="border border-mono-900 dark:border-mono-200 rounded-2xl p-8 bg-white dark:bg-mono-50/50 hover:border-teal-500 dark:hover:border-teal-600 transition-colors">
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div>
           <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mb-3">
             {role.type}
           </span>
-          <h3 className="text-xl font-bold text-[#111111] dark:text-white">{role.title}</h3>
-          <div className="flex flex-wrap gap-3 mt-2 text-sm text-[#737373] dark:text-[#A3A3A3]">
+          <h3 className="text-xl font-bold text-mono-100 dark:text-white">{role.title}</h3>
+          <div className="flex flex-wrap gap-3 mt-2 text-sm text-mono-500 dark:text-mono-700">
             <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" />{role.location}</span>
             <span className="flex items-center gap-1"><TrendingUp className="w-3.5 h-3.5" />{role.salary}</span>
             <span className="flex items-center gap-1"><Star className="w-3.5 h-3.5" />{role.equity}</span>
@@ -134,28 +134,28 @@ function JobCard({ role }: { role: typeof OPEN_ROLES[0] }) {
         </div>
         <a
           href={`mailto:youssef@restaumargin.com?subject=Candidature ${role.title}&body=Bonjour Youssef,%0D%0A%0D%0AJe suis intéressé(e) par le poste ${role.title}.%0D%0A%0D%0AVoici un court résumé de mon parcours :`}
-          className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-semibold hover:opacity-80 transition-opacity"
+          className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-xl text-sm font-semibold hover:opacity-80 transition-opacity"
         >
           Postuler <ArrowRight className="w-4 h-4" />
         </a>
       </div>
 
       {/* When */}
-      <div className="flex items-center gap-2 text-sm text-[#737373] dark:text-[#A3A3A3] mb-6 pb-6 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+      <div className="flex items-center gap-2 text-sm text-mono-500 dark:text-mono-700 mb-6 pb-6 border-b border-mono-900 dark:border-mono-200">
         <Clock className="w-4 h-4 shrink-0" />
-        <span><strong className="text-[#111111] dark:text-white">Timing :</strong> {role.when}</span>
+        <span><strong className="text-mono-100 dark:text-white">Timing :</strong> {role.when}</span>
       </div>
 
       {/* Mission */}
-      <p className="text-[#737373] dark:text-[#A3A3A3] leading-relaxed mb-6">{role.mission}</p>
+      <p className="text-mono-500 dark:text-mono-700 leading-relaxed mb-6">{role.mission}</p>
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Responsibilities */}
         <div>
-          <h4 className="text-sm font-semibold text-[#111111] dark:text-white uppercase tracking-wide mb-3">Ce que tu feras</h4>
+          <h4 className="text-sm font-semibold text-mono-100 dark:text-white uppercase tracking-wide mb-3">Ce que tu feras</h4>
           <ul className="space-y-2">
             {role.responsibilities.map((r, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-[#737373] dark:text-[#A3A3A3]">
+              <li key={i} className="flex items-start gap-2 text-sm text-mono-500 dark:text-mono-700">
                 <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 shrink-0" />
                 {r}
               </li>
@@ -165,10 +165,10 @@ function JobCard({ role }: { role: typeof OPEN_ROLES[0] }) {
 
         {/* Requirements */}
         <div>
-          <h4 className="text-sm font-semibold text-[#111111] dark:text-white uppercase tracking-wide mb-3">Ce qu'on cherche</h4>
+          <h4 className="text-sm font-semibold text-mono-100 dark:text-white uppercase tracking-wide mb-3">Ce qu'on cherche</h4>
           <ul className="space-y-2">
             {role.requirements.map((r, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-[#737373] dark:text-[#A3A3A3]">
+              <li key={i} className="flex items-start gap-2 text-sm text-mono-500 dark:text-mono-700">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                 {r}
               </li>
@@ -177,11 +177,11 @@ function JobCard({ role }: { role: typeof OPEN_ROLES[0] }) {
 
           {role.niceToHave.length > 0 && (
             <>
-              <h4 className="text-sm font-semibold text-[#111111] dark:text-white uppercase tracking-wide mt-4 mb-3">Un plus</h4>
+              <h4 className="text-sm font-semibold text-mono-100 dark:text-white uppercase tracking-wide mt-4 mb-3">Un plus</h4>
               <ul className="space-y-2">
                 {role.niceToHave.map((r, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-[#737373] dark:text-[#A3A3A3]">
-                    <span className="w-4 h-4 flex items-center justify-center text-[#737373] mt-0.5 shrink-0">·</span>
+                  <li key={i} className="flex items-start gap-2 text-sm text-mono-500 dark:text-mono-700">
+                    <span className="w-4 h-4 flex items-center justify-center text-mono-500 mt-0.5 shrink-0">·</span>
                     {r}
                   </li>
                 ))}
@@ -192,11 +192,11 @@ function JobCard({ role }: { role: typeof OPEN_ROLES[0] }) {
       </div>
 
       {/* Process */}
-      <div className="mt-6 pt-6 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-        <h4 className="text-sm font-semibold text-[#111111] dark:text-white uppercase tracking-wide mb-3">Processus · {role.process.length} étapes</h4>
+      <div className="mt-6 pt-6 border-t border-mono-900 dark:border-mono-200">
+        <h4 className="text-sm font-semibold text-mono-100 dark:text-white uppercase tracking-wide mb-3">Processus · {role.process.length} étapes</h4>
         <div className="flex flex-wrap gap-2">
           {role.process.map((step, i) => (
-            <div key={i} className="flex items-center gap-2 text-xs px-3 py-1.5 rounded-lg bg-[#F5F5F5] dark:bg-[#1A1A1A] text-[#737373] dark:text-[#A3A3A3]">
+            <div key={i} className="flex items-center gap-2 text-xs px-3 py-1.5 rounded-lg bg-mono-975 dark:bg-mono-200 text-mono-500 dark:text-mono-700">
               <span className="font-bold text-teal-600 dark:text-teal-400">{i + 1}.</span>
               {step}
             </div>
@@ -218,17 +218,17 @@ export default function Careers() {
 
       {/* Hero */}
       <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm text-[#737373] dark:text-[#A3A3A3] mb-8">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-mono-900 dark:border-mono-200 text-sm text-mono-500 dark:text-mono-700 mb-8">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           Recrutement actif · 2 postes ouverts
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-bold text-[#111111] dark:text-white leading-tight mb-6">
+        <h1 className="text-4xl md:text-5xl font-bold text-mono-100 dark:text-white leading-tight mb-6">
           Construire le back-office<br />
           de la restauration française
         </h1>
 
-        <p className="text-lg text-[#737373] dark:text-[#A3A3A3] leading-relaxed max-w-2xl mx-auto mb-10">
+        <p className="text-lg text-mono-500 dark:text-mono-700 leading-relaxed max-w-2xl mx-auto mb-10">
           RestauMargin aide les restaurateurs à maîtriser leur food cost et leurs marges.
           On est en early-stage, le produit est en production, et on cherche les premières personnes
           qui veulent co-construire quelque chose de solide — pas juste exécuter.
@@ -236,7 +236,7 @@ export default function Careers() {
 
         <a
           href="#postes-ouverts"
-          className="inline-flex items-center gap-2 px-8 py-4 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl font-semibold hover:opacity-80 transition-opacity"
+          className="inline-flex items-center gap-2 px-8 py-4 bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-xl font-semibold hover:opacity-80 transition-opacity"
         >
           Voir les postes <ArrowRight className="w-4 h-4" />
         </a>
@@ -244,17 +244,17 @@ export default function Careers() {
 
       {/* Founder story */}
       <section className="max-w-3xl mx-auto px-6 pb-16">
-        <div className="bg-[#F5F5F5] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8">
+        <div className="bg-mono-975 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-8">
           <div className="flex items-start gap-4 mb-4">
             <div className="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center shrink-0">
               <ChefHat className="w-6 h-6 text-teal-600 dark:text-teal-400" />
             </div>
             <div>
-              <p className="font-semibold text-[#111111] dark:text-white">Youssef, fondateur</p>
-              <p className="text-sm text-[#737373] dark:text-[#A3A3A3]">Montpellier · Solo-founder</p>
+              <p className="font-semibold text-mono-100 dark:text-white">Youssef, fondateur</p>
+              <p className="text-sm text-mono-500 dark:text-mono-700">Montpellier · Solo-founder</p>
             </div>
           </div>
-          <blockquote className="text-[#737373] dark:text-[#A3A3A3] leading-relaxed">
+          <blockquote className="text-mono-500 dark:text-mono-700 leading-relaxed">
             "J'ai construit RestauMargin parce que j'ai vu des restaurateurs fermer non pas parce que leur cuisine était mauvaise,
             mais parce qu'ils ne savaient pas lire leurs marges. Le produit est en prod, on a des clients, et maintenant
             j'ai besoin de renfort humain — pas de l'exécution, de la co-construction. Si tu partages cette conviction,
@@ -265,13 +265,13 @@ export default function Careers() {
 
       {/* Values */}
       <section className="max-w-5xl mx-auto px-6 pb-16">
-        <h2 className="text-2xl font-bold text-[#111111] dark:text-white mb-8 text-center">Comment on travaille</h2>
+        <h2 className="text-2xl font-bold text-mono-100 dark:text-white mb-8 text-center">Comment on travaille</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           {VALUES.map((v, i) => (
-            <div key={i} className="p-6 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl bg-white dark:bg-[#0A0A0A]/50">
+            <div key={i} className="p-6 border border-mono-900 dark:border-mono-200 rounded-2xl bg-white dark:bg-mono-50/50">
               <v.icon className="w-6 h-6 text-teal-600 dark:text-teal-400 mb-3" />
-              <h3 className="font-semibold text-[#111111] dark:text-white mb-2">{v.title}</h3>
-              <p className="text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">{v.body}</p>
+              <h3 className="font-semibold text-mono-100 dark:text-white mb-2">{v.title}</h3>
+              <p className="text-sm text-mono-500 dark:text-mono-700 leading-relaxed">{v.body}</p>
             </div>
           ))}
         </div>
@@ -279,19 +279,19 @@ export default function Careers() {
 
       {/* Benefits */}
       <section className="max-w-5xl mx-auto px-6 pb-16">
-        <h2 className="text-2xl font-bold text-[#111111] dark:text-white mb-8 text-center">Ce qu'on offre (concret)</h2>
+        <h2 className="text-2xl font-bold text-mono-100 dark:text-white mb-8 text-center">Ce qu'on offre (concret)</h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
           {BENEFITS.map((b, i) => (
-            <div key={i} className="flex items-start gap-3 p-4 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-white dark:bg-[#0A0A0A]/50">
+            <div key={i} className="flex items-start gap-3 p-4 border border-mono-900 dark:border-mono-200 rounded-xl bg-white dark:bg-mono-50/50">
               <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-sm text-[#111111] dark:text-white">{b.label}</p>
-                <p className="text-xs text-[#737373] dark:text-[#A3A3A3] mt-0.5">{b.detail}</p>
+                <p className="font-semibold text-sm text-mono-100 dark:text-white">{b.label}</p>
+                <p className="text-xs text-mono-500 dark:text-mono-700 mt-0.5">{b.detail}</p>
               </div>
             </div>
           ))}
         </div>
-        <p className="text-center text-xs text-[#737373] dark:text-[#A3A3A3] mt-4">
+        <p className="text-center text-xs text-mono-500 dark:text-mono-700 mt-4">
           On est early-stage (seed). Les packages complets (mutuelle Alan, Swile, tickets-resto) arrivent au premier CDI.
           La transparence, c'est maintenant.
         </p>
@@ -300,8 +300,8 @@ export default function Careers() {
       {/* Open roles */}
       <section id="postes-ouverts" className="max-w-5xl mx-auto px-6 pb-20">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-[#111111] dark:text-white">Postes ouverts</h2>
-          <span className="text-sm text-[#737373] dark:text-[#A3A3A3]">Réponse sous 3 jours ouvrés</span>
+          <h2 className="text-2xl font-bold text-mono-100 dark:text-white">Postes ouverts</h2>
+          <span className="text-sm text-mono-500 dark:text-mono-700">Réponse sous 3 jours ouvrés</span>
         </div>
         <div className="space-y-6">
           {OPEN_ROLES.map((role) => (
@@ -312,16 +312,16 @@ export default function Careers() {
 
       {/* No open role? */}
       <section className="max-w-2xl mx-auto px-6 pb-20 text-center">
-        <div className="border border-dashed border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-10">
-          <Mail className="w-8 h-8 text-[#737373] dark:text-[#A3A3A3] mx-auto mb-4" />
-          <h3 className="font-bold text-[#111111] dark:text-white mb-2">Pas le bon poste ?</h3>
-          <p className="text-sm text-[#737373] dark:text-[#A3A3A3] mb-6 leading-relaxed">
+        <div className="border border-dashed border-mono-900 dark:border-mono-200 rounded-2xl p-10">
+          <Mail className="w-8 h-8 text-mono-500 dark:text-mono-700 mx-auto mb-4" />
+          <h3 className="font-bold text-mono-100 dark:text-white mb-2">Pas le bon poste ?</h3>
+          <p className="text-sm text-mono-500 dark:text-mono-700 mb-6 leading-relaxed">
             Si tu as une idée de comment tu pourrais contribuer à RestauMargin, envoie un email direct.
             On répond à tout le monde, même pour dire non.
           </p>
           <a
             href="mailto:youssef@restaumargin.com?subject=Candidature spontanée"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm font-semibold text-[#111111] dark:text-white hover:bg-[#F5F5F5] dark:hover:bg-[#1A1A1A] transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-mono-900 dark:border-mono-200 rounded-xl text-sm font-semibold text-mono-100 dark:text-white hover:bg-mono-975 dark:hover:bg-mono-200 transition-colors"
           >
             <Mail className="w-4 h-4" />
             youssef@restaumargin.com
@@ -329,7 +329,7 @@ export default function Careers() {
         </div>
 
         {/* EEO */}
-        <p className="text-xs text-[#737373] dark:text-[#A3A3A3] mt-8 leading-relaxed">
+        <p className="text-xs text-mono-500 dark:text-mono-700 mt-8 leading-relaxed">
           RestauMargin est un employeur qui pratique l'égalité des chances. Nous évaluons tous les candidats
           sur leurs compétences et motivations, indépendamment de l'origine, du genre, de l'âge, du handicap
           ou de l'orientation sexuelle. Les données de candidature sont conservées 2 ans maximum (RGPD).
@@ -338,7 +338,7 @@ export default function Careers() {
 
       {/* Back link */}
       <div className="max-w-5xl mx-auto px-6 pb-10">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors">
+        <Link to="/" className="inline-flex items-center gap-2 text-sm text-mono-500 dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors">
           ← Retour à l'accueil
         </Link>
       </div>

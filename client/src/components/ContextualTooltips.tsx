@@ -141,7 +141,7 @@ export default function ContextualTooltips() {
         fading ? 'opacity-0 translate-y-[-8px]' : 'opacity-100 translate-y-0'
       }`}
     >
-      <div className="bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-2xl shadow-2xl border border-[#333333] dark:border-[#E5E7EB] px-5 py-4">
+      <div className="bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-2xl shadow-2xl border border-[#333333] dark:border-mono-900 px-5 py-4">
         <div className="flex items-start gap-3">
           <div className="w-8 h-8 rounded-lg bg-white/15 dark:bg-black/10 flex items-center justify-center flex-shrink-0 mt-0.5">
             <Lightbulb className="w-4 h-4" />
@@ -158,7 +158,7 @@ export default function ContextualTooltips() {
           </button>
         </div>
         {/* Arrow */}
-        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 bg-[#111111] dark:bg-white border-l border-t border-[#333333] dark:border-[#E5E7EB]" />
+        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 bg-mono-100 dark:bg-white border-l border-t border-[#333333] dark:border-mono-900" />
       </div>
     </div>
   );

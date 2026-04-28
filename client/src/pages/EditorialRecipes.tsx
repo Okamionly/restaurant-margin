@@ -144,7 +144,7 @@ export default function EditorialRecipes() {
     const clamp = Math.min(100, Math.max(0, percent));
     const color = clamp >= 75 ? 'bg-emerald-500' : clamp >= 60 ? 'bg-amber-500' : 'bg-red-500';
     return (
-      <div className="w-full h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-mono-950 dark:bg-[#171717] rounded-full overflow-hidden">
         <div className={`h-full rounded-full ${color} transition-all`} style={{ width: `${clamp}%` }} />
       </div>
     );
@@ -156,68 +156,68 @@ export default function EditorialRecipes() {
     const totalCost = r.ingredients?.reduce((s, i) => s + parseFloat(String(i.total_cost || 0)), 0) || 0;
     return (
       <div className="space-y-6">
-        <button onClick={() => setSelectedRecipe(null)} className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors">
+        <button onClick={() => setSelectedRecipe(null)} className="flex items-center gap-2 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors">
           <ArrowLeft className="w-4 h-4" />
           Retour aux recettes
         </button>
 
-        <div className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+        <div className="bg-mono-1000/50 dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden">
           {/* Header image */}
           {r.image_url ? (
             <div className="relative h-48 sm:h-64">
               <img src={r.image_url} alt={r.title} className="w-full h-full object-cover" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
               <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-black to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
-                <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{r.title}</h1>
-                <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm mt-1">{r.description}</p>
+                <h1 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{r.title}</h1>
+                <p className="text-[#6B7280] dark:text-mono-700 text-sm mt-1">{r.description}</p>
               </div>
             </div>
           ) : (
             <div className="p-6 bg-gradient-to-r from-teal-900/30 to-transparent">
-              <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{r.title}</h1>
-              <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm mt-1">{r.description}</p>
+              <h1 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{r.title}</h1>
+              <p className="text-[#6B7280] dark:text-mono-700 text-sm mt-1">{r.description}</p>
             </div>
           )}
 
           {/* Info badges */}
-          <div className="p-4 flex flex-wrap gap-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <span className="flex items-center gap-1.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <div className="p-4 flex flex-wrap gap-3 border-b border-mono-900 dark:border-mono-200">
+            <span className="flex items-center gap-1.5 text-sm text-[#6B7280] dark:text-mono-700">
               <Users className="w-4 h-4 text-teal-400" /> {r.portions} portions
             </span>
-            <span className="flex items-center gap-1.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            <span className="flex items-center gap-1.5 text-sm text-[#6B7280] dark:text-mono-700">
               <Clock className="w-4 h-4 text-teal-400" /> Prépa {r.prep_time} min
             </span>
-            <span className="flex items-center gap-1.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            <span className="flex items-center gap-1.5 text-sm text-[#6B7280] dark:text-mono-700">
               <Flame className="w-4 h-4 text-orange-400" /> Cuisson {r.cook_time} min
             </span>
-            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${difficultyColors[r.difficulty] || 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${difficultyColors[r.difficulty] || 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700'}`}>
               {r.difficulty}
             </span>
           </div>
 
           {/* Cost summary */}
-          <div className="p-4 grid grid-cols-3 gap-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="p-4 grid grid-cols-3 gap-4 border-b border-mono-900 dark:border-mono-200">
             <div className="text-center">
               <div className="text-lg font-bold text-amber-400">{formatCurrency(parseFloat(String(r.cost_per_portion)))}</div>
-              <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Coût / portion</div>
+              <div className="text-xs text-[#6B7280] dark:text-mono-700">Coût / portion</div>
             </div>
             <div className="text-center">
               <div className="text-lg font-bold text-emerald-400">{formatCurrency(parseFloat(String(r.suggested_price)))}</div>
-              <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Prix suggéré</div>
+              <div className="text-xs text-[#6B7280] dark:text-mono-700">Prix suggéré</div>
             </div>
             <div className="text-center">
               <div className="text-lg font-bold text-teal-400">{parseFloat(String(r.margin_percent)).toFixed(0)}%</div>
-              <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Marge</div>
+              <div className="text-xs text-[#6B7280] dark:text-mono-700">Marge</div>
             </div>
           </div>
 
           {/* Ingredients list */}
           <div className="p-4">
-            <h3 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3">Ingrédients</h3>
+            <h3 className="text-sm font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-3">Ingrédients</h3>
             <div className="space-y-2">
               {r.ingredients?.map((ing) => (
-                <div key={ing.id} className="flex items-center gap-3 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 rounded-xl p-3">
-                  <div className="w-10 h-10 rounded-full bg-[#F3F4F6] dark:bg-[#171717] flex-shrink-0 overflow-hidden">
+                <div key={ing.id} className="flex items-center gap-3 bg-mono-1000/50 dark:bg-mono-50/50 rounded-xl p-3">
+                  <div className="w-10 h-10 rounded-full bg-mono-950 dark:bg-[#171717] flex-shrink-0 overflow-hidden">
                     {ing.image_url ? (
                       <img src={ing.image_url} alt={ing.ingredient_name} className="w-full h-full object-cover" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).parentElement!.innerHTML = '<span class="text-lg flex items-center justify-center w-full h-full">🥘</span>'; }} />
                     ) : (
@@ -225,22 +225,22 @@ export default function EditorialRecipes() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-[#111111] dark:text-white">{ing.ingredient_name}</div>
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                    <div className="text-sm font-medium text-mono-100 dark:text-white">{ing.ingredient_name}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500">
                       {ing.quantity} {ing.unit} · {formatCurrency(parseFloat(String(ing.price_per_unit)))}/{ing.unit}
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
                     <div className="text-sm font-medium text-amber-400">{formatCurrency(parseFloat(String(ing.total_cost)))}</div>
-                    <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex items-center gap-1">
+                    <div className="text-xs text-[#6B7280] dark:text-mono-700 flex items-center gap-1">
                       <Truck className="w-3 h-3" /> {ing.supplier}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="mt-3 flex justify-between items-center bg-[#FAFAFA]/30 dark:bg-[#0A0A0A]/30 rounded-xl p-3">
-              <span className="text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3]">Coût total recette</span>
+            <div className="mt-3 flex justify-between items-center bg-mono-1000/30 dark:bg-mono-50/30 rounded-xl p-3">
+              <span className="text-sm font-semibold text-[#6B7280] dark:text-mono-700">Coût total recette</span>
               <span className="text-lg font-bold text-amber-400">{formatCurrency(totalCost)}</span>
             </div>
           </div>
@@ -258,11 +258,11 @@ export default function EditorialRecipes() {
           )}
 
           {/* Actions */}
-          <div className="p-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-col sm:flex-row gap-3">
+          <div className="p-4 border-t border-mono-900 dark:border-mono-200 flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => addToMine(r.id)}
               disabled={addingId === r.id}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white rounded-xl font-medium transition-colors disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white rounded-xl font-medium transition-colors disabled:opacity-50"
             >
               <Plus className="w-4 h-4" />
               {addingId === r.id ? 'Ajout en cours...' : 'Ajouter à mes recettes'}
@@ -270,7 +270,7 @@ export default function EditorialRecipes() {
             <button
               onClick={() => orderIngredients(r.id)}
               disabled={orderingId === r.id}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white rounded-xl font-medium transition-colors disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border border-mono-900 dark:border-mono-200 hover:border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white rounded-xl font-medium transition-colors disabled:opacity-50"
             >
               <ShoppingCart className="w-4 h-4" />
               {orderingId === r.id ? 'Commande en cours...' : 'Commander les ingrédients'}
@@ -286,14 +286,14 @@ export default function EditorialRecipes() {
       {/* Header */}
       <div>
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-10 h-10 rounded-xl bg-[#111111] dark:bg-white/20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-mono-100 dark:bg-white/20 flex items-center justify-center">
             <ChefHat className="w-5 h-5 text-teal-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
+            <h1 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">
               Recettes de la semaine — Semaine {weekNum}
             </h1>
-            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+            <p className="text-sm text-[#9CA3AF] dark:text-mono-500">
               Transgourmet · Cours du frais · {recipes.length} recette{recipes.length > 1 ? 's' : ''}
             </p>
           </div>
@@ -310,9 +310,9 @@ export default function EditorialRecipes() {
       {/* Empty state */}
       {!loading && recipes.length === 0 && (
         <div className="text-center py-16">
-          <ChefHat className="w-16 h-16 mx-auto text-[#6B7280] dark:text-[#A3A3A3] mb-4" />
-          <h3 className="text-lg font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-2">Aucune recette cette semaine</h3>
-          <p className="text-[#6B7280] dark:text-[#A3A3A3]">Les recettes du "Cours du frais" seront publiées prochainement.</p>
+          <ChefHat className="w-16 h-16 mx-auto text-[#6B7280] dark:text-mono-700 mb-4" />
+          <h3 className="text-lg font-medium text-[#6B7280] dark:text-mono-700 mb-2">Aucune recette cette semaine</h3>
+          <p className="text-[#6B7280] dark:text-mono-700">Les recettes du "Cours du frais" seront publiées prochainement.</p>
         </div>
       )}
 
@@ -323,7 +323,7 @@ export default function EditorialRecipes() {
             <div
               key={r.id}
               onClick={() => openDetail(r.id)}
-              className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden hover:border-[#E5E7EB] dark:border-[#1A1A1A] transition-all cursor-pointer group"
+              className="bg-mono-1000/50 dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl overflow-hidden hover:border-mono-900 dark:border-mono-200 transition-all cursor-pointer group"
             >
               {/* Image */}
               <div className="relative aspect-video overflow-hidden">
@@ -346,7 +346,7 @@ export default function EditorialRecipes() {
                 )}
                 {/* Season badge */}
                 {r.season && (
-                  <span className="absolute top-2 right-2 bg-white dark:bg-black/80 backdrop-blur text-xs text-[#6B7280] dark:text-[#A3A3A3] px-2 py-0.5 rounded-full">
+                  <span className="absolute top-2 right-2 bg-white dark:bg-black/80 backdrop-blur text-xs text-[#6B7280] dark:text-mono-700 px-2 py-0.5 rounded-full">
                     {r.season}
                   </span>
                 )}
@@ -354,30 +354,30 @@ export default function EditorialRecipes() {
 
               {/* Content */}
               <div className="p-4 space-y-3">
-                <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi leading-tight">{r.title}</h3>
+                <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi leading-tight">{r.title}</h3>
 
                 {/* Badges */}
                 <div className="flex flex-wrap gap-1.5">
-                  <span className="px-2 py-0.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full text-xs text-[#6B7280] dark:text-[#A3A3A3]">{r.category}</span>
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${difficultyColors[r.difficulty] || 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                  <span className="px-2 py-0.5 bg-mono-1000 dark:bg-mono-50 rounded-full text-xs text-[#6B7280] dark:text-mono-700">{r.category}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${difficultyColors[r.difficulty] || 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700'}`}>
                     {r.difficulty}
                   </span>
-                  <span className="px-2 py-0.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
+                  <span className="px-2 py-0.5 bg-mono-1000 dark:bg-mono-50 rounded-full text-xs text-[#9CA3AF] dark:text-mono-500 flex items-center gap-1">
                     <Clock className="w-3 h-3" /> {r.prep_time + r.cook_time} min
                   </span>
-                  <span className="px-2 py-0.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
+                  <span className="px-2 py-0.5 bg-mono-1000 dark:bg-mono-50 rounded-full text-xs text-[#9CA3AF] dark:text-mono-500 flex items-center gap-1">
                     <Users className="w-3 h-3" /> {r.portions}
                   </span>
                 </div>
 
                 {/* Cost per portion */}
-                <div className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 rounded-xl p-3">
+                <div className="bg-mono-1000/50 dark:bg-mono-50/50 rounded-xl p-3">
                   <div className="flex justify-between items-baseline mb-1.5">
-                    <span className="text-2xl font-bold text-amber-400">{formatCurrency(parseFloat(String(r.cost_per_portion)))}<span className="text-sm font-normal text-[#6B7280] dark:text-[#A3A3A3]">/portion</span></span>
+                    <span className="text-2xl font-bold text-amber-400">{formatCurrency(parseFloat(String(r.cost_per_portion)))}<span className="text-sm font-normal text-[#6B7280] dark:text-mono-700">/portion</span></span>
                   </div>
                   <MarginGauge percent={parseFloat(String(r.margin_percent))} />
                   <div className="flex justify-between items-center mt-1.5">
-                    <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Prix suggéré : <span className="text-emerald-400 font-semibold">{formatCurrency(parseFloat(String(r.suggested_price)))}</span></span>
+                    <span className="text-sm text-[#9CA3AF] dark:text-mono-500">Prix suggéré : <span className="text-emerald-400 font-semibold">{formatCurrency(parseFloat(String(r.suggested_price)))}</span></span>
                     <span className="text-sm font-semibold text-teal-400">marge {parseFloat(String(r.margin_percent)).toFixed(0)}%</span>
                   </div>
                 </div>
@@ -395,7 +395,7 @@ export default function EditorialRecipes() {
                   <button
                     onClick={(e) => addToMine(r.id, e)}
                     disabled={addingId === r.id}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white text-sm rounded-xl font-medium transition-colors disabled:opacity-50"
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white text-sm rounded-xl font-medium transition-colors disabled:opacity-50"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     {addingId === r.id ? 'Ajout...' : 'Ajouter'}
@@ -403,7 +403,7 @@ export default function EditorialRecipes() {
                   <button
                     onClick={(e) => orderIngredients(r.id, e)}
                     disabled={orderingId === r.id}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white text-sm rounded-xl font-medium transition-colors disabled:opacity-50"
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-mono-900 dark:border-mono-200 hover:border-mono-900 dark:border-mono-200 text-mono-100 dark:text-white text-sm rounded-xl font-medium transition-colors disabled:opacity-50"
                   >
                     <ShoppingCart className="w-3.5 h-3.5" />
                     {orderingId === r.id ? '...' : 'Commander'}

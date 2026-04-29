@@ -166,6 +166,7 @@ const BlogChiffreAffaires = lazyRetry(() => import('./pages/BlogChiffreAffaires'
 const Careers = lazyRetry(() => import('./pages/Careers'));
 const HelpPage = lazyRetry(() => import('./pages/Help'));
 const BreakevenCalculator = lazyRetry(() => import('./pages/BreakevenCalculator'));
+const CouvertsCible = lazyRetry(() => import('./pages/CouvertsCible'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -497,6 +498,7 @@ function AppLayout() {
         { to: '/devis', icon: FileText, label: 'Devis & Factures' },
         { to: '/marketplace', icon: Store, label: 'Marketplace' },
         { to: '/rentabilite', icon: Activity, label: 'Seuil de rentabilité' },
+        { to: '/couverts-cible', icon: Users, label: 'Couverts cible' },
         // Integrations masqué pour l'instant
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
         { to: '/abonnement', icon: CreditCard, label: 'Mon abonnement' },
@@ -1005,6 +1007,7 @@ function AppLayout() {
               <Route path="/comptabilite" element={<Comptabilite />} />
               <Route path="/devis" element={<DevisPage />} />
               <Route path="/rentabilite" element={<BreakevenCalculator />} />
+              <Route path="/couverts-cible" element={<CouvertsCible />} />
               <Route path="/restaurants" element={<TrialPaywallGuard feature="Multi-restaurant"><Restaurants /></TrialPaywallGuard>} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/abonnement" element={<Subscription />} />

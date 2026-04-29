@@ -1537,39 +1537,47 @@ export default function Settings() {
               <Smartphone className="w-5 h-5 text-blue-500" />
               Sessions actives
             </h3>
-            <button
-              onClick={handleDisconnectAll}
-              className="flex items-center gap-2 px-3 py-1.5 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-medium rounded-xl transition-colors"
-            >
-              <LogOut className="w-4 h-4" />
-              Deconnecter tous les appareils
-            </button>
+            {activeSessions.filter(s => !s.current).length > 0 && (
+              <button
+                onClick={handleDisconnectAll}
+                className="flex items-center gap-2 px-3 py-1.5 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-medium rounded-xl transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                Deconnecter tous les appareils
+              </button>
+            )}
           </div>
 
           <div className="space-y-2">
-            {activeSessions.map((session) => (
-              <div
-                key={session.id}
-                className={`flex items-center gap-4 py-3 px-4 rounded-2xl border transition-colors ${
-                  session.current
-                    ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-900/30'
-                    : 'bg-white dark:bg-mono-50 border-mono-900 dark:border-mono-200'
-                }`}
-              >
-                <Smartphone className={`w-5 h-5 flex-shrink-0 ${session.current ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-mono-100 dark:text-white flex items-center gap-2">
-                    {session.device}
-                    {session.current && (
-                      <span className="text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full">
-                        Cet appareil
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{session.location} -- {session.lastActive}</p>
-                </div>
+            {activeSessions.length === 0 ? (
+              <div className="py-6 text-center text-sm text-[#9CA3AF] dark:text-[#A3A3A3]">
+                Aucune session active detectee
               </div>
-            ))}
+            ) : (
+              activeSessions.map((session) => (
+                <div
+                  key={session.id}
+                  className={`flex items-center gap-4 py-3 px-4 rounded-2xl border transition-colors ${
+                    session.current
+                      ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-900/30'
+                      : 'bg-white dark:bg-mono-50 border-mono-900 dark:border-mono-200'
+                  }`}
+                >
+                  <Smartphone className={`w-5 h-5 flex-shrink-0 ${session.current ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-mono-100 dark:text-white flex items-center gap-2">
+                      {session.device}
+                      {session.current && (
+                        <span className="text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full">
+                          Cet appareil
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{session.location} -- {session.lastActive}</p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -1715,26 +1723,34 @@ export default function Settings() {
                 </tr>
               </thead>
               <tbody>
-                {billingHistory.map((entry) => (
-                  <tr key={entry.id} className="border-b border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors">
-                    <td className="py-3 px-3 text-[#6B7280] dark:text-mono-700">
-                      {new Date(entry.date).toLocaleDateString('fr-FR')}
-                    </td>
-                    <td className="py-3 px-3 text-mono-100 dark:text-white font-medium">{entry.description}</td>
-                    <td className="py-3 px-3 text-right text-mono-100 dark:text-white font-mono">{entry.amount}</td>
-                    <td className="py-3 px-3 text-right">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        entry.status === 'paid'
-                          ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
-                          : entry.status === 'pending'
-                          ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
-                          : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                      }`}>
-                        {entry.status === 'paid' ? 'Paye' : entry.status === 'pending' ? 'En attente' : 'Echoue'}
-                      </span>
+                {billingHistory.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-6 text-center text-sm text-[#9CA3AF] dark:text-[#A3A3A3]">
+                      Aucune facture disponible
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  billingHistory.map((entry) => (
+                    <tr key={entry.id} className="border-b border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors">
+                      <td className="py-3 px-3 text-[#6B7280] dark:text-mono-700">
+                        {new Date(entry.date).toLocaleDateString('fr-FR')}
+                      </td>
+                      <td className="py-3 px-3 text-mono-100 dark:text-white font-medium">{entry.description}</td>
+                      <td className="py-3 px-3 text-right text-mono-100 dark:text-white font-mono">{entry.amount}</td>
+                      <td className="py-3 px-3 text-right">
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          entry.status === 'paid'
+                            ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+                            : entry.status === 'pending'
+                            ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                            : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                        }`}>
+                          {entry.status === 'paid' ? 'Paye' : entry.status === 'pending' ? 'En attente' : 'Echoue'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

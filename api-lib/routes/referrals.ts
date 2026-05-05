@@ -10,6 +10,7 @@
 
 import { Router } from 'express';
 import crypto from 'crypto';
+import { Resend } from 'resend';
 import { prisma, authMiddleware } from '../middleware';
 
 const router = Router();
@@ -197,7 +198,27 @@ router.post('/qualify', async (req, res) => {
       data: { status: 'qualified' },
     });
 
-    // TODO : envoyer email au parrain "Votre filleul a souscrit, vous avez gagné 1 mois gratuit !"
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey && referral.referrerId) {
+      const referrer = await prisma.user.findUnique({
+        where: { id: referral.referrerId },
+        select: { email: true, name: true },
+      });
+      if (referrer?.email) {
+        const resend = new Resend(resendKey);
+        await resend.emails.send({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: referrer.email,
+          subject: 'Bonne nouvelle ! Votre filleul a souscrit 🎉',
+          html: `<p>Bonjour${referrer.name ? ` ${referrer.name}` : ''},</p>
+<p>Votre filleul vient de souscrire à RestauMargin. Vous gagnez <strong>1 mois Pro gratuit</strong> sur votre prochain cycle de facturation.</p>
+<p>Merci de faire confiance à RestauMargin et de nous recommander !</p>
+<p>— L'équipe RestauMargin</p>`,
+        }).catch((err: Error) => {
+          console.error('[REFERRALS/qualify] email parrain failed:', err.message);
+        });
+      }
+    }
 
     res.json({ qualified: true, referralId: referral.id, referrerId: referral.referrerId });
   } catch (e: any) {

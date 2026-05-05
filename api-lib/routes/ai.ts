@@ -99,7 +99,7 @@ async function classifyIntent(userMessage: string): Promise<AiIntent> {
     const intentResponse = await anthropic.messages.create({
       // FIX 2026-04-28 : intent classification = output 1 mot, max_tokens 20.
       // Aucune raison de payer Sonnet pour ça. Haiku 5x moins cher, output identique.
-      model: 'claude-haiku-4-5',
+      model: 'claude-haiku-4-5-20251022',
       max_tokens: 20,
       messages: [{ role: 'user', content: userMessage }],
       system: 'Classifie cette demande en UNE catégorie: recipe, ingredient, order, planning, haccp, analysis, general. Réponds UNIQUEMENT le mot.',
@@ -360,7 +360,7 @@ ${context}`;
     // requêtes simples (chat conversationnel, intent classification).
     // Sonnet réservé aux tâches complexes (menu hebdo, vision sur images).
     const useAdvancedModel = isWeeklyMenu || hasImage;
-    const aiModel = useAdvancedModel ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5';
+    const aiModel = useAdvancedModel ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251022';
     const maxTokens = isWeeklyMenu ? 4096 : ['analysis', 'recipe', 'planning'].includes(intent) ? 2048 : 1024;
 
     // Build messages with conversation history

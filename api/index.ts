@@ -20,6 +20,7 @@ import clientsRoutes from '../api-lib/routes/clients';
 import ingredientsRoutes from '../api-lib/routes/ingredients';
 import recipesRoutes from '../api-lib/routes/recipes';
 import inventoryRoutes from '../api-lib/routes/inventory';
+import servicesRoutes from '../api-lib/routes/services';
 import swaggerUi from 'swagger-ui-express';
 import { getOpenApiSpec } from '../api-lib/openapi/spec';
 import { getUnitDivisor } from '../api-lib/utils/unitConversion';
@@ -1017,6 +1018,7 @@ app.use('/api/clients', authWithRestaurant, clientsRoutes);
 app.use('/api/ingredients', authWithRestaurant, ingredientsRoutes);
 app.use('/api/recipes', authWithRestaurant, recipesRoutes);
 app.use('/api/inventory', authWithRestaurant, inventoryRoutes);
+app.use('/api/services', authWithRestaurant, servicesRoutes);
 
 // ── OpenAPI 3.1 — spec + Swagger UI (Wave 3) ──────────────────────────────────
 // Swagger UI only mounted in development to:

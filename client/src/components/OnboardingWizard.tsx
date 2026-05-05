@@ -555,7 +555,18 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                 {RESTAURANT_TYPES.map(type => (
                   <button
                     key={type.value}
-                    onClick={() => setRestaurantType(type.value)}
+                    onClick={() => {
+                      setRestaurantType(type.value);
+                      // FIX 2026-04-28 (audit Karim persona) : auto-import du pack recettes
+                      // dès la sélection du type. Avant : user devait attendre step 5
+                      // pour voir sa 1ère marge calculée. Maintenant : marge visible
+                      // en 90s via le pack pré-rempli (5 recettes pizzeria/bistrot/etc.).
+                      // handleImportPack est idempotent (skip duplicates + flag packImported).
+                      const packId = RESTAURANT_PACK_MAP[type.value];
+                      if (packId && !packImported) {
+                        setTimeout(() => handleImportPack(), 100); // après le re-render
+                      }
+                    }}
                     className={`flex flex-col items-center gap-1.5 p-4 rounded-2xl border-2 transition-all duration-200 group ${
                       restaurantType === type.value
                         ? 'border-mono-100 dark:border-white bg-mono-950 dark:bg-[#171717] scale-[1.02]'

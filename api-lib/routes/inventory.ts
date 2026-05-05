@@ -176,12 +176,35 @@ router.delete('/:id', async (req: any, res) => {
 
 // ============ GET /api/inventory/auto-reorder ============
 // Analyze inventory + suggest reorders grouped by supplier.
+// FIX 2026-04-28 v2 (audit cohérence) : enrichi avec "portions possibles"
+// — combien de fois chaque recette utilisant cet ingrédient peut être faite
+// avec le stock actuel. Réponse plus actionnable pour le restaurateur.
 router.get('/auto-reorder', async (req: any, res) => {
   try {
     const items = await prisma.inventoryItem.findMany({
       where: { restaurantId: req.restaurantId },
       include: { ingredient: { include: { supplierRef: true } } },
     });
+
+    // Charge aussi les recettes pour calcul portions possibles
+    const recipes = await prisma.recipe.findMany({
+      where: { restaurantId: req.restaurantId, deletedAt: null },
+      include: { ingredients: true },
+    });
+
+    // Map ingredientId -> [{ recipeId, recipeName, qtyPerPortion }]
+    const ingredientUsage = new Map<number, Array<{ recipeId: number; recipeName: string; qtyPerPortion: number }>>();
+    for (const r of recipes) {
+      const portions = Math.max(r.nbPortions || 1, 1);
+      for (const ri of r.ingredients) {
+        if (!ingredientUsage.has(ri.ingredientId)) ingredientUsage.set(ri.ingredientId, []);
+        ingredientUsage.get(ri.ingredientId)!.push({
+          recipeId: r.id,
+          recipeName: r.name,
+          qtyPerPortion: ri.quantity / portions,
+        });
+      }
+    }
 
     const lowStockItems = items.filter((item: any) => item.currentStock < item.minStock && item.minStock > 0);
 
@@ -206,6 +229,14 @@ router.get('/auto-reorder', async (req: any, res) => {
       const unitDivisor = getUnitDivisor((item as any).ingredient.unit);
       const estimatedCost = (suggestedQty / unitDivisor) * (item as any).ingredient.pricePerUnit;
 
+      // SMART : portions max possibles avec stock actuel pour les recettes
+      // utilisant cet ingrédient (le minimum sur toutes les recettes).
+      const usages = ingredientUsage.get((item as any).ingredient.id) || [];
+      const portionsPossibles = usages.length === 0 ? null : usages.reduce((min, u) => {
+        const possibles = u.qtyPerPortion > 0 ? Math.floor(item.currentStock / u.qtyPerPortion) : Infinity;
+        return Math.min(min, possibles);
+      }, Number.POSITIVE_INFINITY);
+
       bySupplier[key].items.push({
         ingredientId: (item as any).ingredient.id,
         ingredient: (item as any).ingredient.name,
@@ -214,6 +245,9 @@ router.get('/auto-reorder', async (req: any, res) => {
         unit: item.unit || (item as any).ingredient.unit,
         suggestedQty: Math.round(suggestedQty * 100) / 100,
         estimatedCost: Math.round(estimatedCost * 100) / 100,
+        // Nouveau : combien de portions max + nombre de recettes impactées
+        portionsPossibles: portionsPossibles === null || !isFinite(portionsPossibles) ? null : portionsPossibles,
+        recipesUsing: usages.length,
       });
       bySupplier[key].totalCost += estimatedCost;
     }

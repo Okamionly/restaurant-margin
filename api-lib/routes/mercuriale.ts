@@ -242,4 +242,85 @@ router.get('/suggest', authWithRestaurant, async (req: any, res) => {
   }
 });
 
+// ── POST /api/mercuriale/apply-to-ingredients ──
+// Pour une publication mercuriale donnée, propage les prix moyens vers
+// Ingredient.pricePerUnit (match flou par nom case-insensitive). Crée aussi
+// une entrée PriceHistory pour traçabilité.
+//
+// FIX 2026-04-28 (audit cohérence) : avant ce endpoint, la mercuriale était
+// 100% éditoriale — modifier un prix dedans n'impactait JAMAIS les marges
+// recettes. Maintenant l'admin peut explicitement appliquer une mercuriale
+// à ses ingrédients en 1 click.
+router.post('/publications/:id/apply-to-ingredients', authWithRestaurant, async (req: any, res) => {
+  try {
+    const publicationId = parseInt(req.params.id);
+    const restaurantId = req.restaurantId;
+    if (!restaurantId) return res.status(403).json({ error: 'restaurant_id required' });
+
+    // Fetch all prices for this publication
+    const prices: any[] = await prisma.$queryRaw`
+      SELECT ingredient_name, price_min, price_max, unit
+      FROM mercuriale_prices
+      WHERE publication_id = ${publicationId}
+    `;
+    if (prices.length === 0) return res.status(404).json({ error: 'Publication ou prix non trouvés' });
+
+    let updated = 0;
+    let unchanged = 0;
+    const updatedIngredients: { id: number; name: string; oldPrice: number; newPrice: number }[] = [];
+
+    for (const p of prices) {
+      // Prix moyen entre min/max comme nouvelle référence
+      const avgPrice = (Number(p.price_min) + Number(p.price_max)) / 2;
+      if (!isFinite(avgPrice) || avgPrice <= 0) continue;
+
+      // Match flou par nom (insensitive)
+      const matches = await prisma.ingredient.findMany({
+        where: {
+          restaurantId,
+          deletedAt: null,
+          name: { equals: p.ingredient_name, mode: 'insensitive' },
+        },
+      });
+
+      for (const ing of matches) {
+        if (Math.abs(ing.pricePerUnit - avgPrice) < 0.01) {
+          unchanged++;
+          continue;
+        }
+        const oldPrice = ing.pricePerUnit;
+        await prisma.ingredient.update({
+          where: { id: ing.id },
+          data: { pricePerUnit: avgPrice },
+        });
+        // Trace dans PriceHistory si la table existe
+        try {
+          await prisma.priceHistory.create({
+            data: {
+              ingredientId: ing.id,
+              price: avgPrice,
+              source: `mercuriale-pub-${publicationId}`,
+              date: new Date().toISOString().slice(0, 10),
+              restaurantId,
+            } as any,
+          });
+        } catch {}
+        updated++;
+        updatedIngredients.push({ id: ing.id, name: ing.name, oldPrice, newPrice: avgPrice });
+      }
+    }
+
+    res.json({
+      ok: true,
+      updated,
+      unchanged,
+      total: prices.length,
+      updatedIngredients: updatedIngredients.slice(0, 20),
+    });
+  } catch (e: any) {
+    console.error('[MERCURIALE APPLY]', e.message);
+    res.status(500).json({ error: 'Erreur application mercuriale', details: e.message });
+  }
+});
+
 export default router;

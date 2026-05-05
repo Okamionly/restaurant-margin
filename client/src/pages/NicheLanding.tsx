@@ -255,6 +255,53 @@ const NICHES: Record<string, NicheConfig> = {
       },
     ],
   },
+  'sushi-restaurant': {
+    slug: 'sushi-restaurant',
+    title: 'Calcul de marge restaurant sushi : guide complet 2026',
+    h1: 'Optimisez la marge de votre restaurant sushi',
+    tagline: 'Logiciel de gestion specialise pour restaurants sushi et japonais',
+    description: 'Guide et outil pour calculer les marges de votre restaurant sushi. Food cost poisson cru, riz a sushi, formules plateau, gestion FIFO fraicheur et optimisation carte japonaise.',
+    heroSubtitle: "Saumon, thon, crevettes : des matieres premieres nobles dont le prix fluctue chaque semaine au marche de Rungis. Chaque gramme de poisson compte. RestauMargin vous donne la precision pour proteger votre marge plateau apres plateau.",
+    avgMargin: '62-70%',
+    avgFoodCost: '30-38%',
+    avgCoef: '3 a 3,5',
+    challenges: [
+      'Prix du saumon et du thon : volatils selon cours Rungis et importations Norvege/Atlantique',
+      'Fraicheur absolue obligatoire : pertes importantes si mauvaise prevision de couverts',
+      'Formules plateau tout-inclus : impossible de calculer la marge par convive sans fiche technique',
+      'Riz a sushi : dosage precis (15-18g par piece) et cuisson standardisee indispensables',
+      'Livraison : emballage sushi rigide + suremballer augmentent le cout matiere de 8 a 12%',
+    ],
+    stats: [
+      { label: 'Food cost moyen', value: '34%', color: 'teal' },
+      { label: 'Marge brute cible', value: '66%', color: 'emerald' },
+      { label: 'Coefficient type', value: '3,2x', color: 'amber' },
+      { label: 'Ticket moyen', value: '18-35€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "Le prix du saumon m'a grignote ma marge pendant 3 mois sans que je m'en rende compte. RestauMargin m'a montre que ma California roll principale avait un food cost de 47%. J'ai recalibre le grammage saumon de 25g a 20g et ajuste le prix de vente : 11 points de marge recuperes en 6 semaines.",
+      author: 'Minh',
+      role: 'Patron de restaurant sushi, Nantes',
+    },
+    faqs: [
+      {
+        q: 'Quelle est la marge moyenne d\'un restaurant sushi ?',
+        a: 'La marge brute d\'un restaurant sushi se situe entre 62% et 70%, ce qui est inferieur a la moyenne de la restauration (68-75%) en raison du cout eleve des matieres premieres : le saumon Atlantique oscille entre 12 et 18€/kg selon les periodes, le thon rouge 25-45€/kg, les crevettes 9-14€/kg. Les restaurants sushi qui atteignent 68-70% de marge brute sont ceux qui maitrisent leurs grammages au gramme pres (18g de riz par piece, 15-20g de poisson selon la reference), negocient leurs volumes avec un grossiste en produits de la mer, et proposent une carte equilibree melant references nobles (saumon, thon) et references plus abordables (surimi, avocat, concombre). La marge nette apres charges tourne entre 4% et 9% selon la densite de couverts et le format (self-service conveyor belt vs service a table).',
+      },
+      {
+        q: 'Comment calculer le food cost d\'un maki, d\'un nigiri ou d\'un plateau ?',
+        a: 'Pour un maki california (8 pieces) : riz 130g (0,18€) + nori 1/2 feuille (0,08€) + surimi 40g (0,20€) + avocat 30g (0,12€) + concombre 20g (0,04€) + mayonnaise 10g (0,03€) = 0,65€ de cout matiere. Vendu 6,50€, le food cost est de 10% — excellent. Pour un nigiri saumon : riz 18g (0,025€) + saumon frais 20g (0,30€ au prix de 15€/kg) = 0,325€. Vendu 2,80€, food cost de 11,6%. Pour un plateau 30 pieces mix saumon/thon/crevettes, le cout matiere peut atteindre 8-10€ pour un prix de vente de 25-30€, soit un food cost de 30-40% selon la composition. RestauMargin automatise ce calcul : renseignez une fois vos prix fournisseurs poissons et le systeme recalcule instantanement le food cost de toutes vos pieces et plateaux quand le prix du saumon change.',
+      },
+      {
+        q: 'Comment gerer les pertes liees a la fraicheur du poisson cru ?',
+        a: 'La gestion de la fraicheur est le nerf de la guerre en sushis. Le poisson cru ne se conserve que 24-48h apres reception. Les bonnes pratiques : (1) commander chaque matin en fonction des reservations du jour et des previsions historiques (evitez le stock tampon), (2) tracker chaque lot par date de reception avec methode FIFO stricte, (3) valoriser les restes du soir en tartares ou bowls au menu du lendemain midi avant peremption. RestauMargin integre un module de gestion des pertes : vous saisissez les quantites non utilisees en fin de service, le logiciel calcule automatiquement le cout reel des pertes et l\'impact sur votre food cost journalier. Apres 30 jours, l\'IA identifie les references avec le taux de perte le plus eleve et recommande d\'ajuster les quantites commandees ou de repenser la composition des plateaux pour limiter le gaspillage poisson.',
+      },
+      {
+        q: 'RestauMargin convient-il aux restaurants avec formules tout-inclus ou conveyor belt ?',
+        a: 'Oui, RestauMargin est adapte aux formats sushi all-you-can-eat (AYCE) et aux restaurants conveyor belt (kaiten sushi). Pour les formules tout-inclus, vous creez une "fiche technique composite" avec la composition moyenne consommee par convive (estimee sur 30 jours de service), ce qui vous donne le cout reel par tete et la marge par couvert. Pour les kaiten, chaque assiette tourne avec un code couleur de prix : RestauMargin vous permet de creer une fiche technique par couleur d\'assiette et de suivre les ventes par reference en temps reel via votre caisse. Le dashboard multi-format montre le food cost global, la marge par categorie (nigiri/maki/temaki/sashimi), et les references qui sous-performent. Les restaurants AYCE a forte rotation peuvent ainsi ajuster la composition de leurs plateaux formule sans impacter l\'experience client tout en recuperant 4 a 8 points de marge brute.',
+      },
+    ],
+  },
   'burger-restaurant': {
     slug: 'burger-restaurant',
     title: 'Calcul de marge burger restaurant : guide complet 2026',

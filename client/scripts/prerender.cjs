@@ -64,6 +64,11 @@ const ROUTES = [
     description: "Guide et outil pour calculer les marges de votre burger restaurant. Food cost steak hache, optimisation assemblage, gestion frites et boissons, rentabilite par formule.",
   },
   {
+    path: '/guide-marge/sushi-restaurant',
+    title: 'Calcul de marge restaurant sushi : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre restaurant sushi. Food cost poisson cru, riz a sushi, formules plateau, gestion FIFO fraicheur et optimisation carte japonaise.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

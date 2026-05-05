@@ -4828,15 +4828,50 @@ app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
 // Public endpoint : un visiteur sur /launch entre son email pour recevoir
 // un rappel jour-J (= 9h01 du launch sur Product Hunt). On forward l'email
 // vers la BAL perso pour traçabilité + envoi confirmation au visiteur.
+// Rate limit IP-based pour launch-notify (security audit fix 2026-04-28).
+// Avant : aucun rate limit -> attaquant pouvait boucler 10k fois et epuiser
+// le quota Resend (1 forward + 1 confirmation = 2 emails par appel = $$).
+// Limite : 5 inscriptions par IP par heure.
+const launchNotifyRateLimit = new Map<string, { count: number; resetAt: number }>();
+function checkLaunchNotifyRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = launchNotifyRateLimit.get(ip);
+  if (!entry || now > entry.resetAt) {
+    launchNotifyRateLimit.set(ip, { count: 1, resetAt: now + 3600000 });
+    return true;
+  }
+  if (entry.count >= 5) return false;
+  entry.count++;
+  return true;
+}
+
+// Escape HTML pour eviter XSS dans les emails forward (security audit fix).
+// Email accepte des chars HTML par regex permissive donc on escape avant
+// interpolation dans les templates HTML.
+function escapeHtml(s: string): string {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]!));
+}
+
 app.post('/api/public/launch-notify', async (req, res) => {
   try {
     const { email, source } = req.body as { email?: string; source?: string };
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ error: 'Email invalide' });
     }
+    // Rate limit per IP (5/h)
+    const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+    if (!checkLaunchNotifyRateLimit(ip)) {
+      return res.status(429).json({ error: 'Trop de tentatives. Reessayez dans 1 heure.' });
+    }
 
     const resendKey = process.env.RESEND_API_KEY;
     if (!resendKey) return res.json({ ok: true, queued: true });
+
+    // Sanitize avant interpolation HTML
+    const safeEmail = escapeHtml(email);
+    const safeSource = escapeHtml(source || 'launch-page');
 
     // Forward to perso pour tracking
     try {
@@ -4850,10 +4885,10 @@ app.post('/api/public/launch-notify', async (req, res) => {
           from: 'RestauMargin Launch <contact@restaumargin.fr>',
           to: 'mr.guessousyoussef@gmail.com',
           replyTo: email,
-          subject: `[Launch PH] Nouveau abonné jour-J : ${email}`,
+          subject: `[Launch PH] Nouveau abonné jour-J : ${safeEmail}`,
           html: `<p>Nouveau visiteur sur <strong>/launch</strong> a demandé un rappel jour-J.</p>
-                 <p><strong>Email :</strong> ${email}</p>
-                 <p><strong>Source :</strong> ${source || 'launch-page'}</p>
+                 <p><strong>Email :</strong> ${safeEmail}</p>
+                 <p><strong>Source :</strong> ${safeSource}</p>
                  <p><strong>Timestamp :</strong> ${new Date().toISOString()}</p>`,
         }),
       });

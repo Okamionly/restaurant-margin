@@ -127,12 +127,23 @@ router.put('/:id', async (req: any, res) => {
       const lCheck = validatePositiveNumber(laborCostPerHour, 'Coût main d\'oeuvre/h');
       if (!lCheck.valid) return res.status(400).json({ error: 'Erreur mise à jour recette', details: lCheck.error });
     }
+    // FIX 2026-04-28 v2 (code review) : PATCH partiel correct.
+    // Avant : sellingPrice: parseFloat(undefined) = NaN ecrit en DB, nbPortions
+    // ecrasait silencieusement avec 1 si non envoye. Maintenant on construit
+    // l'objet data conditionnellement (pattern de inventory.ts PUT).
+    const updateData: any = {
+      name: safeName,
+      category: safeCategory,
+      description: safeDescription,
+    };
+    if (sellingPrice !== undefined) updateData.sellingPrice = parseFloat(sellingPrice);
+    if (nbPortions !== undefined) updateData.nbPortions = parseInt(nbPortions) || 1;
+    if (prepTimeMinutes !== undefined) updateData.prepTimeMinutes = prepTimeMinutes != null ? parseInt(prepTimeMinutes) : null;
+    if (cookTimeMinutes !== undefined) updateData.cookTimeMinutes = cookTimeMinutes != null ? parseInt(cookTimeMinutes) : null;
+    if (laborCostPerHour !== undefined) updateData.laborCostPerHour = laborCostPerHour != null ? parseFloat(laborCostPerHour) : 0;
+
     const updated = await prisma.$transaction(async (tx) => {
-      await tx.recipe.update({ where: { id: recipeId }, data: {
-        name: safeName, category: safeCategory, sellingPrice: parseFloat(sellingPrice), nbPortions: parseInt(nbPortions) || 1,
-        description: safeDescription, prepTimeMinutes: prepTimeMinutes != null ? parseInt(prepTimeMinutes) : null,
-        cookTimeMinutes: cookTimeMinutes != null ? parseInt(cookTimeMinutes) : null, laborCostPerHour: laborCostPerHour != null ? parseFloat(laborCostPerHour) : 0,
-      }});
+      await tx.recipe.update({ where: { id: recipeId }, data: updateData });
       if (ingredients) {
         await tx.recipeIngredient.deleteMany({ where: { recipeId } });
         await tx.recipeIngredient.createMany({ data: ingredients.map((i: any) => ({ recipeId, ingredientId: i.ingredientId, quantity: i.quantity, wastePercent: i.wastePercent ?? 0 })) });
@@ -142,7 +153,7 @@ router.put('/:id', async (req: any, res) => {
     if (!updated) return res.status(404).json({ error: 'Recette non trouvée' });
     const recipeChanges: any = {};
     if (existing.name !== safeName) recipeChanges.name = { old: existing.name, new: safeName };
-    if (existing.sellingPrice !== parseFloat(sellingPrice)) recipeChanges.sellingPrice = { old: existing.sellingPrice, new: parseFloat(sellingPrice) };
+    if (sellingPrice !== undefined && existing.sellingPrice !== parseFloat(sellingPrice)) recipeChanges.sellingPrice = { old: existing.sellingPrice, new: parseFloat(sellingPrice) };
     if (existing.category !== safeCategory) recipeChanges.category = { old: existing.category, new: safeCategory };
     logAudit(req.user.userId, req.restaurantId, 'UPDATE', 'recipe', recipeId, Object.keys(recipeChanges).length > 0 ? recipeChanges : undefined);
     res.json(formatRecipe(updated));

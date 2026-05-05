@@ -120,9 +120,10 @@ router.post('/', async (req: any, res) => {
 router.put('/:id', async (req: any, res) => {
   try {
     const id = parseInt(req.params.id);
-    // FIX 2026-04-28 (audit Recipes↔Inventory) : 'minQuantity' acceptait un champ
-    // qui n'existe PAS dans le schema Prisma (seul 'minStock' existe). Backward compat :
-    // si l'UI envoie encore minQuantity, on l'aliase vers minStock.
+    // FIX 2026-04-28 v2 (security audit) : verif tenant isolation AVANT update.
+    // Avant : user resto A pouvait modifier item resto B en devinant l'id.
+    const existing = await prisma.inventoryItem.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Élément inventaire non trouvé' });
     const { currentStock, minStock, maxStock, minQuantity, unit, notes } = req.body;
     const data: any = {};
     if (currentStock !== undefined) {
@@ -135,7 +136,7 @@ router.put('/:id', async (req: any, res) => {
     if (maxStock !== undefined) data.maxStock = maxStock === null ? null : parseFloat(maxStock);
     if (unit !== undefined) data.unit = unit;
     if (notes !== undefined) data.notes = notes ? sanitizeInput(notes) : null;
-    const item = await prisma.inventoryItem.update({ where: { id }, data, include: { ingredient: true } });
+    const item = await prisma.inventoryItem.update({ where: { id: existing.id }, data, include: { ingredient: true } });
     logAudit(req.user.userId, req.restaurantId, 'UPDATE', 'inventory', id, data);
     res.json(item);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour inventaire' }); }
@@ -148,10 +149,12 @@ router.post('/:id/restock', async (req: any, res) => {
     const { quantity } = req.body;
     const qtyCheck = validatePositiveNumber(quantity, 'Quantité');
     if (!qtyCheck.valid || !qtyCheck.value || qtyCheck.value <= 0) return res.status(400).json({ error: 'Erreur réapprovisionnement', details: 'Quantité doit être supérieure à 0' });
-    const existing = await prisma.inventoryItem.findUnique({ where: { id } });
+    // FIX 2026-04-28 v2 (security audit) : findFirst avec restaurantId au lieu
+    // de findUnique sans filtre — sinon IDOR cross-tenant.
+    const existing = await prisma.inventoryItem.findFirst({ where: { id, restaurantId: req.restaurantId } });
     if (!existing) return res.status(404).json({ error: 'Item non trouvé' });
     const item = await prisma.inventoryItem.update({
-      where: { id },
+      where: { id: existing.id },
       data: { currentStock: existing.currentStock + parseFloat(quantity), lastRestockDate: new Date(), lastRestockQuantity: parseFloat(quantity) },
       include: { ingredient: true },
     });

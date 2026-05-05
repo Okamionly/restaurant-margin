@@ -1345,6 +1345,7 @@ router.post('/forecast', authWithRestaurant, async (req: any, res) => {
     if (!checkAiRateLimit(req.restaurantId)) {
       return res.status(429).json({ error: 'Limite IA atteinte (10 requêtes/min). Réessayez dans 1 minute.' });
     }
+    if (await checkMonthlyQuota(req.restaurantId, res)) return;
     // FIX 2026-04-28 (audit cohérence #9) : quota mensuel check uniforme.
     if (await checkMonthlyQuota(req.restaurantId, res)) return;
 
@@ -1385,6 +1386,7 @@ router.post('/menu-analysis', authWithRestaurant, async (req: any, res) => {
     if (!checkAiRateLimit(req.restaurantId)) {
       return res.status(429).json({ error: 'Limite IA atteinte (10 requêtes/min). Réessayez dans 1 minute.' });
     }
+    if (await checkMonthlyQuota(req.restaurantId, res)) return;
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
@@ -1429,6 +1431,7 @@ router.post('/order-recommendation', authWithRestaurant, async (req: any, res) =
     if (!checkAiRateLimit(req.restaurantId)) {
       return res.status(429).json({ error: 'Limite IA atteinte (10 requêtes/min). Réessayez dans 1 minute.' });
     }
+    if (await checkMonthlyQuota(req.restaurantId, res)) return;
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
@@ -1469,6 +1472,7 @@ router.post('/invoice-check', authWithRestaurant, async (req: any, res) => {
     if (!checkAiRateLimit(req.restaurantId)) {
       return res.status(429).json({ error: 'Limite IA atteinte (10 requêtes/min). Réessayez dans 1 minute.' });
     }
+    if (await checkMonthlyQuota(req.restaurantId, res)) return;
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
@@ -1541,6 +1545,7 @@ router.post('/optimize-recipe', authWithRestaurant, async (req: any, res) => {
     if (!checkAiRateLimit(req.restaurantId)) {
       return res.status(429).json({ error: 'Limite IA atteinte (10 requetes/min). Reessayez dans 1 minute.' });
     }
+    if (await checkMonthlyQuota(req.restaurantId, res)) return;
     // FIX 2026-04-28 (audit cohérence #9) : quota mensuel uniforme.
     if (await checkMonthlyQuota(req.restaurantId, res)) return;
     if (!process.env.ANTHROPIC_API_KEY) {
@@ -1685,6 +1690,7 @@ router.post('/optimize-menu', authWithRestaurant, async (req: any, res) => {
     if (!checkAiRateLimit(req.restaurantId)) {
       return res.status(429).json({ error: 'Limite IA atteinte (10 requêtes/min). Réessayez dans 1 minute.' });
     }
+    if (await checkMonthlyQuota(req.restaurantId, res)) return;
 
     const restaurantId = req.restaurantId;
 
@@ -1839,6 +1845,7 @@ router.post('/weekly-report', authWithRestaurant, async (req: any, res) => {
     if (!checkAiRateLimit(restaurantId)) {
       return res.status(429).json({ error: 'Limite atteinte. Réessayez dans quelques minutes.' });
     }
+    if (await checkMonthlyQuota(restaurantId, res)) return;
 
     // ── Collect all data for the weekly report ──
     const now = new Date();
@@ -2083,6 +2090,7 @@ router.post('/waste-analysis', authWithRestaurant, async (req: any, res) => {
     if (!checkAiRateLimit(restaurantId)) {
       return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
     }
+    if (await checkMonthlyQuota(restaurantId, res)) return;
 
     // Collect last 30 days of waste logs
     const thirtyDaysAgo = new Date();
@@ -2285,6 +2293,7 @@ router.post('/allergen-check', authWithRestaurant, async (req: any, res) => {
     if (!checkAiRateLimit(restaurantId)) {
       return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
     }
+    if (await checkMonthlyQuota(restaurantId, res)) return;
 
     const recipe = await prisma.recipe.findFirst({
       where: { id: recipeId, restaurantId },
@@ -2377,6 +2386,7 @@ router.post('/nutrition-estimate', authWithRestaurant, async (req: any, res) => 
     if (!checkAiRateLimit(restaurantId)) {
       return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
     }
+    if (await checkMonthlyQuota(restaurantId, res)) return;
 
     const recipe = await prisma.recipe.findFirst({
       where: { id: recipeId, restaurantId },
@@ -2548,6 +2558,7 @@ router.post('/demand-forecast', authWithRestaurant, async (req: any, res) => {
     const restaurantId = req.restaurantId;
     if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
     if (!checkAiRateLimit(restaurantId)) return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
+    if (await checkMonthlyQuota(restaurantId, res)) return;
 
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
@@ -2652,6 +2663,7 @@ router.post('/pricing-suggestions', authWithRestaurant, async (req: any, res) =>
     const restaurantId = req.restaurantId;
     if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
     if (!checkAiRateLimit(restaurantId)) return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
+    if (await checkMonthlyQuota(restaurantId, res)) return;
 
     const recipes = await prisma.recipe.findMany({
       where: { restaurantId },
@@ -2741,6 +2753,7 @@ router.post('/supplier-brief', authWithRestaurant, async (req: any, res) => {
     if (!supplierId) return res.status(400).json({ error: 'supplierId requis' });
     if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
     if (!checkAiRateLimit(restaurantId)) return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
+    if (await checkMonthlyQuota(restaurantId, res)) return;
 
     const supplier = await prisma.supplier.findFirst({ where: { id: supplierId, restaurantId } });
     if (!supplier) return res.status(404).json({ error: 'Fournisseur introuvable' });

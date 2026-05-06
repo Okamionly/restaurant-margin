@@ -254,6 +254,54 @@ const posts: BlogPost[] = [
     readTime: '11 min',
     date: '2026-04-27',
   },
+  {
+    slug: 'calendrier-haccp-restaurant-modele-gratuit',
+    title: 'Calendrier HACCP restaurant : modèle gratuit 2026 (téléchargeable)',
+    excerpt: 'Toutes les fréquences de contrôle obligatoires, les températures réglementaires, et un modèle prêt à imprimer pour transformer votre HACCP en routine d\'équipe.',
+    category: 'HACCP',
+    readTime: '13 min',
+    date: '2026-05-05',
+  },
+  {
+    slug: 'livraison-restaurant-rentabilite',
+    title: 'Livraison restaurant : comment la rentabiliser sans s\'épuiser',
+    excerpt: 'Uber Eats, Deliveroo, JustEat : commissions, marge réelle livraison, plateformes vs propre canal. Cas chiffrés et plan d\'action.',
+    category: 'Stratégie',
+    readTime: '12 min',
+    date: '2026-05-05',
+  },
+  {
+    slug: 'ouvrir-food-truck-france-guide',
+    title: 'Ouvrir un food truck en France : guide complet 2026',
+    excerpt: 'Réglementation, coûts d\'investissement, choix du véhicule, statuts juridiques, emplacements rentables, plan de rentabilité chiffré.',
+    category: 'Création',
+    readTime: '14 min',
+    date: '2026-05-05',
+  },
+  {
+    slug: 'contrat-travail-restauration-guide',
+    title: 'Contrat de travail en restauration : CDI, CDD, extras, apprentissage',
+    excerpt: 'CCN HCR, mentions obligatoires, coût employeur réel, contrat d\'extra et apprentissage : le guide complet 2026.',
+    category: 'RH',
+    readTime: '13 min',
+    date: '2026-05-05',
+  },
+  {
+    slug: 'reduire-facture-energie-restaurant',
+    title: 'Réduire sa facture d\'énergie en restauration : 10 actions concrètes',
+    excerpt: 'Audit cuisine, équipements A+++, négociation contrats gaz/électricité, CEE : 20 à 40 % d\'économies accessibles dès cette semaine.',
+    category: 'Économies',
+    readTime: '11 min',
+    date: '2026-05-05',
+  },
+  {
+    slug: 'allergenes-restaurant-obligations-legales',
+    title: 'Allergènes en restauration : obligations légales et affichage 2026',
+    excerpt: 'Les 14 allergènes INCO, modèles d\'affichage, sanctions DDPP, allergie sévère vs intolérance, bonnes pratiques en cuisine.',
+    category: 'Réglementation',
+    readTime: '13 min',
+    date: '2026-05-05',
+  },
 ];
 
 const categoryColors: Record<string, string> = {
@@ -275,6 +323,9 @@ const categoryColors: Record<string, string> = {
   'Juridique': 'bg-rose-100 text-rose-700 border-rose-200',
   'RH': 'bg-orange-100 text-orange-700 border-orange-200',
   'Marketing': 'bg-pink-100 text-pink-700 border-pink-200',
+  'Stratégie': 'bg-teal-100 text-teal-700 border-teal-200',
+  'Économies': 'bg-amber-100 text-amber-700 border-amber-200',
+  'Réglementation': 'bg-rose-100 text-rose-700 border-rose-200',
 };
 
 export default function BlogIndex() {

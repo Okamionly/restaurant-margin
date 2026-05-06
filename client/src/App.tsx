@@ -164,6 +164,12 @@ const BlogPrevisionVentes = lazyRetry(() => import('./pages/BlogPrevisionVentes'
 const BlogFormationPersonnel = lazyRetry(() => import('./pages/BlogFormationPersonnel'));
 const BlogStrategieDigitale = lazyRetry(() => import('./pages/BlogStrategieDigitale'));
 const BlogChiffreAffaires = lazyRetry(() => import('./pages/BlogChiffreAffaires'));
+const BlogCalendrierHaccp = lazyRetry(() => import('./pages/BlogCalendrierHaccp'));
+const BlogLivraisonRentabilite = lazyRetry(() => import('./pages/BlogLivraisonRentabilite'));
+const BlogFoodTruck = lazyRetry(() => import('./pages/BlogFoodTruck'));
+const BlogContratTravail = lazyRetry(() => import('./pages/BlogContratTravail'));
+const BlogEnergieRestaurant = lazyRetry(() => import('./pages/BlogEnergieRestaurant'));
+const BlogAllergenes = lazyRetry(() => import('./pages/BlogAllergenes'));
 const Careers = lazyRetry(() => import('./pages/Careers'));
 const HelpPage = lazyRetry(() => import('./pages/Help'));
 const BreakevenCalculator = lazyRetry(() => import('./pages/BreakevenCalculator'));
@@ -1154,6 +1160,12 @@ function App() {
           <Route path="/blog/formation-personnel-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFormationPersonnel /></Suspense>} />
           <Route path="/blog/strategie-digitale-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogStrategieDigitale /></Suspense>} />
           <Route path="/blog/chiffre-affaires-restaurant-comment-calculer" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogChiffreAffaires /></Suspense>} />
+          <Route path="/blog/calendrier-haccp-restaurant-modele-gratuit" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalendrierHaccp /></Suspense>} />
+          <Route path="/blog/livraison-restaurant-rentabilite" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogLivraisonRentabilite /></Suspense>} />
+          <Route path="/blog/ouvrir-food-truck-france-guide" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFoodTruck /></Suspense>} />
+          <Route path="/blog/contrat-travail-restauration-guide" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogContratTravail /></Suspense>} />
+          <Route path="/blog/reduire-facture-energie-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogEnergieRestaurant /></Suspense>} />
+          <Route path="/blog/allergenes-restaurant-obligations-legales" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogAllergenes /></Suspense>} />
           {/* Catch-all: unknown blog slug → redirect to blog index (avoids falling into ProtectedRoute /login) */}
           <Route path="/blog/*" element={<Navigate to="/blog" replace />} />
           {/* Catch-all: unknown public tool → redirect to home */}

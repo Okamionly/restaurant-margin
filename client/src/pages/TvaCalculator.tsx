@@ -179,8 +179,8 @@ export default function TvaCalculator() {
 
         {/* Results by rate */}
         <div className="grid sm:grid-cols-3 gap-4">
-          {TVA_RATES.map(r => (
-            <RateCard key={r.key} {...r} amount={amount} direction={direction} />
+          {TVA_RATES.map(({ key, ...rest }) => (
+            <RateCard key={key} {...rest} amount={amount} direction={direction} />
           ))}
         </div>
 

@@ -81,7 +81,7 @@ router.get('/first-user', async (_req, res) => {
 // ── Register with activation code ──
 router.post('/register', validateRequest(registerRequestSchema), async (req: any, res) => {
   try {
-    const { email: rawEmail, password, name, restaurantName, activationCode, acceptedCgu } = req.body;
+    const { email: rawEmail, password, name, restaurantName, activationCode, acceptedCgu, signupSource } = req.body;
     if (!rawEmail || !password || !name) return res.status(400).json({ error: 'Email, mot de passe et nom requis' });
     // RGPD: enforce server-side that CGU acceptance was sent (Zod schema also gates this).
     if (acceptedCgu !== true) return res.status(400).json({ error: 'Vous devez accepter les CGU pour vous inscrire' });
@@ -115,6 +115,27 @@ router.post('/register', validateRequest(registerRequestSchema), async (req: any
     if (existing) return res.status(409).json({ error: 'Email déjà utilisé' });
     const passwordHash = await bcrypt.hash(password, 12);
     const role = userCount === 0 ? 'admin' : 'chef';
+    // Sanitize signupSource : keep only safe known fields, max 200 chars each (anti-injection)
+    const safeSignupSource: any = {};
+    if (signupSource && typeof signupSource === 'object') {
+      const allowed = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'referrer', 'landing_path'];
+      for (const k of allowed) {
+        const v = signupSource[k];
+        if (typeof v === 'string' && v.length > 0) {
+          safeSignupSource[k] = v.slice(0, 200);
+        }
+      }
+    }
+    // Capture aussi l'IP + user-agent serveur pour cross-ref
+    try {
+      const xff = req.headers['x-forwarded-for'];
+      const xffStr = typeof xff === 'string' ? xff : Array.isArray(xff) ? xff[0] : '';
+      const ip = (xffStr.split(',')[0] || '').trim() || req.socket?.remoteAddress || null;
+      if (ip) safeSignupSource.ip = String(ip).slice(0, 64);
+      const ua = req.headers['user-agent'];
+      if (typeof ua === 'string') safeSignupSource.user_agent = ua.slice(0, 200);
+    } catch {}
+
     const user = await prisma.user.create({
       data: {
         email,
@@ -125,6 +146,9 @@ router.post('/register', validateRequest(registerRequestSchema), async (req: any
         // RGPD: timestamp the CGU acceptance for legal traceability.
         acceptedCguAt: new Date(),
         ...(trialEndsAt ? { trialEndsAt } : {}),
+        // Tracking utm/referrer pour analyse acquisition (RGPD: déjà couvert par
+        // PolitiqueConfidentialite.tsx qui mentionne "URL de provenance + cookies").
+        signupSource: safeSignupSource,
       },
     });
 

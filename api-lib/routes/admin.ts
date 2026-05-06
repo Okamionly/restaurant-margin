@@ -557,4 +557,71 @@ router.get('/finance', async (_req, res) => {
   }
 });
 
+// ============ GET /api/admin/signup-sources ============
+// Stats sur l'origine d'acquisition des users (utm_source, referrer, landing).
+// Cree 2026-05-06 — track depuis qu'on n'a pas pu identifier d'ou vient Charlie.
+router.get('/signup-sources', async (_req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        createdAt: true,
+        plan: true,
+        signupSource: true,
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 200,
+    });
+
+    const bySource: Record<string, number> = {};
+    const byMedium: Record<string, number> = {};
+    const byCampaign: Record<string, number> = {};
+    const byReferrer: Record<string, number> = {};
+    const byLandingPath: Record<string, number> = {};
+
+    for (const u of users) {
+      const s = (u.signupSource as any) || {};
+      let src = s.utm_source || 'direct';
+      if (!s.utm_source && s.referrer) {
+        try { src = new URL(s.referrer).hostname.replace(/^www\./, ''); } catch {}
+      }
+      bySource[src] = (bySource[src] || 0) + 1;
+      if (s.utm_medium) byMedium[s.utm_medium] = (byMedium[s.utm_medium] || 0) + 1;
+      if (s.utm_campaign) byCampaign[s.utm_campaign] = (byCampaign[s.utm_campaign] || 0) + 1;
+      if (s.referrer) {
+        try {
+          const host = new URL(s.referrer).hostname.replace(/^www\./, '');
+          byReferrer[host] = (byReferrer[host] || 0) + 1;
+        } catch {}
+      }
+      if (s.landing_path) byLandingPath[s.landing_path] = (byLandingPath[s.landing_path] || 0) + 1;
+    }
+
+    const sortByCount = (obj: Record<string, number>) =>
+      Object.entries(obj).sort(([, a], [, b]) => b - a).map(([key, count]) => ({ key, count }));
+
+    res.json({
+      total: users.length,
+      bySource: sortByCount(bySource),
+      byMedium: sortByCount(byMedium),
+      byCampaign: sortByCount(byCampaign),
+      byReferrer: sortByCount(byReferrer),
+      byLandingPath: sortByCount(byLandingPath),
+      recentUsers: users.slice(0, 50).map(u => ({
+        id: u.id,
+        email: u.email,
+        name: u.name,
+        createdAt: u.createdAt,
+        plan: u.plan,
+        source: u.signupSource,
+      })),
+    });
+  } catch (e: any) {
+    console.error('[ADMIN SIGNUP-SOURCES]', e.message);
+    res.status(500).json({ error: 'Erreur chargement signup sources' });
+  }
+});
+
 export default router;

@@ -14,6 +14,16 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface SignupSource {
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  utm_term?: string;
+  referrer?: string;
+  landing_path?: string;
+}
+
 export interface RegisterData {
   email: string;
   password: string;
@@ -25,6 +35,8 @@ export interface RegisterData {
   // RGPD: must be true at registration time. UI gates the submit button on
   // a checkbox; backend (Zod + handler) enforces the same server-side.
   acceptedCgu: true;
+  // Tracking acquisition (captured automatiquement par Login.tsx)
+  signupSource?: SignupSource;
 }
 
 export interface Supplier {

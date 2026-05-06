@@ -6,6 +6,7 @@ import { checkFirstUser } from '../services/api';
 import { useTranslation } from '../hooks/useTranslation';
 import { useToast } from '../hooks/useToast';
 import { trackEvent } from '../utils/analytics';
+import { getSignupSource } from '../utils/signupSource';
 import PaperFoldBackground from '../components/landing/PaperFoldBackground';
 
 // Match landing tokens exactly so the visual identity carries over.
@@ -120,6 +121,8 @@ export default function Login() {
           restaurantName: restaurantName || undefined,
           // RGPD: persist consent timestamp on the backend (acceptedCguAt).
           acceptedCgu: true,
+          // Tracking acquisition : utm + referrer + landing_path captured au 1er load.
+          signupSource: getSignupSource(),
         });
         trackEvent('sign_up');
         // Google Ads conversion tracking

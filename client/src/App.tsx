@@ -9,6 +9,7 @@ import FloatingActionBubble from './components/FloatingActionBubble';
 import CookieBanner from './components/CookieBanner';
 import Breadcrumbs from './components/Breadcrumbs';
 import { trackPageVisit } from './utils/recentPages';
+import { captureLandingSource } from './utils/signupSource';
 import NotificationCenter from './components/NotificationCenter';
 import ShortcutsModal from './components/ShortcutsModal';
 import ActiveUsers, { ConnectedBadge, PageActivityDot } from './components/ActiveUsers';
@@ -1082,6 +1083,9 @@ function PublicHome() {
 }
 
 function App() {
+  // Capture utm + referrer + landing_path au tout 1er load (pour signup tracking).
+  // Idempotent : ne re-capture pas si déjà fait.
+  useEffect(() => { captureLandingSource(); }, []);
   return (
     <ErrorBoundary>
     <AuthProvider>

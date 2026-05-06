@@ -38,6 +38,16 @@ export const registerRequestSchema = z.object({
   acceptedCgu: z.literal(true, {
     errorMap: () => ({ message: 'Vous devez accepter les CGU pour vous inscrire' }),
   }),
+  // Tracking acquisition : captured by Login.tsx au moment du submit register.
+  signupSource: z.object({
+    utm_source: z.string().max(200).optional(),
+    utm_medium: z.string().max(200).optional(),
+    utm_campaign: z.string().max(200).optional(),
+    utm_content: z.string().max(200).optional(),
+    utm_term: z.string().max(200).optional(),
+    referrer: z.string().max(500).optional(),
+    landing_path: z.string().max(500).optional(),
+  }).optional(),
 });
 
 export const registerResponseSchema = z.object({

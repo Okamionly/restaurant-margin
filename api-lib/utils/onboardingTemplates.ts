@@ -106,7 +106,7 @@ ${header('RestauMargin', 'Vous y êtes presque')}
 <tr><td style="padding:0 25px 25px;">
   <p style="color:${MUTED};font-size:13px;margin:0;line-height:1.7;">
     Une question, un blocage ? R&eacute;pondez directement &agrave; ce mail, je lis chaque message personnellement.
-    <br>&mdash; Youssef, fondateur RestauMargin
+    <br>&mdash; L'équipe RestauMargin
   </p>
 </td></tr>
 
@@ -249,7 +249,7 @@ ${header('RestauMargin', 'Vous êtes à mi-essai')}
 <tr><td style="padding:0 25px 25px;">
   <p style="color:${MUTED};font-size:13px;margin:0;line-height:1.7;">
     Une question avant de souscrire ? R&eacute;pondez directement &agrave; ce mail.
-    <br>&mdash; Youssef, fondateur RestauMargin
+    <br>&mdash; L'équipe RestauMargin
   </p>
 </td></tr>
 

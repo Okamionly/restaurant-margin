@@ -460,7 +460,7 @@ export default function OutreachMailer() {
               {sending ? 'Envoi en cours...' : 'Envoyer depuis contact@restaumargin.fr'}
             </button>
             <p className="text-xs text-[#94A3B8] mt-3">
-              ✓ From : Youssef Guessous (RestauMargin) &lt;contact@restaumargin.fr&gt;
+              ✓ From : RestauMargin &lt;contact@restaumargin.fr&gt;
               <br />
               ✓ HTML branded avec logo + couleurs + signature pro
               <br />

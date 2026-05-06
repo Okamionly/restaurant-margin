@@ -4905,7 +4905,7 @@ app.post('/api/public/launch-notify', async (req, res) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'Youssef (RestauMargin) <contact@restaumargin.fr>',
+          from: 'RestauMargin <contact@restaumargin.fr>',
           to: email,
           replyTo: 'contact@restaumargin.fr',
           subject: '🚀 On t\'enverra un rappel pour notre launch Product Hunt',
@@ -4916,7 +4916,7 @@ app.post('/api/public/launch-notify', async (req, res) => {
                 <p style="margin: 0; opacity: 0.9;">On t'enverra un rappel pile au moment du launch.</p>
               </div>
               <p>Salut,</p>
-              <p>C'est Youssef, fondateur de RestauMargin.</p>
+              <p>L'équipe RestauMargin.</p>
               <p>Je voulais te remercier personnellement de t'inscrire pour suivre notre launch Product Hunt.</p>
               <p><strong>Voici ce qui t'attend :</strong></p>
               <ul style="line-height: 1.8;">
@@ -4931,7 +4931,7 @@ app.post('/api/public/launch-notify', async (req, res) => {
                   Voir le draft Product Hunt
                 </a>
               </p>
-              <p>À très vite,<br>Youssef</p>
+              <p>À très vite,<br>L'équipe RestauMargin</p>
               <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 32px 0;">
               <p style="color: #737373; font-size: 13px;">
                 RestauMargin — Suivi des marges resto par IA<br>
@@ -5046,7 +5046,7 @@ app.post('/api/outreach/send', authMiddleware, async (req: any, res) => {
         ${closing}
       </p>
       <p style="margin:0; font-size:15px; color:#0F172A; font-weight:600;">
-        Youssef Guessous
+        L'équipe RestauMargin
       </p>
       <p style="margin:0; font-size:14px; color:#64748B;">
         Fondateur · RestauMargin
@@ -5073,7 +5073,7 @@ app.post('/api/outreach/send', authMiddleware, async (req: any, res) => {
 
     const resend = new Resend(resendKey);
     const result = await resend.emails.send({
-      from: 'Youssef Guessous (RestauMargin) <contact@restaumargin.fr>',
+      from: 'RestauMargin <contact@restaumargin.fr>',
       to,
       replyTo: 'contact@restaumargin.fr',
       subject,

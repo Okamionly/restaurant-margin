@@ -381,7 +381,7 @@ ${header('RestauMargin', 'Bienvenue !')}
   <div style="background:#f0fdfa;border:1px solid #99f6e4;border-radius:10px;padding:18px 20px;">
     <p style="color:${TEAL};font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 6px;">D&eacute;mo personnalis&eacute;e offerte</p>
     <p style="color:#0f766e;font-size:14px;margin:0 0 14px;line-height:1.6;">
-      R&eacute;servez 15&nbsp;min avec Youssef pour un tour adapt&eacute; &agrave; votre restaurant.
+      R&eacute;servez 15&nbsp;min avec l&apos;&eacute;quipe pour un tour adapt&eacute; &agrave; votre restaurant.
       Food cost, fiches techniques et quick wins pour vos marges.
     </p>
     <div style="text-align:center;">

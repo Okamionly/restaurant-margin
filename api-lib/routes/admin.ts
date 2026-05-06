@@ -557,6 +557,90 @@ router.get('/finance', async (_req, res) => {
   }
 });
 
+// ============ GET /api/admin/resend-status ============
+// Diagnostic Resend : verifie la cle API + liste les domaines verifies +
+// derniers emails envoyes. Cree 2026-05-06 suite a probleme rapporte par user.
+router.get('/resend-status', async (_req, res) => {
+  const out: any = { hasKey: !!process.env.RESEND_API_KEY, checks: {} };
+
+  if (!process.env.RESEND_API_KEY) {
+    return res.json({ ...out, error: 'RESEND_API_KEY absent dans Vercel env' });
+  }
+
+  // Test 1 : key validity via /domains
+  try {
+    const r = await fetch('https://api.resend.com/domains', {
+      headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
+    });
+    const data = await r.json();
+    out.checks.domains = {
+      httpStatus: r.status,
+      ok: r.ok,
+      domains: r.ok ? (data.data || []).map((d: any) => ({
+        name: d.name,
+        status: d.status,
+        region: d.region,
+      })) : data,
+    };
+  } catch (e: any) {
+    out.checks.domains = { error: e.message };
+  }
+
+  // Test 2 : last 10 emails sent
+  try {
+    const r = await fetch('https://api.resend.com/emails?limit=10', {
+      headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
+    });
+    const data = await r.json();
+    out.checks.recentEmails = {
+      httpStatus: r.status,
+      ok: r.ok,
+      emails: r.ok ? (data.data || []).slice(0, 10).map((e: any) => ({
+        id: e.id,
+        from: e.from,
+        to: e.to,
+        subject: e.subject,
+        createdAt: e.created_at,
+        lastEvent: e.last_event,
+      })) : data,
+    };
+  } catch (e: any) {
+    out.checks.recentEmails = { error: e.message };
+  }
+
+  res.json(out);
+});
+
+// ============ POST /api/admin/email-test ============
+// Envoie un email de test au admin pour verifier que Resend fonctionne en pratique.
+router.post('/email-test', async (req: any, res) => {
+  if (!process.env.RESEND_API_KEY) {
+    return res.json({ ok: false, error: 'RESEND_API_KEY absent' });
+  }
+  try {
+    const targetEmail = req.user.email;
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'RestauMargin <contact@restaumargin.fr>',
+        to: targetEmail,
+        subject: '[Test diagnostic] Resend fonctionne ✓',
+        html: `<p>Cet email confirme que la cle Resend fonctionne.</p>
+               <p>Timestamp serveur : ${new Date().toISOString()}</p>
+               <p>Si tu recois cet email, le service email RestauMargin est OK.</p>`,
+      }),
+    });
+    const data = await r.json();
+    res.json({ ok: r.ok, status: r.status, response: data });
+  } catch (e: any) {
+    res.json({ ok: false, error: e.message });
+  }
+});
+
 // ============ GET /api/admin/signup-sources ============
 // Stats sur l'origine d'acquisition des users (utm_source, referrer, landing).
 // Cree 2026-05-06 — track depuis qu'on n'a pas pu identifier d'ou vient Charlie.

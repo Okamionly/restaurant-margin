@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Printer, Clock, AlertTriangle, ChefHat, SlidersHorizontal, Users, Edit, Sparkles, TrendingDown, Leaf, Package, ShoppingCart, Check, Loader2, X, ArrowRight, Camera, Share2, Copy, ChevronLeft, ChevronRight, Trash2, ExternalLink, Shield, Apple, Activity, FileText, History, MessageSquare, DollarSign, Send, User } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { fetchRecipe, optimizeRecipeCost, addRecipePhoto, deleteRecipePhoto, getRecipeShareLink, checkAllergens, estimateNutrition } from '../services/api';
+import { useTranslation } from '../hooks/useTranslation';
 import type { AllergenCheckResult, NutritionEstimateResult } from '../services/api';
 import type { Recipe, RecipeOptimizationResult, OptimizationSuggestion } from '../types';
 import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
@@ -121,6 +122,7 @@ function getRestaurantName(): string {
 }
 
 export default function RecipeDetail() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
@@ -341,8 +343,8 @@ export default function RecipeDetail() {
     return Array.from(new Set([...allAllergens, ...autoDetectedAllergens])).sort();
   }, [allAllergens, autoDetectedAllergens]);
 
-  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">Chargement...</div>;
-  if (!recipe) return <div className="text-center py-12 text-red-500">Recette non trouvée</div>;
+  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">{t('common.loading')}</div>;
+  if (!recipe) return <div className="text-center py-12 text-red-500">{t('common.notFound')}</div>;
 
   const m = recipe.margin;
   const marginColor = m.marginPercent >= 70 ? 'text-green-600' : m.marginPercent >= 60 ? 'text-amber-600' : 'text-red-600';

@@ -634,6 +634,38 @@ app.get('/api/cron/email-sequence', async (req: any, res) => {
  * Schedule: cron-job.org (or Vercel cron) hits this daily at 09:00 Europe/Paris.
  * Auth: requires CRON_SECRET via Authorization: Bearer header.
  */
+// Diagnostic Resend (auth CRON_SECRET) — accessible aux routines scheduled.
+app.get('/api/cron/resend-diagnostic', async (req: any, res) => {
+  if (!verifyCron(req, res)) return;
+  const out: any = { hasKey: !!process.env.RESEND_API_KEY, checks: {} };
+  if (!process.env.RESEND_API_KEY) {
+    return res.json({ ...out, error: 'RESEND_API_KEY absent dans Vercel env' });
+  }
+  try {
+    const r = await fetch('https://api.resend.com/domains', {
+      headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
+    });
+    const data = await r.json();
+    out.checks.domains = {
+      httpStatus: r.status, ok: r.ok,
+      domains: r.ok ? (data.data || []).map((d: any) => ({ name: d.name, status: d.status, region: d.region })) : data,
+    };
+  } catch (e: any) { out.checks.domains = { error: e.message }; }
+  try {
+    const r = await fetch('https://api.resend.com/emails?limit=5', {
+      headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
+    });
+    const data = await r.json();
+    out.checks.recentEmails = {
+      httpStatus: r.status, ok: r.ok,
+      emails: r.ok ? (data.data || []).slice(0, 5).map((e: any) => ({
+        id: e.id, to: e.to, subject: e.subject, createdAt: e.created_at, lastEvent: e.last_event,
+      })) : data,
+    };
+  } catch (e: any) { out.checks.recentEmails = { error: e.message }; }
+  res.json(out);
+});
+
 app.get('/api/cron/onboarding-nurture', async (req: any, res) => {
   if (!verifyCron(req, res)) return;
   try {

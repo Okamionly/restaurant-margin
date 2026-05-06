@@ -634,6 +634,156 @@ app.get('/api/cron/email-sequence', async (req: any, res) => {
  * Schedule: cron-job.org (or Vercel cron) hits this daily at 09:00 Europe/Paris.
  * Auth: requires CRON_SECRET via Authorization: Bearer header.
  */
+// ==========================================================================
+// CRON: Editorial weekly — generates 3 saisonnal recipes with image + fiche
+// technique, every Monday 6h Paris. Pipeline:
+//   1. Tavily search seasonal products this week
+//   2. Claude Sonnet generates 3 recipes (JSON) avec ingrédients + prix réels
+//   3. Unsplash photos (gratuit, no API key) pour images jolies par recette
+//   4. INSERT editorial_recipes + editorial_recipe_ingredients, published=true
+// ==========================================================================
+app.get('/api/cron/editorial-weekly', async (req: any, res) => {
+  if (!verifyCron(req, res)) return;
+  try {
+    if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure' });
+    const tavilyKey = process.env.TAVILY_API_KEY || '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';
+
+    // Etape 1 : recherche produits/marches saisonniers
+    const month = new Date().toLocaleDateString('fr-FR', { month: 'long' });
+    const tavilyRes = await fetch('https://api.tavily.com/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: tavilyKey,
+        query: `produits de saison ${month} 2026 restaurant france legumes fruits viande poisson`,
+        max_results: 8,
+        include_answer: true,
+        search_depth: 'advanced',
+      }),
+    });
+    const tavilyData = await tavilyRes.json();
+    const articles = (tavilyData.results || []).slice(0, 6).map((r: any) => `- ${r.title}: ${r.content?.slice(0, 250)}`).join('\n');
+
+    // Etape 2 : Claude Sonnet genere 3 recettes saisonnieres
+    const prompt = `Tu es un chef cuisinier français expert. Voici les actualités produits/marchés cette semaine (${month}) :
+
+${articles}
+
+Question utilisateur du restaurant : "${tavilyData.answer?.slice(0, 400) || 'Quels produits sont en saison cette semaine ?'}"
+
+Génère 3 recettes éditoriales saisonnières mettant en valeur les produits mentionnés.
+Chaque recette doit être réaliste, professionnelle, calculable en marge.
+
+Format JSON STRICT (réponds UNIQUEMENT avec le JSON, pas de texte avant/après) :
+[
+  {
+    "title": "Nom court de la recette",
+    "description": "1-2 phrases qui donnent envie",
+    "category": "Entrée|Plat|Dessert",
+    "difficulty": "Facile|Moyen|Difficile",
+    "portions": 4,
+    "prep_time": 20,
+    "cook_time": 30,
+    "season": "${month}",
+    "chef_tip": "1 phrase astuce du chef",
+    "image_keywords": "mots-clés en anglais pour Unsplash photo",
+    "ingredients": [
+      { "name": "Ingrédient", "quantity": 0.4, "unit": "kg", "pricePerUnit": 8.5, "supplier": "Metro|Rungis|Transgourmet" }
+    ]
+  }
+]`;
+
+    const aiRes = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 4096,
+      messages: [{ role: 'user', content: prompt }],
+    });
+    const rawText = aiRes.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
+    const cleaned = rawText.trim().replace(/^```json?\n?/, '').replace(/\n?```$/, '');
+    let recipes: any[];
+    try { recipes = JSON.parse(cleaned); if (!Array.isArray(recipes)) throw new Error(); }
+    catch { return res.status(500).json({ error: 'Erreur parsing IA', raw: rawText.slice(0, 500) }); }
+
+    // Etape 3+4 : insert chaque recette avec image Unsplash + ingredients
+    const monday = new Date();
+    monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+    const weekDate = monday.toISOString().slice(0, 10);
+
+    const created: any[] = [];
+    for (const r of recipes.slice(0, 3)) {
+      // Unsplash featured photo (gratuit, no API key) — query par mots-clés FR/EN
+      const imgQuery = encodeURIComponent(r.image_keywords || r.title || 'restaurant food');
+      const imageUrl = `https://source.unsplash.com/featured/1200x800/?${imgQuery},food`;
+
+      // Calcul cost + prix suggéré (coefficient 3.5 standard restauration)
+      const totalCost = (r.ingredients || []).reduce((sum: number, ing: any) => {
+        const divisor = getUnitDivisor(ing.unit);
+        return sum + (ing.quantity / divisor) * ing.pricePerUnit;
+      }, 0);
+      const portions = Math.max(r.portions || 4, 1);
+      const costPerPortion = totalCost / portions;
+      const suggestedPrice = Math.ceil(costPerPortion * 3.5 * 10) / 10; // arrondi 0.10€ supérieur
+      const marginPercent = suggestedPrice > 0 ? Math.round(((suggestedPrice - costPerPortion) / suggestedPrice) * 1000) / 10 : 0;
+
+      const inserted: any[] = await prisma.$queryRaw`
+        INSERT INTO editorial_recipes
+          (title, description, image_url, portions, category, difficulty, prep_time, cook_time, cost_per_portion, suggested_price, margin_percent, season, chef_tip, week_date, published)
+        VALUES
+          (${String(r.title || 'Recette de saison').slice(0, 200)},
+           ${String(r.description || '').slice(0, 500)},
+           ${imageUrl},
+           ${portions},
+           ${String(r.category || 'Plat').slice(0, 50)},
+           ${String(r.difficulty || 'Moyen').slice(0, 50)},
+           ${parseInt(r.prep_time) || 30},
+           ${parseInt(r.cook_time) || 30},
+           ${Math.round(costPerPortion * 100) / 100},
+           ${suggestedPrice},
+           ${marginPercent},
+           ${String(r.season || month).slice(0, 50)},
+           ${String(r.chef_tip || '').slice(0, 500)},
+           ${weekDate}::date,
+           true)
+        RETURNING id, title, suggested_price, margin_percent
+      `;
+      const recipeId = inserted[0]?.id;
+      if (!recipeId) continue;
+
+      // Insert ingredients
+      for (const ing of (r.ingredients || []).slice(0, 20)) {
+        const totalC = (ing.quantity / getUnitDivisor(ing.unit)) * ing.pricePerUnit;
+        try {
+          await prisma.$executeRaw`
+            INSERT INTO editorial_recipe_ingredients
+              (recipe_id, ingredient_name, quantity, unit, price_per_unit, total_cost, supplier)
+            VALUES
+              (${recipeId},
+               ${String(ing.name || '').slice(0, 200)},
+               ${parseFloat(ing.quantity) || 0},
+               ${String(ing.unit || 'kg').slice(0, 20)},
+               ${parseFloat(ing.pricePerUnit) || 0},
+               ${Math.round(totalC * 100) / 100},
+               ${String(ing.supplier || 'Metro').slice(0, 100)})
+          `;
+        } catch {}
+      }
+      created.push(inserted[0]);
+    }
+
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      weekDate,
+      articlesScanned: (tavilyData.results || []).length,
+      recipesGenerated: created.length,
+      recipes: created,
+    });
+  } catch (e: any) {
+    console.error('[CRON EDITORIAL]', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // Diagnostic Resend (auth CRON_SECRET) — accessible aux routines scheduled.
 app.get('/api/cron/resend-diagnostic', async (req: any, res) => {
   if (!verifyCron(req, res)) return;

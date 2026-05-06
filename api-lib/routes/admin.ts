@@ -611,6 +611,166 @@ router.get('/resend-status', async (_req, res) => {
   res.json(out);
 });
 
+// ============ POST /api/admin/outreach/send ============
+// Envoie batch outreach v3 (campagne email perso) via Resend, depuis le serveur
+// (qui a deja la cle Resend en env). Permet au script local d'envoyer sans
+// avoir besoin de stocker la cle Resend en local.
+//
+// Body: {
+//   candidates: [{ name, email, cuisine?, address?, neighborhood? }],
+//   dryRun?: boolean,
+//   campaign?: string  // default 'montpellier_v3'
+// }
+//
+// Returns: [{ email, ok, refId?, error?, subject? }]
+router.post('/outreach/send', async (req: any, res) => {
+  if (!process.env.RESEND_API_KEY) {
+    return res.status(500).json({ ok: false, error: 'RESEND_API_KEY absent en env' });
+  }
+
+  const { candidates = [], dryRun = false, campaign = 'montpellier_v3' } = req.body || {};
+  if (!Array.isArray(candidates) || candidates.length === 0) {
+    return res.status(400).json({ ok: false, error: 'candidates manquants' });
+  }
+  if (candidates.length > 100) {
+    return res.status(400).json({ ok: false, error: 'max 100 candidats par appel (anti-abuse)' });
+  }
+
+  // ─ Helpers locaux (dupliqu du script local pour cohrence) ─
+  function lowerCuisine(c?: string): string {
+    if (!c) return 'francaise';
+    return c.toLowerCase()
+      .replace(/^restaurant\s+/i, '')
+      .replace(/^bistrot\s*/i, 'bistrot ')
+      .replace(/etoile\s*michelin/i, 'gastronomique')
+      .trim()
+      .split(/\s+/).slice(0, 3).join(' ');
+  }
+  function formatNeighborhood(n?: string, address?: string): string {
+    const raw = (n || '').trim();
+    if (!raw && address) {
+      const a = address.toLowerCase();
+      if (/antigone/.test(a)) return 'Antigone';
+      if (/port\s*marianne|odysseum/.test(a)) return 'Port Marianne';
+      if (/comedie/.test(a)) return 'la Comedie';
+      if (/ecusson|saint-firmin|saint-roch/.test(a)) return "l'Ecusson";
+    }
+    if (!raw) return 'Montpellier';
+    const lower = raw.toLowerCase();
+    if (lower === 'ecusson') return "l'Ecusson";
+    if (/^(le |la |les |l')/i.test(raw)) return raw;
+    return raw;
+  }
+  function preposition(neighborhood: string): string {
+    if (/^l'/i.test(neighborhood)) return `a ${neighborhood}`;
+    if (/^les /i.test(neighborhood)) return `aux ${neighborhood.replace(/^les /i, '')}`;
+    if (/^la /i.test(neighborhood)) return `a ${neighborhood}`;
+    if (/^le /i.test(neighborhood)) return `au ${neighborhood.replace(/^le /i, '')}`;
+    return `a ${neighborhood}`;
+  }
+  function pickSubject(name: string, cuisine: string): { subject: string; variant: string } {
+    const r = Math.random();
+    if (r < 0.6) return { subject: `${name} — 5 min pour calculer votre vraie marge`, variant: 'A' };
+    if (r < 0.9) return { subject: `Combien vous coute reellement votre carte ${cuisine} ?`, variant: 'B' };
+    return { subject: 'RestauMargin — outil local lance a Montpellier', variant: 'C' };
+  }
+  function buildText(c: any): string {
+    const name = c.name || 'votre etablissement';
+    const neighborhood = formatNeighborhood(c.neighborhood, c.address);
+    const prep = preposition(neighborhood);
+    return `Bonjour,
+
+J'ai vu ${name} ${prep}.
+
+Je lance RestauMargin a Montpellier ce mois-ci : un outil web pour calculer le cout exact d'un plat (ingredients + perte) en 5 min, sans Excel.
+
+2 restaurants se sont inscrits cette semaine. Avant de pousser plus loin, je voulais avoir l'avis d'un autre restaurateur du coin.
+
+Vous pouvez tester ici sans engagement : https://www.restaumargin.fr
+
+Si vous n'avez pas le temps, repondez juste "non merci" et je n'envoie plus rien.
+
+Cordialement,
+L'equipe RestauMargin
+contact@restaumargin.fr`;
+  }
+  function buildHtml(c: any): string {
+    const text = buildText(c);
+    const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const withLinks = escaped.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" style="color:#0d9488;text-decoration:none;">$1</a>');
+    const paragraphs = withLinks.split(/\n\n+/).map(p => `<p style="margin:0 0 14px 0;">${p.replace(/\n/g, '<br>')}</p>`).join('');
+    return `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"></head>
+<body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;color:#111;max-width:560px;margin:0 auto;padding:20px;">
+${paragraphs}
+<hr style="border:0;border-top:1px solid #e5e7eb;margin:24px 0 12px 0;">
+<p style="font-size:12px;color:#737373;margin:0;">RestauMargin · Outil SaaS pour restaurateurs francais · <a href="https://www.restaumargin.fr" style="color:#737373;">restaumargin.fr</a></p>
+<p style="font-size:11px;color:#9ca3af;margin:4px 0 0 0;">Si vous ne souhaitez plus recevoir de message, repondez "non merci" et nous vous retirerons immediatement.</p>
+</body></html>`;
+  }
+
+  const results: any[] = [];
+  for (let i = 0; i < candidates.length; i++) {
+    const c = candidates[i];
+    if (!c.email || !c.email.includes('@')) {
+      results.push({ email: c.email, ok: false, error: 'email invalide' });
+      continue;
+    }
+
+    const cuisine = lowerCuisine(c.cuisine);
+    const { subject, variant } = pickSubject(c.name || 'votre etablissement', cuisine);
+    const text = buildText(c);
+    const html = buildHtml(c);
+    const refId = `${campaign}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+    if (dryRun) {
+      results.push({ email: c.email, ok: true, dryRun: true, subject, refId });
+      continue;
+    }
+
+    try {
+      const r = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: [c.email],
+          reply_to: 'contact@restaumargin.fr',
+          subject,
+          text,
+          html,
+          headers: {
+            'X-Entity-Ref-ID': refId,
+            'X-Campaign': campaign,
+          },
+          tags: [
+            { name: 'campaign', value: campaign },
+            { name: 'subject_variant', value: variant },
+          ],
+        }),
+      });
+      const data: any = await r.json();
+      if (r.ok) {
+        results.push({ email: c.email, ok: true, refId, subject, variant, resendId: data?.id });
+      } else {
+        results.push({ email: c.email, ok: false, error: data, status: r.status });
+      }
+    } catch (e: any) {
+      results.push({ email: c.email, ok: false, error: e.message });
+    }
+
+    // Pacing 1.5s entre envois (anti-rate-limit + anti-spam suspect)
+    if (i < candidates.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+    }
+  }
+
+  const okCount = results.filter(r => r.ok).length;
+  res.json({ ok: true, total: candidates.length, sent: okCount, failed: candidates.length - okCount, results });
+});
+
 // ============ POST /api/admin/email-test ============
 // Envoie un email de test au admin pour verifier que Resend fonctionne en pratique.
 router.post('/email-test', async (req: any, res) => {

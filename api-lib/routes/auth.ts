@@ -606,7 +606,12 @@ router.post('/oauth/exchange', async (req: any, res) => {
 // GET /api/auth/google → redirect to Google consent screen
 router.get('/google', (_req, res) => {
   const clientId = process.env.GOOGLE_CLIENT_ID;
-  if (!clientId) return res.status(500).json({ error: 'Google OAuth non configure' });
+  const frontendUrl = process.env.FRONTEND_URL || 'https://www.restaumargin.fr';
+  // FIX 2026-05-06 : avant on retournait HTTP 500 JSON brut quand env var
+  // manquait — le user cliquait "Continuer avec Google" et voyait l'erreur
+  // technique. Maintenant on redirect proprement vers /login?error=...
+  // qui affiche un toast user-friendly (cf Login.tsx:79).
+  if (!clientId) return res.redirect(`${frontendUrl}/login?error=google_not_configured`);
 
   const redirectUri = 'https://www.restaumargin.fr/api/auth/google/callback';
   const scope = encodeURIComponent('email profile');
@@ -614,6 +619,12 @@ router.get('/google', (_req, res) => {
 
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}&state=${state}&access_type=offline&prompt=consent`;
   res.redirect(url);
+});
+
+// GET /api/auth/google/status → frontend can check if Google OAuth is configured
+// pour afficher/cacher le bouton sans tenter le redirect.
+router.get('/google/status', (_req, res) => {
+  res.json({ enabled: !!process.env.GOOGLE_CLIENT_ID && !!process.env.GOOGLE_CLIENT_SECRET });
 });
 
 // GET /api/auth/google/callback → handle Google callback

@@ -68,17 +68,47 @@ export default function Login() {
       .catch(() => setGoogleEnabled(false));
   }, []);
 
-  // Handle Google OAuth token from URL → auto-login
+  // Handle Google OAuth token from URL → auto-login (legacy fallback)
+  // FIX 2026-05-06 : aussi handle le pattern OAuth one-time code (?code=XXX)
+  // que le backend utilise (cf api-lib/routes/auth.ts L686/732). Le backend
+  // redirige vers /login?code=XXX, le frontend POST /api/auth/oauth/exchange
+  // pour echanger le code (one-time, 60s TTL) contre un JWT. Plus secure
+  // qu'un token-in-URL (OWASP A01).
   useEffect(() => {
     const oauthToken = searchParams.get('token');
     if (oauthToken) {
-      // Store token and let AuthProvider pick it up → triggers isAuthenticated redirect
       localStorage.setItem('token', oauthToken);
       trackEvent('login', { method: 'google' });
-      // Force page reload so AuthProvider re-checks token from localStorage
       window.location.replace('/dashboard');
       return;
     }
+
+    // OAuth one-time code exchange (pattern principal utilise par backend)
+    const oauthCode = searchParams.get('code');
+    if (oauthCode) {
+      fetch('/api/auth/oauth/exchange', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ code: oauthCode }),
+      })
+        .then(async (res) => {
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || !data.token) {
+            throw new Error(data.error || 'Echange du code OAuth echoue');
+          }
+          localStorage.setItem('token', data.token);
+          trackEvent('login', { method: 'google' });
+          window.location.replace('/dashboard');
+        })
+        .catch((e) => {
+          setError(e.message || 'Erreur de connexion Google.');
+          // Cleanup l'URL pour eviter retry sur reload
+          window.history.replaceState({}, '', '/login');
+        });
+      return;
+    }
+
     // Handle Google OAuth errors
     const oauthError = searchParams.get('error');
     if (oauthError) {

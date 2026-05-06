@@ -152,6 +152,12 @@ export default function NotificationCenter() {
   const [briefing, setBriefing] = useState<DailyBriefing | null>(null);
   const [dailySummary, setDailySummary] = useState<DailySummary | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | NotifType>('all');
+  // FIX 2026-05-06 : panel position dynamique relative au bouton.
+  // Avant : `fixed top-14 right-4` -> panneau toujours en haut a droite,
+  // mais le bouton existe AUSSI dans la sidebar (gauche) -> click sidebar
+  // = panneau "vole" a l'autre bout de l'ecran (UX confuse, layout shift).
+  // Maintenant : on calcule la position au moment du open, ancree au bouton.
+  const [panelPos, setPanelPos] = useState<{ top: number; left: number }>({ top: 56, left: 16 });
   const prevCountRef = useRef(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const bellRef = useRef<HTMLButtonElement>(null);
@@ -378,6 +384,49 @@ export default function NotificationCenter() {
     }
   }, [open]);
 
+  // FIX 2026-05-06 : compute panel position relative to bell button.
+  // Logique :
+  // - Top = sous le bouton + 8px de marge
+  // - Si bouton sur la moitie gauche -> panneau aligne a gauche du bouton
+  // - Si bouton sur la moitie droite -> panneau aligne a droite du bouton
+  // - Clamp pour ne jamais sortir du viewport (margins 16px)
+  // - Sur petits ecrans, panneau prend toute la largeur dispo
+  useEffect(() => {
+    if (!open || !bellRef.current) return;
+    const PANEL_WIDTH = 380;
+    const MARGIN = 8;
+    const SAFE_EDGE = 16;
+    const viewportW = window.innerWidth;
+    const viewportH = window.innerHeight;
+    const rect = bellRef.current.getBoundingClientRect();
+
+    let top = rect.bottom + MARGIN;
+    const bellCenterX = rect.left + rect.width / 2;
+    let left: number;
+
+    if (viewportW < PANEL_WIDTH + SAFE_EDGE * 2) {
+      // Mobile / petit ecran : panel pleine largeur
+      left = SAFE_EDGE;
+    } else if (bellCenterX < viewportW / 2) {
+      // Bouton dans la moitie gauche -> panneau aligne sur le bord gauche du bouton
+      left = Math.max(SAFE_EDGE, rect.left);
+    } else {
+      // Bouton dans la moitie droite -> panneau aligne sur le bord droit du bouton
+      left = Math.min(viewportW - PANEL_WIDTH - SAFE_EDGE, rect.right - PANEL_WIDTH);
+    }
+
+    // Clamp horizontal
+    left = Math.max(SAFE_EDGE, Math.min(left, viewportW - PANEL_WIDTH - SAFE_EDGE));
+
+    // Clamp vertical (evite de deborder en bas)
+    const maxPanelH = Math.floor(viewportH * 0.7);
+    if (top + maxPanelH > viewportH - SAFE_EDGE) {
+      top = Math.max(SAFE_EDGE, viewportH - maxPanelH - SAFE_EDGE);
+    }
+
+    setPanelPos({ top, left });
+  }, [open]);
+
   // ── Actions ──
   function markAsRead(id: string) {
     const updated = new Set(readIds);
@@ -456,7 +505,8 @@ export default function NotificationCenter() {
       {open && (
       <div
         ref={panelRef}
-        className="fixed top-14 right-4 w-[380px] max-h-[70vh] bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl shadow-2xl shadow-black/20 z-[80] flex flex-col overflow-hidden"
+        style={{ top: `${panelPos.top}px`, left: `${panelPos.left}px` }}
+        className="fixed w-[min(380px,calc(100vw-32px))] max-h-[70vh] bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl shadow-2xl shadow-black/20 z-[80] flex flex-col overflow-hidden"
       >
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-mono-900 dark:border-mono-200 flex-shrink-0">

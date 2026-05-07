@@ -851,6 +851,14 @@ router.post('/outreach/send', async (req: any, res) => {
     if (/creperie/.test(c)) return { range: '20-26%', min: 20, max: 26 };
     return { range: '28-32%', min: 28, max: 32 };
   }
+  // ── PRODUCT POINTS — 3 differentiateurs RestauMargin ──
+  // Ces 3 points sont mentionnes dans chaque email pour montrer la valeur reelle
+  // (vs juste "calcul de marge" qui est commodity).
+  const PRODUCT_PITCH = `RestauMargin combine 3 choses pour les restaurateurs :
+- Balance Bluetooth qui pese chaque ingredient et met a jour l'inventaire en direct
+- IA qui suit vos prix fournisseurs et alerte des hausses
+- Messagerie directe cuisine <-> direction pour les commandes urgentes`;
+
   function buildText(c: any): string {
     const name = c.name || 'votre etablissement';
     const cuisine = lowerCuisine(c.cuisine);
@@ -860,19 +868,19 @@ router.post('/outreach/send', async (req: any, res) => {
       const bench = benchmarkForCuisine(c.cuisine);
       const targetCostMin = (Number(c.dish_price_eur) * bench.min / 100).toFixed(2);
       const targetCostMax = (Number(c.dish_price_eur) * bench.max / 100).toFixed(2);
-      return `Bonjour,
+      return `Bonjour ${name},
 
 J'ai vu votre ${c.featured_dish} a ${c.dish_price_eur}€ sur votre carte.
 
-Pour ce type de plat (cuisine ${cuisine}), le food cost cible tourne autour de ${bench.range}, soit ${targetCostMin}€ a ${targetCostMax}€ de matiere. Si vous etes au-dessus, il y a probablement un peu de marge a recuperer.
+Pour ce type de plat (${cuisine}), le food cost cible tourne autour de ${bench.range} — soit ${targetCostMin}€ a ${targetCostMax}€ de matiere. Si vous etes au-dessus, il y a peut-etre un peu de marge a recuperer.
 
-Je lance RestauMargin a Montpellier : un outil web qui calcule ce food cost precis pour TOUS vos plats en 5 min (depuis votre carte ou vos factures fournisseurs).
+${PRODUCT_PITCH}
 
-2 restaurants Montpellier se sont inscrits cette semaine.
+Pas mal de restaurants francais l'utilisent deja. Je voulais avoir votre avis avant de pousser plus loin a Montpellier.
 
 Tester ici sans engagement : https://www.restaumargin.fr
 
-Si vous n'avez pas le temps, repondez juste "non merci" et je n'envoie plus rien.
+Si pas le temps, repondez juste "non merci" et je n'envoie plus rien.
 
 Cordialement,
 L'equipe RestauMargin
@@ -882,17 +890,17 @@ contact@restaumargin.fr`;
     // V3 fallback : pas de plat extrait
     const neighborhood = formatNeighborhood(c.neighborhood, c.address);
     const prep = preposition(neighborhood);
-    return `Bonjour,
+    return `Bonjour ${name},
 
-J'ai vu ${name} ${prep}.
+J'ai vu votre etablissement ${prep}.
 
-Je lance RestauMargin a Montpellier ce mois-ci : un outil web pour calculer le cout exact d'un plat (ingredients + perte) en 5 min, sans Excel.
+${PRODUCT_PITCH}
 
-2 restaurants se sont inscrits cette semaine. Avant de pousser plus loin, je voulais avoir l'avis d'un autre restaurateur du coin.
+Pas mal de restaurants francais l'utilisent deja. Je voulais avoir votre avis avant de pousser plus loin a Montpellier.
 
-Vous pouvez tester ici sans engagement : https://www.restaumargin.fr
+Tester ici sans engagement : https://www.restaumargin.fr
 
-Si vous n'avez pas le temps, repondez juste "non merci" et je n'envoie plus rien.
+Si pas le temps, repondez juste "non merci" et je n'envoie plus rien.
 
 Cordialement,
 L'equipe RestauMargin

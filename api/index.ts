@@ -5679,6 +5679,47 @@ app.get('/api/presence/active', authMiddleware, (req: any, res) => {
   res.json(result);
 });
 
+// GET /api/presence/audit-log — returns recent audit log entries (collaboration)
+// Le client useCollaboration.tsx polle cet endpoint toutes les 15s pour
+// afficher les actions recentes des autres users connectes. Si pas d'audit
+// log dispo (single user), on retourne array vide pour eviter 404 spam dans
+// la console. FIX 2026-05-07.
+app.get('/api/presence/audit-log', authMiddleware, async (req: any, res) => {
+  try {
+    const limit = Math.min(parseInt(String(req.query.limit || '5'), 10), 20);
+    const since = req.query.since ? new Date(String(req.query.since)) : new Date(Date.now() - 60_000);
+    const restaurantId = req.headers['x-restaurant-id']
+      ? parseInt(String(req.headers['x-restaurant-id']), 10)
+      : null;
+
+    if (!restaurantId) {
+      return res.json([]);
+    }
+
+    const logs = await prisma.auditLog.findMany({
+      where: {
+        restaurantId,
+        createdAt: { gte: since },
+        userId: { not: req.user.userId },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      select: {
+        id: true,
+        action: true,
+        entityType: true,
+        entityName: true,
+        userName: true,
+        createdAt: true,
+      },
+    });
+    res.json(logs);
+  } catch (e: any) {
+    // Silently return empty — pas critique pour l'app
+    res.json([]);
+  }
+});
+
 // ── Customer Feedback ─────────────────────────────────────────────────
 
 // POST /api/feedback — submit feedback (public, no auth for public form)

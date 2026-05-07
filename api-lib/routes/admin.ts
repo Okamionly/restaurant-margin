@@ -34,7 +34,6 @@ router.get('/stats', async (_req, res) => {
       recentSignups,
       totalMessages,
       totalOrders,
-      newsletterCount,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.user.count({ where: { createdAt: { gte: startOfWeek } } }),
@@ -49,8 +48,19 @@ router.get('/stats', async (_req, res) => {
       }),
       prisma.message.count(),
       prisma.marketplaceOrder.count(),
-      prisma.newsletterSubscriber.count({ where: { unsubscribed: false } }),
     ]);
+
+    // FIX 2026-05-07 : NewsletterSubscriber n'existe pas dans schema.prisma
+    // mais la table existe en DB. On utilise une raw query pour ne pas crash.
+    let newsletterCount = 0;
+    try {
+      const result: Array<{ count: bigint }> = await prisma.$queryRaw`
+        SELECT COUNT(*)::bigint as count FROM newsletter_subscribers WHERE unsubscribed = false
+      `;
+      newsletterCount = Number(result[0]?.count || 0);
+    } catch {
+      newsletterCount = 0;
+    }
 
     // Count active subscriptions (users with plan != 'basic' and no expired trial)
     const activeSubscriptions = await prisma.user.count({

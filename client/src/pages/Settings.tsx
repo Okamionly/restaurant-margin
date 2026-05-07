@@ -442,7 +442,7 @@ export default function Settings() {
   const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
 
   // Billing — TODO: GET /api/billing/history + GET /api/usage/current
-  const [currentPlan] = useState<'pro' | 'business'>('pro');
+  const currentPlan = (user?.plan === 'business' ? 'business' : 'pro') as 'pro' | 'business';
   const [billingHistory, setBillingHistory] = useState<BillingEntry[]>([]);
   const [usageStats, setUsageStats] = useState({ aiCalls: 0, aiLimit: 500, storageUsed: 0, storageLimit: 5 });
 

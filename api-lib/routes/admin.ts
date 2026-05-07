@@ -611,6 +611,159 @@ router.get('/resend-status', async (_req, res) => {
   res.json(out);
 });
 
+// ============ POST /api/admin/outreach/enrich-menu ============
+// Enrichit un restaurant avec un plat phare + son prix extrait de leur carte.
+// Permet l'hyper-personnalisation cold email v4 ("J'ai vu votre {dish} a {price}€").
+//
+// Strategie :
+// 1. Fetch website du resto + tente plusieurs URLs (/carte, /menu, /restauration, /a-la-carte, /restaurant, /la-carte)
+// 2. Extract texte body (max 4000 chars)
+// 3. Si contient "€" ou "EUR" -> appel Claude Haiku pour identifier 1 plat principal + prix
+// 4. Retourne { dish, price_eur, source_url } ou { dish: '', price_eur: null }
+//
+// Body: { name, website, cuisine? }
+router.post('/outreach/enrich-menu', async (req: any, res) => {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return res.status(500).json({ ok: false, error: 'ANTHROPIC_API_KEY absent en env' });
+  }
+
+  const { name, website, cuisine } = req.body || {};
+  if (!website || typeof website !== 'string' || !website.startsWith('http')) {
+    return res.status(400).json({ ok: false, error: 'website manquant ou invalide' });
+  }
+
+  // 1. Tenter plusieurs URLs candidates
+  const baseUrl = website.replace(/\/$/, '');
+  const candidates = [
+    baseUrl,
+    `${baseUrl}/carte`,
+    `${baseUrl}/menu`,
+    `${baseUrl}/la-carte`,
+    `${baseUrl}/a-la-carte`,
+    `${baseUrl}/restaurant`,
+    `${baseUrl}/restauration`,
+    `${baseUrl}/notre-carte`,
+    `${baseUrl}/menus`,
+  ];
+
+  let menuText = '';
+  let sourceUrl = '';
+
+  for (const url of candidates) {
+    try {
+      const r = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; RestauMarginBot/1.0; +https://www.restaumargin.fr)',
+          'Accept': 'text/html,application/xhtml+xml',
+        },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!r.ok) continue;
+      const html = await r.text();
+      // Extract text content (strip HTML tags)
+      const text = html
+        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '')
+        .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&euro;/g, '€')
+        .replace(/&#x?\d+;/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      // Doit contenir au moins 1 prix € pour etre une carte
+      if (text.length > 200 && (/\d+[,.]?\d*\s*€/.test(text) || /€\s*\d+/.test(text))) {
+        menuText = text.slice(0, 4500);
+        sourceUrl = url;
+        break;
+      }
+    } catch {
+      // Skip URLs qui timeout / 404 / SSL error
+    }
+  }
+
+  if (!menuText) {
+    return res.json({ ok: true, dish: '', price_eur: null, found: false, reason: 'no_menu_with_prices_found' });
+  }
+
+  // 2. Appel Claude Haiku pour identifier 1 plat principal
+  const prompt = `Voici le contenu textuel d'une carte de restaurant${name ? ` (${name})` : ''}${cuisine ? ` cuisine ${cuisine}` : ''} :
+
+---
+${menuText}
+---
+
+Identifie UN PLAT PRINCIPAL emblematique de cette carte (un plat solide, pas une entree, pas un dessert, pas une boisson, pas une formule).
+
+Privilegie un plat avec un prix entre 12€ et 35€ (zone classique pour un plat principal).
+
+Repond UNIQUEMENT en JSON strict, sans aucun autre texte :
+
+{"dish": "Nom exact du plat (max 70 caracteres)", "price_eur": 18.50}
+
+Si tu ne trouves pas de plat principal clair avec un prix, repond exactement :
+
+{"dish": "", "price_eur": null}`;
+
+  try {
+    const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251022',
+        max_tokens: 200,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+      signal: AbortSignal.timeout(20000),
+    });
+
+    if (!aiRes.ok) {
+      const errText = await aiRes.text();
+      return res.json({ ok: false, error: `claude api ${aiRes.status}`, detail: errText.slice(0, 200) });
+    }
+
+    const data: any = await aiRes.json();
+    const text: string = data.content?.[0]?.text || '{}';
+
+    // Extract JSON object
+    const m = text.match(/\{[^{}]*?"dish"[^{}]*?\}/s);
+    if (!m) {
+      return res.json({ ok: true, dish: '', price_eur: null, found: false, reason: 'no_json_in_response', raw: text.slice(0, 200) });
+    }
+
+    let parsed: any;
+    try {
+      parsed = JSON.parse(m[0]);
+    } catch {
+      return res.json({ ok: true, dish: '', price_eur: null, found: false, reason: 'invalid_json' });
+    }
+
+    const dish = (parsed.dish || '').trim();
+    const priceEur = typeof parsed.price_eur === 'number' ? parsed.price_eur : null;
+
+    if (!dish || !priceEur) {
+      return res.json({ ok: true, dish: '', price_eur: null, found: false, reason: 'empty_extraction' });
+    }
+
+    return res.json({
+      ok: true,
+      dish,
+      price_eur: priceEur,
+      source_url: sourceUrl,
+      found: true,
+    });
+  } catch (e: any) {
+    return res.json({ ok: false, error: e.message });
+  }
+});
+
 // ============ POST /api/admin/outreach/send ============
 // Envoie batch outreach v3 (campagne email perso) via Resend, depuis le serveur
 // (qui a deja la cle Resend en env). Permet au script local d'envoyer sans
@@ -668,14 +821,62 @@ router.post('/outreach/send', async (req: any, res) => {
     if (/^le /i.test(neighborhood)) return `au ${neighborhood.replace(/^le /i, '')}`;
     return `a ${neighborhood}`;
   }
-  function pickSubject(name: string, cuisine: string): { subject: string; variant: string } {
+  function pickSubject(c: any, cuisine: string): { subject: string; variant: string } {
+    const name = c.name || 'votre etablissement';
+    // V4 subject si on a un plat extrait
+    if (c.featured_dish && c.dish_price_eur) {
+      const r = Math.random();
+      if (r < 0.5) return { subject: `Votre ${c.featured_dish} a ${c.dish_price_eur}€`, variant: 'V4-A' };
+      if (r < 0.8) return { subject: `${name} — quel est votre food cost reel ?`, variant: 'V4-B' };
+      return { subject: `${name} — 5 min pour calculer votre marge`, variant: 'V4-C' };
+    }
+    // V3 fallback
     const r = Math.random();
-    if (r < 0.6) return { subject: `${name} — 5 min pour calculer votre vraie marge`, variant: 'A' };
-    if (r < 0.9) return { subject: `Combien vous coute reellement votre carte ${cuisine} ?`, variant: 'B' };
-    return { subject: 'RestauMargin — outil local lance a Montpellier', variant: 'C' };
+    if (r < 0.6) return { subject: `${name} — 5 min pour calculer votre vraie marge`, variant: 'V3-A' };
+    if (r < 0.9) return { subject: `Combien vous coute reellement votre carte ${cuisine} ?`, variant: 'V3-B' };
+    return { subject: 'RestauMargin — outil local lance a Montpellier', variant: 'V3-C' };
+  }
+  // Benchmarks food cost % par type de cuisine (standards industrie restauration FR 2025)
+  function benchmarkForCuisine(cuisine?: string): { range: string; min: number; max: number } {
+    if (!cuisine) return { range: '28-32%', min: 28, max: 32 };
+    const c = cuisine.toLowerCase();
+    if (/pizz|italien|pates|pasta/.test(c)) return { range: '22-28%', min: 22, max: 28 };
+    if (/gastronom|etoile|michelin/.test(c)) return { range: '32-38%', min: 32, max: 38 };
+    if (/brasserie|bistr|bistronom/.test(c)) return { range: '28-32%', min: 28, max: 32 };
+    if (/asiatique|sushi|japonais|chinois|thai|vietnam/.test(c)) return { range: '25-30%', min: 25, max: 30 };
+    if (/burger|street|fast/.test(c)) return { range: '28-34%', min: 28, max: 34 };
+    if (/creperie/.test(c)) return { range: '20-26%', min: 20, max: 26 };
+    return { range: '28-32%', min: 28, max: 32 };
   }
   function buildText(c: any): string {
     const name = c.name || 'votre etablissement';
+    const cuisine = lowerCuisine(c.cuisine);
+
+    // V4 : si on a featured_dish + dish_price_eur, format ultra-perso
+    if (c.featured_dish && c.dish_price_eur) {
+      const bench = benchmarkForCuisine(c.cuisine);
+      const targetCostMin = (Number(c.dish_price_eur) * bench.min / 100).toFixed(2);
+      const targetCostMax = (Number(c.dish_price_eur) * bench.max / 100).toFixed(2);
+      return `Bonjour,
+
+J'ai vu votre ${c.featured_dish} a ${c.dish_price_eur}€ sur votre carte.
+
+Pour ce type de plat (cuisine ${cuisine}), le food cost cible tourne autour de ${bench.range}, soit ${targetCostMin}€ a ${targetCostMax}€ de matiere. Si vous etes au-dessus, il y a probablement un peu de marge a recuperer.
+
+Je lance RestauMargin a Montpellier : un outil web qui calcule ce food cost precis pour TOUS vos plats en 5 min (depuis votre carte ou vos factures fournisseurs).
+
+2 restaurants Montpellier se sont inscrits cette semaine.
+
+Tester ici sans engagement : https://www.restaumargin.fr
+
+Si vous n'avez pas le temps, repondez juste "non merci" et je n'envoie plus rien.
+
+Cordialement,
+L'equipe RestauMargin
+contact@restaumargin.fr`;
+    }
+
+    // V3 fallback : pas de plat extrait
     const neighborhood = formatNeighborhood(c.neighborhood, c.address);
     const prep = preposition(neighborhood);
     return `Bonjour,
@@ -717,7 +918,7 @@ ${paragraphs}
     }
 
     const cuisine = lowerCuisine(c.cuisine);
-    const { subject, variant } = pickSubject(c.name || 'votre etablissement', cuisine);
+    const { subject, variant } = pickSubject(c, cuisine);
     const text = buildText(c);
     const html = buildHtml(c);
     const refId = `${campaign}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;

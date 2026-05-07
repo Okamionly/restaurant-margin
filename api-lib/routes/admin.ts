@@ -875,7 +875,9 @@ router.post('/outreach/send', async (req: any, res) => {
   // ── PRODUCT POINTS — 3 différentiateurs RestauMargin ──
   // Ces 3 points sont mentionnés dans chaque email pour montrer la valeur réelle
   // (vs juste "calcul de marge" qui est commodity).
-  const PRODUCT_PITCH = `RestauMargin résout 3 problèmes concrets :
+  // CRED : mention "conçu par un chef de cuisine" pour positionner credibilite
+  // (vs autres outils SaaS faits par devs sans terrain).
+  const PRODUCT_PITCH = `Conçu par un chef de cuisine, RestauMargin résout 3 problèmes concrets :
 - Une balance Bluetooth qui pèse vos ingrédients et met l'inventaire à jour en temps réel
 - Une IA qui surveille vos prix fournisseurs et alerte en cas de hausse anormale
 - Une messagerie directe cuisine ↔ direction pour les commandes urgentes`;

@@ -824,20 +824,41 @@ router.post('/outreach/send', async (req: any, res) => {
     if (/^le /i.test(neighborhood)) return `au ${neighborhood.replace(/^le /i, '')}`;
     return `a ${neighborhood}`;
   }
+  // Nettoie le nom du resto pour la salutation : enleve " - Pizzeria",
+  // " - Restaurant", " Restaurant", suffixes commerciaux qui sont moches
+  // dans une salutation type "Bonjour {nom},".
+  function cleanRestaurantName(raw: string): string {
+    if (!raw) return 'votre établissement';
+    let n = raw.trim();
+    // Enleve suffix apres " - " ou " — "
+    n = n.split(/\s+[-—]\s+/)[0].trim();
+    // Enleve "Restaurant" ou "Brasserie" en suffix si present
+    n = n.replace(/\s+(restaurant|brasserie|bistrot|bistro|pizzeria|creperie|crêperie)$/i, '').trim();
+    return n || raw;
+  }
+
+  // Format prix euros francais : 13.9 -> "13,90" ; 3.06 -> "3,06"
+  function formatPriceFR(n: number | string): string {
+    const num = typeof n === 'string' ? parseFloat(n) : n;
+    if (isNaN(num)) return String(n);
+    return num.toFixed(2).replace('.', ',');
+  }
+
   function pickSubject(c: any, cuisine: string): { subject: string; variant: string } {
-    const name = c.name || 'votre etablissement';
-    // V4 subject si on a un plat extrait
+    const name = cleanRestaurantName(c.name || 'votre établissement');
+    // V4 subject si on a un plat extrait — curiosity gap pur sur le plat
     if (c.featured_dish && c.dish_price_eur) {
+      const priceFR = formatPriceFR(c.dish_price_eur);
       const r = Math.random();
-      if (r < 0.5) return { subject: `Votre ${c.featured_dish} a ${c.dish_price_eur}€`, variant: 'V4-A' };
-      if (r < 0.8) return { subject: `${name} — quel est votre food cost reel ?`, variant: 'V4-B' };
+      if (r < 0.5) return { subject: `${name} — votre ${c.featured_dish} à ${priceFR}€`, variant: 'V4-A' };
+      if (r < 0.8) return { subject: `Votre ${c.featured_dish} à ${priceFR}€`, variant: 'V4-B' };
       return { subject: `${name} — 5 min pour calculer votre marge`, variant: 'V4-C' };
     }
     // V3 fallback
     const r = Math.random();
     if (r < 0.6) return { subject: `${name} — 5 min pour calculer votre vraie marge`, variant: 'V3-A' };
-    if (r < 0.9) return { subject: `Combien vous coute reellement votre carte ${cuisine} ?`, variant: 'V3-B' };
-    return { subject: 'RestauMargin — outil local lance a Montpellier', variant: 'V3-C' };
+    if (r < 0.9) return { subject: `Combien vous coûte réellement votre carte ${cuisine} ?`, variant: 'V3-B' };
+    return { subject: 'RestauMargin — outil local lancé à Montpellier', variant: 'V3-C' };
   }
   // Benchmarks food cost % par type de cuisine (standards industrie restauration FR 2025)
   function benchmarkForCuisine(cuisine?: string): { range: string; min: number; max: number } {
@@ -851,59 +872,60 @@ router.post('/outreach/send', async (req: any, res) => {
     if (/creperie/.test(c)) return { range: '20-26%', min: 20, max: 26 };
     return { range: '28-32%', min: 28, max: 32 };
   }
-  // ── PRODUCT POINTS — 3 differentiateurs RestauMargin ──
-  // Ces 3 points sont mentionnes dans chaque email pour montrer la valeur reelle
+  // ── PRODUCT POINTS — 3 différentiateurs RestauMargin ──
+  // Ces 3 points sont mentionnés dans chaque email pour montrer la valeur réelle
   // (vs juste "calcul de marge" qui est commodity).
-  const PRODUCT_PITCH = `RestauMargin combine 3 choses pour les restaurateurs :
-- Balance Bluetooth qui pese chaque ingredient et met a jour l'inventaire en direct
-- IA qui suit vos prix fournisseurs et alerte des hausses
-- Messagerie directe cuisine <-> direction pour les commandes urgentes`;
+  const PRODUCT_PITCH = `RestauMargin résout 3 problèmes concrets :
+- Une balance Bluetooth qui pèse vos ingrédients et met l'inventaire à jour en temps réel
+- Une IA qui surveille vos prix fournisseurs et alerte en cas de hausse anormale
+- Une messagerie directe cuisine ↔ direction pour les commandes urgentes`;
 
   function buildText(c: any): string {
-    const name = c.name || 'votre etablissement';
+    const cleanName = cleanRestaurantName(c.name || 'votre établissement');
     const cuisine = lowerCuisine(c.cuisine);
 
     // V4 : si on a featured_dish + dish_price_eur, format ultra-perso
     if (c.featured_dish && c.dish_price_eur) {
       const bench = benchmarkForCuisine(c.cuisine);
-      const targetCostMin = (Number(c.dish_price_eur) * bench.min / 100).toFixed(2);
-      const targetCostMax = (Number(c.dish_price_eur) * bench.max / 100).toFixed(2);
-      return `Bonjour ${name},
+      const priceFR = formatPriceFR(c.dish_price_eur);
+      const targetCostMin = formatPriceFR(Number(c.dish_price_eur) * bench.min / 100);
+      const targetCostMax = formatPriceFR(Number(c.dish_price_eur) * bench.max / 100);
+      return `Bonjour la team ${cleanName},
 
-J'ai vu votre ${c.featured_dish} a ${c.dish_price_eur}€ sur votre carte.
+J'ai vu votre ${c.featured_dish} à ${priceFR}€ sur votre site.
 
-Pour ce type de plat (${cuisine}), le food cost cible tourne autour de ${bench.range} — soit ${targetCostMin}€ a ${targetCostMax}€ de matiere. Si vous etes au-dessus, il y a peut-etre un peu de marge a recuperer.
+Pour ce type de plat (${cuisine}), le food cost type se situe entre ${bench.range} — soit ${targetCostMin}€ à ${targetCostMax}€ de matière. Si vous tournez plus haut, vous laissez probablement 1-2€ de marge brute par plat.
 
 ${PRODUCT_PITCH}
 
-Pas mal de restaurants francais l'utilisent deja. Je voulais avoir votre avis avant de pousser plus loin a Montpellier.
+Quelques restaurants l'utilisent déjà. Je voulais avoir votre regard avant d'élargir à Montpellier.
 
-Tester ici sans engagement : https://www.restaumargin.fr
+Le lien : https://www.restaumargin.fr
 
-Si pas le temps, repondez juste "non merci" et je n'envoie plus rien.
+Si pas le temps, répondez juste "non merci" et je n'envoie plus rien.
 
 Cordialement,
-L'equipe RestauMargin
+L'équipe RestauMargin
 contact@restaumargin.fr`;
     }
 
     // V3 fallback : pas de plat extrait
     const neighborhood = formatNeighborhood(c.neighborhood, c.address);
     const prep = preposition(neighborhood);
-    return `Bonjour ${name},
+    return `Bonjour la team ${cleanName},
 
-J'ai vu votre etablissement ${prep}.
+J'ai vu votre établissement ${prep}.
 
 ${PRODUCT_PITCH}
 
-Pas mal de restaurants francais l'utilisent deja. Je voulais avoir votre avis avant de pousser plus loin a Montpellier.
+Quelques restaurants l'utilisent déjà. Je voulais avoir votre regard avant d'élargir à Montpellier.
 
-Tester ici sans engagement : https://www.restaumargin.fr
+Le lien : https://www.restaumargin.fr
 
-Si pas le temps, repondez juste "non merci" et je n'envoie plus rien.
+Si pas le temps, répondez juste "non merci" et je n'envoie plus rien.
 
 Cordialement,
-L'equipe RestauMargin
+L'équipe RestauMargin
 contact@restaumargin.fr`;
   }
   function buildHtml(c: any): string {

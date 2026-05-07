@@ -1007,6 +1007,122 @@ ${paragraphs}
   res.json({ ok: true, total: candidates.length, sent: okCount, failed: candidates.length - okCount, results });
 });
 
+// ============ POST /api/admin/outreach/relance ============
+// Envoie une relance ("petite relance") aux candidats donnés.
+// Subject + body different (plus court, mention tombe-en-spam).
+// Body: {
+//   candidates: [{ name, email, cuisine?, address?, neighborhood?, featured_dish?, dish_price_eur? }],
+//   dryRun?: boolean,
+//   campaign?: string  // default 'mass_v7_relance'
+// }
+router.post('/outreach/relance', async (req: any, res) => {
+  if (!process.env.RESEND_API_KEY) {
+    return res.status(500).json({ ok: false, error: 'RESEND_API_KEY absent en env' });
+  }
+  const { candidates = [], dryRun = false, campaign = 'mass_v7_relance' } = req.body || {};
+  if (!Array.isArray(candidates) || candidates.length === 0) {
+    return res.status(400).json({ ok: false, error: 'candidates manquants' });
+  }
+  if (candidates.length > 100) {
+    return res.status(400).json({ ok: false, error: 'max 100 candidats par appel' });
+  }
+
+  function cleanName(raw?: string): string {
+    if (!raw) return 'votre établissement';
+    let n = raw.trim().split(/\s+[-—]\s+/)[0].trim();
+    n = n.replace(/\s+(restaurant|brasserie|bistrot|bistro|pizzeria|creperie|crêperie)$/i, '').trim();
+    return n || raw;
+  }
+
+  function buildRelanceText(c: any): string {
+    const cleanedName = cleanName(c.name || 'votre établissement');
+    return `Bonjour la team ${cleanedName},
+
+Je vous ai écrit lundi sans retour, c'est probablement tombé en spam.
+
+Pour rappel : RestauMargin est un outil web conçu par un chef de cuisine qui calcule en 5 min le coût réel d'un plat (depuis votre carte ou vos factures fournisseurs). Plus une balance Bluetooth qui met votre inventaire à jour en temps réel.
+
+Avis honnête : utile ou inutile pour vous ?
+
+https://www.restaumargin.fr
+
+Cordialement,
+L'équipe RestauMargin
+contact@restaumargin.fr`;
+  }
+
+  function buildRelanceHtml(c: any): string {
+    const text = buildRelanceText(c);
+    const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const withLinks = escaped.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" style="color:#0d9488;text-decoration:none;">$1</a>');
+    const paragraphs = withLinks.split(/\n\n+/).map(p => `<p style="margin:0 0 14px 0;">${p.replace(/\n/g, '<br>')}</p>`).join('');
+    return `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"></head>
+<body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;color:#111;max-width:560px;margin:0 auto;padding:20px;">
+${paragraphs}
+<hr style="border:0;border-top:1px solid #e5e7eb;margin:24px 0 12px 0;">
+<p style="font-size:12px;color:#737373;margin:0;">RestauMargin · Outil SaaS pour restaurateurs francais · <a href="https://www.restaumargin.fr" style="color:#737373;">restaumargin.fr</a></p>
+<p style="font-size:11px;color:#9ca3af;margin:4px 0 0 0;">Si vous ne souhaitez plus recevoir de message, repondez "non merci".</p>
+</body></html>`;
+  }
+
+  const results: any[] = [];
+  for (let i = 0; i < candidates.length; i++) {
+    const c = candidates[i];
+    if (!c.email || !c.email.includes('@')) {
+      results.push({ email: c.email, ok: false, error: 'email invalide' });
+      continue;
+    }
+
+    const cleanedName = cleanName(c.name);
+    const subject = `${cleanedName} — petite relance`;
+    const text = buildRelanceText(c);
+    const html = buildRelanceHtml(c);
+    const refId = `${campaign}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+    if (dryRun) {
+      results.push({ email: c.email, ok: true, dryRun: true, subject, refId });
+      continue;
+    }
+
+    try {
+      const r = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: [c.email],
+          reply_to: 'contact@restaumargin.fr',
+          subject,
+          text,
+          html,
+          headers: { 'X-Entity-Ref-ID': refId, 'X-Campaign': campaign },
+          tags: [
+            { name: 'campaign', value: campaign },
+            { name: 'type', value: 'relance' },
+          ],
+        }),
+      });
+      const data: any = await r.json();
+      if (r.ok) {
+        results.push({ email: c.email, ok: true, refId, subject, resendId: data?.id });
+      } else {
+        results.push({ email: c.email, ok: false, error: data, status: r.status });
+      }
+    } catch (e: any) {
+      results.push({ email: c.email, ok: false, error: e.message });
+    }
+    if (i < candidates.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+    }
+  }
+
+  const okCount = results.filter(r => r.ok).length;
+  res.json({ ok: true, total: candidates.length, sent: okCount, failed: candidates.length - okCount, results });
+});
+
 // ============ POST /api/admin/email-test ============
 // Envoie un email de test au admin pour verifier que Resend fonctionne en pratique.
 router.post('/email-test', async (req: any, res) => {

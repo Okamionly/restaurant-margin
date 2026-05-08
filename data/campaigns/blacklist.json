@@ -1,0 +1,35 @@
+{
+  "_comment": "Emails ayant explicitement demande non merci ou refus poli. NE JAMAIS recontacter.",
+  "_created": "2026-05-08",
+  "_source": "Resend Receiving inbox audit wave 1+2",
+  "blacklist": [
+    {
+      "email": "ramenhouse45@gmail.com",
+      "name": "RAMEN HOUSE",
+      "city": "Montpellier",
+      "reason": "non merci",
+      "addedAt": "2026-05-08T04:11:00Z"
+    },
+    {
+      "email": "contact@lescastors.fun",
+      "name": "Les Castors",
+      "city": "Montpellier",
+      "reason": "Non merci",
+      "addedAt": "2026-05-08T04:12:00Z"
+    },
+    {
+      "email": "contact@larome-paris.com",
+      "name": "L'Arome",
+      "city": "Paris",
+      "reason": "Erreur destinataire + chef ne souhaite pas donner suite (Marta)",
+      "addedAt": "2026-05-08T04:13:00Z"
+    },
+    {
+      "email": "thibault@aldehyde.paris",
+      "name": "Aldehyde",
+      "city": "Paris",
+      "reason": "non merci, surtout que notre resto est a Paris (Thibault Blanche, dir. salle)",
+      "addedAt": "2026-05-08T04:14:00Z"
+    }
+  ]
+}

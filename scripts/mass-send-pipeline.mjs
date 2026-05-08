@@ -108,6 +108,19 @@ async function main() {
     JSON.parse(fs.readFileSync(sentLogPath, 'utf8')).filter(e => typeof e === 'string' && e.includes('@'))
   );
 
+  // 1b. Charger blacklist (opt-out manuels + non merci) — NE JAMAIS recontacter
+  const blacklistPath = path.join(ROOT, 'data', 'campaigns', 'blacklist.json');
+  const blacklist = new Set();
+  if (fs.existsSync(blacklistPath)) {
+    try {
+      const bl = JSON.parse(fs.readFileSync(blacklistPath, 'utf8'));
+      for (const item of (bl.blacklist || [])) {
+        if (item.email) blacklist.add(item.email.toLowerCase());
+      }
+      console.log(`Blacklist (opt-out): ${blacklist.size}`);
+    } catch {}
+  }
+
   // 2. Charger tous les CSVs
   const sources = [
     'docs/campaigns/montpellier-contacts.csv',
@@ -124,6 +137,7 @@ async function main() {
     const items = readCsv(path.join(ROOT, src));
     for (const c of items) {
       if (sent.has(c.email)) continue;
+      if (blacklist.has(c.email)) continue; // NE JAMAIS recontacter les opt-out
       if (seen.has(c.email)) continue;
       seen.add(c.email);
       all.push(c);

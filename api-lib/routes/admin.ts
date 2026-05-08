@@ -892,9 +892,39 @@ router.post('/outreach/send', async (req: any, res) => {
 - Une IA qui surveille vos prix fournisseurs et alerte en cas de hausse anormale
 - Une messagerie directe cuisine ↔ direction pour les commandes urgentes`;
 
+  // Detect ville reelle du resto depuis city/address/neighborhood
+  // Pour eviter le bug v7 ou tous les emails disaient "Montpellier" en dur.
+  function detectCity(c: any): string {
+    // 1. city explicit (CSV national)
+    if (c.city && typeof c.city === 'string' && c.city.trim()) return c.city.trim();
+    // 2. neighborhood (CSV Montpellier v1/v2)
+    if (c.neighborhood && typeof c.neighborhood === 'string' && c.neighborhood.trim()) {
+      // Si neighborhood = "Ecusson" ou "Antigone" -> on est forcement a Montpellier
+      return 'Montpellier';
+    }
+    // 3. parse address (chercher CP)
+    if (c.address && typeof c.address === 'string') {
+      const m = c.address.match(/(\d{5})\s+([A-Za-zÀ-ÿ\s\-']+?)(?:\s|,|$)/);
+      if (m) {
+        const cp = m[1];
+        // Detection rapide CP -> ville
+        if (/^75\d{3}$/.test(cp)) {
+          // Paris : detecter arrondissement
+          const arr = parseInt(cp.slice(2));
+          if (arr >= 1 && arr <= 20) return arr === 1 ? 'Paris 1er' : `Paris ${arr}e`;
+          return 'Paris';
+        }
+        if (m[2]) return m[2].trim();
+      }
+    }
+    // 4. fallback : null pour skip mention ville
+    return '';
+  }
+
   function buildText(c: any): string {
     const cleanName = cleanRestaurantName(c.name || 'votre établissement');
     const cuisine = lowerCuisine(c.cuisine);
+    const city = detectCity(c);
 
     // V4 : si on a featured_dish + dish_price_eur, format ultra-perso
     if (c.featured_dish && c.dish_price_eur) {
@@ -910,7 +940,7 @@ Pour ce type de plat (${cuisine}), le food cost type se situe entre ${bench.rang
 
 ${PRODUCT_PITCH}
 
-Quelques restaurants l'utilisent déjà. Je voulais avoir votre regard avant d'élargir à Montpellier.
+Quelques restaurants l'utilisent déjà. Je voulais avoir votre regard avant d'élargir nationalement.
 
 Le lien : https://www.restaumargin.fr
 
@@ -921,16 +951,15 @@ L'équipe RestauMargin
 contact@restaumargin.fr`;
     }
 
-    // V3 fallback : pas de plat extrait
-    const neighborhood = formatNeighborhood(c.neighborhood, c.address);
-    const prep = preposition(neighborhood);
+    // V3 fallback : pas de plat extrait — utilise la ville reelle
+    const cityMention = city ? ` à ${city}` : '';
     return `Bonjour la team ${cleanName},
 
-J'ai vu votre établissement ${prep}.
+J'ai vu votre établissement${cityMention}.
 
 ${PRODUCT_PITCH}
 
-Quelques restaurants l'utilisent déjà. Je voulais avoir votre regard avant d'élargir à Montpellier.
+Quelques restaurants l'utilisent déjà. Je voulais avoir votre regard avant d'élargir nationalement.
 
 Le lien : https://www.restaumargin.fr
 

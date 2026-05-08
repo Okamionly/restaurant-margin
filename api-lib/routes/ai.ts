@@ -1346,8 +1346,6 @@ router.post('/forecast', authWithRestaurant, async (req: any, res) => {
       return res.status(429).json({ error: 'Limite IA atteinte (10 requêtes/min). Réessayez dans 1 minute.' });
     }
     if (await checkMonthlyQuota(req.restaurantId, res)) return;
-    // FIX 2026-04-28 (audit cohérence #9) : quota mensuel check uniforme.
-    if (await checkMonthlyQuota(req.restaurantId, res)) return;
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
@@ -1545,8 +1543,6 @@ router.post('/optimize-recipe', authWithRestaurant, async (req: any, res) => {
     if (!checkAiRateLimit(req.restaurantId)) {
       return res.status(429).json({ error: 'Limite IA atteinte (10 requetes/min). Reessayez dans 1 minute.' });
     }
-    if (await checkMonthlyQuota(req.restaurantId, res)) return;
-    // FIX 2026-04-28 (audit cohérence #9) : quota mensuel uniforme.
     if (await checkMonthlyQuota(req.restaurantId, res)) return;
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
@@ -1838,14 +1834,12 @@ router.post('/weekly-report', authWithRestaurant, async (req: any, res) => {
     }
 
     const restaurantId = req.restaurantId;
-    // FIX 2026-04-28 (audit cohérence #9) : quota mensuel uniforme.
     if (await checkMonthlyQuota(restaurantId, res)) return;
 
     // Rate limit: 1 report per hour per restaurant
     if (!checkAiRateLimit(restaurantId)) {
       return res.status(429).json({ error: 'Limite atteinte. Réessayez dans quelques minutes.' });
     }
-    if (await checkMonthlyQuota(restaurantId, res)) return;
 
     // ── Collect all data for the weekly report ──
     const now = new Date();

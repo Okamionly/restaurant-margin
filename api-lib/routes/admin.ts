@@ -1046,6 +1046,33 @@ ${paragraphs}
   res.json({ ok: true, total: candidates.length, sent: okCount, failed: candidates.length - okCount, results });
 });
 
+// ============ POST /api/admin/outreach/delete-received ============
+// Tente de supprimer un email recu de Resend dashboard via DELETE API.
+// Body: { ids: string[] }  Returns: [{ id, ok, status }]
+router.post('/outreach/delete-received', async (req: any, res) => {
+  if (!process.env.RESEND_API_KEY) {
+    return res.status(500).json({ ok: false, error: 'RESEND_API_KEY absent' });
+  }
+  const { ids = [] } = req.body || {};
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ ok: false, error: 'ids manquants' });
+  }
+  const results: any[] = [];
+  for (const id of ids) {
+    try {
+      const r = await fetch(`https://api.resend.com/emails/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
+      });
+      const body = await r.text();
+      results.push({ id, status: r.status, ok: r.ok, body: body.slice(0, 200) });
+    } catch (e: any) {
+      results.push({ id, ok: false, error: e.message });
+    }
+  }
+  res.json({ ok: true, results });
+});
+
 // ============ POST /api/admin/outreach/relance ============
 // Envoie une relance ("petite relance") aux candidats donnés.
 // Subject + body different (plus court, mention tombe-en-spam).

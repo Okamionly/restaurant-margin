@@ -441,7 +441,7 @@ export default function Settings() {
   // Active sessions — TODO: GET /api/auth/sessions
   const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
 
-  // Billing — TODO: GET /api/billing/history + GET /api/usage/current
+  // Billing — TODO: GET /api/billing/history
   const currentPlan = (user?.plan === 'business' ? 'business' : 'pro') as 'pro' | 'business';
   const [billingHistory, setBillingHistory] = useState<BillingEntry[]>([]);
   const [usageStats, setUsageStats] = useState({ aiCalls: 0, aiLimit: 500, storageUsed: 0, storageLimit: 5 });
@@ -465,6 +465,7 @@ export default function Settings() {
     loadStats();
     loadReferrals();
     loadTeamMembers();
+    loadUsageStats();
   }, []);
 
   useEffect(() => {
@@ -502,6 +503,21 @@ export default function Settings() {
   }, [settings.theme]);
 
   // ------ Data loading ------
+
+  async function loadUsageStats() {
+    try {
+      const res = await fetch(`${API_BASE}/ai/usage`, { headers: authHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        setUsageStats({
+          aiCalls: data.used || 0,
+          aiLimit: data.limit || 500,
+          storageUsed: 0,
+          storageLimit: 5,
+        });
+      }
+    } catch (err) { console.error(err); }
+  }
 
   async function loadStats() {
     try {

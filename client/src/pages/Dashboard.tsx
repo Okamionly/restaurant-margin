@@ -989,7 +989,7 @@ export default function Dashboard() {
           )}
           {trends ? (
             <p className={`text-xs font-medium mt-2 tabular-nums ${trends.marginDiff >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
-              {trends.marginDiff >= 0 ? '\u2191' : '\u2193'} {trends.marginDiff >= 0 ? '+' : ''}{trends.marginDiff}% vs semaine derniere
+              {trends.marginDiff >= 0 ? '↑' : '↓'} {trends.marginDiff >= 0 ? '+' : ''}{trends.marginDiff}% vs semaine derniere
             </p>
           ) : stats ? (
             <p className="text-xs text-[#D1D5DB] dark:text-mono-400 mt-2 italic">Tendance disponible la semaine prochaine</p>
@@ -1019,7 +1019,7 @@ export default function Dashboard() {
           )}
           {trends ? (
             <p className={`text-xs font-medium mt-2 tabular-nums ${trends.foodCostDiff <= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
-              {trends.foodCostDiff <= 0 ? '\u2193' : '\u2191'} {trends.foodCostDiff >= 0 ? '+' : ''}{trends.foodCostDiff}% vs semaine derniere
+              {trends.foodCostDiff <= 0 ? '↓' : '↑'} {trends.foodCostDiff >= 0 ? '+' : ''}{trends.foodCostDiff}% vs semaine derniere
             </p>
           ) : stats ? (
             <p className="text-xs text-[#D1D5DB] dark:text-mono-400 mt-2 italic">Tendance disponible la semaine prochaine</p>
@@ -1037,7 +1037,7 @@ export default function Dashboard() {
           </p>
           {trends ? (
             <p className={`text-xs font-medium mt-2 tabular-nums ${trends.costDiff <= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
-              {trends.costDiff <= 0 ? '\u2193' : '\u2191'} {trends.costDiff >= 0 ? '+' : ''}{trends.costDiff.toFixed(2)} vs semaine derniere
+              {trends.costDiff <= 0 ? '↓' : '↑'} {trends.costDiff >= 0 ? '+' : ''}{trends.costDiff.toFixed(2)} vs semaine derniere
             </p>
           ) : stats ? (
             <p className="text-xs text-[#D1D5DB] dark:text-mono-400 mt-2 italic">Tendance disponible la semaine prochaine</p>
@@ -1166,7 +1166,7 @@ export default function Dashboard() {
             <div className="rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black overflow-hidden">
               {/* Header */}
               <div className="px-6 py-8 text-center border-b border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-mono-50">
-                <div className="text-5xl mb-3">👨‍🍳</div>
+                <div className="text-5xl mb-3">&#128104;&#8205;&#127859;</div>
                 <h3 className="text-xl font-bold text-mono-100 dark:text-white font-satoshi mb-1">Commencez ici</h3>
                 <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-sm mx-auto">
                   3 etapes simples pour maitriser vos marges et optimiser votre restaurant
@@ -1390,28 +1390,31 @@ export default function Dashboard() {
               Distribution des marges
             </h3>
             <div className="grid grid-cols-5 gap-1.5 sm:gap-3">
-              {[
-                { label: '< 50%', count: recipes.filter(r => r.margin.marginPercent < 50).length, color: '#dc2626' },
-                { label: '50-60%', count: recipes.filter(r => r.margin.marginPercent >= 50 && r.margin.marginPercent < 60).length, color: '#ea580c' },
-                { label: '60-70%', count: recipes.filter(r => r.margin.marginPercent >= 60 && r.margin.marginPercent < 70).length, color: '#d97706' },
-                { label: '70-80%', count: recipes.filter(r => r.margin.marginPercent >= 70 && r.margin.marginPercent < 80).length, color: '#65a30d' },
-                { label: '> 80%', count: recipes.filter(r => r.margin.marginPercent >= 80).length, color: '#059669' },
-              ].map(bucket => {
-                const maxCount = Math.max(...recipes.map(() => 1), recipes.length);
-                const height = maxCount > 0 ? Math.max((bucket.count / maxCount) * 80, 4) : 4;
-                return (
-                  <div key={bucket.label} className="flex flex-col items-center gap-2">
-                    <div className="w-full h-20 flex items-end justify-center">
-                      <div
-                        className="w-full max-w-[40px] rounded-t-md transition-all duration-500"
-                        style={{ height: `${height}px`, backgroundColor: bucket.color }}
-                      />
+              {(() => {
+                const buckets = [
+                  { label: '< 50%', count: recipes.filter(r => r.margin.marginPercent < 50).length, color: '#dc2626' },
+                  { label: '50-60%', count: recipes.filter(r => r.margin.marginPercent >= 50 && r.margin.marginPercent < 60).length, color: '#ea580c' },
+                  { label: '60-70%', count: recipes.filter(r => r.margin.marginPercent >= 60 && r.margin.marginPercent < 70).length, color: '#d97706' },
+                  { label: '70-80%', count: recipes.filter(r => r.margin.marginPercent >= 70 && r.margin.marginPercent < 80).length, color: '#65a30d' },
+                  { label: '> 80%', count: recipes.filter(r => r.margin.marginPercent >= 80).length, color: '#059669' },
+                ];
+                const maxCount = Math.max(1, ...buckets.map(b => b.count));
+                return buckets.map(bucket => {
+                  const height = Math.max((bucket.count / maxCount) * 80, 4);
+                  return (
+                    <div key={bucket.label} className="flex flex-col items-center gap-2">
+                      <div className="w-full h-20 flex items-end justify-center">
+                        <div
+                          className="w-full max-w-[40px] rounded-t-md transition-all duration-500"
+                          style={{ height: `${height}px`, backgroundColor: bucket.color }}
+                        />
+                      </div>
+                      <span className="text-lg font-black text-mono-100 dark:text-white tabular-nums">{bucket.count}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{bucket.label}</span>
                     </div>
-                    <span className="text-lg font-black text-mono-100 dark:text-white tabular-nums">{bucket.count}</span>
-                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{bucket.label}</span>
-                  </div>
-                );
-              })}
+                  );
+                });
+              })()}
             </div>
           </div>
         </div>

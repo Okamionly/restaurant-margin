@@ -69,6 +69,11 @@ const ROUTES = [
     description: "Guide et outil pour calculer les marges de votre restaurant sushi. Food cost poisson cru, riz a sushi, formules plateau, gestion FIFO fraicheur et optimisation carte japonaise.",
   },
   {
+    path: '/guide-marge/kebab-fast-food',
+    title: 'Calcul de marge kebab et fast-food : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre kebab ou fast-food. Food cost viande grille, pain, sauces et garnitures. Gestion formules midi, livraison et optimisation marge par commande.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

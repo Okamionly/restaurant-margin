@@ -349,6 +349,53 @@ const NICHES: Record<string, NicheConfig> = {
       },
     ],
   },
+  'kebab-fast-food': {
+    slug: 'kebab-fast-food',
+    title: 'Calcul de marge kebab et fast-food : guide complet 2026',
+    h1: 'Optimisez la marge de votre kebab et fast-food',
+    tagline: 'Logiciel de gestion specialise pour kebabs, sandwicheries et fast-foods',
+    description: 'Guide et outil pour calculer les marges de votre kebab ou fast-food. Food cost viande grille, pain, sauces et garnitures. Gestion formules midi, livraison et optimisation marge par commande.',
+    heroSubtitle: "Le kebab : produit emblematique du fast-food francais avec un potentiel de marge eleve quand les grammages sont maitrise. Viande de broche, pain, sauces, crudites — chaque composant compte. RestauMargin vous donne la precision pour atteindre 68% de marge brute.",
+    avgMargin: '62-70%',
+    avgFoodCost: '30-38%',
+    avgCoef: '3 a 3,5',
+    challenges: [
+      'Prix de la viande de veau/agneau : volatil selon cours et saison',
+      'Grammages non standardises : 120g vs 180g de viande change tout au food cost',
+      'Plateformes de livraison : commission 25-30% qui efface la marge sur les commandes en ligne',
+      'Sauces maison vs industrielles : food cost difficile a maitriser sans fiche technique',
+      'Volume eleve et service rapide : pas le temps pour des calculs manuels entre les commandes',
+    ],
+    stats: [
+      { label: 'Food cost moyen', value: '34%', color: 'teal' },
+      { label: 'Marge brute cible', value: '66%', color: 'emerald' },
+      { label: 'Coefficient type', value: '3,2x', color: 'amber' },
+      { label: 'Ticket moyen', value: '9-15€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "Je ne savais pas que mes grandes assiettes perdaient de l'argent. RestauMargin m'a montre que le kebab XXL avec frites avait un food cost de 48% a cause du grammage viande non controle. J'ai standardise a 160g et ajuste le prix : 12 points de marge recuperes en 1 mois.",
+      author: 'Rachid',
+      role: 'Patron de kebab, Marseille',
+    },
+    faqs: [
+      {
+        q: 'Quelle est la marge moyenne d\'un kebab ou fast-food ?',
+        a: 'La marge brute d\'un kebab se situe entre 62% et 70%, avec un food cost de 30% a 38%. La viande de broche (veau, agneau ou melange) est le poste de cout principal : elle represente 50 a 60% du food cost total d\'un kebab standard. Les kebabs les mieux geres atteignent 68-70% de marge brute grace a trois leviers : (1) standardisation des grammages de viande au gramme pres (120 a 180g selon la taille), (2) fabrication maison des sauces signature (sauce blanche, harissa) avec un food cost de 8-12% vs 15-20% pour les sauces industrielles de qualite equivalente, (3) equilibre de la carte entre kebabs classiques et formules avec boisson et frites qui diluent le food cost eleve de la viande. La marge nette apres charges (loyer, personnel, energie) se situe entre 6% et 14%, ce qui est superieur a la moyenne de la restauration grace aux charges de personnel reduites et au volume de commandes eleve.',
+      },
+      {
+        q: 'Comment calculer le food cost d\'un kebab ?',
+        a: 'Le calcul se fait composant par composant. Pour un kebab standard (taille M) : viande de broche 140g (1,40€ a 10€/kg), pain pita ou baguette (0,25€), salade 40g (0,08€), tomates 60g (0,12€), oignons 30g (0,04€), sauce blanche 30ml (0,06€), harissa 10g (0,03€). Total cout matiere : 1,98€. Vendu 7,50€, le food cost est de 26,4% — excellent. En formule avec frites 150g (0,40€) et boisson 33cl (0,25€), le cout total est de 2,63€ pour un prix de vente de 10,50€, soit 25% de food cost. Le food cost monte a 38-42% quand le grammage viande n\'est pas controle (200g au lieu de 140g) ou quand la boisson est une canette vendue a prix coutant. RestauMargin automatise ce calcul : renseignez une fois vos prix fournisseurs viande, pain et condiments, et toutes vos fiches techniques se mettent a jour en temps reel quand le cours de la viande change.',
+      },
+      {
+        q: 'Comment preserver sa marge sur les commandes Uber Eats et Deliveroo ?',
+        a: 'Les plateformes de livraison prennent 25 a 30% de commission sur le prix TTC, ce qui peut transformer un kebab rentable en article a perte. La strategie en 4 points : (1) appliquer une majoration de 15-20% sur les plateformes par rapport aux prix comptoir — les clients livraison acceptent ce surprice car ils valorisent la commodite, (2) creer un menu livraison simplifie avec les references les plus rentables (kebab M, kebab L, formules) et supprimer les assiettes XXL et les extras qui alourdissent le food cost, (3) calculer la marge nette par canal (comptoir, click & collect, Uber Eats, Deliveroo) pour identifier lesquels sont reellement profitables, (4) pousser le click & collect en direct via QR code en vitrine — zero commission, fidelite client. RestauMargin vous permet de definir deux grilles tarifaires (comptoir / livraison) par produit et affiche la marge reelle apres commission de plateforme pour chaque reference, en temps reel.',
+      },
+      {
+        q: 'RestauMargin convient-il aux kebabs avec forte rotation et service rapide ?',
+        a: 'Oui, RestauMargin est concu pour les environnements a forte cadence. La saisie d\'une fiche technique kebab prend moins de 2 minutes : vous definissez une fois les composants et les grammages standards, et le logiciel calcule automatiquement le food cost de chaque variante (S, M, L, XXL) et de chaque formule. En service, vous n\'avez rien a faire : RestauMargin travaille en arriere-plan. Le tableau de bord quotidien vous montre le food cost de la journee, l\'alerte si le cout matiere depasse votre seuil cible, et la marge par produit. Les patrons de kebabs qui gerent aussi la livraison beneficient du module multi-canal qui compare automatiquement la rentabilite comptoir vs plateformes. Le plan Basic gratuit (50 ingredients, 10 recettes) suffit pour un kebab avec une carte de 15 a 20 references ; le plan Pro a 29€/mois est recommande si vous avez une carte complete avec formules, assiettes et options personnalisation.',
+      },
+    ],
+  },
 };
 
 export default function NicheLanding() {

@@ -176,6 +176,7 @@ const HelpPage = lazyRetry(() => import('./pages/Help'));
 const BreakevenCalculator = lazyRetry(() => import('./pages/BreakevenCalculator'));
 const CouvertsCible = lazyRetry(() => import('./pages/CouvertsCible'));
 const TvaCalculator = lazyRetry(() => import('./pages/TvaCalculator'));
+const LaborCostCalculator = lazyRetry(() => import('./pages/LaborCostCalculator'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -509,6 +510,7 @@ function AppLayout() {
         { to: '/rentabilite', icon: Activity, label: 'Seuil de rentabilité' },
         { to: '/couverts-cible', icon: Users, label: 'Couverts cible' },
         { to: '/calculateur-tva', icon: Calculator, label: 'Calculateur TVA' },
+        { to: '/cout-main-oeuvre', icon: Users, label: 'Coût main d\'œuvre' },
         // Integrations masqué pour l'instant
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
         { to: '/abonnement', icon: CreditCard, label: 'Mon abonnement' },
@@ -1019,6 +1021,7 @@ function AppLayout() {
               <Route path="/rentabilite" element={<BreakevenCalculator />} />
               <Route path="/couverts-cible" element={<CouvertsCible />} />
               <Route path="/calculateur-tva" element={<TvaCalculator />} />
+              <Route path="/cout-main-oeuvre" element={<LaborCostCalculator />} />
               <Route path="/restaurants" element={<TrialPaywallGuard feature="Multi-restaurant"><Restaurants /></TrialPaywallGuard>} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/abonnement" element={<Subscription />} />

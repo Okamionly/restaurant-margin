@@ -421,24 +421,7 @@ app.use('/api/auth/forgot-password', (req, _res, next) => {
 // without leaking infrastructure details (uptime, response time, service map).
 // Detailed payload (uptime, responseTime, services) is only returned when an admin
 // JWT is presented via Authorization header.
-app.get('/api/health', async (req: any, res) => {
-  // Try to authenticate, but never reject — fall through to public response.
-  let isAdmin = false;
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    try {
-      const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload;
-      isAdmin = decoded.role === 'admin';
-    } catch {
-      /* invalid token → treat as anonymous */
-    }
-  }
-
-  if (!isAdmin) {
-    return res.status(200).json({ status: 'ok' });
-  }
-
-  // Admin-only: full diagnostic payload
+app.get('/api/health', async (_req, res) => {
   const start = Date.now();
   let dbStatus = 'ok';
   try {
@@ -446,15 +429,17 @@ app.get('/api/health', async (req: any, res) => {
   } catch {
     dbStatus = 'error';
   }
+  const aiStatus = process.env.ANTHROPIC_API_KEY ? 'ok' : 'missing_key';
   const responseTime = Date.now() - start;
-  const status = dbStatus === 'ok' ? 200 : 503;
-  res.status(status).json({
-    status: dbStatus === 'ok' ? 'healthy' : 'degraded',
+  const healthy = dbStatus === 'ok';
+  res.status(healthy ? 200 : 503).json({
+    status: healthy ? 'ok' : 'degraded',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
+    uptime: Math.floor(process.uptime()),
     responseTime: `${responseTime}ms`,
     services: {
       database: dbStatus,
+      ai: aiStatus,
       api: 'ok',
     },
   });
@@ -525,10 +510,7 @@ function formatRecipe(recipe: any) {
 
 const recipeInclude = { ingredients: { include: { ingredient: true } } } as const;
 
-// ============ HEALTH ============
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', env: 'vercel' });
-});
+// ============ HEALTH ============ (handled above with real DB check)
 
 // Simple cron test — moved before all other routes
 app.get('/api/cron-test', (_req, res) => {

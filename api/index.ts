@@ -397,6 +397,55 @@ app.post('/api/stripe/portal', authMiddleware, async (req: any, res) => {
   }
 });
 
+// GET /api/billing/history — liste les factures Stripe de l'utilisateur connecté
+app.get('/api/billing/history', authMiddleware, async (req: any, res) => {
+  try {
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeKey) return res.json({ invoices: [] });
+
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
+    if (!user?.stripeCustomerId) return res.json({ invoices: [] });
+
+    const stripe = new Stripe(stripeKey, { httpClient: Stripe.createNodeHttpClient(), timeout: 30000 });
+    const invoices = await stripe.invoices.list({ customer: user.stripeCustomerId, limit: 12 });
+
+    const formatted = invoices.data.map((inv) => ({
+      id: inv.id,
+      date: new Date(inv.created * 1000).toISOString(),
+      description: inv.lines?.data?.[0]?.description || 'Abonnement RestauMargin',
+      amount: inv.amount_paid != null ? `${(inv.amount_paid / 100).toFixed(2)} €` : '—',
+      status: inv.status === 'paid' ? 'paid' : inv.status === 'open' ? 'pending' : 'failed',
+    }));
+
+    res.json({ invoices: formatted });
+  } catch (err: any) {
+    res.status(500).json({ error: 'Erreur récupération factures', details: err.message });
+  }
+});
+
+// GET /api/auth/sessions — retourne la session courante (JWT stateless)
+app.get('/api/auth/sessions', authMiddleware, async (req: any, res) => {
+  const ua = req.headers['user-agent'] || '';
+  let device = 'Navigateur inconnu';
+  if (/mobile|android|iphone|ipad/i.test(ua)) device = 'Mobile';
+  else if (/chrome/i.test(ua)) device = 'Chrome';
+  else if (/firefox/i.test(ua)) device = 'Firefox';
+  else if (/safari/i.test(ua)) device = 'Safari';
+  else if (/edge/i.test(ua)) device = 'Edge';
+
+  res.json({
+    sessions: [
+      {
+        id: 'current',
+        device,
+        location: 'Session active',
+        lastActive: new Date().toISOString(),
+        current: true,
+      },
+    ],
+  });
+});
+
 // ── Rate Limiting: Password Reset (3 per email per hour) ──
 const passwordResetLimits = new Map<string, { count: number; resetAt: number }>();
 app.use('/api/auth/forgot-password', (req, _res, next) => {

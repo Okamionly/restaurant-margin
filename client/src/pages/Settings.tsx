@@ -438,10 +438,9 @@ export default function Settings() {
   // FIX 2026-04-28 : retrait des fake data hardcodees (sessions/billing/usage).
   // Avant : 2 sessions Chrome+Safari fictives, 3 factures fictives, 847/2000 AI calls fictifs.
   // Apres : tableaux vides remplis depuis API reelle (ou empty state si pas dispo).
-  // Active sessions — TODO: GET /api/auth/sessions
   const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
 
-  // Billing — TODO: GET /api/billing/history
+  // Billing
   const currentPlan = (user?.plan === 'business' ? 'business' : 'pro') as 'pro' | 'business';
   const [billingHistory, setBillingHistory] = useState<BillingEntry[]>([]);
   const [usageStats, setUsageStats] = useState({ aiCalls: 0, aiLimit: 500, storageUsed: 0, storageLimit: 5 });
@@ -466,6 +465,8 @@ export default function Settings() {
     loadReferrals();
     loadTeamMembers();
     loadUsageStats();
+    loadSessions();
+    loadBillingHistory();
   }, []);
 
   useEffect(() => {
@@ -515,6 +516,26 @@ export default function Settings() {
           storageUsed: 0,
           storageLimit: 5,
         });
+      }
+    } catch (err) { console.error(err); }
+  }
+
+  async function loadSessions() {
+    try {
+      const res = await fetch(`${API_BASE}/auth/sessions`, { headers: authHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        setActiveSessions(data.sessions || []);
+      }
+    } catch (err) { console.error(err); }
+  }
+
+  async function loadBillingHistory() {
+    try {
+      const res = await fetch(`${API_BASE}/billing/history`, { headers: authHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        setBillingHistory(data.invoices || []);
       }
     } catch (err) { console.error(err); }
   }

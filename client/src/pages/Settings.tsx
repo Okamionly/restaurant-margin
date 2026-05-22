@@ -353,6 +353,22 @@ interface ActiveSession {
 }
 
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function formatSessionDate(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  const now = new Date();
+  const time = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  if (now.toDateString() === d.toDateString()) return `Aujourd'hui à ${time}`;
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (yesterday.toDateString() === d.toDateString()) return `Hier à ${time}`;
+  return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ` à ${time}`;
+}
+
 // Main component
 // ---------------------------------------------------------------------------
 
@@ -1610,7 +1626,7 @@ export default function Settings() {
                         </span>
                       )}
                     </p>
-                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{session.location} -- {session.lastActive}</p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{session.location} · {formatSessionDate(session.lastActive)}</p>
                   </div>
                 </div>
               ))

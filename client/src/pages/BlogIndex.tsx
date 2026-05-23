@@ -302,6 +302,38 @@ const posts: BlogPost[] = [
     readTime: '13 min',
     date: '2026-05-05',
   },
+  {
+    slug: 'fifo-lifo-stocks-restaurant',
+    title: 'FIFO vs LIFO en restauration : quelle méthode de stocks choisir ?',
+    excerpt: 'FIFO ou LIFO pour gérer vos stocks en cuisine ? Définitions, comparatif, mise en place pratique et impact sur le food cost. Guide complet pour restaurateurs.',
+    category: 'Stocks',
+    readTime: '10 min',
+    date: '2026-04-27',
+  },
+  {
+    slug: 'reduire-cout-personnel-restaurant',
+    title: 'Comment réduire le coût du personnel en restauration (sans licencier)',
+    excerpt: 'Planning optimisé, réduction du turnover, formation, process cuisine : 5 leviers concrets pour réduire votre masse salariale de 10 à 20 % sans sacrifier la qualité.',
+    category: 'RH',
+    readTime: '10 min',
+    date: '2026-04-27',
+  },
+  {
+    slug: 'fideliser-clients-restaurant-strategies',
+    title: 'Fidéliser ses clients restaurant : programmes et stratégies 2026',
+    excerpt: 'Carte tampon, CRM, anniversaires, NPS : les stratégies concrètes pour transformer vos clients occasionnels en habitués rentables et réduire votre coût d\'acquisition.',
+    category: 'Marketing',
+    readTime: '11 min',
+    date: '2026-05-08',
+  },
+  {
+    slug: 'construire-carte-vins-restaurant',
+    title: 'Carte des vins restaurant : guide pour maximiser la marge 2026',
+    excerpt: 'Comment construire une carte des vins rentable : nombre de références, coefficients multiplicateurs, rotation cave et présentation. Guide complet pour restaurateurs.',
+    category: 'Carte & Prix',
+    readTime: '10 min',
+    date: '2026-05-22',
+  },
 ];
 
 const categoryColors: Record<string, string> = {

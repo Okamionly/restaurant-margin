@@ -794,7 +794,7 @@ export default function Settings() {
   // Disconnect all sessions
   function handleDisconnectAll() {
     setActiveSessions(prev => prev.filter(s => s.current));
-    showToast('Tous les autres appareils ont ete deconnectes', 'success');
+    showToast('Tous les autres appareils ont été déconnectés', 'success');
   }
 
   const handleCopyCode = useCallback(async () => {
@@ -1596,7 +1596,7 @@ export default function Settings() {
                 className="flex items-center gap-2 px-3 py-1.5 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-medium rounded-xl transition-colors"
               >
                 <LogOut className="w-4 h-4" />
-                Deconnecter tous les appareils
+                Déconnecter tous les appareils
               </button>
             )}
           </div>
@@ -1604,7 +1604,7 @@ export default function Settings() {
           <div className="space-y-2">
             {activeSessions.length === 0 ? (
               <div className="py-6 text-center text-sm text-[#9CA3AF] dark:text-[#A3A3A3]">
-                Aucune session active detectee
+                Aucune session active détectée
               </div>
             ) : (
               activeSessions.map((session) => (
@@ -1798,7 +1798,7 @@ export default function Settings() {
                             ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
                             : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                         }`}>
-                          {entry.status === 'paid' ? 'Paye' : entry.status === 'pending' ? 'En attente' : 'Echoue'}
+                          {entry.status === 'paid' ? 'Payé' : entry.status === 'pending' ? 'En attente' : 'Échoué'}
                         </span>
                       </td>
                     </tr>
@@ -1824,7 +1824,7 @@ export default function Settings() {
         connected: stripeConnected,
         onToggle: () => {
           setStripeConnected(!stripeConnected);
-          showToast(stripeConnected ? 'Stripe deconnecte' : 'Stripe connecte', stripeConnected ? 'info' : 'success');
+          showToast(stripeConnected ? 'Stripe déconnecté' : 'Stripe connecté', stripeConnected ? 'info' : 'success');
         },
       },
       {
@@ -1837,7 +1837,7 @@ export default function Settings() {
         connected: gaConnected,
         onToggle: () => {
           setGaConnected(!gaConnected);
-          showToast(gaConnected ? 'Google Analytics deconnecte' : 'Google Analytics connecte', gaConnected ? 'info' : 'success');
+          showToast(gaConnected ? 'Google Analytics déconnecté' : 'Google Analytics connecté', gaConnected ? 'info' : 'success');
         },
       },
       {
@@ -1850,7 +1850,7 @@ export default function Settings() {
         connected: crispConnected,
         onToggle: () => {
           setCrispConnected(!crispConnected);
-          showToast(crispConnected ? 'Crisp deconnecte' : 'Crisp connecte', crispConnected ? 'info' : 'success');
+          showToast(crispConnected ? 'Crisp déconnecté' : 'Crisp connecté', crispConnected ? 'info' : 'success');
         },
       },
       {
@@ -1863,7 +1863,7 @@ export default function Settings() {
         connected: bluetoothConnected,
         onToggle: () => {
           setBluetoothConnected(!bluetoothConnected);
-          showToast(bluetoothConnected ? 'Balance deconnectee' : 'Recherche de balance en cours...', bluetoothConnected ? 'info' : 'success');
+          showToast(bluetoothConnected ? 'Balance déconnectée' : 'Recherche de balance en cours...', bluetoothConnected ? 'info' : 'success');
         },
       },
     ];

@@ -465,6 +465,7 @@ export default function Settings() {
   const [stripeConnected, setStripeConnected] = useState(true);
   const [gaConnected, setGaConnected] = useState(false);
   const [crispConnected, setCrispConnected] = useState(false);
+  const [portalLoading, setPortalLoading] = useState(false);
 
   // ------ Sync profile from user when it loads ------
   useEffect(() => {
@@ -849,6 +850,21 @@ export default function Settings() {
 
   function handleDeleteAccount() {
     // Account deletion removed — not yet implemented
+  }
+
+  async function handleManageSubscription() {
+    setPortalLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/stripe/portal`, { method: 'POST', headers: authHeaders() });
+      if (!res.ok) throw new Error('Erreur serveur');
+      const data = await res.json();
+      if (data.url) window.open(data.url, '_blank');
+      else throw new Error('URL manquante');
+    } catch {
+      showToast('Impossible d\'ouvrir le portail Stripe', 'error');
+    } finally {
+      setPortalLoading(false);
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -1705,11 +1721,12 @@ export default function Settings() {
 
           <div className="mt-4">
             <button
-              onClick={() => showToast('Redirection vers le portail Stripe...', 'info')}
-              className="flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-xl transition-colors"
+              onClick={handleManageSubscription}
+              disabled={portalLoading}
+              className="flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <ExternalLink className="w-4 h-4" />
-              Gerer mon abonnement
+              {portalLoading ? 'Chargement...' : 'Gerer mon abonnement'}
             </button>
           </div>
         </div>

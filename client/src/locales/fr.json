@@ -680,7 +680,9 @@
     "search": "Rechercher",
     "select": "Sélectionner",
     "send": "Envoyer",
-    "total": "Total"
+    "total": "Total",
+    "error": "Erreur",
+    "or": "ou"
   },
   "login": {
     "title": "Connexion",
@@ -724,7 +726,30 @@
     "feature2Title": "Fiches techniques détaillées",
     "feature2Desc": "Créez et gérez vos recettes avec calcul automatique des coûts",
     "feature3Title": "Intelligence artificielle",
-    "feature3Desc": "Suggestions IA pour maximiser votre rentabilité"
+    "feature3Desc": "Suggestions IA pour maximiser votre rentabilité",
+    "oauthExchangeError": "Échange du code OAuth échoué",
+    "googleConnectionError": "Erreur de connexion Google.",
+    "googleNoCode": "Connexion Google annulée.",
+    "googleNotConfigured": "Connexion Google non disponible pour le moment.",
+    "googleTokenFailed": "Erreur de connexion Google. Veuillez réessayer.",
+    "googleNoEmail": "Impossible de récupérer votre email Google.",
+    "googleFailed": "Erreur lors de la connexion Google.",
+    "welcomeTrialMessage": "Bienvenue ! Votre essai gratuit de 7 jours commence maintenant.",
+    "socialProof150": "150+ restaurants nous font confiance",
+    "trialBadge7Days": "Essai gratuit 7 jours",
+    "referralAppliedMessage": "Vous avez été parrainé ! Le code {code} sera appliqué à votre compte.",
+    "continueWithGoogle": "Continuer avec Google",
+    "emailAriaLabel": "Adresse email",
+    "passwordAriaLabel": "Mot de passe",
+    "restaurantNameAriaLabel": "Nom du restaurant",
+    "restaurantNameLabel": "Nom du restaurant",
+    "restaurantNamePlaceholder": "Le Bistrot de Marie",
+    "trustNoCard": "Sans carte bancaire",
+    "trustNoCommitment": "Sans engagement",
+    "trustCancelAnytime": "Annulez quand vous voulez",
+    "viewDemoNoAccount": "Voir la démo sans compte",
+    "pageTitle": "Connexion — RestauMargin",
+    "emailPlaceholder": "votre@email.com"
   },
   "planning": {
     "title": "Planning",

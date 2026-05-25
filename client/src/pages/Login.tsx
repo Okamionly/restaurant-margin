@@ -44,8 +44,8 @@ export default function Login() {
   const [referralCode] = useState(searchParams.get('ref') || '');
 
   useEffect(() => {
-    document.title = 'Connexion — RestauMargin';
-  }, []);
+    document.title = t('login.pageTitle');
+  }, [t]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -95,14 +95,14 @@ export default function Login() {
         .then(async (res) => {
           const data = await res.json().catch(() => ({}));
           if (!res.ok || !data.token) {
-            throw new Error(data.error || 'Echange du code OAuth echoue');
+            throw new Error(data.error || t('login.oauthExchangeError'));
           }
           localStorage.setItem('token', data.token);
           trackEvent('login', { method: 'google' });
           window.location.replace('/dashboard');
         })
         .catch((e) => {
-          setError(e.message || 'Erreur de connexion Google.');
+          setError(e.message || t('login.googleConnectionError'));
           // Cleanup l'URL pour eviter retry sur reload
           window.history.replaceState({}, '', '/login');
         });
@@ -113,15 +113,15 @@ export default function Login() {
     const oauthError = searchParams.get('error');
     if (oauthError) {
       const errorMessages: Record<string, string> = {
-        google_no_code: 'Connexion Google annulee.',
-        google_not_configured: 'Connexion Google non disponible pour le moment.',
-        google_token_failed: 'Erreur de connexion Google. Veuillez reessayer.',
-        google_no_email: 'Impossible de recuperer votre email Google.',
-        google_failed: 'Erreur lors de la connexion Google.',
+        google_no_code: t('login.googleNoCode'),
+        google_not_configured: t('login.googleNotConfigured'),
+        google_token_failed: t('login.googleTokenFailed'),
+        google_no_email: t('login.googleNoEmail'),
+        google_failed: t('login.googleFailed'),
       };
-      setError(errorMessages[oauthError] || 'Erreur de connexion Google.');
+      setError(errorMessages[oauthError] || t('login.googleConnectionError'));
     }
-  }, [searchParams]);
+  }, [searchParams, t]);
 
   // Handle email verification token from URL
   useEffect(() => {
@@ -185,7 +185,7 @@ export default function Login() {
             console.warn('Referral apply failed (non-blocking):', err);
           }
         }
-        showToast('Bienvenue ! Votre essai gratuit de 7 jours commence maintenant.', 'success');
+        showToast(t('login.welcomeTrialMessage'), 'success');
       } else {
         await login({ email, password });
         trackEvent('login');
@@ -217,7 +217,7 @@ export default function Login() {
       }
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Erreur');
+        throw new Error(data.error || t('common.error'));
       }
       setForgotPasswordSuccess(t('login.resetEmailSent'));
     } catch (err: unknown) {
@@ -290,7 +290,7 @@ export default function Login() {
             <div className="mt-12 pt-8 border-t" style={{ borderColor: BORDER }}>
               <div className="flex items-center justify-center gap-2 text-sm" style={{ color: TEXT_MUTED }}>
                 <Users className="w-4 h-4" />
-                <span>150+ restaurants nous font confiance</span>
+                <span>{t('login.socialProof150')}</span>
               </div>
             </div>
           </div>
@@ -321,11 +321,11 @@ export default function Login() {
                   }}
                 >
                   <Clock className="w-4 h-4" />
-                  Essai gratuit 7 jours
+                  {t('login.trialBadge7Days')}
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm" style={{ color: TEXT_MUTED }}>
                   <Users className="w-4 h-4" />
-                  <span>150+ restaurants nous font confiance</span>
+                  <span>{t('login.socialProof150')}</span>
                 </div>
               </div>
             )}
@@ -391,7 +391,7 @@ export default function Login() {
                           aria-describedby={error ? 'login-error' : undefined}
                           className={inputClass}
                           style={inputStyle}
-                          placeholder="votre@email.com"
+                          placeholder={t('login.emailPlaceholder')}
                         />
                       </div>
                     </div>
@@ -432,7 +432,17 @@ export default function Login() {
                       style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}`, color: TEXT }}
                     >
                       <span className="text-lg" style={{ color: ACCENT_DARK }}>★</span>
-                      Vous avez ete parraine ! Le code <strong className="font-mono" style={{ color: ACCENT_DARK }}>{referralCode}</strong> sera applique a votre compte.
+                      {(() => {
+                        const msg = t('login.referralAppliedMessage');
+                        const parts = msg.split('{code}');
+                        return (
+                          <span>
+                            {parts[0]}
+                            <strong className="font-mono" style={{ color: ACCENT_DARK }}>{referralCode}</strong>
+                            {parts[1] ?? ''}
+                          </span>
+                        );
+                      })()}
                     </div>
                   )}
 
@@ -453,7 +463,7 @@ export default function Login() {
                           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                         </svg>
-                        Continuer avec Google
+                        {t('login.continueWithGoogle')}
                       </a>
                     </div>
                   )}
@@ -463,7 +473,7 @@ export default function Login() {
                   {googleEnabled && (
                     <div className="flex items-center gap-3 my-4">
                       <div className="flex-1 h-px" style={{ background: BORDER }} />
-                      <span className="text-xs font-medium uppercase tracking-wider" style={{ color: TEXT_MUTED }}>ou</span>
+                      <span className="text-xs font-medium uppercase tracking-wider" style={{ color: TEXT_MUTED }}>{t('common.or')}</span>
                       <div className="flex-1 h-px" style={{ background: BORDER }} />
                     </div>
                   )}
@@ -480,12 +490,12 @@ export default function Login() {
                           autoComplete="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          aria-label="Adresse email"
+                          aria-label={t('login.emailAriaLabel')}
                           aria-invalid={!!error}
                           aria-describedby={error ? 'login-error' : undefined}
                           className={inputClass}
                           style={inputStyle}
-                          placeholder="votre@email.com"
+                          placeholder={t('login.emailPlaceholder')}
                         />
                       </div>
                     </div>
@@ -502,7 +512,7 @@ export default function Login() {
                           autoComplete={isRegisterMode ? 'new-password' : 'current-password'}
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          aria-label="Mot de passe"
+                          aria-label={t('login.passwordAriaLabel')}
                           aria-invalid={!!error}
                           aria-describedby={error ? 'login-error' : undefined}
                           className={inputClass}
@@ -527,7 +537,7 @@ export default function Login() {
                     {/* Restaurant name — only in register mode */}
                     {isRegisterMode && (
                       <div>
-                        <label htmlFor="register-restaurant" className="block text-sm font-medium mb-1" style={{ color: TEXT }}>Nom du restaurant</label>
+                        <label htmlFor="register-restaurant" className="block text-sm font-medium mb-1" style={{ color: TEXT }}>{t('login.restaurantNameLabel')}</label>
                         <div className="relative">
                           <Store className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#94A3B8' }} aria-hidden="true" />
                           <input
@@ -537,12 +547,12 @@ export default function Login() {
                             autoComplete="organization"
                             value={restaurantName}
                             onChange={(e) => setRestaurantName(e.target.value)}
-                            aria-label="Nom du restaurant"
+                            aria-label={t('login.restaurantNameAriaLabel')}
                             aria-invalid={!!error}
                             aria-describedby={error ? 'login-error' : undefined}
                             className={inputClass}
                             style={inputStyle}
-                            placeholder="Le Bistrot de Marie"
+                            placeholder={t('login.restaurantNamePlaceholder')}
                           />
                         </div>
                       </div>
@@ -585,9 +595,9 @@ export default function Login() {
                   {isRegisterMode && !isFirstUser && (
                     <div className="mt-5 pt-5 border-t" style={{ borderColor: BORDER }}>
                       <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs" style={{ color: TEXT_MUTED }}>
-                        <span className="flex items-center gap-1"><Shield className="w-3 h-3" style={{ color: ACCENT }} /> Sans carte bancaire</span>
-                        <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3" style={{ color: ACCENT }} /> Sans engagement</span>
-                        <span className="flex items-center gap-1"><Lock className="w-3 h-3" style={{ color: ACCENT }} /> Annulez quand vous voulez</span>
+                        <span className="flex items-center gap-1"><Shield className="w-3 h-3" style={{ color: ACCENT }} /> {t('login.trustNoCard')}</span>
+                        <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3" style={{ color: ACCENT }} /> {t('login.trustNoCommitment')}</span>
+                        <span className="flex items-center gap-1"><Lock className="w-3 h-3" style={{ color: ACCENT }} /> {t('login.trustCancelAnytime')}</span>
                       </div>
                     </div>
                   )}
@@ -619,7 +629,7 @@ export default function Login() {
                 style={{ background: 'white', border: `1px solid ${BORDER}`, color: TEXT_MUTED }}
               >
                 <Eye className="w-4 h-4" />
-                Voir la demo sans compte
+                {t('login.viewDemoNoAccount')}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

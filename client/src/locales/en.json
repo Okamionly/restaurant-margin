@@ -680,7 +680,9 @@
     "search": "Search",
     "select": "Select",
     "send": "Send",
-    "total": "Total"
+    "total": "Total",
+    "error": "Error",
+    "or": "or"
   },
   "login": {
     "title": "Login",
@@ -724,7 +726,30 @@
     "feature2Title": "Detailed recipe sheets",
     "feature2Desc": "Create and manage your recipes with automatic cost calculation",
     "feature3Title": "Artificial intelligence",
-    "feature3Desc": "AI suggestions to maximize your profitability"
+    "feature3Desc": "AI suggestions to maximize your profitability",
+    "oauthExchangeError": "OAuth code exchange failed",
+    "googleConnectionError": "Google sign-in error.",
+    "googleNoCode": "Google sign-in cancelled.",
+    "googleNotConfigured": "Google sign-in is not available right now.",
+    "googleTokenFailed": "Google sign-in error. Please try again.",
+    "googleNoEmail": "Could not retrieve your Google email.",
+    "googleFailed": "Google sign-in failed.",
+    "welcomeTrialMessage": "Welcome! Your 7-day free trial starts now.",
+    "socialProof150": "Trusted by 150+ restaurants",
+    "trialBadge7Days": "7-day free trial",
+    "referralAppliedMessage": "You have been referred! The code {code} will be applied to your account.",
+    "continueWithGoogle": "Continue with Google",
+    "emailAriaLabel": "Email address",
+    "passwordAriaLabel": "Password",
+    "restaurantNameAriaLabel": "Restaurant name",
+    "restaurantNameLabel": "Restaurant name",
+    "restaurantNamePlaceholder": "The Marie Bistro",
+    "trustNoCard": "No credit card",
+    "trustNoCommitment": "No commitment",
+    "trustCancelAnytime": "Cancel anytime",
+    "viewDemoNoAccount": "Try the demo without an account",
+    "pageTitle": "Sign in — RestauMargin",
+    "emailPlaceholder": "your@email.com"
   },
   "planning": {
     "title": "Planning",

@@ -167,6 +167,14 @@ const posts: BlogPost[] = [
     date: '2026-05-26',
   },
   {
+    slug: '5-ratios-cles-restaurant',
+    title: "Les 5 ratios clés d'un restaurant rentable en 2026 (avec formules)",
+    excerpt: "Food cost, prime cost, ratio personnel, ticket moyen, taux d'occupation : les 5 indicateurs essentiels pour diagnostiquer 95% des problèmes de rentabilité. Formules, benchmarks et seuils d'alerte par segment.",
+    category: 'Pilotage',
+    readTime: '15 min',
+    date: '2026-05-26',
+  },
+  {
     slug: 'inventaire-restaurant-guide',
     title: "Faire l'inventaire de son restaurant : méthode, fréquence et outils 2026",
     excerpt: "Quotidien, hebdomadaire, mensuel : quelle fréquence selon les produits ? Méthode pas à pas, calcul de rotation et modèle de tableau.",

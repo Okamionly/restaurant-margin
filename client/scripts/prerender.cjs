@@ -101,6 +101,12 @@ const ROUTES = [
     type: 'article',
   },
   {
+    path: '/blog/marge-beneficiaire-restaurant-ideal',
+    title: "Marge bénéficiaire restaurant : quel est l'idéal en 2026 ? (avec exemples)",
+    description: "La marge bénéficiaire idéale d'un restaurant en France 2026 : 5-15% en net selon segment. Un bénéfice de 4% est-il acceptable ? Une marge de 50% est-elle réaliste ? Réponses claires + exemples chiffrés.",
+    type: 'article',
+  },
+  {
     path: '/blog/reduire-food-cost',
     title: 'Reduire le food cost de votre restaurant : 10 strategies',
     description: 'Strategies concretes pour reduire le food cost : gestion des stocks, fiches techniques, negociation fournisseurs, reduction du gaspillage.',
@@ -219,6 +225,12 @@ const ROUTES = [
     path: '/blog/augmenter-ticket-moyen-restaurant',
     title: 'Augmenter le ticket moyen de son restaurant : 10 techniques',
     description: "Upselling boissons, suggestion desserts, formule premium, design de carte : 10 methodes concretes avec l'impact chiffre sur votre CA annuel.",
+    type: 'article',
+  },
+  {
+    path: '/blog/5-ratios-cles-restaurant',
+    title: "Les 5 ratios cles d'un restaurant rentable en 2026 (avec formules)",
+    description: "Decouvrez les 5 ratios essentiels pour piloter votre restaurant : food cost, prime cost, ratio personnel, ticket moyen, taux occupation. Formules, benchmarks et seuils d'alerte par segment.",
     type: 'article',
   },
   {

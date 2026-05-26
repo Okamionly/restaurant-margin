@@ -78,7 +78,7 @@ export default function BlogCalcMarge() {
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
-            headline: 'Comment calculer la marge de votre restaurant en 2026',
+            headline: 'Marge restaurant 2026 : calcul, formule et guide complet',
             description: 'Guide complet du calcul de marge restaurant : marge brute, marge nette, food cost. Formules, exemples chiffres et tableau par type de restaurant.',
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
@@ -136,10 +136,10 @@ export default function BlogCalcMarge() {
       <BlogArticleHero
         category="Marges"
         readTime="15 min"
-        date="Avril 2026"
-        title="Comment calculer la marge de votre restaurant en 2026"
-        accentWord="marge"
-        subtitle="Le calcul de marge restaurant est la clef de voute de votre rentabilite. Decouvrez les formules, les benchmarks par type d'etablissement, les cas pratiques chiffres et les erreurs qui plombent vos benefices."
+        date="Mai 2026"
+        title="Marge restaurant 2026 : calcul, formule et guide complet"
+        accentWord="Marge"
+        subtitle="Le calcul de la marge restaurant est la clef de voute de votre rentabilite. Decouvrez les formules, les benchmarks par type d'etablissement, les cas pratiques chiffres et les erreurs qui plombent vos benefices."
       />
 
       {/* ── Contenu principal ── */}

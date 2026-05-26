@@ -954,7 +954,7 @@ export default function LogicielMargeCreperie() {
         <section className="mb-16">
           <h2 className="text-2xl font-bold text-mono-100 mb-6">Pour aller plus loin</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link to="/blog/food-cost-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Food cost restaurant : guide complet</h3>
               <p className="text-xs text-mono-500">Methode, calculs, optimisation et benchmarks.</p>
             </Link>
@@ -962,7 +962,7 @@ export default function LogicielMargeCreperie() {
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Le coefficient multiplicateur</h3>
               <p className="text-xs text-mono-500">Tableaux par categorie, erreurs courantes, cas pratique.</p>
             </Link>
-            <Link to="/blog/carte-des-vins" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/construire-carte-vins-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Construire une carte des vins / cidres</h3>
               <p className="text-xs text-mono-500">Marge boissons, selection producteurs, pricing.</p>
             </Link>

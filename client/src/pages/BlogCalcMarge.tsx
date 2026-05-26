@@ -105,7 +105,7 @@ export default function BlogCalcMarge() {
           </Link>
           <div className="flex items-center gap-3">
             <Link
-              to="/outils/calculateur-food-cost"
+              to="/outils/calculateur-marge-restaurant"
               className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
             >
               <Calculator className="w-4 h-4" />

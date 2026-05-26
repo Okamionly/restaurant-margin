@@ -667,12 +667,12 @@ function HeroSection() {
             Plateforme #1 des restaurateurs
           </span>
           <h1 className="mt-6 text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.02] tracking-tight" style={{ color: TEXT }}>
-            Maîtrisez vos marges restaurant.
+            Logiciel marge restaurant
             <br />
-            <span style={{ color: ACCENT }}>Augmentez vos profits.</span>
+            <span style={{ color: ACCENT }}>qui transforme vos data en cash.</span>
           </h1>
           <p className="mt-6 text-xl leading-relaxed" style={{ color: TEXT_MUTED }}>
-            L'IA au service de votre rentabilité.
+            Logiciel food cost restaurant + SaaS restauration tout-en-un : calcul marge resto en temps réel, fiches techniques IA et commandes fournisseurs automatisées.
           </p>
           <ul className="mt-8 space-y-3">
             {['Marges optimisées', 'Fiches techniques en quelques clics', 'Analyse et alertes en temps réel'].map((item) => (
@@ -1657,6 +1657,103 @@ function TrustBadgesSection() {
 // ═══════════════════════════════════════════════════════════════════════════
 // 09 — CTA FINAL
 // ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
+// SEO NICHE SECTION — "Pour qui ?" (internal linking vers pages niches)
+// Ajoutée 2026-05-26 pour booster SEO sur KW longue traîne
+// (logiciel-marge-bistrot, pizzeria, boulangerie, gastronomique).
+// ═══════════════════════════════════════════════════════════════════════════
+function SeoNicheSection() {
+  const ref = useReveal<HTMLDivElement>();
+  const niches = [
+    { to: '/logiciel-marge-bistrot', label: 'Bistrot', desc: 'Marge brute 65-70%, food cost 28-32%.' },
+    { to: '/logiciel-marge-pizzeria', label: 'Pizzeria', desc: 'Coût pâte, garnitures et commissions livraison.' },
+    { to: '/logiciel-marge-boulangerie', label: 'Boulangerie', desc: 'Coût farine, pertes invendus, marge viennoiserie.' },
+    { to: '/logiciel-marge-gastronomique', label: 'Gastronomique', desc: 'Produits nobles, food cost 32-40%, cave premium.' },
+  ];
+  return (
+    <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
+      <div ref={ref} className="max-w-7xl mx-auto">
+        <SectionNumber n="08" label="Pour qui ?" />
+        <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
+          Un <span style={{ color: ACCENT }}>logiciel marge restaurant</span>
+          <br />
+          pensé pour votre métier.
+        </h2>
+        <p className="mt-4 text-lg max-w-2xl" style={{ color: TEXT_MUTED }}>
+          Bistrot, pizzeria, boulangerie ou gastronomique : nos modules s'adaptent à votre food cost cible, vos fournisseurs et vos marges.
+        </p>
+        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {niches.map((n) => (
+            <Link
+              key={n.to}
+              to={n.to}
+              className="group rounded-2xl p-6 bg-white border transition-all hover:scale-[1.02] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2"
+              style={{ borderColor: BORDER, '--tw-ring-color': ACCENT } as React.CSSProperties}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-bold" style={{ color: TEXT }}>{n.label}</h3>
+                <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" style={{ color: ACCENT }} />
+              </div>
+              <p className="text-sm leading-relaxed" style={{ color: TEXT_MUTED }}>{n.desc}</p>
+              <span className="mt-4 inline-block text-xs font-semibold uppercase tracking-wider" style={{ color: ACCENT_DARK }}>
+                Voir la page →
+              </span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SEO ALTERNATIVES SECTION — comparatifs concurrents
+// Ajoutée 2026-05-26 pour capter requêtes "alternative à X".
+// ═══════════════════════════════════════════════════════════════════════════
+function SeoAlternativesSection() {
+  const ref = useReveal<HTMLDivElement>();
+  const alts = [
+    { to: '/alternative-zenchef', label: 'Zenchef', desc: 'Réservations + marges en une plateforme.' },
+    { to: '/alternative-innovorder', label: 'Innovorder', desc: 'Caisse + food cost sans frais cachés.' },
+    { to: '/alternative-hubrise', label: 'Hubrise', desc: 'Hub commandes + analyse marge unifiée.' },
+    { to: '/alternative-lightspeed', label: 'Lightspeed', desc: 'POS riche + suivi food cost natif.' },
+  ];
+  return (
+    <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ background: 'white' }}>
+      <div ref={ref} className="max-w-7xl mx-auto">
+        <SectionNumber n="08b" label="Comparatifs" />
+        <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
+          Alternatives à <span style={{ color: ACCENT }}>Zenchef, Innovorder</span>
+          <br />
+          Hubrise et Lightspeed.
+        </h2>
+        <p className="mt-4 text-lg max-w-2xl" style={{ color: TEXT_MUTED }}>
+          RestauMargin remplace ou complète vos outils existants. Comparez prix, fonctionnalités et ROI.
+        </p>
+        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {alts.map((a) => (
+            <Link
+              key={a.label}
+              to={a.to}
+              className="group rounded-2xl p-6 border transition-all hover:scale-[1.02] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2"
+              style={{ background: '#FAFAFA', borderColor: BORDER, '--tw-ring-color': ACCENT } as React.CSSProperties}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-bold" style={{ color: TEXT }}>vs {a.label}</h3>
+                <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" style={{ color: ACCENT }} />
+              </div>
+              <p className="text-sm leading-relaxed" style={{ color: TEXT_MUTED }}>{a.desc}</p>
+              <span className="mt-4 inline-block text-xs font-semibold uppercase tracking-wider" style={{ color: ACCENT_DARK }}>
+                Comparer →
+              </span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function FinalCtaSection() {
   const ref = useReveal<HTMLDivElement>();
   return (
@@ -2292,8 +2389,8 @@ export default function Landing() {
     <>
       <style dangerouslySetInnerHTML={{ __html: LANDING_STYLES }} />
       <SEOHead
-        title="RestauMargin — Logiciel calcul marge restaurant + food cost"
-        description="Calculez votre marge restaurant et food cost en temps réel. Logiciel + IA + fiches techniques + commandes fournisseurs. Essai gratuit 7 jours sans CB."
+        title="Logiciel marge restaurant + food cost IA | RestauMargin (29€/mois)"
+        description="RestauMargin, logiciel SaaS pour calculer la marge de votre restaurant, optimiser le food cost et automatiser les fiches techniques. Essai gratuit 7 jours."
         path="/"
       />
       <StructuredData />
@@ -2326,6 +2423,8 @@ export default function Landing() {
             <section id="temoignages"><TestimonialsSection /></section>
             <TutorialsSection />
             <TrustBadgesSection />
+            <SeoNicheSection />
+            <SeoAlternativesSection />
             <FinalCtaSection />
             <NewsletterSection />
             <ContactSection />

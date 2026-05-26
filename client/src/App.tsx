@@ -190,6 +190,9 @@ const TvaCalculator = lazyRetry(() => import('./pages/TvaCalculator'));
 const LaborCostCalculator = lazyRetry(() => import('./pages/LaborCostCalculator'));
 const AlternativeHubrise = lazyRetry(() => import('./pages/AlternativeHubrise'));
 const AlternativeZenchef = lazyRetry(() => import('./pages/AlternativeZenchef'));
+const AlternativeLAddition = lazyRetry(() => import('./pages/AlternativeLAddition'));
+const AlternativeLightspeed = lazyRetry(() => import('./pages/AlternativeLightspeed'));
+const AlternativeTheFork = lazyRetry(() => import('./pages/AlternativeTheFork'));
 const LogicielMargeBoulangerie = lazyRetry(() => import('./pages/LogicielMargeBoulangerie'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -1162,6 +1165,7 @@ function App() {
           {/* SEO niche 2026-05-26 : Logiciel Marge Boulangerie + Alternative Zenchef (comparatif concurrent). */}
           <Route path="/logiciel-marge-boulangerie" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-amber-500 animate-spin" /></div>}><LogicielMargeBoulangerie /></Suspense>} />
           <Route path="/alternative-zenchef" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeZenchef /></Suspense>} />
+          <Route path="/alternative-laddition" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeLAddition /></Suspense>} />
           <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-mono-100" /></div>}><Temoignages /></Suspense>} />
           <Route path="/demo" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Demo /></Suspense>} />
           <Route path="/blog/coefficient-multiplicateur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoefficient /></Suspense>} />
@@ -1206,6 +1210,8 @@ function App() {
           <Route path="/blog/construire-carte-vins-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCarteVins /></Suspense>} />
           {/* Pages comparatives (alternatives) */}
           <Route path="/alternative-hubrise" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeHubrise /></Suspense>} />
+          <Route path="/alternative-lightspeed" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeLightspeed /></Suspense>} />
+          <Route path="/alternative-thefork" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeTheFork /></Suspense>} />
           {/* Catch-all: unknown blog slug → redirect to blog index (avoids falling into ProtectedRoute /login) */}
           <Route path="/blog/*" element={<Navigate to="/blog" replace />} />
           {/* Catch-all: unknown public tool → redirect to home */}

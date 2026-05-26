@@ -119,6 +119,9 @@ const LogicielMargeDarkKitchen = lazyRetry(() => import('./pages/LogicielMargeDa
 const LogicielMargeGastronomique = lazyRetry(() => import('./pages/LogicielMargeGastronomique'));
 const LogicielMargeFoodTruck = lazyRetry(() => import('./pages/LogicielMargeFoodTruck'));
 const LogicielMargePizzeria = lazyRetry(() => import('./pages/LogicielMargePizzeria'));
+const LogicielMargeSushi = lazyRetry(() => import('./pages/LogicielMargeSushi'));
+const LogicielMargeCreperie = lazyRetry(() => import('./pages/LogicielMargeCreperie'));
+const LogicielMargeBurger = lazyRetry(() => import('./pages/LogicielMargeBurger'));
 const BlogIndex = lazyRetry(() => import('./pages/BlogIndex'));
 const APropos = lazyRetry(() => import('./pages/APropos'));
 const MesParrainages = lazyRetry(() => import('./pages/MesParrainages'));
@@ -1150,6 +1153,12 @@ function App() {
           <Route path="/logiciel-marge-food-truck" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeFoodTruck /></Suspense>} />
           {/* SEO niche 2026-05-26 : page Logiciel Marge Pizzeria (mots-cles food cost pizza, marge pizzeria, commissions livraison). */}
           <Route path="/logiciel-marge-pizzeria" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargePizzeria /></Suspense>} />
+          {/* SEO niche 2026-05-26 : page Logiciel Marge Sushi Japonais (mots-cles food cost saumon thon, marge sushi, perte poisson 24h). */}
+          <Route path="/logiciel-marge-sushi" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-rose-500 animate-spin" /></div>}><LogicielMargeSushi /></Suspense>} />
+          {/* SEO niche 2026-05-26 : page Logiciel Marge Creperie (mots-cles marge creperie, food cost galettes, rentabilite creperie, creperie bretagne). */}
+          <Route path="/logiciel-marge-creperie" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeCreperie /></Suspense>} />
+          {/* SEO niche 2026-05-26 : page Logiciel Marge Burger fast casual (mots-cles food cost smash burger, marge burger restaurant, productivite flat top, market burger France 1.6Md). */}
+          <Route path="/logiciel-marge-burger" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-amber-500 animate-spin" /></div>}><LogicielMargeBurger /></Suspense>} />
           {/* SEO niche 2026-05-26 : Logiciel Marge Boulangerie + Alternative Zenchef (comparatif concurrent). */}
           <Route path="/logiciel-marge-boulangerie" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-amber-500 animate-spin" /></div>}><LogicielMargeBoulangerie /></Suspense>} />
           <Route path="/alternative-zenchef" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeZenchef /></Suspense>} />

@@ -120,8 +120,10 @@ const LogicielMargeGastronomique = lazyRetry(() => import('./pages/LogicielMarge
 const LogicielMargeFoodTruck = lazyRetry(() => import('./pages/LogicielMargeFoodTruck'));
 const LogicielMargePizzeria = lazyRetry(() => import('./pages/LogicielMargePizzeria'));
 const LogicielMargeSushi = lazyRetry(() => import('./pages/LogicielMargeSushi'));
+const LogicielMargeSaladBar = lazyRetry(() => import('./pages/LogicielMargeSaladBar'));
 const LogicielMargeCreperie = lazyRetry(() => import('./pages/LogicielMargeCreperie'));
 const LogicielMargeBurger = lazyRetry(() => import('./pages/LogicielMargeBurger'));
+const LogicielMargeKebab = lazyRetry(() => import('./pages/LogicielMargeKebab'));
 const BlogIndex = lazyRetry(() => import('./pages/BlogIndex'));
 const APropos = lazyRetry(() => import('./pages/APropos'));
 const MesParrainages = lazyRetry(() => import('./pages/MesParrainages'));
@@ -193,7 +195,11 @@ const AlternativeZenchef = lazyRetry(() => import('./pages/AlternativeZenchef'))
 const AlternativeLAddition = lazyRetry(() => import('./pages/AlternativeLAddition'));
 const AlternativeLightspeed = lazyRetry(() => import('./pages/AlternativeLightspeed'));
 const AlternativeTheFork = lazyRetry(() => import('./pages/AlternativeTheFork'));
+const ComparatifLogicielsRestaurant = lazyRetry(() => import('./pages/ComparatifLogicielsRestaurant'));
 const LogicielMargeBoulangerie = lazyRetry(() => import('./pages/LogicielMargeBoulangerie'));
+const LogicielMargeGlacier = lazyRetry(() => import('./pages/LogicielMargeGlacier'));
+const LogicielMargeCafeBar = lazyRetry(() => import('./pages/LogicielMargeCafeBar'));
+const GlossaireRestauration = lazyRetry(() => import('./pages/GlossaireRestauration'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -1158,12 +1164,20 @@ function App() {
           <Route path="/logiciel-marge-pizzeria" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargePizzeria /></Suspense>} />
           {/* SEO niche 2026-05-26 : page Logiciel Marge Sushi Japonais (mots-cles food cost saumon thon, marge sushi, perte poisson 24h). */}
           <Route path="/logiciel-marge-sushi" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-rose-500 animate-spin" /></div>}><LogicielMargeSushi /></Suspense>} />
+          {/* SEO niche 2026-05-26 : page Logiciel Marge Salad Bar Healthy (mots-cles marge salad bar, food cost poke bowl, rentabilite bowl healthy, marche 1.4Md +12%/an). */}
+          <Route path="/logiciel-marge-salad-bar" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><LogicielMargeSaladBar /></Suspense>} />
           {/* SEO niche 2026-05-26 : page Logiciel Marge Creperie (mots-cles marge creperie, food cost galettes, rentabilite creperie, creperie bretagne). */}
           <Route path="/logiciel-marge-creperie" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeCreperie /></Suspense>} />
           {/* SEO niche 2026-05-26 : page Logiciel Marge Burger fast casual (mots-cles food cost smash burger, marge burger restaurant, productivite flat top, market burger France 1.6Md). */}
           <Route path="/logiciel-marge-burger" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-amber-500 animate-spin" /></div>}><LogicielMargeBurger /></Suspense>} />
+          {/* SEO niche 2026-05-26 : page Logiciel Marge Kebab Doner sandwicherie (mots-cles food cost kebab, marge sandwich shop, broche veau-agneau, market kebab France 3Md). */}
+          <Route path="/logiciel-marge-kebab" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-amber-500 animate-spin" /></div>}><LogicielMargeKebab /></Suspense>} />
           {/* SEO niche 2026-05-26 : Logiciel Marge Boulangerie + Alternative Zenchef (comparatif concurrent). */}
           <Route path="/logiciel-marge-boulangerie" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-amber-500 animate-spin" /></div>}><LogicielMargeBoulangerie /></Suspense>} />
+          {/* SEO niche 2026-05-26 : page Logiciel Marge Cafe / Bar / Brasserie de quartier (mots-cles marge bar, coefficient boissons, marge brute boissons 80-85 %, market cafe-bar France 40 000 etablissements). */}
+          <Route path="/logiciel-marge-cafe-bar" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-amber-500 animate-spin" /></div>}><LogicielMargeCafeBar /></Suspense>} />
+          {/* SEO niche 2026-05-26 : page Logiciel Marge Glacier Salon de The (mots-cles food cost glace 18-25%, marge boules 80-90%, saisonnalite extreme 70% CA sur 5 mois, cout froid -18C). */}
+          <Route path="/logiciel-marge-glacier" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-pink-500 animate-spin" /></div>}><LogicielMargeGlacier /></Suspense>} />
           <Route path="/alternative-zenchef" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeZenchef /></Suspense>} />
           <Route path="/alternative-laddition" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeLAddition /></Suspense>} />
           <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-mono-100" /></div>}><Temoignages /></Suspense>} />
@@ -1208,10 +1222,14 @@ function App() {
           <Route path="/blog/allergenes-restaurant-obligations-legales" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogAllergenes /></Suspense>} />
           <Route path="/blog/fideliser-clients-restaurant-strategies" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFideliserClients /></Suspense>} />
           <Route path="/blog/construire-carte-vins-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCarteVins /></Suspense>} />
+          {/* SEO long-tail 2026-05-26 : Glossaire restauration (60+ termes : food cost, marge, prime cost, fiche technique, HACCP, GMP, RevPASH). */}
+          <Route path="/glossaire-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><GlossaireRestauration /></Suspense>} />
           {/* Pages comparatives (alternatives) */}
           <Route path="/alternative-hubrise" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeHubrise /></Suspense>} />
           <Route path="/alternative-lightspeed" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeLightspeed /></Suspense>} />
           <Route path="/alternative-thefork" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeTheFork /></Suspense>} />
+          {/* Mega-comparatif 12 logiciels restaurant 2026 */}
+          <Route path="/comparatif-logiciels-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><ComparatifLogicielsRestaurant /></Suspense>} />
           {/* Catch-all: unknown blog slug → redirect to blog index (avoids falling into ProtectedRoute /login) */}
           <Route path="/blog/*" element={<Navigate to="/blog" replace />} />
           {/* Catch-all: unknown public tool → redirect to home */}

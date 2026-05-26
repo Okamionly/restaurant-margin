@@ -264,6 +264,12 @@ const ROUTES = [
     type: 'article',
   },
   {
+    path: '/blog/salaire-proprietaire-restaurant',
+    title: 'Combien gagne un proprietaire de restaurant en 2026 ? (chiffres reels)',
+    description: "Salaire moyen d'un proprietaire de restaurant en France 2026 : 30-80keur/an selon segment, taille, ville. Decomposition revenus, statut juridique (SARL/SAS), dividendes vs salaire, optimisation.",
+    type: 'article',
+  },
+  {
     path: '/blog/prevision-ventes-restaurant',
     title: 'Prevision des ventes en restauration : methodes et outils 2026',
     description: 'Historique N-1, moyennes mobiles, facteurs meteo/evenements. Commander juste et staffer juste pour eviter gaspillage et ruptures.',

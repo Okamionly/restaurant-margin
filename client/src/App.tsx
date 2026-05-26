@@ -112,6 +112,7 @@ const CalculateurMargeRestaurant = lazyRetry(() => import('./pages/CalculateurMa
 const LaunchPH = lazyRetry(() => import('./pages/LaunchPH'));
 const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
 const BlogFAQMargeRestaurant = lazyRetry(() => import('./pages/BlogFAQMargeRestaurant'));
+const BlogMargeBeneficiaireRestaurant = lazyRetry(() => import('./pages/BlogMargeBeneficiaireRestaurant'));
 const AlternativeInnovorder = lazyRetry(() => import('./pages/AlternativeInnovorder'));
 const BlogPrixDeVente = lazyRetry(() => import('./pages/BlogPrixDeVente'));
 const LogicielMargeRestaurant = lazyRetry(() => import('./pages/LogicielMargeRestaurant'));
@@ -205,6 +206,7 @@ const LogicielMargeBoulangerie = lazyRetry(() => import('./pages/LogicielMargeBo
 const LogicielMargeGlacier = lazyRetry(() => import('./pages/LogicielMargeGlacier'));
 const LogicielMargeCafeBar = lazyRetry(() => import('./pages/LogicielMargeCafeBar'));
 const GlossaireRestauration = lazyRetry(() => import('./pages/GlossaireRestauration'));
+const BlogPourquoiPasRentable = lazyRetry(() => import('./pages/BlogPourquoiPasRentable'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -1158,6 +1160,8 @@ function App() {
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />
           {/* SEO mega-FAQ 2026-05-26 : domination People Also Ask Google sur "marge restaurant" (25 questions + Schema FAQPage massif). */}
           <Route path="/blog/faq-marge-restaurant-25-questions" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFAQMargeRestaurant /></Suspense>} />
+          {/* SEO PAA 2026-05-26 : nouvel article cible 4 questions PAA Google "marge beneficiaire restaurant ideale", "4% bon", "50% excessive", "que signifie 50%". */}
+          <Route path="/blog/marge-beneficiaire-restaurant-ideal" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogMargeBeneficiaireRestaurant /></Suspense>} />
           <Route path="/alternative-innovorder" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeInnovorder /></Suspense>} />
           {/* FIX 2026-04-28 (audit cohérence) : pages orphelines BlogPrixDeVente + LogicielMargeRestaurant restaurées (SEO). */}
           <Route path="/blog/prix-de-vente-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrixDeVente /></Suspense>} />
@@ -1231,6 +1235,8 @@ function App() {
           <Route path="/blog/allergenes-restaurant-obligations-legales" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogAllergenes /></Suspense>} />
           <Route path="/blog/fideliser-clients-restaurant-strategies" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFideliserClients /></Suspense>} />
           <Route path="/blog/construire-carte-vins-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCarteVins /></Suspense>} />
+          {/* SEO PAA 2026-05-26 : "Quels sont les 5 ratios cles en restauration ?" (food cost / prime cost / personnel / ticket moyen / occupation). */}
+          <Route path="/blog/5-ratios-cles-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Blog5RatiosCles /></Suspense>} />
           {/* SEO long-tail 2026-05-26 : Glossaire restauration (60+ termes : food cost, marge, prime cost, fiche technique, HACCP, GMP, RevPASH). */}
           <Route path="/glossaire-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><GlossaireRestauration /></Suspense>} />
           {/* Pages comparatives (alternatives) */}

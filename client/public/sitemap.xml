@@ -145,6 +145,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.restaumargin.fr/blog/marge-beneficiaire-restaurant-ideal</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://www.restaumargin.fr/blog/prix-de-vente-restaurant</loc>
     <lastmod>2026-05-26</lastmod>
     <changefreq>monthly</changefreq>
@@ -269,6 +275,12 @@
     <lastmod>2026-05-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/blog/5-ratios-cles-restaurant</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/blog/inventaire-restaurant-guide</loc>

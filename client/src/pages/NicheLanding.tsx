@@ -396,6 +396,53 @@ const NICHES: Record<string, NicheConfig> = {
       },
     ],
   },
+  'boulangerie-patisserie': {
+    slug: 'boulangerie-patisserie',
+    title: 'Calcul de marge boulangerie-patisserie : guide complet 2026',
+    h1: 'Optimisez la marge de votre boulangerie-patisserie',
+    tagline: 'Logiciel de gestion specialise pour boulangeries, patisseries et viennoiseries',
+    description: "Guide et outil pour calculer les marges de votre boulangerie-patisserie. Food cost farine, beurre, oeufs, gestion des fournees, prix de revient par piece et optimisation carte viennoiseries et gateaux.",
+    heroSubtitle: "Un croissant beurre a 0,28€ de matiere vendu 1,40€ : 80% de marge brute theorie. Mais sans fiche technique au gramme pres et sans suivi du cout des matieres grasses, la realite est souvent bien differente. RestauMargin vous donne la maitrise totale de votre marge par piece.",
+    avgMargin: '55-68%',
+    avgFoodCost: '32-45%',
+    avgCoef: '2,5 a 3,5',
+    challenges: [
+      "Prix du beurre et des oeufs : tres volatils, +40% sur 18 mois — impact direct sur la marge viennoiseries",
+      "Cuissons multiples par jour : gestion des invendus en fin de journee qui alourdissent le food cost reel",
+      "Pieces vendues a l'unite : food cost difficile a calculer sans peser chaque composant par fournee",
+      "Gamme large : 40 a 80 references differentes (pains, viennoiseries, sandwichs, patisseries) avec des marges tres differentes",
+      "Main-d'oeuvre elevee : les charges de personnel (30-40% du CA) mangent la marge nette meme avec un bon food cost",
+    ],
+    stats: [
+      { label: 'Food cost moyen', value: '38%', color: 'teal' },
+      { label: 'Marge brute cible', value: '62%', color: 'emerald' },
+      { label: 'Coefficient type', value: '3x', color: 'amber' },
+      { label: 'Ticket moyen', value: '5-14€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "Je produisais 120 croissants par jour sans savoir exactement ce qu'ils me coutaient. RestauMargin m'a permis de faire la fiche technique complete — beurre de tourage, farine T45, oeufs, sel, sucre — et j'ai decouvert que mon food cost croissant etait a 44% a cause du beurre qui avait augmente. J'ai recalibre le grammage et reajuste le prix de vente. Resultat : 9 points de marge retrouves en 3 semaines.",
+      author: 'Jerome',
+      role: 'Artisan boulanger-patissier, Rennes',
+    },
+    faqs: [
+      {
+        q: "Quelle est la marge moyenne d'une boulangerie-patisserie ?",
+        a: "La marge brute d'une boulangerie-patisserie se situe entre 55% et 68%, ce qui est inferieur a la moyenne de la restauration (68-75%), principalement en raison d'un food cost eleve (32-45%) tire par le beurre, les oeufs, la farine et les garnitures patisserie. Les boulangeries qui atteignent 65-68% de marge brute sont celles qui maitrisent trois leviers : (1) les fiches techniques precises par piece avec grammages au gramme pres, (2) la tracabilite des fournees pour calculer le cout reel selon le taux de perte et les invendus, (3) l'equilibre de la gamme entre les produits phares a forte marge (macarons, entremets, croissants au beurre) et les pains de base a marge plus etroite. La marge nette apres charges (loyer, personnel, energie — fours boulangers tres energy-intensifs) oscille entre 3% et 8% selon le format et l'emplacement. Les boulangeries en centre-ville avec fort passage pedestre atteignent 6-8% grace au volume ; les boulangeries de quartier ou rurales maintiennent 3-5% avec des charges fixes plus legeres.",
+      },
+      {
+        q: "Comment calculer le food cost d'un croissant, d'une baguette ou d'une patisserie ?",
+        a: "Le calcul se fait par fournee, puis ramene a la piece. Pour 20 croissants au beurre : farine T45 500g (0,65€), beurre de tourage 250g (2,50€ a 10€/kg), lait 150ml (0,12€), oeufs 2 (0,36€), sucre 40g (0,05€), sel 8g (0,01€), levure 10g (0,05€) = cout fournee de 3,74€. Divise par 20 pieces : 0,187€ par croissant. Vendu 1,40€, le food cost est de 13,4% — excellent en theorie. Mais en reel, il faut integrer le taux de perte a la cuisson (5-8%), les invendus en fin de journee (10-15% si mauvaise prevision) et l'energie four (amortissement + electrique). Une fois ces couts integres, le food cost reel d'un croissant monte a 20-25%. Pour une tarte aux fraises (250g de fruits a 4€/kg, 80g de creme patissiere, 100g de pate sablee) : food cost de 1,20-1,50€ pour un prix de vente de 4,50€, soit 27-33%. RestauMargin automatise ce calcul par fournee : vous saisissez les ingredientsune fois, definissez le nombre de pieces par fournee, et le logiciel calcule le food cost unitaire et met a jour automatiquement toutes vos fiches si le prix du beurre ou de la farine change chez votre fournisseur.",
+      },
+      {
+        q: "Comment gerer les invendus et pertes en fin de journee ?",
+        a: "Les invendus sont le principal poste de perte occulte en boulangerie. Un croissant non vendu en fin de journee n'est pas \"perdu\" dans les stocks, mais son cout est bien reel et alourdit le food cost de tous les croissants vendus. La bonne methode en 4 etapes : (1) tracker systematiquement les invendus par reference chaque soir (quantite non vendue vs quantite produite) — RestauMargin integre un module de saisie des pertes journalieres en 30 secondes, (2) calculer le taux de perte hebdomadaire par reference et ajuster les quantites produites par fournee, (3) valoriser les invendus de la veille : pain de la veille pour les croutons et sandwichs du midi, viennoiseries en pain perdu ou dans les preparations patisserie, (4) proposer un panier fin de journee a prix reduit (50-60% de remise) pour eviter le gaspillage total. L'IA RestauMargin analyse vos donnees de ventes sur 30 jours et predit les quantites optimales a produire par jour de la semaine et par saison, reduisant les invendus de 25 a 40% en moyenne sans impact sur la disponibilite produit en debut de journee.",
+      },
+      {
+        q: "RestauMargin convient-il aux boulangeries-patisseries avec espace snacking et salon de the ?",
+        a: "Oui, RestauMargin est particulierement adapte aux boulangeries-patisseries qui ont developpe une activite snacking (sandwichs, quiches, formules midi) ou salon de the. Ces formats hybrides ont des contraintes specifiques : gerer simultanément des matieres premieres brutes (farine, beurre, oeufs pour la production) et des produits semitransformes (jambon, fromages, legumes pour le snacking), avec des marges tres differentes selon le segment. Le dashboard multi-categorie vous montre cote a cote la marge de vos pains et viennoiseries (production artisanale), vos patisseries (haute valeur ajoutee), vos sandwichs et formules (marge elevee, food cost 30-35%), et vos boissons en salon (marge >70%). Vous identifiez immediatement les categories qui tirent le resultat vers le bas. Le plan Pro a 29€/mois couvre une boulangerie avec jusqu'a 150 references et 3 utilisateurs — suffisant pour une boulangerie-patisserie standard avec un patron et deux vendeurs. Les boulangeries multi-sites ou franchises beneficient du plan Business avec dashboard consolide et gestion des transferts inter-boutiques.",
+      },
+    ],
+  },
 };
 
 export default function NicheLanding() {

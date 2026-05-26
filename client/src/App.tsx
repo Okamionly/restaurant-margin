@@ -186,6 +186,8 @@ const CouvertsCible = lazyRetry(() => import('./pages/CouvertsCible'));
 const TvaCalculator = lazyRetry(() => import('./pages/TvaCalculator'));
 const LaborCostCalculator = lazyRetry(() => import('./pages/LaborCostCalculator'));
 const AlternativeHubrise = lazyRetry(() => import('./pages/AlternativeHubrise'));
+const AlternativeZenchef = lazyRetry(() => import('./pages/AlternativeZenchef'));
+const LogicielMargeBoulangerie = lazyRetry(() => import('./pages/LogicielMargeBoulangerie'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();

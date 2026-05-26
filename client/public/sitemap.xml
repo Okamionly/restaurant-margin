@@ -518,4 +518,12 @@
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
+
+  <!-- Mega-FAQ 25 questions People Also Ask Google "marge restaurant" -->
+  <url>
+    <loc>https://www.restaumargin.fr/blog/faq-marge-restaurant-25-questions</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
 </urlset>

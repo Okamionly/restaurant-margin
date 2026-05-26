@@ -111,6 +111,7 @@ const FoodCostCalculator = lazyRetry(() => import('./pages/FoodCostCalculator'))
 const CalculateurMargeRestaurant = lazyRetry(() => import('./pages/CalculateurMargeRestaurant'));
 const LaunchPH = lazyRetry(() => import('./pages/LaunchPH'));
 const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
+const BlogFAQMargeRestaurant = lazyRetry(() => import('./pages/BlogFAQMargeRestaurant'));
 const AlternativeInnovorder = lazyRetry(() => import('./pages/AlternativeInnovorder'));
 const BlogPrixDeVente = lazyRetry(() => import('./pages/BlogPrixDeVente'));
 const LogicielMargeRestaurant = lazyRetry(() => import('./pages/LogicielMargeRestaurant'));
@@ -1151,6 +1152,8 @@ function App() {
           <Route path="/a-propos" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><APropos /></Suspense>} />
           <Route path="/carrieres" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Careers /></Suspense>} />
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />
+          {/* SEO mega-FAQ 2026-05-26 : domination People Also Ask Google sur "marge restaurant" (25 questions + Schema FAQPage massif). */}
+          <Route path="/blog/faq-marge-restaurant-25-questions" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFAQMargeRestaurant /></Suspense>} />
           <Route path="/alternative-innovorder" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeInnovorder /></Suspense>} />
           {/* FIX 2026-04-28 (audit cohérence) : pages orphelines BlogPrixDeVente + LogicielMargeRestaurant restaurées (SEO). */}
           <Route path="/blog/prix-de-vente-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrixDeVente /></Suspense>} />

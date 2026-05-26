@@ -95,6 +95,12 @@ const ROUTES = [
     type: 'article',
   },
   {
+    path: '/blog/faq-marge-restaurant-25-questions',
+    title: 'FAQ Marge Restaurant 2026 : 25 questions essentielles (reponses chefs)',
+    description: "Toutes les reponses sur la marge restaurant en 2026 : taux moyen, calcul, regle 30/30/30/10, rentabilite, plat le plus rentable, salaire proprietaire. 25 questions essentielles + formules + benchmarks.",
+    type: 'article',
+  },
+  {
     path: '/blog/reduire-food-cost',
     title: 'Reduire le food cost de votre restaurant : 10 strategies',
     description: 'Strategies concretes pour reduire le food cost : gestion des stocks, fiches techniques, negociation fournisseurs, reduction du gaspillage.',

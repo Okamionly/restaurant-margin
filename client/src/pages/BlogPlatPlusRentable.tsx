@@ -995,7 +995,7 @@ export default function BlogPlatPlusRentable() {
           <Callout type="warning">
             <strong>Comment identifier vos Dogs :</strong> regardez votre POS sur 90 jours. Tout plat
             sous 2 % des ventes (donc moins de 1 prise par jour si vous faites 50 couverts) avec un
-            food cost > 30 % est candidat au retrait. Une carte raccourcie de 30 % augmente generalement
+            food cost superieur a 30 % est candidat au retrait. Une carte raccourcie de 30 % augmente generalement
             la marge globale de 5-10 points.
           </Callout>
         </section>

@@ -28,9 +28,13 @@ import {
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 
 /* ═══════════════════════════════════════════════════════════════
-   Landing niche — Logiciel marge food truck
+   Landing niche — Logiciel marge food truck (2026-05-26)
    Mot-clé principal : logiciel marge food truck
    Différencié de BlogFoodTruck (guide créa) — focus produit/logiciel
+   Sections : intro marché 700M€, 4 spécificités, food cost 28-33%,
+   décompo burger 11€, 8 plats types, charges spé, optim, KPI, cas
+   Lyon 18%→28%, 10 FAQ, CTA /signup.
+   Schemas : Article + FAQPage + BreadcrumbList + SoftwareApplication.
    ═══════════════════════════════════════════════════════════════ */
 
 const faqItems = [

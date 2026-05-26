@@ -312,6 +312,12 @@ const ROUTES = [
     type: 'article',
   },
   {
+    path: '/blog/pourquoi-mon-restaurant-ne-rapporte-pas',
+    title: "Pourquoi mon restaurant ne rapporte-t-il pas d'argent ? 10 causes + solutions 2026",
+    description: "Votre restaurant tourne mais ne rapporte rien ? Diagnostic complet des 10 causes principales : food cost derive, masse salariale, gaspillage, mauvaise carte, fournisseurs trop chers. Plan d'action concret.",
+    type: 'article',
+  },
+  {
     path: '/blog/livraison-restaurant-rentabilite',
     title: 'Livraison restaurant : comment la rentabiliser sans se faire avoir',
     description: 'Uber Eats, Deliveroo, JustEat : commissions, marge reelle livraison, plateformes vs propre canal. Cas chiffres et plan d action.',
@@ -351,6 +357,12 @@ const ROUTES = [
     path: '/blog/construire-carte-vins-restaurant',
     title: 'Carte des vins restaurant : guide pour maximiser la marge 2026',
     description: 'Comment construire une carte des vins rentable : nombre de references, coefficients multiplicateurs, rotation cave et presentation.',
+    type: 'article',
+  },
+  {
+    path: '/blog/plat-le-plus-rentable-restaurant',
+    title: 'Quel est le plat le plus rentable dans un restaurant en 2026 ? (top 15)',
+    description: "Decouvrez les plats les plus rentables d'un restaurant en 2026 : pates, pizza, salade, soupe, dessert maison. Top 15 avec marge brute, food cost et coefficient. Comment construire une carte ultra-rentable.",
     type: 'article',
   },
   // === Pages transactionnelles SEO (Wave 3+5+6+7) ===

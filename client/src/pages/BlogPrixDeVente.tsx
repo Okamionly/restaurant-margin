@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, Calculator, ArrowRight, BookOpen, Users, Zap, AlertTriangle, Lightbulb, ListChecks, Target, TrendingUp, Sparkles, Pizza, Tag, Brain, Award, BarChart3 } from 'lucide-react';
+import { ChefHat, Calculator, ArrowRight, BookOpen, Users, Zap, AlertTriangle, Lightbulb, ListChecks, Target, TrendingUp, Sparkles, Pizza, Tag, Brain, Award, BarChart3, DollarSign, Coffee, Beef } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
@@ -21,7 +21,7 @@ const faqItems = [
   },
   {
     question: "Faut-il calculer le prix de vente en HT ou en TTC ?",
-    answer: "Calculez toujours votre prix HT en interne (c'est sur lui que portent vos calculs de marge), puis convertissez en TTC pour l'affichage client. En France : Prix TTC = Prix HT x 1,10 pour la restauration sur place (TVA 10 %), x 1,055 pour certains produits a emporter.",
+    answer: "Calculez toujours votre prix HT en interne (c'est sur lui que portent vos calculs de marge), puis convertissez en TTC pour l'affichage client. En France : Prix TTC = Prix HT x 1,10 pour la restauration sur place (TVA 10 %), x 1,055 pour certains produits a emporter froids, x 1,20 sur les boissons alcoolisees.",
   },
   {
     question: "Comment fixer un prix sans se brader ni faire fuir les clients ?",
@@ -29,19 +29,35 @@ const faqItems = [
   },
   {
     question: "C'est quoi le pricing psychologique en restauration ?",
-    answer: "Le pricing psychologique exploite les biais cognitifs : prix de charme (19,90 plutot que 20), suppression du symbole EUR sur le menu (augmente la depense moyenne de 8 a 12 %), effet d'ancrage (placer un plat tres cher pour faire paraitre les autres abordables), effet decoy (un plat lu n'est jamais commande mais augmente la valeur percue des autres).",
+    answer: "Le pricing psychologique exploite les biais cognitifs : prix de charme (19,90 plutot que 20), suppression du symbole EUR sur le menu (augmente la depense moyenne de 8 a 12 % selon Cornell), effet d'ancrage (placer un plat tres cher pour faire paraitre les autres abordables), effet decoy (un plat leurre qui n'est jamais commande mais augmente la valeur percue des autres).",
   },
   {
     question: "Comment ajuster les prix face a l'inflation ?",
-    answer: "Trois leviers : 1) augmentation directe progressive (+2-5 % par an, pas plus pour ne pas perdre de clients), 2) shrinkflation (reduction discrete des portions de 5-10 %), 3) substitution d'ingredients (remplacer une variete chere par une moins couteuse a qualite equivalente). RestauMargin alerte automatiquement quand un plat passe sous votre marge cible.",
+    answer: "Trois leviers : (1) augmentation directe progressive (+2-5 % par an, pas plus pour ne pas perdre de clients), (2) shrinkflation (reduction discrete des portions de 5-10 %), (3) substitution d'ingredients (remplacer une variete chere par une moins couteuse a qualite equivalente). RestauMargin alerte automatiquement quand un plat passe sous votre marge cible.",
   },
   {
-    question: "Combien doit coster un plat par rapport a son prix de vente ?",
+    question: "Combien doit couter un plat par rapport a son prix de vente ?",
     answer: "La regle de l'industrie : le cout matieres ne doit pas depasser 30-35 % du prix de vente HT. Sur un plat a 20 EUR HT, vous pouvez investir entre 6 et 7 EUR de matieres premieres maximum, sans quoi votre marge brute tombe sous 65 % et la viabilite economique du plat est compromise.",
   },
   {
     question: "Comment justifier un prix eleve a sa clientele ?",
     answer: "Travaillez la perception de valeur : storytelling produit (origine, producteur, methode), presentation (dressage, vaisselle, salle), service (accueil personnalise, conseil), exclusivite (produits rares, edition limitee). Un steak frites a 30 EUR doit raconter une histoire que celui a 18 EUR ne raconte pas.",
+  },
+  {
+    question: "Quel est l'impact du temps de preparation sur le prix de vente ?",
+    answer: "Un plat avec 1 heure de mise en place mobilise 22-28 EUR/h de cout cuisinier en 2026. Pour les plats complexes, calculez un 'prime cost' (food cost + cout main d'oeuvre direct). Si le prime cost depasse 60 % du PV HT, le plat n'est pas viable. Soit vous le simplifiez, soit vous augmentez le prix.",
+  },
+  {
+    question: "Comment fixer le prix d'une formule (entree + plat + dessert) ?",
+    answer: "Calculez la somme des 3 prix individuels HT, puis appliquez une remise de 8 a 15 % pour creer l'effet bundle. Exemple : entree 8 EUR + plat 18 EUR + dessert 7 EUR = 33 EUR cumules, formule a 29 EUR (remise 12 %). Vous perdez sur l'unitaire mais gagnez en panier moyen : 65-80 % des clients prennent la formule complete plutot qu'un seul plat.",
+  },
+  {
+    question: "Faut-il afficher les prix sans le symbole euro ?",
+    answer: "Oui, idealement. Etude Cornell University (2009, Yang, Kimes, Sessarego) sur 200 menus : retirer le symbole EUR augmente le panier moyen de 8,15 % en moyenne. Si vous voulez un compromis : symbole tres discret, meme typo que le prix, taille reduite de 30 %. Jamais en gras, jamais en rouge.",
+  },
+  {
+    question: "Quelle est la difference entre prix de vente, prix carte et prix HT ?",
+    answer: "Prix HT (hors taxes) : prix interne pour vos calculs de marge. Prix de vente TTC : prix HT + TVA. Prix carte : prix TTC affiche au client, generalement arrondi selon le pricing psychologique. Exemple : food cost 5 EUR x coef 3,33 = 16,65 EUR HT = 18,32 EUR TTC = 18,50 EUR sur la carte.",
   },
 ];
 
@@ -88,8 +104,8 @@ export default function BlogPrixDeVente() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-04-27',
-            dateModified: '2026-04-27',
-            wordCount: 3100,
+            dateModified: '2026-05-26',
+            wordCount: 3300,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/prix-de-vente-restaurant' },
           },
@@ -121,11 +137,22 @@ export default function BlogPrixDeVente() {
         </div>
       </nav>
 
+      {/* ── Breadcrumbs visibles ── */}
+      <div className="bg-mono-1000 border-b border-mono-900 py-3 px-4">
+        <div className="max-w-4xl mx-auto text-xs text-mono-500 flex items-center gap-2 flex-wrap">
+          <Link to="/" className="hover:text-teal-600">Accueil</Link>
+          <span>/</span>
+          <Link to="/blog" className="hover:text-teal-600">Blog</Link>
+          <span>/</span>
+          <span className="text-mono-100 font-medium">Prix de vente d'un plat</span>
+        </div>
+      </div>
+
       {/* ── Hero / H1 ── */}
       <BlogArticleHero
         category="Pricing"
         readTime="15 min"
-        date="Avril 2026"
+        date="Mai 2026"
         title="Comment calculer le prix de vente d'un plat de restaurant ?"
         accentWord="prix de vente"
         subtitle="Trois methodes eprouvees pour fixer le prix de vos plats : coefficient multiplicateur, marge cible, pricing psychologique. Cas pratiques chiffres et formules pretes a l'emploi."
@@ -182,6 +209,9 @@ export default function BlogPrixDeVente() {
               { href: '#psychological', label: 'Methode du pricing psychologique' },
               { href: '#cas-pratique', label: 'Cas pratique : plat a 5 EUR de food cost' },
               { href: '#par-type', label: 'Variation par type de restaurant' },
+              { href: '#exemples-detail', label: 'Exemples detaill par categorie (pizza, viande, dessert)' },
+              { href: '#tva', label: 'TVA en restauration et impact sur le prix' },
+              { href: '#inflation', label: 'Gerer l\'inflation et augmenter les prix' },
               { href: '#erreurs', label: 'Les 5 erreurs de pricing a eviter' },
               { href: '#outils', label: 'Outils gratuits pour calculer' },
               { href: '#faq', label: 'Questions frequentes' },
@@ -508,6 +538,221 @@ export default function BlogPrixDeVente() {
           </div>
         </section>
 
+        {/* ═════════════ NEW : EXEMPLES DETAIL PAR CATEGORIE ═════════════ */}
+        <section id="exemples-detail" className="mb-16">
+          <SectionHeading icon={<ListChecks className="w-6 h-6" />} number="6b">
+            Exemples detaill par categorie de plat
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              Voici 5 exemples chiffres complets, couvrant les principales categories d'une carte
+              standard. Pour chaque cas : decomposition du cout matiere, application du coefficient,
+              prix final, et analyse de marge.
+            </p>
+          </div>
+
+          <div className="space-y-6 mt-8">
+            <ExempleDetail
+              icon={<Pizza className="w-6 h-6" />}
+              title="Pizza Quatre Fromages (pizzeria)"
+              costs={[
+                { item: 'Pate 230g (farine, levure, sel, huile)', cost: '0,28 EUR' },
+                { item: 'Sauce tomate 80g', cost: '0,28 EUR' },
+                { item: 'Mozzarella 80g + Gorgonzola 30g + Parmesan 15g + Chevre 25g', cost: '1,82 EUR' },
+                { item: 'Huile d\'olive + origan', cost: '0,07 EUR' },
+              ]}
+              totalCost="2,45 EUR"
+              coef="x 5,3"
+              priceHT="13,00 EUR"
+              priceTTC="14,30 EUR"
+              priceCarte="13,90 EUR"
+              marginBrute="10,55 EUR"
+              foodCost="18,8 %"
+              note="Coefficient eleve typique de la pizzeria. Marge brute 81 %. Volume 60 pizzas/jour = 633 EUR de marge brute quotidienne."
+            />
+            <ExempleDetail
+              icon={<Beef className="w-6 h-6" />}
+              title="Magret de canard (bistronomie)"
+              costs={[
+                { item: 'Magret de canard 200g (race AOP)', cost: '5,80 EUR' },
+                { item: 'Pommes grenailles 180g', cost: '0,72 EUR' },
+                { item: 'Sauce orange-miel (jus, miel, orange, vinaigre)', cost: '0,42 EUR' },
+                { item: 'Garniture haricots verts + ail fume', cost: '0,38 EUR' },
+                { item: 'Beurre cuisson + fleur de sel + poivre', cost: '0,18 EUR' },
+              ]}
+              totalCost="7,50 EUR"
+              coef="x 3,15"
+              priceHT="23,64 EUR"
+              priceTTC="26,00 EUR"
+              priceCarte="25,90 EUR"
+              marginBrute="16,05 EUR"
+              foodCost="31,8 %"
+              note="Coefficient bas car cout matiere noble. Marge brute 68 % mais marge en EUR superieure a la pizza."
+            />
+            <ExempleDetail
+              icon={<Award className="w-6 h-6" />}
+              title="Risotto aux champignons (vegetarien)"
+              costs={[
+                { item: 'Riz arborio 80g', cost: '0,32 EUR' },
+                { item: 'Cepes seches 8g + champignons frais 100g', cost: '1,40 EUR' },
+                { item: 'Bouillon + vin blanc + creme', cost: '0,55 EUR' },
+                { item: 'Parmesan 25g', cost: '0,60 EUR' },
+                { item: 'Beurre + huile truffe + herbes', cost: '0,33 EUR' },
+              ]}
+              totalCost="3,20 EUR"
+              coef="x 4,5"
+              priceHT="14,40 EUR"
+              priceTTC="15,84 EUR"
+              priceCarte="15,90 EUR"
+              marginBrute="11,25 EUR"
+              foodCost="22,2 %"
+              note="Vegetarien avec valeur percue forte (cepes, parmesan). Coefficient 4,5 sans plaintes clients."
+            />
+            <ExempleDetail
+              icon={<Sparkles className="w-6 h-6" />}
+              title="Tarte tatin (dessert)"
+              costs={[
+                { item: 'Pommes 180g', cost: '0,45 EUR' },
+                { item: 'Pate brisee 60g', cost: '0,18 EUR' },
+                { item: 'Beurre + sucre roux + calvados', cost: '0,42 EUR' },
+                { item: 'Glace vanille bourbon 50g', cost: '0,75 EUR' },
+              ]}
+              totalCost="1,80 EUR"
+              coef="x 4,9"
+              priceHT="8,82 EUR"
+              priceTTC="9,70 EUR"
+              priceCarte="9,50 EUR"
+              marginBrute="6,84 EUR"
+              foodCost="20,4 %"
+              note="Dessert maison : coefficient eleve x 4,9. Marge brute 80 %. Categorie cle pour booster le ticket moyen."
+            />
+            <ExempleDetail
+              icon={<Coffee className="w-6 h-6" />}
+              title="Verre de Bourgogne (vin)"
+              costs={[
+                { item: 'Vin (bouteille 25 EUR HT achat / 5 verres)', cost: '5,00 EUR' },
+                { item: 'Cout sommellerie + casse + perte', cost: '0,30 EUR' },
+              ]}
+              totalCost="5,30 EUR"
+              coef="x 2,4"
+              priceHT="12,72 EUR"
+              priceTTC="15,26 EUR"
+              priceCarte="14,90 EUR"
+              marginBrute="7,12 EUR"
+              foodCost="41,7 %"
+              note="Vin au verre : coefficient bas (x 2,4) mais marge en EUR consequente. La TVA est 20 % sur l'alcool, attention au calcul TTC."
+            />
+          </div>
+        </section>
+
+        {/* ═════════════ NEW : TVA EN RESTAURATION ═════════════ */}
+        <section id="tva" className="mb-16">
+          <SectionHeading icon={<DollarSign className="w-6 h-6" />} number="6c">
+            TVA en restauration et impact sur le prix de vente
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              La TVA est un point souvent mal maitrise par les restaurateurs debutants. Pourtant, mal la
+              prendre en compte fausse tous les calculs de prix de vente. Voici les 3 taux applicables
+              en France en 2026 et comment les integrer.
+            </p>
+          </div>
+
+          <div className="mt-6 overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-mono-975 text-mono-350">
+                  <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Taux TVA</th>
+                  <th className="text-left py-3 px-4 font-semibold">Application</th>
+                  <th className="text-center py-3 px-4 font-semibold">Coefficient TTC</th>
+                  <th className="text-left py-3 px-4 font-semibold rounded-tr-xl">Exemple typique</th>
+                </tr>
+              </thead>
+              <tbody className="text-mono-350">
+                <tr className="bg-white">
+                  <td className="py-3 px-4 font-bold text-teal-700">10 %</td>
+                  <td className="py-3 px-4">Restauration sur place et a emporter chaude</td>
+                  <td className="py-3 px-4 text-center font-mono">x 1,10</td>
+                  <td className="py-3 px-4 text-sm">Plat servi en salle, burger emporte chaud, pizza</td>
+                </tr>
+                <tr className="bg-mono-1000">
+                  <td className="py-3 px-4 font-bold text-teal-700">5,5 %</td>
+                  <td className="py-3 px-4">Produits alimentaires froids a emporter</td>
+                  <td className="py-3 px-4 text-center font-mono">x 1,055</td>
+                  <td className="py-3 px-4 text-sm">Sandwich froid emporte, salade en bocal, smoothie</td>
+                </tr>
+                <tr className="bg-white">
+                  <td className="py-3 px-4 font-bold text-teal-700">20 %</td>
+                  <td className="py-3 px-4">Boissons alcoolisees (toujours)</td>
+                  <td className="py-3 px-4 text-center font-mono">x 1,20</td>
+                  <td className="py-3 px-4 text-sm">Verre de vin, biere, cocktail, champagne</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <Callout type="warning">
+            <strong>Erreur classique :</strong> calculer son food cost sur le prix TTC sous-estime le
+            food cost reel de 10 %. Toujours calculer en HT, puis convertir en TTC pour l'affichage
+            client uniquement. Pour les boissons alcoolisees a TVA 20 %, l'erreur est encore plus grande :
+            le food cost calcule en TTC est sous-estime de 20 %.
+          </Callout>
+        </section>
+
+        {/* ═════════════ NEW : INFLATION ═════════════ */}
+        <section id="inflation" className="mb-16">
+          <SectionHeading icon={<TrendingUp className="w-6 h-6" />} number="6d">
+            Gerer l'inflation et augmenter les prix sans perdre de clients
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              L'inflation alimentaire cumulee sur 3 ans (2023-2025) atteint 22,4 % selon l'INSEE. Un
+              restaurant qui n'a pas augmente ses prix en proportion a perdu mecaniquement 6 a 8 points
+              de marge brute. Voici les 5 leviers pour augmenter les prix correctement.
+            </p>
+          </div>
+
+          <div className="space-y-5 mt-8">
+            <LevierCard
+              number={1}
+              title="Augmentation directe progressive"
+              desc="+0,50 EUR tous les 6 mois plutot que +2 EUR d'un coup. Les clients toleret mal les sauts de prix superieurs a +5 % en une fois. Etalez les hausses dans le temps."
+            />
+            <LevierCard
+              number={2}
+              title="Shrinkflation (reduction discrete des portions)"
+              desc="-10 % grammage compense souvent +5 % de prix sans plainte client. Une assiette de 200g a 230g passe a 200g, le client ne le voit pas. Limite : ne pas franchir le seuil de satiete (180g pour viande, 200g pour pates)."
+            />
+            <LevierCard
+              number={3}
+              title="Substitution d'ingredients"
+              desc="Remplacez une variete chere par une moins couteuse a qualite equivalente. Exemple : bavette d'aloyau (28 EUR/kg) remplacee par onglet (22 EUR/kg). Difference de gout faible, marge sauvee."
+            />
+            <LevierCard
+              number={4}
+              title="Renouvellement de carte"
+              desc="Nouveaux noms = pas de comparaison directe avec l'ancien prix. Renommez 'Steak frites' en 'Pave de boeuf maturee aux frites maison', augmentez le prix de 2-3 EUR, le client accepte parce qu'il percoit un produit nouveau."
+            />
+            <LevierCard
+              number={5}
+              title="Storytelling produit"
+              desc="Communiquez sur la qualite (origine, label AOP, fournisseur premium, methode artisanale) plutot que sur la hausse des couts. La perception de valeur monte avant le prix : le client accepte alors la hausse comme legitime."
+            />
+          </div>
+
+          <Callout type="info">
+            <strong>Cas concret 2025 :</strong> un bistrot lyonnais qui vendait son plat du jour a
+            12,50 EUR (food cost 41 %, marge insuffisante) est passe a 14,90 EUR (food cost 33 %).
+            Resultat sur 6 mois : -8 % de couverts mais +22 % de marge brute totale. La hausse a ete
+            accompagnee d'une refonte de la presentation (assiette ronde 28 cm au lieu de carree),
+            d'un changement de nom (Plat du chef au lieu de Plat du jour) et d'une mise en avant de
+            l'origine des produits.
+          </Callout>
+        </section>
+
         {/* ═════════════ SECTION 7 : ERREURS ═════════════ */}
         <section id="erreurs" className="mb-16">
           <SectionHeading icon={<AlertTriangle className="w-6 h-6" />} number="7">
@@ -621,20 +866,38 @@ export default function BlogPrixDeVente() {
         {/* ═════════════ Articles complementaires ═════════════ */}
         <section className="mb-16">
           <h2 className="text-2xl font-bold text-mono-100 mb-6">Pour aller plus loin</h2>
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link to="/blog/calcul-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calcul marge restaurant : guide complet</h3>
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calcul marge restaurant</h3>
               <p className="text-xs text-mono-500">Marge brute, marge nette, food cost et formules expliquees.</p>
             </Link>
             <Link to="/blog/coefficient-multiplicateur" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Coefficient multiplicateur</h3>
               <p className="text-xs text-mono-500">Tableaux par categorie, erreurs courantes et cas pratiques.</p>
             </Link>
-            <Link to="/pricing" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Tarifs RestauMargin</h3>
-              <p className="text-xs text-mono-500">Voir les plans Pro et Business, et l'essai gratuit 7 jours.</p>
+            <Link to="/blog/fixer-prix-carte-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Fixer les prix de sa carte</h3>
+              <p className="text-xs text-mono-500">Methode complete pour construire une carte de restaurant rentable.</p>
+            </Link>
+            <Link to="/blog/food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le food cost</h3>
+              <p className="text-xs text-mono-500">10 strategies eprouvees pour baisser le food cost.</p>
             </Link>
           </div>
+        </section>
+
+        {/* ═════════════ Sources ═════════════ */}
+        <section className="mb-16">
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Sources et references</h2>
+          <ul className="space-y-2 text-sm text-mono-500">
+            <li><strong>Fiducial Observatoire de la Restauration 2025</strong> &mdash; <a href="https://www.fiducial.fr/Observatoire-de-la-restauration" target="_blank" rel="noopener noreferrer" className="text-teal-700 underline hover:text-teal-800">https://www.fiducial.fr/Observatoire-de-la-restauration</a></li>
+            <li><strong>INSEE : indices de prix a la consommation alimentaire 2023-2025</strong> &mdash; <a href="https://www.insee.fr/fr/statistiques/serie/010540933" target="_blank" rel="noopener noreferrer" className="text-teal-700 underline hover:text-teal-800">https://www.insee.fr</a></li>
+            <li><strong>GIRA Conseil : Etudes de marche restauration 2024-2025</strong> &mdash; <a href="https://www.gira-conseil.com/" target="_blank" rel="noopener noreferrer" className="text-teal-700 underline hover:text-teal-800">https://www.gira-conseil.com</a></li>
+            <li><strong>KPMG Hospitality Benchmark 2025</strong> &mdash; rapport sectoriel sur les marges et ratios de la restauration en Europe</li>
+            <li><strong>Yang, Kimes, Sessarego (2009)</strong> &mdash; "The Mathematics of $20 vs Twenty Dollars on a Restaurant Menu", Cornell School of Hotel Administration</li>
+            <li><strong>FEVAD-CHD 2025</strong> &mdash; etude annuelle ticket moyen en restauration commerciale</li>
+            <li><strong>Code general des impots, articles 279 et 296</strong> &mdash; taux de TVA applicables a la restauration en France</li>
+          </ul>
         </section>
 
         </article>
@@ -728,5 +991,89 @@ function FAQItem({ q, a }: { q: string; a: string }) {
       </summary>
       <p className="px-5 pb-4 text-sm text-mono-400 leading-relaxed">{a}</p>
     </details>
+  );
+}
+
+function ExempleDetail({ icon, title, costs, totalCost, coef, priceHT, priceTTC, priceCarte, marginBrute, foodCost, note }: {
+  icon: React.ReactNode;
+  title: string;
+  costs: { item: string; cost: string }[];
+  totalCost: string;
+  coef: string;
+  priceHT: string;
+  priceTTC: string;
+  priceCarte: string;
+  marginBrute: string;
+  foodCost: string;
+  note: string;
+}) {
+  return (
+    <div className="bg-white border border-mono-900 rounded-2xl p-6">
+      <div className="flex items-center gap-3 mb-5">
+        <div className="w-10 h-10 bg-teal-50 text-teal-700 rounded-xl flex items-center justify-center">
+          {icon}
+        </div>
+        <h3 className="font-bold text-mono-100 text-lg">{title}</h3>
+      </div>
+
+      <div className="bg-mono-1000 rounded-xl p-4 mb-4">
+        <p className="text-xs font-semibold text-mono-500 uppercase tracking-wider mb-2">Cout matieres</p>
+        <div className="space-y-1.5 text-sm">
+          {costs.map((c, i) => (
+            <div key={i} className="flex justify-between text-mono-350">
+              <span className="text-mono-400">{c.item}</span>
+              <span className="font-medium text-mono-100">{c.cost}</span>
+            </div>
+          ))}
+          <div className="flex justify-between pt-2 border-t border-mono-900 mt-2">
+            <span className="font-bold text-mono-100">Total</span>
+            <span className="font-bold text-amber-700">{totalCost}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
+        <div className="bg-teal-50 rounded-lg p-3">
+          <p className="text-xs text-teal-700 font-semibold mb-1">Coefficient</p>
+          <p className="text-lg font-bold text-teal-900">{coef}</p>
+        </div>
+        <div className="bg-mono-1000 rounded-lg p-3">
+          <p className="text-xs text-mono-500 font-semibold mb-1">Prix HT</p>
+          <p className="text-lg font-bold text-mono-100">{priceHT}</p>
+        </div>
+        <div className="bg-mono-1000 rounded-lg p-3">
+          <p className="text-xs text-mono-500 font-semibold mb-1">Prix TTC</p>
+          <p className="text-lg font-bold text-mono-100">{priceTTC}</p>
+        </div>
+        <div className="bg-blue-50 rounded-lg p-3">
+          <p className="text-xs text-blue-700 font-semibold mb-1">Prix carte</p>
+          <p className="text-lg font-bold text-blue-900">{priceCarte}</p>
+        </div>
+        <div className="bg-emerald-50 rounded-lg p-3">
+          <p className="text-xs text-emerald-700 font-semibold mb-1">Marge brute</p>
+          <p className="text-lg font-bold text-emerald-900">{marginBrute}</p>
+        </div>
+        <div className="bg-amber-50 rounded-lg p-3">
+          <p className="text-xs text-amber-700 font-semibold mb-1">Food cost</p>
+          <p className="text-lg font-bold text-amber-900">{foodCost}</p>
+        </div>
+      </div>
+
+      <p className="text-xs text-mono-500 italic leading-relaxed bg-mono-1000 rounded-lg p-3 mt-3">{note}</p>
+    </div>
+  );
+}
+
+function LevierCard({ number, title, desc }: { number: number; title: string; desc: string }) {
+  return (
+    <div className="bg-white border border-mono-900 rounded-xl p-5 sm:p-6 flex gap-4">
+      <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0 font-bold text-lg">
+        {number}
+      </div>
+      <div>
+        <h3 className="font-semibold text-mono-100 mb-1.5">{title}</h3>
+        <p className="text-sm text-mono-400 leading-relaxed">{desc}</p>
+      </div>
+    </div>
   );
 }

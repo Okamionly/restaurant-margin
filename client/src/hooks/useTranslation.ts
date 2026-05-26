@@ -34,7 +34,11 @@ export function useTranslation() {
   const t = useCallback(
     (key: string): string => {
       const dict = locales[locale] || locales.fr;
-      return getNestedValue(dict as Record<string, unknown>, key);
+      const value = getNestedValue(dict as Record<string, unknown>, key);
+      if (value === key && locale !== 'fr') {
+        return getNestedValue(locales.fr as Record<string, unknown>, key);
+      }
+      return value;
     },
     [locale]
   );

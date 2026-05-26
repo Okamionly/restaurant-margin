@@ -204,6 +204,12 @@ const ROUTES = [
     type: 'article',
   },
   {
+    path: '/blog/regle-30-30-30-10-restaurant',
+    title: 'Regle 30/30/30/10 restaurant : guide complet 2026 (food cost, personnel, charges, marge)',
+    description: "Comprendre la regle 30/30/30/10 en restauration : 30% food cost + 30% masse salariale + 30% charges + 10% marge nette. Adaptations par segment, calculs, erreurs courantes.",
+    type: 'article',
+  },
+  {
     path: '/blog/taux-occupation-restaurant',
     title: "Taux d'occupation restaurant : calcul, benchmarks et 8 leviers",
     description: "RevPASH, taux de remplissage, rotation des tables : comment maximiser le chiffre d'affaires de chaque place disponible.",

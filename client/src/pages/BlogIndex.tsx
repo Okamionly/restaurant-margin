@@ -28,7 +28,7 @@ const posts: BlogPost[] = [
     excerpt: 'Methodes eprouvees pour fixer vos prix : coefficient multiplicateur, marge cible, pricing psychologique. Cas pratiques chiffres et outils gratuits.',
     category: 'Pricing',
     readTime: '15 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'calcul-marge-restaurant',
@@ -100,7 +100,7 @@ const posts: BlogPost[] = [
     excerpt: "Formules, exemples chiffrés et benchmarks pour connaître votre point mort, le nombre de couverts nécessaires et les leviers pour réduire votre seuil.",
     category: 'Gestion financière',
     readTime: '12 min',
-    date: '2026-04-25',
+    date: '2026-05-26',
   },
   {
     slug: 'kpi-restaurateur',
@@ -108,7 +108,7 @@ const posts: BlogPost[] = [
     excerpt: "Food cost, prime cost, RevPASH, ticket moyen, taux d'occupation… Les indicateurs clés avec formules et benchmarks sectoriels.",
     category: 'Pilotage',
     readTime: '11 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'logiciel-caisse-enregistreuse-restaurant',
@@ -116,7 +116,7 @@ const posts: BlogPost[] = [
     excerpt: '7 solutions comparées : prix, fonctionnalités, points forts et points faibles. Comment choisir votre caisse enregistreuse en 2026.',
     category: 'Outils',
     readTime: '13 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'methode-fifo-gestion-stocks-restaurant',
@@ -124,7 +124,7 @@ const posts: BlogPost[] = [
     excerpt: "FIFO vs FEFO, organisation des réfrigérateurs, étiquetage, impact sur le food cost : tout pour réduire votre gaspillage à moins de 2%.",
     category: 'Stocks',
     readTime: '10 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'menu-engineering-boston-matrix-restaurant',
@@ -132,7 +132,7 @@ const posts: BlogPost[] = [
     excerpt: 'Classez vos plats en Stars, Vaches à lait, Puzzles et Chiens. Exemple pratique sur une carte de 20 plats avec actions concrètes.',
     category: 'Carte & Prix',
     readTime: '12 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'comment-ouvrir-restaurant-guide-complet',
@@ -140,7 +140,7 @@ const posts: BlogPost[] = [
     excerpt: 'Les 10 étapes pour créer votre restaurant : concept, business plan, financement, licences, recrutement. Coûts réels et aides disponibles.',
     category: 'Création',
     readTime: '15 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'prime-cost-restaurant',
@@ -148,7 +148,7 @@ const posts: BlogPost[] = [
     excerpt: "Food cost + masse salariale = prime cost. Benchmarks, formule complète et plan d'action pour passer de 72% à 62% en 3 mois.",
     category: 'Gestion financière',
     readTime: '10 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'taux-occupation-restaurant',
@@ -156,7 +156,7 @@ const posts: BlogPost[] = [
     excerpt: "RevPASH, taux de remplissage, rotation des tables… Comment maximiser le chiffre d'affaires de chaque place disponible.",
     category: 'Performance',
     readTime: '11 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'augmenter-ticket-moyen-restaurant',
@@ -164,7 +164,7 @@ const posts: BlogPost[] = [
     excerpt: "Upselling boissons, suggestion desserts, formule premium, design de carte… 10 méthodes concrètes avec l'impact chiffré sur votre CA annuel.",
     category: 'Revenus',
     readTime: '10 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'inventaire-restaurant-guide',
@@ -172,7 +172,7 @@ const posts: BlogPost[] = [
     excerpt: "Quotidien, hebdomadaire, mensuel : quelle fréquence selon les produits ? Méthode pas à pas, calcul de rotation et modèle de tableau.",
     category: 'Stocks',
     readTime: '11 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'fixer-prix-carte-restaurant',
@@ -180,7 +180,7 @@ const posts: BlogPost[] = [
     excerpt: "3 méthodes (coût, valeur perçue, concurrence), coefficients multiplicateurs par poste, psychologie des prix et comment augmenter sans perdre de clients.",
     category: 'Carte & Prix',
     readTime: '12 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'charges-sociales-restauration',
@@ -188,7 +188,7 @@ const posts: BlogPost[] = [
     excerpt: "40-45% du salaire brut en charges patronales. Taux CCN HCR 2026, réduction Fillon, comparatif CDI/CDD/extras/apprentis avec coût employeur réel.",
     category: 'Juridique',
     readTime: '11 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'cout-revient-plat-restaurant',
@@ -196,7 +196,7 @@ const posts: BlogPost[] = [
     excerpt: "5 étapes, ratio de perte par produit, exemple bœuf bourguignon, seuil d'alerte à 35% et mise à jour automatique quand les prix fournisseurs changent.",
     category: 'Food Cost',
     readTime: '11 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'logiciel-gestion-restaurant',
@@ -204,7 +204,7 @@ const posts: BlogPost[] = [
     excerpt: "8 solutions comparées (Lightspeed, Skello, Inpulse, RestauMargin…). Stack idéal selon la taille et calcul du ROI sur 12 mois.",
     category: 'Outils',
     readTime: '12 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'rotation-stocks-restaurant',
@@ -212,7 +212,7 @@ const posts: BlogPost[] = [
     excerpt: "Formule, benchmarks par catégorie (viandes 3-4j, poissons 1-2j, secs 30-60j), 6 leviers et impact sur la trésorerie immobilisée.",
     category: 'Stocks',
     readTime: '10 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'budget-previsionnel-restaurant',
@@ -220,7 +220,7 @@ const posts: BlogPost[] = [
     excerpt: "Structure, méthodes top-down vs bottom-up, tableau 12 mois et les 5 postes qui dérivent le plus souvent. Pilotage mensuel budget vs réel.",
     category: 'Gestion financière',
     readTime: '12 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'prevision-ventes-restaurant',
@@ -228,7 +228,7 @@ const posts: BlogPost[] = [
     excerpt: "Historique N-1, moyennes mobiles, facteurs météo/événements… Commander juste et staffer juste pour éviter gaspillage et ruptures.",
     category: 'Pilotage',
     readTime: '10 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'formation-personnel-restauration',
@@ -236,7 +236,7 @@ const posts: BlogPost[] = [
     excerpt: "OPCO Mobilités, CPF, formations prioritaires (HACCP, upselling, outils digitaux). ROI concret et plan de formation annuel pas à pas.",
     category: 'RH',
     readTime: '11 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'strategie-digitale-restaurant',
@@ -244,7 +244,7 @@ const posts: BlogPost[] = [
     excerpt: "Google Business Profile, Instagram, TikTok, gestion des avis, réservation en ligne. Budget recommandé et actions concrètes par niveau d'investissement.",
     category: 'Marketing',
     readTime: '11 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'chiffre-affaires-restaurant-comment-calculer',
@@ -252,7 +252,7 @@ const posts: BlogPost[] = [
     excerpt: "Formule CA, TVA 10%/20%, analyse par service et par créneau, 5 leviers de croissance et projection sur 12 mois selon les scénarios.",
     category: 'Gestion financière',
     readTime: '11 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'calendrier-haccp-restaurant-modele-gratuit',
@@ -260,7 +260,7 @@ const posts: BlogPost[] = [
     excerpt: 'Toutes les fréquences de contrôle obligatoires, les températures réglementaires, et un modèle prêt à imprimer pour transformer votre HACCP en routine d\'équipe.',
     category: 'HACCP',
     readTime: '13 min',
-    date: '2026-05-05',
+    date: '2026-05-26',
   },
   {
     slug: 'livraison-restaurant-rentabilite',
@@ -268,7 +268,7 @@ const posts: BlogPost[] = [
     excerpt: 'Uber Eats, Deliveroo, JustEat : commissions, marge réelle livraison, plateformes vs propre canal. Cas chiffrés et plan d\'action.',
     category: 'Stratégie',
     readTime: '12 min',
-    date: '2026-05-05',
+    date: '2026-05-26',
   },
   {
     slug: 'ouvrir-food-truck-france-guide',
@@ -276,7 +276,7 @@ const posts: BlogPost[] = [
     excerpt: 'Réglementation, coûts d\'investissement, choix du véhicule, statuts juridiques, emplacements rentables, plan de rentabilité chiffré.',
     category: 'Création',
     readTime: '14 min',
-    date: '2026-05-05',
+    date: '2026-05-26',
   },
   {
     slug: 'contrat-travail-restauration-guide',
@@ -284,7 +284,7 @@ const posts: BlogPost[] = [
     excerpt: 'CCN HCR, mentions obligatoires, coût employeur réel, contrat d\'extra et apprentissage : le guide complet 2026.',
     category: 'RH',
     readTime: '13 min',
-    date: '2026-05-05',
+    date: '2026-05-26',
   },
   {
     slug: 'reduire-facture-energie-restaurant',
@@ -292,7 +292,7 @@ const posts: BlogPost[] = [
     excerpt: 'Audit cuisine, équipements A+++, négociation contrats gaz/électricité, CEE : 20 à 40 % d\'économies accessibles dès cette semaine.',
     category: 'Économies',
     readTime: '11 min',
-    date: '2026-05-05',
+    date: '2026-05-26',
   },
   {
     slug: 'allergenes-restaurant-obligations-legales',
@@ -300,7 +300,7 @@ const posts: BlogPost[] = [
     excerpt: 'Les 14 allergènes INCO, modèles d\'affichage, sanctions DDPP, allergie sévère vs intolérance, bonnes pratiques en cuisine.',
     category: 'Réglementation',
     readTime: '13 min',
-    date: '2026-05-05',
+    date: '2026-05-26',
   },
   {
     slug: 'fifo-lifo-stocks-restaurant',
@@ -308,7 +308,7 @@ const posts: BlogPost[] = [
     excerpt: 'FIFO ou LIFO pour gérer vos stocks en cuisine ? Définitions, comparatif, mise en place pratique et impact sur le food cost. Guide complet pour restaurateurs.',
     category: 'Stocks',
     readTime: '10 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'reduire-cout-personnel-restaurant',
@@ -316,7 +316,7 @@ const posts: BlogPost[] = [
     excerpt: 'Planning optimisé, réduction du turnover, formation, process cuisine : 5 leviers concrets pour réduire votre masse salariale de 10 à 20 % sans sacrifier la qualité.',
     category: 'RH',
     readTime: '10 min',
-    date: '2026-04-27',
+    date: '2026-05-26',
   },
   {
     slug: 'fideliser-clients-restaurant-strategies',
@@ -324,7 +324,7 @@ const posts: BlogPost[] = [
     excerpt: 'Carte tampon, CRM, anniversaires, NPS : les stratégies concrètes pour transformer vos clients occasionnels en habitués rentables et réduire votre coût d\'acquisition.',
     category: 'Marketing',
     readTime: '11 min',
-    date: '2026-05-08',
+    date: '2026-05-26',
   },
   {
     slug: 'construire-carte-vins-restaurant',
@@ -332,7 +332,7 @@ const posts: BlogPost[] = [
     excerpt: 'Comment construire une carte des vins rentable : nombre de références, coefficients multiplicateurs, rotation cave et présentation. Guide complet pour restaurateurs.',
     category: 'Carte & Prix',
     readTime: '10 min',
-    date: '2026-05-22',
+    date: '2026-05-26',
   },
 ];
 
@@ -425,7 +425,7 @@ export default function BlogIndex() {
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-mono-900 rounded-full">
               <Sparkles className="w-4 h-4 text-teal-600" />
-              Mis a jour <strong className="text-mono-100">avril 2026</strong>
+              Mis a jour <strong className="text-mono-100">mai 2026</strong>
             </span>
           </div>
         </div>

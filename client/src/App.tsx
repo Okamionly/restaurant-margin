@@ -118,6 +118,7 @@ const LogicielMargeBistrot = lazyRetry(() => import('./pages/LogicielMargeBistro
 const LogicielMargeDarkKitchen = lazyRetry(() => import('./pages/LogicielMargeDarkKitchen'));
 const LogicielMargeGastronomique = lazyRetry(() => import('./pages/LogicielMargeGastronomique'));
 const LogicielMargeFoodTruck = lazyRetry(() => import('./pages/LogicielMargeFoodTruck'));
+const LogicielMargePizzeria = lazyRetry(() => import('./pages/LogicielMargePizzeria'));
 const BlogIndex = lazyRetry(() => import('./pages/BlogIndex'));
 const APropos = lazyRetry(() => import('./pages/APropos'));
 const MesParrainages = lazyRetry(() => import('./pages/MesParrainages'));
@@ -1145,6 +1146,8 @@ function App() {
           {/* SEO niche 2026-05-26 : page Logiciel Marge Restaurant Gastronomique (mots-cles etoile, food cost 32-40%, produits nobles, cave premium). */}
           <Route path="/logiciel-marge-gastronomique" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-amber-500 animate-spin" /></div>}><LogicielMargeGastronomique /></Suspense>} />
           <Route path="/logiciel-marge-food-truck" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeFoodTruck /></Suspense>} />
+          {/* SEO niche 2026-05-26 : page Logiciel Marge Pizzeria (mots-cles food cost pizza, marge pizzeria, commissions livraison). */}
+          <Route path="/logiciel-marge-pizzeria" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargePizzeria /></Suspense>} />
           <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-mono-100" /></div>}><Temoignages /></Suspense>} />
           <Route path="/demo" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Demo /></Suspense>} />
           <Route path="/blog/coefficient-multiplicateur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoefficient /></Suspense>} />
@@ -1187,6 +1190,8 @@ function App() {
           <Route path="/blog/allergenes-restaurant-obligations-legales" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogAllergenes /></Suspense>} />
           <Route path="/blog/fideliser-clients-restaurant-strategies" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFideliserClients /></Suspense>} />
           <Route path="/blog/construire-carte-vins-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCarteVins /></Suspense>} />
+          {/* Pages comparatives (alternatives) */}
+          <Route path="/alternative-hubrise" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeHubrise /></Suspense>} />
           {/* Catch-all: unknown blog slug → redirect to blog index (avoids falling into ProtectedRoute /login) */}
           <Route path="/blog/*" element={<Navigate to="/blog" replace />} />
           {/* Catch-all: unknown public tool → redirect to home */}

@@ -108,10 +108,16 @@ const CGU = lazyRetry(() => import('./pages/CGU'));
 const Pricing = lazyRetry(() => import('./pages/Pricing'));
 const ResetPassword = lazyRetry(() => import('./pages/ResetPassword'));
 const FoodCostCalculator = lazyRetry(() => import('./pages/FoodCostCalculator'));
+const CalculateurMargeRestaurant = lazyRetry(() => import('./pages/CalculateurMargeRestaurant'));
 const LaunchPH = lazyRetry(() => import('./pages/LaunchPH'));
 const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
+const AlternativeInnovorder = lazyRetry(() => import('./pages/AlternativeInnovorder'));
 const BlogPrixDeVente = lazyRetry(() => import('./pages/BlogPrixDeVente'));
 const LogicielMargeRestaurant = lazyRetry(() => import('./pages/LogicielMargeRestaurant'));
+const LogicielMargeBistrot = lazyRetry(() => import('./pages/LogicielMargeBistrot'));
+const LogicielMargeDarkKitchen = lazyRetry(() => import('./pages/LogicielMargeDarkKitchen'));
+const LogicielMargeGastronomique = lazyRetry(() => import('./pages/LogicielMargeGastronomique'));
+const LogicielMargeFoodTruck = lazyRetry(() => import('./pages/LogicielMargeFoodTruck'));
 const BlogIndex = lazyRetry(() => import('./pages/BlogIndex'));
 const APropos = lazyRetry(() => import('./pages/APropos'));
 const MesParrainages = lazyRetry(() => import('./pages/MesParrainages'));
@@ -178,6 +184,7 @@ const BreakevenCalculator = lazyRetry(() => import('./pages/BreakevenCalculator'
 const CouvertsCible = lazyRetry(() => import('./pages/CouvertsCible'));
 const TvaCalculator = lazyRetry(() => import('./pages/TvaCalculator'));
 const LaborCostCalculator = lazyRetry(() => import('./pages/LaborCostCalculator'));
+const AlternativeHubrise = lazyRetry(() => import('./pages/AlternativeHubrise'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -1121,6 +1128,7 @@ function App() {
           <Route path="/pricing" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><Pricing /></Suspense>} />
           <Route path="/reset-password" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><ResetPassword /></Suspense>} />
           <Route path="/outils/calculateur-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><FoodCostCalculator /></Suspense>} />
+          <Route path="/outils/calculateur-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><CalculateurMargeRestaurant /></Suspense>} />
           <Route path="/launch" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><LaunchPH /></Suspense>} />
           <Route path="/outils/generateur-qr-menu" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><QRCodeGenerator /></Suspense>} />
           <Route path="/blog" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogIndex /></Suspense>} />
@@ -1128,9 +1136,15 @@ function App() {
           <Route path="/a-propos" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><APropos /></Suspense>} />
           <Route path="/carrieres" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Careers /></Suspense>} />
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />
+          <Route path="/alternative-innovorder" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeInnovorder /></Suspense>} />
           {/* FIX 2026-04-28 (audit cohérence) : pages orphelines BlogPrixDeVente + LogicielMargeRestaurant restaurées (SEO). */}
           <Route path="/blog/prix-de-vente-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrixDeVente /></Suspense>} />
           <Route path="/logiciel-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeRestaurant /></Suspense>} />
+          <Route path="/logiciel-marge-bistrot" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeBistrot /></Suspense>} />
+          <Route path="/logiciel-marge-dark-kitchen" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeDarkKitchen /></Suspense>} />
+          {/* SEO niche 2026-05-26 : page Logiciel Marge Restaurant Gastronomique (mots-cles etoile, food cost 32-40%, produits nobles, cave premium). */}
+          <Route path="/logiciel-marge-gastronomique" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-amber-500 animate-spin" /></div>}><LogicielMargeGastronomique /></Suspense>} />
+          <Route path="/logiciel-marge-food-truck" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeFoodTruck /></Suspense>} />
           <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-mono-100" /></div>}><Temoignages /></Suspense>} />
           <Route path="/demo" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Demo /></Suspense>} />
           <Route path="/blog/coefficient-multiplicateur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoefficient /></Suspense>} />

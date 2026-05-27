@@ -89,9 +89,19 @@ export default function BlogCalcMarge() {
             },
             datePublished: '2026-04-14',
             dateModified: '2026-05-27',
-            wordCount: 3200,
+            wordCount: 3800,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/calcul-marge-restaurant' },
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'VideoObject',
+            name: 'Comment calculer la marge de votre restaurant en 5 minutes',
+            description: 'Tutoriel pas a pas du calcul de marge en restauration : food cost, marge brute, coefficient multiplicateur et marge nette.',
+            thumbnailUrl: 'https://www.restaumargin.fr/og-image.png',
+            uploadDate: '2026-05-27',
+            contentUrl: 'https://www.restaumargin.fr/video/calcul-marge-restaurant',
+            publisher: { '@type': 'Organization', name: 'RestauMargin' },
           },
         ]}
       />
@@ -283,6 +293,9 @@ export default function BlogCalcMarge() {
               { href: '#cas-pizza', label: 'Cas pratique chiffre : pizza margherita' },
               { href: '#cas-entrecote', label: 'Cas pratique chiffre : entrecote grillee' },
               { href: '#benchmarks', label: 'Benchmarks marge brute par type de restaurant' },
+              { href: '#comparatif-cards', label: 'Comparatif marge brute par type d\'etablissement' },
+              { href: '#france-vs-international', label: 'Marge restaurant France vs international' },
+              { href: '#logiciel-automatique', label: 'Calcul marge automatique avec un logiciel' },
               { href: '#food-cost-tableau', label: 'Tableau du food cost par type de restaurant' },
               { href: '#erreurs', label: 'Les 5 erreurs courantes qui detruisent votre marge' },
               { href: '#automatiser', label: 'Comment RestauMargin automatise le calcul' },
@@ -786,12 +799,170 @@ export default function BlogCalcMarge() {
               brasserie en zone touristique peut tomber a 60 % si elle ne maitrise pas ses approvisionnements.
               L'objectif n'est pas d'etre dans la moyenne mais d'etre dans le top tier de votre categorie.
             </p>
+            <p>
+              Selon votre type d'etablissement, des guides specialises completent cette analyse :
+              {' '}<Link to="/logiciel-marge-bistrot" className="text-teal-700 underline hover:text-teal-800">logiciel marge bistrot</Link>,
+              {' '}<Link to="/logiciel-marge-pizzeria" className="text-teal-700 underline hover:text-teal-800">logiciel marge pizzeria</Link>,
+              {' '}<Link to="/logiciel-marge-boulangerie" className="text-teal-700 underline hover:text-teal-800">logiciel marge boulangerie</Link>,
+              {' '}<Link to="/logiciel-marge-gastronomique" className="text-teal-700 underline hover:text-teal-800">logiciel marge gastronomique</Link>,
+              {' '}<Link to="/logiciel-marge-burger" className="text-teal-700 underline hover:text-teal-800">logiciel marge burger</Link>.
+              Chaque format a ses propres ratios cibles et leviers d'optimisation.
+            </p>
           </div>
         </section>
 
-        {/* ═════════════ SECTION 9 : Tableau food cost ═════════════ */}
+        {/* ═════════════ SECTION : Comparatif cards par type ═════════════ */}
+        <section id="comparatif-cards" className="mb-16">
+          <SectionHeading icon={<Users className="w-6 h-6" />} number="9">
+            Comparatif marge brute par type d'etablissement
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              Vue d'ensemble visuelle des marges brutes cibles par format de restauration. Utilisez ces reperes
+              pour situer votre etablissement et identifier rapidement votre potentiel d'amelioration.
+            </p>
+          </div>
+
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            {[
+              { type: 'Bistrot', mb: 70, color: 'bg-teal-600' },
+              { type: 'Brasserie', mb: 73, color: 'bg-teal-700' },
+              { type: 'Gastronomique', mb: 65, color: 'bg-amber-600' },
+              { type: 'Pizzeria', mb: 75, color: 'bg-emerald-600' },
+              { type: 'Fast-food', mb: 68, color: 'bg-teal-600' },
+              { type: 'Burger', mb: 70, color: 'bg-teal-700' },
+              { type: 'Sushi', mb: 65, color: 'bg-amber-600' },
+              { type: 'Food truck', mb: 70, color: 'bg-emerald-600' },
+            ].map((c, i) => (
+              <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5 text-center hover:border-teal-300 transition-colors">
+                <div className={`w-14 h-14 ${c.color} text-white rounded-full mx-auto flex items-center justify-center font-extrabold text-lg shadow-md mb-3`}>
+                  {c.mb}%
+                </div>
+                <h3 className="font-bold text-mono-100 text-sm sm:text-base">{c.type}</h3>
+                <p className="text-xs text-mono-500 mt-1">Marge brute mediane</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="prose-content mt-8">
+            <p>
+              Les ratios affiches sont des medianes sectorielles 2026. Un <strong>sushi</strong> a 65 % parait
+              faible mais s'explique par le cout du poisson frais (saumon, thon) et du riz japonais importe.
+              Une <strong>pizzeria</strong> a 75 % beneficie d'ingredients peu chers (farine, tomate, mozzarella)
+              et de prix de vente eleves grace au positionnement perpu.
+            </p>
+            <p>
+              Si vous etes en-dessous de la mediane, le diagnostic doit etre rapide : fiches techniques, pertes,
+              prix fournisseurs, mix menu. Si vous etes au-dessus, verifiez que votre positionnement prix ne
+              decroche pas par rapport au marche local. Notre {' '}
+              <Link to="/comparatif-logiciels-restaurant" className="text-teal-700 underline hover:text-teal-800">comparatif logiciels restaurant</Link>
+              {' '}vous aide a choisir l'outil adapte a votre format.
+            </p>
+          </div>
+        </section>
+
+        {/* ═════════════ SECTION : France vs international ═════════════ */}
+        <section id="france-vs-international" className="mb-16">
+          <SectionHeading icon={<TrendingUp className="w-6 h-6" />} number="10">
+            Marge restaurant France vs international
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              La marge restaurant en France est structurellement plus faible que dans d'autres pays. La raison
+              tient a deux poids macroeconomiques majeurs : la TVA et le cout du travail. Comprendre ces
+              specificites est essentiel avant de comparer ses ratios a ceux d'enseignes anglo-saxonnes.
+            </p>
+
+            <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">TVA et taxes de vente</h3>
+            <p>
+              En France, la <strong>TVA restauration sur place est de 10 %</strong>, mais elle grimpe a 20 %
+              sur les boissons alcoolisees. A New York, la sales tax est de 8,875 %. Au Royaume-Uni, la VAT
+              standard est de 20 % (avec un taux reduit a 5 % en periode de crise). En Espagne, la TVA
+              restauration est de 10 %, et en Italie de 10 % egalement. La France se situe donc dans la
+              moyenne basse, mais combinee aux autres charges, l'avantage est marginal.
+            </p>
+
+            <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">Charges sociales et cout du travail</h3>
+            <p>
+              C'est ici que la France decroche. Le cout total du travail en restauration francaise represente
+              <strong> 35 a 45 % du chiffre d'affaires</strong> (salaire brut + charges patronales d'environ 42 %).
+              Aux Etats-Unis, ce ratio descend a 25-30 % grace a un SMIC federal a 7,25 $/h (souvent complete
+              par les tips, pourboires). Au Royaume-Uni, le ratio est autour de 28-32 %. Resultat : sur un
+              meme chiffre d'affaires, un restaurant francais conserve 10-15 points de moins en marge brute
+              apres personnel par rapport a son equivalent americain.
+            </p>
+
+            <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">Marge nette comparee</h3>
+            <p>
+              Cette pression explique pourquoi la <strong>marge nette mediane en restauration francaise se
+              situe entre 4 et 8 %</strong>, alors qu'aux Etats-Unis elle atteint 10-15 % dans des conditions
+              equivalentes. Un restaurateur francais doit donc compenser par une productivite plus elevee,
+              un menu engineering plus rigoureux et un controle des achats plus serre. C'est exactement la
+              philosophie de RestauMargin : transformer chaque point de marge gagne en oxygene financier
+              durable. Pour les enseignes qui hesitent entre solutions, consultez notre {' '}
+              <Link to="/alternative-zenchef" className="text-teal-700 underline hover:text-teal-800">comparatif vs Zenchef</Link>.
+            </p>
+
+            <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">Specificites reglementaires francaises</h3>
+            <p>
+              La France impose aussi des contraintes additionnelles : convention collective HCR, conges payes
+              majoree restauration, prime d'anciennete, contributions formation, taxes specifiques (CVAE,
+              CET, taxe sur les salaires). Ces postes representent 2 a 4 points supplementaires de charges
+              qui n'existent pas a l'identique a l'etranger. C'est pourquoi un food cost a 30 % en France
+              n'a pas la meme signification economique qu'un food cost a 30 % aux USA.
+            </p>
+          </div>
+        </section>
+
+        {/* ═════════════ SECTION : Logiciel automatique ═════════════ */}
+        <section id="logiciel-automatique" className="mb-16">
+          <SectionHeading icon={<Sparkles className="w-6 h-6" />} number="11">
+            Calcul marge automatique avec un logiciel
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              Calculer manuellement chaque fiche technique sur tableur est faisable pour 10 ou 15 plats.
+              Au-dela, c'est chronophage et source d'erreurs. Un <strong>logiciel de calcul de marge restaurant</strong>
+              comme RestauMargin automatise l'integralite du flux : saisie des ingredients, mise a jour des
+              prix fournisseurs, calcul instantane du food cost, marge brute et coefficient multiplicateur,
+              alertes en cas de derive.
+            </p>
+            <p>
+              Les benefices concrets observes sur 500+ etablissements connectes : <strong>gain de 3 a 5 points
+              de marge brute en 6 mois</strong>, reduction de 8 heures par semaine sur la gestion administrative,
+              detection automatique des hausses de prix fournisseurs. Les fiches techniques sont synchronisees
+              avec les factures (OCR), ce qui elimine la double saisie. Pour comprendre comment choisir,
+              consultez notre {' '}
+              <Link to="/comparatif-logiciels-restaurant" className="text-teal-700 underline hover:text-teal-800">comparatif logiciels restaurant</Link>
+              {' '}ou notre {' '}
+              <Link to="/alternative-zenchef" className="text-teal-700 underline hover:text-teal-800">alternative Zenchef</Link>.
+            </p>
+          </div>
+
+          <div className="mt-8 bg-gradient-to-br from-teal-50 to-emerald-50 border border-teal-200 rounded-2xl p-6 sm:p-8 text-center">
+            <h3 className="text-xl sm:text-2xl font-extrabold text-mono-100 mb-3">
+              Essayez RestauMargin gratuitement 7 jours
+            </h3>
+            <p className="text-mono-400 mb-6 max-w-xl mx-auto">
+              Importez vos fiches techniques, connectez vos fournisseurs et voyez votre marge en temps reel.
+              Sans engagement, sans carte bancaire.
+            </p>
+            <Link
+              to="/login?mode=register"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-full transition-colors text-lg shadow-lg"
+            >
+              Demarrer l'essai gratuit
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </section>
+
+        {/* ═════════════ SECTION 12 : Tableau food cost ═════════════ */}
         <section id="food-cost-tableau" className="mb-16">
-          <SectionHeading icon={<BarChart3 className="w-6 h-6" />} number="9">
+          <SectionHeading icon={<BarChart3 className="w-6 h-6" />} number="12">
             Tableau du food cost par type de restaurant
           </SectionHeading>
 
@@ -861,9 +1032,9 @@ export default function BlogCalcMarge() {
           </div>
         </section>
 
-        {/* ═════════════ SECTION 10 : Erreurs courantes ═════════════ */}
+        {/* ═════════════ SECTION 13 : Erreurs courantes ═════════════ */}
         <section id="erreurs" className="mb-16">
-          <SectionHeading icon={<AlertTriangle className="w-6 h-6" />} number="10">
+          <SectionHeading icon={<AlertTriangle className="w-6 h-6" />} number="13">
             Les 5 erreurs courantes qui detruisent votre marge
           </SectionHeading>
 
@@ -911,9 +1082,9 @@ export default function BlogCalcMarge() {
           </div>
         </section>
 
-        {/* ═════════════ SECTION 11 : RestauMargin automatise ═════════════ */}
+        {/* ═════════════ SECTION 14 : RestauMargin automatise ═════════════ */}
         <section id="automatiser" className="mb-16">
-          <SectionHeading icon={<Sparkles className="w-6 h-6" />} number="11">
+          <SectionHeading icon={<Sparkles className="w-6 h-6" />} number="14">
             Comment RestauMargin automatise le calcul de marge
           </SectionHeading>
 
@@ -1033,23 +1204,76 @@ export default function BlogCalcMarge() {
 
         {/* ═════════════ Articles complementaires ═════════════ */}
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-mono-100 mb-6">Pour aller plus loin</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">A lire aussi</h2>
+          <p className="text-sm text-mono-500 mb-6">
+            Ressources complementaires pour approfondir le calcul de marge et choisir le bon outil selon votre type d'etablissement.
+          </p>
+
+          <h3 className="text-lg font-bold text-mono-100 mb-4">Approfondir le calcul de marge</h3>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le food cost en 10 strategies</h3>
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le food cost en 10 strategies</h4>
               <p className="text-xs text-mono-500">Fiches techniques, negociation, gaspillage, menu engineering.</p>
             </Link>
             <Link to="/blog/coefficient-multiplicateur" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Le coefficient multiplicateur</h3>
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Le coefficient multiplicateur</h4>
               <p className="text-xs text-mono-500">Tableaux par categorie, erreurs courantes et cas pratique.</p>
             </Link>
             <Link to="/blog/prix-de-vente-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculer le prix de vente d'un plat</h3>
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculer le prix de vente d'un plat</h4>
               <p className="text-xs text-mono-500">Methodes coefficient, marge cible, pricing psychologique.</p>
             </Link>
+            <Link to="/blog/regle-30-30-30-10-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">La regle 30-30-30-10 en restauration</h4>
+              <p className="text-xs text-mono-500">Repartition ideale des charges et marge cible expliquees.</p>
+            </Link>
+            <Link to="/blog/faq-marge-restaurant-25-questions" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">FAQ marge restaurant : 25 questions</h4>
+              <p className="text-xs text-mono-500">Reponses precises aux questions les plus posees.</p>
+            </Link>
+            <Link to="/glossaire-restauration" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Glossaire restauration</h4>
+              <p className="text-xs text-mono-500">Tous les termes techniques expliques (food cost, prime cost, etc.).</p>
+            </Link>
             <Link to="/outils/calculateur-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculateur food cost gratuit</h3>
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculateur food cost gratuit</h4>
               <p className="text-xs text-mono-500">Outil en ligne pour calculer votre marge en 30 secondes.</p>
+            </Link>
+            <Link to="/outils/calculateur-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculateur marge restaurant</h4>
+              <p className="text-xs text-mono-500">Le simulateur complet : food cost + marge brute + nette.</p>
+            </Link>
+          </div>
+
+          <h3 className="text-lg font-bold text-mono-100 mb-4">Logiciel de marge par type de restaurant</h3>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            <Link to="/logiciel-marge-bistrot" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Logiciel marge bistrot</h4>
+              <p className="text-xs text-mono-500">Cible food cost 28-33 %, optimise pour cartes courtes traditionnelles.</p>
+            </Link>
+            <Link to="/logiciel-marge-pizzeria" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Logiciel marge pizzeria</h4>
+              <p className="text-xs text-mono-500">Coefficient multiplicateur 4 a 6, gestion patons, garnitures, four.</p>
+            </Link>
+            <Link to="/logiciel-marge-boulangerie" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Logiciel marge boulangerie</h4>
+              <p className="text-xs text-mono-500">Marges viennoiseries, ratios farine, gestion invendus, snacking.</p>
+            </Link>
+            <Link to="/logiciel-marge-gastronomique" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Logiciel marge gastronomique</h4>
+              <p className="text-xs text-mono-500">Produits nobles, fiches techniques complexes, allergenes, accords mets-vins.</p>
+            </Link>
+            <Link to="/logiciel-marge-burger" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Logiciel marge burger</h4>
+              <p className="text-xs text-mono-500">Optimisation steak, buns, sauces maison, options vegan et menus combo.</p>
+            </Link>
+            <Link to="/comparatif-logiciels-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Comparatif logiciels restaurant</h4>
+              <p className="text-xs text-mono-500">Tableau comparatif des 8 principales solutions du marche en 2026.</p>
+            </Link>
+            <Link to="/alternative-zenchef" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Alternative Zenchef</h4>
+              <p className="text-xs text-mono-500">Pourquoi RestauMargin est la meilleure alternative pour les marges.</p>
             </Link>
           </div>
         </section>

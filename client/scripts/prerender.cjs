@@ -750,9 +750,46 @@ function run() {
       .map(([href, label]) => `<li><a href="${href}" style="color:#0d9488;text-decoration:none">${label}</a></li>`)
       .join('');
 
+    // ─── BreadcrumbList Schema (rich snippet "navigation visible" dans Google) ───
+    const breadcrumbCategoryUrl =
+      category === 'article' ? `${BASE_URL}/blog` :
+      category === 'guide' ? `${BASE_URL}/blog` :
+      category === 'comparison' || category === 'mega-comparison' ? `${BASE_URL}/comparatif-logiciels-restaurant` :
+      category === 'niche' ? `${BASE_URL}/logiciel-marge-restaurant` :
+      category === 'tool' ? `${BASE_URL}/outils/calculateur-marge-restaurant` :
+      category === 'glossary' ? `${BASE_URL}/glossaire-restauration` :
+      `${BASE_URL}/`;
+
+    const breadcrumbCategoryName =
+      category === 'article' || category === 'guide' ? 'Blog' :
+      category === 'comparison' || category === 'mega-comparison' ? 'Comparatifs' :
+      category === 'niche' ? 'Logiciels métier' :
+      category === 'tool' ? 'Outils gratuits' :
+      category === 'glossary' ? 'Ressources' :
+      'Accueil';
+
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${BASE_URL}/` },
+        category !== 'landing'
+          ? { '@type': 'ListItem', position: 2, name: breadcrumbCategoryName, item: breadcrumbCategoryUrl }
+          : null,
+        category !== 'landing'
+          ? { '@type': 'ListItem', position: 3, name: breadcrumbLabel, item: fullUrl }
+          : null,
+      ].filter(Boolean),
+    };
+
+    const breadcrumbSchemaScript = `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`;
+
+    // Inject BreadcrumbList schema in <head> (before </head>)
+    html = html.replace('</head>', `  ${breadcrumbSchemaScript}\n  </head>`);
+
     const seoStaticContent = `
       <article style="max-width:800px;margin:0 auto;padding:48px 20px;font-family:'Inter',system-ui,sans-serif;color:#111111;line-height:1.6">
-        <nav style="font-size:13px;color:#737373;margin-bottom:24px"><a href="/" style="color:#0d9488;text-decoration:none">${breadcrumbs}</a> &gt; <span>${breadcrumbLabel}</span></nav>
+        <nav style="font-size:13px;color:#737373;margin-bottom:24px" aria-label="Fil d'Ariane"><a href="/" style="color:#0d9488;text-decoration:none">${breadcrumbs}</a> &gt; <span>${breadcrumbLabel}</span></nav>
         <h1 style="font-size:36px;font-weight:800;line-height:1.2;margin:0 0 16px 0;color:#111111">${h1}</h1>
         <p style="font-size:18px;color:#525252;margin:0 0 32px 0">${route.description}</p>
         <div style="background:#f0fdfa;border-left:4px solid #0d9488;padding:16px 20px;border-radius:8px;margin:0 0 32px 0">

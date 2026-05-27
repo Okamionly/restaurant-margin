@@ -667,7 +667,7 @@ function HeroSection() {
             Plateforme #1 des restaurateurs
           </span>
           <h1 className="mt-6 text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.02] tracking-tight" style={{ color: TEXT }}>
-            Logiciel marge restaurant
+            Logiciel marge restaurant{' '}
             <br />
             <span style={{ color: ACCENT }}>qui transforme vos data en cash.</span>
           </h1>

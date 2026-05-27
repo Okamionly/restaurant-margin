@@ -196,6 +196,7 @@ const BreakevenCalculator = lazyRetry(() => import('./pages/BreakevenCalculator'
 const CouvertsCible = lazyRetry(() => import('./pages/CouvertsCible'));
 const TvaCalculator = lazyRetry(() => import('./pages/TvaCalculator'));
 const LaborCostCalculator = lazyRetry(() => import('./pages/LaborCostCalculator'));
+const PriceIncreaseSimulator = lazyRetry(() => import('./pages/PriceIncreaseSimulator'));
 const AlternativeHubrise = lazyRetry(() => import('./pages/AlternativeHubrise'));
 const AlternativeZenchef = lazyRetry(() => import('./pages/AlternativeZenchef'));
 const AlternativeLAddition = lazyRetry(() => import('./pages/AlternativeLAddition'));
@@ -505,6 +506,7 @@ function AppLayout() {
         { to: '/allergen-matrix', icon: Shield, label: 'Matrice allergenes' },
         { to: '/recettes-semaine', icon: ChefHat, label: 'Recettes semaine' },
         { to: '/negociation-ia', icon: Handshake, label: 'Negociation IA' },
+        { to: '/simulateur-prix', icon: TrendingUp, label: 'Simulateur prix' },
       ],
     },
     {
@@ -1052,6 +1054,7 @@ function AppLayout() {
               <Route path="/couverts-cible" element={<CouvertsCible />} />
               <Route path="/calculateur-tva" element={<TvaCalculator />} />
               <Route path="/cout-main-oeuvre" element={<LaborCostCalculator />} />
+              <Route path="/simulateur-prix" element={<PriceIncreaseSimulator />} />
               <Route path="/restaurants" element={<TrialPaywallGuard feature="Multi-restaurant"><Restaurants /></TrialPaywallGuard>} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/abonnement" element={<Subscription />} />

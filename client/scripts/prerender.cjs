@@ -587,19 +587,168 @@ function run() {
     );
 
     // ─── CRITICAL SEO FIX: inject UNIQUE static content INSIDE <div id="root"> ───
-    // Before this fix, Googlebot saw only the generic landing page noscript content on
-    // every route, treating all 91 pages as duplicate content. Now each page has its own
-    // visible H1 + summary + breadcrumbs + featured-snippet paragraph baked into the HTML.
-    // React hydrates over this content seamlessly on the client (matching HTML structure).
+    // Each page now gets category-specific content (not just title), avoiding duplicate
+    // content penalties. React hydrates seamlessly on top on the client side.
     const h1 = route.title.replace(/ \| RestauMargin$/, '').replace(/ — RestauMargin$/, '');
-    const breadcrumbs = route.path.startsWith('/blog/') ? 'Accueil &gt; Blog'
-      : route.path.startsWith('/guide-marge/') ? 'Accueil &gt; Guides'
-      : route.path.startsWith('/alternative-') ? 'Accueil &gt; Comparatifs'
-      : route.path.startsWith('/logiciel-marge-') ? 'Accueil &gt; Logiciels'
-      : route.path.startsWith('/outils/') ? 'Accueil &gt; Outils'
-      : 'Accueil';
+
+    // Determine category for content templating
+    const category =
+      route.path.startsWith('/blog/') ? 'article' :
+      route.path.startsWith('/guide-marge/') ? 'guide' :
+      route.path.startsWith('/alternative-') ? 'comparison' :
+      route.path.startsWith('/comparatif-') ? 'mega-comparison' :
+      route.path === '/glossaire-restauration' ? 'glossary' :
+      route.path.startsWith('/logiciel-marge-') ? 'niche' :
+      route.path.startsWith('/outils/') ? 'tool' :
+      'landing';
+
+    const breadcrumbs =
+      category === 'article' ? 'Accueil &gt; Blog' :
+      category === 'guide' ? 'Accueil &gt; Guides' :
+      category === 'comparison' || category === 'mega-comparison' ? 'Accueil &gt; Comparatifs' :
+      category === 'niche' ? 'Accueil &gt; Logiciels métier' :
+      category === 'tool' ? 'Accueil &gt; Outils gratuits' :
+      category === 'glossary' ? 'Accueil &gt; Ressources' :
+      'Accueil';
+
     const lastSegment = route.path.split('/').filter(Boolean).pop() || 'page';
     const breadcrumbLabel = lastSegment.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    // Extract main keyword from title (first 4-5 words before separator)
+    const mainKw = h1.split(/[:|—|·]/)[0].trim().substring(0, 60);
+
+    // Category-specific featured snippet text (varied to avoid duplicate phrases)
+    const snippetTexts = {
+      article: `<strong>${mainKw}</strong> — guide complet 2026 avec formules détaillées, exemples chiffrés par type de restaurant, benchmarks sectoriels et erreurs courantes à éviter. Tout ce que vous devez savoir pour piloter vos marges au quotidien.`,
+      guide: `<strong>${mainKw}</strong> — guide pratique 2026 spécifique à votre type d'établissement. Découvrez les food cost cibles, coefficients multiplicateurs adaptés, charges spécifiques et benchmarks de rentabilité pour votre segment.`,
+      comparison: `<strong>${mainKw}</strong> — comparatif honnête 2026 entre RestauMargin (gestion food cost et marges) et la solution analysée. Prix, fonctionnalités, cas d'usage et profils restaurateurs adaptés à chaque outil.`,
+      'mega-comparison': `<strong>${mainKw}</strong> — analyse comparative 2026 de 12 logiciels restaurant. Tableau benchmark des 25+ critères clés, profils restaurateurs, recommandations par segment et ROI sur 12 mois.`,
+      niche: `<strong>${mainKw}</strong> — logiciel SaaS spécifiquement conçu pour votre métier en 2026. Food cost cible, coefficients multiplicateurs adaptés, exemples chiffrés et cas concrets de transformation.`,
+      tool: `<strong>${mainKw}</strong> — outil interactif gratuit RestauMargin 2026. Saisissez vos données, obtenez un calcul instantané et téléchargez votre rapport personnalisé. Sans inscription.`,
+      glossary: `<strong>${mainKw}</strong> — glossaire exhaustif 2026 des termes essentiels de la restauration : food cost, prime cost, fiche technique, HACCP, RevPASH, marge brute. 60+ définitions précises avec exemples.`,
+      landing: `<strong>${mainKw}</strong> — la plateforme tout-en-un pour piloter votre restaurant en 2026. Calcul automatique des marges, fiches techniques par IA, mercuriale fournisseurs intelligente, alertes prix et tableau de bord temps réel.`,
+    };
+
+    // Category-specific secondary H2 + paragraph (varies content significantly)
+    const secondaryContent = {
+      article: `
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Sommaire de l'article</h2>
+        <ul style="padding-left:20px;color:#525252;line-height:1.8">
+          <li>Définitions et formules essentielles à connaître</li>
+          <li>Méthode de calcul pas à pas avec exemples chiffrés</li>
+          <li>Benchmarks et ratios cibles par type d'établissement</li>
+          <li>Erreurs courantes et comment les éviter</li>
+          <li>Leviers concrets pour optimiser ce KPI</li>
+          <li>FAQ avec les 8 à 12 questions les plus fréquentes</li>
+        </ul>`,
+      guide: `
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Au programme de ce guide</h2>
+        <ul style="padding-left:20px;color:#525252;line-height:1.8">
+          <li>Spécificités économiques de votre métier</li>
+          <li>Food cost cible et coefficient multiplicateur recommandés</li>
+          <li>Décomposition détaillée des coûts de production</li>
+          <li>Tableau benchmark par plat type</li>
+          <li>Leviers d'optimisation propres au segment</li>
+          <li>Cas concret avant/après chiffré</li>
+        </ul>`,
+      comparison: `
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Que contient ce comparatif ?</h2>
+        <ul style="padding-left:20px;color:#525252;line-height:1.8">
+          <li>Vue d'ensemble et positionnement de chaque outil</li>
+          <li>Tableau comparatif détaillé sur 18 à 25 critères clés</li>
+          <li>Comparatif tarifaire sur 12 mois (formules incluses)</li>
+          <li>Cas d'usage par profil de restaurateur</li>
+          <li>Témoignages anonymisés équilibrés</li>
+          <li>FAQ 10 à 12 questions sur le choix entre les deux solutions</li>
+        </ul>`,
+      'mega-comparison': `
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Méthodologie du comparatif</h2>
+        <p>Notre comparatif analyse 12 logiciels de gestion restaurant sur 15 critères répartis en 6 catégories : économie (prix, ROI), gestion opérationnelle (food cost, fiches techniques), acquisition client (réservations, marketing), terrain (POS, mobile), expérience (UX, onboarding) et innovation (IA, intégrations). Aucun éditeur ne nous rémunère pour son classement.</p>`,
+      niche: `
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Pourquoi un logiciel dédié à votre métier ?</h2>
+        <p>Chaque type d'établissement a des spécificités économiques uniques : food cost cible différent, coefficient multiplicateur adapté, charges propres, saisonnalité, type de fournisseurs et structure de menu. Un logiciel généraliste ne capture pas ces nuances. RestauMargin propose des templates et benchmarks calibrés pour votre segment précis.</p>`,
+      tool: `
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Comment utiliser cet outil ?</h2>
+        <ol style="padding-left:20px;color:#525252;line-height:1.8">
+          <li>Saisissez vos paramètres dans le formulaire interactif</li>
+          <li>Visualisez le calcul instantané et les recommandations</li>
+          <li>Téléchargez le rapport PDF avec votre situation actuelle</li>
+          <li>Comparez à nos benchmarks par segment de restaurant</li>
+        </ol>`,
+      glossary: `
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Comment utiliser ce glossaire ?</h2>
+        <p>Notre glossaire couvre 60+ termes essentiels de la restauration moderne classés de A à Z : food cost, prime cost, marge brute et nette, coefficient multiplicateur, fiche technique, HACCP, RevPASH, AOP/IGP, FIFO, etc. Pour chaque terme, vous obtenez une définition courte, une description approfondie avec exemple chiffré, et un lien vers l'article correspondant.</p>`,
+      landing: `
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Pourquoi RestauMargin ?</h2>
+        <p>RestauMargin réunit en une seule application tout ce qui était auparavant éparpillé sur plusieurs outils : calcul automatique du food cost et des marges, fiches techniques précises avec grammages et coûts, mercuriale fournisseurs intelligente, alertes prix matières premières, station de pesée Bluetooth, commandes fournisseurs optimisées par IA et tableau de bord temps réel. Plan Pro à 29 €/mois, essai gratuit 7 jours.</p>`,
+    };
+
+    const snippetText = snippetTexts[category] || snippetTexts.landing;
+    const secondary = secondaryContent[category] || secondaryContent.landing;
+
+    // Article-related links vary by category to avoid showing identical "Articles connexes"
+    const relatedLinks = {
+      article: [
+        ['/blog/calcul-marge-restaurant', 'Marge restaurant 2026 : calcul, formule, food cost'],
+        ['/blog/coefficient-multiplicateur', 'Coefficient multiplicateur restaurant 2026'],
+        ['/blog/reduire-food-cost', 'Réduire le food cost : 10 stratégies'],
+        ['/blog/prime-cost-restaurant', 'Prime cost : l\'indicateur n°1 de rentabilité'],
+        ['/blog/faq-marge-restaurant-25-questions', 'FAQ Marge : 25 questions essentielles'],
+      ],
+      guide: [
+        ['/blog/calcul-marge-restaurant', 'Calcul marge restaurant : guide complet'],
+        ['/logiciel-marge-bistrot', 'Logiciel marge bistrot et brasserie'],
+        ['/logiciel-marge-pizzeria', 'Logiciel marge pizzeria'],
+        ['/logiciel-marge-gastronomique', 'Logiciel marge restaurant gastronomique'],
+        ['/blog/seuil-rentabilite-restaurant', 'Seuil de rentabilité restaurant'],
+      ],
+      comparison: [
+        ['/comparatif-logiciels-restaurant', 'Comparatif 12 logiciels restaurant 2026'],
+        ['/alternative-zenchef', 'Alternative Zenchef'],
+        ['/alternative-lightspeed', 'Alternative Lightspeed Restaurant'],
+        ['/blog/logiciel-gestion-restaurant', 'Logiciel gestion restaurant : guide d\'achat'],
+        ['/pricing', 'Tarifs RestauMargin'],
+      ],
+      'mega-comparison': [
+        ['/alternative-zenchef', 'RestauMargin vs Zenchef'],
+        ['/alternative-innovorder', 'RestauMargin vs Innovorder'],
+        ['/alternative-lightspeed', 'RestauMargin vs Lightspeed'],
+        ['/blog/logiciel-gestion-restaurant', 'Comparatif logiciels gestion restaurant'],
+        ['/pricing', 'Voir nos tarifs'],
+      ],
+      niche: [
+        ['/blog/calcul-marge-restaurant', 'Méthode de calcul de marge complète'],
+        ['/blog/food-cost-restaurant', 'Réduire le food cost'],
+        ['/blog/coefficient-multiplicateur', 'Coefficient multiplicateur par segment'],
+        ['/outils/calculateur-marge-restaurant', 'Calculateur de marge gratuit'],
+        ['/comparatif-logiciels-restaurant', 'Comparatif logiciels restaurant'],
+      ],
+      tool: [
+        ['/blog/calcul-marge-restaurant', 'Comprendre le calcul de marge'],
+        ['/blog/coefficient-multiplicateur', 'Coefficient multiplicateur expliqué'],
+        ['/blog/reduire-food-cost', 'Réduire votre food cost'],
+        ['/outils/calculateur-food-cost', 'Calculateur de food cost'],
+        ['/pricing', 'Découvrir RestauMargin'],
+      ],
+      glossary: [
+        ['/blog/calcul-marge-restaurant', 'Guide complet calcul marge restaurant'],
+        ['/blog/prime-cost-restaurant', 'Définition prime cost'],
+        ['/blog/faq-marge-restaurant-25-questions', 'FAQ : 25 questions essentielles'],
+        ['/blog/coefficient-multiplicateur', 'Coefficient multiplicateur'],
+        ['/blog/fiche-technique-restaurant', 'Fiche technique restaurant'],
+      ],
+      landing: [
+        ['/blog/calcul-marge-restaurant', 'Calculer la marge de votre restaurant'],
+        ['/blog/reduire-food-cost', 'Réduire le food cost : 10 stratégies'],
+        ['/comparatif-logiciels-restaurant', 'Comparatif 12 logiciels restaurant'],
+        ['/glossaire-restauration', 'Glossaire restauration 60+ termes'],
+        ['/pricing', 'Tarifs : Pro 29€/mois, Business 79€/mois'],
+      ],
+    };
+
+    const linksList = (relatedLinks[category] || relatedLinks.landing)
+      .map(([href, label]) => `<li><a href="${href}" style="color:#0d9488;text-decoration:none">${label}</a></li>`)
+      .join('');
 
     const seoStaticContent = `
       <article style="max-width:800px;margin:0 auto;padding:48px 20px;font-family:'Inter',system-ui,sans-serif;color:#111111;line-height:1.6">
@@ -607,17 +756,12 @@ function run() {
         <h1 style="font-size:36px;font-weight:800;line-height:1.2;margin:0 0 16px 0;color:#111111">${h1}</h1>
         <p style="font-size:18px;color:#525252;margin:0 0 32px 0">${route.description}</p>
         <div style="background:#f0fdfa;border-left:4px solid #0d9488;padding:16px 20px;border-radius:8px;margin:0 0 32px 0">
-          <p style="margin:0;font-size:15px;color:#111111"><strong>${h1}</strong> — découvrez le guide complet RestauMargin 2026 avec formules, exemples chiffrés, benchmarks par segment et calculateur gratuit.</p>
+          <p style="margin:0;font-size:15px;color:#111111">${snippetText}</p>
         </div>
-        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">À propos de RestauMargin</h2>
-        <p>RestauMargin est la plateforme SaaS française de gestion de marge pour restaurateurs. Calculez votre food cost, optimisez vos fiches techniques, gérez votre mercuriale fournisseurs et augmentez vos marges grâce à l'intelligence artificielle. Plan Pro à 29 €/mois, essai gratuit 7 jours sans engagement.</p>
-        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Articles connexes</h2>
-        <ul style="padding-left:20px;color:#525252">
-          <li><a href="/blog/calcul-marge-restaurant" style="color:#0d9488;text-decoration:none">Marge restaurant 2026 : calcul, formule, food cost (guide complet)</a></li>
-          <li><a href="/blog/reduire-food-cost" style="color:#0d9488;text-decoration:none">Réduire le food cost de votre restaurant : 10 stratégies</a></li>
-          <li><a href="/blog/coefficient-multiplicateur" style="color:#0d9488;text-decoration:none">Coefficient multiplicateur restaurant 2026</a></li>
-          <li><a href="/blog/faq-marge-restaurant-25-questions" style="color:#0d9488;text-decoration:none">FAQ Marge Restaurant : 25 questions essentielles</a></li>
-          <li><a href="/outils/calculateur-marge-restaurant" style="color:#0d9488;text-decoration:none">Calculateur de marge restaurant gratuit</a></li>
+        ${secondary}
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Pour aller plus loin</h2>
+        <ul style="padding-left:20px;color:#525252;line-height:1.8">
+          ${linksList}
         </ul>
         <p style="font-size:13px;color:#737373;margin-top:48px">Chargement de l'application interactive…</p>
       </article>

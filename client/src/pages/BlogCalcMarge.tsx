@@ -88,7 +88,7 @@ export default function BlogCalcMarge() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-04-14',
-            dateModified: '2026-05-26',
+            dateModified: '2026-05-27',
             wordCount: 3200,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/calcul-marge-restaurant' },
@@ -176,6 +176,94 @@ export default function BlogCalcMarge() {
           </div>
           <p className="mt-4 text-teal-100 text-sm">
             Objectif standard restauration : food cost entre 25 % et 35 %, marge brute entre 65 % et 75 %, marge nette entre 5 % et 15 %.
+          </p>
+        </div>
+
+        {/* ── Tableau KPIs 2026 (bloc featured snippet table) ── */}
+        <div className="mt-10 bg-white border border-mono-900 rounded-2xl p-6 sm:p-8 shadow-sm">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 mb-2">
+            Tableau des KPIs marge restaurant 2026 (cibles a viser)
+          </h2>
+          <p className="text-sm text-mono-400 mb-6">
+            Benchmarks chiffres a jour 2026 par indicateur, avec frequence de suivi recommandee.
+            Comparez chaque ligne a vos chiffres reels pour savoir ou agir en priorite.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-teal-600 text-white">
+                  <th className="text-left p-3 font-bold">Indicateur</th>
+                  <th className="text-left p-3 font-bold">Cible 2026</th>
+                  <th className="text-left p-3 font-bold">Zone alerte</th>
+                  <th className="text-left p-3 font-bold">Frequence</th>
+                </tr>
+              </thead>
+              <tbody className="text-mono-200">
+                <tr className="border-b border-mono-900">
+                  <td className="p-3 font-semibold">Food cost (% CA)</td>
+                  <td className="p-3">25 % a 32 %</td>
+                  <td className="p-3 text-red-600">superieur a 35 %</td>
+                  <td className="p-3">Hebdomadaire</td>
+                </tr>
+                <tr className="border-b border-mono-900 bg-mono-1000/40">
+                  <td className="p-3 font-semibold">Marge brute</td>
+                  <td className="p-3">68 % a 75 %</td>
+                  <td className="p-3 text-red-600">inferieure a 65 %</td>
+                  <td className="p-3">Hebdomadaire</td>
+                </tr>
+                <tr className="border-b border-mono-900">
+                  <td className="p-3 font-semibold">Marge brute boisson</td>
+                  <td className="p-3">80 % a 88 %</td>
+                  <td className="p-3 text-red-600">inferieure a 78 %</td>
+                  <td className="p-3">Hebdomadaire</td>
+                </tr>
+                <tr className="border-b border-mono-900 bg-mono-1000/40">
+                  <td className="p-3 font-semibold">Cout personnel (% CA)</td>
+                  <td className="p-3">30 % a 38 %</td>
+                  <td className="p-3 text-red-600">superieur a 42 %</td>
+                  <td className="p-3">Mensuelle</td>
+                </tr>
+                <tr className="border-b border-mono-900">
+                  <td className="p-3 font-semibold">Prime cost (food + personnel)</td>
+                  <td className="p-3">55 % a 65 %</td>
+                  <td className="p-3 text-red-600">superieur a 70 %</td>
+                  <td className="p-3">Mensuelle</td>
+                </tr>
+                <tr className="border-b border-mono-900 bg-mono-1000/40">
+                  <td className="p-3 font-semibold">Loyer (% CA)</td>
+                  <td className="p-3">6 % a 10 %</td>
+                  <td className="p-3 text-red-600">superieur a 12 %</td>
+                  <td className="p-3">Trimestrielle</td>
+                </tr>
+                <tr className="border-b border-mono-900">
+                  <td className="p-3 font-semibold">Energie (% CA)</td>
+                  <td className="p-3">3 % a 5 %</td>
+                  <td className="p-3 text-red-600">superieur a 7 %</td>
+                  <td className="p-3">Mensuelle</td>
+                </tr>
+                <tr className="border-b border-mono-900 bg-mono-1000/40">
+                  <td className="p-3 font-semibold">Ticket moyen</td>
+                  <td className="p-3">Suit l'inflation</td>
+                  <td className="p-3 text-red-600">Stagne 12 mois</td>
+                  <td className="p-3">Mensuelle</td>
+                </tr>
+                <tr className="border-b border-mono-900">
+                  <td className="p-3 font-semibold">Gaspillage cuisine (% achats)</td>
+                  <td className="p-3">inferieur a 4 %</td>
+                  <td className="p-3 text-red-600">superieur a 8 %</td>
+                  <td className="p-3">Hebdomadaire</td>
+                </tr>
+                <tr className="bg-mono-1000/40">
+                  <td className="p-3 font-semibold">Marge nette</td>
+                  <td className="p-3">8 % a 15 %</td>
+                  <td className="p-3 text-red-600">inferieure a 5 %</td>
+                  <td className="p-3">Mensuelle / annuelle</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-4 text-xs text-mono-500">
+            Sources : INSEE 2026, Federation nationale de l'industrie hoteliere (FNIH), donnees agregees RestauMargin sur 400+ etablissements francais. Les fourchettes varient selon type d'etablissement (voir benchmark detaille section 8).
           </p>
         </div>
 

@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, Calculator, ArrowRight, BookOpen, Zap, AlertTriangle, Lightbulb, ListChecks, Target, TrendingUp, Sparkles, Pizza, Beef, Coffee, BarChart3, Award, CheckCircle, DollarSign, Percent, Brain } from 'lucide-react';
+import { ChefHat, Calculator, ArrowRight, BookOpen, Zap, AlertTriangle, Lightbulb, ListChecks, Target, TrendingUp, Sparkles, Pizza, Beef, Coffee, BarChart3, Award, CheckCircle, DollarSign, Percent, Brain, Globe, Wine, Building2, Truck, Cookie, Wand2 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 /* ═══════════════════════════════════════════════════════════════
-   Blog SEO — "Coefficient multiplicateur restaurant : guide complet 2026"
-   Mot-clé principal : coefficient multiplicateur restauration
-   ~3 200 mots
+   Blog SEO — "Coefficient multiplicateur restaurant 2026 : calcul + formule + exemples"
+   Mot-clé principal : coefficient multiplicateur restaurant calcul
+   Mots-clés secondaires : coefficient multiplicateur restauration, formule, calcul, exemples
+   ~5 000 mots
    ═══════════════════════════════════════════════════════════════ */
 
 const faqItems = [
@@ -59,14 +60,38 @@ const faqItems = [
     question: "Faut-il integrer les pertes (epluchure, casse) dans le calcul du coefficient ?",
     answer: "Oui, imperativement. Vous devez calculer votre coefficient sur le cout matiere net (apres rendement et pertes). Un kilo de carottes brutes ne donne que 800 g utilisables. Si vous utilisez le cout brut, votre coefficient est sous-estime de 20-25 %. Les fiches techniques precises integrent un coefficient de rendement par ingredient.",
   },
+  {
+    question: "Pourquoi mon coefficient ne couvre pas mes charges ?",
+    answer: "Le coefficient multiplicateur ne couvre QUE le food cost. Les autres postes (masse salariale 30-35 %, charges fixes 20-25 %, loyer 8-12 %) doivent etre couverts par la marge brute restante. Si votre coefficient est de 3,0 (food cost 33 %), il reste 67 % pour TOUT le reste. Pour un restaurant rentable a 10 % de marge nette, visez un coefficient minimum de 3,3 (food cost 30 %), idealement 3,5-4,0. En dessous de 3,0, vous travaillez a perte des qu'un poste derape.",
+  },
+  {
+    question: "Comment ajuster le coefficient pour les plats a fort cout matiere ?",
+    answer: "Pour les plats nobles (poisson, viande premium, truffe, foie gras), n'appliquez pas votre coefficient standard. Reduisez le coefficient a 2,5-3,0 pour rester dans les prix du marche. Compensez en augmentant le coefficient sur les autres categories (entrees, desserts, boissons a x 4-6). Le coefficient moyen pondere de la carte doit converger vers votre cible globale. Exemple : carte avec 30 % de plats nobles a x 2,8 + 70 % d'autres categories a x 4,0 = coefficient pondere 3,64.",
+  },
+  {
+    question: "Coefficient multiplicateur ou marge brute : lequel utiliser ?",
+    answer: "Les deux, a des moments differents. Le COEFFICIENT MULTIPLICATEUR sert a FIXER un prix de vente a partir d'un cout matiere connu (Prix HT = Cout x Coefficient). La MARGE BRUTE sert a ANALYSER la rentabilite d'un plat existant ou d'une categorie (Marge brute % = (CA - Cout) / CA). Pour la creation/refonte de carte, utilisez le coefficient. Pour le pilotage mensuel et le menu engineering, utilisez la marge brute en valeur absolue (EUR) car c'est ce qui paie vos charges.",
+  },
+  {
+    question: "Mon coefficient est de 2,5, est-ce suffisant ?",
+    answer: "Non, sauf cas tres specifique. Un coefficient de 2,5 correspond a un food cost de 40 %, ce qui est viable UNIQUEMENT en restaurant gastronomique etoile (avec ticket moyen >80 EUR) ou sur une categorie isolee (vins premium). Pour un restaurant traditionnel, bistrot ou brasserie, un coefficient de 2,5 vous met en danger immediat : avec 60 % de marge brute, vous ne pouvez pas couvrir 30 % de salaires + 20 % de charges fixes + 10 % de marge cible. Visez minimum 3,3 (food cost 30 %), idealement 3,5-4,0.",
+  },
+  {
+    question: "Comment expliquer un prix eleve a un client ?",
+    answer: "La transparence et le storytelling rendent un coefficient eleve acceptable. 4 leviers : (1) Origine produit : 'agneau de pre-sale du Mont Saint-Michel, eleveur Bertrand', (2) Travail technique : '6 heures de cuisson basse temperature', (3) Rarete : 'cep de Bordeaux limite a 500 bouteilles', (4) Valeur ajoutee : 'sauce maison reduite 4 heures, accompagnement de saison'. Le client n'achete pas un plat a 32 EUR, il achete une experience. Une carte sans storytelling a un coefficient plafonne a x 3,0. Avec storytelling, x 4,0 devient acceptable.",
+  },
+  {
+    question: "Quelle TVA appliquer au coefficient (10 % ou 20 %) ?",
+    answer: "TVA 10 % : restauration sur place + vente a emporter de plats consommes immediatement (chauds ou prepares). TVA 20 % : boissons alcoolisees (vin, biere, spiritueux, cocktails). TVA 5,5 % : vente a emporter de produits froids destines a etre emportes (sandwich emballe, salade barquette). Calcul : appliquez le coefficient sur le cout matiere HT, obtenez le prix HT, puis ajoutez la TVA selon le canal. Erreur frequente : appliquer le coefficient sur un prix TTC fournisseur. Si votre fournisseur facture 12 EUR TTC (10 EUR HT), utilisez 10 EUR comme base, pas 12 EUR.",
+  },
 ];
 
 export default function BlogCoefficient() {
   return (
     <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
-        title="Coefficient multiplicateur restaurant : formule et calcul 2026"
-        description="Guide complet du coefficient multiplicateur en restauration : formules, tableaux par categorie, cas pratiques chiffres et erreurs courantes. Optimisez vos prix de vente."
+        title="Coefficient multiplicateur restaurant 2026 : calcul + formule + exemples (guide complet)"
+        description="Coefficient multiplicateur restaurant : formule, calcul pas a pas, valeurs cibles par segment (bistrot 3.5, gastro 4.5, pizzeria 3.0). Exemples chiffres, erreurs courantes et calculateur gratuit."
         path="/blog/coefficient-multiplicateur"
         type="article"
         schema={[
@@ -95,9 +120,24 @@ export default function BlogCoefficient() {
           },
           {
             '@context': 'https://schema.org',
+            '@type': 'HowTo',
+            name: 'Comment calculer le coefficient multiplicateur en 5 etapes',
+            description: 'Methode rapide en 5 etapes pour calculer le coefficient multiplicateur et obtenir le prix de vente HT et TTC d\'un plat.',
+            totalTime: 'PT5M',
+            tool: ['Fiche technique', 'Calculatrice'],
+            step: [
+              { '@type': 'HowToStep', position: 1, name: 'Calculer le cout matiere HT du plat', text: 'Additionnez le cout HT de chaque ingredient apres rendement (epluchage, parage). Exemple : carbonara = 1,80 EUR de pates + 0,90 EUR de guanciale + 0,40 EUR d\'oeuf + 0,30 EUR de pecorino = 3,40 EUR HT.' },
+              { '@type': 'HowToStep', position: 2, name: 'Definir le food cost cible', text: 'Choisissez votre food cost cible selon votre segment : pizzeria 18-25 %, bistrot 28-32 %, gastronomique 30-35 %. Generalement 28-32 % pour un restaurant traditionnel.' },
+              { '@type': 'HowToStep', position: 3, name: 'Calculer le coefficient', text: 'Coefficient = 1 / Food cost cible. Pour 30 % : 1 / 0,30 = 3,33. Pour 25 % : 1 / 0,25 = 4,0. Pour 33 % : 1 / 0,33 = 3,03.' },
+              { '@type': 'HowToStep', position: 4, name: 'Calculer le prix de vente HT', text: 'Prix vente HT = Cout matiere x Coefficient. Exemple : 3,40 EUR x 3,33 = 11,32 EUR HT.' },
+              { '@type': 'HowToStep', position: 5, name: 'Calculer le prix de vente TTC', text: 'Prix vente TTC = Prix HT x (1 + TVA). En restauration sur place : 11,32 x 1,10 = 12,45 EUR TTC, arrondi a 12,50 EUR sur la carte.' },
+            ],
+          },
+          {
+            '@context': 'https://schema.org',
             '@type': 'Article',
-            headline: 'Coefficient multiplicateur restaurant : formule et calcul complet 2026',
-            description: 'Guide complet du coefficient multiplicateur en restauration : formule, tableaux par categorie et type de cuisine, cas pratiques chiffres, erreurs courantes.',
+            headline: 'Coefficient multiplicateur restaurant 2026 : calcul + formule + exemples (guide complet)',
+            description: 'Coefficient multiplicateur restaurant : formule, calcul pas a pas, valeurs cibles par segment (bistrot 3.5, gastro 4.5, pizzeria 3.0). Exemples chiffres, erreurs courantes et calculateur gratuit.',
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -106,8 +146,8 @@ export default function BlogCoefficient() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-03-20',
-            dateModified: '2026-05-26',
-            wordCount: 3200,
+            dateModified: '2026-05-27',
+            wordCount: 5100,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/coefficient-multiplicateur' },
           },
@@ -123,7 +163,7 @@ export default function BlogCoefficient() {
           </Link>
           <div className="flex items-center gap-3">
             <Link
-              to="/outils/calculateur-food-cost"
+              to="/outils/calculateur-marge-restaurant"
               className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
             >
               <Calculator className="w-4 h-4" />
@@ -153,11 +193,11 @@ export default function BlogCoefficient() {
       {/* ── Hero ── */}
       <BlogArticleHero
         category="Pricing"
-        readTime="15 min"
+        readTime="22 min"
         date="Mai 2026"
-        title="Coefficient multiplicateur restaurant : formule et calcul complet 2026"
+        title="Coefficient multiplicateur restaurant 2026 : calcul, formule et exemples"
         accentWord="coefficient"
-        subtitle="Fixer le prix de vente de vos plats au hasard est la premiere cause de faillite en restauration. Le coefficient multiplicateur est l'outil qui transforme un cout matiere en prix juste, rentable et coherent avec le marche."
+        subtitle="Fixer le prix de vente de vos plats au hasard est la premiere cause de faillite en restauration. Le coefficient multiplicateur est l'outil qui transforme un cout matiere en prix juste, rentable et coherent avec le marche. Guide complet 2026 avec formule, 5 etapes de calcul, valeurs cibles par segment (bistrot 3,5 / gastro 4,5 / pizzeria 3,0), 5 cas concrets chiffres et calculateur gratuit."
       />
 
       {/* ── Contenu principal ── */}
@@ -206,15 +246,25 @@ export default function BlogCoefficient() {
               { href: '#definition', label: 'Definition et utilite du coefficient multiplicateur' },
               { href: '#formule', label: 'La formule complete avec exemples' },
               { href: '#howto', label: 'Comment calculer en 7 etapes' },
+              { href: '#howto-5', label: 'Calcul rapide en 5 etapes (methode express)' },
               { href: '#categories', label: 'Coefficients par categorie de plat' },
               { href: '#cuisines', label: 'Coefficients par type de cuisine' },
+              { href: '#mega-tableau', label: 'Mega tableau : coefficient par type d\'etablissement 2026' },
               { href: '#table', label: 'Table de conversion coefficient / food cost / marge' },
+              { href: '#boissons-vs-solides', label: 'Coefficient boissons vs solides' },
+              { href: '#gastro-vs-traditionnel', label: 'Gastronomique vs traditionnel : 4,5 vs 3,5' },
+              { href: '#pizzeria', label: 'Pizzeria : pourquoi un coefficient bas ?' },
+              { href: '#traiteur', label: 'Coefficient multiplicateur traiteur' },
+              { href: '#vin', label: 'Coefficient multiplicateur vin (4 a 6x)' },
+              { href: '#fr-vs-usa', label: 'Comparaison coefficient FR vs USA' },
+              { href: '#inverse', label: 'Coefficient inverse : ajuster ses prix' },
               { href: '#cas-pratiques', label: 'Cas pratiques chiffres (pizzeria, brasserie, gastro)' },
+              { href: '#cas-concrets-5', label: '5 cas concrets : Lyon, Marseille, Paris, Bordeaux, Lille' },
               { href: '#menu-engineering', label: 'Coefficient et menu engineering : le duo gagnant' },
               { href: '#cas-menu', label: 'Cas pratique : menu complet a 35 EUR' },
               { href: '#erreurs', label: 'Les 7 erreurs courantes a eviter' },
               { href: '#automatiser', label: 'Automatiser avec RestauMargin' },
-              { href: '#faq', label: 'Questions frequentes' },
+              { href: '#faq', label: 'Questions frequentes (12 reponses)' },
               { href: '#cta', label: 'Calculez vos coefficients gratuitement' },
             ].map((item, i) => (
               <li key={i}>
@@ -348,10 +398,72 @@ export default function BlogCoefficient() {
 
           <Callout type="info">
             <strong>Astuce gain de temps :</strong> au lieu de refaire ce calcul a la main pour chaque plat,
-            utilisez le <Link to="/outils/calculateur-food-cost" className="underline font-semibold hover:text-teal-700">calculateur de food cost gratuit RestauMargin</Link>.
+            utilisez le <Link to="/outils/calculateur-marge-restaurant" className="underline font-semibold hover:text-teal-700">calculateur de marge restaurant gratuit</Link> ou
+            le <Link to="/outils/calculateur-food-cost" className="underline font-semibold hover:text-teal-700">calculateur de food cost RestauMargin</Link>.
             Saisissez ingredients et prix : le coefficient, le food cost et la marge s'affichent
             instantanement avec proposition d'arrondi psychologique.
           </Callout>
+        </section>
+
+        {/* ═════════════ SECTION 3bis : Howto 5 etapes ═════════════ */}
+        <section id="howto-5" className="mb-16">
+          <SectionHeading icon={<Zap className="w-6 h-6" />} number="3bis">
+            Calcul rapide en 5 etapes (methode express)
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              Pour les restaurateurs presses, voici la version condensee en 5 etapes. Comptez 2 minutes
+              par plat une fois la methode maitrisee. Cette methode est aussi celle qui apparait dans
+              les schemas structures Google pour les recherches "comment calculer le coefficient
+              multiplicateur".
+            </p>
+          </div>
+
+          <ol className="mt-8 space-y-5">
+            {[
+              {
+                title: 'Calculer le cout matiere HT du plat',
+                body: 'Additionnez le cout HT de chaque ingredient apres rendement (epluchage, parage, cuisson). Exemple carbonara : 1,80 EUR pates + 0,90 EUR guanciale + 0,40 EUR oeuf + 0,30 EUR pecorino + 0,20 EUR autres = 3,60 EUR HT. Integrez toujours le rendement reel (un kilo brut ne donne pas un kilo utilisable).',
+              },
+              {
+                title: 'Definir le food cost cible',
+                body: 'Choisissez votre food cost cible selon votre segment. Generalement 28-32 % pour un restaurant traditionnel rentable. Pizzeria : 18-25 %. Bistrot : 28-32 %. Brasserie : 25-30 %. Gastronomique : 30-35 %. Coffee shop : 10-20 %. Cette cible est votre garde-fou : descendre en dessous met votre marge nette en danger.',
+              },
+              {
+                title: 'Coefficient = 1 / food cost cible',
+                body: 'La formule fondamentale. Pour 30 %, coefficient = 1 / 0,30 = 3,33. Pour 25 %, coefficient = 1 / 0,25 = 4,0. Pour 33 %, coefficient = 1 / 0,33 = 3,03. Pour 20 %, coefficient = 1 / 0,20 = 5,0. Memorisez 3,33 (food cost 30 %) comme coefficient de reference du restaurant traditionnel.',
+              },
+              {
+                title: 'Prix vente HT = cout matiere x coefficient',
+                body: 'Application directe : 3,60 EUR x 3,33 = 11,99 EUR HT. Pour un plat de bistrot a coefficient 3,5 : 3,60 EUR x 3,5 = 12,60 EUR HT. Pour une pizzeria a coefficient 5,0 sur une margherita a 1,80 EUR de cout : 1,80 x 5,0 = 9,00 EUR HT.',
+              },
+              {
+                title: 'Prix vente TTC = prix HT x (1 + TVA)',
+                body: 'Restauration sur place : TVA 10 %, multipliez par 1,10. Pour 11,99 EUR HT : 13,19 EUR TTC, arrondi a 12,90 EUR ou 13,50 EUR sur la carte. Boissons alcoolisees : TVA 20 %, multipliez par 1,20. Vente a emporter froide : TVA 5,5 %, multipliez par 1,055.',
+              },
+            ].map((step, i) => (
+              <li key={i} className="bg-gradient-to-r from-teal-50 to-white border border-teal-200 rounded-2xl p-6 sm:p-7 flex gap-5">
+                <div className="w-12 h-12 bg-teal-600 text-white rounded-xl flex items-center justify-center shrink-0 font-extrabold text-lg shadow-md">
+                  {i + 1}
+                </div>
+                <div>
+                  <h3 className="font-bold text-mono-100 text-lg mb-2">{step.title}</h3>
+                  <p className="text-sm text-mono-400 leading-relaxed">{step.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <div className="bg-teal-600 rounded-2xl p-6 mt-8 text-white">
+            <p className="font-bold mb-2 flex items-center gap-2"><Zap className="w-5 h-5" /> Recapitulatif express</p>
+            <p className="text-sm font-mono bg-white/10 rounded-lg p-3">
+              Cout matiere HT (apres rendement) -- Food cost cible % -- Coefficient = 1/FC -- Prix HT = Cout x Coef -- Prix TTC = HT x (1 + TVA)
+            </p>
+            <p className="text-teal-100 text-sm mt-3">
+              Exemple complet : 3,60 EUR cout -- 30 % cible -- coef 3,33 -- 11,99 EUR HT -- 13,19 EUR TTC -- arrondi 12,90 EUR sur la carte.
+            </p>
+          </div>
         </section>
 
         {/* ═════════════ SECTION 4 : Par categorie ═════════════ */}
@@ -465,6 +577,76 @@ export default function BlogCoefficient() {
           </Callout>
         </section>
 
+        {/* ═════════════ SECTION 5bis : MEGA tableau type d'etablissement ═════════════ */}
+        <section id="mega-tableau" className="mb-16">
+          <SectionHeading icon={<Building2 className="w-6 h-6" />} number="5bis">
+            Mega tableau : coefficient multiplicateur par type d'etablissement 2026
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              Le tableau de reference le plus complet du web francais. 12 types d'etablissement, avec
+              fourchettes basses et hautes constatees en 2026, food cost equivalent et facteur cle
+              expliquant le positionnement. Source : <strong>INSEE 2026 + benchmark RestauMargin sur
+              400+ etablissements connectes</strong>.
+            </p>
+          </div>
+
+          <div className="mt-6 overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-mono-975 text-mono-350">
+                  <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Type d'etablissement</th>
+                  <th className="text-center py-3 px-4 font-semibold">Coefficient</th>
+                  <th className="text-center py-3 px-4 font-semibold">Food cost</th>
+                  <th className="text-left py-3 px-4 font-semibold rounded-tr-xl">Facteur cle</th>
+                </tr>
+              </thead>
+              <tbody className="text-mono-350">
+                {[
+                  { t: 'Bistrot traditionnel', c: 'x 3,0 a 3,5', fc: '29-33 %', f: 'Produits de marche, cuisine francaise simple, ticket 18-25 EUR' },
+                  { t: 'Brasserie', c: 'x 3,2 a 3,7', fc: '27-31 %', f: 'Carte large, volume eleve, mix viande/poisson/salade' },
+                  { t: 'Restaurant gastronomique', c: 'x 4,0 a 5,0', fc: '20-25 %', f: 'Storytelling fort, valeur percue elevee, ticket 60-90 EUR' },
+                  { t: 'Restaurant etoile', c: 'x 4,5 a 6,0', fc: '17-22 %', f: 'Prestige etoile Michelin, produits nobles, ticket 120-300 EUR' },
+                  { t: 'Pizzeria', c: 'x 2,8 a 3,2', fc: '31-36 %', f: 'Food cost ultra-bas mais perception prix figee (10-15 EUR pizza)' },
+                  { t: 'Burger restaurant', c: 'x 3,0 a 3,5', fc: '29-33 %', f: 'Viande hachee couteuse, sides marges fortes (frites, sodas)' },
+                  { t: 'Sushi restaurant', c: 'x 3,5 a 4,0', fc: '25-29 %', f: 'Poisson cru qualite, riz peu couteux, formules plateau' },
+                  { t: 'Creperie / galettes', c: 'x 3,0 a 3,5', fc: '29-33 %', f: 'Farine et garnitures accessibles, ticket modere 12-18 EUR' },
+                  { t: 'Food truck', c: 'x 3,2 a 3,8', fc: '26-31 %', f: 'Charges fixes faibles, volume limite, sourcing optimise' },
+                  { t: 'Boulangerie', c: 'x 2,5 a 3,5', fc: '29-40 %', f: 'Varie selon produit : pain x 2,5 / patisserie x 3,5 / sandwich x 3,0' },
+                  { t: 'Bar / cafe', c: 'x 4,0 a 6,0', fc: '17-25 %', f: 'Boissons a tres faible cout matiere, marge alcool elevee' },
+                  { t: 'Glacier', c: 'x 5,0 a 8,0', fc: '12-20 %', f: 'Boule glace 0,30 EUR cout vs 3,50 EUR vente, super-marge artisanale' },
+                ].map((row, i) => (
+                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
+                    <td className="py-3 px-4 font-medium text-mono-100">{row.t}</td>
+                    <td className="py-3 px-4 text-center font-bold text-teal-700">{row.c}</td>
+                    <td className="py-3 px-4 text-center">{row.fc}</td>
+                    <td className="py-3 px-4 text-sm">{row.f}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="prose-content mt-6">
+            <p>
+              <strong>Lecture :</strong> les coefficients les plus eleves ne sont pas dans le
+              gastronomique (contrairement a une idee recue), mais chez les <strong>glaciers
+              (x 5 a x 8)</strong> et les <strong>bars/cafes (x 4 a x 6)</strong>. C'est la combinaison
+              d'un cout matiere derisoire et d'une perception de "produit fini" (artisanat, service)
+              qui justifie ces multiples. Le restaurant gastronomique a un coefficient absolu plus eleve
+              mais sur un ticket beaucoup plus important.
+            </p>
+            <p className="mt-4">
+              Pour aller plus loin sur votre segment specifique, consultez nos guides dedies :
+              <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">guide marge restaurant</Link>,
+              <Link to="/blog/food-cost-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">guide food cost</Link>,
+              <Link to="/blog/fixer-prix-carte-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">fixer les prix de la carte</Link>,
+              et <Link to="/blog/construire-carte-vins-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">construire une carte des vins</Link>.
+            </p>
+          </div>
+        </section>
+
         {/* ═════════════ SECTION 6 : Table de conversion ═════════════ */}
         <section id="table" className="mb-16">
           <SectionHeading icon={<BarChart3 className="w-6 h-6" />} number="6">
@@ -522,6 +704,388 @@ export default function BlogCoefficient() {
               trop eleve (cout matiere demesure pour le marche), soit une sous-tarification chronique.
               Un coefficient au-dessus de x 4,0 signale soit une categorie a forte marge naturelle
               (boissons, desserts), soit une sur-tarification a verifier vis-a-vis du marche local.
+            </p>
+          </div>
+        </section>
+
+        {/* ═════════════ SECTION 6bis : Boissons vs solides ═════════════ */}
+        <section id="boissons-vs-solides" className="mb-16">
+          <SectionHeading icon={<Wine className="w-6 h-6" />} number="6bis">
+            Coefficient multiplicateur boissons vs solides
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              C'est l'une des cles cachees de la rentabilite en restauration : <strong>la marge brute
+              moyenne sur les boissons (85-90 %) est superieure de 15 a 20 points a celle des
+              solides (65-75 %)</strong>. Un restaurant qui sert 30 % de boissons dans son ticket genere
+              automatiquement 5 a 7 points de marge brute supplementaires.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-6 mt-8">
+            <div className="bg-gradient-to-br from-emerald-50 to-white border border-emerald-200 rounded-2xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center">
+                  <Wine className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-mono-100 text-lg">Boissons : marge 85-90 %</h3>
+              </div>
+              <ul className="space-y-2 text-sm text-mono-400">
+                <li><strong>Cafe :</strong> 0,15 EUR cout, vendu 2,50 EUR -- coefficient x 16,7</li>
+                <li><strong>Biere pression 25 cl :</strong> 0,40 EUR cout, vendue 4,50 EUR -- x 11,3</li>
+                <li><strong>Verre de vin 12 cl :</strong> 1,00 EUR cout, vendu 6,00 EUR -- x 6,0</li>
+                <li><strong>Soda 33 cl :</strong> 0,30 EUR cout, vendu 3,50 EUR -- x 11,7</li>
+                <li><strong>Cocktail :</strong> 1,80 EUR cout, vendu 12,00 EUR -- x 6,7</li>
+              </ul>
+              <p className="text-xs text-emerald-700 mt-4 font-semibold">Marge brute moyenne : 87 %</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-amber-50 to-white border border-amber-200 rounded-2xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-amber-500 text-white rounded-xl flex items-center justify-center">
+                  <Beef className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-mono-100 text-lg">Solides : marge 65-75 %</h3>
+              </div>
+              <ul className="space-y-2 text-sm text-mono-400">
+                <li><strong>Entree :</strong> 2,50 EUR cout, vendue 9,00 EUR -- coefficient x 3,6</li>
+                <li><strong>Plat viande :</strong> 7,00 EUR cout, vendu 22,00 EUR -- x 3,1</li>
+                <li><strong>Plat poisson :</strong> 8,00 EUR cout, vendu 25,00 EUR -- x 3,1</li>
+                <li><strong>Pizza :</strong> 2,00 EUR cout, vendue 13,00 EUR -- x 6,5</li>
+                <li><strong>Dessert :</strong> 1,50 EUR cout, vendu 8,00 EUR -- x 5,3</li>
+              </ul>
+              <p className="text-xs text-amber-700 mt-4 font-semibold">Marge brute moyenne : 70 %</p>
+            </div>
+          </div>
+
+          <Callout type="info">
+            <strong>Strategie :</strong> chaque verre de vin vendu en plus dans votre service augmente
+            la marge brute de l'addition de 5 a 8 EUR. Sur 30 couverts/service x 2 services/jour x 26
+            jours, c'est 7 800 a 12 480 EUR de marge brute mensuelle supplementaire juste en upsellant
+            les boissons. Formez votre equipe a proposer systematiquement.
+          </Callout>
+        </section>
+
+        {/* ═════════════ SECTION 6ter : Gastro vs traditionnel ═════════════ */}
+        <section id="gastro-vs-traditionnel" className="mb-16">
+          <SectionHeading icon={<Award className="w-6 h-6" />} number="6ter">
+            Coefficient multiplicateur restaurant gastronomique vs traditionnel (4,5 vs 3,5)
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              Contrairement a une idee tres repandue, le restaurant gastronomique applique un coefficient
+              <strong> superieur </strong>au restaurant traditionnel, et non l'inverse. Voici pourquoi.
+            </p>
+          </div>
+
+          <div className="mt-6 overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-mono-975 text-mono-350">
+                  <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Critere</th>
+                  <th className="text-center py-3 px-4 font-semibold">Bistrot traditionnel</th>
+                  <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Gastronomique</th>
+                </tr>
+              </thead>
+              <tbody className="text-mono-350">
+                {[
+                  { c: 'Coefficient moyen', t: 'x 3,5', g: 'x 4,5' },
+                  { c: 'Food cost', t: '28-32 %', g: '20-25 %' },
+                  { c: 'Marge brute', t: '68-72 %', g: '75-80 %' },
+                  { c: 'Ticket moyen', t: '20-30 EUR', g: '80-150 EUR' },
+                  { c: 'Couvert/jour', t: '60-100', g: '20-40' },
+                  { c: 'Brigade cuisine', t: '2-4 personnes', g: '8-15 personnes' },
+                  { c: 'Masse salariale (% CA)', t: '28-32 %', g: '38-45 %' },
+                  { c: 'Storytelling produit', t: 'Limite', g: 'Central' },
+                  { c: 'Travail technique', t: 'Modere', g: 'Intense (cuissons, dressage)' },
+                  { c: 'Marge nette cible', t: '8-12 %', g: '6-10 %' },
+                ].map((row, i) => (
+                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
+                    <td className="py-3 px-4 font-medium text-mono-100">{row.c}</td>
+                    <td className="py-3 px-4 text-center">{row.t}</td>
+                    <td className="py-3 px-4 text-center font-bold text-teal-700">{row.g}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="prose-content mt-6">
+            <p>
+              <strong>Pourquoi le gastronomique a un coefficient plus eleve ?</strong> Trois raisons :
+              (1) le client paie l'experience, pas seulement le produit ; (2) la masse salariale tres
+              elevee (jusqu'a 45 % du CA) impose une marge brute superieure pour couvrir les charges ;
+              (3) le storytelling produit (origine, eleveur, technique) justifie une perception de
+              valeur tres au-dessus du cout matiere reel.
+            </p>
+            <p className="mt-4">
+              <strong>Inversement</strong>, le bistrot fonctionne au volume : ticket plus bas, mais
+              rotation 3x superieure. Un coefficient plus modere (3,5) suffit a generer la marge nette
+              cible grace au nombre de couverts servis.
+            </p>
+          </div>
+        </section>
+
+        {/* ═════════════ SECTION 6quater : Pizzeria ═════════════ */}
+        <section id="pizzeria" className="mb-16">
+          <SectionHeading icon={<Pizza className="w-6 h-6" />} number="6quater">
+            Coefficient multiplicateur pizzeria : pourquoi est-il bas ?
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              On entend souvent que la pizzeria a des coefficients "ultra-eleves" parce que le cout
+              matiere d'une pizza est tres bas. <strong>C'est partiellement faux</strong>. Si l'on
+              regarde le coefficient effectif (prix de vente / cout matiere reel), il se situe entre
+              2,8 et 3,2 dans la majorite des pizzerias francaises. Inferieur au coefficient bistrot.
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-br from-red-50 to-white border border-red-200 rounded-2xl p-6 my-6">
+            <h3 className="font-bold text-mono-100 mb-3 flex items-center gap-2">
+              <Pizza className="w-5 h-5 text-red-600" /> Pourquoi le coefficient pizzeria est-il bas ?
+            </h3>
+            <ol className="space-y-3 text-sm text-mono-400 list-decimal list-inside">
+              <li><strong>Plafond psychologique de prix :</strong> une margherita ne peut pas etre vendue plus de 12-13 EUR en pizzeria de quartier, meme avec un cout de 1,80 EUR. Le prix est fige par le marche, pas par le coefficient theorique.</li>
+              <li><strong>Concurrence intense :</strong> 12 000 pizzerias en France (Pizza Hut, Domino's, Del Arte, independants) imposent une grille de prix homogene.</li>
+              <li><strong>Cout matiere reel sous-estime :</strong> la mozzarella di bufala DOP coute 12-14 EUR/kg, l'huile d'olive AOP 8 EUR/L, la farine type 00 1,80 EUR/kg. Une pizza authentique coute 2,50-3,50 EUR de matiere, pas 0,80 EUR.</li>
+              <li><strong>Pertes elevees :</strong> 5-8 % de pertes (pates trop fermentees, garnitures perimees, erreurs cuisson) reduisent le coefficient effectif.</li>
+              <li><strong>Compensation par le volume :</strong> 80-120 pizzas/jour servies en 2 services = compensation par la rotation, pas par le coefficient unitaire.</li>
+            </ol>
+          </div>
+
+          <div className="prose-content">
+            <p>
+              <strong>Strategie gagnante en pizzeria :</strong> visez un coefficient de 3,0-3,2 sur les
+              pizzas (food cost 31-33 %) et compensez avec des coefficients eleves sur les boissons
+              (x 6-8), les desserts maison (x 5-6) et les antipasti (x 4-5). Le coefficient pondere
+              de la carte doit converger vers 3,5-3,8 pour assurer la rentabilite.
+            </p>
+          </div>
+        </section>
+
+        {/* ═════════════ SECTION 6quinquies : Traiteur ═════════════ */}
+        <section id="traiteur" className="mb-16">
+          <SectionHeading icon={<Truck className="w-6 h-6" />} number="6quinquies">
+            Coefficient multiplicateur traiteur : different du restaurant
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              L'activite traiteur fonctionne sur une logique de coefficient differente du restaurant
+              classique. Le client paie non seulement le plat, mais surtout <strong>le service
+              (livraison, dressage, vaisselle, personnel sur place)</strong>.
+            </p>
+          </div>
+
+          <div className="mt-6 grid sm:grid-cols-2 gap-6">
+            <div className="bg-white border border-mono-900 rounded-2xl p-6">
+              <h3 className="font-bold text-mono-100 mb-3 flex items-center gap-2">
+                <Truck className="w-5 h-5 text-teal-600" /> Coefficient traiteur (livraison)
+              </h3>
+              <ul className="space-y-2 text-sm text-mono-400">
+                <li>Cocktail dinatoire : <strong className="text-teal-700">x 4,0 a 5,0</strong></li>
+                <li>Plateau-repas entreprise : <strong className="text-teal-700">x 3,5 a 4,5</strong></li>
+                <li>Buffet froid : <strong className="text-teal-700">x 4,0 a 5,5</strong></li>
+                <li>Buffet chaud : <strong className="text-teal-700">x 3,5 a 4,5</strong></li>
+                <li>Plat individuel livre : <strong className="text-teal-700">x 3,0 a 3,5</strong></li>
+              </ul>
+              <p className="text-xs text-mono-500 mt-3">Coefficient plus eleve : couvre la livraison + emballage.</p>
+            </div>
+            <div className="bg-white border border-mono-900 rounded-2xl p-6">
+              <h3 className="font-bold text-mono-100 mb-3 flex items-center gap-2">
+                <ChefHat className="w-5 h-5 text-teal-600" /> Traiteur evenementiel (sur place)
+              </h3>
+              <ul className="space-y-2 text-sm text-mono-400">
+                <li>Mariage 100 couverts : <strong className="text-teal-700">x 4,5 a 6,0</strong></li>
+                <li>Seminaire entreprise : <strong className="text-teal-700">x 4,0 a 5,0</strong></li>
+                <li>Cocktail VIP : <strong className="text-teal-700">x 5,0 a 7,0</strong></li>
+                <li>Diner gastronomique : <strong className="text-teal-700">x 4,5 a 5,5</strong></li>
+              </ul>
+              <p className="text-xs text-mono-500 mt-3">Coefficient eleve : couvre brigade + service + materiel.</p>
+            </div>
+          </div>
+
+          <div className="prose-content mt-6">
+            <p>
+              <strong>Pourquoi des coefficients plus eleves ?</strong> Le traiteur supporte des couts
+              caches majeurs : transport (carburant, vehicule frigo, chauffeur), emballage (barquettes
+              biosourcees 0,30-0,80 EUR par unite), materiel (vaisselle jetable ou louee, mange-debout,
+              chauffages), personnel de service (15-25 EUR/h charge), assurance specifique, et marges
+              de securite sur les volumes (toujours commander 10 % en plus).
+            </p>
+            <p className="mt-4">
+              <strong>Erreur frequente :</strong> appliquer le coefficient restaurant (x 3,3) sur des
+              prestations traiteur. Resultat : marge nette negative apres deduction des couts caches.
+            </p>
+          </div>
+        </section>
+
+        {/* ═════════════ SECTION 6sex : Vin ═════════════ */}
+        <section id="vin" className="mb-16">
+          <SectionHeading icon={<Wine className="w-6 h-6" />} number="6sex">
+            Coefficient multiplicateur vin : 4 a 6x sur la carte des vins
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              La carte des vins est l'un des leviers de rentabilite les plus puissants en restauration.
+              Le coefficient multiplicateur sur les vins est generalement <strong>4 a 6 fois le prix
+              d'achat HT</strong>, soit une marge brute de 75 a 85 %. Sur une bouteille a 8 EUR HT
+              d'achat, vous la vendez 32 a 48 EUR HT sur la carte.
+            </p>
+          </div>
+
+          <div className="mt-6 overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-mono-975 text-mono-350">
+                  <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Segment vin</th>
+                  <th className="text-center py-3 px-4 font-semibold">Coefficient</th>
+                  <th className="text-center py-3 px-4 font-semibold">Marge brute</th>
+                  <th className="text-left py-3 px-4 font-semibold rounded-tr-xl">Logique</th>
+                </tr>
+              </thead>
+              <tbody className="text-mono-350">
+                {[
+                  { s: 'Vin de pays / IGP entree', c: 'x 5,0 a 6,0', m: '80-83 %', l: 'Vins peu connus, marge maximale possible' },
+                  { s: 'AOC regional (Cotes-du-Rhone, Bordeaux generique)', c: 'x 4,0 a 5,0', m: '75-80 %', l: 'Reconnaissance moderee, prix attendu < 40 EUR' },
+                  { s: 'AOC prestige (Pomerol, Sancerre, Chassagne)', c: 'x 3,0 a 4,0', m: '67-75 %', l: 'Client connait les prix marche, plafond impose' },
+                  { s: 'Grand cru classe (Margaux, Montrachet)', c: 'x 2,2 a 3,0', m: '55-67 %', l: 'Tickets eleves, coefficient module pour rester vendable' },
+                  { s: 'Champagne (Brut sans annee)', c: 'x 4,0 a 5,0', m: '75-80 %', l: 'Marque forte mais marge confortable' },
+                  { s: 'Champagne (Cuvee prestige)', c: 'x 2,5 a 3,5', m: '60-71 %', l: 'Dom Perignon, Krug : ticket > 200 EUR' },
+                  { s: 'Vin au verre 12 cl', c: 'x 6,0 a 8,0', m: '83-87 %', l: 'Bouteille = 5 verres, coefficient amplifie' },
+                  { s: 'Carafe maison 50 cl', c: 'x 5,0 a 7,0', m: '80-86 %', l: 'Excellent compromis qualite/prix client' },
+                ].map((row, i) => (
+                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
+                    <td className="py-3 px-4 font-medium text-mono-100">{row.s}</td>
+                    <td className="py-3 px-4 text-center font-bold text-teal-700">{row.c}</td>
+                    <td className="py-3 px-4 text-center">{row.m}</td>
+                    <td className="py-3 px-4 text-sm">{row.l}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="prose-content mt-6">
+            <p>
+              <strong>Regle d'or sur la carte des vins :</strong> coefficient eleve sur les vins
+              accessibles (vendus en volume) et coefficient module sur les vins prestige (vendus en
+              experience). Pour une carte equilibree : 60 % d'entree de gamme a coefficient x 5,
+              30 % milieu de gamme a x 4, 10 % prestige a x 2,5-3.
+            </p>
+            <p className="mt-4">
+              Pour la methode complete de construction d'une carte des vins rentable, consultez notre <Link to="/blog/construire-carte-vins-restaurant" className="text-teal-700 underline hover:text-teal-800">guide carte des vins restaurant</Link>.
+            </p>
+          </div>
+        </section>
+
+        {/* ═════════════ SECTION 6septies : FR vs USA ═════════════ */}
+        <section id="fr-vs-usa" className="mb-16">
+          <SectionHeading icon={<Globe className="w-6 h-6" />} number="6septies">
+            Comparaison coefficient multiplicateur : France vs USA
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              Les restaurateurs francais utilisent le <strong>"coefficient multiplicateur" (x 3,0 a
+              x 4,0)</strong> tandis que leurs homologues americains parlent de <strong>"menu pricing
+              markup" (2,5x a 3,0x)</strong>. La difference n'est pas qu'une question de vocabulaire :
+              elle reflete des modeles economiques fondamentalement differents.
+            </p>
+          </div>
+
+          <div className="mt-6 overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-mono-975 text-mono-350">
+                  <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Critere</th>
+                  <th className="text-center py-3 px-4 font-semibold">France</th>
+                  <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">USA</th>
+                </tr>
+              </thead>
+              <tbody className="text-mono-350">
+                {[
+                  { c: 'Nom utilise', f: 'Coefficient multiplicateur', u: 'Menu pricing markup' },
+                  { c: 'Fourchette typique', f: 'x 3,0 a 4,0', u: 'x 2,5 a 3,0' },
+                  { c: 'Food cost cible', f: '25-33 %', u: '33-40 %' },
+                  { c: 'Pourquoi plus eleve en France ?', f: 'Couvre TVA + charges sociales', u: 'TVA basse + pourboire = 18-22 % supplementaire' },
+                  { c: 'Pourboire / tip', f: 'Inclus (service compris)', u: 'Ajoute 18-22 % au prix affiche' },
+                  { c: 'TVA / sales tax', f: '10-20 % (incluse)', u: '0-10 % (ajoutee a la caisse)' },
+                  { c: 'Masse salariale (% CA)', f: '30-35 %', u: '25-30 %' },
+                  { c: 'Marge nette type', f: '5-10 %', u: '3-6 %' },
+                  { c: 'Methode populaire', f: 'Coefficient multiplicateur', u: 'Food cost percentage' },
+                ].map((row, i) => (
+                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
+                    <td className="py-3 px-4 font-medium text-mono-100">{row.c}</td>
+                    <td className="py-3 px-4 text-center font-bold text-teal-700">{row.f}</td>
+                    <td className="py-3 px-4 text-center">{row.u}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <Callout type="info">
+            <strong>Lecon a retenir :</strong> ne copiez pas les coefficients americains sur votre carte
+            francaise. Avec un coefficient x 2,5-3,0, vous travailleriez a perte car votre structure de
+            cout (charges sociales, TVA) est radicalement differente. La methode francaise (x 3,0-4,0)
+            est calibree pour absorber les specificites locales.
+          </Callout>
+        </section>
+
+        {/* ═════════════ SECTION 6octies : Coefficient inverse ═════════════ */}
+        <section id="inverse" className="mb-16">
+          <SectionHeading icon={<Wand2 className="w-6 h-6" />} number="6octies">
+            Coefficient multiplicateur inverse : comment ajuster ses prix depuis un food cost cible
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              La methode classique : Cout matiere -- Coefficient -- Prix de vente. La methode inverse :
+              <strong> Prix de vente souhaite -- Food cost cible -- Cout matiere maximum acceptable</strong>.
+              C'est cette approche que les chefs gastronomiques utilisent pour ajuster une recette dont
+              le prix de vente est deja fige par le marche.
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-br from-teal-50 to-white border border-teal-200 rounded-2xl p-6 my-6">
+            <h3 className="font-bold text-mono-100 mb-3 flex items-center gap-2">
+              <Wand2 className="w-5 h-5 text-teal-600" /> Formule du coefficient inverse
+            </h3>
+            <div className="bg-white rounded-lg p-4 font-mono text-sm space-y-2">
+              <div><strong>Cout matiere max</strong> = Prix vente HT x Food cost cible</div>
+              <div><strong>Cout matiere max</strong> = Prix vente HT / Coefficient cible</div>
+            </div>
+            <p className="text-sm text-mono-400 mt-4">
+              Exemple : vous voulez vendre un plat 18 EUR TTC (16,36 EUR HT) avec un food cost cible
+              de 28 %. Cout matiere maximum = 16,36 x 0,28 = <strong>4,58 EUR</strong>. Votre fiche
+              technique doit imperativement rester sous 4,58 EUR de cout matiere reel.
+            </p>
+          </div>
+
+          <h3 className="text-xl font-bold text-mono-100 mb-3 mt-8">Cas d'application : ajuster une recette</h3>
+          <div className="prose-content">
+            <p>
+              Vous avez fixe le prix d'un risotto truffe a 28 EUR TTC sur votre carte (clientele
+              acceptee). Votre food cost cible est 30 %. Calcul inverse :
+            </p>
+            <ul className="list-disc list-inside space-y-1.5 text-mono-350 mt-3">
+              <li>Prix HT = 28 / 1,10 = <strong>25,45 EUR HT</strong></li>
+              <li>Cout matiere max = 25,45 x 0,30 = <strong>7,64 EUR</strong></li>
+              <li>Cout matiere actuel (fiche technique) = 9,80 EUR (avec truffe 6 g)</li>
+              <li>Ecart = <strong>+2,16 EUR de derapage</strong></li>
+              <li>Solution 1 : reduire la truffe a 4 g -- nouveau cout = 7,40 EUR -- conforme</li>
+              <li>Solution 2 : remplacer truffe noire par truffe d'ete (3x moins chere)</li>
+              <li>Solution 3 : augmenter le prix de vente a 32 EUR TTC pour absorber le cout</li>
+            </ul>
+            <p className="mt-4">
+              <strong>Cette methode est cruciale</strong> en menu degustation et plat signature. Elle
+              transforme le coefficient d'outil de calcul en outil de pilotage operationnel. Couplez-la
+              avec une <Link to="/blog/fixer-prix-carte-restaurant" className="text-teal-700 underline hover:text-teal-800">strategie de fixation des prix carte</Link> pour optimiser votre marge globale.
             </p>
           </div>
         </section>
@@ -586,6 +1150,111 @@ export default function BlogCoefficient() {
               comment="Coefficient extreme (x 13) typique des boissons chaudes. Marge brute de 92 %. C'est ce qui permet a un coffee shop d'etre rentable avec un ticket moyen de 6-8 EUR."
             />
           </div>
+        </section>
+
+        {/* ═════════════ SECTION 7bis : 5 cas concrets chiffres ═════════════ */}
+        <section id="cas-concrets-5" className="mb-16">
+          <SectionHeading icon={<Sparkles className="w-6 h-6" />} number="7bis">
+            5 cas concrets chiffres : Lyon, Marseille, Paris, Bordeaux, Lille
+          </SectionHeading>
+
+          <div className="prose-content">
+            <p>
+              Cinq exemples reels d'application du coefficient multiplicateur dans differents segments
+              et villes francaises. Donnees issues du benchmark RestauMargin 2026 (400+ etablissements
+              connectes), prix matiere actualises Q2 2026.
+            </p>
+          </div>
+
+          <div className="space-y-6 mt-8">
+            <CasCard
+              icon={<Beef className="w-6 h-6" />}
+              title="Bistrot Lyon : carbonara, food cost 18 %, coefficient 3,3"
+              data={[
+                { label: 'Plat', value: 'Carbonara maison (250g)' },
+                { label: 'Cout matiere (pates + guanciale + oeuf + pecorino)', value: '3,60 EUR' },
+                { label: 'Food cost cible', value: '18 %' },
+                { label: 'Coefficient applique', value: 'x 3,3 (food cost effectif 30 %)' },
+                { label: 'Prix de vente HT', value: '11,88 EUR' },
+                { label: 'Prix TTC (TVA 10 %)', value: '13,07 EUR' },
+                { label: 'Prix arrondi carte', value: '12,90 EUR' },
+                { label: 'Marge brute par plat', value: '8,13 EUR' },
+              ]}
+              comment="Le bistrot lyonnais cible un food cost de 18 % sur les pates car la matiere est ultra-bon marche. Avec un coefficient de 3,3, le plat reste accessible (12,90 EUR) et genere 8 EUR de marge brute. Volume cible : 35 carbonaras/jour x 26 jours = 7 410 EUR/mois de marge."
+            />
+
+            <CasCard
+              icon={<Pizza className="w-6 h-6" />}
+              title="Pizzeria Marseille : margherita, food cost 22 %, coefficient 3,5"
+              data={[
+                { label: 'Plat', value: 'Pizza margherita napolitaine (32 cm)' },
+                { label: 'Cout matiere (pate + mozzarella + tomate San Marzano + basilic + huile)', value: '2,50 EUR' },
+                { label: 'Food cost cible', value: '22 %' },
+                { label: 'Coefficient applique', value: 'x 3,5 (food cost effectif 28 %)' },
+                { label: 'Prix de vente HT', value: '8,75 EUR' },
+                { label: 'Prix TTC (TVA 10 %)', value: '9,63 EUR' },
+                { label: 'Prix arrondi carte', value: '9,50 EUR' },
+                { label: 'Marge brute par pizza', value: '6,06 EUR' },
+              ]}
+              comment="La pizzeria marseillaise applique un coefficient modere (3,5) car le marche local impose un plafond de 10-11 EUR sur une margherita. Compense par le volume : 80 pizzas/jour x 26 jours = 12 600 EUR/mois de marge brute pizza."
+            />
+
+            <CasCard
+              icon={<Award className="w-6 h-6" />}
+              title="Gastronomique Paris : pigeon, food cost 30 %, coefficient 4,5"
+              data={[
+                { label: 'Plat', value: 'Pigeon de Racan, sauce salmis, betterave (240g)' },
+                { label: 'Cout matiere (pigeon + sauce + accompagnement + dressage)', value: '12,00 EUR' },
+                { label: 'Food cost cible', value: '30 %' },
+                { label: 'Coefficient applique', value: 'x 4,5 (food cost effectif 22 %)' },
+                { label: 'Prix de vente HT', value: '54,00 EUR' },
+                { label: 'Prix TTC (TVA 10 %)', value: '59,40 EUR' },
+                { label: 'Prix arrondi carte', value: '58,00 EUR' },
+                { label: 'Marge brute par plat', value: '40,73 EUR' },
+              ]}
+              comment="Le gastronomique parisien justifie son coefficient 4,5 par le storytelling produit (origine Racan), le travail technique (cuisson basse temperature + sauce reduite), et le ticket moyen eleve (80-120 EUR). 35 couverts/jour x 26 jours = >35 000 EUR/mois de marge brute."
+            />
+
+            <CasCard
+              icon={<Truck className="w-6 h-6" />}
+              title="Food truck Bordeaux : burger, food cost 28 %, coefficient 3,5"
+              data={[
+                { label: 'Plat', value: 'Burger classic (steak 150g + bun + cheddar + sauce)' },
+                { label: 'Cout matiere (steak hache + pain artisan + cheddar + sauce maison + frites)', value: '3,20 EUR' },
+                { label: 'Food cost cible', value: '28 %' },
+                { label: 'Coefficient applique', value: 'x 3,5 (food cost effectif 28,6 %)' },
+                { label: 'Prix de vente HT', value: '11,20 EUR' },
+                { label: 'Prix TTC (TVA 10 %)', value: '12,32 EUR' },
+                { label: 'Prix arrondi carte', value: '12,00 EUR' },
+                { label: 'Marge brute par burger', value: '7,71 EUR' },
+              ]}
+              comment="Le food truck bordelais beneficie de charges fixes basses (pas de loyer 'salle'). Coefficient 3,5 suffisant car volume eleve sur emplacements premium : 120 burgers/jour x 5 jours/semaine = 600 burgers x 7,71 EUR = 4 626 EUR/semaine de marge brute."
+            />
+
+            <CasCard
+              icon={<Wine className="w-6 h-6" />}
+              title="Bar a vin Lille : verre 12 cl, food cost 12 %, coefficient 5,5"
+              data={[
+                { label: 'Produit', value: 'Verre de vin rouge 12 cl (Cotes-du-Rhone Village)' },
+                { label: 'Cout matiere (bouteille 75 cl achetee 5,40 EUR -- 0,86 EUR par verre)', value: '0,86 EUR' },
+                { label: 'Food cost cible', value: '12 %' },
+                { label: 'Coefficient applique', value: 'x 5,5 (food cost effectif 18 %)' },
+                { label: 'Prix de vente HT', value: '4,73 EUR' },
+                { label: 'Prix TTC (TVA 20 % alcool)', value: '5,68 EUR' },
+                { label: 'Prix arrondi carte', value: '5,80 EUR' },
+                { label: 'Marge brute par verre', value: '3,87 EUR' },
+              ]}
+              comment="Le bar a vin lillois applique un coefficient eleve (5,5) sur le verre, classique pour ce segment. Le coefficient effectif est x 6,7 (5,80 / 0,86). Vendu 50 verres/jour x 26 jours = 5 031 EUR/mois de marge brute uniquement sur les verres de vin."
+            />
+          </div>
+
+          <Callout type="info">
+            <strong>Lecon transversale :</strong> ce ne sont pas les coefficients les plus eleves qui
+            generent le plus de marge brute totale, mais la combinaison optimale entre coefficient,
+            volume et ticket moyen. Le gastronomique parisien a un coefficient comparable au bar a vin
+            (4,5 vs 5,5) mais genere 40 EUR de marge par plat (vs 3,87 EUR par verre). C'est le mix
+            volume/marge qui compte.
+          </Callout>
         </section>
 
         {/* ═════════════ SECTION 8 : Menu engineering ═════════════ */}
@@ -790,15 +1459,17 @@ export default function BlogCoefficient() {
           </h3>
           <ol className="space-y-2 text-sm text-mono-350">
             <li>1. Le coefficient multiplicateur convertit le cout matiere en prix de vente HT.</li>
-            <li>2. Coefficient = 1 / Food cost cible.</li>
+            <li>2. <strong>Coefficient = 1 / Food cost cible</strong> (formule fondamentale).</li>
             <li>3. N'appliquez jamais un coefficient unique a toute la carte.</li>
-            <li>4. Les desserts et boissons meritent les coefficients les plus eleves (x 4 a x 12).</li>
-            <li>5. Les plats nobles (viande, poisson) ont les coefficients les plus bas (x 2,5 a x 3,5).</li>
-            <li>6. Calculez sur le cout matiere net (apres rendement et pertes).</li>
-            <li>7. Calculez en HT, jamais en TTC.</li>
-            <li>8. Revisez vos coefficients tous les 3 mois minimum.</li>
-            <li>9. Combinez coefficient et menu engineering pour maximiser la marge globale.</li>
-            <li>10. Verifiez le coefficient effectif apres arrondi psychologique.</li>
+            <li>4. Coefficients par segment : bistrot 3,5 -- gastro 4,5 -- pizzeria 3,0 -- glacier 5-8.</li>
+            <li>5. Boissons : marge brute 85-90 % vs solides 65-75 % (cle de la rentabilite).</li>
+            <li>6. Les desserts et boissons meritent les coefficients les plus eleves (x 4 a x 12).</li>
+            <li>7. Les plats nobles (viande, poisson) ont les coefficients les plus bas (x 2,5 a x 3,5).</li>
+            <li>8. Calculez sur le cout matiere net (apres rendement et pertes).</li>
+            <li>9. Calculez en HT, jamais en TTC. TVA 10 % sur place, 20 % alcool, 5,5 % froid emporte.</li>
+            <li>10. Revisez vos coefficients tous les 3 mois minimum.</li>
+            <li>11. Combinez coefficient et menu engineering pour maximiser la marge globale.</li>
+            <li>12. Utilisez le coefficient inverse pour adapter une recette a un prix fige.</li>
           </ol>
         </div>
 
@@ -815,32 +1486,41 @@ export default function BlogCoefficient() {
         {/* ═════════════ CTA ═════════════ */}
         <section id="cta" className="mb-16">
           <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 sm:p-12 text-center">
+            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-4 py-2 rounded-full text-white text-xs font-bold uppercase tracking-wider mb-4">
+              <Calculator className="w-4 h-4" />
+              Outil gratuit interactif
+            </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-4">
-              Calculez vos coefficients en 5 minutes
+              Calculez votre coefficient en 30 secondes
             </h2>
             <p className="text-teal-100 text-lg max-w-xl mx-auto mb-3 leading-relaxed">
-              Testez RestauMargin gratuitement et voyez le coefficient, le food cost et la marge reelle
-              de chacun de vos plats automatiquement.
+              Saisissez vos ingredients et leur cout. Le calculateur affiche instantanement
+              le coefficient multiplicateur, le food cost, la marge brute et le prix de vente HT/TTC
+              recommande avec arrondi psychologique.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
+              <strong>Sans inscription. Sans carte bancaire. Resultat en temps reel.</strong>
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                to="/login?mode=register"
+                to="/outils/calculateur-marge-restaurant"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white text-teal-700 font-bold rounded-full hover:bg-teal-50 transition-colors text-lg shadow-lg"
               >
-                Essai gratuit 7 jours
+                <Calculator className="w-5 h-5" />
+                Calculateur marge restaurant
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
-                to="/outils/calculateur-food-cost"
+                to="/login?mode=register"
                 className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-colors"
               >
-                <Calculator className="w-5 h-5" />
-                Calculateur gratuit
+                Essai 7 jours RestauMargin
               </Link>
             </div>
+            <p className="text-teal-100 text-xs mt-6">
+              Vous prefererez l'integration complete ? Testez RestauMargin gratuitement 7 jours --
+              <strong> 29 EUR/mois</strong>, sans engagement, sans carte bancaire.
+            </p>
           </div>
         </section>
 
@@ -850,19 +1530,35 @@ export default function BlogCoefficient() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link to="/blog/calcul-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calcul marge restaurant : guide 2026</h3>
-              <p className="text-xs text-mono-500">Marge brute, marge nette, food cost : toutes les formules.</p>
+              <p className="text-xs text-mono-500">Marge brute, marge nette, food cost : toutes les formules. Hub central pricing.</p>
+            </Link>
+            <Link to="/outils/calculateur-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculateur marge interactif</h3>
+              <p className="text-xs text-mono-500">Outil gratuit en ligne pour coefficient + food cost + prix de vente.</p>
+            </Link>
+            <Link to="/outils/calculateur-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculateur food cost gratuit</h3>
+              <p className="text-xs text-mono-500">Outil en ligne, sans inscription, calcul instantane par plat.</p>
+            </Link>
+            <Link to="/blog/fixer-prix-carte-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Fixer les prix de sa carte</h3>
+              <p className="text-xs text-mono-500">3 methodes : cout, valeur percue, concurrence. Psychologie des prix.</p>
+            </Link>
+            <Link to="/blog/construire-carte-vins-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Carte des vins restaurant</h3>
+              <p className="text-xs text-mono-500">Construire une carte des vins rentable : coefficients, rotation, presentation.</p>
+            </Link>
+            <Link to="/blog/food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Food cost restaurant</h3>
+              <p className="text-xs text-mono-500">10 strategies eprouvees pour baisser durablement le food cost.</p>
+            </Link>
+            <Link to="/blog/marge-beneficiaire-restaurant-ideal" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Marge beneficiaire ideale</h3>
+              <p className="text-xs text-mono-500">5-15 % net selon segment. Exemples chiffres et benchmarks 2026.</p>
             </Link>
             <Link to="/blog/prix-de-vente-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Prix de vente d'un plat</h3>
               <p className="text-xs text-mono-500">3 methodes : coefficient, marge cible, pricing psychologique.</p>
-            </Link>
-            <Link to="/blog/food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le food cost</h3>
-              <p className="text-xs text-mono-500">10 strategies eprouvees pour baisser le food cost.</p>
-            </Link>
-            <Link to="/outils/calculateur-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculateur food cost gratuit</h3>
-              <p className="text-xs text-mono-500">Outil en ligne, sans inscription, calcul instantane.</p>
             </Link>
           </div>
         </section>

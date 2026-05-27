@@ -114,8 +114,8 @@ const ROUTES = [
   },
   {
     path: '/blog/coefficient-multiplicateur',
-    title: 'Le coefficient multiplicateur en restauration : guide complet',
-    description: 'Comprendre et appliquer le coefficient multiplicateur pour fixer vos prix de vente en restaurant. Formules et exemples.',
+    title: 'Coefficient multiplicateur restaurant 2026 : calcul + formule + exemples (guide complet)',
+    description: 'Coefficient multiplicateur restaurant : formule, calcul pas a pas, valeurs cibles par segment (bistrot 3.5, gastro 4.5, pizzeria 3.0). Exemples chiffres, erreurs courantes et calculateur gratuit.',
     type: 'article',
   },
   {

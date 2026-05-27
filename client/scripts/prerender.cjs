@@ -472,6 +472,12 @@ const ROUTES = [
     description: 'Comparatif honnete de 12 logiciels restaurant en 2026 : RestauMargin, Lightspeed, Zenchef, Innovorder, Hubrise, TheFork, L Addition. Prix, fonctionnalites, avis.',
   },
   {
+    path: '/comparatif-restaumargin-vs-zenchef',
+    title: 'RestauMargin vs Zenchef : comparatif complet 2026 (prix, features, avis)',
+    description: 'Comparatif benchmark RestauMargin vs Zenchef en 2026. Prix, fonctionnalites, food cost, reservations, gestion marge. Quelle solution choisir selon votre restaurant ? Verdict honnete.',
+    type: 'article',
+  },
+  {
     path: '/glossaire-restauration',
     title: 'Glossaire restauration 2026 | 60+ definitions food cost, marge, KPI | RestauMargin',
     description: 'Glossaire complet de la restauration. 60+ termes definis : food cost, marge, prime cost, fiche technique, HACCP, GMP, RevPASH. Guide de reference 2026.',

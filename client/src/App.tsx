@@ -203,6 +203,7 @@ const AlternativeLAddition = lazyRetry(() => import('./pages/AlternativeLAdditio
 const AlternativeLightspeed = lazyRetry(() => import('./pages/AlternativeLightspeed'));
 const AlternativeTheFork = lazyRetry(() => import('./pages/AlternativeTheFork'));
 const ComparatifLogicielsRestaurant = lazyRetry(() => import('./pages/ComparatifLogicielsRestaurant'));
+const ComparatifRestauMarginZenchef = lazyRetry(() => import('./pages/ComparatifRestauMarginZenchef'));
 const LogicielMargeBoulangerie = lazyRetry(() => import('./pages/LogicielMargeBoulangerie'));
 const LogicielMargeGlacier = lazyRetry(() => import('./pages/LogicielMargeGlacier'));
 const LogicielMargeCafeBar = lazyRetry(() => import('./pages/LogicielMargeCafeBar'));
@@ -1251,6 +1252,8 @@ function App() {
           <Route path="/alternative-thefork" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeTheFork /></Suspense>} />
           {/* Mega-comparatif 12 logiciels restaurant 2026 */}
           <Route path="/comparatif-logiciels-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><ComparatifLogicielsRestaurant /></Suspense>} />
+          {/* SEO contre-attaque 2026-05-27 : benchmark direct RestauMargin vs Zenchef (capter "zenchef alternative", "zenchef vs restaumargin"). */}
+          <Route path="/comparatif-restaumargin-vs-zenchef" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><ComparatifRestauMarginZenchef /></Suspense>} />
           {/* Catch-all: unknown blog slug → redirect to blog index (avoids falling into ProtectedRoute /login) */}
           <Route path="/blog/*" element={<Navigate to="/blog" replace />} />
           {/* Catch-all: unknown public tool → redirect to home */}

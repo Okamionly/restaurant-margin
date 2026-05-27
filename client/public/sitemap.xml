@@ -547,6 +547,14 @@
     <priority>0.95</priority>
   </url>
 
+  <!-- Comparatif direct RestauMargin vs Zenchef (contre-attaque SEO 2026-05-27) -->
+  <url>
+    <loc>https://www.restaumargin.fr/comparatif-restaumargin-vs-zenchef</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
   <!-- Glossaire long-tail SEO (60+ termes restauration) -->
   <url>
     <loc>https://www.restaumargin.fr/glossaire-restauration</loc>

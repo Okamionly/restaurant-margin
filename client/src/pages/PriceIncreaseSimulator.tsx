@@ -44,7 +44,7 @@ function Kpi({ label, before, after, positive }: { label: string; before: string
   );
 }
 
-const SCENARIOS = [5, 10, 15, 20];
+const BASE_SCENARIOS = [5, 10, 15, 20];
 
 export default function PriceIncreaseSimulator() {
   const [ca, setCa] = useState(30000);
@@ -92,7 +92,9 @@ export default function PriceIncreaseSimulator() {
 
   const reset = () => { setCa(30000); setTicket(25); setFc(30); setHausse(10); setPerte(0); };
 
-  const inputClass = 'bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626]';
+  const scenarios = BASE_SCENARIOS.includes(hausse)
+    ? BASE_SCENARIOS
+    : [...BASE_SCENARIOS, hausse].sort((a, b) => a - b);
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] dark:bg-black p-4 md:p-8">
@@ -200,7 +202,7 @@ export default function PriceIncreaseSimulator() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F5F5F5] dark:divide-[#1A1A1A]">
-                {SCENARIOS.map(pct => {
+                {scenarios.map(pct => {
                   const h = pct / 100;
                   const fcR = fc / 100;
                   const couverts = ticket > 0 ? ca / ticket : 0;

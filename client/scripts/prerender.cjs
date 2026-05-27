@@ -586,6 +586,50 @@ function run() {
       `<meta name="twitter:description" content="${route.description}"`
     );
 
+    // ─── CRITICAL SEO FIX: inject UNIQUE static content INSIDE <div id="root"> ───
+    // Before this fix, Googlebot saw only the generic landing page noscript content on
+    // every route, treating all 91 pages as duplicate content. Now each page has its own
+    // visible H1 + summary + breadcrumbs + featured-snippet paragraph baked into the HTML.
+    // React hydrates over this content seamlessly on the client (matching HTML structure).
+    const h1 = route.title.replace(/ \| RestauMargin$/, '').replace(/ — RestauMargin$/, '');
+    const breadcrumbs = route.path.startsWith('/blog/') ? 'Accueil &gt; Blog'
+      : route.path.startsWith('/guide-marge/') ? 'Accueil &gt; Guides'
+      : route.path.startsWith('/alternative-') ? 'Accueil &gt; Comparatifs'
+      : route.path.startsWith('/logiciel-marge-') ? 'Accueil &gt; Logiciels'
+      : route.path.startsWith('/outils/') ? 'Accueil &gt; Outils'
+      : 'Accueil';
+    const lastSegment = route.path.split('/').filter(Boolean).pop() || 'page';
+    const breadcrumbLabel = lastSegment.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    const seoStaticContent = `
+      <article style="max-width:800px;margin:0 auto;padding:48px 20px;font-family:'Inter',system-ui,sans-serif;color:#111111;line-height:1.6">
+        <nav style="font-size:13px;color:#737373;margin-bottom:24px"><a href="/" style="color:#0d9488;text-decoration:none">${breadcrumbs}</a> &gt; <span>${breadcrumbLabel}</span></nav>
+        <h1 style="font-size:36px;font-weight:800;line-height:1.2;margin:0 0 16px 0;color:#111111">${h1}</h1>
+        <p style="font-size:18px;color:#525252;margin:0 0 32px 0">${route.description}</p>
+        <div style="background:#f0fdfa;border-left:4px solid #0d9488;padding:16px 20px;border-radius:8px;margin:0 0 32px 0">
+          <p style="margin:0;font-size:15px;color:#111111"><strong>${h1}</strong> — découvrez le guide complet RestauMargin 2026 avec formules, exemples chiffrés, benchmarks par segment et calculateur gratuit.</p>
+        </div>
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">À propos de RestauMargin</h2>
+        <p>RestauMargin est la plateforme SaaS française de gestion de marge pour restaurateurs. Calculez votre food cost, optimisez vos fiches techniques, gérez votre mercuriale fournisseurs et augmentez vos marges grâce à l'intelligence artificielle. Plan Pro à 29 €/mois, essai gratuit 7 jours sans engagement.</p>
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Articles connexes</h2>
+        <ul style="padding-left:20px;color:#525252">
+          <li><a href="/blog/calcul-marge-restaurant" style="color:#0d9488;text-decoration:none">Marge restaurant 2026 : calcul, formule, food cost (guide complet)</a></li>
+          <li><a href="/blog/reduire-food-cost" style="color:#0d9488;text-decoration:none">Réduire le food cost de votre restaurant : 10 stratégies</a></li>
+          <li><a href="/blog/coefficient-multiplicateur" style="color:#0d9488;text-decoration:none">Coefficient multiplicateur restaurant 2026</a></li>
+          <li><a href="/blog/faq-marge-restaurant-25-questions" style="color:#0d9488;text-decoration:none">FAQ Marge Restaurant : 25 questions essentielles</a></li>
+          <li><a href="/outils/calculateur-marge-restaurant" style="color:#0d9488;text-decoration:none">Calculateur de marge restaurant gratuit</a></li>
+        </ul>
+        <p style="font-size:13px;color:#737373;margin-top:48px">Chargement de l'application interactive…</p>
+      </article>
+    `;
+
+    // Replace the generic <noscript> fallback with route-specific visible content
+    // Pattern matches the empty <div id="root"> OR existing noscript fallback
+    html = html.replace(
+      /<div id="root">[\s\S]*?<\/div>(\s*<script)/,
+      `<div id="root">${seoStaticContent}</div>$1`
+    );
+
     // Write the file
     const dir = path.join(DIST, route.path);
     fs.mkdirSync(dir, { recursive: true });
@@ -593,7 +637,7 @@ function run() {
     count++;
   }
 
-  console.log(`[prerender] Generated ${count} static HTML files for SEO.`);
+  console.log(`[prerender] Generated ${count} static HTML files for SEO (with route-specific H1 + content baked in).`);
 }
 
 run();

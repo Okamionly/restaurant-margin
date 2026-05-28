@@ -2103,7 +2103,7 @@ export default function Recipes() {
     const ids = Array.from(selectedRecipeIds);
     try {
       await Promise.all(ids.map((id) => deleteRecipe(id)));
-      showToast(`${ids.length} recette(s) supprimee(s)`, 'success');
+      showToast(t("recipes.recipeDeleted"), 'success');
       setSelectedRecipeIds(new Set());
       loadData();
     } catch {
@@ -2134,7 +2134,7 @@ export default function Recipes() {
           });
         }
       }
-      showToast(`Categorie changee pour ${ids.length} recette(s)`, 'success');
+      showToast(t("recipes.categoryUpdated"), 'success');
       setSelectedRecipeIds(new Set());
       setBulkRecipeCategoryOpen(false);
       loadData();
@@ -2353,7 +2353,7 @@ export default function Recipes() {
   // AI Mercuriale: suggest ingredients for recipe
   async function handleAiSuggest() {
     if (!form.name.trim() || form.name.trim().length < 2) {
-      showToast('Entrez un nom de recette (min 2 caracteres)', 'error');
+      showToast(t("recipes.nameRequired"), 'error');
       return;
     }
     setAiSuggestionsLoading(true);
@@ -2633,7 +2633,7 @@ export default function Recipes() {
     setIngredientSearch('');
     setWeighingLineIdx(null); setShowBatchWeighing(false); setShowQuickWeighAdd(false); setWeighedLines(new Set()); setSimWeight(0);
     setShowForm(true);
-    showToast('Formulaire pre-rempli avec les ingredients', 'success');
+    showToast(t("recipes.formPrefilled"), 'success');
   }
 
   function openVariantModal(recipe: Recipe) {

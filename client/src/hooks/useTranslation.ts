@@ -22,7 +22,12 @@ function getNestedValue(obj: Record<string, unknown>, path: string): string {
 
 export function useTranslation() {
   const [locale, setLocale] = useState<string>(() => {
-    return localStorage.getItem('locale') || 'fr';
+    // Site FR-first (marche francais) : on force 'fr' par defaut.
+    // Aucun selecteur de langue n'est expose publiquement pour l'instant, donc on
+    // ignore toute locale periimee (ex: 'en' residuel des tests i18n) qui bloquerait
+    // les visiteurs francais sur une UI anglaise. Migration auto via le useEffect ci-dessous.
+    const stored = localStorage.getItem('locale');
+    return stored === 'fr' ? 'fr' : 'fr';
   });
 
   useEffect(() => {

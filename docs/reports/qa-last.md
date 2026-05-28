@@ -1,4 +1,4 @@
-# Rapport QA — 2026-05-27 · 20h00 Paris
+# Rapport QA — 2026-05-28 · 20h00 Paris
 
 ## Résumé
 

@@ -11,11 +11,9 @@ import {
   ChefHat,
   X,
   FileText,
-  Wifi,
   WifiOff,
   Gauge,
   ClipboardList,
-  Package,
   Boxes,
   ShieldCheck,
   Sparkles,
@@ -48,27 +46,27 @@ const faqItems = [
   {
     question: 'Quelles balances Bluetooth sont compatibles avec RestauMargin ?',
     answer:
-      "RestauMargin se connecte aux balances Bluetooth Low Energy (BLE) qui exposent un profil de poids standard, ainsi qu'aux modeles courants de balances de cuisine connectees vendus dans le commerce (portee 0 a 5 ou 0 a 15 kg, precision 1 g). Le kit hardware officiel RestauMargin embarque une balance pre-appairee et testee, prete a l'emploi des la sortie du carton. Si vous possedez deja une balance Bluetooth, contactez-nous avec la reference exacte : nous verifions la compatibilite avant tout achat.",
+      "RestauMargin se connecte aux balances Bluetooth Low Energy (BLE) du commerce qui exposent un profil de poids standard (portee 0 a 5 ou 0 a 15 kg, precision 1 g). Contactez-nous avec la reference de votre balance pour verifier la compatibilite.",
   },
   {
     question: 'Faut-il obligatoirement une tablette pour utiliser le pesage Bluetooth ?',
     answer:
-      "Non. Le pesage Bluetooth fonctionne sur n'importe quel appareil qui ouvre RestauMargin dans un navigateur compatible Web Bluetooth : tablette Android (Samsung Galaxy Tab A9+ recommandee en mode kiosque), smartphone Android, ou ordinateur portable Chrome/Edge. La tablette reste la solution la plus confortable en cuisine : grand ecran lisible a distance, support mural ou sur pied, et mode kiosque qui verrouille l'appareil sur l'application. Le smartphone du chef depanne tres bien pour un controle ponctuel.",
+      "Le pesage Bluetooth fonctionne sur tout appareil ouvrant RestauMargin dans un navigateur compatible Web Bluetooth : tablette ou smartphone Android, ordinateur Chrome/Edge. A vous de choisir l'appareil le plus pratique pour votre cuisine.",
   },
   {
     question: 'Le pesage fonctionne-t-il hors-ligne, sans connexion internet ?',
     answer:
-      "Oui pour la lecture du poids. La balance communique avec la tablette en Bluetooth direct, sans passer par internet : meme en plein creux de reseau, le poids s'affiche et s'inscrit dans la fiche technique. RestauMargin etant une PWA (Progressive Web App), les fiches techniques deja consultees restent disponibles en cache. La synchronisation des couts et l'enregistrement definitif se font des que la connexion revient. En clair : on continue de peser et de produire meme quand la box du restaurant fait des siennes.",
+      "Oui pour la lecture du poids. La balance communique avec votre appareil en Bluetooth direct, sans passer par internet : meme en plein creux de reseau, le poids s'affiche et s'inscrit dans la fiche technique. RestauMargin etant une PWA (Progressive Web App), les fiches techniques deja consultees restent disponibles en cache. La synchronisation des couts et l'enregistrement definitif se font des que la connexion revient. En clair : on continue de peser et de produire meme quand la box du restaurant fait des siennes.",
   },
   {
-    question: 'Le kit hardware avec la balance est-il fourni avec l\'abonnement ?',
+    question: 'Le pesage Bluetooth est-il inclus dans l\'abonnement ?',
     answer:
-      "Le logiciel RestauMargin et la fonction pesage Bluetooth sont inclus dans l'abonnement. Le materiel (balance Bluetooth + tablette Samsung + support) est proposé en option via la Station Produit : vous pouvez utiliser votre propre balance compatible, ou commander le kit clé en main pre-configure pour gagner du temps a l'installation. Decouvrez les configurations et tarifs materiel sur la page Station Produit.",
+      "Oui, la fonction pesage Bluetooth est incluse dans l'abonnement RestauMargin, sans surcout.",
   },
   {
     question: 'Peut-on connecter plusieurs balances en meme temps ?',
     answer:
-      "Oui. Un restaurant avec plusieurs postes (garde-manger, patisserie, chaud) peut equiper chaque poste de sa propre balance et de sa propre tablette : chacune se connecte independamment a son appareil. Une meme tablette peut aussi memoriser plusieurs balances et basculer de l'une a l'autre selon le poste. Chaque pesee est rattachee a la fiche technique ouverte sur l'appareil concerne, sans melange entre les postes.",
+      "Oui. Un restaurant avec plusieurs postes (garde-manger, patisserie, chaud) peut equiper chaque poste de sa propre balance et de son propre appareil : chacun se connecte independamment. Un meme appareil peut aussi memoriser plusieurs balances et basculer de l'une a l'autre selon le poste. Chaque pesee est rattachee a la fiche technique ouverte sur l'appareil concerne, sans melange entre les postes.",
   },
   {
     question: 'Quelle est la precision du pesage et est-elle suffisante pour le food cost ?',
@@ -221,12 +219,12 @@ export default function FonctionnalitePesageBluetooth() {
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              to="/station-produit"
+              to="/demo"
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 font-semibold rounded-2xl border-2 transition-colors hover:bg-white"
               style={{ borderColor: BORDER, color: TEXT, backgroundColor: '#FFFFFF' }}
             >
-              <Package className="w-4 h-4" style={{ color: ACCENT }} />
-              Voir le kit matériel
+              <Smartphone className="w-4 h-4" style={{ color: ACCENT }} />
+              Voir la démo
             </Link>
           </div>
 
@@ -337,7 +335,7 @@ export default function FonctionnalitePesageBluetooth() {
               n: '02',
               icon: <Smartphone className="w-6 h-6" />,
               t: 'Ouvrez la fiche',
-              d: "Sur la tablette ou le mobile, vous ouvrez la fiche technique de la recette en cours. La ligne d'ingrédient à peser attend simplement son poids.",
+              d: "Sur votre appareil, vous ouvrez la fiche technique de la recette en cours. La ligne d'ingrédient à peser attend simplement son poids.",
             },
             {
               n: '03',
@@ -398,34 +396,34 @@ export default function FonctionnalitePesageBluetooth() {
         </div>
       </Section>
 
-      {/* ───────────── Le matériel ───────────── */}
+      {/* ───────────── Compatibilité ───────────── */}
       <Section>
-        <SectionLabel icon={<Package className="w-4 h-4" />}>Le matériel</SectionLabel>
-        <H2>Le bon poste de pesée pour une cuisine pro</H2>
+        <SectionLabel icon={<Bluetooth className="w-4 h-4" />}>Compatibilité</SectionLabel>
+        <H2>Votre balance Bluetooth, votre appareil</H2>
         <Lead>
-          Le pesage Bluetooth fonctionne avec du matériel simple et robuste. Vous pouvez partir avec
-          ce que vous avez, ou commander un kit clé en main déjà configuré.
+          Pas de matériel à acheter pour démarrer : le pesage Bluetooth s'appuie sur les standards
+          du web et fonctionne avec ce que vous avez déjà sous la main.
         </Lead>
 
         <div className="mt-10 grid gap-5 lg:grid-cols-3">
           {[
             {
               icon: <Scale className="w-6 h-6" />,
-              t: 'Balance Bluetooth',
-              d: "Une balance de cuisine connectée en Bluetooth Low Energy (BLE), précision 1 g, portée 5 ou 15 kg selon vos besoins. Surface inox facile à nettoyer, résistante aux projections.",
-              tag: 'Cœur du dispositif',
+              t: 'Balances BLE du commerce',
+              d: "RestauMargin se connecte aux balances Bluetooth Low Energy (BLE) du commerce qui exposent un profil de poids standard : précision 1 g, portée 0 à 5 ou 0 à 15 kg selon vos besoins.",
+              tag: 'Standard ouvert',
             },
             {
               icon: <Smartphone className="w-6 h-6" />,
-              t: 'Tablette Samsung Galaxy Tab A9+',
-              d: "L'écran de référence en cuisine : grand, lisible à distance, robuste. En mode kiosque, la tablette est verrouillée sur RestauMargin — impossible d'en sortir par erreur en plein service.",
-              tag: 'Recommandée',
+              t: "L'appareil de votre choix",
+              d: "Tablette ou smartphone Android, ordinateur Chrome ou Edge : tout appareil qui ouvre RestauMargin dans un navigateur compatible Web Bluetooth fait l'affaire. À vous de choisir le plus pratique pour votre cuisine.",
+              tag: 'Web Bluetooth',
             },
             {
-              icon: <Boxes className="w-6 h-6" />,
-              t: 'Kit hardware optionnel',
-              d: "Balance + tablette + support, le tout pré-appairé et pré-configuré. Vous déballez, vous branchez, vous pesez. Idéal pour ne pas perdre de temps à l'installation.",
-              tag: 'Clé en main',
+              icon: <WifiOff className="w-6 h-6" />,
+              t: 'Une PWA hors-ligne',
+              d: "RestauMargin est une Progressive Web App : la lecture du poids se fait en Bluetooth direct, sans internet, et les fiches déjà consultées restent disponibles en cache. La synchro reprend dès que le réseau revient.",
+              tag: 'Installable',
             },
           ].map((m, i) => (
             <div
@@ -454,25 +452,15 @@ export default function FonctionnalitePesageBluetooth() {
         </div>
 
         <div
-          className="mt-8 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between"
+          className="mt-8 rounded-2xl p-6 flex items-start gap-3"
           style={{ backgroundColor: ACCENT_BG }}
         >
-          <div className="flex items-start gap-3">
-            <Wifi className="w-6 h-6 shrink-0 mt-0.5" style={{ color: ACCENT_DARK }} />
-            <p className="text-sm leading-relaxed" style={{ color: ACCENT_DARK }}>
-              <strong>Pas envie de chercher le bon modèle ?</strong> La Station Produit réunit les
-              configurations matériel testées et validées par RestauMargin, balance Bluetooth
-              incluse, prêtes pour le mode kiosque.
-            </p>
-          </div>
-          <Link
-            to="/station-produit"
-            className="inline-flex shrink-0 items-center justify-center gap-2 px-5 py-3 text-white font-semibold rounded-xl transition-transform hover:scale-[1.02]"
-            style={{ backgroundColor: ACCENT_DARK }}
-          >
-            Station Produit
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          <Bluetooth className="w-6 h-6 shrink-0 mt-0.5" style={{ color: ACCENT_DARK }} />
+          <p className="text-sm leading-relaxed" style={{ color: ACCENT_DARK }}>
+            <strong>Un doute sur votre balance ?</strong> Envoyez-nous la référence de votre modèle :
+            nous vérifions qu'elle expose un profil de poids Bluetooth standard compatible avec
+            RestauMargin avant que vous ne changiez quoi que ce soit.
+          </p>
         </div>
       </Section>
 
@@ -687,8 +675,8 @@ export default function FonctionnalitePesageBluetooth() {
             Pesez juste, margez juste
           </h2>
           <p className="mt-4 text-base sm:text-lg text-white/90 max-w-xl mx-auto leading-relaxed">
-            Essayez le pesage Bluetooth avec vos vraies fiches techniques. Et si vous voulez le poste
-            complet, balance comprise, la Station Produit s'occupe du matériel.
+            Essayez le pesage Bluetooth avec vos vraies fiches techniques. Connectez votre balance,
+            posez l'ingrédient, regardez votre food cost se mettre à jour tout seul.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
@@ -700,15 +688,15 @@ export default function FonctionnalitePesageBluetooth() {
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              to="/station-produit"
+              to="/demo"
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 font-semibold rounded-2xl border-2 border-white/70 text-white transition-colors hover:bg-white/10"
             >
-              <Package className="w-4 h-4" />
-              Découvrir la Station Produit
+              <Smartphone className="w-4 h-4" />
+              Voir la démo
             </Link>
           </div>
           <p className="mt-5 text-sm text-white/80">
-            Sans carte bancaire · Compatible balance Bluetooth · Mode kiosque tablette
+            Sans carte bancaire · Compatible balance Bluetooth BLE · Fonctionne hors-ligne
           </p>
         </div>
       </section>
@@ -730,8 +718,8 @@ export default function FonctionnalitePesageBluetooth() {
               <Link to="/fonctionnalites/fiches-techniques" className="hover:opacity-70 transition-opacity">
                 Fiches techniques
               </Link>
-              <Link to="/station-produit" className="hover:opacity-70 transition-opacity">
-                Station Produit
+              <Link to="/demo" className="hover:opacity-70 transition-opacity">
+                Démo
               </Link>
               <Link to="/login?mode=register" className="hover:opacity-70 transition-opacity">
                 Essai gratuit

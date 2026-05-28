@@ -118,6 +118,16 @@ const BlogPrixDeVente = lazyRetry(() => import('./pages/BlogPrixDeVente'));
 const LogicielMargeRestaurant = lazyRetry(() => import('./pages/LogicielMargeRestaurant'));
 const LogicielMargeBistrot = lazyRetry(() => import('./pages/LogicielMargeBistrot'));
 const LogicielMargeDarkKitchen = lazyRetry(() => import('./pages/LogicielMargeDarkKitchen'));
+// Pages Fonctionnalités (8 modules détaillés + index)
+const FonctionnalitesIndex = lazyRetry(() => import('./pages/FonctionnalitesIndex'));
+const FonctionnaliteCommandesFournisseurs = lazyRetry(() => import('./pages/FonctionnaliteCommandesFournisseurs'));
+const FonctionnaliteIACuisine = lazyRetry(() => import('./pages/FonctionnaliteIACuisine'));
+const FonctionnaliteFichesTechniques = lazyRetry(() => import('./pages/FonctionnaliteFichesTechniques'));
+const FonctionnaliteMercuriale = lazyRetry(() => import('./pages/FonctionnaliteMercuriale'));
+const FonctionnalitePesageBluetooth = lazyRetry(() => import('./pages/FonctionnalitePesageBluetooth'));
+const FonctionnaliteHACCP = lazyRetry(() => import('./pages/FonctionnaliteHACCP'));
+const FonctionnaliteOCRFactures = lazyRetry(() => import('./pages/FonctionnaliteOCRFactures'));
+const FonctionnaliteMenuEngineering = lazyRetry(() => import('./pages/FonctionnaliteMenuEngineering'));
 const LogicielMargeGastronomique = lazyRetry(() => import('./pages/LogicielMargeGastronomique'));
 const LogicielMargeFoodTruck = lazyRetry(() => import('./pages/LogicielMargeFoodTruck'));
 const LogicielMargePizzeria = lazyRetry(() => import('./pages/LogicielMargePizzeria'));
@@ -1168,6 +1178,16 @@ function App() {
           {/* SEO PAA 2026-05-26 : nouvel article cible 4 questions PAA Google "marge beneficiaire restaurant ideale", "4% bon", "50% excessive", "que signifie 50%". */}
           <Route path="/blog/marge-beneficiaire-restaurant-ideal" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogMargeBeneficiaireRestaurant /></Suspense>} />
           <Route path="/alternative-innovorder" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeInnovorder /></Suspense>} />
+          {/* Pages Fonctionnalités (8 modules détaillés + hub index) — 2026-05-28 */}
+          <Route path="/fonctionnalites" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><FonctionnalitesIndex /></Suspense>} />
+          <Route path="/fonctionnalites/commandes-fournisseurs" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><FonctionnaliteCommandesFournisseurs /></Suspense>} />
+          <Route path="/fonctionnalites/ia-cuisine" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><FonctionnaliteIACuisine /></Suspense>} />
+          <Route path="/fonctionnalites/fiches-techniques" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><FonctionnaliteFichesTechniques /></Suspense>} />
+          <Route path="/fonctionnalites/mercuriale-alertes-prix" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><FonctionnaliteMercuriale /></Suspense>} />
+          <Route path="/fonctionnalites/pesage-bluetooth" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><FonctionnalitePesageBluetooth /></Suspense>} />
+          <Route path="/fonctionnalites/haccp-digital" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><FonctionnaliteHACCP /></Suspense>} />
+          <Route path="/fonctionnalites/ocr-factures" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><FonctionnaliteOCRFactures /></Suspense>} />
+          <Route path="/fonctionnalites/menu-engineering" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}><FonctionnaliteMenuEngineering /></Suspense>} />
           {/* FIX 2026-04-28 (audit cohérence) : pages orphelines BlogPrixDeVente + LogicielMargeRestaurant restaurées (SEO). */}
           <Route path="/blog/prix-de-vente-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrixDeVente /></Suspense>} />
           <Route path="/logiciel-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeRestaurant /></Suspense>} />

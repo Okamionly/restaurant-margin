@@ -576,4 +576,59 @@
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
+  <!-- Pages Fonctionnalités (8 modules détaillés + hub) — 2026-05-28 -->
+  <url>
+    <loc>https://www.restaumargin.fr/fonctionnalites</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/fonctionnalites/commandes-fournisseurs</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/fonctionnalites/ia-cuisine</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/fonctionnalites/fiches-techniques</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/fonctionnalites/mercuriale-alertes-prix</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/fonctionnalites/pesage-bluetooth</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/fonctionnalites/haccp-digital</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/fonctionnalites/ocr-factures</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/fonctionnalites/menu-engineering</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
 </urlset>

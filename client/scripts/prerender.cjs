@@ -83,6 +83,60 @@ const ROUTES = [
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',
   },
+  // === Pages Fonctionnalités (8 modules + index) — 2026-05-28 ===
+  {
+    path: '/fonctionnalites',
+    title: 'Fonctionnalités RestauMargin | 8 modules pour piloter une cuisine rentable',
+    description: 'Les 8 modules RestauMargin : commandes fournisseurs, IA cuisine, fiches techniques, mercuriale & alertes prix, pesage Bluetooth, HACCP digital, OCR factures et Menu Engineering.',
+  },
+  {
+    path: '/fonctionnalites/commandes-fournisseurs',
+    title: 'Commandes fournisseurs en 1 clic | Logiciel restaurant RestauMargin',
+    description: "Automatisez vos commandes fournisseurs : l'IA suggere les quantites, le bon de livraison est pre-rempli, envoi Email ou WhatsApp en 1 clic. Fini les oublis et erreurs de saisie.",
+    type: 'article',
+  },
+  {
+    path: '/fonctionnalites/ia-cuisine',
+    title: "L'IA qui parle cuisine | Intelligence artificielle restaurant | RestauMargin",
+    description: "Dictez votre recette, l'IA structure ingredients, allergenes et cout automatiquement. 19 actions IA pour optimiser vos marges. Propulse par Claude. Sans jargon SaaS.",
+    type: 'article',
+  },
+  {
+    path: '/fonctionnalites/fiches-techniques',
+    title: 'Fiches techniques restaurant en 10s | Food cost auto | RestauMargin',
+    description: "Creez vos fiches techniques en 10 secondes : food cost, marge, coefficient et allergenes calcules en temps reel. Mise a jour auto quand les prix changent. Pret pour l'inspection.",
+    type: 'article',
+  },
+  {
+    path: '/fonctionnalites/mercuriale-alertes-prix',
+    title: 'Mercuriale & alertes prix fournisseurs | RestauMargin',
+    description: "Suivi automatique des prix fournisseurs dans le temps. Alerte des qu'un prix derive. Detectez les hausses avant qu'elles grignotent vos marges. Historique trace pour negocier.",
+    type: 'article',
+  },
+  {
+    path: '/fonctionnalites/pesage-bluetooth',
+    title: 'Pesage Bluetooth en cuisine | Balance connectee restaurant | RestauMargin',
+    description: "Balance Bluetooth connectee a vos fiches techniques. Pesez en plein service, le poids et le cout s'inscrivent tout seuls. Fini les post-it et les food cost approximatifs.",
+    type: 'article',
+  },
+  {
+    path: '/fonctionnalites/haccp-digital',
+    title: 'HACCP digital restaurant | Plan de maitrise sanitaire numerique | RestauMargin',
+    description: "HACCP digital : releves temperature, nettoyage et tracabilite en 1 tap. Generation PDF pret pour l'inspection DDPP. Fini le classeur papier et les releves oublies.",
+    type: 'article',
+  },
+  {
+    path: '/fonctionnalites/ocr-factures',
+    title: 'OCR factures fournisseurs restaurant | Scan auto en 4s | RestauMargin',
+    description: "Photographiez votre facture fournisseur, l'OCR injecte les prix dans la mercuriale en 4 secondes. Zero saisie manuelle, zero erreur, mercuriale toujours a jour.",
+    type: 'article',
+  },
+  {
+    path: '/fonctionnalites/menu-engineering',
+    title: 'Menu Engineering restaurant | Matrice Stars/Puzzles/Dogs | RestauMargin',
+    description: "Menu Engineering automatique : RestauMargin croise food cost et ventes pour classer vos plats (Stars, Puzzles, Plowhorses, Dogs). Savez quel plat retirer avant qu'il vous coute cher.",
+    type: 'article',
+  },
   {
     path: '/blog',
     title: 'Blog RestauMargin — Guides et conseils pour restaurateurs',

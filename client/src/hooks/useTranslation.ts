@@ -7,6 +7,15 @@ import de from '../locales/de.json';
 
 const locales: Record<string, Record<string, unknown>> = { fr, en, ar, es, de };
 
+/** Langues disponibles (pour un futur sélecteur de langue — non exposé publiquement pour l'instant). */
+export const AVAILABLE_LOCALES: { code: string; label: string; flag: string }[] = [
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
+  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'ar', label: 'العربية', flag: '🇸🇦' },
+];
+
 function getNestedValue(obj: Record<string, unknown>, path: string): string {
   const keys = path.split('.');
   let current: unknown = obj;

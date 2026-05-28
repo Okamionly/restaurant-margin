@@ -998,14 +998,14 @@ function FeaturesSection() {
   const gridRef = useStagger<HTMLDivElement>(0.06);
   // 8 features (port from claude.design "RestauMargin Nouveau" Features grid).
   const features = [
-    { icon: Send, title: 'Commandes fournisseurs en 1 clic', body: 'Email ou WhatsApp envoyés directement depuis la mercuriale, avec votre BL pré-rempli.' },
-    { icon: Sparkles, title: "L'IA qui parle cuisine", body: "Dictez la recette, l'IA structure ingrédients, allergènes et coût. Pas de jargon SaaS." },
-    { icon: ClipboardList, title: 'Fiches techniques en 10 s', body: 'Food cost, marge, coefficient, allergènes — calculés en temps réel, prêts pour l\'inspection.' },
-    { icon: Truck, title: 'Mercuriale & alertes prix', body: 'Suivi automatique des prix par fournisseur. Alerte dès que le beurre dérive.' },
-    { icon: Scale, title: 'Pesage Bluetooth', body: 'Balance connectée à la fiche, en plein service. Plus de Post-it sur le plan de travail.' },
-    { icon: Thermometer, title: 'HACCP digital', body: 'Températures, nettoyage, traçabilité — un tap. Inspection : un PDF. Fini le classeur.' },
-    { icon: Camera, title: 'OCR factures', body: 'Photo de la facture, prix injectés dans la mercuriale en 4 secondes. Aucune saisie.' },
-    { icon: TrendingUp, title: 'Menu Engineering', body: 'Stars, puzzles, plowhorses, dogs. Sait quel plat sortir de la carte avant qu\'il vous coûte cher.' },
+    { icon: Send, title: 'Commandes fournisseurs en 1 clic', body: 'Email ou WhatsApp envoyés directement depuis la mercuriale, avec votre BL pré-rempli.', slug: 'commandes-fournisseurs' },
+    { icon: Sparkles, title: "L'IA qui parle cuisine", body: "Dictez la recette, l'IA structure ingrédients, allergènes et coût. Pas de jargon SaaS.", slug: 'ia-cuisine' },
+    { icon: ClipboardList, title: 'Fiches techniques en 10 s', body: 'Food cost, marge, coefficient, allergènes — calculés en temps réel, prêts pour l\'inspection.', slug: 'fiches-techniques' },
+    { icon: Truck, title: 'Mercuriale & alertes prix', body: 'Suivi automatique des prix par fournisseur. Alerte dès que le beurre dérive.', slug: 'mercuriale-alertes-prix' },
+    { icon: Scale, title: 'Pesage Bluetooth', body: 'Balance connectée à la fiche, en plein service. Plus de Post-it sur le plan de travail.', slug: 'pesage-bluetooth' },
+    { icon: Thermometer, title: 'HACCP digital', body: 'Températures, nettoyage, traçabilité — un tap. Inspection : un PDF. Fini le classeur.', slug: 'haccp-digital' },
+    { icon: Camera, title: 'OCR factures', body: 'Photo de la facture, prix injectés dans la mercuriale en 4 secondes. Aucune saisie.', slug: 'ocr-factures' },
+    { icon: TrendingUp, title: 'Menu Engineering', body: 'Stars, puzzles, plowhorses, dogs. Sait quel plat sortir de la carte avant qu\'il vous coûte cher.', slug: 'menu-engineering' },
   ];
 
   const monoStyle = { fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, monospace' } as React.CSSProperties;
@@ -1034,10 +1034,11 @@ function FeaturesSection() {
             const Icon = f.icon;
             const num = String(i + 1).padStart(2, '0');
             return (
-              <article
+              <Link
+                to={`/fonctionnalites/${f.slug}`}
                 key={f.title}
-                className="rounded-2xl p-5 lg:p-6 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-md group flex flex-col"
-                style={{ border: `1px solid ${BORDER}` }}
+                className="rounded-2xl p-5 lg:p-6 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-md group flex flex-col no-underline"
+                style={{ border: `1px solid ${BORDER}`, textDecoration: 'none' }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget;
                   el.style.borderColor = ACCENT;
@@ -1059,10 +1060,13 @@ function FeaturesSection() {
                 <h3 className="text-sm sm:text-base font-bold mb-2" style={{ color: TEXT }}>
                   {f.title}
                 </h3>
-                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: TEXT_MUTED }}>
+                <p className="text-xs sm:text-sm leading-relaxed mb-3" style={{ color: TEXT_MUTED }}>
                   {f.body}
                 </p>
-              </article>
+                <span className="mt-auto text-xs font-semibold inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: ACCENT_DARK }}>
+                  En savoir plus →
+                </span>
+              </Link>
             );
           })}
         </div>

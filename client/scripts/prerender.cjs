@@ -457,6 +457,11 @@ const ROUTES = [
     description: 'Logiciel pour calculer marge kebab, doner, sandwicherie. Food cost cible 25-30%, gestion broche. Essai gratuit 7 jours.',
   },
   {
+    path: '/logiciel-marge-traiteur',
+    title: 'Logiciel marge traiteur | Food cost et devis traiteur | RestauMargin',
+    description: "Logiciel pour calculer la marge d'un traiteur evenementiel. Cout prestation, main d'oeuvre, devis, food cost cible 28-35%. Essai gratuit 7 jours.",
+  },
+  {
     path: '/logiciel-marge-cafe-bar',
     title: 'Logiciel marge cafe bar | Coefficient boissons | RestauMargin',
     description: 'Logiciel pour calculer marge cafe, bar, brasserie de quartier. Marge boissons 80-85%, gestion stocks alcool. Essai gratuit 7 jours.',

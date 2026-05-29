@@ -29,6 +29,16 @@ const ROUTES = [
     description: "Découvrez RestauMargin, la plateforme SaaS française de gestion de marge pour restaurateurs. Basée à Montpellier, notre mission est d'aider les chefs à maîtriser leur food cost et leurs marges.",
   },
   {
+    path: '/temoignages',
+    title: 'Témoignages clients RestauMargin : avis de restaurateurs (2026)',
+    description: "Avis et retours de restaurateurs qui ont gagné en marge avec RestauMargin : food cost maîtrisé, fiches techniques, mercuriale et menu engineering. Résultats chiffrés par établissement.",
+  },
+  {
+    path: '/launch',
+    title: 'RestauMargin : le logiciel de marge restaurant tout-en-un (lancement 2026)',
+    description: "Calculez vos marges, votre food cost et vos fiches techniques en quelques minutes. IA cuisine, OCR factures, mercuriale et menu engineering. Essai gratuit 7 jours, 29 EUR/mois ensuite.",
+  },
+  {
     path: '/guide-marge/pizzeria',
     title: 'Calcul de marge pizzeria : guide complet 2026',
     description: "Guide et outil pour calculer les marges de votre pizzeria. Food cost, coefficient multiplicateur, rentabilité par pizza, gestion pâte, garnitures, et optimisation prix de vente.",
@@ -297,6 +307,12 @@ const ROUTES = [
     path: '/blog/fixer-prix-carte-restaurant',
     title: 'Comment fixer les prix de sa carte de restaurant : methode et strategie',
     description: '3 methodes (cout, valeur percue, concurrence), coefficients multiplicateurs par poste, psychologie des prix et comment augmenter sans perdre de clients.',
+    type: 'article',
+  },
+  {
+    path: '/blog/psychologie-des-prix-restaurant',
+    title: 'Psychologie des prix en restauration : 7 techniques pour vendre plus (2026)',
+    description: 'Decouvrez 7 techniques de psychologie des prix prouvees (ancrage, prix de charme, golden triangle, bundling) pour augmenter votre ticket moyen de 15 a 25% sans toucher a vos recettes.',
     type: 'article',
   },
   {

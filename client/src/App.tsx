@@ -201,6 +201,7 @@ const BlogFideliserClients = lazyRetry(() => import('./pages/BlogFideliserClient
 const BlogCarteVins = lazyRetry(() => import('./pages/BlogCarteVins'));
 const BlogPlatPlusRentable = lazyRetry(() => import('./pages/BlogPlatPlusRentable'));
 const Blog5RatiosCles = lazyRetry(() => import('./pages/Blog5RatiosCles'));
+const BlogPsychologiePrix = lazyRetry(() => import('./pages/BlogPsychologiePrix'));
 const Careers = lazyRetry(() => import('./pages/Careers'));
 const HelpPage = lazyRetry(() => import('./pages/Help'));
 const BreakevenCalculator = lazyRetry(() => import('./pages/BreakevenCalculator'));
@@ -1267,6 +1268,7 @@ function App() {
           <Route path="/blog/5-ratios-cles-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Blog5RatiosCles /></Suspense>} />
           {/* PAA SEO 2026-05-26 : "Quel est le plat le plus rentable dans un restaurant ?" — top 15 + menu engineering. */}
           <Route path="/blog/plat-le-plus-rentable-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPlatPlusRentable /></Suspense>} />
+          <Route path="/blog/psychologie-des-prix-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPsychologiePrix /></Suspense>} />
           {/* SEO long-tail 2026-05-26 : Glossaire restauration (60+ termes : food cost, marge, prime cost, fiche technique, HACCP, GMP, RevPASH). */}
           <Route path="/glossaire-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><GlossaireRestauration /></Suspense>} />
           {/* Pages comparatives (alternatives) */}

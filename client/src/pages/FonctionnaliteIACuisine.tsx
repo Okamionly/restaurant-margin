@@ -76,7 +76,7 @@ const faqItems = [
   {
     question: "Puis-je utiliser la commande vocale pendant le service ?",
     answer:
-      "Oui, c'est même un des usages les plus appréciés. La dictée vocale fonctionne via le micro de votre tablette ou smartphone (Web Speech API), idéale quand vous avez les mains dans la prep ou en plein coup de feu. Vous dictez « ajoute 80 grammes de parmesan à la fiche risotto », l'IA met à jour la fiche et recalcule le coût. Sur la tablette du kit hardware RestauMargin, c'est pensé pour rester utilisable même en cuisine, sans clavier.",
+      "Oui, c'est même un des usages les plus appréciés. La dictée vocale fonctionne via le micro de votre tablette ou smartphone (Web Speech API), idéale quand vous avez les mains dans la prep ou en plein coup de feu. Vous dictez « ajoute 80 grammes de parmesan à la fiche risotto », l'IA met à jour la fiche et recalcule le coût. L'interface est conçue pour rester utilisable même en cuisine, sans clavier.",
   },
   {
     question: "Y a-t-il une limite au nombre de requêtes IA ?",

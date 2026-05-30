@@ -1110,7 +1110,7 @@ export default function AutoOrders() {
         setOrders((prev) =>
           prev.map((o) => (o.id === id ? { ...o, status: order.status } : o)),
         );
-        showToast('Erreur changement de statut', 'error');
+        showToast(t('autoOrders.statusChangeError'), 'error');
         return;
       }
     }
@@ -1195,7 +1195,7 @@ export default function AutoOrders() {
     }).catch(() => {/* non-fatal */});
 
     setOrders((prev) => [dup, ...prev]);
-    showToast('Commande re-creee en brouillon', 'success');
+    showToast(t('autoOrders.orderResetToDraft'), 'success');
   }
 
   // ── Reception ─────────────────────────────────────────────────────────────
@@ -1239,10 +1239,10 @@ export default function AutoOrders() {
         );
       }
 
-      showToast('Commande receptionnee, inventaire mis a jour', 'success');
+      showToast(t('autoOrders.orderReceived'), 'success');
       setReceiveOrder(null);
     } catch {
-      showToast('Erreur lors de la reception', 'error');
+      showToast(t('autoOrders.receptionError'), 'error');
     } finally {
       setReceivingId(null);
     }
@@ -1565,7 +1565,7 @@ export default function AutoOrders() {
 
     // Create the reorder as draft
     handleReorder(order);
-    showToast('Commande renouvelee via WhatsApp', 'success');
+    showToast(t('autoOrders.orderRenewedWhatsApp'), 'success');
   }
 
   // ── Bulk WhatsApp Orders ──────────────────────────────────────────────────
@@ -1573,7 +1573,7 @@ export default function AutoOrders() {
   function handleBulkWhatsApp() {
     const draftOrders = orders.filter((o) => o.status === 'brouillon');
     if (draftOrders.length === 0) {
-      showToast('Aucune commande en brouillon a envoyer', 'error');
+      showToast(t('autoOrders.noDraftOrders'), 'error');
       return;
     }
 

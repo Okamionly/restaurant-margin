@@ -1047,7 +1047,13 @@
     "reminderError": "Erreur lors de l'envoi du rappel",
     "loadError": "Erreur de chargement",
     "deleteOrderTitle": "Supprimer la commande",
-    "deleteOrderMessage": "Êtes-vous sûr de vouloir supprimer cette commande ?"
+    "deleteOrderMessage": "Êtes-vous sûr de vouloir supprimer cette commande ?",
+    "statusChangeError": "Erreur lors du changement de statut",
+    "orderResetToDraft": "Commande recréée en brouillon",
+    "orderReceived": "Commande réceptionnée, inventaire mis à jour",
+    "receptionError": "Erreur lors de la réception",
+    "orderRenewedWhatsApp": "Commande renouvelée via WhatsApp",
+    "noDraftOrders": "Aucune commande en brouillon à envoyer"
   },
   "menuEngineering": {
     "title": "Menu Engineering",

@@ -253,6 +253,112 @@ export default function APropos() {
         </div>
       </section>
 
+      {/* ═══ Méthodologie éditoriale (E-E-A-T) ═══ */}
+      <section className="py-16 px-4 sm:px-6 max-w-4xl mx-auto">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-50 border border-teal-200 rounded-full mb-4">
+            <CheckCircle2 className="w-4 h-4 text-teal-600" />
+            <span className="text-sm font-semibold text-teal-700 uppercase tracking-wider">Notre méthodologie éditoriale</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-black text-mono-100 mb-4">
+            Comment nous produisons nos guides
+          </h2>
+          <p className="text-lg text-mono-400 max-w-2xl mx-auto">
+            Chaque article publié sur le blog RestauMargin suit un processus rigoureux pour garantir
+            des chiffres fiables et des conseils applicables au quotidien d'un restaurant.
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-4 mb-10">
+          {[
+            {
+              title: 'Données réelles',
+              text: "Nos repères de food cost, coefficients et ratios s'appuient sur l'analyse agrégée et anonymisée de centaines de fiches techniques saisies dans RestauMargin.",
+            },
+            {
+              title: 'Sources vérifiées',
+              text: 'Les statistiques sectorielles citent leurs sources (INSEE, organisations professionnelles de la restauration, publications spécialisées) et sont datées.',
+            },
+            {
+              title: 'Relecture & mise à jour',
+              text: "Chaque guide est relu avant publication, puis revu régulièrement. La date de dernière mise à jour est affichée en tête d'article.",
+            },
+            {
+              title: 'Expertise métier',
+              text: 'Les contenus sont rédigés par une équipe spécialisée dans la gestion de restaurant, le food cost et la construction de fiches techniques.',
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="bg-white border border-mono-900 rounded-2xl p-6"
+            >
+              <h3 className="text-lg font-bold text-mono-100 mb-2 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-teal-600 flex-shrink-0" />
+                {item.title}
+              </h3>
+              <p className="text-sm text-mono-400 leading-relaxed">{item.text}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Responsable de la publication */}
+        <div
+          className="bg-gradient-to-br from-[#f8fafb] to-white border border-mono-900 rounded-3xl p-6 sm:p-8"
+          itemScope
+          itemType="https://schema.org/Organization"
+        >
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-lg">
+              RM
+            </div>
+            <div className="flex-1">
+              <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">Responsable de la publication</span>
+              <h3 className="text-xl font-bold text-mono-100 mb-2 mt-1" itemProp="name">
+                La rédaction RestauMargin
+              </h3>
+              <p className="text-sm text-mono-400 leading-relaxed" itemProp="description">
+                L'équipe éditoriale de RestauMargin, basée à Montpellier, est responsable de la ligne
+                éditoriale et de la publication des contenus du blog. Pour toute question, correction ou
+                demande de droit de réponse, contactez-nous à{' '}
+                <a href="mailto:contact@restaumargin.fr" className="text-teal-600 hover:text-teal-700 font-semibold">
+                  contact@restaumargin.fr
+                </a>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Schema EditorialPolicy / publishingPrinciples */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            'name': 'RestauMargin',
+            'url': 'https://www.restaumargin.fr',
+            'foundingDate': '2025',
+            'knowsAbout': [
+              'Food cost restaurant',
+              'Coefficient multiplicateur',
+              'Marge brute restauration',
+              'Fiches techniques de cuisine',
+              'Prime cost',
+              'HACCP',
+            ],
+            'publishingPrinciples': 'https://www.restaumargin.fr/a-propos',
+            'contactPoint': {
+              '@type': 'ContactPoint',
+              'email': 'contact@restaumargin.fr',
+              'contactType': 'editorial',
+              'areaServed': 'FR',
+              'availableLanguage': 'French',
+            },
+          }),
+        }}
+      />
+
       {/* ═══ CTA ═══ */}
       <section className="py-16 px-4 sm:px-6 max-w-4xl mx-auto">
         <div className="bg-gradient-to-br from-mono-100 to-[#1f2937] rounded-3xl p-8 sm:p-12 text-center text-white">

@@ -389,7 +389,7 @@ export default function MenuCalendar() {
       if (!res.ok) throw new Error('Erreur');
       const created = await res.json();
       setEntries(prev => [...prev, ...created]);
-      showToast(`${recipe.name} ajoute au ${formatDateKey(date)}`, 'success');
+      showToast(`${recipe.name} ajouté au ${formatDateKey(date)}`, 'success');
     } catch {
       showToast('Erreur lors de l\'ajout', 'error');
     }
@@ -459,9 +459,9 @@ export default function MenuCalendar() {
       if (!res.ok) throw new Error('Erreur');
       const created = await res.json();
       setEntries(prev => [...prev.filter(e => e.id !== dragEntry.id), ...created]);
-      showToast(`${dragEntry.recipe.name} deplace au ${targetKey}`, 'success');
+      showToast(`${dragEntry.recipe.name} déplacé au ${targetKey}`, 'success');
     } catch {
-      showToast('Erreur lors du deplacement', 'error');
+      showToast('Erreur lors du déplacement', 'error');
     }
     setDragEntry(null);
   };
@@ -491,7 +491,7 @@ export default function MenuCalendar() {
         `- ${item.ingredientName}: ${item.totalQuantity.toFixed(2)} ${item.unit} (~${formatCurrency(item.estimatedCost)})`
       ),
       '',
-      `Total estime: ${formatCurrency(totalShoppingCost)}`,
+      `Total estimé: ${formatCurrency(totalShoppingCost)}`,
     ];
     const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -500,7 +500,7 @@ export default function MenuCalendar() {
     a.download = `courses-${monthKey}.txt`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('Liste de courses exportee', 'success');
+    showToast('Liste de courses exportée', 'success');
   };
 
   // ── Seasonal ingredients for current month ──

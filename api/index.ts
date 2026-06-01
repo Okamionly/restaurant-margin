@@ -1889,8 +1889,7 @@ app.post('/api/suppliers/:id/import-prices', authWithRestaurant, async (req: any
 // 10 routes : list, alerts, value, suggest, auto-reorder, create, update, restock, delete, auto-reorder confirm
 
 // ============ RFQ (APPELS D'OFFRES) — DISABLED: models not in Prisma schema ============
-// TODO: Add RFQ, RFQItem, RFQQuote models to schema.prisma before enabling
-const rfqInclude = {} as any;
+// Modèles RFQ/RFQItem/RFQQuote manquants dans schema.prisma — routes retournent 503 en attendant
 const RFQ_DISABLED_MSG = { error: 'Module appels d\'offres en cours de développement' };
 
 app.get('/api/rfqs', authWithRestaurant, async (_req: any, res) => {

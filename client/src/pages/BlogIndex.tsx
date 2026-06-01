@@ -47,6 +47,14 @@ const posts: BlogPost[] = [
     date: '2026-04-14',
   },
   {
+    slug: 'tva-restaurant',
+    title: 'TVA restaurant 2026 : taux 10%, 5,5% et 20% expliques',
+    excerpt: 'Quel taux de TVA en restauration ? 10 % sur place et consommation immediate, 5,5 % vente conditionnee, 20 % alcool. Regles, ventilation et impact sur la marge.',
+    category: 'Fiscalite',
+    readTime: '16 min',
+    date: '2026-06-01',
+  },
+  {
     slug: 'coefficient-multiplicateur',
     title: 'Le coefficient multiplicateur en restauration : guide complet',
     excerpt: "Comprendre et appliquer le coefficient multiplicateur pour fixer vos prix de vente en restaurant. Formules, exemples et erreurs a eviter.",

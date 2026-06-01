@@ -177,6 +177,12 @@ const ROUTES = [
     type: 'article',
   },
   {
+    path: '/blog/tva-restaurant',
+    title: 'TVA restaurant 2026 : taux 10%, 5,5% et 20% expliques (sur place, a emporter, alcool)',
+    description: 'Quel taux de TVA appliquer en restauration en 2026 ? 10 % consommation immediate, 5,5 % vente conditionnee, 20 % alcool. Regles sur place vs a emporter, ventilation, exemple chiffre et impact sur la marge.',
+    type: 'article',
+  },
+  {
     path: '/blog/coefficient-multiplicateur',
     title: 'Coefficient multiplicateur restaurant 2026 : calcul + formule + exemples (guide complet)',
     description: 'Coefficient multiplicateur restaurant : formule, calcul pas a pas, valeurs cibles par segment (bistrot 3.5, gastro 4.5, pizzeria 3.0). Exemples chiffres, erreurs courantes et calculateur gratuit.',

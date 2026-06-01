@@ -857,6 +857,14 @@ function RoiCalculatorSection() {
             >
               Lancer mon essai 7 jours <ArrowRight className="w-4 h-4" />
             </Link>
+            <Link
+              to="/outils/calculateur-marge-restaurant"
+              className="mt-3 inline-flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors hover:underline"
+              style={{ color: ACCENT_DARK }}
+            >
+              <Calculator className="w-4 h-4" />
+              Ou calculez la marge d'un plat — outil gratuit, sans inscription
+            </Link>
           </div>
         </div>
       </div>
@@ -2125,7 +2133,9 @@ function Navbar() {
         <div className="hidden lg:flex items-center gap-8 text-sm font-medium" style={{ color: TEXT_MUTED }}>
           <a href="#fonctionnalites" className="hover:text-[#0F172A] transition-colors">Fonctionnalités</a>
           <a href="#tarifs" className="hover:text-[#0F172A] transition-colors">Tarifs</a>
-          <a href="#temoignages" className="hover:text-[#0F172A] transition-colors">Témoignages</a>
+          <Link to="/outils/calculateur-marge-restaurant" className="inline-flex items-center gap-1 hover:text-[#0F172A] transition-colors" style={{ color: ACCENT_DARK }}>
+            <Calculator className="w-3.5 h-3.5" /> Calculateur gratuit
+          </Link>
           <Link to="/blog" className="hover:text-[#0F172A] transition-colors">Blog</Link>
         </div>
         <div className="hidden lg:flex items-center gap-3">
@@ -2150,7 +2160,9 @@ function Navbar() {
         <div className="lg:hidden bg-white border-t border-mono-900 px-6 py-6 space-y-4 text-base font-medium">
           <a href="#fonctionnalites" className="block py-2" onClick={() => setOpen(false)}>Fonctionnalités</a>
           <a href="#tarifs" className="block py-2" onClick={() => setOpen(false)}>Tarifs</a>
-          <a href="#temoignages" className="block py-2" onClick={() => setOpen(false)}>Témoignages</a>
+          <Link to="/outils/calculateur-marge-restaurant" className="flex items-center gap-1.5 py-2 font-semibold" style={{ color: ACCENT_DARK }} onClick={() => setOpen(false)}>
+            <Calculator className="w-4 h-4" /> Calculateur de marge gratuit
+          </Link>
           <Link to="/blog" className="block py-2" onClick={() => setOpen(false)}>Blog</Link>
           <hr className="border-mono-900" />
           <Link to="/login" className="block py-2" onClick={() => setOpen(false)}>Se connecter</Link>

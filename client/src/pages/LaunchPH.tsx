@@ -295,19 +295,48 @@ export default function LaunchPH() {
               Démo rapide : dictée vocale recette → fiche technique générée + coût + marge en temps réel.
             </p>
 
-            <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl border-2 border-emerald-100 bg-gradient-to-br from-emerald-50 to-white">
-              {/* TODO: remplacer par embed Loom une fois la video enregistree
-                  Pattern : <iframe src="https://www.loom.com/embed/<id>" frameBorder="0" allowFullScreen className="w-full h-full" /> */}
-              <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center">
-                <div className="w-20 h-20 rounded-full bg-emerald-600 flex items-center justify-center mb-4 shadow-lg">
+            {/* TODO: remplacer par embed Loom une fois la video enregistree
+                Pattern : <iframe src="https://www.loom.com/embed/<id>" frameBorder="0" allowFullScreen className="w-full h-full rounded-2xl shadow-2xl border-2 border-emerald-100" /> */}
+            <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl border-2 border-emerald-100 bg-gradient-to-br from-emerald-50 to-white flex flex-col items-center justify-center p-8 text-center gap-6">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-20 h-20 rounded-full bg-emerald-600 flex items-center justify-center shadow-lg animate-pulse">
                   <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 </div>
-                <p className="text-mono-400 font-semibold mb-2">Vidéo démo — bientôt disponible</p>
-                <p className="text-sm text-mono-500 max-w-md">
-                  En attendant, va voir le site live ou découvre les fonctionnalités sur Product Hunt.
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold uppercase tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Enregistrement en cours
+                </span>
+              </div>
+              <div>
+                <p className="text-[#0F172A] font-bold text-lg mb-1">La démo vidéo arrive très bientôt</p>
+                <p className="text-sm text-[#64748B] max-w-sm">
+                  Dictée vocale → fiche technique → coût + marge en temps réel. Essaie-le maintenant, c'est gratuit.
                 </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link
+                  to="/demo"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-colors"
+                >
+                  <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                  Voir la démo live
+                </Link>
+                <a
+                  href={PH_DRAFT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-gray-50 border border-[#E5E7EB] text-[#0F172A] font-semibold text-sm transition-colors"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M13.604 8.4h-3.405V12h3.405c.995 0 1.801-.806 1.801-1.8S14.6 8.4 13.604 8.4z"/>
+                    <path fillRule="evenodd" clipRule="evenodd" d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm-1.801 15.6H8.4V8.4h3.799v-.001h1.405a3.601 3.601 0 0 1 0 7.201h-3.405z"/>
+                  </svg>
+                  Voir sur Product Hunt
+                </a>
               </div>
             </div>
           </div>

@@ -71,8 +71,8 @@ export default function LogicielMargeRestaurant() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
-        title="Logiciel marge restaurant : calcul automatique 2026 | RestauMargin"
-        description="Le logiciel de marge restaurant 100 % automatique : food cost, fiches techniques, scan factures OCR, alertes IA, menu engineering. Essai gratuit 7 jours, 29 EUR/mois."
+        title="Logiciel de calcul de marge restaurant | RestauMargin 29 EUR/mois"
+        description="Logiciel de calcul de marge restaurant 100 % automatique : food cost, fiches techniques, scan factures OCR, alertes IA, menu engineering. Calcule votre marge sans Excel. Essai gratuit 7 jours, 29 EUR/mois."
         path="/logiciel-marge-restaurant"
         type="website"
         schema={[
@@ -179,11 +179,12 @@ export default function LogicielMargeRestaurant() {
             #1 Logiciel marge restaurant France
           </span>
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-mono-100 leading-tight mb-6 max-w-4xl mx-auto">
-            Logiciel de marge restaurant : calcul automatique 2026
+            Logiciel de calcul de marge restaurant, 100 % automatique
           </h1>
           <p className="text-lg sm:text-xl text-mono-400 max-w-3xl mx-auto leading-relaxed mb-8">
-            Le logiciel SaaS qui automatise vos fiches techniques, vos prix fournisseurs et vos
-            calculs de marge. <strong>+5 points de marge brute en 6 mois en moyenne.</strong>
+            Le logiciel SaaS qui calcule la marge de votre restaurant automatiquement : fiches techniques,
+            prix fournisseurs et food cost, sans Excel ni saisie manuelle.
+            <strong> +5 points de marge brute en 6 mois en moyenne.</strong>
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -274,6 +275,95 @@ export default function LogicielMargeRestaurant() {
           <p className="text-xs text-mono-500 mt-4 text-center">
             Comparatif etabli en avril 2026 sur la base des informations publiees par les editeurs.
           </p>
+        </div>
+      </section>
+
+      {/* ── Logiciel vs tableau Excel ── */}
+      <section className="py-16 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
+              Logiciel vs tableau Excel : pourquoi automatiser le calcul de marge
+            </h2>
+            <p className="text-lg text-mono-400 max-w-3xl mx-auto">
+              Beaucoup de restaurateurs calculent encore leur marge a la main sur un tableur. Un logiciel qui
+              calcule la marge automatiquement supprime la saisie, les erreurs de formule et les fiches
+              obsoletes. Voici la comparaison concrete entre le calcul manuel sur Excel et un logiciel de
+              calcul de marge restaurant.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Excel manuel */}
+            <div className="bg-white border border-mono-900 rounded-2xl p-6 sm:p-7">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-11 h-11 bg-mono-975 text-mono-400 rounded-xl flex items-center justify-center">
+                  <FileSpreadsheet className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-mono-100 text-xl">Calcul manuel sur Excel</h3>
+              </div>
+              <ul className="space-y-3 text-sm text-mono-400">
+                {[
+                  'Vous recopiez chaque formule de food cost et de marge brute a la main, plat par plat.',
+                  'Des qu\'un prix fournisseur change, vous devez retrouver et corriger chaque cellule concernee.',
+                  'Aucune alerte : un food cost qui derive au-dessus de 35 % passe inapercu pendant des semaines.',
+                  'Risque d\'erreur eleve (mauvaise reference de cellule, oubli de la TVA, melange HT/TTC).',
+                  'Pas de mise a jour temps reel : le fichier devient obsolete des le lendemain.',
+                  'Comptez 6 a 10 heures par mois rien qu\'en saisie et en verification.',
+                ].map((line, i) => (
+                  <li key={i} className="flex gap-2.5">
+                    <X className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Logiciel automatique */}
+            <div className="bg-teal-50 border-2 border-teal-200 rounded-2xl p-6 sm:p-7 relative">
+              <span className="absolute -top-3 left-6 bg-teal-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                Recommande
+              </span>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-11 h-11 bg-teal-600 text-white rounded-xl flex items-center justify-center">
+                  <Calculator className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-mono-100 text-xl">Logiciel qui calcule la marge automatiquement</h3>
+              </div>
+              <ul className="space-y-3 text-sm text-mono-350">
+                {[
+                  'Le logiciel calcule le food cost, la marge brute et le coefficient des que vous saisissez une fiche technique.',
+                  'Un prix fournisseur change ? Toutes les fiches qui utilisent l\'ingredient se recalculent en cascade.',
+                  'Alertes en temps reel des qu\'un plat depasse votre seuil de food cost.',
+                  'Zero erreur de formule : la TVA et le passage HT/TTC sont geres automatiquement.',
+                  'Donnees toujours a jour, synchronisees avec vos factures via le scan OCR.',
+                  'Environ 1 heure par mois : vous pilotez, le logiciel calcule.',
+                ].map((line, i) => (
+                  <li key={i} className="flex gap-2.5">
+                    <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-8 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-7 text-center">
+            <p className="text-mono-400 text-sm sm:text-base max-w-3xl mx-auto leading-relaxed">
+              <strong className="text-mono-100">En resume :</strong> Excel reste viable en-dessous de 30 plats sans
+              variations frequentes de prix. Au-dela, un logiciel de calcul de marge restaurant qui calcule tout
+              automatiquement vous fait gagner 8 a 15 heures par mois et evite de piloter vos prix sur des chiffres
+              perimes. Pour comprendre les formules en detail, lisez notre{' '}
+              <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline font-semibold hover:text-teal-800">
+                guide complet du calcul de marge restaurant
+              </Link>{' '}
+              ou testez d'abord notre{' '}
+              <Link to="/outils/calculateur-marge-restaurant" className="text-teal-700 underline font-semibold hover:text-teal-800">
+                calculateur de marge gratuit
+              </Link>{' '}
+              avant de passer au logiciel.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -534,11 +624,16 @@ export default function LogicielMargeRestaurant() {
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl font-bold text-mono-100 mb-8 text-center">Pour aller plus loin</h2>
-          <div className="grid sm:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <Link to="/blog/calcul-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <Calculator className="w-8 h-8 text-teal-600 mb-3" />
               <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">Calcul marge restaurant : guide complet</h3>
-              <p className="text-sm text-mono-500">Formules, benchmarks, cas pratiques chiffres pour maitriser le calcul de marge.</p>
+              <p className="text-sm text-mono-500">Formules, benchmarks, tableau a copier et cas pratiques chiffres pour maitriser le calcul de marge.</p>
+            </Link>
+            <Link to="/outils/calculateur-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <FileSpreadsheet className="w-8 h-8 text-teal-600 mb-3" />
+              <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">Calculateur de marge gratuit</h3>
+              <p className="text-sm text-mono-500">L'outil en ligne qui calcule food cost, marge brute et nette en 30 secondes, sans Excel.</p>
             </Link>
             <Link to="/blog/prix-de-vente-restaurant" className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <TrendingUp className="w-8 h-8 text-teal-600 mb-3" />

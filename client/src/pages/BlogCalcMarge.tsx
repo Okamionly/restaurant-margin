@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, TrendingUp, Calculator, AlertTriangle, CheckCircle, ArrowRight, BarChart3, DollarSign, Percent, Target, BookOpen, Lightbulb, Users, Pizza, Beef, Zap, Award, ListChecks, Sparkles } from 'lucide-react';
+import { ChefHat, TrendingUp, Calculator, AlertTriangle, CheckCircle, ArrowRight, BarChart3, DollarSign, Percent, Target, BookOpen, Lightbulb, Users, Pizza, Beef, Zap, Award, ListChecks, Sparkles, Table as TableIcon, FileSpreadsheet, Download } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
@@ -88,8 +88,8 @@ export default function BlogCalcMarge() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-04-14',
-            dateModified: '2026-05-27',
-            wordCount: 3800,
+            dateModified: '2026-06-02',
+            wordCount: 4200,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/calcul-marge-restaurant' },
           },
@@ -277,6 +277,209 @@ export default function BlogCalcMarge() {
           </p>
         </div>
 
+        {/* ═════════════ Modele de tableau de calcul de marge (a copier) ═════════════ */}
+        <section id="modele-tableau" className="mt-12 scroll-mt-24">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
+              <TableIcon className="w-6 h-6" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100">
+              Modele de tableau de calcul de marge (a copier)
+            </h2>
+          </div>
+
+          <div className="prose-content mb-6">
+            <p>
+              Voici un <strong>modele de tableau de calcul de marge</strong> pret a l'emploi que vous pouvez copier
+              directement dans Excel ou Google Sheets. Cette <strong>feuille de calcul food cost</strong> reproduit
+              la structure d'une fiche technique : vous saisissez vos ingredients, grammages et prix, et le tableau
+              calcule automatiquement le cout matiere, le food cost, la marge brute et le coefficient. C'est le
+              <strong> modele Excel marge restaurant</strong> le plus simple pour demarrer sans installer de logiciel.
+            </p>
+          </div>
+
+          {/* Tableau modele reproductible */}
+          <div className="bg-white border border-mono-900 rounded-2xl p-5 sm:p-7 shadow-sm">
+            <div className="flex items-center gap-2 mb-4">
+              <FileSpreadsheet className="w-5 h-5 text-teal-600" />
+              <h3 className="font-bold text-mono-100 text-lg">Tableau de calcul de marge — exemple burger maison</h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="bg-teal-600 text-white">
+                    <th className="text-left p-3 font-bold">Ingredient</th>
+                    <th className="text-right p-3 font-bold">Quantite</th>
+                    <th className="text-right p-3 font-bold">Prix unitaire</th>
+                    <th className="text-right p-3 font-bold">Cout</th>
+                  </tr>
+                </thead>
+                <tbody className="text-mono-200">
+                  <tr className="border-b border-mono-900">
+                    <td className="p-3">Pain burger brioche</td>
+                    <td className="p-3 text-right">1 piece</td>
+                    <td className="p-3 text-right">0,45 EUR/piece</td>
+                    <td className="p-3 text-right font-medium">0,45 EUR</td>
+                  </tr>
+                  <tr className="border-b border-mono-900 bg-mono-1000/40">
+                    <td className="p-3">Steak hache 15 % MG</td>
+                    <td className="p-3 text-right">150 g</td>
+                    <td className="p-3 text-right">9,50 EUR/kg</td>
+                    <td className="p-3 text-right font-medium">1,43 EUR</td>
+                  </tr>
+                  <tr className="border-b border-mono-900">
+                    <td className="p-3">Cheddar affine</td>
+                    <td className="p-3 text-right">30 g</td>
+                    <td className="p-3 text-right">11,00 EUR/kg</td>
+                    <td className="p-3 text-right font-medium">0,33 EUR</td>
+                  </tr>
+                  <tr className="border-b border-mono-900 bg-mono-1000/40">
+                    <td className="p-3">Salade, tomate, oignon</td>
+                    <td className="p-3 text-right">60 g</td>
+                    <td className="p-3 text-right">4,00 EUR/kg</td>
+                    <td className="p-3 text-right font-medium">0,24 EUR</td>
+                  </tr>
+                  <tr className="border-b border-mono-900">
+                    <td className="p-3">Sauce maison + assaisonnement</td>
+                    <td className="p-3 text-right">30 g</td>
+                    <td className="p-3 text-right">5,00 EUR/kg</td>
+                    <td className="p-3 text-right font-medium">0,15 EUR</td>
+                  </tr>
+                  <tr className="border-t-2 border-mono-900 bg-amber-50">
+                    <td className="p-3 font-bold text-mono-100">Cout matiere total</td>
+                    <td className="p-3 text-right">-</td>
+                    <td className="p-3 text-right">-</td>
+                    <td className="p-3 text-right font-bold text-amber-900">2,60 EUR</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Lignes de calcul automatique */}
+            <div className="mt-5 overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <tbody className="text-mono-200">
+                  <tr className="border-b border-mono-900 bg-mono-1000/60">
+                    <td className="p-3 font-semibold text-mono-100">Prix de vente HT</td>
+                    <td className="p-3 text-right">Saisi (ex. 11,90 EUR TTC / 1,10)</td>
+                    <td className="p-3 text-right font-bold text-mono-100">10,82 EUR</td>
+                  </tr>
+                  <tr className="border-b border-mono-900">
+                    <td className="p-3 font-semibold text-mono-100">Food cost %</td>
+                    <td className="p-3 text-right text-mono-500">Cout matiere / Prix vente HT x 100</td>
+                    <td className="p-3 text-right font-bold text-teal-700">24,0 %</td>
+                  </tr>
+                  <tr className="border-b border-mono-900 bg-mono-1000/60">
+                    <td className="p-3 font-semibold text-mono-100">Marge brute (EUR)</td>
+                    <td className="p-3 text-right text-mono-500">Prix vente HT - Cout matiere</td>
+                    <td className="p-3 text-right font-bold text-emerald-700">8,22 EUR</td>
+                  </tr>
+                  <tr className="border-b border-mono-900">
+                    <td className="p-3 font-semibold text-mono-100">Marge brute %</td>
+                    <td className="p-3 text-right text-mono-500">Marge brute / Prix vente HT x 100</td>
+                    <td className="p-3 text-right font-bold text-emerald-700">76,0 %</td>
+                  </tr>
+                  <tr className="bg-mono-1000/60">
+                    <td className="p-3 font-semibold text-mono-100">Coefficient</td>
+                    <td className="p-3 text-right text-mono-500">Prix vente HT / Cout matiere</td>
+                    <td className="p-3 text-right font-bold text-mono-100">4,16</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Formules Excel exactes */}
+          <div className="mt-8 bg-mono-100 rounded-2xl p-6 sm:p-7 text-white shadow-lg">
+            <div className="flex items-center gap-2 mb-4">
+              <Calculator className="w-5 h-5 text-teal-300" />
+              <h3 className="font-bold text-lg">Les formules Excel exactes a recopier</h3>
+            </div>
+            <p className="text-sm text-mono-700 mb-4">
+              Supposons : colonne <strong className="text-white">B</strong> = Cout matiere total (cellule B7),
+              colonne <strong className="text-white">C</strong> = Prix de vente HT (cellule C7). Recopiez ces
+              formules dans votre feuille de calcul food cost :
+            </p>
+            <div className="space-y-2.5 font-mono text-xs sm:text-sm">
+              <div className="bg-black/30 rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                <span className="text-teal-300 font-bold sm:w-40 shrink-0">Food cost %</span>
+                <code className="text-mono-950">=B7/C7*100</code>
+              </div>
+              <div className="bg-black/30 rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                <span className="text-teal-300 font-bold sm:w-40 shrink-0">Marge brute (EUR)</span>
+                <code className="text-mono-950">=C7-B7</code>
+              </div>
+              <div className="bg-black/30 rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                <span className="text-teal-300 font-bold sm:w-40 shrink-0">Marge brute %</span>
+                <code className="text-mono-950">=(C7-B7)/C7*100</code>
+              </div>
+              <div className="bg-black/30 rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                <span className="text-teal-300 font-bold sm:w-40 shrink-0">Coefficient</span>
+                <code className="text-mono-950">=C7/B7</code>
+              </div>
+              <div className="bg-black/30 rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                <span className="text-teal-300 font-bold sm:w-40 shrink-0">Prix vente HT depuis TTC</span>
+                <code className="text-mono-950">=PrixTTC/1,1</code>
+              </div>
+              <div className="bg-black/30 rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                <span className="text-teal-300 font-bold sm:w-40 shrink-0">Cout d'une ligne</span>
+                <code className="text-mono-950">=Quantite*PrixUnitaire</code>
+              </div>
+            </div>
+            <p className="text-xs text-mono-700 mt-4">
+              Astuce : formatez les cellules de pourcentage avec le format Nombre puis ajoutez le symbole %, et
+              arrondissez le prix de vente avec <code className="text-mono-950 bg-black/30 px-1.5 py-0.5 rounded">=ARRONDI(valeur;2)</code> pour rester lisible.
+            </p>
+          </div>
+
+          {/* Encadre : 4 etapes Excel / Google Sheets */}
+          <div className="mt-8 bg-teal-50 border border-teal-200 rounded-2xl p-6 sm:p-7">
+            <div className="flex items-center gap-2 mb-4">
+              <FileSpreadsheet className="w-5 h-5 text-teal-700" />
+              <h3 className="font-bold text-mono-100 text-lg">Comment utiliser ce modele dans Excel ou Google Sheets en 4 etapes</h3>
+            </div>
+            <ol className="space-y-3 text-sm text-mono-350">
+              <li className="flex gap-3">
+                <span className="w-6 h-6 bg-teal-600 text-white rounded-full flex items-center justify-center shrink-0 font-bold text-xs">1</span>
+                <span>Creez 4 colonnes <strong>Ingredient</strong>, <strong>Quantite</strong>, <strong>Prix unitaire</strong>, <strong>Cout</strong>, puis recopiez la structure du tableau de calcul de marge ci-dessus, ligne par ligne.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="w-6 h-6 bg-teal-600 text-white rounded-full flex items-center justify-center shrink-0 font-bold text-xs">2</span>
+                <span>Dans la colonne Cout, saisissez la formule <code className="bg-white px-1.5 py-0.5 rounded text-mono-100">=Quantite*PrixUnitaire</code> sur chaque ligne, puis additionnez le tout avec <code className="bg-white px-1.5 py-0.5 rounded text-mono-100">=SOMME(...)</code> pour obtenir le cout matiere total.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="w-6 h-6 bg-teal-600 text-white rounded-full flex items-center justify-center shrink-0 font-bold text-xs">3</span>
+                <span>Ajoutez une cellule Prix de vente HT, puis recopiez les formules food cost, marge brute et coefficient donnees au-dessus. Les resultats se mettent a jour automatiquement.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="w-6 h-6 bg-teal-600 text-white rounded-full flex items-center justify-center shrink-0 font-bold text-xs">4</span>
+                <span>Dupliquez l'onglet pour chaque plat. Des qu'un prix fournisseur change, modifiez la cellule Prix unitaire : tout le modele Excel marge restaurant se recalcule en cascade.</span>
+              </li>
+            </ol>
+          </div>
+
+          {/* CTA vers calculateur */}
+          <div className="mt-8 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-center text-white shadow-lg">
+            <Download className="w-8 h-8 mx-auto mb-3 text-teal-100" />
+            <h3 className="text-xl sm:text-2xl font-extrabold mb-2">
+              Ou utilisez notre calculateur automatique, sans Excel
+            </h3>
+            <p className="text-teal-100 max-w-xl mx-auto mb-6 text-sm sm:text-base">
+              Pas envie de batir votre feuille de calcul a la main ? Notre calculateur de marge restaurant fait
+              tous ces calculs pour vous : saisissez vos ingredients et obtenez food cost, marge brute et
+              coefficient en 30 secondes, sans formule a recopier.
+            </p>
+            <Link
+              to="/outils/calculateur-marge-restaurant"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-teal-700 font-bold rounded-full hover:bg-teal-50 transition-colors text-lg shadow-md"
+            >
+              <Calculator className="w-5 h-5" />
+              Ouvrir le calculateur gratuit
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </section>
+
         {/* ── Table des matieres ── */}
         <nav className="my-12 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
           <h2 className="text-lg font-bold text-mono-100 mb-4 flex items-center gap-2">
@@ -285,6 +488,7 @@ export default function BlogCalcMarge() {
           </h2>
           <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
+              { href: '#modele-tableau', label: 'Modele de tableau de calcul de marge (a copier)' },
               { href: '#pourquoi', label: 'Pourquoi la marge est critique pour votre restaurant' },
               { href: '#trois-marges', label: 'Les 3 types de marges a connaitre' },
               { href: '#howto', label: 'Comment calculer la marge en 5 etapes' },

@@ -89,6 +89,11 @@ const ROUTES = [
     description: "Guide et outil pour calculer les marges de votre boulangerie-patisserie. Food cost farine, beurre, oeufs, gestion des fournees, prix de revient par piece et optimisation carte viennoiseries et gateaux.",
   },
   {
+    path: '/guide-marge/creperie',
+    title: 'Calcul de marge creperie : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre creperie. Food cost sarrasin, beurre breton AOP, gestion garnitures, cidre et optimisation prix par galette et crepe.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

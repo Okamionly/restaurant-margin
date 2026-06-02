@@ -14,6 +14,12 @@ import SEOHead from '../components/SEOHead';
      /guide-marge/bistro
      /guide-marge/food-truck
      /guide-marge/restaurant-gastronomique
+     /guide-marge/cafe-coffee-shop
+     /guide-marge/sushi-restaurant
+     /guide-marge/burger-restaurant
+     /guide-marge/kebab-fast-food
+     /guide-marge/boulangerie-patisserie
+     /guide-marge/creperie
    ═══════════════════════════════════════════════════════════════ */
 
 interface NicheConfig {
@@ -440,6 +446,53 @@ const NICHES: Record<string, NicheConfig> = {
       {
         q: "RestauMargin convient-il aux boulangeries-patisseries avec espace snacking et salon de the ?",
         a: "Oui, RestauMargin est particulierement adapte aux boulangeries-patisseries qui ont developpe une activite snacking (sandwichs, quiches, formules midi) ou salon de the. Ces formats hybrides ont des contraintes specifiques : gerer simultanément des matieres premieres brutes (farine, beurre, oeufs pour la production) et des produits semitransformes (jambon, fromages, legumes pour le snacking), avec des marges tres differentes selon le segment. Le dashboard multi-categorie vous montre cote a cote la marge de vos pains et viennoiseries (production artisanale), vos patisseries (haute valeur ajoutee), vos sandwichs et formules (marge elevee, food cost 30-35%), et vos boissons en salon (marge >70%). Vous identifiez immediatement les categories qui tirent le resultat vers le bas. Le plan Pro a 29€/mois couvre une boulangerie avec jusqu'a 150 references et 3 utilisateurs — suffisant pour une boulangerie-patisserie standard avec un patron et deux vendeurs. Les boulangeries multi-sites ou franchises beneficient du plan Business avec dashboard consolide et gestion des transferts inter-boutiques.",
+      },
+    ],
+  },
+  'creperie': {
+    slug: 'creperie',
+    title: 'Calcul de marge creperie : guide complet 2026',
+    h1: 'Optimisez la marge de votre creperie',
+    tagline: 'Logiciel de gestion specialise pour creperies et comptoirs galettes-crepes',
+    description: "Guide et outil pour calculer les marges de votre creperie. Food cost sarrasin, beurre breton AOP, gestion garnitures, cidre et optimisation prix par galette et crepe.",
+    heroSubtitle: "Une galette complete au beurre breton a 0,90€ de matiere vendue 12€ : theoriquement 92% de marge. Mais sans fiche technique precise, le beurre AOP, les garnitures et la pate perdue diluent tout. RestauMargin vous donne la maitrise totale de votre marge galette par galette.",
+    avgMargin: '68-76%',
+    avgFoodCost: '24-32%',
+    avgCoef: '4 a 4,5',
+    challenges: [
+      "Prix du beurre breton AOP : 2 a 3 fois plus cher que le beurre standard, et tres volatil (jusqu'a +35% sur 18 mois)",
+      "Galettes sarrasin vs crepes froment : food cost et marges tres differents — la carte melanges les deux sans distinction",
+      "Garnitures premium (comte vieux, jambon artisanal, oeuf fermier) : grammages non controles = food cost qui explose",
+      "Pate perdue : premières galettes de cuisson non vendables, taux de perte difficile a quantifier sans suivi",
+      "Cidre : stock important, TVA alcool a 20%, marges boissons alcoolisees distinctes des crepes",
+    ],
+    stats: [
+      { label: 'Food cost moyen', value: '28%', color: 'teal' },
+      { label: 'Marge brute cible', value: '72%', color: 'emerald' },
+      { label: 'Coefficient type', value: '4,2x', color: 'amber' },
+      { label: 'Ticket moyen', value: '14-22€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "Je pensais que mes galettes completes etaient tres rentables. RestauMargin m'a montre que le comte vieux AOP et le jambon artisanal pesaient 46% de food cost sur cette reference. En ajustant les grammages et en reequilibrant la carte avec des crepes dessert a forte marge, j'ai retrouve 11 points en 6 semaines.",
+      author: 'Nolwenn',
+      role: 'Crepiere, Quimper',
+    },
+    faqs: [
+      {
+        q: "Quelle est la marge moyenne d'une creperie ?",
+        a: "La marge brute d'une creperie se situe entre 68% et 76%, ce qui en fait l'un des meilleurs segments de la restauration rapide. Le food cost moyen oscille entre 24% et 32% selon la gamme : une galette sarrasin simple (beurre, jambon, oeuf) affiche un food cost de 20-25%, tandis qu'une galette garnie de produits nobles (homard breton, st-jacques, foie gras de canard) peut atteindre 38-42%. Les creperies qui atteignent 74-76% de marge brute maitrisent trois leviers : (1) fiches techniques precises par galette et crepe avec grammages au gramme pres, (2) equilibre de la carte entre references simples a forte marge et references premium qui valorisent l'image mais doivent etre tarifees en consequence, (3) gestion du taux de perte sur la pate (premières pieces non vendables en debut de service, restes en fin). La marge nette apres charges (loyer, personnel, energie des biligs) tourne entre 6% et 12% selon l'emplacement et le format — les creperies en zone touristique ou en bretagne avec forte affluence saisonniere atteignent 10-12% en haute saison.",
+      },
+      {
+        q: "Comment calculer le food cost d'une galette ou d'une crepe ?",
+        a: "Le calcul se fait composant par composant. Pour une galette complete (jambon-oeuf-fromage) : pate sarrasin 120g (0,22€ au cout de 1,80€/kg), beurre de cuisson 10g (0,15€), jambon artisanal 40g (0,56€ a 14€/kg), oeuf fermier (0,35€), emmental rape 30g (0,24€) = 1,52€ de cout matiere. Vendue 11,50€, le food cost est de 13,2% — excellent. En version garniture premium avec comte vieux 18 mois et jambon de la Ferme : pate 120g (0,22€) + beurre 10g (0,15€) + comte vieux 40g (0,72€ a 18€/kg) + jambon artisanal 60g (0,90€) + oeuf fermier (0,35€) = 2,34€. Vendue 14,50€, le food cost monte a 16,1%. Pour une crepe dessert (beurre-sucre-citron) : pate froment 80g (0,10€) + beurre breton AOP 15g (0,20€) + sucre 10g (0,02€) = 0,32€ vendue 5,50€, food cost de 5,8% — le meilleur ratio de la carte. RestauMargin automatise ce calcul : renseignez une fois vos prix fournisseurs sarrasin, beurre et garnitures, et toutes vos fiches techniques se mettent a jour en temps reel quand le cours du beurre change.",
+      },
+      {
+        q: "Comment maitriser le food cost du beurre breton AOP en creperie ?",
+        a: "Le beurre breton AOP est l'ingredient identitaire d'une creperie de qualite, mais c'est aussi le plus volatile des couts matieres : son prix peut varier de 8€ a 14€/kg en fonction de la production laitiere bretonne et de la demande internationale. Quatre strategies pour maitriser son impact : (1) standardiser les grammages de beurre de cuisson (8 a 10g par galette sur le bilig, pas au bol) et de beurre de service (portion individuelle 10g predecoupee) — RestauMargin alerte quand le food cost beurre depasse votre seuil cible, (2) negocier un contrat volume avec votre cremier ou groupement d'achat breton pour fixer le prix sur 3 a 6 mois, (3) utiliser le beurre de tourage (moins cher) pour l'incorporation dans la pate et reserver le beurre AOP au service, (4) recalculer immediatement vos prix de vente si le cours du beurre depasse un seuil critique — RestauMargin simule l'impact d'une hausse de 15% sur votre marge et suggere le nouveau prix de vente optimal pour maintenir votre objectif de food cost.",
+      },
+      {
+        q: "RestauMargin convient-il aux creperies avec formules, services du soir et carte cidre ?",
+        a: "Oui, RestauMargin est particulierement adapte aux creperies qui proposent des formules (galette + crepe + boisson a prix fixe), car ces formats melangent des produits aux marges tres differentes : la galette garnie (food cost 20-30%), la crepe dessert (food cost 6-10%) et la boisson (cidre artisanal a 22% de food cost, jus de pomme a 30%, cidre grande surface a 12%). Le dashboard multi-categorie vous montre la marge de chaque reference separement et la marge reelle de la formule une fois composee — indispensable pour tarifer vos formules sans sacrifier la rentabilite. Pour les services du soir avec carte plus elaboree (plateaux fruits de mer, galettes gastronomiques), RestauMargin gere les recettes multi-composants et calcule la marge plat par plat. Les creperies qui gèrent aussi un espace epicerie (produits bretons, confits, biscuits) beneficient du module stock separant produits de fabrication et produits de revente avec des logiques de marge differentes. Le plan Pro a 29€/mois couvre une creperie avec jusqu'a 80 references et 2 utilisateurs.",
       },
     ],
   },

@@ -177,8 +177,8 @@ const ROUTES = [
   },
   {
     path: '/blog/reduire-food-cost',
-    title: 'Reduire le food cost de votre restaurant : 10 strategies',
-    description: 'Strategies concretes pour reduire le food cost : gestion des stocks, fiches techniques, negociation fournisseurs, reduction du gaspillage.',
+    title: 'Food cost restaurant : calcul, formule et benchmarks (guide 2026)',
+    description: 'Le food cost en restauration explique de A a Z : formule exacte, exemple chiffre, benchmarks par type de restaurant, food cost moyen France 2026, 10 leviers pour le reduire. Guide complet.',
     type: 'article',
   },
   {

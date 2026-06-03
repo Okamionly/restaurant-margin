@@ -103,6 +103,11 @@ const faqItems = [
     answer:
       "Trois options : 1) tableur Excel avec formules manuelles (gratuit mais chronophage et source d'erreurs), 2) calculateur en ligne gratuit comme celui de RestauMargin (rapide pour des plats isoles), 3) logiciel complet de gestion qui scanne les factures fournisseurs, met a jour automatiquement les fiches techniques, calcule le food cost en temps reel et alerte en cas de derive. L'automatisation fait gagner 5 a 10 heures par semaine et reduit drastiquement les erreurs.",
   },
+  {
+    question: "Quel est le food cost moyen d'un restaurant en France en 2026 ?",
+    answer:
+      "Le food cost moyen d'un restaurant traditionnel francais se situe autour de 30 a 32 % en 2026, sous l'effet de l'inflation alimentaire cumulee depuis 2022. La restauration rapide tourne autour de 28 a 30 %, la pizzeria descend a 22 a 26 % grace au cout matiere bas de la pate, et la gastronomie monte a 33 a 38 % du fait des produits nobles. Un restaurant bien pilote vise un food cost reel inferieur de 2 a 3 points a la moyenne de son segment : c'est la difference entre une marge nette de 5 % et de 10 %.",
+  },
 ];
 
 const howToSteps = [
@@ -153,8 +158,8 @@ export default function BlogFoodCost() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-04-14',
-            dateModified: '2026-05-26',
-            wordCount: 3800,
+            dateModified: '2026-06-03',
+            wordCount: 3950,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/reduire-food-cost' },
             citation: [

@@ -179,6 +179,14 @@ export default function BlogPlatPlusRentable() {
           </p>
         </div>
 
+        <p className="mt-6 text-sm text-mono-400 leading-relaxed">
+          Pour aller plus loin, consultez notre guide du{' '}
+          <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800 font-medium">food cost en restauration</Link>{' '}
+          (formule, calcul et benchmarks par type d'etablissement) et la methode du{' '}
+          <Link to="/blog/coefficient-multiplicateur" className="text-teal-700 underline hover:text-teal-800 font-medium">coefficient multiplicateur</Link>{' '}
+          pour fixer le prix de vente de chaque plat avec la bonne marge.
+        </p>
+
         {/* ── Table des matieres ── */}
         <nav className="my-12 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
           <h2 className="text-lg font-bold text-mono-100 mb-4 flex items-center gap-2">

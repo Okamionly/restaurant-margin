@@ -519,7 +519,9 @@ export default function BlogMargeBeneficiaireRestaurant() {
               </div>
               <p className="text-sm text-emerald-800 leading-relaxed mb-3">
                 <strong>Réaliste, voire même un peu bas.</strong> La marge brute standard en
-                restauration est de 65-75 %. À 50 %, votre food cost est de 50 %, ce qui est
+                restauration est de 65-75 %. À 50 %, votre{' '}
+                <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">food cost</Link>{' '}
+                est de 50 %, ce qui est
                 excessif et indique un problème de pricing ou d'achats.
               </p>
               <p className="text-sm text-emerald-800 leading-relaxed">

@@ -184,3 +184,27 @@
 | 4 | Consultants CHR | Mention / affiliation (email #3) | Non (email) |
 
 > Rythme conseillé : 2-3 soumissions par semaine (pas tout d'un coup), ancres variées (« RestauMargin », « logiciel de marge restaurant », « calculateur de food cost », URL nue). Éviter les ancres exactes répétées.
+
+---
+
+## 9. Email de relance type (J+7 si pas de réponse)
+
+> À envoyer en réponse au fil d'origine (garde l'objet, préfixe « Relance : »), 5-7 jours après le 1er email.
+
+> **Objet :** Relance : [objet initial]
+>
+> Bonjour [Prénom],
+>
+> Je me permets de revenir vers vous concernant mon message de la semaine dernière (ci-dessous). Je sais que vous êtes très sollicité(e), donc je fais court :
+>
+> Je propose [un article invité original / une ressource gratuite pour vos lecteurs / une fiche dans votre annuaire], sans contrepartie financière. Si le format ne convient pas, dites-le moi simplement — et si un autre angle vous parlerait davantage, je m'adapte volontiers.
+>
+> Un simple « oui, envoyez » ou « non merci » m'aide déjà beaucoup.
+>
+> Merci pour votre temps,
+> Youssef Guessous — RestauMargin
+> https://www.restaumargin.fr
+>
+> --- [citer le message initial en dessous] ---
+
+**Règle d'or relance** : une seule relance, jamais deux. Si pas de réponse après J+7, on passe à la cible suivante. Insister nuit à l'image.

@@ -15,10 +15,10 @@
 | 5 | **Product Hunt** | producthunt.com (submit) | Lancement (pitch fourni) | Oui |
 | 6 | **AlternativeTo** | alternativeto.net | Ajouter comme alternative à un logiciel resto connu | Oui |
 | 7 | **Tool Advisor** | tool-advisor.fr/annuaire-logiciel-saas-b2b | Typeform public — **déjà rempli à 80 %** (finir la Q5 prénom) | Non |
-| 8 | SaaSForge | saasforge.fr/annuaire-saas-francais | Vérifier soumission | À vérifier |
-| 9 | Verysaas | verysaas.io | Vérifier soumission | À vérifier |
-| 10 | Cercle des Éditeurs | cercle-editeurs.fr/annuaire | Vérifier soumission | À vérifier |
-| 11 | Key4IT | key-for-it.com/annuaire-logiciels-saas-p92.html | Vérifier soumission | À vérifier |
+| 8 | **Cercle des Éditeurs** | cercle-editeurs.fr/ajouter-une-entreprise | ✅ **FICHE SOUMISE le 2026-06-03** (en attente modération). Compte auto-créé → identifiants envoyés à contact@restaumargin.fr | Non (auto) |
+| 9 | Verysaas | verysaas.io/contact | Formulaire public confirmé (« soumettez le vôtre ») — soumissible sans compte | Non |
+| 10 | SaaSForge | saasforge.fr/annuaire-saas-francais | Méthode de soumission non exposée → contacter le site | À clarifier |
+| 11 | Key4IT | key-for-it.com | Orienté « devenir exposant » du salon virtuel (probablement payant) | Compte/payant |
 | 12 | Logiciels SaaS French Tech | logicielsaasfrenchtech.fr | Page soumission présente mais formulaire non fonctionnel → contacter via mentions légales | À clarifier |
 
 ## B. Médias / presse CHR (tribune + communiqué — email #1 ou CP)

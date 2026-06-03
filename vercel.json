@@ -80,6 +80,21 @@
       "source": "/booking-demo",
       "destination": "https://calendly.com/restaumargin/demo-15min",
       "permanent": false
+    },
+    {
+      "source": "/calculateur-marge-restaurant",
+      "destination": "/outils/calculateur-marge-restaurant",
+      "permanent": true
+    },
+    {
+      "source": "/calculateur-food-cost",
+      "destination": "/outils/calculateur-food-cost",
+      "permanent": true
+    },
+    {
+      "source": "/calculateur",
+      "destination": "/outils/calculateur-marge-restaurant",
+      "permanent": true
     }
   ],
   "rewrites": [

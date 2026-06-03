@@ -441,12 +441,9 @@ export default function MenuCalendar() {
     const sourceKey = dragEntry.date.slice(0, 10);
     if (targetKey === sourceKey) return;
 
+    const snapshot = entries;
     try {
-      await fetch(`/api/menu-calendar/${dragEntry.id}`, {
-        method: 'DELETE',
-        headers: authHeaders(),
-      });
-
+      // POST first: if it fails, the original entry is still intact in DB
       const res = await fetch('/api/menu-calendar', {
         method: 'POST',
         headers: authHeaders(),
@@ -458,12 +455,20 @@ export default function MenuCalendar() {
       });
       if (!res.ok) throw new Error('Erreur');
       const created = await res.json();
+
+      await fetch(`/api/menu-calendar/${dragEntry.id}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      });
+
       setEntries(prev => [...prev.filter(e => e.id !== dragEntry.id), ...created]);
       showToast(`${dragEntry.recipe.name} déplacé au ${targetKey}`, 'success');
     } catch {
+      setEntries(snapshot);
       showToast('Erreur lors du déplacement', 'error');
+    } finally {
+      setDragEntry(null);
     }
-    setDragEntry(null);
   };
 
   // ── Sidebar drag ──

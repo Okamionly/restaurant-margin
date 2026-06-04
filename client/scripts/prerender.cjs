@@ -498,6 +498,11 @@ const ROUTES = [
     description: 'Logiciel pour calculer la marge d une pizzeria. Cout pate, garniture, livraison. Food cost cible 22-25%. Essai gratuit 7 jours.',
   },
   {
+    path: '/logiciel-marge-restaurant-italien',
+    title: 'Logiciel marge restaurant italien | Food cost pates | RestauMargin',
+    description: 'Logiciel pour calculer la marge d un restaurant italien. Cout pates, antipasti, risotto, vins. Food cost cible 26-30%. Essai gratuit 7 jours.',
+  },
+  {
     path: '/logiciel-marge-gastronomique',
     title: 'Logiciel marge restaurant gastronomique etoile | RestauMargin',
     description: 'Logiciel pour piloter marges restaurant gastronomique etoile. Food cost 32-40%, brigades importantes, produits nobles. Essai gratuit 7 jours.',
@@ -785,7 +790,7 @@ function run() {
         ['/blog/calcul-marge-restaurant', 'Calcul marge restaurant : guide complet'],
         ['/logiciel-marge-bistrot', 'Logiciel marge bistrot et brasserie'],
         ['/logiciel-marge-pizzeria', 'Logiciel marge pizzeria'],
-        ['/logiciel-marge-gastronomique', 'Logiciel marge restaurant gastronomique'],
+        ['/logiciel-marge-restaurant-italien', 'Logiciel marge restaurant italien'],
         ['/blog/seuil-rentabilite-restaurant', 'Seuil de rentabilité restaurant'],
       ],
       comparison: [

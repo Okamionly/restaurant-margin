@@ -21,11 +21,17 @@ const UNITS = ['kg', 'g', 'L', 'cl', 'barquette', 'pièce', 'carton', 'boîte'];
 
 type StatusFilter = 'all' | 'expired' | 'soon' | 'ok';
 
+function parseDlcDate(dlc: string): Date {
+  // new Date("YYYY-MM-DD") is parsed as UTC midnight, causing a 1-day shift
+  // for users in UTC+ timezones. Parse components explicitly for local time.
+  const [y, m, d] = dlc.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
 function getDaysLeft(dlc: string): number {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const expiry = new Date(dlc);
-  expiry.setHours(0, 0, 0, 0);
+  const expiry = parseDlcDate(dlc);
   return Math.ceil((expiry.getTime() - today.getTime()) / 86400000);
 }
 
@@ -303,7 +309,7 @@ export default function DlcTracker() {
                     <div className="flex items-center gap-3 mt-0.5 flex-wrap">
                       {p.quantity && <span className="text-xs text-[#737373] dark:text-[#A3A3A3]">{p.quantity} {p.unit}</span>}
                       <span className="text-xs text-[#737373] dark:text-[#A3A3A3]">
-                        {new Date(p.dlc).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        {parseDlcDate(p.dlc).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
                       </span>
                     </div>
                   </div>

@@ -81,7 +81,7 @@ function saveProducts(products: DlcProduct[]) {
   localStorage.setItem('dlcProducts', JSON.stringify(products));
 }
 
-const EMPTY_FORM = { name: '', category: 'Viandes', quantity: '', unit: 'kg', dlc: '', type: 'DLC' as const };
+const EMPTY_FORM = { name: '', category: 'Viandes', quantity: '', unit: 'kg', dlc: '', type: 'DLC' as 'DLC' | 'DLUO' };
 
 export default function DlcTracker() {
   const [products, setProducts] = useState<DlcProduct[]>(loadProducts);

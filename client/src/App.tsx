@@ -693,6 +693,14 @@ function AppLayout() {
           <ChefHat className="w-5 h-5 flex-shrink-0" />
           {!collapsed && <span className="sidebar-label truncate">Cuisine KDS</span>}
         </NavLink>
+        <NavLink
+          to="/scanner-factures"
+          title={collapsed ? 'Station Factures' : undefined}
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold transition-colors active:scale-95 w-full overflow-hidden ${collapsed ? 'justify-center' : ''}`}
+        >
+          <Receipt className="w-5 h-5 flex-shrink-0" />
+          {!collapsed && <span className="sidebar-label truncate">Station Factures</span>}
+        </NavLink>
       </div>
 
       {/* Nav sections - scrollable area */}

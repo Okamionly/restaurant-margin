@@ -76,19 +76,18 @@ invoicesRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Respo
 invoicesRouter.post('/scan', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     if (!process.env.ANTHROPIC_API_KEY) { res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' }); return; }
-    const { imageBase64, mimeType } = req.body as { imageBase64: string; mimeType: string };
-    if (!imageBase64 || !mimeType) { res.status(400).json({ error: 'imageBase64 et mimeType requis' }); return; }
+    const { imageBase64, fileBase64, mimeType, fileName } = req.body as { imageBase64?: string; fileBase64?: string; mimeType: string; fileName?: string };
+    const data = fileBase64 || imageBase64;
+    if (!data || !mimeType) { res.status(400).json({ error: 'fichier (base64) et mimeType requis' }); return; }
 
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-5',
-      max_tokens: 4096,
-      system: "Tu es un expert-comptable specialise en restauration (CHR). Tu lis des factures et bons de livraison fournisseurs et tu extrais les donnees en JSON strict. Tu ramenes systematiquement chaque prix a l'unite de base (kg, L ou unite) pour qu'il soit directement comparable au cout matiere d'un ingredient. Reponds UNIQUEMENT avec un objet JSON valide : pas de markdown, pas de commentaire, pas d'explication.",
-      messages: [
-        {
-          role: 'user',
-          content: [
-            { type: 'image', source: { type: 'base64', media_type: mimeType as 'image/jpeg', data: imageBase64 } },
-            { type: 'text', text: `Analyse cette facture / ce bon de livraison d'un fournisseur restaurant et extrais les donnees.
+    const fname = (fileName || '').toLowerCase();
+    const isImage = mimeType.startsWith('image/');
+    const isPdf = mimeType === 'application/pdf' || fname.endsWith('.pdf');
+    const isText = mimeType.startsWith('text/') || /\.(md|markdown|txt|csv|tsv)$/.test(fname);
+    const isWordExcel = /officedocument|msword|ms-excel/.test(mimeType) || /\.(docx?|xlsx?|pptx?)$/.test(fname);
+    if (isWordExcel) { res.status(415).json({ error: "Word et Excel ne sont pas encore lus directement. Exportez la facture en PDF puis rescannez." }); return; }
+
+    const promptText = `Analyse cette facture / ce bon de livraison d'un fournisseur restaurant et extrais les donnees.
 
 Retourne un objet JSON avec :
 - fournisseur (string|null) : nom du fournisseur
@@ -104,10 +103,27 @@ Retourne un objet JSON avec :
     - confidence (number) : confiance entre 0 et 1
 - totalHT (number|null), totalTTC (number|null), tva (number|null)
 
-Regles : extrais TOUTES les lignes ; convertis unite ET prix vers l'unite de base ; si une valeur est absente mets null (n'invente jamais) ; reponds avec un objet JSON valide uniquement.` },
-          ],
-        },
-      ],
+Regles : extrais TOUTES les lignes ; convertis unite ET prix vers l'unite de base ; si une valeur est absente mets null (n'invente jamais) ; reponds avec un objet JSON valide uniquement.`;
+
+    let content: unknown;
+    if (isImage) {
+      content = [ { type: 'image', source: { type: 'base64', media_type: mimeType, data } }, { type: 'text', text: promptText } ];
+    } else if (isPdf) {
+      content = [ { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data } }, { type: 'text', text: promptText } ];
+    } else if (isText) {
+      let txt = '';
+      try { txt = Buffer.from(data, 'base64').toString('utf-8').slice(0, 100000); } catch { txt = ''; }
+      content = [ { type: 'text', text: `Contenu texte du fichier "${fileName || 'facture'}" :\n\n${txt}\n\n---\n\n${promptText}` } ];
+    } else {
+      res.status(415).json({ error: 'Format non supporte. Acceptes : image, PDF, Markdown/texte/CSV. Pour Word/Excel, convertissez en PDF.' }); return;
+    }
+
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-5',
+      max_tokens: 4096,
+      system: "Tu es un expert-comptable specialise en restauration (CHR). Tu lis des factures et bons de livraison fournisseurs et tu extrais les donnees en JSON strict. Tu ramenes systematiquement chaque prix a l'unite de base (kg, L ou unite) pour qu'il soit directement comparable au cout matiere d'un ingredient. Reponds UNIQUEMENT avec un objet JSON valide : pas de markdown, pas de commentaire, pas d'explication.",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      messages: [{ role: 'user', content: content as any }],
     });
 
     const rawText = (response.content[0] as { type: 'text'; text: string }).text;

@@ -458,7 +458,7 @@ export default function InvoiceScanner() {
 
   /* ─── File handling ─── */
 
-  const acceptedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+  const acceptedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'text/markdown', 'text/plain', 'text/csv'];
 
   const handleFiles = useCallback((files: FileList | File[]) => {
     const valid = Array.from(files).filter((f) => acceptedTypes.includes(f.type));
@@ -489,11 +489,11 @@ export default function InvoiceScanner() {
         const dataUrl = reader.result as string;
         const commaIdx = dataUrl.indexOf(',');
         const imageBase64 = dataUrl.slice(commaIdx + 1);
-        const mimeType = firstFile.type;
+        const mimeType = firstFile.type || 'application/octet-stream';
         fetch('/api/invoices/scan', {
           method: 'POST',
           headers: authHeaders(),
-          body: JSON.stringify({ imageBase64, mimeType }),
+          body: JSON.stringify({ imageBase64, fileBase64: imageBase64, mimeType, fileName: firstFile.name }),
         })
           .then((r) => r.json())
           .then((data) => {
@@ -735,9 +735,10 @@ export default function InvoiceScanner() {
     e.stopPropagation();
     setIsDragOver(false);
     const files = Array.from(e.dataTransfer.files);
-    const valid = files.find((f) => f.type.startsWith('image/') || f.type === 'application/pdf');
+    const okType = (f: File) => f.type.startsWith('image/') || f.type === 'application/pdf' || f.type.startsWith('text/') || /\.(pdf|md|markdown|txt|csv|webp|jpe?g|png)$/i.test(f.name);
+    const valid = files.find(okType);
     if (valid) handleScanFile(valid);
-    else showToast('Format non supporte. Utilisez JPG, PNG ou PDF.', 'error');
+    else showToast('Format non supporte. Utilisez image, PDF, Markdown, texte ou CSV.', 'error');
   }, [handleScanFile, showToast]);
 
   const handleScanDragOver = useCallback((e: React.DragEvent) => {
@@ -782,12 +783,12 @@ export default function InvoiceScanner() {
 
       const commaIdx = dataUrl.indexOf(',');
       const imageBase64 = dataUrl.slice(commaIdx + 1);
-      const mimeType = scanFile.type || 'image/jpeg';
+      const mimeType = scanFile.type || 'application/octet-stream';
 
       const res = await fetch('/api/invoices/scan', {
         method: 'POST',
         headers: authHeaders(),
-        body: JSON.stringify({ imageBase64, mimeType }),
+        body: JSON.stringify({ imageBase64, fileBase64: imageBase64, mimeType, fileName: scanFile.name }),
       });
 
       const data = await res.json();
@@ -1121,7 +1122,7 @@ export default function InvoiceScanner() {
             ref={fileInputRef}
             type="file"
             multiple
-            accept=".pdf,.jpg,.jpeg,.png"
+            accept=".pdf,.jpg,.jpeg,.png,.webp,.md,.txt,.csv,image/*"
             className="hidden"
             onChange={(e) => {
               if (e.target.files?.length) handleFiles(e.target.files);
@@ -1296,7 +1297,7 @@ export default function InvoiceScanner() {
               <input
                 ref={scanFileInputRef}
                 type="file"
-                accept=".jpg,.jpeg,.png,.pdf,image/*"
+                accept=".jpg,.jpeg,.png,.webp,.pdf,.md,.txt,.csv,image/*"
                 className="hidden"
                 onChange={(e) => {
                   const f = e.target.files?.[0];

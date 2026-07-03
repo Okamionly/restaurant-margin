@@ -131,6 +131,8 @@ interface AiScanItem {
   unit: string;
   unitPrice: number | null;
   totalPrice: number | null;
+  packaging?: string | null;
+  confidence?: number | null;
 }
 
 interface AiScanResult {
@@ -171,6 +173,70 @@ function matchScanItems(items: AiScanItem[], ingredients: Ingredient[]): AiScanM
     const diffPct = (diff != null && oldPrice != null && oldPrice > 0) ? (diff / oldPrice) * 100 : null;
     return { scanItem, ingredient: matched, score: bestScore, oldPrice, newPrice, priceDiff: diff, priceDiffPct: diffPct };
   });
+}
+
+/* ─── Review rows (validation ligne par ligne avant application) ─── */
+
+const INFLATION_THRESHOLD = 15; // % — au-dela, la hausse est signalee en rouge
+
+type RowMode = 'update' | 'create' | 'skip';
+
+interface ReviewRow {
+  lineIndex: number;
+  name: string;
+  quantity: number | null;
+  unit: string;
+  unitPrice: number | null;
+  totalPrice: number | null;
+  packaging: string | null;
+  confidence: number | null;
+  apply: boolean;
+  mode: RowMode;
+  ingredientId: number | null;
+  oldPrice: number | null;
+  pct: number | null;
+  unitMismatch: boolean;
+  bigJump: boolean;
+}
+
+// Normalise une unite vers sa famille de base pour comparer facture vs ingredient
+function normUnit(u: string): string {
+  const s = (u || '').toLowerCase().trim();
+  if (['kg', 'g', 'gr', 'gramme', 'grammes', 'kilo', 'kilos'].includes(s)) return 'kg';
+  if (['l', 'litre', 'litres', 'cl', 'ml'].includes(s)) return 'l';
+  if (['unite', 'unité', 'u', 'piece', 'pièce', 'pce', 'pc'].includes(s)) return 'unite';
+  return s;
+}
+
+function computeRow(item: AiScanItem, ingredient: Ingredient | null, lineIndex: number): ReviewRow {
+  const unitPrice = item.unitPrice;
+  const oldPrice = ingredient ? ingredient.pricePerUnit : null;
+  const pct = (unitPrice != null && oldPrice != null && oldPrice > 0)
+    ? ((unitPrice - oldPrice) / oldPrice) * 100
+    : null;
+  const unitMismatch = !!(ingredient && item.unit && ingredient.unit && normUnit(item.unit) !== normUnit(ingredient.unit));
+  return {
+    lineIndex,
+    name: item.name,
+    quantity: item.quantity,
+    unit: item.unit,
+    unitPrice,
+    totalPrice: item.totalPrice,
+    packaging: item.packaging ?? null,
+    confidence: item.confidence ?? null,
+    apply: unitPrice != null && unitPrice > 0,
+    mode: ingredient ? 'update' : 'create',
+    ingredientId: ingredient ? ingredient.id : null,
+    oldPrice,
+    pct,
+    unitMismatch,
+    bigJump: pct != null && Math.abs(pct) > INFLATION_THRESHOLD,
+  };
+}
+
+function buildReviewRows(items: AiScanItem[], ingredients: Ingredient[]): ReviewRow[] {
+  const matches = matchScanItems(items, ingredients);
+  return items.map((it, i) => computeRow(it, matches[i]?.ingredient ?? null, i));
 }
 
 function parseOcrText(text: string): OcrItem[] {
@@ -254,6 +320,10 @@ export default function InvoiceScanner() {
   const [scanError, setScanError] = useState<string | null>(null);
   const [scanImporting, setScanImporting] = useState(false);
   const [scanImported, setScanImported] = useState(false);
+  const [reviewRows, setReviewRows] = useState<ReviewRow[]>([]);
+  const [importResult, setImportResult] = useState<{ pricesUpdated: number; created: number; alerts: Array<{ name: string; oldPrice: number; newPrice: number; pct: number }> } | null>(null);
+  const [priceAlerts, setPriceAlerts] = useState<Array<{ ingredientId: number; name: string; unit?: string; oldPrice: number; newPrice: number; pct: number; date: string }>>([]);
+  const [alertsDismissed, setAlertsDismissed] = useState(false);
   const scanFileInputRef = useRef<HTMLInputElement>(null);
   const scanCameraInputRef = useRef<HTMLInputElement>(null);
   const scanDropRef = useRef<HTMLDivElement>(null);
@@ -287,12 +357,17 @@ export default function InvoiceScanner() {
   const [showMatchPanel, setShowMatchPanel] = useState(false);
   const [updatingPrices, setUpdatingPrices] = useState(false);
 
-  /* Load ingredients for matching */
+  /* Load ingredients for matching + inflation alerts */
   useEffect(() => {
     if (restaurantLoading || !selectedRestaurant) return;
     fetchIngredients()
       .then(setIngredientsList)
       .catch(() => {});
+    fetch('/api/ingredients/price-alerts?threshold=10', { headers: authHeaders() })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((d) => setPriceAlerts(Array.isArray(d) ? d : []))
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedRestaurant, restaurantLoading]);
 
   /* Load invoices from backend on mount */
@@ -733,6 +808,8 @@ export default function InvoiceScanner() {
           unit: item.unit || item.unite || '',
           unitPrice: item.unitPrice ?? item.prixUnitaire ?? null,
           totalPrice: item.totalPrice ?? item.total ?? null,
+          packaging: item.packaging ?? item.conditionnement ?? null,
+          confidence: typeof item.confidence === 'number' ? item.confidence : null,
         })),
         totalHT: data.totalHT ?? null,
         totalTTC: data.totalTTC ?? null,
@@ -751,11 +828,11 @@ export default function InvoiceScanner() {
         totalTTC: result.totalTTC != null ? String(result.totalTTC) : '',
       });
 
-      // Auto-match
-      if (ingredientsList.length > 0 && result.items.length > 0) {
-        const matches = matchScanItems(result.items, ingredientsList);
-        setScanMatches(matches);
-      }
+      // Auto-match + construction des lignes de validation editables
+      const matches = matchScanItems(result.items, ingredientsList);
+      setScanMatches(matches);
+      setReviewRows(buildReviewRows(result.items, ingredientsList));
+      setImportResult(null);
 
       // Finish progress
       setUploadProgressStep(3);
@@ -766,6 +843,90 @@ export default function InvoiceScanner() {
     } finally {
       setScanProcessing(false);
       cleanup();
+    }
+  };
+
+  /* Per-row review controls */
+  const toggleRowApply = (lineIndex: number) => {
+    setReviewRows((prev) => prev.map((r) => r.lineIndex === lineIndex ? { ...r, apply: !r.apply } : r));
+  };
+
+  const setRowIngredient = (lineIndex: number, ingredientId: number | null) => {
+    setReviewRows((prev) => prev.map((r) => {
+      if (r.lineIndex !== lineIndex) return r;
+      const ing = ingredientId != null ? (ingredientsList.find((i) => i.id === ingredientId) || null) : null;
+      const item: AiScanItem = { name: r.name, quantity: r.quantity, unit: r.unit, unitPrice: r.unitPrice, totalPrice: r.totalPrice, packaging: r.packaging, confidence: r.confidence };
+      const rebuilt = computeRow(item, ing, r.lineIndex);
+      return { ...rebuilt, apply: r.apply }; // conserve le choix "appliquer"
+    }));
+  };
+
+  // Nouvel import transactionnel : cree la facture + met a jour/cree les
+  // ingredients + historise chaque prix + detecte l'inflation, en un seul appel.
+  const handleImportInvoice = async () => {
+    if (!scanResult) return;
+    setScanImporting(true);
+    setImportResult(null);
+    try {
+      const supplierName = editableHeader?.fournisseur || scanResult.fournisseur || 'Inconnu';
+      const invoiceNumber = editableHeader?.numero || scanResult.numeroFacture || '';
+      const invoiceDate = editableHeader?.dateFacture || scanResult.dateFacture || today();
+      const totalHT = editableHeader?.totalHT ? parseFloat(editableHeader.totalHT) : scanResult.totalHT;
+      const totalTTC = editableHeader?.totalTTC ? parseFloat(editableHeader.totalTTC) : scanResult.totalTTC;
+
+      const lines = reviewRows.map((r) => ({
+        productName: r.name,
+        quantity: r.quantity,
+        unit: r.unit,
+        unitPrice: r.unitPrice,
+        totalPrice: r.totalPrice,
+        apply: r.apply,
+        ingredientId: r.mode === 'update' ? r.ingredientId : null,
+        createNew: r.apply && r.mode === 'create',
+      }));
+
+      const res = await fetch('/api/invoices/import', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ supplierName, invoiceNumber, invoiceDate, totalHT, totalTTC, lines, inflationThreshold: INFLATION_THRESHOLD }),
+      });
+      const data = await res.json();
+      if (!res.ok) { showToast(data.error || 'Erreur import', 'error'); setScanImporting(false); return; }
+
+      try { setIngredientsList(await fetchIngredients()); } catch { /* */ }
+      try {
+        const ar = await fetch('/api/ingredients/price-alerts?threshold=10', { headers: authHeaders() });
+        if (ar.ok) { setPriceAlerts(await ar.json()); setAlertsDismissed(false); }
+      } catch { /* */ }
+
+      const newInv: InvoiceFile = {
+        id: data.invoiceId ? `db-${data.invoiceId}` : generateId(),
+        dbId: data.invoiceId ?? undefined,
+        file: scanFile,
+        name: scanFile?.name || `Facture_${supplierName}_${today()}`,
+        type: scanFile?.type === 'application/pdf' ? 'pdf' : 'image',
+        fournisseur: supplierName,
+        invoiceNumber,
+        dateFacture: invoiceDate,
+        dateAjout: today(),
+        montantHT: totalHT,
+        montantTTC: totalTTC,
+        tva: editableHeader?.tva ? parseFloat(editableHeader.tva) : scanResult.tva,
+        notes: `Scanner IA - ${reviewRows.length} lignes`,
+        size: scanFile?.size || 0,
+        previewUrl: scanPreviewUrl,
+        status: 'validee',
+      };
+      setInvoices((prev) => [newInv, ...prev]);
+
+      setImportResult({ pricesUpdated: data.pricesUpdated || 0, created: data.created || 0, alerts: data.alerts || [] });
+      setScanImported(true);
+      updateOnboardingStep('invoiceScanned', true);
+      showToast(`Facture importee : ${data.pricesUpdated || 0} prix mis a jour, ${data.created || 0} ingredient(s) cree(s).`, 'success');
+    } catch (err: any) {
+      showToast(err?.message || 'Erreur import', 'error');
+    } finally {
+      setScanImporting(false);
     }
   };
 
@@ -861,6 +1022,8 @@ export default function InvoiceScanner() {
     setScanImported(false);
     setEditableHeader(null);
     setShowUploadProgress(false);
+    setReviewRows([]);
+    setImportResult(null);
   };
 
   /* Quick actions */
@@ -1018,6 +1181,38 @@ export default function InvoiceScanner() {
       {/* ─── Scanner IA Tab ─── */}
       {activeTab === 'scanner' && (
         <div className="space-y-6">
+
+          {/* Alertes inflation persistantes (historique fournisseurs) */}
+          {priceAlerts.length > 0 && !alertsDismissed && (
+            <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-2xl p-5">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-9 h-9 rounded-xl bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-red-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-red-700 dark:text-red-300">
+                      {priceAlerts.length} hausse(s) de prix recente(s)
+                    </p>
+                    <p className="text-xs text-red-600/70 dark:text-red-400/70">Detectees a partir de l'historique fournisseurs</p>
+                  </div>
+                </div>
+                <button onClick={() => setAlertsDismissed(true)} className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 text-red-400" aria-label="Fermer">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {priceAlerts.slice(0, 6).map((a) => (
+                  <div key={a.ingredientId} className="flex items-center justify-between gap-2 bg-white dark:bg-black border border-red-100 dark:border-red-900/50 rounded-xl px-3 py-2">
+                    <span className="text-xs font-medium text-black dark:text-white truncate">{a.name}</span>
+                    <span className="text-xs whitespace-nowrap text-red-600 dark:text-red-400 font-semibold">
+                      {formatEuro(a.oldPrice)} → {formatEuro(a.newPrice)} +{a.pct}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Drag & Drop Upload Zone */}
           {!scanFile && (
@@ -1316,105 +1511,121 @@ export default function InvoiceScanner() {
           {/* ─── Line Items Table with matching ─── */}
           {scanResult && scanResult.items.length > 0 && (
             <div className="bg-white dark:bg-black border border-black/10 dark:border-white/10 rounded-2xl overflow-hidden">
-              <div className="px-6 py-4 border-b border-black/10 dark:border-white/10 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold text-black dark:text-white flex items-center gap-2">
                   <ScanLine className="w-4 h-4 text-black/40 dark:text-white/40" />
-                  {scanResult.items.length} ligne(s) detectee(s)
+                  {reviewRows.length} ligne(s) detectee(s)
                 </h3>
-                {scanMatches.length > 0 && (
-                  <div className="flex items-center gap-2 text-xs text-black/50 dark:text-white/50">
-                    <span className="flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                      {scanMatches.filter(m => m.ingredient).length} matchs
+                <div className="flex items-center gap-3 text-xs text-black/50 dark:text-white/50">
+                  <span className="flex items-center gap-1">
+                    <Check className="w-3.5 h-3.5 text-black/60 dark:text-white/60" />
+                    {reviewRows.filter(r => r.apply).length} a appliquer
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                    {reviewRows.filter(r => r.mode === 'update').length} associes
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Plus className="w-3.5 h-3.5 text-amber-500" />
+                    {reviewRows.filter(r => r.mode === 'create').length} nouveaux
+                  </span>
+                  {reviewRows.some(r => r.apply && r.bigJump) && (
+                    <span className="flex items-center gap-1 text-red-600 dark:text-red-400 font-medium">
+                      <TrendingUp className="w-3.5 h-3.5" />
+                      {reviewRows.filter(r => r.apply && r.bigJump).length} hausse(s) &gt; {INFLATION_THRESHOLD}%
                     </span>
-                    <span className="flex items-center gap-1">
-                      <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
-                      {scanMatches.filter(m => !m.ingredient).length} nouveaux
-                    </span>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.02]">
-                      <th className="text-left px-4 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider">
-                        Ingredient
+                      <th className="px-3 py-3 w-10 text-center">
+                        <input
+                          type="checkbox"
+                          aria-label="Tout selectionner"
+                          checked={reviewRows.length > 0 && reviewRows.every(r => r.apply)}
+                          onChange={() => { const target = !reviewRows.every(r => r.apply); setReviewRows(prev => prev.map(r => ({ ...r, apply: target }))); }}
+                          className="w-4 h-4 rounded accent-emerald-500 cursor-pointer"
+                        />
                       </th>
-                      <th className="text-center px-3 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider w-20">
-                        Quantite
-                      </th>
-                      <th className="text-center px-3 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider w-16">
-                        Unite
-                      </th>
-                      <th className="text-center px-3 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider w-28">
-                        Prix unitaire
-                      </th>
-                      <th className="text-center px-3 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider w-24">
-                        Montant
-                      </th>
-                      <th className="text-center px-3 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider w-36">
-                        Statut
-                      </th>
-                      <th className="text-center px-3 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider w-36">
-                        Prix
-                      </th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider">Produit facture</th>
+                      <th className="text-center px-3 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider w-24">Qte</th>
+                      <th className="text-center px-3 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider w-28">Prix facture</th>
+                      <th className="text-left px-3 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider w-56">Ingredient a mettre a jour</th>
+                      <th className="text-center px-3 py-3 text-xs font-medium text-black/40 dark:text-white/40 uppercase tracking-wider w-44">Evolution du prix</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {scanResult.items.map((item, idx) => {
-                      const match = scanMatches[idx];
-                      return (
-                        <tr
-                          key={idx}
-                          className="border-b border-black/5 dark:border-white/5 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
-                        >
-                          <td className="px-4 py-3">
-                            <span className="font-medium text-black dark:text-white">{item.name}</span>
-                          </td>
-                          <td className="px-3 py-3 text-center text-black/60 dark:text-white/60">
-                            {item.quantity != null ? item.quantity : '--'}
-                          </td>
-                          <td className="px-3 py-3 text-center text-black/60 dark:text-white/60">
-                            {item.unit || '--'}
-                          </td>
-                          <td className="px-3 py-3 text-center text-black/60 dark:text-white/60">
-                            {item.unitPrice != null ? formatEuro(item.unitPrice) : '--'}
-                          </td>
-                          <td className="px-3 py-3 text-center font-medium text-black dark:text-white">
-                            {item.totalPrice != null ? formatEuro(item.totalPrice) : '--'}
-                          </td>
-                          <td className="px-3 py-3 text-center">
-                            {match?.ingredient ? (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400">
-                                <Check className="w-3 h-3" />
-                                {match.ingredient.name}
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400">
-                                <Plus className="w-3 h-3" />
-                                Nouvel ingredient
+                    {reviewRows.map((r) => (
+                      <tr
+                        key={r.lineIndex}
+                        className={`border-b border-black/5 dark:border-white/5 transition-colors ${r.apply ? 'hover:bg-black/[0.02] dark:hover:bg-white/[0.02]' : 'opacity-50'}`}
+                      >
+                        <td className="px-3 py-3 text-center">
+                          <input type="checkbox" checked={r.apply} onChange={() => toggleRowApply(r.lineIndex)} className="w-4 h-4 rounded accent-emerald-500 cursor-pointer" />
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="font-medium text-black dark:text-white">{r.name || '—'}</div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {r.packaging && (
+                              <span className="text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/50">{r.packaging}</span>
+                            )}
+                            {r.confidence != null && r.confidence < 0.6 && (
+                              <span className="text-[11px] text-amber-600 dark:text-amber-400 flex items-center gap-0.5">
+                                <AlertCircle className="w-3 h-3" /> a verifier
                               </span>
                             )}
-                          </td>
-                          <td className="px-3 py-3 text-center">
-                            {match ? (
-                              <PriceIndicator diff={match.priceDiff} pct={match.priceDiffPct} />
-                            ) : (
-                              <span className="text-xs text-black/30 dark:text-white/30">--</span>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
+                          </div>
+                        </td>
+                        <td className="px-3 py-3 text-center text-black/60 dark:text-white/60 whitespace-nowrap">
+                          {r.quantity != null ? r.quantity : '--'} {r.unit}
+                        </td>
+                        <td className="px-3 py-3 text-center font-medium text-black dark:text-white whitespace-nowrap">
+                          {r.unitPrice != null ? `${formatEuro(r.unitPrice)}/${r.unit || 'u'}` : '--'}
+                        </td>
+                        <td className="px-3 py-3">
+                          <select
+                            value={r.ingredientId ?? ''}
+                            onChange={(e) => setRowIngredient(r.lineIndex, e.target.value ? parseInt(e.target.value) : null)}
+                            className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-black text-black dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white"
+                          >
+                            <option value="">➕ Nouvel ingredient</option>
+                            {ingredientsList.map((ing) => (
+                              <option key={ing.id} value={ing.id}>{ing.name} ({ing.pricePerUnit}€/{ing.unit})</option>
+                            ))}
+                          </select>
+                          {r.unitMismatch && (
+                            <div className="mt-1 text-[11px] text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                              <AlertCircle className="w-3 h-3" /> Unite facture "{r.unit}" differe de l'ingredient
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-3 py-3 text-center">
+                          {r.mode === 'create' ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400">
+                              <Plus className="w-3 h-3" /> Creation
+                            </span>
+                          ) : (r.oldPrice != null && r.unitPrice != null) ? (
+                            <div className="flex flex-col items-center gap-0.5">
+                              <span className="text-xs text-black/50 dark:text-white/50 whitespace-nowrap">
+                                {formatEuro(r.oldPrice)} → <span className="font-semibold text-black dark:text-white">{formatEuro(r.unitPrice)}</span>
+                              </span>
+                              <PriceIndicator diff={r.unitPrice - r.oldPrice} pct={r.pct} />
+                            </div>
+                          ) : (
+                            <span className="text-xs text-black/30 dark:text-white/30">--</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                   <tfoot>
                     <tr className="bg-black/[0.03] dark:bg-white/[0.03]">
-                      <td colSpan={4} className="px-4 py-3 text-sm font-semibold text-black/70 dark:text-white/70 text-right">
-                        Total HT :
-                      </td>
-                      <td className="px-3 py-3 text-sm font-bold text-black dark:text-white text-center">
-                        {formatEuro(scanResult.totalHT ?? scanResult.items.reduce((s, i) => s + (i.totalPrice || 0), 0))}
+                      <td colSpan={3} className="px-4 py-3 text-sm font-semibold text-black/70 dark:text-white/70 text-right">Total HT :</td>
+                      <td className="px-3 py-3 text-sm font-bold text-black dark:text-white text-center whitespace-nowrap">
+                        {formatEuro(scanResult.totalHT ?? reviewRows.reduce((s, r) => s + (r.totalPrice || 0), 0))}
                       </td>
                       <td colSpan={2} />
                     </tr>
@@ -1424,31 +1635,19 @@ export default function InvoiceScanner() {
             </div>
           )}
 
-          {/* ─── Quick Actions after validation ─── */}
-          {scanResult && !scanImported && (
+          {/* ─── Validation : appliquer aux ingredients ─── */}
+          {scanResult && !scanImported && reviewRows.length > 0 && (
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <button
-                onClick={handleScanImport}
-                disabled={scanImporting}
+                onClick={handleImportInvoice}
+                disabled={scanImporting || reviewRows.filter(r => r.apply).length === 0}
                 className="flex-1 px-6 py-3 bg-black dark:bg-white text-white dark:text-black rounded-2xl
                            hover:bg-black/80 dark:hover:bg-white/80 text-sm font-semibold
                            flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {scanImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                Valider et importer
+                Appliquer aux ingredients ({reviewRows.filter(r => r.apply).length})
               </button>
-              {scanMatches.some(m => m.priceDiff !== null && m.priceDiff !== 0) && (
-                <button
-                  onClick={handleUpdatePricesFromScan}
-                  disabled={updatingPrices}
-                  className="flex-1 px-6 py-3 border-2 border-emerald-500 text-emerald-700 dark:text-emerald-400 rounded-2xl
-                             hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-sm font-semibold
-                             flex items-center justify-center gap-2 disabled:opacity-50 transition-colors"
-                >
-                  {updatingPrices ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowUpDown className="w-4 h-4" />}
-                  Mettre a jour les prix ingredients
-                </button>
-              )}
               <button
                 onClick={handleScanReset}
                 className="px-6 py-3 border border-black/10 dark:border-white/10 text-black/50 dark:text-white/50
@@ -1459,40 +1658,51 @@ export default function InvoiceScanner() {
             </div>
           )}
 
-          {/* Success state with quick actions */}
+          {/* Success state with import summary + inflation alerts */}
           {scanImported && (
-            <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-8 text-center">
-              <div className="w-14 h-14 mx-auto bg-emerald-100 dark:bg-emerald-900/40 rounded-2xl flex items-center justify-center mb-4">
-                <CheckCircle2 className="w-7 h-7 text-emerald-500" />
+            <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-8">
+              <div className="text-center">
+                <div className="w-14 h-14 mx-auto bg-emerald-100 dark:bg-emerald-900/40 rounded-2xl flex items-center justify-center mb-4">
+                  <CheckCircle2 className="w-7 h-7 text-emerald-500" />
+                </div>
+                <p className="text-lg font-semibold text-emerald-700 dark:text-emerald-300">
+                  Facture importee avec succes !
+                </p>
+                <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-1">
+                  {importResult
+                    ? `${importResult.pricesUpdated} prix mis a jour${importResult.created > 0 ? `, ${importResult.created} ingredient(s) cree(s)` : ''}. Historique enregistre.`
+                    : 'Les prix des ingredients ont ete mis a jour.'}
+                </p>
               </div>
-              <p className="text-lg font-semibold text-emerald-700 dark:text-emerald-300">
-                Facture importee avec succes !
-              </p>
-              <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-1">
-                Les prix des ingredients ont ete mis a jour.
-              </p>
-              {/* Quick actions after validation */}
+
+              {importResult && importResult.alerts.length > 0 && (
+                <div className="mt-5 bg-white dark:bg-black border border-red-200 dark:border-red-900 rounded-xl p-4 text-left">
+                  <p className="text-sm font-semibold text-red-700 dark:text-red-400 flex items-center gap-2 mb-2">
+                    <TrendingUp className="w-4 h-4" /> {importResult.alerts.length} hausse(s) de prix importante(s) (&gt; {INFLATION_THRESHOLD}%)
+                  </p>
+                  <ul className="space-y-1">
+                    {importResult.alerts.map((a, i) => (
+                      <li key={i} className="text-xs text-black/70 dark:text-white/70 flex items-center justify-between gap-3">
+                        <span className="font-medium text-black dark:text-white">{a.name}</span>
+                        <span className="whitespace-nowrap">
+                          {formatEuro(a.oldPrice)} → {formatEuro(a.newPrice)}{' '}
+                          <span className="text-red-600 dark:text-red-400 font-semibold">+{a.pct}%</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
                 <button
-                  onClick={handleUpdatePricesFromScan}
-                  disabled={updatingPrices}
-                  className="px-4 py-2.5 text-sm font-medium bg-white dark:bg-black border border-emerald-300 dark:border-emerald-700
-                             text-emerald-700 dark:text-emerald-300 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30
-                             flex items-center gap-2 transition-colors"
-                >
-                  <ArrowUpDown className="w-4 h-4" />
-                  Mettre a jour les prix
-                </button>
-                <button
-                  onClick={() => {
-                    setActiveTab('historique');
-                  }}
+                  onClick={() => setActiveTab('historique')}
                   className="px-4 py-2.5 text-sm font-medium bg-white dark:bg-black border border-emerald-300 dark:border-emerald-700
                              text-emerald-700 dark:text-emerald-300 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30
                              flex items-center gap-2 transition-colors"
                 >
                   <Archive className="w-4 h-4" />
-                  Archiver la facture
+                  Voir l'historique
                 </button>
                 <button
                   onClick={handleScanReset}

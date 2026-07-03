@@ -2183,6 +2183,109 @@ app.post('/api/invoices/:id/apply', authWithRestaurant, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur application facture' }); }
 });
 
+// Import complet d'une facture scannee : cree la facture + lignes, met a jour
+// (ou cree) les ingredients, historise CHAQUE changement de prix, detecte
+// l'inflation — le tout dans une seule transaction. Remplace le PUT-loop cote UI.
+app.post('/api/invoices/import', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { supplierName, invoiceNumber, invoiceDate, totalHT, totalTTC, lines, inflationThreshold } = req.body as {
+      supplierName?: string; invoiceNumber?: string; invoiceDate?: string;
+      totalHT?: number; totalTTC?: number;
+      lines?: Array<{ productName: string; quantity?: number; unit?: string; unitPrice?: number; totalPrice?: number; apply?: boolean; ingredientId?: number | null; createNew?: boolean; category?: string }>;
+      inflationThreshold?: number;
+    };
+    const restaurantId = req.restaurantId;
+    const userId = req.user.userId;
+    const threshold = typeof inflationThreshold === 'number' && inflationThreshold >= 0 ? inflationThreshold : 15;
+    const today = new Date().toISOString().slice(0, 10);
+    const safeLines = Array.isArray(lines) ? lines : [];
+
+    const result = await prisma.$transaction(async (tx) => {
+      const invoice = await tx.invoice.create({
+        data: {
+          supplierName: (supplierName || 'Inconnu').slice(0, 200),
+          invoiceNumber: (invoiceNumber || '').slice(0, 100),
+          invoiceDate: invoiceDate || today,
+          totalAmount: totalTTC ?? totalHT ?? 0,
+          restaurantId,
+          status: 'processed',
+          items: {
+            create: safeLines.map((l) => ({
+              productName: (l.productName || '').slice(0, 300),
+              quantity: l.quantity || 0,
+              unit: (l.unit || '').slice(0, 20),
+              unitPrice: l.unitPrice || 0,
+              total: l.totalPrice || 0,
+            })),
+          },
+        },
+        include: { items: true },
+      });
+
+      let pricesUpdated = 0;
+      let created = 0;
+      const alerts: Array<{ ingredientId: number; name: string; oldPrice: number; newPrice: number; pct: number }> = [];
+      const changedIngredientIds: number[] = [];
+      const items = invoice.items;
+
+      for (let i = 0; i < safeLines.length; i++) {
+        const l = safeLines[i];
+        const item = items[i];
+        const newPrice = l.unitPrice;
+        if (!l.apply || newPrice == null || !isFinite(newPrice) || newPrice <= 0) continue;
+
+        // Creation d'un nouvel ingredient depuis la ligne
+        if (l.createNew && !l.ingredientId) {
+          const name = (l.productName || '').trim();
+          if (!name) continue;
+          const dup = await tx.ingredient.findFirst({ where: { restaurantId, deletedAt: null, name: { equals: name, mode: 'insensitive' } } });
+          const ing = dup || await tx.ingredient.create({
+            data: { name, unit: (l.unit || 'kg').slice(0, 20), pricePerUnit: newPrice, category: (l.category || 'Épicerie sèche').slice(0, 60), allergens: [], restaurantId, supplier: supplierName ? supplierName.slice(0, 200) : null },
+          });
+          if (dup && dup.pricePerUnit !== newPrice) {
+            await tx.ingredient.update({ where: { id: dup.id }, data: { pricePerUnit: newPrice } });
+          }
+          await tx.priceHistory.create({ data: { ingredientId: ing.id, price: newPrice, date: today, source: 'invoice', restaurantId } });
+          if (item) await tx.invoiceItem.update({ where: { id: item.id }, data: { ingredientId: ing.id } });
+          created++;
+          changedIngredientIds.push(ing.id);
+          continue;
+        }
+
+        // Mise a jour d'un ingredient existant
+        if (l.ingredientId) {
+          const ing = await tx.ingredient.findFirst({ where: { id: l.ingredientId, restaurantId, deletedAt: null } });
+          if (!ing) continue;
+          const oldPrice = ing.pricePerUnit;
+          if (oldPrice !== newPrice) {
+            await tx.ingredient.update({ where: { id: ing.id }, data: { pricePerUnit: newPrice } });
+            await tx.priceHistory.create({ data: { ingredientId: ing.id, price: newPrice, date: today, source: 'invoice', restaurantId } });
+            pricesUpdated++;
+            changedIngredientIds.push(ing.id);
+            const pct = oldPrice > 0 ? ((newPrice - oldPrice) / oldPrice) * 100 : 0;
+            if (pct > threshold) alerts.push({ ingredientId: ing.id, name: ing.name, oldPrice, newPrice, pct: Math.round(pct * 10) / 10 });
+          }
+          if (item) await tx.invoiceItem.update({ where: { id: item.id }, data: { ingredientId: ing.id } });
+        }
+      }
+
+      return { invoiceId: invoice.id, pricesUpdated, created, alerts, changedIngredientIds };
+    }, { timeout: 20000 });
+
+    // Best-effort : touche les recettes impactees pour forcer le recalcul des marges cote front
+    if (result.changedIngredientIds.length) {
+      try {
+        const affected = await prisma.recipeIngredient.findMany({ where: { ingredientId: { in: result.changedIngredientIds } }, select: { recipeId: true } });
+        const recipeIds = [...new Set(affected.map((a: any) => a.recipeId))];
+        if (recipeIds.length) await prisma.recipe.updateMany({ where: { id: { in: recipeIds } }, data: { updatedAt: new Date() } });
+      } catch (e) { console.error('import recalc touch error:', e); }
+    }
+
+    logAudit(userId, restaurantId, 'IMPORT', 'invoice', result.invoiceId, { pricesUpdated: result.pricesUpdated, created: result.created });
+    res.status(201).json({ invoiceId: result.invoiceId, pricesUpdated: result.pricesUpdated, created: result.created, alerts: result.alerts });
+  } catch (e) { console.error('invoice import error:', e); res.status(500).json({ error: 'Erreur import facture' }); }
+});
+
 app.delete('/api/invoices/:id', authWithRestaurant, async (req: any, res) => {
   try {
     const existing = await prisma.invoice.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId } });
@@ -2199,9 +2302,9 @@ app.post('/api/invoices/scan', authWithRestaurant, async (req, res) => {
     if (!imageBase64 || !mimeType) return res.status(400).json({ error: 'imageBase64 et mimeType requis' });
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 2048,
-      system: 'Tu es un expert comptable specialise en restauration. Analyse cette facture/bon de livraison et extrais toutes les donnees en JSON. Reponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans commentaire, sans explication.',
+      model: 'claude-sonnet-5',
+      max_tokens: 4096,
+      system: "Tu es un expert-comptable specialise en restauration (CHR). Tu lis des factures et bons de livraison fournisseurs et tu extrais les donnees en JSON strict. Tu ramenes systematiquement chaque prix a l'unite de base (kg, L ou unite) pour qu'il soit directement comparable au cout matiere d'un ingredient. Reponds UNIQUEMENT avec un objet JSON valide : pas de markdown, pas de commentaire, pas d'explication.",
       messages: [
         {
           role: 'user',
@@ -2212,16 +2315,29 @@ app.post('/api/invoices/scan', authWithRestaurant, async (req, res) => {
             },
             {
               type: 'text',
-              text: `Analyse cette facture/bon de livraison restaurant. Extrais:
-- fournisseur (string): nom du fournisseur
-- dateFacture (string YYYY-MM-DD): date de la facture
-- numeroFacture (string): numero de facture
-- items (array): pour chaque ligne produit: {name (string), quantity (number), unit (string: kg/g/L/cl/ml/unite/piece), unitPrice (number: prix unitaire HT), totalPrice (number: prix total HT de la ligne)}
-- totalHT (number): total hors taxes
-- totalTTC (number): total TTC
-- tva (number): montant TVA
+              text: `Analyse cette facture / ce bon de livraison d'un fournisseur restaurant et extrais les donnees.
 
-Si une valeur est illisible ou absente, utilise null. Pour les items, extrais TOUTES les lignes produit visibles. Retourne un objet JSON valide.`,
+Retourne un objet JSON avec :
+- fournisseur (string|null) : nom du fournisseur
+- dateFacture (string|null, format YYYY-MM-DD) : date de la facture
+- numeroFacture (string|null) : numero de facture
+- items (array) : une entree par ligne produit, avec :
+    - name (string) : libelle du produit
+    - quantity (number|null) : quantite facturee
+    - unit (string) : UNITE DE BASE normalisee parmi "kg", "L" ou "unite" (jamais "carton", "lot", "caisse", "colis")
+    - unitPrice (number|null) : prix HT par UNITE DE BASE. Si le produit est vendu au conditionnement (ex : "Carton de 6x1L", "Sac 25kg", "Colis 12 pieces"), DIVISE le prix du conditionnement pour obtenir le prix reel par kg / L / unite
+    - totalPrice (number|null) : montant HT total de la ligne, tel qu'ecrit sur la facture
+    - packaging (string|null) : le conditionnement d'origine s'il est indique (ex : "6x1L", "25kg", "colis 12"), sinon null
+    - confidence (number) : ta confiance sur l'exactitude de cette ligne, entre 0 et 1
+- totalHT (number|null) : total hors taxes
+- totalTTC (number|null) : total TTC
+- tva (number|null) : montant de la TVA
+
+Regles :
+- Extrais TOUTES les lignes produit visibles.
+- Convertis toujours l'unite ET le prix vers l'unite de base pour que unitPrice soit comparable a un cout matiere (prix au kg / L / unite).
+- Si une valeur est illisible ou absente, mets null — n'invente jamais un chiffre.
+- Reponds avec un objet JSON valide uniquement.`,
             },
           ],
         },

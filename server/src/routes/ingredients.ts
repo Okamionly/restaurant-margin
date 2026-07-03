@@ -46,6 +46,45 @@ ingredientsRouter.get('/usage', authWithRestaurant, async (req: AuthRequest, res
   }
 });
 
+// GET /api/ingredients/price-alerts — hausses recentes derivees de l'historique
+ingredientsRouter.get('/price-alerts', authWithRestaurant, async (req: AuthRequest, res: Response) => {
+  try {
+    const threshold = Math.max(0, parseFloat(String(req.query.threshold)) || 10);
+    const history = await prisma.priceHistory.findMany({ where: { restaurantId: req.restaurantId! }, orderBy: { createdAt: 'desc' }, take: 1000 });
+    const byIng: Record<number, typeof history> = {};
+    for (const h of history) { (byIng[h.ingredientId] ||= []).push(h); }
+    const ids = Object.keys(byIng).map(Number);
+    const ings = ids.length
+      ? await prisma.ingredient.findMany({ where: { id: { in: ids }, restaurantId: req.restaurantId! }, select: { id: true, name: true, unit: true, category: true } })
+      : [];
+    const byId: Record<number, { id: number; name: string; unit: string; category: string }> = {};
+    ings.forEach((i) => { byId[i.id] = i as { id: number; name: string; unit: string; category: string }; });
+    const alerts: Array<{ ingredientId: number; name: string; unit: string; category: string; oldPrice: number; newPrice: number; pct: number; date: string }> = [];
+    for (const id of ids) {
+      const h = byIng[id];
+      if (h.length < 2 || !byId[id]) continue;
+      const cur = h[0].price, prev = h[1].price;
+      if (prev <= 0) continue;
+      const pct = ((cur - prev) / prev) * 100;
+      if (pct > threshold) alerts.push({ ingredientId: id, name: byId[id].name, unit: byId[id].unit, category: byId[id].category, oldPrice: prev, newPrice: cur, pct: Math.round(pct * 10) / 10, date: h[0].date });
+    }
+    alerts.sort((a, b) => b.pct - a.pct);
+    res.json(alerts);
+  } catch (error) { res.status(500).json({ error: 'Erreur alertes prix' }); }
+});
+
+// GET /api/ingredients/:id/price-history — evolution du prix d'un ingredient
+ingredientsRouter.get('/:id/price-history', authWithRestaurant, async (req: AuthRequest, res: Response) => {
+  try {
+    const ingredientId = parseInt(req.params.id as string);
+    if (isNaN(ingredientId)) { res.status(400).json({ error: 'ID invalide' }); return; }
+    const owns = await prisma.ingredient.findFirst({ where: { id: ingredientId, restaurantId: req.restaurantId! }, select: { id: true } });
+    if (!owns) { res.status(404).json({ error: 'Ingrédient non trouvé' }); return; }
+    const history = await prisma.priceHistory.findMany({ where: { ingredientId, restaurantId: req.restaurantId! }, orderBy: { createdAt: 'asc' }, take: 60, select: { price: true, date: true, source: true, createdAt: true } });
+    res.json(history);
+  } catch (error) { res.status(500).json({ error: 'Erreur historique prix' }); }
+});
+
 // GET single ingredient
 ingredientsRouter.get('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
@@ -135,6 +174,21 @@ ingredientsRouter.put('/:id', authWithRestaurant, async (req: AuthRequest, res: 
         allergens: Array.isArray(allergens) ? allergens : [],
       },
     });
+
+    // Historise le changement de prix (courbe d'evolution, tendance inflation)
+    if (existing.pricePerUnit !== parsedPrice) {
+      try {
+        await prisma.priceHistory.create({
+          data: {
+            ingredientId: id,
+            price: parsedPrice,
+            date: new Date().toISOString().slice(0, 10),
+            source: typeof req.body.priceSource === 'string' ? req.body.priceSource : 'manual',
+            restaurantId: req.restaurantId!,
+          },
+        });
+      } catch (e) { console.error('PriceHistory create error:', e); }
+    }
 
     res.json(ingredient);
   } catch (error) {

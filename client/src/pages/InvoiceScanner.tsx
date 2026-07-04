@@ -793,7 +793,7 @@ export default function InvoiceScanner() {
 
       const data = await res.json();
       if (!res.ok || data.error) {
-        setScanError(data.error || 'Erreur lors du scan');
+        setScanError((data.error || 'Erreur lors du scan') + (data.detail ? ` — ${data.detail}` : ''));
         setShowUploadProgress(false);
         cleanup();
         return;

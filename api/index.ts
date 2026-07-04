@@ -2353,7 +2353,7 @@ Regles :
     }
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-5',
+      model: 'claude-sonnet-4-20250514',
       max_tokens: 4096,
       system: "Tu es un expert-comptable specialise en restauration (CHR). Tu lis des factures et bons de livraison fournisseurs et tu extrais les donnees en JSON strict. Tu ramenes systematiquement chaque prix a l'unite de base (kg, L ou unite) pour qu'il soit directement comparable au cout matiere d'un ingredient. Reponds UNIQUEMENT avec un objet JSON valide : pas de markdown, pas de commentaire, pas d'explication.",
       messages: [{ role: 'user', content }],
@@ -2375,11 +2375,12 @@ Regles :
       res.status(422).json({ error: "Impossible d'analyser la reponse", raw: rawText });
     }
   } catch (e: any) {
-    console.error(e);
+    console.error('invoice scan error:', e);
     if (e?.status === 400 && e?.message?.includes('credit balance')) {
       return res.status(503).json({ error: 'Service IA temporairement indisponible. Veuillez reessayer plus tard.' });
     }
-    res.status(500).json({ error: 'Erreur scan facture' });
+    const detail = e?.error?.error?.message || e?.error?.message || e?.message || String(e);
+    res.status(e?.status && e.status >= 400 && e.status < 600 ? e.status : 500).json({ error: 'Erreur scan facture', detail });
   }
 });
 

@@ -2,25 +2,20 @@ import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy, Handshake, Timer, Mail, Gift, Activity } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
-import ConnectivityBar from './components/ConnectivityBar';
-import OfflineSyncBar from './components/OfflineSyncBar';
 import { isOnboardingCompleted } from './utils/onboardingFlags';
-import FloatingActionBubble from './components/FloatingActionBubble';
 import CookieBanner from './components/CookieBanner';
 import Breadcrumbs from './components/Breadcrumbs';
 import { trackPageVisit } from './utils/recentPages';
 import { captureLandingSource } from './utils/signupSource';
 import NotificationCenter from './components/NotificationCenter';
-import ShortcutsModal from './components/ShortcutsModal';
 import ActiveUsers, { ConnectedBadge, PageActivityDot } from './components/ActiveUsers';
-import CollaborationToast from './components/CollaborationToast';
-import WorkingIndicator from './components/WorkingIndicator';
-import SidebarLevelBadge from './components/SidebarLevelBadge';
-import ContextualTooltips from './components/ContextualTooltips';
-import OnboardingProgress from './components/OnboardingProgress';
-import MobileBottomNav from './components/MobileBottomNav';
-import NPSModal from './components/NPSModal';
 import TrialPaywallGuard from './components/TrialPaywallGuard';
+// NOTE (perf/SEO) : les overlays/bandeaux/modales de l'app-shell (ConnectivityBar,
+// OfflineSyncBar, WorkingIndicator, ContextualTooltips, FloatingActionBubble,
+// MobileBottomNav, NPSModal, ShortcutsModal, SidebarLevelBadge, OnboardingProgress)
+// ne sont rendus QUE dans AppLayout (routes authentifiées). Ils sont donc lazy-loadés
+// plus bas pour sortir du chunk `index` critique que chaque page publique/SEO télécharge.
+// (CollaborationToast : import mort supprimé — jamais rendu.)
 // HelpButton, KitchenTimer, VoiceCommand merged into FloatingActionBubble
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
@@ -66,6 +61,21 @@ const OnboardingWizard = lazyRetry(() => import('./components/OnboardingWizard')
 const CommandPalette = lazyRetry(() => import('./components/CommandPalette'));
 // Gamification is only needed on /mon-score — lazy it.
 const GamificationPage = lazyRetry(() => import('./components/Gamification'));
+
+// App-shell chrome (overlays / status bars / modals) — rendered only inside AppLayout
+// (authenticated routes). Lazy-loaded so they stay OUT of the critical `index` chunk that
+// every public/SEO page (landing, /blog/*, /pricing…) downloads before first paint.
+// All render sites are wrapped in <Suspense fallback={null}> (invisible chrome pop-in).
+const ConnectivityBar = lazyRetry(() => import('./components/ConnectivityBar'));
+const OfflineSyncBar = lazyRetry(() => import('./components/OfflineSyncBar'));
+const WorkingIndicator = lazyRetry(() => import('./components/WorkingIndicator'));
+const ContextualTooltips = lazyRetry(() => import('./components/ContextualTooltips'));
+const FloatingActionBubble = lazyRetry(() => import('./components/FloatingActionBubble'));
+const MobileBottomNav = lazyRetry(() => import('./components/MobileBottomNav'));
+const NPSModal = lazyRetry(() => import('./components/NPSModal'));
+const ShortcutsModal = lazyRetry(() => import('./components/ShortcutsModal'));
+const SidebarLevelBadge = lazyRetry(() => import('./components/SidebarLevelBadge'));
+const OnboardingProgress = lazyRetry(() => import('./components/OnboardingProgress'));
 
 // Lazy-loaded pages for code splitting
 const Dashboard = lazyRetry(() => import('./pages/Dashboard'));
@@ -670,10 +680,10 @@ function AppLayout() {
       {!collapsed && <ActiveUsers />}
 
       {/* Onboarding progress tracker */}
-      {!collapsed && <OnboardingProgress />}
+      {!collapsed && <Suspense fallback={null}><OnboardingProgress /></Suspense>}
 
       {/* Gamification Level Badge */}
-      {!collapsed && <SidebarLevelBadge />}
+      {!collapsed && <Suspense fallback={null}><SidebarLevelBadge /></Suspense>}
 
       {/* Station Balance + Cuisine KDS buttons */}
       <div className={`px-3 mb-3 space-y-2 ${collapsed ? 'mt-4' : ''}`}>
@@ -889,11 +899,11 @@ function AppLayout() {
             </div>
         </header>
 
-        {/* Connectivity status bar */}
-        <ConnectivityBar />
-
-        {/* Offline sync bar — shows pending actions & sync status */}
-        <OfflineSyncBar />
+        {/* Connectivity + offline sync bars — lazy app-shell chrome (invisible fallback) */}
+        <Suspense fallback={null}>
+          <ConnectivityBar />
+          <OfflineSyncBar />
+        </Suspense>
 
         {/* PWA Install banner — platform-specific */}
         {showInstallBanner && !isInstalled && (() => {
@@ -1035,7 +1045,7 @@ function AppLayout() {
         {/* Content */}
         <main id="main-content" key={selectedRestaurant?.id ?? 'no-restaurant'} className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 pb-20 md:pb-6 premium-content">
           <Breadcrumbs />
-          <WorkingIndicator />
+          <Suspense fallback={null}><WorkingIndicator /></Suspense>
           <div key={location.pathname} className="animate-premium-page-in">
           <Suspense fallback={<div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-teal-500" /></div>}>
             <Routes>
@@ -1113,18 +1123,19 @@ function AppLayout() {
           <CommandPalette />
         </Suspense>
       )}
-      <ShortcutsModal open={showShortcutsModal} onClose={() => setShowShortcutsModal(false)} />
-      {/* Contextual tooltips for first-visit pages */}
-      <ContextualTooltips />
-
-      {/* Floating FAB bubble — single button that expands */}
-      <FloatingActionBubble />
-
-      {/* Mobile bottom navigation bar */}
-      <MobileBottomNav />
-
-      {/* NPS survey — shows at J+14 after first login, once per user */}
-      <NPSModal />
+      {/* App-shell overlays — lazy-loaded off the critical path (invisible null fallback).
+          Behavior unchanged : same mount lifecycle, just fetched as async chunks. */}
+      <Suspense fallback={null}>
+        <ShortcutsModal open={showShortcutsModal} onClose={() => setShowShortcutsModal(false)} />
+        {/* Contextual tooltips for first-visit pages */}
+        <ContextualTooltips />
+        {/* Floating FAB bubble — single button that expands */}
+        <FloatingActionBubble />
+        {/* Mobile bottom navigation bar */}
+        <MobileBottomNav />
+        {/* NPS survey — shows at J+14 after first login, once per user */}
+        <NPSModal />
+      </Suspense>
 
       {/* Onboarding Wizard for new users — lazy-loaded (only rendered when needed) */}
       {showOnboarding && (

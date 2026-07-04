@@ -285,34 +285,31 @@ export default function LaunchPH() {
           </div>
         </section>
 
-        {/* DEMO VIDEO (Loom slot) */}
-        <section className="relative py-20 px-4 sm:px-6 bg-white/60 backdrop-blur">
+        {/* DEMO VIDEO */}
+        <section className="relative py-20 px-4 sm:px-6 bg-white/60 dark:bg-[#0A0A0A]/60 backdrop-blur">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-black text-[#0F172A] text-center mb-4 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-black text-[#0F172A] dark:text-white text-center mb-4 tracking-tight">
               90 secondes pour comprendre
             </h2>
-            <p className="text-center text-mono-400 text-lg mb-12 max-w-2xl mx-auto">
+            <p className="text-center text-mono-400 dark:text-[#A3A3A3] text-lg mb-12 max-w-2xl mx-auto">
               Démo rapide : dictée vocale recette → fiche technique générée + coût + marge en temps réel.
             </p>
 
-            {/* TODO: remplacer par embed Loom une fois la video enregistree
-                Pattern : <iframe src="https://www.loom.com/embed/<id>" frameBorder="0" allowFullScreen className="w-full h-full rounded-2xl shadow-2xl border-2 border-emerald-100" /> */}
-            <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl border-2 border-emerald-100 bg-gradient-to-br from-emerald-50 to-white flex flex-col items-center justify-center p-8 text-center gap-6">
+            <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl border-2 border-emerald-100 dark:border-emerald-900 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/40 dark:to-[#0A0A0A] flex flex-col items-center justify-center p-8 text-center gap-6">
               <div className="flex flex-col items-center gap-3">
-                <div className="w-20 h-20 rounded-full bg-emerald-600 flex items-center justify-center shadow-lg animate-pulse">
+                <div className="w-20 h-20 rounded-full bg-emerald-600 flex items-center justify-center shadow-lg">
                   <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 </div>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold uppercase tracking-wider">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Enregistrement en cours
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+                  Démo interactive disponible
                 </span>
               </div>
               <div>
-                <p className="text-[#0F172A] font-bold text-lg mb-1">La démo vidéo arrive très bientôt</p>
-                <p className="text-sm text-[#64748B] max-w-sm">
-                  Dictée vocale → fiche technique → coût + marge en temps réel. Essaie-le maintenant, c'est gratuit.
+                <p className="text-[#0F172A] dark:text-white font-bold text-lg mb-1">Essaie RestauMargin gratuitement</p>
+                <p className="text-sm text-[#64748B] dark:text-[#A3A3A3] max-w-sm">
+                  Dictée vocale → fiche technique → coût + marge en temps réel. Sans inscription.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
@@ -329,7 +326,7 @@ export default function LaunchPH() {
                   href={PH_DRAFT_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-gray-50 border border-[#E5E7EB] text-[#0F172A] font-semibold text-sm transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-[#1A1A1A] hover:bg-gray-50 dark:hover:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] text-[#0F172A] dark:text-white font-semibold text-sm transition-colors"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M13.604 8.4h-3.405V12h3.405c.995 0 1.801-.806 1.801-1.8S14.6 8.4 13.604 8.4z"/>

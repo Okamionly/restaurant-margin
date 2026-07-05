@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, TrendingUp, Calculator, AlertTriangle, CheckCircle, ArrowRight, BarChart3, DollarSign, Percent, Target, BookOpen, Lightbulb, Users, Pizza, Beef, Zap, Award, ListChecks, Sparkles, Table as TableIcon, FileSpreadsheet, Download } from 'lucide-react';
+import { ChefHat, TrendingUp, Calculator, AlertTriangle, CheckCircle, ArrowRight, BarChart3, DollarSign, Percent, Target, BookOpen, Lightbulb, Users, Pizza, Beef, Zap, Award, ListChecks, Sparkles, Table as TableIcon, FileSpreadsheet, Download, ExternalLink, Landmark } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
@@ -88,7 +88,7 @@ export default function BlogCalcMarge() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-04-14',
-            dateModified: '2026-06-02',
+            dateModified: '2026-07-05',
             wordCount: 4200,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/calcul-marge-restaurant' },
@@ -155,7 +155,7 @@ export default function BlogCalcMarge() {
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
-        <BlogAuthor publishedDate="2026-04-14" readTime="15 min" variant="header" />
+        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-07-05" readTime="15 min" variant="header" />
 
         {/* ── Encadre formule rapide (featured snippet) ── */}
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
@@ -1362,7 +1362,7 @@ export default function BlogCalcMarge() {
           </div>
         </section>
 
-        <BlogAuthor publishedDate="2026-04-14" readTime="15 min" variant="footer" />
+        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-07-05" readTime="15 min" variant="footer" />
 
         {/* ═════════════ FAQ visible ═════════════ */}
         <section id="faq" className="mb-16">
@@ -1480,6 +1480,88 @@ export default function BlogCalcMarge() {
               <p className="text-xs text-mono-500">Pourquoi RestauMargin est la meilleure alternative pour les marges.</p>
             </Link>
           </div>
+        </section>
+
+        {/* ═════════════ Sources & references (E-E-A-T Trust) ═════════════ */}
+        <section className="mb-16" aria-labelledby="sources-references">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
+              <Landmark className="w-5 h-5" />
+            </div>
+            <h2 id="sources-references" className="text-2xl font-bold text-mono-100">Sources &amp; references</h2>
+          </div>
+          <p className="text-sm text-mono-500 mb-6 max-w-3xl">
+            Les seuils de marge, taux de TVA et fourchettes de food cost cites dans ce guide s'appuient sur des
+            sources officielles et professionnelles reconnues du secteur, recoupees avec les donnees agregees de
+            RestauMargin (400+ etablissements francais). Ces references sont verifiables et mises a jour pour 2026.
+          </p>
+
+          <ul className="grid sm:grid-cols-2 gap-4 mb-6">
+            <li>
+              <a
+                href="https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mes-autres-impots-et-taxes/tva-quels-sont-les-taux-de-votre-quotidien"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group h-full"
+              >
+                <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
+                <span>
+                  <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">economie.gouv.fr — Taux de TVA</span>
+                  <span className="block text-xs text-mono-500 mt-1">Source officielle des taux 5,5 % / 10 % / 20 % appliques en restauration (repas, boissons, alcool).</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.insee.fr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group h-full"
+              >
+                <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
+                <span>
+                  <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">INSEE</span>
+                  <span className="block text-xs text-mono-500 mt-1">Statistiques nationales sur la restauration, la demographie des entreprises et les taux de defaillance.</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.umih.fr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group h-full"
+              >
+                <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
+                <span>
+                  <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">UMIH</span>
+                  <span className="block text-xs text-mono-500 mt-1">Union des Metiers et des Industries de l'Hotellerie — reference des usages et ratios du secteur CHR.</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.lhotellerie-restauration.fr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group h-full"
+              >
+                <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
+                <span>
+                  <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">L'Hotellerie-Restauration</span>
+                  <span className="block text-xs text-mono-500 mt-1">Presse professionnelle de reference (marges brutes, coefficients, pratiques metier).</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+
+          <p className="text-xs text-mono-500 flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-teal-600 shrink-0" />
+            <span>
+              Methodologie editoriale, sources internes et responsable de la publication detailles sur notre page{' '}
+              <Link to="/a-propos" className="text-teal-600 hover:text-teal-700 font-semibold transition-colors">Qui sommes-nous</Link>.
+            </span>
+          </p>
         </section>
 
         </article>

@@ -12,8 +12,8 @@ import { test, expect } from '@playwright/test';
 import { login } from './auth-helper';
 
 test('@smoke login redirects to dashboard', async ({ page }) => {
-  const email = process.env.E2E_DEMO_EMAIL ?? 'demo@restaumargin.fr';
-  const password = process.env.E2E_DEMO_PASSWORD ?? 'DemoPass2025!';
+  const email = process.env.E2E_DEMO_EMAIL || 'demo@restaumargin.fr';
+  const password = process.env.E2E_DEMO_PASSWORD || 'DemoPass2025!';
 
   // Pre-seed token + user so the dashboard skips its login redirect.
   await login(page, email, password);

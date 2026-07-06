@@ -188,6 +188,12 @@ const ROUTES = [
     type: 'article',
   },
   {
+    path: '/blog/marge-boissons-restaurant',
+    title: 'Marge sur les boissons au restaurant 2026 : cafe, soft, biere, vin, cocktails',
+    description: 'Quelle marge sur les boissons au restaurant ? Marge brute de 80 a 90 %, coefficients x4 a x15 selon la boisson. Cafe, softs, biere, vin au verre, cocktails : food cost cible, exemples chiffres et 7 leviers pour booster votre marge liquide.',
+    type: 'article',
+  },
+  {
     path: '/blog/coefficient-multiplicateur',
     title: 'Coefficient multiplicateur restaurant 2026 : calcul + formule + exemples (guide complet)',
     description: 'Coefficient multiplicateur restaurant : formule, calcul pas a pas, valeurs cibles par segment (bistrot 3.5, gastro 4.5, pizzeria 3.0). Exemples chiffres, erreurs courantes et calculateur gratuit.',

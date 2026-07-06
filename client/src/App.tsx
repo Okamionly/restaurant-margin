@@ -172,6 +172,7 @@ const Demo = lazyRetry(() => import('./pages/Demo'));
 const BlogCoefficient = lazyRetry(() => import('./pages/BlogCoefficient'));
 const BlogFoodCost = lazyRetry(() => import('./pages/BlogFoodCost'));
 const BlogTvaRestaurant = lazyRetry(() => import('./pages/BlogTvaRestaurant'));
+const BlogMargeBoissons = lazyRetry(() => import('./pages/BlogMargeBoissons'));
 const BlogIA = lazyRetry(() => import('./pages/BlogIA'));
 const NegociationIA = lazyRetry(() => import('./pages/NegociationIA'));
 const EmailMarketing = lazyRetry(() => import('./pages/EmailMarketing'));
@@ -1250,6 +1251,7 @@ function App() {
           <Route path="/blog/coefficient-multiplicateur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoefficient /></Suspense>} />
           <Route path="/blog/reduire-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFoodCost /></Suspense>} />
           <Route path="/blog/tva-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogTvaRestaurant /></Suspense>} />
+          <Route path="/blog/marge-boissons-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogMargeBoissons /></Suspense>} />
           <Route path="/blog/ia-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogIA /></Suspense>} />
           <Route path="/blog/gaspillage-alimentaire" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogGaspillage /></Suspense>} />
           <Route path="/blog/haccp-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogHACCP /></Suspense>} />

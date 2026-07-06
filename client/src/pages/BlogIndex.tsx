@@ -23,6 +23,14 @@ interface BlogPost {
 
 const posts: BlogPost[] = [
   {
+    slug: 'marge-boissons-restaurant',
+    title: 'Quelle marge sur les boissons au restaurant ? (guide 2026)',
+    excerpt: 'Cafe, softs, biere, vin, cocktails : la marge brute des boissons atteint 80 a 90 %. Coefficient et food cost cible par boisson, impact de la TVA a 20 % et 7 leviers pour maximiser votre marge liquide.',
+    category: 'Marges',
+    readTime: '16 min',
+    date: '2026-07-06',
+  },
+  {
     slug: 'prix-de-vente-restaurant',
     title: "Calculer le prix de vente d'un plat de restaurant en 2026",
     excerpt: 'Methodes eprouvees pour fixer vos prix : coefficient multiplicateur, marge cible, pricing psychologique. Cas pratiques chiffres et outils gratuits.',

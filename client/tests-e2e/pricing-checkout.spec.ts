@@ -21,6 +21,10 @@ test('@smoke /pricing Pro CTA redirects to Stripe', async ({ page }) => {
 
   await expect(cta).toBeVisible({ timeout: 15_000 });
 
+  // Intercept outbound Stripe requests so CI (no external network) doesn't block.
+  // We only assert that the app *attempts* to reach Stripe, not that checkout completes.
+  await page.route(/stripe\.com|checkout\.stripe\.com/, (route) => route.abort());
+
   // The CTA may either navigate the current tab, open a new one, or redirect
   // via a server endpoint (POST /api/stripe/create-checkout). Wait for any
   // navigation that lands on stripe.com.

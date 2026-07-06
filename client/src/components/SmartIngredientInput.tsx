@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Search, Plus, Loader2, ChevronDown } from 'lucide-react';
 import { authHeadersStandalone as authHeaders } from '../hooks/useApiClient';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface Ingredient {
   id: number;
@@ -62,6 +63,7 @@ export default function SmartIngredientInput({
   placeholder = 'Rechercher un ingrédient...',
   className = '',
 }: SmartIngredientInputProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Ingredient[]>([]);
   const [mercurialePrices, setMercurialePrices] = useState<MercurialePrice[]>([]);
@@ -169,7 +171,7 @@ export default function SmartIngredientInput({
           price: created.price,
           category: created.category,
         });
-        setToast('Ingredient ajoute a l\'inventaire');
+        setToast(t('ingredients.ingredientCreated'));
         setQuery(created.name);
         setOpen(false);
         setSearched(false);

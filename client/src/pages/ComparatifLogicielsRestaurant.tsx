@@ -949,7 +949,7 @@ export default function ComparatifLogicielsRestaurant() {
               <p className="text-xs text-mono-500">Guide complet : food cost, formules et benchmarks par type d'établissement.</p>
             </Link>
             <Link
-              to="/blog/logiciel-caisse-restaurant"
+              to="/blog/logiciel-caisse-enregistreuse-restaurant"
               className="bg-mono-1000 border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group"
             >
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">

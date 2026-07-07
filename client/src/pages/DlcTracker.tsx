@@ -127,6 +127,8 @@ export default function DlcTracker() {
   }
 
   function handleDelete(id: string) {
+    const product = products.find((p: DlcProduct) => p.id === id);
+    if (!window.confirm(`Supprimer "${product?.name}" ?`)) return;
     const updated = products.filter((p: DlcProduct) => p.id !== id);
     setProducts(updated);
     saveProducts(updated);

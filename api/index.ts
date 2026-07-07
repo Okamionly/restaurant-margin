@@ -2500,6 +2500,70 @@ async function findOrCreateConversation(restaurantId: number, email: string, nam
   });
 }
 
+// contact@restaumargin.fr is RestauMargin's own operator support inbox, so inbound
+// mail is routed to the founder's admin restaurant by default.
+const FOUNDER_EMAIL = 'mr.guessousyoussef@gmail.com';
+
+// Normalise the webhook `to` field (string | string[] | {address|email}[]) to a
+// single lowercase string we can scan for sub-addressing.
+function extractToString(to: any): string {
+  if (!to) return '';
+  if (typeof to === 'string') return to.toLowerCase();
+  if (Array.isArray(to)) {
+    return to
+      .map((t) => (typeof t === 'string' ? t : t?.address || t?.email || ''))
+      .join(',')
+      .toLowerCase();
+  }
+  if (typeof to === 'object') return (to.address || to.email || '').toLowerCase();
+  return '';
+}
+
+// Decide which restaurant an inbound email belongs to.
+//   1. Sub-addressing reply+<id>@restaumargin.fr -> that restaurant (future multi-tenant)
+//   2. INBOUND_RESTAURANT_ID env override
+//   3. Founder's admin restaurant (contact@ is the operator support inbox)
+//   4. Lowest restaurant id (last resort)
+async function resolveInboundRestaurantId(to: any): Promise<number> {
+  const toStr = extractToString(to);
+  const plus = toStr.match(/\+(\d+)@/);
+  if (plus) {
+    const id = parseInt(plus[1], 10);
+    if (!isNaN(id) && (await prisma.restaurant.findUnique({ where: { id } }))) return id;
+  }
+  const envId = parseInt(process.env.INBOUND_RESTAURANT_ID || '', 10);
+  if (!isNaN(envId) && (await prisma.restaurant.findUnique({ where: { id: envId } }))) return envId;
+  const founder = await prisma.restaurant.findFirst({
+    where: { owner: { email: { equals: FOUNDER_EMAIL, mode: 'insensitive' } } },
+    orderBy: { id: 'asc' },
+  });
+  if (founder) return founder.id;
+  const any = await prisma.restaurant.findFirst({ orderBy: { id: 'asc' } });
+  return any?.id ?? 5;
+}
+
+// Retrieve the full body of an inbound email from Resend's Received Emails API.
+// The `email.received` webhook only sends metadata, so this is required to get
+// the actual text/html the customer wrote. Returns null on any failure so the
+// webhook can degrade gracefully (falls back to subject).
+async function fetchReceivedEmail(id?: string): Promise<any | null> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key || !id) return null;
+  try {
+    const r = await fetch(`https://api.resend.com/emails/receiving/${id}`, {
+      headers: { Authorization: `Bearer ${key}` },
+    });
+    if (!r.ok) {
+      console.error('[INBOUND] retrieve received email failed', r.status);
+      return null;
+    }
+    return await r.json();
+  } catch (e: any) {
+    console.error('[INBOUND] retrieve received email error', e?.message || e);
+    return null;
+  }
+}
+
 app.get('/api/messages/conversations', authWithRestaurant, async (req: any, res) => {
   try {
     const convs = await prisma.conversation.findMany({
@@ -2667,9 +2731,20 @@ app.put('/api/messages/conversations/:id/star', authWithRestaurant, async (req: 
 // ── Inbound Email Webhook (called by Resend — NO auth) ──
 app.post('/api/inbound/email', async (req: any, res) => {
   try {
-    // Resend webhook wraps email data inside req.body.data
-    const payload = req.body.data || req.body;
-    const { from, to, subject, text, html } = payload;
+    const body = req.body || {};
+    // Resend wraps email data inside req.body.data. The `email.received` webhook
+    // event only carries METADATA (from/to/subject/message_id) — never the body —
+    // so we must fetch text/html from the Received Emails API. Direct/legacy posts
+    // already include from/to/subject/text/html, so support both shapes.
+    let payload = body.data || body;
+    const isResendReceivedEvent = body.type === 'email.received';
+    if (isResendReceivedEvent && payload && !payload.text && !payload.html) {
+      const emailId = payload.email_id || payload.id;
+      const fetched = await fetchReceivedEmail(emailId);
+      if (fetched) payload = { ...payload, ...fetched };
+    }
+
+    const { from, to, subject, text, html } = payload || {};
     if (!from) return res.status(400).json({ error: 'from requis' });
 
     // Extract sender email (handle "Name <email>" format)
@@ -2682,8 +2757,11 @@ app.post('/api/inbound/email', async (req: any, res) => {
       return res.json({ success: true, ignored: true });
     }
 
-    // Determine which restaurant this is for (default to 1 for now)
-    const restaurantId = 1;
+    // Route to the correct restaurant (see resolveInboundRestaurantId).
+    // Was hardcoded to 1 (a restaurant that never existed) — every inbound message
+    // was silently filed under an invisible restaurant. #5 is the founder's admin.
+    const restaurantId = await resolveInboundRestaurantId(to);
+    console.log(`[INBOUND] Routed to restaurant #${restaurantId}`);
 
     // Find or create conversation for this sender
     const conv = await findOrCreateConversation(restaurantId, senderEmail, senderName);

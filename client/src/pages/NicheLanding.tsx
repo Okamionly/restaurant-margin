@@ -449,6 +449,53 @@ const NICHES: Record<string, NicheConfig> = {
       },
     ],
   },
+  'bar-pub': {
+    slug: 'bar-pub',
+    title: 'Calcul de marge bar et pub : guide complet 2026',
+    h1: 'Optimisez la marge de votre bar ou pub',
+    tagline: 'Logiciel de gestion specialise pour bars, pubs et etablissements de nuit',
+    description: "Guide et outil pour calculer les marges de votre bar ou pub. Food cost boissons alcoolisees, marge cocktails, gestion snacking, happy hour et optimisation de la carte des boissons.",
+    heroSubtitle: "Un cocktail a 1,80€ de matiere vendu 10€ : une marge brute de 82%. Mais sans fiche technique sur chaque recette, le gaspillage au comptoir et les doses non controlees rongent votre rentabilite chaque soir. RestauMargin vous donne la maitrise totale de votre marge verre par verre.",
+    avgMargin: '72-82%',
+    avgFoodCost: '18-28%',
+    avgCoef: '5 a 7',
+    challenges: [
+      "Gaspillage au comptoir : surdosage des spiritueux sans jigger — 10 a 20cl de plus par soir representent 50-100€ de perte hebdomadaire",
+      "Happy hour : reduction de 30-50% sur les boissons — difficile de calculer la marge reelle sans simulation par tranche horaire",
+      "Carte cocktails saisonniere : ingredients frais (fruits, herbes) avec des prix tres volatils qui impactent le food cost des signatures",
+      "Snacking et planches : food cost eleve (35-45%) sur la nourriture qui tire la marge globale du bar vers le bas",
+      "TVA boissons alcoolisees a 20% : calcul marge HT vs TTC source d'erreurs frequentes sur la tarification",
+    ],
+    stats: [
+      { label: 'Food cost boissons', value: '22%', color: 'teal' },
+      { label: 'Marge brute cible', value: '78%', color: 'emerald' },
+      { label: 'Coefficient cocktail', value: '6x', color: 'amber' },
+      { label: 'Ticket moyen soir', value: '20-35€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "Je savais que mes cocktails etaient rentables, mais je ne savais pas a quel point le gaspillage me coutait. RestauMargin m'a montre que mes bartenders surdosaient en moyenne de 15%. En standardisant les doses avec jigger et en creant les fiches techniques de chaque cocktail, j'ai recupere 11 points de marge en 5 semaines.",
+      author: 'Sebastien',
+      role: 'Patron de bar cocktails, Bordeaux',
+    },
+    faqs: [
+      {
+        q: "Quelle est la marge moyenne d'un bar ou pub ?",
+        a: "La marge brute d'un bar ou pub se situe entre 72% et 82%, ce qui en fait l'un des segments les plus rentables de la restauration. Les boissons sont le moteur : un spiritueux (whisky, gin, rhum) affiche un food cost de 18-22% selon le positionnement, une biere pression 15-20%, un cocktail signature 18-25% si les doses sont controlees. La marge brute descend a 72-75% dans les etablissements qui proposent une carte snacking significative (planches, burgers, tapas), car le food cost alimentaire (35-45%) tire la moyenne vers le bas. Les pubs avec forte consommation de bieres pression atteignent 78-80% grace a un food cost biere parmi les plus faibles de la restauration. La marge nette apres charges — loyer (souvent eleve en centre-ville), personnel de soir (majoration nuit +25%), licences IV et musique SACEM/SPRE — oscille entre 8% et 16% selon la frequentation et le format. Les bars cocktails en centre-ville avec programmation soirees atteignent 12-16% ; les pubs de quartier 8-11%.",
+      },
+      {
+        q: "Comment calculer le food cost d'un cocktail, d'une biere et d'un spiritueux ?",
+        a: "Pour un cocktail Mojito : rhum blanc 4cl (0,52€ a 13€/litre), sucre de canne 2cl (0,06€), citron vert 1/2 (0,20€), menthe 4-5 feuilles (0,08€), eau gazeuse 10cl (0,04€), glagons (0,05€) = 0,95€ de cout matiere. Vendu 9€, le food cost est de 10,6% — excellent. Pour un whisky sec : 4cl de whisky standard (0,60€ a 15€/litre) vendu 6€, food cost de 10%. Pour une biere pression 25cl : cout matiere 0,35€ (fût 30L a 42€) vendue 3,50€, food cost de 10%. Les boissons sans alcool et soft drinks ont un food cost de 12-18%. Le danger pour la marge cocktails : le surdosage sans jigger (4cl deviennent 5,5cl) ou les ingredients frais dont le prix varie (jus de passion frais vs sirop). RestauMargin automatise ce calcul : renseignez vos prix fournisseurs spiritueux une fois, et le food cost de tous vos cocktails se met a jour en temps reel quand le prix d'un spiritueux change chez votre grossiste.",
+      },
+      {
+        q: "Comment optimiser la marge pendant le happy hour sans sacrifier la rentabilite ?",
+        a: "Le happy hour est un formidable outil de remplissage aux heures creuses, mais mal structure il peut transformer une promotion commerciale en gouffre financier. La methode en 4 etapes : (1) calculer la marge reelle de chaque produit en happy hour AVANT de lancer la promotion — une biere a -1€ reste rentable (food cost 20%), un cocktail signature a -30% peut passer sous le seuil de rentabilite si les ingredients sont chers, (2) construire le happy hour sur les produits a fort coefficient naturel : bieres pression, softs, cocktails simples (gin tonic, vodka orange) plutot que sur les cocktails a ingredients frais et multiples, (3) fixer une plage horaire stricte (17h-19h30 en semaine) et la respecter — le happy hour permanent est un suicide commercial, (4) mesurer l'impact en volume : +30% de couverts compensent largement la reduction de marge par verre. RestauMargin vous permet de creer des grilles tarifaires happy hour distinctes par produit et calcule la marge reelle par scenario (avec et sans promotion) pour chaque tranche horaire.",
+      },
+      {
+        q: "RestauMargin convient-il aux bars avec carte snacking, cocktails signatures et evenements prives ?",
+        a: "Oui, RestauMargin est particulierement adapte aux bars hybrides qui mixent boissons, snacking et evenementiel. Ces etablissements ont trois centres de marge a gerer en parallele : les boissons (cocktails, bieres, vins au verre — food cost 15-25%), le snacking (planches, tapas, burgers — food cost 35-45%), et les evenements prives (open bar, formule cocktail dinatoire — tarification au forfait par tete). Le dashboard multi-categorie vous montre la marge par segment et identifie quelles planches ou quels cocktails tirent le resultat vers le bas. Pour les soirees privees en open bar, la fonctionnalite de simulation vous permet de calculer le cout matiere reel par convive sur un menu de boissons donne et de fixer le prix du forfait avec une marge garantie. Les bars qui organisent des evenements reguliers (concerts, quiz, soirees a theme) peuvent creer des fiches techniques par type d'evenement et suivre la rentabilite par date. Le plan Pro a 29€/mois est suffisant pour un bar avec 60 a 80 references boissons et une carte snacking ; le plan Business est recommande pour les bars multi-sites ou les groupes avec plusieurs licences.",
+      },
+    ],
+  },
   'creperie': {
     slug: 'creperie',
     title: 'Calcul de marge creperie : guide complet 2026',

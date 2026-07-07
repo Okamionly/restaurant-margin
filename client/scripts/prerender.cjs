@@ -94,6 +94,11 @@ const ROUTES = [
     description: "Guide et outil pour calculer les marges de votre creperie. Food cost sarrasin, beurre breton AOP, gestion garnitures, cidre et optimisation prix par galette et crepe.",
   },
   {
+    path: '/guide-marge/bar-pub',
+    title: 'Calcul de marge bar et pub : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre bar ou pub. Food cost boissons alcoolisees, marge cocktails, gestion snacking, happy hour et optimisation de la carte des boissons.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

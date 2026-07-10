@@ -727,10 +727,10 @@ Si tu ne trouves pas de plat principal clair avec un prix, repond exactement :
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        // FIX 2026-05-07 : claude-haiku-4-5-20251022 retourne 404 (probablement
+        // FIX 2026-05-07 : claude-haiku-4-5-20251001 retourne 404 (probablement
         // pas dispo sur ce compte API). On bascule sur Sonnet 4 qui marche.
         // Cout : ~5x plus cher mais reste raisonnable a ~$0.01 par enrichissement.
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 200,
         messages: [{ role: 'user', content: prompt }],
       }),

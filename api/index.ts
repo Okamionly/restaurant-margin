@@ -725,7 +725,7 @@ Format JSON STRICT (réponds UNIQUEMENT avec le JSON, pas de texte avant/après)
 ]`;
 
     const aiRes = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 4096,
       messages: [{ role: 'user', content: prompt }],
     });
@@ -2355,7 +2355,7 @@ Regles :
     }
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 4096,
       system: "Tu es un expert-comptable specialise en restauration (CHR). Tu lis des factures et bons de livraison fournisseurs et tu extrais les donnees en JSON strict. Tu ramenes systematiquement chaque prix a l'unite de base (kg, L ou unite) pour qu'il soit directement comparable au cout matiere d'un ingredient. Reponds UNIQUEMENT avec un objet JSON valide : pas de markdown, pas de commentaire, pas d'explication.",
       messages: [{ role: 'user', content }],
@@ -4568,7 +4568,7 @@ Génère 5 à 7 actualités personnalisées en JSON. Réponds UNIQUEMENT avec un
 [{"title":"...", "content":"...", "type":"price_alert|opportunity|trend|tip", "priority":"high|normal|low"}]`;
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514', max_tokens: 2048,
+      model: 'claude-sonnet-4-6', max_tokens: 2048,
       messages: [{ role: 'user', content: prompt }],
     });
     const rawText = response.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');

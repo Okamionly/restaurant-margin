@@ -297,7 +297,7 @@ aiRouter.post('/chat', authWithRestaurant, async (req: AuthRequest, res: Respons
     const context = await buildRestaurantContext(req.restaurantId!);
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 1024,
       system: `${SYSTEM_PROMPT}\n\n=== DONNÉES DU RESTAURANT ===\n${context}`,
       messages: [{ role: 'user', content: message.trim() }],

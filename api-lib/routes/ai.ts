@@ -99,7 +99,7 @@ async function classifyIntent(userMessage: string): Promise<AiIntent> {
     const intentResponse = await anthropic.messages.create({
       // FIX 2026-04-28 : intent classification = output 1 mot, max_tokens 20.
       // Aucune raison de payer Sonnet pour ça. Haiku 5x moins cher, output identique.
-      model: 'claude-haiku-4-5-20251022',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 20,
       messages: [{ role: 'user', content: userMessage }],
       system: 'Classifie cette demande en UNE catégorie: recipe, ingredient, order, planning, haccp, analysis, general. Réponds UNIQUEMENT le mot.',
@@ -360,7 +360,7 @@ ${context}`;
     // requêtes simples (chat conversationnel, intent classification).
     // Sonnet réservé aux tâches complexes (menu hebdo, vision sur images).
     const useAdvancedModel = isWeeklyMenu || hasImage;
-    const aiModel = useAdvancedModel ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251022';
+    const aiModel = useAdvancedModel ? 'claude-sonnet-4-6' : 'claude-haiku-4-5-20251001';
     const maxTokens = isWeeklyMenu ? 4096 : ['analysis', 'recipe', 'planning'].includes(intent) ? 2048 : 1024;
 
     // Build messages with conversation history
@@ -1352,7 +1352,7 @@ router.post('/forecast', authWithRestaurant, async (req: any, res) => {
     }
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       system: `Tu es un expert en prévision de ventes pour la restauration. Analyse les données historiques et prédis les ventes futures. Réponds UNIQUEMENT en JSON valide, sans texte avant ou après. Format: { "predictions": [{ "date": "YYYY-MM-DD", "covers": number, "revenue": number }] }`,
       messages: [{
@@ -1391,7 +1391,7 @@ router.post('/menu-analysis', authWithRestaurant, async (req: any, res) => {
     }
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       system: `Tu es un expert en menu engineering pour la restauration. Classe les plats selon la matrice BCG adaptée à la restauration:
 - Stars (haute popularité, haute marge) : les plats à promouvoir
@@ -1436,7 +1436,7 @@ router.post('/order-recommendation', authWithRestaurant, async (req: any, res) =
     }
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       system: `Tu es un expert en gestion des commandes fournisseurs pour la restauration. Calcule les quantités optimales à commander en tenant compte du stock actuel, des prévisions de ventes et des prix fournisseurs. Minimise le gaspillage et les ruptures.
 
@@ -1477,7 +1477,7 @@ router.post('/invoice-check', authWithRestaurant, async (req: any, res) => {
     }
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       system: `Tu es un expert en contrôle des factures fournisseurs pour la restauration. Compare la facture avec les prix historiques et signale toute anomalie de prix (hausses anormales, erreurs potentielles, surfacturations).
 
@@ -1586,7 +1586,7 @@ router.post('/optimize-recipe', authWithRestaurant, async (req: any, res) => {
     const currentMonth = monthNames[new Date().getMonth()];
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 3000,
       system: `Tu es un expert en optimisation des couts en restauration professionnelle en France. Tu connais les prix du marche, les fournisseurs comme Transgourmet, Metro, Brake, Promocash. Tu connais la saisonnalite des produits et les equivalences entre ingredients.
 
@@ -1744,7 +1744,7 @@ router.post('/optimize-menu', authWithRestaurant, async (req: any, res) => {
     const avgPopularity = recipeData.reduce((s, r) => s + r.popularity, 0) / recipeData.length;
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 4000,
       system: `Tu es un expert en ingénierie de menu et optimisation de carte pour la restauration en France. Tu utilises la matrice BCG (Boston Consulting Group) adaptée à la restauration pour classifier les plats.
 
@@ -1945,7 +1945,7 @@ router.post('/weekly-report', authWithRestaurant, async (req: any, res) => {
 
     // ── Call Claude Haiku for the report ──
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2000,
       messages: [{
         role: 'user',
@@ -2212,7 +2212,7 @@ Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
 }`;
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       messages: [{ role: 'user', content: prompt }],
       system: 'Tu es un expert en gestion de restaurant et reduction du gaspillage alimentaire. Reponds uniquement en JSON valide.',
@@ -2320,7 +2320,7 @@ Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
 IMPORTANT: Tu DOIS inclure les 14 allergenes dans la liste, meme ceux absents (status: "absent", source: null, riskLevel: null).`;
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       messages: [{ role: 'user', content: prompt }],
       system: 'Tu es un expert en securite alimentaire et reglementation europeenne sur les allergenes (reglement INCO 1169/2011). Reponds uniquement en JSON valide.',
@@ -2423,7 +2423,7 @@ REGLES:
 - Divise les quantites totales par ${recipe.nbPortions} portions`;
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 1024,
       messages: [{ role: 'user', content: prompt }],
       system: 'Tu es un nutritionniste expert. Estime les valeurs nutritionnelles a partir des ingredients et quantites. Reponds uniquement en JSON valide.',
@@ -2616,7 +2616,7 @@ Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
 Genere les predictions pour les 7 prochains jours a partir d'aujourd'hui (${new Date().toISOString().slice(0, 10)}).`;
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 4096,
       messages: [{ role: 'user', content: prompt }],
       system: 'Tu es un expert en prevision de demande pour la restauration. Reponds uniquement en JSON valide.',
@@ -2704,7 +2704,7 @@ Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
 Concentre-toi sur les 10 recettes avec le plus de potentiel d'amelioration.`;
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 4096,
       messages: [{ role: 'user', content: prompt }],
       system: 'Tu es un expert en pricing pour la restauration. Reponds uniquement en JSON valide.',
@@ -2804,7 +2804,7 @@ Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
 }`;
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 4096,
       messages: [{ role: 'user', content: prompt }],
       system: 'Tu es un expert en achat et negociation fournisseur pour la restauration. Reponds uniquement en JSON valide.',

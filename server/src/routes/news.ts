@@ -191,7 +191,7 @@ Priorités :
 Personnalise les actualités selon les ingrédients réels du restaurant. Si le restaurant utilise du saumon, parle du prix du saumon. Si le restaurant a une marge basse sur une recette, mentionne-la.`;
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       messages: [{ role: 'user', content: prompt }],
     });

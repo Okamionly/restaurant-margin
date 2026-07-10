@@ -7,13 +7,13 @@
   <!-- Pages principales -->
   <url>
     <loc>https://www.restaumargin.fr/</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/pricing</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -39,7 +39,7 @@
   <!-- Landing transactionnelle (high-value) -->
   <url>
     <loc>https://www.restaumargin.fr/logiciel-marge-restaurant</loc>
-    <lastmod>2026-05-29</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -152,7 +152,7 @@
   </url>
   <url>
     <loc>https://www.restaumargin.fr/blog/calcul-marge-restaurant</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -164,13 +164,13 @@
   </url>
   <url>
     <loc>https://www.restaumargin.fr/blog/prix-de-vente-restaurant</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/blog/reduire-food-cost</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -188,7 +188,7 @@
   </url>
   <url>
     <loc>https://www.restaumargin.fr/blog/coefficient-multiplicateur</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -242,7 +242,7 @@
   </url>
   <url>
     <loc>https://www.restaumargin.fr/blog/menu-engineering-boston-matrix</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -272,7 +272,7 @@
   </url>
   <url>
     <loc>https://www.restaumargin.fr/blog/prime-cost-restaurant</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -476,7 +476,7 @@
   <!-- Outils publics -->
   <url>
     <loc>https://www.restaumargin.fr/outils/calculateur-food-cost</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>

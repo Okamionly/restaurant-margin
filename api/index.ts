@@ -859,12 +859,14 @@ app.get('/api/cron/onboarding-nurture', async (req: any, res) => {
 
     const now = Date.now();
     const dayMs = 24 * 60 * 60 * 1000;
-    // Look back 24h windows so users registering at any hour get their email
-    // within ~24h of the milestone, not pinned to a UTC midnight.
+    // Grace windows (milestone day .. +a few days) so a missed daily run or a
+    // transient send failure self-heals on a later run, instead of the email being
+    // lost forever (cf. the RESEND_API_KEY outage of June 2026). `col: null` still
+    // guarantees each milestone is sent at most once per user.
     const windows = [
-      { day: 1 as const, after: now - 2 * dayMs, before: now - 1 * dayMs, col: 'onboardingDay1SentAt', build: buildOnboardingDay1Email, subject: 'Premier pas avec RestauMargin' },
-      { day: 3 as const, after: now - 4 * dayMs, before: now - 3 * dayMs, col: 'onboardingDay3SentAt', build: buildOnboardingDay3Email, subject: 'Ce que vos confrères font cette semaine' },
-      { day: 7 as const, after: now - 8 * dayMs, before: now - 7 * dayMs, col: 'onboardingDay7SentAt', build: buildOnboardingDay7Email, subject: 'Vous êtes à mi-essai — voilà votre ROI' },
+      { day: 1 as const, after: now - 4 * dayMs, before: now - 1 * dayMs, col: 'onboardingDay1SentAt', build: buildOnboardingDay1Email, subject: 'Premier pas avec RestauMargin' },
+      { day: 3 as const, after: now - 6 * dayMs, before: now - 3 * dayMs, col: 'onboardingDay3SentAt', build: buildOnboardingDay3Email, subject: 'Ce que vos confrères font cette semaine' },
+      { day: 7 as const, after: now - 11 * dayMs, before: now - 7 * dayMs, col: 'onboardingDay7SentAt', build: buildOnboardingDay7Email, subject: 'Vous êtes à mi-essai — voilà votre ROI' },
     ];
 
     const results: Record<string, number> = { day1Sent: 0, day3Sent: 0, day7Sent: 0, errors: 0 };

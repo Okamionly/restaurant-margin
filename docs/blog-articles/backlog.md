@@ -1,6 +1,6 @@
 # Backlog articles blog RestauMargin
 
-Mise à jour : 2026-05-06
+Mise à jour : 2026-07-10
 
 ## Articles publiés / rédigés (34 total)
 
@@ -45,37 +45,29 @@ Mise à jour : 2026-05-06
 
 ## Prochains articles à écrire (backlog prioritaire)
 
-### 1. Comment fidéliser ses clients restaurant : programme et stratégies 2026
-- **Slug** : `fideliser-clients-restaurant-strategies`
-- **Angle** : programme fidélité (carte tampon, app, points), CRM, base de données client, anniversaires, taux de revisite
-- **Mots-clés** : "fidéliser clients restaurant", "programme fidélité restaurant", "CRM restaurant"
+> Rédigés depuis : `fideliser-clients-restaurant-strategies` ✅, `construire-carte-vins-restaurant` ✅, `psychologie-des-prix-restaurant` ✅, `food-blogger-influenceur-restaurant` ✅ (2026-07-03), `ouvrir-terrasse-restaurant-demarches` ✅ (2026-07-10, ~2 780 mots).
 
-### 2. Carte des vins : comment la construire pour maximiser la marge
-- **Slug** : `construire-carte-vins-restaurant`
-- **Angle** : sélection 20-40 références, marge cible, rotation cave, accord mets-vins, pricing psychologique sur le vin
-- **Mots-clés** : "carte des vins restaurant", "marge vins restauration", "construire carte vins"
-
-### 3. Travailler avec un food blogger / influenceur : guide pratique 2026
-- **Slug** : `food-blogger-influenceur-restaurant`
-- **Angle** : tarification, négociation contrepartie, ROI mesurable, micro-influenceurs vs macro, plateformes
-- **Mots-clés** : "food blogger restaurant", "influenceur restaurant", "marketing influence restauration"
-
-### 4. Ouvrir une terrasse de restaurant : démarches, autorisations, rentabilité
-- **Slug** : `ouvrir-terrasse-restaurant-demarches`
-- **Angle** : autorisations mairie, droit de terrasse, équipement, rentabilité saisonnière, contraintes urbanisme
-- **Mots-clés** : "ouvrir terrasse restaurant", "autorisation terrasse", "droit de terrasse restaurant"
-
-### 5. Reprise de restaurant : comment éviter les pièges (guide acheteur 2026)
+### 1. Reprise de restaurant : comment éviter les pièges (guide acheteur 2026)
 - **Slug** : `reprise-restaurant-guide-acheteur`
 - **Angle** : audit comptable, valorisation fonds de commerce, dette cachée, négociation prix, cas concret
 - **Mots-clés** : "reprise restaurant", "racheter un restaurant", "valorisation fonds de commerce restaurant"
 
-### 6. Brigade en cuisine : organisation, postes, gestion du stress
+### 2. Brigade en cuisine : organisation, postes, gestion du stress
 - **Slug** : `brigade-cuisine-organisation-postes`
 - **Angle** : pyramide brigade Escoffier, postes modernes, stress management, communication chef-équipe
 - **Mots-clés** : "brigade cuisine restaurant", "organisation cuisine restaurant", "postes cuisine"
 
-### 7. Pourboires en France : législation, fiscalité, répartition
+### 3. Pourboires en France : législation, fiscalité, répartition
 - **Slug** : `pourboires-restaurant-legislation-fiscalite`
 - **Angle** : exonération sociale et fiscale (loi 2022-2026), TPE pourboires, répartition équitable, déclaration
 - **Mots-clés** : "pourboires restaurant", "fiscalité pourboires", "exonération pourboires 2026"
+
+### 4. No-show au restaurant : comment lutter contre les réservations non honorées
+- **Slug** : `no-show-restaurant-solutions`
+- **Angle** : coût réel du no-show (marge perdue par couvert vide), empreinte bancaire / acompte, SMS de rappel, politique d'annulation, cas chiffré
+- **Mots-clés** : "no-show restaurant", "réservation non honorée restaurant", "acompte réservation restaurant"
+
+### 5. Calcul du prix de vente d'un menu (entrée-plat-dessert) : la méthode rentable
+- **Slug** : `prix-vente-menu-restaurant-methode`
+- **Angle** : construire un menu à prix fixe rentable, food cost pondéré des 3 composantes, arbitrage marge/attractivité, effet d'ancrage, comparaison carte vs formule, cas chiffré entrée+plat+dessert
+- **Mots-clés** : "prix menu restaurant", "calculer prix formule restaurant", "food cost menu du jour"

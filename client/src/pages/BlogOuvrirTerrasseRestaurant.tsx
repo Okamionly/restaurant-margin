@@ -19,7 +19,7 @@ export default function BlogOuvrirTerrasseRestaurant() {
       <SEOHead
         title="Terrasse de restaurant : autorisations, démarches et rentabilité 2026"
         description="Comment ouvrir une terrasse de restaurant en France ? Droit de terrasse, dossier mairie, équipement et calcul de rentabilité : le guide complet 2026."
-        canonicalUrl="https://www.restaumargin.fr/blog/ouvrir-terrasse-restaurant-demarches"
+        path="/blog/ouvrir-terrasse-restaurant-demarches"
       />
       <script
         type="application/ld+json"

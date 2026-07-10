@@ -1,0 +1,1 @@
+Article ouvrir-terrasse-restaurant-demarches publié le 2026-07-10. Sujet : Terrasse de restaurant autorisations démarches et rentabilité 2026. Sections : droit de terrasse, démarches admin, équipement/budget, calcul rentabilité, erreurs courantes + FAQ.

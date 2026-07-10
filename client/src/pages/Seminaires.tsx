@@ -1021,6 +1021,7 @@ export default function Seminaires() {
                 <label className="block text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1">Nb convives (min)</label>
                 <input
                   type="number"
+                  min="1"
                   value={form.nbConvivesMin}
                   onChange={e => setForm(f => ({ ...f, nbConvivesMin: +e.target.value }))}
                   className="w-full px-3 py-2 bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-lg text-sm text-mono-100 dark:text-white dark:text-white focus:outline-none focus:ring-2 focus:ring-mono-100 dark:ring-white"
@@ -1030,6 +1031,7 @@ export default function Seminaires() {
                 <label className="block text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1">Nb convives (max)</label>
                 <input
                   type="number"
+                  min="1"
                   value={form.nbConvivesMax}
                   onChange={e => setForm(f => ({ ...f, nbConvivesMax: +e.target.value }))}
                   className="w-full px-3 py-2 bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-lg text-sm text-mono-100 dark:text-white dark:text-white focus:outline-none focus:ring-2 focus:ring-mono-100 dark:ring-white"
@@ -1143,6 +1145,8 @@ export default function Seminaires() {
                 <label className="block text-xs font-medium text-[#6B7280] dark:text-mono-700 mb-1">Prix / personne (€)</label>
                 <input
                   type="number"
+                  min="0"
+                  step="0.01"
                   value={form.prixParPersonne}
                   onChange={e => setForm(f => ({ ...f, prixParPersonne: +e.target.value }))}
                   className="w-full px-3 py-2 bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-lg text-sm text-mono-100 dark:text-white focus:outline-none focus:ring-2 focus:ring-mono-100 dark:ring-white"

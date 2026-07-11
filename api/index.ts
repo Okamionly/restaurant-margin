@@ -590,7 +590,7 @@ app.get('/api/cron/health-check', async (req: any, res) => {
     const start = Date.now();
     const dbCheck = await prisma.$queryRaw`SELECT 1 as ok`;
     const responseTime = Date.now() - start;
-    const healthy = responseTime < 2000 && Array.isArray(dbCheck);
+    const healthy = responseTime < 1200 && Array.isArray(dbCheck);
 
     if (!healthy && process.env.RESEND_API_KEY) {
       const { Resend } = await import('resend');
@@ -598,8 +598,8 @@ app.get('/api/cron/health-check', async (req: any, res) => {
       await resend.emails.send({
         from: 'RestauMargin Agents <contact@restaumargin.fr>',
         to: ['Mr.guessousyoussef@gmail.com'],
-        subject: '🔴 ALERTE — RestauMargin down',
-        html: `<p>Le site RestauMargin est lent ou down.</p><p>Response time: ${responseTime}ms</p><p>DB: ${Array.isArray(dbCheck) ? 'OK' : 'ERREUR'}</p>`,
+        subject: `🔴 ALERTE — RestauMargin dégradé (${responseTime}ms)`,
+        html: `<p>Le site RestauMargin est lent ou down.</p><p>Response time: ${responseTime}ms (seuil: 1200ms)</p><p>DB: ${Array.isArray(dbCheck) ? 'OK' : 'ERREUR'}</p>`,
       });
     }
 

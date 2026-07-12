@@ -22,6 +22,7 @@
 - **Build cassé 07-10 → fixé le même jour** (`60e0a03`, prop `path` au lieu de `canonicalUrl` dans SEOHead). Deploy Vercel de nouveau vert.
 - **IndexNow (Bing/Yandex)** : passé en multi-endpoint avec fallback — le ping ne renvoie plus 403.
 - **Perf** : le chunk critique a encore maigri (code-split locales). Precache PWA **753 KiB** ce dimanche (883 KiB en W27) → LCP en baisse sur toutes les pages SEO.
+- **🔎 Bug structuré trouvé + corrigé (dimanche)** : le schema JSON-LD **`Article` n'était émis sur aucune page blog** — `SEOHead` mappait plusieurs `<script ld+json>` frères et **react-helmet-async en dropait** (seul `BreadcrumbList` sortait ; `Article` absent, confirmé en prod). Fix `502787f` : **un seul script `@graph`** (pattern Google). Restaure datePublished/dateModified/author sur ~40 pages blog → gros gain E-E-A-T + freshness. À valider en prod (Rich Results Test).
 
 **Deploy Vercel** : homepage servie en **HTTP 200** avec le bon `<title>` (« Logiciel marge restaurant + food cost IA | RestauMargin (29€/mois) »), TTFB ~0,43 s côté Googlebot. Aucun deploy `ERROR` bloquant en fin de semaine.
 

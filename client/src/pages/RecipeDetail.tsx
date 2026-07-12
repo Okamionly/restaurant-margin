@@ -136,6 +136,7 @@ export default function RecipeDetail() {
   // Photo gallery state
   const [photoIndex, setPhotoIndex] = useState(0);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   // Sharing state
   const [shareUrl, setShareUrl] = useState<string | null>(null);
@@ -210,7 +211,7 @@ export default function RecipeDetail() {
     if (!recipe || !e.target.files?.length) return;
     const file = e.target.files[0];
     if (!file.type.startsWith('image/')) return;
-    if (file.size > 5 * 1024 * 1024) { alert('Image trop lourde (max 5 Mo)'); return; }
+    if (file.size > 5 * 1024 * 1024) { setPhotoError('Image trop lourde (max 5 Mo)'); return; }
     setUploadingPhoto(true);
     try {
       const reader = new FileReader();
@@ -224,7 +225,7 @@ export default function RecipeDetail() {
       const updated = await addRecipePhoto(recipe.id, resized);
       setRecipe(updated);
       setPhotoIndex((updated.photos?.length || 1) - 1);
-    } catch (err) { console.error('Erreur upload photo', err); }
+    } catch (err) { setPhotoError('Erreur lors de l\'upload de la photo'); }
     finally { setUploadingPhoto(false); if (fileInputRef.current) fileInputRef.current.value = ''; }
   }, [recipe]);
 
@@ -234,7 +235,7 @@ export default function RecipeDetail() {
       const updated = await deleteRecipePhoto(recipe.id, idx);
       setRecipe(updated);
       setPhotoIndex(Math.max(0, idx - 1));
-    } catch (err) { console.error('Erreur suppression photo', err); }
+    } catch (err) { setPhotoError('Erreur lors de la suppression de la photo'); }
   }, [recipe]);
 
   const handleShare = useCallback(async () => {
@@ -1818,6 +1819,17 @@ export default function RecipeDetail() {
       </div>
 
       </>
+      )}
+
+      {/* ─── Photo error toast ─── */}
+      {photoError && (
+        <div className="fixed bottom-16 right-4 z-50 bg-red-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 animate-fade-in no-print">
+          <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+          <span className="text-sm">{photoError}</span>
+          <button onClick={() => setPhotoError(null)} className="p-1 hover:bg-red-500 rounded-lg transition-colors">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       )}
 
       {/* ─── Optimize error toast ─── */}

@@ -100,12 +100,27 @@ export default function SEOHead({
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={fullImage} />
 
-      {/* Schema.org JSON-LD */}
-      {schemas.map((s, idx) => (
-        <script key={idx} type="application/ld+json">
-          {JSON.stringify(s)}
+      {/* Schema.org JSON-LD — combined into a SINGLE @graph script.
+          react-helmet-async silently drops some sibling <script> children when
+          several are mapped, so page-specific schemas beyond the first two (e.g.
+          the Article schema) never reached the DOM. One @graph script is the
+          Google-recommended way to declare multiple entities and renders reliably. */}
+      {schemas.length > 0 && (
+        <script type="application/ld+json">
+          {JSON.stringify(
+            schemas.length === 1
+              ? schemas[0]
+              : {
+                  '@context': 'https://schema.org',
+                  '@graph': schemas.map((s) => {
+                    const node = { ...s };
+                    delete node['@context'];
+                    return node;
+                  }),
+                }
+          )}
         </script>
-      ))}
+      )}
     </Helmet>
   );
 }

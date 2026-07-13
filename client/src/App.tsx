@@ -189,6 +189,7 @@ const BlogMethodeFifo = lazyRetry(() => import('./pages/BlogMethodeFifo'));
 const BlogMenuEngineering = lazyRetry(() => import('./pages/BlogMenuEngineering'));
 const BlogOuvrirRestaurant = lazyRetry(() => import('./pages/BlogOuvrirRestaurant'));
 const BlogPrimeCost = lazyRetry(() => import('./pages/BlogPrimeCost'));
+const BlogTauxMarque = lazyRetry(() => import('./pages/BlogTauxMarque'));
 const BlogRegle30303010 = lazyRetry(() => import('./pages/BlogRegle30303010'));
 const BlogTauxOccupation = lazyRetry(() => import('./pages/BlogTauxOccupation'));
 const BlogTicketMoyen = lazyRetry(() => import('./pages/BlogTicketMoyen'));
@@ -1270,6 +1271,7 @@ function App() {
           <Route path="/blog/menu-engineering-boston-matrix-restaurant" element={<Navigate to="/blog/menu-engineering-boston-matrix" replace />} />
           <Route path="/blog/comment-ouvrir-restaurant-guide-complet" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogOuvrirRestaurant /></Suspense>} />
           <Route path="/blog/prime-cost-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrimeCost /></Suspense>} />
+          <Route path="/blog/taux-de-marque-taux-de-marge" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogTauxMarque /></Suspense>} />
           <Route path="/blog/regle-30-30-30-10-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogRegle30303010 /></Suspense>} />
           <Route path="/blog/taux-occupation-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogTauxOccupation /></Suspense>} />
           <Route path="/blog/augmenter-ticket-moyen-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogTicketMoyen /></Suspense>} />

@@ -296,6 +296,12 @@ const ROUTES = [
     type: 'article',
   },
   {
+    path: '/blog/taux-de-marque-taux-de-marge',
+    title: 'Taux de marque ou taux de marge : quelle difference ? (restaurant 2026)',
+    description: "Taux de marge vs taux de marque en restauration : formules, exemple chiffre, tableau de conversion et lien avec le coefficient multiplicateur et le food cost. Ne confondez plus les deux.",
+    type: 'article',
+  },
+  {
     path: '/blog/regle-30-30-30-10-restaurant',
     title: 'Regle 30/30/30/10 restaurant : guide complet 2026 (food cost, personnel, charges, marge)',
     description: "Comprendre la regle 30/30/30/10 en restauration : 30% food cost + 30% masse salariale + 30% charges + 10% marge nette. Adaptations par segment, calculs, erreurs courantes.",

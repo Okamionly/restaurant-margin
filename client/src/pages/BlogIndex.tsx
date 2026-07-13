@@ -23,6 +23,14 @@ interface BlogPost {
 
 const posts: BlogPost[] = [
   {
+    slug: 'taux-de-marque-taux-de-marge',
+    title: 'Taux de marque ou taux de marge : quelle difference ?',
+    excerpt: "Meme marge en euros, mais un denominateur different. Le taux de marque se calcule sur le prix de vente, le taux de marge sur le cout d'achat. Formules, exemple chiffre, tableau de conversion et lien avec le coefficient multiplicateur et le food cost.",
+    category: 'Marges',
+    readTime: '16 min',
+    date: '2026-07-13',
+  },
+  {
     slug: 'marge-boissons-restaurant',
     title: 'Quelle marge sur les boissons au restaurant ? (guide 2026)',
     excerpt: 'Cafe, softs, biere, vin, cocktails : la marge brute des boissons atteint 80 a 90 %. Coefficient et food cost cible par boisson, impact de la TVA a 20 % et 7 leviers pour maximiser votre marge liquide.',

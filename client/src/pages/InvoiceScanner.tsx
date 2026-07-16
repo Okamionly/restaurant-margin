@@ -493,7 +493,7 @@ export default function InvoiceScanner() {
         fetch('/api/invoices/scan', {
           method: 'POST',
           headers: authHeaders(),
-          body: JSON.stringify({ imageBase64, fileBase64: imageBase64, mimeType, fileName: firstFile.name }),
+          body: JSON.stringify({ imageBase64, mimeType, fileName: firstFile.name }),
         })
           .then((r) => r.json())
           .then((data) => {
@@ -788,7 +788,7 @@ export default function InvoiceScanner() {
       const res = await fetch('/api/invoices/scan', {
         method: 'POST',
         headers: authHeaders(),
-        body: JSON.stringify({ imageBase64, fileBase64: imageBase64, mimeType, fileName: scanFile.name }),
+        body: JSON.stringify({ imageBase64, mimeType, fileName: scanFile.name }),
       });
 
       const data = await res.json();

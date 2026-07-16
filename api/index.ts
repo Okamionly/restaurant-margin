@@ -180,7 +180,10 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
   }
 });
 
-app.use(express.json());
+// Limite a 10mb : le scan de factures envoie des images/PDF en base64 (une photo
+// de facture depasse largement le defaut 100kb -> PayloadTooLarge -> 500). Vercel
+// plafonne de toute facon le body a 4.5mb, le front compresse au-dela.
+app.use(express.json({ limit: '10mb' }));
 
 // ── HSTS Header (enforce HTTPS) ──
 app.use((_req, res, next) => {

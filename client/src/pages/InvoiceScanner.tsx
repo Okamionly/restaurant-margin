@@ -979,7 +979,9 @@ export default function InvoiceScanner() {
       en_attente: { label: 'En attente', bg: 'bg-amber-50 dark:bg-amber-950/40', text: 'text-amber-700 dark:text-amber-400', icon: Clock },
       erreur: { label: 'Erreur', bg: 'bg-red-50 dark:bg-red-950/40', text: 'text-red-700 dark:text-red-400', icon: AlertCircle },
     };
-    const c = config[status];
+    // Fallback si le statut n'est pas dans config (statut BDD inconnu ou null) —
+    // sinon config[status] = undefined -> c.icon plante toute la page (error boundary).
+    const c = config[status as keyof typeof config] || { label: String(status || 'Inconnu'), bg: 'bg-black/5 dark:bg-white/10', text: 'text-black/60 dark:text-white/70', icon: FileText };
     const Icon = c.icon;
     return (
       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${c.bg} ${c.text}`}>

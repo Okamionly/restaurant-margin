@@ -976,7 +976,9 @@ export default function InvoiceScanner() {
   const StatusBadge = ({ status }: { status: InvoiceFile['status'] }) => {
     const config = {
       validee: { label: 'Validee', bg: 'bg-emerald-50 dark:bg-emerald-950/40', text: 'text-emerald-700 dark:text-emerald-400', icon: CheckCircle2 },
+      processed: { label: 'Traitee', bg: 'bg-emerald-50 dark:bg-emerald-950/40', text: 'text-emerald-700 dark:text-emerald-400', icon: CheckCircle2 },
       en_attente: { label: 'En attente', bg: 'bg-amber-50 dark:bg-amber-950/40', text: 'text-amber-700 dark:text-amber-400', icon: Clock },
+      pending: { label: 'En attente', bg: 'bg-amber-50 dark:bg-amber-950/40', text: 'text-amber-700 dark:text-amber-400', icon: Clock },
       erreur: { label: 'Erreur', bg: 'bg-red-50 dark:bg-red-950/40', text: 'text-red-700 dark:text-red-400', icon: AlertCircle },
     };
     // Fallback si le statut n'est pas dans config (statut BDD inconnu ou null) —

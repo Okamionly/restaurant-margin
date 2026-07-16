@@ -470,7 +470,7 @@ app.use('/api/auth/forgot-password', (req, _res, next) => {
 // without leaking infrastructure details (uptime, response time, service map).
 // Detailed payload (uptime, responseTime, services) is only returned when an admin
 // JWT is presented via Authorization header.
-app.get('/api/health', async (_req, res) => {
+app.get('/api/health', async (req: any, res) => {
   const start = Date.now();
   let dbStatus = 'ok';
   try {
@@ -478,9 +478,27 @@ app.get('/api/health', async (_req, res) => {
   } catch {
     dbStatus = 'error';
   }
-  const aiStatus = process.env.ANTHROPIC_API_KEY ? 'ok' : 'missing_key';
+  // Shallow = presence de la cle. Deep (?deep=1) = vrai appel modele 1 token, pour
+  // qu'un modele retire ou une cle revoquee soit detecte tout de suite (les deux
+  // sont passes ~1 mois sous le radar car ce check ne verifiait que la presence).
+  let aiStatus = process.env.ANTHROPIC_API_KEY ? 'ok' : 'missing_key';
+  let aiDetail: string | undefined;
+  if (req.query?.deep && process.env.ANTHROPIC_API_KEY) {
+    try {
+      const r = await anthropic.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1,
+        messages: [{ role: 'user', content: 'ping' }],
+      });
+      aiStatus = r?.content?.length ? 'ok' : 'error';
+      aiDetail = 'claude-sonnet-4-6';
+    } catch (e: any) {
+      aiStatus = 'error';
+      aiDetail = `${e?.status || ''} ${(e?.error?.error?.message || e?.message || 'unknown').slice(0, 120)}`.trim();
+    }
+  }
   const responseTime = Date.now() - start;
-  const healthy = dbStatus === 'ok';
+  const healthy = dbStatus === 'ok' && aiStatus !== 'error';
   res.status(healthy ? 200 : 503).json({
     status: healthy ? 'ok' : 'degraded',
     timestamp: new Date().toISOString(),
@@ -489,6 +507,7 @@ app.get('/api/health', async (_req, res) => {
     services: {
       database: dbStatus,
       ai: aiStatus,
+      ...(aiDetail ? { aiDetail } : {}),
       api: 'ok',
     },
   });

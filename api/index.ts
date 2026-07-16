@@ -257,6 +257,14 @@ app.use((req, res, next) => {
     return next();
   }
 
+  // Skip inbound email webhook — appele par Resend (event email.received), sans
+  // Bearer ni CSRF. Le CSRF le bloquait en 403 -> AUCUN email entrant n'atteignait
+  // le handler (Messagerie toujours vide). Endpoint fixe + garde anti-boucle
+  // (self-send) dans le handler. TODO durcissement : verifier la signature svix Resend.
+  if (req.path === '/api/inbound/email') {
+    return next();
+  }
+
   // Skip CSRF for requests with Bearer token (JWT is already a non-guessable token)
   // CSRF protection is mainly needed for cookie-based auth (which we don't use)
   const authHeader = req.headers.authorization;

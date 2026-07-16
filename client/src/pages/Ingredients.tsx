@@ -1208,7 +1208,8 @@ export default function Ingredients() {
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-mono-50 rounded-2xl shadow overflow-x-auto border border-mono-900 dark:border-mono-200 -mx-4 sm:mx-0">
+      {/* Desktop / tablette (>= md) : tableau dense */}
+      <div className="hidden md:block bg-white dark:bg-mono-50 rounded-2xl shadow overflow-x-auto border border-mono-900 dark:border-mono-200">
         <table className="w-full text-sm min-w-[740px]">
           <thead className="bg-mono-1000 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 text-left">
             <tr>
@@ -1401,6 +1402,88 @@ export default function Ingredients() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile (< md) : cartes empilees */}
+      <div className="md:hidden space-y-2">
+        {filtered.length === 0 ? (
+          <div className="py-12 px-4 flex flex-col items-center text-center bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
+            {ingredients.length === 0 ? (
+              <>
+                <FoodIllustration recipeName="tomate" size="lg" />
+                <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-1 mt-3">Ajoutez votre premier ingredient</h3>
+                <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-sm mb-3">Commencez par ajouter vos ingredients avec leurs prix fournisseur.</p>
+                <button onClick={openNew} className="inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors">
+                  <Plus className="w-4 h-4" /> Ajouter un ingredient
+                </button>
+              </>
+            ) : (
+              <span className="text-[#9CA3AF] dark:text-mono-500 text-sm">{t('ingredients.noResults')}</span>
+            )}
+          </div>
+        ) : (
+          filtered.map((ing) => {
+            const supplierName = ing.supplierRef?.name || ing.supplier || '';
+            const badgeColor = supplierName ? getSupplierBadgeColor(supplierName) : null;
+            const sparklinePrices = allPriceHistories[ing.id];
+            const isAlert = costAlertIds.alertIds.has(ing.id);
+            const isStable = costAlertIds.stableIds.has(ing.id);
+            const change = computePriceChange(allPriceHistories[ing.id]);
+            return (
+              <div key={ing.id} className={`p-3 rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 ${selectedIds.has(ing.id) ? 'ring-2 ring-mono-100 dark:ring-white' : ''}`}>
+                <div className="flex items-start gap-2.5">
+                  <input type="checkbox" checked={selectedIds.has(ing.id)} onChange={() => toggleSelectOne(ing.id)} className="mt-1 w-4 h-4 rounded accent-mono-100 dark:accent-white cursor-pointer shrink-0" aria-label={`Selectionner ${ing.name}`} />
+                  <IngredientAvatar name={ing.name} category={ing.category} size="sm" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="font-medium text-mono-100 dark:text-white break-words">
+                          {ing.name}
+                          {isInSeason(ing.name) && (<span className="ml-1 text-xs text-emerald-500" title="Produit de saison">&#127807;</span>)}
+                        </div>
+                        <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                          <span className="px-2 py-0.5 rounded-full text-[11px] bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white">{ing.category}</span>
+                          <span className="text-[11px] text-[#6B7280] dark:text-mono-700">{ing.unit}</span>
+                          {isAlert ? (<Flame className="w-3.5 h-3.5 text-red-500" />) : isStable ? (<CheckCircle className="w-3.5 h-3.5 text-emerald-500" />) : null}
+                        </div>
+                      </div>
+                      <button onClick={() => openPriceTracker(ing)} className="shrink-0 text-right font-mono text-sm text-mono-100 dark:text-white" title="Voir l'historique des prix">
+                        <span className="flex items-center gap-1 justify-end">
+                          {ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}
+                          {getAlertForIngredient(ing.id) !== null && (<Bell className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#9CA3AF] dark:text-mono-500'}`} />)}
+                        </span>
+                        {change && change.direction !== 'stable' && (
+                          <span className={`mt-0.5 inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${change.direction === 'up' ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400' : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400'}`}>
+                            {change.direction === 'up' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                            {change.percent.toFixed(1)}%
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                      {supplierName && badgeColor ? (
+                        <button onClick={() => navigate('/suppliers')} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${badgeColor.bg} ${badgeColor.text} ${badgeColor.hover}`} title={`Voir le fournisseur : ${supplierName}`}>
+                          <Truck className="w-3 h-3 flex-shrink-0" /> {supplierName}
+                        </button>
+                      ) : (
+                        <span className="text-[#9CA3AF] dark:text-mono-500 italic text-xs">{t('ingredients.notAssigned')}</span>
+                      )}
+                      {sparklinePrices && sparklinePrices.length >= 2 ? (<PriceSparkline prices={sparklinePrices} />) : null}
+                    </div>
+                    <div className="mt-2 flex gap-1">
+                      <button onClick={() => togglePriceWatch(ing.id)} className={`p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded transition-colors ${watchedIds.has(ing.id) ? 'bg-teal-100 dark:bg-teal-900/30' : 'hover:bg-teal-50 dark:hover:bg-teal-900/20'}`} aria-label={watchedIds.has(ing.id) ? 'Ne plus surveiller' : 'Surveiller le prix'}>
+                        <Bell aria-hidden="true" className={`w-4 h-4 ${watchedIds.has(ing.id) ? 'text-teal-600 dark:text-teal-400 fill-teal-600 dark:fill-teal-400' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
+                      </button>
+                      <button onClick={() => openWeigh(ing)} className="p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" aria-label="Peser l'ingredient"><Scale aria-hidden="true" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /></button>
+                      <button onClick={() => openEdit(ing)} className="p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" aria-label="Modifier l'ingredient"><Pencil aria-hidden="true" className="w-4 h-4 text-[#6B7280] dark:text-mono-700" /></button>
+                      <button onClick={() => setDeleteTarget(ing.id)} className="p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded hover:bg-red-100 dark:hover:bg-red-900/30 ml-auto" aria-label="Supprimer l'ingredient"><Trash2 aria-hidden="true" className="w-4 h-4 text-red-500" /></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
 
       <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-3">{t('ingredients.ingredientCount').replace('{count}', String(filtered.length))}</p>

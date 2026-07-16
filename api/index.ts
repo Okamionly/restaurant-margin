@@ -487,10 +487,12 @@ app.get('/api/health', async (req: any, res) => {
     try {
       const r = await anthropic.messages.create({
         model: 'claude-sonnet-4-6',
-        max_tokens: 1,
+        max_tokens: 5,
         messages: [{ role: 'user', content: 'ping' }],
       });
-      aiStatus = r?.content?.length ? 'ok' : 'error';
+      // Un appel qui NE JETTE PAS = modele joignable + cle valide (le but du check).
+      // On teste r.id, pas content.length (max_tokens bas peut renvoyer un content vide).
+      aiStatus = r?.id ? 'ok' : 'error';
       aiDetail = 'claude-sonnet-4-6';
     } catch (e: any) {
       aiStatus = 'error';

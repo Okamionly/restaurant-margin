@@ -1411,7 +1411,7 @@ export default function Clients() {
         e.target.value = '';
       }} />
       {/* Main content area */}
-      <div className={`flex-1 space-y-6 transition-all duration-300 ${sidebarClient ? 'mr-0' : ''}`}>
+      <div className={`flex-1 min-w-0 space-y-6 transition-all duration-300 ${sidebarClient ? 'mr-0' : ''}`}>
         {/* localStorage → DB migration banner (shown only when legacy data exists) */}
         <ClientMigrationBanner onMigrationComplete={() => window.location.reload()} />
         {/* Header */}

@@ -145,13 +145,6 @@ export default function LogicielMargeDarkKitchen() {
                 unitText: 'MONTH',
               },
             },
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: '4.8',
-              reviewCount: '150',
-              bestRating: '5',
-              worstRating: '1',
-            },
           },
         ]}
       />

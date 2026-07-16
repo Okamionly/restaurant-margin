@@ -197,13 +197,6 @@ export default function LogicielMargeFoodTruck() {
                 },
               },
             ],
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: '4.8',
-              reviewCount: '47',
-              bestRating: '5',
-              worstRating: '1',
-            },
           },
         ]}
       />

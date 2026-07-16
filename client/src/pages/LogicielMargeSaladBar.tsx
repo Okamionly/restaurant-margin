@@ -116,13 +116,6 @@ export default function LogicielMargeSaladBar() {
                 unitText: 'MONTH',
               },
             },
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: '4.8',
-              ratingCount: '78',
-              bestRating: '5',
-              worstRating: '1',
-            },
           },
         ]}
       />

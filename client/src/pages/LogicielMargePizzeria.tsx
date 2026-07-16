@@ -116,13 +116,6 @@ export default function LogicielMargePizzeria() {
                 unitText: 'MONTH',
               },
             },
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: '4.8',
-              ratingCount: '127',
-              bestRating: '5',
-              worstRating: '1',
-            },
           },
         ]}
       />

@@ -150,11 +150,6 @@ export default function LogicielMargeBoulangerie() {
               priceCurrency: 'EUR',
               priceValidUntil: '2026-12-31',
             },
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: '4.8',
-              ratingCount: '127',
-            },
           },
         ]}
       />

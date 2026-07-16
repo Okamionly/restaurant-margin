@@ -111,11 +111,6 @@ export default function AlternativeZenchef() {
                       unitText: 'MONTH',
                     },
                   },
-                  aggregateRating: {
-                    '@type': 'AggregateRating',
-                    ratingValue: '4.8',
-                    reviewCount: '47',
-                  },
                   description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs independants et groupes.",
                 },
               },

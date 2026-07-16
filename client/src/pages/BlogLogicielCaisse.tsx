@@ -106,13 +106,7 @@ const productSchema = {
       { '@type': 'Offer', name: 'Pro', price: '49', priceCurrency: 'EUR' },
     ],
   },
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.8',
-    reviewCount: '47',
-    bestRating: '5',
-    worstRating: '1',
-  },
+
 };
 
 const articleSchema = {

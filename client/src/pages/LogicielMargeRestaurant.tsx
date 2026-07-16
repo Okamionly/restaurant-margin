@@ -126,13 +126,7 @@ export default function LogicielMargeRestaurant() {
                 },
               },
             ],
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: '4.8',
-              reviewCount: '150',
-              bestRating: '5',
-              worstRating: '1',
-            },
+
           },
         ]}
       />

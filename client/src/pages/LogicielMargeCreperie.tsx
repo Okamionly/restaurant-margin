@@ -117,13 +117,6 @@ export default function LogicielMargeCreperie() {
                 unitText: 'MONTH',
               },
             },
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: '4.9',
-              ratingCount: '64',
-              bestRating: '5',
-              worstRating: '1',
-            },
           },
         ]}
       />

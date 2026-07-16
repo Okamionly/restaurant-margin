@@ -141,11 +141,6 @@ export default function ComparatifRestauMarginZenchef() {
                       unitText: 'MONTH',
                     },
                   },
-                  aggregateRating: {
-                    '@type': 'AggregateRating',
-                    ratingValue: '4.8',
-                    reviewCount: '47',
-                  },
                   description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs independants et groupes.",
                 },
               },
@@ -167,11 +162,6 @@ export default function ComparatifRestauMarginZenchef() {
                       priceCurrency: 'EUR',
                       unitText: 'MONTH',
                     },
-                  },
-                  aggregateRating: {
-                    '@type': 'AggregateRating',
-                    ratingValue: '4.4',
-                    reviewCount: '180',
                   },
                   description: "Plateforme de reservation en ligne, site web restaurant, marketing email et gestion de la relation client pour la restauration.",
                 },

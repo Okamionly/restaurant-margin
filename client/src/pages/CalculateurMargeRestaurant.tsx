@@ -324,13 +324,6 @@ export default function CalculateurMargeRestaurant() {
       price: '0',
       priceCurrency: 'EUR',
     },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      ratingCount: '127',
-      bestRating: '5',
-      worstRating: '1',
-    },
   };
 
   const howToSchema = {

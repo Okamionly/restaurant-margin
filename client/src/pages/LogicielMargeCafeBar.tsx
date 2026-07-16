@@ -176,13 +176,6 @@ export default function LogicielMargeCafeBar() {
                 },
               },
             ],
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: '4.8',
-              reviewCount: '200',
-              bestRating: '5',
-              worstRating: '1',
-            },
           },
         ]}
       />

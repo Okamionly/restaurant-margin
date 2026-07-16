@@ -104,16 +104,16 @@ export default function UserManagement() {
         body: JSON.stringify(form),
       });
       if (res.ok) {
-        showToast('Utilisateur cree avec succes', 'success');
+        showToast(t('Utilisateur créé avec succès'), 'success');
         setShowForm(false);
         setForm({ name: '', email: '', password: '', role: 'chef' });
         loadUsers();
       } else {
         const data = await res.json();
-        showToast(data.error || 'Erreur lors de la creation', 'error');
+        showToast(data.error || 'Erreur lors de la création', 'error');
       }
     } catch {
-      showToast('Erreur reseau', 'error');
+      showToast(t('Erreur réseau'), 'error');
     }
   }
 
@@ -125,7 +125,7 @@ export default function UserManagement() {
         headers: authHeaders(),
       });
       if (res.ok) {
-        showToast('Utilisateur supprime', 'success');
+        showToast(t('Utilisateur supprimé'), 'success');
         setSelectedUsers(prev => {
           const next = new Set(prev);
           next.delete(deleteTarget);
@@ -154,7 +154,7 @@ export default function UserManagement() {
         });
       } catch (err) { console.error(err); }
     }
-    showToast(`${ids.length} utilisateur(s) supprime(s)`, 'success');
+    showToast(`${ids.length} utilisateur(s) supprimé(s)`, 'success');
     setSelectedUsers(new Set());
     setShowBulkActions(false);
     loadUsers();

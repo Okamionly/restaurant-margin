@@ -1689,9 +1689,9 @@ export default function Inventory() {
         </div>
       )}
 
-      {/* ══════ INVENTORY TABLE ══════ */}
-      <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
-        <div className="overflow-x-auto -mx-3 sm:mx-0">
+      {/* ══════ INVENTORY TABLE (desktop / tablette >= md) ══════ */}
+      <div className="hidden md:block bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
+        <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[800px]">
             <thead>
               <tr className="bg-mono-1000 dark:bg-[#171717] text-left">
@@ -1967,6 +1967,96 @@ export default function Inventory() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* ══════ INVENTORY CARDS (mobile < md) ══════ */}
+      <div className="md:hidden space-y-2">
+        {filteredItems.length === 0 ? (
+          <div className="py-8 px-4 text-center text-[#9CA3AF] dark:text-mono-500 bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200">
+            {items.length === 0 ? "Aucun article dans l'inventaire. Ajoutez des ingredients pour commencer." : 'Aucun resultat pour cette recherche.'}
+          </div>
+        ) : filteredItems.map(item => {
+          const status = getStatus(item);
+          const value = (item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit;
+          const meta = parseMeta(item.notes);
+          const expStatus = getExpirationStatus(meta.expirationDate);
+          const daysLeft = getDaysUntilExpiry(meta.expirationDate);
+          const stockPct = getStockPercent(item);
+          const isSelected = selectedIds.has(item.id);
+          return (
+            <div key={item.id} className={`p-3 rounded-2xl border bg-white dark:bg-mono-50 ${expStatus === 'expired' ? 'border-red-300 dark:border-red-800' : 'border-mono-900 dark:border-mono-200'} ${isSelected ? 'ring-2 ring-teal-500' : ''}`}>
+              <div className="flex items-start gap-2.5">
+                <button onClick={() => toggleSelect(item.id)} className="mt-0.5 p-0.5 rounded shrink-0" aria-label="Selectionner">
+                  {isSelected ? <CheckSquare className="w-4 h-4 text-teal-600 dark:text-teal-400" /> : <Square className="w-4 h-4 text-[#D1D5DB] dark:text-mono-350" />}
+                </button>
+                <span className="text-lg leading-none mt-0.5">{CATEGORY_EMOJIS[item.ingredient.category] || '📦'}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="font-medium flex items-center gap-1.5 flex-wrap break-words">
+                        {item.ingredient.name}
+                        {meta.location && (
+                          <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${LOCATION_COLORS[meta.location] || 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700'}`}>
+                            <MapPin className="w-2.5 h-2.5" /> {meta.location}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{item.ingredient.category}</div>
+                    </div>
+                    {status === 'ok' && (<span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"><CheckCircle2 className="w-3 h-3" /> OK</span>)}
+                    {status === 'low' && (<span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"><MinusCircle className="w-3 h-3" /> Bas</span>)}
+                    {status === 'critical' && (<span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"><Flame className="w-3 h-3" /> Critique</span>)}
+                  </div>
+
+                  <div className="mt-2 flex items-center gap-3">
+                    <ProgressRing value={stockPct} max={100} size={40} strokeWidth={4} animated={true} showPercent={true} />
+                    <div className="min-w-0 flex-1">
+                      {editingStockId === item.id ? (
+                        <div className="flex items-center gap-1">
+                          <input type="number" value={inlineStock} onChange={e => setInlineStock(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') handleInlineStockSave(item.id); if (e.key === 'Escape') setEditingStockId(null); }} className="w-20 px-2 py-1 text-sm border rounded border-mono-900 dark:border-mono-200 dark:bg-[#171717] focus:ring-2 focus:ring-teal-500 outline-none" autoFocus step="0.01" />
+                          <button onClick={() => handleInlineStockSave(item.id)} className="text-emerald-600 hover:text-emerald-700"><CheckCircle2 className="w-4 h-4" /></button>
+                          <button onClick={() => setEditingStockId(null)} className="text-[#9CA3AF] dark:text-mono-500"><XCircle className="w-4 h-4" /></button>
+                        </div>
+                      ) : (
+                        <span className="cursor-pointer hover:text-teal-600 transition-colors font-semibold" onClick={() => { setEditingStockId(item.id); setInlineStock(String(item.currentStock)); }} title="Cliquer pour modifier">
+                          {item.currentStock} <span className="text-xs font-normal text-[#9CA3AF] dark:text-mono-500">{item.unit}</span>
+                        </span>
+                      )}
+                      <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
+                        min {item.minStock}{item.maxStock ? ` / max ${item.maxStock}` : ''} · {formatCurrency(value)}
+                      </div>
+                    </div>
+                    {quickRestockId === item.id ? (
+                      <div className="flex items-center gap-1 shrink-0">
+                        <input type="number" value={quickRestockQty} onChange={e => setQuickRestockQty(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') handleQuickRestock(item.id); if (e.key === 'Escape') { setQuickRestockId(null); setQuickRestockQty(''); } }} className="w-14 px-1.5 py-0.5 text-[11px] border rounded border-mono-900 dark:border-mono-200 dark:bg-[#171717] focus:ring-1 focus:ring-teal-500 outline-none" placeholder="qty" autoFocus step="0.1" />
+                        <button onClick={() => handleQuickRestock(item.id)} className="text-emerald-600"><CheckCircle2 className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => { setQuickRestockId(null); setQuickRestockQty(''); }} className="text-[#9CA3AF]"><XCircle className="w-3.5 h-3.5" /></button>
+                      </div>
+                    ) : (
+                      <button onClick={() => { setQuickRestockId(item.id); setQuickRestockQty(''); }} className="shrink-0 flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400" title="Restock rapide"><Plus className="w-2.5 h-2.5" /> Restock</button>
+                    )}
+                  </div>
+
+                  {meta.expirationDate && daysLeft !== null && (
+                    <div className={`mt-2 inline-flex items-center gap-1 text-xs font-semibold ${daysLeft <= 3 ? 'text-red-600 dark:text-red-400' : daysLeft <= 7 ? 'text-amber-500 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                      <Clock className="w-3 h-3" />
+                      {daysLeft <= 0 ? <span className="px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 text-[10px] font-bold">EXPIRE</span> : <>{daysLeft}j restant{daysLeft > 1 ? 's' : ''}</>}
+                      <span className="text-[10px] font-normal text-[#9CA3AF] dark:text-mono-500">· {new Date(meta.expirationDate).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                  )}
+
+                  <div className="mt-2 flex items-center gap-1">
+                    <button onClick={() => openWaste(item)} className="p-2 rounded hover:bg-red-50 dark:hover:bg-red-900/30 text-red-400 transition-colors" title="Declarer perte"><Trash className="w-4 h-4" /></button>
+                    <button onClick={() => setWeighTarget(item)} className="p-2 rounded hover:bg-emerald-50 dark:hover:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 transition-colors" title="Peser avec la balance"><Scale className="w-4 h-4" /></button>
+                    <button onClick={() => openRestock(item)} className="p-2 rounded hover:bg-teal-50 dark:hover:bg-teal-900/30 text-teal-600 dark:text-teal-400 transition-colors" title="Reapprovisionner"><RefreshCw className="w-4 h-4" /></button>
+                    <button onClick={() => openEdit(item)} className="p-2 rounded hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 transition-colors" title="Modifier"><Pencil className="w-4 h-4" /></button>
+                    <button onClick={() => setDeleteTarget(item.id)} className="p-2 rounded hover:bg-red-50 dark:hover:bg-red-900/30 text-red-500 transition-colors ml-auto" title="Supprimer"><Trash2 className="w-4 h-4" /></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Add Modal */}

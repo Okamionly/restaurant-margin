@@ -1175,51 +1175,51 @@ export default function Planning() {
           {/* WhatsApp / Send planning */}
           <button
             onClick={() => setShowWhatsappModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#25D366] text-white rounded-xl hover:bg-[#20BD5A] transition text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-[#25D366] text-white rounded-xl hover:bg-[#20BD5A] transition text-sm font-medium"
           >
-            <Send className="w-4 h-4" /> Envoyer le planning
+            <Send className="w-4 h-4" /> <span className="hidden sm:inline">Envoyer le planning</span>
           </button>
           {/* Templates */}
           <button
             onClick={() => setShowTemplateModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-white dark:bg-black text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition text-sm font-medium"
           >
-            <FileText className="w-4 h-4" /> Templates
+            <FileText className="w-4 h-4" /> <span className="hidden sm:inline">Templates</span>
           </button>
           <button
             onClick={exportPlanningCSV}
-            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-white dark:bg-black text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition text-sm font-medium"
           >
-            <Download className="w-4 h-4" /> Exporter planning
+            <Download className="w-4 h-4" /> <span className="hidden sm:inline">Exporter planning</span>
           </button>
           <button
             onClick={handlePrint}
-            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-white dark:bg-black text-mono-100 dark:text-white border border-mono-900 dark:border-mono-200 rounded-xl hover:bg-mono-1000 dark:hover:bg-mono-50 transition text-sm font-medium"
           >
-            <Printer className="w-4 h-4" /> Imprimer
+            <Printer className="w-4 h-4" /> <span className="hidden sm:inline">Imprimer</span>
           </button>
           {/* Overtime alerts */}
           {overtimeDetails.length > 0 && (
             <button
               onClick={() => setShowOvertimeModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition text-sm font-medium animate-pulse"
+              className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition text-sm font-medium animate-pulse"
             >
-              <Shield className="w-4 h-4" /> {overtimeDetails.length} alerte{overtimeDetails.length > 1 ? 's' : ''} heures
+              <Shield className="w-4 h-4" /> {overtimeDetails.length}<span className="hidden sm:inline"> alerte{overtimeDetails.length > 1 ? 's' : ''} heures</span>
             </button>
           )}
           {conflicts.length > 0 && (
             <button
               onClick={() => setShowConflictsModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition text-sm font-medium animate-pulse"
+              className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-red-600 text-white rounded-xl hover:bg-red-700 transition text-sm font-medium animate-pulse"
             >
-              <AlertCircle className="w-4 h-4" /> {conflicts.length} conflit{conflicts.length > 1 ? 's' : ''}
+              <AlertCircle className="w-4 h-4" /> {conflicts.length}<span className="hidden sm:inline"> conflit{conflicts.length > 1 ? 's' : ''}</span>
             </button>
           )}
-          <button onClick={openAddEmployee} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition text-sm font-medium">
-            <UserPlus className="w-4 h-4" /> {t('planning.employee')}
+          <button onClick={openAddEmployee} className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition text-sm font-medium">
+            <UserPlus className="w-4 h-4" /> <span className="hidden sm:inline">{t('planning.employee')}</span>
           </button>
-          <button onClick={() => openAddShift()} className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-400 transition text-sm font-medium">
-            <Plus className="w-4 h-4" /> {t('planning.shift')}
+          <button onClick={() => openAddShift()} className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-emerald-500 text-white rounded-xl hover:bg-emerald-400 transition text-sm font-medium">
+            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">{t('planning.shift')}</span>
           </button>
         </div>
       </div>
@@ -1295,14 +1295,14 @@ export default function Planning() {
 
       {/* Week navigation + view toggle */}
       <div className="flex flex-col sm:flex-row items-center justify-between bg-white dark:bg-black border border-mono-900 dark:border-mono-200 rounded-2xl p-4 gap-3 no-print">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-center gap-2">
           <button onClick={goPrev} className="p-2 rounded-lg hover:bg-mono-1000 dark:hover:bg-mono-50 transition">
             <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
           </button>
           <button onClick={goThisWeek} className="px-3 py-1 text-xs font-medium rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800/50 transition border border-indigo-200 dark:border-indigo-700/30">
             {t('planning.today')}
           </button>
-          <h2 className="text-lg font-semibold text-mono-100 dark:text-white px-2">{weekLabel}</h2>
+          <h2 className="text-base sm:text-lg font-semibold text-mono-100 dark:text-white px-2 text-center">{weekLabel}</h2>
           <button onClick={goNext} className="p-2 rounded-lg hover:bg-mono-1000 dark:hover:bg-mono-50 transition">
             <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-mono-700" />
           </button>
@@ -1601,7 +1601,7 @@ export default function Planning() {
             <UserPlus className="w-3.5 h-3.5" /> {t('common.add')}
           </button>
         </div>
-        <div className="overflow-x-auto -mx-4 sm:mx-0">
+        <div className="hidden md:block overflow-x-auto -mx-4 sm:mx-0">
           <table className="w-full text-sm min-w-[700px]">
             <thead>
               <tr className="bg-mono-1000 dark:bg-mono-50">
@@ -1681,6 +1681,75 @@ export default function Planning() {
             </tbody>
           </table>
         </div>
+        {/* Mobile: cartes empilees (une par employe) */}
+        <div className="md:hidden p-3 space-y-2">
+          {employees.map(emp => {
+            const hours = employeeWeeklyHours.get(emp.id) || 0;
+            const isOver35 = hours > 35;
+            const isOver48 = hours > 48;
+            const empConflicts = conflicts.filter(c => c.employeeId === emp.id);
+            return (
+              <div key={emp.id} className="bg-mono-1000 dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                  <span className="font-medium text-mono-100 dark:text-white min-w-0 truncate flex-1">{emp.name || ''}</span>
+                  {empConflicts.length > 0 && (
+                    <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-500 text-[10px] font-bold flex-shrink-0">
+                      <AlertCircle className="w-3 h-3" /> Conflit
+                    </span>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                  <div>
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{t('planning.role')}</span>
+                    <div className="mt-0.5">
+                      <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: (emp.color || '#6366f1') + '20', color: emp.color || '#6366f1' }}>
+                        {ROLE_LABELS[emp.role] || emp.role || ''}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{t('planning.rate')}</span>
+                    <div className="mt-0.5 text-[#6B7280] dark:text-mono-700">{formatCurrency(emp.hourlyRate ?? 0)}/h</div>
+                  </div>
+                  <div>
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{t('planning.hoursPerWeek')}</span>
+                    <div className="mt-0.5">
+                      <span className={`font-semibold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                        {hours.toFixed(0)}h
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{t('planning.status')}</span>
+                    <div className="mt-0.5">
+                      {empConflicts.length > 0 ? (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">CONFLIT</span>
+                      ) : isOver48 ? (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">ILLEGAL &gt;48h</span>
+                      ) : isOver35 ? (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">{t('planning.overtime')}</span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">OK</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-1 mt-3 no-print">
+                  <button onClick={() => openAvailabilityManager(emp)} className="flex-1 min-h-[44px] flex items-center justify-center gap-1 rounded-lg border border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717] transition text-xs text-[#6B7280] dark:text-mono-700" title="Disponibilites">
+                    <Clock className="w-4 h-4" /> Dispo
+                  </button>
+                  <button onClick={() => openEditEmployee(emp)} className="flex-1 min-h-[44px] flex items-center justify-center gap-1 rounded-lg border border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717] transition text-xs text-[#6B7280] dark:text-mono-700">
+                    <Edit className="w-4 h-4" /> Modifier
+                  </button>
+                  <button onClick={() => deleteEmployee(emp.id)} className="flex-1 min-h-[44px] flex items-center justify-center gap-1 rounded-lg border border-red-500/30 hover:bg-red-100 dark:hover:bg-red-900/20 transition text-xs text-red-500">
+                    <Trash2 className="w-4 h-4" /> Suppr
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Weekly summary table (print-friendly) */}
@@ -1690,7 +1759,7 @@ export default function Planning() {
             <Clock className="w-4 h-4 text-amber-400" /> {t('planning.weeklySummary')}
           </h3>
         </div>
-        <div className="overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-mono-1000 dark:bg-mono-50">
@@ -1765,6 +1834,49 @@ export default function Planning() {
               </tr>
             </tbody>
           </table>
+        </div>
+        {/* Mobile: cartes empilees (recap par employe) */}
+        <div className="md:hidden p-3 space-y-2">
+          {summaryRows.map(row => {
+            const isOver35 = row.total > 35;
+            const isOver48 = row.total > 48;
+            const empConflicts = conflicts.filter(c => c.employeeId === row.emp.id);
+            return (
+              <div key={row.emp.id} className="bg-mono-1000 dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: row.emp.color || '#6366f1' }} />
+                  <span className="font-medium text-mono-100 dark:text-white min-w-0 truncate flex-1">{row.emp.name || ''}</span>
+                  {empConflicts.length > 0 ? (
+                    <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                  ) : isOver48 ? (
+                    <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                  ) : isOver35 ? (
+                    <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                  ) : null}
+                </div>
+                <div className="grid grid-cols-7 gap-1 mt-2">
+                  {row.days.map((h, i) => (
+                    <div key={i} className="text-center">
+                      <div className="text-[9px] text-[#9CA3AF] dark:text-mono-500 uppercase">{JOURS[i]}</div>
+                      <div className={`text-xs ${h > 0 ? 'text-[#6B7280] dark:text-mono-700 font-medium' : 'text-[#9CA3AF] dark:text-mono-500'}`}>{h > 0 ? `${h}h` : '-'}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-2 border-t border-mono-900 dark:border-mono-200 text-sm">
+                  <span className={`font-bold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-mono-100 dark:text-white'}`}>
+                    Total : {row.total > 0 ? `${row.total}h` : '-'}
+                  </span>
+                  <span className="font-medium text-[#6B7280] dark:text-mono-700">{row.cost > 0 ? formatCurrency(row.cost) : '-'}</span>
+                </div>
+              </div>
+            );
+          })}
+          <div className="bg-mono-1000 dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-3">
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-semibold text-mono-100 dark:text-white">Total semaine</span>
+              <span className="font-semibold text-indigo-400">{totalRow.total}h -- {formatCurrency(totalRow.cost ?? 0)}</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2551,7 +2663,7 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
         <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-3">Timeline 6h - 23h</h4>
         {/* Hour ruler */}
         <div className="flex mb-2" style={{ minWidth: '600px' }}>
-          <div className="w-28 flex-shrink-0" />
+          <div className="w-20 sm:w-28 flex-shrink-0" />
           <div className="flex-1 flex">
             {GRID_HOURS.map(h => (
               <div key={h} className="flex-1 text-center">
@@ -2567,7 +2679,7 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
             const empConflicts = dayConflicts.filter(c => c.employeeId === emp.id);
             return (
               <div key={emp.id} className="flex items-center gap-2">
-                <div className="w-28 flex-shrink-0 flex items-center gap-1.5 truncate">
+                <div className="w-20 sm:w-28 flex-shrink-0 flex items-center gap-1.5 truncate">
                   <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
                   <span className="text-xs font-medium text-mono-100 dark:text-white truncate">{emp.name}</span>
                   {empConflicts.length > 0 && <AlertCircle className="w-3 h-3 text-red-500 flex-shrink-0" />}
@@ -2707,22 +2819,22 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
             return (
               <div
                 key={emp.id}
-                className={`flex items-center justify-between px-4 py-2.5 rounded-xl border transition ${
+                className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 px-4 py-2.5 rounded-xl border transition ${
                   empConflicts.length > 0
                     ? 'border-red-500 bg-red-50 dark:bg-red-950/10'
                     : isPresent ? 'border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50' : 'border-mono-900 dark:border-mono-200 bg-white dark:bg-black opacity-50'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <div className={`w-2.5 h-2.5 rounded-full ${empConflicts.length > 0 ? 'bg-red-500' : isPresent ? 'bg-emerald-400' : 'bg-[#D1D5DB] dark:bg-[#475569]'}`} />
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${empConflicts.length > 0 ? 'bg-red-500' : isPresent ? 'bg-emerald-400' : 'bg-[#D1D5DB] dark:bg-[#475569]'}`} />
                   <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                  <span className={`text-sm font-medium ${isPresent ? 'text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'}`}>{emp.name || ''}</span>
-                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
+                  <span className={`text-sm font-medium min-w-0 truncate ${isPresent ? 'text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'}`}>{emp.name || ''}</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-mono-500 flex-shrink-0">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
                   {empConflicts.length > 0 && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-500 font-bold">CONFLIT</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-500 font-bold flex-shrink-0">CONFLIT</span>
                   )}
                 </div>
-                <div className="text-sm">
+                <div className="text-xs">
                   {isPresent ? (
                     <span className="text-[#6B7280] dark:text-mono-700">
                       {empShifts!.map(s => `${s.startTime}-${s.endTime}`).join(', ')} -- <span className="font-semibold">{empHours}h</span>
@@ -2966,7 +3078,7 @@ function PointageTab({
             </button>
           </div>
         </div>
-        <div className="overflow-x-auto -mx-4 sm:mx-0">
+        <div className="hidden md:block overflow-x-auto -mx-4 sm:mx-0">
           <table className="w-full text-sm min-w-[700px]">
             <thead>
               <tr className="bg-mono-1000 dark:bg-mono-50">
@@ -3041,6 +3153,55 @@ function PointageTab({
               )}
             </tbody>
           </table>
+        </div>
+        {/* Mobile: cartes empilees (recap pointage par employe) */}
+        <div className="md:hidden p-3 space-y-2">
+          {timeclockSummary.length > 0 ? (
+            <>
+              {timeclockSummary.map(emp => {
+                const weekDayStrings = weekDays.map(d => {
+                  if (!d || isNaN(d.getTime())) return '';
+                  return d.toISOString().slice(0, 10);
+                });
+                return (
+                  <div key={emp.id} className="bg-mono-1000 dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                      <span className="font-medium text-mono-100 dark:text-white min-w-0 truncate flex-1">{emp.name}</span>
+                    </div>
+                    <div className="grid grid-cols-7 gap-1 mt-2">
+                      {weekDayStrings.map((dayStr, i) => {
+                        const dayMinutes = emp.days[dayStr] || 0;
+                        const h = Math.round((dayMinutes / 60) * 10) / 10;
+                        return (
+                          <div key={i} className="text-center">
+                            <div className="text-[9px] text-[#9CA3AF] dark:text-mono-500 uppercase">{JOURS_SHORT[i]}</div>
+                            <div className={`text-xs ${h > 0 ? 'text-[#6B7280] dark:text-mono-700 font-medium' : 'text-[#9CA3AF] dark:text-mono-500'}`}>{h > 0 ? `${h}h` : '-'}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-mono-900 dark:border-mono-200 text-sm">
+                      <span className="font-bold text-mono-100 dark:text-white">Total : {emp.totalHours > 0 ? `${emp.totalHours}h` : '-'}</span>
+                      <span className="font-medium text-[#6B7280] dark:text-mono-700">{emp.totalCost > 0 ? formatCurrency(emp.totalCost) : '-'}</span>
+                    </div>
+                  </div>
+                );
+              })}
+              <div className="bg-mono-1000 dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-semibold text-mono-100 dark:text-white">Total</span>
+                  <span className="font-semibold text-mono-100 dark:text-white">
+                    {timeclockSummary.reduce((s, e) => s + e.totalHours, 0).toFixed(1)}h -- {formatCurrency(timeclockSummary.reduce((s, e) => s + e.totalCost, 0))}
+                  </span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="px-2 py-8 text-center text-[#9CA3AF] dark:text-mono-500 text-sm">
+              Aucun pointage enregistre cette semaine.
+            </div>
+          )}
         </div>
       </div>
     </div>

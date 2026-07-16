@@ -617,7 +617,7 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-mono-900 dark:border-mono-200">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-mono-100 dark:bg-white flex items-center justify-center">
               <GitCompareArrows className="w-4.5 h-4.5 text-white dark:text-black" aria-hidden="true" />
@@ -652,7 +652,7 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
 
           {/* Key Metrics with visual bars */}
           {[a, b].map((r, i) => (
-            <div key={`m-${i}`} className="px-5 pb-4 space-y-3">
+            <div key={`m-${i}`} className="px-3 sm:px-5 pb-4 space-y-3">
               {/* Selling Price */}
               <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-3">
                 <div className="flex items-center justify-between mb-1">
@@ -702,7 +702,7 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
 
           {/* Ingredients detail */}
           {[{ ings: aIngs, r: a }, { ings: bIngs, r: b }].map(({ ings, r }, i) => (
-            <div key={`ing-${i}`} className="px-5 pb-5">
+            <div key={`ing-${i}`} className="px-3 sm:px-5 pb-5">
               <div className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-2">
                 Detail ingredients ({r.ingredients.length})
               </div>
@@ -1334,7 +1334,7 @@ function CostOptimizerPanel({
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-mono-900 dark:border-mono-200">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
@@ -1350,7 +1350,7 @@ function CostOptimizerPanel({
         </div>
 
         {/* Margin Impact Summary */}
-        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
+        <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
               <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Cout actuel</div>
@@ -1378,7 +1378,7 @@ function CostOptimizerPanel({
         </div>
 
         {/* Cost Breakdown Bar Chart */}
-        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
+        <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 mb-3">
             <BarChart3 className="w-4 h-4 text-mono-100 dark:text-white" />
             <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Repartition du cout par ingredient</h4>
@@ -1416,7 +1416,7 @@ function CostOptimizerPanel({
         </div>
 
         {/* Top 3 Expensive — Substitution Suggestions */}
-        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
+        <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 mb-3">
             <RefreshCw className="w-4 h-4 text-mono-100 dark:text-white" />
             <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Suggestions de substitution</h4>
@@ -1448,7 +1448,7 @@ function CostOptimizerPanel({
                           <div className="text-xs text-mono-100 dark:text-white">
                             Si vous remplacez <strong>{ic.ri.ingredient.name}</strong> par <strong>{alt.ingredient.name}</strong>, vous economisez <strong className="text-emerald-500">{(savings / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()}</strong>/portion
                           </div>
-                          <div className="flex items-center gap-3 mt-1 text-[10px]">
+                          <div className="flex flex-wrap items-center gap-3 mt-1 text-[10px]">
                             <span className="text-[#9CA3AF] dark:text-mono-500">{alt.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{alt.ingredient.unit}</span>
                             <span className={`font-medium ${newMargin >= 70 ? 'text-emerald-500' : newMargin >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
                               Marge → {newMargin.toFixed(1)}%
@@ -1468,7 +1468,7 @@ function CostOptimizerPanel({
         </div>
 
         {/* Seasonal Suggestions */}
-        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
+        <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 mb-3">
             <SeasonIcon month={currentMonth} />
             <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Ingredients de saison — {monthNames[currentMonth]}</h4>
@@ -1505,7 +1505,7 @@ function CostOptimizerPanel({
 
         {/* Price Alerts */}
         {priceAlerts.length > 0 && (
-          <div className="p-5 border-b border-mono-900 dark:border-mono-200">
+          <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle className="w-4 h-4 text-red-500" />
               <h4 className="text-sm font-semibold text-red-600 dark:text-red-400">Alertes prix</h4>
@@ -1634,7 +1634,7 @@ function BatchOptimizerPanel({
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-mono-900 dark:border-mono-200">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-mono-100 dark:bg-white flex items-center justify-center">
               <Zap className="w-5 h-5 text-white dark:text-mono-100" aria-hidden="true" />
@@ -1650,7 +1650,7 @@ function BatchOptimizerPanel({
         </div>
 
         {/* Summary KPIs */}
-        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
+        <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
               <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Recettes</div>
@@ -1673,7 +1673,7 @@ function BatchOptimizerPanel({
 
         {/* Common Expensive Ingredients */}
         {commonExpensive.length > 0 && (
-          <div className="p-5 border-b border-mono-900 dark:border-mono-200">
+          <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-3">
               <BarChart3 className="w-4 h-4 text-mono-100 dark:text-white" />
               <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Ingredients couteux communs ({commonExpensive.length})</h4>
@@ -1704,7 +1704,7 @@ function BatchOptimizerPanel({
 
         {/* Bulk Substitution Suggestions */}
         {savingsBreakdown.length > 0 && (
-          <div className="p-5 border-b border-mono-900 dark:border-mono-200">
+          <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-3">
               <RefreshCw className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Substitutions groupees recommandees</h4>
@@ -1720,7 +1720,7 @@ function BatchOptimizerPanel({
                     </div>
                     <span className="text-xs font-bold text-emerald-500">-{item.savings.toFixed(2)}{getCurrencySymbol()}</span>
                   </div>
-                  <div className="flex items-center gap-4 text-[10px] text-[#9CA3AF] dark:text-mono-500">
+                  <div className="flex flex-wrap items-center gap-4 text-[10px] text-[#9CA3AF] dark:text-mono-500">
                     <span>Affecte {item.recipeCount} recettes</span>
                     <span>{item.ingredient.pricePerUnit.toFixed(2)} → {item.bestAlt.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{item.ingredient.unit}</span>
                     <span className={`px-1.5 py-0.5 rounded-full font-medium ${item.bestAlt.quality === 'aucun' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : item.bestAlt.quality === 'minimal' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'}`}>
@@ -1734,7 +1734,7 @@ function BatchOptimizerPanel({
         )}
 
         {/* Seasonal Suggestions */}
-        <div className="p-5 border-b border-mono-900 dark:border-mono-200">
+        <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 mb-3">
             <SeasonIcon month={currentMonth} />
             <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Suggestions saisonnieres — {monthNames[currentMonth]}</h4>
@@ -2915,7 +2915,8 @@ export default function Recipes() {
 
       {/* ── Table View ─────────────────────────────────────────────────── */}
       {viewMode === 'table' ? (
-        <div className="bg-white dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 overflow-x-auto">
+        <>
+        <div className="hidden md:block bg-white dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 overflow-x-auto">
           <table className="w-full text-sm min-w-[700px]">
             <thead>
               <tr className="border-b border-mono-900 dark:border-mono-200">
@@ -3039,6 +3040,99 @@ export default function Recipes() {
             </tbody>
           </table>
         </div>
+        {/* ── Table View — Mobile cards (P3, same handlers/state as the table map) ── */}
+        <div className="md:hidden space-y-2">
+          {sortedFiltered.length === 0 ? (
+            recipes.length === 0 ? (
+              <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 py-12 px-5 flex flex-col items-center text-center">
+                <div className="mb-4">
+                  <FoodIllustration recipeName="steak" size="lg" />
+                </div>
+                <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-1">
+                  Creez votre premiere fiche technique
+                </h3>
+                <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-md mb-4">
+                  Composez vos recettes avec ingredients et prix de vente — RestauMargin calcule automatiquement vos marges, food cost et coefficient multiplicateur.
+                </p>
+                <div className="flex flex-wrap gap-3 justify-center">
+                  <button
+                    onClick={openNew}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
+                  >
+                    <Plus className="w-4 h-4" /> Creer une recette
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('templates')}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-colors"
+                  >
+                    <Package className="w-4 h-4" /> Ou importez un pack
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-[#9CA3AF] dark:text-mono-500 text-center py-8">{t("recipes.noResults")}</p>
+            )
+          ) : sortedFiltered.map((recipe) => (
+            <div
+              key={recipe.id}
+              className={`bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-3 ${selectedRecipeIds.has(recipe.id) ? 'ring-2 ring-mono-100 dark:ring-white' : ''}`}
+            >
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={selectedRecipeIds.has(recipe.id)}
+                  onChange={() => toggleSelectRecipe(recipe.id)}
+                  className="w-4 h-4 rounded accent-mono-100 dark:accent-white cursor-pointer shrink-0"
+                  aria-label={`Selectionner ${recipe.name}`}
+                />
+                <FoodIllustration recipeName={recipe.name} category={recipe.category} size="sm" animated={false} />
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium text-mono-100 dark:text-white truncate">{recipe.name}</div>
+                  <div className="text-xs text-[#6B7280] dark:text-mono-700 truncate">{recipe.category}</div>
+                </div>
+                <MarginBadge percent={recipe.margin.marginPercent} />
+              </div>
+              <div className="grid grid-cols-3 gap-2 mt-2 text-sm">
+                <div>
+                  <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">{t("recipes.colSellingPrice")}</div>
+                  <div className="font-mono text-mono-100 dark:text-white">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">{t("recipes.colCost")}</div>
+                  <div className="font-mono text-mono-100 dark:text-white">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">{t("recipes.colCoefficient")}</div>
+                  <div className="font-mono text-mono-100 dark:text-white">
+                    x{recipe.margin.coefficient.toFixed(2)}
+                    <span className="text-[10px] ml-1 text-[#6B7280] dark:text-mono-700">(obj. x{getCoefficient(recipe.category, coefficients).toFixed(1)})</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-1 justify-end mt-2">
+                <Link to={`/recipes/${recipe.id}`} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.view")}>
+                  <Eye className="w-4 h-4 text-mono-100 dark:text-white" />
+                </Link>
+                <button onClick={() => openEdit(recipe)} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
+                  <Pencil className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+                </button>
+                <button onClick={() => handleQuickDuplicate(recipe)} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Dupliquer avec ingredients" aria-label="Dupliquer la recette">
+                  <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                </button>
+                <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
+                  <Printer className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+                </button>
+                <button onClick={() => setOptimizingRecipe(recipe)} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
+                  <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                </button>
+                <button onClick={() => setDeleteTarget(recipe.id)} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
+                  <Trash2 className="w-4 h-4 text-red-500" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        </>
       ) : (
       /* ── Grid View (enhanced cards) ──────────────────────────────────── */
       <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -3207,19 +3301,19 @@ export default function Recipes() {
                   <Link to={`/recipes/${recipe.id}`} className="btn-secondary text-sm flex items-center gap-1 flex-1 justify-center">
                     <Eye className="w-4 h-4" /> {t("recipes.view")}
                   </Link>
-                  <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
+                  <button onClick={() => openEdit(recipe)} className="p-2.5 sm:p-2 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
                     <Pencil className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
                   </button>
-                  <button onClick={() => handleQuickDuplicate(recipe)} className="p-2 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Dupliquer avec ingredients" aria-label="Dupliquer la recette">
+                  <button onClick={() => handleQuickDuplicate(recipe)} className="p-2.5 sm:p-2 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Dupliquer avec ingredients" aria-label="Dupliquer la recette">
                     <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   </button>
-                  <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-2 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
+                  <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-2.5 sm:p-2 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
                     <Printer className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
                   </button>
-                  <button onClick={() => setOptimizingRecipe(recipe)} className="p-2 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
+                  <button onClick={() => setOptimizingRecipe(recipe)} className="p-2.5 sm:p-2 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
                     <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   </button>
-                  <button onClick={() => setDeleteTarget(recipe.id)} className="p-2 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
+                  <button onClick={() => setDeleteTarget(recipe.id)} className="p-2.5 sm:p-2 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
                     <Trash2 className="w-4 h-4 text-red-500" />
                   </button>
                 </div>
@@ -3379,7 +3473,7 @@ export default function Recipes() {
 
                   {/* Stats */}
                   <div className="px-4 pb-3">
-                    <div className="flex items-center gap-3 text-xs text-[#9CA3AF] dark:text-mono-500">
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-[#9CA3AF] dark:text-mono-500">
                       <span className="flex items-center gap-1">
                         <Users className="w-3 h-3" /> {tpl.nbPortions} portion{tpl.nbPortions > 1 ? 's' : ''}
                       </span>
@@ -3514,7 +3608,7 @@ export default function Recipes() {
 
                 {/* Stats row */}
                 <div className="px-5 pb-3">
-                  <div className="flex items-center gap-4 text-xs text-[#9CA3AF] dark:text-mono-500">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-[#9CA3AF] dark:text-mono-500">
                     <span className="flex items-center gap-1">
                       <UtensilsCrossed className="w-3 h-3" /> {pack.recipes.length} recettes
                     </span>
@@ -4050,7 +4144,7 @@ export default function Recipes() {
 
                       {/* Row 2: New ingredient details (only shown when typing a new name) */}
                       {isNewIngredient && fi.newName.trim() && (
-                        <div className="grid grid-cols-3 gap-2 pl-1">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pl-1">
                           <div>
                             <label className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Prix unitaire</label>
                             <input
@@ -4099,7 +4193,7 @@ export default function Recipes() {
                       )}
 
                       {/* Row 3: Quantity, waste %, line total + Peser button */}
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <div className="relative flex items-center">
                           <input
                             type="number"
@@ -4150,10 +4244,12 @@ export default function Recipes() {
                           title={t("recipes.wasteTooltip")}
                         />
                         <span className="text-xs text-[#9CA3AF] dark:text-mono-500 w-4">%</span>
-                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500 ml-auto">
-                          {unitPrice > 0 && <>{unitPrice.toFixed(2)}{getCurrencySymbol()}/{unitLabel}</>}
-                        </span>
-                        <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'}`}>{lineTotal.toFixed(2)} {getCurrencySymbol()}</span>
+                        <div className="w-full sm:w-auto sm:ml-auto flex items-center justify-between gap-2">
+                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">
+                            {unitPrice > 0 && <>{unitPrice.toFixed(2)}{getCurrencySymbol()}/{unitLabel}</>}
+                          </span>
+                          <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'}`}>{lineTotal.toFixed(2)} {getCurrencySymbol()}</span>
+                        </div>
                       </div>
 
                       {/* Inline Weighing Panel */}

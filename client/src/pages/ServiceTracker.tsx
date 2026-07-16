@@ -847,7 +847,7 @@ export default function ServiceTracker() {
             </div>
             Suivi de Service
           </h1>
-          <p className="text-sm text-mono-500 dark:text-mono-700 mt-0.5 ml-12 flex items-center gap-2">
+          <p className="text-sm text-mono-500 dark:text-mono-700 mt-0.5 ml-0 sm:ml-12 flex flex-wrap items-center gap-2">
             Gestion POS en temps reel
             {/* Kitchen connection badge */}
             {phase === 'active' && (
@@ -865,7 +865,7 @@ export default function ServiceTracker() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {/* Sound toggle */}
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
@@ -994,27 +994,27 @@ export default function ServiceTracker() {
               {/* ── 4 Big KPI Cards ────────────────────────────────── */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {/* 1. Couverts */}
-                <div className={`bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/40 rounded-2xl p-6 text-center relative overflow-hidden transition-all duration-300 ${pulsingKpi === 'couverts' ? 'scale-[1.03] ring-2 ring-blue-400/50' : ''}`}>
+                <div className={`bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/40 rounded-2xl p-3 sm:p-6 text-center relative overflow-hidden transition-all duration-300 ${pulsingKpi === 'couverts' ? 'scale-[1.03] ring-2 ring-blue-400/50' : ''}`}>
                   <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 to-blue-400" />
                   <Users className="w-7 h-7 mx-auto mb-2 text-blue-500" />
-                  <div className="text-5xl font-black text-mono-100 dark:text-white tabular-nums leading-none mb-1.5">
+                  <div className="text-2xl sm:text-5xl font-black text-mono-100 dark:text-white tabular-nums leading-none mb-1.5">
                     <AnimatedValue value={liveStats.couverts} decimals={0} />
                   </div>
                   <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Couverts</div>
                 </div>
 
                 {/* 2. CA */}
-                <div className={`bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-900/40 rounded-2xl p-6 text-center relative overflow-hidden transition-all duration-300 ${pulsingKpi === 'ca' ? 'scale-[1.03] ring-2 ring-teal-400/50' : ''}`}>
+                <div className={`bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-900/40 rounded-2xl p-3 sm:p-6 text-center relative overflow-hidden transition-all duration-300 ${pulsingKpi === 'ca' ? 'scale-[1.03] ring-2 ring-teal-400/50' : ''}`}>
                   <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 to-emerald-400" />
                   <DollarSign className="w-7 h-7 mx-auto mb-2 text-teal-500" />
-                  <div className="text-5xl font-black text-mono-100 dark:text-white tabular-nums leading-none mb-1.5">
+                  <div className="text-2xl sm:text-5xl font-black text-mono-100 dark:text-white tabular-nums leading-none mb-1.5">
                     <AnimatedValue value={liveStats.ca} suffix={currencySuffix()} />
                   </div>
                   <div className="text-xs font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider">CA Temps Reel</div>
                 </div>
 
                 {/* 3. Marge % with gauge */}
-                <div className={`rounded-2xl p-6 text-center relative overflow-hidden border transition-all duration-300 ${
+                <div className={`rounded-2xl p-3 sm:p-6 text-center relative overflow-hidden border transition-all duration-300 ${
                   liveStats.margePercent >= 70
                     ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/40'
                     : liveStats.margePercent >= 50
@@ -1027,7 +1027,7 @@ export default function ServiceTracker() {
                       'linear-gradient(to right, #ef4444, #f87171)'
                   }} />
                   <MargeGauge percent={liveStats.margePercent} size="lg" />
-                  <div className={`text-4xl font-black tabular-nums leading-none mt-1 mb-1.5 ${
+                  <div className={`text-xl sm:text-4xl font-black tabular-nums leading-none mt-1 mb-1.5 ${
                     liveStats.margePercent >= 70 ? 'text-emerald-500' : liveStats.margePercent >= 50 ? 'text-amber-500' : 'text-red-500'
                   }`}>
                     <AnimatedValue value={liveStats.margePercent} suffix="%" decimals={1} />
@@ -1036,10 +1036,10 @@ export default function ServiceTracker() {
                 </div>
 
                 {/* 4. Service Timer */}
-                <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900/40 rounded-2xl p-6 text-center relative overflow-hidden">
+                <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900/40 rounded-2xl p-3 sm:p-6 text-center relative overflow-hidden">
                   <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-500 to-purple-400" />
                   <Clock className="w-7 h-7 mx-auto mb-2 text-purple-500" />
-                  <div className="text-5xl font-black text-mono-100 dark:text-white tabular-nums leading-none mb-1.5 font-mono">
+                  <div className="text-2xl sm:text-5xl font-black text-mono-100 dark:text-white tabular-nums leading-none mb-1.5 font-mono">
                     {formatLiveTimer(now - session.startTime)}
                   </div>
                   <div className="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider">Temps Service</div>
@@ -1283,7 +1283,7 @@ export default function ServiceTracker() {
                           </div>
                         </div>
                         {/* Actions */}
-                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                        <div className="flex items-center gap-0.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex-shrink-0">
                           {!order.sentToKitchen && (
                             <button
                               onClick={() => sendToKitchen(order.id)}
@@ -1499,7 +1499,7 @@ export default function ServiceTracker() {
                     <button
                       key={i}
                       onClick={() => setSelectedHistoryDate(isSelected ? null : dateStr)}
-                      className={`relative h-9 rounded-lg text-xs font-medium transition-all ${
+                      className={`relative h-11 sm:h-9 rounded-lg text-xs font-medium transition-all ${
                         isSelected
                           ? 'bg-teal-600 text-white'
                           : isToday

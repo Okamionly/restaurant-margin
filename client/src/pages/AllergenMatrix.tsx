@@ -286,7 +286,7 @@ export default function AllergenMatrix() {
             {data.recipes.length} recettes &times; 14 allergenes majeurs UE
           </p>
         </div>
-        <div className="flex items-center gap-2 no-print">
+        <div className="flex flex-wrap items-center gap-2 no-print w-full sm:w-auto justify-end">
           <button
             onClick={() => setShowClientChecker(v => !v)}
             className={`flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-2xl border transition-colors ${
@@ -385,7 +385,7 @@ export default function AllergenMatrix() {
                 <button
                   key={a.key}
                   onClick={() => toggleClientAllergen(a.key)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-xl text-xs font-medium border transition-all ${
                     selected
                       ? 'bg-red-500 text-white border-red-600 shadow-sm'
                       : 'bg-white dark:bg-mono-50 text-mono-100 dark:text-white border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-[#171717]'
@@ -495,7 +495,7 @@ export default function AllergenMatrix() {
                 key={allergen.key}
                 onClick={() => setHighlightAllergen(isActive ? null : allergen.key)}
                 title={allergen.description}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-semibold border transition-all ${
+                className={`flex items-center gap-1 px-2.5 py-2 sm:py-1 rounded-xl text-[11px] font-semibold border transition-all ${
                   isActive
                     ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 border-mono-100 dark:border-white shadow-sm scale-105'
                     : containsCount > 0
@@ -513,7 +513,9 @@ export default function AllergenMatrix() {
       </div>
 
       {/* ── Matrix Grid ───────────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-x-auto print-matrix">
+      <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden print-matrix">
+        {/* Desktop / tablette (>= md) : matrice complete scrollable */}
+        <div className="hidden md:block overflow-x-auto matrix-desktop">
         <table className="w-full text-[11px] border-collapse min-w-[1000px]">
           <thead>
             <tr className="border-b-2 border-mono-900 dark:border-[#333]">
@@ -662,6 +664,77 @@ export default function AllergenMatrix() {
             })}
           </tbody>
         </table>
+        </div>
+
+        {/* Mobile (< md) : une carte par recette, allergenes contient/traces uniquement */}
+        <div className="md:hidden matrix-mobile divide-y divide-mono-950 dark:divide-mono-200">
+          {filteredRecipes.map((recipe) => {
+            const safetyScore = getSafetyScore(recipe);
+            const flagged = EU_ALLERGENS.filter((allergen) => {
+              const s = getStatus(recipe.allergens[allergen.key]);
+              return s === 'contains' || s === 'traces';
+            });
+            const matchesHighlight = highlightAllergen
+              ? (() => {
+                  const s = getStatus(recipe.allergens[highlightAllergen]);
+                  return s === 'contains' || s === 'traces';
+                })()
+              : false;
+
+            return (
+              <div
+                key={recipe.id}
+                className={`p-3 transition-all ${
+                  highlightAllergen && !matchesHighlight ? 'opacity-40' : ''
+                } ${matchesHighlight ? 'bg-amber-50/50 dark:bg-amber-900/10' : ''}`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <Link
+                      to={`/recipes/${recipe.id}`}
+                      className="block truncate font-medium text-mono-100 dark:text-white hover:text-teal-600 dark:hover:text-teal-400 transition-colors text-sm"
+                    >
+                      {recipe.name}
+                    </Link>
+                    <span className="inline-block mt-1 text-[9px] text-[#9CA3AF] dark:text-mono-500 bg-mono-950 dark:bg-[#171717] px-1.5 py-0.5 rounded">
+                      {recipe.category}
+                    </span>
+                  </div>
+                  <div className="shrink-0 pt-0.5">
+                    <SafetyBar score={safetyScore} total={14} />
+                  </div>
+                </div>
+
+                {flagged.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5 mt-2.5">
+                    {flagged.map((allergen) => {
+                      const allergenData = recipe.allergens[allergen.key];
+                      const status = getStatus(allergenData);
+                      const cfg = statusConfig[status];
+                      const aiDetected = isAIDetected(allergenData);
+                      return (
+                        <span
+                          key={allergen.key}
+                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold border ${cfg.bg} ${cfg.text} ${cfg.border}`}
+                        >
+                          <span>{allergen.icon}</span>
+                          {allergen.label}
+                          <span className="opacity-80">&middot; {cfg.label}</span>
+                          {aiDetected && <Sparkles className="w-2.5 h-2.5" />}
+                        </span>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 mt-2.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Aucun allergene declare
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
 
         {filteredRecipes.length === 0 && (
           <div className="text-center py-8">
@@ -779,6 +852,14 @@ export default function AllergenMatrix() {
             overflow: visible !important;
             border: 2px solid #000 !important;
             border-radius: 0 !important;
+          }
+          /* Force la matrice desktop, masque les cartes mobile a l'impression */
+          .matrix-desktop {
+            display: block !important;
+            overflow: visible !important;
+          }
+          .matrix-mobile {
+            display: none !important;
           }
           .print-matrix table {
             font-size: 7pt !important;

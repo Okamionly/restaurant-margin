@@ -652,7 +652,7 @@ export default function Analytics() {
               <button
                 key={p.value}
                 onClick={() => setPeriod(p.value)}
-                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+                className={`px-3 py-2 min-h-[44px] inline-flex items-center justify-center text-sm font-medium rounded-md transition-all ${
                   period === p.value
                     ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 shadow-sm'
                     : 'text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white'
@@ -665,7 +665,7 @@ export default function Analytics() {
           {/* Compare toggle */}
           <button
             onClick={() => setCompareMode(!compareMode)}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-all ${
+            className={`px-3 py-2 min-h-[44px] inline-flex items-center justify-center text-sm font-medium rounded-lg border transition-all ${
               compareMode
                 ? 'border-mono-100 dark:border-white bg-mono-100 dark:bg-white text-white dark:text-mono-100'
                 : 'border-mono-900 dark:border-mono-300 text-[#6B7280] dark:text-mono-700 hover:border-mono-100 dark:hover:border-white'
@@ -676,7 +676,7 @@ export default function Analytics() {
           {/* Export PDF (print) */}
           <button
             onClick={handleExportPDF}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg border border-mono-900 dark:border-mono-300 text-[#6B7280] dark:text-mono-700 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-all print:hidden"
+            className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium rounded-lg border border-mono-900 dark:border-mono-300 text-[#6B7280] dark:text-mono-700 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-all print:hidden"
           >
             <Printer className="w-4 h-4" />
             Imprimer
@@ -769,7 +769,7 @@ export default function Analytics() {
             <Layers className="w-4 h-4 text-mono-100 dark:text-white" />
             <h2 className="text-sm font-semibold text-mono-100 dark:text-white">Distribution des marges</h2>
           </div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <MarginBucket
               label="< 30%"
               count={marginDistribution.critical}
@@ -1049,7 +1049,7 @@ export default function Analytics() {
               const barWidth = (cat.percent / maxPercent) * 100;
               return (
                 <div key={cat.category} className="flex items-center gap-3">
-                  <span className="text-xs font-medium text-mono-100 dark:text-white w-32 flex-shrink-0 truncate">{cat.category}</span>
+                  <span className="text-xs font-medium text-mono-100 dark:text-white w-20 sm:w-32 flex-shrink-0 truncate">{cat.category}</span>
                   <div className="flex-1 h-6 bg-mono-950 dark:bg-[#171717] rounded-lg overflow-hidden relative">
                     <div
                       className="h-full rounded-lg transition-all duration-500"
@@ -1222,8 +1222,8 @@ export default function Analytics() {
               />
             </div>
           </div>
-          {/* Category table */}
-          <div className="mt-4 overflow-x-auto">
+          {/* Category table — desktop / tablette (>= md) */}
+          <div className="mt-4 overflow-x-auto hidden md:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-xs text-[#6B7280] dark:text-mono-700 border-b border-mono-900 dark:border-mono-300">
@@ -1246,6 +1246,32 @@ export default function Analytics() {
                 ))}
               </tbody>
             </table>
+          </div>
+          {/* Category cards — mobile (< md) */}
+          <div className="mt-4 space-y-2 md:hidden">
+            {categoryPerformance.map(cat => (
+              <div key={cat.category} className="bg-[#F9FAFB] dark:bg-mono-100 rounded-2xl border border-mono-950 dark:border-mono-200 p-3">
+                <p className="text-sm font-medium text-mono-100 dark:text-white truncate">{cat.category}</p>
+                <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs text-[#6B7280] dark:text-mono-700">Recettes</span>
+                    <span className="font-medium text-mono-100 dark:text-white">{cat.recipeCount}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs text-[#6B7280] dark:text-mono-700">Marge moy.</span>
+                    <span className="font-medium text-mono-100 dark:text-white">{cat.avgMarginPercent}%</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs text-[#6B7280] dark:text-mono-700">CA total</span>
+                    <span className="font-medium text-mono-100 dark:text-white">{formatCurrency(cat.totalRevenue)}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs text-[#6B7280] dark:text-mono-700">Cout total</span>
+                    <span className="font-medium text-mono-100 dark:text-white">{formatCurrency(cat.totalCost)}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

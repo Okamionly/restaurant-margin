@@ -915,9 +915,9 @@ export default function Comptabilite() {
           <Heart className="w-5 h-5 text-mono-100 dark:text-mono-700" />
           <h3 className="text-lg font-semibold text-mono-100 dark:text-white">Sante financiere</h3>
         </div>
-        <div className="flex items-center gap-8">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
           {/* Circular gauge */}
-          <div className="relative flex-shrink-0">
+          <div className="relative flex-shrink-0 self-center sm:self-auto">
             <div
               className="w-32 h-32 rounded-full flex items-center justify-center"
               style={{ background: bgGradient }}
@@ -1259,8 +1259,46 @@ export default function Comptabilite() {
             )}
           </div>
 
-          {/* Table */}
-          <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
+          {/* Table — desktop / tablette (>= md) */}
+          {/* Mobile (< md) : une carte par ecriture */}
+          <div className="md:hidden divide-y divide-mono-950 dark:divide-mono-200/50 max-h-[500px] overflow-y-auto">
+            {filteredSales.slice(0, 100).map((s) => (
+              <div key={s.id} className="p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm font-medium text-mono-100 dark:text-white whitespace-nowrap">{fmtDate(s.date)}</span>
+                  <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
+                    s.paiement === 'CB' ? 'bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-mono-700' :
+                    s.paiement === 'Especes' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300' :
+                    s.paiement === 'Cheque' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' :
+                    s.paiement === 'Virement' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300' :
+                    'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300'
+                  }`}>
+                    {s.paiement}
+                  </span>
+                </div>
+                <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
+                  <span className="font-mono text-[#6B7280] dark:text-mono-700">{s.invoiceNum}</span>
+                  {s.client && <span className="text-[#6B7280] dark:text-mono-700 truncate">· {s.client}</span>}
+                </div>
+                {s.description && <div className="mt-1 text-sm text-[#6B7280] dark:text-mono-700 break-words">{s.description}</div>}
+                <div className="grid grid-cols-3 gap-2 mt-2 text-sm">
+                  <div>
+                    <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">HT</div>
+                    <div className="text-mono-100 dark:text-white">{fmt(s.montantHT)}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">TVA</div>
+                    <div className="text-mono-100 dark:text-mono-700">{fmt(s.tva)}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">TTC</div>
+                    <div className="font-medium text-mono-100 dark:text-white">{fmt(s.ttc)}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="hidden md:block overflow-x-auto max-h-[500px] overflow-y-auto">
             <table className="w-full text-sm">
               <thead className="sticky top-0 bg-[#F9FAFB] dark:bg-[#171717]/50">
                 <tr>
@@ -1325,7 +1363,7 @@ export default function Comptabilite() {
       {activeTab === 'charges' && (
         <div className="space-y-6">
           {/* Header with add button */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-lg font-semibold text-mono-100 dark:text-white">Charges & depenses</h2>
             <button
               onClick={() => setShowExpenseModal(true)}
@@ -1393,7 +1431,45 @@ export default function Comptabilite() {
 
           {/* Expenses table */}
           <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
-            <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
+            {/* Mobile (< md) : une carte par depense */}
+            <div className="md:hidden divide-y divide-mono-950 dark:divide-mono-200/50 max-h-[400px] overflow-y-auto">
+              {expenses.slice(0, 80).map((e) => (
+                <div key={e.id} className="p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-medium text-mono-100 dark:text-white whitespace-nowrap">{fmtDate(e.date)}</span>
+                    <button
+                      onClick={() => handleDeleteExpense(e.id)}
+                      className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-[#9CA3AF] dark:text-mono-500 hover:text-red-500 transition-colors"
+                      title="Supprimer"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <span className="text-sm text-mono-100 dark:text-white font-medium">{e.fournisseur}</span>
+                    <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
+                      {e.categorie}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 mt-2 text-sm">
+                    <div>
+                      <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">HT</div>
+                      <div className="text-mono-100 dark:text-white">{fmt(e.montantHT)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">TVA</div>
+                      <div className="text-mono-100 dark:text-mono-700">{fmt(e.tva)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">TTC</div>
+                      <div className="font-medium text-mono-100 dark:text-white">{fmt(e.ttc)}</div>
+                    </div>
+                  </div>
+                  {e.description && <div className="mt-2 text-xs text-[#6B7280] dark:text-mono-700 break-words">{e.description}</div>}
+                </div>
+              ))}
+            </div>
+            <div className="hidden md:block overflow-x-auto max-h-[400px] overflow-y-auto">
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-[#F9FAFB] dark:bg-[#171717]/50">
                   <tr>
@@ -1506,7 +1582,34 @@ export default function Comptabilite() {
 
           {/* Cash Flow Table */}
           <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Mobile (< md) : une carte par mois */}
+            <div className="md:hidden divide-y divide-mono-950 dark:divide-mono-200/50">
+              {cashFlowData.map((row, i) => (
+                <div key={i} className="p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-medium text-mono-100 dark:text-white">{row.mois}</span>
+                    <span className={`text-sm font-bold ${row.solde >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600 dark:text-red-400'}`}>
+                      {fmt(row.solde)}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 mt-2 text-sm">
+                    <div>
+                      <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">Entrees</div>
+                      <div className="text-emerald-600 dark:text-emerald-400">{fmt(row.entrees)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">Sorties</div>
+                      <div className="text-red-600 dark:text-red-400">{fmt(row.sorties)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">Net</div>
+                      <div className={`font-medium ${row.entrees - row.sorties >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>{fmt(row.entrees - row.sorties)}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-[#F9FAFB] dark:bg-[#171717]/50">
                   <tr>
@@ -1586,8 +1689,40 @@ export default function Comptabilite() {
               Ventilation TVA
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
-              {/* TVA table */}
-              <div className="md:col-span-2 overflow-x-auto">
+              {/* TVA table — mobile (< md) : une carte par taux */}
+              <div className="md:hidden space-y-2">
+                {tvaData.map((row, i) => (
+                  <div key={i} className="rounded-xl border border-mono-950 dark:border-mono-200/50 p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-1.5 font-medium text-mono-100 dark:text-white">
+                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: TVA_COLORS[i] }} />
+                        {row.taux}
+                      </span>
+                      <span className="text-xs text-[#6B7280] dark:text-mono-700 text-right">{row.label}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 mt-2 text-sm">
+                      <div>
+                        <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">Base HT</div>
+                        <div className="text-mono-100 dark:text-white">{fmt(row.baseHT)}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">TVA</div>
+                        <div className="font-medium text-mono-100 dark:text-mono-700">{fmt(row.montantTVA)}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">TTC</div>
+                        <div className="text-mono-100 dark:text-white">{fmt(row.totalTTC)}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div className="rounded-xl bg-[#F9FAFB] dark:bg-[#171717]/30 p-3 flex items-center justify-between text-sm font-semibold">
+                  <span className="text-mono-100 dark:text-white">Total TVA</span>
+                  <span className="text-mono-100 dark:text-white">{fmt(tvaData.reduce((s, r) => s + r.montantTVA, 0))}</span>
+                </div>
+              </div>
+              {/* TVA table — desktop / tablette (>= md) */}
+              <div className="md:col-span-2 hidden md:block overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-mono-900 dark:border-mono-200">
@@ -1646,7 +1781,29 @@ export default function Comptabilite() {
             {quarterlyTva.length === 0 ? (
               <p className="text-sm text-[#9CA3AF] dark:text-mono-500 text-center py-4">Pas de donnees trimestrielles</p>
             ) : (
-              <div className="overflow-x-auto">
+              <>
+              {/* Mobile (< md) : une carte par trimestre */}
+              <div className="md:hidden space-y-2">
+                {quarterlyTva.map((q, i) => (
+                  <div key={i} className="rounded-xl border border-mono-950 dark:border-mono-200/50 p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-medium text-mono-100 dark:text-white">{q.label}</span>
+                      <span className={`text-sm font-semibold ${q.net >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400'}`}>{fmt(q.net)}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                      <div>
+                        <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">Collectee</div>
+                        <div className="text-emerald-600 dark:text-emerald-400">{fmt(q.collected)}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] uppercase text-[#9CA3AF] dark:text-mono-500">Deductible</div>
+                        <div className="text-red-600 dark:text-red-400">{fmt(q.paid)}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-mono-900 dark:border-mono-200">
@@ -1670,6 +1827,7 @@ export default function Comptabilite() {
                   </tbody>
                 </table>
               </div>
+              </>
             )}
           </div>
         </div>
@@ -1681,7 +1839,7 @@ export default function Comptabilite() {
       {activeTab === 'budget' && (
         <div className="space-y-6">
           {/* Summary cards */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
               <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Budget total</span>
               <div className="text-xl font-bold text-mono-100 dark:text-white mt-1">{fmt(totalBudget)}</div>
@@ -1723,12 +1881,12 @@ export default function Comptabilite() {
 
                 return (
                   <div key={category} className="p-4">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                       <div className="flex items-center gap-3">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: EXPENSE_BAR_COLORS[category] || '#6b7280' }} />
                         <span className="text-sm font-medium text-mono-100 dark:text-white">{category}</span>
                       </div>
-                      <div className="flex items-center gap-4 text-sm">
+                      <div className="flex flex-wrap items-center gap-4 text-sm">
                         {/* Budget editable */}
                         <div className="text-right">
                           <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Budget</span>
@@ -1819,7 +1977,7 @@ export default function Comptabilite() {
       {activeTab === 'bank' && (
         <div className="space-y-6">
           {/* Summary row */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-white dark:bg-mono-50 rounded-2xl p-4 border border-mono-900 dark:border-mono-200">
               <span className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wide">Total transactions</span>
               <div className="text-xl font-bold text-mono-100 dark:text-white mt-1">{bankTransactions.length}</div>
@@ -1870,9 +2028,9 @@ export default function Comptabilite() {
                 {bankTransactions.map(tx => {
                   const matchedExpense = tx.matchedExpenseId ? expenses.find(e => e.id === tx.matchedExpenseId) : null;
                   return (
-                    <div key={tx.id} className="p-4 flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tx.status === 'rapproche' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-amber-100 dark:bg-amber-900/30'}`}>
+                    <div key={tx.id} className="p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+                      <div className="flex items-center gap-4 min-w-0">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${tx.status === 'rapproche' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-amber-100 dark:bg-amber-900/30'}`}>
                           {tx.status === 'rapproche' ? <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />}
                         </div>
                         <div>
@@ -2178,7 +2336,7 @@ export default function Comptabilite() {
       {/* ─── Add expense Modal ─────────────────────────────────────────── */}
       <Modal isOpen={showExpenseModal} onClose={() => setShowExpenseModal(false)} title="Ajouter une depense">
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Date</label>
               <input
@@ -2223,7 +2381,7 @@ export default function Comptabilite() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Montant HT *</label>
               <input

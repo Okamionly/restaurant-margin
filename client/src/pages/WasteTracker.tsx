@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, LineChart, Line, ReferenceLine
+  Tooltip, ResponsiveContainer, LineChart, Line, ReferenceLine, Legend
 } from 'recharts';
 import { useToast } from '../hooks/useToast';
 import { useRestaurant } from '../hooks/useRestaurant';
@@ -1018,7 +1018,7 @@ export default function WasteTracker() {
               <button
                 key={p}
                 onClick={() => setPeriod(p)}
-                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`px-3 py-2.5 min-h-[44px] text-sm font-medium transition-colors ${
                   period === p
                     ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
                     : 'bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]'
@@ -1030,7 +1030,7 @@ export default function WasteTracker() {
           </div>
           <button
             onClick={exportWasteCSV}
-            className="flex items-center gap-2 px-4 py-2 border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-[#171717] rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:bg-mono-1000 dark:hover:bg-[#171717] rounded-lg text-sm font-medium transition-colors"
           >
             <Download className="w-4 h-4" />
             Exporter dechets
@@ -1038,14 +1038,14 @@ export default function WasteTracker() {
           <button
             onClick={loadAiAnalysis}
             disabled={aiLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] rounded-lg text-sm font-semibold transition-colors disabled:opacity-60"
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] rounded-lg text-sm font-semibold transition-colors disabled:opacity-60"
           >
             {aiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
             Analyse IA
           </button>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors"
           >
             <Plus className="w-4 h-4" />
             {t('wasteTracker.declareWaste')}
@@ -1587,12 +1587,12 @@ export default function WasteTracker() {
                 const pct = (item.cost / maxCost) * 100;
                 return (
                   <div key={item.name}>
-                    <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="font-medium text-[#374151] dark:text-white flex items-center gap-2">
-                        <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-600 text-white text-[10px] font-bold">
+                    <div className="flex items-center justify-between text-sm mb-1 gap-2">
+                      <span className="font-medium text-[#374151] dark:text-white flex items-center gap-2 min-w-0">
+                        <span className="inline-flex shrink-0 items-center justify-center w-5 h-5 rounded-full bg-red-600 text-white text-[10px] font-bold">
                           {i + 1}
                         </span>
-                        {item.name}
+                        <span className="truncate">{item.name}</span>
                       </span>
                       <div className="flex items-center gap-3">
                         <span className="text-xs text-[#9CA3AF] dark:text-mono-500">
@@ -1711,7 +1711,7 @@ export default function WasteTracker() {
           6. REDUCTION GOALS
           ═══════════════════════════════════════════════════════════════════════ */}
       <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
           <div className="flex items-center gap-2">
             <Target className="w-5 h-5 text-green-500" />
             <h2 className="font-semibold text-[#1F2937] dark:text-white">Objectif de reduction mensuel</h2>
@@ -1835,13 +1835,14 @@ export default function WasteTracker() {
                   outerRadius={100}
                   paddingAngle={3}
                   dataKey="value"
-                  label={({ name, percent }: { name?: string; percent?: number }) => `${name ?? ''} (${((percent ?? 0) * 100).toFixed(0)}%)`}
+                  label={({ percent }: { percent?: number }) => `${((percent ?? 0) * 100).toFixed(0)}%`}
                 >
                   {pieData.map((entry, i) => (
                     <Cell key={i} fill={entry.color} />
                   ))}
                 </Pie>
                 <Tooltip formatter={(val: unknown) => formatEuro(Number(val))} />
+                <Legend verticalAlign="bottom" height={36} iconType="circle" />
               </PieChart>
             </ResponsiveContainer>
           ) : (
@@ -2067,7 +2068,7 @@ export default function WasteTracker() {
 
           {/* Recommendations */}
           <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
               <div className="flex items-center gap-2">
                 <Lightbulb className="w-5 h-5 text-mono-100 dark:text-white" />
                 <h3 className="font-semibold text-[#1F2937] dark:text-white">5 actions recommandees</h3>
@@ -2250,7 +2251,7 @@ export default function WasteTracker() {
           WEEKLY WASTE REPORT — Auto-generated summary
           ═══════════════════════════════════════════════════════════════════════ */}
       <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <div className="flex items-center gap-2">
             <Mail className="w-5 h-5 text-mono-100 dark:text-white" />
             <h2 className="font-semibold text-[#1F2937] dark:text-white">Rapport hebdomadaire</h2>
@@ -2258,7 +2259,7 @@ export default function WasteTracker() {
               Auto
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setShowWeeklyReport(!showWeeklyReport)}
               className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium border border-mono-900 dark:border-mono-200 rounded-lg text-[#6B7280] dark:text-mono-700 hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
@@ -2389,7 +2390,8 @@ export default function WasteTracker() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Desktop / tablette (>= md) : tableau dense */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-mono-900 dark:border-mono-200">
@@ -2483,6 +2485,79 @@ export default function WasteTracker() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile (< md) : une carte par ligne */}
+        <div className="md:hidden">
+          {loadingEntries ? (
+            <div className="py-8 text-center text-[#9CA3AF] dark:text-mono-500">
+              <Loader2 className="w-5 h-5 animate-spin mx-auto" />
+            </div>
+          ) : recentEntries.length === 0 ? (
+            <p className="py-8 text-center text-[#9CA3AF] dark:text-mono-500">
+              {t('wasteTracker.noWasteForPeriod')}
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {recentEntries.map(e => {
+                const photo = getWastePhoto(e.id);
+                return (
+                  <div key={e.id} className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-3">
+                    <div className="flex items-start gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium text-[#1F2937] dark:text-white truncate">{e.ingredientName}</div>
+                        <div className="text-xs text-[#6B7280] dark:text-mono-700 mt-0.5">
+                          {new Date(e.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}
+                        </div>
+                      </div>
+                      {photo ? (
+                        <button
+                          onClick={() => setViewingPhoto(photo)}
+                          className="inline-flex items-center justify-center w-11 h-11 rounded-lg overflow-hidden border border-mono-900 dark:border-mono-200 shrink-0"
+                        >
+                          <img src={photo} alt="waste" className="w-full h-full object-cover" />
+                        </button>
+                      ) : (
+                        <span className="inline-flex items-center justify-center w-11 h-11 text-[#D1D5DB] dark:text-mono-350 shrink-0">
+                          <Image className="w-4 h-4" />
+                        </span>
+                      )}
+                      <button
+                        onClick={() => handleDeleteEntry(e.id)}
+                        className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg text-[#9CA3AF] dark:text-mono-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors shrink-0"
+                        title={t('wasteTracker.delete')}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${REASON_BADGE[e.reason]}`}>
+                        {REASON_LABELS[e.reason]}
+                      </span>
+                      {e.rootCause && (
+                        <span
+                          className="inline-block px-2 py-0.5 rounded-full text-xs font-medium"
+                          style={{ backgroundColor: `${ROOT_CAUSE_COLORS[e.rootCause]}20`, color: ROOT_CAUSE_COLORS[e.rootCause] }}
+                        >
+                          {ROOT_CAUSE_LABELS[e.rootCause]}
+                        </span>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                      <div>
+                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{t('wasteTracker.quantity')}</span>
+                        <div className="text-[#374151] dark:text-mono-800">{e.quantity.toFixed(2)} {e.unit}</div>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{t('wasteTracker.cost')}</span>
+                        <div className="font-semibold text-red-600 dark:text-red-400">{formatEuro(e.quantity * e.costPerUnit)}</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 

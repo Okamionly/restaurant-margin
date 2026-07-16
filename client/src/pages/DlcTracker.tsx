@@ -153,7 +153,7 @@ export default function DlcTracker() {
           </div>
           <button
             onClick={() => { setShowForm(v => !v); setError(''); }}
-            className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-sm font-semibold transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-sm font-semibold transition-colors"
           >
             {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             {showForm ? 'Annuler' : 'Ajouter un produit'}
@@ -161,7 +161,7 @@ export default function DlcTracker() {
         </div>
 
         {/* KPI cards */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
           {(['expired', 'soon', 'ok'] as const).map(s => {
             const cfg = STATUS_CONFIG[s];
             const Icon = cfg.icon;
@@ -169,7 +169,7 @@ export default function DlcTracker() {
               <button
                 key={s}
                 onClick={() => setFilter(filter === s ? 'all' : s)}
-                className={`rounded-2xl border p-4 text-left transition-all ${cfg.bg} ${cfg.border} ${filter === s ? 'ring-2 ring-teal-500' : 'hover:opacity-90'}`}
+                className={`rounded-2xl border p-3 sm:p-4 text-left transition-all ${cfg.bg} ${cfg.border} ${filter === s ? 'ring-2 ring-teal-500' : 'hover:opacity-90'}`}
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-semibold text-[#737373] dark:text-[#A3A3A3] uppercase tracking-wider">{cfg.label}</span>
@@ -265,7 +265,7 @@ export default function DlcTracker() {
               <button
                 key={s}
                 onClick={() => setFilter(s)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors border ${
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors border ${
                   filter === s
                     ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] border-transparent'
                     : 'bg-white dark:bg-[#0A0A0A] text-[#737373] dark:text-[#A3A3A3] border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-teal-500'
@@ -300,9 +300,9 @@ export default function DlcTracker() {
                 p.daysLeft === 1 ? 'Expire demain' :
                 `${p.daysLeft} jours restants`;
               return (
-                <div key={p.id} className={`flex items-center gap-4 rounded-2xl border p-4 transition-all ${cfg.bg} ${cfg.border}`}>
+                <div key={p.id} className={`flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 rounded-2xl border p-4 transition-all ${cfg.bg} ${cfg.border}`}>
                   <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${cfg.dot}`} />
-                  <div className="flex-1 min-w-0">
+                  <div className="w-full sm:flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-semibold text-[#111111] dark:text-white text-sm truncate">{p.name}</span>
                       <span className="text-xs text-[#737373] dark:text-[#A3A3A3]">{p.category}</span>
@@ -315,7 +315,7 @@ export default function DlcTracker() {
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 flex-shrink-0">
+                  <div className="flex items-center gap-3 flex-shrink-0 w-full sm:w-auto justify-end">
                     <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${cfg.badge}`}>
                       <Icon className="w-3 h-3" />
                       {daysLabel}

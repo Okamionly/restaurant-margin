@@ -907,7 +907,7 @@ function OrderCard({
             {order.dishes.filter(d => d.status === 'pret' || d.status === 'servi').length}/{order.dishes.length}
           </span>
           {/* Secondary actions: hidden by default, visible on card hover */}
-          <div className="hidden group-hover:flex items-center gap-1.5">
+          <div className="flex sm:hidden sm:group-hover:flex items-center gap-1.5">
             {!allServed && !isBumped && onEditOrder && (
               <button onClick={() => onEditOrder(order)} title="Modifier"
                 className="p-2 rounded-lg bg-mono-200 hover:bg-[#14b8a6]/10 text-[#71717a] hover:text-[#14b8a6] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
@@ -1103,12 +1103,12 @@ function ColumnHeader({ title, count, color, icon }: { title: string; count: num
 // ══════════════════════════════════════════════════════════════════════════
 function RushHourBanner() {
   return (
-    <div className="px-4 py-3 flex items-center justify-center gap-3 shrink-0"
+    <div className="px-4 py-3 flex flex-wrap items-center justify-center gap-3 shrink-0 text-center"
       style={{ animation: 'kds-rush-pulse 2s ease-in-out infinite' }}>
       <Zap className="w-7 h-7 text-white animate-bounce" />
       <span className="text-white text-2xl font-black uppercase tracking-[0.2em]">RUSH HOUR</span>
       <Zap className="w-7 h-7 text-white animate-bounce" />
-      <span className="text-white/80 text-lg font-bold ml-2">Prioritisez les commandes urgentes!</span>
+      <span className="text-white/80 text-lg font-bold hidden sm:inline ml-2">Prioritisez les commandes urgentes!</span>
     </div>
   );
 }
@@ -1264,9 +1264,9 @@ function PerformanceStatsModal({ stats, orders, onClose }: { stats: DailyStats; 
             <div className="space-y-2">
               {categoryTimes.map(ct => (
                 <div key={ct.category} className="flex items-center gap-3 bg-mono-200 rounded-xl px-4 py-3">
-                  <span className="text-lg text-white font-semibold flex-1 capitalize">{ct.category}</span>
+                  <span className="text-lg text-white font-semibold flex-1 min-w-0 truncate capitalize">{ct.category}</span>
                   <span className="text-sm text-[#71717a]">{ct.count} plats</span>
-                  <div className="w-32 h-3 bg-mono-300 rounded-full overflow-hidden">
+                  <div className="w-16 sm:w-32 h-3 bg-mono-300 rounded-full overflow-hidden">
                     <div className="h-full rounded-full bg-[#fbbf24] kds-transition"
                       style={{ width: `${Math.min(100, (ct.avgSeconds / (categoryTimes[0]?.avgSeconds || 1)) * 100)}%` }} />
                   </div>
@@ -1571,9 +1571,9 @@ function TablePanel({
         {status !== 'libre' && (
           <button
             onClick={e => { e.stopPropagation(); onFreeTable(table.number); }}
-            className="absolute top-1 right-1 p-1 rounded-md bg-[#ef4444]/20 hover:bg-[#ef4444]/40 text-[#ef4444] kds-transition"
+            className="absolute top-1 right-1 p-2 rounded-md bg-[#ef4444]/20 hover:bg-[#ef4444]/40 text-[#ef4444] kds-transition"
             title="Liberer la table">
-            <XCircle className="w-3.5 h-3.5" />
+            <XCircle className="w-5 h-5" />
           </button>
         )}
       </button>
@@ -1584,7 +1584,7 @@ function TablePanel({
 
   return (
     <div className="bg-mono-50 border-b-2 border-mono-300 px-4 py-3">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2">
           <LayoutGrid className="w-5 h-5 text-[#14b8a6]" />
           <span className="text-lg font-bold text-white">Tables</span>
@@ -1593,16 +1593,16 @@ function TablePanel({
         <div className="flex items-center gap-2">
           {activeTableFilter && (
             <button onClick={() => onFilterTable(null)}
-              className="px-3 py-1.5 rounded-lg bg-[#14b8a6]/20 text-[#14b8a6] text-sm font-bold kds-transition hover:bg-[#14b8a6]/30">
+              className="px-3 py-2.5 rounded-lg bg-[#14b8a6]/20 text-[#14b8a6] text-sm font-bold kds-transition hover:bg-[#14b8a6]/30">
               <X className="w-4 h-4 inline mr-1" />Filtre T{activeTableFilter}
             </button>
           )}
           <button onClick={onAddTable}
-            className="px-3 py-1.5 rounded-lg bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] text-sm font-bold kds-transition">
+            className="px-3 py-2.5 rounded-lg bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] text-sm font-bold kds-transition">
             <Plus className="w-4 h-4 inline mr-1" />Table
           </button>
           <button onClick={onRemoveTable} disabled={tableConfig.tableCount <= 1}
-            className="px-3 py-1.5 rounded-lg bg-mono-200 hover:bg-[#ef4444]/10 text-[#a1a1aa] hover:text-[#ef4444] text-sm font-bold kds-transition disabled:opacity-30 disabled:cursor-not-allowed">
+            className="px-3 py-2.5 rounded-lg bg-mono-200 hover:bg-[#ef4444]/10 text-[#a1a1aa] hover:text-[#ef4444] text-sm font-bold kds-transition disabled:opacity-30 disabled:cursor-not-allowed">
             <Trash2 className="w-4 h-4 inline mr-1" />Table
           </button>
         </div>
@@ -1756,12 +1756,12 @@ function SplitOrderModal({ order, onSplit, onClose }: {
             <button key={dish.id} onClick={() => toggleDish(dish.id)}
               className={`w-full flex items-center justify-between p-3 rounded-xl kds-transition border-2
                 ${selectedDishIds.has(dish.id) ? 'border-[#14b8a6] bg-[#14b8a6]/10' : 'border-mono-300 bg-mono-200 hover:bg-mono-300'}`}>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center kds-transition
                   ${selectedDishIds.has(dish.id) ? 'border-[#14b8a6] bg-[#14b8a6]' : 'border-mono-350'}`}>
                   {selectedDishIds.has(dish.id) && <CheckCircle2 className="w-4 h-4 text-white" />}
                 </div>
-                <span className="text-lg text-white font-semibold">
+                <span className="text-lg text-white font-semibold truncate">
                   {dish.quantity > 1 && <span className="text-[#fbbf24] mr-1">x{dish.quantity}</span>}
                   {dish.recipeName}
                 </span>
@@ -2598,7 +2598,7 @@ export default function KitchenMode() {
 
       {/* ── TOP BAR ── */}
       <div className="bg-mono-50 border-b-2 border-mono-300 px-4 py-2 shrink-0">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {!isFullscreen && (
             <button onClick={() => navigate('/dashboard')}
               className="min-w-[56px] min-h-[56px] rounded-xl bg-mono-200 hover:bg-mono-300 text-[#a1a1aa] hover:text-white flex items-center justify-center kds-transition shrink-0">
@@ -2620,7 +2620,7 @@ export default function KitchenMode() {
           </div>
 
           <div className="flex items-center gap-2 ml-auto shrink-0">
-            <div className="text-4xl font-mono font-black text-[#14b8a6]">
+            <div className="text-xl sm:text-2xl lg:text-4xl font-mono font-black text-[#14b8a6]">
               {new Date(now).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
             </div>
           </div>
@@ -2740,7 +2740,7 @@ export default function KitchenMode() {
       )}
 
       {/* ── 3-COLUMN KDS BOARD ── */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-y-auto lg:overflow-hidden">
         {!hasAnyOrders ? (
           <div className="flex flex-col items-center justify-center h-full gap-8 py-20">
             <ChefHat className="w-24 h-24 text-mono-300 animate-pulse" />
@@ -2773,7 +2773,7 @@ export default function KitchenMode() {
           </div>
         ) : (
           /* FULL / CHAUD / FROID: 3 columns */
-          <div className="grid grid-cols-1 lg:grid-cols-3 h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-3 lg:h-full">
             <div className="border-r-0 lg:border-r-2 border-mono-200 flex flex-col overflow-hidden bg-red-950/30">
               {renderColumn(
                 'Nouvelles', filterByStation(newOrders).length, '#ef4444',

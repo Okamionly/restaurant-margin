@@ -927,37 +927,37 @@ export default function Dashboard() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigate('/recipes?action=new')}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-medium rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors active:scale-95"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-medium rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors active:scale-95"
           >
             <Plus className="w-4 h-4" /> {t("dashboard.newRecipe")}
           </button>
           <button
             onClick={() => navigate('/ingredients?action=new')}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors"
           >
             <Package className="w-4 h-4" /> {t("dashboard.addIngredient")}
           </button>
-          <Link to="/recipes" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
+          <Link to="/recipes" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
             <ClipboardList className="w-4 h-4" /> {t("dashboard.viewRecipes")}
           </Link>
-          <Link to="/inventory" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
+          <Link to="/inventory" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
             <FileText className="w-4 h-4" /> {t("dashboard.viewInventory")}
           </Link>
           <button
             onClick={fetchWeeklyReport}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-medium rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors no-print"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-medium rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors no-print"
           >
             <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Rapport</span> IA
           </button>
           <button
             onClick={() => window.print()}
-            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors no-print"
+            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors no-print"
           >
             <Printer className="w-4 h-4" /> {t("dashboard.print")}
           </button>
           <button
             onClick={() => setWidgetPickerOpen(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors no-print"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors no-print"
           >
             <Settings2 className="w-4 h-4" /> <span className="hidden sm:inline">Personnaliser</span>
           </button>
@@ -1056,7 +1056,7 @@ export default function Dashboard() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-all whitespace-nowrap
+            className={`px-4 py-2.5 min-h-[44px] text-sm font-medium rounded-lg transition-all whitespace-nowrap
               ${activeTab === tab.key
                 ? 'bg-white dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
                 : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#6B7280] dark:hover:text-mono-700'
@@ -1101,7 +1101,7 @@ export default function Dashboard() {
                     <h3 className="text-base font-bold text-mono-100 dark:text-white font-satoshi mb-4">
                       Top 5 — Marges a ameliorer
                     </h3>
-                    <div className="overflow-x-auto">
+                    <div className="hidden md:block overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-mono-900 dark:border-mono-200">
@@ -1137,6 +1137,34 @@ export default function Dashboard() {
                           ))}
                         </tbody>
                       </table>
+                    </div>
+                    {/* Mobile (< md) : cartes empilees — memes donnees que la table */}
+                    <div className="md:hidden space-y-2">
+                      {stats.sortedByMarginAsc.slice(0, 5).map((recipe, i) => (
+                        <Link
+                          key={recipe.id}
+                          to={`/recipes/${recipe.id}`}
+                          className="block bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-3"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-[#9CA3AF] dark:text-mono-400 w-5 shrink-0">{i + 1}</span>
+                            <span className="flex-1 min-w-0 truncate font-medium text-mono-100 dark:text-[#E5E5E5]">{recipe.name}</span>
+                            <span className={`shrink-0 inline-block px-2 py-0.5 rounded-md text-xs font-bold tabular-nums ${marginColor(recipe.margin.marginPercent)} ${marginBg(recipe.margin.marginPercent)}`}>
+                              {recipe.margin.marginPercent.toFixed(1)}%
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                            <div>
+                              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Cout</p>
+                              <p className="text-[#6B7280] dark:text-mono-500 tabular-nums">{formatCurrency(recipe.margin.totalCostPerPortion || recipe.margin.costPerPortion)}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Prix vente</p>
+                              <p className="font-medium text-mono-100 dark:text-mono-700 tabular-nums">{formatCurrency(recipe.sellingPrice)}</p>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
                     </div>
                     <Link to="/recipes" className="inline-flex items-center gap-1 text-xs text-teal-600 dark:text-teal-400 hover:underline font-medium mt-4">
                       Voir toutes les recettes <ArrowRight className="w-3 h-3" />
@@ -1270,7 +1298,7 @@ export default function Dashboard() {
             <h3 className="text-base font-bold text-mono-100 dark:text-white font-satoshi mb-4">
               Cout par recette
             </h3>
-            <div className="overflow-x-auto">
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-mono-900 dark:border-mono-200">
@@ -1303,6 +1331,35 @@ export default function Dashboard() {
                   })}
                 </tbody>
               </table>
+            </div>
+            {/* Mobile (< md) : cartes empilees — memes donnees que la table */}
+            <div className="md:hidden space-y-2">
+              {stats.sortedByCostDesc.map(recipe => {
+                const totalCost = recipe.margin.totalCostPerPortion || recipe.margin.costPerPortion;
+                const pctOfPrice = recipe.sellingPrice > 0 ? (totalCost / recipe.sellingPrice) * 100 : 0;
+                return (
+                  <Link
+                    key={recipe.id}
+                    to={`/recipes/${recipe.id}`}
+                    className="block bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-3"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="flex-1 min-w-0 truncate font-medium text-mono-100 dark:text-[#E5E5E5]">{recipe.name}</span>
+                      <span className={`shrink-0 text-xs font-bold tabular-nums ${foodCostColor(pctOfPrice)}`}>{pctOfPrice.toFixed(1)}%</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                      <div>
+                        <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Food Cost</p>
+                        <p className="text-[#6B7280] dark:text-mono-500 tabular-nums">{formatCurrency(recipe.margin.costPerPortion)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Cout Total</p>
+                        <p className="font-medium text-mono-100 dark:text-white tabular-nums">{formatCurrency(totalCost)}</p>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
@@ -1600,8 +1657,8 @@ export default function Dashboard() {
 
             {/* Footer */}
             {reportData && !reportLoading && (
-              <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50">
-                <p className="text-xs text-[#9CA3AF]">Rapport en cache 24h</p>
+              <div className="flex flex-wrap items-center justify-between gap-2 px-6 py-4 border-t border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50">
+                <p className="hidden sm:block text-xs text-[#9CA3AF]">Rapport en cache 24h</p>
                 <div className="flex items-center gap-2">
                   <button onClick={copyReport} className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] border border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-mono-300 transition-colors">
                     {reportCopied ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Copie !</> : <><Copy className="w-3.5 h-3.5" /> Copier</>}

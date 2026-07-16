@@ -1283,7 +1283,7 @@ export default function Suppliers() {
         <div className="flex gap-1 bg-mono-950 dark:bg-mono-50 rounded-lg p-1 w-full sm:w-fit overflow-x-auto">
           <button
             onClick={() => setActiveTab('mes-fournisseurs')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`min-h-[44px] inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'mes-fournisseurs'
                 ? 'bg-white dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
                 : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] dark:hover:text-mono-700'
@@ -1294,7 +1294,7 @@ export default function Suppliers() {
           </button>
           <button
             onClick={() => setActiveTab('annuaire')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`min-h-[44px] inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'annuaire'
                 ? 'bg-white dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
                 : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] dark:hover:text-mono-700'
@@ -1305,7 +1305,7 @@ export default function Suppliers() {
           </button>
           <button
             onClick={() => setActiveTab('comparateur')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`min-h-[44px] inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'comparateur'
                 ? 'bg-white dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
                 : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] dark:hover:text-mono-700'
@@ -1965,7 +1965,7 @@ export default function Suppliers() {
                 return (
                   <div className="p-6 space-y-5">
                     {/* Header with name + actions */}
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
                       <div>
                         <h3 className="text-xl font-bold text-mono-100 dark:text-white">{detailSupplier.name}</h3>
                         <div className="flex items-center gap-2 mt-1">
@@ -1977,7 +1977,7 @@ export default function Suppliers() {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
+                      <div className="flex flex-wrap items-center gap-1.5">
                         <button
                           onClick={() => navigate(`/fournisseur/${detailSupplier.id}`)}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-xs font-medium"
@@ -2035,7 +2035,7 @@ export default function Suppliers() {
                     </div>
 
                     {/* Health Score + Last Order Summary */}
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {/* Health Score Card */}
                       <div className="bg-mono-950 dark:bg-[#0F0F0F] rounded-xl border border-mono-900 dark:border-mono-200/50 p-4">
                         <div className="flex items-center gap-2 mb-2">
@@ -2163,10 +2163,10 @@ export default function Suppliers() {
                     </div>
 
                     {/* Contact info */}
-                    <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                       {detailSupplier.contactName && <div className="text-[#6B7280] dark:text-mono-700"><Building2 className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-mono-500" />{detailSupplier.contactName}</div>}
                       {detailSupplier.phone && <div className="text-[#6B7280] dark:text-mono-700"><Phone className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-mono-500" />{detailSupplier.phone}</div>}
-                      {detailSupplier.email && <div className="text-[#6B7280] dark:text-mono-700"><Mail className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-mono-500" />{detailSupplier.email}</div>}
+                      {detailSupplier.email && <div className="text-[#6B7280] dark:text-mono-700 min-w-0 break-all"><Mail className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-mono-500" />{detailSupplier.email}</div>}
                       {detailSupplier.city && <div className="text-[#6B7280] dark:text-mono-700"><MapPin className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-mono-500" />{[detailSupplier.city, detailSupplier.postalCode].filter(Boolean).join(' ')}</div>}
                       {detailSupplier.website && (
                         <div>
@@ -2723,7 +2723,7 @@ export default function Suppliers() {
               )}
             </div>
             {/* Filters */}
-            <div className="flex gap-2 mb-3">
+            <div className="flex flex-col sm:flex-row gap-2 mb-3">
               <div className="relative flex-1">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500" />
                 <input
@@ -2734,7 +2734,7 @@ export default function Suppliers() {
               </div>
               <select
                 value={catalogCat} onChange={e => { setCatalogCat(e.target.value); setCatalogPage(0); }}
-                className="input w-48"
+                className="input w-full sm:w-48"
               >
                 <option value="">{t('suppliers.allCategories')}</option>
                 {[...new Set(catalogData.map(p => p.category))].sort().map(c => (
@@ -2754,8 +2754,9 @@ export default function Suppliers() {
               const existingNames = new Set(ingredients.map(i => i.name.toLowerCase()));
               return (
                 <>
-                  <div className="bg-white dark:bg-mono-50 rounded-lg shadow overflow-hidden">
-                    <table className="w-full text-sm">
+                  {/* Desktop / tablette (>= md) : tableau dense */}
+                  <div className="hidden md:block bg-white dark:bg-mono-50 rounded-lg shadow overflow-x-auto">
+                    <table className="w-full text-sm min-w-[640px]">
                       <thead>
                         <tr className="bg-mono-1000 dark:bg-mono-200 text-left text-xs text-[#9CA3AF] dark:text-mono-500">
                           <th className="px-3 py-2 w-8">
@@ -2820,6 +2821,58 @@ export default function Suppliers() {
                         })}
                       </tbody>
                     </table>
+                  </div>
+                  {/* Mobile (< md) : une carte par produit */}
+                  <div className="md:hidden space-y-2">
+                    {page.map((p, i) => {
+                      const globalIdx = catalogPage * pageSize + i;
+                      const exists = existingNames.has(p.name.toLowerCase());
+                      return (
+                        <div key={globalIdx} className={`bg-white dark:bg-mono-50 rounded-2xl border border-mono-900/10 dark:border-mono-200 p-3 ${exists ? 'opacity-50' : ''}`}>
+                          <div className="flex items-center gap-2">
+                            <input type="checkbox" disabled={exists}
+                              checked={catalogSelected.has(globalIdx)}
+                              onChange={() => setCatalogSelected(prev => {
+                                const next = new Set(prev);
+                                next.has(globalIdx) ? next.delete(globalIdx) : next.add(globalIdx);
+                                return next;
+                              })}
+                              className="w-5 h-5 shrink-0 accent-neutral-900 dark:accent-white"
+                            />
+                            <span className="flex-1 min-w-0 truncate font-medium text-[#9CA3AF] dark:text-mono-700">{p.name}</span>
+                            <span className="shrink-0 text-xs px-2 py-0.5 rounded bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500">{p.category}</span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                            <div>
+                              <span className="block text-[10px] text-[#9CA3AF] dark:text-mono-500">{t('suppliers.estimatedPrice')}</span>
+                              <span className="font-medium text-mono-100 dark:text-white">{formatCurrency(p.prixMoy)}</span>
+                            </div>
+                            <div>
+                              <span className="block text-[10px] text-[#9CA3AF] dark:text-mono-500">{t('suppliers.unit')}</span>
+                              <span className="text-[#9CA3AF] dark:text-mono-500">{p.unit}</span>
+                            </div>
+                          </div>
+                          <div className="flex gap-1 justify-end mt-2">
+                            {exists ? (
+                              <span className="inline-flex items-center min-h-[44px] text-xs text-green-500">✓ {t('suppliers.added')}</span>
+                            ) : (
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    await createIngredient({ name: p.name, unit: p.unit, pricePerUnit: p.prixMoy, category: p.category, allergens: [] } as any);
+                                    await loadData();
+                                    showToast(`${p.name} ${t('suppliers.added')}`, 'success');
+                                  } catch { showToast(t('suppliers.error'), 'error'); }
+                                }}
+                                className="inline-flex items-center justify-center min-h-[44px] text-xs px-4 rounded bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black"
+                              >
+                                + {t('suppliers.add')}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                   {/* Pagination */}
                   {totalPages > 1 && (
@@ -2908,7 +2961,7 @@ export default function Suppliers() {
                 <table className="w-full text-sm min-w-[600px]">
                   <thead>
                     <tr className="bg-mono-1000 dark:bg-mono-200 text-left text-xs text-[#9CA3AF] dark:text-mono-500">
-                      <th className="px-4 py-3 font-medium">Ingredient</th>
+                      <th className="sticky left-0 z-10 bg-mono-1000 dark:bg-mono-200 px-4 py-3 font-medium">Ingredient</th>
                       {suppliers.filter(s => (s.ingredients || []).length > 0).map(s => (
                         <th key={s.id} className="px-4 py-3 font-medium text-center whitespace-nowrap">
                           <div className="flex flex-col items-center gap-0.5">
@@ -2931,7 +2984,7 @@ export default function Suppliers() {
                       item.entries.forEach(e => { entryMap[e.supplierId] = e; });
                       return (
                         <tr key={item.key} className="hover:bg-mono-1000 dark:hover:bg-[#171717]/30">
-                          <td className="px-4 py-3">
+                          <td className="sticky left-0 z-10 bg-white dark:bg-mono-50 px-4 py-3">
                             <div className="font-medium text-[#9CA3AF] dark:text-[#E5E5E5]">{item.displayName}</div>
                             <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{item.entries.length} fournisseurs</div>
                           </td>
@@ -2972,7 +3025,7 @@ export default function Suppliers() {
                   </tbody>
                   <tfoot>
                     <tr className="bg-mono-1000 dark:bg-mono-200 font-semibold">
-                      <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#E5E5E5]">Total</td>
+                      <td className="sticky left-0 z-10 bg-mono-1000 dark:bg-mono-200 px-4 py-3 text-[#9CA3AF] dark:text-[#E5E5E5]">Total</td>
                       {suppliers.filter(s => (s.ingredients || []).length > 0).map(s => (
                         <td key={s.id} className="px-4 py-3" />
                       ))}
@@ -3311,10 +3364,10 @@ export default function Suppliers() {
 
           return (
             <div className="overflow-x-auto max-h-[70vh]">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm min-w-[560px]">
                 <thead className="sticky top-0 bg-mono-1000 dark:bg-mono-50 z-10">
                   <tr>
-                    <th className="text-left px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">Fournisseur</th>
+                    <th className="sticky left-0 z-20 bg-mono-1000 dark:bg-mono-50 text-left px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">Fournisseur</th>
                     <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-mono-500 font-medium">
                       <div className="flex items-center justify-center gap-1"><Star className="w-3 h-3" /> Global</div>
                     </th>
@@ -3338,7 +3391,7 @@ export default function Suppliers() {
                     const isTop = g > 80;
                     return (
                       <tr key={supplier.id} className={`hover:bg-mono-950 dark:hover:bg-[#171717]/30 ${idx === 0 ? 'bg-mono-1000 dark:bg-mono-50' : ''}`}>
-                        <td className="px-3 py-3">
+                        <td className={`sticky left-0 z-10 px-3 py-3 ${idx === 0 ? 'bg-mono-1000 dark:bg-mono-50' : 'bg-white dark:bg-mono-50'}`}>
                           <div className="flex items-center gap-2">
                             <CircularScore score={g} size={32} strokeWidth={3} />
                             <div>

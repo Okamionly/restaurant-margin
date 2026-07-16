@@ -418,13 +418,13 @@ export default function RecipeDetail() {
                 <>
                   <button
                     onClick={() => setPhotoIndex((photoIndex - 1 + recipe.photos!.length) % recipe.photos!.length)}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => setPhotoIndex((photoIndex + 1) % recipe.photos!.length)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
@@ -433,7 +433,7 @@ export default function RecipeDetail() {
               {/* Delete photo */}
               <button
                 onClick={() => handleDeletePhoto(photoIndex)}
-                className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                className="absolute top-2 right-2 w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
                 title="Supprimer cette photo"
               >
                 <Trash2 className="w-4 h-4" />
@@ -444,7 +444,7 @@ export default function RecipeDetail() {
               </div>
             </div>
             {/* Thumbnails + Add button */}
-            <div className="flex items-center gap-2 p-3 border-t border-mono-900 dark:border-mono-200">
+            <div className="flex items-center gap-2 p-3 border-t border-mono-900 dark:border-mono-200 overflow-x-auto">
               {recipe.photos!.map((photo, idx) => (
                 <button
                   key={idx}
@@ -741,7 +741,8 @@ export default function RecipeDetail() {
           <div className="fiche-left flex-[3] md:border-r border-b md:border-b-0 border-mono-900 dark:border-mono-200 p-3 sm:p-4">
             <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2">Composition</h2>
 
-            <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
+            {/* Desktop / print : tableau dense */}
+            <div className="hidden md:block print:block overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
             <table className="w-full text-[11px] border-collapse min-w-[480px]">
               <thead>
                 <tr className="border-b-2 border-[#D1D5DB] dark:border-mono-200 text-[#9CA3AF] dark:text-mono-500">
@@ -788,6 +789,54 @@ export default function RecipeDetail() {
                 </tr>
               </tfoot>
             </table>
+            </div>
+
+            {/* Mobile (< md) : une carte par ingredient (masque a l'impression) */}
+            <div className="md:hidden print:hidden space-y-2">
+              {recipe.ingredients.map((ri) => {
+                const waste = ri.wastePercent || 0;
+                const baseQty = ri.quantity * portionMultiplier;
+                const effectiveQty = baseQty * (1 + waste / 100);
+                const lineTotal = (effectiveQty / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit;
+                const emoji = getCategoryEmoji(ri.ingredient.category);
+                return (
+                  <div key={ri.id} className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900/10 dark:border-mono-200 p-3">
+                    <div className="flex items-center gap-2">
+                      <span className="shrink-0" title={ri.ingredient.category}>{emoji}</span>
+                      <span className="min-w-0 flex-1 truncate font-medium text-mono-100 dark:text-[#E5E5E5]">
+                        {ri.ingredient.name}
+                        {(ri.ingredient.allergens || []).length > 0 && (
+                          <span className="ml-1 text-amber-500 text-[9px] font-bold align-super" title={ri.ingredient.allergens.join(', ')}>*</span>
+                        )}
+                      </span>
+                      <span className="shrink-0 font-mono font-bold text-mono-100 dark:text-[#E5E5E5] text-sm">{lineTotal.toFixed(2)} {getCurrencySymbol()}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 mt-2 text-[11px]">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#9CA3AF] dark:text-mono-500">Qté</span>
+                        <span className="font-mono text-mono-100 dark:text-[#E5E5E5]">{portionMultiplier !== 1 ? baseQty.toFixed(2) : ri.quantity} {ri.ingredient.unit}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#9CA3AF] dark:text-mono-500">Perte</span>
+                        <span className="font-mono text-mono-100 dark:text-[#E5E5E5]">{waste > 0 ? `${waste}%` : '—'}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#9CA3AF] dark:text-mono-500">P.U.</span>
+                        <span className="font-mono text-mono-100 dark:text-[#E5E5E5]">{ri.ingredient.pricePerUnit.toFixed(2)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#9CA3AF] dark:text-mono-500">Total</span>
+                        <span className="font-mono font-bold text-mono-100 dark:text-[#E5E5E5]">{lineTotal.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              {/* Pied de totaux mobile */}
+              <div className="flex items-center justify-between px-3 py-2.5 rounded-2xl bg-mono-1000 dark:bg-mono-50/50 border border-mono-900/10 dark:border-mono-200 font-bold text-mono-100 dark:text-white">
+                <span className="text-xs uppercase tracking-wide">Coût matière total</span>
+                <span className="font-mono text-sm">{(m.foodCost * portionMultiplier).toFixed(2)} {getCurrencySymbol()}</span>
+              </div>
             </div>
           </div>
 
@@ -1260,7 +1309,7 @@ export default function RecipeDetail() {
                 <span>Actuel : {formatCurrency(recipe.sellingPrice)}</span>
               </div>
               {simData && (
-                <div className="grid grid-cols-3 gap-3 mt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
                   <SimCard label="Marge" value={formatCurrency(simData.margin)} highlight={simData.margin >= m.marginAmount} />
                   <SimCard label="Marge %" value={`${simData.marginPct.toFixed(1)}%`} highlight={simData.marginPct >= 70} warn={simData.marginPct < 60} />
                   <SimCard label="Coefficient" value={simData.coeff.toFixed(2)} highlight={simData.coeff >= m.coefficient} />

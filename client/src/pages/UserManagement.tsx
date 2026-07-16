@@ -364,7 +364,7 @@ export default function UserManagement() {
                 {!isMe && (
                   <button
                     onClick={() => toggleSelect(u.id)}
-                    className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-4 right-4 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                   >
                     {isSelected ? (
                       <CheckSquare className="w-5 h-5 text-mono-100 dark:text-white" />
@@ -417,7 +417,7 @@ export default function UserManagement() {
                   <div className="mt-4 pt-4 border-t border-mono-900 dark:border-mono-300 flex items-center gap-2">
                     <button
                       onClick={() => setDeleteTarget(u.id)}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 min-h-[44px] rounded-xl text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       Supprimer
@@ -430,7 +430,9 @@ export default function UserManagement() {
         </div>
       ) : (
         /* List View */
-        <div className="bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl overflow-hidden">
+        <>
+        {/* Desktop / tablette (>= md) : liste en grille */}
+        <div className="hidden md:block bg-white dark:bg-black border border-mono-900 dark:border-mono-300 rounded-2xl overflow-hidden">
           {/* List Header */}
           <div className="hidden sm:grid grid-cols-[auto_1fr_1fr_120px_100px_80px] gap-4 items-center px-5 py-3 bg-[#F9FAFB] dark:bg-mono-50 border-b border-mono-900 dark:border-mono-300">
             <button onClick={toggleSelectAll} className="w-5 h-5">
@@ -509,7 +511,7 @@ export default function UserManagement() {
                     {!isMe && (
                       <button
                         onClick={() => setDeleteTarget(u.id)}
-                        className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                         title="Supprimer"
                       >
                         <Trash2 className="w-4 h-4 text-red-500" />
@@ -521,6 +523,98 @@ export default function UserManagement() {
             })}
           </div>
         </div>
+
+        {/* Mobile (< md) : cartes empilees */}
+        <div className="md:hidden space-y-2">
+          {filteredUsers.map(u => {
+            const isMe = u.id === user?.id;
+            const isSelected = selectedUsers.has(u.id);
+            return (
+              <div
+                key={`card-${u.id}`}
+                className={`bg-white dark:bg-black border rounded-2xl p-3 transition-colors ${
+                  isSelected
+                    ? 'border-mono-100 dark:border-white ring-1 ring-mono-100 dark:ring-white'
+                    : 'border-mono-900 dark:border-mono-300'
+                }`}
+              >
+                {/* Avatar + nom + checkbox */}
+                <div className="flex items-center gap-3">
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0 ${getAvatarColor(u.name)}`}>
+                    {getInitials(u.name)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-mono-100 dark:text-white truncate flex items-center gap-2">
+                      {u.name}
+                      {isMe && (
+                        <span className="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 flex-shrink-0">
+                          Vous
+                        </span>
+                      )}
+                    </h3>
+                  </div>
+                  {!isMe && (
+                    <button
+                      onClick={() => toggleSelect(u.id)}
+                      className="min-h-[44px] min-w-[44px] flex items-center justify-center flex-shrink-0"
+                      aria-label="Selectionner"
+                    >
+                      {isSelected ? (
+                        <CheckSquare className="w-5 h-5 text-mono-100 dark:text-white" />
+                      ) : (
+                        <Square className="w-5 h-5 text-[#9CA3AF] dark:text-mono-500" />
+                      )}
+                    </button>
+                  )}
+                </div>
+
+                {/* Email / Role / Inscription labellises */}
+                <div className="grid grid-cols-1 gap-2 mt-3 text-sm">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider w-16 flex-shrink-0">Email</span>
+                    <span className="text-[#6B7280] dark:text-mono-700 truncate flex items-center gap-1.5 min-w-0">
+                      <Mail className="w-3 h-3 flex-shrink-0" />
+                      {u.email}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider w-16 flex-shrink-0">Role</span>
+                    {u.role === 'admin' ? (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
+                        <Shield className="w-3 h-3" /> Admin
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                        <ChefHat className="w-3 h-3" /> Chef
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider w-16 flex-shrink-0">Inscrit</span>
+                    <span className="text-xs text-[#6B7280] dark:text-mono-700 flex items-center gap-1.5">
+                      <Calendar className="w-3 h-3" />
+                      {timeAgo(u.createdAt)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Action supprimer */}
+                {!isMe && (
+                  <div className="mt-3 pt-3 border-t border-mono-900 dark:border-mono-300 flex justify-end">
+                    <button
+                      onClick={() => setDeleteTarget(u.id)}
+                      className="flex items-center justify-center gap-1.5 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Supprimer
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        </>
       )}
 
       {/* Empty State */}
@@ -579,9 +673,9 @@ export default function UserManagement() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-mono-900 dark:border-mono-300">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Permission</th>
-                <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-purple-600 dark:text-purple-400">Admin</th>
-                <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-blue-600 dark:text-blue-400">Chef</th>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-mono-500">Permission</th>
+                <th className="px-3 sm:px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-purple-600 dark:text-purple-400">Admin</th>
+                <th className="px-3 sm:px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-blue-600 dark:text-blue-400">Chef</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-mono-900 dark:divide-mono-300">
@@ -596,8 +690,8 @@ export default function UserManagement() {
                 { label: 'Facturation & abonnement', admin: true, chef: false },
               ].map((perm, i) => (
                 <tr key={i} className="hover:bg-[#F9FAFB] dark:hover:bg-mono-50 transition-colors">
-                  <td className="px-6 py-3 text-mono-100 dark:text-white">{perm.label}</td>
-                  <td className="px-6 py-3 text-center">
+                  <td className="px-3 sm:px-6 py-3 text-mono-100 dark:text-white">{perm.label}</td>
+                  <td className="px-3 sm:px-6 py-3 text-center">
                     {perm.admin ? (
                       <span className="inline-flex w-6 h-6 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
                         <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
@@ -608,7 +702,7 @@ export default function UserManagement() {
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-3 text-center">
+                  <td className="px-3 sm:px-6 py-3 text-center">
                     {perm.chef ? (
                       <span className="inline-flex w-6 h-6 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
                         <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>

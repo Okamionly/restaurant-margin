@@ -1263,7 +1263,7 @@ export default function Clients() {
           )}
         </div>
 
-        <div className="grid grid-cols-4 gap-2 mt-4 pt-4 border-t border-mono-950 dark:border-mono-200">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 pt-4 border-t border-mono-950 dark:border-mono-200">
           <div className="text-center">
             <div className="text-base font-bold text-mono-100 dark:text-white">{fmt(c.caTotal)}</div>
             <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Total</div>
@@ -1285,7 +1285,7 @@ export default function Clients() {
         </div>
 
         {/* Quick Actions */}
-        <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-2 mt-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
           <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-[#F9FAFB] dark:bg-mono-50/30 text-mono-100 dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-mono-50/50 transition-colors">
             <Send className="w-3.5 h-3.5" /> Email
@@ -1336,7 +1336,7 @@ export default function Clients() {
     });
     const gradient = segs.map(s => `${s.color} ${s.start}deg ${s.end}deg`).join(', ');
     return (
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
         <div className="w-32 h-32 rounded-full flex-shrink-0"
           style={{ background: `conic-gradient(${gradient})` }} />
         <div className="space-y-2">
@@ -1808,7 +1808,9 @@ export default function Clients() {
 
         {/* Table view */}
         {viewMode === 'table' && clients.length > 0 && (
-          <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-x-auto">
+          <>
+          {/* Desktop : table */}
+          <div className="hidden md:block bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-black/50">
@@ -1871,6 +1873,70 @@ export default function Clients() {
               </div>
             )}
           </div>
+
+          {/* Mobile : une carte par ligne */}
+          <div className="md:hidden space-y-3">
+            {filtered.map(c => (
+              <div key={c.id}
+                onClick={() => openSidebar(c)}
+                className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-3 cursor-pointer">
+                {/* Avatar + nom + email */}
+                <div className="flex items-center gap-2">
+                  {renderAvatar(c, 'w-10 h-10 text-xs')}
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium text-mono-100 dark:text-white flex items-center gap-2">
+                      <span className="truncate">{c.prenom} {c.nom}</span>
+                      {isBirthdayThisWeek(c.dateNaissance) && <Cake className="w-3.5 h-3.5 text-pink-500 flex-shrink-0" />}
+                    </div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-mono-500 truncate">{c.email}</div>
+                  </div>
+                </div>
+                {/* Badge fidelite + tags */}
+                <div className="flex items-center gap-1 flex-wrap mt-2">
+                  {renderLoyaltyBadge(c)}
+                  {renderTags(c.tags.slice(0, 2))}
+                  {c.tags.length > 2 && <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">+{c.tags.length - 2}</span>}
+                </div>
+                {/* CA + commandes + derniere visite */}
+                <div className="grid grid-cols-3 gap-2 mt-3 text-sm">
+                  <div>
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">CA Total</div>
+                    <div className="font-medium text-mono-100 dark:text-white">{fmt(c.caTotal)}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Commandes</div>
+                    <div className="font-medium text-[#6B7280] dark:text-mono-700">{c.nbCommandes}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Derniere visite</div>
+                    <div className="font-medium text-[#6B7280] dark:text-mono-700">{fmtDate(c.derniereVisite)}</div>
+                  </div>
+                </div>
+                {/* Actions */}
+                <div className="flex gap-1 justify-end mt-3">
+                  <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
+                    className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-mono-50/30 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors" title="Envoyer email">
+                    <Send className="w-4 h-4" />
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); openSidebar(c); }}
+                    className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] transition-colors" title="Ajouter note">
+                    <StickyNote className="w-4 h-4" />
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
+                    className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-[#374151] transition-colors" title="Modifier">
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+            {filtered.length === 0 && (
+              <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">
+                <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <p>Aucun client trouve</p>
+              </div>
+            )}
+          </div>
+          </>
         )}
       </div>
 
@@ -2184,9 +2250,9 @@ export default function Clients() {
         {selectedClient && (
           <div>
             {/* Header */}
-            <div className="flex items-start gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-4 mb-6">
               {renderAvatar(selectedClient, 'w-16 h-16 text-xl')}
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={`px-2 py-0.5 rounded text-xs font-medium ${(TYPE_COLORS[selectedClient.type] || TYPE_COLORS['Particulier']).bg} ${(TYPE_COLORS[selectedClient.type] || TYPE_COLORS['Particulier']).text}`}>{selectedClient.type}</span>
                   {renderLoyaltyBadge(selectedClient)}
@@ -2226,7 +2292,7 @@ export default function Clients() {
                   </button>
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right w-full sm:w-auto">
                 <div className="text-2xl font-bold text-mono-100 dark:text-white">{fmt(selectedClient.caTotal)}</div>
                 <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Lifetime Value</div>
                 <div className="text-lg font-semibold text-[#6B7280] dark:text-mono-700 mt-1">
@@ -2958,11 +3024,11 @@ export default function Clients() {
                 Recommanderiez-vous notre restaurant ?
               </p>
               {/* Score selector */}
-              <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="flex flex-wrap items-center justify-center gap-1.5 mb-2">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
                   <button key={n}
                     onClick={() => setNpsScore(n)}
-                    className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${
+                    className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${
                       npsScore === n
                         ? n >= 9 ? 'bg-green-500 text-white scale-110'
                           : n >= 7 ? 'bg-amber-500 text-white scale-110'
@@ -3088,7 +3154,7 @@ export default function Clients() {
             <h4 className="text-sm font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
               <ThumbsUp className="w-4 h-4 text-purple-500" /> Score NPS global
             </h4>
-            <div className="grid grid-cols-4 gap-3 mb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
               <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center border border-mono-900 dark:border-mono-200">
                 <div className={`text-3xl font-bold ${globalNPS.score >= 50 ? 'text-green-600 dark:text-green-400' : globalNPS.score >= 0 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                   {globalNPS.total > 0 ? globalNPS.score : '--'}

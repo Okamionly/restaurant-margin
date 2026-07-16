@@ -502,7 +502,7 @@ export default function Mercuriale() {
           </button>
           <button
             onClick={fetchMercuriale}
-            className="p-2 bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+            className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
             title="Actualiser"
           >
             <RefreshCw className="w-4 h-4" />
@@ -620,7 +620,7 @@ export default function Mercuriale() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium transition-all ${
               activeTab === tab.key
                 ? 'bg-white dark:bg-black text-black dark:text-white shadow-sm'
                 : 'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white'
@@ -649,7 +649,7 @@ export default function Mercuriale() {
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
+            className={`px-3 py-2 min-h-[44px] rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
               selectedCategory === 'all'
                 ? 'bg-black dark:bg-white text-white dark:text-black'
                 : 'bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800'
@@ -663,7 +663,7 @@ export default function Mercuriale() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1 ${
+                className={`px-3 py-2 min-h-[44px] rounded-xl text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1 ${
                   selectedCategory === cat
                     ? 'bg-black dark:bg-white text-white dark:text-black'
                     : 'bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800'
@@ -750,7 +750,7 @@ export default function Mercuriale() {
                     <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-2">({catPrices.length} produit{catPrices.length > 1 ? 's' : ''})</span>
                   </h2>
                 </div>
-                <div className="overflow-x-auto">
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-left border-b border-gray-200 dark:border-gray-800/50 bg-white/50 dark:bg-black/40">
@@ -792,6 +792,26 @@ export default function Mercuriale() {
                     </tbody>
                   </table>
                 </div>
+                {/* Mobile cards */}
+                <div className="md:hidden divide-y divide-gray-200 dark:divide-gray-800/50">
+                  {catPrices.map((p) => (
+                    <div key={p.id} className="p-4 flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-black dark:text-white truncate">{p.ingredient_name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                          {formatCurrency(Number(p.price_min))} - {formatCurrency(Number(p.price_max))}
+                          <span className="text-gray-400"> /{p.unit}</span>
+                        </p>
+                        {p.supplier && (
+                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">{p.supplier}</p>
+                        )}
+                      </div>
+                      <div className="shrink-0">
+                        <TrendBadge trend={p.trend} detail={p.trend_detail} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             );
           })}
@@ -809,23 +829,23 @@ export default function Mercuriale() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-left border-b border-gray-200 dark:border-gray-800/50 bg-white/50 dark:bg-black/40">
-                      <th className="px-5 py-2.5 font-semibold text-gray-500 dark:text-gray-400">Produit couteux</th>
-                      <th className="px-5 py-2.5 font-semibold text-gray-500 dark:text-gray-400 text-center">
+                      <th className="px-3 sm:px-5 py-2.5 font-semibold text-gray-500 dark:text-gray-400">Produit couteux</th>
+                      <th className="px-3 sm:px-5 py-2.5 font-semibold text-gray-500 dark:text-gray-400 text-center">
                         <ArrowRight className="w-4 h-4 inline" />
                       </th>
-                      <th className="px-5 py-2.5 font-semibold text-gray-500 dark:text-gray-400">Alternative</th>
-                      <th className="px-5 py-2.5 font-semibold text-emerald-500 text-right">Economie</th>
+                      <th className="px-3 sm:px-5 py-2.5 font-semibold text-gray-500 dark:text-gray-400">Alternative</th>
+                      <th className="px-3 sm:px-5 py-2.5 font-semibold text-emerald-500 text-right">Economie</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.alternatives.map((alt) => (
                       <tr key={alt.id} className="border-b border-gray-200 dark:border-gray-800/30 hover:bg-gray-50 dark:hover:bg-gray-950 transition-colors">
-                        <td className="px-5 py-3 text-black dark:text-white font-medium">{alt.product}</td>
-                        <td className="px-5 py-3 text-center text-gray-400">
+                        <td className="px-3 sm:px-5 py-3 text-black dark:text-white font-medium">{alt.product}</td>
+                        <td className="px-3 sm:px-5 py-3 text-center text-gray-400">
                           <ArrowRight className="w-4 h-4 inline" />
                         </td>
-                        <td className="px-5 py-3 text-emerald-500 font-medium">{alt.alternative}</td>
-                        <td className="px-5 py-3 text-right">
+                        <td className="px-3 sm:px-5 py-3 text-emerald-500 font-medium">{alt.alternative}</td>
+                        <td className="px-3 sm:px-5 py-3 text-right">
                           <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-500 border border-emerald-200 dark:border-emerald-900/50">
                             {alt.saving_per_kg}
                           </span>
@@ -880,7 +900,7 @@ export default function Mercuriale() {
 
                       return (
                         <div key={ingName} className="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-4">
-                          <div className="flex items-center justify-between mb-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                             <h4 className="font-semibold text-black dark:text-white">{ingName}</h4>
                             {savingsRange > 0 && (
                               <span className="text-xs font-medium px-2.5 py-1 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-full border border-emerald-200 dark:border-emerald-900/50">
@@ -997,7 +1017,7 @@ export default function Mercuriale() {
                 Classement complet des fournisseurs
               </h3>
             </div>
-            <div className="overflow-x-auto">
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950">
@@ -1048,6 +1068,49 @@ export default function Mercuriale() {
                 </tbody>
               </table>
             </div>
+            {/* Mobile cards */}
+            <div className="md:hidden space-y-2 p-3">
+              {supplierRanking.map((s, idx) => (
+                <div key={s.name} className="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className={`font-bold shrink-0 ${
+                        idx === 0 ? 'text-amber-500' : idx === 1 ? 'text-gray-400' : idx === 2 ? 'text-orange-400' : 'text-gray-400'
+                      }`}>
+                        {idx + 1}
+                      </span>
+                      <span className="font-medium text-black dark:text-white truncate">{s.name}</span>
+                    </div>
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold shrink-0 ${
+                      s.priceScore >= 70 ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' :
+                      s.priceScore >= 40 ? 'bg-amber-100 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400' :
+                      'bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400'
+                    }`}>
+                      {s.priceScore}/100
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                    <div>
+                      <span className="text-gray-500 dark:text-gray-400">Produits: </span>
+                      <span className="font-semibold text-black dark:text-white">{s.productCount}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-gray-500 dark:text-gray-400">Prix moyen: </span>
+                      <span className="font-semibold text-black dark:text-white">{formatCurrency(s.avgPrice)}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${s.stabilityScore >= 70 ? 'bg-emerald-500' : s.stabilityScore >= 40 ? 'bg-amber-500' : 'bg-red-500'}`}
+                        style={{ width: `${s.stabilityScore}%` }}
+                      />
+                    </div>
+                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400 shrink-0">Stabilite {s.stabilityScore}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -1078,7 +1141,7 @@ export default function Mercuriale() {
                   <div key={item.id} className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden">
                     <button
                       onClick={() => setExpandedIngredient(expandedIngredient === item.ingredient_name ? null : item.ingredient_name)}
-                      className="w-full px-5 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-950 transition-colors"
+                      className="w-full px-5 py-4 flex flex-wrap items-center justify-between gap-2 hover:bg-gray-50 dark:hover:bg-gray-950 transition-colors"
                     >
                       <div className="flex items-center gap-4">
                         <div className="p-2 bg-red-100 dark:bg-red-950/40 rounded-xl">
@@ -1089,13 +1152,13 @@ export default function Mercuriale() {
                           <p className="text-xs text-gray-500">Fournisseur: {item.supplier}</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
+                      <div className="flex flex-wrap items-center gap-3">
                         <div className="text-right">
                           <p className="text-sm">
                             <span className="text-gray-500">Votre prix:</span>{' '}
                             <span className="font-bold text-red-500">{formatCurrency(item.avgPrice)}</span>
                           </p>
-                          <p className="text-sm">
+                          <p className="text-sm hidden sm:block">
                             <span className="text-gray-500">Prix marche estime:</span>{' '}
                             <span className="font-bold text-emerald-500">{formatCurrency(item.marketEstimate)}</span>
                           </p>

@@ -520,6 +520,11 @@ const ROUTES = [
     description: 'Logiciel pour calculer la marge d un restaurant italien. Cout pates, antipasti, risotto, vins. Food cost cible 26-30%. Essai gratuit 7 jours.',
   },
   {
+    path: '/logiciel-marge-restaurant-indien',
+    title: 'Logiciel marge restaurant indien | Food cost curry | RestauMargin',
+    description: 'Logiciel pour calculer la marge d un restaurant indien. Cout curry, biryani, naan, dal, boissons. Food cost cible 28-32%. Essai gratuit 7 jours.',
+  },
+  {
     path: '/logiciel-marge-gastronomique',
     title: 'Logiciel marge restaurant gastronomique etoile | RestauMargin',
     description: 'Logiciel pour piloter marges restaurant gastronomique etoile. Food cost 32-40%, brigades importantes, produits nobles. Essai gratuit 7 jours.',
@@ -808,6 +813,7 @@ function run() {
         ['/logiciel-marge-bistrot', 'Logiciel marge bistrot et brasserie'],
         ['/logiciel-marge-pizzeria', 'Logiciel marge pizzeria'],
         ['/logiciel-marge-restaurant-italien', 'Logiciel marge restaurant italien'],
+        ['/logiciel-marge-restaurant-indien', 'Logiciel marge restaurant indien'],
         ['/blog/seuil-rentabilite-restaurant', 'Seuil de rentabilité restaurant'],
       ],
       comparison: [

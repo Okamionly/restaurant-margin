@@ -148,6 +148,7 @@ const LogicielMargeBurger = lazyRetry(() => import('./pages/LogicielMargeBurger'
 const LogicielMargeKebab = lazyRetry(() => import('./pages/LogicielMargeKebab'));
 const LogicielMargeTraiteur = lazyRetry(() => import('./pages/LogicielMargeTraiteur'));
 const LogicielMargeItalien = lazyRetry(() => import('./pages/LogicielMargeItalien'));
+const LogicielMargeIndien = lazyRetry(() => import('./pages/LogicielMargeIndien'));
 const BlogIndex = lazyRetry(() => import('./pages/BlogIndex'));
 const APropos = lazyRetry(() => import('./pages/APropos'));
 const MesParrainages = lazyRetry(() => import('./pages/MesParrainages'));
@@ -1240,6 +1241,8 @@ function App() {
           <Route path="/logiciel-marge-traiteur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeTraiteur /></Suspense>} />
           {/* SEO niche 2026-06-04 : page Logiciel Marge Restaurant Italien / trattoria (mots-cles marge restaurant italien, food cost pates 8-18%, coefficient italien, levier vins italiens, menu mix antipasti/primi/secondi). Distinct de la page pizzeria. */}
           <Route path="/logiciel-marge-restaurant-italien" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeItalien /></Suspense>} />
+          {/* SEO niche 2026-07-16 : page Logiciel Marge Restaurant Indien (mots-cles marge restaurant indien, food cost curry 9-32%, coefficient indien, sauce de base gravy, levier boissons biere/lassi/chai, menu mix vegetarien/viande/riz). Structure staples cheap (riz/dal/naan) vs proteines cheres (agneau/gambas), miroir de la page italien. */}
+          <Route path="/logiciel-marge-restaurant-indien" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><LogicielMargeIndien /></Suspense>} />
           {/* SEO niche 2026-05-26 : Logiciel Marge Boulangerie + Alternative Zenchef (comparatif concurrent). */}
           <Route path="/logiciel-marge-boulangerie" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-amber-500 animate-spin" /></div>}><LogicielMargeBoulangerie /></Suspense>} />
           {/* SEO niche 2026-05-26 : page Logiciel Marge Cafe / Bar / Brasserie de quartier (mots-cles marge bar, coefficient boissons, marge brute boissons 80-85 %, market cafe-bar France 40 000 etablissements). */}

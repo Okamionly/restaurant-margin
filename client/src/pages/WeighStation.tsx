@@ -1274,7 +1274,7 @@ export default function WeighStation() {
 
       {/* ===== STEP INDICATOR (only for peser tab, hidden in kiosk) ===== */}
       {mainTab === 'peser' && !quickMode && !kioskMode && (
-        <div className="flex items-center justify-center gap-1 px-4 py-3 bg-mono-1000/50 dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200/60">
+        <div className="flex items-center justify-center gap-1 px-1.5 sm:px-4 py-3 overflow-x-auto scrollbar-none bg-mono-1000/50 dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200/60">
           {STEPS.map((step, idx) => {
             const active = currentStep === step.num;
             const done = currentStep > step.num;

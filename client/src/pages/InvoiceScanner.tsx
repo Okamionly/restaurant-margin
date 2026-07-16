@@ -1089,7 +1089,7 @@ export default function InvoiceScanner() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-3 sm:px-5 py-2.5 text-sm font-medium rounded-xl transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl transition-all ${
               activeTab === tab.key
                 ? 'bg-black dark:bg-white text-white dark:text-black shadow-lg'
                 : 'text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'
@@ -1460,47 +1460,7 @@ export default function InvoiceScanner() {
                   )}
                 </div>
               </div>
-              {/* Mobile (<md) : cartes empilées — le tableau 6 colonnes deborde sur un telephone */}
-              <div className="md:hidden space-y-3">
-                <label className="flex items-center gap-2 px-1 text-xs font-medium text-black/50 dark:text-white/50">
-                  <input type="checkbox" aria-label="Tout selectionner (mobile)" checked={reviewRows.length > 0 && reviewRows.every(r => r.apply)} onChange={() => { const target = !reviewRows.every(r => r.apply); setReviewRows(prev => prev.map(r => ({ ...r, apply: target }))); }} className="w-4 h-4 rounded accent-emerald-500 cursor-pointer" />
-                  Tout selectionner
-                </label>
-                {reviewRows.map((r) => (
-                  <div key={r.lineIndex} className={`rounded-2xl border border-black/10 dark:border-white/10 p-3 ${r.apply ? '' : 'opacity-50'}`}>
-                    <div className="flex items-start gap-2">
-                      <input type="checkbox" checked={r.apply} onChange={() => toggleRowApply(r.lineIndex)} className="w-4 h-4 mt-0.5 rounded accent-emerald-500 cursor-pointer shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <div className="font-medium text-black dark:text-white break-words">{r.name || '—'}</div>
-                        <div className="flex flex-wrap items-center gap-2 mt-0.5">
-                          {r.packaging && (<span className="text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/50">{r.packaging}</span>)}
-                          {r.confidence != null && r.confidence < 0.6 && (<span className="text-[11px] text-amber-600 dark:text-amber-400 flex items-center gap-0.5"><AlertCircle className="w-3 h-3" /> a verifier</span>)}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      <div><div className="text-[11px] uppercase tracking-wider text-black/40 dark:text-white/40">Qte</div><div className="text-sm text-black/70 dark:text-white/70">{r.quantity != null ? r.quantity : '--'} {r.unit}</div></div>
-                      <div><div className="text-[11px] uppercase tracking-wider text-black/40 dark:text-white/40">Prix facture</div><div className="text-sm font-medium text-black dark:text-white">{r.unitPrice != null ? `${formatEuro(r.unitPrice)}/${r.unit || 'u'}` : '--'}</div></div>
-                    </div>
-                    <div className="mt-2">
-                      <div className="text-[11px] uppercase tracking-wider text-black/40 dark:text-white/40 mb-1">Ingredient a mettre a jour</div>
-                      <select value={r.ingredientId ?? ''} onChange={(e) => setRowIngredient(r.lineIndex, e.target.value ? parseInt(e.target.value) : null)} className="w-full px-2.5 py-2 text-sm rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-black text-black dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white">
-                        <option value="">➕ Nouvel ingredient</option>
-                        {ingredientsList.map((ing) => (<option key={ing.id} value={ing.id}>{ing.name} ({ing.pricePerUnit}€/{ing.unit})</option>))}
-                      </select>
-                      {r.unitMismatch && (<div className="mt-1 text-[11px] text-amber-600 dark:text-amber-400 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> Unite facture "{r.unit}" differe de l'ingredient</div>)}
-                    </div>
-                    <div className="mt-2 flex items-center justify-between gap-2">
-                      <span className="text-[11px] uppercase tracking-wider text-black/40 dark:text-white/40">Evolution</span>
-                      {r.mode === 'create' ? (<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400"><Plus className="w-3 h-3" /> Creation</span>) : (r.oldPrice != null && r.unitPrice != null) ? (<span className="flex items-center gap-2"><span className="text-xs text-black/50 dark:text-white/50 whitespace-nowrap">{formatEuro(r.oldPrice)} → <span className="font-semibold text-black dark:text-white">{formatEuro(r.unitPrice)}</span></span><PriceIndicator diff={r.unitPrice - r.oldPrice} pct={r.pct} /></span>) : (<span className="text-xs text-black/30 dark:text-white/30">--</span>)}
-                    </div>
-                  </div>
-                ))}
-                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] text-sm">
-                  <span className="font-semibold text-black/70 dark:text-white/70">Total HT</span>
-                  <span className="font-bold text-black dark:text-white">{formatEuro(scanResult.totalHT ?? reviewRows.reduce((s, r) => s + (r.totalPrice || 0), 0))}</span>
-                </div>
-              </div>
+              {/* Desktop / tablette (>= md) : tableau dense */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
@@ -1595,6 +1555,80 @@ export default function InvoiceScanner() {
                     </tr>
                   </tfoot>
                 </table>
+              </div>
+
+              {/* Mobile (< md) : cartes empilees editables (pas de scroll horizontal) */}
+              <div className="md:hidden divide-y divide-black/5 dark:divide-white/5">
+                {reviewRows.map((r) => (
+                  <div key={r.lineIndex} className={`py-3 ${r.apply ? '' : 'opacity-50'}`}>
+                    <div className="flex items-start gap-2.5">
+                      <input
+                        type="checkbox"
+                        checked={r.apply}
+                        onChange={() => toggleRowApply(r.lineIndex)}
+                        className="mt-1 w-4 h-4 rounded accent-emerald-500 cursor-pointer shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium text-black dark:text-white break-words">{r.name || '—'}</div>
+                        <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                          {r.packaging && (
+                            <span className="text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/50">{r.packaging}</span>
+                          )}
+                          {r.confidence != null && r.confidence < 0.6 && (
+                            <span className="text-[11px] text-amber-600 dark:text-amber-400 flex items-center gap-0.5">
+                              <AlertCircle className="w-3 h-3" /> a verifier
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-black/60 dark:text-white/60">
+                          <span><span className="text-black/40 dark:text-white/40">Qte :</span> {r.quantity != null ? r.quantity : '--'} {r.unit}</span>
+                          <span><span className="text-black/40 dark:text-white/40">Prix facture :</span> <span className="font-medium text-black dark:text-white">{r.unitPrice != null ? `${formatEuro(r.unitPrice)}/${r.unit || 'u'}` : '--'}</span></span>
+                        </div>
+                        <div className="mt-2">
+                          <label className="block text-[11px] text-black/40 dark:text-white/40 uppercase tracking-wider mb-1">Ingredient a mettre a jour</label>
+                          <select
+                            value={r.ingredientId ?? ''}
+                            onChange={(e) => setRowIngredient(r.lineIndex, e.target.value ? parseInt(e.target.value) : null)}
+                            className="w-full px-2.5 py-2 text-sm rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-black text-black dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white"
+                          >
+                            <option value="">➕ Nouvel ingredient</option>
+                            {ingredientsList.map((ing) => (
+                              <option key={ing.id} value={ing.id}>{ing.name} ({ing.pricePerUnit}€/{ing.unit})</option>
+                            ))}
+                          </select>
+                          {r.unitMismatch && (
+                            <div className="mt-1 text-[11px] text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                              <AlertCircle className="w-3 h-3" /> Unite facture "{r.unit}" differe de l'ingredient
+                            </div>
+                          )}
+                        </div>
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
+                          <span className="text-[11px] text-black/40 dark:text-white/40 uppercase tracking-wider">Evolution</span>
+                          {r.mode === 'create' ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400">
+                              <Plus className="w-3 h-3" /> Creation
+                            </span>
+                          ) : (r.oldPrice != null && r.unitPrice != null) ? (
+                            <span className="flex items-center gap-1.5 flex-wrap">
+                              <span className="text-xs text-black/50 dark:text-white/50">
+                                {formatEuro(r.oldPrice)} → <span className="font-semibold text-black dark:text-white">{formatEuro(r.unitPrice)}</span>
+                              </span>
+                              <PriceIndicator diff={r.unitPrice - r.oldPrice} pct={r.pct} />
+                            </span>
+                          ) : (
+                            <span className="text-xs text-black/30 dark:text-white/30">--</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div className="py-3 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-black/70 dark:text-white/70">Total HT :</span>
+                  <span className="text-sm font-bold text-black dark:text-white">
+                    {formatEuro(scanResult.totalHT ?? reviewRows.reduce((s, r) => s + (r.totalPrice || 0), 0))}
+                  </span>
+                </div>
               </div>
             </div>
           )}
@@ -2094,7 +2128,8 @@ export default function InvoiceScanner() {
                   </button>
                 </div>
               </div>
-              <div className="overflow-x-auto">
+              {/* Desktop / tablette (>= md) : tableau dense */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.02]">
@@ -2184,6 +2219,52 @@ export default function InvoiceScanner() {
                     </tr>
                   </tfoot>
                 </table>
+              </div>
+
+              {/* Mobile (< md) : cartes empilees editables */}
+              <div className="md:hidden divide-y divide-black/5 dark:divide-white/5">
+                {ocrItems.map((item) => (
+                  <div key={item.id} className="py-3">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={item.name}
+                        onChange={(e) => handleOcrItemChange(item.id, 'name', e.target.value)}
+                        placeholder="Produit"
+                        className="flex-1 min-w-0 px-2.5 py-2 text-sm font-medium rounded-lg border border-black/10 dark:border-white/10 bg-transparent text-black dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white transition-all"
+                      />
+                      <button
+                        onClick={() => handleRemoveOcrItem(item.id)}
+                        className="p-2 text-black/30 dark:text-white/30 hover:text-red-500 rounded-lg transition-colors shrink-0"
+                        title={t('invoiceScanner.deleteLine')}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      <label className="text-[11px] text-black/40 dark:text-white/40 uppercase tracking-wider">
+                        Qte
+                        <input type="number" step="0.01" value={item.qty} onChange={(e) => handleOcrItemChange(item.id, 'qty', e.target.value)} className="mt-0.5 w-full px-2.5 py-1.5 text-sm rounded-lg border border-black/10 dark:border-white/10 bg-transparent text-black dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white transition-all" />
+                      </label>
+                      <label className="text-[11px] text-black/40 dark:text-white/40 uppercase tracking-wider">
+                        Unite
+                        <input type="text" value={item.unit} onChange={(e) => handleOcrItemChange(item.id, 'unit', e.target.value)} className="mt-0.5 w-full px-2.5 py-1.5 text-sm rounded-lg border border-black/10 dark:border-white/10 bg-transparent text-black dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white transition-all" />
+                      </label>
+                      <label className="text-[11px] text-black/40 dark:text-white/40 uppercase tracking-wider">
+                        Prix unitaire
+                        <input type="number" step="0.01" value={item.prixUnitaire} onChange={(e) => handleOcrItemChange(item.id, 'prixUnitaire', e.target.value)} className="mt-0.5 w-full px-2.5 py-1.5 text-sm rounded-lg border border-black/10 dark:border-white/10 bg-transparent text-black dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white transition-all" />
+                      </label>
+                      <label className="text-[11px] text-black/40 dark:text-white/40 uppercase tracking-wider">
+                        Total
+                        <input type="number" step="0.01" value={item.total} onChange={(e) => handleOcrItemChange(item.id, 'total', e.target.value)} className="mt-0.5 w-full px-2.5 py-1.5 text-sm rounded-lg border border-black/10 dark:border-white/10 bg-transparent text-black dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white transition-all" />
+                      </label>
+                    </div>
+                  </div>
+                ))}
+                <div className="py-3 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-black/70 dark:text-white/70">{t('invoiceScanner.totalHT')} :</span>
+                  <span className="text-sm font-bold text-black dark:text-white">{formatEuro(ocrItems.reduce((s, i) => s + i.total, 0))}</span>
+                </div>
               </div>
             </div>
           )}

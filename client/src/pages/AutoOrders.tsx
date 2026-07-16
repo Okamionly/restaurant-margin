@@ -1742,7 +1742,7 @@ export default function AutoOrders() {
       </div>
 
       {/* ── Tab switcher ────────────────────────────────────────────────────── */}
-      <div className="flex gap-1 bg-mono-1000 dark:bg-mono-50/60 border border-mono-900 dark:border-mono-300 rounded-xl p-1 w-fit overflow-x-auto">
+      <div className="flex gap-1 bg-mono-1000 dark:bg-mono-50/60 border border-mono-900 dark:border-mono-300 rounded-xl p-1 w-fit max-w-full overflow-x-auto scrollbar-hide">
         {[
           { key: 'dashboard' as const, icon: Target, label: 'Dashboard', count: null },
           { key: 'commandes' as const, icon: Package, label: t('autoOrders.ordersTab'), count: orders.length },

@@ -1031,7 +1031,7 @@ export default function MenuEngineering() {
               {t('menuEngineering.subtitle')}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={handleOptimizeMenu}
               disabled={aiOptimizing || !data?.engineering?.length}
@@ -1682,7 +1682,7 @@ export default function MenuEngineering() {
                     {t('menuEngineering.bcgDescription')}
                   </p>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-[#9CA3AF] dark:text-mono-500">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#9CA3AF] dark:text-mono-500">
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Vedettes</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-teal-500" /> Énigmes</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Valeurs sûres</span>

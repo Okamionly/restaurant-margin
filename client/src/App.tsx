@@ -883,7 +883,7 @@ function AppLayout() {
       )}
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col min-h-screen md:ml-64 ml-0" style={{ paddingTop: '2px' }}>
+      <div className="flex-1 min-w-0 flex flex-col min-h-screen md:ml-64 ml-0" style={{ paddingTop: '2px' }}>
         {/* Mobile top bar */}
         <header className="md:hidden bg-white/90 dark:bg-mono-50/90 backdrop-blur-lg border-b border-mono-900 dark:border-mono-200 px-4 py-3 flex items-center justify-between no-print">
           <button

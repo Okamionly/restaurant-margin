@@ -282,13 +282,6 @@ html, body {
   background-color: rgba(13, 148, 136, 0.45);
 }
 
-/* Tablet sidebar: hide text labels, show only icons */
-@media (min-width: 768px) and (max-width: 1023px) {
-  aside .sidebar-label {
-    display: none;
-  }
-}
-
 /* Prevent word break on slashes */
 .no-break-slash {
   word-break: keep-all;

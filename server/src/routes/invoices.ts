@@ -120,20 +120,34 @@ Regles : extrais TOUTES les lignes ; convertis unite ET prix vers l'unite de bas
 
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
+      max_tokens: 8192,
       system: "Tu es un expert-comptable specialise en restauration (CHR). Tu lis des factures et bons de livraison fournisseurs et tu extrais les donnees en JSON strict. Tu ramenes systematiquement chaque prix a l'unite de base (kg, L ou unite) pour qu'il soit directement comparable au cout matiere d'un ingredient. Reponds UNIQUEMENT avec un objet JSON valide : pas de markdown, pas de commentaire, pas d'explication.",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messages: [{ role: 'user', content: content as any }],
     });
 
     const rawText = (response.content[0] as { type: 'text'; text: string }).text;
+    const truncatedByModel = (response as { stop_reason?: string }).stop_reason === 'max_tokens';
     let jsonStr = rawText.trim();
     const jsonMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
     if (jsonMatch) jsonStr = jsonMatch[1].trim();
     const braceStart = jsonStr.indexOf('{');
     if (braceStart > 0) jsonStr = jsonStr.slice(braceStart);
     try { res.json(JSON.parse(jsonStr)); }
-    catch { res.status(422).json({ error: "Impossible d'analyser la reponse", raw: rawText }); }
+    catch {
+      // Sortie coupee a max_tokens (document a beaucoup de lignes) : recuperer les lignes completes
+      if (truncatedByModel) {
+        const itemsStart = jsonStr.indexOf('"items"');
+        const lastComplete = jsonStr.lastIndexOf('},');
+        if (itemsStart !== -1 && lastComplete > itemsStart) {
+          try {
+            res.json(JSON.parse(jsonStr.slice(0, lastComplete + 1) + '], "totalHT": null, "totalTTC": null, "tva": null, "truncated": true}')); return;
+          } catch { /* irrecuperable, message clair ci-dessous */ }
+        }
+        res.status(422).json({ error: 'Document trop long pour un seul scan (resultat tronque). Scannez le document page par page, ou envoyez uniquement la page des totaux et lignes produits.' }); return;
+      }
+      res.status(422).json({ error: "Impossible d'analyser la reponse", raw: rawText });
+    }
   } catch (e) {
     const err = e as { status?: number; message?: string };
     if (err?.status === 400 && err?.message?.includes('credit balance')) { res.status(503).json({ error: 'Service IA temporairement indisponible. Reessayez plus tard.' }); return; }

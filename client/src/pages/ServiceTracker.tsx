@@ -11,6 +11,7 @@ import {
 import { fetchRecipes, getToken } from '../services/api';
 import type { Recipe } from '../types';
 import { formatCurrency, currencySuffix } from '../utils/currency';
+import { printTicketHtml } from '../utils/printTicket';
 import { useRestaurant } from '../hooks/useRestaurant';
 import FoodIllustration from '../components/FoodIllustration';
 
@@ -281,9 +282,6 @@ function MargeGauge({ percent, size = 'md' }: { percent: number; size?: 'md' | '
 // ══════════════════════════════════════════════════════════════════════
 
 function printKitchenTicket(order: ServiceOrder, sessionType: ServiceType) {
-  const ticketWindow = window.open('', '_blank', 'width=300,height=500');
-  if (!ticketWindow) return;
-
   const time = new Date(order.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const date = new Date(order.timestamp).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const separator = '<div class="sep">================================</div>';
@@ -322,10 +320,8 @@ ${thinSep}
 <div class="price-row price-total"><span>TOTAL</span><span>${formatCurrency(order.quantity * order.unitSellingPrice)}</span></div>
 ${separator}
 <div class="footer">RestauMargin</div>
-<script>window.onload=function(){setTimeout(function(){window.print()},200)}</script>
 </body></html>`;
-  ticketWindow.document.write(html);
-  ticketWindow.document.close();
+  printTicketHtml(html);
 }
 
 // ══════════════════════════════════════════════════════════════════════

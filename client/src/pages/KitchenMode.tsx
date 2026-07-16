@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { printTicketHtml } from '../utils/printTicket';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Clock, ChefHat, X, Play, Pause, RotateCcw, Timer,
@@ -1445,8 +1446,6 @@ function StandaloneTimer({ onClose }: { onClose: () => void }) {
 // ██  PRINT KITCHEN TICKET  ██████████████████████████████████████████████
 // ══════════════════════════════════════════════════════════════════════════
 function printKitchenTicket(order: Order) {
-  const win = window.open('', '_blank', 'width=300,height=600');
-  if (!win) return;
   const time = new Date(order.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const date = new Date(order.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const prio = order.priority !== 'normal' ? `*** ${order.priority.toUpperCase()} ***` : '';
@@ -1464,7 +1463,7 @@ function printKitchenTicket(order: Order) {
     ? `${thinSep}<div class="allergen">!! ALLERGENES: ${allergens.join(', ')} !!</div>`
     : '';
 
-  win.document.write(`<!DOCTYPE html><html><head><title>Ticket Cuisine</title>
+  const html = `<!DOCTYPE html><html><head><title>Ticket Cuisine</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Courier New',Courier,monospace;width:280px;margin:0 auto;padding:8px;color:#000;background:#fff;font-size:14px;line-height:1.4}
@@ -1499,9 +1498,8 @@ ${allergenLine}
 ${order.notes ? `${thinSep}<div class="notes">!! ${order.notes.toUpperCase()} !!</div>` : ''}
 ${separator}
 <div class="footer">RestauMargin KDS</div>
-<script>window.onload=function(){setTimeout(function(){window.print()},200)}</script>
-</body></html>`);
-  win.document.close();
+</body></html>`;
+  printTicketHtml(html);
 }
 
 // ══════════════════════════════════════════════════════════════════════════

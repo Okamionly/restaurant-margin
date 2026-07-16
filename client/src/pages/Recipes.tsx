@@ -22,6 +22,8 @@ import FoodIllustration from '../components/FoodIllustration';
 import { updateOnboardingStep } from '../components/OnboardingWizard';
 import { useScale } from '../hooks/useScale';
 import { InlineWeighPanel, ModePeseeBar, BatchWeighingPanel, QuickWeighAdd } from '../components/RecipeWeighingPanel';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 
 // ── Unit conversion divisor ─────────────────────────────────────────────
 // pricePerUnit is ALWAYS per the bulk unit (kg for weight, L for volume).
@@ -73,21 +75,21 @@ function MarginAlertBadge({ percent }: { percent: number }) {
   if (percent < 0) {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-600 text-white animate-pulse shadow-lg shadow-red-500/30">
-        <AlertTriangle className="w-3 h-3" /> PERTE
+        <AlertTriangle aria-hidden="true" className="w-3 h-3" /> PERTE
       </span>
     );
   }
   if (percent > 0 && percent < 50) {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-500 text-white shadow-lg shadow-red-500/20">
-        <AlertTriangle className="w-3 h-3" /> ATTENTION
+        <AlertTriangle aria-hidden="true" className="w-3 h-3" /> ATTENTION
       </span>
     );
   }
   if (percent > 80) {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500 text-white shadow-lg shadow-emerald-500/30">
-        <Star className="w-3 h-3" /> STAR
+        <Star aria-hidden="true" className="w-3 h-3" /> STAR
       </span>
     );
   }
@@ -109,7 +111,7 @@ function getCategoryBadgeColor(category: string): string {
     case 'Accompagnement':
       return 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300';
     default:
-      return 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700';
+      return 'bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700';
   }
 }
 
@@ -266,12 +268,12 @@ function generateFicheHTML(recipe: Recipe, restaurantName: string): string {
     <table style="width:100%;border-collapse:collapse;font-size:11px">
       <thead>
         <tr style="border-bottom:2px solid #94a3b8">
-          <th style="padding:6px 10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Ingredient</th>
-          <th style="padding:6px 10px;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Qte</th>
-          <th style="padding:6px 10px;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Unite</th>
-          <th style="padding:6px 10px;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Perte</th>
-          <th style="padding:6px 10px;text-align:right;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">P.U.</th>
-          <th style="padding:6px 10px;text-align:right;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Total</th>
+          <th scope="col" style="padding:6px 10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Ingredient</th>
+          <th scope="col" style="padding:6px 10px;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Qte</th>
+          <th scope="col" style="padding:6px 10px;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Unite</th>
+          <th scope="col" style="padding:6px 10px;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Perte</th>
+          <th scope="col" style="padding:6px 10px;text-align:right;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">P.U.</th>
+          <th scope="col" style="padding:6px 10px;text-align:right;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Total</th>
         </tr>
       </thead>
       <tbody>${ingredientRows}</tbody>
@@ -393,12 +395,12 @@ function printAllFichesTechniques(recipes: Recipe[], restaurantName: string) {
     <h2 style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;font-weight:700;border-bottom:2px solid #111;padding-bottom:6px">Sommaire</h2>
     <table style="width:100%;border-collapse:collapse">
       <thead><tr style="border-bottom:2px solid #94a3b8">
-        <th style="padding:8px 12px;text-align:left;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">#</th>
-        <th style="padding:8px 12px;text-align:left;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Recette</th>
-        <th style="padding:8px 12px;text-align:left;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Categorie</th>
-        <th style="padding:8px 12px;text-align:center;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Portions</th>
-        <th style="padding:8px 12px;text-align:right;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Prix</th>
-        <th style="padding:8px 12px;text-align:right;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Marge</th>
+        <th scope="col" style="padding:8px 12px;text-align:left;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">#</th>
+        <th scope="col" style="padding:8px 12px;text-align:left;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Recette</th>
+        <th scope="col" style="padding:8px 12px;text-align:left;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Categorie</th>
+        <th scope="col" style="padding:8px 12px;text-align:center;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Portions</th>
+        <th scope="col" style="padding:8px 12px;text-align:right;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Prix</th>
+        <th scope="col" style="padding:8px 12px;text-align:right;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Marge</th>
       </tr></thead>
       <tbody>${tocRows}</tbody>
     </table>
@@ -476,10 +478,10 @@ function MarginHealthBar({ recipes }: { recipes: Recipe[] }) {
     <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4 mb-4 sm:mb-6">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Scale className="w-4 h-4 text-mono-100 dark:text-white" />
+          <Scale aria-hidden="true" className="w-4 h-4 text-mono-100 dark:text-white" />
           <span className="text-sm font-semibold text-mono-100 dark:text-white">Sante du portefeuille</span>
         </div>
-        <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{total} recettes</span>
+        <span className="text-xs text-[#737373] dark:text-mono-500">{total} recettes</span>
       </div>
       {/* Bar */}
       <div className="w-full h-5 rounded-full overflow-hidden flex bg-mono-950 dark:bg-[#171717]">
@@ -512,15 +514,15 @@ function MarginHealthBar({ recipes }: { recipes: Recipe[] }) {
       <div className="flex flex-wrap items-center gap-4 mt-2.5">
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-          <span className="text-xs text-[#6B7280] dark:text-mono-700">Bonne marge &gt;70% ({good})</span>
+          <span className="text-xs text-[#737373] dark:text-mono-700">Bonne marge &gt;70% ({good})</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-          <span className="text-xs text-[#6B7280] dark:text-mono-700">Moyenne 50-70% ({medium})</span>
+          <span className="text-xs text-[#737373] dark:text-mono-700">Moyenne 50-70% ({medium})</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-          <span className="text-xs text-[#6B7280] dark:text-mono-700">Critique &lt;50% ({bad})</span>
+          <span className="text-xs text-[#737373] dark:text-mono-700">Critique &lt;50% ({bad})</span>
         </div>
       </div>
     </div>
@@ -539,10 +541,10 @@ function PriceSimulator({ recipe }: { recipe: Recipe }) {
     return (
       <button
         onClick={(e) => { e.stopPropagation(); setOpen(true); }}
-        className="flex items-center gap-1 text-[10px] text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors"
+        className="flex items-center gap-1 text-[10px] text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors"
         title="Simuler un nouveau prix"
       >
-        <SlidersHorizontal className="w-3 h-3" /> Simuler prix
+        <SlidersHorizontal aria-hidden="true" className="w-3 h-3" /> Simuler prix
       </button>
     );
   }
@@ -550,13 +552,14 @@ function PriceSimulator({ recipe }: { recipe: Recipe }) {
   return (
     <div className="bg-mono-1000 dark:bg-mono-50 rounded-lg p-2.5 mt-2 border border-mono-900 dark:border-mono-200 space-y-2" onClick={e => e.stopPropagation()}>
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-semibold uppercase text-[#9CA3AF] dark:text-mono-500">Simulateur de prix</span>
-        <button onClick={() => { setSimPrice(recipe.sellingPrice); setOpen(false); }} className="p-0.5 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
-          <X className="w-3 h-3" />
+        <span className="text-[10px] font-semibold uppercase text-[#737373] dark:text-mono-500">Simulateur de prix</span>
+        <button onClick={() => { setSimPrice(recipe.sellingPrice); setOpen(false); }} aria-label="Fermer le simulateur" className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
+          <X aria-hidden="true" className="w-3 h-3" />
         </button>
       </div>
       <input
         type="range"
+        aria-label="Simuler le prix de vente"
         min={Math.max(0, cost)}
         max={Math.max(cost * 5, recipe.sellingPrice * 2)}
         step="0.5"
@@ -624,10 +627,10 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
             </div>
             <div>
               <h3 id="recipe-compare-title" className="text-lg font-bold text-mono-100 dark:text-white">Comparaison de recettes</h3>
-              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Analyse cote a cote</p>
+              <p className="text-xs text-[#737373] dark:text-mono-500">Analyse cote a cote</p>
             </div>
           </div>
-          <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors">
+          <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors">
             <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
@@ -639,11 +642,11 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
               <div className="flex items-start justify-between">
                 <div>
                   <h4 className="font-bold text-mono-100 dark:text-white text-base leading-tight">{r.name}</h4>
-                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">{r.category}</span>
+                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700">{r.category}</span>
                 </div>
                 {i === winnerIdx && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-lg shadow-amber-500/30 animate-pulse">
-                    <Trophy className="w-3 h-3" /> Gagnant
+                    <Trophy aria-hidden="true" className="w-3 h-3" /> Gagnant
                   </span>
                 )}
               </div>
@@ -656,7 +659,7 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
               {/* Selling Price */}
               <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">Prix de vente</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#737373] dark:text-mono-500">Prix de vente</span>
                   <span className="text-sm font-bold font-mono text-mono-100 dark:text-white">{r.sellingPrice.toFixed(2)}{getCurrencySymbol()}</span>
                 </div>
               </div>
@@ -664,7 +667,7 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
               {/* Cost per portion */}
               <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">Cout / portion</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#737373] dark:text-mono-500">Cout / portion</span>
                   <span className="text-sm font-bold font-mono text-mono-100 dark:text-white">{r.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</span>
                 </div>
               </div>
@@ -672,7 +675,7 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
               {/* Margin with visual bar */}
               <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-3">
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">Marge</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#737373] dark:text-mono-500">Marge</span>
                   <span className={`text-base font-bold ${marginColor(r.margin.marginPercent)}`}>
                     {r.margin.marginPercent.toFixed(1)}%
                   </span>
@@ -685,7 +688,7 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
               {/* Ingredient count */}
               <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">Ingredients</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#737373] dark:text-mono-500">Ingredients</span>
                   <span className="text-sm font-bold text-mono-100 dark:text-white">{r.ingredients.length}</span>
                 </div>
               </div>
@@ -693,7 +696,7 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
               {/* Coefficient */}
               <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">Coefficient</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#737373] dark:text-mono-500">Coefficient</span>
                   <span className="text-sm font-bold font-mono text-mono-100 dark:text-white">x{r.margin.coefficient.toFixed(2)}</span>
                 </div>
               </div>
@@ -703,13 +706,13 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
           {/* Ingredients detail */}
           {[{ ings: aIngs, r: a }, { ings: bIngs, r: b }].map(({ ings, r }, i) => (
             <div key={`ing-${i}`} className="px-3 sm:px-5 pb-5">
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-2">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-[#737373] dark:text-mono-500 mb-2">
                 Detail ingredients ({r.ingredients.length})
               </div>
               <div className="space-y-1.5 max-h-[180px] overflow-y-auto">
                 {ings.map((ing, j) => (
                   <div key={j} className="flex items-center justify-between text-xs py-1 border-b border-mono-950 dark:border-mono-200 last:border-0">
-                    <span className="text-[#6B7280] dark:text-mono-700 truncate mr-2">{ing.name}</span>
+                    <span className="text-[#737373] dark:text-mono-700 truncate mr-2">{ing.name}</span>
                     <span className="font-mono text-mono-100 dark:text-white whitespace-nowrap">{ing.cost.toFixed(2)}{getCurrencySymbol()}</span>
                   </div>
                 ))}
@@ -722,10 +725,10 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
         <div className="p-5 border-t border-mono-900 dark:border-mono-200 bg-gradient-to-r from-amber-50 to-emerald-50 dark:from-amber-950/20 dark:to-emerald-950/20 rounded-b-2xl">
           <div className="flex items-center justify-center gap-3">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
-              <Trophy className="w-4 h-4 text-white" />
+              <Trophy aria-hidden="true" className="w-4 h-4 text-white" />
             </div>
             <div className="text-center">
-              <div className="text-xs text-[#6B7280] dark:text-mono-700 font-medium">Plus rentable</div>
+              <div className="text-xs text-[#737373] dark:text-mono-700 font-medium">Plus rentable</div>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="font-bold text-mono-100 dark:text-white text-sm">
                   {winnerIdx === 0 ? a.name : b.name}
@@ -749,7 +752,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   Gluten: {
     label: 'Gluten',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <path d="M12 2v20M9 5c0 2 3 3 3 5s-3 3-3 5M15 5c0 2-3 3-3 5s3 3 3 5" />
         <path d="M7 3c1 1 2 2 2 4M17 3c-1 1-2 2-2 4" />
       </svg>
@@ -758,7 +761,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   Lait: {
     label: 'Lait',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <path d="M8 2h8l1 5v13a2 2 0 01-2 2H9a2 2 0 01-2-2V7l1-5z" />
         <path d="M6 7h12" />
       </svg>
@@ -767,7 +770,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   Oeufs: {
     label: 'Oeufs',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <ellipse cx="12" cy="14" rx="7" ry="8" />
         <ellipse cx="12" cy="14" rx="3" ry="3.5" />
       </svg>
@@ -776,7 +779,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   Poissons: {
     label: 'Poissons',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z" />
         <path d="M22 12l-3-3v6l3-3z" />
         <circle cx="8" cy="12" r="1" fill="currentColor" />
@@ -786,7 +789,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   'Crustacés': {
     label: 'Crustacés',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <path d="M5 8c0-3 3-5 7-5s7 2 7 5" />
         <path d="M4 12c0 4 4 8 8 8s8-4 8-8" />
         <path d="M8 12v3M16 12v3M12 8v4" />
@@ -797,7 +800,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   'Fruits à coque': {
     label: 'Fruits à coque',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <ellipse cx="12" cy="14" rx="6" ry="7" />
         <path d="M8 7c0-3 2-5 4-5s4 2 4 5" />
         <path d="M12 7v7" />
@@ -807,7 +810,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   Soja: {
     label: 'Soja',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <ellipse cx="9" cy="14" rx="4" ry="6" />
         <ellipse cx="15" cy="14" rx="4" ry="6" />
         <path d="M12 2v6" />
@@ -818,7 +821,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   'Céleri': {
     label: 'Céleri',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <path d="M12 22V8M8 22V10c0-4 2-7 4-8M16 22V10c0-4-2-7-4-8" />
         <path d="M8 6c-2-1-3 1-3 3M16 6c2-1 3 1 3 3" />
       </svg>
@@ -827,7 +830,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   Moutarde: {
     label: 'Moutarde',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <rect x="7" y="8" width="10" height="13" rx="1" />
         <path d="M9 8V5a3 3 0 016 0v3" />
         <path d="M12 2v3M7 14h10" />
@@ -837,7 +840,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   'Sésame': {
     label: 'Sésame',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <ellipse cx="8" cy="10" rx="2.5" ry="4" transform="rotate(-15 8 10)" />
         <ellipse cx="16" cy="10" rx="2.5" ry="4" transform="rotate(15 16 10)" />
         <ellipse cx="12" cy="16" rx="2.5" ry="4" />
@@ -847,7 +850,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   Sulfites: {
     label: 'Sulfites',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="w-3.5 h-3.5">
         <text x="4" y="17" fontSize="11" fontWeight="bold" fill="currentColor" stroke="none" fontFamily="sans-serif">SO₂</text>
       </svg>
     ),
@@ -855,7 +858,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   Lupin: {
     label: 'Lupin',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <path d="M12 22V10" />
         <path d="M12 10c-2-4-6-5-6-8 0 5 4 6 6 8z" />
         <path d="M12 10c2-4 6-5 6-8 0 5-4 6-6 8z" />
@@ -867,7 +870,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   Mollusques: {
     label: 'Mollusques',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <path d="M4 18c0-6 4-12 8-14 4 2 8 8 8 14" />
         <path d="M4 18h16" />
         <path d="M8 18c0-3 2-7 4-9 2 2 4 6 4 9" />
@@ -877,7 +880,7 @@ const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = 
   Arachides: {
     label: 'Arachides',
     svg: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
         <ellipse cx="10" cy="9" rx="4" ry="5" />
         <ellipse cx="14" cy="16" rx="4" ry="5" />
         <path d="M12 12c1-1 1-2 2-3" />
@@ -960,6 +963,7 @@ function IngredientCombobox({
     <div ref={wrapperRef} className="relative flex-1 min-w-[180px]">
       <input
         type="text"
+        aria-label="Rechercher ou saisir un ingrédient"
         className="input w-full text-sm"
         placeholder="Tapez un nom ou choisissez..."
         value={open ? inputValue : displayValue}
@@ -992,7 +996,7 @@ function IngredientCombobox({
                 }}
               >
                 <span className="text-mono-100 dark:text-white">{i.name}</span>
-                <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{i.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{i.unit}</span>
+                <span className="text-xs text-[#737373] dark:text-mono-500">{i.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{i.unit}</span>
               </button>
             ))
           ) : null}
@@ -1009,7 +1013,7 @@ function IngredientCombobox({
             </button>
           )}
           {!inputValue.trim() && filtered.length === 0 && (
-            <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-mono-500">Tapez un nom d&apos;ingredient</div>
+            <div className="px-3 py-2 text-sm text-[#737373] dark:text-mono-500">Tapez un nom d&apos;ingredient</div>
           )}
         </div>
       )}
@@ -1186,10 +1190,10 @@ const SUBSTITUTION_RULES: { pattern: string; alternatives: { name: string; savin
 
 /** Get the seasonal month icon */
 function SeasonIcon({ month }: { month: number }) {
-  if (month >= 2 && month <= 4) return <Flower2 className="w-3.5 h-3.5 text-pink-500" />;
-  if (month >= 5 && month <= 7) return <Sun className="w-3.5 h-3.5 text-amber-500" />;
-  if (month >= 8 && month <= 10) return <CloudRain className="w-3.5 h-3.5 text-orange-500" />;
-  return <Snowflake className="w-3.5 h-3.5 text-blue-400" />;
+  if (month >= 2 && month <= 4) return <Flower2 aria-hidden="true" className="w-3.5 h-3.5 text-pink-500" />;
+  if (month >= 5 && month <= 7) return <Sun aria-hidden="true" className="w-3.5 h-3.5 text-amber-500" />;
+  if (month >= 8 && month <= 10) return <CloudRain aria-hidden="true" className="w-3.5 h-3.5 text-orange-500" />;
+  return <Snowflake aria-hidden="true" className="w-3.5 h-3.5 text-blue-400" />;
 }
 
 /** Check if an ingredient name matches a seasonal pattern for the given month */
@@ -1341,11 +1345,11 @@ function CostOptimizerPanel({
             </div>
             <div>
               <h3 id="recipe-optimization-title" className="text-lg font-bold text-mono-100 dark:text-white">Optimisation : {recipe.name}</h3>
-              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Analyse du cout et suggestions d'economies</p>
+              <p className="text-xs text-[#737373] dark:text-mono-500">Analyse du cout et suggestions d'economies</p>
             </div>
           </div>
           <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
-            <X className="w-5 h-5 text-[#9CA3AF] dark:text-mono-500" aria-hidden="true" />
+            <X className="w-5 h-5 text-[#737373] dark:text-mono-500" aria-hidden="true" />
           </button>
         </div>
 
@@ -1353,15 +1357,15 @@ function CostOptimizerPanel({
         <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Cout actuel</div>
+              <div className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500 mb-1">Cout actuel</div>
               <div className="text-lg font-bold font-mono text-mono-100 dark:text-white">{(totalCost / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()}</div>
             </div>
             <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Cout optimise</div>
+              <div className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500 mb-1">Cout optimise</div>
               <div className="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">{(optimizedCost / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()}</div>
             </div>
             <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Marge actuelle</div>
+              <div className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500 mb-1">Marge actuelle</div>
               <div className={`text-lg font-bold ${currentMargin >= 70 ? 'text-emerald-500' : currentMargin >= 50 ? 'text-amber-500' : 'text-red-500'}`}>{currentMargin.toFixed(1)}%</div>
             </div>
             <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-3 text-center border border-emerald-200 dark:border-emerald-800">
@@ -1371,7 +1375,7 @@ function CostOptimizerPanel({
           </div>
           {totalPotentialSavings > 0 && (
             <div className="mt-3 flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 font-medium">
-              <TrendingDown className="w-4 h-4" />
+              <TrendingDown aria-hidden="true" className="w-4 h-4" />
               Economie potentielle : {(totalPotentialSavings / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()} / portion ({((totalPotentialSavings / totalCost) * 100).toFixed(0)}%)
             </div>
           )}
@@ -1380,7 +1384,7 @@ function CostOptimizerPanel({
         {/* Cost Breakdown Bar Chart */}
         <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 mb-3">
-            <BarChart3 className="w-4 h-4 text-mono-100 dark:text-white" />
+            <BarChart3 aria-hidden="true" className="w-4 h-4 text-mono-100 dark:text-white" />
             <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Repartition du cout par ingredient</h4>
           </div>
           <div className="space-y-2">
@@ -1392,12 +1396,12 @@ function CostOptimizerPanel({
                   <div className="flex items-center justify-between text-xs mb-0.5">
                     <div className="flex items-center gap-1.5 min-w-0 flex-1">
                       {isTop3 && <span className="text-[9px] font-bold text-white bg-red-500 w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0">{idx + 1}</span>}
-                      <span className={`truncate ${isTop3 ? 'font-semibold text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-700'}`}>
+                      <span className={`truncate ${isTop3 ? 'font-semibold text-mono-100 dark:text-white' : 'text-[#737373] dark:text-mono-700'}`}>
                         {ic.ri.ingredient.name}
                       </span>
                       {ic.seasonal.seasonal && (
                         <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 flex-shrink-0">
-                          <Leaf className="w-2.5 h-2.5" /> Saison
+                          <Leaf aria-hidden="true" className="w-2.5 h-2.5" /> Saison
                         </span>
                       )}
                     </div>
@@ -1418,7 +1422,7 @@ function CostOptimizerPanel({
         {/* Top 3 Expensive — Substitution Suggestions */}
         <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="flex items-center gap-2 mb-3">
-            <RefreshCw className="w-4 h-4 text-mono-100 dark:text-white" />
+            <RefreshCw aria-hidden="true" className="w-4 h-4 text-mono-100 dark:text-white" />
             <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Suggestions de substitution</h4>
           </div>
           {top3.map((ic) => {
@@ -1426,7 +1430,7 @@ function CostOptimizerPanel({
               return (
                 <div key={ic.ri.id} className="mb-3 p-3 rounded-xl bg-mono-1000 dark:bg-mono-100 border border-mono-900 dark:border-mono-200">
                   <div className="text-sm font-medium text-mono-100 dark:text-white">{ic.ri.ingredient.name}</div>
-                  <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Aucune alternative moins chere trouvee en base</div>
+                  <div className="text-xs text-[#737373] dark:text-mono-500 mt-1">Aucune alternative moins chere trouvee en base</div>
                 </div>
               );
             }
@@ -1443,13 +1447,13 @@ function CostOptimizerPanel({
                     const newMargin = recipe.sellingPrice > 0 ? ((recipe.sellingPrice - newCostPerPortion) / recipe.sellingPrice) * 100 : 0;
                     return (
                       <div key={aIdx} className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200">
-                        <ArrowRight className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                        <ArrowRight aria-hidden="true" className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                           <div className="text-xs text-mono-100 dark:text-white">
                             Si vous remplacez <strong>{ic.ri.ingredient.name}</strong> par <strong>{alt.ingredient.name}</strong>, vous economisez <strong className="text-emerald-500">{(savings / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()}</strong>/portion
                           </div>
                           <div className="flex flex-wrap items-center gap-3 mt-1 text-[10px]">
-                            <span className="text-[#9CA3AF] dark:text-mono-500">{alt.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{alt.ingredient.unit}</span>
+                            <span className="text-[#737373] dark:text-mono-500">{alt.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{alt.ingredient.unit}</span>
                             <span className={`font-medium ${newMargin >= 70 ? 'text-emerald-500' : newMargin >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
                               Marge → {newMargin.toFixed(1)}%
                             </span>
@@ -1477,7 +1481,7 @@ function CostOptimizerPanel({
             <div className="space-y-2">
               {seasonalIngredients.map((ic) => (
                 <div key={ic.ri.id} className="flex items-center gap-2 p-2 rounded-lg bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/50">
-                  <Leaf className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                  <Leaf aria-hidden="true" className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <span className="text-xs text-mono-100 dark:text-white font-medium">{ic.ri.ingredient.name}</span>
                     <span className="text-[10px] text-green-600 dark:text-green-400 ml-2">De saison — potentiellement {ic.seasonal.discount}% moins cher</span>
@@ -1488,7 +1492,7 @@ function CostOptimizerPanel({
             </div>
           ) : (
             <div className="space-y-2">
-              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Aucun ingredient de saison dans cette recette. Suggestions :</p>
+              <p className="text-xs text-[#737373] dark:text-mono-500">Aucun ingredient de saison dans cette recette. Suggestions :</p>
               {(SEASONAL_CALENDAR[currentMonth] || []).slice(0, 2).map((group, gIdx) => (
                 <div key={gIdx} className="p-2 rounded-lg bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/50">
                   <div className="text-[10px] font-semibold text-green-700 dark:text-green-300 mb-1">{group.label} (-{group.discount}% ce mois)</div>
@@ -1507,7 +1511,7 @@ function CostOptimizerPanel({
         {priceAlerts.length > 0 && (
           <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-3">
-              <AlertTriangle className="w-4 h-4 text-red-500" />
+              <AlertTriangle aria-hidden="true" className="w-4 h-4 text-red-500" />
               <h4 className="text-sm font-semibold text-red-600 dark:text-red-400">Alertes prix</h4>
             </div>
             <div className="space-y-2">
@@ -1521,7 +1525,7 @@ function CostOptimizerPanel({
                       <span className="text-xs font-medium text-mono-100 dark:text-white">{ic.ri.ingredient.name}</span>
                       <span className="text-xs font-mono text-red-500">+{pctAbove.toFixed(0)}% vs moyenne categorie</span>
                     </div>
-                    <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-1">
+                    <div className="text-[10px] text-[#737373] dark:text-mono-500 mt-1">
                       Prix: {ic.ri.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{ic.ri.ingredient.unit} | Moyenne: {avgPrice.toFixed(2)}{getCurrencySymbol()}/{ic.ri.ingredient.unit}
                     </div>
                     {ic.alternatives && ic.alternatives.alternatives.length > 0 && (
@@ -1539,7 +1543,7 @@ function CostOptimizerPanel({
         {/* Footer */}
         <div className="p-5 bg-mono-1000 dark:bg-mono-100 rounded-b-2xl">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Calcule a partir de vos donnees reelles — aucun appel IA</span>
+            <span className="text-xs text-[#737373] dark:text-mono-500">Calcule a partir de vos donnees reelles — aucun appel IA</span>
             <button onClick={onClose} className="px-4 py-2 text-sm font-semibold bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-lg hover:opacity-90 transition-opacity">
               Fermer
             </button>
@@ -1641,11 +1645,11 @@ function BatchOptimizerPanel({
             </div>
             <div>
               <h3 id="menu-optimization-title" className="text-lg font-bold text-mono-100 dark:text-white">Optimiser la carte ({recipes.length} recettes)</h3>
-              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Analyse croisee et substitutions groupees</p>
+              <p className="text-xs text-[#737373] dark:text-mono-500">Analyse croisee et substitutions groupees</p>
             </div>
           </div>
           <button onClick={onClose} aria-label="Fermer" className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
-            <X className="w-5 h-5 text-[#9CA3AF] dark:text-mono-500" aria-hidden="true" />
+            <X className="w-5 h-5 text-[#737373] dark:text-mono-500" aria-hidden="true" />
           </button>
         </div>
 
@@ -1653,11 +1657,11 @@ function BatchOptimizerPanel({
         <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Recettes</div>
+              <div className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500 mb-1">Recettes</div>
               <div className="text-xl font-bold text-mono-100 dark:text-white">{recipes.length}</div>
             </div>
             <div className="bg-mono-1000 dark:bg-mono-100 rounded-xl p-3 text-center">
-              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-1">Marge moy. actuelle</div>
+              <div className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500 mb-1">Marge moy. actuelle</div>
               <div className={`text-xl font-bold ${avgMarginBefore >= 70 ? 'text-emerald-500' : avgMarginBefore >= 50 ? 'text-amber-500' : 'text-red-500'}`}>{avgMarginBefore.toFixed(1)}%</div>
             </div>
             <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-3 text-center border border-emerald-200 dark:border-emerald-800">
@@ -1675,7 +1679,7 @@ function BatchOptimizerPanel({
         {commonExpensive.length > 0 && (
           <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-3">
-              <BarChart3 className="w-4 h-4 text-mono-100 dark:text-white" />
+              <BarChart3 aria-hidden="true" className="w-4 h-4 text-mono-100 dark:text-white" />
               <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Ingredients couteux communs ({commonExpensive.length})</h4>
             </div>
             <div className="space-y-2">
@@ -1686,7 +1690,7 @@ function BatchOptimizerPanel({
                     <div className="flex items-center justify-between text-xs mb-0.5">
                       <div className="flex items-center gap-1.5">
                         <span className="font-medium text-mono-100 dark:text-white">{ing.name}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-500">
                           {ing.recipeCount} recettes
                         </span>
                       </div>
@@ -1706,7 +1710,7 @@ function BatchOptimizerPanel({
         {savingsBreakdown.length > 0 && (
           <div className="p-4 sm:p-5 border-b border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-3">
-              <RefreshCw className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <RefreshCw aria-hidden="true" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <h4 className="text-sm font-semibold text-mono-100 dark:text-white">Substitutions groupees recommandees</h4>
             </div>
             <div className="space-y-3">
@@ -1715,12 +1719,12 @@ function BatchOptimizerPanel({
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-mono-100 dark:text-white">{item.name}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-emerald-500" />
+                      <ArrowRight aria-hidden="true" className="w-3.5 h-3.5 text-emerald-500" />
                       <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">{item.bestAlt.ingredient.name}</span>
                     </div>
                     <span className="text-xs font-bold text-emerald-500">-{item.savings.toFixed(2)}{getCurrencySymbol()}</span>
                   </div>
-                  <div className="flex flex-wrap items-center gap-4 text-[10px] text-[#9CA3AF] dark:text-mono-500">
+                  <div className="flex flex-wrap items-center gap-4 text-[10px] text-[#737373] dark:text-mono-500">
                     <span>Affecte {item.recipeCount} recettes</span>
                     <span>{item.ingredient.pricePerUnit.toFixed(2)} → {item.bestAlt.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{item.ingredient.unit}</span>
                     <span className={`px-1.5 py-0.5 rounded-full font-medium ${item.bestAlt.quality === 'aucun' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : item.bestAlt.quality === 'minimal' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'}`}>
@@ -1753,7 +1757,7 @@ function BatchOptimizerPanel({
                 </div>
               </div>
             ))}
-            <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 italic">
+            <p className="text-[10px] text-[#737373] dark:text-mono-500 italic">
               Ce mois-ci, privilegiez les ingredients de saison pour reduire les couts et ameliorer la fraicheur.
             </p>
           </div>
@@ -1762,7 +1766,7 @@ function BatchOptimizerPanel({
         {/* Footer */}
         <div className="p-5 bg-mono-1000 dark:bg-mono-100 rounded-b-2xl">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Analyse basee sur {sortedIngredients.length} ingredients — {recipes.length} recettes</span>
+            <span className="text-xs text-[#737373] dark:text-mono-500">Analyse basee sur {sortedIngredients.length} ingredients — {recipes.length} recettes</span>
             <button onClick={onClose} className="px-4 py-2 text-sm font-semibold bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-lg hover:opacity-90 transition-opacity">
               Fermer
             </button>
@@ -1781,6 +1785,7 @@ export default function Recipes() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -1890,10 +1895,12 @@ export default function Recipes() {
 
   async function loadData() {
     try {
+      setLoadError(false);
       const [r, i] = await Promise.all([fetchRecipes(), fetchIngredients()]);
       setRecipes(r);
       setIngredients(i);
     } catch {
+      setLoadError(true);
       showToast(t("recipes.errorLoading"), 'error');
     } finally {
       setLoading(false);
@@ -2153,8 +2160,8 @@ export default function Recipes() {
   }
 
   function SortIcon({ col }: { col: string }) {
-    if (sortColumn !== col) return <ChevronsUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />;
-    return sortDirection === 'asc' ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />;
+    if (sortColumn !== col) return <ChevronsUpDown aria-hidden="true" className="w-3.5 h-3.5 text-[#737373] dark:text-mono-500" />;
+    return sortDirection === 'asc' ? <ChevronUp aria-hidden="true" className="w-3.5 h-3.5" /> : <ChevronDown aria-hidden="true" className="w-3.5 h-3.5" />;
   }
 
   // Filtered ingredients for the add-ingredient dropdown search
@@ -2722,7 +2729,8 @@ export default function Recipes() {
     showToast(`${recipes.length} recettes exportees en CSV`, 'success');
   }
 
-  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">{t("recipes.loading")}</div>;
+  if (loading) return <LoadingState label={t("recipes.loading")} />;
+  if (loadError && recipes.length === 0) return <ErrorState message={t("recipes.errorLoading")} onRetry={loadData} />;
 
   return (
     <div>
@@ -2733,22 +2741,22 @@ export default function Recipes() {
             <>
             <button
               onClick={exportRecipesCSV}
-              className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
+              className="flex items-center gap-2 text-sm font-medium px-3 py-2 min-h-[44px] rounded-xl border border-mono-900 dark:border-mono-200 text-[#737373] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               title="Exporter CSV"
             >
-              <Download className="w-4 h-4" /> Exporter CSV
+              <Download aria-hidden="true" className="w-4 h-4" /> Exporter CSV
             </button>
             <button
               onClick={() => printAllFichesTechniques(recipes, selectedRestaurant?.name || '')}
-              className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
+              className="flex items-center gap-2 text-sm font-medium px-3 py-2 min-h-[44px] rounded-xl border border-mono-900 dark:border-mono-200 text-[#737373] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               title="Imprimer toutes les fiches techniques"
             >
-              <Printer className="w-4 h-4" /> Imprimer toutes les fiches
+              <Printer aria-hidden="true" className="w-4 h-4" /> Imprimer toutes les fiches
             </button>
             </>
           )}
           <button onClick={openNew} className="btn-primary flex items-center gap-2 flex-1 sm:flex-none justify-center">
-            <Plus className="w-4 h-4" /> {t("recipes.newRecipe")}
+            <Plus aria-hidden="true" className="w-4 h-4" /> {t("recipes.newRecipe")}
           </button>
         </div>
       </div>
@@ -2766,14 +2774,14 @@ export default function Recipes() {
           </div>
           <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
             <div className="flex items-center gap-1 text-xs font-general-sans text-mono-500 dark:text-mono-700 mb-1">
-              <Trophy className="w-3 h-3" /> {t("recipes.kpiBestMargin")}
+              <Trophy aria-hidden="true" className="w-3 h-3" /> {t("recipes.kpiBestMargin")}
             </div>
             <div className="text-sm font-bold font-satoshi text-emerald-600 dark:text-emerald-400 truncate" title={kpis.bestName}>{kpis.bestName}</div>
             <div className="text-xs font-general-sans tabular-nums text-mono-500 dark:text-mono-700">{kpis.bestMargin.toFixed(1)}%</div>
           </div>
           <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6">
             <div className="flex items-center gap-1 text-xs font-general-sans text-mono-500 dark:text-mono-700 mb-1">
-              <ShieldAlert className="w-3 h-3" /> {t("recipes.kpiDanger")}
+              <ShieldAlert aria-hidden="true" className="w-3 h-3" /> {t("recipes.kpiDanger")}
             </div>
             <div className={`text-2xl font-bold font-satoshi tabular-nums ${kpis.dangerCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>{kpis.dangerCount}</div>
           </div>
@@ -2787,23 +2795,23 @@ export default function Recipes() {
       <div className="flex items-center gap-1 mb-4 border-b border-mono-900 dark:border-mono-200 overflow-x-auto scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
         <button
           onClick={() => setActiveTab('recipes')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'recipes' ? 'border-mono-100 dark:border-white text-mono-100 dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
+          className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'recipes' ? 'border-mono-100 dark:border-white text-mono-100 dark:text-white' : 'border-transparent text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
         >
-          <UtensilsCrossed className="w-4 h-4 shrink-0" />
+          <UtensilsCrossed aria-hidden="true" className="w-4 h-4 shrink-0" />
           Mes recettes
         </button>
         <button
           onClick={() => setActiveTab('templates')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'templates' ? 'border-mono-100 dark:border-white text-mono-100 dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
+          className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'templates' ? 'border-mono-100 dark:border-white text-mono-100 dark:text-white' : 'border-transparent text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
         >
-          <BookOpen className="w-4 h-4 shrink-0" />
+          <BookOpen aria-hidden="true" className="w-4 h-4 shrink-0" />
           Templates
         </button>
         <button
           onClick={() => setActiveTab('modeles')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'modeles' ? 'border-mono-100 dark:border-white text-mono-100 dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
+          className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'modeles' ? 'border-mono-100 dark:border-white text-mono-100 dark:text-white' : 'border-transparent text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
         >
-          <Package className="w-4 h-4 shrink-0" />
+          <Package aria-hidden="true" className="w-4 h-4 shrink-0" />
           Modeles
         </button>
       </div>
@@ -2825,11 +2833,12 @@ export default function Recipes() {
         {/* Sort dropdown for grid view */}
         {viewMode === 'grid' && (
           <div className="flex items-center gap-1.5">
-            <ArrowUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
+            <ArrowUpDown aria-hidden="true" className="w-3.5 h-3.5 text-[#737373] dark:text-mono-500" />
             <select
               value={gridSort}
               onChange={(e) => setGridSort(e.target.value as typeof gridSort)}
-              className="input text-xs py-1.5 pr-8"
+              aria-label="Trier les recettes"
+              className="input text-xs py-1.5 min-h-[44px] pr-8"
             >
               <option value="margin-asc">Marge (pire d'abord)</option>
               <option value="margin-desc">Marge (meilleure d'abord)</option>
@@ -2852,15 +2861,16 @@ export default function Recipes() {
               }
             }}
             disabled={compareIds.length < 2}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${compareIds.length === 2 ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500'}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-lg text-xs font-medium transition-colors ${compareIds.length === 2 ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-500'}`}
           >
-            <GitCompareArrows className="w-3.5 h-3.5" />
+            <GitCompareArrows aria-hidden="true" className="w-3.5 h-3.5" />
             Comparer ({compareIds.length}/2)
             <button
               onClick={(e) => { e.stopPropagation(); setCompareIds([]); }}
-              className="ml-1 p-0.5 hover:bg-white/20 rounded"
+              aria-label="Vider la comparaison"
+              className="ml-1 min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-white/20 rounded"
             >
-              <X className="w-3 h-3" />
+              <X aria-hidden="true" className="w-3 h-3" />
             </button>
           </button>
         )}
@@ -2868,19 +2878,19 @@ export default function Recipes() {
         <div className="flex items-center gap-1 bg-mono-950 dark:bg-[#171717] rounded-lg p-1">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-[#171717] shadow-sm text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-[#171717] shadow-sm text-mono-100 dark:text-white' : 'text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
             title={t("recipes.gridView")}
             aria-label="Vue grille"
           >
-            <LayoutGrid className="w-4 h-4" />
+            <LayoutGrid aria-hidden="true" className="w-4 h-4" />
           </button>
           <button
             onClick={() => setViewMode('table')}
-            className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-[#171717] shadow-sm text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-[#171717] shadow-sm text-mono-100 dark:text-white' : 'text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white'}`}
             title={t("recipes.tableView")}
             aria-label="Vue tableau"
           >
-            <List className="w-4 h-4" />
+            <List aria-hidden="true" className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -2897,7 +2907,7 @@ export default function Recipes() {
         <div className="flex flex-wrap gap-2 mb-4">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#171717]'}`}
+            className={`px-3 py-1.5 min-h-[44px] inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#171717]'}`}
           >
             {t("recipes.allCategories")} ({recipes.length})
           </button>
@@ -2905,7 +2915,7 @@ export default function Recipes() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#171717]'}`}
+              className={`px-3 py-1.5 min-h-[44px] inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-[#171717]'}`}
             >
               {cat} ({count})
             </button>
@@ -2920,7 +2930,7 @@ export default function Recipes() {
           <table className="w-full text-sm min-w-[700px]">
             <thead>
               <tr className="border-b border-mono-900 dark:border-mono-200">
-                <th className="px-4 py-3 w-10">
+                <th scope="col" className="px-4 py-3 w-10">
                   <input
                     type="checkbox"
                     checked={filtered.length > 0 && selectedRecipeIds.size === filtered.length}
@@ -2938,9 +2948,10 @@ export default function Recipes() {
                   { key: 'coefficient', label: t("recipes.colCoefficient") },
                 ].map((col) => (
                   <th
+                    scope="col"
                     key={col.key}
                     onClick={() => handleSort(col.key)}
-                    className="px-4 py-3 text-left text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider cursor-pointer hover:text-mono-100 dark:hover:text-white select-none"
+                    className="px-4 py-3 text-left text-xs font-medium text-[#737373] dark:text-mono-500 uppercase tracking-wider cursor-pointer hover:text-mono-100 dark:hover:text-white select-none"
                   >
                     <span className="inline-flex items-center gap-1">
                       {col.label}
@@ -2948,7 +2959,7 @@ export default function Recipes() {
                     </span>
                   </th>
                 ))}
-                <th className="px-4 py-3 text-right text-xs font-medium text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Actions</th>
+                <th scope="col" className="px-4 py-3 text-right text-xs font-medium text-[#737373] dark:text-mono-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-mono-900 dark:divide-mono-200">
@@ -2963,7 +2974,7 @@ export default function Recipes() {
                         <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-1">
                           Creez votre premiere fiche technique
                         </h3>
-                        <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-md mb-4">
+                        <p className="text-sm text-[#737373] dark:text-mono-500 max-w-md mb-4">
                           Composez vos recettes avec ingredients et prix de vente — RestauMargin calcule automatiquement vos marges, food cost et coefficient multiplicateur.
                         </p>
                         <div className="flex flex-wrap gap-3 justify-center">
@@ -2971,20 +2982,20 @@ export default function Recipes() {
                             onClick={openNew}
                             className="inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
                           >
-                            <Plus className="w-4 h-4" /> Creer une recette
+                            <Plus aria-hidden="true" className="w-4 h-4" /> Creer une recette
                           </button>
                           <button
                             onClick={() => setActiveTab('templates')}
-                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-colors"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-mono-50 text-[#737373] dark:text-mono-700 text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-colors"
                           >
-                            <Package className="w-4 h-4" /> Ou importez un pack
+                            <Package aria-hidden="true" className="w-4 h-4" /> Ou importez un pack
                           </button>
                         </div>
                       </div>
                     </td>
                   </tr>
                 ) : (
-                  <tr><td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-mono-500">{t("recipes.noResults")}</td></tr>
+                  <tr><td colSpan={8} className="px-4 py-8 text-center text-[#737373] dark:text-mono-500">{t("recipes.noResults")}</td></tr>
                 )
               ) : sortedFiltered.map((recipe) => (
                 <tr key={recipe.id} className={`hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors ${selectedRecipeIds.has(recipe.id) ? 'bg-mono-950 dark:bg-[#171717]' : ''}`}>
@@ -3003,35 +3014,35 @@ export default function Recipes() {
                       {recipe.name}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700">{recipe.category}</td>
-                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-mono-700">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</td>
-                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-mono-700">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</td>
+                  <td className="px-4 py-3 text-[#737373] dark:text-mono-700">{recipe.category}</td>
+                  <td className="px-4 py-3 font-mono text-[#737373] dark:text-mono-700">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</td>
+                  <td className="px-4 py-3 font-mono text-[#737373] dark:text-mono-700">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</td>
                   <td className="px-4 py-3"><MarginBadge percent={recipe.margin.marginPercent} /></td>
-                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-mono-700">
+                  <td className="px-4 py-3 font-mono text-[#737373] dark:text-mono-700">
                     {recipe.margin.coefficient.toFixed(2)}
-                    <span className="text-[10px] ml-1 text-[#6B7280] dark:text-mono-700" title={`Coeff. catégorie ${recipe.category}`}>
+                    <span className="text-[10px] ml-1 text-[#737373] dark:text-mono-700" title={`Coeff. catégorie ${recipe.category}`}>
                       (obj. ×{getCoefficient(recipe.category, coefficients).toFixed(1)})
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1 justify-end">
-                      <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.view")}>
-                        <Eye className="w-4 h-4 text-mono-100 dark:text-white" />
+                      <Link to={`/recipes/${recipe.id}`} className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.view")}>
+                        <Eye aria-hidden="true" className="w-4 h-4 text-mono-100 dark:text-white" />
                       </Link>
-                      <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
-                        <Pencil className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+                      <button onClick={() => openEdit(recipe)} className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
+                        <Pencil aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-700" />
                       </button>
-                      <button onClick={() => handleQuickDuplicate(recipe)} className="p-1.5 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Dupliquer avec ingredients" aria-label="Dupliquer la recette">
-                        <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      <button onClick={() => handleQuickDuplicate(recipe)} className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Dupliquer avec ingredients" aria-label="Dupliquer la recette">
+                        <Copy aria-hidden="true" className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       </button>
-                      <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-1.5 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
-                        <Printer className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+                      <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
+                        <Printer aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-700" />
                       </button>
-                      <button onClick={() => setOptimizingRecipe(recipe)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
-                        <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                      <button onClick={() => setOptimizingRecipe(recipe)} className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
+                        <Sparkles aria-hidden="true" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                       </button>
-                      <button onClick={() => setDeleteTarget(recipe.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
-                        <Trash2 className="w-4 h-4 text-red-500" />
+                      <button onClick={() => setDeleteTarget(recipe.id)} className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
+                        <Trash2 aria-hidden="true" className="w-4 h-4 text-red-500" />
                       </button>
                     </div>
                   </td>
@@ -3051,7 +3062,7 @@ export default function Recipes() {
                 <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-1">
                   Creez votre premiere fiche technique
                 </h3>
-                <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-md mb-4">
+                <p className="text-sm text-[#737373] dark:text-mono-500 max-w-md mb-4">
                   Composez vos recettes avec ingredients et prix de vente — RestauMargin calcule automatiquement vos marges, food cost et coefficient multiplicateur.
                 </p>
                 <div className="flex flex-wrap gap-3 justify-center">
@@ -3059,18 +3070,18 @@ export default function Recipes() {
                     onClick={openNew}
                     className="inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
                   >
-                    <Plus className="w-4 h-4" /> Creer une recette
+                    <Plus aria-hidden="true" className="w-4 h-4" /> Creer une recette
                   </button>
                   <button
                     onClick={() => setActiveTab('templates')}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-colors"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-mono-50 text-[#737373] dark:text-mono-700 text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-colors"
                   >
-                    <Package className="w-4 h-4" /> Ou importez un pack
+                    <Package aria-hidden="true" className="w-4 h-4" /> Ou importez un pack
                   </button>
                 </div>
               </div>
             ) : (
-              <p className="text-[#9CA3AF] dark:text-mono-500 text-center py-8">{t("recipes.noResults")}</p>
+              <p className="text-[#737373] dark:text-mono-500 text-center py-8">{t("recipes.noResults")}</p>
             )
           ) : sortedFiltered.map((recipe) => (
             <div
@@ -3088,45 +3099,45 @@ export default function Recipes() {
                 <FoodIllustration recipeName={recipe.name} category={recipe.category} size="sm" animated={false} />
                 <div className="min-w-0 flex-1">
                   <div className="font-medium text-mono-100 dark:text-white truncate">{recipe.name}</div>
-                  <div className="text-xs text-[#6B7280] dark:text-mono-700 truncate">{recipe.category}</div>
+                  <div className="text-xs text-[#737373] dark:text-mono-700 truncate">{recipe.category}</div>
                 </div>
                 <MarginBadge percent={recipe.margin.marginPercent} />
               </div>
               <div className="grid grid-cols-3 gap-2 mt-2 text-sm">
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">{t("recipes.colSellingPrice")}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500">{t("recipes.colSellingPrice")}</div>
                   <div className="font-mono text-mono-100 dark:text-white">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">{t("recipes.colCost")}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500">{t("recipes.colCost")}</div>
                   <div className="font-mono text-mono-100 dark:text-white">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500">{t("recipes.colCoefficient")}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500">{t("recipes.colCoefficient")}</div>
                   <div className="font-mono text-mono-100 dark:text-white">
                     x{recipe.margin.coefficient.toFixed(2)}
-                    <span className="text-[10px] ml-1 text-[#6B7280] dark:text-mono-700">(obj. x{getCoefficient(recipe.category, coefficients).toFixed(1)})</span>
+                    <span className="text-[10px] ml-1 text-[#737373] dark:text-mono-700">(obj. x{getCoefficient(recipe.category, coefficients).toFixed(1)})</span>
                   </div>
                 </div>
               </div>
               <div className="flex gap-1 justify-end mt-2">
                 <Link to={`/recipes/${recipe.id}`} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.view")}>
-                  <Eye className="w-4 h-4 text-mono-100 dark:text-white" />
+                  <Eye aria-hidden="true" className="w-4 h-4 text-mono-100 dark:text-white" />
                 </Link>
                 <button onClick={() => openEdit(recipe)} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
-                  <Pencil className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+                  <Pencil aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-700" />
                 </button>
                 <button onClick={() => handleQuickDuplicate(recipe)} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Dupliquer avec ingredients" aria-label="Dupliquer la recette">
-                  <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <Copy aria-hidden="true" className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </button>
                 <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
-                  <Printer className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+                  <Printer aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-700" />
                 </button>
                 <button onClick={() => setOptimizingRecipe(recipe)} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
-                  <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <Sparkles aria-hidden="true" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </button>
                 <button onClick={() => setDeleteTarget(recipe.id)} className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
-                  <Trash2 className="w-4 h-4 text-red-500" />
+                  <Trash2 aria-hidden="true" className="w-4 h-4 text-red-500" />
                 </button>
               </div>
             </div>
@@ -3145,7 +3156,7 @@ export default function Recipes() {
               <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-1">
                 Creez votre premiere fiche technique
               </h3>
-              <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-md mb-4">
+              <p className="text-sm text-[#737373] dark:text-mono-500 max-w-md mb-4">
                 Composez vos recettes avec ingredients et prix de vente — RestauMargin calcule automatiquement vos marges, food cost et coefficient multiplicateur.
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
@@ -3153,18 +3164,18 @@ export default function Recipes() {
                   onClick={openNew}
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
                 >
-                  <Plus className="w-4 h-4" /> Creer une recette
+                  <Plus aria-hidden="true" className="w-4 h-4" /> Creer une recette
                 </button>
                 <button
                   onClick={() => setActiveTab('templates')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-mono-50 text-[#737373] dark:text-mono-700 text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:border-mono-100 dark:hover:border-white hover:text-mono-100 dark:hover:text-white transition-colors"
                 >
-                  <Package className="w-4 h-4" /> Ou importez un pack
+                  <Package aria-hidden="true" className="w-4 h-4" /> Ou importez un pack
                 </button>
               </div>
             </div>
           ) : (
-            <p className="text-[#9CA3AF] dark:text-mono-500 col-span-full text-center py-8">
+            <p className="text-[#737373] dark:text-mono-500 col-span-full text-center py-8">
               {t("recipes.noResults")}
             </p>
           )
@@ -3193,7 +3204,7 @@ export default function Recipes() {
                 className={`absolute top-2 right-2 z-10 p-1.5 rounded-lg transition-all ${isComparing ? 'bg-blue-500 text-white shadow-lg' : 'bg-black/30 text-white opacity-0 group-hover:opacity-100 hover:bg-black/50'}`}
                 title={isComparing ? 'Retirer de la comparaison' : 'Ajouter a la comparaison'}
               >
-                <GitCompareArrows className="w-3.5 h-3.5" />
+                <GitCompareArrows aria-hidden="true" className="w-3.5 h-3.5" />
               </button>
 
               {/* Margin Alert Badge */}
@@ -3213,12 +3224,12 @@ export default function Recipes() {
                     <h3 className="font-bold text-lg text-mono-100 dark:text-white leading-tight">{recipe.name}</h3>
                     <div className="flex items-center gap-2 mt-1">
                       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${getCategoryBadgeColor(recipe.category)}`}>
-                        <Tag className="w-2.5 h-2.5" /> {recipe.category}
+                        <Tag aria-hidden="true" className="w-2.5 h-2.5" /> {recipe.category}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 mt-1.5">
                       <span className="text-sm font-semibold text-mono-100 dark:text-white">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</span>
-                      <span className="text-[#9CA3AF] dark:text-mono-500">/</span>
+                      <span className="text-[#737373] dark:text-mono-500">/</span>
                       <MarginBadge percent={recipe.margin.marginPercent} />
                     </div>
                   </div>
@@ -3229,15 +3240,15 @@ export default function Recipes() {
                 {/* Key stats row */}
                 <div className="grid grid-cols-3 gap-2 text-center mb-3">
                   <div className="bg-mono-1000 dark:bg-mono-50 rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-[#9CA3AF] dark:text-mono-500">{t("recipes.sale")}</div>
+                    <div className="text-[11px] text-[#737373] dark:text-mono-500">{t("recipes.sale")}</div>
                     <div className="text-sm font-bold text-mono-100 dark:text-white">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</div>
                   </div>
                   <div className="bg-mono-1000 dark:bg-mono-50 rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-[#9CA3AF] dark:text-mono-500">{t("recipes.cost")}</div>
+                    <div className="text-[11px] text-[#737373] dark:text-mono-500">{t("recipes.cost")}</div>
                     <div className="text-sm font-bold text-mono-100 dark:text-white">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</div>
                   </div>
                   <div className="bg-mono-1000 dark:bg-mono-50 rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-[#9CA3AF] dark:text-mono-500">{t("recipes.margin")}</div>
+                    <div className="text-[11px] text-[#737373] dark:text-mono-500">{t("recipes.margin")}</div>
                     <div className={`text-sm font-bold tabular-nums ${recipe.margin.marginPercent >= 70 ? 'text-emerald-600 dark:text-emerald-400' : recipe.margin.marginPercent >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                       {recipe.margin.marginPercent.toFixed(1)}%
                     </div>
@@ -3245,7 +3256,7 @@ export default function Recipes() {
                 </div>
 
                 {/* Coefficient info */}
-                <div className="text-[11px] text-[#6B7280] dark:text-mono-700 font-mono mb-2">
+                <div className="text-[11px] text-[#737373] dark:text-mono-700 font-mono mb-2">
                   Coeff. x{recipe.margin.coefficient.toFixed(2)} (obj. x{getCoefficient(recipe.category, coefficients).toFixed(1)} {recipe.category})
                 </div>
 
@@ -3273,12 +3284,12 @@ export default function Recipes() {
                     <div className="flex flex-wrap gap-1.5 mb-2">
                       {seasonalIngs.length > 0 && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
-                          <Leaf className="w-3 h-3" /> {seasonalIngs.length} ingredient{seasonalIngs.length > 1 ? 's' : ''} de saison
+                          <Leaf aria-hidden="true" className="w-3 h-3" /> {seasonalIngs.length} ingredient{seasonalIngs.length > 1 ? 's' : ''} de saison
                         </span>
                       )}
                       {priceAlertIngs.length > 0 && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
-                          <AlertTriangle className="w-3 h-3" /> {priceAlertIngs.length} alerte{priceAlertIngs.length > 1 ? 's' : ''} prix
+                          <AlertTriangle aria-hidden="true" className="w-3 h-3" /> {priceAlertIngs.length} alerte{priceAlertIngs.length > 1 ? 's' : ''} prix
                         </span>
                       )}
                     </div>
@@ -3291,30 +3302,30 @@ export default function Recipes() {
                 {/* Description/Notes preview */}
                 {recipe.description && (
                   <div className="flex items-start gap-1.5 mb-2 px-1">
-                    <StickyNote className="w-3 h-3 text-[#9CA3AF] dark:text-mono-500 mt-0.5 shrink-0" />
-                    <p className="text-[11px] text-[#6B7280] dark:text-mono-700 line-clamp-2 leading-relaxed italic">{recipe.description}</p>
+                    <StickyNote aria-hidden="true" className="w-3 h-3 text-[#737373] dark:text-mono-500 mt-0.5 shrink-0" />
+                    <p className="text-[11px] text-[#737373] dark:text-mono-700 line-clamp-2 leading-relaxed italic">{recipe.description}</p>
                   </div>
                 )}
 
                 {/* Actions */}
                 <div className="flex gap-1.5 pt-3 border-t border-mono-900 dark:border-mono-200 mt-2">
                   <Link to={`/recipes/${recipe.id}`} className="btn-secondary text-sm flex items-center gap-1 flex-1 justify-center">
-                    <Eye className="w-4 h-4" /> {t("recipes.view")}
+                    <Eye aria-hidden="true" className="w-4 h-4" /> {t("recipes.view")}
                   </Link>
                   <button onClick={() => openEdit(recipe)} className="p-2.5 sm:p-2 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
-                    <Pencil className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+                    <Pencil aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-700" />
                   </button>
                   <button onClick={() => handleQuickDuplicate(recipe)} className="p-2.5 sm:p-2 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Dupliquer avec ingredients" aria-label="Dupliquer la recette">
-                    <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    <Copy aria-hidden="true" className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   </button>
                   <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-2.5 sm:p-2 rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
-                    <Printer className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+                    <Printer aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-700" />
                   </button>
                   <button onClick={() => setOptimizingRecipe(recipe)} className="p-2.5 sm:p-2 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
-                    <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    <Sparkles aria-hidden="true" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   </button>
                   <button onClick={() => setDeleteTarget(recipe.id)} className="p-2.5 sm:p-2 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
-                    <Trash2 className="w-4 h-4 text-red-500" />
+                    <Trash2 aria-hidden="true" className="w-4 h-4 text-red-500" />
                   </button>
                 </div>
               </div>
@@ -3329,7 +3340,7 @@ export default function Recipes() {
       {selectedRecipeIds.size > 0 && (
         <div className="fixed bottom-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 bg-mono-100 dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-4 justify-center">
           <span className="text-sm font-medium flex items-center gap-2">
-            <CheckSquare className="w-4 h-4" />
+            <CheckSquare aria-hidden="true" className="w-4 h-4" />
             {selectedRecipeIds.size} selectionne{selectedRecipeIds.size > 1 ? 's' : ''}
           </span>
           <div className="w-px h-6 bg-white/20 dark:bg-black/20" />
@@ -3339,7 +3350,7 @@ export default function Recipes() {
             onClick={() => setShowBatchFixer(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
           >
-            <Zap className="w-4 h-4" />
+            <Zap aria-hidden="true" className="w-4 h-4" />
             Optimiser les prix
           </button>
 
@@ -3348,7 +3359,7 @@ export default function Recipes() {
             onClick={() => setShowBatchOptimizer(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-teal-600 hover:bg-teal-500 text-white transition-colors"
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkles aria-hidden="true" className="w-4 h-4" />
             Optimiser la carte
           </button>
 
@@ -3357,7 +3368,7 @@ export default function Recipes() {
             onClick={bulkDeleteRecipes}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-500 text-white transition-colors"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 aria-hidden="true" className="w-4 h-4" />
             Supprimer ({selectedRecipeIds.size})
           </button>
 
@@ -3367,9 +3378,9 @@ export default function Recipes() {
               onClick={() => setBulkRecipeCategoryOpen(!bulkRecipeCategoryOpen)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
             >
-              <Tag className="w-4 h-4" />
+              <Tag aria-hidden="true" className="w-4 h-4" />
               Changer categorie
-              <ChevronDown className="w-3 h-3" />
+              <ChevronDown aria-hidden="true" className="w-3 h-3" />
             </button>
             {bulkRecipeCategoryOpen && (
               <div className="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-mono-50 rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-56 overflow-y-auto">
@@ -3392,7 +3403,7 @@ export default function Recipes() {
             className="p-1.5 rounded-lg hover:bg-white/10 dark:hover:bg-black/10 transition-colors ml-1"
             aria-label="Fermer la selection"
           >
-            <X className="w-4 h-4" />
+            <X aria-hidden="true" className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -3406,9 +3417,10 @@ export default function Recipes() {
         {/* Template search + category filter */}
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500" />
+            <Search aria-hidden="true" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#737373] dark:text-mono-500" />
             <input
               type="text"
+              aria-label="Rechercher un template"
               placeholder="Rechercher un template..."
               value={templateSearch}
               onChange={(e) => setTemplateSearch(e.target.value)}
@@ -3421,7 +3433,7 @@ export default function Recipes() {
         <div className="flex flex-wrap gap-2 mb-6">
           <button
             onClick={() => setTemplateCategoryFilter('all')}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === 'all' ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-200'}`}
+            className={`px-3 py-1.5 min-h-[44px] inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === 'all' ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-200'}`}
           >
             Toutes ({Object.values(templatesByCategory).reduce((s, arr) => s + arr.length, 0)})
           </button>
@@ -3432,7 +3444,7 @@ export default function Recipes() {
               <button
                 key={cat}
                 onClick={() => setTemplateCategoryFilter(cat)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === cat ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-200'}`}
+                className={`px-3 py-1.5 min-h-[44px] inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === cat ? 'bg-mono-100 dark:bg-white text-white dark:text-black' : 'bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-200'}`}
               >
                 {cat === 'Entrée' ? 'Entrees' : cat === 'Plat' ? 'Plats' : cat === 'Dessert' ? 'Desserts' : cat === 'Accompagnement' ? 'Accompagnements' : cat} ({count})
               </button>
@@ -3442,7 +3454,7 @@ export default function Recipes() {
 
         {/* Template cards grid */}
         {filteredTemplates.length === 0 ? (
-          <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">
+          <div className="text-center py-12 text-[#737373] dark:text-mono-500">
             Aucun template ne correspond a votre recherche.
           </div>
         ) : (
@@ -3460,7 +3472,7 @@ export default function Recipes() {
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-mono-100 dark:text-white truncate">{tpl.name}</h3>
-                        <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded-full bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
+                        <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded-full bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700">
                           {catLabel}
                         </span>
                       </div>
@@ -3468,17 +3480,17 @@ export default function Recipes() {
                         {tpl.suggestedSellingPrice}{getCurrencySymbol()}
                       </span>
                     </div>
-                    <p className="text-xs text-[#6B7280] dark:text-mono-700 line-clamp-2">{tpl.description}</p>
+                    <p className="text-xs text-[#737373] dark:text-mono-700 line-clamp-2">{tpl.description}</p>
                   </div>
 
                   {/* Stats */}
                   <div className="px-4 pb-3">
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-[#9CA3AF] dark:text-mono-500">
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-[#737373] dark:text-mono-500">
                       <span className="flex items-center gap-1">
-                        <Users className="w-3 h-3" /> {tpl.nbPortions} portion{tpl.nbPortions > 1 ? 's' : ''}
+                        <Users aria-hidden="true" className="w-3 h-3" /> {tpl.nbPortions} portion{tpl.nbPortions > 1 ? 's' : ''}
                       </span>
                       <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {tpl.suggestedPrepTime + tpl.suggestedCookTime} min
+                        <Clock aria-hidden="true" className="w-3 h-3" /> {tpl.suggestedPrepTime + tpl.suggestedCookTime} min
                       </span>
                       <span className="flex items-center gap-1">
                         {tpl.suggestedIngredients.length} ingredients
@@ -3488,7 +3500,7 @@ export default function Recipes() {
                     {/* Cost estimation from DB ingredients */}
                     {preview.foundCount > 0 && (
                       <div className="flex items-center gap-3 mt-2 text-xs">
-                        <span className="text-[#6B7280] dark:text-mono-700">
+                        <span className="text-[#737373] dark:text-mono-700">
                           Cout estime : <strong className="font-mono">{preview.costPerPortion.toFixed(2)}{getCurrencySymbol()}</strong>
                         </span>
                         <span className={`font-medium ${preview.margin >= 70 ? 'text-green-600 dark:text-green-400' : preview.margin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
@@ -3505,12 +3517,12 @@ export default function Recipes() {
                     {/* Ingredients preview */}
                     <div className="mt-2 flex flex-wrap gap-1">
                       {tpl.suggestedIngredients.slice(0, 4).map((ing, i) => (
-                        <span key={i} className="px-1.5 py-0.5 text-[10px] rounded bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
+                        <span key={i} className="px-1.5 py-0.5 text-[10px] rounded bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700">
                           {ing.name}
                         </span>
                       ))}
                       {tpl.suggestedIngredients.length > 4 && (
-                        <span className="px-1.5 py-0.5 text-[10px] rounded bg-mono-950 dark:bg-[#171717] text-[#9CA3AF] dark:text-mono-500">
+                        <span className="px-1.5 py-0.5 text-[10px] rounded bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-500">
                           +{tpl.suggestedIngredients.length - 4}
                         </span>
                       )}
@@ -3523,7 +3535,7 @@ export default function Recipes() {
                       onClick={() => useTemplate(tpl)}
                       className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus aria-hidden="true" className="w-4 h-4" />
                       Utiliser ce template
                     </button>
                   </div>
@@ -3543,7 +3555,7 @@ export default function Recipes() {
           <div className="mb-4 rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center">
-                <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <Check aria-hidden="true" className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
               <div>
                 <p className="text-sm font-medium text-green-700 dark:text-green-300">
@@ -3566,7 +3578,7 @@ export default function Recipes() {
 
         {/* Pack description */}
         <div className="mb-6">
-          <p className="text-sm text-[#6B7280] dark:text-mono-700">
+          <p className="text-sm text-[#737373] dark:text-mono-700">
             Importez un pack complet de recettes en un clic. Chaque pack cree automatiquement les ingredients et les recettes avec des quantites et prix realistes.
           </p>
         </div>
@@ -3603,17 +3615,17 @@ export default function Recipes() {
                       </span>
                     </div>
                   </div>
-                  <p className="text-sm text-[#6B7280] dark:text-mono-700 line-clamp-2">{pack.description}</p>
+                  <p className="text-sm text-[#737373] dark:text-mono-700 line-clamp-2">{pack.description}</p>
                 </div>
 
                 {/* Stats row */}
                 <div className="px-5 pb-3">
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-[#9CA3AF] dark:text-mono-500">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-[#737373] dark:text-mono-500">
                     <span className="flex items-center gap-1">
-                      <UtensilsCrossed className="w-3 h-3" /> {pack.recipes.length} recettes
+                      <UtensilsCrossed aria-hidden="true" className="w-3 h-3" /> {pack.recipes.length} recettes
                     </span>
                     <span className="flex items-center gap-1">
-                      <Tag className="w-3 h-3" /> {totalIngredients} ingredients
+                      <Tag aria-hidden="true" className="w-3 h-3" /> {totalIngredients} ingredients
                     </span>
                     <span className={`flex items-center gap-1 font-medium ${avgMargin >= 70 ? 'text-green-600 dark:text-green-400' : avgMargin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                       ~{avgMargin.toFixed(0)}% marge
@@ -3632,13 +3644,13 @@ export default function Recipes() {
                           className={`flex items-center justify-between py-1.5 px-2.5 rounded-lg text-sm ${alreadyExists ? 'bg-green-50 dark:bg-green-900/10' : 'bg-mono-975 dark:bg-[#171717]'}`}
                         >
                           <div className="flex items-center gap-2 min-w-0">
-                            <span className="text-[#6B7280] dark:text-mono-700 text-xs font-mono w-5 flex-shrink-0">{recipe.category === 'Entrée' ? 'E' : recipe.category === 'Plat' ? 'P' : recipe.category === 'Dessert' ? 'D' : recipe.category === 'Accompagnement' ? 'A' : 'B'}</span>
+                            <span className="text-[#737373] dark:text-mono-700 text-xs font-mono w-5 flex-shrink-0">{recipe.category === 'Entrée' ? 'E' : recipe.category === 'Plat' ? 'P' : recipe.category === 'Dessert' ? 'D' : recipe.category === 'Accompagnement' ? 'A' : 'B'}</span>
                             <span className={`truncate ${alreadyExists ? 'text-green-700 dark:text-green-400' : 'text-mono-100 dark:text-white'}`}>
                               {recipe.name}
                             </span>
-                            {alreadyExists && <Check className="w-3 h-3 text-green-500 flex-shrink-0" />}
+                            {alreadyExists && <Check aria-hidden="true" className="w-3 h-3 text-green-500 flex-shrink-0" />}
                           </div>
-                          <span className="text-xs font-mono text-[#9CA3AF] dark:text-mono-500 flex-shrink-0 ml-2">
+                          <span className="text-xs font-mono text-[#737373] dark:text-mono-500 flex-shrink-0 ml-2">
                             {recipe.sellingPrice}{getCurrencySymbol()}
                           </span>
                         </div>
@@ -3656,12 +3668,12 @@ export default function Recipes() {
                   >
                     {isImporting ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" />
                         Import en cours...
                       </>
                     ) : (
                       <>
-                        <Download className="w-4 h-4" />
+                        <Download aria-hidden="true" className="w-4 h-4" />
                         Importer ce pack
                       </>
                     )}
@@ -3689,9 +3701,9 @@ export default function Recipes() {
                     className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-black rounded-lg transition-colors"
                   >
                     {aiSuggestionsLoading ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <Loader2 aria-hidden="true" className="w-3.5 h-3.5 animate-spin" />
                     ) : (
-                      <Sparkles className="w-3.5 h-3.5" />
+                      <Sparkles aria-hidden="true" className="w-3.5 h-3.5" />
                     )}
                     Suggerer les ingredients
                   </button>
@@ -3699,6 +3711,7 @@ export default function Recipes() {
               </div>
               <input
                 required
+                aria-label="Nom de la recette"
                 className="input w-full"
                 value={form.name}
                 onChange={(e) => handleNameChange(e.target.value)}
@@ -3710,7 +3723,7 @@ export default function Recipes() {
               {showSuggestions && suggestions.length > 0 && (
                 <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-[#171717] rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-80 overflow-y-auto">
                   <div className="px-3 py-2 text-xs font-medium text-mono-100 dark:text-white border-b border-mono-900 dark:border-mono-200 flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" /> {t("recipes.recipeSuggestions")}
+                    <Sparkles aria-hidden="true" className="w-3 h-3" /> {t("recipes.recipeSuggestions")}
                   </div>
                   {suggestions.slice(0, 8).map((tpl, idx) => {
                     const preview = getTemplatePreview(tpl);
@@ -3724,19 +3737,19 @@ export default function Recipes() {
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="font-medium text-mono-100 dark:text-white">{tpl.name}</span>
-                            <span className="ml-2 text-xs text-[#9CA3AF] dark:text-mono-500">{tpl.category}</span>
+                            <span className="ml-2 text-xs text-[#737373] dark:text-mono-500">{tpl.category}</span>
                           </div>
-                          <span className="text-sm font-mono text-[#9CA3AF] dark:text-mono-500">{tpl.suggestedSellingPrice} {getCurrencySymbol()}</span>
+                          <span className="text-sm font-mono text-[#737373] dark:text-mono-500">{tpl.suggestedSellingPrice} {getCurrencySymbol()}</span>
                         </div>
-                        <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{tpl.description}</div>
+                        <div className="text-xs text-[#737373] dark:text-mono-500 mt-0.5">{tpl.description}</div>
                         {/* Preview card with cost/margin estimates */}
                         <div className="flex items-center gap-3 mt-1.5 text-xs">
-                          <span className="px-1.5 py-0.5 rounded bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700">
+                          <span className="px-1.5 py-0.5 rounded bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700">
                             {tpl.suggestedIngredients.length} {t("recipes.ingredients")}
                           </span>
                           {preview.foundCount > 0 && (
                             <>
-                              <span className="text-[#9CA3AF] dark:text-mono-500">
+                              <span className="text-[#737373] dark:text-mono-500">
                                 {t("recipes.estimatedCost")} : {preview.costPerPortion.toFixed(2)}{getCurrencySymbol()}
                               </span>
                               <span className={`font-medium ${preview.margin >= 70 ? 'text-green-600' : preview.margin >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
@@ -3756,7 +3769,7 @@ export default function Recipes() {
                   <button
                     type="button"
                     onClick={() => setShowSuggestions(false)}
-                    className="w-full text-center px-3 py-2 text-xs text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white"
+                    className="w-full text-center px-3 py-2 text-xs text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white"
                   >
                     {t("recipes.closeSuggestions")}
                   </button>
@@ -3771,16 +3784,16 @@ export default function Recipes() {
                   {/* Header */}
                   <div className="flex items-center justify-between px-4 py-3 bg-mono-950 dark:bg-[#171717] border-b border-mono-900 dark:border-mono-200">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-mono-100 dark:text-white" />
+                      <Sparkles aria-hidden="true" className="w-4 h-4 text-mono-100 dark:text-white" />
                       <span className="text-sm font-semibold text-mono-100 dark:text-white">
                         Ingredients suggeres par l'IA
                       </span>
-                      <span className="text-xs text-[#6B7280] dark:text-mono-700 bg-mono-950 dark:bg-[#171717] px-2 py-0.5 rounded-full">
+                      <span className="text-xs text-[#737373] dark:text-mono-700 bg-mono-950 dark:bg-[#171717] px-2 py-0.5 rounded-full">
                         {aiSuggestionsChecked.filter(Boolean).length}/{aiSuggestions.length} selectionnes
                       </span>
                     </div>
-                    <button type="button" onClick={() => setShowAiSuggestions(false)} aria-label="Fermer les suggestions IA" className="p-1 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
-                      <X className="w-4 h-4" />
+                    <button type="button" onClick={() => setShowAiSuggestions(false)} aria-label="Fermer les suggestions IA" className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
+                      <X aria-hidden="true" className="w-4 h-4" />
                     </button>
                   </div>
                   {/* List */}
@@ -3800,18 +3813,18 @@ export default function Recipes() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <span className="text-sm text-mono-100 dark:text-white font-medium">{s.name}</span>
-                            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{s.quantity} {s.unit}</span>
+                            <span className="text-xs text-[#737373] dark:text-mono-500">{s.quantity} {s.unit}</span>
                           </div>
                           {s.priceMin != null && s.priceMax != null ? (
-                            <span className="text-xs text-[#6B7280] dark:text-mono-700">
+                            <span className="text-xs text-[#737373] dark:text-mono-700">
                               {'📊'} Marche : {s.priceMin.toFixed(2)}-{s.priceMax.toFixed(2)}{getCurrencySymbol()}/{s.unit}
                               {s.supplier && ` (${s.supplier})`}
                               {s.trend === 'baisse' && <span className="text-emerald-400 ml-1">{'↘'} {s.trendDetail}</span>}
                               {s.trend === 'hausse' && <span className="text-red-400 ml-1">{'↗'} {s.trendDetail}</span>}
-                              {s.trend === 'stable' && <span className="text-[#9CA3AF] dark:text-mono-500 ml-1">{'→'} {s.trendDetail}</span>}
+                              {s.trend === 'stable' && <span className="text-[#737373] dark:text-mono-500 ml-1">{'→'} {s.trendDetail}</span>}
                             </span>
                           ) : (
-                            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">Prix marche non disponible</span>
+                            <span className="text-xs text-[#737373] dark:text-mono-500">Prix marche non disponible</span>
                           )}
                         </div>
                         {s.marketPrice != null && (
@@ -3840,7 +3853,7 @@ export default function Recipes() {
                       disabled={!aiSuggestionsChecked.some(Boolean)}
                       className="flex items-center gap-1.5 px-4 py-2 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-black text-sm font-semibold rounded-lg transition-colors"
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus aria-hidden="true" className="w-4 h-4" />
                       Ajouter ({aiSuggestionsChecked.filter(Boolean).length})
                     </button>
                   </div>
@@ -3853,9 +3866,9 @@ export default function Recipes() {
               <div className="col-span-2">
                 <div className={`rounded-lg p-3 text-sm flex items-start gap-2 ${templateApplyInfo.missing.length > 0 ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800' : 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'}`}>
                   {templateApplyInfo.missing.length > 0 ? (
-                    <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                    <AlertTriangle aria-hidden="true" className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
                   ) : (
-                    <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    <Check aria-hidden="true" className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                   )}
                   <div>
                     <p className={templateApplyInfo.missing.length > 0 ? 'text-amber-700 dark:text-amber-300' : 'text-green-700 dark:text-green-300'}>
@@ -3881,9 +3894,10 @@ export default function Recipes() {
                   <button
                     type="button"
                     onClick={() => setTemplateApplyInfo(null)}
-                    className="ml-auto p-0.5 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white flex-shrink-0"
+                    aria-label="Fermer"
+                    className="ml-auto min-h-[44px] min-w-[44px] flex items-center justify-center text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white flex-shrink-0"
                   >
-                    <X className="w-3 h-3" />
+                    <X aria-hidden="true" className="w-3 h-3" />
                   </button>
                 </div>
               </div>
@@ -3891,31 +3905,32 @@ export default function Recipes() {
 
             <div>
               <label className="label">{t("recipes.category")}</label>
-              <select required className="input w-full" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
+              <select required aria-label="Catégorie de la recette" className="input w-full" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
                 {RECIPE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
               <label className="label">{t("recipes.nbPortions")}</label>
-              <input required type="number" min="1" className="input w-full" value={form.nbPortions} onChange={(e) => setForm({ ...form, nbPortions: e.target.value })} />
+              <input required type="number" min="1" aria-label="Nombre de portions" className="input w-full" value={form.nbPortions} onChange={(e) => setForm({ ...form, nbPortions: e.target.value })} />
             </div>
             <div>
               <label className="label">{t("recipes.sellingPrice")}</label>
-              <input required type="number" step="0.01" min="0" className="input w-full" value={form.sellingPrice} onChange={(e) => setForm({ ...form, sellingPrice: e.target.value })} />
+              <input required type="number" step="0.01" min="0" aria-label="Prix de vente" className="input w-full" value={form.sellingPrice} onChange={(e) => setForm({ ...form, sellingPrice: e.target.value })} />
             </div>
             <div className="sm:col-span-2">
               <label className="label flex items-center gap-1.5">
-                <StickyNote className="w-3.5 h-3.5" />
+                <StickyNote aria-hidden="true" className="w-3.5 h-3.5" />
                 Notes du chef
               </label>
               <textarea
+                aria-label="Notes du chef"
                 className="input w-full resize-none"
                 rows={3}
                 placeholder="Astuces, variantes, conseils de dressage..."
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
               />
-              <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-1">Visible sur la fiche technique imprimee</p>
+              <p className="text-[10px] text-[#737373] dark:text-mono-500 mt-1">Visible sur la fiche technique imprimee</p>
             </div>
           </div>
 
@@ -3923,40 +3938,40 @@ export default function Recipes() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="label">{t("recipes.prepTime")}</label>
-              <input type="number" min="0" className="input w-full" value={form.prepTimeMinutes} onChange={(e) => setForm({ ...form, prepTimeMinutes: e.target.value })} />
+              <input type="number" min="0" aria-label="Temps de préparation (minutes)" className="input w-full" value={form.prepTimeMinutes} onChange={(e) => setForm({ ...form, prepTimeMinutes: e.target.value })} />
             </div>
             <div>
               <label className="label">{t("recipes.cookTime")}</label>
-              <input type="number" min="0" className="input w-full" value={form.cookTimeMinutes} onChange={(e) => setForm({ ...form, cookTimeMinutes: e.target.value })} />
+              <input type="number" min="0" aria-label="Temps de cuisson (minutes)" className="input w-full" value={form.cookTimeMinutes} onChange={(e) => setForm({ ...form, cookTimeMinutes: e.target.value })} />
             </div>
             <div>
               <label className="label">{t("recipes.laborCostPerHour")}</label>
-              <input type="number" step="0.01" min="0" className="input w-full" value={form.laborCostPerHour} onChange={(e) => setForm({ ...form, laborCostPerHour: e.target.value })} />
+              <input type="number" step="0.01" min="0" aria-label="Coût de main-d'œuvre par heure" className="input w-full" value={form.laborCostPerHour} onChange={(e) => setForm({ ...form, laborCostPerHour: e.target.value })} />
             </div>
           </div>
 
           {/* Live cost/margin preview - always visible */}
           <div className="bg-gradient-to-r from-mono-1000 to-mono-950 dark:from-mono-50 dark:to-mono-50 rounded-lg p-4 border border-mono-900 dark:border-mono-200">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-mono-100 dark:text-white" />
+              <TrendingUp aria-hidden="true" className="w-4 h-4 text-mono-100 dark:text-white" />
               <span className="text-sm font-semibold text-mono-100 dark:text-white">{t("recipes.livePreview")}</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm">
-              <div className="flex justify-between text-[#6B7280] dark:text-mono-700">
+              <div className="flex justify-between text-[#737373] dark:text-mono-700">
                 <span>{t("recipes.materialCost")}</span>
                 <strong className="font-mono">{liveCost.toFixed(2)} {getCurrencySymbol()}</strong>
               </div>
-              <div className="flex justify-between text-[#6B7280] dark:text-mono-700">
+              <div className="flex justify-between text-[#737373] dark:text-mono-700">
                 <span>{t("recipes.costPerPortion")}</span>
                 <strong className="font-mono">{liveCostPerPortion.toFixed(2)} {getCurrencySymbol()}</strong>
               </div>
               {liveLaborPerPortion > 0 && (
-                <div className="flex justify-between text-[#6B7280] dark:text-mono-700">
+                <div className="flex justify-between text-[#737373] dark:text-mono-700">
                   <span>{t("recipes.laborPerPortion")}</span>
                   <strong className="font-mono">{liveLaborPerPortion.toFixed(2)} {getCurrencySymbol()}</strong>
                 </div>
               )}
-              <div className="flex justify-between text-[#6B7280] dark:text-mono-700">
+              <div className="flex justify-between text-[#737373] dark:text-mono-700">
                 <span>{t("recipes.totalPerPortion")}</span>
                 <strong className="font-mono">{liveTotalPerPortion.toFixed(2)} {getCurrencySymbol()}</strong>
               </div>
@@ -3965,15 +3980,16 @@ export default function Recipes() {
             {liveTotalPerPortion > 0 && (
               <div className="flex items-center justify-between mt-2 pt-2 border-t border-mono-900 dark:border-mono-200">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-sm text-[#6B7280] dark:text-mono-700">Prix suggéré</span>
+                  <span className="text-sm text-[#737373] dark:text-mono-700">Prix suggéré</span>
                   {editingCoeff ? (
                     <span className="flex items-center gap-1">
-                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500">×</span>
+                      <span className="text-xs text-[#737373] dark:text-mono-500">×</span>
                       <input
                         type="number"
                         step="0.1"
                         min="1"
                         max="20"
+                        aria-label="Coefficient multiplicateur"
                         className="input w-16 text-center text-xs py-0.5 font-mono"
                         value={tempCoeff}
                         autoFocus
@@ -3995,18 +4011,18 @@ export default function Recipes() {
                           }
                         }}
                       />
-                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500">({form.category})</span>
+                      <span className="text-xs text-[#737373] dark:text-mono-500">({form.category})</span>
                     </span>
                   ) : (
                     <button
                       type="button"
-                      className="flex items-center gap-1 text-xs text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors"
+                      className="flex items-center gap-1 text-xs text-[#737373] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors"
                       onClick={() => { setTempCoeff(liveCoeff); setEditingCoeff(true); }}
                       title="Modifier le coefficient"
                     >
                       <span className="font-mono">×{liveCoeff.toFixed(1)}</span>
                       <span>({form.category})</span>
-                      <Pencil className="w-3 h-3" />
+                      <Pencil aria-hidden="true" className="w-3 h-3" />
                     </button>
                   )}
                 </div>
@@ -4022,7 +4038,7 @@ export default function Recipes() {
             )}
             {liveSellingPrice > 0 && (
               <div className="flex items-center justify-between mt-2 pt-2 border-t border-mono-900 dark:border-mono-200">
-                <span className="text-sm font-semibold text-[#6B7280] dark:text-mono-700">{t("recipes.estimatedMarginLabel")}</span>
+                <span className="text-sm font-semibold text-[#737373] dark:text-mono-700">{t("recipes.estimatedMarginLabel")}</span>
                 <span className={`text-lg font-bold ${liveMargin >= 70 ? 'text-green-600' : liveMargin >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
                   {liveMargin.toFixed(1)}%
                 </span>
@@ -4049,11 +4065,11 @@ export default function Recipes() {
               <div className="flex items-center gap-2">
                 {formIngredients.length > 0 && (
                   <button type="button" onClick={() => { setShowBatchWeighing(true); setShowQuickWeighAdd(false); }} className="flex items-center gap-1 text-xs text-mono-100 dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium px-2 py-1 rounded-lg bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200">
-                    <Scale className="w-3 h-3" /> Peser tous
+                    <Scale aria-hidden="true" className="w-3 h-3" /> Peser tous
                   </button>
                 )}
                 <button type="button" onClick={() => { setShowQuickWeighAdd(true); setShowBatchWeighing(false); }} className="flex items-center gap-1 text-xs text-mono-100 dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium px-2 py-1 rounded-lg bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200">
-                  <Scale className="w-3 h-3" /> <Plus className="w-3 h-3" /> Peser et ajouter
+                  <Scale aria-hidden="true" className="w-3 h-3" /> <Plus aria-hidden="true" className="w-3 h-3" /> Peser et ajouter
                 </button>
                 <button type="button" onClick={addIngredientLine} className="text-sm text-mono-100 dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium">
                   {t("recipes.addIngredient")}
@@ -4103,7 +4119,7 @@ export default function Recipes() {
             )}
 
             {formIngredients.length === 0 ? (
-              <p className="text-sm text-[#9CA3AF] dark:text-mono-500 py-2">{t("recipes.noIngredients")}</p>
+              <p className="text-sm text-[#737373] dark:text-mono-500 py-2">{t("recipes.noIngredients")}</p>
             ) : (
               <div className="space-y-3">
                 {formIngredients.map((fi, idx) => {
@@ -4137,8 +4153,8 @@ export default function Recipes() {
                             setFormIngredients(updated);
                           }}
                         />
-                        <button type="button" onClick={() => removeIngredientLine(idx)} aria-label="Retirer l'ingrédient" className="p-1 text-red-400 hover:text-red-600 flex-shrink-0">
-                          <Trash2 className="w-4 h-4" />
+                        <button type="button" onClick={() => removeIngredientLine(idx)} aria-label="Retirer l'ingrédient" className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-red-400 hover:text-red-600 flex-shrink-0">
+                          <Trash2 aria-hidden="true" className="w-4 h-4" />
                         </button>
                       </div>
 
@@ -4146,12 +4162,13 @@ export default function Recipes() {
                       {isNewIngredient && fi.newName.trim() && (
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pl-1">
                           <div>
-                            <label className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Prix unitaire</label>
+                            <label className="text-[10px] text-[#737373] dark:text-mono-500 uppercase">Prix unitaire</label>
                             <input
                               type="number"
                               step="0.01"
                               min="0"
                               placeholder="0.00"
+                              aria-label="Prix unitaire du nouvel ingrédient"
                               className="input w-full text-sm"
                               value={fi.newPrice}
                               onChange={(e) => {
@@ -4162,8 +4179,9 @@ export default function Recipes() {
                             />
                           </div>
                           <div>
-                            <label className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Unite</label>
+                            <label className="text-[10px] text-[#737373] dark:text-mono-500 uppercase">Unite</label>
                             <select
+                              aria-label="Unité du nouvel ingrédient"
                               className="input w-full text-sm"
                               value={fi.newUnit}
                               onChange={(e) => {
@@ -4176,8 +4194,9 @@ export default function Recipes() {
                             </select>
                           </div>
                           <div>
-                            <label className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Categorie</label>
+                            <label className="text-[10px] text-[#737373] dark:text-mono-500 uppercase">Categorie</label>
                             <select
+                              aria-label="Catégorie du nouvel ingrédient"
                               className="input w-full text-sm"
                               value={fi.newCategory}
                               onChange={(e) => {
@@ -4199,6 +4218,7 @@ export default function Recipes() {
                             type="number"
                             step="0.001"
                             min="0"
+                            aria-label="Quantité"
                             placeholder={t("recipes.qtyPlaceholder")}
                             className={`input w-24 ${weighedLines.has(idx) ? 'border-green-400 dark:border-green-600' : ''}`}
                             value={fi.quantity}
@@ -4209,30 +4229,31 @@ export default function Recipes() {
                             }}
                           />
                           {weighedLines.has(idx) && (
-                            <Check className="absolute right-1 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-green-500" />
+                            <Check aria-hidden="true" className="absolute right-1 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-green-500" />
                           )}
                         </div>
                         <button
                           type="button"
                           onClick={() => { setWeighingLineIdx(weighingLineIdx === idx ? null : idx); setSimWeight(0); }}
-                          className={`flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors flex-shrink-0 ${
+                          className={`flex items-center gap-1 px-2 py-1.5 min-h-[44px] rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors flex-shrink-0 ${
                             weighingLineIdx === idx
                               ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
                               : weighedLines.has(idx)
                               ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800'
-                              : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 border border-mono-900 dark:border-mono-200 hover:bg-mono-900 dark:hover:bg-mono-300'
+                              : 'bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700 border border-mono-900 dark:border-mono-200 hover:bg-mono-900 dark:hover:bg-mono-300'
                           }`}
                           title="Peser cet ingredient"
                         >
-                          <Scale className="w-3 h-3" />
-                          {weighedLines.has(idx) ? <Check className="w-3 h-3" /> : 'Peser'}
+                          <Scale aria-hidden="true" className="w-3 h-3" />
+                          {weighedLines.has(idx) ? <Check aria-hidden="true" className="w-3 h-3" /> : 'Peser'}
                         </button>
-                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500 w-10">{unitLabel}</span>
+                        <span className="text-xs text-[#737373] dark:text-mono-500 w-10">{unitLabel}</span>
                         <input
                           type="number"
                           step="1"
                           min="0"
                           max="100"
+                          aria-label="Pourcentage de perte"
                           placeholder={t("recipes.wastePlaceholder")}
                           className="input w-20"
                           value={fi.wastePercent}
@@ -4243,12 +4264,12 @@ export default function Recipes() {
                           }}
                           title={t("recipes.wasteTooltip")}
                         />
-                        <span className="text-xs text-[#9CA3AF] dark:text-mono-500 w-4">%</span>
+                        <span className="text-xs text-[#737373] dark:text-mono-500 w-4">%</span>
                         <div className="w-full sm:w-auto sm:ml-auto flex items-center justify-between gap-2">
-                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">
+                          <span className="text-xs text-[#737373] dark:text-mono-500">
                             {unitPrice > 0 && <>{unitPrice.toFixed(2)}{getCurrencySymbol()}/{unitLabel}</>}
                           </span>
-                          <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'}`}>{lineTotal.toFixed(2)} {getCurrencySymbol()}</span>
+                          <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-mono-100 dark:text-white' : 'text-[#737373] dark:text-mono-500'}`}>{lineTotal.toFixed(2)} {getCurrencySymbol()}</span>
                         </div>
                       </div>
 
@@ -4275,7 +4296,7 @@ export default function Recipes() {
 
                 {/* Running total of food cost */}
                 <div className="flex items-center justify-end gap-2 pt-2 border-t border-mono-900 dark:border-mono-200">
-                  <span className="text-sm text-[#9CA3AF] dark:text-mono-500">{t("recipes.materialTotal")}</span>
+                  <span className="text-sm text-[#737373] dark:text-mono-500">{t("recipes.materialTotal")}</span>
                   <span className="text-sm font-bold font-mono text-mono-100 dark:text-white">{liveCost.toFixed(2)} {getCurrencySymbol()}</span>
                 </div>
               </div>
@@ -4283,7 +4304,7 @@ export default function Recipes() {
           </div>
 
           <div className="flex items-center justify-between pt-2">
-            <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{t("recipes.ctrlEnterSave")}</span>
+            <span className="text-xs text-[#737373] dark:text-mono-500">{t("recipes.ctrlEnterSave")}</span>
             <div className="flex gap-3">
               <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">{t("recipes.cancel")}</button>
               <button
@@ -4292,9 +4313,9 @@ export default function Recipes() {
                 disabled={saving}
               >
                 {saving ? (
-                  <><Loader2 className="w-4 h-4 animate-spin" /> {t("recipes.saving")}</>
+                  <><Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" /> {t("recipes.saving")}</>
                 ) : saveSuccess ? (
-                  <><Check className="w-4 h-4" /> {t("recipes.saved")}</>
+                  <><Check aria-hidden="true" className="w-4 h-4" /> {t("recipes.saved")}</>
                 ) : (
                   editingId ? t("recipes.edit") : t("recipes.createRecipe")
                 )}
@@ -4310,11 +4331,11 @@ export default function Recipes() {
           <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between p-4 border-b border-mono-900 dark:border-mono-200">
               <div className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-emerald-500" />
+                <Zap aria-hidden="true" className="w-5 h-5 text-emerald-500" />
                 <h3 className="text-lg font-bold text-mono-100 dark:text-white">Optimiser les prix</h3>
               </div>
-              <button onClick={() => setShowBatchFixer(false)} className="p-1 text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
-                <X className="w-5 h-5" />
+              <button onClick={() => setShowBatchFixer(false)} aria-label="Fermer" className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#737373] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white">
+                <X aria-hidden="true" className="w-5 h-5" />
               </button>
             </div>
 
@@ -4327,6 +4348,7 @@ export default function Recipes() {
                 </div>
                 <input
                   type="range"
+                  aria-label="Marge cible"
                   min={30}
                   max={90}
                   step={5}
@@ -4334,7 +4356,7 @@ export default function Recipes() {
                   onChange={(e) => setBatchTargetMargin(parseInt(e.target.value))}
                   className="w-full h-2 bg-mono-900 dark:bg-mono-200 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                 />
-                <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-mono-500 mt-1">
+                <div className="flex justify-between text-[10px] text-[#737373] dark:text-mono-500 mt-1">
                   <span>30%</span>
                   <span>60%</span>
                   <span>90%</span>
@@ -4354,9 +4376,9 @@ export default function Recipes() {
                           {r.currentMargin.toFixed(1)}%
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-mono-700">
+                      <div className="flex items-center gap-2 text-xs text-[#737373] dark:text-mono-700">
                         <span>Cout: {r.cost.toFixed(2)}{getCurrencySymbol()}</span>
-                        <span className="text-[#9CA3AF] dark:text-mono-500">|</span>
+                        <span className="text-[#737373] dark:text-mono-500">|</span>
                         <span>Actuel: {r.currentPrice.toFixed(2)}{getCurrencySymbol()}</span>
                         {needsChange && (
                           <>
@@ -4370,7 +4392,7 @@ export default function Recipes() {
                         )}
                         {!needsChange && (
                           <span className="text-emerald-500 font-medium flex items-center gap-1">
-                            <Check className="w-3 h-3" /> OK
+                            <Check aria-hidden="true" className="w-3 h-3" /> OK
                           </span>
                         )}
                       </div>
@@ -4381,7 +4403,7 @@ export default function Recipes() {
 
               {/* Apply button */}
               <div className="flex items-center justify-between pt-2 border-t border-mono-900 dark:border-mono-200">
-                <span className="text-xs text-[#9CA3AF] dark:text-mono-500">
+                <span className="text-xs text-[#737373] dark:text-mono-500">
                   {batchFixerResults.filter(r => Math.abs(r.suggestedPrice - r.currentPrice) > 0.01).length} recette(s) a ajuster
                 </span>
                 <button
@@ -4418,7 +4440,7 @@ export default function Recipes() {
                   }}
                   className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold rounded-lg transition-colors"
                 >
-                  <Zap className="w-4 h-4" />
+                  <Zap aria-hidden="true" className="w-4 h-4" />
                   Appliquer les prix
                 </button>
               </div>

@@ -20,6 +20,8 @@ import IngredientAvatar from '../components/IngredientAvatar';
 import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 import { updateOnboardingStep } from '../components/OnboardingWizard';
 import FoodIllustration from '../components/FoodIllustration';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 
 // ── Price alert helpers (localStorage) ─────────────────────────────────
 interface PriceAlert {
@@ -104,7 +106,7 @@ function PriceSparkline({ prices }: { prices: number[] }) {
   const max = Math.max(...pts);
   const range = max - min || 1;
   const trending = pts[pts.length - 1] > pts[0] ? 'up' : pts[pts.length - 1] < pts[0] ? 'down' : 'stable';
-  const color = trending === 'up' ? '#EF4444' : trending === 'down' ? '#10B981' : '#9CA3AF';
+  const color = trending === 'up' ? '#EF4444' : trending === 'down' ? '#10B981' : '#737373';
 
   // Generate SVG path
   const width = 60;
@@ -188,6 +190,7 @@ export default function Ingredients() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [showForm, setShowForm] = useState(false);
@@ -419,6 +422,7 @@ export default function Ingredients() {
       setIngredients(data);
       setSuppliers(sups);
       setInventoryItems(inv);
+      setLoadError(false);
       // Check price alerts once per session
       if (!alertsChecked) {
         setAlertsChecked(true);
@@ -434,6 +438,7 @@ export default function Ingredients() {
         }
       }
     } catch {
+      setLoadError(true);
       showToast(t('ingredients.loadError'), 'error');
     } finally {
       setLoading(false);
@@ -996,12 +1001,13 @@ export default function Ingredients() {
     return (
       <button onClick={() => toggleSort(field)} className="flex items-center gap-1 font-medium hover:text-mono-100 dark:hover:text-white">
         {label}
-        <ArrowUpDown className={`w-3 h-3 ${sortKey === field ? 'text-mono-100 dark:text-white' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
+        <ArrowUpDown aria-hidden="true" className={`w-3 h-3 ${sortKey === field ? 'text-mono-100 dark:text-white' : 'text-[#737373] dark:text-mono-500'}`} />
       </button>
     );
   }
 
-  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">{t('ingredients.loading')}</div>;
+  if (loading) return <LoadingState label={t('ingredients.loading')} />;
+  if (loadError) return <ErrorState message={t('ingredients.loadError')} onRetry={loadIngredients} />;
 
   return (
     <div>
@@ -1010,16 +1016,16 @@ export default function Ingredients() {
         <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-mono-100 dark:text-white">{t('ingredients.title')}</h2>
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <button onClick={exportCSV} className="hidden sm:flex btn-secondary items-center gap-2 text-sm no-print" title="Exporter CSV">
-            <Download className="w-4 h-4" /> Exporter CSV
+            <Download aria-hidden="true" className="w-4 h-4" /> Exporter CSV
           </button>
           <button onClick={handleImportClick} className="hidden sm:flex btn-secondary items-center gap-2 text-sm no-print" title="Importer CSV">
-            <Upload className="w-4 h-4" /> Importer CSV
+            <Upload aria-hidden="true" className="w-4 h-4" /> Importer CSV
           </button>
           <button onClick={() => window.print()} className="hidden sm:flex btn-secondary items-center gap-2 text-sm no-print" title={t('ingredients.printTooltip')}>
-            <Printer className="w-4 h-4" /> {t('ingredients.print')}
+            <Printer aria-hidden="true" className="w-4 h-4" /> {t('ingredients.print')}
           </button>
           <button onClick={openNew} className="btn-primary flex items-center gap-2 flex-1 sm:flex-none justify-center">
-            <Plus className="w-4 h-4" /> {t('ingredients.add')}
+            <Plus aria-hidden="true" className="w-4 h-4" /> {t('ingredients.add')}
           </button>
         </div>
       </div>
@@ -1038,8 +1044,8 @@ export default function Ingredients() {
               <p className={`text-xs font-semibold ${colors.text} dark:text-white/70 truncate`}>{cat}</p>
               <p className="text-lg font-bold font-satoshi tabular-nums text-mono-100 dark:text-white mt-0.5">{summary.count}</p>
               <div className="flex items-center justify-between mt-1">
-                <span className="text-[10px] text-[#6B7280] dark:text-mono-700">Moy. {summary.avgPrice.toFixed(2)}{getCurrencySymbol()}</span>
-                <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">Tot. {summary.totalSpend.toFixed(0)}{getCurrencySymbol()}</span>
+                <span className="text-[10px] text-[#737373] dark:text-mono-700">Moy. {summary.avgPrice.toFixed(2)}{getCurrencySymbol()}</span>
+                <span className="text-[10px] text-[#737373] dark:text-mono-500">Tot. {summary.totalSpend.toFixed(0)}{getCurrencySymbol()}</span>
               </div>
             </button>
           );
@@ -1050,7 +1056,7 @@ export default function Ingredients() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-4 sm:mb-6">
         <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
           <div className="p-2 sm:p-2.5 rounded-xl bg-mono-950 dark:bg-[#171717]">
-            <Package className="w-5 h-5 text-mono-100 dark:text-white" />
+            <Package aria-hidden="true" className="w-5 h-5 text-mono-100 dark:text-white" />
           </div>
           <div>
             <p className="text-xs font-general-sans text-mono-500 dark:text-mono-700">{t('ingredients.totalIngredients')}</p>
@@ -1059,7 +1065,7 @@ export default function Ingredients() {
         </div>
         <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
           <div className="p-2 sm:p-2.5 rounded-xl bg-mono-950 dark:bg-[#171717]">
-            <Euro className="w-5 h-5 text-mono-100 dark:text-white" />
+            <Euro aria-hidden="true" className="w-5 h-5 text-mono-100 dark:text-white" />
           </div>
           <div>
             <p className="text-xs font-general-sans text-mono-500 dark:text-mono-700">{t('ingredients.avgPrice')}</p>
@@ -1068,7 +1074,7 @@ export default function Ingredients() {
         </div>
         <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
           <div className="p-2 sm:p-2.5 rounded-xl bg-mono-950 dark:bg-[#171717]">
-            <Tag className="w-5 h-5 text-mono-100 dark:text-white" />
+            <Tag aria-hidden="true" className="w-5 h-5 text-mono-100 dark:text-white" />
           </div>
           <div>
             <p className="text-xs font-general-sans text-mono-500 dark:text-mono-700">{t('ingredients.expensiveCategory')}</p>
@@ -1077,7 +1083,7 @@ export default function Ingredients() {
         </div>
         <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
           <div className="p-2 sm:p-2.5 rounded-xl bg-mono-950 dark:bg-[#171717]">
-            <Truck className="w-5 h-5 text-mono-100 dark:text-white" />
+            <Truck aria-hidden="true" className="w-5 h-5 text-mono-100 dark:text-white" />
           </div>
           <div>
             <p className="text-xs font-general-sans text-mono-500 dark:text-mono-700">{t('ingredients.linkedSuppliers')}</p>
@@ -1091,7 +1097,7 @@ export default function Ingredients() {
         <div className="mb-4 sm:mb-6">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-7 h-7 rounded-lg bg-teal-600 flex items-center justify-center">
-              <Bell className="w-3.5 h-3.5 text-white" />
+              <Bell aria-hidden="true" className="w-3.5 h-3.5 text-white" />
             </div>
             <h3 className="text-sm font-bold text-mono-100 dark:text-white">Prix surveilles</h3>
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300">
@@ -1110,7 +1116,7 @@ export default function Ingredients() {
                 >
                   {hasAlert && (
                     <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center animate-pulse">
-                      <AlertTriangle className="w-2.5 h-2.5 text-white" />
+                      <AlertTriangle aria-hidden="true" className="w-2.5 h-2.5 text-white" />
                     </div>
                   )}
                   <IngredientAvatar name={ing.name} category={ing.category} size="sm" />
@@ -1119,7 +1125,7 @@ export default function Ingredients() {
                       <span className="text-xs font-semibold text-mono-100 dark:text-white truncate">{ing.name}</span>
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="text-xs font-mono text-[#6B7280] dark:text-mono-700">{ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}/{ing.unit}</span>
+                      <span className="text-xs font-mono text-[#737373] dark:text-mono-700">{ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}/{ing.unit}</span>
                       {change && change.direction !== 'stable' && (
                         <span
                           aria-label={`Prix en ${change.direction === 'up' ? 'hausse' : 'baisse'} de ${change.percent.toFixed(1)}%`}
@@ -1138,10 +1144,10 @@ export default function Ingredients() {
                   {sparklinePrices && <PriceSparkline prices={sparklinePrices} />}
                   <button
                     onClick={() => togglePriceWatch(ing.id)}
-                    className="p-1 rounded-md text-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors flex-shrink-0"
+                    className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md text-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors flex-shrink-0"
                     title="Retirer de la surveillance"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X aria-hidden="true" className="w-3.5 h-3.5" />
                   </button>
                 </div>
               );
@@ -1174,10 +1180,10 @@ export default function Ingredients() {
       <div className="flex flex-wrap gap-2 mb-4">
         <button
           onClick={() => setFilterCategory('')}
-          className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+          className={`px-3 py-1.5 min-h-[44px] inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors ${
             !filterCategory
               ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
-              : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
+              : 'bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
           }`}
         >
           {t('ingredients.allCategories')} ({ingredients.length})
@@ -1186,10 +1192,10 @@ export default function Ingredients() {
           <button
             key={cat}
             onClick={() => setFilterCategory(filterCategory === cat ? '' : cat)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            className={`px-3 py-1.5 min-h-[44px] inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors ${
               filterCategory === cat
                 ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
-                : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
+                : 'bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
             }`}
           >
             {cat} ({categoryCounts[cat] || 0})
@@ -1200,10 +1206,10 @@ export default function Ingredients() {
       {/* ── Import/Export bar (mobile) ──────────────────────────────── */}
       <div className="flex sm:hidden gap-2 mb-3">
         <button onClick={exportCSV} className="flex-1 btn-secondary flex items-center justify-center gap-2 text-xs">
-          <Download className="w-3.5 h-3.5" /> Exporter
+          <Download aria-hidden="true" className="w-3.5 h-3.5" /> Exporter
         </button>
         <button onClick={handleImportClick} className="flex-1 btn-secondary flex items-center justify-center gap-2 text-xs">
-          <Upload className="w-3.5 h-3.5" /> Importer
+          <Upload aria-hidden="true" className="w-3.5 h-3.5" /> Importer
         </button>
       </div>
 
@@ -1211,7 +1217,7 @@ export default function Ingredients() {
       {/* Desktop / tablette (>= md) : tableau dense */}
       <div className="hidden md:block bg-white dark:bg-mono-50 rounded-2xl shadow overflow-x-auto border border-mono-900 dark:border-mono-200">
         <table className="w-full text-sm min-w-[740px]">
-          <thead className="bg-mono-1000 dark:bg-mono-50 text-[#6B7280] dark:text-mono-700 text-left">
+          <thead className="bg-mono-1000 dark:bg-mono-50 text-[#737373] dark:text-mono-700 text-left">
             <tr>
               <th scope="col" className="px-4 py-3 w-10">
                 <input
@@ -1244,14 +1250,14 @@ export default function Ingredients() {
                       <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-1">
                         Ajoutez votre premier ingredient
                       </h3>
-                      <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-sm mb-2">
+                      <p className="text-sm text-[#737373] dark:text-mono-500 max-w-sm mb-2">
                         Commencez par ajouter vos ingredients avec leurs prix fournisseur. L'IA peut suggerer les prix du marche.
                       </p>
                       <div className="flex flex-wrap gap-2 justify-center my-3">
-                        <span className="text-xs px-3 py-1 rounded-full bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700">
+                        <span className="text-xs px-3 py-1 rounded-full bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200 text-[#737373] dark:text-mono-700">
                           Ex: Poulet (filet) — 9.50 EUR/kg
                         </span>
-                        <span className="text-xs px-3 py-1 rounded-full bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700">
+                        <span className="text-xs px-3 py-1 rounded-full bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200 text-[#737373] dark:text-mono-700">
                           Ex: Tomates — 2.80 EUR/kg
                         </span>
                       </div>
@@ -1259,14 +1265,14 @@ export default function Ingredients() {
                         onClick={openNew}
                         className="mt-3 inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors"
                       >
-                        <Plus className="w-4 h-4" /> Ajouter un ingredient
+                        <Plus aria-hidden="true" className="w-4 h-4" /> Ajouter un ingredient
                       </button>
                     </div>
                   </td>
                 </tr>
               ) : (
                 <tr>
-                  <td colSpan={9} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-mono-500">
+                  <td colSpan={9} className="px-4 py-8 text-center text-[#737373] dark:text-mono-500">
                     {t('ingredients.noResults')}
                   </td>
                 </tr>
@@ -1307,7 +1313,7 @@ export default function Ingredients() {
                     <td className="px-4 py-3">
                       <button
                         onClick={() => openPriceTracker(ing)}
-                        className="inline-flex items-center gap-1.5 font-mono text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors group"
+                        className="inline-flex items-center gap-1.5 font-mono text-[#737373] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors group"
                         title="Voir l'historique des prix"
                       >
                         {ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}
@@ -1329,9 +1335,9 @@ export default function Ingredients() {
                             </span>
                           );
                         })()}
-                        <BarChart3 className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <BarChart3 aria-hidden="true" className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                         {getAlertForIngredient(ing.id) !== null && (
-                          <Bell className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
+                          <Bell aria-hidden="true" className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#737373] dark:text-mono-500'}`} />
                         )}
                       </button>
                     </td>
@@ -1340,10 +1346,10 @@ export default function Ingredients() {
                       {sparklinePrices && sparklinePrices.length >= 2 ? (
                         <PriceSparkline prices={sparklinePrices} />
                       ) : (
-                        <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">--</span>
+                        <span className="text-[10px] text-[#737373] dark:text-mono-500">--</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[#6B7280] dark:text-mono-700">{ing.unit}</td>
+                    <td className="px-4 py-3 text-[#737373] dark:text-mono-700">{ing.unit}</td>
                     {/* Supplier Badge */}
                     <td className="px-4 py-3">
                       {supplierName && badgeColor ? (
@@ -1352,26 +1358,26 @@ export default function Ingredients() {
                           className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${badgeColor.bg} ${badgeColor.text} ${badgeColor.hover}`}
                           title={`Voir le fournisseur : ${supplierName}`}
                         >
-                          <Truck className="w-3 h-3 flex-shrink-0" />
+                          <Truck aria-hidden="true" className="w-3 h-3 flex-shrink-0" />
                           {supplierName}
                         </button>
                       ) : (
-                        <span className="text-[#9CA3AF] dark:text-mono-500 italic text-xs">{t('ingredients.notAssigned')}</span>
+                        <span className="text-[#737373] dark:text-mono-500 italic text-xs">{t('ingredients.notAssigned')}</span>
                       )}
                     </td>
                     {/* Cost Alert */}
                     <td className="px-3 py-3">
                       {isAlert ? (
                         <span className="inline-flex items-center gap-1 text-red-500" title="Prix en hausse >10%">
-                          <Flame className="w-4 h-4" />
+                          <Flame aria-hidden="true" className="w-4 h-4" />
                         </span>
                       ) : isStable ? (
                         <span className="inline-flex items-center gap-1 text-emerald-500" title="Prix stable">
-                          <CheckCircle className="w-4 h-4" />
+                          <CheckCircle aria-hidden="true" className="w-4 h-4" />
                         </span>
                       ) : (
-                        <span className="text-[#9CA3AF] dark:text-mono-500">
-                          <Minus className="w-4 h-4" />
+                        <span className="text-[#737373] dark:text-mono-500">
+                          <Minus aria-hidden="true" className="w-4 h-4" />
                         </span>
                       )}
                     </td>
@@ -1383,13 +1389,13 @@ export default function Ingredients() {
                           title={watchedIds.has(ing.id) ? 'Retirer la surveillance' : 'Surveiller le prix'}
                           aria-label={watchedIds.has(ing.id) ? 'Ne plus surveiller' : 'Surveiller le prix'}
                         >
-                          <Bell aria-hidden="true" className={`w-4 h-4 ${watchedIds.has(ing.id) ? 'text-teal-600 dark:text-teal-400 fill-teal-600 dark:fill-teal-400' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
+                          <Bell aria-hidden="true" className={`w-4 h-4 ${watchedIds.has(ing.id) ? 'text-teal-600 dark:text-teal-400 fill-teal-600 dark:fill-teal-400' : 'text-[#737373] dark:text-mono-500'}`} />
                         </button>
                         <button onClick={() => openWeigh(ing)} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title={t('ingredients.weighTooltip')} aria-label="Peser l'ingredient">
                           <Scale aria-hidden="true" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         </button>
                         <button onClick={() => openEdit(ing)} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" title={t('ingredients.editTooltip')} aria-label="Modifier l'ingredient">
-                          <Pencil aria-hidden="true" className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
+                          <Pencil aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-700" />
                         </button>
                         <button onClick={() => setDeleteTarget(ing.id)} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t('ingredients.deleteTooltip')} aria-label="Supprimer l'ingredient">
                           <Trash2 aria-hidden="true" className="w-4 h-4 text-red-500" />
@@ -1412,13 +1418,13 @@ export default function Ingredients() {
               <>
                 <FoodIllustration recipeName="tomate" size="lg" />
                 <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi mb-1 mt-3">Ajoutez votre premier ingredient</h3>
-                <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-sm mb-3">Commencez par ajouter vos ingredients avec leurs prix fournisseur.</p>
+                <p className="text-sm text-[#737373] dark:text-mono-500 max-w-sm mb-3">Commencez par ajouter vos ingredients avec leurs prix fournisseur.</p>
                 <button onClick={openNew} className="inline-flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-mono-900 transition-colors">
-                  <Plus className="w-4 h-4" /> Ajouter un ingredient
+                  <Plus aria-hidden="true" className="w-4 h-4" /> Ajouter un ingredient
                 </button>
               </>
             ) : (
-              <span className="text-[#9CA3AF] dark:text-mono-500 text-sm">{t('ingredients.noResults')}</span>
+              <span className="text-[#737373] dark:text-mono-500 text-sm">{t('ingredients.noResults')}</span>
             )}
           </div>
         ) : (
@@ -1443,18 +1449,18 @@ export default function Ingredients() {
                         </div>
                         <div className="mt-1 flex flex-wrap items-center gap-1.5">
                           <span className="px-2 py-0.5 rounded-full text-[11px] bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white">{ing.category}</span>
-                          <span className="text-[11px] text-[#6B7280] dark:text-mono-700">{ing.unit}</span>
-                          {isAlert ? (<Flame className="w-3.5 h-3.5 text-red-500" />) : isStable ? (<CheckCircle className="w-3.5 h-3.5 text-emerald-500" />) : null}
+                          <span className="text-[11px] text-[#737373] dark:text-mono-700">{ing.unit}</span>
+                          {isAlert ? (<Flame aria-hidden="true" className="w-3.5 h-3.5 text-red-500" />) : isStable ? (<CheckCircle aria-hidden="true" className="w-3.5 h-3.5 text-emerald-500" />) : null}
                         </div>
                       </div>
                       <button onClick={() => openPriceTracker(ing)} className="shrink-0 text-right font-mono text-sm text-mono-100 dark:text-white" title="Voir l'historique des prix">
                         <span className="flex items-center gap-1 justify-end">
                           {ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}
-                          {getAlertForIngredient(ing.id) !== null && (<Bell className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#9CA3AF] dark:text-mono-500'}`} />)}
+                          {getAlertForIngredient(ing.id) !== null && (<Bell aria-hidden="true" className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#737373] dark:text-mono-500'}`} />)}
                         </span>
                         {change && change.direction !== 'stable' && (
                           <span className={`mt-0.5 inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${change.direction === 'up' ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400' : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400'}`}>
-                            {change.direction === 'up' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                            {change.direction === 'up' ? <TrendingUp aria-hidden="true" className="w-3 h-3" /> : <TrendingDown aria-hidden="true" className="w-3 h-3" />}
                             {change.percent.toFixed(1)}%
                           </span>
                         )}
@@ -1463,20 +1469,20 @@ export default function Ingredients() {
                     <div className="mt-2 flex items-center justify-between gap-2">
                       {supplierName && badgeColor ? (
                         <button onClick={() => navigate('/suppliers')} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${badgeColor.bg} ${badgeColor.text} ${badgeColor.hover}`} title={`Voir le fournisseur : ${supplierName}`}>
-                          <Truck className="w-3 h-3 flex-shrink-0" /> {supplierName}
+                          <Truck aria-hidden="true" className="w-3 h-3 flex-shrink-0" /> {supplierName}
                         </button>
                       ) : (
-                        <span className="text-[#9CA3AF] dark:text-mono-500 italic text-xs">{t('ingredients.notAssigned')}</span>
+                        <span className="text-[#737373] dark:text-mono-500 italic text-xs">{t('ingredients.notAssigned')}</span>
                       )}
                       {sparklinePrices && sparklinePrices.length >= 2 ? (<PriceSparkline prices={sparklinePrices} />) : null}
                     </div>
                     <div className="mt-2 flex gap-1">
-                      <button onClick={() => togglePriceWatch(ing.id)} className={`p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded transition-colors ${watchedIds.has(ing.id) ? 'bg-teal-100 dark:bg-teal-900/30' : 'hover:bg-teal-50 dark:hover:bg-teal-900/20'}`} aria-label={watchedIds.has(ing.id) ? 'Ne plus surveiller' : 'Surveiller le prix'}>
-                        <Bell aria-hidden="true" className={`w-4 h-4 ${watchedIds.has(ing.id) ? 'text-teal-600 dark:text-teal-400 fill-teal-600 dark:fill-teal-400' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
+                      <button onClick={() => togglePriceWatch(ing.id)} className={`p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded transition-colors ${watchedIds.has(ing.id) ? 'bg-teal-100 dark:bg-teal-900/30' : 'hover:bg-teal-50 dark:hover:bg-teal-900/20'}`} aria-label={watchedIds.has(ing.id) ? 'Ne plus surveiller' : 'Surveiller le prix'}>
+                        <Bell aria-hidden="true" className={`w-4 h-4 ${watchedIds.has(ing.id) ? 'text-teal-600 dark:text-teal-400 fill-teal-600 dark:fill-teal-400' : 'text-[#737373] dark:text-mono-500'}`} />
                       </button>
-                      <button onClick={() => openWeigh(ing)} className="p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" aria-label="Peser l'ingredient"><Scale aria-hidden="true" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /></button>
-                      <button onClick={() => openEdit(ing)} className="p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" aria-label="Modifier l'ingredient"><Pencil aria-hidden="true" className="w-4 h-4 text-[#6B7280] dark:text-mono-700" /></button>
-                      <button onClick={() => setDeleteTarget(ing.id)} className="p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded hover:bg-red-100 dark:hover:bg-red-900/30 ml-auto" aria-label="Supprimer l'ingredient"><Trash2 aria-hidden="true" className="w-4 h-4 text-red-500" /></button>
+                      <button onClick={() => openWeigh(ing)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" aria-label="Peser l'ingredient"><Scale aria-hidden="true" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /></button>
+                      <button onClick={() => openEdit(ing)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]" aria-label="Modifier l'ingredient"><Pencil aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-700" /></button>
+                      <button onClick={() => setDeleteTarget(ing.id)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-red-100 dark:hover:bg-red-900/30 ml-auto" aria-label="Supprimer l'ingredient"><Trash2 aria-hidden="true" className="w-4 h-4 text-red-500" /></button>
                     </div>
                   </div>
                 </div>
@@ -1486,10 +1492,10 @@ export default function Ingredients() {
         )}
       </div>
 
-      <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-3">{t('ingredients.ingredientCount').replace('{count}', String(filtered.length))}</p>
+      <p className="text-sm text-[#737373] dark:text-mono-500 mt-3">{t('ingredients.ingredientCount').replace('{count}', String(filtered.length))}</p>
 
       {/* Hidden file input for CSV import */}
-      <input type="file" ref={fileInputRef} accept=".csv" className="hidden" onChange={(e) => {
+      <input type="file" aria-label="Importer un fichier CSV" ref={fileInputRef} accept=".csv" className="hidden" onChange={(e) => {
         const file = e.target.files?.[0];
         if (!file) return;
         const reader = new FileReader();
@@ -1535,7 +1541,7 @@ export default function Ingredients() {
       {selectedIds.size > 0 && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-mono-100 dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-4 animate-in slide-in-from-bottom-4 max-w-[95vw]">
           <span className="text-sm font-medium flex items-center gap-2">
-            <CheckSquare className="w-4 h-4" />
+            <CheckSquare aria-hidden="true" className="w-4 h-4" />
             {selectedIds.size} ingredient{selectedIds.size > 1 ? 's' : ''} selectionne{selectedIds.size > 1 ? 's' : ''}
           </span>
           <div className="w-px h-6 bg-white/20 dark:bg-black/20 hidden sm:block" />
@@ -1543,9 +1549,9 @@ export default function Ingredients() {
           {/* Export selected CSV */}
           <button
             onClick={exportSelectedCSV}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
           >
-            <Download className="w-4 h-4" />
+            <Download aria-hidden="true" className="w-4 h-4" />
             <span className="hidden sm:inline">Exporter selection CSV</span>
             <span className="sm:hidden">CSV</span>
           </button>
@@ -1553,9 +1559,9 @@ export default function Ingredients() {
           {/* Bulk price update */}
           <button
             onClick={openBulkPriceUpdate}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-amber-600 hover:bg-amber-500 text-white transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-lg text-sm font-medium bg-amber-600 hover:bg-amber-500 text-white transition-colors"
           >
-            <Percent className="w-4 h-4" />
+            <Percent aria-hidden="true" className="w-4 h-4" />
             <span className="hidden sm:inline">Mettre a jour les prix</span>
             <span className="sm:hidden">Prix</span>
           </button>
@@ -1563,9 +1569,9 @@ export default function Ingredients() {
           {/* Bulk delete with confirmation */}
           <button
             onClick={() => setShowBulkDeleteConfirm(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-500 text-white transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-lg text-sm font-medium bg-red-600 hover:bg-red-500 text-white transition-colors"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 aria-hidden="true" className="w-4 h-4" />
             <span className="hidden sm:inline">Supprimer selection ({selectedIds.size})</span>
             <span className="sm:hidden">{selectedIds.size}</span>
           </button>
@@ -1574,11 +1580,11 @@ export default function Ingredients() {
           <div className="relative">
             <button
               onClick={() => { setBulkCategoryOpen(!bulkCategoryOpen); setBulkSupplierOpen(false); }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
             >
-              <Tag className="w-4 h-4" />
+              <Tag aria-hidden="true" className="w-4 h-4" />
               <span className="hidden sm:inline">Changer categorie</span>
-              <ChevronDown className="w-3 h-3" />
+              <ChevronDown aria-hidden="true" className="w-3 h-3" />
             </button>
             {bulkCategoryOpen && (
               <div className="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-mono-50 rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-56 overflow-y-auto">
@@ -1599,16 +1605,16 @@ export default function Ingredients() {
           <div className="relative">
             <button
               onClick={() => { setBulkSupplierOpen(!bulkSupplierOpen); setBulkCategoryOpen(false); }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
             >
-              <Truck className="w-4 h-4" />
+              <Truck aria-hidden="true" className="w-4 h-4" />
               <span className="hidden sm:inline">Changer fournisseur</span>
-              <ChevronDown className="w-3 h-3" />
+              <ChevronDown aria-hidden="true" className="w-3 h-3" />
             </button>
             {bulkSupplierOpen && (
               <div className="absolute bottom-full left-0 mb-2 w-56 bg-white dark:bg-mono-50 rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-56 overflow-y-auto">
                 {suppliers.length === 0 ? (
-                  <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-mono-500">Aucun fournisseur</div>
+                  <div className="px-3 py-2 text-sm text-[#737373] dark:text-mono-500">Aucun fournisseur</div>
                 ) : suppliers.map((sup) => (
                   <button
                     key={sup.id}
@@ -1625,10 +1631,10 @@ export default function Ingredients() {
           {/* Close selection */}
           <button
             onClick={() => { setSelectedIds(new Set()); setBulkCategoryOpen(false); setBulkSupplierOpen(false); }}
-            className="p-1.5 rounded-lg hover:bg-white/10 dark:hover:bg-black/10 transition-colors ml-1"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-white/10 dark:hover:bg-black/10 transition-colors ml-1"
             aria-label="Fermer la selection"
           >
-            <X className="w-4 h-4" />
+            <X aria-hidden="true" className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -1636,7 +1642,7 @@ export default function Ingredients() {
       {/* ── Bulk Price Update Modal ──────────────────────────────────── */}
       <Modal isOpen={showBulkPriceModal} onClose={() => setShowBulkPriceModal(false)} title="Mettre a jour les prix en lot">
         <div className="space-y-4">
-          <p className="text-sm text-[#6B7280] dark:text-mono-700">
+          <p className="text-sm text-[#737373] dark:text-mono-700">
             Appliquer un ajustement de prix a <strong className="text-mono-100 dark:text-white">{selectedIds.size}</strong> ingredient(s) selectionne(s).
           </p>
 
@@ -1644,19 +1650,20 @@ export default function Ingredients() {
             <div className="flex rounded-lg border border-mono-900 dark:border-mono-200 overflow-hidden">
               <button
                 onClick={() => setBulkPriceDirection('increase')}
-                className={`px-4 py-2 text-sm font-medium transition-colors ${bulkPriceDirection === 'increase' ? 'bg-red-500 text-white' : 'bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700'}`}
+                className={`px-4 py-2 min-h-[44px] inline-flex items-center justify-center text-sm font-medium transition-colors ${bulkPriceDirection === 'increase' ? 'bg-red-500 text-white' : 'bg-white dark:bg-mono-50 text-[#737373] dark:text-mono-700'}`}
               >
-                <TrendingUp className="w-4 h-4 inline mr-1" /> Hausse
+                <TrendingUp aria-hidden="true" className="w-4 h-4 inline mr-1" /> Hausse
               </button>
               <button
                 onClick={() => setBulkPriceDirection('decrease')}
-                className={`px-4 py-2 text-sm font-medium transition-colors ${bulkPriceDirection === 'decrease' ? 'bg-emerald-500 text-white' : 'bg-white dark:bg-mono-50 text-[#6B7280] dark:text-mono-700'}`}
+                className={`px-4 py-2 min-h-[44px] inline-flex items-center justify-center text-sm font-medium transition-colors ${bulkPriceDirection === 'decrease' ? 'bg-emerald-500 text-white' : 'bg-white dark:bg-mono-50 text-[#737373] dark:text-mono-700'}`}
               >
-                <TrendingDown className="w-4 h-4 inline mr-1" /> Baisse
+                <TrendingDown aria-hidden="true" className="w-4 h-4 inline mr-1" /> Baisse
               </button>
             </div>
             <div className="flex items-center gap-2">
               <input
+                aria-label="Pourcentage d'ajustement du prix"
                 type="number"
                 step="0.1"
                 min="0"
@@ -1666,7 +1673,7 @@ export default function Ingredients() {
                 className="input w-24 text-center"
                 placeholder="5"
               />
-              <span className="text-sm text-[#6B7280] dark:text-mono-700 font-medium">%</span>
+              <span className="text-sm text-[#737373] dark:text-mono-700 font-medium">%</span>
             </div>
           </div>
 
@@ -1676,21 +1683,21 @@ export default function Ingredients() {
               <table className="w-full text-sm">
                 <thead className="bg-mono-950 dark:bg-[#171717]">
                   <tr>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-[#6B7280] dark:text-mono-700">Ingredient</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-[#6B7280] dark:text-mono-700">Avant</th>
-                    <th className="px-3 py-2 text-center text-xs font-medium text-[#6B7280] dark:text-mono-700"></th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-[#6B7280] dark:text-mono-700">Apres</th>
+                    <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-[#737373] dark:text-mono-700">Ingredient</th>
+                    <th scope="col" className="px-3 py-2 text-right text-xs font-medium text-[#737373] dark:text-mono-700">Avant</th>
+                    <th scope="col" className="px-3 py-2 text-center text-xs font-medium text-[#737373] dark:text-mono-700"></th>
+                    <th scope="col" className="px-3 py-2 text-right text-xs font-medium text-[#737373] dark:text-mono-700">Apres</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-mono-900 dark:divide-mono-200">
                   {bulkPricePreview.map((item) => (
                     <tr key={item.id}>
                       <td className="px-3 py-2 font-medium text-mono-100 dark:text-white">{item.name}</td>
-                      <td className="px-3 py-2 text-right font-mono text-[#6B7280] dark:text-mono-700">{item.oldPrice.toFixed(2)}{getCurrencySymbol()}/{item.unit}</td>
+                      <td className="px-3 py-2 text-right font-mono text-[#737373] dark:text-mono-700">{item.oldPrice.toFixed(2)}{getCurrencySymbol()}/{item.unit}</td>
                       <td className="px-3 py-2 text-center">
                         {bulkPriceDirection === 'increase'
-                          ? <TrendingUp className="w-3.5 h-3.5 text-red-500 mx-auto" />
-                          : <TrendingDown className="w-3.5 h-3.5 text-emerald-500 mx-auto" />
+                          ? <TrendingUp aria-hidden="true" className="w-3.5 h-3.5 text-red-500 mx-auto" />
+                          : <TrendingDown aria-hidden="true" className="w-3.5 h-3.5 text-emerald-500 mx-auto" />
                         }
                       </td>
                       <td className={`px-3 py-2 text-right font-mono font-semibold ${bulkPriceDirection === 'increase' ? 'text-red-500' : 'text-emerald-500'}`}>
@@ -1710,7 +1717,7 @@ export default function Ingredients() {
               disabled={bulkPricePreview.length === 0}
               className="btn-primary flex items-center gap-2 disabled:opacity-50"
             >
-              <Check className="w-4 h-4" /> Appliquer les changements
+              <Check aria-hidden="true" className="w-4 h-4" /> Appliquer les changements
             </button>
           </div>
         </div>
@@ -1722,7 +1729,7 @@ export default function Ingredients() {
         {editingId && (
           <div className="mb-4 bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-3">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-[#737373] dark:text-mono-700 uppercase tracking-wider">
                 Historique des prix (30j)
               </span>
               {priceHistory.length >= 2 && (() => {
@@ -1735,7 +1742,7 @@ export default function Ingredients() {
                 return (
                   <span
                     aria-label={isUp ? `Prix en hausse de ${pct}%` : isDown ? `Prix en baisse de ${pct}%` : `Prix stable`}
-                    className={`flex items-center gap-1 text-xs font-semibold ${isUp ? 'text-red-500' : isDown ? 'text-emerald-500' : 'text-[#9CA3AF] dark:text-mono-500'}`}
+                    className={`flex items-center gap-1 text-xs font-semibold ${isUp ? 'text-red-500' : isDown ? 'text-emerald-500' : 'text-[#737373] dark:text-mono-500'}`}
                   >
                     {isUp && <TrendingUp className="w-3.5 h-3.5" aria-hidden="true" />}
                     {isDown && <TrendingDown className="w-3.5 h-3.5" aria-hidden="true" />}
@@ -1745,11 +1752,9 @@ export default function Ingredients() {
               })()}
             </div>
             {priceHistoryLoading ? (
-              <div className="flex items-center justify-center py-4">
-                <Loader2 className="w-4 h-4 animate-spin text-[#9CA3AF] dark:text-mono-500" />
-              </div>
+              <LoadingState size="sm" label={t('ingredients.loading')} />
             ) : priceHistory.length === 0 ? (
-              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 text-center py-3">
+              <p className="text-xs text-[#737373] dark:text-mono-500 text-center py-3">
                 Pas d'historique disponible
               </p>
             ) : (
@@ -1758,7 +1763,7 @@ export default function Ingredients() {
                   <LineChart data={priceHistory} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
                     <XAxis
                       dataKey="date"
-                      tick={{ fontSize: 10, fill: '#9CA3AF' }}
+                      tick={{ fontSize: 10, fill: '#737373' }}
                       tickFormatter={(v: string) => {
                         const d = new Date(v);
                         return `${d.getDate()}/${d.getMonth() + 1}`;
@@ -1767,7 +1772,7 @@ export default function Ingredients() {
                       tickLine={false}
                     />
                     <YAxis
-                      tick={{ fontSize: 10, fill: '#9CA3AF' }}
+                      tick={{ fontSize: 10, fill: '#737373' }}
                       width={40}
                       tickFormatter={(v: number) => `${v.toFixed(1)}`}
                       axisLine={false}
@@ -1830,7 +1835,7 @@ export default function Ingredients() {
               <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-mono-50 rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-64 overflow-y-auto">
                 {nameSuggestions.length > 0 && (
                   <>
-                    <div className="px-3 py-1.5 text-xs text-[#9CA3AF] dark:text-mono-500 border-b border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50">
+                    <div className="px-3 py-1.5 text-xs text-[#737373] dark:text-mono-500 border-b border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50">
                       {t('ingredients.existingIngredients')}
                     </div>
                     {nameSuggestions.map((ing) => (
@@ -1842,9 +1847,9 @@ export default function Ingredients() {
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-mono-100 dark:text-white">{ing.name}</span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{ing.category} - {ing.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{ing.unit}</span>
+                          <span className="text-xs text-[#737373] dark:text-mono-500">{ing.category} - {ing.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{ing.unit}</span>
                         </div>
-                        {ing.supplier && <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-0.5">{t('ingredients.supplierPrefix')}{ing.supplier}</div>}
+                        {ing.supplier && <div className="text-xs text-[#737373] dark:text-mono-500 mt-0.5">{t('ingredients.supplierPrefix')}{ing.supplier}</div>}
                       </button>
                     ))}
                   </>
@@ -1852,7 +1857,7 @@ export default function Ingredients() {
                 {catalogSuggestions.length > 0 && (
                   <>
                     <div className="px-3 py-1.5 text-xs text-mono-100 dark:text-white border-b border-mono-900 dark:border-mono-200 bg-mono-950 dark:bg-[#171717] flex items-center gap-1.5">
-                      <BookOpen className="w-3 h-3" /> {t('ingredients.catalogTitle')}
+                      <BookOpen aria-hidden="true" className="w-3 h-3" /> {t('ingredients.catalogTitle')}
                     </div>
                     {catalogSuggestions.map((product, idx) => (
                       <button
@@ -1866,12 +1871,12 @@ export default function Ingredients() {
                           <span className="text-xs font-semibold text-mono-100 dark:text-white">{product.prixMoy.toFixed(2)}{getCurrencySymbol()}/{product.unit}</span>
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{product.category}</span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">|</span>
+                          <span className="text-xs text-[#737373] dark:text-mono-500">{product.category}</span>
+                          <span className="text-xs text-[#737373] dark:text-mono-500">|</span>
                           <span className="text-xs text-green-600">{product.prixMin.toFixed(2)}{getCurrencySymbol()}</span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500">&mdash;</span>
+                          <span className="text-xs text-[#737373] dark:text-mono-500">&mdash;</span>
                           <span className="text-xs text-red-500">{product.prixMax.toFixed(2)}{getCurrencySymbol()}</span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-mono-500 ml-auto">{product.fournisseurs.join(', ')}</span>
+                          <span className="text-xs text-[#737373] dark:text-mono-500 ml-auto">{product.fournisseurs.join(', ')}</span>
                         </div>
                       </button>
                     ))}
@@ -1883,8 +1888,9 @@ export default function Ingredients() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="label">{t('ingredients.unitPriceLabel')}</label>
+              <label htmlFor="ingredient-price" className="label">{t('ingredients.unitPriceLabel')}</label>
               <input
+                id="ingredient-price"
                 required
                 type="number"
                 step="0.01"
@@ -1900,14 +1906,15 @@ export default function Ingredients() {
               />
               {formErrors.pricePerUnit && <p className="text-xs text-red-500 mt-1">{t('ingredients.priceRequired')}</p>}
               {editingId && lastPrice !== null && (
-                <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-1">
+                <p className="text-xs text-[#737373] dark:text-mono-700 mt-1">
                   {t('ingredients.lastPrice').replace('{price}', lastPrice.toFixed(2))}
                 </p>
               )}
             </div>
             <div>
-              <label className="label">{t('ingredients.unitLabel')}</label>
+              <label htmlFor="ingredient-unit" className="label">{t('ingredients.unitLabel')}</label>
               <select
+                id="ingredient-unit"
                 required
                 className={`input w-full ${formErrors.unit ? 'border-red-500 ring-1 ring-red-500' : ''}`}
                 value={form.unit}
@@ -1919,8 +1926,9 @@ export default function Ingredients() {
           </div>
 
           <div>
-            <label className="label">{t('ingredients.categoryLabel')}</label>
+            <label htmlFor="ingredient-category" className="label">{t('ingredients.categoryLabel')}</label>
             <select
+              id="ingredient-category"
               required
               className={`input w-full ${formErrors.category ? 'border-red-500 ring-1 ring-red-500' : ''}`}
               value={form.category}
@@ -1930,7 +1938,7 @@ export default function Ingredients() {
             </select>
             {!editingId && suggestCategory(form.name) && suggestCategory(form.name) === form.category && (
               <p className="text-xs text-teal-600 dark:text-teal-400 mt-1 flex items-center gap-1">
-                <Check className="w-3 h-3" /> Categorie detectee automatiquement
+                <Check aria-hidden="true" className="w-3 h-3" /> Categorie detectee automatiquement
               </p>
             )}
           </div>
@@ -1938,11 +1946,11 @@ export default function Ingredients() {
           {/* Supplier dropdown with autocomplete */}
           <div className="relative" ref={supplierDropdownRef}>
             <div className="flex items-center justify-between">
-              <label className="label">{t('ingredients.supplierLabelText')}</label>
+              <label htmlFor="ingredient-supplier" className="label">{t('ingredients.supplierLabelText')}</label>
               <button
                 type="button"
                 onClick={() => setShowNewSupplierForm(!showNewSupplierForm)}
-                className="text-xs text-mono-100 dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium"
+                className="min-h-[44px] inline-flex items-center text-xs text-mono-100 dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium"
               >
                 {showNewSupplierForm ? t('ingredients.cancelCreateSupplier') : t('ingredients.createSupplier')}
               </button>
@@ -1951,6 +1959,7 @@ export default function Ingredients() {
             {showNewSupplierForm ? (
               <div className="flex gap-2 mt-1">
                 <input
+                  aria-label="Nom du nouveau fournisseur"
                   className="input flex-1"
                   value={newSupplierName}
                   onChange={(e) => setNewSupplierName(e.target.value)}
@@ -1970,6 +1979,7 @@ export default function Ingredients() {
             ) : (
               <div className="relative">
                 <input
+                  id="ingredient-supplier"
                   className="input w-full pr-8"
                   value={supplierQuery}
                   onChange={(e) => handleSupplierInputChange(e.target.value)}
@@ -1977,21 +1987,21 @@ export default function Ingredients() {
                   placeholder={t('ingredients.supplierSelectPlaceholder')}
                   autoComplete="off"
                 />
-                <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500 pointer-events-none" />
+                <ChevronDown aria-hidden="true" className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#737373] dark:text-mono-500 pointer-events-none" />
                 {form.supplier && (
                   <button
                     type="button"
                     onClick={() => { setForm({ ...form, supplier: '', supplierId: null }); setSupplierQuery(''); }}
                     aria-label="Effacer le fournisseur"
-                    className="absolute right-8 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-mono-950 dark:hover:bg-[#171717]"
+                    className="absolute right-8 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717]"
                   >
-                    <X className="w-3 h-3 text-[#9CA3AF] dark:text-mono-500" />
+                    <X aria-hidden="true" className="w-3 h-3 text-[#737373] dark:text-mono-500" />
                   </button>
                 )}
                 {showSupplierDropdown && (
                   <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-mono-50 rounded-lg shadow-xl border border-mono-900 dark:border-mono-200 max-h-48 overflow-y-auto">
                     {filteredSuppliersList.length === 0 ? (
-                      <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-mono-500">
+                      <div className="px-3 py-2 text-sm text-[#737373] dark:text-mono-500">
                         {suppliers.length === 0 ? t('ingredients.noExistingSuppliers') : t('ingredients.noMatch')}
                       </div>
                     ) : (
@@ -2000,7 +2010,7 @@ export default function Ingredients() {
                           key={s.id}
                           type="button"
                           onClick={() => selectSupplier(s)}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors ${form.supplierId === s.id ? 'bg-mono-950 dark:bg-[#171717] font-medium text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-700'}`}
+                          className={`w-full text-left px-3 py-2 text-sm hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors ${form.supplierId === s.id ? 'bg-mono-950 dark:bg-[#171717] font-medium text-mono-100 dark:text-white' : 'text-[#737373] dark:text-mono-700'}`}
                         >
                           {s.name}
                         </button>
@@ -2016,7 +2026,7 @@ export default function Ingredients() {
             <label className="label">{t('ingredients.allergensLabel')}</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
               {ALLERGENS.map((allergen) => (
-                <label key={allergen} className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-mono-700 cursor-pointer">
+                <label key={allergen} className="flex items-center gap-2 text-sm text-[#737373] dark:text-mono-700 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={form.allergens.includes(allergen)}
@@ -2031,8 +2041,9 @@ export default function Ingredients() {
 
           {/* Barcode */}
           <div>
-            <label className="label">Code-barres (EAN/UPC)</label>
+            <label htmlFor="ingredient-barcode" className="label">Code-barres (EAN/UPC)</label>
             <input
+              id="ingredient-barcode"
               type="text"
               className="input w-full"
               value={form.barcode}
@@ -2040,12 +2051,12 @@ export default function Ingredients() {
               placeholder="Ex: 3017620422003"
               inputMode="numeric"
             />
-            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">Optionnel. Permet le scan rapide en inventaire.</p>
+            <p className="text-xs text-[#737373] dark:text-mono-500 mt-1">Optionnel. Permet le scan rapide en inventaire.</p>
           </div>
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{t('ingredients.saveShortcut')}</span>
+              <span className="text-xs text-[#737373] dark:text-mono-500">{t('ingredients.saveShortcut')}</span>
               {editingId && (
                 <button
                   type="button"
@@ -2053,9 +2064,9 @@ export default function Ingredients() {
                     const ing = ingredients.find(i => i.id === editingId);
                     if (ing) { setShowForm(false); openWeigh(ing); }
                   }}
-                  className="flex items-center gap-1 px-2 py-1 text-xs bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white rounded border border-mono-900 dark:border-mono-200 hover:bg-mono-900 dark:hover:bg-mono-300 transition-colors"
+                  className="flex items-center gap-1 px-2 py-1 min-h-[44px] text-xs bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white rounded border border-mono-900 dark:border-mono-200 hover:bg-mono-900 dark:hover:bg-mono-300 transition-colors"
                 >
-                  <Scale className="w-3 h-3" /> {t('ingredients.weigh')}
+                  <Scale aria-hidden="true" className="w-3 h-3" /> {t('ingredients.weigh')}
                 </button>
               )}
             </div>
@@ -2067,9 +2078,9 @@ export default function Ingredients() {
                 disabled={saving}
               >
                 {saving ? (
-                  <><Loader2 className="w-4 h-4 animate-spin" /> {t('ingredients.saving')}</>
+                  <><Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" /> {t('ingredients.saving')}</>
                 ) : saveSuccess ? (
-                  <><Check className="w-4 h-4" /> {t('ingredients.saved')}</>
+                  <><Check aria-hidden="true" className="w-4 h-4" /> {t('ingredients.saved')}</>
                 ) : (
                   editingId ? t('ingredients.edit') : t('ingredients.add')
                 )}
@@ -2094,10 +2105,10 @@ export default function Ingredients() {
                 <button
                   key={p}
                   onClick={() => changeTrackerPeriod(p)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  className={`px-3 py-1.5 min-h-[44px] inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors ${
                     trackerPeriod === p
                       ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
-                      : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
+                      : 'bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
                   }`}
                 >
                   {p === 30 ? '30 jours' : p === 90 ? '90 jours' : '1 an'}
@@ -2107,16 +2118,14 @@ export default function Ingredients() {
 
             {/* Chart */}
             {trackerLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF] dark:text-mono-500" />
-              </div>
+              <LoadingState label={t('ingredients.loading')} />
             ) : trackerData && trackerData.data.length > 0 ? (
               <div className="h-56 bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-3">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trackerData.data} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
                     <XAxis
                       dataKey="date"
-                      tick={{ fontSize: 10, fill: '#9CA3AF' }}
+                      tick={{ fontSize: 10, fill: '#737373' }}
                       tickFormatter={(v: string) => {
                         const d = new Date(v);
                         return `${d.getDate()}/${d.getMonth() + 1}`;
@@ -2125,7 +2134,7 @@ export default function Ingredients() {
                       tickLine={false}
                     />
                     <YAxis
-                      tick={{ fontSize: 10, fill: '#9CA3AF' }}
+                      tick={{ fontSize: 10, fill: '#737373' }}
                       width={45}
                       tickFormatter={(v: number) => `${v.toFixed(2)}`}
                       axisLine={false}
@@ -2149,7 +2158,7 @@ export default function Ingredients() {
                     {/* Average reference line */}
                     <ReferenceLine
                       y={trackerData.avgPrice}
-                      stroke="#9CA3AF"
+                      stroke="#737373"
                       strokeDasharray="4 4"
                       strokeWidth={1}
                     />
@@ -2175,8 +2184,8 @@ export default function Ingredients() {
                 </ResponsiveContainer>
               </div>
             ) : (
-              <div className="text-center py-8 text-[#9CA3AF] dark:text-mono-500">
-                <BarChart3 className="w-8 h-8 mx-auto mb-2 opacity-40" />
+              <div className="text-center py-8 text-[#737373] dark:text-mono-500">
+                <BarChart3 aria-hidden="true" className="w-8 h-8 mx-auto mb-2 opacity-40" />
                 <p className="text-sm">Pas d'historique de prix disponible</p>
                 <p className="text-xs mt-1">L'historique s'enregistre a chaque modification de prix.</p>
               </div>
@@ -2186,24 +2195,24 @@ export default function Ingredients() {
             {trackerData && trackerData.data.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3">
-                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-semibold">Min</p>
+                  <p className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500 font-semibold">Min</p>
                   <p className="text-lg font-bold text-mono-100 dark:text-white">{trackerData.minPrice.toFixed(2)} {getCurrencySymbol()}</p>
                 </div>
                 <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3">
-                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-semibold">Max</p>
+                  <p className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500 font-semibold">Max</p>
                   <p className="text-lg font-bold text-mono-100 dark:text-white">{trackerData.maxPrice.toFixed(2)} {getCurrencySymbol()}</p>
                 </div>
                 <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3">
-                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-semibold">Moyenne</p>
+                  <p className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500 font-semibold">Moyenne</p>
                   <p className="text-lg font-bold text-mono-100 dark:text-white">{trackerData.avgPrice.toFixed(2)} {getCurrencySymbol()}</p>
                 </div>
                 <div className="bg-mono-950 dark:bg-[#171717] rounded-xl p-3">
-                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 font-semibold">Actuel</p>
+                  <p className="text-[10px] uppercase tracking-wider text-[#737373] dark:text-mono-500 font-semibold">Actuel</p>
                   <div className="flex items-center gap-1.5">
                     <p className="text-lg font-bold text-mono-100 dark:text-white">{trackerData.currentPrice.toFixed(2)} {getCurrencySymbol()}</p>
-                    {trackerData.trend === 'up' && <TrendingUp className="w-4 h-4 text-red-500" />}
-                    {trackerData.trend === 'down' && <TrendingDown className="w-4 h-4 text-emerald-500" />}
-                    {trackerData.trend === 'stable' && <Minus className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />}
+                    {trackerData.trend === 'up' && <TrendingUp aria-hidden="true" className="w-4 h-4 text-red-500" />}
+                    {trackerData.trend === 'down' && <TrendingDown aria-hidden="true" className="w-4 h-4 text-emerald-500" />}
+                    {trackerData.trend === 'stable' && <Minus aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-500" />}
                   </div>
                 </div>
               </div>
@@ -2213,7 +2222,7 @@ export default function Ingredients() {
             {trackerData && trackerData.data.length > 1 && (
               <div className="flex items-center gap-3 bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-3">
                 <div className="flex-1">
-                  <p className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider mb-1">Volatilite</p>
+                  <p className="text-xs font-semibold text-[#737373] dark:text-mono-700 uppercase tracking-wider mb-1">Volatilite</p>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-2 bg-mono-900 dark:bg-mono-300 rounded-full overflow-hidden">
                       <div
@@ -2237,7 +2246,7 @@ export default function Ingredients() {
             {/* Supplier comparison */}
             {trackerData && trackerData.supplierPrices.length > 1 && (
               <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-3">
-                <p className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider mb-2">
+                <p className="text-xs font-semibold text-[#737373] dark:text-mono-700 uppercase tracking-wider mb-2">
                   Comparaison fournisseurs
                 </p>
                 <div className="space-y-2">
@@ -2250,8 +2259,8 @@ export default function Ingredients() {
                       return (
                         <div key={idx} className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <Truck className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-mono-500" />
-                            <span className={`text-sm ${isCheapest ? 'font-semibold text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-700'}`}>
+                            <Truck aria-hidden="true" className="w-3.5 h-3.5 text-[#737373] dark:text-mono-500" />
+                            <span className={`text-sm ${isCheapest ? 'font-semibold text-mono-100 dark:text-white' : 'text-[#737373] dark:text-mono-700'}`}>
                               {sp.supplierName}
                             </span>
                             {isCheapest && (
@@ -2261,7 +2270,7 @@ export default function Ingredients() {
                             )}
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className={`text-sm font-mono ${isCheapest ? 'font-bold text-mono-100 dark:text-white' : 'text-[#6B7280] dark:text-mono-700'}`}>
+                            <span className={`text-sm font-mono ${isCheapest ? 'font-bold text-mono-100 dark:text-white' : 'text-[#737373] dark:text-mono-700'}`}>
                               {sp.price.toFixed(2)} {getCurrencySymbol()}
                             </span>
                             {!isCheapest && pctDiff > 0 && (
@@ -2278,13 +2287,14 @@ export default function Ingredients() {
             {/* Price alert threshold */}
             <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl border border-mono-900 dark:border-mono-200 p-3">
               <div className="flex items-center gap-2 mb-2">
-                <Bell className="w-4 h-4 text-[#6B7280] dark:text-mono-700" />
-                <p className="text-xs font-semibold text-[#6B7280] dark:text-mono-700 uppercase tracking-wider">
+                <Bell aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-700" />
+                <p className="text-xs font-semibold text-[#737373] dark:text-mono-700 uppercase tracking-wider">
                   Alerte si prix depasse
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <input
+                  aria-label="Seuil d'alerte de prix"
                   type="number"
                   step="0.01"
                   min="0"
@@ -2293,7 +2303,7 @@ export default function Ingredients() {
                   onChange={(e) => setAlertInput(e.target.value)}
                   placeholder={`Ex: ${(trackerIngredient.pricePerUnit * 1.1).toFixed(2)} €`}
                 />
-                <span className="text-sm text-[#9CA3AF] dark:text-mono-500">{getCurrencySymbol()}/{trackerIngredient.unit}</span>
+                <span className="text-sm text-[#737373] dark:text-mono-500">{getCurrencySymbol()}/{trackerIngredient.unit}</span>
                 <button
                   onClick={saveAlertThreshold}
                   className="btn-primary text-sm px-4"
@@ -2303,7 +2313,7 @@ export default function Ingredients() {
               </div>
               {getAlertForIngredient(trackerIngredient.id) !== null && (
                 <p className="text-xs mt-2 flex items-center gap-1.5">
-                  <AlertTriangle className={`w-3 h-3 ${trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0) ? 'text-red-500' : 'text-emerald-500'}`} />
+                  <AlertTriangle aria-hidden="true" className={`w-3 h-3 ${trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0) ? 'text-red-500' : 'text-emerald-500'}`} />
                   <span className={trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0) ? 'text-red-500 font-semibold' : 'text-emerald-500'}>
                     {trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0)
                       ? `Prix actuel (${trackerIngredient.pricePerUnit.toFixed(2)} €) depasse le seuil !`

@@ -18,6 +18,9 @@ import { useRestaurant } from '../hooks/useRestaurant';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 import { trackEvent } from '../utils/analytics';
+import { useToast } from '../hooks/useToast';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 
 // ── Unit conversion divisor ────────────────────────────────────────────────
 // getUnitDivisor moved to ../utils/units to avoid duplication (was copy-pasted
@@ -133,12 +136,12 @@ function WidgetPickerModal({ visible, order, onSave, onClose }: {
             <h3 id="widget-customizer-title" className="text-lg font-bold font-satoshi text-mono-100 dark:text-white">Personnaliser</h3>
           </div>
           <button onClick={onClose} aria-label="Fermer le personnalisateur de widgets" className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
-            <X className="w-5 h-5 text-[#9CA3AF]" aria-hidden="true" />
+            <X className="w-5 h-5 text-[#737373]" aria-hidden="true" />
           </button>
         </div>
 
         <div className="px-6 py-4 space-y-1 max-h-[60vh] overflow-y-auto">
-          <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-3">Glissez pour reordonner, cliquez pour afficher/masquer.</p>
+          <p className="text-xs text-[#737373] dark:text-mono-500 mb-3">Glissez pour reordonner, cliquez pour afficher/masquer.</p>
           {localOrder.map((wId, idx) => {
             const def = ALL_WIDGETS.find(w => w.id === wId);
             if (!def) return null;
@@ -155,20 +158,20 @@ function WidgetPickerModal({ visible, order, onSave, onClose }: {
                   ${dragIdx === idx ? 'border-teal-400 dark:border-teal-500 bg-teal-50/50 dark:bg-teal-900/10' : 'border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50'}
                   ${!isVisible ? 'opacity-50' : ''}`}
               >
-                <GripVertical className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
-                <Icon className="w-4 h-4 text-[#6B7280] dark:text-mono-700 flex-shrink-0" />
+                <GripVertical className="w-4 h-4 text-[#737373] flex-shrink-0" aria-hidden="true" />
+                <Icon className="w-4 h-4 text-[#737373] dark:text-mono-700 flex-shrink-0" aria-hidden="true" />
                 <span className="text-sm font-medium text-mono-100 dark:text-white flex-1">{def.label}</span>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => moveUp(idx)} aria-label={`Monter le widget ${def.label}`} className="p-1 rounded hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] hover:text-[#6B7280]">
+                  <button onClick={() => moveUp(idx)} aria-label={`Monter le widget ${def.label}`} className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717] text-[#737373] hover:text-[#737373]">
                     <ArrowUpRight className="w-3.5 h-3.5 rotate-[-45deg]" aria-hidden="true" />
                   </button>
-                  <button onClick={() => moveDown(idx)} aria-label={`Descendre le widget ${def.label}`} className="p-1 rounded hover:bg-mono-950 dark:hover:bg-[#171717] text-[#9CA3AF] hover:text-[#6B7280]">
+                  <button onClick={() => moveDown(idx)} aria-label={`Descendre le widget ${def.label}`} className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717] text-[#737373] hover:text-[#737373]">
                     <ArrowDownRight className="w-3.5 h-3.5 rotate-[45deg]" aria-hidden="true" />
                   </button>
-                  <button onClick={() => toggle(wId)} aria-label={isVisible ? `Masquer ${def.label}` : `Afficher ${def.label}`} aria-pressed={isVisible} className="p-1 rounded hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
+                  <button onClick={() => toggle(wId)} aria-label={isVisible ? `Masquer ${def.label}` : `Afficher ${def.label}`} aria-pressed={isVisible} className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
                     {isVisible
                       ? <Eye className="w-4 h-4 text-teal-600 dark:text-teal-400" aria-hidden="true" />
-                      : <EyeOff className="w-4 h-4 text-[#9CA3AF]" aria-hidden="true" />}
+                      : <EyeOff className="w-4 h-4 text-[#737373]" aria-hidden="true" />}
                   </button>
                 </div>
               </div>
@@ -177,7 +180,7 @@ function WidgetPickerModal({ visible, order, onSave, onClose }: {
         </div>
 
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-mono-900 dark:border-mono-200">
-          <button onClick={onClose} className="px-4 py-2 text-sm font-medium rounded-xl text-[#6B7280] hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
+          <button onClick={onClose} className="px-4 py-2 text-sm font-medium rounded-xl text-[#737373] hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
             Annuler
           </button>
           <button
@@ -202,16 +205,16 @@ function WelcomeMessage({ restaurantName, firstName }: { restaurantName: string;
   return (
     <div className="flex items-center gap-4 px-6 py-4 rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black">
       <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20">
-        <TimeIcon className="w-6 h-6 text-amber-500 dark:text-amber-400" />
+        <TimeIcon className="w-6 h-6 text-amber-500 dark:text-amber-400" aria-hidden="true" />
       </div>
       <div className="min-w-0">
         <h2 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi truncate">
           {greeting}, {firstName || 'Chef'} !
         </h2>
-        <p className="text-sm text-[#9CA3AF] dark:text-mono-500">
+        <p className="text-sm text-[#737373] dark:text-mono-500">
           Aujourd'hui : {today}
           {restaurantName && restaurantName !== 'Mon Restaurant' && (
-            <span> · <span className="text-[#6B7280] dark:text-mono-700 font-medium">{restaurantName}</span></span>
+            <span> · <span className="text-[#737373] dark:text-mono-700 font-medium">{restaurantName}</span></span>
           )}
         </p>
       </div>
@@ -265,7 +268,7 @@ function AIDailyInsight({ recipes, ingredients }: { recipes: Recipe[]; ingredien
 
   return (
     <div className="flex items-center gap-3 px-5 py-3 rounded-2xl border border-teal-200 dark:border-teal-800/40 bg-teal-50 dark:bg-teal-900/10">
-      <Lightbulb className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0" />
+      <Lightbulb className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0" aria-hidden="true" />
       <p className="text-sm font-medium text-teal-800 dark:text-teal-300 flex-1">{insight}</p>
     </div>
   );
@@ -375,11 +378,11 @@ function SmartAlerts({ recipes, ingredients, navigate }: {
             onClick={() => navigate(alert.link)}
             className={`w-full flex items-center gap-3 px-5 py-3 rounded-2xl border ${colors.border} ${colors.bg} transition-all hover:opacity-90 active:scale-[0.99] text-left`}
           >
-            <Icon className={`w-5 h-5 ${colors.icon} flex-shrink-0`} />
+            <Icon className={`w-5 h-5 ${colors.icon} flex-shrink-0`} aria-hidden="true" />
             <p className={`text-sm font-medium ${colors.text} flex-1`}>
               {alert.message}
             </p>
-            <ArrowRight className={`w-4 h-4 ${colors.link} flex-shrink-0`} />
+            <ArrowRight className={`w-4 h-4 ${colors.link} flex-shrink-0`} aria-hidden="true" />
           </button>
         );
       })}
@@ -419,11 +422,11 @@ function TodayFocus({ recipes, navigate }: { recipes: Recipe[]; navigate: (path:
     <div className="rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black p-6">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/20">
-          <Target className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+          <Target className="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
         </div>
         <div>
           <h3 className="text-base font-bold text-mono-100 dark:text-white font-satoshi">Priorite du jour</h3>
-          <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Basee sur vos donnees actuelles</p>
+          <p className="text-xs text-[#737373] dark:text-mono-500">Basee sur vos donnees actuelles</p>
         </div>
       </div>
       <div className="flex items-start gap-4 p-4 rounded-xl bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200">
@@ -437,9 +440,9 @@ function TodayFocus({ recipes, navigate }: { recipes: Recipe[]; navigate: (path:
         </div>
         <button
           onClick={() => navigate(`/recipes/${focus.recipeId}`)}
-          className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+          className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-xs font-medium rounded-lg bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
         >
-          Voir <ArrowRight className="w-3 h-3" />
+          Voir <ArrowRight className="w-3 h-3" aria-hidden="true" />
         </button>
       </div>
     </div>
@@ -467,7 +470,7 @@ function QuickActionsWidget({ navigate }: { navigate: (path: string) => void }) 
               onClick={() => navigate(a.path)}
               className={`flex flex-col items-center gap-2.5 p-4 rounded-xl text-white transition-all ${a.color} ${a.darkColor} shadow-sm hover:shadow-md`}
             >
-              <Icon className="w-6 h-6" />
+              <Icon className="w-6 h-6" aria-hidden="true" />
               <span className="text-xs font-semibold text-center leading-tight">{a.label}</span>
             </button>
           );
@@ -541,12 +544,12 @@ function OnboardingChecklist({ restaurantName, ingredientCount, recipeCount, nav
           <h3 className="text-lg font-bold text-mono-100 dark:text-white font-satoshi">
             {allDone ? 'Bravo ! Vous etes pret' : 'Premiers pas avec RestauMargin'}
           </h3>
-          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-0.5">
+          <p className="text-sm text-[#737373] dark:text-mono-500 mt-0.5">
             {allDone ? 'Toutes les etapes sont completees.' : `${completedSteps.length}/${ONBOARDING_STEPS.length} etapes completees`}
           </p>
         </div>
         {allDone && (
-          <button onClick={() => setDismissed(true)} className="text-xs text-[#9CA3AF] hover:text-[#6B7280] transition-colors">
+          <button onClick={() => setDismissed(true)} className="text-xs text-[#737373] hover:text-[#737373] transition-colors">
             Masquer
           </button>
         )}
@@ -576,13 +579,13 @@ function OnboardingChecklist({ restaurantName, ingredientCount, recipeCount, nav
                   }`}
               >
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center
-                  ${done ? 'bg-teal-500 text-white' : isCurrent ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-600' : 'bg-mono-900 dark:bg-[#171717] text-[#9CA3AF]'}`}>
-                  {done ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
+                  ${done ? 'bg-teal-500 text-white' : isCurrent ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-600' : 'bg-mono-900 dark:bg-[#171717] text-[#737373]'}`}>
+                  {done ? <Check className="w-4 h-4" aria-hidden="true" /> : <Icon className="w-4 h-4" aria-hidden="true" />}
                 </div>
                 <span className={`text-sm font-medium ${done ? 'text-teal-700 dark:text-teal-300 line-through' : 'text-mono-100 dark:text-white'}`}>
                   {step.label}
                 </span>
-                {isCurrent && !done && <ArrowRight className="w-4 h-4 ml-auto text-teal-500" />}
+                {isCurrent && !done && <ArrowRight className="w-4 h-4 ml-auto text-teal-500" aria-hidden="true" />}
               </button>
             );
           })}
@@ -591,7 +594,7 @@ function OnboardingChecklist({ restaurantName, ingredientCount, recipeCount, nav
 
       {allDone && (
         <div className="flex items-center gap-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-200/50 dark:border-teal-800/30">
-          <Trophy className="w-5 h-5 text-amber-500" />
+          <Trophy className="w-5 h-5 text-amber-500" aria-hidden="true" />
           <p className="text-sm text-teal-700 dark:text-teal-300">
             Votre restaurant est configure. Explorez maintenant vos marges et optimisez votre carte !
           </p>
@@ -610,8 +613,10 @@ export default function Dashboard() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   // ── Widget customization state ────────────────────────────────────────
   const [widgetLayout, setWidgetLayout] = useState(loadWidgetLayout);
@@ -688,8 +693,11 @@ export default function Dashboard() {
     navigator.clipboard.writeText(reportData.report).then(() => {
       setReportCopied(true);
       setTimeout(() => setReportCopied(false), 2000);
+      showToast('Rapport copie dans le presse-papier', 'success');
+    }).catch(() => {
+      showToast('Impossible de copier le rapport. Reessayez.', 'error');
     });
-  }, [reportData]);
+  }, [reportData, showToast]);
 
   const sendReportByEmail = useCallback(async () => {
     if (!reportData) return;
@@ -712,12 +720,13 @@ export default function Dashboard() {
       }
       setReportEmailSent(true);
       setTimeout(() => setReportEmailSent(false), 3000);
+      showToast('Rapport envoye par email', 'success');
     } catch (err: any) {
-      alert(err.message);
+      showToast(err.message || 'Erreur envoi email. Verifiez votre connexion, puis reessayez.', 'error');
     } finally {
       setReportEmailSending(false);
     }
-  }, [reportData]);
+  }, [reportData, showToast]);
 
   // ── Tab definitions ────────────────────────────────────────────────────
   const TABS: { key: TabKey; label: string }[] = [
@@ -733,13 +742,20 @@ export default function Dashboard() {
     trackEvent('page_view', { page: 'dashboard' });
   }, []);
 
-  useEffect(() => {
+  // Chargement des donnees principales. Extrait en callback pour que l'etat
+  // d'erreur (ErrorState « Reessayer ») rejoue exactement le meme fetch — aucune
+  // logique metier modifiee, juste l'ajout de l'etat d'erreur (critere U3).
+  const loadData = useCallback(() => {
     if (restaurantLoading || !selectedRestaurant) return;
+    setLoadError(false);
+    setLoading(true);
     Promise.all([fetchRecipes(), fetchIngredients()])
       .then(([r, i]) => { setRecipes(r); setIngredients(i); })
-      .catch(() => console.error('Erreur chargement'))
+      .catch(() => setLoadError(true))
       .finally(() => setLoading(false));
   }, [selectedRestaurant, restaurantLoading]);
+
+  useEffect(() => { loadData(); }, [loadData]);
 
   // ── P&L data fetch ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -851,7 +867,13 @@ export default function Dashboard() {
   // ── Loading — skeleton shimmer ──────────────────────────────────────
   if (loading) {
     return (
-      <div className="space-y-6 max-w-6xl mx-auto animate-fade-in">
+      <div
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+        className="space-y-6 max-w-6xl mx-auto animate-fade-in"
+      >
+        <span className="sr-only">Chargement du tableau de bord…</span>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="skeleton h-8 w-48 mb-2" />
@@ -876,6 +898,23 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="skeleton h-48 rounded-2xl" />
           <div className="skeleton h-48 rounded-2xl" />
+        </div>
+      </div>
+    );
+  }
+
+  // ── Erreur de chargement — message + « Reessayer » (rejoue loadData) ──────
+  if (loadError) {
+    return (
+      <div className="space-y-6 max-w-6xl mx-auto">
+        <h1 className="text-2xl sm:text-3xl font-black font-satoshi text-mono-100 dark:text-white tracking-tight">
+          {t("dashboard.title")}
+        </h1>
+        <div className="rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black">
+          <ErrorState
+            message="Impossible de charger vos recettes et ingredients. Verifiez votre connexion, puis reessayez."
+            onRetry={loadData}
+          />
         </div>
       </div>
     );
@@ -920,7 +959,7 @@ export default function Dashboard() {
           <h1 className="text-2xl sm:text-3xl font-black font-satoshi text-mono-100 dark:text-white tracking-tight">
             {t("dashboard.title")}
           </h1>
-          <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-1 font-general-sans">
+          <p className="text-sm text-[#737373] dark:text-mono-500 mt-1 font-general-sans">
             {stats ? stats.totalRecipes : 0} {t("dashboard.recipesCount")} · {ingredients.length} {t("dashboard.ingredientsCount")}
           </p>
         </div>
@@ -929,37 +968,42 @@ export default function Dashboard() {
             onClick={() => navigate('/recipes?action=new')}
             className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-medium rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors active:scale-95"
           >
-            <Plus className="w-4 h-4" /> {t("dashboard.newRecipe")}
+            <Plus className="w-4 h-4" aria-hidden="true" /> {t("dashboard.newRecipe")}
           </button>
           <button
             onClick={() => navigate('/ingredients?action=new')}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#737373] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors"
           >
-            <Package className="w-4 h-4" /> {t("dashboard.addIngredient")}
+            <Package className="w-4 h-4" aria-hidden="true" /> {t("dashboard.addIngredient")}
           </button>
-          <Link to="/recipes" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
-            <ClipboardList className="w-4 h-4" /> {t("dashboard.viewRecipes")}
+          <Link to="/recipes" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#737373] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
+            <ClipboardList className="w-4 h-4" aria-hidden="true" /> {t("dashboard.viewRecipes")}
           </Link>
-          <Link to="/inventory" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
-            <FileText className="w-4 h-4" /> {t("dashboard.viewInventory")}
+          <Link to="/inventory" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#737373] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors">
+            <FileText className="w-4 h-4" aria-hidden="true" /> {t("dashboard.viewInventory")}
           </Link>
           <button
             onClick={fetchWeeklyReport}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-medium rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors no-print"
+            disabled={reportLoading}
+            aria-label="Generer le rapport IA hebdomadaire"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-medium rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors no-print disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Rapport</span> IA
+            {reportLoading
+              ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+              : <Sparkles className="w-4 h-4" aria-hidden="true" />} <span className="hidden sm:inline">Rapport</span> IA
           </button>
           <button
             onClick={() => window.print()}
-            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors no-print"
+            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#737373] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors no-print"
           >
-            <Printer className="w-4 h-4" /> {t("dashboard.print")}
+            <Printer className="w-4 h-4" aria-hidden="true" /> {t("dashboard.print")}
           </button>
           <button
             onClick={() => setWidgetPickerOpen(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors no-print"
+            aria-label="Personnaliser les widgets du tableau de bord"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-white dark:bg-mono-50 text-[#737373] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-mono-900 dark:border-mono-200 hover:bg-mono-1000 dark:hover:bg-[#171717] transition-colors no-print"
           >
-            <Settings2 className="w-4 h-4" /> <span className="hidden sm:inline">Personnaliser</span>
+            <Settings2 className="w-4 h-4" aria-hidden="true" /> <span className="hidden sm:inline">Personnaliser</span>
           </button>
         </div>
       </div>
@@ -968,18 +1012,18 @@ export default function Dashboard() {
       {isWidgetVisible('kpis') && <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" data-tour-id="tour-kpis">
         {/* Marge moyenne */}
         <div className="rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black p-6 card-hover animate-kpi-1">
-          <p className="text-xs font-medium uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-2">Marge moyenne</p>
+          <p className="text-xs font-medium uppercase tracking-wider text-[#737373] dark:text-mono-500 mb-2">Marge moyenne</p>
           <div className="flex items-end gap-2">
-            <span className={`text-4xl font-black font-satoshi tabular-nums animate-number-reveal ${stats ? marginColor(stats.avgMargin) : 'text-[#9CA3AF]'}`}>
+            <span className={`text-4xl font-black font-satoshi tabular-nums animate-number-reveal ${stats ? marginColor(stats.avgMargin) : 'text-[#737373]'}`}>
               {stats ? stats.avgMargin.toFixed(1) : '--'}%
             </span>
             {stats && (
               <span className={`mb-1 ${stats.avgMargin >= 70 ? 'text-emerald-500' : 'text-red-400'}`}>
-                {stats.avgMargin >= 70 ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownRight className="w-5 h-5" />}
+                {stats.avgMargin >= 70 ? <ArrowUpRight className="w-5 h-5" aria-hidden="true" /> : <ArrowDownRight className="w-5 h-5" aria-hidden="true" />}
               </span>
             )}
           </div>
-          <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-2">
+          <p className="text-xs text-[#737373] dark:text-mono-500 mt-2">
             {stats ? (stats.avgMargin >= 70 ? 'Objectif atteint' : 'Objectif : 70%') : 'Ajoutez des recettes'}
           </p>
           {stats && (
@@ -992,24 +1036,24 @@ export default function Dashboard() {
               {trends.marginDiff >= 0 ? '↑' : '↓'} {trends.marginDiff >= 0 ? '+' : ''}{trends.marginDiff}% vs semaine derniere
             </p>
           ) : stats ? (
-            <p className="text-xs text-[#D1D5DB] dark:text-mono-400 mt-2 italic">Tendance disponible la semaine prochaine</p>
+            <p className="text-xs text-[#737373] dark:text-mono-400 mt-2 italic">Tendance disponible la semaine prochaine</p>
           ) : null}
         </div>
 
         {/* Food Cost moyen */}
         <div className="rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black p-6 card-hover animate-kpi-2">
-          <p className="text-xs font-medium uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-2">Food Cost moyen</p>
+          <p className="text-xs font-medium uppercase tracking-wider text-[#737373] dark:text-mono-500 mb-2">Food Cost moyen</p>
           <div className="flex items-end gap-2">
-            <span className={`text-4xl font-black font-satoshi tabular-nums animate-number-reveal-d1 ${stats ? foodCostColor(stats.avgFoodCostPct) : 'text-[#9CA3AF]'}`}>
+            <span className={`text-4xl font-black font-satoshi tabular-nums animate-number-reveal-d1 ${stats ? foodCostColor(stats.avgFoodCostPct) : 'text-[#737373]'}`}>
               {stats ? stats.avgFoodCostPct.toFixed(1) : '--'}%
             </span>
             {stats && (
               <span className={`mb-1 ${stats.avgFoodCostPct <= 30 ? 'text-emerald-500' : 'text-red-400'}`}>
-                {stats.avgFoodCostPct <= 30 ? <ArrowDownRight className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
+                {stats.avgFoodCostPct <= 30 ? <ArrowDownRight className="w-5 h-5" aria-hidden="true" /> : <ArrowUpRight className="w-5 h-5" aria-hidden="true" />}
               </span>
             )}
           </div>
-          <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-2">
+          <p className="text-xs text-[#737373] dark:text-mono-500 mt-2">
             {stats ? (stats.avgFoodCostPct <= 30 ? 'Excellent' : stats.avgFoodCostPct <= 35 ? 'Objectif : < 30%' : 'Trop eleve, objectif < 30%') : 'Ajoutez des recettes'}
           </p>
           {stats && (
@@ -1022,17 +1066,17 @@ export default function Dashboard() {
               {trends.foodCostDiff <= 0 ? '↓' : '↑'} {trends.foodCostDiff >= 0 ? '+' : ''}{trends.foodCostDiff}% vs semaine derniere
             </p>
           ) : stats ? (
-            <p className="text-xs text-[#D1D5DB] dark:text-mono-400 mt-2 italic">Tendance disponible la semaine prochaine</p>
+            <p className="text-xs text-[#737373] dark:text-mono-400 mt-2 italic">Tendance disponible la semaine prochaine</p>
           ) : null}
         </div>
 
         {/* Cout moyen total */}
         <div className="rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black p-6 card-hover animate-kpi-3">
-          <p className="text-xs font-medium uppercase tracking-wider text-[#9CA3AF] dark:text-mono-500 mb-2">Cout moyen / portion</p>
+          <p className="text-xs font-medium uppercase tracking-wider text-[#737373] dark:text-mono-500 mb-2">Cout moyen / portion</p>
           <span className="text-4xl font-black font-satoshi tabular-nums text-mono-100 dark:text-white animate-number-reveal-d2">
             {stats && stats.avgTotalCost > 0 ? formatCurrency(stats.avgTotalCost) : '--'}
           </span>
-          <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-2">
+          <p className="text-xs text-[#737373] dark:text-mono-500 mt-2">
             {stats ? `Food cost : ${formatCurrency(stats.avgFoodCost)}` : 'Ajoutez des recettes'}
           </p>
           {trends ? (
@@ -1040,7 +1084,7 @@ export default function Dashboard() {
               {trends.costDiff <= 0 ? '↓' : '↑'} {trends.costDiff >= 0 ? '+' : ''}{trends.costDiff.toFixed(2)} vs semaine derniere
             </p>
           ) : stats ? (
-            <p className="text-xs text-[#D1D5DB] dark:text-mono-400 mt-2 italic">Tendance disponible la semaine prochaine</p>
+            <p className="text-xs text-[#737373] dark:text-mono-400 mt-2 italic">Tendance disponible la semaine prochaine</p>
           ) : null}
         </div>
       </div>}
@@ -1059,7 +1103,7 @@ export default function Dashboard() {
             className={`px-4 py-2.5 min-h-[44px] text-sm font-medium rounded-lg transition-all whitespace-nowrap
               ${activeTab === tab.key
                 ? 'bg-white dark:bg-[#171717] text-mono-100 dark:text-white shadow-sm'
-                : 'text-[#9CA3AF] dark:text-mono-500 hover:text-[#6B7280] dark:hover:text-mono-700'
+                : 'text-[#737373] dark:text-mono-500 hover:text-[#737373] dark:hover:text-mono-700'
               }`}
           >
             {tab.label}
@@ -1105,10 +1149,10 @@ export default function Dashboard() {
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-mono-900 dark:border-mono-200">
-                            <th className="text-left py-2 text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Recette</th>
-                            <th className="text-right py-2 text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Cout</th>
-                            <th className="text-right py-2 text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Prix vente</th>
-                            <th className="text-right py-2 text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider">Marge %</th>
+                            <th scope="col" className="text-left py-2 text-xs font-semibold text-[#737373] dark:text-mono-500 uppercase tracking-wider">Recette</th>
+                            <th scope="col" className="text-right py-2 text-xs font-semibold text-[#737373] dark:text-mono-500 uppercase tracking-wider">Cout</th>
+                            <th scope="col" className="text-right py-2 text-xs font-semibold text-[#737373] dark:text-mono-500 uppercase tracking-wider">Prix vente</th>
+                            <th scope="col" className="text-right py-2 text-xs font-semibold text-[#737373] dark:text-mono-500 uppercase tracking-wider">Marge %</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1116,13 +1160,13 @@ export default function Dashboard() {
                             <tr key={recipe.id} className="border-b border-mono-950 dark:border-mono-200/50 hover:bg-mono-1000 dark:hover:bg-mono-50 transition-colors">
                               <td className="py-3">
                                 <Link to={`/recipes/${recipe.id}`} className="flex items-center gap-2 group">
-                                  <span className="text-xs font-bold text-[#9CA3AF] dark:text-mono-400 w-5">{i + 1}</span>
+                                  <span className="text-xs font-bold text-[#737373] dark:text-mono-400 w-5">{i + 1}</span>
                                   <span className="font-medium text-mono-100 dark:text-[#E5E5E5] truncate max-w-[200px] group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                                     {recipe.name}
                                   </span>
                                 </Link>
                               </td>
-                              <td className="py-3 text-right text-[#6B7280] dark:text-mono-500 tabular-nums">
+                              <td className="py-3 text-right text-[#737373] dark:text-mono-500 tabular-nums">
                                 {formatCurrency(recipe.margin.totalCostPerPortion || recipe.margin.costPerPortion)}
                               </td>
                               <td className="py-3 text-right text-mono-100 dark:text-mono-700 font-medium tabular-nums">
@@ -1147,7 +1191,7 @@ export default function Dashboard() {
                           className="block bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-3"
                         >
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-[#9CA3AF] dark:text-mono-400 w-5 shrink-0">{i + 1}</span>
+                            <span className="text-xs font-bold text-[#737373] dark:text-mono-400 w-5 shrink-0">{i + 1}</span>
                             <span className="flex-1 min-w-0 truncate font-medium text-mono-100 dark:text-[#E5E5E5]">{recipe.name}</span>
                             <span className={`shrink-0 inline-block px-2 py-0.5 rounded-md text-xs font-bold tabular-nums ${marginColor(recipe.margin.marginPercent)} ${marginBg(recipe.margin.marginPercent)}`}>
                               {recipe.margin.marginPercent.toFixed(1)}%
@@ -1155,11 +1199,11 @@ export default function Dashboard() {
                           </div>
                           <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
                             <div>
-                              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Cout</p>
-                              <p className="text-[#6B7280] dark:text-mono-500 tabular-nums">{formatCurrency(recipe.margin.totalCostPerPortion || recipe.margin.costPerPortion)}</p>
+                              <p className="text-xs text-[#737373] dark:text-mono-500">Cout</p>
+                              <p className="text-[#737373] dark:text-mono-500 tabular-nums">{formatCurrency(recipe.margin.totalCostPerPortion || recipe.margin.costPerPortion)}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Prix vente</p>
+                              <p className="text-xs text-[#737373] dark:text-mono-500">Prix vente</p>
                               <p className="font-medium text-mono-100 dark:text-mono-700 tabular-nums">{formatCurrency(recipe.sellingPrice)}</p>
                             </div>
                           </div>
@@ -1167,7 +1211,7 @@ export default function Dashboard() {
                       ))}
                     </div>
                     <Link to="/recipes" className="inline-flex items-center gap-1 text-xs text-teal-600 dark:text-teal-400 hover:underline font-medium mt-4">
-                      Voir toutes les recettes <ArrowRight className="w-3 h-3" />
+                      Voir toutes les recettes <ArrowRight className="w-3 h-3" aria-hidden="true" />
                     </Link>
                   </div>
                 ) : null;
@@ -1196,7 +1240,7 @@ export default function Dashboard() {
               <div className="px-6 py-8 text-center border-b border-mono-900 dark:border-mono-200 bg-[#F9FAFB] dark:bg-mono-50">
                 <div className="text-5xl mb-3">&#128104;&#8205;&#127859;</div>
                 <h3 className="text-xl font-bold text-mono-100 dark:text-white font-satoshi mb-1">Commencez ici</h3>
-                <p className="text-sm text-[#9CA3AF] dark:text-mono-500 max-w-sm mx-auto">
+                <p className="text-sm text-[#737373] dark:text-mono-500 max-w-sm mx-auto">
                   3 etapes simples pour maitriser vos marges et optimiser votre restaurant
                 </p>
               </div>
@@ -1206,45 +1250,45 @@ export default function Dashboard() {
                 {/* Step 1 */}
                 <Link to="/ingredients" className="group p-6 flex flex-col items-center text-center hover:bg-[#F9FAFB] dark:hover:bg-mono-50/50 transition-colors">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                    <ShoppingBasket className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                    <ShoppingBasket className="w-6 h-6 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
                   </div>
                   <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-1">Etape 1</div>
                   <h4 className="text-sm font-bold text-mono-100 dark:text-white mb-1">Ajoutez vos ingredients</h4>
-                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500 leading-relaxed">
+                  <p className="text-xs text-[#737373] dark:text-mono-500 leading-relaxed">
                     Saisissez vos ingredients et leurs prix fournisseur
                   </p>
                   <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 group-hover:gap-2 transition-all">
-                    Commencer <ArrowRight className="w-3 h-3" />
+                    Commencer <ArrowRight className="w-3 h-3" aria-hidden="true" />
                   </span>
                 </Link>
 
                 {/* Step 2 */}
                 <Link to="/recipes" className="group p-6 flex flex-col items-center text-center hover:bg-[#F9FAFB] dark:hover:bg-mono-50/50 transition-colors">
                   <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                    <ClipboardList className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    <ClipboardList className="w-6 h-6 text-blue-600 dark:text-blue-400" aria-hidden="true" />
                   </div>
                   <div className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">Etape 2</div>
                   <h4 className="text-sm font-bold text-mono-100 dark:text-white mb-1">Creez vos fiches techniques</h4>
-                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500 leading-relaxed">
+                  <p className="text-xs text-[#737373] dark:text-mono-500 leading-relaxed">
                     Associez ingredients et prix de vente pour chaque plat
                   </p>
                   <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-blue-600 dark:text-blue-400 group-hover:gap-2 transition-all">
-                    Creer <ArrowRight className="w-3 h-3" />
+                    Creer <ArrowRight className="w-3 h-3" aria-hidden="true" />
                   </span>
                 </Link>
 
                 {/* Step 3 */}
                 <Link to="/analytics" className="group p-6 flex flex-col items-center text-center hover:bg-[#F9FAFB] dark:hover:bg-mono-50/50 transition-colors">
                   <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                    <TrendingUp className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    <TrendingUp className="w-6 h-6 text-amber-600 dark:text-amber-400" aria-hidden="true" />
                   </div>
                   <div className="text-xs font-bold text-amber-600 dark:text-amber-400 mb-1">Etape 3</div>
                   <h4 className="text-sm font-bold text-mono-100 dark:text-white mb-1">Analysez vos marges</h4>
-                  <p className="text-xs text-[#9CA3AF] dark:text-mono-500 leading-relaxed">
+                  <p className="text-xs text-[#737373] dark:text-mono-500 leading-relaxed">
                     Visualisez food cost, marges et rentabilite en un clic
                   </p>
                   <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400 group-hover:gap-2 transition-all">
-                    Analyser <ArrowRight className="w-3 h-3" />
+                    Analyser <ArrowRight className="w-3 h-3" aria-hidden="true" />
                   </span>
                 </Link>
               </div>
@@ -1265,7 +1309,7 @@ export default function Dashboard() {
               return (
                 <Link key={recipe.id} to={`/recipes/${recipe.id}`} className="block group">
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-bold text-[#9CA3AF] dark:text-mono-500 w-5 text-right tabular-nums">{i + 1}</span>
+                    <span className="text-xs font-bold text-[#737373] dark:text-mono-500 w-5 text-right tabular-nums">{i + 1}</span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm font-medium text-mono-100 dark:text-white truncate pr-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
@@ -1302,10 +1346,10 @@ export default function Dashboard() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-mono-900 dark:border-mono-200">
-                    <th className="text-left py-2 text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Recette</th>
-                    <th className="text-right py-2 text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Food Cost</th>
-                    <th className="text-right py-2 text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Cout Total</th>
-                    <th className="text-right py-2 text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">% du prix</th>
+                    <th scope="col" className="text-left py-2 text-xs font-semibold text-[#737373] uppercase tracking-wider">Recette</th>
+                    <th scope="col" className="text-right py-2 text-xs font-semibold text-[#737373] uppercase tracking-wider">Food Cost</th>
+                    <th scope="col" className="text-right py-2 text-xs font-semibold text-[#737373] uppercase tracking-wider">Cout Total</th>
+                    <th scope="col" className="text-right py-2 text-xs font-semibold text-[#737373] uppercase tracking-wider">% du prix</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1319,7 +1363,7 @@ export default function Dashboard() {
                             {recipe.name}
                           </Link>
                         </td>
-                        <td className="py-3 text-right text-[#6B7280] tabular-nums">{formatCurrency(recipe.margin.costPerPortion)}</td>
+                        <td className="py-3 text-right text-[#737373] tabular-nums">{formatCurrency(recipe.margin.costPerPortion)}</td>
                         <td className="py-3 text-right font-medium text-mono-100 dark:text-white tabular-nums">{formatCurrency(totalCost)}</td>
                         <td className="py-3 text-right">
                           <span className={`text-xs font-bold tabular-nums ${foodCostColor(pctOfPrice)}`}>
@@ -1349,11 +1393,11 @@ export default function Dashboard() {
                     </div>
                     <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
                       <div>
-                        <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Food Cost</p>
-                        <p className="text-[#6B7280] dark:text-mono-500 tabular-nums">{formatCurrency(recipe.margin.costPerPortion)}</p>
+                        <p className="text-xs text-[#737373] dark:text-mono-500">Food Cost</p>
+                        <p className="text-[#737373] dark:text-mono-500 tabular-nums">{formatCurrency(recipe.margin.costPerPortion)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Cout Total</p>
+                        <p className="text-xs text-[#737373] dark:text-mono-500">Cout Total</p>
                         <p className="font-medium text-mono-100 dark:text-white tabular-nums">{formatCurrency(totalCost)}</p>
                       </div>
                     </div>
@@ -1377,7 +1421,7 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm font-medium text-mono-100 dark:text-white">{cat.name}</span>
                         <div className="flex items-center gap-3">
-                          <span className="text-xs text-[#9CA3AF]">{pct.toFixed(0)}%</span>
+                          <span className="text-xs text-[#737373]">{pct.toFixed(0)}%</span>
                           <span className="text-sm font-bold text-mono-100 dark:text-white tabular-nums">{formatCurrency(cat.value)}</span>
                         </div>
                       </div>
@@ -1406,7 +1450,7 @@ export default function Dashboard() {
                 {stats.sortedByMarginDesc.slice(0, 5).map((r, i) => (
                   <Link key={r.id} to={`/recipes/${r.id}`} className="flex items-center justify-between py-2 border-b border-mono-950 dark:border-mono-200/50 last:border-0 group">
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xs font-bold text-[#9CA3AF] w-4">{i + 1}</span>
+                      <span className="text-xs font-bold text-[#737373] w-4">{i + 1}</span>
                       <span className="text-sm font-medium text-mono-100 dark:text-white truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{r.name}</span>
                     </div>
                     <span className={`text-sm font-bold tabular-nums flex-shrink-0 ${marginColor(r.margin.marginPercent)}`}>
@@ -1426,11 +1470,11 @@ export default function Dashboard() {
                 {stats.sortedByMarginAsc.slice(0, 5).map((r, i) => (
                   <Link key={r.id} to={`/recipes/${r.id}`} className="flex items-center justify-between py-2 border-b border-mono-950 dark:border-mono-200/50 last:border-0 group">
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xs font-bold text-[#9CA3AF] w-4">{i + 1}</span>
+                      <span className="text-xs font-bold text-[#737373] w-4">{i + 1}</span>
                       <span className="text-sm font-medium text-mono-100 dark:text-white truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{r.name}</span>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className="text-xs text-[#9CA3AF]">{formatCurrency(r.sellingPrice)}</span>
+                      <span className="text-xs text-[#737373]">{formatCurrency(r.sellingPrice)}</span>
                       <span className={`text-sm font-bold tabular-nums ${marginColor(r.margin.marginPercent)}`}>
                         {r.margin.marginPercent.toFixed(1)}%
                       </span>
@@ -1467,7 +1511,7 @@ export default function Dashboard() {
                         />
                       </div>
                       <span className="text-lg font-black text-mono-100 dark:text-white tabular-nums">{bucket.count}</span>
-                      <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{bucket.label}</span>
+                      <span className="text-xs text-[#737373] dark:text-mono-500">{bucket.label}</span>
                     </div>
                   );
                 });
@@ -1486,10 +1530,11 @@ export default function Dashboard() {
               <button
                 key={p}
                 onClick={() => setPnlPeriod(p)}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all
+                aria-pressed={pnlPeriod === p}
+                className={`px-4 py-2 min-h-[44px] text-sm font-medium rounded-lg transition-all
                   ${pnlPeriod === p
                     ? 'bg-mono-100 dark:bg-white text-white dark:text-black'
-                    : 'bg-white dark:bg-mono-50 text-[#9CA3AF] border border-mono-900 dark:border-mono-200 hover:text-[#6B7280]'
+                    : 'bg-white dark:bg-mono-50 text-[#737373] border border-mono-900 dark:border-mono-200 hover:text-[#525252]'
                   }`}
               >
                 {p === 'week' ? 'Semaine' : p === 'month' ? 'Mois' : 'Annee'}
@@ -1498,9 +1543,7 @@ export default function Dashboard() {
           </div>
 
           {pnlLoading ? (
-            <div className="flex items-center justify-center py-16">
-              <div className="animate-spin rounded-full h-8 w-8 border-4 border-teal-600 border-t-transparent" />
-            </div>
+            <LoadingState label="Chargement du compte de resultat…" />
           ) : pnlData ? (
             <div className="rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black p-6">
               <h3 className="text-base font-bold text-mono-100 dark:text-white font-satoshi mb-6">Compte de resultat</h3>
@@ -1514,7 +1557,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between py-3 border-b border-mono-900 dark:border-mono-200">
                   <div>
                     <span className="text-sm font-medium text-mono-100 dark:text-white">Cout matieres</span>
-                    <span className="text-xs text-[#9CA3AF] ml-2">{pnlData.foodCostPercent}% du CA</span>
+                    <span className="text-xs text-[#737373] ml-2">{pnlData.foodCostPercent}% du CA</span>
                   </div>
                   <span className="text-lg font-bold text-red-600 dark:text-red-400 tabular-nums">- {formatCurrency(pnlData.foodCost)}</span>
                 </div>
@@ -1523,7 +1566,7 @@ export default function Dashboard() {
                   <div className="flex items-center justify-between py-3 border-b border-mono-900 dark:border-mono-200">
                     <div>
                       <span className="text-sm font-medium text-mono-100 dark:text-white">Cout main d'oeuvre</span>
-                      <span className="text-xs text-[#9CA3AF] ml-2">{pnlData.laborCostPercent}% du CA</span>
+                      <span className="text-xs text-[#737373] ml-2">{pnlData.laborCostPercent}% du CA</span>
                     </div>
                     <span className="text-lg font-bold text-red-600 dark:text-red-400 tabular-nums">- {formatCurrency(pnlData.laborCost)}</span>
                   </div>
@@ -1570,10 +1613,10 @@ export default function Dashboard() {
       {/* No stats fallback for margin/cost/profitability tabs */}
       {activeTab !== 'overview' && activeTab !== 'pnl' && !stats && (
         <div className="text-center py-16 rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black">
-          <ChefHat className="w-12 h-12 mx-auto text-[#D1D5DB] dark:text-mono-400 mb-3" />
-          <p className="text-sm text-[#9CA3AF]">Ajoutez des recettes pour voir les analyses</p>
+          <ChefHat className="w-12 h-12 mx-auto text-[#737373] dark:text-mono-400 mb-3" aria-hidden="true" />
+          <p className="text-sm text-[#737373]">Ajoutez des recettes pour voir les analyses</p>
           <Link to="/recipes?action=new" className="inline-flex items-center gap-1.5 px-4 py-2 mt-4 bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-medium rounded-xl">
-            <Plus className="w-4 h-4" /> Creer une recette
+            <Plus className="w-4 h-4" aria-hidden="true" /> Creer une recette
           </Link>
         </div>
       )}
@@ -1612,23 +1655,28 @@ export default function Dashboard() {
                 <div>
                   <h3 id="weekly-report-title" className="text-lg font-bold font-satoshi text-mono-100 dark:text-white">Rapport Hebdomadaire IA</h3>
                   {reportData?.generatedAt && (
-                    <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
+                    <p className="text-xs text-[#737373] dark:text-mono-500">
                       {new Date(reportData.generatedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </p>
                   )}
                 </div>
               </div>
               <button onClick={() => setReportModalOpen(false)} aria-label="Fermer" className="p-2 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors">
-                <X className="w-5 h-5 text-[#9CA3AF]" aria-hidden="true" />
+                <X className="w-5 h-5 text-[#737373]" aria-hidden="true" />
               </button>
             </div>
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto px-6 py-5">
               {reportLoading ? (
-                <div className="flex flex-col items-center justify-center py-20 gap-4">
-                  <Loader2 className="w-8 h-8 text-mono-100 dark:text-white animate-spin" />
-                  <p className="text-sm text-[#9CA3AF]">Analyse de vos donnees en cours...</p>
+                <div
+                  role="status"
+                  aria-live="polite"
+                  aria-busy="true"
+                  className="flex flex-col items-center justify-center py-20 gap-4"
+                >
+                  <Loader2 className="w-8 h-8 text-mono-100 dark:text-white animate-spin" aria-hidden="true" />
+                  <p className="text-sm text-[#737373]">Analyse de vos donnees en cours...</p>
                 </div>
               ) : reportData ? (
                 <>
@@ -1641,7 +1689,7 @@ export default function Dashboard() {
                       ].map((m, i) => (
                         <div key={i} className="bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl p-4 text-center">
                           <p className="text-2xl font-black font-satoshi text-mono-100 dark:text-white">{m.value}</p>
-                          <p className="text-xs text-[#9CA3AF] mt-1">{m.label}</p>
+                          <p className="text-xs text-[#737373] mt-1">{m.label}</p>
                         </div>
                       ))}
                     </div>
@@ -1658,16 +1706,16 @@ export default function Dashboard() {
             {/* Footer */}
             {reportData && !reportLoading && (
               <div className="flex flex-wrap items-center justify-between gap-2 px-6 py-4 border-t border-mono-900 dark:border-mono-200 bg-mono-1000 dark:bg-mono-50">
-                <p className="hidden sm:block text-xs text-[#9CA3AF]">Rapport en cache 24h</p>
+                <p className="hidden sm:block text-xs text-[#737373]">Rapport en cache 24h</p>
                 <div className="flex items-center gap-2">
-                  <button onClick={copyReport} className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] border border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-mono-300 transition-colors">
-                    {reportCopied ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Copie !</> : <><Copy className="w-3.5 h-3.5" /> Copier</>}
+                  <button onClick={copyReport} className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-xs font-medium rounded-lg bg-white dark:bg-[#171717] text-[#737373] dark:text-[#E5E5E5] border border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-mono-300 transition-colors">
+                    {reportCopied ? <><Check className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" /> Copie !</> : <><Copy className="w-3.5 h-3.5" aria-hidden="true" /> Copier</>}
                   </button>
-                  <button onClick={sendReportByEmail} disabled={reportEmailSending} className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] border border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-mono-300 transition-colors disabled:opacity-50">
-                    {reportEmailSending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Envoi...</> : reportEmailSent ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Envoye !</> : <><Mail className="w-3.5 h-3.5" /> Email</>}
+                  <button onClick={sendReportByEmail} disabled={reportEmailSending} className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-xs font-medium rounded-lg bg-white dark:bg-[#171717] text-[#737373] dark:text-[#E5E5E5] border border-mono-900 dark:border-mono-200 hover:bg-mono-950 dark:hover:bg-mono-300 transition-colors disabled:opacity-50">
+                    {reportEmailSending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> Envoi...</> : reportEmailSent ? <><Check className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" /> Envoye !</> : <><Mail className="w-3.5 h-3.5" aria-hidden="true" /> Email</>}
                   </button>
-                  <button onClick={() => window.print()} className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
-                    <Download className="w-3.5 h-3.5" /> PDF
+                  <button onClick={() => window.print()} className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-xs font-medium rounded-lg bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                    <Download className="w-3.5 h-3.5" aria-hidden="true" /> PDF
                   </button>
                 </div>
               </div>

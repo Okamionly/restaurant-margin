@@ -10,6 +10,8 @@ import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/curr
 import RecipePlaceholder, { getMarginBadgeColor } from '../components/RecipePlaceholder';
 import FoodIllustration from '../components/FoodIllustration';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 
 // ─── Category emoji map ───
 // ── Unit conversion divisor (price is always per bulk unit: kg/L) ───
@@ -126,6 +128,7 @@ export default function RecipeDetail() {
   const { id } = useParams();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [simPrice, setSimPrice] = useState<number | null>(null);
   const [portions, setPortions] = useState<number | null>(null);
   const [optimizing, setOptimizing] = useState(false);
@@ -245,7 +248,7 @@ export default function RecipeDetail() {
       const { url } = await getRecipeShareLink(recipe.id);
       setShareUrl(url);
       setShowShareModal(true);
-    } catch (err) { console.error('Erreur partage', err); }
+    } catch (err) { setPhotoError('Impossible de générer le lien de partage. Vérifiez votre connexion, puis réessayez.'); }
     finally { setShareLoading(false); }
   }, [recipe]);
 
@@ -302,18 +305,21 @@ export default function RecipeDetail() {
     }
   }, [recipe]);
 
-  useEffect(() => {
-    if (id) {
-      fetchRecipe(parseInt(id))
-        .then((r) => {
-          setRecipe(r);
-          setSimPrice(r.sellingPrice);
-          setPortions(r.nbPortions);
-        })
-        .catch(() => console.error('Erreur'))
-        .finally(() => setLoading(false));
-    }
+  const loadRecipe = useCallback(() => {
+    if (!id) return;
+    setLoading(true);
+    setLoadError(false);
+    fetchRecipe(parseInt(id))
+      .then((r) => {
+        setRecipe(r);
+        setSimPrice(r.sellingPrice);
+        setPortions(r.nbPortions);
+      })
+      .catch(() => setLoadError(true))
+      .finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => { loadRecipe(); }, [loadRecipe]);
 
   const simData = useMemo(() => {
     if (!recipe || simPrice === null) return null;
@@ -344,7 +350,8 @@ export default function RecipeDetail() {
     return Array.from(new Set([...allAllergens, ...autoDetectedAllergens])).sort();
   }, [allAllergens, autoDetectedAllergens]);
 
-  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-mono-500">{t('common.loading')}</div>;
+  if (loading) return <LoadingState label={t('common.loading')} />;
+  if (loadError) return <ErrorState message="Impossible de charger la recette. Vérifiez votre connexion, puis réessayez." onRetry={loadRecipe} />;
   if (!recipe) return <div className="text-center py-12 text-red-500">{t('common.notFound')}</div>;
 
   const m = recipe.margin;
@@ -368,7 +375,7 @@ export default function RecipeDetail() {
           to="/recipes"
           className="flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 text-sm font-medium transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" /> Retour aux recettes
+          <ArrowLeft aria-hidden="true" className="w-4 h-4" /> Retour aux recettes
         </Link>
         <div className="flex items-center gap-2 flex-wrap">
           <button
@@ -376,7 +383,7 @@ export default function RecipeDetail() {
             disabled={shareLoading}
             className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-mono-50 text-mono-100 dark:text-white hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors disabled:opacity-50"
           >
-            {shareLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+            {shareLoading ? <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" /> : <Share2 aria-hidden="true" className="w-4 h-4" />}
             Partager
           </button>
           <button
@@ -384,20 +391,20 @@ export default function RecipeDetail() {
             disabled={optimizing}
             className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {optimizing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+            {optimizing ? <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" /> : <Sparkles aria-hidden="true" className="w-4 h-4" />}
             {optimizing ? 'Analyse...' : 'Optimiser IA'}
           </button>
           <Link
             to={`/recipes/${recipe.id}/edit`}
             className="btn-secondary flex items-center gap-2 text-sm"
           >
-            <Edit className="w-4 h-4" /> Modifier
+            <Edit aria-hidden="true" className="w-4 h-4" /> Modifier
           </Link>
           <button
             onClick={() => window.print()}
             className="btn-primary flex items-center gap-2 text-sm"
           >
-            <Printer className="w-4 h-4" /> {"Imprimer / PDF"}
+            <Printer aria-hidden="true" className="w-4 h-4" /> {"Imprimer / PDF"}
           </button>
         </div>
       </div>
@@ -418,25 +425,28 @@ export default function RecipeDetail() {
                 <>
                   <button
                     onClick={() => setPhotoIndex((photoIndex - 1 + recipe.photos!.length) % recipe.photos!.length)}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                    aria-label="Photo précédente"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft aria-hidden="true" className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => setPhotoIndex((photoIndex + 1) % recipe.photos!.length)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                    aria-label="Photo suivante"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
                   >
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight aria-hidden="true" className="w-5 h-5" />
                   </button>
                 </>
               )}
               {/* Delete photo */}
               <button
                 onClick={() => handleDeletePhoto(photoIndex)}
-                className="absolute top-2 right-2 w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                className="absolute top-2 right-2 w-11 h-11 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
                 title="Supprimer cette photo"
+                aria-label="Supprimer cette photo"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 aria-hidden="true" className="w-4 h-4" />
               </button>
               {/* Photo counter */}
               <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded-full">
@@ -449,6 +459,7 @@ export default function RecipeDetail() {
                 <button
                   key={idx}
                   onClick={() => setPhotoIndex(idx)}
+                  aria-label={`Afficher la photo ${idx + 1}`}
                   className={`w-14 h-14 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-colors ${idx === photoIndex ? 'border-mono-100 dark:border-white' : 'border-transparent opacity-60 hover:opacity-100'}`}
                 >
                   <img src={photo} alt={`Miniature ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" />
@@ -458,9 +469,10 @@ export default function RecipeDetail() {
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingPhoto}
-                  className="w-14 h-14 rounded-lg border-2 border-dashed border-[#D1D5DB] dark:border-mono-200 flex items-center justify-center text-[#9CA3AF] hover:text-mono-100 dark:hover:text-white hover:border-mono-100 dark:hover:border-white transition-colors flex-shrink-0"
+                  aria-label="Ajouter une photo"
+                  className="w-14 h-14 rounded-lg border-2 border-dashed border-[#D1D5DB] dark:border-mono-200 flex items-center justify-center text-[#737373] hover:text-mono-100 dark:hover:text-white hover:border-mono-100 dark:hover:border-white transition-colors flex-shrink-0"
                 >
-                  {uploadingPhoto ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
+                  {uploadingPhoto ? <Loader2 aria-hidden="true" className="w-5 h-5 animate-spin" /> : <Camera aria-hidden="true" className="w-5 h-5" />}
                 </button>
               )}
             </div>
@@ -488,12 +500,12 @@ export default function RecipeDetail() {
               <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
                 {recipe.prepTimeMinutes && recipe.prepTimeMinutes > 0 && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 text-white backdrop-blur-sm">
-                    <Clock className="w-3 h-3" /> Prep {recipe.prepTimeMinutes}min
+                    <Clock aria-hidden="true" className="w-3 h-3" /> Prep {recipe.prepTimeMinutes}min
                   </span>
                 )}
                 {recipe.cookTimeMinutes && recipe.cookTimeMinutes > 0 && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 text-white backdrop-blur-sm">
-                    <Clock className="w-3 h-3" /> Cuisson {recipe.cookTimeMinutes}min
+                    <Clock aria-hidden="true" className="w-3 h-3" /> Cuisson {recipe.cookTimeMinutes}min
                   </span>
                 )}
               </div>
@@ -504,7 +516,7 @@ export default function RecipeDetail() {
               disabled={uploadingPhoto}
               className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/20 backdrop-blur-sm text-white text-xs font-medium hover:bg-white/30 transition-colors"
             >
-              {uploadingPhoto ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
+              {uploadingPhoto ? <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" /> : <Camera aria-hidden="true" className="w-4 h-4" />}
               Ajouter une photo
             </button>
           </div>
@@ -516,6 +528,7 @@ export default function RecipeDetail() {
           capture="environment"
           onChange={handlePhotoUpload}
           className="hidden"
+          aria-label="Choisir une photo de la recette à téléverser"
         />
       </div>
 
@@ -536,32 +549,33 @@ export default function RecipeDetail() {
           >
             <div className="flex items-center justify-between px-5 py-4 border-b border-mono-900 dark:border-mono-200">
               <h3 id="recipe-share-title" className="text-lg font-bold text-mono-100 dark:text-white">Partager la recette</h3>
-              <button onClick={() => setShowShareModal(false)} aria-label="Fermer" className="text-[#9CA3AF] hover:text-mono-100 dark:hover:text-white transition-colors">
+              <button onClick={() => setShowShareModal(false)} aria-label="Fermer" className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg text-[#737373] hover:text-mono-100 dark:hover:text-white transition-colors">
                 <X className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
             <div className="p-5 space-y-4">
               {/* Link */}
               <div>
-                <label className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-1 block">Lien public</label>
+                <label className="text-xs font-semibold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-1 block">Lien public</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     readOnly
                     value={shareUrl}
+                    aria-label="Lien public de partage de la recette"
                     className="flex-1 px-3 py-2 text-sm rounded-lg border border-mono-900 dark:border-mono-200 bg-mono-950 dark:bg-[#171717] text-mono-100 dark:text-white font-mono"
                   />
                   <button
                     onClick={handleCopyLink}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${shareCopied ? 'bg-green-600 text-white' : 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:bg-[#333333] dark:hover:bg-[#E5E5E5]'}`}
                   >
-                    {shareCopied ? <><Check className="w-4 h-4" /> Copié</> : <><Copy className="w-4 h-4" /> Copier</>}
+                    {shareCopied ? <><Check aria-hidden="true" className="w-4 h-4" /> Copié</> : <><Copy aria-hidden="true" className="w-4 h-4" /> Copier</>}
                   </button>
                 </div>
               </div>
               {/* QR Code */}
               <div>
-                <label className="text-xs font-semibold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2 block">QR Code</label>
+                <label className="text-xs font-semibold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-2 block">QR Code</label>
                 <div className="flex justify-center p-4 bg-white rounded-xl border border-mono-900">
                   <QRCodeSVG value={shareUrl} size={180} />
                 </div>
@@ -573,11 +587,11 @@ export default function RecipeDetail() {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-mono-900 dark:border-mono-200 text-sm font-medium text-mono-100 dark:text-white hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               >
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink aria-hidden="true" className="w-4 h-4" />
                 Voir la page publique
               </a>
               {/* Info note */}
-              <p className="text-xs text-[#9CA3AF] dark:text-mono-500 text-center">
+              <p className="text-xs text-[#737373] dark:text-mono-500 text-center">
                 Cette page publique affiche la recette sans prix ni marges.
               </p>
             </div>
@@ -598,13 +612,13 @@ export default function RecipeDetail() {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
+              className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
                 activeTab === tab.key
                   ? 'bg-mono-100 dark:bg-white text-white dark:text-mono-100 shadow-sm'
-                  : 'text-[#6B7280] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white hover:bg-mono-950 dark:hover:bg-[#171717]'
+                  : 'text-[#737373] dark:text-mono-700 hover:text-mono-100 dark:hover:text-white hover:bg-mono-950 dark:hover:bg-[#171717]'
               }`}
             >
-              <tab.icon className="w-4 h-4" />
+              <tab.icon aria-hidden="true" className="w-4 h-4" />
               {tab.label}
               {tab.key === 'notes' && notes.length > 0 && (
                 <span className={`ml-1 text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
@@ -625,7 +639,7 @@ export default function RecipeDetail() {
         {/* Portions calculator */}
         <div className="px-5 py-3 bg-indigo-50 dark:bg-indigo-900/20 border-b border-indigo-200 dark:border-indigo-800">
           <div className="flex items-center gap-3 flex-wrap">
-            <Users className="w-4 h-4 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
+            <Users aria-hidden="true" className="w-4 h-4 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
             <span className="text-sm font-semibold text-indigo-800 dark:text-indigo-300">Calculer pour</span>
             <input
               type="number"
@@ -633,7 +647,8 @@ export default function RecipeDetail() {
               max={500}
               value={portions ?? ''}
               onChange={(e) => setPortions(Math.max(1, parseInt(e.target.value) || 1))}
-              className="w-20 px-2 py-1 text-sm border border-indigo-300 dark:border-indigo-600 rounded-lg text-center bg-white dark:bg-mono-50 text-mono-100 dark:text-[#E5E5E5] focus:ring-2 focus:ring-indigo-400 outline-none"
+              aria-label="Nombre de portions à calculer"
+              className="w-20 px-2 py-1 min-h-[44px] text-sm border border-indigo-300 dark:border-indigo-600 rounded-lg text-center bg-white dark:bg-mono-50 text-mono-100 dark:text-[#E5E5E5] focus:ring-2 focus:ring-indigo-400 outline-none"
             />
             <span className="text-sm text-indigo-700 dark:text-indigo-300">
               portions {portionMultiplier !== 1 && <span className="text-xs text-indigo-500">(x{portionMultiplier.toFixed(2)})</span>}
@@ -651,8 +666,8 @@ export default function RecipeDetail() {
         {/* Price Simulator */}
         <div className="px-5 py-3">
           <div className="flex items-center gap-3 mb-2">
-            <SlidersHorizontal className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
-            <span className="text-sm font-semibold text-[#9CA3AF] dark:text-mono-500">Simulateur de prix</span>
+            <SlidersHorizontal aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-500" />
+            <span className="text-sm font-semibold text-[#737373] dark:text-mono-500">Simulateur de prix</span>
             <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400 ml-auto">{(simPrice ?? 0).toFixed(2)} {getCurrencySymbol()}</span>
           </div>
           <input
@@ -662,9 +677,10 @@ export default function RecipeDetail() {
             step="0.10"
             value={simPrice ?? recipe.sellingPrice}
             onChange={(e) => setSimPrice(parseFloat(e.target.value))}
+            aria-label="Simuler le prix de vente"
             className="w-full h-2 bg-mono-900 dark:bg-mono-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
           />
-          <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">
+          <div className="flex justify-between text-xs text-[#737373] dark:text-mono-500 mt-1">
             <span>Coût : {m.totalCostPerPortion.toFixed(2)} {getCurrencySymbol()}</span>
             <span>Actuel : {recipe.sellingPrice.toFixed(2)} {getCurrencySymbol()}</span>
             <span>Max : {(recipe.sellingPrice * 2.5).toFixed(2)} {getCurrencySymbol()}</span>
@@ -695,16 +711,16 @@ export default function RecipeDetail() {
             <div className="flex items-center gap-3">
               {/* Logo placeholder */}
               <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                <ChefHat className="w-5 h-5 opacity-90" />
+                <ChefHat aria-hidden="true" className="w-5 h-5 opacity-90" />
               </div>
               <div>
                 <div className="text-sm font-bold uppercase tracking-widest">{getRestaurantName()}</div>
-                <div className="text-[10px] text-gray-400 uppercase tracking-wider">Fiche Technique</div>
+                <div className="text-[10px] text-[#A3A3A3] uppercase tracking-wider">Fiche Technique</div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-xs text-gray-400">N&deg;<span className="text-white font-bold text-sm">{String(recipe.id).padStart(3, '0')}</span></div>
-              <div className="text-[10px] text-gray-500">{formatDateShort(recipe.updatedAt)}</div>
+              <div className="text-xs text-[#A3A3A3]">N&deg;<span className="text-white font-bold text-sm">{String(recipe.id).padStart(3, '0')}</span></div>
+              <div className="text-[10px] text-[#A3A3A3]">{formatDateShort(recipe.updatedAt)}</div>
             </div>
           </div>
         </div>
@@ -714,12 +730,12 @@ export default function RecipeDetail() {
           <div className="flex items-baseline justify-between gap-4 flex-wrap">
             <div>
               <h1 className="text-xl font-bold text-mono-100 dark:text-white leading-tight print:font-serif">{recipe.name}</h1>
-              <div className="flex items-center gap-3 mt-0.5 text-xs text-[#9CA3AF] dark:text-mono-500">
-                <span className="font-medium text-[#9CA3AF] dark:text-mono-500 bg-mono-900 dark:bg-mono-200 px-2 py-0.5 rounded">{recipe.category}</span>
+              <div className="flex items-center gap-3 mt-0.5 text-xs text-[#737373] dark:text-mono-500">
+                <span className="font-medium text-[#737373] dark:text-mono-500 bg-mono-900 dark:bg-mono-200 px-2 py-0.5 rounded">{recipe.category}</span>
                 <span>{portions ?? recipe.nbPortions} portion{(portions ?? recipe.nbPortions) > 1 ? 's' : ''}</span>
                 {totalTime > 0 && (
                   <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
+                    <Clock aria-hidden="true" className="w-3 h-3" />
                     {totalTime} min
                   </span>
                 )}
@@ -727,11 +743,11 @@ export default function RecipeDetail() {
             </div>
             <div className="text-right">
               <div className="text-xl sm:text-2xl font-black text-mono-100 dark:text-white">{recipe.sellingPrice.toFixed(2)}<span className="text-sm font-medium ml-0.5">{getCurrencySymbol()}</span></div>
-              <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 uppercase">Prix de vente</div>
+              <div className="text-[10px] text-[#737373] dark:text-mono-500 uppercase">Prix de vente</div>
             </div>
           </div>
           {recipe.description && (
-            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1.5 italic leading-snug">{recipe.description}</p>
+            <p className="text-xs text-[#737373] dark:text-mono-500 mt-1.5 italic leading-snug">{recipe.description}</p>
           )}
         </div>
 
@@ -739,19 +755,19 @@ export default function RecipeDetail() {
         <div className="flex flex-col md:flex-row fiche-body">
           {/* ──── LEFT COLUMN (60%) ──── */}
           <div className="fiche-left flex-[3] md:border-r border-b md:border-b-0 border-mono-900 dark:border-mono-200 p-3 sm:p-4">
-            <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2">Composition</h2>
+            <h2 className="text-[11px] font-bold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-2">Composition</h2>
 
             {/* Desktop / print : tableau dense */}
             <div className="hidden md:block print:block overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
             <table className="w-full text-[11px] border-collapse min-w-[480px]">
               <thead>
-                <tr className="border-b-2 border-[#D1D5DB] dark:border-mono-200 text-[#9CA3AF] dark:text-mono-500">
-                  <th className="text-left pb-1.5 font-semibold pl-1">Ingrédient</th>
-                  <th className="text-center pb-1.5 font-semibold w-16">Qté</th>
-                  <th className="text-center pb-1.5 font-semibold w-12">Unité</th>
-                  <th className="text-center pb-1.5 font-semibold w-12">Perte</th>
-                  <th className="text-right pb-1.5 font-semibold w-14">P.U.</th>
-                  <th className="text-right pb-1.5 font-semibold pr-1 w-16">Total</th>
+                <tr className="border-b-2 border-[#D1D5DB] dark:border-mono-200 text-[#737373] dark:text-mono-500">
+                  <th scope="col" className="text-left pb-1.5 font-semibold pl-1">Ingrédient</th>
+                  <th scope="col" className="text-center pb-1.5 font-semibold w-16">Qté</th>
+                  <th scope="col" className="text-center pb-1.5 font-semibold w-12">Unité</th>
+                  <th scope="col" className="text-center pb-1.5 font-semibold w-12">Perte</th>
+                  <th scope="col" className="text-right pb-1.5 font-semibold w-14">P.U.</th>
+                  <th scope="col" className="text-right pb-1.5 font-semibold pr-1 w-16">Total</th>
                 </tr>
               </thead>
               <tbody>
@@ -771,12 +787,12 @@ export default function RecipeDetail() {
                           <span className="ml-1 text-amber-500 text-[9px] font-bold align-super" title={ri.ingredient.allergens.join(', ')}>*</span>
                         )}
                       </td>
-                      <td className="py-1 text-center font-mono text-[#9CA3AF] dark:text-mono-500">
+                      <td className="py-1 text-center font-mono text-[#737373] dark:text-mono-500">
                         {portionMultiplier !== 1 ? baseQty.toFixed(2) : ri.quantity}
                       </td>
-                      <td className="py-1 text-center text-[#9CA3AF] dark:text-mono-500">{ri.ingredient.unit}</td>
-                      <td className="py-1 text-center font-mono text-[#9CA3AF] dark:text-mono-500">{waste > 0 ? `${waste}%` : '—'}</td>
-                      <td className="py-1 text-right font-mono text-[#6B7280] dark:text-mono-500">{ri.ingredient.pricePerUnit.toFixed(2)}</td>
+                      <td className="py-1 text-center text-[#737373] dark:text-mono-500">{ri.ingredient.unit}</td>
+                      <td className="py-1 text-center font-mono text-[#737373] dark:text-mono-500">{waste > 0 ? `${waste}%` : '—'}</td>
+                      <td className="py-1 text-right font-mono text-[#737373] dark:text-mono-500">{ri.ingredient.pricePerUnit.toFixed(2)}</td>
                       <td className="py-1 text-right font-mono font-bold text-mono-100 dark:text-[#E5E5E5] pr-1">{lineTotal.toFixed(2)}</td>
                     </tr>
                   );
@@ -813,19 +829,19 @@ export default function RecipeDetail() {
                     </div>
                     <div className="grid grid-cols-2 gap-2 mt-2 text-[11px]">
                       <div className="flex items-center justify-between">
-                        <span className="text-[#9CA3AF] dark:text-mono-500">Qté</span>
+                        <span className="text-[#737373] dark:text-mono-500">Qté</span>
                         <span className="font-mono text-mono-100 dark:text-[#E5E5E5]">{portionMultiplier !== 1 ? baseQty.toFixed(2) : ri.quantity} {ri.ingredient.unit}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[#9CA3AF] dark:text-mono-500">Perte</span>
+                        <span className="text-[#737373] dark:text-mono-500">Perte</span>
                         <span className="font-mono text-mono-100 dark:text-[#E5E5E5]">{waste > 0 ? `${waste}%` : '—'}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[#9CA3AF] dark:text-mono-500">P.U.</span>
+                        <span className="text-[#737373] dark:text-mono-500">P.U.</span>
                         <span className="font-mono text-mono-100 dark:text-[#E5E5E5]">{ri.ingredient.pricePerUnit.toFixed(2)}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[#9CA3AF] dark:text-mono-500">Total</span>
+                        <span className="text-[#737373] dark:text-mono-500">Total</span>
                         <span className="font-mono font-bold text-mono-100 dark:text-[#E5E5E5]">{lineTotal.toFixed(2)}</span>
                       </div>
                     </div>
@@ -845,7 +861,7 @@ export default function RecipeDetail() {
 
             {/* Key metrics box */}
             <div>
-              <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2">Indicateurs clés</h2>
+              <h2 className="text-[11px] font-bold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-2">Indicateurs clés</h2>
               <div className="border border-[#D1D5DB] dark:border-mono-200 rounded-lg overflow-hidden text-[11px]">
                 <MetricRow label="Prix de vente" value={formatCurrency(recipe.sellingPrice)} />
                 <MetricRow label="Coût matière / portion" value={`${m.costPerPortion.toFixed(2)} ${getCurrencySymbol()}`} sub={`(${foodCostPct.toFixed(1)}%)`} />
@@ -861,7 +877,7 @@ export default function RecipeDetail() {
 
             {/* Donut chart */}
             <div>
-              <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-1">Répartition du prix</h2>
+              <h2 className="text-[11px] font-bold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-1">Répartition du prix</h2>
               <div className="flex items-center gap-2">
                 <div className="w-24 h-24 flex-shrink-0 no-print">
                   <ResponsiveContainer width="100%" height="100%">
@@ -919,7 +935,7 @@ export default function RecipeDetail() {
                   {donutData.map((d, i) => (
                     <div key={i} className="flex items-center gap-1.5">
                       <span className="w-2.5 h-2.5 rounded-sm inline-block flex-shrink-0" style={{ backgroundColor: DONUT_COLORS[i] }} />
-                      <span className="text-[#6B7280] dark:text-mono-500 flex-1">{d.name}</span>
+                      <span className="text-[#737373] dark:text-mono-500 flex-1">{d.name}</span>
                       <span className="font-mono font-bold text-mono-100 dark:text-[#E5E5E5]">{d.value.toFixed(2)} {getCurrencySymbol()}</span>
                     </div>
                   ))}
@@ -929,8 +945,8 @@ export default function RecipeDetail() {
 
             {/* Allergens (auto-detected + DB) */}
             <div>
-              <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                <AlertTriangle className="w-3 h-3 text-amber-500" />
+              <h2 className="text-[11px] font-bold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <AlertTriangle aria-hidden="true" className="w-3 h-3 text-amber-500" />
                 Allergènes
               </h2>
               {mergedAllergens.length > 0 ? (
@@ -952,22 +968,22 @@ export default function RecipeDetail() {
             {/* Timing */}
             {totalTime > 0 && (
               <div>
-                <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-1.5">Temps de production</h2>
+                <h2 className="text-[11px] font-bold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-1.5">Temps de production</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 text-center text-[10px]">
                   {recipe.prepTimeMinutes > 0 && (
                     <div className="bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-200 rounded px-2 py-1.5">
-                      <div className="text-[#9CA3AF] dark:text-mono-500 uppercase text-[8px] font-semibold">Prép.</div>
+                      <div className="text-[#737373] dark:text-mono-500 uppercase text-[8px] font-semibold">Prép.</div>
                       <div className="font-bold text-mono-100 dark:text-[#E5E5E5] text-sm">{recipe.prepTimeMinutes}<span className="text-[9px] font-normal ml-0.5">min</span></div>
                     </div>
                   )}
                   {recipe.cookTimeMinutes > 0 && (
                     <div className="bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-200 rounded px-2 py-1.5">
-                      <div className="text-[#9CA3AF] dark:text-mono-500 uppercase text-[8px] font-semibold">Cuisson</div>
+                      <div className="text-[#737373] dark:text-mono-500 uppercase text-[8px] font-semibold">Cuisson</div>
                       <div className="font-bold text-mono-100 dark:text-[#E5E5E5] text-sm">{recipe.cookTimeMinutes}<span className="text-[9px] font-normal ml-0.5">min</span></div>
                     </div>
                   )}
                   <div className="bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded px-2 py-1.5">
-                    <div className="text-gray-300 dark:text-gray-500 uppercase text-[8px] font-semibold">Total</div>
+                    <div className="text-[#D4D4D4] dark:text-[#737373] uppercase text-[8px] font-semibold">Total</div>
                     <div className="font-bold text-sm">{totalTime}<span className="text-[9px] font-normal ml-0.5">min</span></div>
                   </div>
                 </div>
@@ -977,7 +993,7 @@ export default function RecipeDetail() {
         </div>
 
         {/* ─── FOOTER ─── */}
-        <div className="fiche-footer px-5 py-1.5 border-t border-[#D1D5DB] dark:border-mono-200 bg-mono-975 dark:bg-mono-50 flex items-center justify-between text-[9px] text-[#9CA3AF] dark:text-mono-500">
+        <div className="fiche-footer px-5 py-1.5 border-t border-[#D1D5DB] dark:border-mono-200 bg-mono-975 dark:bg-mono-50 flex items-center justify-between text-[9px] text-[#737373] dark:text-mono-500">
           <span>Genere par RestauMargin &mdash; {new Date().toLocaleDateString('fr-FR')}</span>
           <span>{getRestaurantName()} &mdash; Fiche Technique N&deg;{String(recipe.id).padStart(3, '0')}</span>
           <span>Mise a jour le {formatDate(recipe.updatedAt)}</span>
@@ -1218,10 +1234,10 @@ export default function RecipeDetail() {
         <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden no-print">
           <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
             <h2 className="text-lg font-bold text-mono-100 dark:text-white flex items-center gap-2">
-              <Package className="w-5 h-5 text-teal-400" />
+              <Package aria-hidden="true" className="w-5 h-5 text-teal-400" />
               Ingredients ({recipe.ingredients.length})
             </h2>
-            <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">
+            <p className="text-xs text-[#737373] dark:text-mono-500 mt-1">
               Pour {portions ?? recipe.nbPortions} portion{(portions ?? recipe.nbPortions) > 1 ? 's' : ''}
             </p>
           </div>
@@ -1246,7 +1262,7 @@ export default function RecipeDetail() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 mt-0.5 text-[11px] text-[#9CA3AF] dark:text-mono-500">
+                    <div className="flex items-center gap-3 mt-0.5 text-[11px] text-[#737373] dark:text-mono-500">
                       <span>{ri.ingredient.category}</span>
                       {waste > 0 && <span>Perte: {waste}%</span>}
                     </div>
@@ -1255,7 +1271,7 @@ export default function RecipeDetail() {
                     <div className="text-sm font-bold text-mono-100 dark:text-white">
                       {portionMultiplier !== 1 ? baseQty.toFixed(2) : ri.quantity} {ri.ingredient.unit}
                     </div>
-                    <div className="text-[11px] text-[#9CA3AF] dark:text-mono-500">
+                    <div className="text-[11px] text-[#737373] dark:text-mono-500">
                       {formatCurrency(lineTotal)} ({pctOfTotal.toFixed(0)}%)
                     </div>
                   </div>
@@ -1286,13 +1302,13 @@ export default function RecipeDetail() {
           <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
             <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
               <h2 className="text-lg font-bold text-mono-100 dark:text-white flex items-center gap-2">
-                <SlidersHorizontal className="w-5 h-5 text-teal-400" />
+                <SlidersHorizontal aria-hidden="true" className="w-5 h-5 text-teal-400" />
                 Simulateur de prix
               </h2>
             </div>
             <div className="p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-[#6B7280] dark:text-mono-700">Prix de vente simule</span>
+                <span className="text-sm text-[#737373] dark:text-mono-700">Prix de vente simule</span>
                 <span className="text-2xl font-black text-mono-100 dark:text-white">{formatCurrency(simPrice ?? 0)}</span>
               </div>
               <input
@@ -1302,9 +1318,10 @@ export default function RecipeDetail() {
                 step="0.10"
                 value={simPrice ?? recipe.sellingPrice}
                 onChange={(e) => setSimPrice(parseFloat(e.target.value))}
+                aria-label="Simuler le prix de vente"
                 className="w-full h-2 bg-mono-900 dark:bg-mono-200 rounded-lg appearance-none cursor-pointer accent-mono-100 dark:accent-white"
               />
-              <div className="flex justify-between text-[11px] text-[#9CA3AF] dark:text-mono-500 mt-1">
+              <div className="flex justify-between text-[11px] text-[#737373] dark:text-mono-500 mt-1">
                 <span>Cout : {formatCurrency(m.totalCostPerPortion)}</span>
                 <span>Actuel : {formatCurrency(recipe.sellingPrice)}</span>
               </div>
@@ -1323,7 +1340,7 @@ export default function RecipeDetail() {
             {/* Donut chart */}
             <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
               <h3 className="text-sm font-bold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-teal-400" />
+                <DollarSign aria-hidden="true" className="w-4 h-4 text-teal-400" />
                 Repartition du prix
               </h3>
               <div className="flex items-center gap-4">
@@ -1355,7 +1372,7 @@ export default function RecipeDetail() {
                   {donutData.map((d, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: DONUT_COLORS[i] }} />
-                      <span className="text-xs text-[#6B7280] dark:text-mono-500 flex-1">{d.name}</span>
+                      <span className="text-xs text-[#737373] dark:text-mono-500 flex-1">{d.name}</span>
                       <span className="text-xs font-bold text-mono-100 dark:text-white">{formatCurrency(d.value)}</span>
                     </div>
                   ))}
@@ -1366,7 +1383,7 @@ export default function RecipeDetail() {
             {/* Key metrics */}
             <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-5">
               <h3 className="text-sm font-bold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
-                <TrendingDown className="w-4 h-4 text-teal-400" />
+                <TrendingDown aria-hidden="true" className="w-4 h-4 text-teal-400" />
                 Indicateurs cles
               </h3>
               <div className="space-y-0.5 rounded-xl border border-mono-900 dark:border-mono-200 overflow-hidden">
@@ -1398,7 +1415,7 @@ export default function RecipeDetail() {
                 </div>
               </div>
             </div>
-            <div className="flex justify-between mt-2 text-[10px] text-[#9CA3AF] dark:text-mono-500">
+            <div className="flex justify-between mt-2 text-[10px] text-[#737373] dark:text-mono-500">
               <span>0% - Perte</span>
               <span>60% - Minimum</span>
               <span>70% - Objectif</span>
@@ -1415,7 +1432,7 @@ export default function RecipeDetail() {
           <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
             <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
               <h2 className="text-lg font-bold text-mono-100 dark:text-white flex items-center gap-2">
-                <History className="w-5 h-5 text-teal-400" />
+                <History aria-hidden="true" className="w-5 h-5 text-teal-400" />
                 Evolution du cout matiere
               </h2>
             </div>
@@ -1433,7 +1450,7 @@ export default function RecipeDetail() {
                         className={`w-full rounded-t-lg transition-all ${isLatest ? 'bg-mono-100 dark:bg-white' : 'bg-mono-900 dark:bg-mono-200'}`}
                         style={{ height: `${height}%`, minHeight: '4px' }}
                       />
-                      <span className="text-[8px] text-[#9CA3AF] dark:text-mono-500">
+                      <span className="text-[8px] text-[#737373] dark:text-mono-500">
                         {new Date(point.date).toLocaleDateString('fr-FR', { month: 'short' })}
                       </span>
                     </div>
@@ -1447,7 +1464,7 @@ export default function RecipeDetail() {
           <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
             <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
               <h2 className="text-lg font-bold text-mono-100 dark:text-white flex items-center gap-2">
-                <FileText className="w-5 h-5 text-teal-400" />
+                <FileText aria-hidden="true" className="w-5 h-5 text-teal-400" />
                 Journal des modifications
               </h2>
             </div>
@@ -1461,14 +1478,14 @@ export default function RecipeDetail() {
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 z-10 ${
                         i === 0 ? 'bg-mono-100 dark:bg-white' : 'bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200'
                       }`}>
-                        <History className={`w-3.5 h-3.5 ${i === 0 ? 'text-white dark:text-mono-100' : 'text-[#9CA3AF] dark:text-mono-500'}`} />
+                        <History aria-hidden="true" className={`w-3.5 h-3.5 ${i === 0 ? 'text-white dark:text-mono-100' : 'text-[#737373] dark:text-mono-500'}`} />
                       </div>
                       <div className="flex-1 min-w-0 pb-4">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-mono-100 dark:text-white">{entry.action}</span>
-                          <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{formatDate(entry.date)}</span>
+                          <span className="text-[10px] text-[#737373] dark:text-mono-500">{formatDate(entry.date)}</span>
                         </div>
-                        <p className="text-xs text-[#6B7280] dark:text-mono-700 mt-0.5">{entry.detail}</p>
+                        <p className="text-xs text-[#737373] dark:text-mono-700 mt-0.5">{entry.detail}</p>
                       </div>
                     </div>
                   ))}
@@ -1486,22 +1503,23 @@ export default function RecipeDetail() {
           <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 overflow-hidden">
             <div className="px-5 py-4 border-b border-mono-900 dark:border-mono-200">
               <h2 className="text-lg font-bold text-mono-100 dark:text-white flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-teal-400" />
+                <MessageSquare aria-hidden="true" className="w-5 h-5 text-teal-400" />
                 Notes de l'equipe
               </h2>
             </div>
             <div className="p-5">
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-mono-100 dark:bg-white flex items-center justify-center shrink-0">
-                  <User className="w-4 h-4 text-white dark:text-mono-100" />
+                  <User aria-hidden="true" className="w-4 h-4 text-white dark:text-mono-100" />
                 </div>
                 <div className="flex-1">
                   <textarea
                     value={newNote}
                     onChange={(e) => setNewNote(e.target.value)}
                     placeholder="Ajouter une note pour l'equipe..."
+                    aria-label="Nouvelle note pour l'équipe"
                     rows={3}
-                    className="w-full px-3 py-2 bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-sm text-mono-100 dark:text-white placeholder:text-[#9CA3AF] dark:placeholder:text-mono-500 focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:outline-none resize-none"
+                    className="w-full px-3 py-2 bg-mono-1000 dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-xl text-sm text-mono-100 dark:text-white placeholder:text-[#737373] dark:placeholder:text-mono-500 focus:ring-2 focus:ring-mono-100 dark:focus:ring-white focus:outline-none resize-none"
                   />
                   <div className="flex justify-end mt-2">
                     <button
@@ -1509,7 +1527,7 @@ export default function RecipeDetail() {
                       disabled={!newNote.trim()}
                       className="flex items-center gap-2 px-4 py-2 rounded-xl bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-40"
                     >
-                      <Send className="w-3.5 h-3.5" />
+                      <Send aria-hidden="true" className="w-3.5 h-3.5" />
                       Publier
                     </button>
                   </div>
@@ -1525,24 +1543,25 @@ export default function RecipeDetail() {
                 <div key={note.id} className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 p-4">
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-full bg-mono-950 dark:bg-[#171717] flex items-center justify-center shrink-0">
-                      <User className="w-4 h-4 text-[#9CA3AF] dark:text-mono-500" />
+                      <User aria-hidden="true" className="w-4 h-4 text-[#737373] dark:text-mono-500" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-mono-100 dark:text-white">{note.author}</span>
-                          <span className="text-[10px] text-[#9CA3AF] dark:text-mono-500">
+                          <span className="text-[10px] text-[#737373] dark:text-mono-500">
                             {new Date(note.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
                         <button
                           onClick={() => deleteNote(note.id)}
-                          className="p-1 rounded-lg text-[#D1D5DB] dark:text-[#333] hover:text-red-400 hover:bg-red-500/10 transition-all"
+                          aria-label="Supprimer la note"
+                          className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-[#737373] dark:text-[#A3A3A3] hover:text-red-400 hover:bg-red-500/10 transition-all"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 aria-hidden="true" className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                      <p className="text-sm text-[#6B7280] dark:text-mono-700 mt-1 whitespace-pre-wrap">{note.text}</p>
+                      <p className="text-sm text-[#737373] dark:text-mono-700 mt-1 whitespace-pre-wrap">{note.text}</p>
                     </div>
                   </div>
                 </div>
@@ -1550,9 +1569,9 @@ export default function RecipeDetail() {
             </div>
           ) : (
             <div className="bg-white dark:bg-mono-50 rounded-2xl border border-mono-900 dark:border-mono-200 py-12 text-center">
-              <MessageSquare className="w-10 h-10 mx-auto mb-3 text-[#D1D5DB] dark:text-[#333]" />
-              <p className="text-sm text-[#9CA3AF] dark:text-mono-500">Aucune note pour cette recette.</p>
-              <p className="text-xs text-[#D1D5DB] dark:text-[#333] mt-1">Ajoutez des notes pour communiquer avec votre equipe.</p>
+              <MessageSquare aria-hidden="true" className="w-10 h-10 mx-auto mb-3 text-[#D1D5DB] dark:text-[#333]" />
+              <p className="text-sm text-[#737373] dark:text-mono-500">Aucune note pour cette recette.</p>
+              <p className="text-xs text-[#737373] dark:text-[#A3A3A3] mt-1">Ajoutez des notes pour communiquer avec votre equipe.</p>
             </div>
           )}
         </div>
@@ -1569,7 +1588,7 @@ export default function RecipeDetail() {
       <div className="bg-white dark:bg-mono-50 rounded-xl shadow-md mt-4 overflow-hidden no-print">
         <div className="px-5 py-3 border-b border-mono-900 dark:border-mono-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-mono-100 dark:text-white" />
+            <Shield aria-hidden="true" className="w-4 h-4 text-mono-100 dark:text-white" />
             <h3 className="text-sm font-bold text-mono-100 dark:text-white">Analyse allergenes IA</h3>
           </div>
           <button
@@ -1577,7 +1596,7 @@ export default function RecipeDetail() {
             disabled={allergenLoading}
             className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-lg bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
           >
-            {allergenLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+            {allergenLoading ? <Loader2 aria-hidden="true" className="w-3.5 h-3.5 animate-spin" /> : <Sparkles aria-hidden="true" className="w-3.5 h-3.5" />}
             {allergenLoading ? 'Analyse...' : 'Analyser allergenes IA'}
           </button>
         </div>
@@ -1592,7 +1611,7 @@ export default function RecipeDetail() {
           <div className="p-5 space-y-4">
             {/* 14 EU Allergens Grid */}
             <div>
-              <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2">14 allergenes majeurs UE</h4>
+              <h4 className="text-[10px] font-bold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-2">14 allergenes majeurs UE</h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
                 {allergenResult.allergens.map((a) => {
                   const isPresent = a.status === 'present';
@@ -1619,7 +1638,7 @@ export default function RecipeDetail() {
                       </div>
                       <div className="text-[10px] font-semibold text-mono-100 dark:text-white leading-tight">{a.name}</div>
                       {a.source && (
-                        <div className="text-[9px] text-[#9CA3AF] dark:text-mono-500 mt-0.5 truncate" title={a.source}>{a.source}</div>
+                        <div className="text-[9px] text-[#737373] dark:text-mono-500 mt-0.5 truncate" title={a.source}>{a.source}</div>
                       )}
                       {a.riskLevel && String(a.riskLevel) !== 'null' && (
                         <div className={`text-[8px] font-medium mt-0.5 ${iconColor}`}>{a.riskLevel}</div>
@@ -1633,18 +1652,18 @@ export default function RecipeDetail() {
             {/* Cross-contamination warnings */}
             {allergenResult.crossContamination.length > 0 && (
               <div>
-                <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2 flex items-center gap-1">
-                  <AlertTriangle className="w-3 h-3 text-amber-500" />
+                <h4 className="text-[10px] font-bold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-2 flex items-center gap-1">
+                  <AlertTriangle aria-hidden="true" className="w-3 h-3 text-amber-500" />
                   Risques de contamination croisee
                 </h4>
                 <div className="space-y-1.5">
                   {allergenResult.crossContamination.map((cc, i) => (
                     <div key={i} className="flex items-start gap-2 px-3 py-2 rounded-lg bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800">
-                      <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                      <AlertTriangle aria-hidden="true" className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
                       <div>
                         <span className="text-xs font-semibold text-amber-800 dark:text-amber-300">{cc.allergen}</span>
-                        <span className="text-xs text-[#6B7280] dark:text-mono-700 ml-1">({cc.source})</span>
-                        <p className="text-[10px] text-[#9CA3AF] dark:text-mono-500">{cc.risk}</p>
+                        <span className="text-xs text-[#737373] dark:text-mono-700 ml-1">({cc.source})</span>
+                        <p className="text-[10px] text-[#737373] dark:text-mono-500">{cc.risk}</p>
                       </div>
                     </div>
                   ))}
@@ -1655,7 +1674,7 @@ export default function RecipeDetail() {
             {/* Recommendation */}
             {allergenResult.recommendation && (
               <div className="px-3 py-2.5 rounded-lg bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200">
-                <p className="text-xs text-[#6B7280] dark:text-mono-700 leading-relaxed">{allergenResult.recommendation}</p>
+                <p className="text-xs text-[#737373] dark:text-mono-700 leading-relaxed">{allergenResult.recommendation}</p>
               </div>
             )}
 
@@ -1688,9 +1707,9 @@ export default function RecipeDetail() {
                   printWin.document.close();
                   printWin.print();
                 }}
-                className="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-lg border border-mono-900 dark:border-mono-200 text-[#6B7280] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
+                className="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-lg border border-mono-900 dark:border-mono-200 text-[#737373] dark:text-mono-700 hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors"
               >
-                <Printer className="w-3.5 h-3.5" />
+                <Printer aria-hidden="true" className="w-3.5 h-3.5" />
                 Imprimer etiquette allergenes
               </button>
             </div>
@@ -1699,8 +1718,8 @@ export default function RecipeDetail() {
 
         {!allergenResult && !allergenLoading && !allergenError && (
           <div className="px-5 py-6 text-center">
-            <Shield className="w-8 h-8 mx-auto mb-2 text-[#D1D5DB] dark:text-[#333]" />
-            <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
+            <Shield aria-hidden="true" className="w-8 h-8 mx-auto mb-2 text-[#D1D5DB] dark:text-[#333]" />
+            <p className="text-xs text-[#737373] dark:text-mono-500">
               Lancez l'analyse IA pour detecter les 14 allergenes majeurs UE, les sources et les risques de contamination croisee.
             </p>
           </div>
@@ -1713,7 +1732,7 @@ export default function RecipeDetail() {
       <div className="bg-white dark:bg-mono-50 rounded-xl shadow-md mt-4 overflow-hidden no-print">
         <div className="px-5 py-3 border-b border-mono-900 dark:border-mono-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Apple className="w-4 h-4 text-mono-100 dark:text-white" />
+            <Apple aria-hidden="true" className="w-4 h-4 text-mono-100 dark:text-white" />
             <h3 className="text-sm font-bold text-mono-100 dark:text-white">Estimation nutritionnelle IA</h3>
           </div>
           <button
@@ -1721,7 +1740,7 @@ export default function RecipeDetail() {
             disabled={nutritionLoading}
             className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-lg bg-mono-100 dark:bg-white text-white dark:text-mono-100 hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
           >
-            {nutritionLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+            {nutritionLoading ? <Loader2 aria-hidden="true" className="w-3.5 h-3.5 animate-spin" /> : <Sparkles aria-hidden="true" className="w-3.5 h-3.5" />}
             {nutritionLoading ? 'Estimation...' : 'Estimer nutrition IA'}
           </button>
         </div>
@@ -1737,7 +1756,7 @@ export default function RecipeDetail() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Macros donut */}
               <div className="md:col-span-1">
-                <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2">Macronutriments / portion</h4>
+                <h4 className="text-[10px] font-bold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-2">Macronutriments / portion</h4>
                 <div className="flex flex-col items-center">
                   <div className="w-32 h-32">
                     <ResponsiveContainer width="100%" height="100%">
@@ -1770,17 +1789,17 @@ export default function RecipeDetail() {
                   <div className="flex gap-3 mt-2 text-[10px]">
                     <div className="flex items-center gap-1">
                       <span className="w-2.5 h-2.5 rounded-sm bg-mono-100 dark:bg-white" />
-                      <span className="text-[#6B7280] dark:text-mono-500">Prot.</span>
+                      <span className="text-[#737373] dark:text-mono-500">Prot.</span>
                       <span className="font-bold text-mono-100 dark:text-white">{nutritionResult.perPortion.protein}g</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="w-2.5 h-2.5 rounded-sm bg-[#9CA3AF]" />
-                      <span className="text-[#6B7280] dark:text-mono-500">Gluc.</span>
+                      <span className="text-[#737373] dark:text-mono-500">Gluc.</span>
                       <span className="font-bold text-mono-100 dark:text-white">{nutritionResult.perPortion.carbs}g</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="w-2.5 h-2.5 rounded-sm bg-[#D1D5DB] dark:bg-mono-500" />
-                      <span className="text-[#6B7280] dark:text-mono-500">Lip.</span>
+                      <span className="text-[#737373] dark:text-mono-500">Lip.</span>
                       <span className="font-bold text-mono-100 dark:text-white">{nutritionResult.perPortion.fat}g</span>
                     </div>
                   </div>
@@ -1789,10 +1808,10 @@ export default function RecipeDetail() {
 
               {/* Calorie count + detail */}
               <div className="md:col-span-1">
-                <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2">Calories / portion</h4>
+                <h4 className="text-[10px] font-bold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-2">Calories / portion</h4>
                 <div className="text-center py-3">
                   <div className="text-4xl font-black text-mono-100 dark:text-white">{nutritionResult.perPortion.calories}</div>
-                  <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">kcal</div>
+                  <div className="text-xs text-[#737373] dark:text-mono-500 mt-1">kcal</div>
                 </div>
                 <div className="space-y-1.5 mt-2">
                   <NutritionRow label="Fibres" value={`${nutritionResult.perPortion.fiber}g`} />
@@ -1802,7 +1821,7 @@ export default function RecipeDetail() {
 
               {/* Health score ring */}
               <div className="md:col-span-1">
-                <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2">Score sante</h4>
+                <h4 className="text-[10px] font-bold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-2">Score sante</h4>
                 <div className="flex flex-col items-center py-2">
                   <div className="relative w-28 h-28">
                     <svg viewBox="0 0 120 120" className="w-full h-full">
@@ -1821,10 +1840,10 @@ export default function RecipeDetail() {
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <span className="text-2xl font-black text-mono-100 dark:text-white">{nutritionResult.healthScore}</span>
-                      <span className="text-[9px] text-[#9CA3AF] dark:text-mono-500">/100</span>
+                      <span className="text-[9px] text-[#737373] dark:text-mono-500">/100</span>
                     </div>
                   </div>
-                  <span className="text-[10px] font-medium mt-1 text-[#9CA3AF] dark:text-mono-500">
+                  <span className="text-[10px] font-medium mt-1 text-[#737373] dark:text-mono-500">
                     {nutritionResult.healthScore >= 70 ? 'Bon equilibre' : nutritionResult.healthScore >= 40 ? 'Acceptable' : 'A ameliorer'}
                   </span>
                 </div>
@@ -1834,7 +1853,7 @@ export default function RecipeDetail() {
             {/* Dietary labels */}
             {nutritionResult.dietaryLabels.length > 0 && (
               <div>
-                <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-mono-500 uppercase tracking-wider mb-2">Labels</h4>
+                <h4 className="text-[10px] font-bold text-[#737373] dark:text-mono-500 uppercase tracking-wider mb-2">Labels</h4>
                 <div className="flex flex-wrap gap-1.5">
                   {nutritionResult.dietaryLabels.map((label, i) => (
                     <span
@@ -1851,7 +1870,7 @@ export default function RecipeDetail() {
             {/* AI Analysis */}
             {nutritionResult.analysis && (
               <div className="px-3 py-2.5 rounded-lg bg-mono-950 dark:bg-[#171717] border border-mono-900 dark:border-mono-200">
-                <p className="text-xs text-[#6B7280] dark:text-mono-700 leading-relaxed">{nutritionResult.analysis}</p>
+                <p className="text-xs text-[#737373] dark:text-mono-700 leading-relaxed">{nutritionResult.analysis}</p>
               </div>
             )}
           </div>
@@ -1859,8 +1878,8 @@ export default function RecipeDetail() {
 
         {!nutritionResult && !nutritionLoading && !nutritionError && (
           <div className="px-5 py-6 text-center">
-            <Activity className="w-8 h-8 mx-auto mb-2 text-[#D1D5DB] dark:text-[#333]" />
-            <p className="text-xs text-[#9CA3AF] dark:text-mono-500">
+            <Activity aria-hidden="true" className="w-8 h-8 mx-auto mb-2 text-[#D1D5DB] dark:text-[#333]" />
+            <p className="text-xs text-[#737373] dark:text-mono-500">
               Lancez l'estimation IA pour obtenir les calories, macronutriments, score sante et labels dietetiques.
             </p>
           </div>
@@ -1873,10 +1892,10 @@ export default function RecipeDetail() {
       {/* ─── Photo error toast ─── */}
       {photoError && (
         <div className="fixed bottom-16 right-4 z-50 bg-red-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 animate-fade-in no-print">
-          <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+          <AlertTriangle aria-hidden="true" className="w-5 h-5 flex-shrink-0" />
           <span className="text-sm">{photoError}</span>
-          <button onClick={() => setPhotoError(null)} className="p-1 hover:bg-red-500 rounded-lg transition-colors">
-            <X className="w-4 h-4" />
+          <button onClick={() => setPhotoError(null)} aria-label="Fermer le message d'erreur" className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-red-500 rounded-lg transition-colors">
+            <X aria-hidden="true" className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -1884,10 +1903,10 @@ export default function RecipeDetail() {
       {/* ─── Optimize error toast ─── */}
       {optimizeError && (
         <div className="fixed bottom-4 right-4 z-50 bg-red-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 animate-fade-in no-print">
-          <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+          <AlertTriangle aria-hidden="true" className="w-5 h-5 flex-shrink-0" />
           <span className="text-sm">{optimizeError}</span>
-          <button onClick={() => setOptimizeError(null)} className="p-1 hover:bg-red-500 rounded-lg transition-colors">
-            <X className="w-4 h-4" />
+          <button onClick={() => setOptimizeError(null)} aria-label="Fermer le message d'erreur" className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-red-500 rounded-lg transition-colors">
+            <X aria-hidden="true" className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -1903,14 +1922,14 @@ export default function RecipeDetail() {
             {/* Modal header */}
             <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-teal-600 to-teal-500">
               <div className="flex items-center gap-3">
-                <Sparkles className="w-6 h-6 text-white" />
+                <Sparkles aria-hidden="true" className="w-6 h-6 text-white" />
                 <div>
                   <h3 className="text-lg font-bold text-white">Optimisation IA des couts</h3>
                   <p className="text-teal-100 text-xs">{optimizationResult.recipe.name}</p>
                 </div>
               </div>
-              <button onClick={() => setShowOptimizer(false)} className="p-1.5 rounded-lg hover:bg-teal-400/30 transition-colors">
-                <X className="w-5 h-5 text-white" />
+              <button onClick={() => setShowOptimizer(false)} aria-label="Fermer" className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-teal-400/30 transition-colors">
+                <X aria-hidden="true" className="w-5 h-5 text-white" />
               </button>
             </div>
 
@@ -1918,18 +1937,18 @@ export default function RecipeDetail() {
             <div className="px-6 py-4 bg-mono-1000/50 dark:bg-mono-50/50 border-b border-mono-900 dark:border-mono-200">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-4 border border-mono-900 dark:border-mono-200 text-center">
-                  <div className="text-xs text-[#9CA3AF] dark:text-mono-500 font-medium mb-1">Cout actuel</div>
+                  <div className="text-xs text-[#737373] dark:text-mono-500 font-medium mb-1">Cout actuel</div>
                   <div className="text-2xl font-bold text-red-400">{optimizationResult.optimization.currentTotalCost.toFixed(2)} {getCurrencySymbol()}</div>
-                  <div className="text-xs text-[#6B7280] dark:text-mono-700 mt-0.5">{optimizationResult.costPerPortion.toFixed(2)} {getCurrencySymbol()}/portion</div>
+                  <div className="text-xs text-[#737373] dark:text-mono-700 mt-0.5">{optimizationResult.costPerPortion.toFixed(2)} {getCurrencySymbol()}/portion</div>
                 </div>
                 <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-4 border border-teal-600/50 text-center relative">
                   <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-teal-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">OPTIMISE</div>
-                  <div className="text-xs text-[#9CA3AF] dark:text-mono-500 font-medium mb-1">Cout optimise</div>
+                  <div className="text-xs text-[#737373] dark:text-mono-500 font-medium mb-1">Cout optimise</div>
                   <div className="text-2xl font-bold text-teal-400">{optimizationResult.optimization.optimizedTotalCost.toFixed(2)} {getCurrencySymbol()}</div>
-                  <div className="text-xs text-[#6B7280] dark:text-mono-700 mt-0.5">{(optimizationResult.optimization.optimizedTotalCost / (optimizationResult.recipe.nbPortions || 1)).toFixed(2)} {getCurrencySymbol()}/portion</div>
+                  <div className="text-xs text-[#737373] dark:text-mono-700 mt-0.5">{(optimizationResult.optimization.optimizedTotalCost / (optimizationResult.recipe.nbPortions || 1)).toFixed(2)} {getCurrencySymbol()}/portion</div>
                 </div>
                 <div className="bg-mono-1000 dark:bg-mono-50 rounded-xl p-4 border border-emerald-600/50 text-center">
-                  <div className="text-xs text-[#9CA3AF] dark:text-mono-500 font-medium mb-1">Economies</div>
+                  <div className="text-xs text-[#737373] dark:text-mono-500 font-medium mb-1">Economies</div>
                   <div className="text-2xl font-bold text-emerald-400">-{optimizationResult.optimization.totalSavingsEuros.toFixed(2)} {getCurrencySymbol()}</div>
                   <div className="text-xs text-emerald-500 mt-0.5 font-semibold">-{optimizationResult.optimization.totalSavingsPercent.toFixed(1)}%</div>
                 </div>
@@ -1945,8 +1964,8 @@ export default function RecipeDetail() {
 
             {/* Suggestions list */}
             <div className="px-6 py-4 max-h-[50vh] overflow-y-auto">
-              <h4 className="text-sm font-semibold text-[#6B7280] dark:text-mono-700 mb-3 flex items-center gap-2">
-                <TrendingDown className="w-4 h-4 text-teal-400" />
+              <h4 className="text-sm font-semibold text-[#737373] dark:text-mono-700 mb-3 flex items-center gap-2">
+                <TrendingDown aria-hidden="true" className="w-4 h-4 text-teal-400" />
                 Suggestions d'optimisation ({optimizationResult.optimization.suggestions.length})
               </h4>
               <div className="space-y-3">
@@ -1984,21 +2003,21 @@ export default function RecipeDetail() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2 flex-wrap">
                             <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${typeBg}`}>
-                              <TypeIcon className="w-3 h-3" />
+                              <TypeIcon aria-hidden="true" className="w-3 h-3" />
                               {typeLabel}
                             </span>
                             <span className={`text-[10px] font-medium ${impactColor}`}>{impactLabel}</span>
                           </div>
                           <div className="text-sm font-semibold text-mono-100 dark:text-white mb-1">{suggestion.ingredientName}</div>
-                          <p className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-2">{suggestion.suggestion}</p>
+                          <p className="text-xs text-[#737373] dark:text-mono-500 mb-2">{suggestion.suggestion}</p>
                           <div className="flex items-center gap-3 text-xs">
                             <span className="text-red-400 line-through">{suggestion.currentCost.toFixed(2)} {getCurrencySymbol()}</span>
-                            <ArrowRight className="w-3 h-3 text-[#6B7280] dark:text-mono-700" />
+                            <ArrowRight aria-hidden="true" className="w-3 h-3 text-[#737373] dark:text-mono-700" />
                             <span className="text-teal-400 font-semibold">{suggestion.estimatedNewCost.toFixed(2)} {getCurrencySymbol()}</span>
                             <span className="text-emerald-400 font-bold">-{suggestion.savingsPercent.toFixed(0)}%</span>
                           </div>
                           {suggestion.reasoning && (
-                            <p className="text-[11px] text-[#6B7280] dark:text-mono-700 mt-2 italic">{suggestion.reasoning}</p>
+                            <p className="text-[11px] text-[#737373] dark:text-mono-700 mt-2 italic">{suggestion.reasoning}</p>
                           )}
                         </div>
                         <button
@@ -2016,10 +2035,10 @@ export default function RecipeDetail() {
                           className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                             isApplied
                               ? 'bg-teal-600 text-white'
-                              : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-teal-600 hover:text-white'
+                              : 'bg-mono-950 dark:bg-[#171717] text-[#737373] dark:text-mono-700 hover:bg-teal-600 hover:text-white'
                           }`}
                         >
-                          {isApplied ? <Check className="w-3.5 h-3.5" /> : null}
+                          {isApplied ? <Check aria-hidden="true" className="w-3.5 h-3.5" /> : null}
                           {isApplied ? 'Applique' : 'Appliquer'}
                         </button>
                       </div>
@@ -2027,8 +2046,8 @@ export default function RecipeDetail() {
                   );
                 })}
                 {optimizationResult.optimization.suggestions.length === 0 && (
-                  <div className="text-center py-8 text-[#6B7280] dark:text-mono-700">
-                    <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <div className="text-center py-8 text-[#737373] dark:text-mono-700">
+                    <Sparkles aria-hidden="true" className="w-8 h-8 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">Cette recette est deja bien optimisee !</p>
                   </div>
                 )}
@@ -2038,12 +2057,12 @@ export default function RecipeDetail() {
             {/* Modal footer */}
             {appliedSuggestions.size > 0 && (
               <div className="px-6 py-3 bg-mono-1000 dark:bg-mono-50 border-t border-mono-900 dark:border-mono-200 flex items-center justify-between">
-                <span className="text-xs text-[#9CA3AF] dark:text-mono-500">{appliedSuggestions.size} suggestion{appliedSuggestions.size > 1 ? 's' : ''} selectionnee{appliedSuggestions.size > 1 ? 's' : ''}</span>
+                <span className="text-xs text-[#737373] dark:text-mono-500">{appliedSuggestions.size} suggestion{appliedSuggestions.size > 1 ? 's' : ''} selectionnee{appliedSuggestions.size > 1 ? 's' : ''}</span>
                 <button
                   onClick={() => setShowOptimizer(false)}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold transition-colors"
                 >
-                  <Check className="w-4 h-4" />
+                  <Check aria-hidden="true" className="w-4 h-4" />
                   Valider la selection
                 </button>
               </div>
@@ -2074,10 +2093,10 @@ function MetricRow({
 }) {
   return (
     <div className={`metric-row flex items-center justify-between px-3 py-1.5 ${!last ? 'border-b border-mono-900 dark:border-mono-200' : ''} ${bold ? 'bg-mono-1000 dark:bg-[#171717]/50' : ''}`}>
-      <span className={`text-[#6B7280] dark:text-mono-500 ${bold ? 'font-semibold text-[#4B5563] dark:text-mono-700' : ''}`}>{label}</span>
+      <span className={`text-[#737373] dark:text-mono-500 ${bold ? 'font-semibold text-[#4B5563] dark:text-mono-700' : ''}`}>{label}</span>
       <div className="text-right">
         <span className={`font-mono font-bold ${valueClass || 'text-mono-100 dark:text-[#E5E5E5]'}`}>{value}</span>
-        {sub && <span className="text-[#9CA3AF] dark:text-mono-500 ml-1 text-[9px]">{sub}</span>}
+        {sub && <span className="text-[#737373] dark:text-mono-500 ml-1 text-[9px]">{sub}</span>}
       </div>
     </div>
   );
@@ -2096,7 +2115,7 @@ function SimCard({ label, value, highlight, warn }: { label: string; value: stri
       : 'text-mono-100 dark:text-white';
   return (
     <div className={`rounded-lg border-2 p-2.5 text-center transition-colors ${border}`}>
-      <div className="text-[10px] text-[#9CA3AF] dark:text-mono-500 font-medium">{label}</div>
+      <div className="text-[10px] text-[#737373] dark:text-mono-500 font-medium">{label}</div>
       <div className={`text-lg font-bold mt-0.5 ${textColor}`}>{value}</div>
     </div>
   );
@@ -2105,7 +2124,7 @@ function SimCard({ label, value, highlight, warn }: { label: string; value: stri
 function NutritionRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between px-2 py-1 rounded bg-mono-950 dark:bg-[#171717]">
-      <span className="text-[10px] text-[#6B7280] dark:text-mono-500">{label}</span>
+      <span className="text-[10px] text-[#737373] dark:text-mono-500">{label}</span>
       <span className="text-[10px] font-bold text-mono-100 dark:text-white">{value}</span>
     </div>
   );

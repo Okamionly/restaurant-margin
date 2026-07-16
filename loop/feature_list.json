@@ -1,0 +1,249 @@
+{
+  "goal": "Passe globale RestauMargin : combler les manques UX (etats vides/chargement/erreur, feedbacks), ameliorer la coherence visuelle (theme W&B strict) et l'accessibilite WCAG AA ecran par ecran, sans casser le pass mobile 390px ni la logique existante. Gate = npx vite build (client/) exit 0 + audit statique DOM (inputs sans label=0, boutons icone sans aria-label=0) par ecran traite. Commits atomiques FR, pas de push.",
+  "created": "2026-07-16",
+  "scope_in": [
+    "ecrans app authentifiee usage quotidien (routes protegees App.tsx)"
+  ],
+  "scope_out": [
+    "Blog*.tsx",
+    "Logiciel*/Alternative*/Comparatif*/Fonctionnalite* (landings SEO)",
+    "Landing.tsx",
+    "pages legales",
+    "outils publics /outils/*",
+    "backend api/ server/ prisma",
+    "auth passwordHash",
+    "WeighStation (hardware sensible)"
+  ],
+  "features": [
+    {
+      "id": "F1",
+      "title": "Fondation : script d'audit a11y statique + primitives d'etats partagees",
+      "done": true,
+      "awaiting_eval": false,
+      "criteria": [
+        "G2 : creer client/scripts/a11y-audit.mjs qui prend un chemin d'ecran en arg et rapporte inputs-sans-label et boutons-icone-sans-aria-label",
+        "L'audit distingue input hidden/submit/button (exclus) des inputs de saisie (comptes)",
+        "Creer/consolider primitives reutilisables sans casser l'existant : LoadingState (role=status+aria-live+sr-only), ErrorState (message + bouton Reessayer via callback), Skeleton (animate-pulse) — ou documenter EmptyState/Toast/Button existants comme canon",
+        "npx vite build reste exit 0 (G1) apres ajout",
+        "Aucune primitive n'ecrase ni ne modifie la logique d'un ecran ; ce sont des composants purs de presentation"
+      ]
+    },
+    {
+      "id": "F2",
+      "title": "Dashboard (/dashboard) — ecran d'accueil, le plus vu",
+      "done": true,
+      "awaiting_eval": false,
+      "screens": [
+        "Dashboard.tsx"
+      ],
+      "criteria": [
+        "U1 empty, U2 loading (role=status), U3 error+Reessayer, U4 feedback, U5 async-disabled",
+        "V1 zero slate, V2 palette, V3 cards rounded-2xl, V4 boutons teal-600, V5 dark mode, V6 texte secondaire",
+        "A1 labels, A2 boutons-icone aria-label, A3 focus visible, A4 contraste AA, A5 44px, A6 aria-hidden/alt, A7 semantique",
+        "N1 min-w-0 conserve, N2 md:hidden conserve, N3 pas de debordement 390px, N4 logique intacte",
+        "Gate : node scripts/a11y-audit.mjs src/pages/Dashboard.tsx -> inputs-sans-label=0 ET boutons-icone-sans-aria-label=0"
+      ]
+    },
+    {
+      "id": "F3",
+      "title": "Ingredients (/ingredients) — CRUD + SmartIngredientInput",
+      "done": true,
+      "awaiting_eval": false,
+      "screens": [
+        "Ingredients.tsx"
+      ],
+      "criteria": [
+        "U1-U5 etats (remplacer le loading texte-nu ligne ~1004 par LoadingState role=status)",
+        "V1-V6 theme W&B (nettoyer les 3 slate-* du fichier)",
+        "A1-A7 a11y (formulaire de creation ingredient : labels associes sur chaque champ)",
+        "N1-N4 non-regression mobile+logique",
+        "Gate audit sur Ingredients.tsx -> 0/0"
+      ]
+    },
+    {
+      "id": "F4",
+      "title": "Recipes (/recipes) + RecipeDetail (/recipes/:id) — coeur metier fiches techniques",
+      "done": false,
+      "awaiting_eval": true,
+      "screens": [
+        "Recipes.tsx",
+        "RecipeDetail.tsx"
+      ],
+      "criteria": [
+        "U1-U5 sur les 2 ecrans (liste recettes vide, chargement, erreur, feedback sauvegarde)",
+        "V1-V6 theme W&B sur les 2 ecrans",
+        "A1-A7 a11y (RecipeDetail : formulaire ingredients/quantites labellise, boutons-icone d'edition aria-label)",
+        "N1-N4 (fichiers volumineux : preserver les tables->cartes md:hidden existantes)",
+        "Gate audit sur Recipes.tsx ET RecipeDetail.tsx -> 0/0 chacun"
+      ]
+    },
+    {
+      "id": "F5",
+      "title": "Inventory (/inventory) + DlcTracker (/dlc-tracker) — stocks & DLC",
+      "done": false,
+      "awaiting_eval": false,
+      "screens": [
+        "Inventory.tsx",
+        "DlcTracker.tsx"
+      ],
+      "criteria": [
+        "U1-U5 (inventaire vide -> EmptyState ; DLC : etats loading/error)",
+        "V1-V6 theme W&B",
+        "A1-A7 a11y (champs quantite/seuil labellises, badges de statut avec contraste AA)",
+        "N1-N4 non-regression",
+        "Gate audit sur Inventory.tsx ET DlcTracker.tsx -> 0/0 chacun"
+      ]
+    },
+    {
+      "id": "F6",
+      "title": "Suppliers (/suppliers) — fournisseurs (fichier le plus lourd)",
+      "done": false,
+      "awaiting_eval": false,
+      "screens": [
+        "Suppliers.tsx"
+      ],
+      "criteria": [
+        "U1-U5 etats",
+        "V1-V6 theme W&B",
+        "A1-A7 a11y (formulaire fournisseur, recherche labellisee, boutons-icone contact aria-label)",
+        "N1-N4 (fichier 213KB : attention a preserver le layout mobile existant)",
+        "Gate audit sur Suppliers.tsx -> 0/0"
+      ]
+    },
+    {
+      "id": "F7",
+      "title": "Mercuriale (/mercuriale) — edition prix fournisseurs + historique",
+      "done": false,
+      "awaiting_eval": false,
+      "screens": [
+        "Mercuriale.tsx"
+      ],
+      "criteria": [
+        "U1-U5 (tableau prix vide -> EmptyState ; historique loading/error)",
+        "V1-V6 theme W&B (nettoyer 2 slate-*)",
+        "A1-A7 a11y (cellules editables : inputs prix labellises/aria-label, table th scope)",
+        "N1-N4 non-regression",
+        "Gate audit sur Mercuriale.tsx -> 0/0"
+      ]
+    },
+    {
+      "id": "F8",
+      "title": "InvoiceScanner (/scanner-factures) — OCR factures",
+      "done": false,
+      "awaiting_eval": false,
+      "screens": [
+        "InvoiceScanner.tsx"
+      ],
+      "criteria": [
+        "U1-U5 (etat vide upload, loading OCR = LoadingState, erreur scan + Reessayer)",
+        "V1-V6 theme W&B (nettoyer 3 slate-*)",
+        "A1-A7 a11y (input file labellise, boutons-icone d'action aria-label, zone drop accessible)",
+        "N1-N4 non-regression",
+        "Gate audit sur InvoiceScanner.tsx -> 0/0"
+      ]
+    },
+    {
+      "id": "F9",
+      "title": "MenuEngineering (/menu-engineering) + AllergenMatrix (/allergen-matrix)",
+      "done": false,
+      "awaiting_eval": false,
+      "screens": [
+        "MenuEngineering.tsx",
+        "AllergenMatrix.tsx"
+      ],
+      "criteria": [
+        "U1-U5 (matrice/quadrant vide -> EmptyState, loading, erreur)",
+        "V1-V6 theme W&B (nettoyer slate-* residuels)",
+        "A1-A7 a11y (matrice allergenes : table th scope, cellules avec libelle accessible ; boutons-icone aria-label)",
+        "N1-N4 (matrices larges : preserver le scroll horizontal contenu, pas de debordement page 390px)",
+        "Gate audit sur MenuEngineering.tsx ET AllergenMatrix.tsx -> 0/0 chacun"
+      ]
+    },
+    {
+      "id": "F10",
+      "title": "WasteTracker (/gaspillage) + AutoOrders (/commandes) — gaspillage & commandes auto",
+      "done": false,
+      "awaiting_eval": false,
+      "screens": [
+        "WasteTracker.tsx",
+        "AutoOrders.tsx"
+      ],
+      "criteria": [
+        "U1-U5 sur les 2 ecrans",
+        "V1-V6 theme W&B",
+        "A1-A7 a11y (formulaires saisie gaspillage / parametres commande labellises)",
+        "N1-N4 (fichiers volumineux 137-140KB : preserver mobile)",
+        "Gate audit sur WasteTracker.tsx ET AutoOrders.tsx -> 0/0 chacun"
+      ]
+    },
+    {
+      "id": "F11",
+      "title": "Analytics (/analytics) + Comptabilite (/comptabilite) — data-heavy + charts",
+      "done": false,
+      "awaiting_eval": false,
+      "screens": [
+        "Analytics.tsx",
+        "Comptabilite.tsx"
+      ],
+      "criteria": [
+        "U1-U5 (graphiques sans donnee -> EmptyState ; loading skeleton de la forme des charts ; erreur+Reessayer)",
+        "V1-V6 theme W&B (couleurs de charts dans la palette, nettoyer slate)",
+        "A1-A7 a11y (filtres de periode labellises, charts avec titre/description accessible, boutons export aria-label)",
+        "N1-N4 non-regression",
+        "Gate audit sur Analytics.tsx ET Comptabilite.tsx -> 0/0 chacun"
+      ]
+    },
+    {
+      "id": "F12",
+      "title": "Planning (/planning) + ServiceTracker (/service-tracker) + KitchenMode (/kitchen-mode) — operations",
+      "done": false,
+      "awaiting_eval": false,
+      "screens": [
+        "Planning.tsx",
+        "ServiceTracker.tsx",
+        "KitchenMode.tsx"
+      ],
+      "criteria": [
+        "U1-U5 sur les 3 ecrans (planning vide, service en cours loading, erreur)",
+        "V1-V6 theme W&B (KitchenMode : garder lisibilite grand format cuisine)",
+        "A1-A7 a11y (KitchenMode critique : touch targets 44px+ pour usage tablette cuisine ; boutons-icone aria-label)",
+        "N1-N4 (fichiers 97-161KB : preserver mobile + mode tablette)",
+        "Gate audit sur Planning.tsx ET ServiceTracker.tsx ET KitchenMode.tsx -> 0/0 chacun"
+      ]
+    },
+    {
+      "id": "F13",
+      "title": "HACCP (/haccp) + Clients (/clients) — conformite & CRM (fichiers massifs)",
+      "done": false,
+      "awaiting_eval": false,
+      "screens": [
+        "HACCP.tsx",
+        "Clients.tsx"
+      ],
+      "criteria": [
+        "U1-U5 (checklists/temperatures vides -> EmptyState ; loading ; erreur)",
+        "V1-V6 theme W&B",
+        "A1-A7 a11y (formulaires releves temperature labellises ; boutons-icone aria-label ; contraste badges conformite)",
+        "N1-N4 (HACCP 197KB / Clients 186KB : preserver mobile)",
+        "Gate audit sur HACCP.tsx ET Clients.tsx -> 0/0 chacun"
+      ]
+    },
+    {
+      "id": "F14",
+      "title": "Settings (/settings) + UserManagement (/users) — parametres & equipe",
+      "done": false,
+      "awaiting_eval": false,
+      "screens": [
+        "Settings.tsx",
+        "UserManagement.tsx"
+      ],
+      "criteria": [
+        "U1-U5 (etats vides liste utilisateurs, loading, erreur, feedback sauvegarde parametres)",
+        "V1-V6 theme W&B",
+        "A1-A7 a11y (formulaires parametres denses : CHAQUE toggle/input labellise ; boutons-icone aria-label)",
+        "N1-N4 non-regression",
+        "Gate audit sur Settings.tsx ET UserManagement.tsx -> 0/0 chacun"
+      ]
+    }
+  ]
+}

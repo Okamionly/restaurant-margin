@@ -341,7 +341,7 @@ export default function BlogKpiGuide() {
           </ul>
 
           <Callout type="info">
-            Pour approfondir, consultez notre <Link to="/blog/food-cost" className="text-teal-700 underline hover:text-teal-800 font-semibold">guide complet du food cost</Link> et
+            Pour approfondir, consultez notre <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800 font-semibold">guide complet du food cost</Link> et
             le <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800 font-semibold">calculateur gratuit</Link>.
           </Callout>
         </section>
@@ -401,7 +401,7 @@ export default function BlogKpiGuide() {
           </ul>
 
           <Callout type="info">
-            Notre <Link to="/blog/prime-cost" className="text-teal-700 underline hover:text-teal-800 font-semibold">guide dédié au prime cost</Link> approfondit
+            Notre <Link to="/blog/prime-cost-restaurant" className="text-teal-700 underline hover:text-teal-800 font-semibold">guide dédié au prime cost</Link> approfondit
             chaque levier d'optimisation avec des cas concrets.
           </Callout>
         </section>
@@ -862,11 +862,11 @@ export default function BlogKpiGuide() {
               <p className="font-semibold text-mono-100 mb-1">Calcul marge restaurant</p>
               <p className="text-sm text-mono-400">Marge brute, nette, food cost et coefficient.</p>
             </Link>
-            <Link to="/blog/food-cost" className="block p-4 border border-mono-900 rounded-xl hover:border-teal-300 transition-colors">
+            <Link to="/blog/reduire-food-cost" className="block p-4 border border-mono-900 rounded-xl hover:border-teal-300 transition-colors">
               <p className="font-semibold text-mono-100 mb-1">Food cost : la méthode complète</p>
               <p className="text-sm text-mono-400">Formules, fiches techniques, pertes, benchmarks.</p>
             </Link>
-            <Link to="/blog/prime-cost" className="block p-4 border border-mono-900 rounded-xl hover:border-teal-300 transition-colors">
+            <Link to="/blog/prime-cost-restaurant" className="block p-4 border border-mono-900 rounded-xl hover:border-teal-300 transition-colors">
               <p className="font-semibold text-mono-100 mb-1">Prime cost : matières + personnel</p>
               <p className="text-sm text-mono-400">L'indicateur ultime de rentabilité opérationnelle.</p>
             </Link>

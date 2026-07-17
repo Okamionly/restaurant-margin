@@ -486,7 +486,7 @@ export default function BlogLogicielGestion() {
               <div>Total : 88 a 156 €/mois</div>
             </div>
             <p className="text-[#374151] leading-relaxed">
-              A ce niveau, la priorite est l <strong>integration caisse-compta-marges</strong>. Les plannings restent manuels (Excel ou WhatsApp) tant que vous etes moins de 4 salaries. <Link to="/blog/inventaire-restaurant" className="text-teal-600 hover:underline">L inventaire</Link> peut se faire mensuel sur Excel ou directement dans RestauMargin.
+              A ce niveau, la priorite est l <strong>integration caisse-compta-marges</strong>. Les plannings restent manuels (Excel ou WhatsApp) tant que vous etes moins de 4 salaries. <Link to="/blog/inventaire-restaurant-guide" className="text-teal-600 hover:underline">L inventaire</Link> peut se faire mensuel sur Excel ou directement dans RestauMargin.
             </p>
           </section>
 
@@ -675,11 +675,11 @@ export default function BlogLogicielGestion() {
                 <p className="text-xs font-semibold text-teal-600 uppercase mb-1">Guide</p>
                 <p className="font-semibold text-mono-100">Calcul marge restaurant : formules et exemples</p>
               </Link>
-              <Link to="/blog/food-cost-restaurant-comment-calculer" className="block border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors">
+              <Link to="/blog/reduire-food-cost" className="block border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors">
                 <p className="text-xs font-semibold text-teal-600 uppercase mb-1">Food cost</p>
                 <p className="font-semibold text-mono-100">Food cost restaurant : comment le calculer</p>
               </Link>
-              <Link to="/blog/inventaire-restaurant" className="block border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors">
+              <Link to="/blog/inventaire-restaurant-guide" className="block border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors">
                 <p className="text-xs font-semibold text-teal-600 uppercase mb-1">Stocks</p>
                 <p className="font-semibold text-mono-100">Inventaire restaurant : methode FIFO</p>
               </Link>

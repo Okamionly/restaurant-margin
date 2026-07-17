@@ -1,0 +1,1210 @@
+{
+  "pages": [
+    {
+      "name": "landing",
+      "url": "https://www.restaumargin.fr/",
+      "desktop": {
+        "name": "landing-desktop",
+        "url": "https://www.restaumargin.fr/",
+        "finalUrl": "https://www.restaumargin.fr/",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "RestauMargin — Logiciel de marge restaurant | L'IA au service de votre rentabilité",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "warning",
+            "text": "[.WebGL-0x2c8c001a6800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+          },
+          {
+            "type": "warning",
+            "text": "[.WebGL-0x2c8c001a6200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+          },
+          {
+            "type": "warning",
+            "text": "[.WebGL-0x2c8c001a6800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+          },
+          {
+            "type": "warning",
+            "text": "[.WebGL-0x2c8c001a6200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+          },
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252329455&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1732126886.1777252330&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266400~117512542~117884344~118167059&sid=1777252330&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2F&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20marge%20restaurant%20%7C%20L%27IA%20au%20service%20de%20votre%20rentabilit%C3%A9&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=3984' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252329455&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1732126886.1777252330&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266400~117512542~117884344~118167059&sid=1777252330&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2F&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20marge%20restaurant%20%7C%20L%27IA%20au%20service%20de%20votre%20rentabilit%C3%A9&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=3984. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "landing-desktop-1440px.png",
+        "pageTextSample": "restaumargin.fr\nRestauMargin\nFonctionnalités\nTarifs\nTémoignages\nBlog\nSe connecter\nEssai 7 jours\nPLATEFORME #1 DES RESTAURATEURS\nMaîtrisez vos marges.\nAugmentez vos profits.\n\nL'IA au service de votre rentabilité.\n\nMarges optimisées\nFiches techniques en quelques clics\nAnalyse et alertes en temps réel\nEssayer gratuitement\n7 jours gratuits\n·\nSans carte bancaire\n320+\nBRIGADES ACTIVES\n+4 pts\nMARGE EN 90 J\n10 s\nPOUR UNE FICHE\n800 €\nÉCONOMISÉS / SITE\nRestauMargin\n/ Dashboard\nNOUVEAU 2026\nFOOD COST\n27.3\n"
+      },
+      "mobile": {
+        "name": "landing-mobile",
+        "url": "https://www.restaumargin.fr/",
+        "finalUrl": "https://www.restaumargin.fr/",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "RestauMargin — Logiciel de marge restaurant | L'IA au service de votre rentabilité",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252334660&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=563991915.1777252336&frm=0&pscdl=noapi&rcb=10&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~116363098~117266401~117512543~117884344&sid=1777252335&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2F&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20marge%20restaurant%20%7C%20L%27IA%20au%20service%20de%20votre%20rentabilit%C3%A9&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=1217' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252334660&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=563991915.1777252336&frm=0&pscdl=noapi&rcb=10&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~116363098~117266401~117512543~117884344&sid=1777252335&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2F&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20marge%20restaurant%20%7C%20L%27IA%20au%20service%20de%20votre%20rentabilit%C3%A9&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=1217. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "landing-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nPLATEFORME #1 DES RESTAURATEURS\nMaîtrisez vos marges.\nAugmentez vos profits.\n\nL'IA au service de votre rentabilité.\n\nMarges optimisées\nFiches techniques en quelques clics\nAnalyse et alertes en temps réel\nEssayer gratuitement\n7 jours gratuits\n·\nSans carte bancaire\n320+\nBRIGADES ACTIVES\n+4 pts\nMARGE EN 90 J\n10 s\nPOUR UNE FICHE\n800 €\nÉCONOMISÉS / SITE\nRestauMargin\n/ Dashboard\nNOUVEAU 2026\nFOOD COST\n0.0\n%\n▼ 6.7pts vs janvier\nMARGE BRUTE\n0.0\n%\nObjectif : 70%\nCA CE MOIS\n0\nk€\n▲ +4.2% vs N-"
+      }
+    },
+    {
+      "name": "login",
+      "url": "https://www.restaumargin.fr/login",
+      "desktop": {
+        "name": "login-desktop",
+        "url": "https://www.restaumargin.fr/login",
+        "finalUrl": "https://www.restaumargin.fr/login",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Connexion — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252339019&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=737076999.1777252340&frm=0&pscdl=noapi&rcb=12&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938469~117266401~117512542&sid=1777252339&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Flogin&dt=Connexion%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=634' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252339019&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=737076999.1777252340&frm=0&pscdl=noapi&rcb=12&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938469~117266401~117512542&sid=1777252339&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Flogin&dt=Connexion%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=634. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "login-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\n\nGérez vos marges, optimisez votre rentabilité\n\nCalcul de marges précis\n\nSuivez vos coûts matière et optimisez vos prix de vente\n\nFiches techniques détaillées\n\nCréez et gérez vos recettes avec calcul automatique des coûts\n\nIntelligence artificielle\n\nSuggestions IA pour maximiser votre rentabilité\n\n150+ restaurants nous font confiance\nRestauMargin\nEssai gratuit 7 jours\n150+ restaurants nous font confiance\nConnexion\nContinuer avec Google\nContinuer avec Apple\nOU\nEmail\nMot de passe\nRéin"
+      },
+      "mobile": {
+        "name": "login-mobile",
+        "url": "https://www.restaumargin.fr/login",
+        "finalUrl": "https://www.restaumargin.fr/login",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Connexion — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252343045&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1373474888.1777252343&frm=0&pscdl=noapi&rcb=6&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616985~115938466~115938468~117266400~117512542~118167060&sid=1777252343&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Flogin&dt=Connexion%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=485' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252343045&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1373474888.1777252343&frm=0&pscdl=noapi&rcb=6&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616985~115938466~115938468~117266400~117512542~118167060&sid=1777252343&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Flogin&dt=Connexion%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=485. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "login-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nEssai gratuit 7 jours\n150+ restaurants nous font confiance\nConnexion\nContinuer avec Google\nContinuer avec Apple\nOU\nEmail\nMot de passe\nRéinitialiser\nSe connecter\nPas encore de compte ?\nVoir la demo sans compte\nCGU·Politique de confidentialité·Mentions légales\n\nCe site utilise des cookies\n\nNous utilisons des cookies essentiels pour le fonctionnement du site et des cookies analytiques pour ameliorer votre experience. Consultez notre politique de confidentialite pour en savoir plus.\n\nRe"
+      }
+    },
+    {
+      "name": "login-register",
+      "url": "https://www.restaumargin.fr/login?mode=register",
+      "desktop": {
+        "name": "login-register-desktop",
+        "url": "https://www.restaumargin.fr/login?mode=register",
+        "finalUrl": "https://www.restaumargin.fr/login?mode=register",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Connexion — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252346562&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=408410368.1777252347&frm=0&pscdl=noapi&rcb=16&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266400~117384405~117512543~118167058~118463262&sid=1777252346&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Flogin%3Fmode%3Dregister&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=350' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252346562&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=408410368.1777252347&frm=0&pscdl=noapi&rcb=16&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266400~117384405~117512543~118167058~118463262&sid=1777252346&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Flogin%3Fmode%3Dregister&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=350. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "login-register-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\n\nGérez vos marges, optimisez votre rentabilité\n\nCalcul de marges précis\n\nSuivez vos coûts matière et optimisez vos prix de vente\n\nFiches techniques détaillées\n\nCréez et gérez vos recettes avec calcul automatique des coûts\n\nIntelligence artificielle\n\nSuggestions IA pour maximiser votre rentabilité\n\n150+ restaurants nous font confiance\nRestauMargin\nEssai gratuit 7 jours\n150+ restaurants nous font confiance\nCréer un compte\nContinuer avec Google\nContinuer avec Apple\nOU\nEmail\nMot de pass"
+      },
+      "mobile": {
+        "name": "login-register-mobile",
+        "url": "https://www.restaumargin.fr/login?mode=register",
+        "finalUrl": "https://www.restaumargin.fr/login?mode=register",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Connexion — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252350902&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=52514866.1777252351&frm=0&pscdl=noapi&rcb=9&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~117266401~117512542~118167059~118463262&sid=1777252351&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Flogin%3Fmode%3Dregister&dt=Connexion%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=603' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252350902&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=52514866.1777252351&frm=0&pscdl=noapi&rcb=9&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~117266401~117512542~118167059~118463262&sid=1777252351&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Flogin%3Fmode%3Dregister&dt=Connexion%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=603. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "login-register-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nEssai gratuit 7 jours\n150+ restaurants nous font confiance\nCréer un compte\nContinuer avec Google\nContinuer avec Apple\nOU\nEmail\nMot de passe\nNom du restaurant\nJ'accepte les Conditions Générales d'Utilisation et la Politique de confidentialité\nS'inscrire\nSans carte bancaire\nSans engagement\nAnnulez quand vous voulez\nDéjà un compte ?\nVoir la demo sans compte\nCGU·Politique de confidentialité·Mentions légales\n\nCe site utilise des cookies\n\nNous utilisons des cookies essentiels pour le fonc"
+      }
+    },
+    {
+      "name": "pricing",
+      "url": "https://www.restaumargin.fr/pricing",
+      "desktop": {
+        "name": "pricing-desktop",
+        "url": "https://www.restaumargin.fr/pricing",
+        "finalUrl": "https://www.restaumargin.fr/pricing",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Tarifs RestauMargin — Pro 29€, Business 79€, Enterprise",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2h1v9248788156za200zd9248788156&_p=1777252355041&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1660459272.1777252355&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266400~117512542~118167059&sid=1777252355&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fpricing&dt=Tarifs%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=656' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2h1v9248788156za200zd9248788156&_p=1777252355041&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1660459272.1777252355&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266400~117512542~118167059&sid=1777252355&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fpricing&dt=Tarifs%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=656. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "pricing-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nDemo\nSe connecter\n150+ restaurants — essai 7j sans carte bancaire\nTarifs simples, sans surprise\n\nUn seul objectif : vous aider a maitriser vos marges. Choisissez votre plan et commencez en 2 minutes.\n\nMensuel\nAnnuel\nPOPULAIRE\nPro\n\nPour les independants qui veulent maitriser leurs marges\n\n29€\n/mois\n\nou 278€/an (-20%)\n\nFiches techniques illimitees avec calcul automatique des marges\n19 actions IA : creez vos recettes par chat ou commande vocale\nCommandes fournisseurs par email et Whats"
+      },
+      "mobile": {
+        "name": "pricing-mobile",
+        "url": "https://www.restaumargin.fr/pricing",
+        "finalUrl": "https://www.restaumargin.fr/pricing",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Tarifs RestauMargin — Pro 29€, Business 79€, Enterprise",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252358589&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=254871734.1777252359&frm=0&pscdl=noapi&rcb=19&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616985~115938465~115938469~116363097~117266400~117384405~117512542&sid=1777252358&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fpricing&dt=Tarifs%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=392' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252358589&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=254871734.1777252359&frm=0&pscdl=noapi&rcb=19&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616985~115938465~115938469~116363097~117266400~117384405~117512542&sid=1777252358&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fpricing&dt=Tarifs%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=392. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "pricing-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nSe connecter\n150+ restaurants — essai 7j sans carte bancaire\nTarifs simples, sans surprise\n\nUn seul objectif : vous aider a maitriser vos marges. Choisissez votre plan et commencez en 2 minutes.\n\nMensuel\nAnnuel\nPOPULAIRE\nPro\n\nPour les independants qui veulent maitriser leurs marges\n\n29€\n/mois\n\nou 278€/an (-20%)\n\nFiches techniques illimitees avec calcul automatique des marges\n19 actions IA : creez vos recettes par chat ou commande vocale\nCommandes fournisseurs par email et WhatsApp e"
+      }
+    },
+    {
+      "name": "blog-index",
+      "url": "https://www.restaumargin.fr/blog",
+      "desktop": {
+        "name": "blog-index-desktop",
+        "url": "https://www.restaumargin.fr/blog",
+        "finalUrl": "https://www.restaumargin.fr/blog",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Blog RestauMargin — Guides et conseils pour restaurateurs",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252362119&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1366513698.1777252362&frm=0&pscdl=noapi&rcb=19&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~117266401~117384405~117512543&sid=1777252362&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog&dt=Blog%20RestauMargin%20%E2%80%94%20Guides%20et%20conseils%20pour%20restaurateurs&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=573' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252362119&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1366513698.1777252362&frm=0&pscdl=noapi&rcb=19&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~117266401~117384405~117512543&sid=1777252362&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog&dt=Blog%20RestauMargin%20%E2%80%94%20Guides%20et%20conseils%20pour%20restaurateurs&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=573. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-index-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nCalculer ma marge\nConnexion\nBLOG\nGuides et conseils pour restaurateurs\n\nArticles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost, et gerer votre restaurant au quotidien.\n\nMarges\n12 min\nComment calculer la marge de votre restaurant en 2026\n\nGuide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.\n\nLire l'article\nFood Cost\n10 min\nReduire le food co"
+      },
+      "mobile": {
+        "name": "blog-index-mobile",
+        "url": "https://www.restaumargin.fr/blog",
+        "finalUrl": "https://www.restaumargin.fr/blog",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Blog RestauMargin — Guides et conseils pour restaurateurs",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64n0h2v9248788156za200zd9248788156&_p=1777252365987&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1168459293.1777252366&frm=0&pscdl=noapi&rcb=13&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938466~115938469~117266400~117512543&sid=1777252366&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog&dt=Blog%20RestauMargin%20%E2%80%94%20Guides%20et%20conseils%20pour%20restaurateurs&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=514' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64n0h2v9248788156za200zd9248788156&_p=1777252365987&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1168459293.1777252366&frm=0&pscdl=noapi&rcb=13&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938466~115938469~117266400~117512543&sid=1777252366&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog&dt=Blog%20RestauMargin%20%E2%80%94%20Guides%20et%20conseils%20pour%20restaurateurs&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=514. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-index-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nBLOG\nGuides et conseils pour restaurateurs\n\nArticles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost, et gerer votre restaurant au quotidien.\n\nMarges\n12 min\nComment calculer la marge de votre restaurant en 2026\n\nGuide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.\n\nLire l'article\nFood Cost\n10 min\nReduire le food cost de votre restau"
+      }
+    },
+    {
+      "name": "blog-calc-marge",
+      "url": "https://www.restaumargin.fr/blog/calcul-marge-restaurant",
+      "desktop": {
+        "name": "blog-calc-marge-desktop",
+        "url": "https://www.restaumargin.fr/blog/calcul-marge-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog/calcul-marge-restaurant",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Comment calculer la marge de votre restaurant en 2026 | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252370160&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1809132386.1777252371&frm=0&pscdl=noapi&rcb=11&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266400~117384405~117512542&sid=1777252370&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fcalcul-marge-restaurant&dt=Comment%20calculer%20la%20marge%20de%20votre%20restaurant%20en%202026%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=767' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252370160&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1809132386.1777252371&frm=0&pscdl=noapi&rcb=11&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266400~117384405~117512542&sid=1777252370&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fcalcul-marge-restaurant&dt=Comment%20calculer%20la%20marge%20de%20votre%20restaurant%20en%202026%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=767. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-calc-marge-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nCalculer ma marge\nConnexion\nGUIDE COMPLET 2026\nComment calculer la marge\nde votre restaurant en 2026\n\nLe calcul de marge restaurant est la clef de voute de votre rentabilite. Decouvrez les formules, les benchmarks par type d'etablissement et les erreurs qui plombent vos benefices.\n\nPar l'equipe RestauMargin\n|\nMis a jour : avril 2026\n|\n12 min de lecture\nRM\nLa rédaction RestauMargin\n14 avril 2026\n12 min de lecture\nSommaire\n1.\nPourquoi la marge est critique pour votre restaurant\n2.\nLes"
+      },
+      "mobile": {
+        "name": "blog-calc-marge-mobile",
+        "url": "https://www.restaumargin.fr/blog/calcul-marge-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog/calcul-marge-restaurant",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Comment calculer la marge de votre restaurant en 2026 | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2h1v9248788156za200zd9248788156&_p=1777252374609&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1601413165.1777252375&frm=0&pscdl=noapi&rcb=0&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938466~115938468~117266401~117512542&sid=1777252375&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fcalcul-marge-restaurant&dt=Comment%20calculer%20la%20marge%20de%20votre%20restaurant%20en%202026%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=579' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2h1v9248788156za200zd9248788156&_p=1777252374609&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1601413165.1777252375&frm=0&pscdl=noapi&rcb=0&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938466~115938468~117266401~117512542&sid=1777252375&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fcalcul-marge-restaurant&dt=Comment%20calculer%20la%20marge%20de%20votre%20restaurant%20en%202026%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=579. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-calc-marge-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nGUIDE COMPLET 2026\nComment calculer la marge de votre restaurant en 2026\n\nLe calcul de marge restaurant est la clef de voute de votre rentabilite. Decouvrez les formules, les benchmarks par type d'etablissement et les erreurs qui plombent vos benefices.\n\nPar l'equipe RestauMargin\n|\nMis a jour : avril 2026\n|\n12 min de lecture\nRM\nLa rédaction RestauMargin\n14 avril 2026\n12 min de lecture\nSommaire\n1.\nPourquoi la marge est critique pour votre restaurant\n2.\nLes 3 types de marges"
+      }
+    },
+    {
+      "name": "blog-coefficient",
+      "url": "https://www.restaumargin.fr/blog/coefficient-multiplicateur",
+      "desktop": {
+        "name": "blog-coefficient-desktop",
+        "url": "https://www.restaumargin.fr/blog/coefficient-multiplicateur",
+        "finalUrl": "https://www.restaumargin.fr/blog/coefficient-multiplicateur",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Le coefficient multiplicateur en restauration : guide complet | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64n0h2v9248788156za200zd9248788156&_p=1777252379571&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1647318835.1777252380&frm=0&pscdl=noapi&rcb=19&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266400~117512543&sid=1777252379&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fcoefficient-multiplicateur&dt=Le%20coefficient%20multiplicateur%20en%20restauration%20%3A%20guide%20complet%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=1001' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64n0h2v9248788156za200zd9248788156&_p=1777252379571&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1647318835.1777252380&frm=0&pscdl=noapi&rcb=19&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266400~117512543&sid=1777252379&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fcoefficient-multiplicateur&dt=Le%20coefficient%20multiplicateur%20en%20restauration%20%3A%20guide%20complet%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=1001. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-coefficient-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nGUIDE COMPLET\nComment calculer le coefficient multiplicateur de vos plats\nRestauMargin\n12 min de lecture\nRM\nLa rédaction RestauMargin\n14 avril 2026\n8 min de lecture\n\nFixer le prix de vente de vos plats au hasard est la premiere cause de faillite en restauration. En France, un restaurant sur deux ferme dans les trois premieres annees. Le point commun de ceux qui survivent ? Ils maitrisent leur coefficient multiplicateur.\n\nQu'est-ce que le coefficient multiplicateur en resta"
+      },
+      "mobile": {
+        "name": "blog-coefficient-mobile",
+        "url": "https://www.restaumargin.fr/blog/coefficient-multiplicateur",
+        "finalUrl": "https://www.restaumargin.fr/blog/coefficient-multiplicateur",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Le coefficient multiplicateur en restauration : guide complet | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252384684&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1043400600.1777252385&frm=0&pscdl=noapi&rcb=9&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938469~117266401~117512542&sid=1777252385&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fcoefficient-multiplicateur&dt=Le%20coefficient%20multiplicateur%20en%20restauration%20%3A%20guide%20complet%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=983' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252384684&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1043400600.1777252385&frm=0&pscdl=noapi&rcb=9&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938469~117266401~117512542&sid=1777252385&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fcoefficient-multiplicateur&dt=Le%20coefficient%20multiplicateur%20en%20restauration%20%3A%20guide%20complet%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=983. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-coefficient-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nGUIDE COMPLET\nComment calculer le coefficient multiplicateur de vos plats\nRestauMargin\n12 min de lecture\nRM\nLa rédaction RestauMargin\n14 avril 2026\n8 min de lecture\n\nFixer le prix de vente de vos plats au hasard est la premiere cause de faillite en restauration. En France, un restaurant sur deux ferme dans les trois premieres annees. Le point commun de ceux qui survivent ? Ils maitrisent leur coefficient multiplicateur.\n\nQu'est-ce que le coefficient multiplicateur en resta"
+      }
+    },
+    {
+      "name": "blog-fiche-technique",
+      "url": "https://www.restaumargin.fr/blog/fiche-technique-restaurant",
+      "desktop": {
+        "name": "blog-fiche-technique-desktop",
+        "url": "https://www.restaumargin.fr/blog/fiche-technique-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog/fiche-technique-restaurant",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Fiche technique restaurant : le guide complet 2026 | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252388921&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=661740589.1777252389&frm=0&pscdl=noapi&rcb=17&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938466~115938468~116363098~117266400~117512542~118463261&sid=1777252389&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Ffiche-technique-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=499' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252388921&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=661740589.1777252389&frm=0&pscdl=noapi&rcb=17&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938466~115938468~116363098~117266400~117512542~118463261&sid=1777252389&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Ffiche-technique-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=499. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-fiche-technique-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nCalculer mon food cost\nConnexion\nGESTION & RENTABILITE\nFiche technique restaurant :\nle guide complet 2026\n\nLa fiche technique est le document le plus sous-estime de la cuisine professionnelle. Bien construite, elle elimine les dérives de coûts, garantit la constance de vos plats et devient le fondement de votre rentabilite.\n\nPar l'equipe RestauMargin\n|\nMis a jour : avril 2026\n|\n11 min de lecture\nRM\nLa rédaction RestauMargin\n14 avril 2026\n11 min de lecture\nSommaire\n1.\nQu'est-ce qu'un"
+      },
+      "mobile": {
+        "name": "blog-fiche-technique-mobile",
+        "url": "https://www.restaumargin.fr/blog/fiche-technique-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog/fiche-technique-restaurant",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Fiche technique restaurant : le guide complet 2026 | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252393399&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=2044924130.1777252394&frm=0&pscdl=noapi&rcb=12&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616985~115938465~115938469~117266401~117384406~117512543&sid=1777252394&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Ffiche-technique-restaurant&dt=Fiche%20technique%20restaurant%20%3A%20le%20guide%20complet%202026%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=861' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252393399&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=2044924130.1777252394&frm=0&pscdl=noapi&rcb=12&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616985~115938465~115938469~117266401~117384406~117512543&sid=1777252394&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Ffiche-technique-restaurant&dt=Fiche%20technique%20restaurant%20%3A%20le%20guide%20complet%202026%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=861. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-fiche-technique-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nGESTION & RENTABILITE\nFiche technique restaurant :le guide complet 2026\n\nLa fiche technique est le document le plus sous-estime de la cuisine professionnelle. Bien construite, elle elimine les dérives de coûts, garantit la constance de vos plats et devient le fondement de votre rentabilite.\n\nPar l'equipe RestauMargin\n|\nMis a jour : avril 2026\n|\n11 min de lecture\nRM\nLa rédaction RestauMargin\n14 avril 2026\n11 min de lecture\nSommaire\n1.\nQu'est-ce qu'une fiche technique de cui"
+      }
+    },
+    {
+      "name": "blog-food-cost",
+      "url": "https://www.restaumargin.fr/blog/food-cost-restaurant",
+      "desktop": {
+        "name": "blog-food-cost-desktop",
+        "url": "https://www.restaumargin.fr/blog/food-cost-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Blog RestauMargin — Guides et conseils pour restaurateurs",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252397737&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1380050026.1777252398&frm=0&pscdl=noapi&rcb=12&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938469~117266401~117512543~117884344&sid=1777252398&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Ffood-cost-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=590' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252397737&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1380050026.1777252398&frm=0&pscdl=noapi&rcb=12&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938469~117266401~117512543~117884344&sid=1777252398&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Ffood-cost-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=590. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-food-cost-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nCalculer ma marge\nConnexion\nBLOG\nGuides et conseils pour restaurateurs\n\nArticles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost, et gerer votre restaurant au quotidien.\n\nMarges\n12 min\nComment calculer la marge de votre restaurant en 2026\n\nGuide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.\n\nLire l'article\nFood Cost\n10 min\nReduire le food co"
+      },
+      "mobile": {
+        "name": "blog-food-cost-mobile",
+        "url": "https://www.restaumargin.fr/blog/food-cost-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Blog RestauMargin — Guides et conseils pour restaurateurs",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252401797&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1996783566.1777252402&frm=0&pscdl=noapi&rcb=7&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266401~117512543&sid=1777252402&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Ffood-cost-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=496' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252401797&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1996783566.1777252402&frm=0&pscdl=noapi&rcb=7&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266401~117512543&sid=1777252402&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Ffood-cost-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=496. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-food-cost-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nBLOG\nGuides et conseils pour restaurateurs\n\nArticles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost, et gerer votre restaurant au quotidien.\n\nMarges\n12 min\nComment calculer la marge de votre restaurant en 2026\n\nGuide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.\n\nLire l'article\nFood Cost\n10 min\nReduire le food cost de votre restau"
+      }
+    },
+    {
+      "name": "blog-gaspillage",
+      "url": "https://www.restaumargin.fr/blog/gaspillage-alimentaire-restaurant",
+      "desktop": {
+        "name": "blog-gaspillage-desktop",
+        "url": "https://www.restaumargin.fr/blog/gaspillage-alimentaire-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Blog RestauMargin — Guides et conseils pour restaurateurs",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2h1v9248788156za200zd9248788156&_p=1777252406005&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=385580205.1777252406&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~117266400~117512543~118167060&sid=1777252406&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fgaspillage-alimentaire-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=607' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2h1v9248788156za200zd9248788156&_p=1777252406005&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=385580205.1777252406&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~117266400~117512543~118167060&sid=1777252406&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fgaspillage-alimentaire-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=607. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-gaspillage-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nCalculer ma marge\nConnexion\nBLOG\nGuides et conseils pour restaurateurs\n\nArticles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost, et gerer votre restaurant au quotidien.\n\nMarges\n12 min\nComment calculer la marge de votre restaurant en 2026\n\nGuide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.\n\nLire l'article\nFood Cost\n10 min\nReduire le food co"
+      },
+      "mobile": {
+        "name": "blog-gaspillage-mobile",
+        "url": "https://www.restaumargin.fr/blog/gaspillage-alimentaire-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Blog RestauMargin — Guides et conseils pour restaurateurs",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252410347&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1224435755.1777252411&frm=0&pscdl=noapi&rcb=7&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938466~115938468~117266401~117512543&sid=1777252410&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fgaspillage-alimentaire-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=655' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252410347&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1224435755.1777252411&frm=0&pscdl=noapi&rcb=7&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938466~115938468~117266401~117512543&sid=1777252410&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fgaspillage-alimentaire-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=655. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-gaspillage-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nBLOG\nGuides et conseils pour restaurateurs\n\nArticles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost, et gerer votre restaurant au quotidien.\n\nMarges\n12 min\nComment calculer la marge de votre restaurant en 2026\n\nGuide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.\n\nLire l'article\nFood Cost\n10 min\nReduire le food cost de votre restau"
+      }
+    },
+    {
+      "name": "blog-haccp",
+      "url": "https://www.restaumargin.fr/blog/haccp-restaurant",
+      "desktop": {
+        "name": "blog-haccp-desktop",
+        "url": "https://www.restaumargin.fr/blog/haccp-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog/haccp-restaurant",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "HACCP en restaurant : guide complet des normes d'hygiene | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2h1v9248788156za200zd9248788156&_p=1777252414657&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=348960221.1777252415&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266400~117512542&sid=1777252415&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fhaccp-restaurant&dt=HACCP%20en%20restaurant%20%3A%20guide%20complet%20des%20normes%20d%27hygiene%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=761' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2h1v9248788156za200zd9248788156&_p=1777252414657&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=348960221.1777252415&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266400~117512542&sid=1777252415&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fhaccp-restaurant&dt=HACCP%20en%20restaurant%20%3A%20guide%20complet%20des%20normes%20d%27hygiene%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=761. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-haccp-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nCalculer mon food cost\nConnexion\nSECURITE ALIMENTAIRE 2026\nGuide HACCP pour les restaurants :\ntout ce qu'il faut savoir\n\nLe HACCP (Hazard Analysis Critical Control Points) est obligatoire pour tous les restaurants en France. Decouvrez les 7 principes, les temperatures a respecter et une checklist pratique pour votre etablissement.\n\nPar l'equipe RestauMargin\n|\nMis a jour : avril 2026\n|\n12 min de lecture\nRM\nLa rédaction RestauMargin\n14 avril 2026\n14 min de lecture\nSommaire\n1.\nQu'est-c"
+      },
+      "mobile": {
+        "name": "blog-haccp-mobile",
+        "url": "https://www.restaumargin.fr/blog/haccp-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog/haccp-restaurant",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "HACCP en restaurant : guide complet des normes d'hygiene | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252419292&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1807515775.1777252420&frm=0&pscdl=noapi&rcb=18&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938469~117266400~117512542&sid=1777252420&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fhaccp-restaurant&dt=HACCP%20en%20restaurant%20%3A%20guide%20complet%20des%20normes%20d%27hygiene%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=1118' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252419292&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1807515775.1777252420&frm=0&pscdl=noapi&rcb=18&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938469~117266400~117512542&sid=1777252420&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fhaccp-restaurant&dt=HACCP%20en%20restaurant%20%3A%20guide%20complet%20des%20normes%20d%27hygiene%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=1118. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-haccp-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nSECURITE ALIMENTAIRE 2026\nGuide HACCP pour les restaurants :tout ce qu'il faut savoir\n\nLe HACCP (Hazard Analysis Critical Control Points) est obligatoire pour tous les restaurants en France. Decouvrez les 7 principes, les temperatures a respecter et une checklist pratique pour votre etablissement.\n\nPar l'equipe RestauMargin\n|\nMis a jour : avril 2026\n|\n12 min de lecture\nRM\nLa rédaction RestauMargin\n14 avril 2026\n14 min de lecture\nSommaire\n1.\nQu'est-ce que le HACCP et pourqu"
+      }
+    },
+    {
+      "name": "blog-ia",
+      "url": "https://www.restaumargin.fr/blog/intelligence-artificielle-restaurant",
+      "desktop": {
+        "name": "blog-ia-desktop",
+        "url": "https://www.restaumargin.fr/blog/intelligence-artificielle-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Blog RestauMargin — Guides et conseils pour restaurateurs",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252423848&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1352835554.1777252424&frm=0&pscdl=noapi&rcb=6&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~116363098~117266400~117384406~117512542~118167059&sid=1777252424&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fintelligence-artificielle-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=672' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252423848&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1352835554.1777252424&frm=0&pscdl=noapi&rcb=6&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~116363098~117266400~117384406~117512542~118167059&sid=1777252424&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fintelligence-artificielle-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=672. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-ia-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nCalculer ma marge\nConnexion\nBLOG\nGuides et conseils pour restaurateurs\n\nArticles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost, et gerer votre restaurant au quotidien.\n\nMarges\n12 min\nComment calculer la marge de votre restaurant en 2026\n\nGuide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.\n\nLire l'article\nFood Cost\n10 min\nReduire le food co"
+      },
+      "mobile": {
+        "name": "blog-ia-mobile",
+        "url": "https://www.restaumargin.fr/blog/intelligence-artificielle-restaurant",
+        "finalUrl": "https://www.restaumargin.fr/blog",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Blog RestauMargin — Guides et conseils pour restaurateurs",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252428730&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1362730688.1777252429&frm=0&pscdl=noapi&rcb=7&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938465~115938468~117266401~117384406~117512543~118289195&sid=1777252429&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fintelligence-artificielle-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=721' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252428730&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1362730688.1777252429&frm=0&pscdl=noapi&rcb=7&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938465~115938468~117266401~117384406~117512543~118289195&sid=1777252429&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog%2Fintelligence-artificielle-restaurant&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=721. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-ia-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nBLOG\nGuides et conseils pour restaurateurs\n\nArticles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost, et gerer votre restaurant au quotidien.\n\nMarges\n12 min\nComment calculer la marge de votre restaurant en 2026\n\nGuide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.\n\nLire l'article\nFood Cost\n10 min\nReduire le food cost de votre restau"
+      }
+    },
+    {
+      "name": "blog-kpi",
+      "url": "https://www.restaumargin.fr/blog/kpi-restaurateur",
+      "desktop": {
+        "name": "blog-kpi-desktop",
+        "url": "https://www.restaumargin.fr/blog/kpi-restaurateur",
+        "finalUrl": "https://www.restaumargin.fr/blog",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Blog RestauMargin — Guides et conseils pour restaurateurs",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2h1v9248788156za200zd9248788156&_p=1777252432986&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=663853110.1777252433&frm=0&pscdl=noapi&rcb=17&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938465~115938468~117266400~117512542~117884344~118463261&sid=1777252433&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=566' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2h1v9248788156za200zd9248788156&_p=1777252432986&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=663853110.1777252433&frm=0&pscdl=noapi&rcb=17&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938465~115938468~117266400~117512542~117884344~118463261&sid=1777252433&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=566. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-kpi-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nCalculer ma marge\nConnexion\nBLOG\nGuides et conseils pour restaurateurs\n\nArticles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost, et gerer votre restaurant au quotidien.\n\nMarges\n12 min\nComment calculer la marge de votre restaurant en 2026\n\nGuide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.\n\nLire l'article\nFood Cost\n10 min\nReduire le food co"
+      },
+      "mobile": {
+        "name": "blog-kpi-mobile",
+        "url": "https://www.restaumargin.fr/blog/kpi-restaurateur",
+        "finalUrl": "https://www.restaumargin.fr/blog",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Blog RestauMargin — Guides et conseils pour restaurateurs",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252437060&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1619686711.1777252437&frm=0&pscdl=noapi&rcb=3&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266401~117512542~118463261&sid=1777252437&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=576' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252437060&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1619686711.1777252437&frm=0&pscdl=noapi&rcb=3&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266401~117512542~118463261&sid=1777252437&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fblog&dt=RestauMargin%20%E2%80%94%20Logiciel%20de%20calcul%20de%20marge%20restaurant%20%7C%20Food%20cost%20et%20fiches%20techniques&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=576. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "blog-kpi-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nBLOG\nGuides et conseils pour restaurateurs\n\nArticles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost, et gerer votre restaurant au quotidien.\n\nMarges\n12 min\nComment calculer la marge de votre restaurant en 2026\n\nGuide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.\n\nLire l'article\nFood Cost\n10 min\nReduire le food cost de votre restau"
+      }
+    },
+    {
+      "name": "a-propos",
+      "url": "https://www.restaumargin.fr/a-propos",
+      "desktop": {
+        "name": "a-propos-desktop",
+        "url": "https://www.restaumargin.fr/a-propos",
+        "finalUrl": "https://www.restaumargin.fr/a-propos",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "À propos — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252441320&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1328896788.1777252442&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266400~117384406~117512542~118128923~118167059&sid=1777252441&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fa-propos&dt=%C3%80%20propos%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=759' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252441320&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1328896788.1777252442&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266400~117384406~117512542~118128923~118167059&sid=1777252441&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fa-propos&dt=%C3%80%20propos%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=759. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "a-propos-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nCalculer ma marge\nConnexion\nNOTRE HISTOIRE\nNous aidons les restaurateurs à maîtriser leurs marges\n\nRestauMargin est né d'une conviction : chaque restaurateur mérite des outils professionnels pour calculer ses marges, optimiser son food cost et gérer son activité avec précision.\n\nRM\nNOTRE ÉQUIPE\nL'équipe RestauMargin\n\nMontpellier, France\n\nPassionnés par la restauration et la technologie, nous avons fondé RestauMargin en 2025 avec une mission simple : rendre accessibles à tous les res"
+      },
+      "mobile": {
+        "name": "a-propos-mobile",
+        "url": "https://www.restaumargin.fr/a-propos",
+        "finalUrl": "https://www.restaumargin.fr/a-propos",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "À propos — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252445194&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1470997715.1777252446&frm=0&pscdl=noapi&rcb=5&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938469~117266400~117512542&sid=1777252445&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fa-propos&dt=%C3%80%20propos%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=572' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252445194&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1470997715.1777252446&frm=0&pscdl=noapi&rcb=5&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938469~117266400~117512542&sid=1777252445&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fa-propos&dt=%C3%80%20propos%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=572. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "a-propos-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nNOTRE HISTOIRE\nNous aidons les restaurateurs à maîtriser leurs marges\n\nRestauMargin est né d'une conviction : chaque restaurateur mérite des outils professionnels pour calculer ses marges, optimiser son food cost et gérer son activité avec précision.\n\nRM\nNOTRE ÉQUIPE\nL'équipe RestauMargin\n\nMontpellier, France\n\nPassionnés par la restauration et la technologie, nous avons fondé RestauMargin en 2025 avec une mission simple : rendre accessibles à tous les restaurateurs les out"
+      }
+    },
+    {
+      "name": "demo",
+      "url": "https://www.restaumargin.fr/demo",
+      "desktop": {
+        "name": "demo-desktop",
+        "url": "https://www.restaumargin.fr/demo",
+        "finalUrl": "https://www.restaumargin.fr/demo",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Demo — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252448969&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1349722323.1777252449&frm=0&pscdl=noapi&rcb=7&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~117266400~117512543&sid=1777252449&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fdemo&dt=Demo%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=596' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252448969&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1349722323.1777252449&frm=0&pscdl=noapi&rcb=7&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~117266400~117512543&sid=1777252449&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fdemo&dt=Demo%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=596. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "demo-desktop-1440px.png",
+        "pageTextSample": "Mode demo -- Donnees fictives du \"Bistrot de Marie\"\nCreer mon compte gratuit\nRestauMargin\nDEMO\nTarifs\nEssai gratuit\nLe Bistrot de Marie\n\nBistrot traditionnel -- Paris 11e -- 45 couverts/service\n\nDERNIERE MAJ\n\nAujourd'hui, 14h32\n\nTableau de bord\nFOOD COST GLOBAL\n\n26.8%\n\nSous l'objectif de 28%\n\nMARGE BRUTE\n\n73.2%\n\n+4.7 pts en 6 mois\n\nCA HT / MOIS\n\n46327.00 €\n\n+12% vs mois dernier\n\nCOUVERTS / MOIS\n\n1 456\n\n24 recettes / 87 ingredients\n\nFOURNISSEURS\n\n8\n\nFournisseurs actifs\n\nCOMMANDES\n\n34\n\nCe mois\n\nAL"
+      },
+      "mobile": {
+        "name": "demo-mobile",
+        "url": "https://www.restaumargin.fr/demo",
+        "finalUrl": "https://www.restaumargin.fr/demo",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Demo — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252452620&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=374449889.1777252453&frm=0&pscdl=noapi&rcb=14&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266401~117512542&sid=1777252452&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fdemo&dt=Demo%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=662' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252452620&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=374449889.1777252453&frm=0&pscdl=noapi&rcb=14&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266401~117512542&sid=1777252452&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fdemo&dt=Demo%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=662. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "demo-mobile-390px.png",
+        "pageTextSample": "Mode demo -- Donnees fictives du \"Bistrot de Marie\"\nCreer mon compte gratuit\nRestauMargin\nDEMO\nTarifs\nEssai gratuit\nLe Bistrot de Marie\n\nBistrot traditionnel -- Paris 11e -- 45 couverts/service\n\nDERNIERE MAJ\n\nAujourd'hui, 14h32\n\nTableau de bord\nFOOD COST GLOBAL\n\n26.8%\n\nSous l'objectif de 28%\n\nMARGE BRUTE\n\n73.2%\n\n+4.7 pts en 6 mois\n\nCA HT / MOIS\n\n46327.00 €\n\n+12% vs mois dernier\n\nCOUVERTS / MOIS\n\n1 456\n\n24 recettes / 87 ingredients\n\nFOURNISSEURS\n\n8\n\nFournisseurs actifs\n\nCOMMANDES\n\n34\n\nCe mois\n\nAL"
+      }
+    },
+    {
+      "name": "outil-food-cost",
+      "url": "https://www.restaumargin.fr/outils/calculateur-food-cost",
+      "desktop": {
+        "name": "outil-food-cost-desktop",
+        "url": "https://www.restaumargin.fr/outils/calculateur-food-cost",
+        "finalUrl": "https://www.restaumargin.fr/outils/calculateur-food-cost",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Calculateur de Food Cost Restaurant Gratuit | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252456908&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=881524511.1777252457&frm=0&pscdl=noapi&rcb=10&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266400~117512542~118167058~118463262&sid=1777252457&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Foutils%2Fcalculateur-food-cost&dt=Calculateur%20de%20Food%20Cost%20Restaurant%20Gratuit%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=915' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252456908&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=881524511.1777252457&frm=0&pscdl=noapi&rcb=10&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266400~117512542~118167058~118463262&sid=1777252457&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Foutils%2Fcalculateur-food-cost&dt=Calculateur%20de%20Food%20Cost%20Restaurant%20Gratuit%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=915. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "outil-food-cost-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nEssai gratuit\nOutil 100% gratuit — aucun compte requis\nCalculateur de Food Cost Restaurant\n\nAjoutez vos ingredients, visualisez votre food cost avec une jauge interactive, comparez-vous aux standards du secteur et simulez votre profit mensuel.\n\nIngredients de la recette\nINGREDIENT\nQUANTITE\nPRIX UNITAIRE\nUNITE\nkg\ng\nL\ncL\nmL\npiece(s)\nbotte(s)\ntranche(s)\nkg\ng\nL\ncL\nmL\npiece(s)\nbotte(s)\ntranche(s)\nkg\ng\nL\ncL\nmL\npiece(s)\nbotte(s)\ntranche(s)\nAjouter\nReset\nCout total : 0.00 €\nPortions & prix "
+      },
+      "mobile": {
+        "name": "outil-food-cost-mobile",
+        "url": "https://www.restaumargin.fr/outils/calculateur-food-cost",
+        "finalUrl": "https://www.restaumargin.fr/outils/calculateur-food-cost",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Calculateur de Food Cost Restaurant Gratuit | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252461073&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1804418812.1777252461&frm=0&pscdl=noapi&rcb=19&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266401~117512542~118128923&sid=1777252461&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Foutils%2Fcalculateur-food-cost&dt=Calculateur%20de%20Food%20Cost%20Restaurant%20Gratuit%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=548' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252461073&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1804418812.1777252461&frm=0&pscdl=noapi&rcb=19&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266401~117512542~118128923&sid=1777252461&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Foutils%2Fcalculateur-food-cost&dt=Calculateur%20de%20Food%20Cost%20Restaurant%20Gratuit%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=548. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "outil-food-cost-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nOutil 100% gratuit — aucun compte requis\nCalculateur de Food Cost Restaurant\n\nAjoutez vos ingredients, visualisez votre food cost avec une jauge interactive, comparez-vous aux standards du secteur et simulez votre profit mensuel.\n\nIngredients de la recette\nIngredient\nQuantite\nPrix unitaire\nUnite\nkg\ng\nL\ncL\nmL\npiece(s)\nbotte(s)\ntranche(s)\nIngredient\nQuantite\nPrix unitaire\nUnite\nkg\ng\nL\ncL\nmL\npiece(s)\nbotte(s)\ntranche(s)\nIngredient\nQuantite\nPrix unitaire\nUnite\nkg\ng\nL\ncL\nmL\npiece(s)\nbott"
+      }
+    },
+    {
+      "name": "outil-qr-menu",
+      "url": "https://www.restaumargin.fr/outils/generateur-qr-menu",
+      "desktop": {
+        "name": "outil-qr-menu-desktop",
+        "url": "https://www.restaumargin.fr/outils/generateur-qr-menu",
+        "finalUrl": "https://www.restaumargin.fr/outils/generateur-qr-menu",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Generateur de QR Code Menu Restaurant Gratuit | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252465159&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=2026241979.1777252466&frm=0&pscdl=noapi&rcb=14&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266401~117512542&sid=1777252465&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Foutils%2Fgenerateur-qr-menu&dt=Generateur%20de%20QR%20Code%20Menu%20Restaurant%20Gratuit%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=799' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252465159&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=2026241979.1777252466&frm=0&pscdl=noapi&rcb=14&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938465~115938468~117266401~117512542&sid=1777252465&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Foutils%2Fgenerateur-qr-menu&dt=Generateur%20de%20QR%20Code%20Menu%20Restaurant%20Gratuit%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=799. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "outil-qr-menu-desktop-1440px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nOutil 100% gratuit\nGenerateur de QR Code\npour votre restaurant\n\nQR code personnalise en 10 secondes. Couleurs, formats, impression par lot pour chaque table.\n\nTYPE DE LIEN\nMenu digital\nAvis Google\nInstagram\nLien libre\nURL\nCOULEUR DU QR\nHex:\nFOND DU QR\nHex:\nTAILLE (PX)\n128\n256\n512\n1024\nFORMAT\nPNG\nSVG\nPDF\nGENERATION PAR LOT (TABLES)\nAPERCU EN DIRECT\nEntrez une URL\npour voir l'apercu\nTelecharger PNG (256px)\nCopier le lien\nCreez votre menu digital complet avec RestauMargin\n\nGe"
+      },
+      "mobile": {
+        "name": "outil-qr-menu-mobile",
+        "url": "https://www.restaumargin.fr/outils/generateur-qr-menu",
+        "finalUrl": "https://www.restaumargin.fr/outils/generateur-qr-menu",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Generateur de QR Code Menu Restaurant Gratuit | RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64n0h2v9248788156za200zd9248788156&_p=1777252469292&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=501565917.1777252470&frm=0&pscdl=noapi&rcb=13&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~117266401~117512543~117884344&sid=1777252469&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Foutils%2Fgenerateur-qr-menu&dt=Generateur%20de%20QR%20Code%20Menu%20Restaurant%20Gratuit%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=539' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64n0h2v9248788156za200zd9248788156&_p=1777252469292&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=501565917.1777252470&frm=0&pscdl=noapi&rcb=13&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938469~117266401~117512543~117884344&sid=1777252469&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Foutils%2Fgenerateur-qr-menu&dt=Generateur%20de%20QR%20Code%20Menu%20Restaurant%20Gratuit%20%7C%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=539. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "outil-qr-menu-mobile-390px.png",
+        "pageTextSample": "RestauMargin\nConnexion\nOutil 100% gratuit\nGenerateur de QR Code\npour votre restaurant\n\nQR code personnalise en 10 secondes. Couleurs, formats, impression par lot pour chaque table.\n\nTYPE DE LIEN\nMenu digital\nAvis Google\nInstagram\nLien libre\nURL\nCOULEUR DU QR\nHex:\nFOND DU QR\nHex:\nTAILLE (PX)\n128\n256\n512\n1024\nFORMAT\nPNG\nSVG\nPDF\nGENERATION PAR LOT (TABLES)\nAPERCU EN DIRECT\nEntrez une URL\npour voir l'apercu\nTelecharger PNG (256px)\nCopier le lien\nCreez votre menu digital complet avec RestauMargin\n\nGe"
+      }
+    },
+    {
+      "name": "cgu",
+      "url": "https://www.restaumargin.fr/cgu",
+      "desktop": {
+        "name": "cgu-desktop",
+        "url": "https://www.restaumargin.fr/cgu",
+        "finalUrl": "https://www.restaumargin.fr/cgu",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Conditions Generales d'Utilisation — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252473317&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=397186820.1777252474&frm=0&pscdl=noapi&rcb=19&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938465~115938468~117266400~117512542~118128922~118167060&sid=1777252473&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fcgu&dt=Conditions%20Generales%20d%27Utilisation%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=838' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252473317&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=397186820.1777252474&frm=0&pscdl=noapi&rcb=19&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938465~115938468~117266400~117512542~118128922~118167060&sid=1777252473&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fcgu&dt=Conditions%20Generales%20d%27Utilisation%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=838. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "cgu-desktop-1440px.png",
+        "pageTextSample": "Retour\nConditions Generales d'Utilisation\n\nDerniere mise a jour : 7 avril 2026\n\nPreambule\n\nLes presentes Conditions Generales d'Utilisation (ci-apres « les CGU ») ont pour objet de definir les modalites et conditions d'acces et d'utilisation de la plateforme RestauMargin, editee par RestauMargin SAS (ci-apres « la Societe »), societe par actions simplifiee de droit francais dont le siege social est situe a Marseille, France. La plateforme est accessible a l'adresse https://restaumargin.com (ci-a"
+      },
+      "mobile": {
+        "name": "cgu-mobile",
+        "url": "https://www.restaumargin.fr/cgu",
+        "finalUrl": "https://www.restaumargin.fr/cgu",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Conditions Generales d'Utilisation — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64n0h2v9248788156za200zd9248788156&_p=1777252478565&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1180911990.1777252479&frm=0&pscdl=noapi&rcb=6&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266401~117512543~118167058&sid=1777252478&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fcgu&dt=Conditions%20Generales%20d%27Utilisation%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=928' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64n0h2v9248788156za200zd9248788156&_p=1777252478565&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1180911990.1777252479&frm=0&pscdl=noapi&rcb=6&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115938466~115938468~117266401~117512543~118167058&sid=1777252478&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fcgu&dt=Conditions%20Generales%20d%27Utilisation%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=928. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "cgu-mobile-390px.png",
+        "pageTextSample": "Retour\nConditions Generales d'Utilisation\n\nDerniere mise a jour : 7 avril 2026\n\nPreambule\n\nLes presentes Conditions Generales d'Utilisation (ci-apres « les CGU ») ont pour objet de definir les modalites et conditions d'acces et d'utilisation de la plateforme RestauMargin, editee par RestauMargin SAS (ci-apres « la Societe »), societe par actions simplifiee de droit francais dont le siege social est situe a Marseille, France. La plateforme est accessible a l'adresse https://restaumargin.com (ci-a"
+      }
+    },
+    {
+      "name": "politique-confidentialite",
+      "url": "https://www.restaumargin.fr/politique-confidentialite",
+      "desktop": {
+        "name": "politique-confidentialite-desktop",
+        "url": "https://www.restaumargin.fr/politique-confidentialite",
+        "finalUrl": "https://www.restaumargin.fr/politique-confidentialite",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Politique de Confidentialite — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252483863&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1166896094.1777252485&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616985~115938465~115938468~117266401~117512542&sid=1777252484&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fpolitique-confidentialite&dt=Politique%20de%20Confidentialite%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=1075' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252483863&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1166896094.1777252485&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616985~115938465~115938468~117266401~117512542&sid=1777252484&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fpolitique-confidentialite&dt=Politique%20de%20Confidentialite%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=1075. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "politique-confidentialite-desktop-1440px.png",
+        "pageTextSample": "Retour\nPolitique de Confidentialite\n\nDerniere mise a jour : 7 avril 2026\n\nPreambule\n\nLa presente Politique de confidentialite (ci-apres « la Politique ») a pour objet d'informer les utilisateurs du site internet https://restaumargin.com (ci-apres « le Site » ou « la Plateforme ») et des services associes sur les modalites de collecte, de traitement, de stockage, de conservation et de protection de leurs donnees a caractere personnel par RestauMargin SAS (ci-apres « la Societe »), societe par act"
+      },
+      "mobile": {
+        "name": "politique-confidentialite-mobile",
+        "url": "https://www.restaumargin.fr/politique-confidentialite",
+        "finalUrl": "https://www.restaumargin.fr/politique-confidentialite",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Politique de Confidentialite — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252488630&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1012380304.1777252489&frm=0&pscdl=noapi&rcb=11&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938466~115938469~116363097~117266400~117512543~118167059~118463261&sid=1777252488&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fpolitique-confidentialite&dt=Politique%20de%20Confidentialite%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=413' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252488630&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1012380304.1777252489&frm=0&pscdl=noapi&rcb=11&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938466~115938469~116363097~117266400~117512543~118167059~118463261&sid=1777252488&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fpolitique-confidentialite&dt=Politique%20de%20Confidentialite%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=413. Refused to connect because it violates the document's Content Security Policy."
+          },
+          {
+            "type": "warning",
+            "text": "The resource https://www.restaumargin.fr/images/hero/hero-1.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "politique-confidentialite-mobile-390px.png",
+        "pageTextSample": "Retour\nPolitique de Confidentialite\n\nDerniere mise a jour : 7 avril 2026\n\nPreambule\n\nLa presente Politique de confidentialite (ci-apres « la Politique ») a pour objet d'informer les utilisateurs du site internet https://restaumargin.com (ci-apres « le Site » ou « la Plateforme ») et des services associes sur les modalites de collecte, de traitement, de stockage, de conservation et de protection de leurs donnees a caractere personnel par RestauMargin SAS (ci-apres « la Societe »), societe par act"
+      }
+    },
+    {
+      "name": "mentions-legales",
+      "url": "https://www.restaumargin.fr/mentions-legales",
+      "desktop": {
+        "name": "mentions-legales-desktop",
+        "url": "https://www.restaumargin.fr/mentions-legales",
+        "finalUrl": "https://www.restaumargin.fr/mentions-legales",
+        "viewport": "1440x900",
+        "httpStatus": 200,
+        "title": "Mentions Legales — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64n0h2v9248788156za200zd9248788156&_p=1777252492584&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=936486350.1777252493&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616985~115938466~115938468~117266400~117384406~117512543~118463261&sid=1777252492&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fmentions-legales&dt=Mentions%20Legales%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=506' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64n0h2v9248788156za200zd9248788156&_p=1777252492584&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=936486350.1777252493&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616985~115938466~115938468~117266400~117384406~117512543~118463261&sid=1777252492&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fmentions-legales&dt=Mentions%20Legales%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=506. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "mentions-legales-desktop-1440px.png",
+        "pageTextSample": "Retour\nMentions Legales\n\nDerniere mise a jour : 7 avril 2026\n\nPreambule\n\nConformement aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'economie numerique (dite « LCEN »), il est porte a la connaissance des utilisateurs et visiteurs du site internet accessible a l'adresse https://restaumargin.com (ci-apres denomme « le Site ») les presentes mentions legales. La connexion et la navigation sur le Site par l'utilisateur impliquent l'acceptation integrale et sans reserv"
+      },
+      "mobile": {
+        "name": "mentions-legales-mobile",
+        "url": "https://www.restaumargin.fr/mentions-legales",
+        "finalUrl": "https://www.restaumargin.fr/mentions-legales",
+        "viewport": "390x844",
+        "httpStatus": 200,
+        "title": "Mentions Legales — RestauMargin",
+        "loadError": null,
+        "jsErrors": [],
+        "consoleErrors": [
+          {
+            "type": "error",
+            "text": "Connecting to 'https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252496244&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1228372717.1777252497&frm=0&pscdl=noapi&rcb=19&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938465~115938469~117266401~117512543&sid=1777252496&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fmentions-legales&dt=Mentions%20Legales%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=507' violates the following Content Security Policy directive: \"connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com https://api.resend.com https://*.sentry.io https://www.google-analytics.com https://client.crisp.chat wss://client.relay.crisp.chat https://api.fontshare.com\". The action has been blocked."
+          },
+          {
+            "type": "error",
+            "text": "Fetch API cannot load https://region1.google-analytics.com/g/collect?v=2&tid=G-656H54T9RS&gtm=45je64m2v9248788156za200zd9248788156&_p=1777252496244&gcd=13l3l3l2l1l1&npa=1&dma_cps=a&dma=1&are=1&cid=1228372717.1777252497&frm=0&pscdl=noapi&rcb=19&sr=390x844&uaa=x86&uab=64&uafvl=HeadlessChrome%3B147.0.7727.15%7CNot.A%252FBrand%3B8.0.0.0%7CChromium%3B147.0.7727.15&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=fr&_s=1&tag_exp=0~115616986~115938465~115938469~117266401~117512543&sid=1777252496&sct=1&seg=0&dl=https%3A%2F%2Fwww.restaumargin.fr%2Fmentions-legales&dt=Mentions%20Legales%20%E2%80%94%20RestauMargin&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=507. Refused to connect because it violates the document's Content Security Policy."
+          }
+        ],
+        "networkErrors": [],
+        "screenshotPath": "mentions-legales-mobile-390px.png",
+        "pageTextSample": "Retour\nMentions Legales\n\nDerniere mise a jour : 7 avril 2026\n\nPreambule\n\nConformement aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'economie numerique (dite « LCEN »), il est porte a la connaissance des utilisateurs et visiteurs du site internet accessible a l'adresse https://restaumargin.com (ci-apres denomme « le Site ») les presentes mentions legales. La connexion et la navigation sur le Site par l'utilisateur impliquent l'acceptation integrale et sans reserv"
+      }
+    }
+  ],
+  "registrationFlow": {
+    "steps": [
+      {
+        "step": "navigate-register",
+        "status": "ok",
+        "url": "https://www.restaumargin.fr/login?mode=register"
+      },
+      {
+        "step": "fill-email",
+        "status": "ok",
+        "value": "test+audit-1777252326205@restaumargin.fr"
+      },
+      {
+        "step": "fill-password",
+        "status": "ok"
+      },
+      {
+        "step": "fill-restaurant",
+        "status": "skip",
+        "detail": "Restaurant input not found"
+      },
+      {
+        "step": "error",
+        "detail": "elementHandle.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    37 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+      }
+    ],
+    "success": false,
+    "finalError": "elementHandle.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    37 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+    "jsErrors": [],
+    "apiResponses": [
+      {
+        "url": "https://www.restaumargin.fr/api/csrf-token",
+        "method": "GET",
+        "status": 200,
+        "body": "{\"csrfToken\":\"e29fc7e447494fd925e549c2af69353b0dffa72912877f74af1a143fbdf1d996\"}"
+      },
+      {
+        "url": "https://www.restaumargin.fr/api/auth/first-user",
+        "method": "GET",
+        "status": 200,
+        "body": "{\"isFirstUser\":false}"
+      }
+    ]
+  },
+  "landingSpecific": {
+    "paperFoldCanvas": {
+      "found": true,
+      "canvases": [
+        {
+          "width": 1440,
+          "height": 900,
+          "displayWidth": 1440,
+          "displayHeight": 900,
+          "visible": true
+        },
+        {
+          "width": 1342,
+          "height": 984,
+          "displayWidth": 1342,
+          "displayHeight": 984,
+          "visible": true
+        }
+      ]
+    },
+    "browserFrameDots": {
+      "redDotCount": 2,
+      "allColoredDots": 0,
+      "inViewport": []
+    },
+    "heroKpis": {
+      "has320": true,
+      "hasPlusFour": true,
+      "has10": true,
+      "has800": true
+    },
+    "roiSection": {
+      "hasAN": true,
+      "hasRETOUR": true,
+      "hasDELAI": true
+    },
+    "featureNumbers": {
+      "01": true,
+      "02": true,
+      "03": true,
+      "04": true,
+      "05": true,
+      "06": true,
+      "07": true,
+      "08": true
+    },
+    "trialDays": {
+      "occurrences7jours": 5,
+      "occurrences14jours": 0,
+      "essaiContext": [
+        "Essai 7 jours",
+        "essai 7 jours"
+      ]
+    },
+    "mobileNavbarTrial": {
+      "navText": "RestauMargin",
+      "has7jours": false,
+      "has14jours": false
+    },
+    "carousel": {
+      "hasVoiceFiche": true,
+      "hasDashboardVariant": true,
+      "variantCount": 0
+    },
+    "newsletter": {
+      "found": true,
+      "emailInput": true
+    },
+    "contactSection": {
+      "found": true
+    },
+    "footer": {
+      "found": true,
+      "text": "RestauMargin\n\nLe logiciel de marges pensé pour les restaurateurs français.\n\nServeurs opérationnels\n\nPRODUIT\n\nFonctionnalités\nTarifs\nTémoignages\nBlog\n\nRESSOURCES\n\nCalculateur food cost\nGénérateur QR me"
+    },
+    "tabletSection": {
+      "hasTablet": false
+    }
+  },
+  "summary": {
+    "total": 20,
+    "ok": 20,
+    "errors": 0,
+    "jsErrors": 0,
+    "networkErrors": 0
+  }
+}

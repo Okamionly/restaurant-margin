@@ -1,0 +1,28 @@
+=== Michelin France Scraping ===
+  [Wiki] https://fr.wikipedia.org/wiki/Liste_des_restaurants_trois_%C3%A9toiles_du_Guide_Michelin
+  [Wiki] 14 restaurants extraits (raw)
+  [Wiki] 11 apres filtrage
+  [Wiki] https://fr.wikipedia.org/wiki/Liste_des_restaurants_%C3%A9toil%C3%A9s_par_le_Guide_Michelin_en_France
+  [Wiki] 14 restaurants extraits (raw)
+  [Wiki] 11 apres filtrage
+
+Total restaurants etoiles uniques: 12
+
+Phase 2 : recherche websites + emails...
+
+  [1/12] Wiktionnaire                        -> (no email)
+  [2/12] Wikibooks                           -> (no email)
+  [3/12] Wikiquote                           -> (no email)
+  [4/12] Wikisource                          -> (no email)
+  [5/12] Wikinews                            -> (no email)
+  [6/12] Wikiversity                         -> (no email)
+  [7/12] Commons                             -> (no email)
+  [8/12] Wikivoyage                          -> (no email)
+  [9/12] Wikidata                            -> (no email)
+  [10/12] Recherchez « Liste des restaurants  -> (no email)
+  [11/12] Cherchez d'autres pages de Wikipédi -> (no email)
+  [12/12] Recherchez « Liste des restaurants  -> (no email)
+
+=== TERMINE ===
+Total: 12 | Avec email: 0
+CSV: C:\Users\mrgue\CLAUDE CODE\restaurant-margin\data\scraping\michelin-france-2026-05-06.csv

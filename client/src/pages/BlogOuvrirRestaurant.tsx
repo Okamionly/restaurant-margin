@@ -499,7 +499,7 @@ export default function BlogOuvrirRestaurant() {
           <div className="prose-content mt-6">
             <p>
               Pour comprendre les implications de votre statut sur les {' '}
-              <Link to="/blog/charges-sociales-restaurant" className="text-teal-700 underline hover:text-teal-800">charges sociales en restauration</Link>, consultez notre guide dédié. La différence entre TNS (EURL) et assimilé salarié (SASU) peut représenter 10 000 à 20 000€ par an pour un gérant rémunéré 3 500€ net mensuel.
+              <Link to="/blog/charges-sociales-restauration" className="text-teal-700 underline hover:text-teal-800">charges sociales en restauration</Link>, consultez notre guide dédié. La différence entre TNS (EURL) et assimilé salarié (SASU) peut représenter 10 000 à 20 000€ par an pour un gérant rémunéré 3 500€ net mensuel.
             </p>
           </div>
         </section>
@@ -534,7 +534,7 @@ export default function BlogOuvrirRestaurant() {
           <Callout type="info">
             <strong>Pour aller plus loin :</strong> consultez notre guide dédié à la {' '}
             <Link to="/blog/haccp-restaurant" className="text-teal-700 underline hover:text-teal-800">méthode HACCP en restauration</Link> et au {' '}
-            <Link to="/blog/calendrier-haccp" className="text-teal-700 underline hover:text-teal-800">calendrier HACCP quotidien</Link>. Une inspection DDPP négative peut entraîner une fermeture administrative en 24-72h.
+            <Link to="/blog/calendrier-haccp-restaurant-modele-gratuit" className="text-teal-700 underline hover:text-teal-800">calendrier HACCP quotidien</Link>. Une inspection DDPP négative peut entraîner une fermeture administrative en 24-72h.
           </Callout>
         </section>
 
@@ -635,7 +635,7 @@ export default function BlogOuvrirRestaurant() {
 
           <Callout type="warning">
             <strong>Coût caché d'un mauvais recrutement :</strong> un employé qui démissionne dans le mois coûte 2 500 à 4 000€ (recrutement, formation, sous-effectif, ambiance dégradée). Mieux vaut prendre 3 semaines de plus pour le bon profil que de remplacer 3 fois en 6 mois. Pour mesurer l'impact sur votre masse salariale, consultez notre guide sur le {' '}
-            <Link to="/blog/cout-personnel-restaurant" className="text-teal-700 underline hover:text-teal-800">coût du personnel en restauration</Link>.
+            <Link to="/blog/reduire-cout-personnel-restaurant" className="text-teal-700 underline hover:text-teal-800">coût du personnel en restauration</Link>.
           </Callout>
         </section>
 
@@ -773,7 +773,7 @@ export default function BlogOuvrirRestaurant() {
           <div className="prose-content mt-6">
             <p>
               <strong>Lecture :</strong> année 1 difficile (marge nette 3,7%), année 2 satisfaisante (9,1%), année 3 confortable (10,9%). C'est le scénario typique d'un restaurant bien lancé. Si vous projetez une marge nette de 15% dès l'année 1, votre business plan est probablement irréaliste — les banques vous le diront. Pour comprendre comment piloter ces marges au quotidien, consultez notre {' '}
-              <Link to="/blog/food-cost" className="text-teal-700 underline hover:text-teal-800">guide du food cost</Link> et notre {' '}
+              <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">guide du food cost</Link> et notre {' '}
               <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800">calculateur de food cost gratuit</Link>.
             </p>
           </div>
@@ -938,7 +938,7 @@ export default function BlogOuvrirRestaurant() {
               <h3 className="font-semibold text-mono-100 mb-1.5">Seuil de rentabilité</h3>
               <p className="text-xs text-mono-500">Calcul du break-even et nombre de couverts nécessaires.</p>
             </Link>
-            <Link to="/blog/food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 transition-all">
+            <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 transition-all">
               <h3 className="font-semibold text-mono-100 mb-1.5">Guide du food cost</h3>
               <p className="text-xs text-mono-500">Définition, formule, benchmarks et 10 leviers d'optimisation.</p>
             </Link>

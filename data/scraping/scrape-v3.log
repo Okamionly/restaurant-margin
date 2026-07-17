@@ -1,0 +1,310 @@
+=== Montpellier Extended Scraping ===
+Queries: 9
+Chrome: C:/Program Files/Google/Chrome/Application/chrome.exe
+
+[pizzeria montpellier] Starting...
+  [pizzeria montpellier] 65 cartes trouvees, extraction details...
+  [pizzeria montpellier] -> 60 restaurants
+
+[brasserie montpellier] Starting...
+  [brasserie montpellier] 61 cartes trouvees, extraction details...
+  [brasserie montpellier] -> 60 restaurants
+
+[bistrot montpellier] Starting...
+  [bistrot montpellier] 65 cartes trouvees, extraction details...
+  [bistrot montpellier] -> 60 restaurants
+
+[restaurant gastronomique montpellier] Starting...
+  [restaurant gastronomique montpellier] 65 cartes trouvees, extraction details...
+  [restaurant gastronomique montpellier] -> 60 restaurants
+
+[restaurant asiatique montpellier] Starting...
+  [restaurant asiatique montpellier] 65 cartes trouvees, extraction details...
+  [restaurant asiatique montpellier] -> 60 restaurants
+
+[restaurant italien montpellier] Starting...
+  [restaurant italien montpellier] 65 cartes trouvees, extraction details...
+  [restaurant italien montpellier] -> 60 restaurants
+
+[creperie montpellier] Starting...
+  [creperie montpellier] 37 cartes trouvees, extraction details...
+  [creperie montpellier] -> 37 restaurants
+
+[restaurant antigone montpellier] Starting...
+  [restaurant antigone montpellier] 65 cartes trouvees, extraction details...
+  [restaurant antigone montpellier] -> 60 restaurants
+
+[restaurant port marianne montpellier] Starting...
+  [restaurant port marianne montpellier] 42 cartes trouvees, extraction details...
+  [restaurant port marianne montpellier] -> 42 restaurants
+
+=== Total uniques: 336 ===
+
+=== Extracting emails from websites ===
+  [1/336] Regui Pizza - Montpellier      (no email)
+  [2/336] I RAGAZZI                      (no email)
+  [4/336] Pizzeria La Spezia             (no email)
+  [7/336] La Burrata - Pizzeria          -> pizza@laburrata.fr
+  [8/336] Ori Panzerotti                 (no email)
+  [9/336] Basilic & Co - pizzas de terro (no email)
+  [10/336] Pizzeria-Dei-Guindani          (no email)
+  [11/336] Pizza Vera Napoli pizzeria feu (no email)
+  [12/336] Restaurant Il Bar A Pizze - Mo (no email)
+  [14/336] Pinocchio - Restaurant Italien (no email)
+  [15/336] Vera vera pizzeria             -> contact@veravera-pizzeria.fr
+  [16/336] La Mamma St Roch - Restaurant  (no email)
+  [18/336] Pizzeria le Repalatin          (no email)
+  [20/336] Pizzeria la Terrasse           (no email)
+  [21/336] PIZZA EAT Montpellier          (no email)
+  [22/336] POUSSE Pizza                   (no email)
+  [24/336] Pizza Hut                      (no email)
+  [25/336] CHEEZY PIZZA                   (no email)
+  [26/336] Cheezy Pizza Comédie           (no email)
+  [27/336] Home Sushi                     (no email)
+  [29/336] Chez Valou, Les Souris Dansent (no email)
+  [31/336] PIZZA STREET                   (no email)
+  [32/336] Big pizza                      (no email)
+  [33/336] Tukizza Montpellier            (no email)
+  [34/336] Pizza Jules César | Livraison  (no email)
+  [36/336] L'OSTERIA                      -> contact@etre-visible.local.fr
+  [37/336] IT - Italian Trattoria Montpel (no email)
+  [38/336] Bambino Rocco restaurant itali (no email)
+  [40/336] Don Camillo                    (no email)
+  [41/336] ANGELO PIZZERIA                (no email)
+  [42/336] Pizz’burg Avenue               -> khalidoo.34@hotmail.fr
+  [43/336] Volfoni Montpellier – Restaura (no email)
+  [44/336] Domino's Pizza Montpellier Sud (no email)
+  [45/336] Restaurant Italien, Pizzeria - (no email)
+  [46/336] L'Ovalino                      (no email)
+  [47/336] Rocco et sa mère               (no email)
+  [49/336] PIZZA LAB                      (no email)
+  [51/336] Bisciù Pizzeria                (no email)
+  [52/336] La Pizzaïère                   (no email)
+  [53/336] PIZZA MARSALA                  (no email)
+  [54/336] TACOS & PIZZA                  (no email)
+  [55/336] Brasserie du Théâtre           -> contact@brasseriedutheatre.fr
+  [56/336] Le Dome                        (no email)
+  [57/336] Les Bockale | Bar à bières - f (no email)
+  [58/336] Café de la Mairie - Restaurant (no email)
+  [59/336] Brasserie Pompette             (no email)
+  [60/336] Broc Café                      (no email)
+  [61/336] Microbrasserie La Barbote      (no email)
+  [63/336] Chez Delagare - Brasserie Mode -> info@belaroia.fr
+  [64/336] Hopulus Brewpub                (no email)
+  [65/336] Le Réservoir                   (no email)
+  [67/336] BRASSERIE LAISSAC              -> brasserie.laissac@gmail.com
+  [68/336] Pousse Pas Mémé dans la Vigne  -> devis.ppmv@gmail.com
+  [69/336] Le Paresseur                   (no email)
+  [70/336] Brasserie Des Finances         (no email)
+  [72/336] La BAF Brasserie Associative d (no email)
+  [73/336] Plein Sud                      -> pleinsud.montpellier@gmail.com
+  [74/336] LE GURU                        (no email)
+  [75/336] L'Accoudoir                    -> contactlaccoudoir.montpellier@gmail.com
+  [76/336] Maison Marguerite - Restaurant (no email)
+  [77/336] Brasserie Chez Boris           -> contact@chezboris.com
+  [78/336] COMME UN DIMANCHE SOUS LE FIGU (no email)
+  [79/336] Angus & Bacchus                (no email)
+  [80/336] Brasserie L'escale Montpellier -> contact@jscom.fr
+  [82/336] La Chistera                    (no email)
+  [84/336] Restaurant Leclère, Cuisine d’ (no email)
+  [85/336] CAFÉ MARCEAU                   -> lcm34@outlook.fr
+  [86/336] La Cigale                      (no email)
+  [87/336] Le Bourdon                     -> lebourdon.montpellier@gmail.com
+  [89/336] Le jardin des Sens             (no email)
+  [90/336] Le Boudoir Montpelliérain      (no email)
+  [91/336] Le Bistrok Montpellier         -> bistrokmontpellier1@gmail.com
+  [92/336] Le Couperet | Bar & Restaurant (no email)
+  [93/336] Le Café Joseph                 (no email)
+  [94/336] BRASSERIE LEPIC                -> brasserielepic@orange.fr
+  [95/336] AU LOUP Restaurant & Bar 🍴🍸� (no email)
+  [96/336] Les BerThoM Montpellier        (no email)
+  [97/336] La Bistrote                    (no email)
+  [98/336] POKHAWAI POKE BAR - Meilleur p (no email)
+  [101/336] Les Garçons                    (no email)
+  [102/336] Le Pat'Daniel's                (no email)
+  [103/336] Les t'OCqués                   (no email)
+  [105/336] Restaurant Le Montis - Bar à C (no email)
+  [106/336] Les Castors - Bar à Jeux       -> contact@lescastors.fun
+  [107/336] Les Fils À Maman Montpellier   (no email)
+  [108/336] Bar L'Elytre                   (no email)
+  [109/336] Pastis Restaurant              (no email)
+  [111/336] Pinot Bistrot                  (no email)
+  [112/336] Bistrot des Arceaux            (no email)
+  [113/336] Bistrot Sainte Anne            -> contact@bistrot-sainte-anne.com
+  [115/336] Bistrot Umami Montpellier      (no email)
+  [116/336] Le Bistro Urbain               -> lebistrourbain@gmail.com
+  [117/336] MENJIA - Bistrot Canaille      (no email)
+  [119/336] Bistrot des musées             (no email)
+  [120/336] Faim                           -> faim.soifaussi@gmail.com
+  [121/336] Le Jardin des Frangins - Resta (no email)
+  [122/336] Bistro La Canourgue            (no email)
+  [124/336] Les Enfants Rouges             (no email)
+  [125/336] LAS TAPAS                      (no email)
+  [127/336] Coppia                         (no email)
+  [128/336] Restaurant l'Angelus           (no email)
+  [129/336] Le Bistro Romain Montpellier   (no email)
+  [130/336] Les Canons | Restaurant Montpe (no email)
+  [131/336] Comptoir de l'Arc              (no email)
+  [132/336] Rosemarie - Restaurant Méditer (no email)
+  [133/336] le victoria                    (no email)
+  [134/336] Les Bistronomes                (no email)
+  [135/336] Buonanotte                     (no email)
+  [136/336] L'Alchimiste                   (no email)
+  [137/336] Brasserie le BG                -> brasseriebg.sj@gmail.com
+  [138/336] Café Pitot                     (no email)
+  [142/336] CÉNA - Restaurant gastronomiqu (no email)
+  [143/336] Restaurant Aliro By Gary-Bobo  (no email)
+  [144/336] La Réserve Rimbaud             (no email)
+  [145/336] ARTISANE                       (no email)
+  [146/336] Ébullition                     -> info@restaurant-ebullition.fr
+  [147/336] Restaurant La Table Des Poètes -> contact@la-table-des-poetes.com
+  [148/336] Aroc                           -> contact@restaurant-aroc.com
+  [149/336] Reflet d'Obione                (no email)
+  [150/336] ESENCIA, restaurant et cave à  (no email)
+  [151/336] Restaurant du Petit Jardin     -> contact@petit-jardin.com
+  [152/336] Les Vignes Montpellier         -> t.germain34@gmail.com
+  [153/336] Les Gourmands                  (no email)
+  [154/336] Restaurant Le Grand Arbre      (no email)
+  [155/336] GOMU Montpellier               (no email)
+  [156/336] L'Atelier du Petit Jardin      -> contact@petit-jardin.com
+  [157/336] Le Sens Six Restaurant         -> restaurant@lesenssix.fr
+  [158/336] Mahé                           -> contact@mahe-restaurant.fr
+  [159/336] Naïa Restaurant | Montpellier  (no email)
+  [160/336] Restaurant Sensible            (no email)
+  [161/336] Le Cena                        (no email)
+  [163/336] La Factory devient Berthe      (no email)
+  [164/336] Thym Et Romarin                -> contact@thymetromarin.com
+  [165/336] Tartine et sac à dos           (no email)
+  [166/336] Le Melice - Restaurant Montpel -> info@melice.fr
+  [167/336] Emiko                          (no email)
+  [168/336] L'Atelier de l'Alchimiste      (no email)
+  [169/336] L'artichaut                    (no email)
+  [170/336] Hakko                          (no email)
+  [171/336] Ceba - Cuisine d'arrivage, pro (no email)
+  [172/336] New Delhi                      (no email)
+  [173/336] Spécialité tunisienne Le Monas (no email)
+  [174/336] Restaurant La Closerie         (no email)
+  [176/336] Restaurant Le G - Montpellier  (no email)
+  [178/336] AKATSUKI                       (no email)
+  [180/336] MAI SUSHI                      (no email)
+  [181/336] Coco d'Asie                    (no email)
+  [183/336] Tiger Noodles Louis Blanc      (no email)
+  [185/336] KONG'S FOOD                    (no email)
+  [187/336] Quanta                         (no email)
+  [188/336] Tiger Noodles Antigone         (no email)
+  [190/336] Wei sin                        -> hello@weisin.com
+  [194/336] THAÏZONE                       (no email)
+  [197/336] Restaurant Bane Lao            (no email)
+  [199/336] KUMA-Ï SUSHI JAPONAIS A VOLONT (no email)
+  [201/336] Sushi Boat                     (no email)
+  [202/336] Chô Chaï Montpellier Antigone  (no email)
+  [206/336] Cuisine S                      (no email)
+  [207/336] Galanga - Cuisine Thaï Lao     (no email)
+  [208/336] Le Bol d'or - Restaurant Thaï  (no email)
+  [209/336] Aloy Thai - Montpellier        (no email)
+  [210/336] Thai to Box                    -> himnoy@gmail.com
+  [213/336] Moutarde & Wasabi              (no email)
+  [215/336] Li’s Raviolis Chinois - Léon B -> contact@etre-visible.local.fr
+  [216/336] Côté Sushi Montpellier Ecusson (no email)
+  [217/336] Kashmir villa                  (no email)
+  [218/336] Ché Lys                        (no email)
+  [219/336] Li‘s Raviolis Chinois - Univer -> contact@etre-visible.local.fr
+  [220/336] Wok to Walk Montpellier        (no email)
+  [221/336] Sushi Kawaii Montpellier       (no email)
+  [222/336] Sawadee resto thai             (no email)
+  [223/336] Korean Korner                  (no email)
+  [224/336] Restaurant Vietnamien La Pagod (no email)
+  [225/336] Wokami Montpellier             (no email)
+  [226/336] The Little Italy Shop restaura (no email)
+  [227/336] Casa Di Giorgio - Restaurant I (no email)
+  [228/336] Il Pastaiolo                   (no email)
+  [229/336] Romagna Kitchen - Spécialités  (no email)
+  [230/336] Strada by IT - Montpellier     -> office.florida@it-trattoria.com
+  [232/336] Antonio e Marco - Montpellier  (no email)
+  [233/336] La Trattoria                   (no email)
+  [234/336] La Maison d´Anna               (no email)
+  [235/336] La Nonna Restaurant Montpellie (no email)
+  [237/336] Caravaggio                     -> contact@caravaggio.fr
+  [238/336] Le Secco                       (no email)
+  [239/336] Cucina Nostra                  (no email)
+  [240/336] La Vita è Bella                (no email)
+  [241/336] Pourquoi Pas                   (no email)
+  [242/336] DiscoVolante                   (no email)
+  [243/336] Angelo Gelato Caffè - Artisan  -> angelogelatocaffe@gmail.com
+  [244/336] Meraki Taverna                 -> contact@meraki.restaurant
+  [245/336] Baba Ristorante                (no email)
+  [246/336] La Vita Al dente               (no email)
+  [247/336] Pizzeria Sicilia - Montpellier (no email)
+  [248/336] L'indya                        (no email)
+  [249/336] O BEACH                        (no email)
+  [250/336] Arezzo                         (no email)
+  [251/336] Takkito                        (no email)
+  [252/336] Crêperie Le Kreisker           (no email)
+  [254/336] Yo&Co - Pancakerie, Crêperie e (no email)
+  [255/336] Froment & Sarrasin - Crêperie  -> fromentetsarrasin@yahoo.com
+  [259/336] Tacos Square Montpellier       (no email)
+  [260/336] Crêpe Touch Odysseum           (no email)
+  [262/336] Amorino Gelato - Montpellier T (no email)
+  [263/336] Amorino Gelato - Montpellier L (no email)
+  [264/336] Jean Le Gourmand MONTPELLIER   (no email)
+  [266/336] Balthazar café & restaurant    (no email)
+  [267/336] Grand Slam Burger | Hamburger  (no email)
+  [270/336] Toast and Tea                  (no email)
+  [271/336] Glacier - Mamma Mia            -> nadia.zeta@icloud.com
+  [273/336] Le Triple-B-Gourmet            (no email)
+  [274/336] Empanadas Club                 (no email)
+  [275/336] Bloom and Cake's               (no email)
+  [276/336] À La Braise                    -> Chickenbraise34@gmail.com
+  [280/336] L’Endroit du Jour              (no email)
+  [281/336] Coffee Shop l THE BABEL COMMUN (no email)
+  [282/336] Gyraya                         (no email)
+  [283/336] Brasserie Vert Tomate          (no email)
+  [284/336] Restaurant L'Arlequin          -> contact@larlequinmontpellier.com
+  [287/336] Sumac                          (no email)
+  [288/336] La Famille                     (no email)
+  [289/336] BRASSERIE QUOTIDIENNE          (no email)
+  [290/336] Le tête en l'air café          (no email)
+  [291/336] Le NAKA                        (no email)
+  [292/336] Hippopotamus Montpellier Antig (no email)
+  [294/336] Lunch and More                 (no email)
+  [295/336] Le croissant (par Martin Bross (no email)
+  [296/336] Au Restaurant Mimino           (no email)
+  [297/336] LE VERTIGO ROOFTOP             (no email)
+  [298/336] Takô Sushi                     -> tako-sushi@outlook.fr
+  [299/336] BRUNCH AND CAKES💕🧁- Montpell (no email)
+  [301/336] Côté Sushi Montpellier Antigon (no email)
+  [303/336] NaturElle                      -> naturellepolygone@gmail.com
+  [304/336] Le Karawan                     -> fouad_20112012@hotmail.com
+  [306/336] BAGELSTEIN • Bagels & Coffee s (no email)
+  [307/336] Le Sud                         -> le-sud.shop@gmail.com
+  [308/336] Cuisine S2                     (no email)
+  [309/336] Les Jardins d'Antigone         (no email)
+  [311/336] Trinquefougasse O’Sud          (no email)
+  [312/336] Le Comptoir                    (no email)
+  [314/336] GOYA Montpellier Restaurant    -> contact@goyarestaurant.com
+  [315/336] SHAKE BEEF PORTMARIANNE        (no email)
+  [316/336] Momy's Brunch Montpellier      (no email)
+  [317/336] De la Sierra Coffee Roasters - (no email)
+  [319/336] Coldrip - Port Marianne        (no email)
+  [320/336] Clover Brunch and Coffee       -> contact@jscom.fr
+  [321/336] Le Hubba                       -> stratad.consulting@gmail.com
+  [322/336] KOJI                           (no email)
+  [323/336] Terminal #1                    (no email)
+  [324/336] BIVOUAK CAFÉ - Restaurant -    -> CONTACT@BIVOUAKCAFE.COM
+  [326/336] L'Atmosphère                   (no email)
+  [327/336] Jean le Croquant - Streetfood  (no email)
+  [329/336] Full Tacos                     (no email)
+  [330/336] Les Halles Solanid             (no email)
+  [331/336] Chez lez Amis                  -> lezamismontpellier@outlook.com
+  [332/336] ChickenPlace                   -> contact@grubbio.com
+  [333/336] Ninkasi Montpellier            (no email)
+  [334/336] Le Comptoir Alaryk             (no email)
+  [335/336] Groove Café | brunch           -> pothos.lena34@gmail.com
+  [336/336] My Beers Montpellier           -> contact@mybeers.fr
+
+=== Filtered Montpellier (CP 34xxx): 335 ===
+=== Avec email: 55 ===
+
+Output: C:\Users\mrgue\CLAUDE CODE\restaurant-margin\docs\campaigns\montpellier-v3-leads.csv
+
+=== DONE ===

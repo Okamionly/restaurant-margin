@@ -307,7 +307,7 @@ export default function BlogSeuilRentabilite() {
             </p>
             <p>
               Pour aller plus loin sur les fondamentaux financiers, consultez aussi notre <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800">guide complet du calcul de marge restaurant</Link> et
-              notre <Link to="/blog/food-cost" className="text-teal-700 underline hover:text-teal-800">méthode food cost</Link>.
+              notre <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">méthode food cost</Link>.
             </p>
           </div>
         </section>
@@ -726,7 +726,7 @@ export default function BlogSeuilRentabilite() {
             </p>
             <p>
               Pour creuser les KPI à surveiller, consultez notre <Link to="/blog/kpi-restaurateur" className="text-teal-700 underline hover:text-teal-800">guide des 10 KPI restaurant</Link> et
-              notre article sur le <Link to="/blog/prime-cost" className="text-teal-700 underline hover:text-teal-800">prime cost</Link>.
+              notre article sur le <Link to="/blog/prime-cost-restaurant" className="text-teal-700 underline hover:text-teal-800">prime cost</Link>.
             </p>
           </div>
         </section>
@@ -763,7 +763,7 @@ export default function BlogSeuilRentabilite() {
               <li>Point mort calendaire actualisé</li>
             </ul>
             <p>
-              Pour aller plus loin sur les indicateurs, lisez notre <Link to="/blog/tableau-de-bord-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du tableau de bord restaurant</Link>.
+              Pour aller plus loin sur les indicateurs, lisez notre <Link to="/blog/kpi-essentiels-restaurateur" className="text-teal-700 underline hover:text-teal-800">guide du tableau de bord restaurant</Link>.
             </p>
           </div>
         </section>
@@ -884,11 +884,11 @@ export default function BlogSeuilRentabilite() {
               <p className="font-semibold text-mono-100 mb-1">Les 10 KPI essentiels pour piloter un restaurant</p>
               <p className="text-sm text-mono-400">Food cost, prime cost, RevPASH, ticket moyen et benchmarks 2026.</p>
             </Link>
-            <Link to="/blog/food-cost" className="block p-4 border border-mono-900 rounded-xl hover:border-teal-300 transition-colors">
+            <Link to="/blog/reduire-food-cost" className="block p-4 border border-mono-900 rounded-xl hover:border-teal-300 transition-colors">
               <p className="font-semibold text-mono-100 mb-1">Food cost : la méthode complète</p>
               <p className="text-sm text-mono-400">Formules, fiches techniques, pertes et benchmarks 2026.</p>
             </Link>
-            <Link to="/blog/prime-cost" className="block p-4 border border-mono-900 rounded-xl hover:border-teal-300 transition-colors">
+            <Link to="/blog/prime-cost-restaurant" className="block p-4 border border-mono-900 rounded-xl hover:border-teal-300 transition-colors">
               <p className="font-semibold text-mono-100 mb-1">Prime cost : matières + personnel</p>
               <p className="text-sm text-mono-400">L'indicateur ultime de rentabilité opérationnelle.</p>
             </Link>

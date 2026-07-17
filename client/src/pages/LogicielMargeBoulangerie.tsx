@@ -809,7 +809,7 @@ export default function LogicielMargeBoulangerie() {
             <strong>Pour aller plus loin :</strong> consultez notre
             <Link to="/blog/coefficient-multiplicateur" className="underline font-semibold hover:text-teal-700 ml-1">guide complet du coefficient multiplicateur</Link>
             et notre article sur
-            <Link to="/blog/food-cost-restaurant" className="underline font-semibold hover:text-teal-700 ml-1">comment reduire le food cost</Link>.
+            <Link to="/blog/reduire-food-cost" className="underline font-semibold hover:text-teal-700 ml-1">comment reduire le food cost</Link>.
           </Callout>
         </section>
 

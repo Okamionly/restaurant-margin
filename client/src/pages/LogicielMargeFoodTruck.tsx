@@ -222,7 +222,7 @@ export default function LogicielMargeFoodTruck() {
               Demo
             </Link>
             <Link
-              to="/signup"
+              to="/login?mode=register"
               className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
             >
               Essai gratuit
@@ -258,7 +258,7 @@ export default function LogicielMargeFoodTruck() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
             <Link
-              to="/signup"
+              to="/login?mode=register"
               className="inline-flex items-center gap-2 px-8 py-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-full transition-colors text-lg shadow-lg shadow-teal-600/30"
             >
               Essai gratuit 7 jours
@@ -907,7 +907,7 @@ export default function LogicielMargeFoodTruck() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              to="/signup"
+              to="/login?mode=register"
               className="inline-flex items-center gap-2 px-10 py-5 bg-white text-teal-700 font-extrabold rounded-full hover:bg-teal-50 transition-colors text-lg shadow-2xl"
             >
               Essai gratuit 7 jours
@@ -954,7 +954,7 @@ export default function LogicielMargeFoodTruck() {
               </p>
             </Link>
             <Link
-              to="/signup"
+              to="/login?mode=register"
               className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group"
             >
               <Sparkles className="w-8 h-8 text-teal-600 mb-3" />

@@ -145,7 +145,7 @@ export default function BlogPrevisionVentes() {
           </Link>
           <div className="flex items-center gap-3">
             <Link
-              to="/signup"
+              to="/login?mode=register"
               className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
             >
               <Sparkles className="w-4 h-4" />
@@ -1108,7 +1108,7 @@ export default function BlogPrevisionVentes() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <Link
-                  to="/signup"
+                  to="/login?mode=register"
                   className="inline-flex items-center gap-2 bg-white text-teal-700 font-semibold px-6 py-3 rounded-xl hover:bg-teal-50 transition-colors text-sm shadow-md"
                 >
                   Essayer gratuitement <ArrowRight className="w-4 h-4" />

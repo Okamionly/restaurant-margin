@@ -741,7 +741,7 @@ export default function BlogPlatPlusRentable() {
             </p>
             <p>
               Pour mesurer la rentabilite reelle, multipliez la marge euros par votre volume mensuel. Utilisez
-              notre <Link to="/outils/calculateur-marge-restaurant" className="text-teal-700 underline">calculateur marge restaurant</Link> ou le calculateur de <Link to="/blog/food-cost-restaurant" className="text-teal-700 underline">food cost</Link>.
+              notre <Link to="/outils/calculateur-marge-restaurant" className="text-teal-700 underline">calculateur marge restaurant</Link> ou le calculateur de <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline">food cost</Link>.
             </p>
           </div>
         </section>
@@ -1056,7 +1056,7 @@ export default function BlogPlatPlusRentable() {
         <section className="mb-16">
           <h2 className="text-2xl font-bold text-mono-100 mb-6">Pour aller plus loin</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link to="/blog/food-cost-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Food cost en restauration : guide complet</h3>
               <p className="text-xs text-mono-500">Calcul, benchmarks, optimisation. Tout sur le food cost en 2026.</p>
             </Link>

@@ -515,7 +515,7 @@ export default function BlogFormationPersonnel() {
             </table>
           </div>
           <p className="text-[#374151] leading-relaxed">
-            Un outil comme <Link to="/login" className="text-teal-600 hover:underline">RestauMargin</Link> automatise le suivi de ces KPI et attribue les variations aux actions menees. Pour aller plus loin sur la maitrise economique globale, voir notre guide du <Link to="/blog/calcul-marge-restaurant" className="text-teal-600 hover:underline">calcul de marge restaurant</Link> et le <Link to="/blog/prime-cost" className="text-teal-600 hover:underline">pilotage du prime cost</Link>.
+            Un outil comme <Link to="/login" className="text-teal-600 hover:underline">RestauMargin</Link> automatise le suivi de ces KPI et attribue les variations aux actions menees. Pour aller plus loin sur la maitrise economique globale, voir notre guide du <Link to="/blog/calcul-marge-restaurant" className="text-teal-600 hover:underline">calcul de marge restaurant</Link> et le <Link to="/blog/prime-cost-restaurant" className="text-teal-600 hover:underline">pilotage du prime cost</Link>.
           </p>
         </section>
 
@@ -583,7 +583,7 @@ export default function BlogFormationPersonnel() {
               <p className="font-semibold text-mono-100 mb-1">Calcul de marge restaurant</p>
               <p className="text-sm text-mono-400">Methode complete : food cost, coefficient, marge brute/nette.</p>
             </Link>
-            <Link to="/blog/prime-cost" className="block p-5 border border-mono-900 rounded-xl hover:border-teal-600 transition-colors">
+            <Link to="/blog/prime-cost-restaurant" className="block p-5 border border-mono-900 rounded-xl hover:border-teal-600 transition-colors">
               <p className="font-semibold text-mono-100 mb-1">Prime cost restaurant</p>
               <p className="text-sm text-mono-400">Indicateur cle food cost + masse salariale. Objectifs HCR.</p>
             </Link>

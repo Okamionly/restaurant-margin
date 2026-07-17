@@ -612,7 +612,7 @@ export default function BlogChargesSociales() {
               <li>Ratio masse salariale / CA HT : <strong>34%</strong> (objectif HCR 30-35% pour brasserie)</li>
               <li>Sans Fillon : cout 22 577 EUR/mois soit 38% du CA (au-dessus seuil critique)</li>
             </ul>
-            <p className="mt-3 text-sm">L'apprenti pese seulement 1,5% des couts pour 12,5% des effectifs. Pour maitriser globalement votre <Link to="/blog/seuil-rentabilite-restaurant" className="text-teal-600 hover:underline">seuil de rentabilite restaurant</Link>, surveiller en continu le ratio masse salariale / CA et le <Link to="/blog/prime-cost" className="text-teal-600 hover:underline">prime cost (food + masse salariale)</Link> qui ne devrait pas depasser 65-70%.</p>
+            <p className="mt-3 text-sm">L'apprenti pese seulement 1,5% des couts pour 12,5% des effectifs. Pour maitriser globalement votre <Link to="/blog/seuil-rentabilite-restaurant" className="text-teal-600 hover:underline">seuil de rentabilite restaurant</Link>, surveiller en continu le ratio masse salariale / CA et le <Link to="/blog/prime-cost-restaurant" className="text-teal-600 hover:underline">prime cost (food + masse salariale)</Link> qui ne devrait pas depasser 65-70%.</p>
           </div>
         </section>
 
@@ -682,7 +682,7 @@ export default function BlogChargesSociales() {
               <p className="font-semibold text-mono-100 mb-1">Calcul de marge restaurant</p>
               <p className="text-sm text-mono-400">Methode complete : food cost, coefficient, marge brute/nette.</p>
             </Link>
-            <Link to="/blog/prime-cost" className="block p-5 border border-mono-900 rounded-xl hover:border-teal-600 transition-colors">
+            <Link to="/blog/prime-cost-restaurant" className="block p-5 border border-mono-900 rounded-xl hover:border-teal-600 transition-colors">
               <p className="font-semibold text-mono-100 mb-1">Prime cost restaurant</p>
               <p className="text-sm text-mono-400">Indicateur cle food cost + masse salariale. Objectifs HCR.</p>
             </Link>

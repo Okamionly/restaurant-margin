@@ -1,0 +1,751 @@
+=== Multi-Country Scraping (Suisse + Belgique) ===
+Targets: 46 villes (23 CH + 23 BE)
+Queries: 6/ville
+Output: C:\Users\mrgue\CLAUDE CODE\restaurant-margin\data\scraping\multi-country-2026-05-08.csv
+Existing : 7 villes faites, 589 restos
+A faire : 39
+
+============================================================
+  Montreux (Suisse)
+============================================================
+  > restaurant Montreux Suisse
+    30 nouveaux
+  > pizzeria Montreux Suisse
+    14 nouveaux
+  > brasserie Montreux Suisse
+    0 nouveaux
+  > bistrot Montreux Suisse
+    9 nouveaux
+  > restaurant gastronomique Montreux Suisse
+    5 nouveaux
+  > restaurant italien Montreux Suisse
+    12 nouveaux
+  -> 70 restos uniques. Extraction emails...
+  Montreux DONE: 70 restos | 27 avec email
+  Pause 30s...
+
+============================================================
+  Bulle (Suisse)
+============================================================
+  > restaurant Bulle Suisse
+    32 nouveaux
+  > pizzeria Bulle Suisse
+    9 nouveaux
+  > brasserie Bulle Suisse
+    3 nouveaux
+  > bistrot Bulle Suisse
+    3 nouveaux
+  > restaurant gastronomique Bulle Suisse
+    6 nouveaux
+  > restaurant italien Bulle Suisse
+    5 nouveaux
+  -> 58 restos uniques. Extraction emails...
+  Bulle DONE: 58 restos | 25 avec email
+  Pause 30s...
+
+============================================================
+  Yverdon-les-Bains (Suisse)
+============================================================
+  > restaurant Yverdon-les-Bains Suisse
+    34 nouveaux
+  > pizzeria Yverdon-les-Bains Suisse
+    14 nouveaux
+  > brasserie Yverdon-les-Bains Suisse
+    0 nouveaux
+  > bistrot Yverdon-les-Bains Suisse
+    2 nouveaux
+  > restaurant gastronomique Yverdon-les-Bains Suisse
+    6 nouveaux
+  > restaurant italien Yverdon-les-Bains Suisse
+    6 nouveaux
+  -> 62 restos uniques. Extraction emails...
+  Yverdon-les-Bains DONE: 62 restos | 22 avec email
+  Pause 30s...
+
+============================================================
+  Nyon (Suisse)
+============================================================
+  > restaurant Nyon Suisse
+    35 nouveaux
+  > pizzeria Nyon Suisse
+    7 nouveaux
+  > brasserie Nyon Suisse
+    3 nouveaux
+  > bistrot Nyon Suisse
+    6 nouveaux
+  > restaurant gastronomique Nyon Suisse
+    8 nouveaux
+  > restaurant italien Nyon Suisse
+    3 nouveaux
+  -> 62 restos uniques. Extraction emails...
+  Nyon DONE: 62 restos | 19 avec email
+  Pause 30s...
+
+============================================================
+  Morges (Suisse)
+============================================================
+  > restaurant Morges Suisse
+    31 nouveaux
+  > pizzeria Morges Suisse
+    10 nouveaux
+  > brasserie Morges Suisse
+    5 nouveaux
+  > bistrot Morges Suisse
+    5 nouveaux
+  > restaurant gastronomique Morges Suisse
+    2 nouveaux
+  > restaurant italien Morges Suisse
+    13 nouveaux
+  -> 66 restos uniques. Extraction emails...
+  Morges DONE: 66 restos | 31 avec email
+  Pause 30s...
+
+============================================================
+  Pully (Suisse)
+============================================================
+  > restaurant Pully Suisse
+    35 nouveaux
+  > pizzeria Pully Suisse
+    3 nouveaux
+  > brasserie Pully Suisse
+    4 nouveaux
+  > bistrot Pully Suisse
+    2 nouveaux
+  > restaurant gastronomique Pully Suisse
+    14 nouveaux
+  > restaurant italien Pully Suisse
+    1 nouveaux
+  -> 59 restos uniques. Extraction emails...
+  Pully DONE: 59 restos | 25 avec email
+  Pause 30s...
+
+============================================================
+  Renens (Suisse)
+============================================================
+  > restaurant Renens Suisse
+    33 nouveaux
+  > pizzeria Renens Suisse
+    13 nouveaux
+  > brasserie Renens Suisse
+    8 nouveaux
+  > bistrot Renens Suisse
+    1 nouveaux
+  > restaurant gastronomique Renens Suisse
+    8 nouveaux
+  > restaurant italien Renens Suisse
+    9 nouveaux
+  -> 72 restos uniques. Extraction emails...
+  Renens DONE: 72 restos | 24 avec email
+  Pause 30s...
+
+============================================================
+  Carouge (Suisse)
+============================================================
+  > restaurant Carouge Suisse
+    28 nouveaux
+  > pizzeria Carouge Suisse
+    19 nouveaux
+  > brasserie Carouge Suisse
+    10 nouveaux
+  > bistrot Carouge Suisse
+    2 nouveaux
+  > restaurant gastronomique Carouge Suisse
+    2 nouveaux
+  > restaurant italien Carouge Suisse
+    9 nouveaux
+  -> 70 restos uniques. Extraction emails...
+  Carouge DONE: 70 restos | 21 avec email
+  Pause 30s...
+
+============================================================
+  Vernier (Suisse)
+============================================================
+  > restaurant Vernier Suisse
+    34 nouveaux
+  > pizzeria Vernier Suisse
+    13 nouveaux
+  > brasserie Vernier Suisse
+    0 nouveaux
+  > bistrot Vernier Suisse
+    8 nouveaux
+  > restaurant gastronomique Vernier Suisse
+    12 nouveaux
+  > restaurant italien Vernier Suisse
+    10 nouveaux
+  -> 77 restos uniques. Extraction emails...
+  Vernier DONE: 77 restos | 21 avec email
+  Pause 30s...
+
+============================================================
+  Onex (Suisse)
+============================================================
+  > restaurant Onex Suisse
+    34 nouveaux
+  > pizzeria Onex Suisse
+    5 nouveaux
+  > brasserie Onex Suisse
+    1 nouveaux
+  > bistrot Onex Suisse
+    4 nouveaux
+  > restaurant gastronomique Onex Suisse
+    11 nouveaux
+  > restaurant italien Onex Suisse
+    3 nouveaux
+  -> 58 restos uniques. Extraction emails...
+  Onex DONE: 58 restos | 11 avec email
+  Pause 30s...
+
+============================================================
+  Meyrin (Suisse)
+============================================================
+  > restaurant Meyrin Suisse
+    33 nouveaux
+  > pizzeria Meyrin Suisse
+    9 nouveaux
+  > brasserie Meyrin Suisse
+    4 nouveaux
+  > bistrot Meyrin Suisse
+    6 nouveaux
+  > restaurant gastronomique Meyrin Suisse
+    7 nouveaux
+  > restaurant italien Meyrin Suisse
+    14 nouveaux
+  -> 73 restos uniques. Extraction emails...
+  Meyrin DONE: 73 restos | 21 avec email
+  Pause 30s...
+
+============================================================
+  Martigny (Suisse)
+============================================================
+  > restaurant Martigny Suisse
+    32 nouveaux
+  > pizzeria Martigny Suisse
+    14 nouveaux
+  > brasserie Martigny Suisse
+    12 nouveaux
+  > bistrot Martigny Suisse
+    0 nouveaux
+  > restaurant gastronomique Martigny Suisse
+    9 nouveaux
+  > restaurant italien Martigny Suisse
+    3 nouveaux
+  -> 70 restos uniques. Extraction emails...
+  Martigny DONE: 70 restos | 29 avec email
+  Pause 30s...
+
+============================================================
+  Monthey (Suisse)
+============================================================
+  > restaurant Monthey Suisse
+    34 nouveaux
+  > pizzeria Monthey Suisse
+    10 nouveaux
+  > brasserie Monthey Suisse
+    0 nouveaux
+  > bistrot Monthey Suisse
+    0 nouveaux
+  > restaurant gastronomique Monthey Suisse
+    6 nouveaux
+  > restaurant italien Monthey Suisse
+    1 nouveaux
+  -> 51 restos uniques. Extraction emails...
+  Monthey DONE: 51 restos | 20 avec email
+  Pause 30s...
+
+============================================================
+  Delémont (Suisse)
+============================================================
+  > restaurant Delémont Suisse
+    32 nouveaux
+  > pizzeria Delémont Suisse
+    9 nouveaux
+  > brasserie Delémont Suisse
+    4 nouveaux
+  > bistrot Delémont Suisse
+    5 nouveaux
+  > restaurant gastronomique Delémont Suisse
+    3 nouveaux
+  > restaurant italien Delémont Suisse
+    3 nouveaux
+  -> 56 restos uniques. Extraction emails...
+  Delémont DONE: 56 restos | 20 avec email
+  Pause 30s...
+
+============================================================
+  Le Locle (Suisse)
+============================================================
+  > restaurant Le Locle Suisse
+    33 nouveaux
+  > pizzeria Le Locle Suisse
+    5 nouveaux
+  > brasserie Le Locle Suisse
+    1 nouveaux
+  > bistrot Le Locle Suisse
+    4 nouveaux
+  > restaurant gastronomique Le Locle Suisse
+    5 nouveaux
+  > restaurant italien Le Locle Suisse
+    3 nouveaux
+  -> 51 restos uniques. Extraction emails...
+  Le Locle DONE: 51 restos | 17 avec email
+  Pause 30s...
+
+============================================================
+  Gland (Suisse)
+============================================================
+  > restaurant Gland Suisse
+    33 nouveaux
+  > pizzeria Gland Suisse
+    6 nouveaux
+  > brasserie Gland Suisse
+    6 nouveaux
+  > bistrot Gland Suisse
+    0 nouveaux
+  > restaurant gastronomique Gland Suisse
+    11 nouveaux
+  > restaurant italien Gland Suisse
+    1 nouveaux
+  -> 57 restos uniques. Extraction emails...
+  Gland DONE: 57 restos | 25 avec email
+  Pause 30s...
+
+============================================================
+  Bruxelles (Belgique)
+============================================================
+  > restaurant Bruxelles Belgique
+    31 nouveaux
+  > pizzeria Bruxelles Belgique
+    30 nouveaux
+  > brasserie Bruxelles Belgique
+    11 nouveaux
+  > bistrot Bruxelles Belgique
+    0 nouveaux
+  > restaurant gastronomique Bruxelles Belgique
+    20 nouveaux
+  > restaurant italien Bruxelles Belgique
+    26 nouveaux
+  -> 118 restos uniques. Extraction emails...
+  Bruxelles DONE: 118 restos | 37 avec email
+  Pause 30s...
+
+============================================================
+  Liège (Belgique)
+============================================================
+  > restaurant Liège Belgique
+    31 nouveaux
+  > pizzeria Liège Belgique
+    25 nouveaux
+  > brasserie Liège Belgique
+    21 nouveaux
+  > bistrot Liège Belgique
+    11 nouveaux
+  > restaurant gastronomique Liège Belgique
+    12 nouveaux
+  > restaurant italien Liège Belgique
+    17 nouveaux
+  -> 117 restos uniques. Extraction emails...
+  Liège DONE: 117 restos | 29 avec email
+  Pause 30s...
+
+============================================================
+  Charleroi (Belgique)
+============================================================
+  > restaurant Charleroi Belgique
+    32 nouveaux
+  > pizzeria Charleroi Belgique
+    26 nouveaux
+  > brasserie Charleroi Belgique
+    20 nouveaux
+  > bistrot Charleroi Belgique
+    1 nouveaux
+  > restaurant gastronomique Charleroi Belgique
+    12 nouveaux
+  > restaurant italien Charleroi Belgique
+    16 nouveaux
+  -> 107 restos uniques. Extraction emails...
+  Charleroi DONE: 107 restos | 20 avec email
+  Pause 30s...
+
+============================================================
+  Namur (Belgique)
+============================================================
+  > restaurant Namur Belgique
+    33 nouveaux
+  > pizzeria Namur Belgique
+    26 nouveaux
+  > brasserie Namur Belgique
+    18 nouveaux
+  > bistrot Namur Belgique
+    5 nouveaux
+  > restaurant gastronomique Namur Belgique
+    11 nouveaux
+  > restaurant italien Namur Belgique
+    11 nouveaux
+  -> 104 restos uniques. Extraction emails...
+  Namur DONE: 104 restos | 34 avec email
+  Pause 30s...
+
+============================================================
+  Mons (Belgique)
+============================================================
+  > restaurant Mons Belgique
+    32 nouveaux
+  > pizzeria Mons Belgique
+    22 nouveaux
+  > brasserie Mons Belgique
+    17 nouveaux
+  > bistrot Mons Belgique
+    5 nouveaux
+  > restaurant gastronomique Mons Belgique
+    9 nouveaux
+  > restaurant italien Mons Belgique
+    12 nouveaux
+  -> 97 restos uniques. Extraction emails...
+  Mons DONE: 97 restos | 26 avec email
+  Pause 30s...
+
+============================================================
+  La Louvière (Belgique)
+============================================================
+  > restaurant La Louvière Belgique
+    34 nouveaux
+  > pizzeria La Louvière Belgique
+    16 nouveaux
+  > brasserie La Louvière Belgique
+    12 nouveaux
+  > bistrot La Louvière Belgique
+    4 nouveaux
+  > restaurant gastronomique La Louvière Belgique
+    5 nouveaux
+  > restaurant italien La Louvière Belgique
+    4 nouveaux
+  -> 75 restos uniques. Extraction emails...
+  La Louvière DONE: 75 restos | 15 avec email
+  Pause 30s...
+
+============================================================
+  Tournai (Belgique)
+============================================================
+  > restaurant Tournai Belgique
+    31 nouveaux
+  > pizzeria Tournai Belgique
+    21 nouveaux
+  > brasserie Tournai Belgique
+    13 nouveaux
+  > bistrot Tournai Belgique
+    4 nouveaux
+  > restaurant gastronomique Tournai Belgique
+    6 nouveaux
+  > restaurant italien Tournai Belgique
+    7 nouveaux
+  -> 82 restos uniques. Extraction emails...
+  Tournai DONE: 82 restos | 13 avec email
+  Pause 30s...
+
+============================================================
+  Verviers (Belgique)
+============================================================
+  > restaurant Verviers Belgique
+    35 nouveaux
+  > pizzeria Verviers Belgique
+    21 nouveaux
+  > brasserie Verviers Belgique
+    11 nouveaux
+  > bistrot Verviers Belgique
+    1 nouveaux
+  > restaurant gastronomique Verviers Belgique
+    9 nouveaux
+  > restaurant italien Verviers Belgique
+    8 nouveaux
+  -> 85 restos uniques. Extraction emails...
+  Verviers DONE: 85 restos | 25 avec email
+  Pause 30s...
+
+============================================================
+  Mouscron (Belgique)
+============================================================
+  > restaurant Mouscron Belgique
+    32 nouveaux
+  > pizzeria Mouscron Belgique
+    13 nouveaux
+  > brasserie Mouscron Belgique
+    14 nouveaux
+  > bistrot Mouscron Belgique
+    2 nouveaux
+  > restaurant gastronomique Mouscron Belgique
+    4 nouveaux
+  > restaurant italien Mouscron Belgique
+    6 nouveaux
+  -> 71 restos uniques. Extraction emails...
+  Mouscron DONE: 71 restos | 11 avec email
+  Pause 30s...
+
+============================================================
+  Arlon (Belgique)
+============================================================
+  > restaurant Arlon Belgique
+    30 nouveaux
+  > pizzeria Arlon Belgique
+    13 nouveaux
+  > brasserie Arlon Belgique
+    8 nouveaux
+  > bistrot Arlon Belgique
+    6 nouveaux
+  > restaurant gastronomique Arlon Belgique
+    2 nouveaux
+  > restaurant italien Arlon Belgique
+    2 nouveaux
+  -> 61 restos uniques. Extraction emails...
+  Arlon DONE: 61 restos | 16 avec email
+  Pause 30s...
+
+============================================================
+  Wavre (Belgique)
+============================================================
+  > restaurant Wavre Belgique
+    33 nouveaux
+  > pizzeria Wavre Belgique
+    12 nouveaux
+  > brasserie Wavre Belgique
+    7 nouveaux
+  > bistrot Wavre Belgique
+    4 nouveaux
+  > restaurant gastronomique Wavre Belgique
+    8 nouveaux
+  > restaurant italien Wavre Belgique
+    1 nouveaux
+  -> 65 restos uniques. Extraction emails...
+  Wavre DONE: 65 restos | 19 avec email
+  Pause 30s...
+
+============================================================
+  Nivelles (Belgique)
+============================================================
+  > restaurant Nivelles Belgique
+    31 nouveaux
+  > pizzeria Nivelles Belgique
+    15 nouveaux
+  > brasserie Nivelles Belgique
+    9 nouveaux
+  > bistrot Nivelles Belgique
+    2 nouveaux
+  > restaurant gastronomique Nivelles Belgique
+    9 nouveaux
+  > restaurant italien Nivelles Belgique
+    8 nouveaux
+  -> 74 restos uniques. Extraction emails...
+  Nivelles DONE: 74 restos | 27 avec email
+  Pause 30s...
+
+============================================================
+  Ottignies-Louvain-la-Neuve (Belgique)
+============================================================
+  > restaurant Ottignies-Louvain-la-Neuve Belgique
+    32 nouveaux
+  > pizzeria Ottignies-Louvain-la-Neuve Belgique
+    11 nouveaux
+  > brasserie Ottignies-Louvain-la-Neuve Belgique
+    10 nouveaux
+  > bistrot Ottignies-Louvain-la-Neuve Belgique
+    3 nouveaux
+  > restaurant gastronomique Ottignies-Louvain-la-Neuve Belgique
+    8 nouveaux
+  > restaurant italien Ottignies-Louvain-la-Neuve Belgique
+    7 nouveaux
+  -> 71 restos uniques. Extraction emails...
+  Ottignies-Louvain-la-Neuve DONE: 71 restos | 27 avec email
+  Pause 30s...
+
+============================================================
+  Marche-en-Famenne (Belgique)
+============================================================
+  > restaurant Marche-en-Famenne Belgique
+    33 nouveaux
+  > pizzeria Marche-en-Famenne Belgique
+    12 nouveaux
+  > brasserie Marche-en-Famenne Belgique
+    8 nouveaux
+  > bistrot Marche-en-Famenne Belgique
+    1 nouveaux
+  > restaurant gastronomique Marche-en-Famenne Belgique
+    9 nouveaux
+  > restaurant italien Marche-en-Famenne Belgique
+    6 nouveaux
+  -> 69 restos uniques. Extraction emails...
+  Marche-en-Famenne DONE: 69 restos | 21 avec email
+  Pause 30s...
+
+============================================================
+  Bastogne (Belgique)
+============================================================
+  > restaurant Bastogne Belgique
+    31 nouveaux
+  > pizzeria Bastogne Belgique
+    5 nouveaux
+  > brasserie Bastogne Belgique
+    7 nouveaux
+  > bistrot Bastogne Belgique
+    3 nouveaux
+  > restaurant gastronomique Bastogne Belgique
+    4 nouveaux
+  > restaurant italien Bastogne Belgique
+    0 nouveaux
+  -> 50 restos uniques. Extraction emails...
+  Bastogne DONE: 50 restos | 14 avec email
+  Pause 30s...
+
+============================================================
+  Dinant (Belgique)
+============================================================
+  > restaurant Dinant Belgique
+    31 nouveaux
+  > pizzeria Dinant Belgique
+    11 nouveaux
+  > brasserie Dinant Belgique
+    9 nouveaux
+  > bistrot Dinant Belgique
+    4 nouveaux
+  > restaurant gastronomique Dinant Belgique
+    4 nouveaux
+  > restaurant italien Dinant Belgique
+    2 nouveaux
+  -> 61 restos uniques. Extraction emails...
+  Dinant DONE: 61 restos | 14 avec email
+  Pause 30s...
+
+============================================================
+  Spa (Belgique)
+============================================================
+  > restaurant Spa Belgique
+    32 nouveaux
+  > pizzeria Spa Belgique
+    10 nouveaux
+  > brasserie Spa Belgique
+    8 nouveaux
+  > bistrot Spa Belgique
+    0 nouveaux
+  > restaurant gastronomique Spa Belgique
+    6 nouveaux
+  > restaurant italien Spa Belgique
+    2 nouveaux
+  -> 58 restos uniques. Extraction emails...
+  Spa DONE: 58 restos | 24 avec email
+  Pause 30s...
+
+============================================================
+  Huy (Belgique)
+============================================================
+  > restaurant Huy Belgique
+    32 nouveaux
+  > pizzeria Huy Belgique
+    12 nouveaux
+  > brasserie Huy Belgique
+    4 nouveaux
+  > bistrot Huy Belgique
+    4 nouveaux
+  > restaurant gastronomique Huy Belgique
+    8 nouveaux
+  > restaurant italien Huy Belgique
+    9 nouveaux
+  -> 69 restos uniques. Extraction emails...
+  Huy DONE: 69 restos | 16 avec email
+  Pause 30s...
+
+============================================================
+  Waterloo (Belgique)
+============================================================
+  > restaurant Waterloo Belgique
+    30 nouveaux
+  > pizzeria Waterloo Belgique
+    19 nouveaux
+  > brasserie Waterloo Belgique
+    4 nouveaux
+  > bistrot Waterloo Belgique
+    5 nouveaux
+  > restaurant gastronomique Waterloo Belgique
+    7 nouveaux
+  > restaurant italien Waterloo Belgique
+    1 nouveaux
+  -> 66 restos uniques. Extraction emails...
+  Waterloo DONE: 66 restos | 24 avec email
+  Pause 30s...
+
+============================================================
+  Ixelles (Belgique)
+============================================================
+  > restaurant Ixelles Belgique
+    31 nouveaux
+  > pizzeria Ixelles Belgique
+    28 nouveaux
+  > brasserie Ixelles Belgique
+    18 nouveaux
+  > bistrot Ixelles Belgique
+    12 nouveaux
+  > restaurant gastronomique Ixelles Belgique
+    19 nouveaux
+  > restaurant italien Ixelles Belgique
+    13 nouveaux
+  -> 121 restos uniques. Extraction emails...
+  Ixelles DONE: 121 restos | 34 avec email
+  Pause 30s...
+
+============================================================
+  Uccle (Belgique)
+============================================================
+  > restaurant Uccle Belgique
+    31 nouveaux
+  > pizzeria Uccle Belgique
+    23 nouveaux
+  > brasserie Uccle Belgique
+    10 nouveaux
+  > bistrot Uccle Belgique
+    1 nouveaux
+  > restaurant gastronomique Uccle Belgique
+    11 nouveaux
+  > restaurant italien Uccle Belgique
+    11 nouveaux
+  -> 87 restos uniques. Extraction emails...
+  Uccle DONE: 87 restos | 21 avec email
+  Pause 30s...
+
+============================================================
+  Etterbeek (Belgique)
+============================================================
+  > restaurant Etterbeek Belgique
+    31 nouveaux
+  > pizzeria Etterbeek Belgique
+    27 nouveaux
+  > brasserie Etterbeek Belgique
+    17 nouveaux
+  > bistrot Etterbeek Belgique
+    2 nouveaux
+  > restaurant gastronomique Etterbeek Belgique
+    11 nouveaux
+  > restaurant italien Etterbeek Belgique
+    8 nouveaux
+  -> 96 restos uniques. Extraction emails...
+  Etterbeek DONE: 96 restos | 38 avec email
+  Pause 30s...
+
+============================================================
+  Saint-Gilles (Belgique)
+============================================================
+  > restaurant Saint-Gilles Belgique
+    31 nouveaux
+  > pizzeria Saint-Gilles Belgique
+    30 nouveaux
+  > brasserie Saint-Gilles Belgique
+    15 nouveaux
+  > bistrot Saint-Gilles Belgique
+    3 nouveaux
+  > restaurant gastronomique Saint-Gilles Belgique
+    13 nouveaux
+  > restaurant italien Saint-Gilles Belgique
+    11 nouveaux
+  -> 103 restos uniques. Extraction emails...
+  Saint-Gilles DONE: 103 restos | 31 avec email
+
+=== TERMINE ===
+Total villes : 46
+Total restos : 3508
+CSV : C:\Users\mrgue\CLAUDE CODE\restaurant-margin\data\scraping\multi-country-2026-05-08.csv

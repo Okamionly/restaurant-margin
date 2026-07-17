@@ -348,7 +348,7 @@ export default function BlogCalendrierHaccp() {
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Formation du personnel</h3>
               <p className="text-sm text-mono-500">OPCO, CPF, formations prioritaires HACCP, ROI concret.</p>
             </Link>
-            <Link to="/blog/inventaire-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/inventaire-restaurant-guide" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Inventaire restaurant</h3>
               <p className="text-sm text-mono-500">Methode, frequence, modele Excel et bonnes pratiques.</p>
             </Link>

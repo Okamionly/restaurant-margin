@@ -234,7 +234,7 @@ export default function BlogFicheTechnique() {
             la rentabilite. Pour aller plus loin sur les calculs, consultez notre guide complet du
             <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">calcul de marge restaurant</Link>
             et notre article sur le
-            <Link to="/blog/food-cost" className="text-teal-700 underline hover:text-teal-800 ml-1">food cost en restauration</Link>.
+            <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800 ml-1">food cost en restauration</Link>.
           </p>
         </div>
 
@@ -1015,7 +1015,7 @@ export default function BlogFicheTechnique() {
             </p>
             <ul className="list-disc list-inside space-y-1 text-mono-350 mt-3">
               <li>
-                <Link to="/blog/food-cost" className="text-teal-700 underline hover:text-teal-800">
+                <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">
                   Food cost en restauration : guide complet et benchmarks
                 </Link>
               </li>
@@ -1162,7 +1162,7 @@ export default function BlogFicheTechnique() {
                 Calculer la marge de son restaurant
               </p>
             </Link>
-            <Link to="/blog/food-cost" className="group bg-white border border-mono-900 hover:border-teal-300 rounded-2xl p-5 transition-colors">
+            <Link to="/blog/reduire-food-cost" className="group bg-white border border-mono-900 hover:border-teal-300 rounded-2xl p-5 transition-colors">
               <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">Food cost</span>
               <p className="font-semibold text-mono-100 mt-1 group-hover:text-teal-600 transition-colors text-sm">
                 Food cost en restauration : guide

@@ -1,0 +1,55 @@
+=== France EXTENDED Scraping ===
+Cities: 159 | Queries/city: 14
+Output: C:\Users\mrgue\CLAUDE CODE\restaurant-margin\data\scraping\france-mass-2026-05-06.csv
+Existing: 3090 restos uniques | 30 villes scraped
+Villes a faire (couverture <30): 129
+
+============================================================
+  Paris 14e (queries: 14)
+============================================================
+  > restaurant Paris 14e
+    27 nouveaux
+  > pizzeria Paris 14e
+    21 nouveaux
+  > brasserie Paris 14e
+    13 nouveaux
+  > bistrot Paris 14e
+    7 nouveaux
+  > restaurant gastronomique Paris 14e
+    15 nouveaux
+  > restaurant chinois Paris 14e
+    24 nouveaux
+  > restaurant japonais Paris 14e
+    21 nouveaux
+  > sushi Paris 14e
+    11 nouveaux
+  > restaurant marocain Paris 14e
+    9 nouveaux
+  > restaurant indien Paris 14e
+    24 nouveaux
+  > restaurant turc Paris 14e
+    25 nouveaux
+  > kebab Paris 14e
+    13 nouveaux
+  > restaurant africain Paris 14e
+    20 nouveaux
+  > restaurant libanais Paris 14e
+    24 nouveaux
+  -> 254 restos uniques. Extraction emails...
+  Paris 14e DONE: 254 restos | 32 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Paris 15e (queries: 14)
+============================================================
+  > restaurant Paris 15e
+    23 nouveaux
+  > pizzeria Paris 15e
+    24 nouveaux
+  > brasserie Paris 15e
+    14 nouveaux
+  > bistrot Paris 15e
+    12 nouveaux
+  > restaurant gastronomique Paris 15e
+    14 nouveaux
+  > restaurant chinois Paris 15e

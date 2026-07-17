@@ -1,0 +1,526 @@
+=== Mass Send Pipeline ===
+Limit: 350 | Batch: 10 | Dry: false
+Campaign: mass_v7_wave2_2026_05_07
+
+Total uniques non contactes : 347
+Wave 2 (incl. mismatch) : 346
+A traiter : 346
+
+
+━━━ BATCH 1/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] L'OSTERIA                      (no dish: empty_extraction)
+    [2/10] Pizz’burg Avenue               -> 🟢MENU LE GOURMAND🇫🇷 @ 17€
+    [3/10] Chez Delagare - Brasserie Mode (no dish: no_menu_with_prices_found)
+    [4/10] BRASSERIE LAISSAC              (no dish: no_menu_with_prices_found)
+    [5/10] Pousse Pas Mémé dans la Vigne  (no dish: no_menu_with_prices_found)
+    [6/10] Plein Sud                      (no dish: no_menu_with_prices_found)
+    [7/10] CAFÉ MARCEAU                   (no dish: unknown)
+    [8/10] BRASSERIE LEPIC                (no dish: no_menu_with_prices_found)
+    [9/10] Le Bistro Urbain               (no dish: empty_extraction)
+    [10/10] Faim                           (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 2/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Brasserie le BG                -> Ceviche de daurade royale, lec @ 18€
+    [2/10] Wei sin                        (no dish: no_menu_with_prices_found)
+    [3/10] Thai to Box                    -> Pad Thai poulet 🐓 @ 16.9€
+    [4/10] Angelo Gelato Caffè - Artisan  (no dish: no_menu_with_prices_found)
+    [5/10] Froment & Sarrasin - Crêperie  (no dish: no_menu_with_prices_found)
+    [6/10] Glacier - Mamma Mia            (no dish: no_menu_with_prices_found)
+    [7/10] À La Braise                    (no dish: no_menu_with_prices_found)
+    [8/10] Takô Sushi                     (no dish: empty_extraction)
+    [9/10] NaturElle                      -> Le faux Filet Grillé @ 22.9€
+    [10/10] Le Sud                         (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 3/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Le Hubba                       (no dish: no_menu_with_prices_found)
+    [2/10] BIVOUAK CAFÉ - Restaurant -    (no dish: empty_extraction)
+    [3/10] Chez lez Amis                  -> Dos de lieu sauce bourride ser @ 14.9€
+    [4/10] ChickenPlace                   (no dish: empty_extraction)
+    [5/10] Groove Café | brunch           (no dish: no_menu_with_prices_found)
+    [6/10] Campelli                       (no dish: no_menu_with_prices_found)
+    [7/10] Restaurant Pantagruel Paris    (no dish: empty_extraction)
+    [8/10] Il Fico                        (no dish: empty_extraction)
+    [9/10] Brasserie des Prés             (no dish: no_menu_with_prices_found)
+    [10/10] Verjus                         (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 4/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Restaurant Kei                 (no dish: empty_extraction)
+    [2/10] EnYaa - Saké & Champagne       (no dish: no_menu_with_prices_found)
+    [3/10] Le Petit Bouillon Pharamond    -> Tripes à la mode de Caen depui @ 11.9€
+    [4/10] Restaurant Quelque part        (no dish: no_menu_with_prices_found)
+    [5/10] Saku Vendôme                   (no dish: empty_extraction)
+    [6/10] Chez Vong                      (no dish: no_menu_with_prices_found)
+    [7/10] Aux Crus de Bourgogne          (no dish: empty_extraction)
+    [8/10] Les Bascules                   -> Côte De Boeuf Pour 2 @ 70€
+    [9/10] Chez Carrie                    (no dish: no_menu_with_prices_found)
+    [10/10] Kuisinistan - Restaurant Paris -> Kebab döner @ 15€
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 5/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Restaurant Panurge             (no dish: empty_extraction)
+    [2/10] Nomás Paris 2 - Mexican Street -> ROCKY BARBACOA BURRITO 🐮 @ 12€
+    [3/10] Chez Georges                   (no dish: no_menu_with_prices_found)
+    [4/10] Dalmata Paris 2                -> Margherita DOP V @ 13€
+    [5/10] Tigermilk Sentier - Paris 2    (no dish: no_menu_with_prices_found)
+    [6/10] CHEZ MARCO                     (no dish: no_menu_with_prices_found)
+    [7/10] Le Compas                      (no dish: no_menu_with_prices_found)
+    [8/10] BISTROT Madame                 (no dish: empty_extraction)
+    [9/10] Bistrot Vivienne               -> Onglet de bœuf Scotch Beef, sa @ 27.5€
+    [10/10] Le Bougainville                (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 6/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] La Petite Bohème               (no dish: no_menu_with_prices_found)
+    [2/10] Restaurant Le Céladon          -> Ballottine d'agneau frottée à  @ 34€
+    [3/10] Mori Venice Bar                (no dish: empty_extraction)
+    [4/10] Juji-ya                        -> 💥Bento Karaage @ 17.5€
+    [5/10] PW restaurant coréen           -> Bibimbap au boeuf mariné @ 16.5€
+    [6/10] Mahatma                        (no dish: no_menu_with_prices_found)
+    [7/10] Joon                           -> Dal Bhat @ 25€
+    [8/10] Bontemps Le Restaurant "Jardin (no dish: no_menu_with_prices_found)
+    [9/10] Pizzeria & Restaurant Marcela  (no dish: no_menu_with_prices_found)
+    [10/10] Le Carreau                     (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 7/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Le Sancerre                    -> BELLE ENTRECÔTE environ 350g,  @ 32.8€
+    [2/10] La Royale                      -> Entrecote de boeuf "irish cut" @ 23€
+    [3/10] Le Carlie                      (no dish: empty_extraction)
+    [4/10] Le Roi de Pique                (no dish: no_menu_with_prices_found)
+    [5/10] Restaurant Anne - Place des Vo (no dish: empty_extraction)
+    [6/10] Bouillon de Paris - Restaurant (no dish: empty_extraction)
+    [7/10] Le MaZenay                     (no dish: no_menu_with_prices_found)
+    [8/10] La Cantine de Chez Chris       (no dish: no_menu_with_prices_found)
+    [9/10] L'Aller Retour Marais          -> Onglet de Bœuf Irlandais @ 19€
+    [10/10] KIN KAN กินกัน                 (no dish: empty_extraction)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 8/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] BENTO&GO!                      -> Bento Poulet teriyaki ( halal  @ 16€
+    [2/10] La Petite Maison Dans La Cour  (no dish: no_menu_with_prices_found)
+    [3/10] ilô restaurant                 (no dish: empty_extraction)
+    [4/10] Comptoir Rivoli                (no dish: no_menu_with_prices_found)
+    [5/10] Les Saveurs de Maman           (no dish: empty_extraction)
+    [6/10] ORCHIDEE & KHMER THAï          (no dish: no_menu_with_prices_found)
+    [7/10] Etoile Gourmet 聚福楼             (no dish: empty_extraction)
+    [8/10] La Forge                       (no dish: no_menu_with_prices_found)
+    [9/10] La Crète                       (no dish: no_menu_with_prices_found)
+    [10/10] Le 5ème CRU — Chez BruNab      (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 9/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] LA SIRENA                      (no dish: no_menu_with_prices_found)
+    [2/10] Vita Nuova                     (no dish: no_menu_with_prices_found)
+    [3/10] Café TournBride Bistro         (no dish: no_menu_with_prices_found)
+    [4/10] Lilane                         (no dish: no_menu_with_prices_found)
+    [5/10] Sola                           (no dish: empty_extraction)
+    [6/10] Lamian Latian                  (no dish: no_menu_with_prices_found)
+    [7/10] Kanpai Paris                   (no dish: no_menu_with_prices_found)
+    [8/10] La Ferrandaise restaurant de t (no dish: empty_extraction)
+    [9/10] Anicia, table nature par Franç (no dish: empty_extraction)
+    [10/10] Le Bon Saint Pourçain          -> Quasi de veau, jus dail doux,  @ 36€
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 10/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Restaurant Chez Lionel Paris 6 (no dish: no_menu_with_prices_found)
+    [2/10] Restaurant Chez Bartolo        (no dish: empty_extraction)
+    [3/10] Vita Ristorante                (no dish: no_menu_with_prices_found)
+    [4/10] Villa Médici Da Napoli         (no dish: no_menu_with_prices_found)
+    [5/10] Pastamore                      -> Ravioli ai funghi porcini con  @ 22€
+    [6/10] O'Neil                         (no dish: no_menu_with_prices_found)
+    [7/10] Chez Georges                   (no dish: empty_extraction)
+    [8/10] Le comptoir du Relais          (no dish: no_menu_with_prices_found)
+    [9/10] La Boissonnerie                (no dish: empty_extraction)
+    [10/10] Le Pré aux Clercs              (no dish: empty_extraction)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 11/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Au Père Louis                  -> Poulet fermier rôti dans son j @ 25.5€
+    [2/10] Relais Louis XIII              (no dish: empty_extraction)
+    [3/10] Près de Seine                  (no dish: no_menu_with_prices_found)
+    [4/10] Boutary                        (no dish: empty_extraction)
+    [5/10] Taiyaki Oden                   (no dish: no_menu_with_prices_found)
+    [6/10] L’Atelier des Nouilles         -> Soupe de nouilles au boeuf « S @ 13.9€
+    [7/10] Terre Mère                     (no dish: no_menu_with_prices_found)
+    [8/10] Pertinence                     (no dish: empty_extraction)
+    [9/10] Les Parisiens Restaurant by Th (no dish: empty_extraction)
+    [10/10] Brasserie Le Bourbon           (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 12/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Brasserie des Ministères       (no dish: empty_extraction)
+    [2/10] La Fontaine de Mars            (no dish: no_menu_with_prices_found)
+    [3/10] L'Éclair                       (no dish: no_menu_with_prices_found)
+    [4/10] Cinq-Mars                      (no dish: no_menu_with_prices_found)
+    [5/10] Pause Viet                     -> Pho Tai chin @ 18.5€
+    [6/10] Yummy                          (no dish: no_menu_with_prices_found)
+    [7/10] Ojii                           (no dish: no_menu_with_prices_found)
+    [8/10] Le Maxan                       (no dish: empty_extraction)
+    [9/10] Au XV Du Rond Point (Champs-Él (no dish: no_menu_with_prices_found)
+    [10/10] Aqua Kyoto Paris               (no dish: empty_extraction)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 13/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Le Taillevent                  (no dish: no_menu_with_prices_found)
+    [2/10] Lasserre                       (no dish: no_menu_with_prices_found)
+    [3/10] Goloso Pizzeria (57 rue de rom (no dish: no_menu_with_prices_found)
+    [4/10] L'Annexe Restaurant            (no dish: no_menu_with_prices_found)
+    [5/10] Visconti                       (no dish: no_menu_with_prices_found)
+    [6/10] Le Bistro Marbeuf              (no dish: no_menu_with_prices_found)
+    [7/10] Les 110 de Taillevent          -> Canette rôtie, pommes fondante @ 31€
+    [8/10] Bistro Le Valentino            (no dish: no_menu_with_prices_found)
+    [9/10] Bistrot d’Arsène               (no dish: no_menu_with_prices_found)
+    [10/10] Akira Back Paris               (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 14/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Restaurant Pierre Gagnaire     (no dish: empty_extraction)
+    [2/10] Alléno Paris - Yannick Alléno  (no dish: empty_extraction)
+    [3/10] Pavyllon Paris - Yannick Allén (no dish: no_menu_with_prices_found)
+    [4/10] Komatsubaki Paris              (no dish: no_menu_with_prices_found)
+    [5/10] Le Huit                        (no dish: no_menu_with_prices_found)
+    [6/10] Bôl                            (no dish: no_menu_with_prices_found)
+    [7/10] Les Saisons                    -> Magret de canard, rhubarbe rôt @ 29€
+    [8/10] Restaurant L'Embuscade Paris 9 (no dish: empty_extraction)
+    [9/10] Gargouille                     (no dish: no_menu_with_prices_found)
+    [10/10] Becco                          (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 15/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Café Limo                      (no dish: empty_extraction)
+    [2/10] Bistrot Smiley                 (no dish: no_menu_with_prices_found)
+    [3/10] Sao Mai                        -> Phở Bò Đặc Biệt @ 12.9€
+    [4/10] GYOZA HOUSE - NOTRE DAME DE LO (no dish: no_menu_with_prices_found)
+    [5/10] BISTROT KINZO                  (no dish: empty_extraction)
+    [6/10] Tempête                        (no dish: no_menu_with_prices_found)
+    [7/10] Maria Belza                    (no dish: empty_extraction)
+    [8/10] Pizzeria Papelini - Faubourg S -> Burrata @ 17.9€
+    [9/10] SUGO pasta fresca - Chateau d' -> CARBONARA @ 18€
+    [10/10] Marcus Pizze Amore             -> MARCUS @ 21€
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 16/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Maison Saint Martin            (no dish: no_menu_with_prices_found)
+    [2/10] Café A                         (no dish: no_menu_with_prices_found)
+    [3/10] Joyaux du Tibet                (no dish: no_menu_with_prices_found)
+    [4/10] Labranda                       (no dish: empty_extraction)
+    [5/10] Levain, Le Vin                 (no dish: no_menu_with_prices_found)
+    [6/10] Yamanashi Ramen                (no dish: no_menu_with_prices_found)
+    [7/10] Siseng                         (no dish: no_menu_with_prices_found)
+    [8/10] Petit Bao - Bastille           (no dish: no_menu_with_prices_found)
+    [9/10] Les Artistes Gourmands         (no dish: no_menu_with_prices_found)
+    [10/10] Louie Louie                    (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 17/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Mozzafiato Paris – Pizzeria Ar (no dish: no_menu_with_prices_found)
+    [2/10] A Smorfia Pizzeria             (no dish: no_menu_with_prices_found)
+    [3/10] Batistou - Restaurant Père-Lac (no dish: no_menu_with_prices_found)
+    [4/10] Le Saint Sébastien             (no dish: no_menu_with_prices_found)
+    [5/10] GIBON                          (no dish: empty_extraction)
+    [6/10] P'tit Deux, comptoir de chefs  (no dish: no_menu_with_prices_found)
+    [7/10] Le Comptoir Japonais           (no dish: no_menu_with_prices_found)
+    [8/10] SAMOURÏCE onigiri Paris        (no dish: no_menu_with_prices_found)
+    [9/10] ARTIST NOODLE – Nouilles & Cui -> Nouilles au bœuf à la sauce sé @ 14.8€
+    [10/10] Maythai - Restaurant Thaïlanda -> PADTHAI CREVETTES @ 15.5€
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 18/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Le Petit Relais                (no dish: no_menu_with_prices_found)
+    [2/10] Cantine La Planque             (no dish: no_menu_with_prices_found)
+    [3/10] La Margherita Michel Bizot     -> PIZZA TRUFFE @ 16€
+    [4/10] Pizza Julia                    (no dish: no_menu_with_prices_found)
+    [5/10] Mangiamo italiano              (no dish: empty_extraction)
+    [6/10] Restaurant Pellicano           (no dish: no_menu_with_prices_found)
+    [7/10] Tigermilk Batignolles - Paris  -> Menu Costillas de la Madre @ 18€
+    [8/10] Le Bistrot Du Passage          (no dish: empty_extraction)
+    [9/10] Gaston                         -> Tartare de bœuf Charolais au c @ 21€
+    [10/10] Restaurant Le Compositeur - Cu (no dish: empty_extraction)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 19/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Madame FAN                     (no dish: no_menu_with_prices_found)
+    [2/10] Le bonheur de Cardinet         (no dish: no_menu_with_prices_found)
+    [3/10] Banhmila                       (no dish: no_menu_with_prices_found)
+    [4/10] James Bún Batignolles          (no dish: no_menu_with_prices_found)
+    [5/10] La Scala Siciliana             (no dish: empty_extraction)
+    [6/10] OKJA - Pizzeria & Cocktails à  (no dish: empty_extraction)
+    [7/10] Il Fico                        (no dish: no_menu_with_prices_found)
+    [8/10] MARIA.                         -> Ponticelli @ 15.5€
+    [9/10] Ciao Nonna                     (no dish: no_menu_with_prices_found)
+    [10/10] Brasserie Bouillon Baratte : I (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 20/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Le Bistrot de Lyon             (no dish: no_menu_with_prices_found)
+    [2/10] Le Bœuf d'Argent               (no dish: no_menu_with_prices_found)
+    [3/10] Brasserie Du Square            (no dish: no_menu_with_prices_found)
+    [4/10] Canopée Lyon - Bistronomie de  (no dish: no_menu_with_prices_found)
+    [5/10] Palatino                       (no dish: no_menu_with_prices_found)
+    [6/10] Tripletta Saint Michel         (no dish: no_menu_with_prices_found)
+    [7/10] Osteria Pizzeria da Bartolo    (no dish: no_menu_with_prices_found)
+    [8/10] LA STATION PIZZA               (no dish: no_menu_with_prices_found)
+    [9/10] Le Passage Saint Michel        -> TATIN DE CONFIT DE CANARD MAIS @ 19.5€
+    [10/10] Brasserie des 4 Chemins        (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 21/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Le 369 Restaurant              -> Poulpe des Cyclades @ 24.9€
+    [2/10] L'aparté                       (no dish: no_menu_with_prices_found)
+    [3/10] Little Bistrok Mourillon       -> Le Kroq-Mie-10 (croque truffé) @ 14€
+    [4/10] Restaurant Le Saint Gabriel    (no dish: no_menu_with_prices_found)
+    [5/10] Racines - Cuisine de Producteu (no dish: empty_extraction)
+    [6/10] Bar Des Amis                   (no dish: empty_extraction)
+    [7/10] La P'tite Fringale             (no dish: no_menu_with_prices_found)
+    [8/10] Hôi An                         (no dish: no_menu_with_prices_found)
+    [9/10] Feel Food                      (no dish: no_menu_with_prices_found)
+    [10/10] Restaurant JARDIN BAMBOU       (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 22/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Chi Haï                        -> Pho Boeuf @ 12€
+    [2/10] Wok Asian Food                 (no dish: empty_extraction)
+    [3/10] Delicatessen                   (no dish: no_menu_with_prices_found)
+    [4/10] Chez André                     (no dish: no_menu_with_prices_found)
+    [5/10] Le Sant'Anna                   (no dish: no_menu_with_prices_found)
+    [6/10] Le Sorrento                    (no dish: empty_extraction)
+    [7/10] Bella storia LH                (no dish: empty_extraction)
+    [8/10] Les Artistes                   (no dish: no_menu_with_prices_found)
+    [9/10] Le Cintra                      (no dish: no_menu_with_prices_found)
+    [10/10] La verrerie                    (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 23/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Le Petit Bistrot mirabeau      (no dish: no_menu_with_prices_found)
+    [2/10] Brasserie des Platanes         (no dish: empty_extraction)
+    [3/10] Chez Lulu - Aix Centre Ville   (no dish: no_menu_with_prices_found)
+    [4/10] Les Inséparables               (no dish: empty_extraction)
+    [5/10] O'Gustus                       (no dish: no_menu_with_prices_found)
+    [6/10] La Table du Pigonnet           (no dish: no_menu_with_prices_found)
+    [7/10] Asia Food                      (no dish: empty_extraction)
+    [8/10] Bunny's Bubble Tea             (no dish: no_menu_with_prices_found)
+    [9/10] Bistro La Batée Restaurant     (no dish: no_menu_with_prices_found)
+    [10/10] Les Petits Bonheurs            (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 24/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] La Table Saint Firmin          (no dish: no_menu_with_prices_found)
+    [2/10] L'Edito Amiens                 (no dish: no_menu_with_prices_found)
+    [3/10] Brasserie de l'horloge         -> Brochette de boeuf marinée tex @ 18€
+    [4/10] Les étoiles                    (no dish: no_menu_with_prices_found)
+    [5/10] Les Orfèvres                   (no dish: no_menu_with_prices_found)
+    [6/10] Le Loft                        (no dish: empty_extraction)
+    [7/10] L'improviste                   (no dish: no_menu_with_prices_found)
+    [8/10] Le Z                           (no dish: empty_extraction)
+    [9/10] La Table Du Marais             (no dish: no_menu_with_prices_found)
+    [10/10] Restaurant Le Vivier           (no dish: empty_extraction)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 25/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Restaurant Le Gaulois - Cuisin -> MOULES MARINIÈRE @ 18€
+    [2/10] Papilles en herbes             (no dish: no_menu_with_prices_found)
+    [3/10] Kimme                          (no dish: no_menu_with_prices_found)
+    [4/10] SO'PHO                         -> Pho @ 12.5€
+    [5/10] RAMEN HOUSE                    -> Ramen au boeuf @ 16.9€
+    [6/10] Mont Fuji                      (no dish: no_menu_with_prices_found)
+    [7/10] La perle d'asie                (no dish: no_menu_with_prices_found)
+    [8/10] Restaurant Gaia St Tropez      (no dish: no_menu_with_prices_found)
+    [9/10] El Callejon Biarritz           -> Ttoro basque (merlu, cabillaud @ 34€
+    [10/10] Restaurant le Touareg Biarritz (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 26/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] The Bayou                      -> Creole-Style Jambalaya @ 16€
+    [2/10] La Trattoria - Pizzeria des Ar (no dish: empty_extraction)
+    [3/10] Pizzeria Maysan                (no dish: no_menu_with_prices_found)
+    [4/10] botak pizzeria                 -> JAMBON CRU ROQUETTE @ 16€
+    [5/10] Dia Pizza                      (no dish: empty_extraction)
+    [6/10] Mamma Mia Deauville            -> L'Entrecote Argentine Angus -  @ 35€
+    [7/10] Villa Leona                    -> Entrecôte sauce poivre ou gorg @ 28€
+    [8/10] Augusto Chez Laurent           (no dish: no_menu_with_prices_found)
+    [9/10] L'Equilibriste                 (no dish: empty_extraction)
+    [10/10] Le Cyrano Deauville            -> Entrecôte race normande @ 27.6€
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 27/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] L'Etoile des Mers              -> Pavé de Saumon @ 24€
+    [2/10] OH MY PIZZ' - Kiosque 24/24    (no dish: no_menu_with_prices_found)
+    [3/10] Brasserie Les Petits Princes   -> Filet de bœuf au poivre frites @ 32€
+    [4/10] L'Odyssée                      (no dish: no_menu_with_prices_found)
+    [5/10] Le Hibouville - Deauville      (no dish: no_menu_with_prices_found)
+    [6/10] Brasserie les Bains Trouville  (no dish: empty_extraction)
+    [7/10] L'Etoile                       (no dish: no_menu_with_prices_found)
+    [8/10] Chez Trassoudaine              (no dish: no_menu_with_prices_found)
+    [9/10] L'Hommage                      (no dish: empty_extraction)
+    [10/10] Il était un square - Burger PA (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 28/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Kanasuk                        (no dish: no_menu_with_prices_found)
+    [2/10] Restaurant DE NHAT PHO Paris 1 (no dish: no_menu_with_prices_found)
+    [3/10] La Habana.Paris restaurant cub -> Effiloché de bœuf, Riz congris @ 19€
+    [4/10] Verbalon                       -> Dos de cabillaud à la plancha  @ 23€
+    [5/10] Fior di Latte Pizzeria         (no dish: no_menu_with_prices_found)
+    [6/10] Le San Giovani                 (no dish: no_menu_with_prices_found)
+    [7/10] Grazia Maria                   (no dish: no_menu_with_prices_found)
+    [8/10] La Toscana                     (no dish: no_menu_with_prices_found)
+    [9/10] Restaurant Sébastopol          (no dish: no_menu_with_prices_found)
+    [10/10] Ginko                          (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 29/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] La Fleur de Lille SARL         -> Entrecôte grillée, rose de pom @ 24€
+    [2/10] Pizza Delizio                  -> Cannibale sénior 33 cm @ 15€
+    [3/10] Pizzeria Il Piccolino          (no dish: no_menu_with_prices_found)
+    [4/10] Al Fornello                    -> BURRATINA @ 14.5€
+    [5/10] Mamie Fada                     (no dish: no_menu_with_prices_found)
+    [6/10] Maison Paganelli Angers        (no dish: no_menu_with_prices_found)
+    [7/10] Gribiche                       (no dish: no_menu_with_prices_found)
+    [8/10] Pizza Micky                    -> Quatre saisons @ 14€
+    [9/10] Posto Ristorante               (no dish: no_menu_with_prices_found)
+    [10/10] Le Miam's angers pâtes fraîche (no dish: empty_extraction)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 30/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Le Bouillon Limousin           (no dish: no_menu_with_prices_found)
+    [2/10] Chez Mimi                      (no dish: no_menu_with_prices_found)
+    [3/10] L'HARMONIE                     (no dish: no_menu_with_prices_found)
+    [4/10] La Cuisine du Cloître - Quarti (no dish: empty_extraction)
+    [5/10] VerSus                         (no dish: no_menu_with_prices_found)
+    [6/10] Le Cheverny                    (no dish: empty_extraction)
+    [7/10] Le Comptoir Pailloux           (no dish: no_menu_with_prices_found)
+    [8/10] CHAM-FEL                       (no dish: no_menu_with_prices_found)
+    [9/10] LE BISTROT DES HALLES          (no dish: empty_extraction)
+    [10/10] La Rose Des Sables Limoges     -> Assiette 3 viandes @ 13€
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 31/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Le MilouYou                    (no dish: no_menu_with_prices_found)
+    [2/10] Pizza Pezzo                    (no dish: no_menu_with_prices_found)
+    [3/10] L'Assiette à Pizz'             (no dish: no_menu_with_prices_found)
+    [4/10] Ô Pho 86                       (no dish: no_menu_with_prices_found)
+    [5/10] Le Pas Sage                    (no dish: no_menu_with_prices_found)
+    [6/10] Au Coin de la Rue              (no dish: no_menu_with_prices_found)
+    [7/10] Le V'Four                      (no dish: no_menu_with_prices_found)
+    [8/10] TT Histoire                    (no dish: no_menu_with_prices_found)
+    [9/10] Pizzeria La Craffe             (no dish: no_menu_with_prices_found)
+    [10/10] Ciao Tutti                     (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 32/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] RAGAZZA                        (no dish: no_menu_with_prices_found)
+    [2/10] Restaurant pizzeria au feu de  (no dish: no_menu_with_prices_found)
+    [3/10] L'Avant Première | Restaurant  (no dish: no_menu_with_prices_found)
+    [4/10] Pizzeria Sole Mio              (no dish: no_menu_with_prices_found)
+    [5/10] Opaline                        (no dish: empty_extraction)
+    [6/10] Saveurs Dans L'R               (no dish: no_menu_with_prices_found)
+    [7/10] Le Comptoir de Walter . Retaur (no dish: empty_extraction)
+    [8/10] Au Bour’Pif                    (no dish: no_menu_with_prices_found)
+    [9/10] La Fleur de Sel                -> Entrecôte française , pommes g @ 28€
+    [10/10] Le Maillon - Restaurant La roc (no dish: no_menu_with_prices_found)
+  [Send]
+    OK : 10 envoyes / 0 fail
+  Pause 5s avant prochain batch...
+
+━━━ BATCH 33/35 (10 restos) ━━━
+  [Enrich]
+    [1/10] Le Bistrot Gourmand            (no dish: no_menu_with_prices_found)
+    [2/10] Mimi La Rochelle en résidence  (no dish: no_menu_with_prices_found)
+    [3/10] Basilic'O                      

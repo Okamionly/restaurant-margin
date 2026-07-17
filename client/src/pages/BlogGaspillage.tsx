@@ -289,7 +289,7 @@ export default function BlogGaspillage() {
 
             <p>
               <strong>Lien utile :</strong> Consultez notre{' '}
-              <Link to="/blog/fiches-techniques" className="text-teal-600 hover:text-teal-700 underline underline-offset-2">
+              <Link to="/blog/fiche-technique-restaurant" className="text-teal-600 hover:text-teal-700 underline underline-offset-2">
                 guide complet sur les fiches techniques de cuisine
               </Link>{' '}
               pour apprendre a creer et maintenir vos fiches techniques efficacement.
@@ -448,11 +448,11 @@ export default function BlogGaspillage() {
         <section className="mb-16">
           <h2 className="text-2xl font-bold text-mono-100 mb-6">Articles complementaires</h2>
           <div className="grid sm:grid-cols-3 gap-4">
-            <Link to="/blog/fiches-techniques" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/fiche-technique-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Fiche technique de cuisine : le guide complet</h3>
               <p className="text-sm text-mono-500">Creez des fiches techniques precises pour maitriser vos portions et couts.</p>
             </Link>
-            <Link to="/blog/haccp" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/haccp-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Guide HACCP pour les restaurants</h3>
               <p className="text-sm text-mono-500">Temperatures, principes et checklist pour respecter l'hygiene alimentaire.</p>
             </Link>

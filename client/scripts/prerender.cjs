@@ -290,6 +290,12 @@ const ROUTES = [
     type: 'article',
   },
   {
+    path: '/blog/ouvrir-terrasse-restaurant-demarches',
+    title: 'Terrasse de restaurant : autorisations, demarches et rentabilite 2026',
+    description: 'Comment ouvrir une terrasse de restaurant en France ? Droit de terrasse, dossier mairie, equipement et calcul de rentabilite : le guide complet 2026.',
+    type: 'article',
+  },
+  {
     path: '/blog/prime-cost-restaurant',
     title: "Prime cost en restauration : l'indicateur n1 de rentabilite",
     description: "Food cost + masse salariale = prime cost. Benchmarks, formule complete et plan d'action pour passer de 72% a 62% en 3 mois.",
@@ -832,7 +838,7 @@ function run() {
       ],
       niche: [
         ['/blog/calcul-marge-restaurant', 'Méthode de calcul de marge complète'],
-        ['/blog/food-cost-restaurant', 'Réduire le food cost'],
+        ['/blog/reduire-food-cost', 'Réduire le food cost'],
         ['/blog/coefficient-multiplicateur', 'Coefficient multiplicateur par segment'],
         ['/outils/calculateur-marge-restaurant', 'Calculateur de marge gratuit'],
         ['/comparatif-logiciels-restaurant', 'Comparatif logiciels restaurant'],

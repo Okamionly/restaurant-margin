@@ -847,7 +847,7 @@ export default function BlogPrixCarte() {
               des derives de prix matieres.
             </p>
             <p>
-              Pour aller plus loin sur les fondamentaux du calcul, lisez egalement notre <Link to="/blog/food-cost" className="text-teal-700 underline hover:text-teal-800">guide du food cost</Link>, notre <Link to="/blog/prime-cost" className="text-teal-700 underline hover:text-teal-800">guide du prime cost</Link>, et notre <Link to="/blog/seuil-rentabilite-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du seuil de rentabilite</Link>.
+              Pour aller plus loin sur les fondamentaux du calcul, lisez egalement notre <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">guide du food cost</Link>, notre <Link to="/blog/prime-cost-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du prime cost</Link>, et notre <Link to="/blog/seuil-rentabilite-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du seuil de rentabilite</Link>.
             </p>
           </div>
         </section>

@@ -1,0 +1,3861 @@
+=== France EXTENDED Scraping ===
+Cities: 159 | Queries/city: 14
+Output: C:\Users\mrgue\CLAUDE CODE\restaurant-margin\data\scraping\france-mass-2026-05-06.csv
+Existing: 8036 restos uniques | 49 villes scraped
+Villes a faire (couverture <30): 110
+
+============================================================
+  Brest (queries: 14)
+============================================================
+  > restaurant Brest
+    27 nouveaux
+  > pizzeria Brest
+    28 nouveaux
+  > brasserie Brest
+    18 nouveaux
+  > bistrot Brest
+    6 nouveaux
+  > restaurant gastronomique Brest
+    8 nouveaux
+  > restaurant chinois Brest
+    21 nouveaux
+  > restaurant japonais Brest
+    6 nouveaux
+  > sushi Brest
+    5 nouveaux
+  > restaurant marocain Brest
+    3 nouveaux
+  > restaurant indien Brest
+    4 nouveaux
+  > restaurant turc Brest
+    10 nouveaux
+  > kebab Brest
+    18 nouveaux
+  > restaurant africain Brest
+    9 nouveaux
+  > restaurant libanais Brest
+    1 nouveaux
+  -> 164 restos uniques. Extraction emails...
+  Brest DONE: 164 restos | 25 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Tours (queries: 14)
+============================================================
+  > restaurant Tours
+    31 nouveaux
+  > pizzeria Tours
+    30 nouveaux
+  > brasserie Tours
+    19 nouveaux
+  > bistrot Tours
+    6 nouveaux
+  > restaurant gastronomique Tours
+    9 nouveaux
+  > restaurant chinois Tours
+    27 nouveaux
+  > restaurant japonais Tours
+    12 nouveaux
+  > sushi Tours
+    4 nouveaux
+  > restaurant marocain Tours
+    20 nouveaux
+  > restaurant indien Tours
+    5 nouveaux
+  > restaurant turc Tours
+    10 nouveaux
+  > kebab Tours
+    17 nouveaux
+  > restaurant africain Tours
+    11 nouveaux
+  > restaurant libanais Tours
+    2 nouveaux
+  -> 203 restos uniques. Extraction emails...
+  Tours DONE: 203 restos | 45 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Perpignan (queries: 14)
+============================================================
+  > restaurant Perpignan
+    25 nouveaux
+  > pizzeria Perpignan
+    25 nouveaux
+  > brasserie Perpignan
+    14 nouveaux
+  > bistrot Perpignan
+    11 nouveaux
+  > restaurant gastronomique Perpignan
+    15 nouveaux
+  > restaurant chinois Perpignan
+    19 nouveaux
+  > restaurant japonais Perpignan
+    15 nouveaux
+  > sushi Perpignan
+    11 nouveaux
+  > restaurant marocain Perpignan
+    20 nouveaux
+  > restaurant indien Perpignan
+    11 nouveaux
+  > restaurant turc Perpignan
+    12 nouveaux
+  > kebab Perpignan
+    19 nouveaux
+  > restaurant africain Perpignan
+    11 nouveaux
+  > restaurant libanais Perpignan
+    2 nouveaux
+  -> 210 restos uniques. Extraction emails...
+  Perpignan DONE: 210 restos | 40 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Metz (queries: 14)
+============================================================
+  > restaurant Metz
+    27 nouveaux
+  > pizzeria Metz
+    27 nouveaux
+  > brasserie Metz
+    23 nouveaux
+  > bistrot Metz
+    8 nouveaux
+  > restaurant gastronomique Metz
+    5 nouveaux
+  > restaurant chinois Metz
+    25 nouveaux
+  > restaurant japonais Metz
+    10 nouveaux
+  > sushi Metz
+    4 nouveaux
+  > restaurant marocain Metz
+    13 nouveaux
+  > restaurant indien Metz
+    4 nouveaux
+  > restaurant turc Metz
+    26 nouveaux
+  > kebab Metz
+    18 nouveaux
+  > restaurant africain Metz
+    5 nouveaux
+  > restaurant libanais Metz
+    2 nouveaux
+  -> 197 restos uniques. Extraction emails...
+  Metz DONE: 197 restos | 39 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Besancon (queries: 14)
+============================================================
+  > restaurant Besancon
+    29 nouveaux
+  > pizzeria Besancon
+    26 nouveaux
+  > brasserie Besancon
+    21 nouveaux
+  > bistrot Besancon
+    0 nouveaux
+  > restaurant gastronomique Besancon
+    0 nouveaux
+  > restaurant chinois Besancon
+    0 nouveaux
+  > restaurant japonais Besancon
+    0 nouveaux
+  > sushi Besancon
+    0 nouveaux
+  > restaurant marocain Besancon
+    0 nouveaux
+  > restaurant indien Besancon
+    0 nouveaux
+  > restaurant turc Besancon
+    0 nouveaux
+  > kebab Besancon
+    0 nouveaux
+  > restaurant africain Besancon
+    0 nouveaux
+  > restaurant libanais Besancon
+    0 nouveaux
+  -> 76 restos uniques. Extraction emails...
+  Besancon DONE: 76 restos | 16 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Rouen (queries: 14)
+============================================================
+  > restaurant Rouen
+    0 nouveaux
+  > pizzeria Rouen
+    0 nouveaux
+  > brasserie Rouen
+    0 nouveaux
+  > bistrot Rouen
+    0 nouveaux
+  > restaurant gastronomique Rouen
+    0 nouveaux
+  > restaurant chinois Rouen
+    0 nouveaux
+  > restaurant japonais Rouen
+    0 nouveaux
+  > sushi Rouen
+    0 nouveaux
+  > restaurant marocain Rouen
+    0 nouveaux
+  > restaurant indien Rouen
+    0 nouveaux
+  > restaurant turc Rouen
+    0 nouveaux
+  > kebab Rouen
+    0 nouveaux
+  > restaurant africain Rouen
+    0 nouveaux
+  > restaurant libanais Rouen
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Rouen DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Caen (queries: 14)
+============================================================
+  > restaurant Caen
+    0 nouveaux
+  > pizzeria Caen
+    0 nouveaux
+  > brasserie Caen
+    0 nouveaux
+  > bistrot Caen
+    0 nouveaux
+  > restaurant gastronomique Caen
+    0 nouveaux
+  > restaurant chinois Caen
+    0 nouveaux
+  > restaurant japonais Caen
+    0 nouveaux
+  > sushi Caen
+    0 nouveaux
+  > restaurant marocain Caen
+    0 nouveaux
+  > restaurant indien Caen
+    5 nouveaux
+  > restaurant turc Caen
+    14 nouveaux
+  > kebab Caen
+    20 nouveaux
+  > restaurant africain Caen
+    14 nouveaux
+  > restaurant libanais Caen
+    2 nouveaux
+  -> 55 restos uniques. Extraction emails...
+  Caen DONE: 55 restos | 9 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Cannes (queries: 14)
+============================================================
+  > restaurant Cannes
+    27 nouveaux
+  > pizzeria Cannes
+    27 nouveaux
+  > brasserie Cannes
+    19 nouveaux
+  > bistrot Cannes
+    15 nouveaux
+  > restaurant gastronomique Cannes
+    12 nouveaux
+  > restaurant chinois Cannes
+    28 nouveaux
+  > restaurant japonais Cannes
+    17 nouveaux
+  > sushi Cannes
+    9 nouveaux
+  > restaurant marocain Cannes
+    13 nouveaux
+  > restaurant indien Cannes
+    7 nouveaux
+  > restaurant turc Cannes
+    20 nouveaux
+  > kebab Cannes
+    7 nouveaux
+  > restaurant africain Cannes
+    4 nouveaux
+  > restaurant libanais Cannes
+    11 nouveaux
+  -> 216 restos uniques. Extraction emails...
+  Cannes DONE: 216 restos | 42 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Saint-Tropez (queries: 14)
+============================================================
+  > restaurant Saint-Tropez
+    31 nouveaux
+  > pizzeria Saint-Tropez
+    23 nouveaux
+  > brasserie Saint-Tropez
+    14 nouveaux
+  > bistrot Saint-Tropez
+    5 nouveaux
+  > restaurant gastronomique Saint-Tropez
+    13 nouveaux
+  > restaurant chinois Saint-Tropez
+    2 nouveaux
+  > restaurant japonais Saint-Tropez
+    2 nouveaux
+  > sushi Saint-Tropez
+    0 nouveaux
+  > restaurant marocain Saint-Tropez
+    2 nouveaux
+  > restaurant indien Saint-Tropez
+    0 nouveaux
+  > restaurant turc Saint-Tropez
+    9 nouveaux
+  > kebab Saint-Tropez
+    15 nouveaux
+  > restaurant africain Saint-Tropez
+    2 nouveaux
+  > restaurant libanais Saint-Tropez
+    1 nouveaux
+  -> 119 restos uniques. Extraction emails...
+  Saint-Tropez DONE: 119 restos | 31 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Annecy (queries: 14)
+============================================================
+  > restaurant Annecy
+    28 nouveaux
+  > pizzeria Annecy
+    25 nouveaux
+  > brasserie Annecy
+    18 nouveaux
+  > bistrot Annecy
+    0 nouveaux
+  > restaurant gastronomique Annecy
+    0 nouveaux
+  > restaurant chinois Annecy
+    0 nouveaux
+  > restaurant japonais Annecy
+    0 nouveaux
+  > sushi Annecy
+    0 nouveaux
+  > restaurant marocain Annecy
+    0 nouveaux
+  > restaurant indien Annecy
+    0 nouveaux
+  > restaurant turc Annecy
+    0 nouveaux
+  > kebab Annecy
+    0 nouveaux
+  > restaurant africain Annecy
+    0 nouveaux
+  > restaurant libanais Annecy
+    0 nouveaux
+  -> 71 restos uniques. Extraction emails...
+  Annecy DONE: 71 restos | 20 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Chamonix (queries: 14)
+============================================================
+  > restaurant Chamonix
+    0 nouveaux
+  > pizzeria Chamonix
+    0 nouveaux
+  > brasserie Chamonix
+    0 nouveaux
+  > bistrot Chamonix
+    0 nouveaux
+  > restaurant gastronomique Chamonix
+    0 nouveaux
+  > restaurant chinois Chamonix
+    0 nouveaux
+  > restaurant japonais Chamonix
+    0 nouveaux
+  > sushi Chamonix
+    0 nouveaux
+  > restaurant marocain Chamonix
+    0 nouveaux
+  > restaurant indien Chamonix
+    0 nouveaux
+  > restaurant turc Chamonix
+    0 nouveaux
+  > kebab Chamonix
+    0 nouveaux
+  > restaurant africain Chamonix
+    0 nouveaux
+  > restaurant libanais Chamonix
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Chamonix DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Avignon (queries: 14)
+============================================================
+  > restaurant Avignon
+    0 nouveaux
+  > pizzeria Avignon
+    0 nouveaux
+  > brasserie Avignon
+    0 nouveaux
+  > bistrot Avignon
+    0 nouveaux
+  > restaurant gastronomique Avignon
+    0 nouveaux
+  > restaurant chinois Avignon
+    0 nouveaux
+  > restaurant japonais Avignon
+    0 nouveaux
+  > sushi Avignon
+    0 nouveaux
+  > restaurant marocain Avignon
+    0 nouveaux
+  > restaurant indien Avignon
+    12 nouveaux
+  > restaurant turc Avignon
+    27 nouveaux
+  > kebab Avignon
+    13 nouveaux
+  > restaurant africain Avignon
+    4 nouveaux
+  > restaurant libanais Avignon
+    4 nouveaux
+  -> 60 restos uniques. Extraction emails...
+  Avignon DONE: 60 restos | 6 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Aix-les-Bains (queries: 14)
+============================================================
+  > restaurant Aix-les-Bains
+    28 nouveaux
+  > pizzeria Aix-les-Bains
+    21 nouveaux
+  > brasserie Aix-les-Bains
+    12 nouveaux
+  > bistrot Aix-les-Bains
+    0 nouveaux
+  > restaurant gastronomique Aix-les-Bains
+    11 nouveaux
+  > restaurant chinois Aix-les-Bains
+    9 nouveaux
+  > restaurant japonais Aix-les-Bains
+    2 nouveaux
+  > sushi Aix-les-Bains
+    7 nouveaux
+  > restaurant marocain Aix-les-Bains
+    4 nouveaux
+  > restaurant indien Aix-les-Bains
+    0 nouveaux
+  > restaurant turc Aix-les-Bains
+    8 nouveaux
+  > kebab Aix-les-Bains
+    3 nouveaux
+  > restaurant africain Aix-les-Bains
+    4 nouveaux
+  > restaurant libanais Aix-les-Bains
+    4 nouveaux
+  -> 113 restos uniques. Extraction emails...
+  Aix-les-Bains DONE: 113 restos | 23 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Saint-Malo (queries: 14)
+============================================================
+  > restaurant Saint-Malo
+    30 nouveaux
+  > pizzeria Saint-Malo
+    25 nouveaux
+  > brasserie Saint-Malo
+    17 nouveaux
+  > bistrot Saint-Malo
+    0 nouveaux
+  > restaurant gastronomique Saint-Malo
+    0 nouveaux
+  > restaurant chinois Saint-Malo
+    0 nouveaux
+  > restaurant japonais Saint-Malo
+    0 nouveaux
+  > sushi Saint-Malo
+    0 nouveaux
+  > restaurant marocain Saint-Malo
+    0 nouveaux
+  > restaurant indien Saint-Malo
+    0 nouveaux
+  > restaurant turc Saint-Malo
+    0 nouveaux
+  > kebab Saint-Malo
+    0 nouveaux
+  > restaurant africain Saint-Malo
+    0 nouveaux
+  > restaurant libanais Saint-Malo
+    0 nouveaux
+  -> 72 restos uniques. Extraction emails...
+  Saint-Malo DONE: 72 restos | 21 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Boulogne-Billancourt (queries: 14)
+============================================================
+  > restaurant Boulogne-Billancourt
+    0 nouveaux
+  > pizzeria Boulogne-Billancourt
+    0 nouveaux
+  > brasserie Boulogne-Billancourt
+    0 nouveaux
+  > bistrot Boulogne-Billancourt
+    0 nouveaux
+  > restaurant gastronomique Boulogne-Billancourt
+    0 nouveaux
+  > restaurant chinois Boulogne-Billancourt
+    0 nouveaux
+  > restaurant japonais Boulogne-Billancourt
+    0 nouveaux
+  > sushi Boulogne-Billancourt
+    0 nouveaux
+  > restaurant marocain Boulogne-Billancourt
+    0 nouveaux
+  > restaurant indien Boulogne-Billancourt
+    0 nouveaux
+  > restaurant turc Boulogne-Billancourt
+    0 nouveaux
+  > kebab Boulogne-Billancourt
+    0 nouveaux
+  > restaurant africain Boulogne-Billancourt
+    0 nouveaux
+  > restaurant libanais Boulogne-Billancourt
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Boulogne-Billancourt DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Saint-Denis (queries: 14)
+============================================================
+  > restaurant Saint-Denis
+    0 nouveaux
+  > pizzeria Saint-Denis
+    0 nouveaux
+  > brasserie Saint-Denis
+    0 nouveaux
+  > bistrot Saint-Denis
+    0 nouveaux
+  > restaurant gastronomique Saint-Denis
+    0 nouveaux
+  > restaurant chinois Saint-Denis
+    0 nouveaux
+  > restaurant japonais Saint-Denis
+    0 nouveaux
+  > sushi Saint-Denis
+    0 nouveaux
+  > restaurant marocain Saint-Denis
+    0 nouveaux
+  > restaurant indien Saint-Denis
+    0 nouveaux
+  > restaurant turc Saint-Denis
+    19 nouveaux
+  > kebab Saint-Denis
+    28 nouveaux
+  > restaurant africain Saint-Denis
+    24 nouveaux
+  > restaurant libanais Saint-Denis
+    1 nouveaux
+  -> 72 restos uniques. Extraction emails...
+  Saint-Denis DONE: 72 restos | 6 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Argenteuil (queries: 14)
+============================================================
+  > restaurant Argenteuil
+    30 nouveaux
+  > pizzeria Argenteuil
+    23 nouveaux
+  > brasserie Argenteuil
+    15 nouveaux
+  > bistrot Argenteuil
+    3 nouveaux
+  > restaurant gastronomique Argenteuil
+    5 nouveaux
+  > restaurant chinois Argenteuil
+    10 nouveaux
+  > restaurant japonais Argenteuil
+    3 nouveaux
+  > sushi Argenteuil
+    13 nouveaux
+  > restaurant marocain Argenteuil
+    5 nouveaux
+  > restaurant indien Argenteuil
+    4 nouveaux
+  > restaurant turc Argenteuil
+    20 nouveaux
+  > kebab Argenteuil
+    8 nouveaux
+  > restaurant africain Argenteuil
+    5 nouveaux
+  > restaurant libanais Argenteuil
+    5 nouveaux
+  -> 149 restos uniques. Extraction emails...
+  Argenteuil DONE: 149 restos | 18 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Montreuil (queries: 14)
+============================================================
+  > restaurant Montreuil
+    29 nouveaux
+  > pizzeria Montreuil
+    26 nouveaux
+  > brasserie Montreuil
+    11 nouveaux
+  > bistrot Montreuil
+    10 nouveaux
+  > restaurant gastronomique Montreuil
+    3 nouveaux
+  > restaurant chinois Montreuil
+    24 nouveaux
+  > restaurant japonais Montreuil
+    14 nouveaux
+  > sushi Montreuil
+    9 nouveaux
+  > restaurant marocain Montreuil
+    10 nouveaux
+  > restaurant indien Montreuil
+    9 nouveaux
+  > restaurant turc Montreuil
+    19 nouveaux
+  > kebab Montreuil
+    17 nouveaux
+  > restaurant africain Montreuil
+    10 nouveaux
+  > restaurant libanais Montreuil
+    25 nouveaux
+  -> 216 restos uniques. Extraction emails...
+  Montreuil DONE: 216 restos | 32 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Versailles (queries: 14)
+============================================================
+  > restaurant Versailles
+    25 nouveaux
+  > pizzeria Versailles
+    27 nouveaux
+  > brasserie Versailles
+    16 nouveaux
+  > bistrot Versailles
+    4 nouveaux
+  > restaurant gastronomique Versailles
+    0 nouveaux
+  > restaurant chinois Versailles
+    0 nouveaux
+  > restaurant japonais Versailles
+    0 nouveaux
+  > sushi Versailles
+    0 nouveaux
+  > restaurant marocain Versailles
+    0 nouveaux
+  > restaurant indien Versailles
+    0 nouveaux
+  > restaurant turc Versailles
+    0 nouveaux
+  > kebab Versailles
+    0 nouveaux
+  > restaurant africain Versailles
+    0 nouveaux
+  > restaurant libanais Versailles
+    0 nouveaux
+  -> 72 restos uniques. Extraction emails...
+  Versailles DONE: 72 restos | 13 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Nanterre (queries: 14)
+============================================================
+  > restaurant Nanterre
+    0 nouveaux
+  > pizzeria Nanterre
+    0 nouveaux
+  > brasserie Nanterre
+    0 nouveaux
+  > bistrot Nanterre
+    0 nouveaux
+  > restaurant gastronomique Nanterre
+    0 nouveaux
+  > restaurant chinois Nanterre
+    0 nouveaux
+  > restaurant japonais Nanterre
+    0 nouveaux
+  > sushi Nanterre
+    0 nouveaux
+  > restaurant marocain Nanterre
+    0 nouveaux
+  > restaurant indien Nanterre
+    0 nouveaux
+  > restaurant turc Nanterre
+    0 nouveaux
+  > kebab Nanterre
+    0 nouveaux
+  > restaurant africain Nanterre
+    0 nouveaux
+  > restaurant libanais Nanterre
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Nanterre DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Vitry-sur-Seine (queries: 14)
+============================================================
+  > restaurant Vitry-sur-Seine
+    0 nouveaux
+  > pizzeria Vitry-sur-Seine
+    0 nouveaux
+  > brasserie Vitry-sur-Seine
+    0 nouveaux
+  > bistrot Vitry-sur-Seine
+    0 nouveaux
+  > restaurant gastronomique Vitry-sur-Seine
+    0 nouveaux
+  > restaurant chinois Vitry-sur-Seine
+    0 nouveaux
+  > restaurant japonais Vitry-sur-Seine
+    0 nouveaux
+  > sushi Vitry-sur-Seine
+    0 nouveaux
+  > restaurant marocain Vitry-sur-Seine
+    0 nouveaux
+  > restaurant indien Vitry-sur-Seine
+    0 nouveaux
+  > restaurant turc Vitry-sur-Seine
+    8 nouveaux
+  > kebab Vitry-sur-Seine
+    24 nouveaux
+  > restaurant africain Vitry-sur-Seine
+    32 nouveaux
+  > restaurant libanais Vitry-sur-Seine
+    0 nouveaux
+  -> 64 restos uniques. Extraction emails...
+  Vitry-sur-Seine DONE: 64 restos | 12 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Clichy (queries: 14)
+============================================================
+  > restaurant Clichy
+    27 nouveaux
+  > pizzeria Clichy
+    27 nouveaux
+  > brasserie Clichy
+    15 nouveaux
+  > bistrot Clichy
+    3 nouveaux
+  > restaurant gastronomique Clichy
+    0 nouveaux
+  > restaurant chinois Clichy
+    0 nouveaux
+  > restaurant japonais Clichy
+    0 nouveaux
+  > sushi Clichy
+    0 nouveaux
+  > restaurant marocain Clichy
+    0 nouveaux
+  > restaurant indien Clichy
+    0 nouveaux
+  > restaurant turc Clichy
+    0 nouveaux
+  > kebab Clichy
+    0 nouveaux
+  > restaurant africain Clichy
+    0 nouveaux
+  > restaurant libanais Clichy
+    0 nouveaux
+  -> 72 restos uniques. Extraction emails...
+  Clichy DONE: 72 restos | 12 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Courbevoie (queries: 14)
+============================================================
+  > restaurant Courbevoie
+    0 nouveaux
+  > pizzeria Courbevoie
+    0 nouveaux
+  > brasserie Courbevoie
+    0 nouveaux
+  > bistrot Courbevoie
+    0 nouveaux
+  > restaurant gastronomique Courbevoie
+    0 nouveaux
+  > restaurant chinois Courbevoie
+    0 nouveaux
+  > restaurant japonais Courbevoie
+    0 nouveaux
+  > sushi Courbevoie
+    0 nouveaux
+  > restaurant marocain Courbevoie
+    0 nouveaux
+  > restaurant indien Courbevoie
+    0 nouveaux
+  > restaurant turc Courbevoie
+    0 nouveaux
+  > kebab Courbevoie
+    0 nouveaux
+  > restaurant africain Courbevoie
+    0 nouveaux
+  > restaurant libanais Courbevoie
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Courbevoie DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Asnieres-sur-Seine (queries: 14)
+============================================================
+  > restaurant Asnieres-sur-Seine
+    0 nouveaux
+  > pizzeria Asnieres-sur-Seine
+    0 nouveaux
+  > brasserie Asnieres-sur-Seine
+    0 nouveaux
+  > bistrot Asnieres-sur-Seine
+    0 nouveaux
+  > restaurant gastronomique Asnieres-sur-Seine
+    0 nouveaux
+  > restaurant chinois Asnieres-sur-Seine
+    0 nouveaux
+  > restaurant japonais Asnieres-sur-Seine
+    0 nouveaux
+  > sushi Asnieres-sur-Seine
+    0 nouveaux
+  > restaurant marocain Asnieres-sur-Seine
+    0 nouveaux
+  > restaurant indien Asnieres-sur-Seine
+    10 nouveaux
+  > restaurant turc Asnieres-sur-Seine
+    12 nouveaux
+  > kebab Asnieres-sur-Seine
+    21 nouveaux
+  > restaurant africain Asnieres-sur-Seine
+    13 nouveaux
+  > restaurant libanais Asnieres-sur-Seine
+    1 nouveaux
+  -> 57 restos uniques. Extraction emails...
+  Asnieres-sur-Seine DONE: 57 restos | 6 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Colombes (queries: 14)
+============================================================
+  > restaurant Colombes
+    22 nouveaux
+  > pizzeria Colombes
+    25 nouveaux
+  > brasserie Colombes
+    14 nouveaux
+  > bistrot Colombes
+    0 nouveaux
+  > restaurant gastronomique Colombes
+    5 nouveaux
+  > restaurant chinois Colombes
+    19 nouveaux
+  > restaurant japonais Colombes
+    15 nouveaux
+  > sushi Colombes
+    5 nouveaux
+  > restaurant marocain Colombes
+    11 nouveaux
+  > restaurant indien Colombes
+    11 nouveaux
+  > restaurant turc Colombes
+    15 nouveaux
+  > kebab Colombes
+    12 nouveaux
+  > restaurant africain Colombes
+    2 nouveaux
+  > restaurant libanais Colombes
+    0 nouveaux
+  -> 156 restos uniques. Extraction emails...
+  Colombes DONE: 156 restos | 22 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Aulnay-sous-Bois (queries: 14)
+============================================================
+  > restaurant Aulnay-sous-Bois
+    33 nouveaux
+  > pizzeria Aulnay-sous-Bois
+    19 nouveaux
+  > brasserie Aulnay-sous-Bois
+    15 nouveaux
+  > bistrot Aulnay-sous-Bois
+    2 nouveaux
+  > restaurant gastronomique Aulnay-sous-Bois
+    0 nouveaux
+  > restaurant chinois Aulnay-sous-Bois
+    0 nouveaux
+  > restaurant japonais Aulnay-sous-Bois
+    0 nouveaux
+  > sushi Aulnay-sous-Bois
+    0 nouveaux
+  > restaurant marocain Aulnay-sous-Bois
+    0 nouveaux
+  > restaurant indien Aulnay-sous-Bois
+    0 nouveaux
+  > restaurant turc Aulnay-sous-Bois
+    0 nouveaux
+  > kebab Aulnay-sous-Bois
+    0 nouveaux
+  > restaurant africain Aulnay-sous-Bois
+    0 nouveaux
+  > restaurant libanais Aulnay-sous-Bois
+    0 nouveaux
+  -> 69 restos uniques. Extraction emails...
+  Aulnay-sous-Bois DONE: 69 restos | 8 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Champigny-sur-Marne (queries: 14)
+============================================================
+  > restaurant Champigny-sur-Marne
+    0 nouveaux
+  > pizzeria Champigny-sur-Marne
+    0 nouveaux
+  > brasserie Champigny-sur-Marne
+    0 nouveaux
+  > bistrot Champigny-sur-Marne
+    0 nouveaux
+  > restaurant gastronomique Champigny-sur-Marne
+    0 nouveaux
+  > restaurant chinois Champigny-sur-Marne
+    0 nouveaux
+  > restaurant japonais Champigny-sur-Marne
+    0 nouveaux
+  > sushi Champigny-sur-Marne
+    0 nouveaux
+  > restaurant marocain Champigny-sur-Marne
+    0 nouveaux
+  > restaurant indien Champigny-sur-Marne
+    0 nouveaux
+  > restaurant turc Champigny-sur-Marne
+    0 nouveaux
+  > kebab Champigny-sur-Marne
+    0 nouveaux
+  > restaurant africain Champigny-sur-Marne
+    0 nouveaux
+  > restaurant libanais Champigny-sur-Marne
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Champigny-sur-Marne DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Saint-Maur-des-Fosses (queries: 14)
+============================================================
+  > restaurant Saint-Maur-des-Fosses
+    0 nouveaux
+  > pizzeria Saint-Maur-des-Fosses
+    0 nouveaux
+  > brasserie Saint-Maur-des-Fosses
+    0 nouveaux
+  > bistrot Saint-Maur-des-Fosses
+    0 nouveaux
+  > restaurant gastronomique Saint-Maur-des-Fosses
+    0 nouveaux
+  > restaurant chinois Saint-Maur-des-Fosses
+    0 nouveaux
+  > restaurant japonais Saint-Maur-des-Fosses
+    0 nouveaux
+  > sushi Saint-Maur-des-Fosses
+    0 nouveaux
+  > restaurant marocain Saint-Maur-des-Fosses
+    0 nouveaux
+  > restaurant indien Saint-Maur-des-Fosses
+    0 nouveaux
+  > restaurant turc Saint-Maur-des-Fosses
+    7 nouveaux
+  > kebab Saint-Maur-des-Fosses
+    11 nouveaux
+  > restaurant africain Saint-Maur-des-Fosses
+    2 nouveaux
+  > restaurant libanais Saint-Maur-des-Fosses
+    6 nouveaux
+  -> 26 restos uniques. Extraction emails...
+  Saint-Maur-des-Fosses DONE: 26 restos | 4 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Cergy (queries: 14)
+============================================================
+  > restaurant Cergy
+    32 nouveaux
+  > pizzeria Cergy
+    20 nouveaux
+  > brasserie Cergy
+    16 nouveaux
+  > bistrot Cergy
+    4 nouveaux
+  > restaurant gastronomique Cergy
+    0 nouveaux
+  > restaurant chinois Cergy
+    0 nouveaux
+  > restaurant japonais Cergy
+    0 nouveaux
+  > sushi Cergy
+    0 nouveaux
+  > restaurant marocain Cergy
+    0 nouveaux
+  > restaurant indien Cergy
+    0 nouveaux
+  > restaurant turc Cergy
+    0 nouveaux
+  > kebab Cergy
+    0 nouveaux
+  > restaurant africain Cergy
+    0 nouveaux
+  > restaurant libanais Cergy
+    0 nouveaux
+  -> 72 restos uniques. Extraction emails...
+  Cergy DONE: 72 restos | 8 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Issy-les-Moulineaux (queries: 14)
+============================================================
+  > restaurant Issy-les-Moulineaux
+    0 nouveaux
+  > pizzeria Issy-les-Moulineaux
+    0 nouveaux
+  > brasserie Issy-les-Moulineaux
+    0 nouveaux
+  > bistrot Issy-les-Moulineaux
+    0 nouveaux
+  > restaurant gastronomique Issy-les-Moulineaux
+    0 nouveaux
+  > restaurant chinois Issy-les-Moulineaux
+    0 nouveaux
+  > restaurant japonais Issy-les-Moulineaux
+    0 nouveaux
+  > sushi Issy-les-Moulineaux
+    0 nouveaux
+  > restaurant marocain Issy-les-Moulineaux
+    0 nouveaux
+  > restaurant indien Issy-les-Moulineaux
+    0 nouveaux
+  > restaurant turc Issy-les-Moulineaux
+    0 nouveaux
+  > kebab Issy-les-Moulineaux
+    0 nouveaux
+  > restaurant africain Issy-les-Moulineaux
+    0 nouveaux
+  > restaurant libanais Issy-les-Moulineaux
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Issy-les-Moulineaux DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Levallois-Perret (queries: 14)
+============================================================
+  > restaurant Levallois-Perret
+    0 nouveaux
+  > pizzeria Levallois-Perret
+    0 nouveaux
+  > brasserie Levallois-Perret
+    0 nouveaux
+  > bistrot Levallois-Perret
+    0 nouveaux
+  > restaurant gastronomique Levallois-Perret
+    0 nouveaux
+  > restaurant chinois Levallois-Perret
+    0 nouveaux
+  > restaurant japonais Levallois-Perret
+    0 nouveaux
+  > sushi Levallois-Perret
+    0 nouveaux
+  > restaurant marocain Levallois-Perret
+    0 nouveaux
+  > restaurant indien Levallois-Perret
+    0 nouveaux
+  > restaurant turc Levallois-Perret
+    6 nouveaux
+  > kebab Levallois-Perret
+    16 nouveaux
+  > restaurant africain Levallois-Perret
+    0 nouveaux
+  > restaurant libanais Levallois-Perret
+    2 nouveaux
+  -> 24 restos uniques. Extraction emails...
+  Levallois-Perret DONE: 24 restos | 2 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Neuilly-sur-Seine (queries: 14)
+============================================================
+  > restaurant Neuilly-sur-Seine
+    27 nouveaux
+  > pizzeria Neuilly-sur-Seine
+    15 nouveaux
+  > brasserie Neuilly-sur-Seine
+    11 nouveaux
+  > bistrot Neuilly-sur-Seine
+    5 nouveaux
+  > restaurant gastronomique Neuilly-sur-Seine
+    4 nouveaux
+  > restaurant chinois Neuilly-sur-Seine
+    21 nouveaux
+  > restaurant japonais Neuilly-sur-Seine
+    13 nouveaux
+  > sushi Neuilly-sur-Seine
+    7 nouveaux
+  > restaurant marocain Neuilly-sur-Seine
+    9 nouveaux
+  > restaurant indien Neuilly-sur-Seine
+    0 nouveaux
+  > restaurant turc Neuilly-sur-Seine
+    9 nouveaux
+  > kebab Neuilly-sur-Seine
+    0 nouveaux
+  > restaurant africain Neuilly-sur-Seine
+    8 nouveaux
+  > restaurant libanais Neuilly-sur-Seine
+    3 nouveaux
+  -> 132 restos uniques. Extraction emails...
+  Neuilly-sur-Seine DONE: 132 restos | 22 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Antibes (queries: 14)
+============================================================
+  > restaurant Antibes
+    32 nouveaux
+  > pizzeria Antibes
+    28 nouveaux
+  > brasserie Antibes
+    18 nouveaux
+  > bistrot Antibes
+    0 nouveaux
+  > restaurant gastronomique Antibes
+    0 nouveaux
+  > restaurant chinois Antibes
+    0 nouveaux
+  > restaurant japonais Antibes
+    0 nouveaux
+  > sushi Antibes
+    0 nouveaux
+  > restaurant marocain Antibes
+    0 nouveaux
+  > restaurant indien Antibes
+    0 nouveaux
+  > restaurant turc Antibes
+    0 nouveaux
+  > kebab Antibes
+    0 nouveaux
+  > restaurant africain Antibes
+    0 nouveaux
+  > restaurant libanais Antibes
+    0 nouveaux
+  -> 78 restos uniques. Extraction emails...
+  Antibes DONE: 78 restos | 9 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Cagnes-sur-Mer (queries: 14)
+============================================================
+  > restaurant Cagnes-sur-Mer
+    0 nouveaux
+  > pizzeria Cagnes-sur-Mer
+    0 nouveaux
+  > brasserie Cagnes-sur-Mer
+    0 nouveaux
+  > bistrot Cagnes-sur-Mer
+    0 nouveaux
+  > restaurant gastronomique Cagnes-sur-Mer
+    0 nouveaux
+  > restaurant chinois Cagnes-sur-Mer
+    0 nouveaux
+  > restaurant japonais Cagnes-sur-Mer
+    0 nouveaux
+  > sushi Cagnes-sur-Mer
+    0 nouveaux
+  > restaurant marocain Cagnes-sur-Mer
+    0 nouveaux
+  > restaurant indien Cagnes-sur-Mer
+    0 nouveaux
+  > restaurant turc Cagnes-sur-Mer
+    0 nouveaux
+  > kebab Cagnes-sur-Mer
+    0 nouveaux
+  > restaurant africain Cagnes-sur-Mer
+    0 nouveaux
+  > restaurant libanais Cagnes-sur-Mer
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Cagnes-sur-Mer DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Frejus (queries: 14)
+============================================================
+  > restaurant Frejus
+    0 nouveaux
+  > pizzeria Frejus
+    0 nouveaux
+  > brasserie Frejus
+    0 nouveaux
+  > bistrot Frejus
+    0 nouveaux
+  > restaurant gastronomique Frejus
+    0 nouveaux
+  > restaurant chinois Frejus
+    0 nouveaux
+  > restaurant japonais Frejus
+    0 nouveaux
+  > sushi Frejus
+    0 nouveaux
+  > restaurant marocain Frejus
+    0 nouveaux
+  > restaurant indien Frejus
+    2 nouveaux
+  > restaurant turc Frejus
+    0 nouveaux
+  > kebab Frejus
+    28 nouveaux
+  > restaurant africain Frejus
+    7 nouveaux
+  > restaurant libanais Frejus
+    0 nouveaux
+  -> 37 restos uniques. Extraction emails...
+  Frejus DONE: 37 restos | 6 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Hyeres (queries: 14)
+============================================================
+  > restaurant Hyeres
+    31 nouveaux
+  > pizzeria Hyeres
+    27 nouveaux
+  > brasserie Hyeres
+    18 nouveaux
+  > bistrot Hyeres
+    0 nouveaux
+  > restaurant gastronomique Hyeres
+    0 nouveaux
+  > restaurant chinois Hyeres
+    0 nouveaux
+  > restaurant japonais Hyeres
+    0 nouveaux
+  > sushi Hyeres
+    0 nouveaux
+  > restaurant marocain Hyeres
+    0 nouveaux
+  > restaurant indien Hyeres
+    0 nouveaux
+  > restaurant turc Hyeres
+    0 nouveaux
+  > kebab Hyeres
+    0 nouveaux
+  > restaurant africain Hyeres
+    0 nouveaux
+  > restaurant libanais Hyeres
+    0 nouveaux
+  -> 76 restos uniques. Extraction emails...
+  Hyeres DONE: 76 restos | 16 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  La Seyne-sur-Mer (queries: 14)
+============================================================
+  > restaurant La Seyne-sur-Mer
+    0 nouveaux
+  > pizzeria La Seyne-sur-Mer
+    0 nouveaux
+  > brasserie La Seyne-sur-Mer
+    0 nouveaux
+  > bistrot La Seyne-sur-Mer
+    0 nouveaux
+  > restaurant gastronomique La Seyne-sur-Mer
+    0 nouveaux
+  > restaurant chinois La Seyne-sur-Mer
+    0 nouveaux
+  > restaurant japonais La Seyne-sur-Mer
+    0 nouveaux
+  > sushi La Seyne-sur-Mer
+    0 nouveaux
+  > restaurant marocain La Seyne-sur-Mer
+    0 nouveaux
+  > restaurant indien La Seyne-sur-Mer
+    0 nouveaux
+  > restaurant turc La Seyne-sur-Mer
+    0 nouveaux
+  > kebab La Seyne-sur-Mer
+    0 nouveaux
+  > restaurant africain La Seyne-sur-Mer
+    0 nouveaux
+  > restaurant libanais La Seyne-sur-Mer
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  La Seyne-sur-Mer DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Beziers (queries: 14)
+============================================================
+  > restaurant Beziers
+    0 nouveaux
+  > pizzeria Beziers
+    0 nouveaux
+  > brasserie Beziers
+    0 nouveaux
+  > bistrot Beziers
+    0 nouveaux
+  > restaurant gastronomique Beziers
+    0 nouveaux
+  > restaurant chinois Beziers
+    0 nouveaux
+  > restaurant japonais Beziers
+    0 nouveaux
+  > sushi Beziers
+    0 nouveaux
+  > restaurant marocain Beziers
+    0 nouveaux
+  > restaurant indien Beziers
+    0 nouveaux
+  > restaurant turc Beziers
+    11 nouveaux
+  > kebab Beziers
+    16 nouveaux
+  > restaurant africain Beziers
+    1 nouveaux
+  > restaurant libanais Beziers
+    2 nouveaux
+  -> 30 restos uniques. Extraction emails...
+  Beziers DONE: 30 restos | 7 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Narbonne (queries: 14)
+============================================================
+  > restaurant Narbonne
+    29 nouveaux
+  > pizzeria Narbonne
+    24 nouveaux
+  > brasserie Narbonne
+    16 nouveaux
+  > bistrot Narbonne
+    1 nouveaux
+  > restaurant gastronomique Narbonne
+    0 nouveaux
+  > restaurant chinois Narbonne
+    0 nouveaux
+  > restaurant japonais Narbonne
+    0 nouveaux
+  > sushi Narbonne
+    0 nouveaux
+  > restaurant marocain Narbonne
+    0 nouveaux
+  > restaurant indien Narbonne
+    0 nouveaux
+  > restaurant turc Narbonne
+    0 nouveaux
+  > kebab Narbonne
+    0 nouveaux
+  > restaurant africain Narbonne
+    0 nouveaux
+  > restaurant libanais Narbonne
+    0 nouveaux
+  -> 70 restos uniques. Extraction emails...
+  Narbonne DONE: 70 restos | 7 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Sete (queries: 14)
+============================================================
+  > restaurant Sete
+    0 nouveaux
+  > pizzeria Sete
+    0 nouveaux
+  > brasserie Sete
+    0 nouveaux
+  > bistrot Sete
+    0 nouveaux
+  > restaurant gastronomique Sete
+    0 nouveaux
+  > restaurant chinois Sete
+    0 nouveaux
+  > restaurant japonais Sete
+    0 nouveaux
+  > sushi Sete
+    0 nouveaux
+  > restaurant marocain Sete
+    0 nouveaux
+  > restaurant indien Sete
+    0 nouveaux
+  > restaurant turc Sete
+    0 nouveaux
+  > kebab Sete
+    0 nouveaux
+  > restaurant africain Sete
+    0 nouveaux
+  > restaurant libanais Sete
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Sete DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Beaucaire (queries: 14)
+============================================================
+  > restaurant Beaucaire
+    0 nouveaux
+  > pizzeria Beaucaire
+    0 nouveaux
+  > brasserie Beaucaire
+    0 nouveaux
+  > bistrot Beaucaire
+    0 nouveaux
+  > restaurant gastronomique Beaucaire
+    0 nouveaux
+  > restaurant chinois Beaucaire
+    0 nouveaux
+  > restaurant japonais Beaucaire
+    0 nouveaux
+  > sushi Beaucaire
+    0 nouveaux
+  > restaurant marocain Beaucaire
+    0 nouveaux
+  > restaurant indien Beaucaire
+    17 nouveaux
+  > restaurant turc Beaucaire
+    4 nouveaux
+  > kebab Beaucaire
+    5 nouveaux
+  > restaurant africain Beaucaire
+    2 nouveaux
+  > restaurant libanais Beaucaire
+    10 nouveaux
+  -> 38 restos uniques. Extraction emails...
+  Beaucaire DONE: 38 restos | 8 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Tarbes (queries: 14)
+============================================================
+  > restaurant Tarbes
+    26 nouveaux
+  > pizzeria Tarbes
+    24 nouveaux
+  > brasserie Tarbes
+    9 nouveaux
+  > bistrot Tarbes
+    4 nouveaux
+  > restaurant gastronomique Tarbes
+    7 nouveaux
+  > restaurant chinois Tarbes
+    17 nouveaux
+  > restaurant japonais Tarbes
+    1 nouveaux
+  > sushi Tarbes
+    0 nouveaux
+  > restaurant marocain Tarbes
+    2 nouveaux
+  > restaurant indien Tarbes
+    0 nouveaux
+  > restaurant turc Tarbes
+    4 nouveaux
+  > kebab Tarbes
+    17 nouveaux
+  > restaurant africain Tarbes
+    1 nouveaux
+  > restaurant libanais Tarbes
+    0 nouveaux
+  -> 112 restos uniques. Extraction emails...
+  Tarbes DONE: 112 restos | 17 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Pau (queries: 14)
+============================================================
+  > restaurant Pau
+    29 nouveaux
+  > pizzeria Pau
+    32 nouveaux
+  > brasserie Pau
+    20 nouveaux
+  > bistrot Pau
+    0 nouveaux
+  > restaurant gastronomique Pau
+    0 nouveaux
+  > restaurant chinois Pau
+    0 nouveaux
+  > restaurant japonais Pau
+    0 nouveaux
+  > sushi Pau
+    0 nouveaux
+  > restaurant marocain Pau
+    0 nouveaux
+  > restaurant indien Pau
+    0 nouveaux
+  > restaurant turc Pau
+    0 nouveaux
+  > kebab Pau
+    0 nouveaux
+  > restaurant africain Pau
+    0 nouveaux
+  > restaurant libanais Pau
+    0 nouveaux
+  -> 81 restos uniques. Extraction emails...
+  Pau DONE: 81 restos | 10 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Bayonne (queries: 14)
+============================================================
+  > restaurant Bayonne
+    0 nouveaux
+  > pizzeria Bayonne
+    0 nouveaux
+  > brasserie Bayonne
+    0 nouveaux
+  > bistrot Bayonne
+    0 nouveaux
+  > restaurant gastronomique Bayonne
+    0 nouveaux
+  > restaurant chinois Bayonne
+    0 nouveaux
+  > restaurant japonais Bayonne
+    0 nouveaux
+  > sushi Bayonne
+    0 nouveaux
+  > restaurant marocain Bayonne
+    0 nouveaux
+  > restaurant indien Bayonne
+    0 nouveaux
+  > restaurant turc Bayonne
+    0 nouveaux
+  > kebab Bayonne
+    0 nouveaux
+  > restaurant africain Bayonne
+    0 nouveaux
+  > restaurant libanais Bayonne
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Bayonne DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Anglet (queries: 14)
+============================================================
+  > restaurant Anglet
+    0 nouveaux
+  > pizzeria Anglet
+    0 nouveaux
+  > brasserie Anglet
+    0 nouveaux
+  > bistrot Anglet
+    0 nouveaux
+  > restaurant gastronomique Anglet
+    0 nouveaux
+  > restaurant chinois Anglet
+    0 nouveaux
+  > restaurant japonais Anglet
+    4 nouveaux
+  > sushi Anglet
+    0 nouveaux
+  > restaurant marocain Anglet
+    2 nouveaux
+  > restaurant indien Anglet
+    8 nouveaux
+  > restaurant turc Anglet
+    0 nouveaux
+  > kebab Anglet
+    14 nouveaux
+  > restaurant africain Anglet
+    4 nouveaux
+  > restaurant libanais Anglet
+    0 nouveaux
+  -> 32 restos uniques. Extraction emails...
+  Anglet DONE: 32 restos | 4 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Saint-Jean-de-Luz (queries: 14)
+============================================================
+  > restaurant Saint-Jean-de-Luz
+    30 nouveaux
+  > pizzeria Saint-Jean-de-Luz
+    22 nouveaux
+  > brasserie Saint-Jean-de-Luz
+    10 nouveaux
+  > bistrot Saint-Jean-de-Luz
+    5 nouveaux
+  > restaurant gastronomique Saint-Jean-de-Luz
+    10 nouveaux
+  > restaurant chinois Saint-Jean-de-Luz
+    8 nouveaux
+  > restaurant japonais Saint-Jean-de-Luz
+    3 nouveaux
+  > sushi Saint-Jean-de-Luz
+    1 nouveaux
+  > restaurant marocain Saint-Jean-de-Luz
+    5 nouveaux
+  > restaurant indien Saint-Jean-de-Luz
+    5 nouveaux
+  > restaurant turc Saint-Jean-de-Luz
+    6 nouveaux
+  > kebab Saint-Jean-de-Luz
+    18 nouveaux
+  > restaurant africain Saint-Jean-de-Luz
+    3 nouveaux
+  > restaurant libanais Saint-Jean-de-Luz
+    0 nouveaux
+  -> 126 restos uniques. Extraction emails...
+  Saint-Jean-de-Luz DONE: 126 restos | 30 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Carcassonne (queries: 14)
+============================================================
+  > restaurant Carcassonne
+    29 nouveaux
+  > pizzeria Carcassonne
+    26 nouveaux
+  > brasserie Carcassonne
+    16 nouveaux
+  > bistrot Carcassonne
+    0 nouveaux
+  > restaurant gastronomique Carcassonne
+    10 nouveaux
+  > restaurant chinois Carcassonne
+    21 nouveaux
+  > restaurant japonais Carcassonne
+    1 nouveaux
+  > sushi Carcassonne
+    4 nouveaux
+  > restaurant marocain Carcassonne
+    3 nouveaux
+  > restaurant indien Carcassonne
+    1 nouveaux
+  > restaurant turc Carcassonne
+    3 nouveaux
+  > kebab Carcassonne
+    17 nouveaux
+  > restaurant africain Carcassonne
+    4 nouveaux
+  > restaurant libanais Carcassonne
+    0 nouveaux
+  -> 135 restos uniques. Extraction emails...
+  Carcassonne DONE: 135 restos | 23 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Albi (queries: 14)
+============================================================
+  > restaurant Albi
+    27 nouveaux
+  > pizzeria Albi
+    21 nouveaux
+  > brasserie Albi
+    19 nouveaux
+  > bistrot Albi
+    6 nouveaux
+  > restaurant gastronomique Albi
+    0 nouveaux
+  > restaurant chinois Albi
+    0 nouveaux
+  > restaurant japonais Albi
+    0 nouveaux
+  > sushi Albi
+    0 nouveaux
+  > restaurant marocain Albi
+    0 nouveaux
+  > restaurant indien Albi
+    0 nouveaux
+  > restaurant turc Albi
+    0 nouveaux
+  > kebab Albi
+    0 nouveaux
+  > restaurant africain Albi
+    0 nouveaux
+  > restaurant libanais Albi
+    0 nouveaux
+  -> 73 restos uniques. Extraction emails...
+  Albi DONE: 73 restos | 11 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Cahors (queries: 14)
+============================================================
+  > restaurant Cahors
+    0 nouveaux
+  > pizzeria Cahors
+    0 nouveaux
+  > brasserie Cahors
+    0 nouveaux
+  > bistrot Cahors
+    0 nouveaux
+  > restaurant gastronomique Cahors
+    0 nouveaux
+  > restaurant chinois Cahors
+    0 nouveaux
+  > restaurant japonais Cahors
+    0 nouveaux
+  > sushi Cahors
+    0 nouveaux
+  > restaurant marocain Cahors
+    0 nouveaux
+  > restaurant indien Cahors
+    0 nouveaux
+  > restaurant turc Cahors
+    0 nouveaux
+  > kebab Cahors
+    0 nouveaux
+  > restaurant africain Cahors
+    0 nouveaux
+  > restaurant libanais Cahors
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Cahors DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Rodez (queries: 14)
+============================================================
+  > restaurant Rodez
+    0 nouveaux
+  > pizzeria Rodez
+    0 nouveaux
+  > brasserie Rodez
+    0 nouveaux
+  > bistrot Rodez
+    0 nouveaux
+  > restaurant gastronomique Rodez
+    0 nouveaux
+  > restaurant chinois Rodez
+    0 nouveaux
+  > restaurant japonais Rodez
+    0 nouveaux
+  > sushi Rodez
+    0 nouveaux
+  > restaurant marocain Rodez
+    0 nouveaux
+  > restaurant indien Rodez
+    2 nouveaux
+  > restaurant turc Rodez
+    18 nouveaux
+  > kebab Rodez
+    7 nouveaux
+  > restaurant africain Rodez
+    2 nouveaux
+  > restaurant libanais Rodez
+    0 nouveaux
+  -> 29 restos uniques. Extraction emails...
+  Rodez DONE: 29 restos | 2 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Montauban (queries: 14)
+============================================================
+  > restaurant Montauban
+    29 nouveaux
+  > pizzeria Montauban
+    25 nouveaux
+  > brasserie Montauban
+    17 nouveaux
+  > bistrot Montauban
+    5 nouveaux
+  > restaurant gastronomique Montauban
+    0 nouveaux
+  > restaurant chinois Montauban
+    0 nouveaux
+  > restaurant japonais Montauban
+    0 nouveaux
+  > sushi Montauban
+    0 nouveaux
+  > restaurant marocain Montauban
+    0 nouveaux
+  > restaurant indien Montauban
+    0 nouveaux
+  > restaurant turc Montauban
+    0 nouveaux
+  > kebab Montauban
+    0 nouveaux
+  > restaurant africain Montauban
+    0 nouveaux
+  > restaurant libanais Montauban
+    0 nouveaux
+  -> 76 restos uniques. Extraction emails...
+  Montauban DONE: 76 restos | 10 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Agen (queries: 14)
+============================================================
+  > restaurant Agen
+    0 nouveaux
+  > pizzeria Agen
+    0 nouveaux
+  > brasserie Agen
+    0 nouveaux
+  > bistrot Agen
+    0 nouveaux
+  > restaurant gastronomique Agen
+    0 nouveaux
+  > restaurant chinois Agen
+    0 nouveaux
+  > restaurant japonais Agen
+    0 nouveaux
+  > sushi Agen
+    0 nouveaux
+  > restaurant marocain Agen
+    0 nouveaux
+  > restaurant indien Agen
+    0 nouveaux
+  > restaurant turc Agen
+    0 nouveaux
+  > kebab Agen
+    0 nouveaux
+  > restaurant africain Agen
+    0 nouveaux
+  > restaurant libanais Agen
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Agen DONE: 0 restos | 0 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Bergerac (queries: 14)
+============================================================
+  > restaurant Bergerac
+    0 nouveaux
+  > pizzeria Bergerac
+    0 nouveaux
+  > brasserie Bergerac
+    0 nouveaux
+  > bistrot Bergerac
+    0 nouveaux
+  > restaurant gastronomique Bergerac
+    0 nouveaux
+  > restaurant chinois Bergerac
+    0 nouveaux
+  > restaurant japonais Bergerac
+    0 nouveaux
+  > sushi Bergerac
+    0 nouveaux
+  > restaurant marocain Bergerac
+    0 nouveaux
+  > restaurant indien Bergerac
+    3 nouveaux
+  > restaurant turc Bergerac
+    29 nouveaux
+  > kebab Bergerac
+    20 nouveaux
+  > restaurant africain Bergerac
+    0 nouveaux
+  > restaurant libanais Bergerac
+    2 nouveaux
+  -> 54 restos uniques. Extraction emails...
+  Bergerac DONE: 54 restos | 13 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Perigueux (queries: 14)
+============================================================
+  > restaurant Perigueux
+    24 nouveaux
+  > pizzeria Perigueux
+    23 nouveaux
+  > brasserie Perigueux
+    11 nouveaux
+  > bistrot Perigueux
+    6 nouveaux
+  > restaurant gastronomique Perigueux
+    8 nouveaux
+  > restaurant chinois Perigueux
+    9 nouveaux
+  > restaurant japonais Perigueux
+    2 nouveaux
+  > sushi Perigueux
+    0 nouveaux
+  > restaurant marocain Perigueux
+    5 nouveaux
+  > restaurant indien Perigueux
+    3 nouveaux
+  > restaurant turc Perigueux
+    5 nouveaux
+  > kebab Perigueux
+    21 nouveaux
+  > restaurant africain Perigueux
+    5 nouveaux
+  > restaurant libanais Perigueux
+    0 nouveaux
+  -> 122 restos uniques. Extraction emails...
+  Perigueux DONE: 122 restos | 30 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Brive-la-Gaillarde (queries: 14)
+============================================================
+  > restaurant Brive-la-Gaillarde
+    32 nouveaux
+  > pizzeria Brive-la-Gaillarde
+    19 nouveaux
+  > brasserie Brive-la-Gaillarde
+    13 nouveaux
+  > bistrot Brive-la-Gaillarde
+    2 nouveaux
+  > restaurant gastronomique Brive-la-Gaillarde
+    4 nouveaux
+  > restaurant chinois Brive-la-Gaillarde
+    13 nouveaux
+  > restaurant japonais Brive-la-Gaillarde
+    1 nouveaux
+  > sushi Brive-la-Gaillarde
+    4 nouveaux
+  > restaurant marocain Brive-la-Gaillarde
+    1 nouveaux
+  > restaurant indien Brive-la-Gaillarde
+    1 nouveaux
+  > restaurant turc Brive-la-Gaillarde
+    10 nouveaux
+  > kebab Brive-la-Gaillarde
+    10 nouveaux
+  > restaurant africain Brive-la-Gaillarde
+    2 nouveaux
+  > restaurant libanais Brive-la-Gaillarde
+    5 nouveaux
+  -> 117 restos uniques. Extraction emails...
+  Brive-la-Gaillarde DONE: 117 restos | 23 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Angouleme (queries: 14)
+============================================================
+  > restaurant Angouleme
+    28 nouveaux
+  > pizzeria Angouleme
+    23 nouveaux
+  > brasserie Angouleme
+    17 nouveaux
+  > bistrot Angouleme
+    3 nouveaux
+  > restaurant gastronomique Angouleme
+    6 nouveaux
+  > restaurant chinois Angouleme
+    14 nouveaux
+  > restaurant japonais Angouleme
+    1 nouveaux
+  > sushi Angouleme
+    0 nouveaux
+  > restaurant marocain Angouleme
+    1 nouveaux
+  > restaurant indien Angouleme
+    3 nouveaux
+  > restaurant turc Angouleme
+    3 nouveaux
+  > kebab Angouleme
+    18 nouveaux
+  > restaurant africain Angouleme
+    6 nouveaux
+  > restaurant libanais Angouleme
+    0 nouveaux
+  -> 123 restos uniques. Extraction emails...
+  Angouleme DONE: 123 restos | 28 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Niort (queries: 14)
+============================================================
+  > restaurant Niort
+    30 nouveaux
+  > pizzeria Niort
+    17 nouveaux
+  > brasserie Niort
+    14 nouveaux
+  > bistrot Niort
+    4 nouveaux
+  > restaurant gastronomique Niort
+    5 nouveaux
+  > restaurant chinois Niort
+    15 nouveaux
+  > restaurant japonais Niort
+    2 nouveaux
+  > sushi Niort
+    0 nouveaux
+  > restaurant marocain Niort
+    0 nouveaux
+  > restaurant indien Niort
+    1 nouveaux
+  > restaurant turc Niort
+    5 nouveaux
+  > kebab Niort
+    11 nouveaux
+  > restaurant africain Niort
+    3 nouveaux
+  > restaurant libanais Niort
+    2 nouveaux
+  -> 109 restos uniques. Extraction emails...
+  Niort DONE: 109 restos | 17 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  La Roche-sur-Yon (queries: 14)
+============================================================
+  > restaurant La Roche-sur-Yon
+    28 nouveaux
+  > pizzeria La Roche-sur-Yon
+    19 nouveaux
+  > brasserie La Roche-sur-Yon
+    12 nouveaux
+  > bistrot La Roche-sur-Yon
+    8 nouveaux
+  > restaurant gastronomique La Roche-sur-Yon
+    7 nouveaux
+  > restaurant chinois La Roche-sur-Yon
+    4 nouveaux
+  > restaurant japonais La Roche-sur-Yon
+    4 nouveaux
+  > sushi La Roche-sur-Yon
+    0 nouveaux
+  > restaurant marocain La Roche-sur-Yon
+    0 nouveaux
+  > restaurant indien La Roche-sur-Yon
+    0 nouveaux
+  > restaurant turc La Roche-sur-Yon
+    6 nouveaux
+  > kebab La Roche-sur-Yon
+    11 nouveaux
+  > restaurant africain La Roche-sur-Yon
+    2 nouveaux
+  > restaurant libanais La Roche-sur-Yon
+    0 nouveaux
+  -> 101 restos uniques. Extraction emails...
+  La Roche-sur-Yon DONE: 101 restos | 22 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Cholet (queries: 14)
+============================================================
+  > restaurant Cholet
+    30 nouveaux
+  > pizzeria Cholet
+    20 nouveaux
+  > brasserie Cholet
+    10 nouveaux
+  > bistrot Cholet
+    0 nouveaux
+  > restaurant gastronomique Cholet
+    7 nouveaux
+  > restaurant chinois Cholet
+    4 nouveaux
+  > restaurant japonais Cholet
+    3 nouveaux
+  > sushi Cholet
+    0 nouveaux
+  > restaurant marocain Cholet
+    0 nouveaux
+  > restaurant indien Cholet
+    0 nouveaux
+  > restaurant turc Cholet
+    4 nouveaux
+  > kebab Cholet
+    15 nouveaux
+  > restaurant africain Cholet
+    14 nouveaux
+  > restaurant libanais Cholet
+    10 nouveaux
+  -> 117 restos uniques. Extraction emails...
+  Cholet DONE: 117 restos | 18 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Saumur (queries: 14)
+============================================================
+  > restaurant Saumur
+    29 nouveaux
+  > pizzeria Saumur
+    19 nouveaux
+  > brasserie Saumur
+    10 nouveaux
+  > bistrot Saumur
+    4 nouveaux
+  > restaurant gastronomique Saumur
+    3 nouveaux
+  > restaurant chinois Saumur
+    6 nouveaux
+  > restaurant japonais Saumur
+    0 nouveaux
+  > sushi Saumur
+    0 nouveaux
+  > restaurant marocain Saumur
+    2 nouveaux
+  > restaurant indien Saumur
+    0 nouveaux
+  > restaurant turc Saumur
+    10 nouveaux
+  > kebab Saumur
+    0 nouveaux
+  > restaurant africain Saumur
+    1 nouveaux
+  > restaurant libanais Saumur
+    0 nouveaux
+  -> 84 restos uniques. Extraction emails...
+  Saumur DONE: 84 restos | 19 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Lorient (queries: 14)
+============================================================
+  > restaurant Lorient
+    29 nouveaux
+  > pizzeria Lorient
+    25 nouveaux
+  > brasserie Lorient
+    13 nouveaux
+  > bistrot Lorient
+    6 nouveaux
+  > restaurant gastronomique Lorient
+    8 nouveaux
+  > restaurant chinois Lorient
+    18 nouveaux
+  > restaurant japonais Lorient
+    5 nouveaux
+  > sushi Lorient
+    4 nouveaux
+  > restaurant marocain Lorient
+    1 nouveaux
+  > restaurant indien Lorient
+    3 nouveaux
+  > restaurant turc Lorient
+    10 nouveaux
+  > kebab Lorient
+    11 nouveaux
+  > restaurant africain Lorient
+    7 nouveaux
+  > restaurant libanais Lorient
+    0 nouveaux
+  -> 140 restos uniques. Extraction emails...
+  Lorient DONE: 140 restos | 20 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Vannes (queries: 14)
+============================================================
+  > restaurant Vannes
+    29 nouveaux
+  > pizzeria Vannes
+    23 nouveaux
+  > brasserie Vannes
+    21 nouveaux
+  > bistrot Vannes
+    6 nouveaux
+  > restaurant gastronomique Vannes
+    7 nouveaux
+  > restaurant chinois Vannes
+    11 nouveaux
+  > restaurant japonais Vannes
+    9 nouveaux
+  > sushi Vannes
+    1 nouveaux
+  > restaurant marocain Vannes
+    11 nouveaux
+  > restaurant indien Vannes
+    4 nouveaux
+  > restaurant turc Vannes
+    10 nouveaux
+  > kebab Vannes
+    4 nouveaux
+  > restaurant africain Vannes
+    0 nouveaux
+  > restaurant libanais Vannes
+    1 nouveaux
+  -> 137 restos uniques. Extraction emails...
+  Vannes DONE: 137 restos | 21 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Quimper (queries: 14)
+============================================================
+  > restaurant Quimper
+    29 nouveaux
+  > pizzeria Quimper
+    25 nouveaux
+  > brasserie Quimper
+    17 nouveaux
+  > bistrot Quimper
+    6 nouveaux
+  > restaurant gastronomique Quimper
+    6 nouveaux
+  > restaurant chinois Quimper
+    10 nouveaux
+  > restaurant japonais Quimper
+    5 nouveaux
+  > sushi Quimper
+    0 nouveaux
+  > restaurant marocain Quimper
+    2 nouveaux
+  > restaurant indien Quimper
+    2 nouveaux
+  > restaurant turc Quimper
+    10 nouveaux
+  > kebab Quimper
+    14 nouveaux
+  > restaurant africain Quimper
+    8 nouveaux
+  > restaurant libanais Quimper
+    1 nouveaux
+  -> 135 restos uniques. Extraction emails...
+  Quimper DONE: 135 restos | 27 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Saint-Brieuc (queries: 14)
+============================================================
+  > restaurant Saint-Brieuc
+    28 nouveaux
+  > pizzeria Saint-Brieuc
+    20 nouveaux
+  > brasserie Saint-Brieuc
+    8 nouveaux
+  > bistrot Saint-Brieuc
+    2 nouveaux
+  > restaurant gastronomique Saint-Brieuc
+    9 nouveaux
+  > restaurant chinois Saint-Brieuc
+    9 nouveaux
+  > restaurant japonais Saint-Brieuc
+    3 nouveaux
+  > sushi Saint-Brieuc
+    4 nouveaux
+  > restaurant marocain Saint-Brieuc
+    7 nouveaux
+  > restaurant indien Saint-Brieuc
+    0 nouveaux
+  > restaurant turc Saint-Brieuc
+    5 nouveaux
+  > kebab Saint-Brieuc
+    15 nouveaux
+  > restaurant africain Saint-Brieuc
+    0 nouveaux
+  > restaurant libanais Saint-Brieuc
+    2 nouveaux
+  -> 112 restos uniques. Extraction emails...
+  Saint-Brieuc DONE: 112 restos | 18 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Lannion (queries: 14)
+============================================================
+  > restaurant Lannion
+    30 nouveaux
+  > pizzeria Lannion
+    18 nouveaux
+  > brasserie Lannion
+    6 nouveaux
+  > bistrot Lannion
+    2 nouveaux
+  > restaurant gastronomique Lannion
+    3 nouveaux
+  > restaurant chinois Lannion
+    0 nouveaux
+  > restaurant japonais Lannion
+    7 nouveaux
+  > sushi Lannion
+    0 nouveaux
+  > restaurant marocain Lannion
+    0 nouveaux
+  > restaurant indien Lannion
+    1 nouveaux
+  > restaurant turc Lannion
+    4 nouveaux
+  > kebab Lannion
+    1 nouveaux
+  > restaurant africain Lannion
+    4 nouveaux
+  > restaurant libanais Lannion
+    0 nouveaux
+  -> 76 restos uniques. Extraction emails...
+  Lannion DONE: 76 restos | 11 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Laval (queries: 14)
+============================================================
+  > restaurant Laval
+    26 nouveaux
+  > pizzeria Laval
+    17 nouveaux
+  > brasserie Laval
+    9 nouveaux
+  > bistrot Laval
+    5 nouveaux
+  > restaurant gastronomique Laval
+    9 nouveaux
+  > restaurant chinois Laval
+    5 nouveaux
+  > restaurant japonais Laval
+    2 nouveaux
+  > sushi Laval
+    0 nouveaux
+  > restaurant marocain Laval
+    3 nouveaux
+  > restaurant indien Laval
+    9 nouveaux
+  > restaurant turc Laval
+    27 nouveaux
+  > kebab Laval
+    13 nouveaux
+  > restaurant africain Laval
+    1 nouveaux
+  > restaurant libanais Laval
+    25 nouveaux
+  -> 151 restos uniques. Extraction emails...
+  Laval DONE: 151 restos | 20 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Alencon (queries: 14)
+============================================================
+  > restaurant Alencon
+    25 nouveaux
+  > pizzeria Alencon
+    16 nouveaux
+  > brasserie Alencon
+    9 nouveaux
+  > bistrot Alencon
+    0 nouveaux
+  > restaurant gastronomique Alencon
+    7 nouveaux
+  > restaurant chinois Alencon
+    5 nouveaux
+  > restaurant japonais Alencon
+    0 nouveaux
+  > sushi Alencon
+    0 nouveaux
+  > restaurant marocain Alencon
+    0 nouveaux
+  > restaurant indien Alencon
+    0 nouveaux
+  > restaurant turc Alencon
+    9 nouveaux
+  > kebab Alencon
+    2 nouveaux
+  > restaurant africain Alencon
+    0 nouveaux
+  > restaurant libanais Alencon
+    0 nouveaux
+  -> 73 restos uniques. Extraction emails...
+  Alencon DONE: 73 restos | 8 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Cherbourg-en-Cotentin (queries: 14)
+============================================================
+  > restaurant Cherbourg-en-Cotentin
+    31 nouveaux
+  > pizzeria Cherbourg-en-Cotentin
+    13 nouveaux
+  > brasserie Cherbourg-en-Cotentin
+    10 nouveaux
+  > bistrot Cherbourg-en-Cotentin
+    3 nouveaux
+  > restaurant gastronomique Cherbourg-en-Cotentin
+    9 nouveaux
+  > restaurant chinois Cherbourg-en-Cotentin
+    9 nouveaux
+  > restaurant japonais Cherbourg-en-Cotentin
+    1 nouveaux
+  > sushi Cherbourg-en-Cotentin
+    0 nouveaux
+  > restaurant marocain Cherbourg-en-Cotentin
+    3 nouveaux
+  > restaurant indien Cherbourg-en-Cotentin
+    1 nouveaux
+  > restaurant turc Cherbourg-en-Cotentin
+    9 nouveaux
+  > kebab Cherbourg-en-Cotentin
+    8 nouveaux
+  > restaurant africain Cherbourg-en-Cotentin
+    4 nouveaux
+  > restaurant libanais Cherbourg-en-Cotentin
+    0 nouveaux
+  -> 101 restos uniques. Extraction emails...
+  Cherbourg-en-Cotentin DONE: 101 restos | 27 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Saint-Lo (queries: 14)
+============================================================
+  > restaurant Saint-Lo
+    28 nouveaux
+  > pizzeria Saint-Lo
+    7 nouveaux
+  > brasserie Saint-Lo
+    9 nouveaux
+  > bistrot Saint-Lo
+    2 nouveaux
+  > restaurant gastronomique Saint-Lo
+    2 nouveaux
+  > restaurant chinois Saint-Lo
+    1 nouveaux
+  > restaurant japonais Saint-Lo
+    0 nouveaux
+  > sushi Saint-Lo
+    0 nouveaux
+  > restaurant marocain Saint-Lo
+    1 nouveaux
+  > restaurant indien Saint-Lo
+    1 nouveaux
+  > restaurant turc Saint-Lo
+    3 nouveaux
+  > kebab Saint-Lo
+    3 nouveaux
+  > restaurant africain Saint-Lo
+    0 nouveaux
+  > restaurant libanais Saint-Lo
+    1 nouveaux
+  -> 58 restos uniques. Extraction emails...
+  Saint-Lo DONE: 58 restos | 5 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Calais (queries: 14)
+============================================================
+  > restaurant Calais
+    28 nouveaux
+  > pizzeria Calais
+    14 nouveaux
+  > brasserie Calais
+    6 nouveaux
+  > bistrot Calais
+    5 nouveaux
+  > restaurant gastronomique Calais
+    6 nouveaux
+  > restaurant chinois Calais
+    7 nouveaux
+  > restaurant japonais Calais
+    0 nouveaux
+  > sushi Calais
+    0 nouveaux
+  > restaurant marocain Calais
+    1 nouveaux
+  > restaurant indien Calais
+    2 nouveaux
+  > restaurant turc Calais
+    3 nouveaux
+  > kebab Calais
+    20 nouveaux
+  > restaurant africain Calais
+    1 nouveaux
+  > restaurant libanais Calais
+    14 nouveaux
+  -> 107 restos uniques. Extraction emails...
+  Calais DONE: 107 restos | 21 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Boulogne-sur-Mer (queries: 14)
+============================================================
+  > restaurant Boulogne-sur-Mer
+    31 nouveaux
+  > pizzeria Boulogne-sur-Mer
+    23 nouveaux
+  > brasserie Boulogne-sur-Mer
+    6 nouveaux
+  > bistrot Boulogne-sur-Mer
+    2 nouveaux
+  > restaurant gastronomique Boulogne-sur-Mer
+    3 nouveaux
+  > restaurant chinois Boulogne-sur-Mer
+    4 nouveaux
+  > restaurant japonais Boulogne-sur-Mer
+    1 nouveaux
+  > sushi Boulogne-sur-Mer
+    0 nouveaux
+  > restaurant marocain Boulogne-sur-Mer
+    3 nouveaux
+  > restaurant indien Boulogne-sur-Mer
+    0 nouveaux
+  > restaurant turc Boulogne-sur-Mer
+    4 nouveaux
+  > kebab Boulogne-sur-Mer
+    13 nouveaux
+  > restaurant africain Boulogne-sur-Mer
+    8 nouveaux
+  > restaurant libanais Boulogne-sur-Mer
+    0 nouveaux
+  -> 98 restos uniques. Extraction emails...
+  Boulogne-sur-Mer DONE: 98 restos | 25 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Dunkerque (queries: 14)
+============================================================
+  > restaurant Dunkerque
+    29 nouveaux
+  > pizzeria Dunkerque
+    27 nouveaux
+  > brasserie Dunkerque
+    13 nouveaux
+  > bistrot Dunkerque
+    12 nouveaux
+  > restaurant gastronomique Dunkerque
+    10 nouveaux
+  > restaurant chinois Dunkerque
+    12 nouveaux
+  > restaurant japonais Dunkerque
+    1 nouveaux
+  > sushi Dunkerque
+    2 nouveaux
+  > restaurant marocain Dunkerque
+    4 nouveaux
+  > restaurant indien Dunkerque
+    3 nouveaux
+  > restaurant turc Dunkerque
+    1 nouveaux
+  > kebab Dunkerque
+    22 nouveaux
+  > restaurant africain Dunkerque
+    6 nouveaux
+  > restaurant libanais Dunkerque
+    0 nouveaux
+  -> 142 restos uniques. Extraction emails...
+  Dunkerque DONE: 142 restos | 17 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Roubaix (queries: 14)
+============================================================
+  > restaurant Roubaix
+    29 nouveaux
+  > pizzeria Roubaix
+    26 nouveaux
+  > brasserie Roubaix
+    18 nouveaux
+  > bistrot Roubaix
+    6 nouveaux
+  > restaurant gastronomique Roubaix
+    6 nouveaux
+  > restaurant chinois Roubaix
+    3 nouveaux
+  > restaurant japonais Roubaix
+    6 nouveaux
+  > sushi Roubaix
+    1 nouveaux
+  > restaurant marocain Roubaix
+    3 nouveaux
+  > restaurant indien Roubaix
+    1 nouveaux
+  > restaurant turc Roubaix
+    15 nouveaux
+  > kebab Roubaix
+    13 nouveaux
+  > restaurant africain Roubaix
+    11 nouveaux
+  > restaurant libanais Roubaix
+    10 nouveaux
+  -> 148 restos uniques. Extraction emails...
+  Roubaix DONE: 148 restos | 25 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Tourcoing (queries: 14)
+============================================================
+  > restaurant Tourcoing
+    30 nouveaux
+  > pizzeria Tourcoing
+    24 nouveaux
+  > brasserie Tourcoing
+    16 nouveaux
+  > bistrot Tourcoing
+    2 nouveaux
+  > restaurant gastronomique Tourcoing
+    1 nouveaux
+  > restaurant chinois Tourcoing
+    2 nouveaux
+  > restaurant japonais Tourcoing
+    5 nouveaux
+  > sushi Tourcoing
+    0 nouveaux
+  > restaurant marocain Tourcoing
+    4 nouveaux
+  > restaurant indien Tourcoing
+    4 nouveaux
+  > restaurant turc Tourcoing
+    7 nouveaux
+  > kebab Tourcoing
+    13 nouveaux
+  > restaurant africain Tourcoing
+    10 nouveaux
+  > restaurant libanais Tourcoing
+    1 nouveaux
+  -> 119 restos uniques. Extraction emails...
+  Tourcoing DONE: 119 restos | 18 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Valenciennes (queries: 14)
+============================================================
+  > restaurant Valenciennes
+    29 nouveaux
+  > pizzeria Valenciennes
+    21 nouveaux
+  > brasserie Valenciennes
+    10 nouveaux
+  > bistrot Valenciennes
+    0 nouveaux
+  > restaurant gastronomique Valenciennes
+    5 nouveaux
+  > restaurant chinois Valenciennes
+    11 nouveaux
+  > restaurant japonais Valenciennes
+    11 nouveaux
+  > sushi Valenciennes
+    10 nouveaux
+  > restaurant marocain Valenciennes
+    0 nouveaux
+  > restaurant indien Valenciennes
+    4 nouveaux
+  > restaurant turc Valenciennes
+    10 nouveaux
+  > kebab Valenciennes
+    15 nouveaux
+  > restaurant africain Valenciennes
+    2 nouveaux
+  > restaurant libanais Valenciennes
+    1 nouveaux
+  -> 129 restos uniques. Extraction emails...
+  Valenciennes DONE: 129 restos | 34 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Arras (queries: 14)
+============================================================
+  > restaurant Arras
+    30 nouveaux
+  > pizzeria Arras
+    25 nouveaux
+  > brasserie Arras
+    10 nouveaux
+  > bistrot Arras
+    6 nouveaux
+  > restaurant gastronomique Arras
+    4 nouveaux
+  > restaurant chinois Arras
+    8 nouveaux
+  > restaurant japonais Arras
+    1 nouveaux
+  > sushi Arras
+    1 nouveaux
+  > restaurant marocain Arras
+    3 nouveaux
+  > restaurant indien Arras
+    1 nouveaux
+  > restaurant turc Arras
+    5 nouveaux
+  > kebab Arras
+    15 nouveaux
+  > restaurant africain Arras
+    3 nouveaux
+  > restaurant libanais Arras
+    0 nouveaux
+  -> 112 restos uniques. Extraction emails...
+  Arras DONE: 112 restos | 18 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Beauvais (queries: 14)
+============================================================
+  > restaurant Beauvais
+    24 nouveaux
+  > pizzeria Beauvais
+    16 nouveaux
+  > brasserie Beauvais
+    10 nouveaux
+  > bistrot Beauvais
+    4 nouveaux
+  > restaurant gastronomique Beauvais
+    7 nouveaux
+  > restaurant chinois Beauvais
+    16 nouveaux
+  > restaurant japonais Beauvais
+    2 nouveaux
+  > sushi Beauvais
+    1 nouveaux
+  > restaurant marocain Beauvais
+    2 nouveaux
+  > restaurant indien Beauvais
+    1 nouveaux
+  > restaurant turc Beauvais
+    6 nouveaux
+  > kebab Beauvais
+    12 nouveaux
+  > restaurant africain Beauvais
+    3 nouveaux
+  > restaurant libanais Beauvais
+    0 nouveaux
+  -> 104 restos uniques. Extraction emails...
+  Beauvais DONE: 104 restos | 21 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Compiegne (queries: 14)
+============================================================
+  > restaurant Compiegne
+    27 nouveaux
+  > pizzeria Compiegne
+    20 nouveaux
+  > brasserie Compiegne
+    19 nouveaux
+  > bistrot Compiegne
+    1 nouveaux
+  > restaurant gastronomique Compiegne
+    8 nouveaux
+  > restaurant chinois Compiegne
+    4 nouveaux
+  > restaurant japonais Compiegne
+    5 nouveaux
+  > sushi Compiegne
+    0 nouveaux
+  > restaurant marocain Compiegne
+    0 nouveaux
+  > restaurant indien Compiegne
+    1 nouveaux
+  > restaurant turc Compiegne
+    9 nouveaux
+  > kebab Compiegne
+    6 nouveaux
+  > restaurant africain Compiegne
+    2 nouveaux
+  > restaurant libanais Compiegne
+    2 nouveaux
+  -> 104 restos uniques. Extraction emails...
+  Compiegne DONE: 104 restos | 23 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Mulhouse (queries: 14)
+============================================================
+  > restaurant Mulhouse
+    21 nouveaux
+  > pizzeria Mulhouse
+    22 nouveaux
+  > brasserie Mulhouse
+    16 nouveaux
+  > bistrot Mulhouse
+    8 nouveaux
+  > restaurant gastronomique Mulhouse
+    6 nouveaux
+  > restaurant chinois Mulhouse
+    25 nouveaux
+  > restaurant japonais Mulhouse
+    7 nouveaux
+  > sushi Mulhouse
+    0 nouveaux
+  > restaurant marocain Mulhouse
+    20 nouveaux
+  > restaurant indien Mulhouse
+    4 nouveaux
+  > restaurant turc Mulhouse
+    22 nouveaux
+  > kebab Mulhouse
+    10 nouveaux
+  > restaurant africain Mulhouse
+    10 nouveaux
+  > restaurant libanais Mulhouse
+    0 nouveaux
+  -> 171 restos uniques. Extraction emails...
+  Mulhouse DONE: 171 restos | 32 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Colmar (queries: 14)
+============================================================
+  > restaurant Colmar
+    29 nouveaux
+  > pizzeria Colmar
+    27 nouveaux
+  > brasserie Colmar
+    18 nouveaux
+  > bistrot Colmar
+    9 nouveaux
+  > restaurant gastronomique Colmar
+    9 nouveaux
+  > restaurant chinois Colmar
+    23 nouveaux
+  > restaurant japonais Colmar
+    1 nouveaux
+  > sushi Colmar
+    1 nouveaux
+  > restaurant marocain Colmar
+    4 nouveaux
+  > restaurant indien Colmar
+    0 nouveaux
+  > restaurant turc Colmar
+    22 nouveaux
+  > kebab Colmar
+    11 nouveaux
+  > restaurant africain Colmar
+    2 nouveaux
+  > restaurant libanais Colmar
+    0 nouveaux
+  -> 156 restos uniques. Extraction emails...
+  Colmar DONE: 156 restos | 30 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Belfort (queries: 14)
+============================================================
+  > restaurant Belfort
+    30 nouveaux
+  > pizzeria Belfort
+    22 nouveaux
+  > brasserie Belfort
+    11 nouveaux
+  > bistrot Belfort
+    7 nouveaux
+  > restaurant gastronomique Belfort
+    6 nouveaux
+  > restaurant chinois Belfort
+    6 nouveaux
+  > restaurant japonais Belfort
+    11 nouveaux
+  > sushi Belfort
+    0 nouveaux
+  > restaurant marocain Belfort
+    0 nouveaux
+  > restaurant indien Belfort
+    1 nouveaux
+  > restaurant turc Belfort
+    14 nouveaux
+  > kebab Belfort
+    19 nouveaux
+  > restaurant africain Belfort
+    4 nouveaux
+  > restaurant libanais Belfort
+    0 nouveaux
+  -> 131 restos uniques. Extraction emails...
+  Belfort DONE: 131 restos | 36 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Montbeliard (queries: 14)
+============================================================
+  > restaurant Montbeliard
+    27 nouveaux
+  > pizzeria Montbeliard
+    17 nouveaux
+  > brasserie Montbeliard
+    8 nouveaux
+  > bistrot Montbeliard
+    4 nouveaux
+  > restaurant gastronomique Montbeliard
+    5 nouveaux
+  > restaurant chinois Montbeliard
+    1 nouveaux
+  > restaurant japonais Montbeliard
+    0 nouveaux
+  > sushi Montbeliard
+    0 nouveaux
+  > restaurant marocain Montbeliard
+    0 nouveaux
+  > restaurant indien Montbeliard
+    0 nouveaux
+  > restaurant turc Montbeliard
+    0 nouveaux
+  > kebab Montbeliard
+    2 nouveaux
+  > restaurant africain Montbeliard
+    2 nouveaux
+  > restaurant libanais Montbeliard
+    5 nouveaux
+  -> 71 restos uniques. Extraction emails...
+  Montbeliard DONE: 71 restos | 13 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Vesoul (queries: 14)
+============================================================
+  > restaurant Vesoul
+    27 nouveaux
+  > pizzeria Vesoul
+    18 nouveaux
+  > brasserie Vesoul
+    14 nouveaux
+  > bistrot Vesoul
+    3 nouveaux
+  > restaurant gastronomique Vesoul
+    6 nouveaux
+  > restaurant chinois Vesoul
+    0 nouveaux
+  > restaurant japonais Vesoul
+    0 nouveaux
+  > sushi Vesoul
+    0 nouveaux
+  > restaurant marocain Vesoul
+    0 nouveaux
+  > restaurant indien Vesoul
+    2 nouveaux
+  > restaurant turc Vesoul
+    6 nouveaux
+  > kebab Vesoul
+    2 nouveaux
+  > restaurant africain Vesoul
+    7 nouveaux
+  > restaurant libanais Vesoul
+    1 nouveaux
+  -> 86 restos uniques. Extraction emails...
+  Vesoul DONE: 86 restos | 12 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Chalons-en-Champagne (queries: 14)
+============================================================
+  > restaurant Chalons-en-Champagne
+    28 nouveaux
+  > pizzeria Chalons-en-Champagne
+    22 nouveaux
+  > brasserie Chalons-en-Champagne
+    6 nouveaux
+  > bistrot Chalons-en-Champagne
+    1 nouveaux
+  > restaurant gastronomique Chalons-en-Champagne
+    0 nouveaux
+  > restaurant chinois Chalons-en-Champagne
+    6 nouveaux
+  > restaurant japonais Chalons-en-Champagne
+    1 nouveaux
+  > sushi Chalons-en-Champagne
+    1 nouveaux
+  > restaurant marocain Chalons-en-Champagne
+    3 nouveaux
+  > restaurant indien Chalons-en-Champagne
+    1 nouveaux
+  > restaurant turc Chalons-en-Champagne
+    6 nouveaux
+  > kebab Chalons-en-Champagne
+    4 nouveaux
+  > restaurant africain Chalons-en-Champagne
+    2 nouveaux
+  > restaurant libanais Chalons-en-Champagne
+    0 nouveaux
+  -> 81 restos uniques. Extraction emails...
+  Chalons-en-Champagne DONE: 81 restos | 18 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Troyes (queries: 14)
+============================================================
+  > restaurant Troyes
+    28 nouveaux
+  > pizzeria Troyes
+    24 nouveaux
+  > brasserie Troyes
+    14 nouveaux
+  > bistrot Troyes
+    7 nouveaux
+  > restaurant gastronomique Troyes
+    2 nouveaux
+  > restaurant chinois Troyes
+    16 nouveaux
+  > restaurant japonais Troyes
+    5 nouveaux
+  > sushi Troyes
+    0 nouveaux
+  > restaurant marocain Troyes
+    4 nouveaux
+  > restaurant indien Troyes
+    8 nouveaux
+  > restaurant turc Troyes
+    15 nouveaux
+  > kebab Troyes
+    13 nouveaux
+  > restaurant africain Troyes
+    2 nouveaux
+  > restaurant libanais Troyes
+    1 nouveaux
+  -> 139 restos uniques. Extraction emails...
+  Troyes DONE: 139 restos | 22 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Charleville-Mezieres (queries: 14)
+============================================================
+  > restaurant Charleville-Mezieres
+    24 nouveaux
+  > pizzeria Charleville-Mezieres
+    14 nouveaux
+  > brasserie Charleville-Mezieres
+    8 nouveaux
+  > bistrot Charleville-Mezieres
+    1 nouveaux
+  > restaurant gastronomique Charleville-Mezieres
+    5 nouveaux
+  > restaurant chinois Charleville-Mezieres
+    7 nouveaux
+  > restaurant japonais Charleville-Mezieres
+    2 nouveaux
+  > sushi Charleville-Mezieres
+    1 nouveaux
+  > restaurant marocain Charleville-Mezieres
+    3 nouveaux
+  > restaurant indien Charleville-Mezieres
+    0 nouveaux
+  > restaurant turc Charleville-Mezieres
+    5 nouveaux
+  > kebab Charleville-Mezieres
+    17 nouveaux
+  > restaurant africain Charleville-Mezieres
+    0 nouveaux
+  > restaurant libanais Charleville-Mezieres
+    5 nouveaux
+  -> 92 restos uniques. Extraction emails...
+  Charleville-Mezieres DONE: 92 restos | 13 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Verdun (queries: 14)
+============================================================
+  > restaurant Verdun
+    30 nouveaux
+  > pizzeria Verdun
+    18 nouveaux
+  > brasserie Verdun
+    10 nouveaux
+  > bistrot Verdun
+    7 nouveaux
+  > restaurant gastronomique Verdun
+    7 nouveaux
+  > restaurant chinois Verdun
+    0 nouveaux
+  > restaurant japonais Verdun
+    0 nouveaux
+  > sushi Verdun
+    0 nouveaux
+  > restaurant marocain Verdun
+    0 nouveaux
+  > restaurant indien Verdun
+    0 nouveaux
+  > restaurant turc Verdun
+    2 nouveaux
+  > kebab Verdun
+    12 nouveaux
+  > restaurant africain Verdun
+    1 nouveaux
+  > restaurant libanais Verdun
+    0 nouveaux
+  -> 87 restos uniques. Extraction emails...
+  Verdun DONE: 87 restos | 20 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Thionville (queries: 14)
+============================================================
+  > restaurant Thionville
+    33 nouveaux
+  > pizzeria Thionville
+    15 nouveaux
+  > brasserie Thionville
+    12 nouveaux
+  > bistrot Thionville
+    8 nouveaux
+  > restaurant gastronomique Thionville
+    7 nouveaux
+  > restaurant chinois Thionville
+    12 nouveaux
+  > restaurant japonais Thionville
+    10 nouveaux
+  > sushi Thionville
+    1 nouveaux
+  > restaurant marocain Thionville
+    7 nouveaux
+  > restaurant indien Thionville
+    3 nouveaux
+  > restaurant turc Thionville
+    7 nouveaux
+  > kebab Thionville
+    17 nouveaux
+  > restaurant africain Thionville
+    0 nouveaux
+  > restaurant libanais Thionville
+    1 nouveaux
+  -> 133 restos uniques. Extraction emails...
+  Thionville DONE: 133 restos | 18 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Forbach (queries: 14)
+============================================================
+  > restaurant Forbach
+    29 nouveaux
+  > pizzeria Forbach
+    5 nouveaux
+  > brasserie Forbach
+    1 nouveaux
+  > bistrot Forbach
+    9 nouveaux
+  > restaurant gastronomique Forbach
+    4 nouveaux
+  > restaurant chinois Forbach
+    0 nouveaux
+  > restaurant japonais Forbach
+    2 nouveaux
+  > sushi Forbach
+    0 nouveaux
+  > restaurant marocain Forbach
+    2 nouveaux
+  > restaurant indien Forbach
+    0 nouveaux
+  > restaurant turc Forbach
+    2 nouveaux
+  > kebab Forbach
+    12 nouveaux
+  > restaurant africain Forbach
+    4 nouveaux
+  > restaurant libanais Forbach
+    0 nouveaux
+  -> 70 restos uniques. Extraction emails...
+  Forbach DONE: 70 restos | 11 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Sarreguemines (queries: 14)
+============================================================
+  > restaurant Sarreguemines
+    29 nouveaux
+  > pizzeria Sarreguemines
+    17 nouveaux
+  > brasserie Sarreguemines
+    3 nouveaux
+  > bistrot Sarreguemines
+    3 nouveaux
+  > restaurant gastronomique Sarreguemines
+    0 nouveaux
+  > restaurant chinois Sarreguemines
+    0 nouveaux
+  > restaurant japonais Sarreguemines
+    0 nouveaux
+  > sushi Sarreguemines
+    2 nouveaux
+  > restaurant marocain Sarreguemines
+    2 nouveaux
+  > restaurant indien Sarreguemines
+    0 nouveaux
+  > restaurant turc Sarreguemines
+    8 nouveaux
+  > kebab Sarreguemines
+    10 nouveaux
+  > restaurant africain Sarreguemines
+    1 nouveaux
+  > restaurant libanais Sarreguemines
+    0 nouveaux
+  -> 75 restos uniques. Extraction emails...
+  Sarreguemines DONE: 75 restos | 9 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Saint-Die-des-Vosges (queries: 14)
+============================================================
+  > restaurant Saint-Die-des-Vosges
+    23 nouveaux
+  > pizzeria Saint-Die-des-Vosges
+    6 nouveaux
+  > brasserie Saint-Die-des-Vosges
+    2 nouveaux
+  > bistrot Saint-Die-des-Vosges
+    8 nouveaux
+  > restaurant gastronomique Saint-Die-des-Vosges
+    7 nouveaux
+  > restaurant chinois Saint-Die-des-Vosges
+    3 nouveaux
+  > restaurant japonais Saint-Die-des-Vosges
+    0 nouveaux
+  > sushi Saint-Die-des-Vosges
+    0 nouveaux
+  > restaurant marocain Saint-Die-des-Vosges
+    1 nouveaux
+  > restaurant indien Saint-Die-des-Vosges
+    0 nouveaux
+  > restaurant turc Saint-Die-des-Vosges
+    1 nouveaux
+  > kebab Saint-Die-des-Vosges
+    11 nouveaux
+  > restaurant africain Saint-Die-des-Vosges
+    3 nouveaux
+  > restaurant libanais Saint-Die-des-Vosges
+    1 nouveaux
+  -> 66 restos uniques. Extraction emails...
+  Saint-Die-des-Vosges DONE: 66 restos | 6 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Epinal (queries: 14)
+============================================================
+  > restaurant Epinal
+    28 nouveaux
+  > pizzeria Epinal
+    18 nouveaux
+  > brasserie Epinal
+    19 nouveaux
+  > bistrot Epinal
+    1 nouveaux
+  > restaurant gastronomique Epinal
+    6 nouveaux
+  > restaurant chinois Epinal
+    3 nouveaux
+  > restaurant japonais Epinal
+    1 nouveaux
+  > sushi Epinal
+    0 nouveaux
+  > restaurant marocain Epinal
+    3 nouveaux
+  > restaurant indien Epinal
+    4 nouveaux
+  > restaurant turc Epinal
+    11 nouveaux
+  > kebab Epinal
+    11 nouveaux
+  > restaurant africain Epinal
+    0 nouveaux
+  > restaurant libanais Epinal
+    0 nouveaux
+  -> 105 restos uniques. Extraction emails...
+  Epinal DONE: 105 restos | 17 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Auxerre (queries: 14)
+============================================================
+  > restaurant Auxerre
+    26 nouveaux
+  > pizzeria Auxerre
+    16 nouveaux
+  > brasserie Auxerre
+    12 nouveaux
+  > bistrot Auxerre
+    4 nouveaux
+  > restaurant gastronomique Auxerre
+    4 nouveaux
+  > restaurant chinois Auxerre
+    7 nouveaux
+  > restaurant japonais Auxerre
+    1 nouveaux
+  > sushi Auxerre
+    0 nouveaux
+  > restaurant marocain Auxerre
+    2 nouveaux
+  > restaurant indien Auxerre
+    2 nouveaux
+  > restaurant turc Auxerre
+    6 nouveaux
+  > kebab Auxerre
+    9 nouveaux
+  > restaurant africain Auxerre
+    2 nouveaux
+  > restaurant libanais Auxerre
+    0 nouveaux
+  -> 91 restos uniques. Extraction emails...
+  Auxerre DONE: 91 restos | 22 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Sens (queries: 14)
+============================================================
+  > restaurant Sens
+    25 nouveaux
+  > pizzeria Sens
+    21 nouveaux
+  > brasserie Sens
+    3 nouveaux
+  > bistrot Sens
+    1 nouveaux
+  > restaurant gastronomique Sens
+    10 nouveaux
+  > restaurant chinois Sens
+    7 nouveaux
+  > restaurant japonais Sens
+    0 nouveaux
+  > sushi Sens
+    0 nouveaux
+  > restaurant marocain Sens
+    3 nouveaux
+  > restaurant indien Sens
+    0 nouveaux
+  > restaurant turc Sens
+    5 nouveaux
+  > kebab Sens
+    9 nouveaux
+  > restaurant africain Sens
+    4 nouveaux
+  > restaurant libanais Sens
+    0 nouveaux
+  -> 88 restos uniques. Extraction emails...
+  Sens DONE: 88 restos | 18 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Nevers (queries: 14)
+============================================================
+  > restaurant Nevers
+    25 nouveaux
+  > pizzeria Nevers
+    17 nouveaux
+  > brasserie Nevers
+    15 nouveaux
+  > bistrot Nevers
+    2 nouveaux
+  > restaurant gastronomique Nevers
+    5 nouveaux
+  > restaurant chinois Nevers
+    4 nouveaux
+  > restaurant japonais Nevers
+    2 nouveaux
+  > sushi Nevers
+    0 nouveaux
+  > restaurant marocain Nevers
+    2 nouveaux
+  > restaurant indien Nevers
+    2 nouveaux
+  > restaurant turc Nevers
+    10 nouveaux
+  > kebab Nevers
+    10 nouveaux
+  > restaurant africain Nevers
+    0 nouveaux
+  > restaurant libanais Nevers
+    1 nouveaux
+  -> 95 restos uniques. Extraction emails...
+  Nevers DONE: 95 restos | 15 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Vichy (queries: 14)
+============================================================
+  > restaurant Vichy
+    27 nouveaux
+  > pizzeria Vichy
+    24 nouveaux
+  > brasserie Vichy
+    12 nouveaux
+  > bistrot Vichy
+    6 nouveaux
+  > restaurant gastronomique Vichy
+    4 nouveaux
+  > restaurant chinois Vichy
+    4 nouveaux
+  > restaurant japonais Vichy
+    0 nouveaux
+  > sushi Vichy
+    0 nouveaux
+  > restaurant marocain Vichy
+    0 nouveaux
+  > restaurant indien Vichy
+    3 nouveaux
+  > restaurant turc Vichy
+    9 nouveaux
+  > kebab Vichy
+    10 nouveaux
+  > restaurant africain Vichy
+    0 nouveaux
+  > restaurant libanais Vichy
+    0 nouveaux
+  -> 99 restos uniques. Extraction emails...
+  Vichy DONE: 99 restos | 15 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Moulins (queries: 14)
+============================================================
+  > restaurant Moulins
+    28 nouveaux
+  > pizzeria Moulins
+    19 nouveaux
+  > brasserie Moulins
+    14 nouveaux
+  > bistrot Moulins
+    1 nouveaux
+  > restaurant gastronomique Moulins
+    9 nouveaux
+  > restaurant chinois Moulins
+    5 nouveaux
+  > restaurant japonais Moulins
+    1 nouveaux
+  > sushi Moulins
+    0 nouveaux
+  > restaurant marocain Moulins
+    0 nouveaux
+  > restaurant indien Moulins
+    0 nouveaux
+  > restaurant turc Moulins
+    7 nouveaux
+  > kebab Moulins
+    4 nouveaux
+  > restaurant africain Moulins
+    0 nouveaux
+  > restaurant libanais Moulins
+    0 nouveaux
+  -> 88 restos uniques. Extraction emails...
+  Moulins DONE: 88 restos | 13 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Chartres (queries: 14)
+============================================================
+  > restaurant Chartres
+    29 nouveaux
+  > pizzeria Chartres
+    21 nouveaux
+  > brasserie Chartres
+    10 nouveaux
+  > bistrot Chartres
+    5 nouveaux
+  > restaurant gastronomique Chartres
+    7 nouveaux
+  > restaurant chinois Chartres
+    15 nouveaux
+  > restaurant japonais Chartres
+    4 nouveaux
+  > sushi Chartres
+    2 nouveaux
+  > restaurant marocain Chartres
+    8 nouveaux
+  > restaurant indien Chartres
+    1 nouveaux
+  > restaurant turc Chartres
+    11 nouveaux
+  > kebab Chartres
+    3 nouveaux
+  > restaurant africain Chartres
+    3 nouveaux
+  > restaurant libanais Chartres
+    1 nouveaux
+  -> 120 restos uniques. Extraction emails...
+  Chartres DONE: 120 restos | 30 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Bourges (queries: 14)
+============================================================
+  > restaurant Bourges
+    28 nouveaux
+  > pizzeria Bourges
+    20 nouveaux
+  > brasserie Bourges
+    16 nouveaux
+  > bistrot Bourges
+    2 nouveaux
+  > restaurant gastronomique Bourges
+    5 nouveaux
+  > restaurant chinois Bourges
+    15 nouveaux
+  > restaurant japonais Bourges
+    13 nouveaux
+  > sushi Bourges
+    2 nouveaux
+  > restaurant marocain Bourges
+    3 nouveaux
+  > restaurant indien Bourges
+    3 nouveaux
+  > restaurant turc Bourges
+    1 nouveaux
+  > kebab Bourges
+    14 nouveaux
+  > restaurant africain Bourges
+    1 nouveaux
+  > restaurant libanais Bourges
+    0 nouveaux
+  -> 123 restos uniques. Extraction emails...
+  Bourges DONE: 123 restos | 28 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Chateauroux (queries: 14)
+============================================================
+  > restaurant Chateauroux
+    28 nouveaux
+  > pizzeria Chateauroux
+    17 nouveaux
+  > brasserie Chateauroux
+    7 nouveaux
+  > bistrot Chateauroux
+    3 nouveaux
+  > restaurant gastronomique Chateauroux
+    4 nouveaux
+  > restaurant chinois Chateauroux
+    15 nouveaux
+  > restaurant japonais Chateauroux
+    0 nouveaux
+  > sushi Chateauroux
+    1 nouveaux
+  > restaurant marocain Chateauroux
+    2 nouveaux
+  > restaurant indien Chateauroux
+    0 nouveaux
+  > restaurant turc Chateauroux
+    9 nouveaux
+  > kebab Chateauroux
+    4 nouveaux
+  > restaurant africain Chateauroux
+    0 nouveaux
+  > restaurant libanais Chateauroux
+    11 nouveaux
+  -> 101 restos uniques. Extraction emails...
+  Chateauroux DONE: 101 restos | 9 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Blois (queries: 14)
+============================================================
+  > restaurant Blois
+    28 nouveaux
+  > pizzeria Blois
+    21 nouveaux
+  > brasserie Blois
+    12 nouveaux
+  > bistrot Blois
+    8 nouveaux
+  > restaurant gastronomique Blois
+    7 nouveaux
+  > restaurant chinois Blois
+    12 nouveaux
+  > restaurant japonais Blois
+    3 nouveaux
+  > sushi Blois
+    1 nouveaux
+  > restaurant marocain Blois
+    5 nouveaux
+  > restaurant indien Blois
+    0 nouveaux
+  > restaurant turc Blois
+    4 nouveaux
+  > kebab Blois
+    12 nouveaux
+  > restaurant africain Blois
+    8 nouveaux
+  > restaurant libanais Blois
+    0 nouveaux
+  -> 121 restos uniques. Extraction emails...
+  Blois DONE: 121 restos | 16 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Le Puy-en-Velay (queries: 14)
+============================================================
+  > restaurant Le Puy-en-Velay
+    29 nouveaux
+  > pizzeria Le Puy-en-Velay
+    18 nouveaux
+  > brasserie Le Puy-en-Velay
+    8 nouveaux
+  > bistrot Le Puy-en-Velay
+    3 nouveaux
+  > restaurant gastronomique Le Puy-en-Velay
+    5 nouveaux
+  > restaurant chinois Le Puy-en-Velay
+    7 nouveaux
+  > restaurant japonais Le Puy-en-Velay
+    1 nouveaux
+  > sushi Le Puy-en-Velay
+    0 nouveaux
+  > restaurant marocain Le Puy-en-Velay
+    1 nouveaux
+  > restaurant indien Le Puy-en-Velay
+    0 nouveaux
+  > restaurant turc Le Puy-en-Velay
+    5 nouveaux
+  > kebab Le Puy-en-Velay
+    12 nouveaux
+  > restaurant africain Le Puy-en-Velay
+    1 nouveaux
+  > restaurant libanais Le Puy-en-Velay
+    1 nouveaux
+  -> 91 restos uniques. Extraction emails...
+  Le Puy-en-Velay DONE: 91 restos | 22 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Albertville (queries: 14)
+============================================================
+  > restaurant Albertville
+    26 nouveaux
+  > pizzeria Albertville
+    14 nouveaux
+  > brasserie Albertville
+    11 nouveaux
+  > bistrot Albertville
+    5 nouveaux
+  > restaurant gastronomique Albertville
+    10 nouveaux
+  > restaurant chinois Albertville
+    1 nouveaux
+  > restaurant japonais Albertville
+    1 nouveaux
+  > sushi Albertville
+    1 nouveaux
+  > restaurant marocain Albertville
+    0 nouveaux
+  > restaurant indien Albertville
+    0 nouveaux
+  > restaurant turc Albertville
+    1 nouveaux
+  > kebab Albertville
+    9 nouveaux
+  > restaurant africain Albertville
+    1 nouveaux
+  > restaurant libanais Albertville
+    0 nouveaux
+  -> 80 restos uniques. Extraction emails...
+  Albertville DONE: 80 restos | 18 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Bourg-en-Bresse (queries: 14)
+============================================================
+  > restaurant Bourg-en-Bresse
+    27 nouveaux
+  > pizzeria Bourg-en-Bresse
+    21 nouveaux
+  > brasserie Bourg-en-Bresse
+    14 nouveaux
+  > bistrot Bourg-en-Bresse
+    2 nouveaux
+  > restaurant gastronomique Bourg-en-Bresse
+    10 nouveaux
+  > restaurant chinois Bourg-en-Bresse
+    1 nouveaux
+  > restaurant japonais Bourg-en-Bresse
+    8 nouveaux
+  > sushi Bourg-en-Bresse
+    0 nouveaux
+  > restaurant marocain Bourg-en-Bresse
+    2 nouveaux
+  > restaurant indien Bourg-en-Bresse
+    2 nouveaux
+  > restaurant turc Bourg-en-Bresse
+    11 nouveaux
+  > kebab Bourg-en-Bresse
+    5 nouveaux
+  > restaurant africain Bourg-en-Bresse
+    4 nouveaux
+  > restaurant libanais Bourg-en-Bresse
+    3 nouveaux
+  -> 110 restos uniques. Extraction emails...
+  Bourg-en-Bresse DONE: 110 restos | 24 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Roanne (queries: 14)
+============================================================
+  > restaurant Roanne
+    26 nouveaux
+  > pizzeria Roanne
+    11 nouveaux
+  > brasserie Roanne
+    11 nouveaux
+  > bistrot Roanne
+    0 nouveaux
+  > restaurant gastronomique Roanne
+    9 nouveaux
+  > restaurant chinois Roanne
+    2 nouveaux
+  > restaurant japonais Roanne
+    2 nouveaux
+  > sushi Roanne
+    1 nouveaux
+  > restaurant marocain Roanne
+    3 nouveaux
+  > restaurant indien Roanne
+    2 nouveaux
+  > restaurant turc Roanne
+    7 nouveaux
+  > kebab Roanne
+    20 nouveaux
+  > restaurant africain Roanne
+    0 nouveaux
+  > restaurant libanais Roanne
+    0 nouveaux
+  -> 94 restos uniques. Extraction emails...
+  Roanne DONE: 94 restos | 23 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Valence (queries: 14)
+============================================================
+  > restaurant Valence
+    27 nouveaux
+  > pizzeria Valence
+    22 nouveaux
+  > brasserie Valence
+    15 nouveaux
+  > bistrot Valence
+    5 nouveaux
+  > restaurant gastronomique Valence
+    8 nouveaux
+  > restaurant chinois Valence
+    20 nouveaux
+  > restaurant japonais Valence
+    2 nouveaux
+  > sushi Valence
+    1 nouveaux
+  > restaurant marocain Valence
+    7 nouveaux
+  > restaurant indien Valence
+    8 nouveaux
+  > restaurant turc Valence
+    6 nouveaux
+  > kebab Valence
+    13 nouveaux
+  > restaurant africain Valence
+    6 nouveaux
+  > restaurant libanais Valence
+    1 nouveaux
+  -> 141 restos uniques. Extraction emails...
+  Valence DONE: 141 restos | 35 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Romans-sur-Isere (queries: 14)
+============================================================
+  > restaurant Romans-sur-Isere
+    29 nouveaux
+  > pizzeria Romans-sur-Isere
+    20 nouveaux
+  > brasserie Romans-sur-Isere
+    9 nouveaux
+  > bistrot Romans-sur-Isere
+    6 nouveaux
+  > restaurant gastronomique Romans-sur-Isere
+    3 nouveaux
+  > restaurant chinois Romans-sur-Isere
+    8 nouveaux
+  > restaurant japonais Romans-sur-Isere
+    4 nouveaux
+  > sushi Romans-sur-Isere
+    0 nouveaux
+  > restaurant marocain Romans-sur-Isere
+    0 nouveaux
+  > restaurant indien Romans-sur-Isere
+    2 nouveaux
+  > restaurant turc Romans-sur-Isere
+    5 nouveaux
+  > kebab Romans-sur-Isere
+    9 nouveaux
+  > restaurant africain Romans-sur-Isere
+    0 nouveaux
+  > restaurant libanais Romans-sur-Isere
+    2 nouveaux
+  -> 97 restos uniques. Extraction emails...
+  Romans-sur-Isere DONE: 97 restos | 22 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Voiron (queries: 14)
+============================================================
+  > restaurant Voiron
+    30 nouveaux
+  > pizzeria Voiron
+    15 nouveaux
+  > brasserie Voiron
+    4 nouveaux
+  > bistrot Voiron
+    2 nouveaux
+  > restaurant gastronomique Voiron
+    10 nouveaux
+  > restaurant chinois Voiron
+    5 nouveaux
+  > restaurant japonais Voiron
+    1 nouveaux
+  > sushi Voiron
+    2 nouveaux
+  > restaurant marocain Voiron
+    2 nouveaux
+  > restaurant indien Voiron
+    0 nouveaux
+  > restaurant turc Voiron
+    13 nouveaux
+  > kebab Voiron
+    6 nouveaux
+  > restaurant africain Voiron
+    2 nouveaux
+  > restaurant libanais Voiron
+    1 nouveaux
+  -> 93 restos uniques. Extraction emails...
+  Voiron DONE: 93 restos | 24 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Annonay (queries: 14)
+============================================================
+  > restaurant Annonay
+    30 nouveaux
+  > pizzeria Annonay
+    16 nouveaux
+  > brasserie Annonay
+    12 nouveaux
+  > bistrot Annonay
+    3 nouveaux
+  > restaurant gastronomique Annonay
+    3 nouveaux
+  > restaurant chinois Annonay
+    0 nouveaux
+  > restaurant japonais Annonay
+    2 nouveaux
+  > sushi Annonay
+    2 nouveaux
+  > restaurant marocain Annonay
+    0 nouveaux
+  > restaurant indien Annonay
+    0 nouveaux
+  > restaurant turc Annonay
+    3 nouveaux
+  > kebab Annonay
+    0 nouveaux
+  > restaurant africain Annonay
+    3 nouveaux
+  > restaurant libanais Annonay
+    1 nouveaux
+  -> 75 restos uniques. Extraction emails...
+  Annonay DONE: 75 restos | 9 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Aubenas (queries: 14)
+============================================================
+  > restaurant Aubenas
+    27 nouveaux
+  > pizzeria Aubenas
+    17 nouveaux
+  > brasserie Aubenas
+    9 nouveaux
+  > bistrot Aubenas
+    2 nouveaux
+  > restaurant gastronomique Aubenas
+    7 nouveaux
+  > restaurant chinois Aubenas
+    6 nouveaux
+  > restaurant japonais Aubenas
+    0 nouveaux
+  > sushi Aubenas
+    0 nouveaux
+  > restaurant marocain Aubenas
+    3 nouveaux
+  > restaurant indien Aubenas
+    2 nouveaux
+  > restaurant turc Aubenas
+    4 nouveaux
+  > kebab Aubenas
+    2 nouveaux
+  > restaurant africain Aubenas
+    0 nouveaux
+  > restaurant libanais Aubenas
+    0 nouveaux
+  -> 79 restos uniques. Extraction emails...
+  Aubenas DONE: 79 restos | 9 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+=== TERMINE ===
+Total villes scraped (cumul) : 158
+Total restos (cumul) : 18001
+CSV: C:\Users\mrgue\CLAUDE CODE\restaurant-margin\data\scraping\france-mass-2026-05-06.csv

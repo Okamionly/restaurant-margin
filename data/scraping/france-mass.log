@@ -1,0 +1,213 @@
+=== France Mass Scraping ===
+Cities: 61 | Queries/city: 6
+Output: C:\Users\mrgue\CLAUDE CODE\restaurant-margin\data\scraping\france-mass-2026-05-06.csv
+Villes deja faites: 0 | Total restos enregistres: 0
+Villes a faire: 61
+
+============================================================
+  Paris 1er
+============================================================
+  > restaurant Paris 1er
+    31 nouveaux
+  > pizzeria Paris 1er
+    29 nouveaux
+  > brasserie Paris 1er
+    25 nouveaux
+  > bistrot Paris 1er
+    16 nouveaux
+  > restaurant gastronomique Paris 1er
+    20 nouveaux
+  > restaurant asiatique Paris 1er
+    39 nouveaux
+  -> 160 restos uniques. Extraction emails...
+  Paris 1er DONE: 160 restos | 27 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 2e
+============================================================
+  > restaurant Paris 2e
+    43 nouveaux
+  > pizzeria Paris 2e
+    27 nouveaux
+  > brasserie Paris 2e
+    21 nouveaux
+  > bistrot Paris 2e
+    17 nouveaux
+  > restaurant gastronomique Paris 2e
+    19 nouveaux
+  > restaurant asiatique Paris 2e
+    30 nouveaux
+  -> 157 restos uniques. Extraction emails...
+  Paris 2e DONE: 157 restos | 38 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 3e
+============================================================
+  > restaurant Paris 3e
+    38 nouveaux
+  > pizzeria Paris 3e
+    24 nouveaux
+  > brasserie Paris 3e
+    20 nouveaux
+  > bistrot Paris 3e
+    8 nouveaux
+  > restaurant gastronomique Paris 3e
+    15 nouveaux
+  > restaurant asiatique Paris 3e
+    28 nouveaux
+  -> 133 restos uniques. Extraction emails...
+  Paris 3e DONE: 133 restos | 33 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 4e
+============================================================
+  > restaurant Paris 4e
+    35 nouveaux
+  > pizzeria Paris 4e
+    21 nouveaux
+  > brasserie Paris 4e
+    17 nouveaux
+  > bistrot Paris 4e
+    7 nouveaux
+  > restaurant gastronomique Paris 4e
+    15 nouveaux
+  > restaurant asiatique Paris 4e
+    35 nouveaux
+  -> 130 restos uniques. Extraction emails...
+  Paris 4e DONE: 130 restos | 19 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 5e
+============================================================
+  > restaurant Paris 5e
+    41 nouveaux
+  > pizzeria Paris 5e
+    29 nouveaux
+  > brasserie Paris 5e
+    18 nouveaux
+  > bistrot Paris 5e
+    6 nouveaux
+  > restaurant gastronomique Paris 5e
+    17 nouveaux
+  > restaurant asiatique Paris 5e
+    35 nouveaux
+  -> 146 restos uniques. Extraction emails...
+  Paris 5e DONE: 146 restos | 22 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 6e
+============================================================
+  > restaurant Paris 6e
+    37 nouveaux
+  > pizzeria Paris 6e
+    25 nouveaux
+  > brasserie Paris 6e
+    20 nouveaux
+  > bistrot Paris 6e
+    14 nouveaux
+  > restaurant gastronomique Paris 6e
+    16 nouveaux
+  > restaurant asiatique Paris 6e
+    32 nouveaux
+  -> 144 restos uniques. Extraction emails...
+  Paris 6e DONE: 144 restos | 39 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 7e
+============================================================
+  > restaurant Paris 7e
+    38 nouveaux
+  > pizzeria Paris 7e
+    32 nouveaux
+  > brasserie Paris 7e
+    18 nouveaux
+  > bistrot Paris 7e
+    8 nouveaux
+  > restaurant gastronomique Paris 7e
+    17 nouveaux
+  > restaurant asiatique Paris 7e
+    32 nouveaux
+  -> 145 restos uniques. Extraction emails...
+  Paris 7e DONE: 145 restos | 24 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 8e
+============================================================
+  > restaurant Paris 8e
+    40 nouveaux
+  > pizzeria Paris 8e
+    32 nouveaux
+  > brasserie Paris 8e
+    23 nouveaux
+  > bistrot Paris 8e
+    18 nouveaux
+  > restaurant gastronomique Paris 8e
+    19 nouveaux
+  > restaurant asiatique Paris 8e
+    40 nouveaux
+  -> 172 restos uniques. Extraction emails...
+  Paris 8e DONE: 172 restos | 34 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 9e
+============================================================
+  > restaurant Paris 9e
+    37 nouveaux
+  > pizzeria Paris 9e
+    27 nouveaux
+  > brasserie Paris 9e
+    23 nouveaux
+  > bistrot Paris 9e
+    16 nouveaux
+  > restaurant gastronomique Paris 9e
+    16 nouveaux
+  > restaurant asiatique Paris 9e
+    32 nouveaux
+  -> 151 restos uniques. Extraction emails...
+  Paris 9e DONE: 151 restos | 24 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 10e
+============================================================
+  > restaurant Paris 10e
+    36 nouveaux
+  > pizzeria Paris 10e
+    36 nouveaux
+  > brasserie Paris 10e
+    24 nouveaux
+  > bistrot Paris 10e
+    10 nouveaux
+  > restaurant gastronomique Paris 10e
+    20 nouveaux
+  > restaurant asiatique Paris 10e
+    36 nouveaux
+  -> 162 restos uniques. Extraction emails...
+  Paris 10e DONE: 162 restos | 27 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 11e
+============================================================
+  > restaurant Paris 11e
+    41 nouveaux
+  > pizzeria Paris 11e
+    37 nouveaux
+  > brasserie Paris 11e
+FATAL: ProtocolError: Protocol error (Target.closeTarget): No target with given id found
+    at <instance_members_initializer> (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/common/CallbackRegistry.js:99:14)
+    at new Callback (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/common/CallbackRegistry.js:103:16)
+    at CallbackRegistry.create (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/common/CallbackRegistry.js:22:26)
+    at Connection._rawSend (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/cdp/Connection.js:104:26)
+    at Connection.send (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/cdp/Connection.js:95:21)
+    at CdpPage.close (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/cdp/Page.js:916:34)
+    at async scrapeQuery (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/scripts/scrape-france-mass.mjs:211:5)
+    at async main (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/scripts/scrape-france-mass.mjs:264:23)

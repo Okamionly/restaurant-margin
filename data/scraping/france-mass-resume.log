@@ -1,0 +1,980 @@
+=== France Mass Scraping ===
+Cities: 61 | Queries/city: 6
+Output: C:\Users\mrgue\CLAUDE CODE\restaurant-margin\data\scraping\france-mass-2026-05-06.csv
+Villes deja faites: 10 | Total restos enregistres: 1500
+Villes a faire: 51
+
+============================================================
+  Paris 11e
+============================================================
+  > restaurant Paris 11e
+    36 nouveaux
+  > pizzeria Paris 11e
+    35 nouveaux
+  > brasserie Paris 11e
+    24 nouveaux
+  > bistrot Paris 11e
+    8 nouveaux
+  > restaurant gastronomique Paris 11e
+    22 nouveaux
+  > restaurant asiatique Paris 11e
+    38 nouveaux
+  -> 163 restos uniques. Extraction emails...
+  Paris 11e DONE: 163 restos | 28 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 12e
+============================================================
+  > restaurant Paris 12e
+    37 nouveaux
+  > pizzeria Paris 12e
+    32 nouveaux
+  > brasserie Paris 12e
+    9 nouveaux
+  > bistrot Paris 12e
+    0 nouveaux
+  > restaurant gastronomique Paris 12e
+    0 nouveaux
+  > restaurant asiatique Paris 12e
+    0 nouveaux
+  -> 78 restos uniques. Extraction emails...
+  Paris 12e DONE: 78 restos | 14 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 13e
+============================================================
+  > restaurant Paris 13e
+    0 nouveaux
+  > pizzeria Paris 13e
+    0 nouveaux
+  > brasserie Paris 13e
+    0 nouveaux
+  > bistrot Paris 13e
+    0 nouveaux
+  > restaurant gastronomique Paris 13e
+    0 nouveaux
+  > restaurant asiatique Paris 13e
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Paris 13e DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 14e
+============================================================
+  > restaurant Paris 14e
+    0 nouveaux
+  > pizzeria Paris 14e
+    0 nouveaux
+  > brasserie Paris 14e
+    0 nouveaux
+  > bistrot Paris 14e
+    0 nouveaux
+  > restaurant gastronomique Paris 14e
+    0 nouveaux
+  > restaurant asiatique Paris 14e
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Paris 14e DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 15e
+============================================================
+  > restaurant Paris 15e
+    0 nouveaux
+  > pizzeria Paris 15e
+    0 nouveaux
+  > brasserie Paris 15e
+    0 nouveaux
+  > bistrot Paris 15e
+    0 nouveaux
+  > restaurant gastronomique Paris 15e
+    0 nouveaux
+  > restaurant asiatique Paris 15e
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Paris 15e DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 16e
+============================================================
+  > restaurant Paris 16e
+    0 nouveaux
+  > pizzeria Paris 16e
+    0 nouveaux
+  > brasserie Paris 16e
+    0 nouveaux
+  > bistrot Paris 16e
+    0 nouveaux
+  > restaurant gastronomique Paris 16e
+    0 nouveaux
+  > restaurant asiatique Paris 16e
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Paris 16e DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 17e
+============================================================
+  > restaurant Paris 17e
+    0 nouveaux
+  > pizzeria Paris 17e
+    0 nouveaux
+  > brasserie Paris 17e
+    38 nouveaux
+  > bistrot Paris 17e
+    23 nouveaux
+  > restaurant gastronomique Paris 17e
+    25 nouveaux
+  > restaurant asiatique Paris 17e
+    36 nouveaux
+  -> 122 restos uniques. Extraction emails...
+  Paris 17e DONE: 122 restos | 26 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 18e
+============================================================
+  > restaurant Paris 18e
+    0 nouveaux
+  > pizzeria Paris 18e
+    0 nouveaux
+  > brasserie Paris 18e
+    0 nouveaux
+  > bistrot Paris 18e
+    0 nouveaux
+  > restaurant gastronomique Paris 18e
+    0 nouveaux
+  > restaurant asiatique Paris 18e
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Paris 18e DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 19e
+============================================================
+  > restaurant Paris 19e
+    0 nouveaux
+  > pizzeria Paris 19e
+    0 nouveaux
+  > brasserie Paris 19e
+    0 nouveaux
+  > bistrot Paris 19e
+    0 nouveaux
+  > restaurant gastronomique Paris 19e
+    0 nouveaux
+  > restaurant asiatique Paris 19e
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Paris 19e DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Paris 20e
+============================================================
+  > restaurant Paris 20e
+    0 nouveaux
+  > pizzeria Paris 20e
+    0 nouveaux
+  > brasserie Paris 20e
+    0 nouveaux
+  > bistrot Paris 20e
+    0 nouveaux
+  > restaurant gastronomique Paris 20e
+    0 nouveaux
+  > restaurant asiatique Paris 20e
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Paris 20e DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Marseille
+============================================================
+  > restaurant Marseille
+    0 nouveaux
+  > pizzeria Marseille
+    0 nouveaux
+  > brasserie Marseille
+    0 nouveaux
+  > bistrot Marseille
+    0 nouveaux
+  > restaurant gastronomique Marseille
+    0 nouveaux
+  > restaurant asiatique Marseille
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Marseille DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Lyon
+============================================================
+  > restaurant Lyon
+    0 nouveaux
+  > pizzeria Lyon
+    39 nouveaux
+  > brasserie Lyon
+    41 nouveaux
+  > bistrot Lyon
+    0 nouveaux
+  > restaurant gastronomique Lyon
+    0 nouveaux
+  > restaurant asiatique Lyon
+    0 nouveaux
+  -> 80 restos uniques. Extraction emails...
+  Lyon DONE: 80 restos | 18 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Toulouse
+============================================================
+  > restaurant Toulouse
+    0 nouveaux
+  > pizzeria Toulouse
+    0 nouveaux
+  > brasserie Toulouse
+    0 nouveaux
+  > bistrot Toulouse
+    0 nouveaux
+  > restaurant gastronomique Toulouse
+    0 nouveaux
+  > restaurant asiatique Toulouse
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Toulouse DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Nice
+============================================================
+  > restaurant Nice
+    0 nouveaux
+  > pizzeria Nice
+    0 nouveaux
+  > brasserie Nice
+    0 nouveaux
+  > bistrot Nice
+    0 nouveaux
+  > restaurant gastronomique Nice
+    0 nouveaux
+  > restaurant asiatique Nice
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Nice DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Nantes
+============================================================
+  > restaurant Nantes
+    0 nouveaux
+  > pizzeria Nantes
+    0 nouveaux
+  > brasserie Nantes
+    0 nouveaux
+  > bistrot Nantes
+    0 nouveaux
+  > restaurant gastronomique Nantes
+    0 nouveaux
+  > restaurant asiatique Nantes
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Nantes DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Strasbourg
+============================================================
+  > restaurant Strasbourg
+    0 nouveaux
+  > pizzeria Strasbourg
+    0 nouveaux
+  > brasserie Strasbourg
+    0 nouveaux
+  > bistrot Strasbourg
+    0 nouveaux
+  > restaurant gastronomique Strasbourg
+    0 nouveaux
+  > restaurant asiatique Strasbourg
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Strasbourg DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Bordeaux
+============================================================
+  > restaurant Bordeaux
+    0 nouveaux
+  > pizzeria Bordeaux
+    43 nouveaux
+  > brasserie Bordeaux
+    42 nouveaux
+  > bistrot Bordeaux
+    0 nouveaux
+  > restaurant gastronomique Bordeaux
+    0 nouveaux
+  > restaurant asiatique Bordeaux
+    0 nouveaux
+  -> 85 restos uniques. Extraction emails...
+  Bordeaux DONE: 85 restos | 10 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Lille
+============================================================
+  > restaurant Lille
+    0 nouveaux
+  > pizzeria Lille
+    0 nouveaux
+  > brasserie Lille
+    0 nouveaux
+  > bistrot Lille
+    0 nouveaux
+  > restaurant gastronomique Lille
+    0 nouveaux
+  > restaurant asiatique Lille
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Lille DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Rennes
+============================================================
+  > restaurant Rennes
+    0 nouveaux
+  > pizzeria Rennes
+    0 nouveaux
+  > brasserie Rennes
+    0 nouveaux
+  > bistrot Rennes
+    0 nouveaux
+  > restaurant gastronomique Rennes
+    0 nouveaux
+  > restaurant asiatique Rennes
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Rennes DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Reims
+============================================================
+  > restaurant Reims
+    0 nouveaux
+  > pizzeria Reims
+    0 nouveaux
+  > brasserie Reims
+    0 nouveaux
+  > bistrot Reims
+    0 nouveaux
+  > restaurant gastronomique Reims
+    0 nouveaux
+  > restaurant asiatique Reims
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Reims DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Saint-Etienne
+============================================================
+  > restaurant Saint-Etienne
+    0 nouveaux
+  > pizzeria Saint-Etienne
+    0 nouveaux
+  > brasserie Saint-Etienne
+    0 nouveaux
+  > bistrot Saint-Etienne
+    0 nouveaux
+  > restaurant gastronomique Saint-Etienne
+    0 nouveaux
+  > restaurant asiatique Saint-Etienne
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Saint-Etienne DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Toulon
+============================================================
+  > restaurant Toulon
+    0 nouveaux
+  > pizzeria Toulon
+    0 nouveaux
+  > brasserie Toulon
+    36 nouveaux
+  > bistrot Toulon
+    21 nouveaux
+  > restaurant gastronomique Toulon
+    21 nouveaux
+  > restaurant asiatique Toulon
+    29 nouveaux
+  -> 107 restos uniques. Extraction emails...
+  Toulon DONE: 107 restos | 18 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Le Havre
+============================================================
+  > restaurant Le Havre
+    44 nouveaux
+  > pizzeria Le Havre
+    37 nouveaux
+  > brasserie Le Havre
+    0 nouveaux
+  > bistrot Le Havre
+    0 nouveaux
+  > restaurant gastronomique Le Havre
+    0 nouveaux
+  > restaurant asiatique Le Havre
+    0 nouveaux
+  -> 81 restos uniques. Extraction emails...
+  Le Havre DONE: 81 restos | 13 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Grenoble
+============================================================
+  > restaurant Grenoble
+    0 nouveaux
+  > pizzeria Grenoble
+    0 nouveaux
+  > brasserie Grenoble
+    0 nouveaux
+  > bistrot Grenoble
+    0 nouveaux
+  > restaurant gastronomique Grenoble
+    0 nouveaux
+  > restaurant asiatique Grenoble
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Grenoble DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Dijon
+============================================================
+  > restaurant Dijon
+    0 nouveaux
+  > pizzeria Dijon
+    0 nouveaux
+  > brasserie Dijon
+    0 nouveaux
+  > bistrot Dijon
+    0 nouveaux
+  > restaurant gastronomique Dijon
+    0 nouveaux
+  > restaurant asiatique Dijon
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Dijon DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Angers
+============================================================
+  > restaurant Angers
+    0 nouveaux
+  > pizzeria Angers
+    0 nouveaux
+  > brasserie Angers
+    0 nouveaux
+  > bistrot Angers
+    0 nouveaux
+  > restaurant gastronomique Angers
+    0 nouveaux
+  > restaurant asiatique Angers
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Angers DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Nimes
+============================================================
+  > restaurant Nimes
+    0 nouveaux
+  > pizzeria Nimes
+    0 nouveaux
+  > brasserie Nimes
+    0 nouveaux
+  > bistrot Nimes
+    0 nouveaux
+  > restaurant gastronomique Nimes
+    0 nouveaux
+  > restaurant asiatique Nimes
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Nimes DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Aix-en-Provence
+============================================================
+  > restaurant Aix-en-Provence
+    0 nouveaux
+  > pizzeria Aix-en-Provence
+    0 nouveaux
+  > brasserie Aix-en-Provence
+    40 nouveaux
+  > bistrot Aix-en-Provence
+    5 nouveaux
+  > restaurant gastronomique Aix-en-Provence
+    25 nouveaux
+  > restaurant asiatique Aix-en-Provence
+    37 nouveaux
+  -> 107 restos uniques. Extraction emails...
+  Aix-en-Provence DONE: 107 restos | 23 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Clermont-Ferrand
+============================================================
+  > restaurant Clermont-Ferrand
+    0 nouveaux
+  > pizzeria Clermont-Ferrand
+    0 nouveaux
+  > brasserie Clermont-Ferrand
+    0 nouveaux
+  > bistrot Clermont-Ferrand
+    0 nouveaux
+  > restaurant gastronomique Clermont-Ferrand
+    0 nouveaux
+  > restaurant asiatique Clermont-Ferrand
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Clermont-Ferrand DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Le Mans
+============================================================
+  > restaurant Le Mans
+    0 nouveaux
+  > pizzeria Le Mans
+    0 nouveaux
+  > brasserie Le Mans
+    0 nouveaux
+  > bistrot Le Mans
+    0 nouveaux
+  > restaurant gastronomique Le Mans
+    0 nouveaux
+  > restaurant asiatique Le Mans
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Le Mans DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Brest
+============================================================
+  > restaurant Brest
+    0 nouveaux
+  > pizzeria Brest
+    0 nouveaux
+  > brasserie Brest
+    0 nouveaux
+  > bistrot Brest
+    0 nouveaux
+  > restaurant gastronomique Brest
+    0 nouveaux
+  > restaurant asiatique Brest
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Brest DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Tours
+============================================================
+  > restaurant Tours
+    0 nouveaux
+  > pizzeria Tours
+    0 nouveaux
+  > brasserie Tours
+    0 nouveaux
+  > bistrot Tours
+    0 nouveaux
+  > restaurant gastronomique Tours
+    0 nouveaux
+  > restaurant asiatique Tours
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Tours DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Amiens
+============================================================
+  > restaurant Amiens
+    0 nouveaux
+  > pizzeria Amiens
+    0 nouveaux
+  > brasserie Amiens
+    0 nouveaux
+  > bistrot Amiens
+    42 nouveaux
+  > restaurant gastronomique Amiens
+    21 nouveaux
+  > restaurant asiatique Amiens
+    30 nouveaux
+  -> 93 restos uniques. Extraction emails...
+  Amiens DONE: 93 restos | 16 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Limoges
+============================================================
+  > restaurant Limoges
+    0 nouveaux
+  > pizzeria Limoges
+    0 nouveaux
+  > brasserie Limoges
+    0 nouveaux
+  > bistrot Limoges
+    0 nouveaux
+  > restaurant gastronomique Limoges
+    0 nouveaux
+  > restaurant asiatique Limoges
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Limoges DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Perpignan
+============================================================
+  > restaurant Perpignan
+    0 nouveaux
+  > pizzeria Perpignan
+    0 nouveaux
+  > brasserie Perpignan
+    0 nouveaux
+  > bistrot Perpignan
+    0 nouveaux
+  > restaurant gastronomique Perpignan
+    0 nouveaux
+  > restaurant asiatique Perpignan
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Perpignan DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Metz
+============================================================
+  > restaurant Metz
+    0 nouveaux
+  > pizzeria Metz
+    0 nouveaux
+  > brasserie Metz
+    0 nouveaux
+  > bistrot Metz
+    0 nouveaux
+  > restaurant gastronomique Metz
+    0 nouveaux
+  > restaurant asiatique Metz
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Metz DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Besancon
+============================================================
+  > restaurant Besancon
+    0 nouveaux
+  > pizzeria Besancon
+    0 nouveaux
+  > brasserie Besancon
+    0 nouveaux
+  > bistrot Besancon
+    0 nouveaux
+  > restaurant gastronomique Besancon
+    0 nouveaux
+  > restaurant asiatique Besancon
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Besancon DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Orleans
+============================================================
+  > restaurant Orleans
+    0 nouveaux
+  > pizzeria Orleans
+    0 nouveaux
+  > brasserie Orleans
+    0 nouveaux
+  > bistrot Orleans
+    0 nouveaux
+  > restaurant gastronomique Orleans
+    43 nouveaux
+  > restaurant asiatique Orleans
+    37 nouveaux
+  -> 80 restos uniques. Extraction emails...
+  Orleans DONE: 80 restos | 10 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Rouen
+============================================================
+  > restaurant Rouen
+    0 nouveaux
+  > pizzeria Rouen
+    0 nouveaux
+  > brasserie Rouen
+    0 nouveaux
+  > bistrot Rouen
+    0 nouveaux
+  > restaurant gastronomique Rouen
+    0 nouveaux
+  > restaurant asiatique Rouen
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Rouen DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Caen
+============================================================
+  > restaurant Caen
+    0 nouveaux
+  > pizzeria Caen
+    0 nouveaux
+  > brasserie Caen
+    0 nouveaux
+  > bistrot Caen
+    0 nouveaux
+  > restaurant gastronomique Caen
+    0 nouveaux
+  > restaurant asiatique Caen
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Caen DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Nancy
+============================================================
+  > restaurant Nancy
+    0 nouveaux
+  > pizzeria Nancy
+    0 nouveaux
+  > brasserie Nancy
+    0 nouveaux
+  > bistrot Nancy
+    0 nouveaux
+  > restaurant gastronomique Nancy
+    0 nouveaux
+  > restaurant asiatique Nancy
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Nancy DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Cannes
+============================================================
+  > restaurant Cannes
+    0 nouveaux
+  > pizzeria Cannes
+    0 nouveaux
+  > brasserie Cannes
+    0 nouveaux
+  > bistrot Cannes
+    0 nouveaux
+  > restaurant gastronomique Cannes
+    0 nouveaux
+  > restaurant asiatique Cannes
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Cannes DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Saint-Tropez
+============================================================
+  > restaurant Saint-Tropez
+    0 nouveaux
+  > pizzeria Saint-Tropez
+    0 nouveaux
+  > brasserie Saint-Tropez
+    0 nouveaux
+  > bistrot Saint-Tropez
+    0 nouveaux
+  > restaurant gastronomique Saint-Tropez
+    0 nouveaux
+  > restaurant asiatique Saint-Tropez
+    12 nouveaux
+  -> 12 restos uniques. Extraction emails...
+  Saint-Tropez DONE: 12 restos | 3 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Biarritz
+============================================================
+  > restaurant Biarritz
+    38 nouveaux
+  > pizzeria Biarritz
+    34 nouveaux
+  > brasserie Biarritz
+    0 nouveaux
+  > bistrot Biarritz
+    0 nouveaux
+  > restaurant gastronomique Biarritz
+    0 nouveaux
+  > restaurant asiatique Biarritz
+    0 nouveaux
+  -> 72 restos uniques. Extraction emails...
+  Biarritz DONE: 72 restos | 14 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Annecy
+============================================================
+  > restaurant Annecy
+    0 nouveaux
+  > pizzeria Annecy
+    0 nouveaux
+  > brasserie Annecy
+    0 nouveaux
+  > bistrot Annecy
+    0 nouveaux
+  > restaurant gastronomique Annecy
+    0 nouveaux
+  > restaurant asiatique Annecy
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Annecy DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Chamonix
+============================================================
+  > restaurant Chamonix
+    0 nouveaux
+  > pizzeria Chamonix
+    0 nouveaux
+  > brasserie Chamonix
+    0 nouveaux
+  > bistrot Chamonix
+    0 nouveaux
+  > restaurant gastronomique Chamonix
+    0 nouveaux
+  > restaurant asiatique Chamonix
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Chamonix DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Avignon
+============================================================
+  > restaurant Avignon
+    0 nouveaux
+  > pizzeria Avignon
+    0 nouveaux
+  > brasserie Avignon
+    0 nouveaux
+  > bistrot Avignon
+    0 nouveaux
+  > restaurant gastronomique Avignon
+    0 nouveaux
+  > restaurant asiatique Avignon
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Avignon DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Aix-les-Bains
+============================================================
+  > restaurant Aix-les-Bains
+    0 nouveaux
+  > pizzeria Aix-les-Bains
+    0 nouveaux
+  > brasserie Aix-les-Bains
+    0 nouveaux
+  > bistrot Aix-les-Bains
+    0 nouveaux
+  > restaurant gastronomique Aix-les-Bains
+    0 nouveaux
+  > restaurant asiatique Aix-les-Bains
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Aix-les-Bains DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Deauville
+============================================================
+  > restaurant Deauville
+    0 nouveaux
+  > pizzeria Deauville
+    39 nouveaux
+  > brasserie Deauville
+    30 nouveaux
+  > bistrot Deauville
+    2 nouveaux
+  > restaurant gastronomique Deauville
+    0 nouveaux
+  > restaurant asiatique Deauville
+    0 nouveaux
+  -> 71 restos uniques. Extraction emails...
+  Deauville DONE: 71 restos | 16 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  La Rochelle
+============================================================
+  > restaurant La Rochelle
+    0 nouveaux
+  > pizzeria La Rochelle
+    0 nouveaux
+  > brasserie La Rochelle
+    0 nouveaux
+  > bistrot La Rochelle
+    0 nouveaux
+  > restaurant gastronomique La Rochelle
+    0 nouveaux
+  > restaurant asiatique La Rochelle
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  La Rochelle DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+  Saint-Malo
+============================================================
+  > restaurant Saint-Malo
+    0 nouveaux
+  > pizzeria Saint-Malo
+    0 nouveaux
+  > brasserie Saint-Malo
+    0 nouveaux
+  > bistrot Saint-Malo
+    0 nouveaux
+  > restaurant gastronomique Saint-Malo
+    0 nouveaux
+  > restaurant asiatique Saint-Malo
+    0 nouveaux
+  -> 0 restos uniques. Extraction emails...
+  Saint-Malo DONE: 0 restos | 0 avec email
+  Pause 30s avant prochaine ville...
+
+============================================================
+=== TERMINE ===
+Total villes: 61
+Total restos: 2651
+CSV: C:\Users\mrgue\CLAUDE CODE\restaurant-margin\data\scraping\france-mass-2026-05-06.csv

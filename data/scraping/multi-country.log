@@ -1,0 +1,157 @@
+=== Multi-Country Scraping (Suisse + Belgique) ===
+Targets: 46 villes (23 CH + 23 BE)
+Queries: 6/ville
+Output: C:\Users\mrgue\CLAUDE CODE\restaurant-margin\data\scraping\multi-country-2026-05-08.csv
+Existing : 0 villes faites, 0 restos
+A faire : 46
+
+============================================================
+  Genève (Suisse)
+============================================================
+  > restaurant Genève Suisse
+    25 nouveaux
+  > pizzeria Genève Suisse
+    25 nouveaux
+  > brasserie Genève Suisse
+    23 nouveaux
+  > bistrot Genève Suisse
+    7 nouveaux
+  > restaurant gastronomique Genève Suisse
+    14 nouveaux
+  > restaurant italien Genève Suisse
+    13 nouveaux
+  -> 107 restos uniques. Extraction emails...
+  Genève DONE: 107 restos | 28 avec email
+  Pause 30s...
+
+============================================================
+  Lausanne (Suisse)
+============================================================
+  > restaurant Lausanne Suisse
+    31 nouveaux
+  > pizzeria Lausanne Suisse
+    24 nouveaux
+  > brasserie Lausanne Suisse
+    18 nouveaux
+  > bistrot Lausanne Suisse
+    7 nouveaux
+  > restaurant gastronomique Lausanne Suisse
+    3 nouveaux
+  > restaurant italien Lausanne Suisse
+    12 nouveaux
+  -> 95 restos uniques. Extraction emails...
+  Lausanne DONE: 95 restos | 42 avec email
+  Pause 30s...
+
+============================================================
+  Sion (Suisse)
+============================================================
+  > restaurant Sion Suisse
+    29 nouveaux
+  > pizzeria Sion Suisse
+    18 nouveaux
+  > brasserie Sion Suisse
+    11 nouveaux
+  > bistrot Sion Suisse
+    5 nouveaux
+  > restaurant gastronomique Sion Suisse
+    5 nouveaux
+  > restaurant italien Sion Suisse
+    10 nouveaux
+  -> 78 restos uniques. Extraction emails...
+  Sion DONE: 78 restos | 25 avec email
+  Pause 30s...
+
+============================================================
+  Fribourg (Suisse)
+============================================================
+  > restaurant Fribourg Suisse
+    33 nouveaux
+  > pizzeria Fribourg Suisse
+    19 nouveaux
+  > brasserie Fribourg Suisse
+    12 nouveaux
+  > bistrot Fribourg Suisse
+    6 nouveaux
+  > restaurant gastronomique Fribourg Suisse
+    6 nouveaux
+  > restaurant italien Fribourg Suisse
+    7 nouveaux
+  -> 83 restos uniques. Extraction emails...
+  Fribourg DONE: 83 restos | 38 avec email
+  Pause 30s...
+
+============================================================
+  Neuchâtel (Suisse)
+============================================================
+  > restaurant Neuchâtel Suisse
+    30 nouveaux
+  > pizzeria Neuchâtel Suisse
+    15 nouveaux
+  > brasserie Neuchâtel Suisse
+    12 nouveaux
+  > bistrot Neuchâtel Suisse
+    5 nouveaux
+  > restaurant gastronomique Neuchâtel Suisse
+    8 nouveaux
+  > restaurant italien Neuchâtel Suisse
+    4 nouveaux
+  -> 74 restos uniques. Extraction emails...
+  Neuchâtel DONE: 74 restos | 31 avec email
+  Pause 30s...
+
+============================================================
+  La Chaux-de-Fonds (Suisse)
+============================================================
+  > restaurant La Chaux-de-Fonds Suisse
+    32 nouveaux
+  > pizzeria La Chaux-de-Fonds Suisse
+    16 nouveaux
+  > brasserie La Chaux-de-Fonds Suisse
+    17 nouveaux
+  > bistrot La Chaux-de-Fonds Suisse
+    4 nouveaux
+  > restaurant gastronomique La Chaux-de-Fonds Suisse
+    3 nouveaux
+  > restaurant italien La Chaux-de-Fonds Suisse
+    3 nouveaux
+  -> 75 restos uniques. Extraction emails...
+  La Chaux-de-Fonds DONE: 75 restos | 32 avec email
+  Pause 30s...
+
+============================================================
+  Vevey (Suisse)
+============================================================
+  > restaurant Vevey Suisse
+    31 nouveaux
+  > pizzeria Vevey Suisse
+    16 nouveaux
+  > brasserie Vevey Suisse
+    11 nouveaux
+  > bistrot Vevey Suisse
+    2 nouveaux
+  > restaurant gastronomique Vevey Suisse
+    11 nouveaux
+  > restaurant italien Vevey Suisse
+    6 nouveaux
+  -> 77 restos uniques. Extraction emails...
+  Vevey DONE: 77 restos | 26 avec email
+  Pause 30s...
+
+============================================================
+  Montreux (Suisse)
+============================================================
+  > restaurant Montreux Suisse
+    30 nouveaux
+  > pizzeria Montreux Suisse
+    14 nouveaux
+  > brasserie Montreux Suisse
+FATAL: ProtocolError: Protocol error (Target.closeTarget): No target with given id found
+    at <instance_members_initializer> (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/common/CallbackRegistry.js:99:14)
+    at new Callback (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/common/CallbackRegistry.js:103:16)
+    at CallbackRegistry.create (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/common/CallbackRegistry.js:22:26)
+    at Connection._rawSend (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/cdp/Connection.js:104:26)
+    at Connection.send (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/cdp/Connection.js:95:21)
+    at CdpPage.close (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/cdp/Page.js:916:34)
+    at async scrapeQuery (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/scripts/scrape-multi-country.mjs:189:5)
+    at async main (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/scripts/scrape-multi-country.mjs:237:23)

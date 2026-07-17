@@ -840,7 +840,7 @@ export default function BlogTicketMoyen() {
               <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">Marges</span>
               <p className="font-semibold text-mono-100 mt-1 group-hover:text-teal-600 transition-colors text-sm">Calculer la marge de son restaurant</p>
             </Link>
-            <Link to="/blog/food-cost" className="group bg-white border border-mono-900 hover:border-teal-300 rounded-2xl p-5 transition-colors">
+            <Link to="/blog/reduire-food-cost" className="group bg-white border border-mono-900 hover:border-teal-300 rounded-2xl p-5 transition-colors">
               <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">Food cost</span>
               <p className="font-semibold text-mono-100 mt-1 group-hover:text-teal-600 transition-colors text-sm">Food cost en restauration : guide</p>
             </Link>

@@ -130,7 +130,7 @@ export default function LogicielMargeBurger() {
           </Link>
           <div className="flex items-center gap-3">
             <Link
-              to="/signup"
+              to="/login?mode=register"
               className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
             >
               <Beef className="w-4 h-4" />
@@ -915,7 +915,7 @@ export default function LogicielMargeBurger() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                to="/signup"
+                to="/login?mode=register"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white text-teal-700 font-bold rounded-full hover:bg-teal-50 transition-colors text-lg shadow-lg"
               >
                 Essai gratuit 7 jours
@@ -936,7 +936,7 @@ export default function LogicielMargeBurger() {
         <section className="mb-16">
           <h2 className="text-2xl font-bold text-mono-100 mb-6">Pour aller plus loin</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link to="/blog/food-cost-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Food cost restaurant : guide complet</h3>
               <p className="text-xs text-mono-500">Methodes, benchmarks, leviers d'optimisation.</p>
             </Link>
@@ -948,7 +948,7 @@ export default function LogicielMargeBurger() {
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Strategie digitale restaurant</h3>
               <p className="text-xs text-mono-500">Click & collect, programme fidelite, reseaux sociaux.</p>
             </Link>
-            <Link to="/signup" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/login?mode=register" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Essai gratuit 7 jours</h3>
               <p className="text-xs text-mono-500">Pilotez votre burger restaurant sans carte bancaire requise.</p>
             </Link>

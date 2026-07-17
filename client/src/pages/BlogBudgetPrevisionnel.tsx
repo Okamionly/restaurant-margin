@@ -517,7 +517,7 @@ export default function BlogBudgetPrevisionnel() {
           <div className="prose-content mt-6">
             <p>
               <strong>Lecture clé :</strong> le prime cost (food cost + masse salariale) ne devrait jamais dépasser 70% du CA HT. Au-delà, la marge nette devient structurellement insuffisante pour absorber les autres charges. Pour approfondir le pilotage du food cost, consultez notre guide {' '}
-              <Link to="/blog/food-cost" className="text-teal-700 underline hover:text-teal-800">food cost en restauration</Link> et notre {' '}
+              <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">food cost en restauration</Link> et notre {' '}
               <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800">calculateur de food cost gratuit</Link>.
             </p>
           </div>
@@ -715,7 +715,7 @@ export default function BlogBudgetPrevisionnel() {
             {[
               { num: 1, titre: "Énergie (gaz + électricité + eau)", desc: "4-6% du CA en saison normale, jusqu'à 8% en cas de tension tarifaire. Audit énergétique avant ouverture, contrats annuels indexés. Une hotte mal réglée consomme 20-30% de plus." },
               { num: 2, titre: "Salaires extras et heures supplémentaires", desc: "Enveloppe explicite 3-5% du CA, suivi hebdomadaire. Sans cadrage, peut atteindre 8-10% en saison haute. Le pilotage hebdo des heures travaillées est non négociable." },
-              { num: 3, titre: "Pertes matières et démarques inconnues", desc: "Inventaire mensuel + écart food cost théorique vs réel. Une démarque de 3-5% est normale, au-delà c'est un problème de procédure (vol, gaspillage, mauvaise rotation). Suivez les ratios via {' '}", link: "/blog/inventaire-restaurant", linkText: "notre guide de l'inventaire restaurant" },
+              { num: 3, titre: "Pertes matières et démarques inconnues", desc: "Inventaire mensuel + écart food cost théorique vs réel. Une démarque de 3-5% est normale, au-delà c'est un problème de procédure (vol, gaspillage, mauvaise rotation). Suivez les ratios via {' '}", link: "/blog/inventaire-restaurant-guide", linkText: "notre guide de l'inventaire restaurant" },
               { num: 4, titre: "Réparations et maintenance imprévues", desc: "Provision 1-2% du CA en compte épargne dédié. Une chambre froide qui lâche en plein été = 1 500-3 000€ d'intervention express + perte marchandise. Anticipez." },
               { num: 5, titre: "Marketing et communication", desc: "Budget annuel ET mensuel, ROI mesuré sur chaque action. Les paid social mal pilotés peuvent doubler le budget sans amélioration du CA. Tracking obligatoire : code promo, QR code, formulaire." },
               { num: 6, titre: "Abonnements logiciels et SaaS", desc: "Caisse, gestion, paie, réservation, livraison, marketing. Total facile à atteindre 300-600€/mois soit 1-2% du CA. Auditez chaque trimestre pour éliminer les doublons." },
@@ -853,7 +853,7 @@ export default function BlogBudgetPrevisionnel() {
               <h3 className="font-semibold text-mono-100 mb-1.5">Seuil de rentabilité</h3>
               <p className="text-xs text-mono-500">Calcul du break-even et nombre de couverts nécessaires.</p>
             </Link>
-            <Link to="/blog/food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 transition-all">
+            <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 transition-all">
               <h3 className="font-semibold text-mono-100 mb-1.5">Guide du food cost</h3>
               <p className="text-xs text-mono-500">Définition, formule, benchmarks et leviers d'optimisation.</p>
             </Link>

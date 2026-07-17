@@ -360,7 +360,7 @@ export default function BlogContratTravail() {
               <strong>Cout net mensuel : 500 EUR</strong> (vs 2 460 EUR pour un cuisinier CDI au SMIC).
             </p>
           </div>
-          <p>L'apprenti coute en realite <strong>5 fois moins cher</strong> qu'un CDI au SMIC la 1ere annee. Sur 3 ans de formation CAP + Bac Pro, le ROI est imbattable. Pour calculer l'impact sur votre prime cost global, voir notre <Link to="/blog/prime-cost" className="text-teal-600 hover:underline">guide du prime cost restaurant</Link>.</p>
+          <p>L'apprenti coute en realite <strong>5 fois moins cher</strong> qu'un CDI au SMIC la 1ere annee. Sur 3 ans de formation CAP + Bac Pro, le ROI est imbattable. Pour calculer l'impact sur votre prime cost global, voir notre <Link to="/blog/prime-cost-restaurant" className="text-teal-600 hover:underline">guide du prime cost restaurant</Link>.</p>
         </Section>
 
         <Section icon={<Calendar className="w-5 h-5" />} number="6" title="Le contrat saisonnier" id="saisonnier">
@@ -588,7 +588,7 @@ export default function BlogContratTravail() {
               <p className="font-semibold text-mono-100 mb-1">Calcul de marge restaurant</p>
               <p className="text-sm text-mono-400">Methode complete : food cost, coefficient multiplicateur, marge brute et nette.</p>
             </Link>
-            <Link to="/blog/prime-cost" className="block p-5 border border-mono-900 rounded-xl hover:border-teal-600 transition-colors">
+            <Link to="/blog/prime-cost-restaurant" className="block p-5 border border-mono-900 rounded-xl hover:border-teal-600 transition-colors">
               <p className="font-semibold text-mono-100 mb-1">Prime cost restaurant</p>
               <p className="text-sm text-mono-400">Indicateur cle food cost + cout personnel. Objectifs par type d'etablissement.</p>
             </Link>

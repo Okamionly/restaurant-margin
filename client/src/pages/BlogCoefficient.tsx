@@ -640,7 +640,7 @@ export default function BlogCoefficient() {
             <p className="mt-4">
               Pour aller plus loin sur votre segment specifique, consultez nos guides dedies :
               <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">guide marge restaurant</Link>,
-              <Link to="/blog/food-cost-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">guide food cost</Link>,
+              <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800 ml-1">guide food cost</Link>,
               <Link to="/blog/fixer-prix-carte-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">fixer les prix de la carte</Link>,
               et <Link to="/blog/construire-carte-vins-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">construire une carte des vins</Link>.
             </p>
@@ -1278,7 +1278,7 @@ export default function BlogCoefficient() {
             <p className="mt-4">
               Le coefficient seul vous dit qu'un plat est rentable. Le menu engineering vous dit si vos
               clients le commandent. Les deux ensemble vous permettent d'optimiser le mix produit
-              pour maximiser la marge globale. Voir notre <Link to="/blog/menu-engineering" className="text-teal-700 underline hover:text-teal-800">guide complet du menu engineering</Link> pour
+              pour maximiser la marge globale. Voir notre <Link to="/blog/menu-engineering-boston-matrix" className="text-teal-700 underline hover:text-teal-800">guide complet du menu engineering</Link> pour
               la methode complete.
             </p>
           </div>
@@ -1444,7 +1444,7 @@ export default function BlogCoefficient() {
               Plus de 500 restaurants utilisent RestauMargin pour piloter leur tarification. Le gain
               moyen constate sur les 6 premiers mois : <strong>+3,5 points de marge brute</strong>,
               grace a une meilleure allocation des coefficients par poste et a l'identification
-              automatique des derives. Pour aller plus loin, lisez aussi notre <Link to="/blog/food-cost" className="text-teal-700 underline hover:text-teal-800">guide du food cost</Link>, notre <Link to="/blog/prime-cost" className="text-teal-700 underline hover:text-teal-800">guide du prime cost</Link>, et notre <Link to="/blog/seuil-rentabilite-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du seuil de rentabilite</Link>.
+              automatique des derives. Pour aller plus loin, lisez aussi notre <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">guide du food cost</Link>, notre <Link to="/blog/prime-cost-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du prime cost</Link>, et notre <Link to="/blog/seuil-rentabilite-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du seuil de rentabilite</Link>.
             </p>
           </div>
         </section>
@@ -1548,7 +1548,7 @@ export default function BlogCoefficient() {
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Carte des vins restaurant</h3>
               <p className="text-xs text-mono-500">Construire une carte des vins rentable : coefficients, rotation, presentation.</p>
             </Link>
-            <Link to="/blog/food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Food cost restaurant</h3>
               <p className="text-xs text-mono-500">10 strategies eprouvees pour baisser durablement le food cost.</p>
             </Link>

@@ -718,7 +718,7 @@ export default function BlogInventaire() {
               <li>Ecart 5 % = 30 000 EUR (restaurant en danger)</li>
             </ul>
             <p className="mt-4">
-              Pour mettre ces chiffres en perspective, lisez notre guide sur <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800">le calcul de marge restaurant</Link> et notre article sur <Link to="/blog/gaspillage" className="text-teal-700 underline hover:text-teal-800">la reduction du gaspillage en cuisine</Link>.
+              Pour mettre ces chiffres en perspective, lisez notre guide sur <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800">le calcul de marge restaurant</Link> et notre article sur <Link to="/blog/gaspillage-alimentaire" className="text-teal-700 underline hover:text-teal-800">la reduction du gaspillage en cuisine</Link>.
             </p>
           </div>
         </section>
@@ -1088,11 +1088,11 @@ export default function BlogInventaire() {
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calcul marge restaurant</h3>
               <p className="text-xs text-mono-500">Food cost, marge brute, coefficient multiplicateur.</p>
             </Link>
-            <Link to="/blog/food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Food cost optimal</h3>
               <p className="text-xs text-mono-500">Benchmarks par type d'etablissement.</p>
             </Link>
-            <Link to="/blog/gaspillage" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/gaspillage-alimentaire" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le gaspillage</h3>
               <p className="text-xs text-mono-500">10 strategies pour limiter les pertes.</p>
             </Link>

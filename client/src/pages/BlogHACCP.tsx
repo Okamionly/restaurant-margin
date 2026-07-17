@@ -443,11 +443,11 @@ export default function BlogHACCP() {
         <section className="mb-16">
           <h2 className="text-2xl font-bold text-mono-100 mb-6">Articles complementaires</h2>
           <div className="grid sm:grid-cols-3 gap-4">
-            <Link to="/blog/gaspillage" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/gaspillage-alimentaire" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le gaspillage alimentaire</h3>
               <p className="text-sm text-mono-500">5 astuces concretes et un calculateur de pertes pour votre restaurant.</p>
             </Link>
-            <Link to="/blog/fiches-techniques" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/fiche-technique-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Fiche technique de cuisine : le guide</h3>
               <p className="text-sm text-mono-500">Creez des fiches techniques precises pour maitriser food cost et qualite.</p>
             </Link>

@@ -597,10 +597,10 @@ export default function BlogLogicielCaisse() {
               <strong>Posseder une excellente caisse ne suffit pas.</strong> La caisse vous dit combien vous vendez ; elle ne vous dit <em>pas</em> combien vous gagnez. Pour passer du CA a la marge nette, il faut croiser les ventes avec :
             </p>
             <ul className="space-y-2 text-[#374151] mb-5">
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Les <Link to="/blog/fiche-technique-cuisine-restaurant" className="text-teal-600 hover:underline">fiches techniques</Link> (composition exacte de chaque plat)</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Les <Link to="/blog/fiche-technique-restaurant" className="text-teal-600 hover:underline">fiches techniques</Link> (composition exacte de chaque plat)</span></li>
               <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Les couts d achat actualises (factures fournisseurs)</span></li>
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Le <Link to="/blog/food-cost-restaurant-comment-calculer" className="text-teal-600 hover:underline">food cost</Link> reel (mesure du cout matieres)</span></li>
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Le <Link to="/blog/inventaire-restaurant" className="text-teal-600 hover:underline">stock reel</Link> et les pertes (gaspillage, casse, offerts)</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Le <Link to="/blog/reduire-food-cost" className="text-teal-600 hover:underline">food cost</Link> reel (mesure du cout matieres)</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Le <Link to="/blog/inventaire-restaurant-guide" className="text-teal-600 hover:underline">stock reel</Link> et les pertes (gaspillage, casse, offerts)</span></li>
             </ul>
             <p className="text-[#374151] leading-relaxed mb-4"><strong>Workflow type avec RestauMargin :</strong></p>
             <div className="bg-mono-1000 rounded-xl p-5 mb-4 font-mono text-sm text-mono-100 space-y-1">
@@ -663,11 +663,11 @@ export default function BlogLogicielCaisse() {
                 <p className="text-xs font-semibold text-teal-600 uppercase mb-1">Guide</p>
                 <p className="font-semibold text-mono-100">Calcul marge restaurant : formules et exemples</p>
               </Link>
-              <Link to="/blog/food-cost-restaurant-comment-calculer" className="block border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors">
+              <Link to="/blog/reduire-food-cost" className="block border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors">
                 <p className="text-xs font-semibold text-teal-600 uppercase mb-1">Food cost</p>
                 <p className="font-semibold text-mono-100">Food cost restaurant : comment le calculer</p>
               </Link>
-              <Link to="/blog/inventaire-restaurant" className="block border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors">
+              <Link to="/blog/inventaire-restaurant-guide" className="block border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors">
                 <p className="text-xs font-semibold text-teal-600 uppercase mb-1">Stocks</p>
                 <p className="font-semibold text-mono-100">Inventaire restaurant : methode FIFO</p>
               </Link>

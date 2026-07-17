@@ -112,7 +112,7 @@ export default function BlogTauxOccupation() {
           </Link>
           <div className="flex items-center gap-3">
             <Link
-              to="/signup"
+              to="/login?mode=register"
               className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
             >
               <Calculator className="w-4 h-4" />
@@ -974,7 +974,7 @@ export default function BlogTauxOccupation() {
               RestauMargin calcule automatiquement votre taux d'occupation, votre RevPASH par service, votre rotation, et identifie les creneaux a fort potentiel. Tableau de bord temps reel, alertes intelligentes, simulateur d'impact financier.
             </p>
             <Link
-              to="/signup"
+              to="/login?mode=register"
               className="inline-flex items-center gap-2 bg-white text-teal-700 font-semibold px-7 py-3.5 rounded-xl hover:bg-teal-50 transition-colors text-sm sm:text-base"
             >
               Essayer gratuitement <ArrowRight className="w-4 h-4" />

@@ -1,0 +1,665 @@
+=== France EXTENDED Scraping ===
+Cities: 159 | Queries/city: 14
+Output: C:\Users\mrgue\CLAUDE CODE\restaurant-margin\data\scraping\france-mass-2026-05-06.csv
+Existing: 3344 restos uniques | 31 villes scraped
+Villes a faire (couverture <30): 128
+
+============================================================
+  Paris 15e (queries: 14)
+============================================================
+  > restaurant Paris 15e
+    32 nouveaux
+  > pizzeria Paris 15e
+    20 nouveaux
+  > brasserie Paris 15e
+    15 nouveaux
+  > bistrot Paris 15e
+    7 nouveaux
+  > restaurant gastronomique Paris 15e
+    15 nouveaux
+  > restaurant chinois Paris 15e
+    25 nouveaux
+  > restaurant japonais Paris 15e
+    23 nouveaux
+  > sushi Paris 15e
+    10 nouveaux
+  > restaurant marocain Paris 15e
+    10 nouveaux
+  > restaurant indien Paris 15e
+    19 nouveaux
+  > restaurant turc Paris 15e
+    12 nouveaux
+  > kebab Paris 15e
+    21 nouveaux
+  > restaurant africain Paris 15e
+    18 nouveaux
+  > restaurant libanais Paris 15e
+    21 nouveaux
+  -> 248 restos uniques. Extraction emails...
+  Paris 15e DONE: 248 restos | 37 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Paris 16e (queries: 14)
+============================================================
+  > restaurant Paris 16e
+    28 nouveaux
+  > pizzeria Paris 16e
+    22 nouveaux
+  > brasserie Paris 16e
+    17 nouveaux
+  > bistrot Paris 16e
+    9 nouveaux
+  > restaurant gastronomique Paris 16e
+    18 nouveaux
+  > restaurant chinois Paris 16e
+    22 nouveaux
+  > restaurant japonais Paris 16e
+    23 nouveaux
+  > sushi Paris 16e
+    10 nouveaux
+  > restaurant marocain Paris 16e
+    3 nouveaux
+  > restaurant indien Paris 16e
+    20 nouveaux
+  > restaurant turc Paris 16e
+    13 nouveaux
+  > kebab Paris 16e
+    23 nouveaux
+  > restaurant africain Paris 16e
+    3 nouveaux
+  > restaurant libanais Paris 16e
+    15 nouveaux
+  -> 226 restos uniques. Extraction emails...
+  Paris 16e DONE: 226 restos | 27 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Paris 18e (queries: 14)
+============================================================
+  > restaurant Paris 18e
+    27 nouveaux
+  > pizzeria Paris 18e
+    22 nouveaux
+  > brasserie Paris 18e
+    15 nouveaux
+  > bistrot Paris 18e
+    4 nouveaux
+  > restaurant gastronomique Paris 18e
+    10 nouveaux
+  > restaurant chinois Paris 18e
+    22 nouveaux
+  > restaurant japonais Paris 18e
+    22 nouveaux
+  > sushi Paris 18e
+    9 nouveaux
+  > restaurant marocain Paris 18e
+    16 nouveaux
+  > restaurant indien Paris 18e
+    16 nouveaux
+  > restaurant turc Paris 18e
+    19 nouveaux
+  > kebab Paris 18e
+    21 nouveaux
+  > restaurant africain Paris 18e
+    25 nouveaux
+  > restaurant libanais Paris 18e
+    16 nouveaux
+  -> 244 restos uniques. Extraction emails...
+  Paris 18e DONE: 244 restos | 25 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Paris 19e (queries: 14)
+============================================================
+  > restaurant Paris 19e
+    22 nouveaux
+  > pizzeria Paris 19e
+    21 nouveaux
+  > brasserie Paris 19e
+    12 nouveaux
+  > bistrot Paris 19e
+    7 nouveaux
+  > restaurant gastronomique Paris 19e
+    13 nouveaux
+  > restaurant chinois Paris 19e
+    26 nouveaux
+  > restaurant japonais Paris 19e
+    12 nouveaux
+  > sushi Paris 19e
+    12 nouveaux
+  > restaurant marocain Paris 19e
+    8 nouveaux
+  > restaurant indien Paris 19e
+    16 nouveaux
+  > restaurant turc Paris 19e
+    19 nouveaux
+  > kebab Paris 19e
+    15 nouveaux
+  > restaurant africain Paris 19e
+    20 nouveaux
+  > restaurant libanais Paris 19e
+    7 nouveaux
+  -> 210 restos uniques. Extraction emails...
+  Paris 19e DONE: 210 restos | 35 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Marseille (queries: 14)
+============================================================
+  > restaurant Marseille
+    29 nouveaux
+  > pizzeria Marseille
+    29 nouveaux
+  > brasserie Marseille
+    26 nouveaux
+  > bistrot Marseille
+    23 nouveaux
+  > restaurant gastronomique Marseille
+    23 nouveaux
+  > restaurant chinois Marseille
+    28 nouveaux
+  > restaurant japonais Marseille
+    26 nouveaux
+  > sushi Marseille
+    11 nouveaux
+  > restaurant marocain Marseille
+    29 nouveaux
+  > restaurant indien Marseille
+    26 nouveaux
+  > restaurant turc Marseille
+    30 nouveaux
+  > kebab Marseille
+    15 nouveaux
+  > restaurant africain Marseille
+    31 nouveaux
+  > restaurant libanais Marseille
+    22 nouveaux
+  -> 348 restos uniques. Extraction emails...
+  Marseille DONE: 348 restos | 47 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Toulouse (queries: 14)
+============================================================
+  > restaurant Toulouse
+    30 nouveaux
+  > pizzeria Toulouse
+    31 nouveaux
+  > brasserie Toulouse
+    20 nouveaux
+  > bistrot Toulouse
+    11 nouveaux
+  > restaurant gastronomique Toulouse
+    13 nouveaux
+  > restaurant chinois Toulouse
+    26 nouveaux
+  > restaurant japonais Toulouse
+    29 nouveaux
+  > sushi Toulouse
+    16 nouveaux
+  > restaurant marocain Toulouse
+    31 nouveaux
+  > restaurant indien Toulouse
+    27 nouveaux
+  > restaurant turc Toulouse
+    24 nouveaux
+  > kebab Toulouse
+    21 nouveaux
+  > restaurant africain Toulouse
+    26 nouveaux
+  > restaurant libanais Toulouse
+    25 nouveaux
+  -> 330 restos uniques. Extraction emails...
+  Toulouse DONE: 330 restos | 68 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Nice (queries: 14)
+============================================================
+  > restaurant Nice
+    30 nouveaux
+  > pizzeria Nice
+    26 nouveaux
+  > brasserie Nice
+    23 nouveaux
+  > bistrot Nice
+    20 nouveaux
+  > restaurant gastronomique Nice
+    19 nouveaux
+  > restaurant chinois Nice
+    32 nouveaux
+  > restaurant japonais Nice
+    27 nouveaux
+  > sushi Nice
+    8 nouveaux
+  > restaurant marocain Nice
+    30 nouveaux
+  > restaurant indien Nice
+    27 nouveaux
+  > restaurant turc Nice
+    23 nouveaux
+  > kebab Nice
+    20 nouveaux
+  > restaurant africain Nice
+    20 nouveaux
+  > restaurant libanais Nice
+    20 nouveaux
+  -> 325 restos uniques. Extraction emails...
+  Nice DONE: 325 restos | 35 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Nantes (queries: 14)
+============================================================
+  > restaurant Nantes
+    26 nouveaux
+  > pizzeria Nantes
+    30 nouveaux
+  > brasserie Nantes
+    26 nouveaux
+  > bistrot Nantes
+    16 nouveaux
+  > restaurant gastronomique Nantes
+    11 nouveaux
+  > restaurant chinois Nantes
+    33 nouveaux
+  > restaurant japonais Nantes
+    19 nouveaux
+  > sushi Nantes
+    6 nouveaux
+  > restaurant marocain Nantes
+    14 nouveaux
+  > restaurant indien Nantes
+    28 nouveaux
+  > restaurant turc Nantes
+    29 nouveaux
+  > kebab Nantes
+    18 nouveaux
+  > restaurant africain Nantes
+    28 nouveaux
+  > restaurant libanais Nantes
+    20 nouveaux
+  -> 304 restos uniques. Extraction emails...
+  Nantes DONE: 304 restos | 71 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Montpellier (queries: 14)
+============================================================
+  > restaurant Montpellier
+    30 nouveaux
+  > pizzeria Montpellier
+    25 nouveaux
+  > brasserie Montpellier
+    23 nouveaux
+  > bistrot Montpellier
+    13 nouveaux
+  > restaurant gastronomique Montpellier
+    16 nouveaux
+  > restaurant chinois Montpellier
+    24 nouveaux
+  > restaurant japonais Montpellier
+    19 nouveaux
+  > sushi Montpellier
+    13 nouveaux
+  > restaurant marocain Montpellier
+    20 nouveaux
+  > restaurant indien Montpellier
+    27 nouveaux
+  > restaurant turc Montpellier
+    17 nouveaux
+  > kebab Montpellier
+    13 nouveaux
+  > restaurant africain Montpellier
+    22 nouveaux
+  > restaurant libanais Montpellier
+    20 nouveaux
+  -> 282 restos uniques. Extraction emails...
+  Montpellier DONE: 282 restos | 50 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Strasbourg (queries: 14)
+============================================================
+  > restaurant Strasbourg
+    29 nouveaux
+  > pizzeria Strasbourg
+    27 nouveaux
+  > brasserie Strasbourg
+    26 nouveaux
+  > bistrot Strasbourg
+    18 nouveaux
+  > restaurant gastronomique Strasbourg
+    19 nouveaux
+  > restaurant chinois Strasbourg
+    30 nouveaux
+  > restaurant japonais Strasbourg
+    26 nouveaux
+  > sushi Strasbourg
+    12 nouveaux
+  > restaurant marocain Strasbourg
+    28 nouveaux
+  > restaurant indien Strasbourg
+    29 nouveaux
+  > restaurant turc Strasbourg
+    29 nouveaux
+  > kebab Strasbourg
+    22 nouveaux
+  > restaurant africain Strasbourg
+    14 nouveaux
+  > restaurant libanais Strasbourg
+    23 nouveaux
+  -> 332 restos uniques. Extraction emails...
+  Strasbourg DONE: 332 restos | 57 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Rennes (queries: 14)
+============================================================
+  > restaurant Rennes
+    28 nouveaux
+  > pizzeria Rennes
+    30 nouveaux
+  > brasserie Rennes
+    24 nouveaux
+  > bistrot Rennes
+    10 nouveaux
+  > restaurant gastronomique Rennes
+    9 nouveaux
+  > restaurant chinois Rennes
+    28 nouveaux
+  > restaurant japonais Rennes
+    19 nouveaux
+  > sushi Rennes
+    10 nouveaux
+  > restaurant marocain Rennes
+    28 nouveaux
+  > restaurant indien Rennes
+    12 nouveaux
+  > restaurant turc Rennes
+    13 nouveaux
+  > kebab Rennes
+    19 nouveaux
+  > restaurant africain Rennes
+    25 nouveaux
+  > restaurant libanais Rennes
+    7 nouveaux
+  -> 262 restos uniques. Extraction emails...
+  Rennes DONE: 262 restos | 50 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Reims (queries: 14)
+============================================================
+  > restaurant Reims
+    30 nouveaux
+  > pizzeria Reims
+    30 nouveaux
+  > brasserie Reims
+    22 nouveaux
+  > bistrot Reims
+    11 nouveaux
+  > restaurant gastronomique Reims
+    9 nouveaux
+  > restaurant chinois Reims
+    24 nouveaux
+  > restaurant japonais Reims
+    15 nouveaux
+  > sushi Reims
+    4 nouveaux
+  > restaurant marocain Reims
+    18 nouveaux
+  > restaurant indien Reims
+    10 nouveaux
+  > restaurant turc Reims
+    19 nouveaux
+  > kebab Reims
+    10 nouveaux
+  > restaurant africain Reims
+    12 nouveaux
+  > restaurant libanais Reims
+    1 nouveaux
+  -> 215 restos uniques. Extraction emails...
+  Reims DONE: 215 restos | 43 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Saint-Etienne (queries: 14)
+============================================================
+  > restaurant Saint-Etienne
+    31 nouveaux
+  > pizzeria Saint-Etienne
+    31 nouveaux
+  > brasserie Saint-Etienne
+    24 nouveaux
+  > bistrot Saint-Etienne
+    16 nouveaux
+  > restaurant gastronomique Saint-Etienne
+    10 nouveaux
+  > restaurant chinois Saint-Etienne
+    10 nouveaux
+  > restaurant japonais Saint-Etienne
+    23 nouveaux
+  > sushi Saint-Etienne
+    3 nouveaux
+  > restaurant marocain Saint-Etienne
+    24 nouveaux
+  > restaurant indien Saint-Etienne
+    11 nouveaux
+  > restaurant turc Saint-Etienne
+    27 nouveaux
+  > kebab Saint-Etienne
+    16 nouveaux
+  > restaurant africain Saint-Etienne
+    20 nouveaux
+  > restaurant libanais Saint-Etienne
+    6 nouveaux
+  -> 252 restos uniques. Extraction emails...
+  Saint-Etienne DONE: 252 restos | 42 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Grenoble (queries: 14)
+============================================================
+  > restaurant Grenoble
+    30 nouveaux
+  > pizzeria Grenoble
+    29 nouveaux
+  > brasserie Grenoble
+    26 nouveaux
+  > bistrot Grenoble
+    16 nouveaux
+  > restaurant gastronomique Grenoble
+    13 nouveaux
+  > restaurant chinois Grenoble
+    29 nouveaux
+  > restaurant japonais Grenoble
+    25 nouveaux
+  > sushi Grenoble
+    9 nouveaux
+  > restaurant marocain Grenoble
+    14 nouveaux
+  > restaurant indien Grenoble
+    23 nouveaux
+  > restaurant turc Grenoble
+    10 nouveaux
+  > kebab Grenoble
+    23 nouveaux
+  > restaurant africain Grenoble
+    24 nouveaux
+  > restaurant libanais Grenoble
+    20 nouveaux
+  -> 291 restos uniques. Extraction emails...
+  Grenoble DONE: 291 restos | 56 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Dijon (queries: 14)
+============================================================
+  > restaurant Dijon
+    26 nouveaux
+  > pizzeria Dijon
+    31 nouveaux
+  > brasserie Dijon
+    24 nouveaux
+  > bistrot Dijon
+    12 nouveaux
+  > restaurant gastronomique Dijon
+    14 nouveaux
+  > restaurant chinois Dijon
+    29 nouveaux
+  > restaurant japonais Dijon
+    12 nouveaux
+  > sushi Dijon
+    4 nouveaux
+  > restaurant marocain Dijon
+    3 nouveaux
+  > restaurant indien Dijon
+    8 nouveaux
+  > restaurant turc Dijon
+    24 nouveaux
+  > kebab Dijon
+    12 nouveaux
+  > restaurant africain Dijon
+    14 nouveaux
+  > restaurant libanais Dijon
+    4 nouveaux
+  -> 217 restos uniques. Extraction emails...
+  Dijon DONE: 217 restos | 59 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Nimes (queries: 14)
+============================================================
+  > restaurant Nimes
+    30 nouveaux
+  > pizzeria Nimes
+    30 nouveaux
+  > brasserie Nimes
+    21 nouveaux
+  > bistrot Nimes
+    9 nouveaux
+  > restaurant gastronomique Nimes
+    8 nouveaux
+  > restaurant chinois Nimes
+    27 nouveaux
+  > restaurant japonais Nimes
+    16 nouveaux
+  > sushi Nimes
+    4 nouveaux
+  > restaurant marocain Nimes
+    19 nouveaux
+  > restaurant indien Nimes
+    6 nouveaux
+  > restaurant turc Nimes
+    10 nouveaux
+  > kebab Nimes
+    24 nouveaux
+  > restaurant africain Nimes
+    6 nouveaux
+  > restaurant libanais Nimes
+    0 nouveaux
+  -> 210 restos uniques. Extraction emails...
+  Nimes DONE: 210 restos | 40 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Clermont-Ferrand (queries: 14)
+============================================================
+  > restaurant Clermont-Ferrand
+    28 nouveaux
+  > pizzeria Clermont-Ferrand
+    32 nouveaux
+  > brasserie Clermont-Ferrand
+    18 nouveaux
+  > bistrot Clermont-Ferrand
+    9 nouveaux
+  > restaurant gastronomique Clermont-Ferrand
+    15 nouveaux
+  > restaurant chinois Clermont-Ferrand
+    31 nouveaux
+  > restaurant japonais Clermont-Ferrand
+    14 nouveaux
+  > sushi Clermont-Ferrand
+    3 nouveaux
+  > restaurant marocain Clermont-Ferrand
+    16 nouveaux
+  > restaurant indien Clermont-Ferrand
+    18 nouveaux
+  > restaurant turc Clermont-Ferrand
+    10 nouveaux
+  > kebab Clermont-Ferrand
+    23 nouveaux
+  > restaurant africain Clermont-Ferrand
+    8 nouveaux
+  > restaurant libanais Clermont-Ferrand
+    2 nouveaux
+  -> 227 restos uniques. Extraction emails...
+  Clermont-Ferrand DONE: 227 restos | 40 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Le Mans (queries: 14)
+============================================================
+  > restaurant Le Mans
+    31 nouveaux
+  > pizzeria Le Mans
+    26 nouveaux
+  > brasserie Le Mans
+    16 nouveaux
+  > bistrot Le Mans
+    6 nouveaux
+  > restaurant gastronomique Le Mans
+    8 nouveaux
+  > restaurant chinois Le Mans
+    27 nouveaux
+  > restaurant japonais Le Mans
+    5 nouveaux
+  > sushi Le Mans
+    0 nouveaux
+  > restaurant marocain Le Mans
+    10 nouveaux
+  > restaurant indien Le Mans
+    4 nouveaux
+  > restaurant turc Le Mans
+    16 nouveaux
+  > kebab Le Mans
+    11 nouveaux
+  > restaurant africain Le Mans
+    9 nouveaux
+  > restaurant libanais Le Mans
+    0 nouveaux
+  -> 169 restos uniques. Extraction emails...
+  Le Mans DONE: 169 restos | 27 avec email
+  Pause 45s avant prochaine ville...
+
+============================================================
+  Brest (queries: 14)
+============================================================
+  > restaurant Brest
+    27 nouveaux
+  > pizzeria Brest
+    28 nouveaux
+  > brasserie Brest
+    18 nouveaux
+  > bistrot Brest
+    1 nouveaux
+  > restaurant gastronomique Brest
+    9 nouveaux
+  > restaurant chinois Brest
+    21 nouveaux
+  > restaurant japonais Brest
+    6 nouveaux
+  > sushi Brest
+    5 nouveaux
+  > restaurant marocain Brest
+FATAL: ProtocolError: Protocol error (Target.closeTarget): No target with given id found
+    at <instance_members_initializer> (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/common/CallbackRegistry.js:99:14)
+    at new Callback (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/common/CallbackRegistry.js:103:16)
+    at CallbackRegistry.create (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/common/CallbackRegistry.js:22:26)
+    at Connection._rawSend (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/cdp/Connection.js:104:26)
+    at Connection.send (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/cdp/Connection.js:95:21)
+    at CdpPage.close (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/node_modules/puppeteer-core/lib/esm/puppeteer/cdp/Page.js:916:34)
+    at async scrapeQuery (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/scripts/scrape-france-extended.mjs:270:5)
+    at async main (file:///C:/Users/mrgue/CLAUDE%20CODE/restaurant-margin/scripts/scrape-france-extended.mjs:324:23)

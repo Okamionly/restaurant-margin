@@ -115,7 +115,7 @@ export default function BlogEnergieRestaurant() {
           </Link>
           <div className="flex items-center gap-3">
             <Link
-              to="/signup"
+              to="/login?mode=register"
               className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
             >
               <Zap className="w-4 h-4" />
@@ -812,7 +812,7 @@ function CTABlock() {
           Notre module suivi des charges enregistre vos consommations electricite, gaz et eau,
           calcule votre ratio kWh/couvert en temps reel et alerte des qu'une derive depasse votre seuil.
         </p>
-        <Link to="/signup" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-teal-700 font-bold rounded-full hover:bg-teal-50 transition-colors">
+        <Link to="/login?mode=register" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-teal-700 font-bold rounded-full hover:bg-teal-50 transition-colors">
           Essayer gratuitement
           <ArrowRight className="w-4 h-4" />
         </Link>

@@ -1047,7 +1047,7 @@ export default function BlogCoutRevient() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              to="/signup"
+              to="/login?mode=register"
               className="inline-flex items-center justify-center gap-2 bg-white text-teal-700 font-semibold px-6 py-3 rounded-xl hover:bg-teal-50 transition-colors text-sm"
             >
               Essayer gratuitement <ArrowRight className="w-4 h-4" />

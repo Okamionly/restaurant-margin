@@ -879,7 +879,7 @@ export default function BlogPrixDeVente() {
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Fixer les prix de sa carte</h3>
               <p className="text-xs text-mono-500">Methode complete pour construire une carte de restaurant rentable.</p>
             </Link>
-            <Link to="/blog/food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le food cost</h3>
               <p className="text-xs text-mono-500">10 strategies eprouvees pour baisser le food cost.</p>
             </Link>

@@ -481,13 +481,26 @@ app.use('/api/auth/forgot-password', (req, _res, next) => {
 // without leaking infrastructure details (uptime, response time, service map).
 // Detailed payload (uptime, responseTime, services) is only returned when an admin
 // JWT is presented via Authorization header.
+
+// Cache le résultat du check DB 30s pour éviter le cold start Supabase à chaque probe.
+const dbHealthCache: { status: string; cachedAt: number } = { status: 'ok', cachedAt: 0 };
+const DB_HEALTH_TTL_MS = 30_000;
+
 app.get('/api/health', async (req: any, res) => {
   const start = Date.now();
-  let dbStatus = 'ok';
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-  } catch {
-    dbStatus = 'error';
+  let dbStatus: string;
+  const now = Date.now();
+  if (now - dbHealthCache.cachedAt < DB_HEALTH_TTL_MS) {
+    dbStatus = dbHealthCache.status;
+  } else {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      dbStatus = 'ok';
+    } catch {
+      dbStatus = 'error';
+    }
+    dbHealthCache.status = dbStatus;
+    dbHealthCache.cachedAt = now;
   }
   // Shallow = presence de la cle. Deep (?deep=1) = vrai appel modele 1 token, pour
   // qu'un modele retire ou une cle revoquee soit detecte tout de suite (les deux

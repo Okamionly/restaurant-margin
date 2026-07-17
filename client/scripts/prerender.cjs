@@ -296,6 +296,12 @@ const ROUTES = [
     type: 'article',
   },
   {
+    path: '/blog/negocier-fournisseurs-restaurant',
+    title: 'Negocier avec ses fournisseurs en restauration : 7 techniques pour reduire ses couts matieres',
+    description: "Apprenez a negocier efficacement avec vos fournisseurs de restauration : mise en concurrence, contrats-cadres, RFA, regroupement d'achats. Guide pratique 2026 pour reduire votre food cost de 5 a 10 %.",
+    type: 'article',
+  },
+  {
     path: '/blog/prime-cost-restaurant',
     title: "Prime cost en restauration : l'indicateur n1 de rentabilite",
     description: "Food cost + masse salariale = prime cost. Benchmarks, formule complete et plan d'action pour passer de 72% a 62% en 3 mois.",

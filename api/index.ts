@@ -183,7 +183,15 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
 // Limite a 10mb : le scan de factures envoie des images/PDF en base64 (une photo
 // de facture depasse largement le defaut 100kb -> PayloadTooLarge -> 500). Vercel
 // plafonne de toute facon le body a 4.5mb, le front compresse au-dela.
-app.use(express.json({ limit: '10mb' }));
+// verify capture le body brut pour /api/inbound/email afin de verifier la signature svix.
+app.use(express.json({
+  limit: '10mb',
+  verify: (req: any, _res, buf) => {
+    if (req.url === '/api/inbound/email') {
+      req.rawBody = buf.toString();
+    }
+  },
+}));
 
 // ── HSTS Header (enforce HTTPS) ──
 app.use((_req, res, next) => {
@@ -261,9 +269,7 @@ app.use((req, res, next) => {
   }
 
   // Skip inbound email webhook — appele par Resend (event email.received), sans
-  // Bearer ni CSRF. Le CSRF le bloquait en 403 -> AUCUN email entrant n'atteignait
-  // le handler (Messagerie toujours vide). Endpoint fixe + garde anti-boucle
-  // (self-send) dans le handler. TODO durcissement : verifier la signature svix Resend.
+  // Bearer ni CSRF. Signature svix verifiee dans le handler via RESEND_WEBHOOK_SECRET.
   if (req.path === '/api/inbound/email') {
     return next();
   }
@@ -2788,8 +2794,47 @@ app.put('/api/messages/conversations/:id/star', authWithRestaurant, async (req: 
   } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur favoris' }); }
 });
 
+// ── Resend webhook signature verification (svix, CWE-345) ──
+// Graceful degradation: if RESEND_WEBHOOK_SECRET is not set, all requests pass
+// (backward-compat during deploy). Once the secret is added to env, all unsigned
+// requests are rejected with 401.
+function verifyResendSignature(req: any): boolean {
+  const secret = process.env.RESEND_WEBHOOK_SECRET;
+  if (!secret) return true;
+
+  const svixId = req.headers['svix-id'] as string | undefined;
+  const svixTimestamp = req.headers['svix-timestamp'] as string | undefined;
+  const svixSig = req.headers['svix-signature'] as string | undefined;
+  if (!svixId || !svixTimestamp || !svixSig) return false;
+
+  // Replay protection: reject events older than 5 minutes
+  const ts = parseInt(svixTimestamp, 10);
+  if (isNaN(ts) || Math.abs(Math.floor(Date.now() / 1000) - ts) > 300) return false;
+
+  // HMAC-SHA256 over "svix-id.svix-timestamp.rawBody"
+  const rawBody = req.rawBody ?? JSON.stringify(req.body);
+  const toSign = `${svixId}.${svixTimestamp}.${rawBody}`;
+  const keyBytes = Buffer.from(secret.replace(/^whsec_/, ''), 'base64');
+  const computed = crypto.createHmac('sha256', keyBytes).update(toSign).digest('base64');
+
+  // svix-signature header is space-separated, each entry is "v1,<base64>"
+  return svixSig.split(' ').some(s => {
+    const [version, sig] = s.split(',');
+    if (version !== 'v1' || !sig) return false;
+    try {
+      const a = Buffer.from(sig, 'base64');
+      const b = Buffer.from(computed, 'base64');
+      return a.length === b.length && crypto.timingSafeEqual(a, b);
+    } catch { return false; }
+  });
+}
+
 // ── Inbound Email Webhook (called by Resend — NO auth) ──
 app.post('/api/inbound/email', async (req: any, res) => {
+  if (!verifyResendSignature(req)) {
+    console.warn('[INBOUND] Webhook signature invalid — request rejected');
+    return res.status(401).json({ error: 'Invalid webhook signature' });
+  }
   try {
     const body = req.body || {};
     // Resend wraps email data inside req.body.data. The `email.received` webhook

@@ -44,9 +44,15 @@ function lazyRetry(importFn: () => Promise<any>) {
   }));
 }
 
-// Critical pages loaded eagerly (first pages users see)
-import Login from './pages/Login';
+// NotFound stays eager (tiny, it's the catch-all fallback).
 import NotFound from './pages/NotFound';
+
+// Login is lazy-loaded: it renders only on /login, but was previously bundled
+// eagerly into the critical `index` chunk that EVERY public/SEO page (landing,
+// /blog/*, /pricing…) downloads before first paint. It pulls in a heavy WebGL
+// PaperFoldBackground; splitting it out shrinks the critical path for SEO pages.
+// Returning users hit /login with a token and get auto-redirected anyway.
+const Login = lazyRetry(() => import('./pages/Login'));
 
 // Public marketing pages — lazy loaded to keep initial bundle small.
 // Landing.tsx (2341 lines + GSAP) and StationLanding etc. are heavy and not always
@@ -1182,7 +1188,7 @@ function App() {
           <Routes>
             <Route path="/" element={<PublicHome />} />
           <Route path="/landing" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>}><Landing /></Suspense>} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-teal-500" /></div>}><Login /></Suspense>} />
           <Route path="/menu-public" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>}><PublicMenu /></Suspense>} />
           <Route path="/feedback/:id" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-mono-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-mono-100 dark:text-white" /></div>}><PublicFeedback /></Suspense>} />
           <Route path="/r/:token" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-mono-100" /></div>}><PublicRecipe /></Suspense>} />

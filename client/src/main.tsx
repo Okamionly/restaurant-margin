@@ -18,9 +18,14 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   </React.StrictMode>
 );
 
-// Prefetch Dashboard and vendor-charts chunks during idle time
-// so they're ready when user navigates after login
-const prefetchIdleCallback = window.requestIdleCallback || ((cb: IdleRequestCallback) => setTimeout(cb, 2000));
-prefetchIdleCallback(() => {
-  import('./pages/Dashboard').catch(() => {});
-});
+// Prefetch the Dashboard chunk during idle time so it's ready when a logged-in
+// user navigates after login. Gated on the presence of an auth token: anonymous
+// visitors on public/SEO pages (landing, /blog/*, /pricing, crawlers) never reach
+// the auth-gated dashboard, so downloading + parsing its chunk on those pages is
+// pure waste (hurts TBT/INP on low-end devices and bandwidth). Skip it for them.
+if (localStorage.getItem('token')) {
+  const prefetchIdleCallback = window.requestIdleCallback || ((cb: IdleRequestCallback) => setTimeout(cb, 2000));
+  prefetchIdleCallback(() => {
+    import('./pages/Dashboard').catch(() => {});
+  });
+}

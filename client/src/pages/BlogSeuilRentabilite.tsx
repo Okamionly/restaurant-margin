@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, BookOpen, Calculator, TrendingDown, BarChart3, AlertTriangle, Target, ArrowRight, Zap, CheckCircle, Lightbulb, ListChecks, Users, Award, TrendingUp, Building2, Wallet, ChevronRight } from 'lucide-react';
+import { ChefHat, BookOpen, Calculator, TrendingDown, BarChart3, AlertTriangle, Target, ArrowRight, Zap, CheckCircle, Lightbulb, ListChecks, Users, Award, TrendingUp, Building2, Wallet, ChevronRight, Landmark, ExternalLink } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
@@ -98,7 +98,7 @@ const articleSchema = {
     logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
   },
   datePublished: '2026-04-25',
-  dateModified: '2026-05-26',
+  dateModified: '2026-07-19',
   wordCount: 3200,
   inLanguage: 'fr-FR',
   mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/seuil-rentabilite-restaurant' },
@@ -183,7 +183,7 @@ export default function BlogSeuilRentabilite() {
       {/* Body */}
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
-        <BlogAuthor publishedDate="2026-04-25" updatedDate="2026-05-26" readTime="15 min" variant="header" />
+        <BlogAuthor publishedDate="2026-04-25" updatedDate="2026-07-19" readTime="15 min" variant="header" />
 
         {/* Encadré formule rapide (featured snippet) */}
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
@@ -851,6 +851,88 @@ export default function BlogSeuilRentabilite() {
           </div>
         </section>
 
+        {/* ═════════════ Sources & références (E-E-A-T) ═════════════ */}
+        <section className="mb-16" aria-labelledby="sources-references">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
+              <Landmark className="w-5 h-5" />
+            </div>
+            <h2 id="sources-references" className="text-2xl font-bold text-mono-100">Sources &amp; références</h2>
+          </div>
+          <p className="text-sm text-mono-500 mb-6 max-w-3xl">
+            Les seuils de rentabilité, taux de marge sur coût variable, ratios de charges et fourchettes de food cost cités
+            dans ce guide s'appuient sur des sources officielles et professionnelles reconnues du secteur CHR, recoupées avec
+            les données agrégées de RestauMargin (400+ établissements français). Ces références sont vérifiables et mises à jour pour 2026.
+          </p>
+
+          <ul className="grid sm:grid-cols-2 gap-4 mb-6">
+            <li>
+              <a
+                href="https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mes-autres-impots-et-taxes/tva-quels-sont-les-taux-de-votre-quotidien"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group h-full"
+              >
+                <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
+                <span>
+                  <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">economie.gouv.fr — Taux de TVA</span>
+                  <span className="block text-xs text-mono-500 mt-1">Taux officiels 5,5 % / 10 % / 20 % appliqués en restauration, base du calcul du CA HT et donc du seuil de rentabilité.</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.insee.fr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group h-full"
+              >
+                <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
+                <span>
+                  <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">INSEE</span>
+                  <span className="block text-xs text-mono-500 mt-1">Statistiques nationales sur la restauration, la démographie des entreprises et les taux de défaillance — contexte du point mort.</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.umih.fr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group h-full"
+              >
+                <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
+                <span>
+                  <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">UMIH</span>
+                  <span className="block text-xs text-mono-500 mt-1">Union des Métiers et des Industries de l'Hôtellerie — référence des usages, charges fixes et ratios de rentabilité du secteur CHR.</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.lhotellerie-restauration.fr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group h-full"
+              >
+                <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
+                <span>
+                  <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">L'Hôtellerie-Restauration</span>
+                  <span className="block text-xs text-mono-500 mt-1">Presse professionnelle de référence (marges, coefficients, seuils de rentabilité et point mort).</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+
+          <p className="text-xs text-mono-500 flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-teal-600 shrink-0" />
+            <span>
+              Méthodologie éditoriale, sources internes et responsable de la publication détaillés sur notre page{' '}
+              <Link to="/a-propos" className="text-teal-600 hover:text-teal-700 font-semibold transition-colors">Qui sommes-nous</Link>.
+            </span>
+          </p>
+        </section>
+
         {/* CTA */}
         <div id="cta" className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 text-center text-white">
           <h2 className="text-2xl font-bold mb-3">Calculez votre seuil de rentabilité en 5 minutes</h2>
@@ -867,7 +949,7 @@ export default function BlogSeuilRentabilite() {
         </div>
 
         {/* Author footer */}
-        <BlogAuthor publishedDate="2026-04-25" updatedDate="2026-05-26" readTime="15 min" variant="footer" />
+        <BlogAuthor publishedDate="2026-04-25" updatedDate="2026-07-19" readTime="15 min" variant="footer" />
 
         {/* Articles connexes */}
         <div className="mt-12 pt-8 border-t border-mono-900">

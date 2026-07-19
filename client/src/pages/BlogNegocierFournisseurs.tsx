@@ -7,7 +7,6 @@ import {
   CheckCircle,
   ArrowRight,
   ShoppingCart,
-  Handshake,
   FileText,
   Users,
   BarChart3,
@@ -53,7 +52,6 @@ const title = 'Négocier avec ses fournisseurs en restauration : 7 techniques po
 const description =
   'Apprenez à négocier efficacement avec vos fournisseurs de restauration : mise en concurrence, contrats-cadres, RFA, regroupement d\'achats. Guide pratique 2026 pour réduire votre food cost de 5 à 10 %.';
 const publishDate = '2026-07-17';
-const heroIcon = <Handshake className="w-10 h-10 text-teal-400" />;
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -84,17 +82,17 @@ export default function BlogNegocierFournisseurs() {
       <SEOHead
         title={`${title} | RestauMargin`}
         description={description}
-        canonical={`https://www.restaumargin.fr/blog/${slug}`}
-        schemas={[articleSchema, faqSchema, breadcrumbSchema]}
+        path={`/blog/${slug}`}
+        schema={[articleSchema, faqSchema, breadcrumbSchema]}
       />
 
       <div className="min-h-screen bg-white dark:bg-black">
         <BlogArticleHero
           category="Achats & Marges"
           title={title}
+          accentWord="fournisseurs"
           subtitle="Avec un food cost cible entre 28 et 32 %, chaque point gagné à l'achat se retrouve directement en marge nette. 7 techniques éprouvées pour reprendre l'avantage face à vos fournisseurs."
-          icon={heroIcon}
-          publishDate={publishDate}
+          date="Juillet 2026"
           readTime="7 min"
         />
 
@@ -319,7 +317,7 @@ export default function BlogNegocierFournisseurs() {
             </Link>
           </div>
 
-          <BlogAuthor />
+          <BlogAuthor publishedDate={publishDate} readTime="7 min" variant="footer" />
         </div>
       </div>
     </>

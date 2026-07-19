@@ -72,11 +72,11 @@ interface AIRecommendation {
 // ── Status helpers ──
 
 const STATUS_CONFIG: Record<NegotiationStatus, { label: string; color: string; bgColor: string }> = {
-  identifie: { label: 'Identifie', color: 'text-[#9CA3AF]', bgColor: 'bg-mono-950 dark:bg-[#171717]' },
-  contacte: { label: 'Contacte', color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-50 dark:bg-blue-950/30' },
-  en_negociation: { label: 'En negociation', color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-50 dark:bg-amber-950/30' },
-  accepte: { label: 'Accepte', color: 'text-emerald-600 dark:text-emerald-400', bgColor: 'bg-emerald-50 dark:bg-emerald-950/30' },
-  refuse: { label: 'Refuse', color: 'text-red-600 dark:text-red-400', bgColor: 'bg-red-50 dark:bg-red-950/30' },
+  identifie: { label: 'Identifié', color: 'text-[#9CA3AF]', bgColor: 'bg-mono-950 dark:bg-[#171717]' },
+  contacte: { label: 'Contacté', color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-50 dark:bg-blue-950/30' },
+  en_negociation: { label: 'En négociation', color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-50 dark:bg-amber-950/30' },
+  accepte: { label: 'Accepté', color: 'text-emerald-600 dark:text-emerald-400', bgColor: 'bg-emerald-50 dark:bg-emerald-950/30' },
+  refuse: { label: 'Refusé', color: 'text-red-600 dark:text-red-400', bgColor: 'bg-red-50 dark:bg-red-950/30' },
 };
 
 const STATUS_ORDER: NegotiationStatus[] = ['identifie', 'contacte', 'en_negociation', 'accepte', 'refuse'];
@@ -251,8 +251,8 @@ function computeRecommendations(
       recs.push({
         type: 'substitute',
         icon: RefreshCw,
-        title: `Changez de ${mostExpensive.name} a ${cheapest.name}`,
-        description: `Meme categorie (${cat}), -${savingPercent}% de cout. ${fmtEur(cheapest.pricePerUnit)}/${cheapest.unit} vs ${fmtEur(mostExpensive.pricePerUnit)}/${mostExpensive.unit}.`,
+        title: `Changez de ${mostExpensive.name} à ${cheapest.name}`,
+        description: `Même catégorie (${cat}), -${savingPercent}% de coût. ${fmtEur(cheapest.pricePerUnit)}/${cheapest.unit} vs ${fmtEur(mostExpensive.pricePerUnit)}/${mostExpensive.unit}.`,
         potentialSavings: Math.round((mostExpensive.pricePerUnit - cheapest.pricePerUnit) * 20),
         priority: savingPercent > 30 ? 'haute' : 'moyenne',
       });
@@ -267,7 +267,7 @@ function computeRecommendations(
         type: 'volume',
         icon: TrendingDown,
         title: `Votre volume de ${opp.ingredientName} justifie une remise de 10%`,
-        description: `Vous payez ${fmtEur(opp.currentPrice)}/${opp.unit} alors que le marche est a ${fmtEur(opp.marketAvgPrice)}. Negociez une remise volume.`,
+        description: `Vous payez ${fmtEur(opp.currentPrice)}/${opp.unit} alors que le marché est à ${fmtEur(opp.marketAvgPrice)}. Négociez une remise volume.`,
         potentialSavings: Math.round(opp.savingsPerMonth),
         priority: opp.savingsPerMonth > 50 ? 'haute' : 'moyenne',
       });
@@ -281,17 +281,17 @@ function computeRecommendations(
 // ── Script generator ──
 
 function generateNegotiationScript(opp: NegotiationOpportunity): string {
-  return `Bonjour${opp.supplierName !== 'Non renseigne' ? ` ${opp.supplierName}` : ''},
+  return `Bonjour${opp.supplierName !== 'Non renseigné' ? ` ${opp.supplierName}` : ''},
 
-Nous commandons regulierement des ${opp.ingredientName} (environ ${opp.category === 'Viande' ? '30' : opp.category === 'Poisson' ? '15' : '20'} ${opp.unit}/mois) et nous valorisons beaucoup notre partenariat.
+Nous commandons régulièrement des ${opp.ingredientName} (environ ${opp.category === 'Viande' ? '30' : opp.category === 'Poisson' ? '15' : '20'} ${opp.unit}/mois) et nous valorisons beaucoup notre partenariat.
 
-Apres une analyse de marche, nous avons constate que le prix moyen pour ce produit se situe actuellement autour de ${fmtEur(opp.marketAvgPrice)}/${opp.unit}.
+Après une analyse de marché, nous avons constaté que le prix moyen pour ce produit se situe actuellement autour de ${fmtEur(opp.marketAvgPrice)}/${opp.unit}.
 
-Notre tarif actuel de ${fmtEur(opp.currentPrice)}/${opp.unit} represente un ecart significatif par rapport au marche. Serait-il possible de revoir notre tarif vers ${fmtEur(opp.targetPrice)}/${opp.unit} ?
+Notre tarif actuel de ${fmtEur(opp.currentPrice)}/${opp.unit} représente un écart significatif par rapport au marché. Serait-il possible de revoir notre tarif vers ${fmtEur(opp.targetPrice)}/${opp.unit} ?
 
-Cela nous permettrait de continuer a travailler ensemble dans les meilleures conditions et potentiellement d'augmenter nos volumes de commande.
+Cela nous permettrait de continuer à travailler ensemble dans les meilleures conditions et potentiellement d'augmenter nos volumes de commande.
 
-Nous sommes bien entendu ouverts a la discussion et a trouver un accord mutuellement benefique.
+Nous sommes bien entendu ouverts à la discussion et à trouver un accord mutuellement bénéfique.
 
 Cordialement,
 [Votre nom]
@@ -302,26 +302,26 @@ function generateCallScript(opp: NegotiationOpportunity): string {
   return `--- SCRIPT D'APPEL ---
 
 1. INTRODUCTION
-"Bonjour, c'est [votre nom] du restaurant [nom]. J'espere que tout va bien de votre cote."
+"Bonjour, c'est [votre nom] du restaurant [nom]. J'espère que tout va bien de votre côté."
 
 2. CONTEXTE
-"Je vous appelle car nous faisons le point sur nos couts ingredients. Nous sommes un client fidele et nous commandons regulierement ${opp.ingredientName} chez vous."
+"Je vous appelle car nous faisons le point sur nos coûts ingrédients. Nous sommes un client fidèle et nous commandons régulièrement ${opp.ingredientName} chez vous."
 
 3. LA DEMANDE
-"Nous avons remarque que le prix du marche pour ${opp.ingredientName} est actuellement autour de ${fmtEur(opp.marketAvgPrice)}/${opp.unit}, et nous payons actuellement ${fmtEur(opp.currentPrice)}/${opp.unit}. Est-ce qu'il serait possible d'ajuster ce tarif ?"
+"Nous avons remarqué que le prix du marché pour ${opp.ingredientName} est actuellement autour de ${fmtEur(opp.marketAvgPrice)}/${opp.unit}, et nous payons actuellement ${fmtEur(opp.currentPrice)}/${opp.unit}. Est-ce qu'il serait possible d'ajuster ce tarif ?"
 
 4. OBJECTIF
 Prix cible : ${fmtEur(opp.targetPrice)}/${opp.unit}
-Economie visee : ${fmtEur(opp.savingsPerMonth)}/mois
+Économie visée : ${fmtEur(opp.savingsPerMonth)}/mois
 
 5. ARGUMENTS
-- Fidelite : client regulier
+- Fidélité : client régulier
 - Volume : commandes mensuelles stables
-- Engagement : pret a augmenter les volumes si le prix est ajuste
-- Marche : d'autres fournisseurs proposent des tarifs competitifs
+- Engagement : prêt à augmenter les volumes si le prix est ajusté
+- Marché : d'autres fournisseurs proposent des tarifs compétitifs
 
 6. CONCLUSION
-"Merci d'y reflechir. On peut se rappeler en fin de semaine pour en discuter ?"`;
+"Merci d'y réfléchir. On peut se rappeler en fin de semaine pour en discuter ?"`;
 }
 
 // ── Confidence Badge ──
@@ -451,7 +451,7 @@ export default function NegociationIA() {
       originalPrice: opp.currentPrice,
       targetPrice: opp.targetPrice,
       acceptedPrice: null,
-      logs: [{ date: new Date().toISOString(), action: 'Opportunite identifiee', result: `Ecart de ${fmtEur(opp.savingsPerUnit)}/${opp.unit} vs marche` }],
+      logs: [{ date: new Date().toISOString(), action: 'Opportunité identifiée', result: `Écart de ${fmtEur(opp.savingsPerUnit)}/${opp.unit} vs marché` }],
       createdAt: new Date().toISOString(),
     };
     const updated = [record, ...negotiations];
@@ -548,9 +548,9 @@ export default function NegociationIA() {
   // ── TABS ──
 
   const tabs: { id: TabId; label: string; icon: typeof Handshake; count?: number }[] = [
-    { id: 'dashboard', label: 'Opportunites', icon: Target, count: filteredOpportunities.length },
+    { id: 'dashboard', label: 'Opportunités', icon: Target, count: filteredOpportunities.length },
     { id: 'tracker', label: 'Suivi', icon: ClipboardList, count: negotiations.length },
-    { id: 'savings', label: 'Economies', icon: PiggyBank },
+    { id: 'savings', label: 'Économies', icon: PiggyBank },
     { id: 'recommendations', label: 'Conseils IA', icon: Sparkles, count: recommendations.length },
   ];
 
@@ -565,21 +565,21 @@ export default function NegociationIA() {
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-mono-100 dark:text-white font-satoshi tracking-tight flex items-center gap-3">
             <Handshake className="w-8 h-8 text-teal-600 dark:text-teal-400" />
-            Negociation IA
+            Négociation IA
           </h1>
           <p className="text-sm text-[#6B7280] dark:text-mono-700 mt-1">
-            Assistant intelligent pour negocier avec vos fournisseurs
+            Assistant intelligent pour négocier avec vos fournisseurs
           </p>
         </div>
 
         {/* Big savings KPI */}
         <div className="bg-gradient-to-br from-teal-600 to-emerald-600 rounded-2xl px-6 py-4 text-white shadow-lg">
-          <div className="text-xs font-medium uppercase tracking-wider opacity-80">Potentiel d'economie</div>
+          <div className="text-xs font-medium uppercase tracking-wider opacity-80">Potentiel d'économie</div>
           <div className="text-3xl font-bold font-satoshi mt-1">
             {formatCurrency(Math.round(totalPotentialSavings))}<span className="text-lg font-normal opacity-80">/mois</span>
           </div>
           <div className="text-xs mt-1 opacity-70">
-            {formatCurrency(Math.round(totalPotentialSavings * 12))}/an sur {opportunities.length} ingredient{opportunities.length > 1 ? 's' : ''}
+            {formatCurrency(Math.round(totalPotentialSavings * 12))}/an sur {opportunities.length} ingrédient{opportunities.length > 1 ? 's' : ''}
           </div>
         </div>
       </div>
@@ -589,10 +589,10 @@ export default function NegociationIA() {
         <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
           <div className="flex items-center gap-2 text-[#6B7280] dark:text-mono-700 text-xs font-medium mb-2">
             <Target className="w-4 h-4" />
-            Opportunites
+            Opportunités
           </div>
           <div className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{opportunities.length}</div>
-          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">ingredients surpayes</div>
+          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">ingrédients surpayés</div>
         </div>
         <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
           <div className="flex items-center gap-2 text-[#6B7280] dark:text-mono-700 text-xs font-medium mb-2">
@@ -600,23 +600,23 @@ export default function NegociationIA() {
             En cours
           </div>
           <div className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{activeCount}</div>
-          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">negociations actives</div>
+          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">négociations actives</div>
         </div>
         <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
           <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-medium mb-2">
             <Check className="w-4 h-4" />
-            Acceptees
+            Acceptées
           </div>
           <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-satoshi">{acceptedCount}</div>
-          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">negociations reussies</div>
+          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">négociations réussies</div>
         </div>
         <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-4">
           <div className="flex items-center gap-2 text-teal-600 dark:text-teal-400 text-xs font-medium mb-2">
             <CircleDollarSign className="w-4 h-4" />
-            Economies realisees
+            Économies réalisées
           </div>
           <div className="text-2xl font-bold text-teal-600 dark:text-teal-400 font-satoshi">{formatCurrency(Math.round(annualSavingsRealized))}</div>
-          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">cette annee</div>
+          <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mt-1">cette année</div>
         </div>
       </div>
 
@@ -657,7 +657,7 @@ export default function NegociationIA() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
               <input
                 type="text"
-                placeholder="Rechercher un ingredient ou fournisseur..."
+                placeholder="Rechercher un ingrédient ou fournisseur..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 text-sm text-mono-100 dark:text-white placeholder:text-[#9CA3AF] dark:placeholder:text-mono-500 focus:outline-none focus:ring-2 focus:ring-teal-500/30"
@@ -710,11 +710,11 @@ export default function NegociationIA() {
           {filteredOpportunities.length === 0 ? (
             <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-12 text-center">
               <Handshake className="w-12 h-12 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-4" />
-              <p className="text-lg font-semibold text-mono-100 dark:text-white">Aucune opportunite detectee</p>
+              <p className="text-lg font-semibold text-mono-100 dark:text-white">Aucune opportunité détectée</p>
               <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-2">
                 {ingredients.length < 5
-                  ? 'Ajoutez plus d\'ingredients pour que l\'IA detecte des opportunites de negociation.'
-                  : 'Tous vos prix sont competitifs ! Continuez a surveiller le marche.'}
+                  ? 'Ajoutez plus d\'ingrédients pour que l\'IA détecte des opportunités de négociation.'
+                  : 'Tous vos prix sont compétitifs ! Continuez à surveiller le marché.'}
               </p>
             </div>
           ) : (
@@ -802,7 +802,7 @@ export default function NegociationIA() {
                             <div className="text-xl font-bold text-red-600 dark:text-red-400 font-satoshi">{fmtEur(opp.currentPrice)}<span className="text-sm font-normal">/{opp.unit}</span></div>
                           </div>
                           <div className="bg-mono-1000 dark:bg-[#0D0D0D] rounded-xl p-4">
-                            <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Moyenne marche</div>
+                            <div className="text-xs text-[#9CA3AF] dark:text-mono-500 mb-1">Moyenne marché</div>
                             <div className="text-xl font-bold text-mono-100 dark:text-white font-satoshi">{fmtEur(opp.marketAvgPrice)}<span className="text-sm font-normal">/{opp.unit}</span></div>
                             <ConfidenceBadge level={opp.confidence} dataPoints={opp.dataPoints} />
                           </div>
@@ -817,7 +817,7 @@ export default function NegociationIA() {
                           <div className="flex items-center justify-between mb-3">
                             <h3 className="text-sm font-semibold text-mono-100 dark:text-white flex items-center gap-2">
                               <FileText className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                              Script de negociation
+                              Script de négociation
                             </h3>
                             <div className="flex gap-1 bg-mono-950 dark:bg-[#171717] rounded-lg p-0.5">
                               <button
@@ -854,7 +854,7 @@ export default function NegociationIA() {
                               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors"
                             >
                               {copied === opp.ingredientId ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                              {copied === opp.ingredientId ? 'Copie !' : 'Copier'}
+                              {copied === opp.ingredientId ? 'Copié !' : 'Copier'}
                             </button>
                             {opp.supplierEmail && (
                               <button
@@ -883,7 +883,7 @@ export default function NegociationIA() {
                                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-teal-600 text-white hover:bg-teal-500 transition-colors"
                               >
                                 <Handshake className="w-4 h-4" />
-                                Lancer la negociation
+                                Lancer la négociation
                               </button>
                             )}
                           </div>
@@ -907,9 +907,9 @@ export default function NegociationIA() {
           {negotiations.length === 0 ? (
             <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-12 text-center">
               <Handshake className="w-12 h-12 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-4" />
-              <p className="text-lg font-semibold text-mono-100 dark:text-white">Aucune negociation en cours</p>
+              <p className="text-lg font-semibold text-mono-100 dark:text-white">Aucune négociation en cours</p>
               <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-2">
-                Allez dans l'onglet "Opportunites" pour identifier des negociations a lancer.
+                Allez dans l'onglet "Opportunités" pour identifier des négociations à lancer.
               </p>
             </div>
           ) : (
@@ -930,7 +930,7 @@ export default function NegociationIA() {
                       <div className="text-right">
                         <div className="text-xs text-[#9CA3AF] dark:text-mono-500">{fmtEur(neg.originalPrice)} → {fmtEur(neg.targetPrice)}</div>
                         {neg.acceptedPrice !== null && (
-                          <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Accepte: {fmtEur(neg.acceptedPrice)}</div>
+                          <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Accepté : {fmtEur(neg.acceptedPrice)}</div>
                         )}
                       </div>
                     </div>
@@ -949,12 +949,12 @@ export default function NegociationIA() {
                           <button
                             onClick={() => {
                               if (status === 'accepte') {
-                                const price = prompt('Prix accepte (EUR) :');
+                                const price = prompt('Prix accepté (EUR) :');
                                 if (price) {
                                   updateNegotiationStatus(neg.id, status, '', parseFloat(price));
                                 }
                               } else {
-                                updateNegotiationStatus(neg.id, status, `Passage a: ${config.label}`);
+                                updateNegotiationStatus(neg.id, status, `Passage à : ${config.label}`);
                               }
                             }}
                             className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all text-center ${
@@ -973,7 +973,7 @@ export default function NegociationIA() {
                     })}
                     {/* Refuse button */}
                     <button
-                      onClick={() => updateNegotiationStatus(neg.id, 'refuse', 'Negociation refusee')}
+                      onClick={() => updateNegotiationStatus(neg.id, 'refuse', 'Négociation refusée')}
                       className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                         neg.status === 'refuse'
                           ? 'bg-red-100 dark:bg-red-950/30 text-red-600 dark:text-red-400'
@@ -1021,13 +1021,13 @@ export default function NegociationIA() {
             <div className="flex items-center gap-3 mb-4">
               <Award className="w-8 h-8 opacity-80" />
               <div>
-                <h2 className="text-lg font-bold font-satoshi">Rapport d'economies annuel</h2>
+                <h2 className="text-lg font-bold font-satoshi">Rapport d'économies annuel</h2>
                 <p className="text-sm opacity-80">{new Date().getFullYear()}</p>
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-6">
               <div>
-                <div className="text-sm opacity-70">Economies realisees</div>
+                <div className="text-sm opacity-70">Économies réalisées</div>
                 <div className="text-3xl font-bold font-satoshi mt-1">{formatCurrency(Math.round(annualSavingsRealized))}</div>
               </div>
               <div>
@@ -1050,10 +1050,10 @@ export default function NegociationIA() {
             <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
               <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
                 <Truck className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                Economies par fournisseur
+                Économies par fournisseur
               </h3>
               {Object.keys(savingsBySupplier).length === 0 ? (
-                <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Aucune negociation reussie pour le moment.</p>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Aucune négociation réussie pour le moment.</p>
               ) : (
                 <div className="space-y-3">
                   {Object.entries(savingsBySupplier)
@@ -1073,10 +1073,10 @@ export default function NegociationIA() {
             <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
               <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-4 flex items-center gap-2">
                 <ShoppingBasket className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                Economies par ingredient
+                Économies par ingrédient
               </h3>
               {Object.keys(savingsByIngredient).length === 0 ? (
-                <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Aucune negociation reussie pour le moment.</p>
+                <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Aucune négociation réussie pour le moment.</p>
               ) : (
                 <div className="space-y-3">
                   {Object.entries(savingsByIngredient)
@@ -1095,7 +1095,7 @@ export default function NegociationIA() {
 
           {/* Negotiation summary */}
           <div className="bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-2xl p-5">
-            <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-4">Resume des negociations</h3>
+            <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-4">Résumé des négociations</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">{negotiations.length}</div>
@@ -1103,7 +1103,7 @@ export default function NegociationIA() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-satoshi">{acceptedCount}</div>
-                <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Acceptees</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Acceptées</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-amber-600 dark:text-amber-400 font-satoshi">{activeCount}</div>
@@ -1111,7 +1111,7 @@ export default function NegociationIA() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-red-600 dark:text-red-400 font-satoshi">{refusedCount}</div>
-                <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Refusees</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-mono-500">Refusées</div>
               </div>
             </div>
           </div>
@@ -1129,14 +1129,14 @@ export default function NegociationIA() {
               <Lightbulb className="w-12 h-12 text-[#D1D5DB] dark:text-mono-350 mx-auto mb-4" />
               <p className="text-lg font-semibold text-mono-100 dark:text-white">Pas encore de recommandations</p>
               <p className="text-sm text-[#9CA3AF] dark:text-mono-500 mt-2">
-                Ajoutez plus d'ingredients et de fournisseurs pour recevoir des conseils personnalises.
+                Ajoutez plus d'ingrédients et de fournisseurs pour recevoir des conseils personnalisés.
               </p>
             </div>
           ) : (
             <>
               <div className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-mono-700">
                 <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                <span>{recommendations.length} recommandation{recommendations.length > 1 ? 's' : ''} generee{recommendations.length > 1 ? 's' : ''} a partir de vos donnees</span>
+                <span>{recommendations.length} recommandation{recommendations.length > 1 ? 's' : ''} générée{recommendations.length > 1 ? 's' : ''} à partir de vos données</span>
               </div>
 
               {recommendations.map((rec, i) => {
@@ -1164,7 +1164,7 @@ export default function NegociationIA() {
                       <p className="text-xs text-[#6B7280] dark:text-mono-700 leading-relaxed">{rec.description}</p>
                       <div className="mt-2 text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                         <PiggyBank className="w-3.5 h-3.5" />
-                        Economie potentielle: ~{fmtEur(rec.potentialSavings)}/mois
+                        Économie potentielle : ~{fmtEur(rec.potentialSavings)}/mois
                       </div>
                     </div>
                   </div>

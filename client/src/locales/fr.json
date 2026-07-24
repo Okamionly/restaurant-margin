@@ -2306,19 +2306,18 @@
   "www.restaumargin.fr/pricing": "www.restaumargin.fr/pricing",
   "Événement créé avec succès": "Événement créé avec succès",
   "Événement supprimé": "Événement supprimé",
-
   "landing.navDemo": "Demo",
   "landing.navFeatures": "Fonctionnalites",
   "landing.navPricing": "Tarifs",
   "landing.navFAQ": "FAQ",
-  "landing.navLogin": "Se connecter",
+  "landing.navLogin": "Connexion",
   "landing.navTrialFree": "Essai gratuit",
   "landing.badge": "Nouveau 2026",
   "landing.heroTitleA1": "Calculez le cout reel",
   "landing.heroTitleA2": "de chaque plat ",
   "landing.heroTitleA3": "en 2 clics.",
   "landing.heroTitleB1": "Les restaurants qui utilisent RestauMargin economisent ",
-  "landing.heroTitleB2": "340\u20ac/mois",
+  "landing.heroTitleB2": "340€/mois",
   "landing.heroTitleB3": " en moyenne.",
   "landing.heroSubA": "La plateforme tout-en-un pour les restaurateurs qui veulent reprendre le controle de leurs couts matiere, optimiser leur carte et automatiser leurs commandes.",
   "landing.heroSubB": "Fiches techniques automatiques, alertes fournisseurs, IA cuisine — tout pour reduire votre food cost des le premier jour.",
@@ -2331,12 +2330,6 @@
   "landing.statRecipes": "Fiches techniques creees",
   "landing.statSavings": "Euros economises en food cost",
   "landing.statFoodCost": "Cout matiere economise",
-  "landing.navDemo": "Demo",
-  "landing.navFeatures": "Fonctionnalites",
-  "landing.navPricing": "Tarifs",
-  "landing.navFAQ": "FAQ",
-  "landing.navLogin": "Connexion",
-  "landing.navTrialFree": "Essai gratuit",
   "landing.featuresTitle": "Tout ce dont vous avez besoin",
   "landing.featuresSubtitle": "pour maitriser vos marges",
   "landing.feat1Title": "Commandes fournisseurs en 1 clic",
@@ -2365,7 +2358,6 @@
   "landing.contactSent": "Message envoye ! Nous vous repondrons sous 24h.",
   "landing.contactError": "Erreur lors de l'envoi. Veuillez reessayer.",
   "landing.satisfactionClients": "Satisfaction clients",
-
   "pricing.title": "Tarifs simples, sans surprise",
   "pricing.subtitle": "Choisissez le plan qui correspond a votre restaurant. Sans engagement, annulable a tout moment.",
   "pricing.perMonth": "/mois",
@@ -2383,7 +2375,6 @@
   "pricing.popular": "Populaire",
   "pricing.comparisonTitle": "Comparaison detaillee des plans",
   "pricing.feature": "Fonctionnalite",
-
   "subscription.planActive": "Actif",
   "subscription.nextBilling": "Prochaine facture",
   "subscription.manageSubscription": "Gerer l'abonnement",
@@ -2403,7 +2394,6 @@
   "subscription.roiAnnualSavings": "Economies annuelles",
   "subscription.faqTitle": "Questions frequentes",
   "subscription.testimonialTitle": "Ce que disent nos clients",
-
   "kitchenMode.title": "Mode Cuisine",
   "kitchenMode.newOrder": "Nouvelle Commande",
   "kitchenMode.tableNumber": "Table",
@@ -2441,7 +2431,6 @@
   "kitchenMode.back": "Retour",
   "kitchenMode.fullscreen": "Plein ecran",
   "kitchenMode.exitFullscreen": "Quitter le plein ecran",
-
   "serviceTracker.title": "Suivi de Service",
   "serviceTracker.subtitle": "Gestion POS en temps reel",
   "serviceTracker.disableSound": "Desactiver le son",
@@ -2472,7 +2461,6 @@
   "serviceTracker.noHistoryDesc": "Les bilans de vos services apparaitront ici.",
   "serviceTracker.print": "Imprimer",
   "serviceTracker.download": "Telecharger",
-
   "demo.banner": "Mode demo -- Donnees fictives",
   "demo.createAccount": "Creer mon compte gratuit",
   "demo.pricing": "Tarifs",
@@ -2509,7 +2497,6 @@
   "demo.ctaTitle": "Pret a optimiser vos marges ?",
   "demo.ctaSubtitle": "Creez votre compte et importez vos recettes en 5 minutes.",
   "demo.ctaButton": "Commencer gratuitement",
-
   "foodCostCalculator.title": "Calculateur de Food Cost",
   "foodCostCalculator.subtitle": "Calculez la rentabilite de vos plats en quelques secondes",
   "foodCostCalculator.ingredientName": "Nom de l'ingredient",
@@ -2536,7 +2523,6 @@
   "foodCostCalculator.ctaTitle": "Envie d'aller plus loin ?",
   "foodCostCalculator.ctaSubtitle": "RestauMargin calcule automatiquement le food cost de toutes vos recettes avec l'IA.",
   "foodCostCalculator.ctaButton": "Essai gratuit 7 jours",
-
   "temoignages.title": "Temoignages",
   "temoignages.heroTitle": "Ce que disent nos clients",
   "temoignages.filterAll": "Tous",
@@ -2551,7 +2537,6 @@
   "temoignages.statSatisfaction": "Satisfaction",
   "temoignages.statFoodCostReduction": "Reduction food cost",
   "temoignages.statTimePerWeek": "Temps gagne/semaine",
-
   "settings.title": "Parametres",
   "settings.restaurant": "Restaurant",
   "settings.restaurantName": "Nom du restaurant",
@@ -2596,9 +2581,8 @@
   "settings.deleteAccount": "Supprimer le compte",
   "settings.deleteWarning": "Cette action est irreversible.",
   "settings.version": "Version",
-
   "allergenMatrix.title": "Matrice allergenes",
-  "allergenMatrix.subtitle": "{count} recettes \u00d7 14 allergenes majeurs UE",
+  "allergenMatrix.subtitle": "{count} recettes × 14 allergenes majeurs UE",
   "allergenMatrix.clientChecker": "Checker client",
   "allergenMatrix.legend": "Legende",
   "allergenMatrix.print": "Imprimer la matrice",
@@ -2615,5 +2599,13 @@
   "allergenMatrix.loading": "Chargement de la matrice allergenes...",
   "allergenMatrix.error": "Erreur lors du chargement",
   "allergenMatrix.noRecipes": "Aucune recette avec ingredients.",
-  "allergenMatrix.addIngredientsHint": "Ajoutez des ingredients a vos recettes pour voir la matrice."
+  "allergenMatrix.addIngredientsHint": "Ajoutez des ingredients a vos recettes pour voir la matrice.",
+  "menuCalendar": {
+    "errorAdding": "Erreur lors de l'ajout",
+    "errorDeleting": "Erreur lors de la suppression",
+    "errorMoving": "Erreur lors du déplacement",
+    "shoppingListExported": "Liste de courses exportée",
+    "addedTo": "ajouté au",
+    "movedTo": "déplacé au"
+  }
 }

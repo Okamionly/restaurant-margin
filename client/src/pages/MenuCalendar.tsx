@@ -32,6 +32,7 @@ import { useApiClient } from '../hooks/useApiClient';
 import { useToast } from '../hooks/useToast';
 import { useRestaurant } from '../hooks/useRestaurant';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { useTranslation } from '../hooks/useTranslation';
 import type { Recipe } from '../types';
 import FoodIllustration from '../components/FoodIllustration';
 
@@ -180,6 +181,7 @@ const MONTH_NAMES = [
 
 export default function MenuCalendar() {
   const { showToast } = useToast();
+  const { t } = useTranslation();
   useRestaurant();
   const { authHeaders } = useApiClient();
 
@@ -389,9 +391,9 @@ export default function MenuCalendar() {
       if (!res.ok) throw new Error('Erreur');
       const created = await res.json();
       setEntries(prev => [...prev, ...created]);
-      showToast(`${recipe.name} ajouté au ${formatDateKey(date)}`, 'success');
+      showToast(`${recipe.name} ${t('menuCalendar.addedTo')} ${formatDateKey(date)}`, 'success');
     } catch {
-      showToast('Erreur lors de l\'ajout', 'error');
+      showToast(t('menuCalendar.errorAdding'), 'error');
     }
   };
 
@@ -404,7 +406,7 @@ export default function MenuCalendar() {
       if (!res.ok) throw new Error('Erreur');
       setEntries(prev => prev.filter(e => e.id !== id));
     } catch {
-      showToast('Erreur lors de la suppression', 'error');
+      showToast(t('menuCalendar.errorDeleting'), 'error');
     }
   };
 
@@ -462,10 +464,10 @@ export default function MenuCalendar() {
       });
 
       setEntries(prev => [...prev.filter(e => e.id !== dragEntry.id), ...created]);
-      showToast(`${dragEntry.recipe.name} déplacé au ${targetKey}`, 'success');
+      showToast(`${dragEntry.recipe.name} ${t('menuCalendar.movedTo')} ${targetKey}`, 'success');
     } catch {
       setEntries(snapshot);
-      showToast('Erreur lors du déplacement', 'error');
+      showToast(t('menuCalendar.errorMoving'), 'error');
     } finally {
       setDragEntry(null);
     }
@@ -505,7 +507,7 @@ export default function MenuCalendar() {
     a.download = `courses-${monthKey}.txt`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('Liste de courses exportée', 'success');
+    showToast(t('menuCalendar.shoppingListExported'), 'success');
   };
 
   // ── Seasonal ingredients for current month ──

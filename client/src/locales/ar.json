@@ -423,5 +423,13 @@
     "loading": "جاري تحميل البيانات...",
     "cancel": "إلغاء",
     "addBtn": "إضافة"
+  },
+  "menuCalendar": {
+    "errorAdding": "خطأ أثناء الإضافة",
+    "errorDeleting": "خطأ أثناء الحذف",
+    "errorMoving": "خطأ أثناء النقل",
+    "shoppingListExported": "تم تصدير قائمة التسوق",
+    "addedTo": "أُضيف إلى",
+    "movedTo": "نُقل إلى"
   }
 }

@@ -433,5 +433,13 @@
     "month": "Monat",
     "quarter": "Quartal",
     "year": "Jahr"
+  },
+  "menuCalendar": {
+    "errorAdding": "Fehler beim Hinzufügen",
+    "errorDeleting": "Fehler beim Löschen",
+    "errorMoving": "Fehler beim Verschieben",
+    "shoppingListExported": "Einkaufsliste exportiert",
+    "addedTo": "hinzugefügt am",
+    "movedTo": "verschoben nach"
   }
 }

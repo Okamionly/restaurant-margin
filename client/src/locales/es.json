@@ -433,5 +433,13 @@
     "month": "Mes",
     "quarter": "Trimestre",
     "year": "Año"
+  },
+  "menuCalendar": {
+    "errorAdding": "Error al añadir la receta",
+    "errorDeleting": "Error al eliminar la entrada",
+    "errorMoving": "Error al mover la entrada",
+    "shoppingListExported": "Lista de compras exportada",
+    "addedTo": "añadido al",
+    "movedTo": "movido al"
   }
 }

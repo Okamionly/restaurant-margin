@@ -233,6 +233,7 @@ const TvaCalculator = lazyRetry(() => import('./pages/TvaCalculator'));
 const LaborCostCalculator = lazyRetry(() => import('./pages/LaborCostCalculator'));
 const PriceIncreaseSimulator = lazyRetry(() => import('./pages/PriceIncreaseSimulator'));
 const DlcTracker = lazyRetry(() => import('./pages/DlcTracker'));
+const ChecklistService = lazyRetry(() => import('./pages/ChecklistService'));
 const AlternativeHubrise = lazyRetry(() => import('./pages/AlternativeHubrise'));
 const AlternativeZenchef = lazyRetry(() => import('./pages/AlternativeZenchef'));
 const AlternativeLAddition = lazyRetry(() => import('./pages/AlternativeLAddition'));
@@ -562,6 +563,7 @@ function AppLayout() {
         { to: '/rfqs', icon: FileSearch, label: "Appels d'offres" },
         { to: '/haccp', icon: ShieldCheck, label: 'HACCP' },
         { to: '/dlc-tracker', icon: Package, label: 'DLC / DLUO' },
+        { to: '/checklist-service', icon: ClipboardList, label: 'Checklist service' },
       ],
     },
     {
@@ -1102,6 +1104,7 @@ function AppLayout() {
               <Route path="/cout-main-oeuvre" element={<LaborCostCalculator />} />
               <Route path="/simulateur-prix" element={<PriceIncreaseSimulator />} />
               <Route path="/dlc-tracker" element={<DlcTracker />} />
+              <Route path="/checklist-service" element={<ChecklistService />} />
               <Route path="/restaurants" element={<TrialPaywallGuard feature="Multi-restaurant"><Restaurants /></TrialPaywallGuard>} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/abonnement" element={<Subscription />} />

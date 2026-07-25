@@ -11,8 +11,6 @@ Triées par impact décroissant. La feature en cours est retirée par le Feature
 
 ### OPERATIONS
 - **Chrono préparation par poste** — Timer par station cuisine (chaud, froid, pâtisserie) pour mesurer les temps de sortie des plats.
-- **Checklist ouverture/fermeture** — Listes de tâches personnalisables pour l'ouverture et la fermeture du restaurant, avec signature digitale.
-
 
 ### INTELLIGENCE
 - **Analyse saisonnalité ingrédients** — Calendrier visuel des saisons par ingrédient pour optimiser les achats et les menus.
@@ -30,3 +28,4 @@ Triées par impact décroissant. La feature en cours est retirée par le Feature
 - ✅ **Tableau de bord DLC/DLUO** (2026-06-03) — Page `/dlc-tracker` dans OPERATIONS. Suivi des dates d'expiration (DLC/DLUO) avec alertes visuelles vert/orange/rouge, KPIs (expiré/bientôt/ok), ajout/suppression produits, persistance localStorage.
 - ✅ **Simulateur augmentation prix carte** (2026-05-27) — Page `/simulateur-prix` dans INTELLIGENCE. CA mensuel, ticket moyen, food cost %, hausse → gain marge mensuel/annuel, slider élasticité, point mort clients, tableau comparatif 5/10/15/20%.
 - ✅ **Calculateur coût main d'œuvre** (2026-05-20) — Page `/cout-main-oeuvre` dans BUSINESS. Saisie équipe + CA → ratio masse salariale/CA, jauge colorée, alertes, benchmarks UMIH/GNI par type d'établissement.
+- ✅ **Checklist ouverture/fermeture** (2026-07-25) — Page `/checklist-service` dans OPERATIONS. Deux onglets (Ouverture/Fermeture), tâches pré-remplies, barre de progression, ajout de tâches personnalisées, réinitialisation, persistance localStorage.

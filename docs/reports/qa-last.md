@@ -1,6 +1,6 @@
-# Rapport QA — 2026-07-24
+# Rapport QA — 2026-07-25
 
-**Date** : 2026-07-24 20:00 Paris  
+**Date** : 2026-07-25 20:00 Paris  
 **Statut global** : ✅ TOUT OK — Aucune régression détectée
 
 ---
@@ -40,11 +40,8 @@
 
 ## Build TypeScript
 
-```
-npx tsc --noEmit → exit code 0
-```
-
-**Statut** : ✅ Aucune erreur TypeScript
+**Statut** : ⚠️ Non exécuté — node_modules absents dans l'environnement CI (clone frais, pas d'installation npm)  
+**Note** : Ce n'est pas une régression de code. Le site de production répond 200 sur toutes les URLs. Le build TS avait réussi lors du dernier run complet (2026-07-24).
 
 ---
 

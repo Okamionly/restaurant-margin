@@ -1036,18 +1036,20 @@ app.get('/api/cron/daily-digest', async (req: any, res) => {
     const month = new Date().toLocaleDateString('fr-FR', { month: 'long' });
 
     // Etape 1 — 2 recherches Tavily : cours des denrées + news qui impactent les aliments
-    const tavily = async (query: string, n = 6) => {
+    // maxDuration Vercel = 60s → Tavily 'basic' + timeout borné 12s par requête (sinon on continue sans, le prompt sait générer depuis la saison)
+    const tavily = async (query: string, n = 5) => {
       try {
         const r = await fetch('https://api.tavily.com/search', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ api_key: tavilyKey, query, max_results: n, include_answer: true, search_depth: 'advanced' }),
+          body: JSON.stringify({ api_key: tavilyKey, query, max_results: n, include_answer: true, search_depth: 'basic' }),
+          signal: AbortSignal.timeout(12000),
         });
         return await r.json();
       } catch { return { results: [], answer: '' }; }
     };
     const [pricesData, newsData] = await Promise.all([
-      tavily(`cours prix denrées alimentaires gros France ${month} 2026 boeuf volaille porc beurre lait farine huile café sucre poisson légumes RNM FranceAgriMer`, 8),
-      tavily(`actualité qui impacte prix alimentation restauration France ${month} 2026 météo récolte grève import inflation pénurie`, 6),
+      tavily(`cours prix denrées alimentaires gros France ${month} 2026 boeuf volaille porc beurre lait farine huile café sucre poisson légumes RNM FranceAgriMer`, 6),
+      tavily(`actualité qui impacte prix alimentation restauration France ${month} 2026 météo récolte grève import inflation pénurie`, 5),
     ]);
     const fmt = (d: any) => (d.results || []).slice(0, 6).map((r: any) => `- ${r.title}: ${(r.content || '').slice(0, 220)} (${r.url})`).join('\n');
     const sources = [...(pricesData.results || []), ...(newsData.results || [])].slice(0, 10).map((r: any) => ({ title: r.title, url: r.url }));

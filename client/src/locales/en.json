@@ -2607,5 +2607,17 @@
     "shoppingListExported": "Shopping list exported",
     "addedTo": "added to",
     "movedTo": "moved to"
+  },
+  "alertsBell": {
+    "title": "Price alerts",
+    "noAlerts": "No price alerts",
+    "stablePrices": "Prices have been stable for the last 30 days",
+    "seeDetails": "See details",
+    "dismiss": "Dismiss",
+    "affectedRecipesLabel": "Affected recipes",
+    "viewMercuriale": "View full price list",
+    "severityCritique": "Critical",
+    "severityWarning": "Warning",
+    "severityInfo": "Info"
   }
 }

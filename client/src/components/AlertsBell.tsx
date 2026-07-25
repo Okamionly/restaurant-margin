@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Bell, TrendingUp, TrendingDown, X, Eye, ChevronRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, X, Eye, ChevronRight } from 'lucide-react';
 import { useApiClient } from '../hooks/useApiClient';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface AffectedRecipe {
   id: number;
@@ -39,6 +40,7 @@ export default function AlertsBell() {
   const [expandedAlert, setExpandedAlert] = useState<number | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const { authHeaders } = useApiClient();
+  const { t } = useTranslation();
 
   async function fetchAlerts() {
     try {
@@ -91,21 +93,21 @@ export default function AlertsBell() {
       bg: 'bg-red-500/5',
       badge: 'bg-red-500/20 text-red-400',
       icon: 'text-red-400',
-      label: 'Critique',
+      label: t('alertsBell.severityCritique'),
     },
     warning: {
       border: 'border-l-4 border-l-amber-500',
       bg: 'bg-amber-500/5',
       badge: 'bg-amber-500/20 text-amber-400',
       icon: 'text-amber-400',
-      label: 'Attention',
+      label: t('alertsBell.severityWarning'),
     },
     info: {
       border: 'border-l-4 border-l-teal-500',
       bg: 'bg-teal-500/5',
       badge: 'bg-teal-500/20 text-teal-400',
       icon: 'text-teal-400',
-      label: 'Info',
+      label: t('alertsBell.severityInfo'),
     },
   };
 
@@ -118,7 +120,7 @@ export default function AlertsBell() {
       <button
         onClick={() => { setOpen(!open); if (!open) fetchAlerts(); }}
         className="relative p-2 rounded-lg hover:bg-mono-900 dark:hover:bg-mono-350/50 text-mono-500 dark:text-mono-700 hover:text-mono-100 dark:hover:text-white transition-colors"
-        aria-label={`Alertes prix${totalCount > 0 ? ` (${totalCount} alertes)` : ''}`}
+        aria-label={`${t('alertsBell.title')}${totalCount > 0 ? ` (${totalCount})` : ''}`}
       >
         <TrendingUp className="w-5 h-5" />
         {totalCount > 0 && (
@@ -138,7 +140,7 @@ export default function AlertsBell() {
           <div className="px-4 py-3 border-b border-mono-900 dark:border-mono-300/50 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-teal-400" />
-              <span className="text-sm font-semibold text-mono-100 dark:text-white">Alertes prix</span>
+              <span className="text-sm font-semibold text-mono-100 dark:text-white">{t('alertsBell.title')}</span>
             </div>
             <div className="flex items-center gap-2">
               {criticalCount > 0 && (
@@ -156,15 +158,15 @@ export default function AlertsBell() {
           <div className="max-h-[420px] overflow-y-auto">
             {loading && alerts.length === 0 && (
               <div className="px-4 py-8 text-center text-mono-500 text-sm">
-                Chargement...
+                {t('common.loading')}
               </div>
             )}
 
             {!loading && alerts.length === 0 && (
               <div className="px-4 py-8 text-center">
                 <TrendingUp className="w-8 h-8 text-mono-400 mx-auto mb-2" />
-                <p className="text-sm text-mono-500">Aucune alerte prix</p>
-                <p className="text-xs text-mono-400 mt-1">Les prix sont stables ces 30 derniers jours</p>
+                <p className="text-sm text-mono-500">{t('alertsBell.noAlerts')}</p>
+                <p className="text-xs text-mono-400 mt-1">{t('alertsBell.stablePrices')}</p>
               </div>
             )}
 
@@ -238,7 +240,7 @@ export default function AlertsBell() {
                             setExpandedAlert(isExpanded ? null : alert.id);
                           }}
                           className="p-1.5 rounded-lg hover:bg-mono-400/50 text-mono-500 hover:text-teal-400 transition-colors"
-                          title="Voir details"
+                          title={t('alertsBell.seeDetails')}
                         >
                           <Eye className="w-3.5 h-3.5" />
                         </button>
@@ -248,7 +250,7 @@ export default function AlertsBell() {
                             dismissAlert(alert.ingredientId);
                           }}
                           className="p-1.5 rounded-lg hover:bg-mono-400/50 text-mono-500 hover:text-red-400 transition-colors"
-                          title="Ignorer"
+                          title={t('alertsBell.dismiss')}
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
@@ -260,7 +262,7 @@ export default function AlertsBell() {
                   {isExpanded && alert.affectedRecipes.length > 0 && (
                     <div className="px-4 pb-3 border-t border-mono-300/30">
                       <p className="text-[11px] font-semibold text-mono-700 uppercase tracking-wider mt-2 mb-1.5">
-                        Recettes impactees
+                        {t('alertsBell.affectedRecipesLabel')}
                       </p>
                       <div className="space-y-1">
                         {alert.affectedRecipes.map((recipe: AffectedRecipe) => (
@@ -293,7 +295,7 @@ export default function AlertsBell() {
                 href="/mercuriale"
                 className="text-xs text-teal-400 hover:text-teal-300 font-medium transition-colors"
               >
-                Voir la mercuriale complete
+                {t('alertsBell.viewMercuriale')}
               </a>
             </div>
           )}

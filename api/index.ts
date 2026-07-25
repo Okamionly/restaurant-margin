@@ -1097,7 +1097,8 @@ Produis un digest quotidien pour le restaurateur. Réponds UNIQUEMENT avec ce JS
 }
 Contraintes : 6 à 10 denrées dans commodityPrices (panier resto standard) ; prix réalistes France 2026 ; 2 à 4 news ; recette calculable en marge (ingrédients chiffrés). Utilise la saison (${month}).`;
 
-    const aiRes = await anthropic.messages.create({ model: 'claude-sonnet-4-6', max_tokens: 4096, messages: [{ role: 'user', content: prompt }] });
+    // Haiku 4.5 : rapide (tient dans maxDuration 60s Vercel) — Sonnet timeoutait (FUNCTION_INVOCATION_TIMEOUT) sur ce prompt riche
+    const aiRes = await anthropic.messages.create({ model: 'claude-haiku-4-5-20251001', max_tokens: 4096, messages: [{ role: 'user', content: prompt }] });
     const rawText = aiRes.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
     const cleaned = rawText.trim().replace(/^```json?\n?/, '').replace(/\n?```$/, '');
     let digest: any;

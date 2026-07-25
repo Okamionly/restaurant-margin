@@ -4,7 +4,8 @@ import {
   Newspaper, TrendingUp, TrendingDown, AlertTriangle, Lightbulb, RefreshCw, X,
   Clock, ChevronRight, ArrowRight, CalendarDays, Sparkles, Rocket, Star,
   ChevronDown, ChevronUp, Mail, Check, Bell, Zap, Gift, Tag, BookOpen,
-  MessageCircle, Megaphone, ExternalLink, Globe, BarChart3, Loader2
+  MessageCircle, Megaphone, ExternalLink, Globe, BarChart3, Loader2,
+  Minus, ChefHat, Utensils
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
@@ -123,6 +124,85 @@ interface IngredientTrend {
   changePercent: number;
   unit: string;
 }
+
+// ── Daily Digest types ───────────────────────────────────────────────────────
+
+interface DigestCommodity {
+  name: string;
+  trend: 'up' | 'down' | 'stable';
+  changePct: number;
+  price: number;
+  unit: string;
+  note: string;
+}
+
+interface DigestNews {
+  title: string;
+  impact: string;
+  severity: 'high' | 'medium' | 'low';
+  source: string;
+}
+
+interface DigestRecipeIngredient {
+  name: string;
+  quantity: number;
+  unit: string;
+  pricePerUnit: number;
+  supplier: string;
+}
+
+interface DigestRecipe {
+  title: string;
+  description: string;
+  category: string;
+  difficulty: string;
+  portions: number;
+  prep_time: number;
+  cook_time: number;
+  chef_tip: string;
+  steps: string[];
+  ingredients: DigestRecipeIngredient[];
+  cost_per_portion: number;
+  suggested_price: number;
+  margin_percent: number;
+  image_url: string;
+}
+
+interface DigestSource {
+  title: string;
+  url: string;
+}
+
+interface DailyDigest {
+  digest_date: string;
+  commodity_prices: DigestCommodity[];
+  market_summary: string;
+  news: DigestNews[];
+  recipe: DigestRecipe | null;
+  insight: string;
+  sources: DigestSource[];
+  created_at: string;
+}
+
+interface DigestArchiveEntry {
+  digest_date: string;
+  market_summary: string;
+  recipe_title: string;
+  commodity_count: number;
+  news_count: number;
+}
+
+const DIGEST_TREND: Record<'up' | 'down' | 'stable', { icon: typeof TrendingUp; text: string; bg: string }> = {
+  up:     { icon: TrendingUp,   text: 'text-red-600 dark:text-red-400',         bg: 'bg-red-50 dark:bg-red-950/30' },
+  down:   { icon: TrendingDown, text: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/30' },
+  stable: { icon: Minus,        text: 'text-[#737373] dark:text-[#A3A3A3]',     bg: 'bg-[#F5F5F5] dark:bg-[#1A1A1A]' },
+};
+
+const DIGEST_SEVERITY: Record<'high' | 'medium' | 'low', string> = {
+  high:   'bg-red-500',
+  medium: 'bg-amber-500',
+  low:    'bg-[#A3A3A3]',
+};
 
 // ── Product Updates (RestauMargin changelog — static, our own content) ──────
 
@@ -275,6 +355,12 @@ export default function Actualites() {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
 
+  // Daily digest state
+  const [digest, setDigest] = useState<DailyDigest | null>(null);
+  const [digestLoading, setDigestLoading] = useState(true);
+  const [digestArchive, setDigestArchive] = useState<DigestArchiveEntry[]>([]);
+  const [digestSelectedDate, setDigestSelectedDate] = useState<string>('today');
+
   // ── Data Fetching ─────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -295,6 +381,43 @@ export default function Actualites() {
       })
       .catch(() => {});
   }, []);
+
+  // ── Daily Digest ──────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setDigestLoading(true);
+        const res = await fetch('/api/daily-digest/latest', { headers: authHeaders() });
+        const data = res.ok ? await res.json() : null;
+        setDigest(data ?? null);
+      } catch {
+        setDigest(null);
+      } finally {
+        setDigestLoading(false);
+      }
+    })();
+
+    fetch('/api/daily-digest/archive?limit=30', { headers: authHeaders() })
+      .then(r => (r.ok ? r.json() : []))
+      .then(data => setDigestArchive(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  }, []);
+
+  async function loadDigestForDate(value: string) {
+    setDigestSelectedDate(value);
+    setDigestLoading(true);
+    try {
+      const url = value === 'today' ? '/api/daily-digest/latest' : `/api/daily-digest/${value}`;
+      const res = await fetch(url, { headers: authHeaders() });
+      const data = res.ok ? await res.json() : null;
+      setDigest(data ?? null);
+    } catch {
+      setDigest(null);
+    } finally {
+      setDigestLoading(false);
+    }
+  }
 
   const fetchNews = useCallback(async () => {
     try {
@@ -460,6 +583,266 @@ export default function Actualites() {
           {generating ? 'Analyse en cours...' : 'Actualiser'}
         </button>
       </div>
+
+      {/* ── Digest du jour (contenu vedette quotidien) ─────────────────────── */}
+      <section className="space-y-5">
+        {/* En-tete + selecteur d'archive */}
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-xl">
+              <Sparkles className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold font-satoshi text-black dark:text-white">Digest du jour</h2>
+              {digest && (
+                <p className="text-sm text-[#737373] dark:text-[#A3A3A3] first-letter:uppercase">
+                  {new Date(digest.digest_date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+                </p>
+              )}
+            </div>
+          </div>
+          {digestArchive.length > 0 && (
+            <div className="flex items-center gap-2">
+              {digestSelectedDate !== 'today' && (
+                <button
+                  onClick={() => loadDigestForDate('today')}
+                  className="min-h-[40px] px-3 rounded-xl text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:opacity-90 transition-opacity"
+                >
+                  Aujourd'hui
+                </button>
+              )}
+              <select
+                value={digestSelectedDate}
+                onChange={e => loadDigestForDate(e.target.value)}
+                className="min-h-[40px] px-3 rounded-xl text-sm border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-black dark:text-white outline-none focus:ring-2 focus:ring-teal-500"
+              >
+                <option value="today">Aujourd'hui</option>
+                {digestArchive.map(a => (
+                  <option key={a.digest_date} value={a.digest_date}>
+                    {new Date(a.digest_date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+
+        {/* Corps : loading / vide / charge */}
+        {digestLoading ? (
+          <div className="space-y-4">
+            <div className="h-24 rounded-2xl bg-[#F5F5F5] dark:bg-[#1A1A1A] animate-pulse" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="h-24 rounded-2xl bg-[#F5F5F5] dark:bg-[#1A1A1A] animate-pulse" />
+              <div className="h-24 rounded-2xl bg-[#F5F5F5] dark:bg-[#1A1A1A] animate-pulse" />
+              <div className="h-24 rounded-2xl bg-[#F5F5F5] dark:bg-[#1A1A1A] animate-pulse" />
+            </div>
+          </div>
+        ) : !digest ? (
+          <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8 text-center">
+            <Clock className="w-10 h-10 text-teal-500 mx-auto mb-3" />
+            <p className="text-sm font-medium text-black dark:text-white mb-1">Le digest du jour est en preparation</p>
+            <p className="text-xs text-[#737373] dark:text-[#A3A3A3]">
+              Revenez a 8h pour decouvrir les cours des denrees, la recette etoilee et les actualites du jour.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-5">
+            {/* Synthese marche */}
+            {digest.market_summary && (
+              <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <BarChart3 className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                  <h3 className="text-sm font-bold text-black dark:text-white">Synthese marche</h3>
+                </div>
+                <p className="text-sm text-[#374151] dark:text-[#D4D4D4] leading-relaxed">{digest.market_summary}</p>
+              </div>
+            )}
+
+            {/* Cours des denrees */}
+            {(digest.commodity_prices?.length ?? 0) > 0 && (
+              <div>
+                <h3 className="text-sm font-bold text-black dark:text-white mb-3">Cours des denrees</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {digest.commodity_prices.map((c, i) => {
+                    const conf = DIGEST_TREND[c.trend] || DIGEST_TREND.stable;
+                    const TrendIcon = conf.icon;
+                    return (
+                      <div
+                        key={`${c.name}-${i}`}
+                        className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4"
+                      >
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <span className="text-sm font-semibold text-black dark:text-white">{c.name}</span>
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${conf.bg} ${conf.text}`}>
+                            <TrendIcon className="w-3 h-3" />
+                            {c.changePct > 0 ? '+' : ''}{c.changePct.toFixed(1)}%
+                          </span>
+                        </div>
+                        <div className="text-base font-bold text-black dark:text-white">
+                          {formatCurrency(c.price)}
+                          <span className="text-xs font-normal text-[#737373] dark:text-[#A3A3A3]"> /{c.unit}</span>
+                        </div>
+                        {c.note && (
+                          <p className="text-xs text-[#737373] dark:text-[#A3A3A3] mt-1 leading-snug">{c.note}</p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Recette etoilee du jour */}
+            {digest.recipe && (
+              <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+                {digest.recipe.image_url && (
+                  <img
+                    src={digest.recipe.image_url}
+                    alt={digest.recipe.title}
+                    loading="lazy"
+                    className="w-full h-48 object-cover rounded-t-2xl"
+                    onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                  />
+                )}
+                <div className="p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <ChefHat className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                    <span className="text-[11px] font-bold uppercase tracking-wide text-teal-600 dark:text-teal-400">
+                      Recette etoilee du jour
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-black dark:text-white mb-1">{digest.recipe.title}</h3>
+                  <p className="text-sm text-[#737373] dark:text-[#A3A3A3] mb-3 leading-relaxed">{digest.recipe.description}</p>
+
+                  {/* Badges meta */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {[
+                      digest.recipe.category,
+                      digest.recipe.difficulty,
+                      `${digest.recipe.portions} pers`,
+                      `${digest.recipe.prep_time + digest.recipe.cook_time} min`,
+                    ].map((b, i) => (
+                      <span
+                        key={i}
+                        className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#F5F5F5] dark:bg-[#1A1A1A] text-[#374151] dark:text-[#D4D4D4]"
+                      >
+                        {b}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Badges chiffres */}
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    <div className="rounded-xl bg-[#F5F5F5] dark:bg-[#1A1A1A] p-3 text-center">
+                      <div className="text-base font-bold text-black dark:text-white">{formatCurrency(digest.recipe.cost_per_portion)}</div>
+                      <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3] mt-0.5">Cout / portion</div>
+                    </div>
+                    <div className="rounded-xl bg-[#F5F5F5] dark:bg-[#1A1A1A] p-3 text-center">
+                      <div className="text-base font-bold text-black dark:text-white">{formatCurrency(digest.recipe.suggested_price)}</div>
+                      <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3] mt-0.5">Prix conseille</div>
+                    </div>
+                    <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 p-3 text-center">
+                      <div className="text-base font-bold text-emerald-600 dark:text-emerald-400">{digest.recipe.margin_percent}%</div>
+                      <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3] mt-0.5">Marge</div>
+                    </div>
+                  </div>
+
+                  {/* Ingredients + etapes */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {(digest.recipe.ingredients?.length ?? 0) > 0 && (
+                      <div>
+                        <h4 className="text-xs font-bold text-black dark:text-white mb-2 flex items-center gap-1.5">
+                          <Utensils className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" /> Ingredients
+                        </h4>
+                        <ul className="space-y-1.5">
+                          {digest.recipe.ingredients.map((ing, i) => (
+                            <li key={`${ing.name}-${i}`} className="flex items-baseline justify-between gap-2 text-sm">
+                              <span className="text-black dark:text-white">{ing.name}</span>
+                              <span className="text-xs text-[#737373] dark:text-[#A3A3A3] whitespace-nowrap">
+                                {ing.quantity} {ing.unit} · {formatCurrency(ing.pricePerUnit)}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {(digest.recipe.steps?.length ?? 0) > 0 && (
+                      <div>
+                        <h4 className="text-xs font-bold text-black dark:text-white mb-2">Preparation</h4>
+                        <ol className="space-y-1.5 list-decimal list-inside">
+                          {digest.recipe.steps.map((s, i) => (
+                            <li key={i} className="text-sm text-[#374151] dark:text-[#D4D4D4] leading-relaxed">{s}</li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Astuce du chef */}
+                  {digest.recipe.chef_tip && (
+                    <div className="mt-4 flex items-start gap-2 rounded-xl bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800/40 p-3">
+                      <Lightbulb className="w-4 h-4 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-xs font-bold text-teal-700 dark:text-teal-300 mb-0.5">Astuce du chef</div>
+                        <p className="text-xs text-[#374151] dark:text-[#D4D4D4] leading-relaxed">{digest.recipe.chef_tip}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Actualites qui impactent les aliments */}
+            {(digest.news?.length ?? 0) > 0 && (
+              <div>
+                <h3 className="text-sm font-bold text-black dark:text-white mb-3">Actualites qui impactent les aliments</h3>
+                <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+                  {digest.news.map((n, i) => (
+                    <div key={`${n.title}-${i}`} className="flex items-start gap-3 p-4">
+                      <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${DIGEST_SEVERITY[n.severity] || DIGEST_SEVERITY.low}`} />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-black dark:text-white">{n.title}</p>
+                        {n.impact && <p className="text-xs text-[#737373] dark:text-[#A3A3A3] mt-0.5 leading-relaxed">{n.impact}</p>}
+                        {n.source && <p className="text-[11px] text-[#A3A3A3] dark:text-[#737373] mt-1">{n.source}</p>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Insight du jour */}
+            {digest.insight && (
+              <div className="flex items-start gap-3 rounded-2xl bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800/40 p-4">
+                <Lightbulb className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-xs font-bold text-teal-700 dark:text-teal-300 mb-0.5">Insight du jour</div>
+                  <p className="text-sm text-[#374151] dark:text-[#D4D4D4] leading-relaxed">{digest.insight}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Sources */}
+            {(digest.sources?.length ?? 0) > 0 && (
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                <span className="text-[11px] font-medium text-[#737373] dark:text-[#A3A3A3]">Sources :</span>
+                {digest.sources.map((s, i) => (
+                  <a
+                    key={`${s.url}-${i}`}
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] text-teal-600 dark:text-teal-400 hover:underline"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    {s.title}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </section>
 
       {/* ── Featured Update Hero Card ──────────────────────────────────────── */}
       {featuredUpdate && (

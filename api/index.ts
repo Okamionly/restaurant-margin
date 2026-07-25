@@ -1025,6 +1025,132 @@ app.get('/api/cron/market-intel', async (req: any, res) => {
   }
 });
 
+// 5b. DAILY DIGEST — chaque jour 8h : cours denrées + news alimentaires + recette étoilée du jour
+// Stocke 1 ligne/jour dans daily_digest (UPSERT idempotent). Affiché sur la page Actualités.
+app.get('/api/cron/daily-digest', async (req: any, res) => {
+  if (!verifyCron(req, res)) return;
+  try {
+    if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure' });
+    const tavilyKey = process.env.TAVILY_API_KEY || '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';
+    const today = new Date().toISOString().slice(0, 10);
+    const month = new Date().toLocaleDateString('fr-FR', { month: 'long' });
+
+    // Etape 1 — 2 recherches Tavily : cours des denrées + news qui impactent les aliments
+    const tavily = async (query: string, n = 6) => {
+      try {
+        const r = await fetch('https://api.tavily.com/search', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ api_key: tavilyKey, query, max_results: n, include_answer: true, search_depth: 'advanced' }),
+        });
+        return await r.json();
+      } catch { return { results: [], answer: '' }; }
+    };
+    const [pricesData, newsData] = await Promise.all([
+      tavily(`cours prix denrées alimentaires gros France ${month} 2026 boeuf volaille porc beurre lait farine huile café sucre poisson légumes RNM FranceAgriMer`, 8),
+      tavily(`actualité qui impacte prix alimentation restauration France ${month} 2026 météo récolte grève import inflation pénurie`, 6),
+    ]);
+    const fmt = (d: any) => (d.results || []).slice(0, 6).map((r: any) => `- ${r.title}: ${(r.content || '').slice(0, 220)} (${r.url})`).join('\n');
+    const sources = [...(pricesData.results || []), ...(newsData.results || [])].slice(0, 10).map((r: any) => ({ title: r.title, url: r.url }));
+
+    // Anti-répétition : titres des recettes des 14 derniers jours
+    const recent: any[] = await prisma.$queryRaw`SELECT recipe->>'title' AS title FROM daily_digest WHERE digest_date > (CURRENT_DATE - INTERVAL '14 days') AND recipe IS NOT NULL ORDER BY digest_date DESC LIMIT 14`;
+    const avoid = recent.map((x) => x.title).filter(Boolean).join(', ') || '(aucune)';
+
+    // Etape 2 — Claude Sonnet structure le digest
+    const prompt = `Tu es à la fois analyste des marchés alimentaires ET chef étoilé, pour un logiciel de gestion de restaurant en France. Date : ${today}.
+
+DONNÉES MARCHÉ (prix/cours des denrées) :
+${fmt(pricesData) || '(recherche indisponible — base-toi sur les tendances saisonnières connues de ' + month + ', reste prudent et générique)'}
+Synthèse : ${(pricesData.answer || '').slice(0, 500)}
+
+ACTUALITÉS qui impactent l'alimentation :
+${fmt(newsData) || '(recherche indisponible)'}
+Synthèse : ${(newsData.answer || '').slice(0, 400)}
+
+Recettes déjà proposées ces 14 derniers jours (NE les refais PAS, propose autre chose de différent en cuisine/technique/produit) : ${avoid}
+
+Produis un digest quotidien pour le restaurateur. Réponds UNIQUEMENT avec ce JSON strict (pas de texte avant/après) :
+{
+  "commodityPrices": [
+    { "name": "Bœuf (aloyau)", "trend": "up|down|stable", "changePct": 2.5, "price": 14.9, "unit": "€/kg", "note": "cause courte en 1 bout de phrase" }
+  ],
+  "marketSummary": "2-3 phrases de synthèse marché du jour, ton pro et concret, chiffré si possible",
+  "news": [
+    { "title": "titre court", "impact": "1 phrase : en quoi ça touche les coûts/appro d'un resto", "severity": "high|medium|low", "source": "nom média" }
+  ],
+  "insight": "1 astuce/chiffre actionnable du jour pour protéger la marge (ex: substitution produit, saisonnalité, négo)",
+  "recipe": {
+    "title": "Nom d'une recette de niveau gastronomique ORIGINALE (ne copie AUCUNE recette existante d'un chef nommé)",
+    "description": "1-2 phrases qui donnent envie",
+    "category": "Entrée|Plat|Dessert",
+    "difficulty": "Facile|Moyen|Difficile",
+    "portions": 4,
+    "prep_time": 25,
+    "cook_time": 30,
+    "chef_tip": "1 astuce de chef",
+    "image_keywords": "3-5 mots-clés EN pour photo Unsplash",
+    "steps": ["étape 1", "étape 2", "étape 3", "étape 4"],
+    "ingredients": [ { "name": "Ingrédient", "quantity": 0.4, "unit": "kg", "pricePerUnit": 8.5, "supplier": "Metro|Rungis|Transgourmet" } ]
+  }
+}
+Contraintes : 6 à 10 denrées dans commodityPrices (panier resto standard) ; prix réalistes France 2026 ; 2 à 4 news ; recette calculable en marge (ingrédients chiffrés). Utilise la saison (${month}).`;
+
+    const aiRes = await anthropic.messages.create({ model: 'claude-sonnet-4-6', max_tokens: 4096, messages: [{ role: 'user', content: prompt }] });
+    const rawText = aiRes.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
+    const cleaned = rawText.trim().replace(/^```json?\n?/, '').replace(/\n?```$/, '');
+    let digest: any;
+    try { digest = JSON.parse(cleaned); } catch { return res.status(500).json({ error: 'Erreur parsing IA', raw: rawText.slice(0, 400) }); }
+
+    // Etape 3 — enrichir la recette : coût/portion + prix suggéré (coef 3.5) + marge + image Unsplash
+    const r = digest.recipe || {};
+    const ings = Array.isArray(r.ingredients) ? r.ingredients.slice(0, 25) : [];
+    const totalCost = ings.reduce((sum: number, ing: any) => sum + (Number(ing.quantity) / getUnitDivisor(ing.unit)) * Number(ing.pricePerUnit || 0), 0);
+    const portions = Math.max(parseInt(r.portions) || 4, 1);
+    const costPerPortion = totalCost / portions;
+    const suggestedPrice = Math.ceil(costPerPortion * 3.5 * 10) / 10;
+    const marginPercent = suggestedPrice > 0 ? Math.round(((suggestedPrice - costPerPortion) / suggestedPrice) * 1000) / 10 : 0;
+    const imgQuery = encodeURIComponent(r.image_keywords || r.title || 'gastronomic food');
+    const recipeObj = {
+      ...r, ingredients: ings,
+      cost_per_portion: Math.round(costPerPortion * 100) / 100,
+      suggested_price: suggestedPrice,
+      margin_percent: marginPercent,
+      image_url: `https://source.unsplash.com/featured/1200x800/?${imgQuery},food,gourmet`,
+    };
+
+    // Etape 4 — UPSERT (1 ligne/jour, rejouable sans doublon)
+    await prisma.$executeRaw`
+      INSERT INTO daily_digest (digest_date, commodity_prices, market_summary, news, recipe, insight, sources)
+      VALUES (${today}::date,
+        ${JSON.stringify(Array.isArray(digest.commodityPrices) ? digest.commodityPrices : [])}::jsonb,
+        ${String(digest.marketSummary || '').slice(0, 2000)},
+        ${JSON.stringify(Array.isArray(digest.news) ? digest.news : [])}::jsonb,
+        ${JSON.stringify(recipeObj)}::jsonb,
+        ${String(digest.insight || '').slice(0, 1000)},
+        ${JSON.stringify(sources)}::jsonb)
+      ON CONFLICT (digest_date) DO UPDATE SET
+        commodity_prices = EXCLUDED.commodity_prices,
+        market_summary = EXCLUDED.market_summary,
+        news = EXCLUDED.news,
+        recipe = EXCLUDED.recipe,
+        insight = EXCLUDED.insight,
+        sources = EXCLUDED.sources,
+        created_at = now()
+    `;
+
+    res.json({
+      status: 'ok', timestamp: new Date().toISOString(), digestDate: today,
+      commodityCount: (digest.commodityPrices || []).length,
+      newsCount: (digest.news || []).length,
+      recipe: { title: recipeObj.title, suggested_price: suggestedPrice, margin_percent: marginPercent },
+      sourcesScanned: sources.length,
+    });
+  } catch (e: any) {
+    console.error('[CRON DAILY-DIGEST]', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // 6. DAILY REPORT — every day at 8:30
 app.get('/api/cron/daily-report', async (req: any, res) => {
   if (!verifyCron(req, res)) return;
@@ -4615,6 +4741,28 @@ app.get('/api/news', authWithRestaurant, async (req: any, res) => {
     news.sort((a: any, b: any) => (priorityOrder[a.priority] ?? 1) - (priorityOrder[b.priority] ?? 1) || new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     res.json(news);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur actualités' }); }
+});
+
+// ── DAILY DIGEST (lecture) — digest du jour + archive pour la page Actualités ──
+app.get('/api/daily-digest/latest', authWithRestaurant, async (_req: any, res) => {
+  try {
+    const rows: any[] = await prisma.$queryRaw`SELECT digest_date, commodity_prices, market_summary, news, recipe, insight, sources, created_at FROM daily_digest ORDER BY digest_date DESC LIMIT 1`;
+    res.json(rows[0] || null);
+  } catch (e: any) { console.error('[daily-digest/latest]', e.message); res.status(500).json({ error: 'Erreur digest' }); }
+});
+app.get('/api/daily-digest/archive', authWithRestaurant, async (req: any, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit) || 30, 90);
+    const rows: any[] = await prisma.$queryRaw`SELECT digest_date, market_summary, recipe->>'title' AS recipe_title, jsonb_array_length(commodity_prices) AS commodity_count, jsonb_array_length(news) AS news_count FROM daily_digest ORDER BY digest_date DESC LIMIT ${limit}`;
+    res.json(rows);
+  } catch (e: any) { console.error('[daily-digest/archive]', e.message); res.status(500).json({ error: 'Erreur archive digest' }); }
+});
+app.get('/api/daily-digest/:date', authWithRestaurant, async (req: any, res) => {
+  try {
+    const date = String(req.params.date).slice(0, 10);
+    const rows: any[] = await prisma.$queryRaw`SELECT digest_date, commodity_prices, market_summary, news, recipe, insight, sources FROM daily_digest WHERE digest_date = ${date}::date LIMIT 1`;
+    res.json(rows[0] || null);
+  } catch (e: any) { console.error('[daily-digest/:date]', e.message); res.status(500).json({ error: 'Erreur digest date' }); }
 });
 
 app.post('/api/news/generate', authWithRestaurant, async (req: any, res) => {

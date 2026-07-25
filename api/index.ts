@@ -1058,8 +1058,9 @@ app.get('/api/cron/daily-digest', async (req: any, res) => {
     const recent: any[] = await prisma.$queryRaw`SELECT recipe->>'title' AS title FROM daily_digest WHERE digest_date > (CURRENT_DATE - INTERVAL '14 days') AND recipe IS NOT NULL ORDER BY digest_date DESC LIMIT 14`;
     const avoid = recent.map((x) => x.title).filter(Boolean).join(', ') || '(aucune)';
 
-    // Etape 2 — Claude Sonnet structure le digest
-    const prompt = `Tu es à la fois analyste des marchés alimentaires ET chef étoilé, pour un logiciel de gestion de restaurant en France. Date : ${today}.
+    // Etape 2 — SPLIT parallèle (maxDuration 60s) : Haiku = données marché + saison (rapide),
+    // Sonnet = uniquement la recette (créatif, mérite le gros modèle). Promise.all => wall-time du plus lent.
+    const promptData = `Tu es analyste des marchés alimentaires pour un logiciel de gestion de restaurant en France. Date : ${today}.
 
 DONNÉES MARCHÉ (prix/cours des denrées) :
 ${fmt(pricesData) || '(recherche indisponible — base-toi sur les tendances saisonnières connues de ' + month + ', reste prudent et générique)'}
@@ -1069,9 +1070,7 @@ ACTUALITÉS qui impactent l'alimentation :
 ${fmt(newsData) || '(recherche indisponible)'}
 Synthèse : ${(newsData.answer || '').slice(0, 400)}
 
-Recettes déjà proposées ces 14 derniers jours (NE les refais PAS, propose autre chose de différent en cuisine/technique/produit) : ${avoid}
-
-Produis un digest quotidien pour le restaurateur. Réponds UNIQUEMENT avec ce JSON strict (pas de texte avant/après) :
+Réponds UNIQUEMENT avec ce JSON strict (pas de texte avant/après) :
 {
   "commodityPrices": [
     { "name": "Bœuf (aloyau)", "trend": "up|down|stable", "changePct": 2.5, "price": 14.9, "unit": "€/kg", "note": "cause courte en 1 bout de phrase" }
@@ -1080,32 +1079,49 @@ Produis un digest quotidien pour le restaurateur. Réponds UNIQUEMENT avec ce JS
   "news": [
     { "title": "titre court", "impact": "1 phrase : en quoi ça touche les coûts/appro d'un resto", "severity": "high|medium|low", "source": "nom média" }
   ],
-  "insight": "1 astuce/chiffre actionnable du jour pour protéger la marge (ex: substitution produit, saisonnalité, négo)",
-  "recipe": {
-    "title": "Nom d'une recette de niveau gastronomique ORIGINALE (ne copie AUCUNE recette existante d'un chef nommé)",
-    "description": "1-2 phrases qui donnent envie",
-    "category": "Entrée|Plat|Dessert",
-    "difficulty": "Facile|Moyen|Difficile",
-    "portions": 4,
-    "prep_time": 25,
-    "cook_time": 30,
-    "chef_tip": "1 astuce de chef",
-    "image_keywords": "3-5 mots-clés EN pour photo Unsplash",
-    "steps": ["étape 1", "étape 2", "étape 3", "étape 4"],
-    "ingredients": [ { "name": "Ingrédient", "quantity": 0.4, "unit": "kg", "pricePerUnit": 8.5, "supplier": "Metro|Rungis|Transgourmet" } ]
-  }
+  "seasonal": [
+    { "name": "Abricot", "category": "Fruit|Légume|Poisson|Viande|Fromage", "status": "peak|starting|ending", "note": "1 bout de phrase : pourquoi c'est le moment (prix bas, pleine saison, dernière semaine...)" }
+  ],
+  "insight": "1 astuce/chiffre actionnable du jour pour protéger la marge (ex: substitution produit, saisonnalité, négo)"
 }
-Contraintes : 6 à 10 denrées dans commodityPrices (panier resto standard) ; prix réalistes France 2026 ; 2 à 4 news ; recette calculable en marge (ingrédients chiffrés). Utilise la saison (${month}).`;
+Contraintes : 6 à 10 denrées dans commodityPrices (panier resto standard, prix réalistes France 2026) ; 2 à 4 news ; 6 à 10 produits dans seasonal (calendrier de saison réel du mois de ${month} en France, mélange fruits/légumes/poissons).`;
 
-    // Haiku 4.5 : rapide (tient dans maxDuration 60s Vercel) — Sonnet timeoutait (FUNCTION_INVOCATION_TIMEOUT) sur ce prompt riche
-    const aiRes = await anthropic.messages.create({ model: 'claude-haiku-4-5-20251001', max_tokens: 4096, messages: [{ role: 'user', content: prompt }] });
-    const rawText = aiRes.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
-    const cleaned = rawText.trim().replace(/^```json?\n?/, '').replace(/\n?```$/, '');
-    let digest: any;
-    try { digest = JSON.parse(cleaned); } catch { return res.status(500).json({ error: 'Erreur parsing IA', raw: rawText.slice(0, 400) }); }
+    const promptRecipe = `Tu es un chef étoilé français. Date : ${today}, saison : ${month}.
+
+Recettes déjà proposées ces 14 derniers jours (NE les refais PAS, change de produit, de cuisine et de technique) : ${avoid}
+
+Crée LA recette gastronomique du jour, ORIGINALE (ne copie AUCUNE recette signée d'un chef nommé), réalisable en service et calculable en marge.
+Réponds UNIQUEMENT avec ce JSON strict (pas de texte avant/après) :
+{
+  "title": "Nom de la recette, précis et appétissant",
+  "description": "1-2 phrases qui donnent envie",
+  "category": "Entrée|Plat|Dessert",
+  "difficulty": "Facile|Moyen|Difficile",
+  "portions": 4,
+  "prep_time": 25,
+  "cook_time": 30,
+  "chef_tip": "1 astuce de chef vraiment utile (technique, température, timing)",
+  "image_keywords": "3-5 mots-clés EN pour photo Unsplash",
+  "steps": ["étape 1 détaillée", "étape 2", "étape 3", "étape 4", "étape 5"],
+  "ingredients": [ { "name": "Ingrédient", "quantity": 0.4, "unit": "kg", "pricePerUnit": 8.5, "supplier": "Metro|Rungis|Transgourmet" } ]
+}
+Contraintes : produits de saison (${month}) ; 6 à 12 ingrédients chiffrés avec prix de gros réalistes France 2026 ; 4 à 6 étapes concrètes.`;
+
+    const parseJson = (msg: any) => {
+      const raw = msg.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
+      const clean = raw.trim().replace(/^```json?\n?/, '').replace(/\n?```$/, '');
+      try { return JSON.parse(clean); } catch { return null; }
+    };
+    const [dataMsg, recipeMsg] = await Promise.all([
+      anthropic.messages.create({ model: 'claude-haiku-4-5-20251001', max_tokens: 3000, messages: [{ role: 'user', content: promptData }] }),
+      anthropic.messages.create({ model: 'claude-sonnet-4-6', max_tokens: 2000, messages: [{ role: 'user', content: promptRecipe }] }),
+    ]);
+    const digest: any = parseJson(dataMsg);
+    const recipeData: any = parseJson(recipeMsg);
+    if (!digest) return res.status(500).json({ error: 'Erreur parsing IA (donnees marche)' });
 
     // Etape 3 — enrichir la recette : coût/portion + prix suggéré (coef 3.5) + marge + image Unsplash
-    const r = digest.recipe || {};
+    const r = recipeData || {};
     const ings = Array.isArray(r.ingredients) ? r.ingredients.slice(0, 25) : [];
     const totalCost = ings.reduce((sum: number, ing: any) => sum + (Number(ing.quantity) / getUnitDivisor(ing.unit)) * Number(ing.pricePerUnit || 0), 0);
     const portions = Math.max(parseInt(r.portions) || 4, 1);
@@ -1123,14 +1139,15 @@ Contraintes : 6 à 10 denrées dans commodityPrices (panier resto standard) ; pr
 
     // Etape 4 — UPSERT (1 ligne/jour, rejouable sans doublon)
     await prisma.$executeRaw`
-      INSERT INTO daily_digest (digest_date, commodity_prices, market_summary, news, recipe, insight, sources)
+      INSERT INTO daily_digest (digest_date, commodity_prices, market_summary, news, recipe, insight, sources, seasonal)
       VALUES (${today}::date,
         ${JSON.stringify(Array.isArray(digest.commodityPrices) ? digest.commodityPrices : [])}::jsonb,
         ${String(digest.marketSummary || '').slice(0, 2000)},
         ${JSON.stringify(Array.isArray(digest.news) ? digest.news : [])}::jsonb,
         ${JSON.stringify(recipeObj)}::jsonb,
         ${String(digest.insight || '').slice(0, 1000)},
-        ${JSON.stringify(sources)}::jsonb)
+        ${JSON.stringify(sources)}::jsonb,
+        ${JSON.stringify(Array.isArray(digest.seasonal) ? digest.seasonal : [])}::jsonb)
       ON CONFLICT (digest_date) DO UPDATE SET
         commodity_prices = EXCLUDED.commodity_prices,
         market_summary = EXCLUDED.market_summary,
@@ -1138,15 +1155,64 @@ Contraintes : 6 à 10 denrées dans commodityPrices (panier resto standard) ; pr
         recipe = EXCLUDED.recipe,
         insight = EXCLUDED.insight,
         sources = EXCLUDED.sources,
+        seasonal = EXCLUDED.seasonal,
         created_at = now()
     `;
+
+    // Etape 5 — email du digest (best-effort : un échec d'envoi ne casse pas le digest déjà stocké)
+    let emailSent = false;
+    if (process.env.RESEND_API_KEY) {
+      try {
+        const { Resend } = await import('resend');
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        const dateFr = new Date(today).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+        const arrow = (t: string) => (t === 'up' ? '▲' : t === 'down' ? '▼' : '→');
+        const color = (t: string) => (t === 'up' ? '#DC2626' : t === 'down' ? '#059669' : '#737373');
+        const priceRows = (Array.isArray(digest.commodityPrices) ? digest.commodityPrices : []).slice(0, 10).map((c: any) =>
+          `<tr><td style="padding:6px 8px;border-bottom:1px solid #eee;">${c.name}</td>
+           <td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right;"><b>${c.price ?? '-'}</b> <span style="color:#737373;font-size:12px;">${c.unit || ''}</span></td>
+           <td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right;color:${color(c.trend)};">${arrow(c.trend)} ${c.changePct ?? 0}%</td></tr>`).join('');
+        const seasonalTxt = (Array.isArray(digest.seasonal) ? digest.seasonal : []).slice(0, 10).map((s: any) => s.name).join(' · ');
+        const newsTxt = (Array.isArray(digest.news) ? digest.news : []).slice(0, 4).map((n: any) =>
+          `<li style="margin-bottom:6px;"><b>${n.title}</b><br><span style="color:#737373;font-size:13px;">${n.impact || ''}</span></li>`).join('');
+        const ingTxt = (recipeObj.ingredients || []).slice(0, 12).map((i: any) => `${i.name} (${i.quantity} ${i.unit})`).join(' · ');
+        await resend.emails.send({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: 'mr.guessousyoussef@gmail.com',
+          subject: `Digest ${dateFr} — ${recipeObj.title ? String(recipeObj.title).slice(0, 60) : 'marché du jour'}`,
+          html: `<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:640px;margin:0 auto;color:#111;">
+  <h2 style="margin:0 0 4px;">Digest du jour</h2>
+  <p style="color:#737373;margin:0 0 18px;text-transform:capitalize;">${dateFr}</p>
+  ${digest.marketSummary ? `<p style="background:#F5F5F5;padding:12px;border-radius:10px;line-height:1.5;">${digest.marketSummary}</p>` : ''}
+  <h3 style="margin:22px 0 8px;">Cours des denrées</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:14px;">${priceRows}</table>
+  ${seasonalTxt ? `<h3 style="margin:22px 0 8px;">De saison</h3><p style="line-height:1.6;">${seasonalTxt}</p>` : ''}
+  ${newsTxt ? `<h3 style="margin:22px 0 8px;">Ce qui bouge</h3><ul style="padding-left:18px;line-height:1.5;">${newsTxt}</ul>` : ''}
+  <h3 style="margin:22px 0 8px;">Recette du jour</h3>
+  <div style="border:1px solid #E5E7EB;border-radius:12px;padding:14px;">
+    <b style="font-size:16px;">${recipeObj.title || ''}</b>
+    <p style="color:#737373;margin:6px 0 10px;line-height:1.5;">${recipeObj.description || ''}</p>
+    <p style="margin:0 0 10px;"><span style="background:#F5F5F5;padding:4px 8px;border-radius:6px;">Coût ${recipeObj.cost_per_portion}€</span>
+       <span style="background:#F5F5F5;padding:4px 8px;border-radius:6px;">Prix conseillé ${recipeObj.suggested_price}€</span>
+       <span style="background:#ECFDF5;color:#059669;padding:4px 8px;border-radius:6px;">Marge ${recipeObj.margin_percent}%</span></p>
+    <p style="font-size:13px;color:#737373;line-height:1.5;margin:0;">${ingTxt}</p>
+  </div>
+  ${digest.insight ? `<p style="margin-top:20px;background:#F0FDFA;border-left:3px solid #0D9488;padding:12px;line-height:1.5;">${digest.insight}</p>` : ''}
+  <p style="margin-top:24px;"><a href="https://www.restaumargin.fr/actualites" style="background:#111;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;">Voir le digest complet</a></p>
+</div>`,
+        });
+        emailSent = true;
+      } catch (mailErr: any) { console.error('[DAILY-DIGEST mail]', mailErr.message); }
+    }
 
     res.json({
       status: 'ok', timestamp: new Date().toISOString(), digestDate: today,
       commodityCount: (digest.commodityPrices || []).length,
       newsCount: (digest.news || []).length,
-      recipe: { title: recipeObj.title, suggested_price: suggestedPrice, margin_percent: marginPercent },
+      seasonalCount: (digest.seasonal || []).length,
+      recipe: { title: recipeObj.title, suggested_price: suggestedPrice, margin_percent: marginPercent, model: recipeData ? 'sonnet-4-6' : 'none' },
       sourcesScanned: sources.length,
+      emailSent,
     });
   } catch (e: any) {
     console.error('[CRON DAILY-DIGEST]', e.message);
@@ -4749,7 +4815,7 @@ app.get('/api/news', authWithRestaurant, async (req: any, res) => {
 // ── DAILY DIGEST (lecture) — digest du jour + archive pour la page Actualités ──
 app.get('/api/daily-digest/latest', authWithRestaurant, async (_req: any, res) => {
   try {
-    const rows: any[] = await prisma.$queryRaw`SELECT digest_date, commodity_prices, market_summary, news, recipe, insight, sources, created_at FROM daily_digest ORDER BY digest_date DESC LIMIT 1`;
+    const rows: any[] = await prisma.$queryRaw`SELECT digest_date, commodity_prices, market_summary, news, recipe, insight, sources, seasonal, created_at FROM daily_digest ORDER BY digest_date DESC LIMIT 1`;
     res.json(rows[0] || null);
   } catch (e: any) { console.error('[daily-digest/latest]', e.message); res.status(500).json({ error: 'Erreur digest' }); }
 });
@@ -4763,7 +4829,7 @@ app.get('/api/daily-digest/archive', authWithRestaurant, async (req: any, res) =
 app.get('/api/daily-digest/:date', authWithRestaurant, async (req: any, res) => {
   try {
     const date = String(req.params.date).slice(0, 10);
-    const rows: any[] = await prisma.$queryRaw`SELECT digest_date, commodity_prices, market_summary, news, recipe, insight, sources FROM daily_digest WHERE digest_date = ${date}::date LIMIT 1`;
+    const rows: any[] = await prisma.$queryRaw`SELECT digest_date, commodity_prices, market_summary, news, recipe, insight, sources, seasonal FROM daily_digest WHERE digest_date = ${date}::date LIMIT 1`;
     res.json(rows[0] || null);
   } catch (e: any) { console.error('[daily-digest/:date]', e.message); res.status(500).json({ error: 'Erreur digest date' }); }
 });

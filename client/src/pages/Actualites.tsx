@@ -5,7 +5,7 @@ import {
   Clock, ChevronRight, ArrowRight, CalendarDays, Sparkles, Rocket, Star,
   ChevronDown, ChevronUp, Mail, Check, Bell, Zap, Gift, Tag, BookOpen,
   MessageCircle, Megaphone, ExternalLink, Globe, BarChart3, Loader2,
-  Minus, ChefHat, Utensils
+  Minus, ChefHat, Utensils, Sprout
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
@@ -173,6 +173,15 @@ interface DigestSource {
   url: string;
 }
 
+type DigestSeasonalStatus = 'peak' | 'starting' | 'ending';
+
+interface DigestSeasonal {
+  name: string;
+  category: string;
+  status: DigestSeasonalStatus;
+  note: string;
+}
+
 interface DailyDigest {
   digest_date: string;
   commodity_prices: DigestCommodity[];
@@ -181,6 +190,7 @@ interface DailyDigest {
   recipe: DigestRecipe | null;
   insight: string;
   sources: DigestSource[];
+  seasonal?: DigestSeasonal[];
   created_at: string;
 }
 
@@ -202,6 +212,19 @@ const DIGEST_SEVERITY: Record<'high' | 'medium' | 'low', string> = {
   high:   'bg-red-500',
   medium: 'bg-amber-500',
   low:    'bg-[#A3A3A3]',
+};
+
+// Fallback neutre si le backend renvoie un statut inconnu / absent
+const DIGEST_SEASON_FALLBACK: { label: string; text: string; bg: string } = {
+  label: 'De saison',
+  text: 'text-[#737373] dark:text-[#A3A3A3]',
+  bg: 'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
+};
+
+const DIGEST_SEASON_STATUS: Record<DigestSeasonalStatus, { label: string; text: string; bg: string }> = {
+  peak:     { label: 'Pleine saison',  text: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/30' },
+  starting: { label: 'Debut de saison', text: 'text-teal-700 dark:text-teal-400',      bg: 'bg-teal-50 dark:bg-teal-950/30' },
+  ending:   { label: 'Fin de saison',   text: 'text-amber-700 dark:text-amber-400',    bg: 'bg-amber-50 dark:bg-amber-950/30' },
 };
 
 // ── Product Updates (RestauMargin changelog — static, our own content) ──────
@@ -688,6 +711,42 @@ export default function Actualites() {
                       </div>
                     );
                   })}
+                </div>
+              </div>
+            )}
+
+            {/* Produits de saison */}
+            {(digest.seasonal?.length ?? 0) > 0 && (
+              <div>
+                <h3 className="text-sm font-bold text-black dark:text-white mb-3 flex items-center gap-1.5">
+                  <Sprout className="w-4 h-4 text-teal-600 dark:text-teal-400 flex-shrink-0" />
+                  Produits de saison
+                </h3>
+                <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+                  <div className="flex flex-wrap gap-2">
+                    {digest.seasonal?.map((s, i) => {
+                      const conf = DIGEST_SEASON_STATUS[s.status] || DIGEST_SEASON_FALLBACK;
+                      return (
+                        <div
+                          key={`${s.name}-${i}`}
+                          title={s.note || undefined}
+                          className={`min-w-0 max-w-full rounded-xl px-3 py-2 ${conf.bg}`}
+                        >
+                          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                            <span className="text-sm font-bold text-black dark:text-white break-words">{s.name}</span>
+                            <span className={`text-[11px] font-semibold whitespace-nowrap ${conf.text}`}>{conf.label}</span>
+                          </div>
+                          {(s.category || s.note) && (
+                            <p className="text-[11px] text-[#737373] dark:text-[#A3A3A3] mt-0.5 leading-snug break-words">
+                              {s.category}
+                              {s.category && s.note ? ' · ' : ''}
+                              {s.note}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             )}

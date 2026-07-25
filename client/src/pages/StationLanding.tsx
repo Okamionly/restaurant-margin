@@ -261,7 +261,10 @@ export default function StationLanding() {
                   src="/images/restaumargin-station-opt.webp"
                   alt="RestauMargin Station — Kit Balance + Tablette"
                   className="w-full h-auto rounded-2xl"
+                  width={2816}
+                  height={1536}
                   loading="eager"
+                  decoding="async"
                 />
                 <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
                   <span className="px-3 py-1 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-full text-xs text-mono-400 dark:text-mono-800">Balance 5kg</span>
@@ -356,6 +359,10 @@ export default function StationLanding() {
                   src="/images/restaumargin-station-opt.webp"
                   alt="Vue détaillée RestauMargin Station"
                   className="w-full h-full object-cover rounded-xl"
+                  width={2816}
+                  height={1536}
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className="grid grid-cols-3 gap-3 text-center">

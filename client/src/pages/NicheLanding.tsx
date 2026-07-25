@@ -20,6 +20,7 @@ import SEOHead from '../components/SEOHead';
      /guide-marge/kebab-fast-food
      /guide-marge/boulangerie-patisserie
      /guide-marge/creperie
+     /guide-marge/restaurant-traiteur
    ═══════════════════════════════════════════════════════════════ */
 
 interface NicheConfig {
@@ -540,6 +541,53 @@ const NICHES: Record<string, NicheConfig> = {
       {
         q: "RestauMargin convient-il aux creperies avec formules, services du soir et carte cidre ?",
         a: "Oui, RestauMargin est particulierement adapte aux creperies qui proposent des formules (galette + crepe + boisson a prix fixe), car ces formats melangent des produits aux marges tres differentes : la galette garnie (food cost 20-30%), la crepe dessert (food cost 6-10%) et la boisson (cidre artisanal a 22% de food cost, jus de pomme a 30%, cidre grande surface a 12%). Le dashboard multi-categorie vous montre la marge de chaque reference separement et la marge reelle de la formule une fois composee — indispensable pour tarifer vos formules sans sacrifier la rentabilite. Pour les services du soir avec carte plus elaboree (plateaux fruits de mer, galettes gastronomiques), RestauMargin gere les recettes multi-composants et calcule la marge plat par plat. Les creperies qui gèrent aussi un espace epicerie (produits bretons, confits, biscuits) beneficient du module stock separant produits de fabrication et produits de revente avec des logiques de marge differentes. Le plan Pro a 29€/mois couvre une creperie avec jusqu'a 80 references et 2 utilisateurs.",
+      },
+    ],
+  },
+  'restaurant-traiteur': {
+    slug: 'restaurant-traiteur',
+    title: 'Calcul de marge restaurant traiteur : guide complet 2026',
+    h1: 'Optimisez la marge de votre restaurant traiteur',
+    tagline: 'Logiciel de gestion specialise pour traiteurs, buffets et restauration evenementielle',
+    description: "Guide et outil pour calculer les marges de votre restaurant traiteur. Food cost par convive, gestion devis evenements, marge buffets, plateaux repas et optimisation de la rentabilite par prestation.",
+    heroSubtitle: "Un buffet a 4,80€ de matiere par convive facture 28€ tete : une marge brute de 83% en theorie. Mais sans fiche technique par prestation et sans suivi du gaspillage post-evenement, la rentabilite s'envole avec les restes. RestauMargin vous donne la maitrise totale de votre marge prestation par prestation.",
+    avgMargin: '65-78%',
+    avgFoodCost: '22-35%',
+    avgCoef: '3,5 a 5',
+    challenges: [
+      "Tarification par devis : chaque prestation est unique, impossible de standardiser sans fiche technique par type d'evenement",
+      "Gaspillage post-buffet : 15 a 25% des matieres preparees non consommees — perte directe et invisible sur la marge",
+      "Sous-traitants et extras : coordination logistique (vaisselle, personnel renforce, transport) qui alourdit le cout reel de la prestation",
+      "Saisonnalite forte : mariages en juin-septembre, cocktails d'entreprise en novembre-decembre — gestion des flux de tresorerie entre creux et pics",
+      "Devis perdants : sans calcul precis du cout de revient par convive, on sous-tarife et on travaille a perte sans le savoir",
+    ],
+    stats: [
+      { label: 'Food cost moyen', value: '28%', color: 'teal' },
+      { label: 'Marge brute cible', value: '72%', color: 'emerald' },
+      { label: 'Coefficient type', value: '4x', color: 'amber' },
+      { label: 'Ticket moyen convive', value: '25-65€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "Je faisais des devis au feeling depuis 10 ans. RestauMargin m'a montre que mon buffet cocktail dinatoire etait facture a perte : le food cost reel avec les pertes et le personnel depasse 38%. J'ai restructure mes formules et augmente les tarifs. Resultat : 13 points de marge recuperes sur chaque prestation.",
+      author: 'Patricia',
+      role: 'Traiteur independante, Aix-en-Provence',
+    },
+    faqs: [
+      {
+        q: "Quelle est la marge moyenne d'un restaurant traiteur ?",
+        a: "La marge brute d'un restaurant traiteur se situe entre 65% et 78%, avec une grande disparite selon le type de prestation. Les cocktails debout (food cost 22-26%) et les buffets de mariage haut de gamme (food cost 28-32%) sont les plus rentables grace a un rapport valeur perçue / cout matiere tres favorable. Les plateaux repas d'entreprise affichent un food cost plus eleve (30-35%) a cause du packaging individuel et des portions standardisees. Les traiteurs qui atteignent 75-78% de marge brute sur leurs prestations evenementielles maitrisent trois leviers : (1) fiches techniques precises par type de prestation et par convive avec zero estimation au feeling, (2) suivi systematique des pertes post-evenement (quantites preparees vs consommees) pour affiner les ratios de commande, (3) tarification par couche separant food cost, cout de personnel renforce, location materiel et marge nette cible. La marge nette apres charges fixes (cuisine de production, vehicules refrigeres, stockage, personnel permanent) oscille entre 8% et 18% selon le positionnement et le volume de prestations annuelles.",
+      },
+      {
+        q: "Comment calculer le food cost d'un buffet ou d'un cocktail dinatoire ?",
+        a: "Le calcul se fait par convive, en decomposant chaque piece ou composant du buffet. Pour un cocktail dinatoire 40 pieces par personne (2 heures) : mini-quiches x6 (0,45€), verrines x4 (0,60€), brochettes poulet x4 (0,72€), mini-sandwichs x4 (0,48€), veloute en shot x2 (0,20€), assortiment fromages 60g (0,54€), desserts pieces x6 (0,42€), pain et beurre (0,08€) = 3,49€ de cout matiere brute par convive, auquel on ajoute 15% de marge de securite pour les pertes et les extras (sel, huile, herbes) = 4,01€ reel. Facture 22€ HT par convive, le food cost est de 18,2% — excellent. Pour un buffet assis 3 services (entree-plat-dessert), le cout matiere monte a 7-12€ par convive selon le standing, pour un prix de vente de 28-55€. RestauMargin permet de creer une fiche technique de prestation composite : vous definissez la liste des pieces, les quantites par convive et les ratios de perte, et le logiciel calcule automatiquement le cout total par prestation et par tete selon l'effectif du devis.",
+      },
+      {
+        q: "Comment eviter les devis perdants et securiser la rentabilite de chaque prestation ?",
+        a: "Le devis perdant est le principal risque du metier de traiteur : on accepte une prestation en sous-estimant le cout reel (personnel, transport, pertes, sous-traitants) et on travaille parfois a perte sans s'en rendre compte jusqu'au bilan de fin d'annee. La methode en 5 etapes pour securiser chaque devis : (1) creer un template de fiche technique par type de prestation (cocktail debout, buffet assis, box dejeuner, plateau cadeau) avec le food cost cible, les ratios de pieces par convive et les postes de cout hors-matiere, (2) ajouter systematiquement au devis le cout du personnel renforce (extras, serveurs, cuisinier) en euros par heure, le transport et la logistique, la location de materiel si non-proprietaire, (3) definir un taux de marge nette cible par type de prestation (ex : 20% net sur les cocktails, 15% sur les buffets complexes) et ne jamais accepter un devis sous ce seuil, (4) etablir un bilan post-prestation dans les 48h : cout reel vs devis — les ecarts recurrents sur un meme type de prestation signalent un probleme de fiche technique ou de sous-estimation chronique, (5) indexer vos tarifs annuellement sur l'evolution des prix fournisseurs. RestauMargin integre un module de devis avec simulation de marge nette en temps reel : vous saisissez l'effectif, le type de prestation et les options, et le logiciel calcule instantanement le prix de vente minimal pour atteindre votre objectif de marge.",
+      },
+      {
+        q: "RestauMargin convient-il aux traiteurs qui gerent a la fois un espace de vente, des plateaux repas et des evenements ?",
+        a: "Oui, RestauMargin est particulierement adapte aux traiteurs multi-activites qui cumulent une boutique de vente directe (plats cuisines, entrees preparees, plateaux fromages), une activite plateaux repas d'entreprise (livraison recurrente, facturation mensuelle) et une activite evenementielle (mariages, cocktails, seminaires). Ces trois segments ont des logiques de marge tres differentes : la boutique affiche un food cost de 35-42% mais une forte valeur perçue sur les produits artisanaux, les plateaux repas 28-35% avec un volume previsible et des couts de logistique a integrer, et l'evenementiel 22-32% avec une tarification premium qui permet les meilleures marges nettes si bien structure. Le dashboard multi-categorie RestauMargin vous montre la marge par segment en temps reel : vous identifiez immediatement lequel est le moteur de votre rentabilite et lequel sous-performe. La fonctionnalite de devis evenementiel avec calcul de marge nette integre remplace les spreadsheets maison souvent sources d'erreurs. Les traiteurs avec une cuisine centrale qui gere plusieurs points de vente ou plusieurs equipes terrain beneficient du plan Business avec gestion multi-sites et suivi des couts de production en cuisine centrale. Le plan Pro a 29€/mois est suffisant pour un traiteur independant avec une activite evenementielle de 20 a 50 prestations par an.",
       },
     ],
   },

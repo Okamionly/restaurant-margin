@@ -99,6 +99,11 @@ const ROUTES = [
     description: "Guide et outil pour calculer les marges de votre bar ou pub. Food cost boissons alcoolisees, marge cocktails, gestion snacking, happy hour et optimisation de la carte des boissons.",
   },
   {
+    path: '/guide-marge/restaurant-traiteur',
+    title: 'Calcul de marge restaurant traiteur : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre restaurant traiteur. Food cost par convive, gestion devis evenements, marge buffets, plateaux repas et optimisation de la rentabilite par prestation.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

@@ -619,7 +619,7 @@ export default function Actualites() {
               <h2 className="text-2xl font-bold font-satoshi text-black dark:text-white">Digest du jour</h2>
               {digest && (
                 <p className="text-sm text-[#737373] dark:text-[#A3A3A3] first-letter:uppercase">
-                  {new Date(digest.digest_date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+                  {new Date(digest.digest_date + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
                 </p>
               )}
             </div>
@@ -642,7 +642,7 @@ export default function Actualites() {
                 <option value="today">Aujourd'hui</option>
                 {digestArchive.map(a => (
                   <option key={a.digest_date} value={a.digest_date}>
-                    {new Date(a.digest_date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
+                    {new Date(a.digest_date + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
                   </option>
                 ))}
               </select>

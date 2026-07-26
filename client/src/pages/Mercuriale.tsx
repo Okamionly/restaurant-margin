@@ -473,7 +473,7 @@ export default function Mercuriale() {
   }
 
   const pub = data.publication;
-  const weekDate = new Date(pub.week_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const weekDate = new Date(pub.week_date + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">

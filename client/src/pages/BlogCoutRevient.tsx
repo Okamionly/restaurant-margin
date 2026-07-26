@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import BlogAuthor from '../components/BlogAuthor';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Coût de revient restaurant : guide complet 2026"
@@ -195,6 +196,8 @@ export default function BlogCoutRevient() {
 
       {/* Body */}
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
+
+        <BlogAuthor publishedDate="2026-05-26" readTime="18 min" variant="header" />
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">
@@ -1038,6 +1041,8 @@ export default function BlogCoutRevient() {
         </section>
 
         </article>
+
+        <BlogAuthor publishedDate="2026-05-26" readTime="18 min" variant="footer" />
 
         {/* CTA */}
         <div id="cta" className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 sm:p-10 text-center text-white shadow-xl">

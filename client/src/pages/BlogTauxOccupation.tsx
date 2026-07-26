@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, TrendingUp, BarChart3, Sun, Users, Clock, Smartphone, Calendar, ArrowRight, CheckCircle, Target, Percent, Zap, Award, Sparkles, Lightbulb } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import BlogAuthor from '../components/BlogAuthor';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Taux d'occupation restaurant : calcul, RevPASH et optimisation"
@@ -151,6 +152,8 @@ export default function BlogTauxOccupation() {
 
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
+
+        <BlogAuthor publishedDate="2026-05-26" readTime="15 min" variant="header" />
 
         {/* ── Encadre formule rapide (featured snippet) ── */}
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
@@ -1011,6 +1014,8 @@ export default function BlogTauxOccupation() {
         </section>
 
         </article>
+
+        <BlogAuthor publishedDate="2026-05-26" readTime="15 min" variant="footer" />
 
         {/* ── Nav bas de page ── */}
         <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">

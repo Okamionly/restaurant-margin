@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import BlogAuthor from '../components/BlogAuthor';
 
 /* ════════════════════════════════════════════════════════════════════
    Blog SEO — "Chiffre d'affaires restaurant : comment le calculer,
@@ -231,6 +232,8 @@ export default function BlogChiffreAffaires() {
 
       {/* Body */}
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-05-26" readTime="16 min" variant="header" />
+
         {/* Encadré formules rapides (featured snippet) */}
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
           <div className="flex items-center gap-2 mb-3">
@@ -1257,6 +1260,8 @@ export default function BlogChiffreAffaires() {
             </Link>
           </div>
         </article>
+
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-05-26" readTime="16 min" variant="footer" />
       </main>
 
       {/* Footer */}

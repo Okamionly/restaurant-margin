@@ -212,14 +212,14 @@ export default function BlogFoodCost() {
       <BlogArticleHero
         category="Food Cost"
         readTime="18 min"
-        date="Mai 2026"
+        date="Juin 2026"
         title="Food cost restaurant : le guide complet 2026 pour le calculer et le maitriser"
         accentWord="food cost"
         subtitle="La formule exacte, l'exemple chiffre detaille, les benchmarks par type d'etablissement et les 10 leviers eprouves pour faire passer votre food cost sous la barre des 30 % sans sacrifier la qualite."
       />
 
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
-        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-05-26" readTime="18 min" variant="header" />
+        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-06-03" readTime="18 min" variant="header" />
 
         {/* ── Intro / Featured snippet ── */}
         <div className="bg-gradient-to-br from-teal-50 to-emerald-50 border-l-4 border-teal-600 rounded-r-2xl p-5 sm:p-6 my-8">
@@ -1111,7 +1111,7 @@ export default function BlogFoodCost() {
           </p>
         </section>
 
-        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-05-26" readTime="18 min" variant="footer" />
+        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-06-03" readTime="18 min" variant="footer" />
 
         </article>
       </main>

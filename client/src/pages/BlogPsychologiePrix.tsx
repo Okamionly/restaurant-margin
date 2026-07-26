@@ -12,6 +12,7 @@ import {
   ChefHat,
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogAuthor from '../components/BlogAuthor';
 
 const faqItems = [
   {
@@ -98,11 +99,12 @@ export default function BlogPsychologiePrix() {
             <p className="text-lg text-[#737373] dark:text-[#A3A3A3] leading-relaxed">
               Augmentez votre ticket moyen de 15 à 25 % grâce aux biais cognitifs prouvés. Des techniques utilisées par les plus grands groupes, applicables dès ce soir.
             </p>
-            <p className="mt-4 text-sm text-[#737373] dark:text-[#A3A3A3]">Par l'équipe RestauMargin · 29 mai 2026 · 7 min de lecture</p>
           </div>
         </div>
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
+
+          <BlogAuthor publishedDate="2026-05-29" readTime="7 min" variant="header" />
 
           {/* Intro */}
           <p className="text-lg leading-relaxed text-[#737373] dark:text-[#A3A3A3]">
@@ -292,6 +294,8 @@ export default function BlogPsychologiePrix() {
               <ArrowRight className="w-4 h-4" />
             </a>
           </section>
+
+          <BlogAuthor publishedDate="2026-05-29" readTime="7 min" variant="footer" />
 
           {/* Back to blog */}
           <div className="pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">

@@ -301,6 +301,12 @@ const ROUTES = [
     type: 'article',
   },
   {
+    path: '/blog/reprise-restaurant-guide-acheteur',
+    title: 'Reprise de restaurant : comment eviter les pieges — Guide acheteur 2026',
+    description: "Audit comptable, valorisation fonds de commerce, dettes cachees, negociation et financement : tout ce qu'il faut savoir avant de racheter un restaurant en 2026.",
+    type: 'article',
+  },
+  {
     path: '/blog/negocier-fournisseurs-restaurant',
     title: 'Negocier avec ses fournisseurs en restauration : 7 techniques pour reduire ses couts matieres',
     description: "Apprenez a negocier efficacement avec vos fournisseurs de restauration : mise en concurrence, contrats-cadres, RFA, regroupement d'achats. Guide pratique 2026 pour reduire votre food cost de 5 a 10 %.",

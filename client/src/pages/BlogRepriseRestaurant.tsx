@@ -80,8 +80,8 @@ export default function BlogRepriseRestaurant() {
       <SEOHead
         title={`${pageTitle} | RestauMargin`}
         description={pageDescription}
-        canonical={canonicalUrl}
-        jsonLd={[
+        path={`/blog/${slug}`}
+        schema={[
           articleSchema,
           buildFAQSchema(faqItems),
           buildBreadcrumbSchema([
@@ -102,6 +102,8 @@ export default function BlogRepriseRestaurant() {
         />
 
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+          <BlogAuthor publishedDate="2026-07-25" readTime="7 min" variant="header" />
+
           {/* Intro */}
           <p className="text-lg text-[#111111] dark:text-white leading-relaxed mb-6">
             Vous avez trouvé le restaurant de vos rêves à reprendre. L'emplacement est idéal, le
@@ -388,7 +390,7 @@ export default function BlogRepriseRestaurant() {
             </a>
           </div>
 
-          <BlogAuthor />
+          <BlogAuthor publishedDate="2026-07-25" readTime="7 min" variant="footer" />
 
           <div className="mt-8 pt-6 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
             <Link

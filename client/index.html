@@ -94,87 +94,26 @@
       }
     }
     </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "inLanguage": "fr-FR",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Comment calculer la marge d'un plat en restauration ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "La marge brute se calcule ainsi : prix de vente HT moins coût matière. Le ratio matière (food cost) s'obtient en divisant le coût matière par le prix de vente HT. En restauration, un ratio matière sain se situe entre 25% et 35% selon le type d'établissement."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Qu'est-ce qu'une fiche technique en cuisine ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Une fiche technique est un document détaillant les ingrédients, grammages, coûts, allergènes et process de fabrication d'un plat. Elle sert à standardiser la production, calculer précisément la marge et garantir la traçabilité HACCP dans un restaurant."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Comment réduire le food cost de son restaurant ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Pour réduire le food cost, optimisez vos fiches techniques, négociez avec vos fournisseurs, suivez vos stocks avec la méthode FIFO, réduisez le gaspillage alimentaire, standardisez les portions et analysez régulièrement la rentabilité de chaque plat avec un logiciel de gestion."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Qu'est-ce que le coefficient multiplicateur en restauration ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Le coefficient multiplicateur est le rapport entre le prix de vente TTC et le coût matière. En restauration traditionnelle, il varie généralement entre 3 et 4 pour les plats solides et peut atteindre 5 à 7 pour les boissons. Il permet de fixer le prix de vente en fonction du coût de revient."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Quelle est la marge moyenne d'un restaurant en France ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "En France, la marge nette moyenne d'un restaurant se situe entre 2% et 4% pour un restaurant classique, et jusqu'à 15% pour les concepts à forte rotation (fast-casual, street food). La marge brute sur les solides doit atteindre 70% à 75% pour assurer la rentabilité."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Comment calculer la marge d'un restaurant ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Pour calculer la marge d'un restaurant, soustrayez le coût matière (food cost) du prix de vente HT, puis divisez par le prix de vente HT pour obtenir la marge brute en pourcentage. Avec RestauMargin, le calcul est automatique : chaque fiche technique génère sa marge brute, sa marge contributive et son coefficient multiplicateur en temps réel."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Quel est le food cost idéal en restauration ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Le food cost idéal varie selon le concept : 25% à 30% pour la restauration traditionnelle, 28% à 32% pour la bistronomie, 30% à 35% pour la gastronomie (produits nobles), 22% à 28% pour le fast-casual. Un food cost au-dessus de 35% signale un problème de prix de vente, de gaspillage ou de fiches techniques mal calibrées."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Combien coûte RestauMargin ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "RestauMargin propose deux plans : Pro à 29€/mois (1 restaurant, fiches techniques illimitées, food cost IA, fournisseurs) et Business à 79€/mois (multi-restaurants, API, intégrations caisse, support prioritaire). Un essai gratuit de 7 jours est disponible sans carte bancaire."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Quel délai pour voir les résultats sur la marge avec RestauMargin ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Les premiers résultats sont visibles dès la première semaine : food cost calculé sur chaque plat, alertes prix fournisseurs et suggestions IA de marge. À 30 jours, la plupart des restaurants observent une optimisation de 2 à 4 points de marge brute grâce au menu engineering, à la négociation fournisseurs et à la réduction du gaspillage."
-          }
-        }
-      ]
-    }
-    </script>
+    <!--
+      RETIRE le 2026-07-27 — FAQPage globale (9 Q/A) declaree dans le shell.
+
+      Ce bloc etait injecte sur les ~115 pages prerendues, alors qu'AUCUNE page
+      du site n'affiche ces questions (verifie : les intitules n'existent dans
+      aucun composant React ni locale — uniquement ici). Deux problemes :
+        1. Google exige que le contenu balise en FAQPage soit VISIBLE par
+           l'utilisateur sur la page. Balisage sans contrepartie visible =
+           risque d'action manuelle "donnees structurees trompeuses".
+        2. Sur les 82 pages qui passent leur propre buildFAQSchema(), cela
+           faisait DEUX entites FAQPage sur la meme URL — exactement le defaut
+           deja constate sur SoftwareApplication (cf. note dans SEOHead.tsx).
+      Aucune perte : depuis 2023 Google reserve les rich results FAQ aux sites
+      gouvernementaux et de sante, donc ce balisage ne generait aucun affichage
+      enrichi pour un SaaS. Les FAQPage par page (contenu reellement affiche)
+      sont conservees et restent exploitees pour la comprehension du contenu.
+
+      Si une FAQ globale est souhaitee un jour : afficher les questions sur la
+      page d'accueil, puis injecter le schema via SEOHead depuis Landing.tsx.
+    -->
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-656H54T9RS"></script>
     <script>

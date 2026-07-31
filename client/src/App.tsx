@@ -192,6 +192,7 @@ const BlogFifoLifo = lazyRetry(() => import('./pages/BlogFifoLifo'));
 const BlogSeuilRentabilite = lazyRetry(() => import('./pages/BlogSeuilRentabilite'));
 const BlogKpiGuide = lazyRetry(() => import('./pages/BlogKpiGuide'));
 const BlogLogicielCaisse = lazyRetry(() => import('./pages/BlogLogicielCaisse'));
+const BlogGestionTresorerie = lazyRetry(() => import('./pages/BlogGestionTresorerie'));
 const BlogMethodeFifo = lazyRetry(() => import('./pages/BlogMethodeFifo'));
 const BlogMenuEngineering = lazyRetry(() => import('./pages/BlogMenuEngineering'));
 const BlogOuvrirRestaurant = lazyRetry(() => import('./pages/BlogOuvrirRestaurant'));
@@ -1279,6 +1280,7 @@ function App() {
           <Route path="/blog/menu-engineering-boston-matrix" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogMenuEngineering /></Suspense>} />
           <Route path="/blog/kpi-restaurateur" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogKpiGuide /></Suspense>} />
           <Route path="/blog/logiciel-caisse-enregistreuse-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogLogicielCaisse /></Suspense>} />
+          <Route path="/blog/gestion-tresorerie-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogGestionTresorerie /></Suspense>} />
           <Route path="/blog/methode-fifo-gestion-stocks-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogMethodeFifo /></Suspense>} />
           {/* FIX 2026-04-28 (audit cohérence) : redirect canonical pour éviter duplicate content SEO.
               L'URL ...-restaurant pointait sur le même composant que le canonique. */}

@@ -1,5 +1,6 @@
 import { useRef, useCallback } from 'react';
 import { useToast } from './useToast';
+import { useTranslation } from './useTranslation';
 
 /**
  * Hook for soft-delete with undo support.
@@ -32,6 +33,7 @@ const UNDO_WINDOW_MS = 5000;
 
 export function useUndoDelete() {
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const undoRef = useRef<{ cancelled: boolean } | null>(null);
 
   const deleteWithUndo = useCallback(
@@ -39,41 +41,39 @@ export function useUndoDelete() {
       const { deleteFn, restoreFn, itemLabel, onDeleted, onRestored } = options;
 
       try {
-        // Perform the actual delete
         await deleteFn();
       } catch (err) {
-        showToast('Erreur lors de la suppression', 'error');
+        showToast(t('common.deleteError'), 'error');
         return;
       }
 
-      // Notify caller that delete succeeded
       onDeleted?.();
 
-      // Track undo state
       const undoState = { cancelled: false };
       undoRef.current = undoState;
 
-      // Show toast with Annuler button
-      const label = itemLabel ? `"${itemLabel}" supprime` : 'Element supprime';
+      const label = itemLabel
+        ? `"${itemLabel}" ${t('common.itemDeleted')}`
+        : t('common.elementDeleted');
       showToast(label, 'success', {
         duration: UNDO_WINDOW_MS,
         action: {
-          label: 'Annuler',
+          label: t('common.cancel'),
           onClick: async () => {
             if (undoState.cancelled) return;
             undoState.cancelled = true;
             try {
               await restoreFn();
               onRestored?.();
-              showToast('Restaure avec succes', 'info');
+              showToast(t('common.restoreSuccess'), 'info');
             } catch {
-              showToast('Erreur lors de la restauration', 'error');
+              showToast(t('common.restoreError'), 'error');
             }
           },
         },
       });
     },
-    [showToast]
+    [showToast, t]
   );
 
   return { deleteWithUndo };

@@ -682,7 +682,12 @@
     "send": "Send",
     "total": "Total",
     "error": "Error",
-    "or": "or"
+    "or": "or",
+    "deleteError": "Error deleting item",
+    "elementDeleted": "Item deleted",
+    "itemDeleted": "deleted",
+    "restoreSuccess": "Restored successfully",
+    "restoreError": "Error restoring item"
   },
   "login": {
     "title": "Login",

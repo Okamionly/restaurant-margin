@@ -682,7 +682,12 @@
     "send": "Envoyer",
     "total": "Total",
     "error": "Erreur",
-    "or": "ou"
+    "or": "ou",
+    "deleteError": "Erreur lors de la suppression",
+    "elementDeleted": "Élément supprimé",
+    "itemDeleted": "supprimé",
+    "restoreSuccess": "Restauré avec succès",
+    "restoreError": "Erreur lors de la restauration"
   },
   "login": {
     "title": "Connexion",

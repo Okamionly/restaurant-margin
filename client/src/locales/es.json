@@ -76,7 +76,14 @@
     "csvHeaderSupplier": "Proveedor",
     "csvHeaderAllergens": "Alergenos",
     "printTooltip": "Imprimir",
-    "supplierPrefix": "Proveedor: "
+    "supplierPrefix": "Proveedor: ",
+    "alertSet": "Alerta configurada: {name} > {price} €",
+    "alertRemoved": "Alerta eliminada para {name}",
+    "bulkDeleted": "{count} ingrediente(s) eliminado(s)",
+    "bulkCategoryChanged": "Categoría cambiada para {count} ingrediente(s)",
+    "bulkSupplierAssigned": "Proveedor asignado para {count} ingrediente(s)",
+    "bulkPriceUpdated": "Precios actualizados para {count} ingrediente(s)",
+    "csvColumnMissing": "Columna \"Nombre\" no encontrada en el CSV"
   },
   "recipes": {
     "title": "Fichas tecnicas",

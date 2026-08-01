@@ -488,10 +488,10 @@ export default function Ingredients() {
     const val = parseFloat(alertInput);
     if (val > 0) {
       setPriceAlert(trackerIngredient.id, val);
-      showToast(`Alerte configuree : ${trackerIngredient.name} > ${val.toFixed(2)} €`, 'success');
+      showToast(t('ingredients.alertSet').replace('{name}', trackerIngredient.name).replace('{price}', val.toFixed(2)), 'success');
     } else {
       removePriceAlert(trackerIngredient.id);
-      showToast(`Alerte supprimee pour ${trackerIngredient.name}`, 'success');
+      showToast(t('ingredients.alertRemoved').replace('{name}', trackerIngredient.name), 'success');
     }
   }
 
@@ -854,7 +854,7 @@ export default function Ingredients() {
     const ids = Array.from(selectedIds);
     try {
       await Promise.all(ids.map((id) => deleteIngredient(id)));
-      showToast(`${ids.length} ingredient(s) supprime(s)`, 'success');
+      showToast(t('ingredients.bulkDeleted').replace('{count}', String(ids.length)), 'success');
       setSelectedIds(new Set());
       setShowBulkDeleteConfirm(false);
       loadIngredients();
@@ -868,7 +868,7 @@ export default function Ingredients() {
     const ids = Array.from(selectedIds);
     try {
       await Promise.all(ids.map((id) => updateIngredient(id, { category })));
-      showToast(`Categorie changee pour ${ids.length} ingredient(s)`, 'success');
+      showToast(t('ingredients.bulkCategoryChanged').replace('{count}', String(ids.length)), 'success');
       setSelectedIds(new Set());
       setBulkCategoryOpen(false);
       loadIngredients();
@@ -881,7 +881,7 @@ export default function Ingredients() {
     const ids = Array.from(selectedIds);
     try {
       await Promise.all(ids.map((id) => updateIngredient(id, { supplierId, supplier: supplierName })));
-      showToast(`Fournisseur assigne pour ${ids.length} ingredient(s)`, 'success');
+      showToast(t('ingredients.bulkSupplierAssigned').replace('{count}', String(ids.length)), 'success');
       setSelectedIds(new Set());
       setBulkSupplierOpen(false);
       loadIngredients();
@@ -916,7 +916,7 @@ export default function Ingredients() {
       await Promise.all(bulkPricePreview.map(item =>
         updateIngredient(item.id, { pricePerUnit: Math.round(item.newPrice * 100) / 100 })
       ));
-      showToast(`Prix mis a jour pour ${bulkPricePreview.length} ingredient(s)`, 'success');
+      showToast(t('ingredients.bulkPriceUpdated').replace('{count}', String(bulkPricePreview.length)), 'success');
       setShowBulkPriceModal(false);
       setSelectedIds(new Set());
       loadIngredients();
@@ -945,7 +945,7 @@ export default function Ingredients() {
     a.download = `ingredients_restaumargin_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast(`${ingredients.length} ingredients exportes en CSV`, 'success');
+    showToast(t('ingredients.csvExported').replace('{count}', String(ingredients.length)), 'success');
   }
 
   // ── Export Selected CSV ─────────────────────────────────────────────
@@ -970,7 +970,7 @@ export default function Ingredients() {
     a.download = `selection_ingredients_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast(`${selectedIngs.length} ingredient${selectedIngs.length > 1 ? 's' : ''} exporte${selectedIngs.length > 1 ? 's' : ''} en CSV`, 'success');
+    showToast(t('ingredients.csvExported').replace('{count}', String(selectedIngs.length)), 'success');
   }
 
   function downloadCSVTemplate() {
@@ -1503,14 +1503,14 @@ export default function Ingredients() {
           try {
             const text = evt.target?.result as string;
             const lines = text.split('\n').filter(l => l.trim());
-            if (lines.length < 2) { showToast('Le fichier CSV est vide ou invalide', 'error'); return; }
+            if (lines.length < 2) { showToast(t('ingredients.csvEmpty'), 'error'); return; }
             const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim().toLowerCase());
             const nameIdx = headers.findIndex(h => h === 'nom' || h === 'name');
             const catIdx = headers.findIndex(h => h === 'categorie' || h === 'category');
             const unitIdx = headers.findIndex(h => h === 'unite' || h === 'unit');
             const priceIdx = headers.findIndex(h => h.includes('prix') || h.includes('price') || h.includes('cout') || h.includes('cost'));
             const supplierIdx = headers.findIndex(h => h.includes('fournisseur') || h.includes('supplier'));
-            if (nameIdx === -1) { showToast('Colonne "Nom" introuvable dans le CSV', 'error'); return; }
+            if (nameIdx === -1) { showToast(t('ingredients.csvColumnMissing'), 'error'); return; }
             let importCount = 0;
             for (let i = 1; i < lines.length; i++) {
               const cols = lines[i].split(',').map(c => c.replace(/"/g, '').trim());
@@ -1530,8 +1530,8 @@ export default function Ingredients() {
               setIngredients(prev => [...prev, newIngredient as any]);
               importCount++;
             }
-            showToast(`${importCount} ingredient${importCount > 1 ? 's' : ''} importe${importCount > 1 ? 's' : ''} avec succes`, 'success');
-          } catch { showToast('Erreur lors de la lecture du fichier CSV', 'error'); }
+            showToast(t('ingredients.csvImported').replace('{imported}', String(importCount)), 'success');
+          } catch { showToast(t('ingredients.csvReadError'), 'error'); }
         };
         reader.readAsText(file);
         e.target.value = '';

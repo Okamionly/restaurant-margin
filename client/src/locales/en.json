@@ -76,7 +76,14 @@
     "csvHeaderSupplier": "Supplier",
     "csvHeaderAllergens": "Allergens",
     "printTooltip": "Print",
-    "supplierPrefix": "Supplier: "
+    "supplierPrefix": "Supplier: ",
+    "alertSet": "Alert configured: {name} > {price} €",
+    "alertRemoved": "Alert removed for {name}",
+    "bulkDeleted": "{count} ingredient(s) deleted",
+    "bulkCategoryChanged": "Category changed for {count} ingredient(s)",
+    "bulkSupplierAssigned": "Supplier assigned for {count} ingredient(s)",
+    "bulkPriceUpdated": "Prices updated for {count} ingredient(s)",
+    "csvColumnMissing": "\"Name\" column not found in CSV"
   },
   "recipes": {
     "title": "Recipe Sheets",

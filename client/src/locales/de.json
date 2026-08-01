@@ -76,7 +76,14 @@
     "csvHeaderSupplier": "Lieferant",
     "csvHeaderAllergens": "Allergene",
     "printTooltip": "Drucken",
-    "supplierPrefix": "Lieferant: "
+    "supplierPrefix": "Lieferant: ",
+    "alertSet": "Alarm konfiguriert: {name} > {price} €",
+    "alertRemoved": "Alarm für {name} entfernt",
+    "bulkDeleted": "{count} Zutat(en) gelöscht",
+    "bulkCategoryChanged": "Kategorie für {count} Zutat(en) geändert",
+    "bulkSupplierAssigned": "Lieferant für {count} Zutat(en) zugewiesen",
+    "bulkPriceUpdated": "Preise für {count} Zutat(en) aktualisiert",
+    "csvColumnMissing": "Spalte \"Name\" nicht in der CSV gefunden"
   },
   "recipes": {
     "title": "Rezeptblaetter",

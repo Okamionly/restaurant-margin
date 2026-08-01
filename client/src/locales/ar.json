@@ -76,7 +76,14 @@
     "csvHeaderSupplier": "المورد",
     "csvHeaderAllergens": "مسببات الحساسية",
     "printTooltip": "طباعة",
-    "supplierPrefix": "المورد: "
+    "supplierPrefix": "المورد: ",
+    "alertSet": "تم تكوين التنبيه: {name} > {price} €",
+    "alertRemoved": "تمت إزالة التنبيه لـ {name}",
+    "bulkDeleted": "تم حذف {count} مكوّن(ات)",
+    "bulkCategoryChanged": "تم تغيير الفئة لـ {count} مكوّن(ات)",
+    "bulkSupplierAssigned": "تم تعيين المورد لـ {count} مكوّن(ات)",
+    "bulkPriceUpdated": "تم تحديث الأسعار لـ {count} مكوّن(ات)",
+    "csvColumnMissing": "عمود \"الاسم\" غير موجود في ملف CSV"
   },
   "recipes": {
     "title": "بطاقات الوصفات",

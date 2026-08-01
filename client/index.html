@@ -14,14 +14,42 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <link rel="manifest" href="/manifest.json" />
-    <!-- DNS prefetch for external services -->
-    <link rel="dns-prefetch" href="https://supabase.co" />
-    <link rel="dns-prefetch" href="https://sentry.io" />
+    <!--
+      Fontshare: Satoshi (titres) + General Sans (corps) — chaine critique du rendu texte.
+      Place AUSSI HAUT QUE POSSIBLE dans le head : le navigateur n'ouvre la
+      connexion qu'en parsant ces balises. Plus bas = connexion ouverte plus tard.
+
+      DEUX origines distinctes, et le `crossorigin` differe sur chacune :
+        - api.fontshare.com sert le CSS  -> requete NON-CORS -> preconnect SANS crossorigin
+        - cdn.fontshare.com sert les woff2 -> requete CORS   -> preconnect AVEC crossorigin
+      Une connexion prechauffee en mode CORS anonyme n'est PAS reutilisable par une
+      requete non-CORS (et inversement) : un `crossorigin` mal place rend le
+      preconnect inutile. Meme pattern que le duo officiel Google Fonts
+      (fonts.googleapis.com sans / fonts.gstatic.com avec).
+
+      cdn.fontshare.com n'est decouvert qu'APRES le parse du CSS (les url() y
+      pointent en //cdn.fontshare.com) : sans ce preconnect, DNS+TCP+TLS
+      s'ajoutent en serie sur le chemin des polices du corps de texte.
+    -->
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" /></noscript>
+
+    <!--
+      DNS prefetch for external services.
+      Retires le 2026-08-01 (mesure sur /blog/calcul-marge-restaurant) :
+        - supabase.co (dns-prefetch + preconnect) : ZERO requete navigateur — le
+          front n'appelle jamais Supabase (c'est le backend qui s'en charge), et
+          l'origine etait de toute facon fausse (un projet vit sur
+          <ref>.supabase.co, et un preconnect ne vaut que pour une origine EXACTE).
+          Un preconnect inutilise consomme un slot de connexion sur le chemin critique.
+        - sentry.io : ZERO requete — le hote reellement contacte est
+          browser.sentry-cdn.com, qui garde son dns-prefetch ci-dessous.
+    -->
     <link rel="dns-prefetch" href="https://browser.sentry-cdn.com" />
     <link rel="dns-prefetch" href="https://client.crisp.chat" />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-    <!-- Preconnect to Supabase for faster API calls -->
-    <link rel="preconnect" href="https://supabase.co" crossorigin />
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="RestauMargin — Logiciel de gestion de marge restaurant" />
@@ -195,10 +223,8 @@
       twq('config','YOUR_TWITTER_PIXEL_ID');
     </script>
     -->
-    <!-- Fontshare: Satoshi (display) + General Sans (body) — non-blocking load -->
-    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
-    <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" /></noscript>
+    <!-- Note: le bloc Fontshare (preconnect + preload CSS) a ete REMONTE en haut
+         du head le 2026-08-01 — voir le commentaire detaille la-bas. -->
 
     <!-- Note: hero-1.webp preload removed — Landing v3 uses an animated WebGL
          shader (Paper Fold + Curves) for the hero background, no static image. -->

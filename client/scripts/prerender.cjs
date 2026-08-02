@@ -19,6 +19,11 @@ const BASE_URL = 'https://www.restaumargin.fr';
 // Public routes to prerender with their SEO metadata
 const ROUTES = [
   {
+    path: '/login',
+    title: 'Connexion — RestauMargin',
+    description: "Connectez-vous à votre espace RestauMargin pour piloter vos marges, votre food cost et vos fiches techniques. Pas encore de compte ? Essai gratuit 7 jours.",
+  },
+  {
     path: '/pricing',
     title: 'Tarifs — RestauMargin',
     description: 'Plans Pro (29 EUR/mois) et Business (79 EUR/mois). Calculez vos marges restaurant, food cost et fiches techniques. Essai gratuit 7 jours sans engagement.',
@@ -298,6 +303,12 @@ const ROUTES = [
     path: '/blog/ouvrir-terrasse-restaurant-demarches',
     title: 'Terrasse de restaurant : autorisations, demarches et rentabilite 2026',
     description: 'Comment ouvrir une terrasse de restaurant en France ? Droit de terrasse, dossier mairie, equipement et calcul de rentabilite : le guide complet 2026.',
+    type: 'article',
+  },
+  {
+    path: '/blog/gestion-tresorerie-restaurant',
+    title: 'Gestion de la trésorerie restaurant : guide complet 2026 (plan 13 semaines)',
+    description: "Comment piloter la trésorerie de votre restaurant : plan prévisionnel 13 semaines, 8 leviers pour améliorer le cash, solutions d'urgence. Guide expert 2026.",
     type: 'article',
   },
   {

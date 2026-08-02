@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, Calculator, TrendingUp, Wallet, AlertTriangle, CheckCircle, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import BlogAuthor from '../components/BlogAuthor';
 
 const faqItems = [
   {
@@ -104,12 +105,8 @@ export default function BlogGestionTresorerie() {
           <p className="text-lg text-[#737373] dark:text-[#A3A3A3] leading-relaxed">
             La plupart des restaurants qui ferment ne manquent pas de clients — ils manquent de cash. Voici le guide concret pour sécuriser vos liquidités et piloter votre trésorerie comme un professionnel.
           </p>
-          <div className="flex items-center gap-4 mt-6 text-sm text-[#737373] dark:text-[#A3A3A3]">
-            <span>31 juillet 2026</span>
-            <span>·</span>
-            <span>8 min de lecture</span>
-            <span>·</span>
-            <span>La rédaction RestauMargin</span>
+          <div className="mt-6">
+            <BlogAuthor publishedDate="2026-07-31" readTime="8 min" variant="header" />
           </div>
         </header>
 
@@ -287,6 +284,8 @@ export default function BlogGestionTresorerie() {
             ))}
           </div>
         </section>
+
+        <BlogAuthor publishedDate="2026-07-31" readTime="8 min" variant="footer" />
 
         {/* CTA */}
         <section className="bg-[#111111] dark:bg-white rounded-2xl p-8 text-center">

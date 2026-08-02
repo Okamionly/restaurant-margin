@@ -1,5 +1,6 @@
 import React from 'react';
 import SEOHead from '../components/SEOHead';
+import BlogAuthor from '../components/BlogAuthor';
 
 export default function BlogOuvrirTerrasseRestaurant() {
   const jsonLd = {
@@ -36,7 +37,9 @@ export default function BlogOuvrirTerrasseRestaurant() {
             <p className="text-lg text-[#737373] dark:text-[#A3A3A3] leading-relaxed">
               Vous rêvez d'installer une terrasse devant votre restaurant ? Entre autorisations mairie, droit de terrasse et investissement matériel, beaucoup renoncent. Pourtant, une terrasse bien gérée peut augmenter votre chiffre d'affaires de 20 à 40 % en saison. Voici le guide complet.
             </p>
-            <p className="text-sm text-[#737373] dark:text-[#A3A3A3] mt-3">Publié le 10 juillet 2026 · 7 min de lecture</p>
+            <div className="mt-4">
+              <BlogAuthor publishedDate="2026-07-10" readTime="7 min" variant="header" />
+            </div>
           </header>
 
           <nav className="bg-[#F5F5F5] dark:bg-[#262626] rounded-xl p-5 mb-8">
@@ -225,6 +228,8 @@ export default function BlogOuvrirTerrasseRestaurant() {
               Découvrir RestauMargin →
             </a>
           </section>
+
+          <BlogAuthor publishedDate="2026-07-10" readTime="7 min" variant="footer" />
         </article>
       </main>
     </>

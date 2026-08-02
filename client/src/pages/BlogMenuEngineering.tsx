@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Star, TrendingUp, Puzzle, AlertCircle, Layout, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import BlogAuthor from '../components/BlogAuthor';
 
 export default function BlogMenuEngineering() {
   const faqSchema = buildFAQSchema([
@@ -116,6 +117,7 @@ export default function BlogMenuEngineering() {
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-07-10" readTime="16 min" variant="header" />
 
         <p className="text-[#374151] text-lg leading-relaxed mb-8">
           <strong>Sur une carte typique de 25 plats, seuls 4 à 6 plats génèrent 80 % de la marge brute totale.</strong> Le menu engineering, formalisé par Donald Smith et Michael Kasavana à l'Université du Michigan en 1982, est la science qui permet d'identifier ces dynamiques et de transformer chaque plat en levier de rentabilité.
@@ -501,6 +503,8 @@ export default function BlogMenuEngineering() {
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>
+
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-07-10" readTime="16 min" variant="footer" />
       </main>
     </div>
   );

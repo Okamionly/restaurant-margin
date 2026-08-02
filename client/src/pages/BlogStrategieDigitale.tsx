@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import BlogAuthor from '../components/BlogAuthor';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Stratégie digitale restaurant : guide complet 2026"
@@ -179,6 +180,7 @@ export default function BlogStrategieDigitale() {
 
       {/* Body */}
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-05-26" readTime="18 min" variant="header" />
 
         {/* Encadré formule rapide */}
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
@@ -916,6 +918,8 @@ export default function BlogStrategieDigitale() {
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/blog/calcul-marge-restaurant" className="text-sm text-teal-600 hover:underline">Calculer sa marge →</Link>
         </div>
+
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-05-26" readTime="18 min" variant="footer" />
       </main>
     </div>
   );

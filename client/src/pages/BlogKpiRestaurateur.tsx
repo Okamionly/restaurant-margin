@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, BarChart3, TrendingUp, Users, Star, ArrowRight } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import BlogAuthor from '../components/BlogAuthor';
 
 export default function BlogKpiRestaurateur() {
   return (
@@ -63,6 +64,7 @@ export default function BlogKpiRestaurateur() {
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
+        <BlogAuthor publishedDate="2026-04-24" readTime="11 min" variant="header" />
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">
@@ -260,6 +262,8 @@ export default function BlogKpiRestaurateur() {
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">← Tous les articles</Link>
           <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>
+
+        <BlogAuthor publishedDate="2026-04-24" readTime="11 min" variant="footer" />
       </main>
     </div>
   );

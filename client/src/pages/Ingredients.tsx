@@ -2308,7 +2308,7 @@ export default function Ingredients() {
                   onClick={saveAlertThreshold}
                   className="btn-primary text-sm px-4"
                 >
-                  {parseFloat(alertInput) > 0 ? 'Sauvegarder' : 'Supprimer'}
+                  {parseFloat(alertInput) > 0 ? t('ingredients.alertSaveBtn') : t('ingredients.deleteTooltip')}
                 </button>
               </div>
               {getAlertForIngredient(trackerIngredient.id) !== null && (
@@ -2316,8 +2316,8 @@ export default function Ingredients() {
                   <AlertTriangle aria-hidden="true" className={`w-3 h-3 ${trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0) ? 'text-red-500' : 'text-emerald-500'}`} />
                   <span className={trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0) ? 'text-red-500 font-semibold' : 'text-emerald-500'}>
                     {trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0)
-                      ? `Prix actuel (${trackerIngredient.pricePerUnit.toFixed(2)} €) depasse le seuil !`
-                      : `Prix sous le seuil (${getAlertForIngredient(trackerIngredient.id)?.toFixed(2)} €)`
+                      ? t('ingredients.alertAbove').replace('{price}', trackerIngredient.pricePerUnit.toFixed(2))
+                      : t('ingredients.alertBelow').replace('{price}', (getAlertForIngredient(trackerIngredient.id) ?? 0).toFixed(2))
                     }
                   </span>
                 </p>

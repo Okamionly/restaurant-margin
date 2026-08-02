@@ -10,7 +10,6 @@ Triées par impact décroissant. La feature en cours est retirée par le Feature
 - **Simulateur prime saisonnière** — Calcul des primes d'été/hiver pour l'équipe selon le CA réalisé.
 
 ### OPERATIONS
-- **Chrono préparation par poste** — Timer par station cuisine (chaud, froid, pâtisserie) pour mesurer les temps de sortie des plats.
 
 ### INTELLIGENCE
 - **Analyse saisonnalité ingrédients** — Calendrier visuel des saisons par ingrédient pour optimiser les achats et les menus.
@@ -29,3 +28,4 @@ Triées par impact décroissant. La feature en cours est retirée par le Feature
 - ✅ **Simulateur augmentation prix carte** (2026-05-27) — Page `/simulateur-prix` dans INTELLIGENCE. CA mensuel, ticket moyen, food cost %, hausse → gain marge mensuel/annuel, slider élasticité, point mort clients, tableau comparatif 5/10/15/20%.
 - ✅ **Calculateur coût main d'œuvre** (2026-05-20) — Page `/cout-main-oeuvre` dans BUSINESS. Saisie équipe + CA → ratio masse salariale/CA, jauge colorée, alertes, benchmarks UMIH/GNI par type d'établissement.
 - ✅ **Checklist ouverture/fermeture** (2026-07-25) — Page `/checklist-service` dans OPERATIONS. Deux onglets (Ouverture/Fermeture), tâches pré-remplies, barre de progression, ajout de tâches personnalisées, réinitialisation, persistance localStorage.
+- ✅ **Chrono préparation par poste** (2026-08-02) — Page `/chrono-preparation` dans OPERATIONS. 3 stations (Chaud, Froid, Pâtisserie), start/pause/enregistrer/reset, historique 5 derniers chrono, moyenne, postes personnalisés, persistance localStorage.

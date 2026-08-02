@@ -21,6 +21,7 @@ import SEOHead from '../components/SEOHead';
      /guide-marge/boulangerie-patisserie
      /guide-marge/creperie
      /guide-marge/restaurant-traiteur
+     /guide-marge/dark-kitchen
    ═══════════════════════════════════════════════════════════════ */
 
 interface NicheConfig {
@@ -588,6 +589,53 @@ const NICHES: Record<string, NicheConfig> = {
       {
         q: "RestauMargin convient-il aux traiteurs qui gerent a la fois un espace de vente, des plateaux repas et des evenements ?",
         a: "Oui, RestauMargin est particulierement adapte aux traiteurs multi-activites qui cumulent une boutique de vente directe (plats cuisines, entrees preparees, plateaux fromages), une activite plateaux repas d'entreprise (livraison recurrente, facturation mensuelle) et une activite evenementielle (mariages, cocktails, seminaires). Ces trois segments ont des logiques de marge tres differentes : la boutique affiche un food cost de 35-42% mais une forte valeur perçue sur les produits artisanaux, les plateaux repas 28-35% avec un volume previsible et des couts de logistique a integrer, et l'evenementiel 22-32% avec une tarification premium qui permet les meilleures marges nettes si bien structure. Le dashboard multi-categorie RestauMargin vous montre la marge par segment en temps reel : vous identifiez immediatement lequel est le moteur de votre rentabilite et lequel sous-performe. La fonctionnalite de devis evenementiel avec calcul de marge nette integre remplace les spreadsheets maison souvent sources d'erreurs. Les traiteurs avec une cuisine centrale qui gere plusieurs points de vente ou plusieurs equipes terrain beneficient du plan Business avec gestion multi-sites et suivi des couts de production en cuisine centrale. Le plan Pro a 29€/mois est suffisant pour un traiteur independant avec une activite evenementielle de 20 a 50 prestations par an.",
+      },
+    ],
+  },
+  'dark-kitchen': {
+    slug: 'dark-kitchen',
+    title: 'Calcul de marge dark kitchen et ghost kitchen : guide complet 2026',
+    h1: 'Optimisez la marge de votre dark kitchen',
+    tagline: 'Logiciel de gestion specialise pour dark kitchens et ghost kitchens',
+    description: "Guide et outil pour calculer les marges de votre dark kitchen ou ghost kitchen. Food cost multi-marques, commissions plateformes de livraison, optimisation par canal et rentabilite marque par marque.",
+    heroSubtitle: "Une dark kitchen sans salle ni serveurs : theoriquement la structure de cout ideale. Mais les commissions plateformes a 27-30%, les emballages livraison et la complexite multi-marques peuvent vite devorer vos benefices. RestauMargin vous donne la visibilite pour piloter votre rentabilite marque par marque, canal par canal.",
+    avgMargin: '58-70%',
+    avgFoodCost: '28-36%',
+    avgCoef: '3 a 4',
+    challenges: [
+      "Commissions plateformes 25-30% sur le prix TTC : sans majoration tarifaire strategique, chaque commande peut etre a perte",
+      "Multi-marques depuis une meme cuisine : food costs et marges radicalement differents selon la marque — sans outil, pilotage impossible",
+      "Emballages livraison : boites carton, sacs isothermes, inserts anti-renversement — un cout invisible qui atteint facilement 8-12% du food cost",
+      "Dependance aux algorithmes de plateforme : pas de salle, pas de clients reguliers en direct — la visibilite vient des plateformes",
+      "Pas de boissons avec forte marge pour compenser : tout repose sur le food, chaque centieme de food cost compte",
+    ],
+    stats: [
+      { label: 'Food cost moyen', value: '32%', color: 'teal' },
+      { label: 'Marge brute cible', value: '68%', color: 'emerald' },
+      { label: 'Commission plateforme', value: '27%', color: 'amber' },
+      { label: 'Ticket moyen livraison', value: '18-28€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "J'avais 3 marques depuis ma dark kitchen et je ne savais pas laquelle etait rentable. RestauMargin m'a montre que ma marque bowls perdait de l'argent : le food cost reel avec les emballages non integres etait a 43%. J'ai restructure les fiches techniques et ajuste les prix plateformes. Neuf points de marge recuperes en 6 semaines.",
+      author: 'Yann',
+      role: 'Operateur dark kitchen, Nantes',
+    },
+    faqs: [
+      {
+        q: "Quelle est la marge moyenne d'une dark kitchen ou ghost kitchen ?",
+        a: "La marge brute d'une dark kitchen se situe entre 58% et 70%, ce qui est inferieur a la moyenne de la restauration classique (68-75%) principalement a cause de deux postes qui n'existent pas en salle : les commissions plateformes (25-30% du prix TTC, soit 15-20 points de marge brute reels) et les emballages livraison (boites carton, sacs isothermes, inserts — 2 a 4% du prix de vente). Les dark kitchens qui atteignent 68-70% de marge brute sont celles qui ont mis en place trois leviers : (1) une grille tarifaire plateforme 20-25% superieure aux prix d'un restaurant classique pour absorber les commissions, (2) des fiches techniques incluant le cout de l'emballage dans le food cost de chaque reference, (3) un mix de marques equilibre — une marque burgers ou pizzas a food cost eleve compensee par une marque bowls ou saladerie a food cost plus faible. La marge nette apres loyer cuisine (souvent partage en operateur multi-kitchen), personnel de production et frais fixes oscille entre 5% et 14% selon le volume de commandes et le nombre de marques actives. Les dark kitchens qui gerent 5 marques ou plus depuis une cuisine partagee atteignent les meilleures marges nettes grace a l'amortissement des charges fixes sur un chiffre d'affaires agrege plus eleve.",
+      },
+      {
+        q: "Comment calculer la vraie marge apres commission de plateforme de livraison ?",
+        a: "La marge nette plateforme se calcule en trois etapes. Exemple pour un burger a 14€ TTC vendu sur Uber Eats. Etape 1 — isoler le prix HT : 14€ TTC / 1,10 = 12,73€ HT (TVA 10% sur la nourriture). Etape 2 — deduire la commission : 12,73€ HT x (1 - 0,27) = 9,29€ encaisse reel HT. Etape 3 — soustraire le food cost : si le burger + emballage = 4,20€ de cout matiere, la marge brute reelle est de 9,29 - 4,20 = 5,09€, soit 54,8% — tres inferieure aux 70% theoriques calcules sans la commission. C'est pour cette raison que la grille tarifaire plateforme doit imperativement etre superieure de 20-25% au prix d'un restaurant classique : le meme burger affiche a 17€ TTC donne 11,27€ encaisse, 11,27 - 4,20 = 7,07€ de marge brute, soit 62,7% — nettement plus tenable. RestauMargin calcule automatiquement la marge nette apres commission pour chaque reference sur chaque plateforme (Uber Eats, Deliveroo, Just Eat) avec leur taux de commission respectif. Vous identifiez en un coup d'oeil quelles references sont reellement rentables en livraison et lesquelles doivent etre retirees du menu plateforme ou retarifees.",
+      },
+      {
+        q: "Comment gerer plusieurs marques depuis une meme cuisine de production ?",
+        a: "La gestion multi-marques est le principal defi operationnel d'une dark kitchen. Sans outil dedie, il est impossible de connaitre la rentabilite reelle de chaque marque : les ingredients sont partages, les charges de production sont mutualisees, et le food cost de chaque commande est noye dans un cout global indifferencie. La methode en 4 etapes pour piloter chaque marque independamment : (1) creer une entite independante par marque dans RestauMargin avec ses propres fiches techniques, sa propre grille tarifaire plateforme et ses propres objectifs de food cost — par exemple la marque burgers cible 30% de food cost, la marque tacos 28%, la marque bowls 26%, (2) integrer les emballages dans chaque fiche technique de la marque concernee : une boite burger rigide coutant 0,45€ a un impact tres different sur un burger a 14€ (3,2%) et sur un bowl a 10€ (4,5%), (3) etablir un budget de temps de production par marque si les cuisiniers travaillent sur plusieurs concepts en parallele — le cout main-d'oeuvre imputable a chaque marque est un indicateur cle pour les decisions de scaling ou d'arret, (4) lire le dashboard marque-par-marque chaque semaine pour identifier les tendances : quelle marque monte en volume, laquelle sous-performe. RestauMargin permet de creer autant de marques virtuelles que necessaire dans un seul compte, avec un dashboard consolide et des vues par marque en un clic.",
+      },
+      {
+        q: "RestauMargin convient-il aux dark kitchens en cuisine partagee et aux operateurs multi-sites ?",
+        a: "Oui, RestauMargin est particulierement adapte aux dark kitchens en infrastructure partagee (operateurs type Deliverect, Taster, Kitchen Club, ou cuisine centrale propre) et aux operateurs qui gerent plusieurs emplacements. Pour les cuisines partagees, RestauMargin gere les couts de production partages : vous definissez les charges fixes imputables a chaque marque (loyer prorata, energie, personnel) et le logiciel calcule le point mort de chaque marque independamment — indispensable pour decider quand une nouvelle marque devient autoportante ou quand une marque sous-performante doit etre arretee. Pour les operateurs multi-sites (meme marque dans 3 villes), le plan Business permet de consolider les performances par marque et par site depuis un dashboard unique. La fonctionnalite multi-canal vous permet de comparer la rentabilite de chaque site sur Uber Eats vs Deliveroo vs commandes en direct (click & collect, site propre) et d'optimiser le mix canal pour maximiser la marge nette. Les dark kitchens qui completent leur activite livraison par un service click & collect direct (zero commission) ou une integration caisse pour les commandes phone recuperent 6 a 10 points de marge sur ces ventes. Le plan Pro a 29€/mois couvre une dark kitchen avec jusqu'a 5 marques et 3 utilisateurs ; le plan Business est recommande pour les operateurs avec plus de 5 marques ou plusieurs sites de production.",
       },
     ],
   },

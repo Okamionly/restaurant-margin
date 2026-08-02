@@ -109,6 +109,11 @@ const ROUTES = [
     description: "Guide et outil pour calculer les marges de votre restaurant traiteur. Food cost par convive, gestion devis evenements, marge buffets, plateaux repas et optimisation de la rentabilite par prestation.",
   },
   {
+    path: '/guide-marge/dark-kitchen',
+    title: 'Calcul de marge dark kitchen et ghost kitchen : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre dark kitchen ou ghost kitchen. Food cost multi-marques, commissions plateformes de livraison, optimisation par canal et rentabilite marque par marque.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

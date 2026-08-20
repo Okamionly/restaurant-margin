@@ -1,46 +1,44 @@
 # CFO Analyse - 2026-08-20
 
 ## Métriques financières
-| Indicateur | Valeur | Variation vs 02/08 |
-|------------|--------|--------------------|
+| Indicateur | Valeur | Variation vs hier |
+|------------|--------|-------------------|
 | **MRR** | 29 € (Pro 1 + Biz 0) | 0% (stable) |
 | **ARR** | 348 € | 0% (stable) |
 | **Abonnés payants** | 1 (1 Pro, 0 Business) | +0 |
 | **Trials actifs** | 0 | = 0 |
 | **Utilisateurs total** | 19 | +0 |
 | **Leads réels (7j)** | 0 | = 0 |
-| **Nouveaux users 24h** | 0 | = 0 |
-| **Nouveaux users 48h** | 0 | = 0 |
+| **Nouveaux users 24h** | 0 | — |
+| **Nouveaux users 48h** | 0 | — |
 
-> **Période couverte :** 02/08/2026 → 20/08/2026. MRR figé à 29 € — J+77 de stagnation consécutive. 0 nouveau utilisateur sur 24h et 48h. 0 lead qualifié sur 7j. 0 trial actif. 18 jours écoulés sans aucun signal positif depuis le dernier rapport.
+> **Période couverte :** analyse du 2026-08-20 à ~23h12 UTC. MRR figé à 29 € — aucun signal de croissance. 0 nouveau utilisateur sur 24h/48h. 0 lead qualifié sur 7j. 0 trial actif. 1 client unique = 100% du MRR.
 
-## Variation MRR
-- 02/08 → 20/08 : 29 € → 29 € (**0% — stable**)
-- J+77 consécutifs sans variation MRR
-- 1 client unique = 100% du MRR — concentration maximale, risque churn total
-- 0 lead qualifié sur 7j — acquisition totalement à l'arrêt
+## Variation MRR (chute > 20% ?)
+- MRR hier : 29 € → MRR aujourd'hui : 29 € = **0% — aucune chute détectée**
+- Seuil déclenchement alerte urgente : −20% (non atteint)
 
-## 3 Alertes
+## 3 Alertes actives
 
 ### 🔴 ALERTE 1 — Phase amorçage critique (MRR 29 € < seuil 100 €)
-MRR : 29 €. Écart au seuil minimal : −71 €. J+77 de stagnation absolue. 1 seul abonné Pro = 100% du revenu. Risque churn total permanent : une résiliation = MRR → 0 €. Aucune conversion depuis l'abonné initial. Pipeline vide.
+MRR : 29 €. Écart au seuil minimal : −71 €. Stagnation absolue. 1 seul abonné Pro = 100% du revenu. Risque churn total permanent : une résiliation = MRR → 0 €. Pipeline vide, aucune conversion récente.
 
 ### 🔴 ALERTE 2 — Leads = 0 sur 7 jours (Investiguer acquisition)
-0 lead qualifié sur 7j. 0 nouveau utilisateur sur 24h et 48h. Canal d'acquisition en arrêt complet malgré les outils SEO publics (calculateur food cost, générateur QR menu). Août — mois de reprise post-vacances — sans aucune activité d'acquisition.
+0 lead qualifié sur 7j. 0 nouveau utilisateur sur 24h et 48h. Canal d'acquisition en arrêt complet. Les outils SEO publics (calculateur food cost, générateur QR menu) ne génèrent aucun trafic converti. Rentrée septembre approche sans pipeline.
 
-### 🟡 ALERTE 3 — Pipeline conversion vide (0 trials, 0 leads)
-19 utilisateurs total, 1 payant, 0 trial actif, 0 lead qualifié 7j. Taux de conversion global : 5,3% (1/19). Les 18 comptes basic dormants restent le seul levier de conversion sans coût d'acquisition. Aucun mouvement observé depuis J+77.
+### 🟡 ALERTE 3 — Ratio trial/payants sain mais pipeline vide
+0 trials actifs (ratio 0:1 — seuil alerte : >5x). Le pipeline est vide en amont : sans trials, aucune conversion possible. Les 18 comptes basic dormants restent le seul levier de conversion sans coût.
 
 ## 3 Recommandations chiffrées (priorité maximale)
 
-### 1. Campagne email fin août — Délai critique : avant le 25/08
-Août se termine dans 11 jours. Les restaurateurs relancent leur activité post-vacances début septembre. Envoyer une séquence email aux 18 comptes basic avec objet "Préparez la rentrée : maîtrisez vos marges avec RestauMargin". CTA upgrade Pro 29 €/mois. Objectif : 2 conversions avant le 01/09 = MRR 87 € (+200%). Coût : 0 €. Délai résultat : J+7.
+### 1. Campagne email rentrée — Délai : avant le 25/08 (J+5)
+Envoyer une séquence email aux 18 comptes basic : objet "Rentrée restaurant : maîtrisez vos marges avec RestauMargin". CTA upgrade Pro 29 €/mois. Objectif : 2 conversions = MRR 87 € (+200%). Coût : 0 €. Délai résultat : J+7.
 
-### 2. SEO rentrée : cibler "food cost restaurant septembre 2026" — Cette semaine
-Créer un article ciblant les requêtes de rentrée ("coût matière restaurant", "marges restauration rentrée 2026"). Indexer les pages publiques sur Google Search Console. Objectif : 1 inscription organique → 1 conversion Pro J+14 = MRR 58 € (+100%). Coût : 0 €. Temps : 3h.
+### 2. SEO rentrée — Cette semaine
+Créer un article ciblant "food cost restaurant rentrée 2026", "coût matière restaurant septembre". Soumettre dans Google Search Console. Objectif : 1 inscription organique → conversion Pro = MRR 58 € (+100%). Coût : 0 €. Temps : 3h.
 
-### 3. Prospection directe restaurateurs LinkedIn — Semaine du 25/08
-18 jours sans lead = signal d'urgence. Prospection directe sur LinkedIn ciblant gérants de restaurants (Paris, Lyon, Marseille) avec pitch 1 message : "Calculez votre food cost en 2 minutes, économisez des milliers d'euros par mois." 1 conversion Business = MRR 128 € (+341%). Objectif : 3 contacts/jour pendant 5 jours. Coût : 0 €. Temps : 1h/jour.
+### 3. Prospection directe LinkedIn — Semaine du 25/08
+Cibler gérants de restaurants (Paris, Lyon, Marseille). Pitch 1 message : "Calculez votre food cost en 2 minutes." 1 conversion Business = MRR 128 € (+341%). Objectif : 3 contacts/jour × 5 jours. Coût : 0 €. Temps : 1h/jour.
 
 ## Projection 30 jours (objectif 20/09/2026)
 | Scénario | MRR | ARR | Actions requises |
@@ -52,7 +50,7 @@ Créer un article ciblant les requêtes de rentrée ("coût matière restaurant"
 | **Objectif seuil MRR 100 €** | **100 €** | **1 200 €** | **≥ 3 Pro actifs total** |
 
 ## Statut alerte urgente
-MRR variation vs 02/08 : 29 € → 29 € = **0% (seuil déclenchement : −20%). Aucun paiement échoué détecté. Aucun email urgent envoyé.**
+MRR variation : 29 € → 29 € = **0% — seuil −20% non atteint. Aucun paiement échoué détecté. Aucun email urgent envoyé.**
 
 ---
-*Généré automatiquement le 2026-08-20 à 17h00 Paris — CFO RestauMargin.*
+*Généré automatiquement le 2026-08-20 — CFO RestauMargin.*

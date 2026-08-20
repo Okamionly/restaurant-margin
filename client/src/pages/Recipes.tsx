@@ -2377,13 +2377,13 @@ export default function Recipes() {
         setAiSuggestions(data.ingredients);
         setAiSuggestionsChecked(data.ingredients.map(() => true));
         setShowAiSuggestions(true);
-        showToast(`${data.ingredients.length} ingredients suggeres par l'IA`, 'success');
+        showToast(t('recipes.aiSuggestSuccess').replace('{count}', String(data.ingredients.length)), 'success');
       } else {
-        showToast('L\'IA n\'a pas pu generer de suggestions. Verifiez que le nom de recette est clair (ex: "Risotto aux cepes").', 'info');
+        showToast(t('recipes.aiNoSuggestions'), 'info');
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Erreur connexion serveur';
-      showToast(`Erreur IA: ${msg}`, 'error');
+      showToast(t('recipes.aiError').replace('{msg}', msg), 'error');
     } finally {
       setAiSuggestionsLoading(false);
     }
@@ -2410,7 +2410,7 @@ export default function Recipes() {
     setFormIngredients([...formIngredients, ...newLines]);
     setShowAiSuggestions(false);
     setAiSuggestions([]);
-    showToast(`${selected.length} ingredient(s) ajoute(s)`, 'success');
+    showToast(t('recipes.ingredientsAdded').replace('{count}', String(selected.length)), 'success');
   }
 
   function addIngredientLine() {
@@ -4430,12 +4430,12 @@ export default function Recipes() {
                           });
                         }
                       }
-                      showToast(`${toUpdate.length} prix mis a jour`, 'success');
+                      showToast(t('recipes.pricesUpdated').replace('{count}', String(toUpdate.length)), 'success');
                       setShowBatchFixer(false);
                       setSelectedRecipeIds(new Set());
                       loadData();
                     } catch {
-                      showToast('Erreur lors de la mise a jour des prix', 'error');
+                      showToast(t('recipes.errorUpdatingPrices'), 'error');
                     }
                   }}
                   className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold rounded-lg transition-colors"

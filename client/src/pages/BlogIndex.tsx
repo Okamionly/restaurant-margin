@@ -366,6 +366,14 @@ const posts: BlogPost[] = [
     readTime: '10 min',
     date: '2026-05-26',
   },
+  {
+    slug: 'google-my-business-restaurant',
+    title: 'Google My Business pour restaurant : guide complet 2026',
+    excerpt: 'Créer et optimiser sa fiche Google My Business : Pack Local, avis clients, photos, posts et attributs 2026. La méthode complète pour dominer les résultats locaux.',
+    category: 'Marketing',
+    readTime: '8 min',
+    date: '2026-08-21',
+  },
 ];
 
 const categoryColors: Record<string, string> = {

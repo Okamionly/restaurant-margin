@@ -521,6 +521,12 @@ const ROUTES = [
     description: "Decouvrez les plats les plus rentables d'un restaurant en 2026 : pates, pizza, salade, soupe, dessert maison. Top 15 avec marge brute, food cost et coefficient. Comment construire une carte ultra-rentable.",
     type: 'article',
   },
+  {
+    path: '/blog/google-my-business-restaurant',
+    title: 'Google My Business pour restaurant : guide complet 2026',
+    description: "Google My Business restaurant 2026 : creer et optimiser sa fiche, gerer les avis, photos, posts et attributs pour dominer le Pack Local et remplir ses tables.",
+    type: 'article',
+  },
   // === Pages transactionnelles SEO (Wave 3+5+6+7) ===
   {
     path: '/alternative-zenchef',

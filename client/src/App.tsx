@@ -227,6 +227,7 @@ const BlogPsychologiePrix = lazyRetry(() => import('./pages/BlogPsychologiePrix'
 const BlogOuvrirTerrasseRestaurant = lazyRetry(() => import('./pages/BlogOuvrirTerrasseRestaurant'));
 const BlogNegocierFournisseurs = lazyRetry(() => import('./pages/BlogNegocierFournisseurs'));
 const BlogRepriseRestaurant = lazyRetry(() => import('./pages/BlogRepriseRestaurant'));
+const BlogGoogleMyBusiness = lazyRetry(() => import('./pages/BlogGoogleMyBusiness'));
 const Careers = lazyRetry(() => import('./pages/Careers'));
 const HelpPage = lazyRetry(() => import('./pages/Help'));
 const BreakevenCalculator = lazyRetry(() => import('./pages/BreakevenCalculator'));
@@ -1323,6 +1324,7 @@ function App() {
           <Route path="/blog/ouvrir-terrasse-restaurant-demarches" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogOuvrirTerrasseRestaurant /></Suspense>} />
           <Route path="/blog/negocier-fournisseurs-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogNegocierFournisseurs /></Suspense>} />
           <Route path="/blog/reprise-restaurant-guide-acheteur" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogRepriseRestaurant /></Suspense>} />
+          <Route path="/blog/google-my-business-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogGoogleMyBusiness /></Suspense>} />
           {/* SEO long-tail 2026-05-26 : Glossaire restauration (60+ termes : food cost, marge, prime cost, fiche technique, HACCP, GMP, RevPASH). */}
           <Route path="/glossaire-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><GlossaireRestauration /></Suspense>} />
           {/* Pages comparatives (alternatives) */}

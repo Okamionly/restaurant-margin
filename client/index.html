@@ -35,6 +35,22 @@
     <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
     <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" /></noscript>
+    <!--
+      Perf 2026-08-22 : le titre H1 de Landing/Pricing/Blog utilise tous
+      `font-extrabold` (Tailwind 800) sur Satoshi, qui n'a que les graisses
+      400/500/700/900 -> le navigateur resout vers 900 (CSS Fonts Module 4,
+      matching ascendant). Ce fichier woff2 EST donc l'element LCP (texte)
+      de nos 3 pages SEO cles, mais son URL n'est decouverte qu'APRES coup :
+      HTML -> CSS preload -> fetch CSS -> parse @font-face -> fetch woff2.
+      Le preload direct ci-dessous court-circuite ce round-trip et lance le
+      telechargement du woff2 en parallele du CSS, des le tout debut du head.
+      Fragile par nature : Fontshare sert ce fichier via une URL a hash de
+      contenu qui peut etre regeneree si la police est republiee sur leur CDN.
+      Si le hash devient perime, ce <link> est simplement ignore (aucune
+      regression, juste un preload gaspille) — a revalider si Satoshi 900
+      est un jour mis a jour cote Fontshare.
+    -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.fontshare.com/wf/NHPGVFYUXYXE33DZ75OIT4JFGHITX5PE/PSUTMASCDJTVPERDYJZPN23BVUFUCQIF/J64QX5IPOHK56I2KYUNBQ5M2XWZEYKYX.woff2" />
 
     <!--
       DNS prefetch for external services.

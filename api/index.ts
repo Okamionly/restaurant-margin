@@ -36,9 +36,26 @@ const app = express();
 app.disable('x-powered-by');
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
 
+// Cache partagé pour le health check — déclaré ici pour être accessible au warm-up.
+const dbHealthCache: { status: string; cachedAt: number } = { status: 'ok', cachedAt: 0 };
+const DB_HEALTH_TTL_MS = 30_000;
+
 // Eager DB warm-up: pre-connect on cold start so first real request doesn't pay
 // the TCP + TLS + auth handshake cost (was causing ~800ms cold-start latency).
-prisma.$connect().catch((err) => console.error('[DB WARMUP]', err));
+// On prime aussi dbHealthCache avec le résultat du premier SELECT 1 pour que la
+// première probe /api/health réponde en <1 ms au lieu de ~400 ms (Supabase round-trip).
+prisma.$connect()
+  .then(() => prisma.$queryRaw`SELECT 1`)
+  .then(() => {
+    dbHealthCache.status = 'ok';
+    dbHealthCache.cachedAt = Date.now();
+    console.log('[DB WARMUP] connexion établie + cache health primé');
+  })
+  .catch((err) => {
+    dbHealthCache.status = 'error';
+    dbHealthCache.cachedAt = Date.now();
+    console.error('[DB WARMUP]', err);
+  });
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) throw new Error('JWT_SECRET env variable required');
@@ -491,10 +508,6 @@ app.use('/api/auth/forgot-password', (req, _res, next) => {
 // without leaking infrastructure details (uptime, response time, service map).
 // Detailed payload (uptime, responseTime, services) is only returned when an admin
 // JWT is presented via Authorization header.
-
-// Cache le résultat du check DB 30s pour éviter le cold start Supabase à chaque probe.
-const dbHealthCache: { status: string; cachedAt: number } = { status: 'ok', cachedAt: 0 };
-const DB_HEALTH_TTL_MS = 30_000;
 
 app.get('/api/health', async (req: any, res) => {
   const start = Date.now();

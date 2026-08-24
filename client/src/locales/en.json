@@ -2629,6 +2629,19 @@
     "addedTo": "added to",
     "movedTo": "moved to"
   },
+  "seminaires": {
+    "errorLoading": "Error loading seminars",
+    "statusUpdated": "Status updated",
+    "errorUpdatingStatus": "Error updating status",
+    "errorRequiredFields": "Please fill in the client name and date",
+    "eventCreated": "Event created successfully",
+    "errorCreating": "Error creating event",
+    "devisSent": "Quote sent by email",
+    "actionDone": "Action performed",
+    "eventDeleted": "Event deleted",
+    "errorDeleting": "Error deleting",
+    "printingBeo": "Printing BEO..."
+  },
   "alertsBell": {
     "title": "Price alerts",
     "noAlerts": "No price alerts",

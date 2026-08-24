@@ -451,5 +451,18 @@
     "shoppingListExported": "Einkaufsliste exportiert",
     "addedTo": "hinzugefügt am",
     "movedTo": "verschoben nach"
+  },
+  "seminaires": {
+    "errorLoading": "Fehler beim Laden der Seminare",
+    "statusUpdated": "Status aktualisiert",
+    "errorUpdatingStatus": "Fehler beim Aktualisieren des Status",
+    "errorRequiredFields": "Bitte Kundenname und Datum ausfüllen",
+    "eventCreated": "Veranstaltung erfolgreich erstellt",
+    "errorCreating": "Fehler beim Erstellen der Veranstaltung",
+    "devisSent": "Angebot per E-Mail gesendet",
+    "actionDone": "Aktion ausgeführt",
+    "eventDeleted": "Veranstaltung gelöscht",
+    "errorDeleting": "Fehler beim Löschen",
+    "printingBeo": "BEO wird gedruckt..."
   }
 }

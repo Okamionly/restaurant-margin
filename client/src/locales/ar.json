@@ -441,5 +441,18 @@
     "shoppingListExported": "تم تصدير قائمة التسوق",
     "addedTo": "أُضيف إلى",
     "movedTo": "نُقل إلى"
+  },
+  "seminaires": {
+    "errorLoading": "خطأ في تحميل الفعاليات",
+    "statusUpdated": "تم تحديث الحالة",
+    "errorUpdatingStatus": "خطأ في تحديث الحالة",
+    "errorRequiredFields": "يرجى ملء اسم العميل والتاريخ",
+    "eventCreated": "تم إنشاء الحدث بنجاح",
+    "errorCreating": "خطأ في إنشاء الحدث",
+    "devisSent": "تم إرسال العرض عبر البريد الإلكتروني",
+    "actionDone": "تم تنفيذ الإجراء",
+    "eventDeleted": "تم حذف الحدث",
+    "errorDeleting": "خطأ في الحذف",
+    "printingBeo": "جارٍ طباعة BEO..."
   }
 }

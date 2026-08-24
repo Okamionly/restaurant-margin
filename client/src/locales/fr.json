@@ -2629,6 +2629,19 @@
     "addedTo": "ajouté au",
     "movedTo": "déplacé au"
   },
+  "seminaires": {
+    "errorLoading": "Erreur chargement séminaires",
+    "statusUpdated": "Statut mis à jour",
+    "errorUpdatingStatus": "Erreur mise à jour statut",
+    "errorRequiredFields": "Veuillez remplir le nom du client et la date",
+    "eventCreated": "Événement créé avec succès",
+    "errorCreating": "Erreur création événement",
+    "devisSent": "Devis envoyé par email",
+    "actionDone": "Action effectuée",
+    "eventDeleted": "Événement supprimé",
+    "errorDeleting": "Erreur suppression",
+    "printingBeo": "Impression du BEO en cours..."
+  },
   "alertsBell": {
     "title": "Alertes prix",
     "noAlerts": "Aucune alerte prix",

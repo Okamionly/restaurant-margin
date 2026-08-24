@@ -199,7 +199,7 @@ export default function Seminaires() {
       const data = await res.json();
       setEvents(data.map(mapFromApi));
     } catch {
-      showToast('Erreur chargement séminaires', 'error');
+      showToast(t('seminaires.errorLoading'), 'error');
     } finally {
       setLoading(false);
     }
@@ -324,16 +324,16 @@ export default function Seminaires() {
         body: JSON.stringify({ status: STATUS_TO_BACKEND[newStatus] }),
       });
       setEvents(prev => prev.map(e => e.id === id ? { ...e, status: newStatus } : e));
-      showToast('Statut mis à jour', 'success');
+      showToast(t('seminaires.statusUpdated'), 'success');
     } catch {
-      showToast('Erreur mise à jour statut', 'error');
+      showToast(t('seminaires.errorUpdatingStatus'), 'error');
     }
   }
 
   // ── Create event ──
   async function handleCreate() {
     if (!form.clientNom || !form.date) {
-      showToast('Veuillez remplir le nom du client et la date', 'error');
+      showToast(t('seminaires.errorRequiredFields'), 'error');
       return;
     }
     const total = form.prixParPersonne * form.nbConvivesMax;
@@ -363,9 +363,9 @@ export default function Seminaires() {
       setEvents(prev => [mapFromApi(created), ...prev]);
       setForm(emptyForm);
       setShowNewModal(false);
-      showToast('Événement créé avec succès', 'success');
+      showToast(t('seminaires.eventCreated'), 'success');
     } catch {
-      showToast('Erreur création événement', 'error');
+      showToast(t('seminaires.errorCreating'), 'error');
     }
   }
 
@@ -401,9 +401,9 @@ export default function Seminaires() {
         body: JSON.stringify({ status: STATUS_TO_BACKEND[newStatus] }),
       });
       setEvents(prev => prev.map(e => e.id === event.id ? { ...e, status: newStatus } : e));
-      showToast(action === 'envoyer_devis' ? 'Devis envoyé par email' : 'Action effectuée', 'success');
+      showToast(action === 'envoyer_devis' ? t('seminaires.devisSent') : t('seminaires.actionDone'), 'success');
     } catch {
-      showToast('Erreur mise à jour statut', 'error');
+      showToast(t('seminaires.errorUpdatingStatus'), 'error');
     }
     setShowDetailModal(false);
     setSelectedEvent(null);
@@ -416,9 +416,9 @@ export default function Seminaires() {
       setEvents(prev => prev.filter(e => e.id !== id));
       setShowDetailModal(false);
       setSelectedEvent(null);
-      showToast('Événement supprimé', 'success');
+      showToast(t('seminaires.eventDeleted'), 'success');
     } catch {
-      showToast('Erreur suppression', 'error');
+      showToast(t('seminaires.errorDeleting'), 'error');
     }
   }
 
@@ -1442,7 +1442,7 @@ export default function Seminaires() {
                   {/* BEO Print */}
                   <button
                     onClick={() => {
-                      showToast('Impression du BEO en cours...', 'info');
+                      showToast(t('seminaires.printingBeo'), 'info');
                       setTimeout(() => window.print(), 300);
                     }}
                     className="flex items-center gap-2 px-4 py-2 bg-mono-950 dark:bg-[#171717] hover:bg-mono-950 dark:hover:bg-[#171717] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-mono-500 rounded-lg text-sm font-semibold transition-colors ml-auto"

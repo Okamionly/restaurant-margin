@@ -511,19 +511,20 @@ app.use('/api/auth/forgot-password', (req, _res, next) => {
 
 app.get('/api/health', async (req: any, res) => {
   const start = Date.now();
-  let dbStatus: string;
   const now = Date.now();
-  if (now - dbHealthCache.cachedAt < DB_HEALTH_TTL_MS) {
-    dbStatus = dbHealthCache.status;
-  } else {
-    try {
-      await prisma.$queryRaw`SELECT 1`;
-      dbStatus = 'ok';
-    } catch {
-      dbStatus = 'error';
-    }
-    dbHealthCache.status = dbStatus;
-    dbHealthCache.cachedAt = now;
+  const cacheExpired = now - dbHealthCache.cachedAt >= DB_HEALTH_TTL_MS;
+  // Stale-while-revalidate: always serve cached value immediately (<1ms),
+  // then kick off a background SELECT 1 when the cache window expires.
+  // This eliminates the ~1s Supabase round-trip that blocked the response.
+  const dbStatus = dbHealthCache.status || 'ok';
+  if (cacheExpired) {
+    (prisma.$queryRaw`SELECT 1` as Promise<unknown>).then(() => {
+      dbHealthCache.status = 'ok';
+      dbHealthCache.cachedAt = Date.now();
+    }).catch(() => {
+      dbHealthCache.status = 'error';
+      dbHealthCache.cachedAt = Date.now();
+    });
   }
   // Shallow = presence de la cle. Deep (?deep=1) = vrai appel modele 1 token, pour
   // qu'un modele retire ou une cle revoquee soit detecte tout de suite (les deux

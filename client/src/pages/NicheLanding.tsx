@@ -22,6 +22,7 @@ import SEOHead from '../components/SEOHead';
      /guide-marge/creperie
      /guide-marge/restaurant-traiteur
      /guide-marge/dark-kitchen
+     /guide-marge/restaurant-vegan
    ═══════════════════════════════════════════════════════════════ */
 
 interface NicheConfig {
@@ -589,6 +590,53 @@ const NICHES: Record<string, NicheConfig> = {
       {
         q: "RestauMargin convient-il aux traiteurs qui gerent a la fois un espace de vente, des plateaux repas et des evenements ?",
         a: "Oui, RestauMargin est particulierement adapte aux traiteurs multi-activites qui cumulent une boutique de vente directe (plats cuisines, entrees preparees, plateaux fromages), une activite plateaux repas d'entreprise (livraison recurrente, facturation mensuelle) et une activite evenementielle (mariages, cocktails, seminaires). Ces trois segments ont des logiques de marge tres differentes : la boutique affiche un food cost de 35-42% mais une forte valeur perçue sur les produits artisanaux, les plateaux repas 28-35% avec un volume previsible et des couts de logistique a integrer, et l'evenementiel 22-32% avec une tarification premium qui permet les meilleures marges nettes si bien structure. Le dashboard multi-categorie RestauMargin vous montre la marge par segment en temps reel : vous identifiez immediatement lequel est le moteur de votre rentabilite et lequel sous-performe. La fonctionnalite de devis evenementiel avec calcul de marge nette integre remplace les spreadsheets maison souvent sources d'erreurs. Les traiteurs avec une cuisine centrale qui gere plusieurs points de vente ou plusieurs equipes terrain beneficient du plan Business avec gestion multi-sites et suivi des couts de production en cuisine centrale. Le plan Pro a 29€/mois est suffisant pour un traiteur independant avec une activite evenementielle de 20 a 50 prestations par an.",
+      },
+    ],
+  },
+  'restaurant-vegan': {
+    slug: 'restaurant-vegan',
+    title: 'Calcul de marge restaurant vegan : guide complet 2026',
+    h1: 'Optimisez la marge de votre restaurant vegan',
+    tagline: 'Logiciel de gestion specialise pour restaurants vegans et vegetariens',
+    description: "Guide et outil pour calculer les marges de votre restaurant vegan ou vegetarien. Food cost ingredients vegetaux, proteines alternatives, gestion bio et optimisation de la rentabilite par plat.",
+    heroSubtitle: "Un bowl vegan a 2,80€ de matiere vendu 16€ : theoriquement 82% de marge. Mais sans fiche technique precise, les fromages de cajou, le tempeh bio et les superaliments font exploser le food cost. RestauMargin vous donne la maitrise totale de votre marge plat par plat.",
+    avgMargin: '68-76%',
+    avgFoodCost: '24-32%',
+    avgCoef: '3,5 a 4,5',
+    challenges: [
+      "Ingredients alternatifs premium (fromage cajou maison, tempeh artisanal, seitan) : food cost 2 a 3 fois superieur aux produits classiques equivalents",
+      "Saisonnalite forte des legumes frais : le food cost d'un meme plat peut varier de 8 a 15 points entre l'ete et l'hiver selon le sourcing local",
+      "Perception prix client : les convives vegan associent souvent vegetal a moins cher et resistent a des prix refletant le cout reel des ingredients premium et du travail de transformation",
+      "Labels et certifications (bio, vegan certifie, sans gluten) : surcoût matiere de 20-40% sur les references labelisees qui tire le food cost global vers le haut",
+      "Carte saisonniere qui change tous les 2-3 mois : nombreuses fiches techniques a recreer en permanence sans systeme de gestion dedie",
+    ],
+    stats: [
+      { label: 'Food cost moyen', value: '28%', color: 'teal' },
+      { label: 'Marge brute cible', value: '72%', color: 'emerald' },
+      { label: 'Coefficient type', value: '3,8x', color: 'amber' },
+      { label: 'Ticket moyen', value: '15-25€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "Je pensais que mon bowl signature au tempeh etait mon plat phare. RestauMargin m'a montre que son food cost atteignait 46% a cause du tempeh bio artisanal et du fromage de cajou maison. En reequilibrant les grammages et en ajustant le prix de vente, j'ai recupere 14 points de marge en 4 semaines sans toucher a la qualite.",
+      author: 'Sarah',
+      role: 'Fondatrice de restaurant vegan, Lyon',
+    },
+    faqs: [
+      {
+        q: "Quelle est la marge moyenne d'un restaurant vegan ?",
+        a: "La marge brute d'un restaurant vegan se situe entre 68% et 76%, ce qui est comparable ou superieur a la restauration classique quand les fiches techniques sont bien construites. Contrairement a une idee recue, les restaurants vegans ne sont pas systematiquement plus rentables parce qu'ils n'utilisent pas de viande : les proteines vegetales premium (tempeh bio 18-22€/kg, seitan artisanal 14-18€/kg, cashew pour les fromages 12-16€/kg) ont un cout matiere equivalent voire superieur a la viande de boeuf standard. Les restaurants vegans qui atteignent 74-76% de marge brute sont ceux qui equilibrent leur carte entre des preparations simples a fort coefficient (bowls legumes rotis, soupes, wraps) et des plats elabores qui justifient un positionnement premium. La marge nette apres charges (loyer, personnel, energie) oscille entre 6% et 13% selon l'emplacement et le positionnement — les restaurants vegans en centre-ville avec une clientele CSP+ atteignent 10-13% grace a un ticket moyen eleve (20-28€) sur une carte courte bien maitrisee.",
+      },
+      {
+        q: "Comment calculer le food cost d'un bowl vegan, d'un burger vegan ou d'un plat proteines vegetales ?",
+        a: "Pour un bowl vegan complet (base + proteines + toppings) : riz complet ou quinoa 150g (0,45€), tempeh marine 100g (1,90€ a 19€/kg bio), epinards et legumes rotis 200g (0,60€), sauce tahini 30g (0,24€), graines et superaliments (0,35€), sauce vinaigrette maison (0,10€) = 3,64€ de cout matiere. Vendu 16€, le food cost est de 22,8% — excellent. Pour un burger vegan : steak vegetal maison (champignons + lentilles + flocons avoine) 120g (0,85€), bun complet (0,35€), fromage cajou maison 40g (0,52€), legumes et sauce (0,40€) = 2,12€. Vendu 14€, food cost de 15,1%. En revanche, un plat avec proteines nobles veganes : escalope de seitan artisanal 180g (3,24€ a 18€/kg) + sauce forestiere et legumes (1,20€) = 4,44€. Vendu 17€, food cost de 26,1% — correct si c'est le plat signature. RestauMargin automatise ce calcul : renseignez une fois vos prix fournisseurs tempeh, seitan, fromages vegans et superaliments, et toutes vos fiches techniques se mettent a jour en temps reel quand le prix d'un ingredient change.",
+      },
+      {
+        q: "Comment fixer des prix de vente refletant la vraie valeur d'une cuisine vegan de qualite ?",
+        a: "La tarification est le principal defi marketing d'un restaurant vegan : la cuisine vegetale de qualite coute cher a produire (ingredients bio, transformation elaboree, main-d'oeuvre qualifiee) mais une partie des clients associe encore vegetal a bon marche. La methode en 4 etapes pour sortir de ce piege : (1) calculer systematiquement le food cost reel de chaque plat avec fiche technique precise — RestauMargin le fait en 2 minutes — pour identifier quels prix de vente garantissent votre objectif de food cost (max 30%), (2) mettre en avant la valeur perçue plutot que l'absence de viande : ingredients bios certifies, sourcing local et saison, recettes elaborees maison (fromage de cajou affine, seitan maison, pain au levain) qui justifient un positionnement premium, (3) structurer la carte avec une pyramide de prix : quelques entrees et options rapides accessibles (12-15€) pour ne pas bloquer l'entree, des plats signatures a 18-24€ qui portent votre identite et votre marge, des formules midi a prix engage (14-16€) qui remplissent en semaine avec un food cost maitrise, (4) ne jamais casser les prix sur les references premium — une reduction sur un burger vegan a 16€ qui coute 4€ de matiere reste acceptable ; sur un plat seitan truffes a 22€ qui coute 7€, une promotion efface toute la marge. RestauMargin vous permet de simuler l'impact d'une promotion sur votre marge avant de la lancer.",
+      },
+      {
+        q: "RestauMargin convient-il aux restaurants vegans avec carte saisonniere, brunch du dimanche et formules traiteur ?",
+        a: "Oui, RestauMargin est particulierement adapte aux restaurants vegans qui changent de carte plusieurs fois par an et qui ont des activites multiples. La cuisine vegan contemporaine est souvent saisonniere par conviction : une carte d'ete aux courgettes, tomates et basilic n'a rien a voir avec une carte d'hiver aux courges, choux et legumes racines. Chaque changement de carte genere une nouvelle serie de fiches techniques a construire. RestauMargin vous permet de dupliquer les fiches existantes, d'en modifier uniquement les ingredients saisonniers, et de recalculer instantanement le food cost avec les nouveaux prix fournisseurs — ce qui prend 2 a 3 heures de travail est reduit a 20 minutes. Pour les brunchs du dimanche (formule a prix fixe avec de nombreuses preparations differentes), la fonctionnalite de fiche technique composite calcule le cout reel par convive en integrant tous les composants du brunch. Pour l'activite traiteur ou les boxs repas, RestauMargin gere les devis avec simulation de marge nette et suivi des pertes post-evenement. Le plan Pro a 29€/mois couvre un restaurant vegan avec jusqu'a 100 references et une carte qui change chaque saison ; le plan Business est recommande pour les restaurants avec plusieurs points de vente ou un espace epicerie vegan de produits transformes.",
       },
     ],
   },

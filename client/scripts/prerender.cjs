@@ -114,6 +114,11 @@ const ROUTES = [
     description: "Guide et outil pour calculer les marges de votre dark kitchen ou ghost kitchen. Food cost multi-marques, commissions plateformes de livraison, optimisation par canal et rentabilite marque par marque.",
   },
   {
+    path: '/guide-marge/restaurant-vegan',
+    title: 'Calcul de marge restaurant vegan : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre restaurant vegan ou vegetarien. Food cost ingredients vegetaux, proteines alternatives, gestion bio et optimisation de la rentabilite par plat.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

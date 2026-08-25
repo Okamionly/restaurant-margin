@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, BookOpen, Star, TrendingUp, Puzzle, AlertCircle, Layout, ArrowRight } from 'lucide-react';
+import { ChefHat, BookOpen, Star, TrendingUp, Puzzle, AlertCircle, Layout, ArrowRight, Calculator } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
 import BlogAuthor from '../components/BlogAuthor';
@@ -49,6 +49,14 @@ export default function BlogMenuEngineering() {
     {
       question: "En combien de temps voit-on les résultats du menu engineering ?",
       answer: "Les premiers effets sur la marge apparaissent dès le mois suivant la refonte de la carte (mise en avant des Stars, suppression des Chiens). Un cycle complet d'optimisation — reformulation, tests de prix, repositionnement — produit ses pleins résultats sur 3 mois."
+    },
+    {
+      question: "Quelle différence entre un tableur Excel et un logiciel dédié pour le menu engineering ?",
+      answer: "Un tableur exige une saisie manuelle des ventes et des coûts matières à chaque cycle — fastidieux au-delà de 20 plats et vite obsolète si un prix fournisseur bouge. Un logiciel connecté à la caisse et aux fiches techniques recalcule la matrice en continu, sans ressaisie, et alerte dès qu'un plat change de quadrant."
+    },
+    {
+      question: "À partir de combien de plats faut-il automatiser le menu engineering ?",
+      answer: "Au-delà de 15 à 20 références, le calcul manuel devient chronophage (plusieurs heures par cycle) et sujet à erreur. En dessous, un tableur reste gérable. Le vrai déclencheur n'est pas seulement le nombre de plats : c'est la fréquence à laquelle vos coûts matières varient — plus ils bougent, plus l'automatisation devient rentable."
     }
   ]);
   const breadcrumbSchema = buildBreadcrumbSchema([
@@ -74,7 +82,7 @@ export default function BlogMenuEngineering() {
             "@type": "Article",
             "headline": "Menu engineering : la méthode Boston Matrix pour optimiser votre carte",
             "datePublished": "2026-04-27",
-            "dateModified": "2026-07-10",
+            "dateModified": "2026-08-25",
             "author": {
               "@type": "Organization",
               "name": "La rédaction RestauMargin",
@@ -117,7 +125,7 @@ export default function BlogMenuEngineering() {
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
-        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-07-10" readTime="16 min" variant="header" />
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-08-25" readTime="16 min" variant="header" />
 
         <p className="text-[#374151] text-lg leading-relaxed mb-8">
           <strong>Sur une carte typique de 25 plats, seuls 4 à 6 plats génèrent 80 % de la marge brute totale.</strong> Le menu engineering, formalisé par Donald Smith et Michael Kasavana à l'Université du Michigan en 1982, est la science qui permet d'identifier ces dynamiques et de transformer chaque plat en levier de rentabilité.
@@ -136,6 +144,7 @@ export default function BlogMenuEngineering() {
             <li><a href="#cas-concret" className="hover:text-teal-600 transition-colors">7. Cas concret : transformer un Puzzle en Star</a></li>
             <li><a href="#saisonnalite" className="hover:text-teal-600 transition-colors">8. Saisonnalité : adapter sa matrice</a></li>
             <li><a href="#erreurs" className="hover:text-teal-600 transition-colors">9. Les 6 erreurs à éviter</a></li>
+            <li><a href="#automatiser" className="hover:text-teal-600 transition-colors">10. Excel, caisse ou logiciel : quand automatiser</a></li>
           </ol>
         </nav>
 
@@ -412,6 +421,42 @@ export default function BlogMenuEngineering() {
           </ol>
         </section>
 
+        {/* Section 10 */}
+        <section id="automatiser" className="mb-12">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
+              <Calculator className="w-5 h-5 text-indigo-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-mono-100">10. Excel, export caisse ou logiciel dédié : quand automatiser</h2>
+          </div>
+          <p className="text-[#374151] leading-relaxed mb-4">
+            La méthode Boston Matrix ne change pas selon l'outil. Ce qui change, c'est le temps qu'elle vous coûte et la vitesse à laquelle vos chiffres se périment. Trois niveaux d'outillage coexistent chez les restaurateurs, avec un écart de fiabilité qui grandit avec la taille de la carte.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+            <div className="bg-white border border-mono-900 rounded-2xl p-4">
+              <p className="text-xs font-semibold text-red-500 uppercase mb-2">Tableur manuel</p>
+              <p className="text-sm text-mono-400 leading-relaxed">Ventes et coûts matières recopiés à la main depuis le Z de caisse et les fiches techniques. 2 à 4 h par cycle sur une carte de 25 plats — et le calcul est déjà daté le jour où il est terminé.</p>
+            </div>
+            <div className="bg-white border border-mono-900 rounded-2xl p-4">
+              <p className="text-xs font-semibold text-amber-500 uppercase mb-2">Export caisse + tableur</p>
+              <p className="text-sm text-mono-400 leading-relaxed">Les volumes vendus viennent d'un export CSV de la caisse, ce qui fait gagner du temps sur la moitié du travail. Mais le coût matières reste calculé à part : dès qu'un fournisseur change son tarif, le lien casse et personne ne s'en aperçoit avant le cycle suivant.</p>
+            </div>
+            <div className="bg-white border border-mono-900 rounded-2xl p-4">
+              <p className="text-xs font-semibold text-emerald-600 uppercase mb-2">Logiciel dédié</p>
+              <p className="text-sm text-mono-400 leading-relaxed">Caisse et fiches techniques connectées à la même base : la matrice se recalcule seule à chaque vente ou changement de prix fournisseur, et alerte dès qu'un plat bascule de quadrant — sans ressaisie.</p>
+            </div>
+          </div>
+          <p className="text-[#374151] leading-relaxed mb-3"><strong>Trois signaux indiquent qu'il est temps de passer à l'étape suivante :</strong></p>
+          <ul className="space-y-2 text-[#374151] mb-4">
+            <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-indigo-500 mt-2 flex-shrink-0" /><span>Votre carte dépasse 15 à 20 plats : le calcul manuel passe de « corvée trimestrielle » à « chantier qui ne se fait plus ».</span></li>
+            <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-indigo-500 mt-2 flex-shrink-0" /><span>Vos coûts matières bougent souvent (mercuriale volatile, produits de saison) : un tableur figé ment dès le mois suivant.</span></li>
+            <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-indigo-500 mt-2 flex-shrink-0" /><span>Vous gérez plusieurs points de vente : comparer des matrices construites à la main site par site devient vite intenable.</span></li>
+          </ul>
+          <p className="text-[#374151] leading-relaxed">
+            Cette bascule rejoint la question plus large du pilotage de caisse — voir notre comparatif des <Link to="/blog/logiciel-caisse-enregistreuse-restaurant" className="text-teal-600 font-medium hover:underline">logiciels de caisse enregistreuse</Link> et notre guide sur le <Link to="/blog/logiciel-gestion-restaurant" className="text-teal-600 font-medium hover:underline">logiciel de gestion de restaurant</Link>, qui centralise ventes, stocks et marges au même endroit. C'est exactement ce que fait le <Link to="/outils/calculateur-food-cost" className="text-teal-600 font-medium hover:underline">calculateur de food cost RestauMargin</Link> : il croise vos ventes et vos fiches techniques pour reconstituer la matrice Boston sans tableur à entretenir.
+          </p>
+        </section>
+
         {/* Pour aller plus loin */}
         <section className="mb-12">
           <div className="bg-mono-975 border border-mono-900 rounded-2xl p-6">
@@ -474,6 +519,14 @@ export default function BlogMenuEngineering() {
               {
                 q: "En combien de temps voit-on les résultats du menu engineering ?",
                 a: "Les premiers effets sur la marge apparaissent dès le mois suivant la refonte de la carte (mise en avant des Stars, suppression des Chiens). Un cycle complet d'optimisation — reformulation, tests de prix, repositionnement — produit ses pleins résultats sur 3 mois."
+              },
+              {
+                q: "Quelle différence entre un tableur Excel et un logiciel dédié pour le menu engineering ?",
+                a: "Un tableur exige une saisie manuelle des ventes et des coûts matières à chaque cycle — fastidieux au-delà de 20 plats et vite obsolète si un prix fournisseur bouge. Un logiciel connecté à la caisse et aux fiches techniques recalcule la matrice en continu, sans ressaisie, et alerte dès qu'un plat change de quadrant."
+              },
+              {
+                q: "À partir de combien de plats faut-il automatiser le menu engineering ?",
+                a: "Au-delà de 15 à 20 références, le calcul manuel devient chronophage (plusieurs heures par cycle) et sujet à erreur. En dessous, un tableur reste gérable. Le vrai déclencheur n'est pas seulement le nombre de plats : c'est la fréquence à laquelle vos coûts matières varient — plus ils bougent, plus l'automatisation devient rentable."
               }
             ].map(({ q, a }) => (
               <div key={q} className="border border-mono-900 rounded-xl p-5">
@@ -504,7 +557,7 @@ export default function BlogMenuEngineering() {
           <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>
 
-        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-07-10" readTime="16 min" variant="footer" />
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-08-25" readTime="16 min" variant="footer" />
       </main>
     </div>
   );

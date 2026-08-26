@@ -235,6 +235,7 @@ const CouvertsCible = lazyRetry(() => import('./pages/CouvertsCible'));
 const TvaCalculator = lazyRetry(() => import('./pages/TvaCalculator'));
 const LaborCostCalculator = lazyRetry(() => import('./pages/LaborCostCalculator'));
 const PriceIncreaseSimulator = lazyRetry(() => import('./pages/PriceIncreaseSimulator'));
+const PrimeSaisonniere = lazyRetry(() => import('./pages/PrimeSaisonniere'));
 const DlcTracker = lazyRetry(() => import('./pages/DlcTracker'));
 const ChecklistService = lazyRetry(() => import('./pages/ChecklistService'));
 const ChronoPreparation = lazyRetry(() => import('./pages/ChronoPreparation'));
@@ -588,6 +589,7 @@ function AppLayout() {
         { to: '/couverts-cible', icon: Users, label: 'Couverts cible' },
         { to: '/calculateur-tva', icon: Calculator, label: 'Calculateur TVA' },
         { to: '/cout-main-oeuvre', icon: Users, label: 'Coût main d\'œuvre' },
+        { to: '/prime-saisonniere', icon: Gift, label: 'Prime saisonnière' },
         // Integrations masqué pour l'instant
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
         { to: '/abonnement', icon: CreditCard, label: 'Mon abonnement' },
@@ -1108,6 +1110,7 @@ function AppLayout() {
               <Route path="/calculateur-tva" element={<TvaCalculator />} />
               <Route path="/cout-main-oeuvre" element={<LaborCostCalculator />} />
               <Route path="/simulateur-prix" element={<PriceIncreaseSimulator />} />
+              <Route path="/prime-saisonniere" element={<PrimeSaisonniere />} />
               <Route path="/dlc-tracker" element={<DlcTracker />} />
               <Route path="/checklist-service" element={<ChecklistService />} />
               <Route path="/chrono-preparation" element={<ChronoPreparation />} />

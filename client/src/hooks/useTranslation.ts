@@ -49,7 +49,7 @@ export function useTranslation() {
     // ignore toute locale periimee (ex: 'en' residuel des tests i18n) qui bloquerait
     // les visiteurs francais sur une UI anglaise. Migration auto via le useEffect ci-dessous.
     const stored = localStorage.getItem('locale');
-    return stored === 'fr' ? 'fr' : 'fr';
+    return (stored && localeLoaders[stored]) ? stored : 'fr';
   });
 
   // Incrémenté quand un dictionnaire chargé à la demande devient disponible → force un re-render

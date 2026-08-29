@@ -1,9 +1,16 @@
+/* ── Obsidian Kitchen — Google Fonts ─────────────────────────────────────── */
+/* Perf 2026-08-29 : @import DOIT preceder toute autre regle CSS (sauf
+   @charset) — un @import place apres @tailwind (qui s'etend en vraies regles
+   avant meme le build) est invalide selon le spec et SILENCIEUSEMENT ignore
+   par le navigateur. Verifie en prod : zero requete vers fonts.googleapis.com,
+   donc "JetBrains Mono" (utilise 4x sur Landing.tsx, la homepage) ne se
+   chargeait jamais et retombait sur la police mono systeme. Space Grotesk
+   retire du import : aucun usage trouve dans tout client/src (poids mort). */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* ── Obsidian Kitchen — Google Fonts ─────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap');
 
 @layer base {
   /* ── 8. Smooth Scroll ─────────────────────────────────────────────────── */

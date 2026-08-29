@@ -704,7 +704,7 @@ export default function MenuCalendar() {
                 type="text"
                 value={sidebarSearch}
                 onChange={e => setSidebarSearch(e.target.value)}
-                placeholder="Rechercher..."
+                placeholder={t('menuCalendar.search')}
                 className="w-full pl-8 pr-3 py-2 rounded-xl border border-mono-900 dark:border-[#333333] bg-white dark:bg-black text-mono-100 dark:text-white text-xs placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
               />
             </div>
@@ -1229,7 +1229,7 @@ export default function MenuCalendar() {
                   type="text"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Rechercher une recette..."
+                  placeholder={t('menuCalendar.searchRecipes')}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-mono-900 dark:border-[#333333] bg-white dark:bg-black text-mono-100 dark:text-white text-sm placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-mono-100 dark:focus:ring-white"
                   autoFocus
                 />

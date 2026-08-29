@@ -450,7 +450,9 @@
     "errorMoving": "Fehler beim Verschieben",
     "shoppingListExported": "Einkaufsliste exportiert",
     "addedTo": "hinzugefügt am",
-    "movedTo": "verschoben nach"
+    "movedTo": "verschoben nach",
+    "search": "Suchen...",
+    "searchRecipes": "Rezept suchen..."
   },
   "seminaires": {
     "errorLoading": "Fehler beim Laden der Seminare",

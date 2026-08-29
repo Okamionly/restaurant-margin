@@ -2627,7 +2627,9 @@
     "errorMoving": "Error moving entry",
     "shoppingListExported": "Shopping list exported",
     "addedTo": "added to",
-    "movedTo": "moved to"
+    "movedTo": "moved to",
+    "search": "Search...",
+    "searchRecipes": "Search for a recipe..."
   },
   "seminaires": {
     "errorLoading": "Error loading seminars",

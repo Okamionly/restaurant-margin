@@ -450,7 +450,9 @@
     "errorMoving": "Error al mover la entrada",
     "shoppingListExported": "Lista de compras exportada",
     "addedTo": "añadido al",
-    "movedTo": "movido al"
+    "movedTo": "movido al",
+    "search": "Buscar...",
+    "searchRecipes": "Buscar una receta..."
   },
   "seminaires": {
     "errorLoading": "Error al cargar los seminarios",

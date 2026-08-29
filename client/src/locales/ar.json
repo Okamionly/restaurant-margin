@@ -440,7 +440,9 @@
     "errorMoving": "خطأ أثناء النقل",
     "shoppingListExported": "تم تصدير قائمة التسوق",
     "addedTo": "أُضيف إلى",
-    "movedTo": "نُقل إلى"
+    "movedTo": "نُقل إلى",
+    "search": "بحث...",
+    "searchRecipes": "البحث عن وصفة..."
   },
   "seminaires": {
     "errorLoading": "خطأ في تحميل الفعاليات",

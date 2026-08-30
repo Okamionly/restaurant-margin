@@ -29,7 +29,9 @@ const OPENAI_COMPATIBLE: OpenAiCompatProvider[] = [
     name: 'groq',
     envKey: 'GROQ_API_KEY',
     baseUrl: 'https://api.groq.com/openai/v1/chat/completions',
-    model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+    // Verifie en live le 2026-08-30 sur le compte : llama-3.3-70b-versatile a ete
+    // retire du catalogue Groq (404 model_not_found). gpt-oss-120b repond en ~0,8 s.
+    model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
   },
   {
     name: 'nvidia',

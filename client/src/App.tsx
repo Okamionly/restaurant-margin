@@ -4,6 +4,7 @@ import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, M
 import ErrorBoundary from './components/ErrorBoundary';
 import { isOnboardingCompleted } from './utils/onboardingFlags';
 import CookieBanner from './components/CookieBanner';
+import AssistantWidget from './components/AssistantWidget';
 import Breadcrumbs from './components/Breadcrumbs';
 import { trackPageVisit } from './utils/recentPages';
 import { captureLandingSource } from './utils/signupSource';
@@ -1364,6 +1365,11 @@ function App() {
           />
           </Routes>
           <CookieBanner />
+          {/* Assistant IA visiteurs : monte a cote du CookieBanner (hors <Routes>) pour couvrir
+              toutes les pages publiques (landing, SEO, blog, outils) sans toucher au routing.
+              Le composant se masque lui-meme quand l'utilisateur est connecte, ce qui evite
+              tout recouvrement de la MobileBottomNav (rendue uniquement dans AppLayout). */}
+          <AssistantWidget />
         </RestaurantProvider>
       </ToastProvider>
     </AuthProvider>

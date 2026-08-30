@@ -581,11 +581,19 @@ function RichDashboardMockup() {
 function HeroKpis() {
   // Format inspired from claude.design "RestauMargin Nouveau" — big number on top
   // (mono font for the technical feel), small uppercase tracking-wide label below.
+  // Chaque accroche decrit une capacite REELLE du produit, verifiable dans le
+  // code : aucune statistique client, aucun resultat promis.
+  //  - essai 7 j sans CB  -> api-lib/routes/auth.ts (trialEndsAt = +7 j, aucun
+  //    moyen de paiement demande a l'inscription)
+  //  - inventaire         -> client/src/pages/Inventory.tsx, route /inventory
+  //  - historique de prix -> modele Prisma PriceHistory, affiche dans
+  //    Ingredients / Mercuriale / Suppliers / RecipeDetail
+  //  - mises a jour       -> changelog produit, page /actualites
   const kpis = [
-    { value: '320+', label: 'Brigades actives' },
-    { value: '+4 pts', label: 'Marge en 90 j' },
-    { value: '10 s', label: 'Pour une fiche' },
-    { value: '800 €', label: 'Économisés / site' },
+    { value: '7 j', label: 'Essai gratuit sans CB' },
+    { value: 'Stock', label: 'Inventaire temps réel' },
+    { value: 'Suivi', label: 'Historique des prix' },
+    { value: 'Nouveau', label: 'Mises à jour régulières' },
   ];
   const containerRef = useStagger<HTMLDivElement>(0.12);
   return (
@@ -2089,14 +2097,21 @@ function Footer() {
         <div>
           <p className="text-white font-bold text-sm uppercase tracking-wider mb-4">Légal</p>
           <ul className="space-y-2 text-sm">
+            <li><Link to="/mentions-legales" className="hover:text-white">Mentions légales</Link></li>
             <li><Link to="/cgu" className="hover:text-white">CGU</Link></li>
+            <li><Link to="/cgv" className="hover:text-white">CGV</Link></li>
             <li><Link to="/politique-confidentialite" className="hover:text-white">Politique de confidentialité</Link></li>
             <li><a href="mailto:contact@restaumargin.fr" className="hover:text-white">Contact</a></li>
           </ul>
         </div>
       </div>
       <div className="max-w-7xl mx-auto border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <p className="text-xs text-white/40">© {new Date().getFullYear()} RestauMargin · Hébergé en Europe · RGPD</p>
+        {/* Pas de mention « hébergé en Europe » : le site est déployé sur Vercel
+            (société américaine, aucune région EU épinglée dans vercel.json).
+            Le détail exact figure dans les mentions légales, article 4. */}
+        <p className="text-xs text-white/40">
+          © {new Date().getFullYear()} RestauMargin · <Link to="/mentions-legales" className="hover:text-white/70 underline underline-offset-2">Mentions légales</Link>
+        </p>
         <p className="text-xs text-white/40">Made with care in France 🇫🇷</p>
       </div>
     </footer>

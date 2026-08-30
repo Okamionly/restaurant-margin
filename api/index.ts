@@ -9,6 +9,8 @@ import jwt from 'jsonwebtoken';
 import { Resend } from 'resend';
 import Anthropic from '@anthropic-ai/sdk';
 import Stripe from 'stripe';
+import { llmComplete, llmJson, llmProvidersStatus } from '../api-lib/llm';
+import { ratelimit } from '../api-lib/ratelimit';
 import authRoutes from '../api-lib/routes/auth';
 import aiRoutes from '../api-lib/routes/ai';
 import mercurialeRoutes from '../api-lib/routes/mercuriale';
@@ -636,6 +638,85 @@ app.get('/api/cron-test', (_req, res) => {
 });
 
 // ══════════════════════════════════════════════════════════════════════════
+// ASSISTANT IA PUBLIC — repond aux questions des visiteurs sur le site
+// Utilise le routeur LLM multi-fournisseurs (Groq/NVIDIA gratuits -> Claude).
+// Chaque question est journalisee dans notif_log ; le cron inbox-sync les
+// remonte groupees par email (pas de notification par question = pas de spam).
+// ══════════════════════════════════════════════════════════════════════════
+
+// Faits VERIFIES sur le produit. L'assistant n'a le droit de s'appuyer que la-dessus.
+// Ne JAMAIS y ajouter de chiffre client, de temoignage ou de reference inventes.
+const ASSISTANT_FACTS = `RestauMargin est un logiciel francais de gestion de marge pour la restauration.
+Ce qu'il fait reellement :
+- Fiches techniques de recettes avec calcul automatique du cout de revient au gramme
+- Food cost et marge par plat, prix de vente conseille
+- Scanner de factures fournisseurs par IA (photo ou PDF) qui met a jour les prix
+- Inventaire et suivi des stocks
+- Menu engineering (classement des plats : stars, puzzles, plowhorses, dogs)
+- Mercuriale : suivi de l'evolution des prix fournisseurs dans le temps
+- Commandes fournisseurs, gestion des allergenes, HACCP, DLC, planning equipe
+- Mode cuisine (KDS) et station de pesee
+- Digest quotidien : cours des denrees, produits de saison, recette du jour
+Tarif : 29 EUR par mois. Essai gratuit de 7 jours, sans carte bancaire.
+Contact humain : contact@restaumargin.fr
+Le service est exploite par un entrepreneur individuel francais.`;
+
+app.post('/api/assistant/ask', async (req: any, res) => {
+  try {
+    const ip = (req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'anon').toString().split(',')[0].trim();
+    const rl = await ratelimit(`assistant:${ip}`);
+    if (!rl.success) return res.status(429).json({ error: 'Trop de questions, reessayez dans une minute.' });
+
+    const question = String(req.body?.question || '').trim();
+    if (!question) return res.status(400).json({ error: 'Question requise' });
+    if (question.length > 1000) return res.status(400).json({ error: 'Question trop longue (1000 caracteres max)' });
+    const email = String(req.body?.email || '').trim().slice(0, 200);
+
+    const out = await llmComplete({
+      system: `Tu es l'assistant de RestauMargin. Tu reponds aux visiteurs du site, en francais, de facon claire, chaleureuse et concise (5 lignes maximum).
+
+FAITS AUTORISES (ta seule source de verite) :
+${ASSISTANT_FACTS}
+
+REGLES ABSOLUES :
+- N'invente JAMAIS de chiffre, de statistique, de nombre de clients, de temoignage ou de reference client. Ces donnees n'existent pas.
+- Si la question porte sur quelque chose qui n'est pas dans les faits ci-dessus (tarif sur mesure, partenariat, facturation, donnees d'un compte precis, question juridique), reponds honnetement que tu ne peux pas repondre precisement et invite a ecrire a contact@restaumargin.fr.
+- Ne promets aucun resultat chiffre ("vous gagnerez X %"). Parle de ce que l'outil fait, pas de ce qu'il ferait gagner.
+- Reste factuel : mieux vaut dire "je ne sais pas" que d'approximer.`,
+      user: question,
+      maxTokens: 500,
+      timeoutMs: 20000,
+    });
+
+    // Journalise pour que le proprietaire voie ce que demandent les visiteurs
+    try {
+      await prisma.$executeRaw`
+        INSERT INTO notif_log (kind, ref, category, meta, notified)
+        VALUES ('visitor_question', ${`q-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`}, 'visitor_question',
+                ${JSON.stringify({ question: question.slice(0, 1000), answer: out.text.slice(0, 2000), email, provider: out.provider, ip })}::jsonb,
+                false)
+        ON CONFLICT (kind, ref) DO NOTHING`;
+    } catch (logErr: any) { console.warn('[ASSISTANT] log echoue:', logErr.message); }
+
+    res.json({ answer: out.text, provider: out.provider });
+  } catch (e: any) {
+    console.error('[ASSISTANT]', e.message);
+    res.status(503).json({ error: "L'assistant est momentanement indisponible. Ecrivez-nous a contact@restaumargin.fr." });
+  }
+});
+
+// Sante des fournisseurs IA (quel LLM est configure / lequel repond)
+app.get('/api/assistant/health', async (_req: any, res) => {
+  const status = llmProvidersStatus();
+  try {
+    const out = await llmComplete({ system: 'Reponds exactement: OK', user: 'ping', maxTokens: 10, timeoutMs: 12000 });
+    res.json({ ...status, actif: out.provider, modele: out.model, repond: true });
+  } catch (e: any) {
+    res.status(503).json({ ...status, repond: false, erreur: e.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════
 // CRON AGENTS — Vercel scheduled jobs (run automatically, no auth needed)
 // Protected by CRON_SECRET env var to prevent unauthorized access
 // ══════════════════════════════════════════════════════════════════════════
@@ -1234,6 +1315,202 @@ Contraintes : produits de saison (${month}) ; 6 à 12 ingrédients chiffrés ave
     });
   } catch (e: any) {
     console.error('[CRON DAILY-DIGEST]', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 5c. INBOX SYNC + NOTIFICATIONS — toutes les 2h
+// Pourquoi un POLLING et pas le webhook : le webhook Resend est "enabled" mais ne
+// livre plus rien depuis avril (0 message stocke alors que la boite en a recu 10+).
+// Aller CHERCHER les emails est insensible aux echecs de livraison, et rattrape
+// automatiquement l'historique manque. Le webhook reste actif en plus (ceinture+bretelles).
+// Fait aussi : classification IA (vrai client vs spam) + notification email des
+// nouveaux messages ET des nouvelles inscriptions (Pushover est mort : token absent).
+app.get('/api/cron/inbox-sync', async (req: any, res) => {
+  if (!verifyCron(req, res)) return;
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!resendKey) return res.status(503).json({ error: 'RESEND_API_KEY absent' });
+
+  const imported: any[] = [];
+  const skippedSpam: any[] = [];
+  let newSignups: any[] = [];
+
+  try {
+    // ── 1. Emails entrants deja traites (dedup) ──
+    const seenRows: any[] = await prisma.$queryRaw`SELECT ref FROM notif_log WHERE kind = 'inbound_email'`;
+    const seen = new Set(seenRows.map((r) => String(r.ref)));
+
+    // ── 2. Liste de la boite de reception Resend ──
+    const listRes = await fetch('https://api.resend.com/emails/receiving?limit=25', {
+      headers: { Authorization: `Bearer ${resendKey}` },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!listRes.ok) {
+      const body = await listRes.text();
+      return res.status(502).json({ error: 'Resend list failed', status: listRes.status, body: body.slice(0, 200) });
+    }
+    const listJson: any = await listRes.json();
+    const all: any[] = listJson?.data || listJson?.emails || [];
+    const fresh = all.filter((e: any) => e?.id && !seen.has(String(e.id)));
+
+    // Cap par run (maxDuration 60s) — le cron repasse toutes les 2h pour le reste.
+    const batch = fresh.slice(0, 5);
+
+    for (const item of batch) {
+      const detail = await fetchReceivedEmail(item.id);
+      const from = detail?.from || item.from || '';
+      const subject = detail?.subject || item.subject || '(sans objet)';
+      const to = detail?.to || item.to || 'contact@restaumargin.fr';
+      const text: string = detail?.text || (detail?.html ? String(detail.html).replace(/<[^>]+>/g, ' ') : '') || '';
+      const senderEmail = (String(from).match(/<([^>]+)>/) || [null, String(from)])[1].trim().toLowerCase();
+      const senderName = String(from).replace(/<[^>]+>/, '').trim() || senderEmail;
+
+      // Anti-boucle : ignorer nos propres envois
+      if (senderEmail.includes('restaumargin.fr')) {
+        await prisma.$executeRaw`INSERT INTO notif_log (kind, ref, category, notified) VALUES ('inbound_email', ${String(item.id)}, 'self', true) ON CONFLICT DO NOTHING`;
+        continue;
+      }
+
+      // ── 3. Classification IA : vrai message client vs spam/demarchage ──
+      let category = 'inconnu';
+      let summary = subject;
+      let draft = '';
+      try {
+        const { data } = await llmJson<any>({
+          system: "Tu tries la boite de reception d'un logiciel SaaS francais pour restaurateurs (RestauMargin). Tu reponds UNIQUEMENT en JSON valide, sans texte autour.",
+          user: `Email recu :
+De: ${from}
+Objet: ${subject}
+Message: ${text.slice(0, 1500)}
+
+Reponds avec ce JSON strict :
+{
+  "category": "client_question" | "prospect" | "spam" | "phishing" | "demarchage" | "administratif" | "autre",
+  "summary": "1 phrase resumant la demande",
+  "needs_reply": true | false,
+  "draft_reply": "si needs_reply est true : brouillon de reponse en francais, poli, concret, 4-8 lignes, signe 'L'equipe RestauMargin'. Sinon chaine vide."
+}
+Regles : "phishing" pour les faux avis de suspension de domaine / fausses factures. "demarchage" pour la prospection commerciale non sollicitee. "client_question"/"prospect" seulement si une vraie personne pose une question sur le produit.`,
+          maxTokens: 700,
+          timeoutMs: 15000,
+        });
+        if (data) {
+          category = String(data.category || 'inconnu');
+          summary = String(data.summary || subject).slice(0, 300);
+          draft = String(data.draft_reply || '').slice(0, 2000);
+        }
+      } catch (e: any) {
+        console.warn('[INBOX-SYNC] classification indisponible:', e?.message);
+      }
+
+      // ── 4. Stockage dans la messagerie de l'app ──
+      const restaurantId = await resolveInboundRestaurantId(to);
+      const conv = await findOrCreateConversation(restaurantId, senderEmail, senderName);
+      await prisma.message.create({
+        data: {
+          conversationId: conv.id,
+          senderId: senderEmail,
+          senderName,
+          content: `${subject}\n\n${text || '(corps vide)'}`.slice(0, 8000),
+          timestamp: new Date().toISOString(),
+          read: false,
+        },
+      });
+      await prisma.conversation.update({
+        where: { id: conv.id },
+        data: { lastMessage: subject.slice(0, 200), unreadCount: { increment: 1 } },
+      });
+
+      const isJunk = ['spam', 'phishing', 'demarchage'].includes(category);
+      await prisma.$executeRaw`
+        INSERT INTO notif_log (kind, ref, category, meta, notified)
+        VALUES ('inbound_email', ${String(item.id)}, ${category},
+                ${JSON.stringify({ from: senderEmail, subject, summary, draft, conversationId: conv.id })}::jsonb,
+                ${isJunk})
+        ON CONFLICT (kind, ref) DO NOTHING`;
+
+      const entry = { from: senderEmail, subject, category, summary, draft, receivedAt: item.created_at || item.received_at || null };
+      if (isJunk) skippedSpam.push(entry); else imported.push(entry);
+    }
+
+    // ── 5. Nouvelles inscriptions non notifiees ──
+    newSignups = await prisma.$queryRaw`
+      SELECT u.id, u.email, u."createdAt", u."trialEndsAt"
+      FROM users u
+      WHERE NOT EXISTS (SELECT 1 FROM notif_log n WHERE n.kind = 'signup' AND n.ref = u.id::text)
+        AND u."createdAt" > now() - interval '30 days'
+      ORDER BY u."createdAt" DESC`;
+
+    // ── 5b. Questions posees a l'assistant IA sur le site, pas encore remontees ──
+    const visitorQuestions: any[] = await prisma.$queryRaw`
+      SELECT ref, meta, created_at FROM notif_log
+      WHERE kind = 'visitor_question' AND notified = false
+      ORDER BY created_at DESC LIMIT 20`;
+
+    // ── 6. Notification email (Resend fonctionne — contrairement a Pushover) ──
+    let emailSent = false;
+    const worthNotifying = imported.length > 0 || newSignups.length > 0 || visitorQuestions.length > 0;
+    if (worthNotifying) {
+      try {
+        const { Resend } = await import('resend');
+        const resend = new Resend(resendKey);
+        const signupHtml = newSignups.map((u: any) =>
+          `<li style="margin-bottom:6px;"><b>${u.email}</b> — inscrit le ${new Date(u.createdAt).toLocaleString('fr-FR')}, essai jusqu'au ${new Date(u.trialEndsAt).toLocaleDateString('fr-FR')}</li>`).join('');
+        const msgHtml = imported.map((m) =>
+          `<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px;">
+             <b>${m.subject}</b><br>
+             <span style="color:#737373;font-size:13px;">de ${m.from} — ${m.category}</span>
+             <p style="margin:8px 0 0;line-height:1.5;">${m.summary}</p>
+             ${m.draft ? `<details style="margin-top:8px;"><summary style="cursor:pointer;color:#0D9488;">Brouillon de reponse propose</summary><p style="white-space:pre-wrap;background:#F5F5F5;padding:10px;border-radius:8px;margin-top:8px;line-height:1.5;">${m.draft}</p></details>` : ''}
+           </div>`).join('');
+        await resend.emails.send({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: 'mr.guessousyoussef@gmail.com',
+          subject: [
+            newSignups.length ? `${newSignups.length} inscription(s)` : '',
+            imported.length ? `${imported.length} message(s) client` : '',
+            visitorQuestions.length ? `${visitorQuestions.length} question(s) visiteur` : '',
+          ].filter(Boolean).join(' + ') + ' — RestauMargin',
+          html: `<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:640px;margin:0 auto;color:#111;">
+  <h2 style="margin:0 0 16px;">A traiter</h2>
+  ${newSignups.length ? `<h3 style="margin:18px 0 8px;">Nouvelles inscriptions (${newSignups.length})</h3><ul style="padding-left:18px;line-height:1.6;">${signupHtml}</ul>` : ''}
+  ${imported.length ? `<h3 style="margin:18px 0 8px;">Messages clients (${imported.length})</h3>${msgHtml}` : ''}
+  ${visitorQuestions.length ? `<h3 style="margin:18px 0 8px;">Questions posees a l'assistant sur le site (${visitorQuestions.length})</h3>${
+    visitorQuestions.map((q: any) => `<div style="border-left:3px solid #0D9488;padding:8px 12px;margin-bottom:10px;background:#F0FDFA;">
+      <b>${String(q.meta?.question || '').slice(0, 300)}</b>
+      <p style="margin:6px 0 0;color:#737373;font-size:13px;line-height:1.5;">Reponse IA : ${String(q.meta?.answer || '').slice(0, 400)}</p>
+      ${q.meta?.email ? `<p style="margin:6px 0 0;font-size:13px;">Contact laisse : <b>${q.meta.email}</b></p>` : ''}
+    </div>`).join('')}` : ''}
+  ${skippedSpam.length ? `<p style="color:#737373;font-size:13px;margin-top:16px;">${skippedSpam.length} message(s) classes spam/demarchage, filtres et non detailles ici.</p>` : ''}
+  <p style="margin-top:22px;"><a href="https://www.restaumargin.fr/messagerie" style="background:#111;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;">Ouvrir la messagerie</a></p>
+</div>`,
+        });
+        emailSent = true;
+        for (const u of newSignups) {
+          await prisma.$executeRaw`INSERT INTO notif_log (kind, ref, category, meta, notified) VALUES ('signup', ${String(u.id)}, 'signup', ${JSON.stringify({ email: u.email })}::jsonb, true) ON CONFLICT (kind, ref) DO NOTHING`;
+        }
+        await prisma.$executeRaw`UPDATE notif_log SET notified = true WHERE kind IN ('inbound_email', 'visitor_question') AND notified = false`;
+      } catch (mailErr: any) {
+        console.error('[INBOX-SYNC mail]', mailErr.message);
+      }
+    }
+
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      boiteResend: all.length,
+      nouveaux: fresh.length,
+      traites: batch.length,
+      messagesClients: imported.length,
+      spamFiltres: skippedSpam.length,
+      nouvellesInscriptions: newSignups.length,
+      questionsVisiteurs: visitorQuestions.length,
+      emailSent,
+      resteATraiter: Math.max(fresh.length - batch.length, 0),
+      details: imported.map((m) => ({ from: m.from, subject: m.subject, category: m.category })),
+    });
+  } catch (e: any) {
+    console.error('[CRON INBOX-SYNC]', e.message);
     res.status(500).json({ error: e.message });
   }
 });

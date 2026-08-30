@@ -115,7 +115,7 @@ export function InlineWeighPanel({
         <>
           <div className="flex items-center justify-center gap-3 py-3 rounded-lg" style={{
             background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-            border: `2px solid ${netWeight > 0 && isStable ? '#10b981' : netWeight > 0 ? '#3b82f6' : '#334155'}`,
+            border: `2px solid ${netWeight > 0 && isStable ? '#10b981' : netWeight > 0 ? '#3b82f6' : '#404040'}`,
           }}>
             <span className={`text-3xl font-black tabular-nums tracking-tight transition-colors ${
               netWeight > 0 && isStable ? 'text-emerald-400' :
@@ -423,7 +423,7 @@ export function BatchWeighingPanel({
           {/* Weight display */}
           <div className="flex items-center justify-center gap-3 py-4 rounded-lg" style={{
             background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-            border: `2px solid ${netWeight > 0 && isStable ? '#10b981' : netWeight > 0 ? '#3b82f6' : '#334155'}`,
+            border: `2px solid ${netWeight > 0 && isStable ? '#10b981' : netWeight > 0 ? '#3b82f6' : '#404040'}`,
           }}>
             <span className={`text-4xl font-black tabular-nums tracking-tight transition-colors ${
               netWeight > 0 && isStable ? 'text-emerald-400' :
@@ -612,7 +612,7 @@ export function QuickWeighAdd({
             <>
               <div className="flex items-center justify-center gap-3 py-3 rounded-lg" style={{
                 background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-                border: `2px solid ${netWeight > 0 && isStable ? '#10b981' : netWeight > 0 ? '#3b82f6' : '#334155'}`,
+                border: `2px solid ${netWeight > 0 && isStable ? '#10b981' : netWeight > 0 ? '#3b82f6' : '#404040'}`,
               }}>
                 <span className={`text-3xl font-black tabular-nums tracking-tight transition-colors ${
                   netWeight > 0 && isStable ? 'text-emerald-400' :

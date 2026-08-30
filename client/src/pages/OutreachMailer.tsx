@@ -11,7 +11,7 @@
  */
 
 import { useState } from 'react';
-import { Send, Mail, FileText, Plus, X, Check, AlertCircle, Sparkles } from 'lucide-react';
+import { Send, Mail, FileText, Plus, X, Check, AlertCircle, Sparkles, Loader2 } from 'lucide-react';
 import { useApiClient } from '../hooks/useApiClient';
 
 interface ArticleLink {
@@ -454,9 +454,9 @@ export default function OutreachMailer() {
             <button
               onClick={handleSend}
               disabled={sending}
-              className="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-[#94A3B8] text-white font-bold rounded-full flex items-center justify-center gap-2 transition"
+              className="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold rounded-full flex items-center justify-center gap-2 transition"
             >
-              <Send className="w-4 h-4" />
+              {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               {sending ? 'Envoi en cours...' : 'Envoyer depuis contact@restaumargin.fr'}
             </button>
             <p className="text-xs text-[#94A3B8] mt-3">

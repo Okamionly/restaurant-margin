@@ -169,7 +169,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
           className="relative rounded-xl flex flex-col items-center justify-center py-8"
           style={{
             background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-            border: `2px solid ${netWeight > 0 && isStable ? '#10b981' : netWeight > 0 ? '#3b82f6' : '#334155'}`,
+            border: `2px solid ${netWeight > 0 && isStable ? '#10b981' : netWeight > 0 ? '#3b82f6' : '#404040'}`,
           }}
         >
           {/* Scan lines */}

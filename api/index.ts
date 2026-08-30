@@ -717,7 +717,10 @@ REGLES ABSOLUES :
 app.get('/api/assistant/health', async (_req: any, res) => {
   const status = llmProvidersStatus();
   try {
-    const out = await llmComplete({ system: 'Reponds exactement: OK', user: 'ping', maxTokens: 10, timeoutMs: 12000 });
+    // maxTokens genereux : gpt-oss (Groq) est un modele de RAISONNEMENT — avec 10 tokens
+    // il consomme tout en reflexion interne et renvoie un texte vide, ce qui faisait
+    // basculer la sonde sur Anthropic et affichait un faux "groq KO".
+    const out = await llmComplete({ system: 'Reponds exactement: OK', user: 'ping', maxTokens: 200, timeoutMs: 12000 });
     res.json({ ...status, actif: out.provider, modele: out.model, repond: true });
   } catch (e: any) {
     res.status(503).json({ ...status, repond: false, erreur: e.message });
@@ -3252,6 +3255,65 @@ app.post('/api/messages/conversations/:id/messages', authWithRestaurant, async (
 
     res.status(201).json(msg);
   } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur envoi message' }); }
+});
+
+// ── ASSISTANCE IA DANS LA MESSAGERIE ──────────────────────────────────────
+// Redige une reponse au dernier message du client, a partir de l'historique reel
+// de la conversation. Renvoie un BROUILLON : c'est le restaurateur qui valide et
+// envoie (via POST .../messages, qui expedie l'email). On n'envoie jamais tout seul
+// a un client — une hallucination partirait sans relecture.
+app.post('/api/messages/conversations/:id/ai-draft', authWithRestaurant, async (req: any, res) => {
+  try {
+    const conv = await prisma.conversation.findUnique({ where: { id: req.params.id } });
+    if (!conv || conv.restaurantId !== req.restaurantId) return res.status(404).json({ error: 'Conversation introuvable' });
+
+    const history = await prisma.message.findMany({
+      where: { conversationId: req.params.id },
+      orderBy: { createdAt: 'asc' },
+      take: 20,
+    });
+    if (history.length === 0) return res.status(400).json({ error: 'Aucun message a traiter' });
+
+    const restaurant = await prisma.restaurant.findUnique({ where: { id: req.restaurantId } });
+    const moi = (req.user?.email || '').toLowerCase();
+    const transcript = history.map((m: any) => {
+      const isUs = m.senderId === 'user' || String(m.senderId).toLowerCase() === moi || String(m.senderId).includes('restaumargin.fr');
+      return `${isUs ? 'NOUS' : 'CLIENT'} : ${String(m.content).slice(0, 1200)}`;
+    }).join('\n\n');
+
+    // Consigne libre optionnelle ("propose un rdv", "explique le tarif", "refuse poliment")
+    const consigne = String(req.body?.consigne || '').slice(0, 500);
+
+    const out = await llmComplete({
+      system: `Tu rediges, en francais, la reponse d'un restaurateur/editeur a un message recu sur sa messagerie professionnelle.
+
+FAITS AUTORISES sur le produit (ta seule source de verite) :
+${ASSISTANT_FACTS}
+
+REGLES ABSOLUES :
+- N'invente JAMAIS de chiffre, de statistique, de nombre de clients, de temoignage, de reference client, de delai ou d'engagement commercial qui ne figure pas dans les faits ci-dessus.
+- Si le message demande une information que tu n'as pas (facturation precise, juridique, donnees d'un compte, tarif sur mesure), dis-le simplement et propose de revenir vers la personne — ne bluffe pas.
+- Ton : professionnel, direct, chaleureux, sans jargon commercial ni superlatifs. Pas d'emojis.
+- Format : 4 a 10 lignes, pret a envoyer. Pas d'objet, pas de champ "De/A". Commence par la salutation, termine par une formule de politesse.
+- Si le message est du demarchage, du spam ou du phishing, reponds exactement : NE_PAS_REPONDRE`,
+      user: `Voici l'echange (du plus ancien au plus recent) :\n\n${transcript}\n\n${consigne ? `Consigne du restaurateur pour cette reponse : ${consigne}\n\n` : ''}Redige la reponse a envoyer au CLIENT.`,
+      maxTokens: 900,
+      timeoutMs: 25000,
+    });
+
+    const draft = out.text.trim();
+    const isJunk = draft.includes('NE_PAS_REPONDRE');
+    res.json({
+      draft: isJunk ? '' : draft,
+      recommandation: isJunk ? 'ignorer' : 'repondre',
+      provider: out.provider,
+      modele: out.model,
+      restaurant: restaurant?.name || 'RestauMargin',
+    });
+  } catch (e: any) {
+    console.error('[AI-DRAFT]', e.message);
+    res.status(503).json({ error: "L'assistant n'a pas pu rediger de reponse pour le moment." });
+  }
 });
 
 app.put('/api/messages/conversations/:id/read', authWithRestaurant, async (req: any, res) => {

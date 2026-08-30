@@ -297,6 +297,14 @@ app.use((req, res, next) => {
     return next();
   }
 
+  // Skip l'assistant public : appele par des VISITEURS non connectes (widget de chat
+  // du site), qui n'ont ni session ni token CSRF. Sans cette exemption le widget
+  // renvoie 403 pour tout le monde. L'abus est contenu par le rate-limit par IP
+  // dans le handler, et l'endpoint ne fait qu'appeler un LLM en lecture seule.
+  if (req.path === '/api/assistant/ask') {
+    return next();
+  }
+
   // Skip CSRF for requests with Bearer token (JWT is already a non-guessable token)
   // CSRF protection is mainly needed for cookie-based auth (which we don't use)
   const authHeader = req.headers.authorization;

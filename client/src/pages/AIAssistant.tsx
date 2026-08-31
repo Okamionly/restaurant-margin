@@ -269,10 +269,30 @@ async function getAIResponse(message: string, history: Message[], image?: string
     },
     body: JSON.stringify(body),
   });
-  const data = await res.json();
-  if (!res.ok) {
-    const errorDetail = data.error || data.message || '';
-    const statusText = res.status === 429 ? 'Quota depasse' : res.status === 503 ? 'Service IA indisponible' : res.status === 401 ? 'Session expiree, reconnectez-vous' : `Erreur serveur (${res.status})`;
+  // On lit d'abord en TEXTE puis on parse : res.json() direct plantait avec
+  // "JSON.parse: unexpected character at line 1 column 1" des que la reponse
+  // n'etait pas du JSON (page HTML d'un 504 Vercel, 502, ou basculement pendant
+  // un deploiement) — et le bloc de gestion d'erreur ci-dessous n'etait alors
+  // JAMAIS atteint, donc l'utilisateur voyait une erreur technique incomprehensible
+  // au lieu de "Service IA indisponible".
+  const raw = await res.text();
+  let data: any = {};
+  let parseFailed = false;
+  try {
+    data = raw ? JSON.parse(raw) : {};
+  } catch {
+    parseFailed = true;
+  }
+
+  if (!res.ok || parseFailed) {
+    const errorDetail = (!parseFailed && (data.error || data.message)) || '';
+    const statusText =
+      res.status === 429 ? 'Quota depasse'
+      : res.status === 503 ? 'Service IA indisponible'
+      : res.status === 401 ? 'Session expiree, reconnectez-vous'
+      : res.status === 504 || res.status === 502 ? "L'analyse a pris trop de temps. Reessayez, ou posez une question plus ciblee."
+      : parseFailed ? "Reponse illisible du serveur (mise a jour en cours ?). Reessayez dans un instant."
+      : `Erreur serveur (${res.status})`;
     throw new Error(errorDetail || statusText);
   }
 

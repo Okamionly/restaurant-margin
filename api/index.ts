@@ -1416,6 +1416,7 @@ app.get('/api/cron/inbox-sync', async (req: any, res) => {
       let category = 'inconnu';
       let summary = subject;
       let draft = '';
+      let autoOk = false;
       try {
         const { data } = await llmJson<any>({
           system: "Tu tries la boite de reception d'un logiciel SaaS francais pour restaurateurs (RestauMargin). Tu reponds UNIQUEMENT en JSON valide, sans texte autour.",
@@ -1429,9 +1430,15 @@ Reponds avec ce JSON strict :
   "category": "client_question" | "prospect" | "spam" | "phishing" | "demarchage" | "administratif" | "autre",
   "summary": "1 phrase resumant la demande",
   "needs_reply": true | false,
+  "auto_ok": true | false,
   "draft_reply": "si needs_reply est true : brouillon de reponse en francais, poli, concret, 4-8 lignes, signe 'L'equipe RestauMargin'. Sinon chaine vide."
 }
-Regles : "phishing" pour les faux avis de suspension de domaine / fausses factures. "demarchage" pour la prospection commerciale non sollicitee. "client_question"/"prospect" seulement si une vraie personne pose une question sur le produit.`,
+Regles de categorie : "phishing" pour les faux avis de suspension de domaine / fausses factures. "demarchage" pour la prospection commerciale non sollicitee. "client_question"/"prospect" seulement si une vraie personne pose une question sur le produit.
+
+Regle pour "auto_ok" (une reponse automatique partira SANS relecture humaine — sois prudent) :
+- true UNIQUEMENT si la demande est simple et FACTUELLE, entierement couverte par les faits produit : tarif, duree d'essai, fonctionnalites, comment ca marche, compatibilite.
+- false des qu'il y a le moindre enjeu : question juridique, structure de la societe, mentions legales, SIREN, demande de chiffres (clients, references, resultats), presse/journaliste/etude de marche, reclamation, remboursement, facturation, resiliation, incident technique, ton mecontent, demande de partenariat, ou toute question a laquelle tu ne peux pas repondre avec certitude a partir des faits.
+- Dans le doute : false. Un accuse de reception partira a la place, et un humain repondra.`,
           maxTokens: 700,
           timeoutMs: 15000,
         });
@@ -1439,6 +1446,7 @@ Regles : "phishing" pour les faux avis de suspension de domaine / fausses factur
           category = String(data.category || 'inconnu');
           summary = String(data.summary || subject).slice(0, 300);
           draft = String(data.draft_reply || '').slice(0, 2000);
+          autoOk = data.auto_ok === true;
         }
       } catch (e: any) {
         console.warn('[INBOX-SYNC] classification indisponible:', e?.message);
@@ -1463,14 +1471,63 @@ Regles : "phishing" pour les faux avis de suspension de domaine / fausses factur
       });
 
       const isJunk = ['spam', 'phishing', 'demarchage'].includes(category);
+
+      // ── 3b. REPONSE AUTOMATIQUE au contact ────────────────────────────────
+      // Deux niveaux, jamais un seul :
+      //  - auto_ok = true  -> la reponse IA part directement (question factuelle
+      //    entierement couverte par les faits produit : tarif, essai, features).
+      //  - auto_ok = false -> simple accuse de reception, et un humain repond.
+      // Le 2e niveau existe parce qu'une reponse automatique EVASIVE est pire que
+      // pas de reponse : le prospect du 22/08 posait des questions sur la structure
+      // juridique et les chiffres — y repondre automatiquement aurait aggrave les choses.
+      // Jamais de reponse auto au spam/phishing/demarchage (on ne confirme pas
+      // l'existence de l'adresse a un spammeur).
+      let autoReplied: 'reponse' | 'accuse' | null = null;
+      if (!isJunk && ['client_question', 'prospect'].includes(category) && process.env.AUTO_REPLY_DISABLED !== '1') {
+        try {
+          const { Resend } = await import('resend');
+          const resendAuto = new Resend(resendKey);
+          const corps = autoOk && draft
+            ? draft
+            : `Bonjour,\n\nNous avons bien recu votre message${subject ? ` au sujet de "${subject}"` : ''}.\n\nVotre demande demande une reponse precise : nous revenons vers vous personnellement dans les meilleurs delais.\n\nEn attendant, vous pouvez tester RestauMargin gratuitement pendant 7 jours, sans carte bancaire, sur https://www.restaumargin.fr`;
+          await resendAuto.emails.send({
+            from: 'RestauMargin <contact@restaumargin.fr>',
+            to: senderEmail,
+            replyTo: 'contact@restaumargin.fr',
+            subject: subject ? `Re: ${String(subject).slice(0, 120)}` : 'Votre message — RestauMargin',
+            html: `<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;color:#111;line-height:1.6;">
+  <p style="white-space:pre-wrap;">${String(corps).replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+  <hr style="border:none;border-top:1px solid #E5E7EB;margin:22px 0;">
+  <p style="font-size:12px;color:#737373;margin:0;">RestauMargin — gestion de marge pour la restauration<br>
+  Repondez directement a cet email, nous le lisons.</p>
+</div>`,
+          });
+          autoReplied = autoOk && draft ? 'reponse' : 'accuse';
+          // Trace la reponse dans la conversation, pour que l'historique du site
+          // reflete exactement ce que le contact a recu.
+          await prisma.message.create({
+            data: {
+              conversationId: conv.id,
+              senderId: 'user',
+              senderName: autoReplied === 'reponse' ? 'RestauMargin (reponse auto IA)' : 'RestauMargin (accuse de reception auto)',
+              content: corps,
+              timestamp: new Date().toISOString(),
+              read: true,
+            },
+          });
+        } catch (autoErr: any) {
+          console.error('[INBOX-SYNC auto-reply]', autoErr.message);
+        }
+      }
+
       await prisma.$executeRaw`
         INSERT INTO notif_log (kind, ref, category, meta, notified)
         VALUES ('inbound_email', ${String(item.id)}, ${category},
-                ${JSON.stringify({ from: senderEmail, subject, summary, draft, conversationId: conv.id })}::jsonb,
+                ${JSON.stringify({ from: senderEmail, subject, summary, draft, conversationId: conv.id, autoReplied })}::jsonb,
                 ${isJunk})
         ON CONFLICT (kind, ref) DO NOTHING`;
 
-      const entry = { from: senderEmail, subject, category, summary, draft, receivedAt: item.created_at || item.received_at || null };
+      const entry = { from: senderEmail, subject, category, summary, draft, autoReplied, receivedAt: item.created_at || item.received_at || null };
       if (isJunk) skippedSpam.push(entry); else imported.push(entry);
     }
 
@@ -1501,6 +1558,11 @@ Regles : "phishing" pour les faux avis de suspension de domaine / fausses factur
           `<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px;">
              <b>${m.subject}</b><br>
              <span style="color:#737373;font-size:13px;">de ${m.from} — ${m.category}</span>
+             ${m.autoReplied === 'reponse'
+               ? '<p style="margin:6px 0 0;font-size:12px;color:#059669;"><b>Reponse automatique deja envoyee</b> (question factuelle)</p>'
+               : m.autoReplied === 'accuse'
+                 ? '<p style="margin:6px 0 0;font-size:12px;color:#B45309;"><b>Accuse de reception envoye</b> — cette demande attend VOTRE reponse</p>'
+                 : ''}
              <p style="margin:8px 0 0;line-height:1.5;">${m.summary}</p>
              ${m.draft ? `<details style="margin-top:8px;"><summary style="cursor:pointer;color:#0D9488;">Brouillon de reponse propose</summary><p style="white-space:pre-wrap;background:#F5F5F5;padding:10px;border-radius:8px;margin-top:8px;line-height:1.5;">${m.draft}</p></details>` : ''}
            </div>`).join('');
@@ -1548,7 +1610,9 @@ Regles : "phishing" pour les faux avis de suspension de domaine / fausses factur
       questionsVisiteurs: visitorQuestions.length,
       emailSent,
       resteATraiter: Math.max(fresh.length - batch.length, 0),
-      details: imported.map((m) => ({ from: m.from, subject: m.subject, category: m.category })),
+      reponsesAutoEnvoyees: imported.filter((m) => m.autoReplied === 'reponse').length,
+      accusesReceptionEnvoyes: imported.filter((m) => m.autoReplied === 'accuse').length,
+      details: imported.map((m) => ({ from: m.from, subject: m.subject, category: m.category, autoReplied: m.autoReplied })),
     });
   } catch (e: any) {
     console.error('[CRON INBOX-SYNC]', e.message);

@@ -4,6 +4,7 @@ import {
   Loader2, Plus, X, Paperclip, ArrowLeft, StarOff,
   Circle, Users, ChefHat, Truck, MessageSquare,
   Phone, MessageCircle, CheckCheck, Mail, Zap,
+  Sparkles, Info,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -231,6 +232,11 @@ export default function Messagerie() {
   const [newMsgIds, setNewMsgIds] = useState<Set<string>>(new Set());
   const [isTyping, setIsTyping] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(false);
+  // ── Assistance IA (brouillon de reponse) ──
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiNotice, setAiNotice] = useState<{ kind: 'draft' | 'ignore' | 'error'; text: string } | null>(null);
+  const [showConsigne, setShowConsigne] = useState(false);
+  const [consigne, setConsigne] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -373,6 +379,9 @@ export default function Messagerie() {
     setInputText('');
     setIsTyping(false);
     setShowQuickReplies(false);
+    setAiNotice(null);
+    setShowConsigne(false);
+    setConsigne('');
     setTimeout(() => inputRef.current?.focus(), 100);
   }
 
@@ -384,6 +393,7 @@ export default function Messagerie() {
     const content = inputText.trim();
     setInputText('');
     setShowQuickReplies(false);
+    setAiNotice(null);
 
     const tempId = `tmp-${Date.now()}`;
     const newMsg: Message = {
@@ -411,6 +421,8 @@ export default function Messagerie() {
     );
     setNewMsgIds((s) => new Set(s).add(tempId));
     setTimeout(() => setNewMsgIds((s) => { const n = new Set(s); n.delete(tempId); return n; }), 600);
+    // Le brouillon a ete envoye : l'encart "relisez avant d'envoyer" n'a plus lieu d'etre
+    setAiNotice(null);
 
     if (useMock) return;
 
@@ -457,6 +469,90 @@ export default function Messagerie() {
     setInputText(text);
     setShowQuickReplies(false);
     setTimeout(() => inputRef.current?.focus(), 50);
+  }
+
+  // ── Brouillon IA ────────────────────────────────────────────────────
+  // Redimensionne le textarea apres une injection programmatique
+  function resizeInput() {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 128) + 'px';
+  }
+
+  async function handleAiDraft() {
+    if (!activeId || aiLoading) return;
+    // Ne jamais perdre du texte deja tape sans accord explicite
+    if (inputText.trim() && !window.confirm("Remplacer le texte deja saisi par le brouillon de l'IA ?")) return;
+
+    setAiLoading(true);
+    setAiNotice(null);
+    try {
+      const trimmedConsigne = consigne.trim();
+      const res = await fetch(`${API}/conversations/${activeId}/ai-draft`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(trimmedConsigne ? { consigne: trimmedConsigne } : {}),
+      });
+      // On lit d'abord en TEXTE puis on parse : un res.json() direct plante avec
+      // "JSON.parse: unexpected character at line 1 column 1" des que la reponse
+      // n'est pas du JSON (page HTML d'un 504 Vercel, 502, ou bascule pendant un
+      // deploiement) — l'utilisateur verrait alors une erreur technique
+      // incomprehensible au lieu d'un message clair.
+      const raw = await res.text();
+      let data: any = {};
+      let parseFailed = false;
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        parseFailed = true;
+      }
+
+      if (!res.ok || parseFailed) {
+        const errorDetail = (!parseFailed && (data?.error || data?.message)) || '';
+        const statusText =
+          res.status === 404 ? 'Conversation introuvable.'
+          : res.status === 400 ? "Cette conversation ne contient aucun message a analyser."
+          : res.status === 401 ? 'Session expiree, reconnectez-vous.'
+          : res.status === 429 ? 'Quota IA depasse, reessayez plus tard.'
+          : res.status === 503 ? "L'assistant IA est indisponible pour le moment."
+          : res.status === 502 || res.status === 504 ? "La generation a pris trop de temps. Reessayez dans un instant."
+          : parseFailed ? "Reponse illisible du serveur (mise a jour en cours ?). Reessayez dans un instant."
+          : `Erreur serveur (${res.status}).`;
+        throw new Error(errorDetail || statusText);
+      }
+
+      if (data?.recommandation === 'ignorer') {
+        setAiNotice({
+          kind: 'ignore',
+          text: "L'IA a identifie ce message comme du demarchage ou du spam — aucune reponse suggeree.",
+        });
+        return;
+      }
+
+      const draft = String(data?.draft || '').trim();
+      if (!draft) {
+        setAiNotice({ kind: 'error', text: "L'IA n'a pas produit de brouillon exploitable." });
+        return;
+      }
+
+      setInputText(draft);
+      setShowQuickReplies(false);
+      setAiNotice({
+        kind: 'draft',
+        text: data?.provider
+          ? `Brouillon genere par l'IA (${data.provider}) — relisez avant d'envoyer.`
+          : "Brouillon genere par l'IA — relisez avant d'envoyer.",
+      });
+      setTimeout(() => { resizeInput(); inputRef.current?.focus(); }, 50);
+    } catch (err: any) {
+      setAiNotice({
+        kind: 'error',
+        text: err?.message || "L'assistant IA est indisponible pour le moment.",
+      });
+    } finally {
+      setAiLoading(false);
+    }
   }
 
   // ── Compose ─────────────────────────────────────────────────────────
@@ -926,6 +1022,68 @@ export default function Messagerie() {
 
               {/* Input area */}
               <div className="border-t border-mono-900 dark:border-mono-300 bg-white dark:bg-black p-3 flex-shrink-0">
+                {/* ── Assistance IA ── */}
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <button
+                    onClick={handleAiDraft}
+                    disabled={aiLoading}
+                    className="flex items-center gap-2 min-h-[40px] px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 shadow-sm"
+                    title="Generer un brouillon de reponse avec l'IA"
+                  >
+                    {aiLoading
+                      ? <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
+                      : <Sparkles className="w-4 h-4 flex-shrink-0" />}
+                    <span>{aiLoading ? 'Redaction...' : "Repondre avec l'IA"}</span>
+                  </button>
+
+                  <button
+                    onClick={() => setShowConsigne((v) => !v)}
+                    className={`min-h-[40px] px-3 py-2 rounded-xl text-xs font-medium border transition-all ${
+                      showConsigne
+                        ? 'border-teal-600 text-teal-700 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/20'
+                        : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white hover:border-[#D1D5DB] dark:hover:border-[#262626]'
+                    }`}
+                  >
+                    {showConsigne ? 'Masquer la consigne' : "Donner une consigne a l'IA"}
+                  </button>
+                </div>
+
+                {/* Consigne optionnelle */}
+                {showConsigne && (
+                  <input
+                    type="text"
+                    value={consigne}
+                    onChange={(e) => setConsigne(e.target.value)}
+                    placeholder="ex : propose un rendez-vous telephonique"
+                    className="w-full min-h-[40px] mb-2 px-3 py-2 rounded-lg bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 text-sm text-[#111111] dark:text-white placeholder:text-[#9CA3AF] dark:placeholder:text-[#737373] outline-none transition-all"
+                  />
+                )}
+
+                {/* Retour de l'assistance IA */}
+                {aiNotice && (
+                  <div
+                    className={`flex items-start gap-2 mb-2 px-3 py-2 rounded-xl border text-xs leading-relaxed ${
+                      aiNotice.kind === 'ignore'
+                        ? 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F5F5F5] dark:bg-[#0A0A0A] text-[#111111] dark:text-white'
+                        : aiNotice.kind === 'error'
+                          ? 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#737373] dark:text-[#A3A3A3]'
+                          : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#737373] dark:text-[#A3A3A3]'
+                    }`}
+                  >
+                    {aiNotice.kind === 'ignore'
+                      ? <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-teal-600 dark:text-teal-400" />
+                      : <Sparkles className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-teal-600 dark:text-teal-400" />}
+                    <span className="flex-1 min-w-0 break-words">{aiNotice.text}</span>
+                    <button
+                      onClick={() => setAiNotice(null)}
+                      className="flex-shrink-0 p-0.5 rounded hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A] text-[#737373] dark:text-[#A3A3A3] transition-colors"
+                      title="Fermer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+
                 <div className="flex items-end gap-2">
                   {/* Quick replies toggle */}
                   <button

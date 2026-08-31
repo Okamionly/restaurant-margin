@@ -87,7 +87,7 @@ export default function BlogArticleHero({
             Blog
           </Link>
           <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-[#0F172A] font-medium truncate">{category}</span>
+          <span className="text-[#111111] dark:text-white font-medium truncate">{category}</span>
         </nav>
 
         {/* Meta badges */}
@@ -106,7 +106,7 @@ export default function BlogArticleHero({
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F172A] leading-tight tracking-tight mb-6">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#111111] dark:text-white leading-tight tracking-tight mb-6">
           {renderTitle()}
         </h1>
 

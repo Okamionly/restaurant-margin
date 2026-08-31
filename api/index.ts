@@ -528,13 +528,26 @@ app.get('/api/health', async (req: any, res) => {
   // This eliminates the ~1s Supabase round-trip that blocked the response.
   const dbStatus = dbHealthCache.status || 'ok';
   if (cacheExpired) {
-    (prisma.$queryRaw`SELECT 1` as Promise<unknown>).then(() => {
-      dbHealthCache.status = 'ok';
-      dbHealthCache.cachedAt = Date.now();
-    }).catch(() => {
-      dbHealthCache.status = 'error';
-      dbHealthCache.cachedAt = Date.now();
-    });
+    // Un SEUL echec ne suffit pas a declarer la base en panne : sur serverless, le
+    // tout premier SELECT d'une instance peut echouer (connexion Prisma pas encore
+    // etablie au cold start). Or le statut mis en cache restait 'error' pendant
+    // toute la duree de vie de l'instance -> fausses alertes recurrentes
+    // (mesure du 2026-08-31 : health disait db:error alors que 8 appels reels sur
+    // 8 passaient). On retente donc une fois avant de conclure a la panne.
+    (prisma.$queryRaw`SELECT 1` as Promise<unknown>)
+      .then(() => {
+        dbHealthCache.status = 'ok';
+        dbHealthCache.cachedAt = Date.now();
+      })
+      .catch(async () => {
+        try {
+          await prisma.$queryRaw`SELECT 1`;
+          dbHealthCache.status = 'ok';
+        } catch {
+          dbHealthCache.status = 'error';
+        }
+        dbHealthCache.cachedAt = Date.now();
+      });
   }
   // Shallow = presence de la cle. Deep (?deep=1) = vrai appel modele 1 token, pour
   // qu'un modele retire ou une cle revoquee soit detecte tout de suite (les deux

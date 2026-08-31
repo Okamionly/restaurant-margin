@@ -680,7 +680,15 @@ Ce qu'il fait reellement :
 - Digest quotidien : cours des denrees, produits de saison, recette du jour
 Tarif : 29 EUR par mois. Essai gratuit de 7 jours, sans carte bancaire.
 Contact humain : contact@restaumargin.fr
-Le service est exploite par un entrepreneur individuel francais.`;
+Le service est exploite par un entrepreneur individuel francais.
+
+STADE REEL DU PRODUIT (a respecter absolument) : RestauMargin est RECENT et en phase
+de lancement. Il compte tres peu d'utilisateurs et aucun abonne payant a ce jour.
+Ne laisse JAMAIS entendre une adoption large ("deja utilise par des etablissements",
+"nos clients", "de nombreux restaurants", "ils ont gagne X %"). Si on te demande le
+nombre d'utilisateurs, de clients ou de references : dis honnetement que le service
+est jeune, en lancement, et propose de mettre en relation avec l'editeur. L'honnetete
+sur ce point est une consigne stricte : une adoption exageree a deja pose probleme.`;
 
 app.post('/api/assistant/ask', async (req: any, res) => {
   try {

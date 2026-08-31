@@ -753,6 +753,24 @@ const ROUTES = [
     title: 'Politique de Confidentialite — RestauMargin',
     description: 'Politique de confidentialite et protection des donnees personnelles de RestauMargin. Conforme RGPD.',
   },
+  {
+    path: '/blog/tva-restauration-taux-guide',
+    title: 'TVA en restauration 2026 : 5,5 %, 10 % ou 20 % — quel taux appliquer ?',
+    description: "Le guide complet de la TVA en restauration : la vraie regle (consommation immediate ou differee), le piege de l'alcool, le ticket a taux multiples, et l'impact sur votre marge.",
+    type: 'article',
+  },
+  {
+    path: '/blog/licence-iv-restaurant-guide',
+    title: "Licence IV en restauration : l'obtenir, la transferer, l'exploiter (guide 2026)",
+    description: "Groupes de boissons, licence restaurant vs licence IV, permis d'exploitation, mutation et transfert, prix 2026, comptabilisation et les 4 pieges qui font perdre une licence.",
+    type: 'article',
+  },
+  {
+    path: '/blog/avis-google-negatifs-restaurant',
+    title: 'Avis Google negatifs au restaurant : la methode qui limite les degats',
+    description: "Combien coute un avis negatif, comment y repondre sans se braquer, quand demander sa suppression a Google, et comment construire un matelas d'avis positifs.",
+    type: 'article',
+  },
 ];
 
 function run() {

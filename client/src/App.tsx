@@ -229,6 +229,9 @@ const BlogOuvrirTerrasseRestaurant = lazyRetry(() => import('./pages/BlogOuvrirT
 const BlogNegocierFournisseurs = lazyRetry(() => import('./pages/BlogNegocierFournisseurs'));
 const BlogRepriseRestaurant = lazyRetry(() => import('./pages/BlogRepriseRestaurant'));
 const BlogGoogleMyBusiness = lazyRetry(() => import('./pages/BlogGoogleMyBusiness'));
+const BlogTvaRestaurationTaux = lazyRetry(() => import('./pages/BlogTvaRestaurationTaux'));
+const BlogLicenceIV = lazyRetry(() => import('./pages/BlogLicenceIV'));
+const BlogAvisGoogleNegatifs = lazyRetry(() => import('./pages/BlogAvisGoogleNegatifs'));
 const Careers = lazyRetry(() => import('./pages/Careers'));
 const HelpPage = lazyRetry(() => import('./pages/Help'));
 const BreakevenCalculator = lazyRetry(() => import('./pages/BreakevenCalculator'));
@@ -1329,6 +1332,10 @@ function App() {
           <Route path="/blog/negocier-fournisseurs-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogNegocierFournisseurs /></Suspense>} />
           <Route path="/blog/reprise-restaurant-guide-acheteur" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogRepriseRestaurant /></Suspense>} />
           <Route path="/blog/google-my-business-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogGoogleMyBusiness /></Suspense>} />
+          {/* SEO daily push 2026-08-31 : lot de publication (3 articles rediges en attente depuis 6 semaines). */}
+          <Route path="/blog/tva-restauration-taux-guide" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogTvaRestaurationTaux /></Suspense>} />
+          <Route path="/blog/licence-iv-restaurant-guide" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogLicenceIV /></Suspense>} />
+          <Route path="/blog/avis-google-negatifs-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogAvisGoogleNegatifs /></Suspense>} />
           {/* SEO long-tail 2026-05-26 : Glossaire restauration (60+ termes : food cost, marge, prime cost, fiche technique, HACCP, GMP, RevPASH). */}
           <Route path="/glossaire-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><GlossaireRestauration /></Suspense>} />
           {/* Pages comparatives (alternatives) */}

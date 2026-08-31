@@ -374,6 +374,30 @@ const posts: BlogPost[] = [
     readTime: '8 min',
     date: '2026-08-21',
   },
+  {
+    slug: 'tva-restauration-taux-guide',
+    title: 'TVA en restauration 2026 : 5,5 %, 10 % ou 20 % — quel taux appliquer ?',
+    excerpt: "La vraie règle (consommation immédiate ou différée), le piège de l'alcool, le ticket à taux multiples, et l'impact sur votre marge. Guide complet 2026.",
+    category: 'Réglementation',
+    readTime: '12 min',
+    date: '2026-08-31',
+  },
+  {
+    slug: 'licence-iv-restaurant-guide',
+    title: "Licence IV en restauration : l'obtenir, la transférer, l'exploiter (guide 2026)",
+    excerpt: "Licence restaurant vs licence IV, permis d'exploitation, mutation et transfert, prix 2026, comptabilisation et les 4 pièges qui font perdre une licence.",
+    category: 'Réglementation',
+    readTime: '14 min',
+    date: '2026-08-31',
+  },
+  {
+    slug: 'avis-google-negatifs-restaurant',
+    title: 'Avis Google négatifs au restaurant : la méthode qui limite les dégâts',
+    excerpt: "Combien coûte un avis négatif, comment y répondre sans se braquer, quand demander sa suppression à Google, et comment construire un matelas d'avis positifs.",
+    category: 'Marketing',
+    readTime: '11 min',
+    date: '2026-08-31',
+  },
 ];
 
 const categoryColors: Record<string, string> = {

@@ -11,7 +11,6 @@ Triées par impact décroissant. La feature en cours est retirée par le Feature
 ### OPERATIONS
 
 ### INTELLIGENCE
-- **Analyse saisonnalité ingrédients** — Calendrier visuel des saisons par ingrédient pour optimiser les achats et les menus.
 
 ### COMMUNICATION
 - **Générateur de bon cadeau PDF** — Création de bons-cadeaux personnalisés (nom, montant, design) exportables en PDF.
@@ -19,6 +18,9 @@ Triées par impact décroissant. La feature en cours est retirée par le Feature
 ---
 
 ## Complétées
+
+- ✅ **Analyse saisonnalité ingrédients** (2026-09-02) — Page `/saisonnalite` dans INTELLIGENCE. Calendrier mensuel pour 56 ingrédients (Légumes/Fruits/Champignons/Herbes/Poissons), filtre par catégorie, mois, et recherche texte. Astuces food cost intégrées.
+
 
 - ✅ **Calculateur Seuil de Rentabilité** (2026-04-24) — Page `/rentabilite` dans BUSINESS. Charges fixes, taux marge variable, ticket moyen → CA seuil, couverts/mois/semaine/jour.
 - ✅ **Calculateur TVA restauration** (2026-05-06) — Page `/calculateur-tva` dans BUSINESS. Convertisseur HT↔TTC pour les 3 taux (5,5 % / 10 % / 20 %) avec tableau de référence produits.

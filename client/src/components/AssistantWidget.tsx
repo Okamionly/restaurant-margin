@@ -310,7 +310,7 @@ function renderBlock(block: Block, key: string): ReactNode {
         {items}
       </ol>
     ) : (
-      <ul key={key} className="list-disc pl-4 space-y-1 marker:text-[#A3A3A3]">
+      <ul key={key} className="list-disc pl-4 space-y-1 marker:text-[#737373] dark:marker:text-[#A3A3A3]">
         {items}
       </ul>
     );

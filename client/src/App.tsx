@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy, Handshake, Timer, Mail, Gift, Activity } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy, Handshake, Timer, Mail, Gift, Activity, Leaf } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import { isOnboardingCompleted } from './utils/onboardingFlags';
 import CookieBanner from './components/CookieBanner';
@@ -243,6 +243,7 @@ const PrimeSaisonniere = lazyRetry(() => import('./pages/PrimeSaisonniere'));
 const DlcTracker = lazyRetry(() => import('./pages/DlcTracker'));
 const ChecklistService = lazyRetry(() => import('./pages/ChecklistService'));
 const ChronoPreparation = lazyRetry(() => import('./pages/ChronoPreparation'));
+const SaisonnaliteIngredients = lazyRetry(() => import('./pages/SaisonnaliteIngredients'));
 const AlternativeHubrise = lazyRetry(() => import('./pages/AlternativeHubrise'));
 const AlternativeZenchef = lazyRetry(() => import('./pages/AlternativeZenchef'));
 const AlternativeLAddition = lazyRetry(() => import('./pages/AlternativeLAddition'));
@@ -554,6 +555,7 @@ function AppLayout() {
         { to: '/recettes-semaine', icon: ChefHat, label: 'Recettes semaine' },
         { to: '/negociation-ia', icon: Handshake, label: 'Negociation IA' },
         { to: '/simulateur-prix', icon: TrendingUp, label: 'Simulateur prix' },
+        { to: '/saisonnalite', icon: Leaf, label: 'Saisonnalité' },
       ],
     },
     {
@@ -1118,6 +1120,7 @@ function AppLayout() {
               <Route path="/dlc-tracker" element={<DlcTracker />} />
               <Route path="/checklist-service" element={<ChecklistService />} />
               <Route path="/chrono-preparation" element={<ChronoPreparation />} />
+              <Route path="/saisonnalite" element={<SaisonnaliteIngredients />} />
               <Route path="/restaurants" element={<TrialPaywallGuard feature="Multi-restaurant"><Restaurants /></TrialPaywallGuard>} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/abonnement" element={<Subscription />} />

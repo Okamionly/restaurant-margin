@@ -249,6 +249,7 @@ const AlternativeZenchef = lazyRetry(() => import('./pages/AlternativeZenchef'))
 const AlternativeLAddition = lazyRetry(() => import('./pages/AlternativeLAddition'));
 const AlternativeLightspeed = lazyRetry(() => import('./pages/AlternativeLightspeed'));
 const AlternativeTheFork = lazyRetry(() => import('./pages/AlternativeTheFork'));
+const AlternativeCosKitchen = lazyRetry(() => import('./pages/AlternativeCosKitchen'));
 const ComparatifLogicielsRestaurant = lazyRetry(() => import('./pages/ComparatifLogicielsRestaurant'));
 const ComparatifRestauMarginZenchef = lazyRetry(() => import('./pages/ComparatifRestauMarginZenchef'));
 const LogicielMargeBoulangerie = lazyRetry(() => import('./pages/LogicielMargeBoulangerie'));
@@ -1345,6 +1346,7 @@ function App() {
           <Route path="/alternative-hubrise" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeHubrise /></Suspense>} />
           <Route path="/alternative-lightspeed" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeLightspeed /></Suspense>} />
           <Route path="/alternative-thefork" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeTheFork /></Suspense>} />
+          <Route path="/alternative-cos-kitchen" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeCosKitchen /></Suspense>} />
           {/* Mega-comparatif 12 logiciels restaurant 2026 */}
           <Route path="/comparatif-logiciels-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><ComparatifLogicielsRestaurant /></Suspense>} />
           {/* SEO contre-attaque 2026-05-27 : benchmark direct RestauMargin vs Zenchef (capter "zenchef alternative", "zenchef vs restaumargin"). */}

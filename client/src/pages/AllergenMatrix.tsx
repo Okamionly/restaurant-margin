@@ -248,8 +248,8 @@ export default function AllergenMatrix() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
-        <span className="ml-2 text-sm text-[#9CA3AF]">Chargement de la matrice allergenes...</span>
+        <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF] dark:text-mono-500" />
+        <span className="ml-2 text-sm text-[#9CA3AF] dark:text-mono-500">Chargement de la matrice allergenes...</span>
       </div>
     );
   }

@@ -1725,8 +1725,8 @@ export default function Settings() {
               disabled={portalLoading}
               className="flex items-center gap-2 px-5 py-2.5 bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <ExternalLink className="w-4 h-4" />
-              {portalLoading ? 'Chargement...' : 'Gerer mon abonnement'}
+              {portalLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <ExternalLink className="w-4 h-4" />}
+              {portalLoading ? 'Chargement...' : 'Gérer mon abonnement'}
             </button>
           </div>
         </div>

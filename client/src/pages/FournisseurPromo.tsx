@@ -267,7 +267,7 @@ export default function FournisseurPromo() {
     return (
       <div className="flex flex-col items-center justify-center h-96 text-[#9CA3AF] dark:text-mono-500">
         <Loader2 className="w-8 h-8 animate-spin mb-4" />
-        <p>Chargement des promotions...</p>
+        <p className="text-sm text-[#9CA3AF] dark:text-mono-500">Chargement des promotions...</p>
       </div>
     );
   }

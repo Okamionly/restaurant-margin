@@ -232,6 +232,7 @@ const BlogGoogleMyBusiness = lazyRetry(() => import('./pages/BlogGoogleMyBusines
 const BlogTvaRestaurationTaux = lazyRetry(() => import('./pages/BlogTvaRestaurationTaux'));
 const BlogLicenceIV = lazyRetry(() => import('./pages/BlogLicenceIV'));
 const BlogAvisGoogleNegatifs = lazyRetry(() => import('./pages/BlogAvisGoogleNegatifs'));
+const BlogNoShowRestaurant = lazyRetry(() => import('./pages/BlogNoShowRestaurant'));
 const Careers = lazyRetry(() => import('./pages/Careers'));
 const HelpPage = lazyRetry(() => import('./pages/Help'));
 const BreakevenCalculator = lazyRetry(() => import('./pages/BreakevenCalculator'));
@@ -1340,6 +1341,7 @@ function App() {
           <Route path="/blog/tva-restauration-taux-guide" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogTvaRestaurationTaux /></Suspense>} />
           <Route path="/blog/licence-iv-restaurant-guide" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogLicenceIV /></Suspense>} />
           <Route path="/blog/avis-google-negatifs-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogAvisGoogleNegatifs /></Suspense>} />
+          <Route path="/blog/no-show-restaurant-solutions" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogNoShowRestaurant /></Suspense>} />
           {/* SEO long-tail 2026-05-26 : Glossaire restauration (60+ termes : food cost, marge, prime cost, fiche technique, HACCP, GMP, RevPASH). */}
           <Route path="/glossaire-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><GlossaireRestauration /></Suspense>} />
           {/* Pages comparatives (alternatives) */}

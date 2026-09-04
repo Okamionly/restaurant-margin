@@ -278,20 +278,20 @@ export default function OutreachMailer() {
   };
 
   return (
-    <div className="min-h-screen bg-mono-1000 py-8 px-4 sm:px-6">
+    <div className="min-h-screen bg-mono-1000 dark:bg-black py-8 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center gap-3 mb-2">
           <Mail className="w-7 h-7 text-emerald-600" />
-          <h1 className="text-3xl font-black text-[#0F172A]">Outreach Mailer</h1>
+          <h1 className="text-3xl font-black text-[#0F172A] dark:text-white">Outreach Mailer</h1>
         </div>
-        <p className="text-sm text-mono-400 mb-8">
+        <p className="text-sm text-mono-400 dark:text-[#A3A3A3] mb-8">
           Envoi d'emails branded depuis <strong>contact@restaumargin.fr</strong> avec template HTML pro
           (logo, couleurs, signature). Pour SEO link building, partenariats, journalistes.
         </p>
 
         {/* Templates */}
-        <div className="bg-white border border-mono-900 rounded-2xl p-5 mb-6">
-          <h2 className="text-sm font-bold text-[#0F172A] uppercase tracking-wider mb-3 flex items-center gap-2">
+        <div className="bg-white dark:bg-[#0A0A0A]/50 border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-5 mb-6">
+          <h2 className="text-sm font-bold text-[#0F172A] dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-emerald-600" />
             Templates pretes
           </h2>
@@ -303,7 +303,7 @@ export default function OutreachMailer() {
                 className={`px-3 py-2 text-sm rounded-full border transition ${
                   selectedTemplate.id === t.id
                     ? 'bg-emerald-600 text-white border-emerald-600'
-                    : 'bg-white text-[#0F172A] border-mono-900 hover:border-emerald-500'
+                    : 'bg-white dark:bg-[#1A1A1A] text-[#0F172A] dark:text-white border-mono-900 dark:border-[#262626] hover:border-emerald-500 dark:hover:border-emerald-700'
                 }`}
               >
                 {t.label}
@@ -313,67 +313,67 @@ export default function OutreachMailer() {
         </div>
 
         {/* Form */}
-        <div className="bg-white border border-mono-900 rounded-2xl p-6 sm:p-8 space-y-5">
+        <div className="bg-white dark:bg-[#0A0A0A]/50 border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-6 sm:p-8 space-y-5">
           {/* To */}
           <div>
-            <label className="block text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider mb-2">
               Destinataire (To)
             </label>
             <input
               type="email"
               value={to}
               onChange={e => setTo(e.target.value)}
-              className="w-full px-4 py-2.5 bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-mono-900 dark:border-[#262626] text-[#111111] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-[#A3A3A3]"
               placeholder="redaction@example.com"
             />
           </div>
 
           {/* Subject */}
           <div>
-            <label className="block text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider mb-2">
               Sujet
             </label>
             <input
               type="text"
               value={subject}
               onChange={e => setSubject(e.target.value)}
-              className="w-full px-4 py-2.5 bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-mono-900 dark:border-[#262626] text-[#111111] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-[#A3A3A3]"
             />
           </div>
 
           {/* Recipient Name */}
           <div>
-            <label className="block text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider mb-2">
               Salutation
             </label>
             <input
               type="text"
               value={recipientName}
               onChange={e => setRecipientName(e.target.value)}
-              className="w-full px-4 py-2.5 bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-mono-900 dark:border-[#262626] text-[#111111] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-[#A3A3A3]"
               placeholder="Bonjour, ou Madame, Monsieur,"
             />
           </div>
 
           {/* Intro */}
           <div>
-            <label className="block text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider mb-2">
               Intro (qui on est)
             </label>
             <textarea
               value={intro}
               onChange={e => setIntro(e.target.value)}
               rows={4}
-              className="w-full px-4 py-2.5 bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none font-mono text-sm"
+              className="w-full px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-mono-900 dark:border-[#262626] text-[#111111] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none font-mono text-sm placeholder:text-[#A3A3A3]"
               placeholder="Je viens de lancer RestauMargin..."
             />
-            <p className="text-xs text-[#94A3B8] mt-1">Markdown : **bold** + saut de ligne</p>
+            <p className="text-xs text-[#94A3B8] dark:text-[#A3A3A3] mt-1">Markdown : **bold** + saut de ligne</p>
           </div>
 
           {/* Articles */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-1.5">
+              <label className="text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider flex items-center gap-1.5">
                 <FileText className="w-3.5 h-3.5" />
                 Articles blog (preuve d'expertise)
               </label>
@@ -391,7 +391,7 @@ export default function OutreachMailer() {
                   <select
                     value=""
                     onChange={e => e.target.value !== '' && pickFromBlog(idx, parseInt(e.target.value))}
-                    className="px-2 py-2 text-xs bg-emerald-50 border border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="px-2 py-2 text-xs bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-[#111111] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
                     <option value="">📚 Pick</option>
                     {BLOG_ARTICLES.map((b, i) => (
@@ -403,18 +403,18 @@ export default function OutreachMailer() {
                     value={a.title}
                     onChange={e => updateArticle(idx, 'title', e.target.value)}
                     placeholder="Titre"
-                    className="flex-1 px-3 py-2 text-sm bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="flex-1 px-3 py-2 text-sm bg-[#F5F5F5] dark:bg-[#262626] border border-mono-900 dark:border-[#262626] text-[#111111] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder:text-[#A3A3A3]"
                   />
                   <input
                     type="url"
                     value={a.url}
                     onChange={e => updateArticle(idx, 'url', e.target.value)}
                     placeholder="https://..."
-                    className="flex-[2] px-3 py-2 text-sm bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="flex-[2] px-3 py-2 text-sm bg-[#F5F5F5] dark:bg-[#262626] border border-mono-900 dark:border-[#262626] text-[#111111] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder:text-[#A3A3A3]"
                   />
                   <button
                     onClick={() => removeArticle(idx)}
-                    className="px-2 py-2 text-mono-500 hover:text-red-500"
+                    className="px-2 py-2 text-mono-500 dark:text-[#A3A3A3] hover:text-red-500 transition-colors"
                     title="Supprimer"
                   >
                     <X className="w-4 h-4" />
@@ -426,23 +426,23 @@ export default function OutreachMailer() {
 
           {/* Pitch */}
           <div>
-            <label className="block text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider mb-2">
               Pitch (corps du mail)
             </label>
             <textarea
               value={pitch}
               onChange={e => setPitch(e.target.value)}
               rows={14}
-              className="w-full px-4 py-2.5 bg-mono-1000 border border-mono-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none font-mono text-sm"
+              className="w-full px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-mono-900 dark:border-[#262626] text-[#111111] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none font-mono text-sm placeholder:text-[#A3A3A3]"
               placeholder="Je propose..."
             />
-            <p className="text-xs text-[#94A3B8] mt-1">Markdown : **bold** + sauts de ligne preserves</p>
+            <p className="text-xs text-[#94A3B8] dark:text-[#A3A3A3] mt-1">Markdown : **bold** + sauts de ligne preserves</p>
           </div>
 
           {/* Result */}
           {result && (
             <div className={`flex items-start gap-2 p-3 rounded-lg ${
-              result.ok ? 'bg-emerald-50 border border-emerald-200 text-emerald-700' : 'bg-red-50 border border-red-200 text-red-700'
+              result.ok ? 'bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400'
             }`}>
               {result.ok ? <Check className="w-5 h-5 flex-shrink-0 mt-0.5" /> : <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />}
               <p className="text-sm font-medium">{result.msg}</p>
@@ -450,7 +450,7 @@ export default function OutreachMailer() {
           )}
 
           {/* Send button */}
-          <div className="pt-4 border-t border-mono-900">
+          <div className="pt-4 border-t border-mono-900 dark:border-[#1A1A1A]">
             <button
               onClick={handleSend}
               disabled={sending}
@@ -459,7 +459,7 @@ export default function OutreachMailer() {
               {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               {sending ? 'Envoi en cours...' : 'Envoyer depuis contact@restaumargin.fr'}
             </button>
-            <p className="text-xs text-[#94A3B8] mt-3">
+            <p className="text-xs text-[#94A3B8] dark:text-[#A3A3A3] mt-3">
               ✓ From : RestauMargin &lt;contact@restaumargin.fr&gt;
               <br />
               ✓ HTML branded avec logo + couleurs + signature pro

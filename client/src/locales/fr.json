@@ -697,7 +697,8 @@
     "elementDeleted": "Élément supprimé",
     "itemDeleted": "supprimé",
     "restoreSuccess": "Restauré avec succès",
-    "restoreError": "Erreur lors de la restauration"
+    "restoreError": "Erreur lors de la restauration",
+    "retry": "Réessayer"
   },
   "login": {
     "title": "Connexion",
@@ -2655,5 +2656,9 @@
     "severityCritique": "Critique",
     "severityWarning": "Attention",
     "severityInfo": "Info"
+  },
+  "analytics": {
+    "errorLoading": "Erreur de chargement du rapport",
+    "reportDownloaded": "Rapport téléchargé !"
   }
 }

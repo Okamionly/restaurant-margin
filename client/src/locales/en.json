@@ -697,7 +697,8 @@
     "elementDeleted": "Item deleted",
     "itemDeleted": "deleted",
     "restoreSuccess": "Restored successfully",
-    "restoreError": "Error restoring item"
+    "restoreError": "Error restoring item",
+    "retry": "Retry"
   },
   "login": {
     "title": "Login",
@@ -2655,5 +2656,9 @@
     "severityCritique": "Critical",
     "severityWarning": "Warning",
     "severityInfo": "Info"
+  },
+  "analytics": {
+    "errorLoading": "Error loading report",
+    "reportDownloaded": "Report downloaded!"
   }
 }

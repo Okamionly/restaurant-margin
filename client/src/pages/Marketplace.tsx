@@ -840,6 +840,7 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
 // ── Supplier Rating System ──────────────────────────────────────────────────
 
 function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
+  const { t } = useTranslation();
   const [ratings, setRatings] = useState<SupplierRating[]>(() =>
     suppliers.map(s => ({
       supplierId: s.id,
@@ -872,10 +873,10 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
     .sort((a, b) => b.overall - a.overall);
 
   const CRITERIA = [
-    { key: 'price' as const, label: 'Prix', icon: BadgePercent },
-    { key: 'quality' as const, label: 'Qualite', icon: Shield },
-    { key: 'delivery' as const, label: 'Livraison', icon: Truck },
-    { key: 'communication' as const, label: 'Communication', icon: MessageSquare },
+    { key: 'price' as const, label: t('marketplace.ratingPrice'), icon: BadgePercent },
+    { key: 'quality' as const, label: t('marketplace.ratingQuality'), icon: Shield },
+    { key: 'delivery' as const, label: t('marketplace.ratingDelivery'), icon: Truck },
+    { key: 'communication' as const, label: t('marketplace.ratingCommunication'), icon: MessageSquare },
   ];
 
   return (
@@ -885,8 +886,8 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
           <Star className="w-5 h-5 text-amber-600 dark:text-amber-400" />
         </div>
         <div>
-          <h2 className="font-bold text-mono-100 dark:text-white text-lg">Evaluation des fournisseurs</h2>
-          <p className="text-xs text-[#9CA3AF] dark:text-mono-500">Notez vos fournisseurs sur 4 criteres — les meilleurs obtiennent le badge Recommande</p>
+          <h2 className="font-bold text-mono-100 dark:text-white text-lg">{t('marketplace.ratingTitle')}</h2>
+          <p className="text-xs text-[#9CA3AF] dark:text-mono-500">{t('marketplace.ratingSubtitle')}</p>
         </div>
       </div>
 
@@ -915,7 +916,7 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
                     {isRecommended && (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-gradient-to-r from-amber-400 to-orange-400 text-white">
                         <ThumbsUp className="w-3 h-3" />
-                        Recommande
+                        {t('marketplace.ratingRecommended')}
                       </span>
                     )}
                   </div>
@@ -937,7 +938,7 @@ function SupplierRatingSystem({ suppliers }: { suppliers: Supplier[] }) {
                       : 'bg-mono-950 dark:bg-[#171717] text-[#6B7280] dark:text-mono-700 hover:bg-mono-900 dark:hover:bg-mono-300'
                   }`}
                 >
-                  {isEditing ? 'Sauvegarder' : 'Modifier'}
+                  {isEditing ? t('common.save') : t('common.edit')}
                 </button>
               </div>
 

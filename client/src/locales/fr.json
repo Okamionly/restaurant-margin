@@ -1202,7 +1202,14 @@
     "sent": "Envoyé",
     "confirmed": "Confirmé",
     "received": "Reçu",
-    "confirm": "Confirmer"
+    "confirm": "Confirmer",
+    "ratingTitle": "Évaluation des fournisseurs",
+    "ratingSubtitle": "Notez vos fournisseurs sur 4 critères — les meilleurs obtiennent le badge Recommandé",
+    "ratingRecommended": "Recommandé",
+    "ratingPrice": "Prix",
+    "ratingQuality": "Qualité",
+    "ratingDelivery": "Livraison",
+    "ratingCommunication": "Communication"
   },
   "messagerie": {
     "title": "Messagerie",

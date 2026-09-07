@@ -398,6 +398,22 @@ const posts: BlogPost[] = [
     readTime: '11 min',
     date: '2026-08-31',
   },
+  {
+    slug: 'no-show-restaurant-solutions',
+    title: 'No-show au restaurant : solutions pour réduire les réservations non honorées',
+    excerpt: "Calculez le vrai coût d'un no-show, activez les SMS de rappel, l'empreinte bancaire et rédigez une politique d'annulation béton. Guide complet 2026.",
+    category: 'Marketing',
+    readTime: '8 min',
+    date: '2026-09-04',
+  },
+  {
+    slug: 'brigade-cuisine-organisation-postes',
+    title: 'Brigade de cuisine : organisation, postes et gestion du stress',
+    excerpt: "La pyramide Escoffier adaptée à un vrai restaurant : dimensionnement par taille d'établissement, coût chiffré du turnover, obligation légale du DUERP face au burnout.",
+    category: 'Pilotage',
+    readTime: '10 min',
+    date: '2026-09-07',
+  },
 ];
 
 const categoryColors: Record<string, string> = {

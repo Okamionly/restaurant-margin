@@ -1,8 +1,8 @@
 # Backlog articles blog RestauMargin
 
-Mise à jour : 2026-08-31
+Mise à jour : 2026-09-07
 
-## Articles publiés / rédigés (38 total)
+## Articles publiés / rédigés (39 total)
 
 | Slug | Titre | Statut | Date |
 |---|---|---|---|
@@ -45,12 +45,15 @@ Mise à jour : 2026-08-31
 | tva-restauration-taux-guide | TVA restauration 2026 : 5,5 %, 10 % ou 20 % | **Publié** (2 603 mots) | 2026-08-31 |
 | licence-iv-restaurant-guide | Licence IV : l'obtenir, la transférer, l'exploiter | **Publié** (3 049 mots) | 2026-08-31 |
 | avis-google-negatifs-restaurant | Avis Google négatifs : la méthode qui limite les dégâts | **Publié** (2 508 mots) | 2026-08-31 |
+| brigade-cuisine-organisation-postes | Brigade de cuisine : organisation, postes et gestion du stress | **Publié** (2 527 mots) | 2026-09-07 |
 
 ---
 
 ## Prochains articles à écrire (backlog prioritaire)
 
-> Rédigés depuis : `fideliser-clients-restaurant-strategies` ✅, `construire-carte-vins-restaurant` ✅, `psychologie-des-prix-restaurant` ✅, `food-blogger-influenceur-restaurant` ✅ (2026-07-03), `ouvrir-terrasse-restaurant-demarches` ✅ (2026-07-10), `reprise-restaurant-guide-acheteur` ✅ (2026-07-17, ~3 500 mots), `tva-restauration-taux-guide` ✅ (2026-07-25, 2 603 mots — dans la cible, taux 5,5/10/20 vérifiés en live), `licence-iv-restaurant-guide` ✅ (2026-08-02, 3 049 mots — 1,6 % au-dessus de la borne haute, tableaux inclus dans le comptage ; règles vérifiées en live), `avis-google-negatifs-restaurant` ✅ (2026-08-21, 2 508 mots — dans la cible ; stats Harvard/Luca, taux de suppression Google 1/4, cinq motifs légaux vérifiés en live).
+> Rédigés depuis : `fideliser-clients-restaurant-strategies` ✅, `construire-carte-vins-restaurant` ✅, `psychologie-des-prix-restaurant` ✅, `food-blogger-influenceur-restaurant` ✅ (2026-07-03), `ouvrir-terrasse-restaurant-demarches` ✅ (2026-07-10), `reprise-restaurant-guide-acheteur` ✅ (2026-07-17, ~3 500 mots), `tva-restauration-taux-guide` ✅ (2026-07-25, 2 603 mots — dans la cible, taux 5,5/10/20 vérifiés en live), `licence-iv-restaurant-guide` ✅ (2026-08-02, 3 049 mots — 1,6 % au-dessus de la borne haute, tableaux inclus dans le comptage ; règles vérifiées en live), `avis-google-negatifs-restaurant` ✅ (2026-08-21, 2 508 mots — dans la cible ; stats Harvard/Luca, taux de suppression Google 1/4, cinq motifs légaux vérifiés en live), `brigade-cuisine-organisation-postes` ✅ (2026-09-04, 2 527 mots — dans la cible ; turnover INSEE 50 %, grille salariale HCR 2026, stats burnout 2026 et obligation DUERP vérifiés en live).
+
+> ⚠️ **Aucun run enregistré entre le 21/08 et le 04/09** — pas de `_LAST_RUN_2026-08-28.md` dans ce dossier. Le run du 04/09 a repris directement sur le slot #1 du backlog précédent (brigade en cuisine), resté non traité malgré plusieurs runs. À surveiller : si un run hebdomadaire manque de nouveau, vérifier la configuration de la routine cloud plutôt que de supposer qu'un sujet a été traité ailleurs.
 
 > ⚠️ **Note de comptage (2026-07-17)** : les nombres de mots reportés dans les `_LAST_RUN_*.md` antérieurs sont surévalués. Vérifié : `ouvrir-terrasse-restaurant-demarches.md` est annoncé « ~2 280 mots » mais fait réellement **~1 380 mots de prose** (1 531 tokens `wc -w`) — donc **sous la cible de 2 000**. Plusieurs articles courts (`kpi-essentiels-restaurateur`, `livraison-restaurant-rentabilite`, `ouvrir-food-truck-france-guide`, `contrat-travail-restauration-guide` < 10 Ko) sont probablement dans le même cas. **Méthode de comptage fiable** :
 > ```bash
@@ -58,32 +61,27 @@ Mise à jour : 2026-08-31
 > ```
 > → Chantier utile : repasser les articles sous-dimensionnés pour les remonter à la cible.
 
-### 1. Brigade en cuisine : organisation, postes, gestion du stress
-- **Slug** : `brigade-cuisine-organisation-postes`
-- **Angle** : pyramide brigade Escoffier, postes modernes, stress management, communication chef-équipe
-- **Mots-clés** : "brigade cuisine restaurant", "organisation cuisine restaurant", "postes cuisine"
-
-### 2. Pourboires en France : législation, fiscalité, répartition
+### 1. Pourboires en France : législation, fiscalité, répartition
 - **Slug** : `pourboires-restaurant-legislation-fiscalite`
 - **Angle** : exonération sociale et fiscale (loi 2022-2026), TPE pourboires, répartition équitable, déclaration
 - **Mots-clés** : "pourboires restaurant", "fiscalité pourboires", "exonération pourboires 2026"
 
-### 3. No-show au restaurant : comment lutter contre les réservations non honorées
+### 2. No-show au restaurant : comment lutter contre les réservations non honorées
 - **Slug** : `no-show-restaurant-solutions`
 - **Angle** : coût réel du no-show (marge perdue par couvert vide), empreinte bancaire / acompte, SMS de rappel, politique d'annulation, cas chiffré
 - **Mots-clés** : "no-show restaurant", "réservation non honorée restaurant", "acompte réservation restaurant"
 
-### 4. Calcul du prix de vente d'un menu (entrée-plat-dessert) : la méthode rentable
+### 3. Calcul du prix de vente d'un menu (entrée-plat-dessert) : la méthode rentable
 - **Slug** : `prix-vente-menu-restaurant-methode`
 - **Angle** : construire un menu à prix fixe rentable, food cost pondéré des 3 composantes, arbitrage marge/attractivité, effet d'ancrage, comparaison carte vs formule, cas chiffré entrée+plat+dessert
 - **Mots-clés** : "prix menu restaurant", "calculer prix formule restaurant", "food cost menu du jour"
 
-### 5. Emploi saisonnier en restauration ⭐ NOUVEAU
+### 4. Emploi saisonnier en restauration
 - **Slug** : `contrat-saisonnier-restauration`
 - **Angle** : complète `contrat-travail-restauration-guide` (extras, CDD saisonnier, heures supplémentaires, spécificités montagne/littoral)
 - **Mots-clés** : "contrat saisonnier restauration", "CDD saisonnier restaurant", "extra restauration contrat"
 
-### 6. Contrôle de la DDPP / hygiène : déroulé, grille, sanctions
+### 5. Contrôle de la DDPP / hygiène : déroulé, grille, sanctions
 - **Slug** : `controle-hygiene-restaurant-ddpp`
 - **Angle** : déroulé d'un contrôle, grille d'évaluation, suites (avertissement / mise en demeure / fermeture), lien avec Alim'confiance. À croiser avec `guide-haccp-2026-restaurant` pour éviter le doublon.
 - **Mots-clés** : "contrôle DDPP restaurant", "contrôle hygiène restaurant", "Alim'confiance restaurant"

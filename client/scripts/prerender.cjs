@@ -811,6 +811,12 @@ const ROUTES = [
     description: "Calculez le vrai cout d'un no-show, activez les SMS de rappel, l'empreinte bancaire et redigez une politique d'annulation beton. Guide complet 2026.",
     type: 'article',
   },
+  {
+    path: '/blog/brigade-cuisine-organisation-postes',
+    title: 'Brigade de cuisine : organisation, postes et gestion du stress',
+    description: "La pyramide Escoffier adaptee a un vrai restaurant en 2026 : dimensionnement par taille d'etablissement, cout chiffre d'un turnover a 50%, obligation legale du DUERP face au burnout, et rituels de communication chef-equipe.",
+    type: 'article',
+  },
 ];
 
 function run() {

@@ -466,5 +466,10 @@
     "eventDeleted": "Veranstaltung gelöscht",
     "errorDeleting": "Fehler beim Löschen",
     "printingBeo": "BEO wird gedruckt..."
+  },
+  "analytics": {
+    "errorLoading": "Fehler beim Laden des Berichts",
+    "reportDownloaded": "Bericht heruntergeladen!",
+    "retry": "Erneut versuchen"
   }
 }

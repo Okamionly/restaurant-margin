@@ -255,7 +255,7 @@ export default function Analytics() {
         }
       }
     } catch (e: any) {
-      setError(e.message || 'Erreur chargement rapport');
+      setError(e.message || t('analytics.errorLoading'));
     } finally {
       setLoading(false);
     }
@@ -583,7 +583,7 @@ export default function Analytics() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showToast('Rapport telecharge !', 'success');
+    showToast(t('analytics.reportDownloaded'), 'success');
   }, [report, selectedRestaurant, topInsightsText, showToast]);
 
   if (loading) {
@@ -591,7 +591,7 @@ export default function Analytics() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <RefreshCw className="w-8 h-8 animate-spin text-[#6B7280] dark:text-mono-700" />
-          <p className="text-[#6B7280] dark:text-mono-700">Chargement du rapport...</p>
+          <p className="text-[#6B7280] dark:text-mono-700">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -602,10 +602,10 @@ export default function Analytics() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <AlertTriangle className="w-12 h-12 text-[#6B7280] dark:text-mono-500 mx-auto mb-4" />
-          <p className="text-mono-100 dark:text-white font-medium mb-2">Erreur</p>
+          <p className="text-mono-100 dark:text-white font-medium mb-2">{t('common.error')}</p>
           <p className="text-[#6B7280] dark:text-mono-700 text-sm mb-4">{error}</p>
           <button onClick={() => fetchReport(period)} className="px-4 py-2 bg-mono-100 dark:bg-white text-white dark:text-mono-100 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
-            Reessayer
+            {t('common.retry')}
           </button>
         </div>
       </div>

@@ -466,5 +466,10 @@
     "eventDeleted": "Evento eliminado",
     "errorDeleting": "Error al eliminar",
     "printingBeo": "Imprimiendo el BEO..."
+  },
+  "analytics": {
+    "errorLoading": "Error al cargar el informe",
+    "reportDownloaded": "¡Informe descargado!",
+    "retry": "Reintentar"
   }
 }

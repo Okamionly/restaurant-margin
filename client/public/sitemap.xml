@@ -170,7 +170,7 @@
   </url>
   <url>
     <loc>https://www.restaumargin.fr/blog/prix-de-vente-restaurant</loc>
-    <lastmod>2026-07-17</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -502,6 +502,12 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://www.restaumargin.fr/guide-marge/restaurant-halal</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
   <!-- Outils publics -->
   <url>
@@ -780,6 +786,12 @@
   <url>
     <loc>https://www.restaumargin.fr/blog/no-show-restaurant-solutions</loc>
     <lastmod>2026-09-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/blog/brigade-cuisine-organisation-postes</loc>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

@@ -23,6 +23,7 @@ import SEOHead from '../components/SEOHead';
      /guide-marge/restaurant-traiteur
      /guide-marge/dark-kitchen
      /guide-marge/restaurant-vegan
+     /guide-marge/restaurant-halal
    ═══════════════════════════════════════════════════════════════ */
 
 interface NicheConfig {
@@ -684,6 +685,53 @@ const NICHES: Record<string, NicheConfig> = {
       {
         q: "RestauMargin convient-il aux dark kitchens en cuisine partagee et aux operateurs multi-sites ?",
         a: "Oui, RestauMargin est particulierement adapte aux dark kitchens en infrastructure partagee (operateurs type Deliverect, Taster, Kitchen Club, ou cuisine centrale propre) et aux operateurs qui gerent plusieurs emplacements. Pour les cuisines partagees, RestauMargin gere les couts de production partages : vous definissez les charges fixes imputables a chaque marque (loyer prorata, energie, personnel) et le logiciel calcule le point mort de chaque marque independamment — indispensable pour decider quand une nouvelle marque devient autoportante ou quand une marque sous-performante doit etre arretee. Pour les operateurs multi-sites (meme marque dans 3 villes), le plan Business permet de consolider les performances par marque et par site depuis un dashboard unique. La fonctionnalite multi-canal vous permet de comparer la rentabilite de chaque site sur Uber Eats vs Deliveroo vs commandes en direct (click & collect, site propre) et d'optimiser le mix canal pour maximiser la marge nette. Les dark kitchens qui completent leur activite livraison par un service click & collect direct (zero commission) ou une integration caisse pour les commandes phone recuperent 6 a 10 points de marge sur ces ventes. Le plan Pro a 29€/mois couvre une dark kitchen avec jusqu'a 5 marques et 3 utilisateurs ; le plan Business est recommande pour les operateurs avec plus de 5 marques ou plusieurs sites de production.",
+      },
+    ],
+  },
+  'restaurant-halal': {
+    slug: 'restaurant-halal',
+    title: 'Calcul de marge restaurant halal : guide complet 2026',
+    h1: 'Optimisez la marge de votre restaurant halal',
+    tagline: 'Logiciel de gestion specialise pour restaurants halal et fast-foods halal',
+    description: "Guide et outil pour calculer les marges de votre restaurant halal. Food cost viande halal certifiee, surcoût certification, gestion kebabs, grillades et tajines, et optimisation rentabilite par plat.",
+    heroSubtitle: "La viande halal certifiee (agneau, boeuf, poulet) coute 15 a 25% plus cher que son equivalent standard. Sans fiche technique precise, ce surcoût invisible ronge vos marges plat apres plat. RestauMargin vous donne la maitrise totale de votre food cost pour proteger votre rentabilite.",
+    avgMargin: '62-72%',
+    avgFoodCost: '28-35%',
+    avgCoef: '3,2 a 4',
+    challenges: [
+      "Viande halal certifiee (agneau, boeuf, poulet) : 15-25% plus chere que l'equivalent standard — surcoût invisible sans fiche technique precise",
+      "Tracabilite certifications fournisseurs : labels HCF, AVS, ARGML — verification obligatoire pour maintenir la confiance client et eviter les scandales",
+      "Volume eleve pour les produits phares (kebab, brochettes, tajines) : gestion FIFO viande crue critique pour limiter les pertes",
+      "Livraison et plateformes : commissions 25-30% sur un food cost deja eleve entre 28-35% — marge nette tres serree sans tarification adaptee",
+      "Pression concurrentielle forte sur le segment fast-food halal : difficile d'augmenter les prix sans perdre des clients face aux concurrents",
+    ],
+    stats: [
+      { label: 'Food cost moyen', value: '31%', color: 'teal' },
+      { label: 'Marge brute cible', value: '69%', color: 'emerald' },
+      { label: 'Surcout viande halal', value: '+20%', color: 'amber' },
+      { label: 'Ticket moyen', value: '12-20€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "Je ne savais pas que mon assiette mechoui perdait de l'argent. RestauMargin m'a montre que le food cost de l'agneau halal bio atteignait 52% sur cette reference. En reajustant la portion et le prix de vente, j'ai recupere 15 points de marge en cinq semaines.",
+      author: 'Rachid',
+      role: 'Patron de restaurant halal, Marseille',
+    },
+    faqs: [
+      {
+        q: "Quelle est la marge moyenne d'un restaurant halal ?",
+        a: "La marge brute d'un restaurant halal se situe entre 62% et 72%, selon le positionnement (fast-food, restaurant assis, grillade traditionnelle) et la maitrise du food cost viande. Le principal defi structurel est le surcout de la viande halal certifiee : l'agneau halal (label HCF ou AVS) s'affiche entre 14 et 22€/kg selon la coupe et l'origine, le boeuf hache halal entre 9 et 14€/kg, le poulet entier halal 5 a 8€/kg. Ces prix sont 15 a 25% superieurs aux equivalents sans certification, ce qui tire mecaniquement le food cost vers le haut. Les restaurants halal qui atteignent 70-72% de marge brute maitrisent trois leviers : fiches techniques precises par plat avec grammages controles (notamment les pieces de viande), une carte equilibree melant references nobles (agneau, boeuf) et references a fort coefficient (kefta, merguez, poulet roti) qui compensent le food cost des plats premium, et une gestion stricte des pertes viande en fin de service. La marge nette apres charges tourne entre 5% et 11% selon la taille de l'etablissement, l'emplacement et le format.",
+      },
+      {
+        q: "Comment calculer le food cost de la viande halal et de ses preparations ?",
+        a: "Le calcul se fait composant par composant, en integrant la viande, les epices maison et les accompagnements. Pour un kebab poulet sandwich : pain turc 90g (0,22€), escalope poulet halal 120g (0,78€ a 6,50€/kg), sauce blanche 30g (0,12€), crudites laitue-tomate-oignon 80g (0,14€), huile 0,06€ = 1,32€ de cout matiere. Vendu 7€, food cost de 18,9% — excellent. Pour une assiette tajine agneau-pruneaux : agneau epaule halal 180g (3,42€ a 19€/kg), legumes courgettes-carottes-oignons 200g (0,40€), pruneaux 40g (0,28€), amandes 15g (0,18€), epices ras-el-hanout (0,08€), couscous 150g (0,18€) = 4,54€. Vendue 17€, food cost de 26,7%. Pour une brochette kefta 3 pieces : boeuf hache halal 240g (2,64€ a 11€/kg), epices et herbes (0,12€), pain pita (0,18€), sauce harissa (0,06€) = 3,00€. Vendue 13€, food cost de 23,1%. RestauMargin automatise ce calcul : renseignez une fois vos prix fournisseurs viande halal, et toutes vos fiches techniques se mettent a jour en temps reel quand le cours de l'agneau ou du boeuf change.",
+      },
+      {
+        q: "Comment absorber le surcout de la viande halal sans sacrifier la rentabilite ni perdre des clients ?",
+        a: "Le surcout de la certification halal est une realite structurelle qui ne disparaitra pas. Quatre strategies pour maintenir la rentabilite sans baisser la qualite : (1) equilibrer la carte avec des plats a fort coefficient naturel — les preparations a base de kefta, merguez ou poulet aile (food cost 20-25%) compensent les plats a l'agneau noble (food cost 28-35%) ; la carte doit etre construite avec une vision globale de la marge composite, (2) controler les grammages au gramme pres et imposer un pesage systematique avant cuisson — RestauMargin permet de definir le grammage cible par piece et d'alerter si le cout matiere d'une commande depasse le seuil, (3) valoriser la certification halal comme argument premium : un restaurateur qui affiche ses labels HCF ou AVS, sa tracabilite fournisseur et ses normes de preparation peut positionner un prix legerement superieur a la moyenne du quartier en le justifiant par la qualite et la confiance client, (4) negocier des volumes avec un grossiste halal specialise (Bahia Foods, Reghalal, Metro halal) : un contrat de volume sur le poulet ou l'agneau peut faire baisser le cout unitaire de 8 a 12% et compenser une partie du surcout certification. RestauMargin vous permet de simuler l'impact d'une hausse de prix fournisseur sur l'ensemble de votre carte en quelques secondes.",
+      },
+      {
+        q: "RestauMargin convient-il aux restaurants halal avec livraison, comptoir kebab rapide et evenementiel ?",
+        a: "Oui, RestauMargin est particulierement adapte aux restaurants halal qui cumulent plusieurs activites : restauration sur place avec une carte de plats traditionnels (tajines, couscous, grillades), un comptoir kebab-sandwichs pour le flux rapide du midi, une activite de livraison sur plateformes (Uber Eats, Deliveroo, Just Eat) et parfois une activite traiteur pour les evenements familiaux ou religieux (mariages, fetes de l'Aid). Pour le comptoir rapide, les fiches techniques kebab avec grammages standardises permettent d'homogeneiser la preparation entre les employes et d'eviter le surdosage. Pour la livraison, le module calcul-commission simule la marge nette apres deduction des commissions plateforme (27-30%) pour chaque reference : vous identifiez quels plats sont rentables en livraison et quels prix fixer pour absorber la commission sans sacrifier la marge. Pour le traiteur evenementiel (buffets de mariage halal, plateaux-repas Aid), la fonctionnalite de fiche technique composite calcule le cout par convive en integrant viandes, accompagnements, patisseries orientales et packaging. Le plan Pro a 29€/mois couvre un restaurant halal avec jusqu'a 100 references et 3 utilisateurs ; le plan Business est recommande pour les etablissements avec plusieurs comptoirs ou une cuisine centrale de production traiteur.",
       },
     ],
   },

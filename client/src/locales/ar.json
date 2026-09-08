@@ -456,5 +456,10 @@
     "eventDeleted": "تم حذف الحدث",
     "errorDeleting": "خطأ في الحذف",
     "printingBeo": "جارٍ طباعة BEO..."
+  },
+  "analytics": {
+    "errorLoading": "خطأ في تحميل التقرير",
+    "reportDownloaded": "تم تنزيل التقرير!",
+    "retry": "إعادة المحاولة"
   }
 }

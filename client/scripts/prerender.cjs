@@ -119,6 +119,11 @@ const ROUTES = [
     description: "Guide et outil pour calculer les marges de votre restaurant vegan ou vegetarien. Food cost ingredients vegetaux, proteines alternatives, gestion bio et optimisation de la rentabilite par plat.",
   },
   {
+    path: '/guide-marge/restaurant-halal',
+    title: 'Calcul de marge restaurant halal : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre restaurant halal. Food cost viande halal certifiee, surcoût certification, gestion kebabs, grillades et tajines, et optimisation rentabilite par plat.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

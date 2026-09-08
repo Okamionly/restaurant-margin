@@ -162,8 +162,8 @@ function StarRating({ rating }: { rating: number }) {
           key={i}
           className={`w-4 h-4 ${
             i < rating
-              ? 'fill-black text-black'
-              : 'fill-mono-900 text-mono-900'
+              ? 'fill-black dark:fill-white text-black dark:text-white'
+              : 'fill-mono-900 dark:fill-[#333333] text-mono-900 dark:text-[#333333]'
           }`}
         />
       ))}
@@ -181,26 +181,26 @@ export default function Temoignages() {
   });
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
-      <header className="border-b border-mono-900">
+      <header className="border-b border-mono-900 dark:border-[#1A1A1A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center">
               <ChefHat className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-bold text-black">RestauMargin</span>
+            <span className="text-lg font-bold text-black dark:text-white">RestauMargin</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link
               to="/tarifs"
-              className="hidden sm:inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#6B7280] hover:text-black transition-colors"
+              className="hidden sm:inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:text-black dark:hover:text-white transition-colors"
             >
               Tarifs
             </Link>
             <Link
               to="/login?mode=register"
-              className="px-4 py-2 rounded-xl bg-black text-white text-sm font-medium hover:bg-[#333333] transition-colors"
+              className="px-4 py-2 rounded-xl bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors"
             >
               Essai gratuit
             </Link>
@@ -215,16 +215,16 @@ export default function Temoignages() {
             <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">
               Temoignages
             </p>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black leading-tight mb-12">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black dark:text-white leading-tight mb-12">
               Ils ont repris le controle de leurs marges
             </h1>
 
             {/* Featured card */}
-            <div className="bg-mono-1000 border border-mono-900 rounded-2xl p-8 sm:p-12 text-left relative">
-              <Quote className="w-10 h-10 text-black/10 absolute top-6 left-6" />
+            <div className="bg-mono-1000 dark:bg-[#0A0A0A]/50 border border-mono-900 dark:border-[#1A1A1A] rounded-2xl p-8 sm:p-12 text-left relative">
+              <Quote className="w-10 h-10 text-black/10 dark:text-white/10 absolute top-6 left-6" />
               <div className="relative">
                 <StarRating rating={featured.rating} />
-                <p className="text-lg sm:text-xl text-[#374151] leading-relaxed mt-4 mb-8 italic">
+                <p className="text-lg sm:text-xl text-[#374151] dark:text-[#D1D5DB] leading-relaxed mt-4 mb-8 italic">
                   "{featured.quote}"
                 </p>
                 <div className="flex items-center gap-4">
@@ -232,8 +232,8 @@ export default function Temoignages() {
                     {featured.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="font-semibold text-black">{featured.name}</p>
-                    <p className="text-sm text-[#6B7280]">
+                    <p className="font-semibold text-black dark:text-white">{featured.name}</p>
+                    <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
                       {featured.role} — {featured.restaurant}, {featured.city}
                     </p>
                   </div>
@@ -308,8 +308,8 @@ export default function Temoignages() {
                 onClick={() => setActiveCuisine(cuisine)}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                   activeCuisine === cuisine
-                    ? 'bg-black text-white'
-                    : 'bg-mono-950 text-[#6B7280] hover:bg-mono-900 hover:text-black'
+                    ? 'bg-black dark:bg-white text-white dark:text-black'
+                    : 'bg-mono-950 dark:bg-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-mono-900 dark:hover:bg-[#262626] hover:text-black dark:hover:text-white'
                 }`}
               >
                 {cuisine}
@@ -327,7 +327,7 @@ export default function Temoignages() {
               <p className="text-[#9CA3AF] text-lg">Aucun temoignage pour cette cuisine.</p>
               <button
                 onClick={() => setActiveCuisine("Tous")}
-                className="mt-4 text-sm font-medium text-black underline"
+                className="mt-4 text-sm font-medium text-black dark:text-white underline"
               >
                 Voir tous les temoignages
               </button>
@@ -337,11 +337,11 @@ export default function Temoignages() {
               {filteredTestimonials.map((t, i) => (
                 <div
                   key={i}
-                  className="break-inside-avoid p-6 rounded-2xl border border-mono-900 bg-white hover:border-black/30 transition-all duration-200 group"
+                  className="break-inside-avoid p-6 rounded-2xl border border-mono-900 dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A]/50 hover:border-black/30 dark:hover:border-[#333333] transition-all duration-200 group"
                 >
                   {/* Video placeholder */}
                   {t.hasVideo && (
-                    <div className="mb-4 rounded-xl bg-mono-950 aspect-video flex items-center justify-center group-hover:bg-mono-900 transition-colors cursor-pointer">
+                    <div className="mb-4 rounded-xl bg-mono-950 dark:bg-[#1A1A1A] aspect-video flex items-center justify-center group-hover:bg-mono-900 dark:group-hover:bg-[#262626] transition-colors cursor-pointer">
                       <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center">
                         <Play className="w-5 h-5 text-white ml-0.5" />
                       </div>
@@ -353,24 +353,24 @@ export default function Temoignages() {
 
                   {/* Savings badge */}
                   {t.savings && (
-                    <div className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 bg-mono-950 rounded-lg text-xs font-semibold text-black">
+                    <div className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 bg-mono-950 dark:bg-[#1A1A1A] rounded-lg text-xs font-semibold text-black dark:text-white">
                       <TrendingUp className="w-3 h-3" />
                       {t.savings}
                     </div>
                   )}
 
                   {/* Quote */}
-                  <p className="text-[#374151] text-sm leading-relaxed mt-4 mb-6">
+                  <p className="text-[#374151] dark:text-[#D1D5DB] text-sm leading-relaxed mt-4 mb-6">
                     "{t.quote}"
                   </p>
 
                   {/* Divider + Author */}
-                  <div className="border-t border-mono-900 pt-4 flex items-center gap-3">
+                  <div className="border-t border-mono-900 dark:border-[#1A1A1A] pt-4 flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                       {t.name.charAt(0)}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-black truncate">{t.name}</p>
+                      <p className="text-sm font-semibold text-black dark:text-white truncate">{t.name}</p>
                       <p className="text-xs text-[#9CA3AF] truncate">
                         {t.restaurant} — {t.city}
                       </p>
@@ -379,7 +379,7 @@ export default function Temoignages() {
 
                   {/* Cuisine tag */}
                   <div className="mt-3">
-                    <span className="text-xs text-[#9CA3AF] bg-[#F9FAFB] px-2 py-1 rounded-md">
+                    <span className="text-xs text-[#9CA3AF] bg-[#F9FAFB] dark:bg-[#1A1A1A] px-2 py-1 rounded-md">
                       {t.cuisine}
                     </span>
                   </div>
@@ -426,13 +426,13 @@ export default function Temoignages() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-mono-900 py-8">
+      <footer className="border-t border-mono-900 dark:border-[#1A1A1A] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-[#9CA3AF]">RestauMargin &copy; 2026. Tous droits reserves.</p>
           <div className="flex items-center gap-6 text-xs text-[#9CA3AF]">
-            <Link to="/mentions-legales" className="hover:text-black transition-colors">Mentions legales</Link>
-            <Link to="/cgu" className="hover:text-black transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-black transition-colors">Confidentialite</Link>
+            <Link to="/mentions-legales" className="hover:text-black dark:hover:text-white transition-colors">Mentions legales</Link>
+            <Link to="/cgu" className="hover:text-black dark:hover:text-white transition-colors">CGU</Link>
+            <Link to="/politique-confidentialite" className="hover:text-black dark:hover:text-white transition-colors">Confidentialite</Link>
           </div>
         </div>
       </footer>

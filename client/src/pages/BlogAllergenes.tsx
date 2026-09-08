@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, ArrowRight, ShieldAlert, ListChecks, Eye, Users, Utensils, Coffee, AlertTriangle } from 'lucide-react';
+import { ChefHat, ArrowRight, ShieldAlert, ListChecks, Eye, Users, Utensils, Coffee, AlertTriangle, Truck, FileText } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
@@ -10,7 +10,12 @@ export default function BlogAllergenes() {
     { question: "Si un client demande un plat allergique, suis-je oblige de le preparer ?", answer: "Non, vous pouvez refuser. Mieux vaut refuser que mal preparer. Reponse pro : Je ne peux malheureusement pas garantir l'absence totale de cet allergene dans notre cuisine, je prefere vous proposer un autre plat." },
     { question: "Le QR code menu remplit-il l'obligation INCO ?", answer: "Oui, a condition qu'il soit immediatement consultable (sans connexion 4G defaillante, sans inscription). Beaucoup de DGCCRF preferent encore le classeur papier." },
     { question: "Le sarrasin et la chataigne sont-ils dans la liste ?", answer: "Non. Ce ne sont pas des allergenes obligatoires INCO. Mais le sarrasin est en surveillance dans certains pays. A mentionner volontairement si vous l'utilisez." },
-    { question: "Que faire en cas de reaction d'un client en plein service ?", answer: "1. Appeler le 15 (SAMU) immediatement. 2. Demander si le client a un stylo d'adrenaline (Anapen, EpiPen). 3. Allonger le client jambes surelevees. 4. Noter ce qu'il a mange. 5. Conserver le plat consomme pour analyse." }
+    { question: "Que faire en cas de reaction d'un client en plein service ?", answer: "1. Appeler le 15 (SAMU) immediatement. 2. Demander si le client a un stylo d'adrenaline (Anapen, EpiPen). 3. Allonger le client jambes surelevees. 4. Noter ce qu'il a mange. 5. Conserver le plat consomme pour analyse." },
+    { question: "Un menu peut-il etre garanti 100% sans allergene ?", answer: "Non. Vous pouvez garantir l'absence d'UN allergene precis dans UN plat donne avec des precautions strictes, mais un menu global zero risque n'existe pas legalement ni en pratique — le principe de precaution s'applique toujours." },
+    { question: "Les allergenes doivent-ils etre affiches sur Uber Eats ou Deliveroo ?", answer: "Oui, l'obligation INCO s'applique aussi a la vente a distance. Les plateformes imposent generalement de renseigner les 14 allergenes a la creation de chaque fiche produit." },
+    { question: "Faut-il former un extra ou un saisonnier des son premier service ?", answer: "Oui. L'obligation de moyens s'applique des le premier service, meme pour un contrat de quelques heures. Un briefing de 5 minutes sur les 14 allergenes et la procedure d'alerte suffit a couvrir l'essentiel." },
+    { question: "Le menu enfant echappe-t-il a l'obligation d'affichage ?", answer: "Non, aucune exception d'age n'existe dans le reglement INCO. Le menu enfant doit afficher ses allergenes comme n'importe quelle autre carte." },
+    { question: "Que risque-t-on si on rassure a tort un client allergique ?", answer: "Une sanction bien plus lourde qu'un simple defaut d'affichage : une fausse information donnee sciemment pour rassurer un client constitue une tromperie aggravee car elle met en jeu sa sante, avec des consequences penales nettement plus severes que l'omission." }
   ]);
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Accueil", url: "https://www.restaumargin.fr/" },
@@ -29,10 +34,10 @@ export default function BlogAllergenes() {
         </div>
       </nav>
 
-      <BlogArticleHero category="Reglementation" readTime="13 min" date="Mai 2026" title="Allergenes en restauration : obligations legales 2026" accentWord="Allergenes" subtitle="Les 14 allergenes obligatoires, modele d'affichage, sanctions DDPP, bonnes pratiques en cuisine. Le reflexe metier non negociable." />
+      <BlogArticleHero category="Reglementation" readTime="17 min" date="Mai 2026" title="Allergenes en restauration : obligations legales 2026" accentWord="Allergenes" subtitle="Les 14 allergenes obligatoires, modele d'affichage, sanctions DDPP, bonnes pratiques en cuisine. Le reflexe metier non negociable." />
 
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
-        <BlogAuthor publishedDate="2026-05-05" readTime="13 min" variant="header" />
+        <BlogAuthor publishedDate="2026-05-05" updatedDate="2026-09-08" readTime="17 min" variant="header" />
 
         <div className="prose-content my-10">
           <p>Une cliente arrive en cuisine en pleine crise anaphylactique. Personne dans l'equipe ne sait precisement ce qu'il y a dans la sauce du plat servi. C'est le pire scenario imaginable pour un restaurateur — et il est plus frequent qu'on ne le croit. Connaitre la reglementation allergenes n'est pas une option. C'est un reflexe metier.</p>
@@ -98,14 +103,64 @@ export default function BlogAllergenes() {
           <p>Si reaction anaphylactique grave : mise en danger d'autrui, ou homicide involontaire si deces. Cas judiciaire recent : restaurant condamne a 80 000 EUR de dommages + 6 mois sursis pour avoir servi un plat aux cacahuetes a un client qui avait pourtant prevenu.</p>
         </Section>
 
-        <BlogAuthor publishedDate="2026-05-05" readTime="13 min" variant="footer" />
+        <Section icon={<Truck />} number="8" title="Allergenes en livraison et dark kitchen">
+          <p>La vente a distance ne dispense pas de l'obligation INCO. Sur Uber Eats, Deliveroo ou Just Eat, chaque plat doit afficher ses allergenes dans la fiche produit — la plupart des plateformes imposent d'ailleurs de cocher les 14 allergenes a la creation de la carte, sous peine de blocage de la fiche.</p>
+          <p>Pour une dark kitchen ou un service en cuisine fermee sans contact client, le risque de contamination croisee est identique a celui d'une salle classique, mais le filet de rattrapage disparait : personne ne peut confirmer une info oralement au dernier moment. Trois reflexes reduisent le risque : scellage systematique des contenants avant remise au livreur, etiquette allergenes collee sur l'emballage (pas seulement dans l'appli), et procedure stricte de double-verification entre le poste qui prepare et celui qui emballe.</p>
+          <p>En cas de commande signalee comme allergene-sensible via l'appli, le meilleur reflexe reste souvent le meme qu'en salle : proposer une alternative sure plutot que de tenter une adaptation risquee en pleine rush.</p>
+        </Section>
+
+        <Section icon={<FileText />} number="9" title="Construire son classeur allergenes en 5 etapes">
+          <p>Le classeur allergenes (ou fichier numerique equivalent) est l'outil le plus consulte lors d'un controle DGCCRF. Voici la methode pour le construire sans y passer une semaine :</p>
+          <ol>
+            <li>Lister tous les plats et boissons de la carte, y compris les suggestions du jour et les a-cotes (sauces, pain, garnitures)</li>
+            <li>Decomposer chaque recette ingredient par ingredient — pas seulement les produits bruts, mais aussi les produits transformes achetes (sauce soja, fond de veau industriel, moutarde en tube)</li>
+            <li>Croiser chaque ingredient avec la liste des 14 allergenes INCO et cocher les cases concernees</li>
+            <li>Faire relire le tableau par un second membre de l'equipe : les oublis viennent presque toujours d'un ingredient "cache" (sulfites dans un vin de cuisson, moutarde dans une vinaigrette du commerce)</li>
+            <li>Mettre a jour le classeur a chaque changement de recette ou de fournisseur — un fournisseur qui change la composition d'un produit transforme peut faire apparaitre un allergene du jour au lendemain sans prevenir</li>
+          </ol>
+          <p>Un logiciel de fiches techniques qui calcule les allergenes automatiquement a partir des ingredients evite l'essentiel du travail manuel et surtout le risque d'oubli lors d'une mise a jour de recette.</p>
+        </Section>
+
+        <BlogAuthor publishedDate="2026-05-05" updatedDate="2026-09-08" readTime="17 min" variant="footer" />
         <CTABlock />
+
+        <section className="mb-16">
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Articles complementaires</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Link to="/blog/haccp-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Guide HACCP complet</h3>
+              <p className="text-sm text-mono-500">Les 7 principes, temperatures, checklist quotidienne.</p>
+            </Link>
+            <Link to="/blog/calendrier-haccp-restaurant-modele-gratuit" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calendrier HACCP</h3>
+              <p className="text-sm text-mono-500">Modele gratuit, grilles quotidienne / hebdomadaire / mensuelle.</p>
+            </Link>
+            <Link to="/blog/formation-personnel-restauration" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Formation du personnel</h3>
+              <p className="text-sm text-mono-500">OPCO, CPF, formations prioritaires HACCP, ROI concret.</p>
+            </Link>
+            <Link to="/blog/fiche-technique-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Fiche technique restaurant</h3>
+              <p className="text-sm text-mono-500">Grammages, couts matieres, allergenes, process de fabrication.</p>
+            </Link>
+            <Link to="/blog/contrat-travail-restauration-guide" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Contrat de travail en restauration</h3>
+              <p className="text-sm text-mono-500">CDD, extra, obligations employeur, guide complet.</p>
+            </Link>
+          </div>
+        </section>
+
         <FAQSection items={[
           { q: "Doit-on mentionner les traces possibles d'allergenes ?", a: "Pas obligatoire (hors INCO), mais recommande. Phrase type : Prepare dans une cuisine utilisant gluten, lait, oeufs, fruits a coque." },
           { q: "Si un client demande un plat allergique, suis-je oblige de le preparer ?", a: "Non, vous pouvez refuser. Mieux vaut refuser que mal preparer." },
           { q: "Le QR code menu remplit-il l'obligation INCO ?", a: "Oui s'il est immediatement consultable. Beaucoup de DGCCRF preferent encore le classeur papier." },
           { q: "Le sarrasin et la chataigne sont-ils dans la liste ?", a: "Non. Pas dans la liste INCO. A mentionner volontairement si utilise." },
-          { q: "Que faire en cas de reaction d'un client en plein service ?", a: "1. SAMU 15. 2. Stylo adrenaline si dispo. 3. Allonger jambes surelevees. 4. Noter ce qu'il a mange. 5. Conserver le plat." }
+          { q: "Que faire en cas de reaction d'un client en plein service ?", a: "1. SAMU 15. 2. Stylo adrenaline si dispo. 3. Allonger jambes surelevees. 4. Noter ce qu'il a mange. 5. Conserver le plat." },
+          { q: "Un menu peut-il etre garanti 100% sans allergene ?", a: "Non. Vous pouvez garantir l'absence d'UN allergene precis dans UN plat donne, mais un menu global zero risque n'existe pas legalement — le principe de precaution s'applique toujours." },
+          { q: "Les allergenes doivent-ils etre affiches sur Uber Eats ou Deliveroo ?", a: "Oui, l'obligation INCO s'applique aussi a la vente a distance. Les plateformes imposent generalement de renseigner les 14 allergenes a la creation de la fiche produit." },
+          { q: "Faut-il former un extra ou un saisonnier des son premier service ?", a: "Oui. L'obligation de moyens s'applique des le premier service. Un briefing de 5 minutes sur les 14 allergenes suffit a couvrir l'essentiel." },
+          { q: "Le menu enfant echappe-t-il a l'obligation d'affichage ?", a: "Non, aucune exception d'age n'existe dans le reglement INCO." },
+          { q: "Que risque-t-on si on rassure a tort un client allergique ?", a: "Une sanction plus lourde qu'un simple defaut d'affichage : une fausse information donnee sciemment constitue une tromperie aggravee car elle met en jeu la sante du client." }
         ]} />
       </main>
 

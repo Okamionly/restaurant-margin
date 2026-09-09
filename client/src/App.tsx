@@ -242,6 +242,7 @@ const TvaCalculator = lazyRetry(() => import('./pages/TvaCalculator'));
 const LaborCostCalculator = lazyRetry(() => import('./pages/LaborCostCalculator'));
 const PriceIncreaseSimulator = lazyRetry(() => import('./pages/PriceIncreaseSimulator'));
 const PrimeSaisonniere = lazyRetry(() => import('./pages/PrimeSaisonniere'));
+const BonCadeau = lazyRetry(() => import('./pages/BonCadeau'));
 const DlcTracker = lazyRetry(() => import('./pages/DlcTracker'));
 const ChecklistService = lazyRetry(() => import('./pages/ChecklistService'));
 const ChronoPreparation = lazyRetry(() => import('./pages/ChronoPreparation'));
@@ -586,6 +587,7 @@ function AppLayout() {
       items: [
         { to: '/feedback', icon: MessageSquare, label: 'Avis clients' },
         { to: '/clients', icon: Contact, label: 'Clients CRM' },
+        { to: '/bon-cadeau', icon: Gift, label: 'Bon cadeau' },
       ],
     },
     {
@@ -1124,6 +1126,7 @@ function AppLayout() {
               <Route path="/checklist-service" element={<ChecklistService />} />
               <Route path="/chrono-preparation" element={<ChronoPreparation />} />
               <Route path="/saisonnalite" element={<SaisonnaliteIngredients />} />
+              <Route path="/bon-cadeau" element={<BonCadeau />} />
               <Route path="/restaurants" element={<TrialPaywallGuard feature="Multi-restaurant"><Restaurants /></TrialPaywallGuard>} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/abonnement" element={<Subscription />} />

@@ -13,11 +13,12 @@ Triées par impact décroissant. La feature en cours est retirée par le Feature
 ### INTELLIGENCE
 
 ### COMMUNICATION
-- **Générateur de bon cadeau PDF** — Création de bons-cadeaux personnalisés (nom, montant, design) exportables en PDF.
 
 ---
 
 ## Complétées
+
+- ✅ **Générateur de bon cadeau PDF** (2026-09-09) — Page `/bon-cadeau` dans COMMUNICATION. Création de bons-cadeaux personnalisés (restaurant, destinataire, expéditeur, montant, message, expiration, code unique) avec 3 designs (Classique, Moderne, Festif). Export PDF via impression navigateur.
 
 - ✅ **Analyse saisonnalité ingrédients** (2026-09-02) — Page `/saisonnalite` dans INTELLIGENCE. Calendrier mensuel pour 56 ingrédients (Légumes/Fruits/Champignons/Herbes/Poissons), filtre par catégorie, mois, et recherche texte. Astuces food cost intégrées.
 

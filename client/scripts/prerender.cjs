@@ -671,6 +671,11 @@ const ROUTES = [
     description: 'COS Kitchen calcule votre food cost. RestauMargin ajoute stock, mercuriale avec alertes, IA et multi-restaurant des 29€/mois. Comparatif detaille.',
   },
   {
+    path: '/alternative-marge-brut',
+    title: 'Alternative Marge Brut : RestauMargin, la gestion complète | 2026',
+    description: 'Marge Brut est gratuit en phase de developpement. RestauMargin ajoute mercuriale, stock, menu engineering et HACCP des 29€/mois. Comparatif detaille.',
+  },
+  {
     path: '/logiciel-marge-restaurant',
     title: 'Logiciel de marge restaurant : RestauMargin (29€/mois)',
     description: 'Logiciel pour calculer la marge de votre restaurant. Food cost, fiches techniques, mercuriale, IA. Essai gratuit 7 jours.',

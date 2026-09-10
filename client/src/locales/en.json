@@ -22,6 +22,7 @@
     "ingredientCount": "{count} ingredient(s)",
     "editModalTitle": "Edit ingredient",
     "newModalTitle": "New ingredient",
+    "newIngredientDetected": "New ingredient detected!",
     "nameLabel": "Last name *",
     "namePlaceholder": "Ingredient name",
     "nameRequired": "Name is required",

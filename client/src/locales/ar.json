@@ -22,6 +22,7 @@
     "ingredientCount": "{count} مكون(ات)",
     "editModalTitle": "تعديل مكون",
     "newModalTitle": "مكون جديد",
+    "newIngredientDetected": "مكوّن جديد تم اكتشافه!",
     "nameLabel": "الاسم *",
     "namePlaceholder": "اسم المكون",
     "nameRequired": "الاسم مطلوب",

@@ -285,7 +285,7 @@ export default function SmartIngredientInput({
               <div className="flex items-center gap-2 px-4 py-3 bg-teal-100 dark:bg-teal-900/40 border-b border-teal-300 dark:border-teal-700/50">
                 <span className="text-lg">✨</span>
                 <span className="text-sm font-semibold text-teal-300">
-                  Nouvel ingredient detecte !
+                  {t('ingredients.newIngredientDetected')}
                 </span>
                 <span className="ml-auto text-xs text-teal-400 bg-teal-200 dark:bg-teal-900/60 px-2 py-0.5 rounded-full">
                   {query.trim()}
@@ -310,7 +310,7 @@ export default function SmartIngredientInput({
                 <div className="grid grid-cols-2 gap-3">
                   {/* Price */}
                   <div>
-                    <label className="block text-xs text-mono-700 mb-1">Prix unitaire</label>
+                    <label className="block text-xs text-mono-700 mb-1">{t('ingredients.unitPriceColumn')}</label>
                     <input
                       type="number"
                       step="0.01"
@@ -324,7 +324,7 @@ export default function SmartIngredientInput({
 
                   {/* Unit */}
                   <div>
-                    <label className="block text-xs text-mono-700 mb-1">Unite</label>
+                    <label className="block text-xs text-mono-700 mb-1">{t('ingredients.unitColumn')}</label>
                     <select
                       value={newUnit}
                       onChange={(e) => setNewUnit(e.target.value)}
@@ -340,7 +340,7 @@ export default function SmartIngredientInput({
                 <div className="grid grid-cols-2 gap-3">
                   {/* Category */}
                   <div>
-                    <label className="block text-xs text-mono-700 mb-1">Categorie</label>
+                    <label className="block text-xs text-mono-700 mb-1">{t('ingredients.categoryColumn')}</label>
                     <select
                       value={newCategory}
                       onChange={(e) => setNewCategory(e.target.value)}
@@ -356,12 +356,12 @@ export default function SmartIngredientInput({
 
                   {/* Supplier */}
                   <div>
-                    <label className="block text-xs text-mono-700 mb-1">Fournisseur</label>
+                    <label className="block text-xs text-mono-700 mb-1">{t('ingredients.supplierColumn')}</label>
                     <input
                       type="text"
                       value={newSupplier}
                       onChange={(e) => setNewSupplier(e.target.value)}
-                      placeholder="Optionnel"
+                      placeholder={t('inventory.optional')}
                       className="w-full px-3 py-2 bg-mono-975 dark:bg-mono-300 border border-mono-900 dark:border-mono-300 rounded-lg text-sm text-mono-100 dark:text-white placeholder-mono-700 dark:placeholder-mono-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
@@ -379,7 +379,7 @@ export default function SmartIngredientInput({
                   ) : (
                     <Plus className="w-4 h-4" />
                   )}
-                  Ajouter a l'inventaire
+                  {t('inventory.addToInventory')}
                 </button>
               </div>
             </div>

@@ -22,6 +22,7 @@
     "ingredientCount": "{count} Zutat(en)",
     "editModalTitle": "Zutat bearbeiten",
     "newModalTitle": "Neue Zutat",
+    "newIngredientDetected": "Neue Zutat erkannt!",
     "nameLabel": "Name *",
     "namePlaceholder": "Name der Zutat",
     "nameRequired": "Name ist erforderlich",

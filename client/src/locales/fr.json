@@ -22,6 +22,7 @@
     "ingredientCount": "{count} ingrédient(s)",
     "editModalTitle": "Modifier un ingrédient",
     "newModalTitle": "Nouvel ingrédient",
+    "newIngredientDetected": "Nouvel ingrédient détecté !",
     "nameLabel": "Nom *",
     "namePlaceholder": "Nom de l'ingrédient",
     "nameRequired": "Le nom est requis",

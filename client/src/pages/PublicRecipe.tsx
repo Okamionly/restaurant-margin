@@ -85,6 +85,7 @@ export default function PublicRecipe() {
               alt={recipe.name}
               className="w-full h-full object-cover"
               decoding="async"
+              fetchPriority={photoIndex === 0 ? 'high' : 'auto'}
             />
           </div>
           {recipe.photos.length > 1 && (

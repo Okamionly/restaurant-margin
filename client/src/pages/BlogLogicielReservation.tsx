@@ -6,22 +6,22 @@ const faqItems = [
   {
     question: 'Un logiciel de réservation peut-il réduire les no-shows à zéro ?',
     answer:
-      'Non, mais il peut les réduire de 30 à 50 %. Les rappels automatisés à 48 h et 24 h avant la visite sont le levier le plus efficace. L\'empreinte bancaire permet d\'aller plus loin, mais dissuade aussi certains clients de réserver.',
+      "Non, mais il peut les réduire de 30 à 50 %. Les rappels automatisés à 48 h et 24 h avant la visite sont le levier le plus efficace. L'empreinte bancaire permet d'aller plus loin, mais dissuade aussi certains clients de réserver.",
   },
   {
     question: 'Faut-il absolument être sur TheFork pour remplir son restaurant ?',
     answer:
-      'Non. TheFork génère de la visibilité mais au prix d\'une commission élevée (2-3 € par couvert). Un restaurant avec un bon référencement local et un widget sur son site peut attirer autant de réservations directes, sans payer de commission.',
+      "Non. TheFork génère de la visibilité mais au prix d'une commission élevée (2-3 € par couvert). Un restaurant avec un bon référencement local et un widget sur son site peut attirer autant de réservations directes, sans payer de commission.",
   },
   {
-    question: 'Le RGPD s\'applique-t-il aux données de réservation ?',
+    question: "Le RGPD s'applique-t-il aux données de réservation ?",
     answer:
       'Oui. Noms, emails et préférences alimentaires sont des données personnelles. Votre logiciel doit respecter le RGPD : base légale de traitement, durée de conservation définie, droit de suppression. Privilégiez un hébergement en Europe.',
   },
   {
     question: 'Mon restaurant est petit (20 couverts). Est-ce utile ?',
     answer:
-      'Très utile. Un petit établissement bénéficie autant des rappels automatiques et de la prise de réservation 24/7. Google Reserve (gratuit) peut suffire dans un premier temps. La solution payante devient rentable dès 10 à 15 réservations par semaine.',
+      "Très utile. Un petit établissement bénéficie autant des rappels automatiques et de la prise de réservation 24/7. Google Reserve (gratuit) peut suffire dans un premier temps. La solution payante devient rentable dès 10 à 15 réservations par semaine.",
   },
 ];
 
@@ -89,16 +89,8 @@ export default function BlogLogicielReservation() {
       <SEOHead
         title="Logiciel de réservation restaurant : comparatif 2026 | RestauMargin"
         description="Comparatif complet des logiciels de réservation pour restaurants en 2026 : TheFork, Zenchef, Sevenrooms, Google Reserve. Critères de choix, coûts réels et ROI."
-        canonicalPath="/blog/logiciel-reservation-restaurant"
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        path="/blog/logiciel-reservation-restaurant"
+        schema={[articleSchema, faqSchema]}
       />
 
       <div className="min-h-screen bg-white dark:bg-black text-[#111111] dark:text-white">
@@ -156,7 +148,7 @@ export default function BlogLogicielReservation() {
                 Le carnet papier atteint ses limites dès 40 couverts par service : erreurs de double-réservation, pages illisibles, impossibilité de consulter les disponibilités depuis un smartphone.
               </p>
               <p>
-                <strong className="text-[#111111] dark:text-white">67 % des clients de moins de 45 ans préfèrent réserver en ligne</strong> plutôt que par téléphone. Un restaurant sans formulaire en ligne perd des réservations chaque nuit, pendant qu'il dort.
+                <strong className="text-[#111111] dark:text-white">67 % des clients de moins de 45 ans préfèrent réserver en ligne</strong> plutôt que par téléphone. Un restaurant sans formulaire en ligne perd des réservations chaque nuit, pendant qu&apos;il dort.
               </p>
               <p>
                 Les logiciels qui envoient des rappels SMS/email 24 à 48 h avant la visite réduisent les no-shows de <strong className="text-[#111111] dark:text-white">30 à 50 %</strong>. Sur 500 k€ de CA, cela représente 15 000 à 30 000 € récupérés chaque année.
@@ -184,7 +176,7 @@ export default function BlogLogicielReservation() {
                 {
                   num: '03',
                   title: 'Widget intégrable sur votre site',
-                  desc: 'Réservez directement depuis votre site : vous évitez la commission et conservez la relation client. Vérifiez qu\'il est rapide (< 2 s) et responsive mobile.',
+                  desc: "Réservez directement depuis votre site : vous évitez la commission et conservez la relation client. Vérifiez qu'il est rapide (< 2 s) et responsive mobile.",
                 },
                 {
                   num: '04',
@@ -193,7 +185,7 @@ export default function BlogLogicielReservation() {
                 },
                 {
                   num: '05',
-                  title: 'Rappels et listes d\'attente automatiques',
+                  title: "Rappels et listes d'attente automatiques",
                   desc: 'SMS automatique, notification en cas d\'annulation, gestion de la liste d\'attente en temps réel : ces fonctions font la différence entre un outil basique et un vrai yield management.',
                 },
                 {
@@ -319,8 +311,8 @@ export default function BlogLogicielReservation() {
             <div className="space-y-4">
               {[
                 { step: 'J-30', title: 'Export de vos données actuelles', desc: 'Exportez toutes vos réservations futures depuis votre système actuel. Saisissez les réservations papier dans le nouveau système une semaine avant le go-live.' },
-                { step: 'J-15', title: 'Configuration et tests', desc: 'Paramétrez plan de salle, créneaux, messages automatiques. Simulez réservation, confirmation, annulation et liste d\'attente. Impliquez votre équipe.' },
-                { step: 'J-7', title: 'Communication client', desc: 'Redirigez l\'ancienne URL de réservation. Mettez à jour Google My Business, site, réseaux sociaux et auto-réponses d\'email.' },
+                { step: 'J-15', title: 'Configuration et tests', desc: "Paramétrez plan de salle, créneaux, messages automatiques. Simulez réservation, confirmation, annulation et liste d'attente. Impliquez votre équipe." },
+                { step: 'J-7', title: 'Communication client', desc: "Redirigez l'ancienne URL de réservation. Mettez à jour Google My Business, site, réseaux sociaux et auto-réponses d'email." },
                 { step: 'Jour J', title: 'Go-live progressif', desc: 'Lancez un jour calme (lundi/mardi). Gardez le téléphone actif la première semaine. Surveillez les confirmations envoyées.' },
                 { step: 'J+30', title: 'Optimisation continue', desc: 'Analysez taux de remplissage par créneau, taux d\'annulation, délai réservation-visite. Ajustez vos créneaux et délais de rappel.' },
               ].map((s, i) => (

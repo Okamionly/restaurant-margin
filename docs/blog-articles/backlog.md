@@ -1,8 +1,8 @@
 # Backlog articles blog RestauMargin
 
-Mise à jour : 2026-09-07
+Mise à jour : 2026-09-12
 
-## Articles publiés / rédigés (39 total)
+## Articles publiés / rédigés (40 total)
 
 | Slug | Titre | Statut | Date |
 |---|---|---|---|
@@ -46,6 +46,9 @@ Mise à jour : 2026-09-07
 | licence-iv-restaurant-guide | Licence IV : l'obtenir, la transférer, l'exploiter | **Publié** (3 049 mots) | 2026-08-31 |
 | avis-google-negatifs-restaurant | Avis Google négatifs : la méthode qui limite les dégâts | **Publié** (2 508 mots) | 2026-08-31 |
 | brigade-cuisine-organisation-postes | Brigade de cuisine : organisation, postes et gestion du stress | **Publié** (2 527 mots) | 2026-09-07 |
+| pourboires-restaurant-legislation-fiscalite | Pourboires en restauration : législation, fiscalité et répartition | **Rédigé, à publier** (2 727 mots) | 2026-09-12 |
+
+> ⚠️ **`no-show-restaurant-solutions` retiré de cette table par erreur lors d'une passe antérieure** : vérifié `grep` le 2026-09-12, la route existe dans `App.tsx` et l'URL dans `sitemap.xml` — l'article est **déjà publié**, il n'apparaissait juste pas dans ce tableau de suivi (qui n'était pas exhaustif sur les 57+ `.md` du dossier).
 
 ---
 
@@ -61,27 +64,19 @@ Mise à jour : 2026-09-07
 > ```
 > → Chantier utile : repasser les articles sous-dimensionnés pour les remonter à la cible.
 
-### 1. Pourboires en France : législation, fiscalité, répartition
-- **Slug** : `pourboires-restaurant-legislation-fiscalite`
-- **Angle** : exonération sociale et fiscale (loi 2022-2026), TPE pourboires, répartition équitable, déclaration
-- **Mots-clés** : "pourboires restaurant", "fiscalité pourboires", "exonération pourboires 2026"
+> **2026-09-12** : `pourboires-restaurant-legislation-fiscalite` rédigé (2 727 mots réels, ex-slot #1). `no-show-restaurant-solutions` (ex-slot #2) déjà publié depuis le 04/09 — retiré de la liste ci-dessous.
 
-### 2. No-show au restaurant : comment lutter contre les réservations non honorées
-- **Slug** : `no-show-restaurant-solutions`
-- **Angle** : coût réel du no-show (marge perdue par couvert vide), empreinte bancaire / acompte, SMS de rappel, politique d'annulation, cas chiffré
-- **Mots-clés** : "no-show restaurant", "réservation non honorée restaurant", "acompte réservation restaurant"
-
-### 3. Calcul du prix de vente d'un menu (entrée-plat-dessert) : la méthode rentable
+### 1. Calcul du prix de vente d'un menu (entrée-plat-dessert) : la méthode rentable
 - **Slug** : `prix-vente-menu-restaurant-methode`
 - **Angle** : construire un menu à prix fixe rentable, food cost pondéré des 3 composantes, arbitrage marge/attractivité, effet d'ancrage, comparaison carte vs formule, cas chiffré entrée+plat+dessert
 - **Mots-clés** : "prix menu restaurant", "calculer prix formule restaurant", "food cost menu du jour"
 
-### 4. Emploi saisonnier en restauration
+### 2. Emploi saisonnier en restauration
 - **Slug** : `contrat-saisonnier-restauration`
 - **Angle** : complète `contrat-travail-restauration-guide` (extras, CDD saisonnier, heures supplémentaires, spécificités montagne/littoral)
 - **Mots-clés** : "contrat saisonnier restauration", "CDD saisonnier restaurant", "extra restauration contrat"
 
-### 5. Contrôle de la DDPP / hygiène : déroulé, grille, sanctions
+### 3. Contrôle de la DDPP / hygiène : déroulé, grille, sanctions
 - **Slug** : `controle-hygiene-restaurant-ddpp`
 - **Angle** : déroulé d'un contrôle, grille d'évaluation, suites (avertissement / mise en demeure / fermeture), lien avec Alim'confiance. À croiser avec `guide-haccp-2026-restaurant` pour éviter le doublon.
 - **Mots-clés** : "contrôle DDPP restaurant", "contrôle hygiène restaurant", "Alim'confiance restaurant"

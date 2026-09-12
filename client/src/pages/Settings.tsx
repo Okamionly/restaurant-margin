@@ -833,16 +833,16 @@ export default function Settings() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('Export CSV telecharge', 'success');
+      showToast(t('settings.csvExported'), 'success');
     } catch {
-      showToast("Erreur lors de l'export CSV", 'error');
+      showToast(t('settings.csvExportError'), 'error');
     }
   }
 
   function handleDeleteAllData() {
     if (deleteConfirmText !== 'SUPPRIMER') return;
     localStorage.clear();
-    showToast('Toutes les donnees ont ete supprimees', 'success');
+    showToast(t('settings.allDataDeleted'), 'success');
     setShowDeleteDataModal(false);
     setDeleteConfirmText('');
     window.location.reload();

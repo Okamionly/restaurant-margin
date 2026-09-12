@@ -1364,13 +1364,13 @@ export default function Clients() {
           try {
             const text = evt.target?.result as string;
             const lines = text.split('\n').filter(l => l.trim());
-            if (lines.length < 2) { showToast('Le fichier CSV est vide ou invalide', 'error'); return; }
+            if (lines.length < 2) { showToast(t('clients.csvEmpty'), 'error'); return; }
             const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim().toLowerCase());
             const prenomIdx = headers.findIndex(h => h === 'prenom' || h === 'firstname' || h === 'first_name');
             const nomIdx = headers.findIndex(h => h === 'nom' || h === 'lastname' || h === 'last_name' || h === 'name');
             const emailIdx = headers.findIndex(h => h === 'email' || h === 'mail');
             const telIdx = headers.findIndex(h => h.includes('tel') || h.includes('phone'));
-            if (nomIdx === -1 && prenomIdx === -1) { showToast('Colonne "Nom" ou "Prenom" introuvable dans le CSV', 'error'); return; }
+            if (nomIdx === -1 && prenomIdx === -1) { showToast(t('clients.csvColumnMissing'), 'error'); return; }
             let importCount = 0;
             for (let i = 1; i < lines.length; i++) {
               const cols = lines[i].split(',').map(c => c.replace(/"/g, '').trim());

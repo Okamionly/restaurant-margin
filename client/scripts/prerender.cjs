@@ -846,6 +846,12 @@ const ROUTES = [
     description: "La pyramide Escoffier adaptee a un vrai restaurant en 2026 : dimensionnement par taille d'etablissement, cout chiffre d'un turnover a 50%, obligation legale du DUERP face au burnout, et rituels de communication chef-equipe.",
     type: 'article',
   },
+  {
+    path: '/blog/logiciel-reservation-restaurant',
+    title: 'Logiciel de reservation restaurant : comparatif 2026',
+    description: 'Comparatif complet des logiciels de reservation pour restaurants en 2026 : TheFork, Zenchef, Sevenrooms, Google Reserve. Criteres de choix, couts reels et ROI.',
+    type: 'article',
+  },
 ];
 
 function run() {

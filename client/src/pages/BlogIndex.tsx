@@ -407,6 +407,14 @@ const posts: BlogPost[] = [
     date: '2026-09-04',
   },
   {
+    slug: 'logiciel-reservation-restaurant',
+    title: 'Logiciel de réservation restaurant : comparatif 2026',
+    excerpt: 'Comparatif complet des logiciels de réservation pour restaurants en 2026 : TheFork, Zenchef, Sevenrooms, Google Reserve. Critères de choix, coûts réels et ROI.',
+    category: 'Outils',
+    readTime: '9 min',
+    date: '2026-09-12',
+  },
+  {
     slug: 'brigade-cuisine-organisation-postes',
     title: 'Brigade de cuisine : organisation, postes et gestion du stress',
     excerpt: "La pyramide Escoffier adaptée à un vrai restaurant : dimensionnement par taille d'établissement, coût chiffré du turnover, obligation légale du DUERP face au burnout.",

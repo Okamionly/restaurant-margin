@@ -2673,5 +2673,11 @@
   "analytics": {
     "errorLoading": "Erreur de chargement du rapport",
     "reportDownloaded": "Rapport téléchargé !"
-  }
+  },
+  "recipeDetail.errorUploadPhoto": "Erreur lors de l'upload de la photo",
+  "recipeDetail.errorDeletePhoto": "Erreur lors de la suppression de la photo",
+  "recipeDetail.errorShareLink": "Impossible de générer le lien de partage. Vérifiez votre connexion, puis réessayez.",
+  "recipeDetail.errorOptimize": "Erreur lors de l'optimisation",
+  "recipeDetail.errorAllergens": "Erreur lors de l'analyse des allergènes",
+  "recipeDetail.errorNutrition": "Erreur lors de l'estimation nutritionnelle"
 }

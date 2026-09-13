@@ -228,9 +228,9 @@ export default function RecipeDetail() {
       const updated = await addRecipePhoto(recipe.id, resized);
       setRecipe(updated);
       setPhotoIndex((updated.photos?.length || 1) - 1);
-    } catch (err) { setPhotoError('Erreur lors de l\'upload de la photo'); }
+    } catch (err) { setPhotoError(t('recipeDetail.errorUploadPhoto')); }
     finally { setUploadingPhoto(false); if (fileInputRef.current) fileInputRef.current.value = ''; }
-  }, [recipe]);
+  }, [recipe, t]);
 
   const handleDeletePhoto = useCallback(async (idx: number) => {
     if (!recipe) return;
@@ -238,8 +238,8 @@ export default function RecipeDetail() {
       const updated = await deleteRecipePhoto(recipe.id, idx);
       setRecipe(updated);
       setPhotoIndex(Math.max(0, idx - 1));
-    } catch (err) { setPhotoError('Erreur lors de la suppression de la photo'); }
-  }, [recipe]);
+    } catch (err) { setPhotoError(t('recipeDetail.errorDeletePhoto')); }
+  }, [recipe, t]);
 
   const handleShare = useCallback(async () => {
     if (!recipe) return;
@@ -248,9 +248,9 @@ export default function RecipeDetail() {
       const { url } = await getRecipeShareLink(recipe.id);
       setShareUrl(url);
       setShowShareModal(true);
-    } catch (err) { setPhotoError('Impossible de générer le lien de partage. Vérifiez votre connexion, puis réessayez.'); }
+    } catch (err) { setPhotoError(t('recipeDetail.errorShareLink')); }
     finally { setShareLoading(false); }
-  }, [recipe]);
+  }, [recipe, t]);
 
   const handleCopyLink = useCallback(async () => {
     if (!shareUrl) return;
@@ -271,11 +271,11 @@ export default function RecipeDetail() {
       setShowOptimizer(true);
       setAppliedSuggestions(new Set());
     } catch (err: any) {
-      setOptimizeError(err.message || 'Erreur lors de l\'optimisation');
+      setOptimizeError(err.message || t('recipeDetail.errorOptimize'));
     } finally {
       setOptimizing(false);
     }
-  }, [recipe]);
+  }, [recipe, t]);
 
   const handleAllergenCheck = useCallback(async () => {
     if (!recipe) return;
@@ -285,11 +285,11 @@ export default function RecipeDetail() {
       const result = await checkAllergens(recipe.id);
       setAllergenResult(result);
     } catch (err: any) {
-      setAllergenError(err.message || 'Erreur lors de l\'analyse des allergenes');
+      setAllergenError(err.message || t('recipeDetail.errorAllergens'));
     } finally {
       setAllergenLoading(false);
     }
-  }, [recipe]);
+  }, [recipe, t]);
 
   const handleNutritionEstimate = useCallback(async () => {
     if (!recipe) return;
@@ -299,11 +299,11 @@ export default function RecipeDetail() {
       const result = await estimateNutrition(recipe.id);
       setNutritionResult(result);
     } catch (err: any) {
-      setNutritionError(err.message || 'Erreur lors de l\'estimation nutritionnelle');
+      setNutritionError(err.message || t('recipeDetail.errorNutrition'));
     } finally {
       setNutritionLoading(false);
     }
-  }, [recipe]);
+  }, [recipe, t]);
 
   const loadRecipe = useCallback(() => {
     if (!id) return;

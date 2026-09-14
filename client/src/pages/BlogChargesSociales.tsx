@@ -519,7 +519,7 @@ export default function BlogChargesSociales() {
             </li>
             <li className="flex items-start gap-2">
               <span className="w-2 h-2 rounded-full bg-red-500 mt-2 flex-shrink-0" />
-              <span><strong>Pourboires mal traites</strong> : le "service compris" (15% historique) est du salaire, donc soumis a cotisations. Seuls les pourboires volontaires (laisses directement au serveur) sont exoneres (jusqu'au 31/12/2026, ≤ 1,6 SMIC). Si caisse commune ou TPE pourboires : redistributuons traites comme salaire.</span>
+              <span><strong>Pourboires mal traites</strong> : le "service compris" (15% historique) est du salaire, donc soumis a cotisations. Seuls les pourboires volontaires (laisses directement au serveur) sont exoneres (jusqu'au 31/12/2028, ≤ 1,6 SMIC). Si caisse commune ou TPE pourboires : redistribution traitee comme salaire. Detail complet : <Link to="/blog/pourboires-restaurant-legislation-fiscalite" className="text-teal-600 hover:underline">pourboires en restauration, legislation et repartition</Link>.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="w-2 h-2 rounded-full bg-red-500 mt-2 flex-shrink-0" />

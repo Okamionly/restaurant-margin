@@ -205,6 +205,7 @@ const BlogTicketMoyen = lazyRetry(() => import('./pages/BlogTicketMoyen'));
 const BlogInventaire = lazyRetry(() => import('./pages/BlogInventaire'));
 const BlogPrixCarte = lazyRetry(() => import('./pages/BlogPrixCarte'));
 const BlogChargesSociales = lazyRetry(() => import('./pages/BlogChargesSociales'));
+const BlogPourboiresRestaurant = lazyRetry(() => import('./pages/BlogPourboiresRestaurant'));
 const BlogCoutRevient = lazyRetry(() => import('./pages/BlogCoutRevient'));
 const BlogLogicielGestion = lazyRetry(() => import('./pages/BlogLogicielGestion'));
 const BlogRotationStocks = lazyRetry(() => import('./pages/BlogRotationStocks'));
@@ -1316,6 +1317,7 @@ function App() {
           <Route path="/blog/inventaire-restaurant-guide" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogInventaire /></Suspense>} />
           <Route path="/blog/fixer-prix-carte-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrixCarte /></Suspense>} />
           <Route path="/blog/charges-sociales-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogChargesSociales /></Suspense>} />
+          <Route path="/blog/pourboires-restaurant-legislation-fiscalite" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPourboiresRestaurant /></Suspense>} />
           <Route path="/blog/cout-revient-plat-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoutRevient /></Suspense>} />
           <Route path="/blog/logiciel-gestion-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogLogicielGestion /></Suspense>} />
           <Route path="/blog/rotation-stocks-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogRotationStocks /></Suspense>} />

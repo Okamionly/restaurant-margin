@@ -223,6 +223,14 @@ const posts: BlogPost[] = [
     date: '2026-05-26',
   },
   {
+    slug: 'pourboires-restaurant-legislation-fiscalite',
+    title: 'Pourboires en restauration : législation, fiscalité et répartition 2026',
+    excerpt: "À qui appartiennent les pourboires, comment les répartir sans perdre l'exonération, et jusqu'à quand l'exonération fiscale et sociale s'applique. Cas chiffré.",
+    category: 'Juridique',
+    readTime: '11 min',
+    date: '2026-09-14',
+  },
+  {
     slug: 'cout-revient-plat-restaurant',
     title: "Calculer le coût de revient d'un plat : méthode complète pour restaurateurs",
     excerpt: "5 étapes, ratio de perte par produit, exemple bœuf bourguignon, seuil d'alerte à 35% et mise à jour automatique quand les prix fournisseurs changent.",

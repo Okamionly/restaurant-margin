@@ -2197,6 +2197,8 @@
   "recipes.ingredientsAdded": "{count} ingrédient(s) ajouté(s)",
   "recipes.pricesUpdated": "{count} prix mis à jour",
   "recipes.errorUpdatingPrices": "Erreur lors de la mise à jour des prix",
+  "recipes.packImportSuccess": "Pack \"{name}\" importé : {count} recette(s) créée(s)",
+  "recipes.packImportError": "Erreur lors de l'import du pack \"{name}\"",
   "status": "Statut",
   "suppliers.action": "Action",
   "suppliers.add": "Ajouter",

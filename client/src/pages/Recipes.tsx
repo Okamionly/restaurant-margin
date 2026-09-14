@@ -2347,11 +2347,11 @@ export default function Recipes() {
       }
 
       setImportResult({ packName: pack.name, created, total: pack.recipes.length });
-      showToast(`Pack "${pack.name}" importe : ${created} recette(s) creee(s)`, 'success');
+      showToast(t('recipes.packImportSuccess').replace('{name}', pack.name).replace('{count}', String(created)), 'success');
       updateOnboardingStep('recipeCreated', true);
       loadData();
     } catch (err) {
-      showToast(`Erreur lors de l'import du pack "${pack.name}"`, 'error');
+      showToast(t('recipes.packImportError').replace('{name}', pack.name), 'error');
     } finally {
       setImportingPack(null);
     }

@@ -124,6 +124,11 @@ const ROUTES = [
     description: "Guide et outil pour calculer les marges de votre restaurant halal. Food cost viande halal certifiee, surcoût certification, gestion kebabs, grillades et tajines, et optimisation rentabilite par plat.",
   },
   {
+    path: '/guide-marge/bistro-gastronomique',
+    title: 'Calcul de marge bistro gastronomique : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre bistro gastronomique. Food cost produits du terroir et de saison, marge par formule courte, gestion de la bistronomie et optimisation prix de vente.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

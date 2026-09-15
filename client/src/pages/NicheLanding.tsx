@@ -24,6 +24,7 @@ import SEOHead from '../components/SEOHead';
      /guide-marge/dark-kitchen
      /guide-marge/restaurant-vegan
      /guide-marge/restaurant-halal
+     /guide-marge/bistro-gastronomique
    ═══════════════════════════════════════════════════════════════ */
 
 interface NicheConfig {
@@ -732,6 +733,53 @@ const NICHES: Record<string, NicheConfig> = {
       {
         q: "RestauMargin convient-il aux restaurants halal avec livraison, comptoir kebab rapide et evenementiel ?",
         a: "Oui, RestauMargin est particulierement adapte aux restaurants halal qui cumulent plusieurs activites : restauration sur place avec une carte de plats traditionnels (tajines, couscous, grillades), un comptoir kebab-sandwichs pour le flux rapide du midi, une activite de livraison sur plateformes (Uber Eats, Deliveroo, Just Eat) et parfois une activite traiteur pour les evenements familiaux ou religieux (mariages, fetes de l'Aid). Pour le comptoir rapide, les fiches techniques kebab avec grammages standardises permettent d'homogeneiser la preparation entre les employes et d'eviter le surdosage. Pour la livraison, le module calcul-commission simule la marge nette apres deduction des commissions plateforme (27-30%) pour chaque reference : vous identifiez quels plats sont rentables en livraison et quels prix fixer pour absorber la commission sans sacrifier la marge. Pour le traiteur evenementiel (buffets de mariage halal, plateaux-repas Aid), la fonctionnalite de fiche technique composite calcule le cout par convive en integrant viandes, accompagnements, patisseries orientales et packaging. Le plan Pro a 29€/mois couvre un restaurant halal avec jusqu'a 100 references et 3 utilisateurs ; le plan Business est recommande pour les etablissements avec plusieurs comptoirs ou une cuisine centrale de production traiteur.",
+      },
+    ],
+  },
+  'bistro-gastronomique': {
+    slug: 'bistro-gastronomique',
+    title: 'Calcul de marge bistro gastronomique : guide complet 2026',
+    h1: 'Optimisez la marge de votre bistro gastronomique',
+    tagline: 'Logiciel de gestion pour bistronomie et restaurants bistrots gastronomiques',
+    description: "Guide et outil pour calculer les marges de votre bistro gastronomique. Food cost produits du terroir, marge par menu degustation courte, gestion de la bistronomie et optimisation prix de vente.",
+    heroSubtitle: "La bistronomie : la cuisine gastronomique au prix du bistrot. Des produits nobles, une carte courte et une marge qui se joue au gramme pres. RestauMargin vous donne la precision des grandes tables avec la simplicite d'un outil pense pour les chefs independants.",
+    avgMargin: '66-74%',
+    avgFoodCost: '28-34%',
+    avgCoef: '3,2 a 4',
+    challenges: [
+      "Produits de saison et du terroir : prix qui varient chaque semaine selon les arrivages et la meteo",
+      "Carte courte (4 a 8 plats par section) : chaque plat doit etre rentable — pas de dilution possible avec une carte large",
+      "Main-d'oeuvre qualifiee : brigade reduite mais cuisiniers experimentes — masse salariale elevee (35-45% du CA)",
+      "Menu unique ou formule courte : si un plat ne s'ecoule pas, le gaspillage impacte directement le food cost journalier",
+      "Positionnement delicat entre bistrot accessible et gastronomie premium : une hausse de prix peut faire fuir la clientele fidelisee",
+    ],
+    stats: [
+      { label: 'Food cost moyen', value: '31%', color: 'teal' },
+      { label: 'Marge brute cible', value: '70%', color: 'emerald' },
+      { label: 'Coefficient type', value: '3,6x', color: 'amber' },
+      { label: 'Ticket moyen', value: '35-60€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "J'avais une carte courte de 12 plats et je pensais bien gerer. RestauMargin m'a revele que 3 plats sur 12 etaient en dessous de 62% de marge brute — dont mon plat signature. En recalibrant les grammages et en renegociant mon grossiste en viande, j'ai recupere 8 points de marge sans toucher aux prix de la carte.",
+      author: 'Charlotte',
+      role: 'Chef-patronne de bistro gastronomique, Bordeaux',
+    },
+    faqs: [
+      {
+        q: "Quelle est la marge moyenne d'un bistro gastronomique ?",
+        a: "La marge brute d'un bistro gastronomique se situe entre 66% et 74%, positionnee entre le bistrot traditionnel (68-73%) et le restaurant gastronomique etoile (65-70%). Cette marge est obtenue grace a un ticket moyen plus eleve (35-60€) qui permet d'absorber le food cost de produits de qualite superieure (viandes de race, poissons nobles, legumes du maraicher local) tout en maintenant des prix inferieurs a la grande gastronomie. Les bistros gastronomiques les plus rentables partagent trois caracteristiques : une carte tres courte (12 a 18 references maximum) avec des fiches techniques maitrisees au gramme pres, une gestion rigoureuse des previsions de couverts pour limiter les achats de produits frais non utilises, et un approvisionnement direct producteurs qui permet de reduire le cout matiere de 10 a 20% par rapport aux grossistes classiques. La marge nette apres charges (loyer, brigade qualifiee, energie) oscille entre 6% et 12% — superieure au restaurant gastronomique traditionnel grace a des charges de personnel proportionnellement plus faibles (brigade de 2 a 4 cuisiniers vs 8 a 15 en gastronomie).",
+      },
+      {
+        q: "Comment calculer le food cost des plats du terroir et produits de saison ?",
+        a: "Le calcul des produits de saison exige une mise a jour hebdomadaire des prix fournisseurs, car un cardon ou un saint-pierre peut varier de 30% en quelques jours selon la peche ou la recolte. La methode en 4 etapes : (1) creer une fiche technique de reference par plat avec grammages fixes et prix d'achat moyen sur la saison, (2) mettre a jour le prix des ingredients volatils (poissons, champignons sauvages, legumes primeurs) chaque semaine via la mercuriale fournisseur de RestauMargin — les fiches techniques se mettent a jour automatiquement et alertent si le food cost depasse votre seuil cible, (3) calculer un prix de vente plancher (prix de vente minimum pour conserver la marge cible) qui sert de garde-fou si les prix s'envolent en cours de saison, (4) evaluer a chaque changement de carte si le plat reste rentable au nouveau prix d'achat ou s'il faut l'ajuster ou le retirer. Exemple : un dos de cabillaud 180g vendu 24€ HT a 6,80€/kg (1,22€ de matiere poisson) atteint facilement un food cost de 22% avec les legumes et la sauce. Si le cabillaud monte a 11€/kg (1,98€ de matiere), le food cost grimpe a 32% — RestauMargin vous alerte instantanement et vous propose de recalculer le prix de vente optimal.",
+      },
+      {
+        q: "Comment equilibrer la marge sur une carte courte sans augmenter les prix ?",
+        a: "Une carte courte offre moins de levier de compensation entre plats : chaque reference doit porter son propre poids en marge. Trois strategies adaptees a la bistronomie : (1) construire la carte avec un mix delibere entre pieces nobles a fort ticket (cote de boeuf maturee, Saint-Jacques en saison, langoustines) qui ancrent le positionnement premium mais acceptent un food cost plus eleve (28-34%), et preparations a forte valeur ajoutee avec des ingredients accessibles (terrine maison, oeuf parfait et truffe en petite quantite, risotto de la mer) qui affichent un food cost de 18-25% et equilibrent la marge globale, (2) valoriser le travail et la technique plutot que la matiere premiere — un tartare de legumes du jardin bien travaille peut se vendre 16€ avec 2,80€ de cout matiere (17,5% de food cost) sans que le client ne percoive une asymetrie qualite-prix, (3) proposer une formule midi courte (entree + plat ou plat + dessert a 22-28€) avec des preparationsreutilisant les parures et surplus du soir — cette pratique reduit le gaspillage et cree un flux de clientele supplementaire avec un food cost maitrise. RestauMargin analyse votre carte et identifie les plats qui tirent la marge globale vers le bas, avec des suggestions d'ajustement de grammage ou de prix pour atteindre votre objectif.",
+      },
+      {
+        q: "RestauMargin convient-il aux bistros gastronomiques avec menu degustation courte ?",
+        a: "Oui, RestauMargin est particulierement adapte au format bistronomique avec menu degustation courte (4 a 6 plats) et carte a la carte reduite. Pour les menus degustation, vous creez une fiche technique composite : chaque plat du menu est saisi separement avec ses propres ingredients et grammages, puis regroupe dans un menu global. RestauMargin calcule la marge du menu complet, le food cost par plat et le cout total par convive, en integrant les boissons accordees si vous proposez un accord mets-vins. Vous voyez immediatement si le menu est equilibre ou si un plat plombe la rentabilite de l'ensemble. Pour la gestion des produits nobles qui entrent dans vos preparations (truffes, homard, ris de veau), le module de suivi des pertes et des rendements vous permet de calculer le cout reel apres parage — indispensable quand 30% du poids brut d'un ris de veau ou d'un homard est perdu a la preparation. Le plan Pro a 29€/mois est adapte pour un bistro gastronomique avec une carte de 20 a 40 references et 2 utilisateurs (chef + second). Le plan Business est recommande si vous gerez deux etablissements ou une table gastronomique avec cave a vins separee.",
       },
     ],
   },

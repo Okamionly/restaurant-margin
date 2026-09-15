@@ -427,6 +427,27 @@ const ROUTES = [
     title: 'Terrasse de restaurant : autorisations, demarches et rentabilite 2026',
     description: 'Comment ouvrir une terrasse de restaurant en France ? Droit de terrasse, dossier mairie, equipement et calcul de rentabilite : le guide complet 2026.',
     type: 'article',
+    seoBody: `
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Terrasse en hiver : chauffage et rentabilite hors saison</h2>
+        <p style="margin:0 0 16px 0;color:#333333">Depuis le decret du 30 mars 2022 (loi Climat et Resilience), les chauffages au gaz et electriques classiques sont interdits sur les terrasses ouvertes. Seuls restent autorises les dispositifs biomasse (bois, granules) ou geothermiques, plus couteux a l'achat (800 a 2 000 EUR l'unite) mais sans surcout energetique variable comparable au gaz. Une terrasse partiellement fermee (parois amovibles en verre ou PVC, a moins de 50 % de surface ouverte) echappe a l'interdiction mais bascule alors dans le regime de la construction (permis d'amenager). Meme chauffee, une terrasse voit sa frequentation chuter fortement sous 5 a 10 degres ressentis : mieux vaut reduire le nombre de tables ouvertes plutot que de chauffer une terrasse a moitie vide.</p>
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Assurance et responsabilite : ce qui est vraiment couvert</h2>
+        <p style="margin:0 0 16px 0;color:#333333">La RC professionnelle classique d'un restaurant ne couvre pas automatiquement une occupation du domaine public. Sans extension explicite "terrasse" ou "occupation de voirie" au contrat, un accident (chute sur un pied de parasol, projection de mobilier par grand vent) peut vous laisser sans couverture. A verifier avec l'assureur : extension occupation de voirie, couverture du mobilier laisse dehors la nuit, garantie tempete pour parasols et pare-vents, responsabilite en cas de chute sur un dénivelé. Cette extension represente en general 150 a 400 EUR par an.</p>
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Questions frequentes sur la terrasse de restaurant</h2>
+        <h3 style="font-size:18px;font-weight:600;margin:24px 0 8px 0;color:#111111">Peut-on installer une terrasse fermee (type veranda) sur le domaine public ?</h3>
+        <p style="margin:0 0 16px 0;color:#333333">Oui, mais c'est soumis a une autorisation plus contraignante, parfois assimilee a une construction permanente necessitant un permis d'amenager. Certaines villes l'interdisent pour des raisons esthetiques.</p>
+        <h3 style="font-size:18px;font-weight:600;margin:24px 0 8px 0;color:#111111">La redevance de terrasse est-elle deductible des impots ?</h3>
+        <p style="margin:0 0 16px 0;color:#333333">Oui, c'est une charge d'exploitation deductible du resultat imposable, comme n'importe quel loyer lie a l'activite. Conservez toutes vos quittances.</p>
+        <h3 style="font-size:18px;font-weight:600;margin:24px 0 8px 0;color:#111111">Peut-on installer une terrasse sur un parking prive ?</h3>
+        <p style="margin:0 0 16px 0;color:#333333">Oui, si le parking appartient a votre bailleur et que le bail commercial l'autorise. Pas besoin de droit de terrasse municipal, mais verifiez les regles du PLU et les droits de voisinage.</p>
+        <h3 style="font-size:18px;font-weight:600;margin:24px 0 8px 0;color:#111111">Le chauffage de terrasse est-il encore autorise en France ?</h3>
+        <p style="margin:0 0 16px 0;color:#333333">Les chauffages au gaz et electriques classiques sont interdits en terrasse ouverte depuis le decret du 30 mars 2022. Seuls les dispositifs biomasse ou geothermiques restent autorises en exterieur non couvert.</p>
+        <h3 style="font-size:18px;font-weight:600;margin:24px 0 8px 0;color:#111111">Combien coute l'entretien annuel d'une terrasse professionnelle ?</h3>
+        <p style="margin:0 0 16px 0;color:#333333">Comptez 3 a 8 % de la valeur du mobilier par an : nettoyage haute pression, hivernage, petites reparations et remplacement des pieces d'usure.</p>
+        <h3 style="font-size:18px;font-weight:600;margin:24px 0 8px 0;color:#111111">Une terrasse peut-elle rester ouverte toute l'annee ?</h3>
+        <p style="margin:0 0 16px 0;color:#333333">Oui avec un investissement premium (parois amovibles, chauffage biomasse, tapis chauffants), mais le retour sur investissement depend du climat local. En dessous de 5 degres, la frequentation chute fortement meme terrasse chauffee.</p>
+        <h3 style="font-size:18px;font-weight:600;margin:24px 0 8px 0;color:#111111">Que se passe-t-il si la mairie refuse le renouvellement de l'autorisation ?</h3>
+        <p style="margin:0 0 16px 0;color:#333333">Vous devez demonter la terrasse dans le delai imparti. Les motifs de refus (travaux voirie, plaintes riverains, changement de PLU) sont generalement notifies a l'avance.</p>
+    `,
   },
   {
     path: '/blog/gestion-tresorerie-restaurant',

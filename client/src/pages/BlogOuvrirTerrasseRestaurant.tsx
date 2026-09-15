@@ -11,8 +11,65 @@ export default function BlogOuvrirTerrasseRestaurant() {
     "author": { "@type": "Organization", "name": "RestauMargin" },
     "publisher": { "@type": "Organization", "name": "RestauMargin", "url": "https://www.restaumargin.fr" },
     "datePublished": "2026-07-10",
-    "dateModified": "2026-07-10",
+    "dateModified": "2026-09-15",
     "url": "https://www.restaumargin.fr/blog/ouvrir-terrasse-restaurant-demarches"
+  };
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Peut-on installer une terrasse fermée (type véranda) sur le domaine public ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Oui, mais c'est soumis à une autorisation plus contraignante, parfois assimilée à une construction permanente nécessitant un permis d'aménager. Certaines villes l'interdisent pour des raisons esthétiques." }
+      },
+      {
+        "@type": "Question",
+        "name": "La redevance de terrasse est-elle déductible des impôts ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Oui, c'est une charge d'exploitation déductible du résultat imposable, comme n'importe quel loyer lié à l'activité. Conservez toutes vos quittances." }
+      },
+      {
+        "@type": "Question",
+        "name": "Mon voisin a une terrasse plus grande que son autorisation. Que faire ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Signalez-le au service voirie de la mairie ou à la préfecture de police. Ces infractions sont vérifiables sur le terrain et peuvent bloquer votre propre demande si le trottoir est trop encombré." }
+      },
+      {
+        "@type": "Question",
+        "name": "Peut-on installer une terrasse sur un parking privé ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Oui, si le parking appartient à votre bailleur et que le bail commercial l'autorise. Pas besoin de droit de terrasse municipal, mais vérifiez les règles du PLU et les droits de voisinage." }
+      },
+      {
+        "@type": "Question",
+        "name": "Le chauffage de terrasse est-il encore autorisé en France ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Les chauffages au gaz et électriques classiques sont interdits en terrasse ouverte depuis le décret du 30 mars 2022 (loi Climat). Seuls les dispositifs biomasse (bois, granulés) ou géothermiques restent autorisés en extérieur non couvert." }
+      },
+      {
+        "@type": "Question",
+        "name": "Faut-il une assurance spécifique pour une terrasse sur le domaine public ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Votre RC pro classique ne couvre pas toujours l'occupation du domaine public. Il faut une extension \"occupation de voirie\" ou \"terrasse\" explicitement mentionnée au contrat, sans quoi un accident (chute, projection) engage votre responsabilité sans couverture." }
+      },
+      {
+        "@type": "Question",
+        "name": "Combien coûte l'entretien annuel d'une terrasse professionnelle ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Comptez 3 à 8 % de la valeur du mobilier par an : nettoyage haute pression, hivernage (stockage ou housses), petites réparations et remplacement des pièces d'usure (roulettes, sangles de parasol)." }
+      },
+      {
+        "@type": "Question",
+        "name": "Une terrasse peut-elle rester ouverte toute l'année ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Oui avec un investissement premium (parois amovibles, chauffage biomasse, tapis chauffants), mais le retour sur investissement dépend du climat local et de la clientèle. En dessous de 5°C, la fréquentation chute fortement même terrasse chauffée." }
+      },
+      {
+        "@type": "Question",
+        "name": "Le personnel affecté à la terrasse compte-t-il dans le coût de personnel du restaurant ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Oui, mais rapportez-le au CA généré par la terrasse pour juger sa rentabilité réelle plutôt qu'au CA global. Un serveur dédié terrasse en haute saison reste rentable si le ticket moyen et le taux de rotation compensent le coût horaire." }
+      },
+      {
+        "@type": "Question",
+        "name": "Que se passe-t-il si la mairie refuse le renouvellement de l'autorisation ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Vous devez démonter la terrasse dans le délai imparti. Les motifs de refus (travaux voirie, plaintes riverains, changement de PLU) sont généralement notifiés à l'avance — anticipez un plan B (terrasse réduite, salle intérieure)." }
+      }
+    ]
   };
 
   return (
@@ -26,6 +83,10 @@ export default function BlogOuvrirTerrasseRestaurant() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
 
       <main className="max-w-3xl mx-auto px-4 py-10 text-[#111111] dark:text-white">
         <article>
@@ -38,7 +99,7 @@ export default function BlogOuvrirTerrasseRestaurant() {
               Vous rêvez d'installer une terrasse devant votre restaurant ? Entre autorisations mairie, droit de terrasse et investissement matériel, beaucoup renoncent. Pourtant, une terrasse bien gérée peut augmenter votre chiffre d'affaires de 20 à 40 % en saison. Voici le guide complet.
             </p>
             <div className="mt-4">
-              <BlogAuthor publishedDate="2026-07-10" readTime="7 min" variant="header" />
+              <BlogAuthor publishedDate="2026-07-10" updatedDate="2026-09-15" readTime="9 min" variant="header" />
             </div>
           </header>
 
@@ -49,6 +110,8 @@ export default function BlogOuvrirTerrasseRestaurant() {
               <li><a href="#demarches" className="hover:text-teal-600">Les démarches administratives à suivre</a></li>
               <li><a href="#equipement" className="hover:text-teal-600">Quel équipement prévoir et pour quel budget ?</a></li>
               <li><a href="#rentabilite" className="hover:text-teal-600">Comment calculer la rentabilité de votre terrasse ?</a></li>
+              <li><a href="#hiver" className="hover:text-teal-600">Terrasse en hiver : chauffage et rentabilité hors saison</a></li>
+              <li><a href="#assurance" className="hover:text-teal-600">Assurance et responsabilité : ce qui est vraiment couvert</a></li>
               <li><a href="#erreurs" className="hover:text-teal-600">Erreurs courantes et comment les éviter</a></li>
             </ol>
           </nav>
@@ -166,12 +229,48 @@ export default function BlogOuvrirTerrasseRestaurant() {
               À raison de 20 couverts/service × 3 services/semaine × 26 semaines = <strong>1 560 couverts potentiels</strong>. La terrasse est rentabilisée après seulement 16 % du potentiel saisonnier.
             </p>
             <p className="text-sm text-[#737373] dark:text-[#A3A3A3]">
-              En général, les restaurateurs observent un CA estival supérieur de 25 à 40 % les années suivant l'ouverture d'une terrasse, avec un ticket moyen terrasse supérieur de 8 à 15 % à celui de la salle.
+              En général, les restaurateurs observent un CA estival supérieur de 25 à 40 % les années suivant l'ouverture d'une terrasse, avec un ticket moyen terrasse supérieur de 8 à 15 % à celui de la salle. Ce ticket moyen plus élevé mérite d'être suivi précisément : consultez notre guide pour <a href="/blog/augmenter-ticket-moyen-restaurant" className="text-teal-600 hover:underline">augmenter le ticket moyen</a> et notre calcul détaillé du <a href="/blog/seuil-rentabilite-restaurant" className="text-teal-600 hover:underline">seuil de rentabilité restaurant</a>.
+            </p>
+          </section>
+
+          <section id="hiver" className="mb-10">
+            <h2 className="font-satoshi text-2xl font-bold mb-4">5. Terrasse en hiver : chauffage et rentabilité hors saison</h2>
+            <p className="mb-4 leading-relaxed">
+              Depuis le <strong>décret du 30 mars 2022</strong> (loi Climat et Résilience), les chauffages au gaz et électriques classiques sont interdits sur les terrasses ouvertes. Seuls restent autorisés les dispositifs <strong>biomasse</strong> (bois, granulés) ou <strong>géothermiques</strong>, plus coûteux à l'achat (800 à 2 000 € l'unité) mais sans surcoût énergétique variable comparable au gaz.
+            </p>
+            <p className="mb-4 leading-relaxed">
+              Une terrasse partiellement fermée (parois amovibles en verre ou PVC, à moins de 50 % de surface ouverte) échappe à l'interdiction car elle n'est plus juridiquement une « terrasse ouverte » — mais bascule alors dans le régime plus contraignant de la construction (permis d'aménager, cf. FAQ). C'est l'arbitrage clé à faire avant d'investir : chauffage biomasse sur terrasse ouverte, ou parois amovibles avec chauffage classique en espace semi-fermé.
+            </p>
+            <div className="bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-xl p-4 mb-4">
+              <p className="text-sm font-semibold text-teal-700 dark:text-teal-400 mb-1">Seuil de fréquentation observé</p>
+              <p className="text-sm leading-relaxed">
+                Même chauffée, une terrasse voit sa fréquentation chuter fortement sous 5°C ressentis. Les retours terrain situent le point de bascule autour de 8-10°C : en dessous, mieux vaut réduire le nombre de tables ouvertes plutôt que de chauffer une terrasse à moitié vide — l'impact sur votre <a href="/blog/gestion-tresorerie-restaurant" className="text-teal-600 hover:underline">trésorerie</a> d'un chauffage biomasse allumé pour 3 couverts est immédiat.
+              </p>
+            </div>
+            <p className="leading-relaxed">
+              Le chauffage de terrasse pèse aussi sur votre facture énergétique globale : un dispositif biomasse consomme des granulés (350-450 €/tonne, environ 1 sac de 15 kg pour une soirée par brasero) qu'il faut budgéter en amont. Voir notre guide pour <a href="/blog/reduire-facture-energie-restaurant" className="text-teal-600 hover:underline">réduire la facture énergie du restaurant</a> pour arbitrer entre chauffage terrasse et autres postes de consommation.
+            </p>
+          </section>
+
+          <section id="assurance" className="mb-10">
+            <h2 className="font-satoshi text-2xl font-bold mb-4">6. Assurance et responsabilité : ce qui est vraiment couvert</h2>
+            <p className="mb-4 leading-relaxed">
+              La RC professionnelle classique d'un restaurant couvre l'activité de restauration à l'intérieur de l'établissement — elle ne couvre pas automatiquement une <strong>occupation du domaine public</strong>. En l'absence d'extension explicite « terrasse » ou « occupation de voirie » au contrat, un accident impliquant un passant (chute sur un pied de parasol, projection de mobilier par grand vent) peut vous laisser sans couverture.
+            </p>
+            <p className="mb-3 font-semibold">Points à vérifier avec votre assureur avant l'ouverture :</p>
+            <ul className="list-disc list-inside space-y-2 mb-5 text-sm">
+              <li>Extension RC « occupation de voirie / domaine public » explicitement mentionnée</li>
+              <li>Couverture du mobilier laissé dehors la nuit (souvent exclue sans système de fixation ou de stockage)</li>
+              <li>Garantie « catastrophes naturelles / tempête » pour les parasols et pare-vents</li>
+              <li>Responsabilité en cas de chute d'un client sur un dénivelé ou câble d'alimentation électrique</li>
+            </ul>
+            <p className="leading-relaxed">
+              Budgétez cette extension dans vos charges d'exploitation dès le calcul de <a href="/blog/seuil-rentabilite-restaurant" className="text-teal-600 hover:underline">rentabilité</a> ci-dessus : elle représente en général 150 à 400 €/an selon la surface et l'équipement, un coût marginal face au risque d'un sinistre non couvert. Pour objectiver l'ensemble de ces coûts dans vos <a href="/blog/kpi-restaurateur" className="text-teal-600 hover:underline">indicateurs de pilotage</a>, intégrez la terrasse comme un centre de coût et de revenu distinct de la salle.
             </p>
           </section>
 
           <section id="erreurs" className="mb-10">
-            <h2 className="font-satoshi text-2xl font-bold mb-4">5. Erreurs courantes et comment les éviter</h2>
+            <h2 className="font-satoshi text-2xl font-bold mb-4">7. Erreurs courantes et comment les éviter</h2>
             <div className="space-y-4">
               <div className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4">
                 <p className="font-semibold text-red-600 dark:text-red-400 mb-1">Erreur n°1 : Ouvrir sans autorisation</p>
@@ -215,6 +314,30 @@ export default function BlogOuvrirTerrasseRestaurant() {
                 <p className="font-semibold mb-1">Peut-on installer une terrasse sur un parking privé ?</p>
                 <p className="text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">Oui, si le parking appartient à votre bailleur et que le bail commercial l'autorise. Pas besoin de droit de terrasse municipal, mais vérifiez les règles du PLU et les droits de voisinage.</p>
               </div>
+              <div>
+                <p className="font-semibold mb-1">Le chauffage de terrasse est-il encore autorisé en France ?</p>
+                <p className="text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">Les chauffages au gaz et électriques classiques sont interdits en terrasse ouverte depuis le décret du 30 mars 2022 (loi Climat). Seuls les dispositifs biomasse (bois, granulés) ou géothermiques restent autorisés en extérieur non couvert.</p>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">Faut-il une assurance spécifique pour une terrasse sur le domaine public ?</p>
+                <p className="text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">Votre RC pro classique ne couvre pas toujours l'occupation du domaine public. Il faut une extension « occupation de voirie » ou « terrasse » explicitement mentionnée au contrat, sans quoi un accident engage votre responsabilité sans couverture.</p>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">Combien coûte l'entretien annuel d'une terrasse professionnelle ?</p>
+                <p className="text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">Comptez 3 à 8 % de la valeur du mobilier par an : nettoyage haute pression, hivernage (stockage ou housses), petites réparations et remplacement des pièces d'usure (roulettes, sangles de parasol).</p>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">Une terrasse peut-elle rester ouverte toute l'année ?</p>
+                <p className="text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">Oui avec un investissement premium (parois amovibles, chauffage biomasse, tapis chauffants), mais le retour sur investissement dépend du climat local. En dessous de 5°C, la fréquentation chute fortement même terrasse chauffée.</p>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">Le personnel affecté à la terrasse compte-t-il dans le coût de personnel du restaurant ?</p>
+                <p className="text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">Oui, mais rapportez-le au CA généré par la terrasse pour juger sa rentabilité réelle plutôt qu'au CA global. Un serveur dédié terrasse en haute saison reste rentable si le ticket moyen et le taux de rotation compensent le coût horaire.</p>
+              </div>
+              <div>
+                <p className="font-semibold mb-1">Que se passe-t-il si la mairie refuse le renouvellement de l'autorisation ?</p>
+                <p className="text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">Vous devez démonter la terrasse dans le délai imparti. Les motifs de refus (travaux voirie, plaintes riverains, changement de PLU) sont généralement notifiés à l'avance — anticipez un plan B.</p>
+              </div>
             </div>
           </section>
 
@@ -229,7 +352,7 @@ export default function BlogOuvrirTerrasseRestaurant() {
             </a>
           </section>
 
-          <BlogAuthor publishedDate="2026-07-10" readTime="7 min" variant="footer" />
+          <BlogAuthor publishedDate="2026-07-10" updatedDate="2026-09-15" readTime="9 min" variant="footer" />
         </article>
       </main>
     </>

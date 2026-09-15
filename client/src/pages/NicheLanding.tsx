@@ -1018,7 +1018,7 @@ export default function NicheLanding() {
             className="text-2xl sm:text-3xl font-bold text-mono-100 mb-3"
            
           >
-            Ne perdez plus de marge sur votre {config.slug.replace('-', ' ')}
+            Ne perdez plus de marge sur votre {config.slug.replace(/-/g, ' ')}
           </h2>
           <p className="text-mono-400 mb-6 max-w-xl mx-auto">
             Essayez RestauMargin gratuitement pendant 7 jours. Sans carte bancaire. Sans engagement.
@@ -1043,7 +1043,7 @@ export default function NicheLanding() {
               to={`/guide-marge/${n.slug}`}
               className="px-3 py-1.5 bg-mono-975 hover:bg-teal-50 hover:text-teal-700 text-mono-400 text-sm rounded-full transition-colors capitalize"
             >
-              {n.slug.replace('-', ' ')}
+              {n.slug.replace(/-/g, ' ')}
             </Link>
           ))}
         </div>

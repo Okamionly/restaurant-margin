@@ -15,6 +15,7 @@ const path = require('path');
 
 const DIST = path.resolve(__dirname, '..', 'dist');
 const BASE_URL = 'https://www.restaumargin.fr';
+const BUILD_DATE = new Date().toISOString().slice(0, 10);
 
 // Public routes to prerender with their SEO metadata
 const ROUTES = [
@@ -1151,6 +1152,63 @@ function run() {
 
     // Inject BreadcrumbList schema in <head> (before </head>)
     html = html.replace('</head>', `  ${breadcrumbSchemaScript}\n  </head>`);
+
+    // ─── Article + FAQPage schema, auto-extraite du seoBody ───
+    // Verifie le 2026-09-16 : aucune des ~50 pages blog/guide n'emettait de
+    // schema Article ou FAQPage cote statique (seul BreadcrumbList existait
+    // ci-dessus). Les runs precedents croyaient l'avoir "confirme" en grep-ant
+    // la chaine "FAQPage" dans le HTML, qui ne matchait en realite QUE le
+    // commentaire mort retire le 27/07 dans client/index.html (present sur
+    // TOUTES les pages) — faux positif systematique. Les questions/reponses du
+    // seoBody sont deja redigees et visibles ; on les reduplique ici en JSON-LD
+    // sans inventer de contenu (meme regle que le pattern seoBody existant).
+    if (route.seoBody && (category === 'article' || category === 'guide')) {
+      const stripTags = (s) => s.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+      const faqPairs = [];
+      const faqRegex = /<h3[^>]*>([\s\S]*?)<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>/g;
+      let faqMatch;
+      while ((faqMatch = faqRegex.exec(route.seoBody)) !== null) {
+        const question = stripTags(faqMatch[1]);
+        const answer = stripTags(faqMatch[2]);
+        if (question && answer) faqPairs.push({ question, answer });
+      }
+
+      const articleSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: h1,
+        description: route.description,
+        image: `${BASE_URL}/og-image.png`,
+        dateModified: BUILD_DATE,
+        author: { '@type': 'Organization', name: 'RestauMargin', url: BASE_URL },
+        publisher: {
+          '@type': 'Organization',
+          name: 'RestauMargin',
+          logo: { '@type': 'ImageObject', url: `${BASE_URL}/og-image.png` },
+        },
+        mainEntityOfPage: { '@type': 'WebPage', '@id': fullUrl },
+      };
+      html = html.replace(
+        '</head>',
+        `  <script type="application/ld+json">${JSON.stringify(articleSchema)}</script>\n  </head>`
+      );
+
+      if (faqPairs.length >= 2) {
+        const faqSchema = {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqPairs.map((qa) => ({
+            '@type': 'Question',
+            name: qa.question,
+            acceptedAnswer: { '@type': 'Answer', text: qa.answer },
+          })),
+        };
+        html = html.replace(
+          '</head>',
+          `  <script type="application/ld+json">${JSON.stringify(faqSchema)}</script>\n  </head>`
+        );
+      }
+    }
 
     const seoStaticContent = `
       <article style="max-width:800px;margin:0 auto;padding:48px 20px;font-family:'Inter',system-ui,sans-serif;color:#111111;line-height:1.6">

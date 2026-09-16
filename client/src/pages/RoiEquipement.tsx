@@ -126,6 +126,8 @@ export default function RoiEquipement() {
 
   const reset = () => { setEquipements(DEFAULTS); setSelected('1'); };
 
+  const roiResult = calcRoi(eq);
+
   const labelCls = 'text-xs font-medium text-[#737373] dark:text-[#A3A3A3] mb-1 block';
   const inputCls = 'w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white';
 
@@ -224,7 +226,7 @@ export default function RoiEquipement() {
                 ['Investissement initial', fmt(-eq.prixAchat), 'text-red-500'],
                 ['Gains CA cumulés', fmt(eq.gainCaMensuel * eq.dureeAmortissement * 12), 'text-teal-600'],
                 ['Économies cumulées', fmt(eq.economiesMensuelles * eq.dureeAmortissement * 12), 'text-emerald-500'],
-                ['Amortissement mensuel', fmt(eq.prixAchat / (eq.dureeAmortissement * 12)), 'text-[#111111] dark:text-white'],
+                ['Amortissement mensuel', fmt(roiResult.amortMensuel), 'text-[#111111] dark:text-white'],
               ].map(([label, val, cls]) => (
                 <div key={label} className="flex justify-between items-center py-1.5 border-b border-[#F5F5F5] dark:border-[#1A1A1A] last:border-0">
                   <span className="text-sm text-[#737373] dark:text-[#A3A3A3]">{label}</span>

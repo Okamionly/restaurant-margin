@@ -249,6 +249,7 @@ const DlcTracker = lazyRetry(() => import('./pages/DlcTracker'));
 const ChecklistService = lazyRetry(() => import('./pages/ChecklistService'));
 const ChronoPreparation = lazyRetry(() => import('./pages/ChronoPreparation'));
 const SaisonnaliteIngredients = lazyRetry(() => import('./pages/SaisonnaliteIngredients'));
+const RoiEquipement = lazyRetry(() => import('./pages/RoiEquipement'));
 const AlternativeHubrise = lazyRetry(() => import('./pages/AlternativeHubrise'));
 const AlternativeZenchef = lazyRetry(() => import('./pages/AlternativeZenchef'));
 const AlternativeLAddition = lazyRetry(() => import('./pages/AlternativeLAddition'));
@@ -604,6 +605,7 @@ function AppLayout() {
         { to: '/calculateur-tva', icon: Calculator, label: 'Calculateur TVA' },
         { to: '/cout-main-oeuvre', icon: Users, label: 'Coût main d\'œuvre' },
         { to: '/prime-saisonniere', icon: Gift, label: 'Prime saisonnière' },
+        { to: '/roi-equipement', icon: TrendingUp, label: 'ROI Équipement' },
         // Integrations masqué pour l'instant
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
         { to: '/abonnement', icon: CreditCard, label: 'Mon abonnement' },
@@ -1129,6 +1131,7 @@ function AppLayout() {
               <Route path="/checklist-service" element={<ChecklistService />} />
               <Route path="/chrono-preparation" element={<ChronoPreparation />} />
               <Route path="/saisonnalite" element={<SaisonnaliteIngredients />} />
+              <Route path="/roi-equipement" element={<RoiEquipement />} />
               <Route path="/bon-cadeau" element={<BonCadeau />} />
               <Route path="/restaurants" element={<TrialPaywallGuard feature="Multi-restaurant"><Restaurants /></TrialPaywallGuard>} />
               <Route path="/pricing" element={<Pricing />} />

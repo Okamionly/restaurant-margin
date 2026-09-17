@@ -164,7 +164,9 @@
     "colSellingPrice": "سعر البيع",
     "colCost": "التكلفة",
     "colMargin": "الهامش %",
-    "colCoefficient": "المعامل"
+    "colCoefficient": "المعامل",
+    "csvNoRecipes": "لا توجد وصفات للتصدير",
+    "csvExported": "تم تصدير {count} وصفة إلى CSV"
   },
   "dashboard": {
     "title": "لوحة التحكم",

@@ -2706,7 +2706,7 @@ export default function Recipes() {
 
   // ── Export CSV ────────────────────────────────────────────────────
   function exportRecipesCSV() {
-    if (recipes.length === 0) { showToast('Aucune recette a exporter', 'error'); return; }
+    if (recipes.length === 0) { showToast(t('recipes.csvNoRecipes'), 'error'); return; }
     const header = ['Nom', 'Categorie', 'Prix de vente', 'Cout portion', 'Marge %', 'Portions', 'Temps prep (min)', 'Temps cuisson (min)'];
     const rows = recipes.map(r => [
       r.name,
@@ -2726,7 +2726,7 @@ export default function Recipes() {
     a.download = `recettes_restaumargin_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast(`${recipes.length} recettes exportees en CSV`, 'success');
+    showToast(t('recipes.csvExported').replace('{count}', String(recipes.length)), 'success');
   }
 
   if (loading) return <LoadingState label={t("recipes.loading")} />;

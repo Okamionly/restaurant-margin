@@ -164,7 +164,9 @@
     "colSellingPrice": "Precio venta",
     "colCost": "Coste",
     "colMargin": "Margen %",
-    "colCoefficient": "Coeficiente"
+    "colCoefficient": "Coeficiente",
+    "csvNoRecipes": "No hay recetas para exportar",
+    "csvExported": "{count} receta(s) exportada(s) en CSV"
   },
   "dashboard": {
     "title": "Panel de control",

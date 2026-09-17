@@ -164,7 +164,9 @@
     "colSellingPrice": "Selling price",
     "colCost": "Cost",
     "colMargin": "Margin %",
-    "colCoefficient": "Coefficient"
+    "colCoefficient": "Coefficient",
+    "csvNoRecipes": "No recipes to export",
+    "csvExported": "{count} recipe(s) exported to CSV"
   },
   "dashboard": {
     "title": "Dashboard",

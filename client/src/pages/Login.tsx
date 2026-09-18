@@ -465,6 +465,17 @@ export default function Login() {
                         </svg>
                         {t('login.continueWithGoogle')}
                       </a>
+                      {/* FIX 2026-09-18 : le formulaire email exige une case CGU cochee,
+                          mais ce bouton n'affichait aucune mention — alors qu'il represente
+                          la majorite des inscriptions. Le serveur horodate desormais
+                          acceptedCguAt pour cette voie : cette mention est ce qui rend ce
+                          consentement reel, et non fabrique apres coup. */}
+                      <p className="text-[11px] leading-snug text-center" style={{ color: TEXT_MUTED }}>
+                        En continuant avec Google, vous acceptez les{' '}
+                        <a href="/cgu" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">CGU</a>
+                        {' '}et la{' '}
+                        <a href="/politique-confidentialite" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">politique de confidentialité</a>.
+                      </p>
                     </div>
                   )}
 

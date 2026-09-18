@@ -372,7 +372,15 @@ export async function fetchRestaurantsOverview(): Promise<RestaurantOverview> {
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (res.status === 401) {
+    // FIX 2026-09-18 : cette redirection etait inconditionnelle. Un 401 recu sans
+    // session ouverte (visiteur anonyme, ou token deja expire au 1er chargement)
+    // ejectait donc le visiteur d'une page publique vers /login, et court-circuitait
+    // le catch de checkAuth() qui devait juste nettoyer en silence.
+    // On ne redirige plus que pour ce que ce message annonce vraiment : une session
+    // qui EXISTAIT et vient d'expirer.
+    const hadSession = !!getToken();
     removeToken();
+    if (!hadSession) throw new Error('Non authentifie');
     emitToast('Votre session a expire', 'error');
     window.location.href = '/login';
     throw new Error('Session expiree');

@@ -688,6 +688,26 @@ router.get('/google/callback', async (req, res) => {
 
     // New user → create account + restaurant
     const passwordHash = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12);
+
+    // FIX 2026-09-18 : cette voie d'inscription ne renseignait NI acceptedCguAt NI
+    // signupSource, contrairement a POST /register. Consequence mesuree en base :
+    // 6 des 10 dernieres inscriptions (soit la majorite) n'avaient aucune trace de
+    // consentement CGU et aucune origine d'acquisition -> impossible de savoir d'ou
+    // venaient les clients, et aucune preuve de consentement cote juridique.
+    // Le consentement est recueilli par la mention affichee sous le bouton Google
+    // dans Login.tsx ("En continuant avec Google, vous acceptez les CGU").
+    const oauthSignupSource: any = { provider: 'google', landing_path: '/login' };
+    try {
+      const xff = req.headers['x-forwarded-for'];
+      const xffStr = typeof xff === 'string' ? xff : Array.isArray(xff) ? xff[0] : '';
+      const ip = (xffStr.split(',')[0] || '').trim() || req.socket?.remoteAddress || null;
+      if (ip) oauthSignupSource.ip = String(ip).slice(0, 64);
+      const ua = req.headers['user-agent'];
+      if (typeof ua === 'string') oauthSignupSource.user_agent = ua.slice(0, 200);
+      // Le referrer d'un retour OAuth est accounts.google.com : sans valeur
+      // analytique. On garde uniquement ce qui identifie vraiment le canal.
+    } catch {}
+
     user = await prisma.user.create({
       data: {
         email,
@@ -697,6 +717,8 @@ router.get('/google/callback', async (req, res) => {
         plan: 'basic',
         trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         emailVerified: true, // Google emails are verified
+        acceptedCguAt: new Date(),
+        signupSource: oauthSignupSource,
       },
     });
 

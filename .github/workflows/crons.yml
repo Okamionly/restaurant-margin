@@ -1,0 +1,117 @@
+# ══════════════════════════════════════════════════════════════════════════
+# Planificateur des taches automatiques RestauMargin
+#
+# POURQUOI CE FICHIER EXISTE
+# Ces taches tournaient comme "routines" dans l'app Claude. Probleme constate
+# le 2026-09-18 : elles consomment le quota Claude de l'utilisateur et, une fois
+# ce quota epuise, elles echouent TOUTES en silence
+# ("You've hit your weekly limit") — 2 jours sans digest et sans import des
+# emails entrants, sans que personne ne soit prevenu.
+#
+# Or ces taches ne font qu'appeler un endpoint HTTP : tout le travail reel
+# (recherche, IA, base de donnees, envoi d'emails) est fait par le serveur
+# Vercel. Elles n'ont donc AUCUN besoin d'un LLM. Les faire dependre d'un quota
+# de LLM etait une fragilite gratuite.
+#
+# GitHub Actions est ici le bon support : gratuit sur depot public, independant
+# de l'app Claude et de la machine de l'utilisateur, et il envoie un email
+# automatiquement si un job echoue — ce qui redonne une alerte fiable.
+#
+# ⚠️ Les horaires cron de GitHub Actions sont en UTC et ne suivent PAS l'heure
+# d'ete. Les commentaires donnent l'heure de Paris en ete (UTC+2) puis en hiver.
+# ══════════════════════════════════════════════════════════════════════════
+
+name: Taches automatiques RestauMargin
+
+on:
+  schedule:
+    - cron: '15 */2 * * *'   # Import des emails — toutes les 2 h
+    - cron: '5 5 * * *'      # Digest du jour — 07h05 Paris (ete) / 06h05 (hiver)
+    - cron: '0 7 * * *'      # Emails d'onboarding — 09h Paris (ete) / 08h (hiver)
+    - cron: '0 4 * * 1'      # Recettes de la semaine — lundi 06h Paris (ete)
+    - cron: '30 */6 * * *'   # Controle de sante — toutes les 6 h
+  workflow_dispatch:
+    inputs:
+      tache:
+        description: "Tache a lancer manuellement"
+        required: true
+        default: inbox-sync
+        type: choice
+        options: [inbox-sync, daily-digest, onboarding-nurture, editorial-weekly, sante, toutes]
+
+concurrency:
+  group: crons-restaumargin
+  cancel-in-progress: false
+
+jobs:
+  taches:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Verifier que le secret est configure
+        run: |
+          if [ -z "${{ secrets.CRON_SECRET }}" ]; then
+            echo "::error::CRON_SECRET absent des secrets du depot — les endpoints repondront 401."
+            exit 1
+          fi
+
+      # Fonction commune : appelle un endpoint, affiche la reponse, echoue si HTTP != 200.
+      # L'echec fait rougir le job -> GitHub envoie un email : c'est l'alerte.
+      - name: Preparer l'appelant
+        run: |
+          cat > "$RUNNER_TEMP/appeler.sh" <<'SCRIPT'
+          #!/usr/bin/env bash
+          set -uo pipefail
+          nom="$1"; chemin="$2"
+          echo "──────────────────────────────────────────"
+          echo "▶ $nom"
+          corps=$(mktemp)
+          code=$(curl -s -o "$corps" -w '%{http_code}' \
+            "https://www.restaumargin.fr$chemin" \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            --max-time 120 --retry 2 --retry-delay 10 --retry-connrefused)
+          echo "HTTP $code"
+          head -c 1200 "$corps"; echo
+          if [ "$code" != "200" ]; then
+            echo "::error::$nom a echoue (HTTP $code)"
+            exit 1
+          fi
+          echo "✓ $nom OK"
+          SCRIPT
+          chmod +x "$RUNNER_TEMP/appeler.sh"
+
+      - name: Import des emails (messagerie + notifications)
+        if: github.event.schedule == '15 */2 * * *' || inputs.tache == 'inbox-sync' || inputs.tache == 'toutes'
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: "$RUNNER_TEMP/appeler.sh 'Import des emails' '/api/cron/inbox-sync'"
+
+      - name: Digest du jour
+        if: github.event.schedule == '5 5 * * *' || inputs.tache == 'daily-digest' || inputs.tache == 'toutes'
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: "$RUNNER_TEMP/appeler.sh 'Digest du jour' '/api/cron/daily-digest'"
+
+      - name: Emails d'onboarding
+        if: github.event.schedule == '0 7 * * *' || inputs.tache == 'onboarding-nurture' || inputs.tache == 'toutes'
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: "$RUNNER_TEMP/appeler.sh 'Emails onboarding' '/api/cron/onboarding-nurture'"
+
+      - name: Recettes de la semaine
+        if: github.event.schedule == '0 4 * * 1' || inputs.tache == 'editorial-weekly' || inputs.tache == 'toutes'
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: "$RUNNER_TEMP/appeler.sh 'Recettes de la semaine' '/api/cron/editorial-weekly'"
+
+      # Sante : endpoint PUBLIC (pas de secret). On verifie le contenu, pas juste
+      # le code HTTP — la sonde a deja renvoye 200 en annoncant une base en panne.
+      - name: Controle de sante
+        if: github.event.schedule == '30 */6 * * *' || inputs.tache == 'sante' || inputs.tache == 'toutes'
+        run: |
+          echo "▶ Controle de sante"
+          corps=$(curl -s "https://www.restaumargin.fr/api/health?deep=1" --max-time 60 --retry 2)
+          echo "$corps"
+          echo "$corps" | grep -q '"database":"ok"' || { echo "::error::base de donnees KO"; exit 1; }
+          echo "$corps" | grep -q '"ai":"ok"'       || { echo "::error::service IA KO"; exit 1; }
+          echo "✓ site, base et IA operationnels"

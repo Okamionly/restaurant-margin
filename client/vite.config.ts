@@ -103,7 +103,31 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         // Navigation fallback for SPA
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api\//],
+        // FIX 2026-09-18 : le denylist ne couvrait que /api/, donc TOUTE navigation
+        // etait servie depuis l'index.html precache. Consequence mesuree : sur
+        // /blog/calcul-marge-restaurant, document.title valait "Logiciel marge
+        // restaurant + food cost IA | RestauMargin (29€/mois)" (le titre de la home)
+        // alors que le serveur envoie bien "Marge restaurant 2026 : calcul, formule...".
+        // Le HTML prerendu par route — titre, description, canonical, Open Graph —
+        // n'atteignait jamais un visiteur ayant deja le service worker installe.
+        // Googlebot n'execute pas le SW, donc l'indexation etait epargnee ; c'est
+        // l'experience et le partage de liens qui etaient casses.
+        // On exclut donc les routes de CONTENU PUBLIC (prerendues, a forte valeur
+        // SEO/partage) et on laisse le fallback aux routes applicatives, qui en ont
+        // besoin pour le mode hors-ligne du kiosk.
+        navigateFallbackDenylist: [
+          /^\/api\//,
+          /^\/blog/,
+          /^\/outils\//,
+          /^\/guide-marge\//,
+          /^\/logiciel-marge-/,
+          /^\/mentions-legales$/,
+          /^\/cgu$/,
+          /^\/cgv$/,
+          /^\/politique-confidentialite$/,
+          /^\/a-propos$/,
+          /^\/carrieres$/,
+        ],
         runtimeCaching: [
           // API GET requests: serve stale while revalidating
           {

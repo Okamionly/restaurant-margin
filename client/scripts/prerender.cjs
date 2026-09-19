@@ -887,91 +887,6 @@ const ROUTES = [
   },
 ];
 
-// ─── modulepreload du chunk de route (Core Web Vitals / LCP) ───────────────
-// Mesure du 2026-09-19 (mobile, CPU x4, ~1,6 Mb/s) : sur `/`, index.js finit a
-// ~1356 ms mais Landing-*.js (67 Ko) n'est DECOUVERT qu'a 1682 ms — il vient d'un
-// import() dynamique, donc le navigateur ne peut pas le precharger tout seul.
-// Vite n'emet des <link rel="modulepreload"> que pour les imports STATIQUES de
-// l'entry (vendor-react, vendor-icons) ; les chunks de route paient un
-// aller-retour complet en serie, juste avant le LCP (3344 ms, element = texte).
-//
-// On injecte donc, par route prerendue, un modulepreload du chunk correspondant.
-// Regle de prudence : en cas de doute on n'injecte RIEN. Un preload errone
-// consomme de la bande passante sur le chemin critique sans aucun benefice.
-function buildRouteChunkMap() {
-  const appPath = path.resolve(__dirname, '..', 'src', 'App.tsx');
-  const assetsDir = path.join(DIST, 'assets');
-  if (!fs.existsSync(appPath) || !fs.existsSync(assetsDir)) return {};
-
-  const app = fs.readFileSync(appPath, 'utf-8');
-
-  // 1. const X = lazyRetry(() => import('./pages/Y'))  →  X vers 'Y'
-  const moduleByComponent = {};
-  const lazyRe = /const\s+(\w+)\s*=\s*lazy(?:Retry)?\(\s*\(\)\s*=>\s*import\(\s*'([^']+)'\s*\)/g;
-  let m;
-  while ((m = lazyRe.exec(app))) moduleByComponent[m[1]] = m[2].split('/').pop();
-
-  // 2. Nom de module vers fichier bati. Motif ANCRE (^Nom-hash.js$) : sans les
-  //    ancres, "Blog" matcherait "BlogCalcMarge-*.js" (collision de prefixe).
-  //    Le nom est VALIDE plutot qu'echappe — un nom de module non alphanumerique
-  //    est refuse, ce qui evite toute construction de regex a partir de texte libre.
-  //    0 ou plusieurs correspondances = ambigu, donc on renonce.
-  const jsFiles = fs.readdirSync(assetsDir).filter((f) => f.endsWith('.js'));
-  function chunkFor(moduleName) {
-    if (!/^[A-Za-z0-9_]+$/.test(moduleName)) return null;
-    const re = new RegExp('^' + moduleName + '-[A-Za-z0-9_-]{6,}[.]js$');
-    const hits = jsFiles.filter((f) => re.test(f));
-    return hits.length === 1 ? hits[0] : null;
-  }
-
-  // 3. <Route path="..." element={ ... <Composant /> ... } />
-  //    Un meme path peut etre declare DEUX fois (ex. "/" = Dashboard cote
-  //    authentifie, PublicHome cote visiteur) : on collecte puis on n'accepte
-  //    que les paths dont toutes les declarations pointent vers le meme module.
-  const modulesByPath = {};
-  const routeRe = /<Route\s+path="([^"]+)"\s+element=\{([\s\S]*?)\}\s*\/>/g;
-  while ((m = routeRe.exec(app))) {
-    const routePath = m[1];
-    const element = m[2];
-    const lazyComps = (element.match(/<(\w+)\s*\/>/g) || [])
-      .map((tag) => tag.replace(/[<>/\s]/g, ''))
-      .filter((name) => moduleByComponent[name]);
-    if (lazyComps.length !== 1) continue;
-    if (!modulesByPath[routePath]) modulesByPath[routePath] = [];
-    modulesByPath[routePath].push(moduleByComponent[lazyComps[0]]);
-  }
-
-  const map = {};
-  for (const routePath of Object.keys(modulesByPath)) {
-    const mods = modulesByPath[routePath];
-    if (new Set(mods).size !== 1) continue; // path ambigu, aucun preload
-    const file = chunkFor(mods[0]);
-    if (file) map[routePath] = file;
-  }
-
-  // Exception documentee : "/" est rendu par PublicHome, un composant NON lazy
-  // declare dans App.tsx, qui se contente de <Landing /> pour un visiteur non
-  // authentifie. Le parseur ne peut pas le voir ; la home est la page la plus
-  // strategique du site, on la cable donc explicitement.
-  const landingChunk = chunkFor('Landing');
-  if (landingChunk) map['/'] = landingChunk;
-
-  return map;
-}
-
-// Resout une route prerendue vers son chunk : correspondance exacte d'abord,
-// puis routes parametrees ("/guide-marge/:slug" couvre "/guide-marge/pizzeria").
-function resolveChunk(routePath, chunkMap) {
-  if (chunkMap[routePath]) return chunkMap[routePath];
-  for (const pattern of Object.keys(chunkMap)) {
-    if (pattern.indexOf(':') === -1) continue;
-    if (!/^[A-Za-z0-9/:_-]+$/.test(pattern)) continue;
-    const re = new RegExp('^' + pattern.replace(/:\w+/g, '[^/]+') + '$');
-    if (re.test(routePath)) return chunkMap[pattern];
-  }
-  return null;
-}
-
 function run() {
   const indexPath = path.join(DIST, 'index.html');
   if (!fs.existsSync(indexPath)) {
@@ -979,13 +894,8 @@ function run() {
     process.exit(1);
   }
 
-  const baseHtml = fs.readFileSync(indexPath, 'utf-8')
-    // Idempotence : un 2e run relirait un dist/index.html DEJA porteur du hint de
-    // la home (reecrit plus bas) — toutes les pages en heriteraient en plus du leur.
-    .replace(/[ \t]*<link rel="modulepreload"[^>]*data-route-chunk>\n?/g, '');
+  const baseHtml = fs.readFileSync(indexPath, 'utf-8');
   let count = 0;
-  const chunkMap = buildRouteChunkMap();
-  let preloaded = 0;
 
   for (const route of ROUTES) {
     let html = baseHtml;
@@ -1344,16 +1254,6 @@ function run() {
       `<div id="root">${seoStaticContent}</div>$1`
     );
 
-    // Precharge le chunk de la route : sans ce hint il n'est decouvert qu'apres
-    // execution de index.js (mesure du 19/09 : 1682 ms au lieu de ~300 ms).
-    const routeChunk = resolveChunk(route.path, chunkMap);
-    if (routeChunk && html.indexOf('</head>') !== -1) {
-      const hint = `    <link rel="modulepreload" crossorigin href="/assets/${routeChunk}" data-route-chunk>`;
-      html = html.replace('</head>', () => `${hint}
-  </head>`);
-      preloaded++;
-    }
-
     // Write the file
     const dir = path.join(DIST, route.path);
     fs.mkdirSync(dir, { recursive: true });
@@ -1361,29 +1261,7 @@ function run() {
     count++;
   }
 
-  // La home n'est PAS dans ROUTES : elle est servie telle quelle depuis
-  // dist/index.html (son <title> par defaut EST celui de la home). Elle n'a donc
-  // recu aucun hint dans la boucle ci-dessus — or c'est la page au pire LCP
-  // (3344 ms mesures le 19/09) et la porte d'entree de tout le trafic organique.
-  // On la traite donc a part, a partir du baseHtml d'origine.
-  //
-  // Arbitrage assume : dist/index.html sert aussi de fallback SPA aux routes NON
-  // prerendues (espace authentifie). Celles-ci precharferont donc un chunk Landing
-  // inutile. C'est accepte : le hint est en priorite basse et non bloquant, le
-  // trafic d'acquisition est organique et atterrit sur `/`, et les pages privees
-  // sont derriere une authentification, bien moins sensibles au LCP.
-  const homeChunk = resolveChunk('/', chunkMap);
-  if (homeChunk && baseHtml.indexOf('</head>') !== -1) {
-    const homeHint = `    <link rel="modulepreload" crossorigin href="/assets/${homeChunk}" data-route-chunk>`;
-    const homeHtml = baseHtml.replace('</head>', () => `${homeHint}
-  </head>`);
-    fs.writeFileSync(path.join(DIST, 'index.html'), homeHtml, 'utf-8');
-    preloaded++;
-    console.log(`[prerender] home (/) : modulepreload ${homeChunk}`);
-  }
-
   console.log(`[prerender] Generated ${count} static HTML files for SEO (with route-specific H1 + content baked in).`);
-  console.log(`[prerender] modulepreload du chunk de route injecte sur ${preloaded} pages (${count} routes + home).`);
 }
 
 run();

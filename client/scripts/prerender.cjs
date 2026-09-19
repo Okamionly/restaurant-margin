@@ -956,6 +956,7 @@ function run() {
 
     // Determine category for content templating
     const category =
+      route.path === '/blog' ? 'blog-index' :
       route.path.startsWith('/blog/') ? 'article' :
       route.path.startsWith('/guide-marge/') ? 'guide' :
       route.path.startsWith('/alternative-') ? 'comparison' :
@@ -966,7 +967,7 @@ function run() {
       'landing';
 
     const breadcrumbs =
-      category === 'article' ? 'Accueil &gt; Blog' :
+      category === 'article' || category === 'blog-index' ? 'Accueil &gt; Blog' :
       category === 'guide' ? 'Accueil &gt; Guides' :
       category === 'comparison' || category === 'mega-comparison' ? 'Accueil &gt; Comparatifs' :
       category === 'niche' ? 'Accueil &gt; Logiciels métier' :
@@ -989,6 +990,7 @@ function run() {
       niche: `<strong>${mainKw}</strong> — logiciel SaaS spécifiquement conçu pour votre métier en 2026. Food cost cible, coefficients multiplicateurs adaptés, exemples chiffrés et cas concrets de transformation.`,
       tool: `<strong>${mainKw}</strong> — outil interactif gratuit RestauMargin 2026. Saisissez vos données, obtenez un calcul instantané et téléchargez votre rapport personnalisé. Sans inscription.`,
       glossary: `<strong>${mainKw}</strong> — glossaire exhaustif 2026 des termes essentiels de la restauration : food cost, prime cost, fiche technique, HACCP, RevPASH, marge brute. 60+ définitions précises avec exemples.`,
+      'blog-index': `<strong>Blog RestauMargin</strong> — guides pratiques et articles de fond pour restaurateurs : calcul de marge, food cost, fiches techniques, HACCP, pricing menu et rentabilité restaurant. Publiés et mis à jour par des experts en gestion de restaurant.`,
       landing: `<strong>${mainKw}</strong> — la plateforme tout-en-un pour piloter votre restaurant en 2026. Calcul automatique des marges, fiches techniques par IA, mercuriale fournisseurs intelligente, alertes prix et tableau de bord temps réel.`,
     };
 
@@ -1041,6 +1043,16 @@ function run() {
       glossary: `
         <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Comment utiliser ce glossaire ?</h2>
         <p>Notre glossaire couvre 60+ termes essentiels de la restauration moderne classés de A à Z : food cost, prime cost, marge brute et nette, coefficient multiplicateur, fiche technique, HACCP, RevPASH, AOP/IGP, FIFO, etc. Pour chaque terme, vous obtenez une définition courte, une description approfondie avec exemple chiffré, et un lien vers l'article correspondant.</p>`,
+      'blog-index': `
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Nos catégories d'articles</h2>
+        <ul style="padding-left:20px;color:#525252;line-height:1.8">
+          <li>Calcul de marge et food cost restaurant</li>
+          <li>Fiches techniques et prix de revient</li>
+          <li>HACCP et hygiène alimentaire</li>
+          <li>Gestion des stocks et méthode FIFO</li>
+          <li>Intelligence artificielle en cuisine</li>
+          <li>Menu engineering et stratégie de pricing</li>
+        </ul>`,
       landing: `
         <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Pourquoi RestauMargin ?</h2>
         <p>RestauMargin réunit en une seule application tout ce qui était auparavant éparpillé sur plusieurs outils : calcul automatique du food cost et des marges, fiches techniques précises avec grammages et coûts, mercuriale fournisseurs intelligente, alertes prix matières premières, station de pesée Bluetooth, commandes fournisseurs optimisées par IA et tableau de bord temps réel. Plan Pro à 29 €/mois, essai gratuit 7 jours.</p>`,
@@ -1103,6 +1115,13 @@ function run() {
         ['/blog/coefficient-multiplicateur', 'Coefficient multiplicateur'],
         ['/blog/fiche-technique-restaurant', 'Fiche technique restaurant'],
       ],
+      'blog-index': [
+        ['/blog/calcul-marge-restaurant', 'Marge restaurant 2026 : calcul, formule, food cost'],
+        ['/blog/coefficient-multiplicateur', 'Coefficient multiplicateur restaurant 2026'],
+        ['/blog/reduire-food-cost', 'Réduire le food cost : 10 stratégies'],
+        ['/blog/prime-cost-restaurant', 'Prime cost : l\'indicateur n°1 de rentabilité'],
+        ['/blog/fiche-technique-restaurant', 'Fiche technique restaurant : modèle et calcul'],
+      ],
       landing: [
         ['/blog/calcul-marge-restaurant', 'Calculer la marge de votre restaurant'],
         ['/blog/reduire-food-cost', 'Réduire le food cost : 10 stratégies'],
@@ -1118,6 +1137,7 @@ function run() {
 
     // ─── BreadcrumbList Schema (rich snippet "navigation visible" dans Google) ───
     const breadcrumbCategoryUrl =
+      category === 'blog-index' ? `${BASE_URL}/blog` :
       category === 'article' ? `${BASE_URL}/blog` :
       category === 'guide' ? `${BASE_URL}/blog` :
       category === 'comparison' || category === 'mega-comparison' ? `${BASE_URL}/comparatif-logiciels-restaurant` :
@@ -1127,7 +1147,7 @@ function run() {
       `${BASE_URL}/`;
 
     const breadcrumbCategoryName =
-      category === 'article' || category === 'guide' ? 'Blog' :
+      category === 'blog-index' || category === 'article' || category === 'guide' ? 'Blog' :
       category === 'comparison' || category === 'mega-comparison' ? 'Comparatifs' :
       category === 'niche' ? 'Logiciels métier' :
       category === 'tool' ? 'Outils gratuits' :
@@ -1142,7 +1162,7 @@ function run() {
         category !== 'landing'
           ? { '@type': 'ListItem', position: 2, name: breadcrumbCategoryName, item: breadcrumbCategoryUrl }
           : null,
-        category !== 'landing'
+        category !== 'landing' && category !== 'blog-index'
           ? { '@type': 'ListItem', position: 3, name: breadcrumbLabel, item: fullUrl }
           : null,
       ].filter(Boolean),

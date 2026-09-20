@@ -24,10 +24,21 @@ async function main() {
   console.log(`IndexNow : soumission de ${urlList.length} URLs pour ${HOST}...`);
 
   // IndexNow est un protocole partage : une soumission acceptee par un moteur est
-  // repartagee aux autres participants (dont Bing). On tente plusieurs endpoints et
-  // on considere le run reussi si AU MOINS UN accepte. Utile tant que la verification
-  // de la cle cote Bing (api.indexnow.org / bing.com) renvoie 403 : yandex.com accepte
-  // et propage les URLs au reseau IndexNow.
+  // censee etre repartagee aux autres participants. On tente plusieurs endpoints et
+  // on considere le run techniquement reussi si AU MOINS UN accepte.
+  //
+  // ATTENTION — premisse REFUTEE par la mesure du 2026-09-20. Ce commentaire affirmait
+  // auparavant que l'acceptation par yandex.com "propage les URLs au reseau IndexNow"
+  // et couvrait donc Bing malgre le 403. Apres 3+ semaines de runs quotidiens avec
+  // yandex 202 et bing 403, Bing n'a TOUJOURS aucune page du site : sonde par titre
+  // exact, validee par temoin (le titre exact de zenchef.com remonte zenchef #1 a #5 ;
+  // les titres exacts de la home et de /blog/calcul-marge-restaurant ne remontent
+  // AUCUNE page restaumargin.fr). Cote serveur tout est correct : robots.txt Allow,
+  // bingbot recoit 200 + HTML prerendu, sitemap declare, fichier cle servi en 200.
+  // Le 403 UserForbiddedToAccessSite est donc le SEUL blocage, et il n'est pas
+  // contournable par Yandex : il exige la revendication du domaine dans Bing Webmaster
+  // Tools (action proprietaire, hors depot). Tant qu'elle n'est pas faite, ce script
+  // n'alimente que Yandex — ne pas lire son exit 0 comme "Bing est couvert".
   const ENDPOINTS = [
     'https://api.indexnow.org/indexnow',
     'https://www.bing.com/indexnow',
@@ -35,6 +46,8 @@ async function main() {
   ];
   const body = JSON.stringify({ host: HOST, key: KEY, keyLocation: KEY_LOCATION, urlList });
   let anyOk = false;
+  let bingOk = false;
+  const okHosts = [];
   for (const endpoint of ENDPOINTS) {
     try {
       const res = await fetch(endpoint, {
@@ -45,6 +58,7 @@ async function main() {
       const ok = res.status === 200 || res.status === 202;
       anyOk = anyOk || ok;
       const host = new URL(endpoint).host;
+      if (ok) { okHosts.push(host); if (/bing|indexnow.org/.test(host)) bingOk = true; }
       console.log(`  ${ok ? 'OK ' : 'KO '} ${host.padEnd(20)} HTTP ${res.status} ${res.statusText}`);
       if (!ok) {
         const txt = await res.text().catch(() => '');
@@ -55,7 +69,17 @@ async function main() {
     }
   }
   // 200/202 = accepte. 403 = cle pas encore verifiee cote moteur. 422 = URL/host invalide.
-  console.log(anyOk ? 'IndexNow : accepte par au moins un moteur (repartage au reseau).' : 'IndexNow : aucun moteur accepte.');
+  if (!anyOk) {
+    console.log('IndexNow : AUCUN moteur n a accepte la soumission.');
+  } else if (!bingOk) {
+    console.log('IndexNow : accepte par ' + okHosts.join(', ') + '.');
+    console.log('IndexNow : BING REFUSE (403) — canal Bing ferme, indexation Bing nulle.');
+    console.log('           Action proprietaire requise : revendiquer www.restaumargin.fr');
+    console.log('           dans Bing Webmaster Tools (https://www.bing.com/webmasters) ;');
+    console.log('           option "Importer depuis Google Search Console" la plus rapide.');
+  } else {
+    console.log('IndexNow : accepte par ' + okHosts.join(', ') + ', Bing inclus.');
+  }
   process.exit(anyOk ? 0 : 1);
 }
 

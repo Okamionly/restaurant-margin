@@ -30,6 +30,7 @@ on:
     - cron: '0 7 * * *'      # Emails d'onboarding — 09h Paris (ete) / 08h (hiver)
     - cron: '0 4 * * 1'      # Recettes de la semaine — lundi 06h Paris (ete)
     - cron: '30 */6 * * *'   # Controle de sante — toutes les 6 h
+    - cron: '0 7 * * *'      # Trial rescue — 09h Paris (ete) / 08h (hiver) — meme creneau que onboarding
   workflow_dispatch:
     inputs:
       tache:
@@ -37,7 +38,7 @@ on:
         required: true
         default: inbox-sync
         type: choice
-        options: [inbox-sync, daily-digest, onboarding-nurture, editorial-weekly, sante, toutes]
+        options: [inbox-sync, daily-digest, onboarding-nurture, editorial-weekly, sante, trial-rescue, toutes]
 
 concurrency:
   group: crons-restaumargin
@@ -103,6 +104,12 @@ jobs:
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: "$RUNNER_TEMP/appeler.sh 'Recettes de la semaine' '/api/cron/editorial-weekly'"
+
+      - name: Trial rescue (emails trials expirant dans 48 h)
+        if: github.event.schedule == '0 7 * * *' || inputs.tache == 'trial-rescue' || inputs.tache == 'toutes'
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: "$RUNNER_TEMP/appeler.sh 'Trial rescue' '/api/cron/trial-expiry'"
 
       # Sante : endpoint PUBLIC (pas de secret). On verifie le contenu, pas juste
       # le code HTTP — la sonde a deja renvoye 200 en annoncant une base en panne.

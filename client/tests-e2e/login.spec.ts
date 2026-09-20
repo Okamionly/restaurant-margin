@@ -12,8 +12,12 @@ import { test, expect } from '@playwright/test';
 import { login } from './auth-helper';
 
 test('@smoke login redirects to dashboard', async ({ page }) => {
-  const email = process.env.E2E_DEMO_EMAIL ?? 'demo@restaumargin.fr';
-  const password = process.env.E2E_DEMO_PASSWORD ?? 'DemoPass2025!';
+  const email = process.env.E2E_DEMO_EMAIL;
+  const password = process.env.E2E_DEMO_PASSWORD;
+  if (!email || !password) {
+    test.skip(true, 'E2E_DEMO_EMAIL / E2E_DEMO_PASSWORD not configured — add them as GitHub secrets to enable this test');
+    return;
+  }
 
   // Pre-seed token + user so the dashboard skips its login redirect.
   await login(page, email, password);

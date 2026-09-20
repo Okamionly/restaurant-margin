@@ -2683,5 +2683,6 @@
   "recipeDetail.errorShareLink": "Unable to generate share link. Check your connection and try again.",
   "recipeDetail.errorOptimize": "Error during cost optimization",
   "recipeDetail.errorAllergens": "Error during allergen analysis",
-  "recipeDetail.errorNutrition": "Error during nutrition estimation"
+  "recipeDetail.errorNutrition": "Error during nutrition estimation",
+  "Erreur lors de la création": "Creation error"
 }

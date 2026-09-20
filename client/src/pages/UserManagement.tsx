@@ -94,7 +94,7 @@ export default function UserManagement() {
   async function handleCreateUser(e: React.FormEvent) {
     e.preventDefault();
     if (form.password.length < 6) {
-      showToast('Le mot de passe doit contenir au moins 6 caracteres', 'error');
+      showToast(t('Le mot de passe doit contenir au moins 6 caractères'), 'error');
       return;
     }
     try {
@@ -110,7 +110,7 @@ export default function UserManagement() {
         loadUsers();
       } else {
         const data = await res.json();
-        showToast(data.error || 'Erreur lors de la création', 'error');
+        showToast(data.error || t('Erreur lors de la création'), 'error');
       }
     } catch {
       showToast(t('Erreur réseau'), 'error');
@@ -137,7 +137,7 @@ export default function UserManagement() {
         showToast(data.error || 'Erreur', 'error');
       }
     } catch {
-      showToast('Erreur reseau', 'error');
+      showToast(t('Erreur réseau'), 'error');
     } finally {
       setDeleteTarget(null);
     }

@@ -464,5 +464,6 @@
     "errorLoading": "خطأ في تحميل التقرير",
     "reportDownloaded": "تم تنزيل التقرير!",
     "retry": "إعادة المحاولة"
-  }
+  },
+  "Erreur lors de la création": "خطأ أثناء الإنشاء"
 }

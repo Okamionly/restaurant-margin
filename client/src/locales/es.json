@@ -474,5 +474,6 @@
     "errorLoading": "Error al cargar el informe",
     "reportDownloaded": "¡Informe descargado!",
     "retry": "Reintentar"
-  }
+  },
+  "Erreur lors de la création": "Error al crear"
 }

@@ -2683,5 +2683,6 @@
   "recipeDetail.errorShareLink": "Impossible de générer le lien de partage. Vérifiez votre connexion, puis réessayez.",
   "recipeDetail.errorOptimize": "Erreur lors de l'optimisation",
   "recipeDetail.errorAllergens": "Erreur lors de l'analyse des allergènes",
-  "recipeDetail.errorNutrition": "Erreur lors de l'estimation nutritionnelle"
+  "recipeDetail.errorNutrition": "Erreur lors de l'estimation nutritionnelle",
+  "Erreur lors de la création": "Erreur lors de la création"
 }

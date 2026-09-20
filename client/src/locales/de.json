@@ -474,5 +474,6 @@
     "errorLoading": "Fehler beim Laden des Berichts",
     "reportDownloaded": "Bericht heruntergeladen!",
     "retry": "Erneut versuchen"
-  }
+  },
+  "Erreur lors de la création": "Fehler beim Erstellen"
 }

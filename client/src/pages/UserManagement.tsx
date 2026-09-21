@@ -134,7 +134,7 @@ export default function UserManagement() {
         loadUsers();
       } else {
         const data = await res.json();
-        showToast(data.error || 'Erreur', 'error');
+        showToast(data.error || t('Erreur lors de la suppression'), 'error');
       }
     } catch {
       showToast(t('Erreur réseau'), 'error');

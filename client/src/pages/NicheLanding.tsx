@@ -25,6 +25,7 @@ import SEOHead from '../components/SEOHead';
      /guide-marge/restaurant-vegan
      /guide-marge/restaurant-halal
      /guide-marge/bistro-gastronomique
+     /guide-marge/restaurant-seminaire-groupe
    ═══════════════════════════════════════════════════════════════ */
 
 interface NicheConfig {
@@ -780,6 +781,53 @@ const NICHES: Record<string, NicheConfig> = {
       {
         q: "RestauMargin convient-il aux bistros gastronomiques avec menu degustation courte ?",
         a: "Oui, RestauMargin est particulierement adapte au format bistronomique avec menu degustation courte (4 a 6 plats) et carte a la carte reduite. Pour les menus degustation, vous creez une fiche technique composite : chaque plat du menu est saisi separement avec ses propres ingredients et grammages, puis regroupe dans un menu global. RestauMargin calcule la marge du menu complet, le food cost par plat et le cout total par convive, en integrant les boissons accordees si vous proposez un accord mets-vins. Vous voyez immediatement si le menu est equilibre ou si un plat plombe la rentabilite de l'ensemble. Pour la gestion des produits nobles qui entrent dans vos preparations (truffes, homard, ris de veau), le module de suivi des pertes et des rendements vous permet de calculer le cout reel apres parage — indispensable quand 30% du poids brut d'un ris de veau ou d'un homard est perdu a la preparation. Le plan Pro a 29€/mois est adapte pour un bistro gastronomique avec une carte de 20 a 40 references et 2 utilisateurs (chef + second). Le plan Business est recommande si vous gerez deux etablissements ou une table gastronomique avec cave a vins separee.",
+      },
+    ],
+  },
+  'restaurant-seminaire-groupe': {
+    slug: 'restaurant-seminaire-groupe',
+    title: 'Calcul de marge restaurant seminaire et groupe : guide complet 2026',
+    h1: 'Optimisez la marge de votre restaurant seminaire et groupe',
+    tagline: 'Logiciel de gestion specialise pour restaurants groupes, seminaires et banquets',
+    description: "Guide et outil pour calculer les marges de votre restaurant seminaire et groupe. Food cost par convive, tarification menus groupe, marge buffets et banquets, gestion des formules seminaires et optimisation de la rentabilite par prestation.",
+    heroSubtitle: "Un menu groupe a 4,20€ de matiere par convive facture 38€ : theoriquement 89% de marge brute. Mais sans fiche technique par formule et sans suivi du gaspillage sur 80 couverts, la rentabilite s'evapore. RestauMargin vous donne la maitrise totale de votre marge banquet par banquet.",
+    avgMargin: '65-74%',
+    avgFoodCost: '26-35%',
+    avgCoef: '3,5 a 4,5',
+    challenges: [
+      "Tarification groupe negociee en amont : calculer la marge sans fiche technique = accepter des contrats a perte sans le savoir",
+      "Volumes importants — le gaspillage sur 80 a 200 couverts est demultiplie : 5% de perte en assiettage representent 8 a 15€ de matiere par personne perdue",
+      "Boissons a volonte incluses dans les formules seminaires : food cost drinks difficile a maitriser, certains groupes consomment 3x plus que les previsions",
+      "Standards de service en banquet differents de la carte : grammages, modes de cuisson, mise en place — fiches techniques specifiques groupe indispensables",
+      "Saisonnalite prononcee des seminaires — pic janvier-juin et septembre-novembre, creux estival : gestion des couts fixes sur les periodes creuses",
+    ],
+    stats: [
+      { label: 'Food cost moyen', value: '30%', color: 'teal' },
+      { label: 'Marge brute cible', value: '70%', color: 'emerald' },
+      { label: 'Coefficient type', value: '4x', color: 'amber' },
+      { label: 'Ticket moyen convive', value: '35-75€', color: 'rose' },
+    ],
+    testimonial: {
+      quote: "Je signais des contrats seminaires au feeling depuis des annees. RestauMargin m'a montre que ma formule cocktail dinatoire groupe etait a 39% de food cost quand on integrait le gaspillage et les boissons ouvertes. En restructurant les formules et en fixant un ratio boissons par convive, j'ai recupere 12 points de marge sur chaque prestation.",
+      author: 'Guillaume',
+      role: 'Directeur de restaurant seminaire, Versailles',
+    },
+    faqs: [
+      {
+        q: "Quelle est la marge moyenne d'un restaurant specialise seminaires et groupes ?",
+        a: "La marge brute d'un restaurant seminaire et groupe se situe entre 65% et 74%, avec une forte disparite selon le type de prestation : les cocktails debout (food cost 22-26%) et les buffets diner de gala (food cost 24-30%) sont les formats les plus rentables, tandis que les menus servis a table avec boissons comprises (food cost 30-35%) offrent une marge plus etroite mais un ticket convive plus eleve (55-75€ vs 35-45€ pour un cocktail). Les restaurants seminaires qui atteignent 72-74% de marge brute maitrisent trois leviers : (1) fiches techniques precises par format de prestation (formule seminaire half-day, full-day, diner de gala, team building avec repas) avec calcul du food cost par convive integrant les ratios de perte, (2) tarification des boissons separee du forfait alimentaire ou plafonnement du ratio de consommation par convive, (3) systeme de devis avec calcul de marge nette en temps reel integrant les couts de main-d'oeuvre renforce et de logistique. La marge nette apres charges (brigade banquet, vaisselle, lingerie, salle) oscille entre 8% et 16% selon le taux de remplissage annuel et la capacite a alterner groupes seminaires, mariages et evenements grands publics.",
+      },
+      {
+        q: "Comment calculer le food cost d'un menu groupe ou d'une formule seminaire ?",
+        a: "Le calcul se fait par convive, en decomposant chaque plat ou composant du menu. Pour une formule seminaire full-day avec dejeuner 3 services : accueil matin (cafe, jus, viennoiseries) 0,85€/pers, dejeuner entree (salade composee) 1,10€/pers, plat (poulet rotis et legumes de saison) 2,40€/pers, dessert (buffet desserts) 0,90€/pers, eau et soft a table 0,60€/pers, pause apres-midi (cafe, the, fruits) 0,55€/pers = 6,40€ de cout matiere brute par convive. Avec un ratio de perte de 12% sur les buffets (pieces non consommees, restes) = 7,17€ reel. Facture 38€ HT par convive (full-day hors salle), le food cost est de 18,9% — excellent. Pour un diner de gala avec vin inclus : food cost alimentaire 8-12€ par convive + boissons (vins, champagne) 6-10€ = 14-22€ de cout matiere total, pour un prix de vente de 65-90€ HT, soit 22-30% de food cost. RestauMargin permet de creer une fiche technique composite par type de prestation : vous definissez une fois les composants et les quantites par convive, le logiciel calcule automatiquement le cout total et le food cost pour n'importe quel effectif de groupe.",
+      },
+      {
+        q: "Comment maitriser le food cost des boissons a volonte dans les formules groupe ?",
+        a: "Les boissons a volonte (open bar, boissons comprises) sont la principale variable incontrôlable dans la tarification groupe : certains seminaires consomment 1,5 verre de vin par convive, d'autres en sont a 3. Sans ratio de reference, il est impossible de calculer la marge reelle du contrat a l'avance. La methode en 4 etapes pour reprendre le contrôle : (1) tracker systematiquement la consommation reelle de boissons par convive sur chaque prestation — RestauMargin integre un module de saisie des consommations groupe en fin de service qui alimente votre historique, (2) definir un ratio standard de consommation par type de groupe et par formule (ex : seminaire entreprise mid-market = 0,75 bouteille vin/table de 10 + 3 softs/convive ; diner de gala festif = 1,2 bouteille/table + champagne accueil) base sur vos 12 derniers mois de donnees, (3) integrer ce ratio directement dans vos fiches techniques de prestation pour que le food cost boissons soit capture dans le devis, (4) proposer deux versions de formule : boissons comprises avec plafond explicite (ex : 1/3 de bouteille de vin et 1 soft par convive, champagne supplementaire en option) et formule boissons consommees avec majoration forfait. RestauMargin vous permet de simuler l'impact d'une consommation boissons plus elevee que prevu sur la marge nette du contrat, et de fixer le prix de vente groupe avec une marge de securite integree.",
+      },
+      {
+        q: "RestauMargin convient-il aux restaurants qui gerent a la fois le service a la carte et les groupes ?",
+        a: "Oui, RestauMargin est particulierement adapte aux restaurants hybrides qui cumulent un service a la carte (soir ou midi individuel) et une activite groupe-seminaires. Ces etablissements ont deux logiques de marge tres differentes a gerer en parallele : le service carte avec des fiches techniques recette par recette et une marge par plat, et le service groupe avec des fiches techniques par prestation et une marge par convive. Le dashboard multi-categorie RestauMargin vous montre la marge de chaque canal separement : service carte vs prestations groupe, avec le food cost et la marge brute pour chaque segment sur la periode choisie. Vous identifiez immediatement lequel est le moteur de votre rentabilite et pouvez arbitrer votre strategie commerciale — certains restaurateurs decouvrent que les groupes, malgre un prix convive moins eleve, sont plus rentables que le service carte grace a la preparation en volume et a l'absence de no-shows. Pour les restaurants avec une salle modulable (banquet ou service individuel), RestauMargin gere la double fiche technique — carte et groupe — sur les memes ingredients et fournisseurs, ce qui evite la double saisie. Le plan Pro a 29€/mois couvre les besoins d'un restaurant avec 2 a 3 formules groupe et une carte de 40 a 60 references ; le plan Business est recommande pour les hotels-restaurants avec une capacite banquet superieure a 150 couverts et plusieurs espaces seminaires independants.",
       },
     ],
   },

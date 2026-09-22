@@ -130,6 +130,11 @@ const ROUTES = [
     description: "Guide et outil pour calculer les marges de votre bistro gastronomique. Food cost produits du terroir et de saison, marge par formule courte, gestion de la bistronomie et optimisation prix de vente.",
   },
   {
+    path: '/guide-marge/restaurant-seminaire-groupe',
+    title: 'Calcul de marge restaurant seminaire et groupe : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre restaurant seminaire et groupe. Food cost par convive, tarification menus groupe, marge buffets et banquets, gestion des formules seminaires et optimisation de la rentabilite par prestation.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

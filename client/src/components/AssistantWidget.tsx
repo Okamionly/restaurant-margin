@@ -545,7 +545,14 @@ export default function AssistantWidget() {
   const showSuggestions = messages.length === 1 && !sending;
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-3 no-print">
+    // FIX 2026-09-24 : --cookie-banner-h est publiee par CookieBanner avec sa hauteur
+    // reelle mesuree. Tant que le bandeau est affiche, la bulle remonte au-dessus de
+    // lui ; quand il disparait la variable repasse a 0px et la bulle redescend. Le
+    // repli var(..., 0px) garantit la position normale sur toute page sans bandeau.
+    <div
+      className="fixed right-4 sm:right-6 z-50 flex flex-col items-end gap-3 no-print"
+      style={{ bottom: 'calc(1rem + var(--cookie-banner-h, 0px))' }}
+    >
       {open && (
         <div
           role="dialog"

@@ -772,7 +772,7 @@ export default function BlogTauxOccupation() {
           </div>
 
           <p className="text-[#374151] leading-relaxed mb-6">
-            Tableau complet des benchmarks observes en France en 2026 sur 8 types d'etablissement. Ces fourchettes sont issues des donnees agregees de la GIRA Conseil, du Synhorcat, et de notre base de donnees RestauMargin.
+            Tableau complet des benchmarks observes en France en 2026 sur 8 types d'etablissement. Ces fourchettes sont issues des donnees agregees de la GIRA Conseil, du Synhorcat.
           </p>
 
           <div className="mt-6 overflow-x-auto">

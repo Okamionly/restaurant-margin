@@ -679,7 +679,7 @@ export default function BlogOuvrirRestaurant() {
 
           <div className="prose-content">
             <p>
-              Voici la décomposition détaillée du budget d'ouverture d'un restaurant de 50-60 couverts en France métropolitaine en 2026. Les fourchettes sont issues des données BPI France, Fiducial, et de notre base de données RestauMargin (500+ restaurants connectés).
+              Voici la décomposition détaillée du budget d'ouverture d'un restaurant de 50-60 couverts en France métropolitaine en 2026. Les fourchettes sont issues des données BPI France, Fiducial.
             </p>
           </div>
 

@@ -527,7 +527,7 @@ export default function BlogCoefficient() {
           <div className="prose-content">
             <p>
               Le coefficient multiplicateur varie aussi selon le type de cuisine. Voici les fourchettes
-              constatees en France en 2026, issues du benchmark RestauMargin (520 restaurants connectees)
+              constatees en France en 2026, issues de sources publiques du secteur
               et croisees avec les donnees Fiducial.
             </p>
           </div>
@@ -572,7 +572,7 @@ export default function BlogCoefficient() {
           </div>
 
           <Callout type="info">
-            <strong>Source :</strong> benchmark RestauMargin avril 2026 sur 520 restaurants francais
+            <strong>Source :</strong> benchmarks publics du secteur
             connectees, croise avec les donnees Fiducial Observatoire 2025 et GIRA Conseil.
           </Callout>
         </section>
@@ -587,8 +587,8 @@ export default function BlogCoefficient() {
             <p>
               Le tableau de reference le plus complet du web francais. 12 types d'etablissement, avec
               fourchettes basses et hautes constatees en 2026, food cost equivalent et facteur cle
-              expliquant le positionnement. Source : <strong>INSEE 2026 + benchmark RestauMargin sur
-              400+ etablissements connectes</strong>.
+              expliquant le positionnement. Source : <strong>INSEE 2026 + benchmarks publics du secteur
+              etablissements du secteur</strong>.
             </p>
           </div>
 
@@ -1161,7 +1161,7 @@ export default function BlogCoefficient() {
           <div className="prose-content">
             <p>
               Cinq exemples reels d'application du coefficient multiplicateur dans differents segments
-              et villes francaises. Donnees issues du benchmark RestauMargin 2026 (400+ etablissements
+              et villes francaises. Donnees issues de sources publiques du secteur
               connectes), prix matiere actualises Q2 2026.
             </p>
           </div>
@@ -1337,7 +1337,7 @@ export default function BlogCoefficient() {
 
           <div className="prose-content mt-8">
             <p>
-              <strong>Analyse :</strong> avec un coefficient module par categorie (3,5 / 3,0 / 5,9),
+              <strong>Analyse :</strong> avec un coefficient module par categorie (3,5 / 3,0 sur 5,9),
               vous obtenez un coefficient moyen de 3,57, soit un food cost global de 28 % parfaitement
               conforme a la cible. Si vous aviez applique un coefficient uniforme de 3,0 :
             </p>
@@ -1424,7 +1424,7 @@ export default function BlogCoefficient() {
             {[
               { icon: <Calculator className="w-5 h-5" />, title: 'Fiches techniques automatiques', desc: 'Coefficient calcule en temps reel a partir des prix fournisseurs. Mise a jour automatique a chaque variation.' },
               { icon: <Target className="w-5 h-5" />, title: 'Coefficient cible par categorie', desc: 'Definissez un coefficient cible par categorie (entrees, plats viande, desserts, etc.). RestauMargin alerte des derives.' },
-              { icon: <BarChart3 className="w-5 h-5" />, title: 'Benchmark automatique', desc: 'Comparaison avec la mediane du marche local (50+ etablissements connectees dans votre zone).' },
+              { icon: <BarChart3 className="w-5 h-5" />, title: 'Benchmark automatique', desc: 'Comparaison avec la mediane du marche local (quand la donnee locale est disponible).' },
               { icon: <Brain className="w-5 h-5" />, title: 'Menu engineering integre', desc: 'Matrice BCG generee automatiquement : Stars, Cash Cows, Question Marks, Dogs. Recommandations d\'actions.' },
               { icon: <AlertTriangle className="w-5 h-5" />, title: 'Alertes de derive', desc: 'Notification quand un plat franchit le seuil de coefficient minimum (par exemple x 3,0).' },
               { icon: <DollarSign className="w-5 h-5" />, title: 'Scan de factures (OCR)', desc: 'Photographiez vos factures fournisseurs : prix extraits automatiquement et fiches techniques mises a jour.' },
@@ -1571,7 +1571,7 @@ export default function BlogCoefficient() {
             <li><strong>INSEE : indices de prix a la consommation alimentaire 2023-2025</strong> &mdash; <a href="https://www.insee.fr/fr/statistiques/serie/010540933" target="_blank" rel="noopener noreferrer" className="text-teal-700 underline hover:text-teal-800">https://www.insee.fr</a></li>
             <li><strong>GIRA Conseil : Etudes de marche restauration 2024-2025</strong> &mdash; <a href="https://www.gira-conseil.com/" target="_blank" rel="noopener noreferrer" className="text-teal-700 underline hover:text-teal-800">https://www.gira-conseil.com</a></li>
             <li><strong>KPMG Hospitality Benchmark 2025</strong> &mdash; ratios sectoriels restauration en Europe</li>
-            <li><strong>Benchmark RestauMargin avril 2026</strong> &mdash; 520 restaurants francais connectees</li>
+            <li><strong>Sources publiques du secteur</strong> &mdash; INSEE, GIRA Conseil, SNRC</li>
             <li><strong>Code general des impots, article 279 et 296</strong> &mdash; taux de TVA applicables a la restauration</li>
           </ul>
         </section>

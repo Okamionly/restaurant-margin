@@ -387,7 +387,7 @@ export default function FonctionnaliteHACCP() {
               >
                 guide complet du HACCP en restaurant
               </Link>
-              .
+              et de sources publiques du secteur.
             </div>
           </div>
         </div>

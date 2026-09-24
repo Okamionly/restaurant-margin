@@ -660,8 +660,8 @@ export default function LogicielMargeGastronomique() {
             <KpiCard
               icon={<Star className="w-6 h-6" />}
               title="Note plateformes"
-              value=">4,7 / 5"
-              desc="Tripadvisor, La Fourchette, Google : note moyenne <4,7 / 5 = signal d'alerte. Le NPS interne RestauMargin permet de detecter avant que ca tombe sur les plateformes publiques."
+              value=">Essai 7 jours"
+              desc="Tripadvisor, La Fourchette, Google : note moyenne <Essai 7 jours = signal d'alerte. Le NPS interne RestauMargin permet de detecter avant que ca tombe sur les plateformes publiques."
             />
           </div>
         </div>

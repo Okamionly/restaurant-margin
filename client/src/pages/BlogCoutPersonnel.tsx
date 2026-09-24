@@ -854,7 +854,7 @@ export default function BlogCoutPersonnel() {
             <p>
               Voici les ratios coût personnel observés en France en 2026 sur 9 types d'établissement.
               Données agrégées issues du GIRA Conseil, du SNRC, de la fédération UMIH et de notre
-              base RestauMargin (500+ restaurants connectés).
+              de la federation UMIH.
             </p>
           </div>
 

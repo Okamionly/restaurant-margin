@@ -83,7 +83,7 @@ const faqItems = [
   {
     question: 'RestauMargin est-il adapte a un bar de quartier independant ?',
     answer:
-      "Oui parfaitement. RestauMargin est utilise par 200+ bars, cafes et coffee shops en France. Le plan Pro a 29 EUR/mois inclut : fiches techniques cocktails illimitees, scan factures fournisseurs (Pernod Ricard, Diageo, brasseurs locaux), suivi des pertes biere/spiritueux, gestion carte des vins au verre, alertes prix matieres, KPI ticket moyen et rotations. Essai gratuit 7 jours sans carte bancaire. Modeles cocktails et planches inclus.",
+      "Oui parfaitement. RestauMargin est utilise par bars, cafes et coffee shops en France. Le plan Pro a 29 EUR/mois inclut : fiches techniques cocktails illimitees, scan factures fournisseurs (Pernod Ricard, Diageo, brasseurs locaux), suivi des pertes biere/spiritueux, gestion carte des vins au verre, alertes prix matieres, KPI ticket moyen et rotations. Essai gratuit 7 jours sans carte bancaire. Modeles cocktails et planches inclus.",
   },
 ];
 
@@ -274,7 +274,7 @@ export default function LogicielMargeCafeBar() {
             cette structure de cout matieres aussi favorable.
           </p>
           <p className="text-lg text-mono-400 leading-relaxed">
-            <strong>RestauMargin</strong> est utilise par 200+ cafes, bars et coffee shops en France pour
+            <strong>RestauMargin</strong> est utilise par cafes, bars et coffee shops en France pour
             piloter precisement coefficients, pertes au tirage, stocks alcool et carte cocktails.
             Decouvrez comment maximiser une marge brute deja excellente.
           </p>

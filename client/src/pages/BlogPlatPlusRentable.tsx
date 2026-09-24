@@ -334,7 +334,7 @@ export default function BlogPlatPlusRentable() {
           <div className="prose-content">
             <p>
               Voici notre classement detaille des 15 plats les plus rentables a mettre a la carte
-              d'un restaurant en France en 2026. Donnees issues de notre base de 500+ restaurants
+              d'un restaurant en France en 2026. Donnees issues de notre base de des restaurants
               utilisant RestauMargin, croisees avec les benchmarks GIRA Conseil et SNRC.
             </p>
           </div>

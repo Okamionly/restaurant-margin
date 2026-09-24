@@ -1107,7 +1107,7 @@ export default function BlogFoodCost() {
             <li>- <strong>National Restaurant Association</strong> : Benchmark international du food cost (US data)</li>
           </ul>
           <p className="text-xs text-mono-500 mt-4 italic">
-            Article redige par la redaction RestauMargin. Mis a jour le 26 mai 2026. Notre methodologie : croisement des donnees publiques INSEE et Fiducial avec les retours terrain de 200+ restaurateurs accompagnes par RestauMargin depuis 2025.
+            Article redige par la redaction RestauMargin. Mis a jour le 26 mai 2026. Notre methodologie : croisement des donnees publiques INSEE et Fiducial avec les retours terrain de des restaurateurs accompagnes par RestauMargin depuis 2025.
           </p>
         </section>
 

@@ -48,7 +48,7 @@ const faqItems = [
   {
     question: "Quelle est la rotation cible par categorie de produit ?",
     answer:
-      "Frais (viandes, poissons, fruits, legumes) : 2-3 jours de stock, soit une rotation de 10-15x/mois. Produits secs (riz, pates, farine, conserves) : 15-30 jours de stock, rotation 1-2x/mois. Surgeles : 30-60 jours, rotation 0,5-1x/mois. Vins courants : 15-30 jours, vins de garde : 60-90 jours. Ces ratios proviennent des benchmarks GIRA Conseil et de la base RestauMargin.",
+      "Frais (viandes, poissons, fruits, legumes) : 2-3 jours de stock, soit une rotation de 10-15x/mois. Produits secs (riz, pates, farine, conserves) : 15-30 jours de stock, rotation 1-2x/mois. Surgeles : 30-60 jours, rotation 0,5-1x/mois. Vins courants : 15-30 jours, vins de garde : 60-90 jours. Ces ratios proviennent des benchmarks GIRA Conseil.",
   },
   {
     question: "FIFO, LIFO, PEPS : quelle methode utiliser en restauration ?",
@@ -364,7 +364,7 @@ export default function BlogRotationStocks() {
 
           <div className="prose-content mt-8">
             <p>
-              Selon les donnees agregees de la GIRA Conseil et de la base RestauMargin (500+ restaurants
+              Selon les donnees agregees de la GIRA Conseil (des restaurants
               connectes), les etablissements dans le top 25 % de leur categorie ont une rotation moyenne
               <strong> 2,4x superieure</strong> a la moyenne du marche. Ce n'est pas un hasard : ils ont
               compris que <strong>la rotation est un effet, pas une cause</strong>. C'est le reflet d'une
@@ -456,7 +456,7 @@ export default function BlogRotationStocks() {
               L'analyse globale de la rotation masque toujours des anomalies locales. C'est en
               decoupant par famille de produit que vous detectez le stock dormant. Voici les
               <strong> ratios cibles par categorie</strong> observes dans les restaurants performants
-              en France (source : GIRA Conseil 2025, SNRC, base RestauMargin).
+              en France (source : GIRA Conseil 2025, SNRC).
             </p>
           </div>
 
@@ -971,7 +971,7 @@ export default function BlogRotationStocks() {
               fonctionnalites / prix pour le suivi de la rotation et de la marge.
             </p>
             <p>
-              Resultat moyen constate sur les 500+ restaurants connectes a RestauMargin : <strong>-30 %
+              Resultat moyen constate sur les etablissements du secteur a RestauMargin : <strong>-30 %
               de stock dormant en 90 jours</strong>, <strong>+1,5 a 3 points de marge brute</strong>{' '}
               recuperes, <strong>5-8 heures par semaine economisees</strong> sur la gestion des stocks.
               Pour decouvrir l'outil, lancez le

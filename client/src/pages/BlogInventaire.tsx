@@ -663,7 +663,7 @@ export default function BlogInventaire() {
 
           <div className="prose-content">
             <p>
-              Voici les benchmarks d'ecart d'inventaire restaurant observes en France en 2026. Ces fourchettes sont issues des donnees agregees de la GIRA Conseil et de notre base de donnees RestauMargin (500+ restaurants connectes).
+              Voici les benchmarks d'ecart d'inventaire restaurant observes en France en 2026. Ces fourchettes sont issues des donnees agregees de la GIRA Conseil.
             </p>
           </div>
 
@@ -1031,7 +1031,7 @@ export default function BlogInventaire() {
               <li>- GIRA Conseil — Etude annuelle de la profitabilite restaurants HCR France</li>
               <li>- Reglement (CE) n° 178/2002 — Tracabilite des denrees alimentaires (Paquet Hygiene)</li>
               <li>- Plan Comptable General — Methodes de valorisation des stocks (PEPS et CMUP autorises)</li>
-              <li>- Base RestauMargin — 500+ restaurants connectes, donnees agregees 2025-2026</li>
+              <li>- — etablissements du secteur, donnees agregees 2025-2026</li>
               <li>- Convention collective nationale HCR (IDCC 1979) — Procedures de tracabilite et responsabilite</li>
             </ul>
           </div>

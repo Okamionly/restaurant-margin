@@ -672,7 +672,7 @@ function HeroSection() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: ACCENT }} />
               <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: ACCENT }} />
             </span>
-            Plateforme #1 des restaurateurs
+            Pensee pour les restaurateurs
           </span>
           <h1 className="mt-6 text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.02] tracking-tight" style={{ color: TEXT }}>
             Logiciel marge restaurant{' '}

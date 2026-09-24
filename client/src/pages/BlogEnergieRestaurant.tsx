@@ -178,7 +178,7 @@ export default function BlogEnergieRestaurant() {
             </div>
           </div>
           <p className="mt-4 text-teal-100 text-sm">
-            Source : agregation donnees ADEME, Atee, GIRA Conseil et base RestauMargin 2026.
+            Source : agregation donnees ADEME, Atee, GIRA Conseil.
           </p>
         </div>
 

@@ -39,7 +39,7 @@ const faqItems = [
   {
     question: "Comment calculer le taux de marque d'un restaurant ?",
     answer:
-      "Taux de marque = (Prix de vente HT moins Cout matiere HT) / Prix de vente HT x 100. Exemple : un plat vendu 18 EUR HT avec un cout matiere de 5 EUR a un taux de marque de (18-5)/18 = 72 %. Le taux de marque est le complement du food cost : Taux de marque = 100 % moins Food cost. Un food cost de 28 % correspond donc a un taux de marque de 72 %. C'est le taux le plus utilise pour piloter un restaurant car il se rapporte directement au chiffre d'affaires.",
+      "Taux de marque = (Prix de vente HT moins Cout matiere HT) / Prix de vente HT x 100. Exemple : un plat vendu 18 EUR HT avec un cout matiere de 5 EUR a un taux de marque de (18-5)/18 = 72 %. Le taux de marque est le complement du food cost : Taux de marque = 100 % moins Food cost. Un food cost de 28 % correspond donc a un taux de marque de 72 %. C'est le taux largement repandu pour piloter un restaurant car il se rapporte directement au chiffre d'affaires.",
   },
   {
     question: "Comment calculer le taux de marge ?",

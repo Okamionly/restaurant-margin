@@ -21,6 +21,14 @@ jobs:
       - name: Comparer les deux schemas
         run: node scripts/verifier-schemas-prisma.cjs
 
+      # Les agents de contenu du parc fabriquent de la preuve sociale par defaut
+      # des que rien ne l'interdit : le 2026-09-24, 24 faux temoignages nominatifs
+      # et trois chiffres d'adoption contradictoires etaient en ligne et indexes.
+      # La regle est ecrite dans CLAUDE.md — une regle se lit, ou ne se lit pas.
+      # Cette garde, elle, fait rougir le CI.
+      - name: Aucune preuve sociale fabriquee
+        run: node scripts/verifier-preuve-sociale.cjs
+
   typecheck:
     name: TypeScript Check
     runs-on: ubuntu-latest

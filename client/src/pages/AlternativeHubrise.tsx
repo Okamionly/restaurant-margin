@@ -556,7 +556,7 @@ export default function AlternativeHubrise() {
               color="amber"
             />
             <UsecaseCard
-              title="Chaine multi-restaurants (5+ etablissements)"
+              title="Chaine multi-restaurants (des etablissements)"
               recommendation="Hubrise + RestauMargin business + outil BI"
               detail="A cette echelle, il vous faut Hubrise pour normaliser l'operationnel sur tous les sites, RestauMargin pour avoir un pilotage de marge consolide multi-restaurants, et idealement un outil BI (Metabase, Tableau) connecte aux deux pour reporting consolide."
               color="blue"
@@ -691,7 +691,7 @@ export default function AlternativeHubrise() {
               note="Indispensable pour piloter le complexe. Le ROI vient du gain de temps + identification marques perdantes."
             />
             <PricingCard
-              title="Chaine 5+ etablissements"
+              title="Chaine des etablissements"
               hubrise="3 000+ EUR/an (250 EUR/mois)"
               restaumargin="588 EUR/an (49 EUR/mois business)"
               total="3 588+ EUR/an"

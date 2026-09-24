@@ -206,7 +206,7 @@ export default function BlogSalaireProprietaireRestaurant() {
               C'est l'une des questions les plus posees aux experts-comptables specialises CHR
               (cafes, hotels, restaurants). La reponse honnete : <strong>c'est tres variable</strong>.
               Selon les chiffres consolides de l'INSEE, du SNRC et de notre propre base de donnees
-              (500+ restaurants connectes a RestauMargin), un proprietaire de restaurant en France
+              (etablissements du secteur a RestauMargin), un proprietaire de restaurant en France
               gagne en moyenne <strong>entre 30 000 EUR et 60 000 EUR net par an en 2026</strong>.
             </p>
             <p>
@@ -346,7 +346,7 @@ export default function BlogSalaireProprietaireRestaurant() {
             <p>
               Le revenu d'un proprietaire varie enormement selon le type d'etablissement.
               Voici les fourchettes observees en France en 2026, issues des donnees agregees
-              de la GIRA Conseil, de l'INSEE et des 500+ restaurants connectes a RestauMargin.
+              de la GIRA Conseil, de l'INSEE et des etablissements du secteur a RestauMargin.
             </p>
           </div>
 
@@ -487,7 +487,7 @@ export default function BlogSalaireProprietaireRestaurant() {
             <p>
               Passons aux cas reels. Trois proprietaires-types, trois profils, trois revenus tres
               differents. Tous les chiffres sont issus de comptes annuels reels (anonymises) issus
-              de notre base RestauMargin.
+              et de sources publiques du secteur.
             </p>
           </div>
 
@@ -796,7 +796,7 @@ export default function BlogSalaireProprietaireRestaurant() {
           <Callout type="info">
             <strong>Impact cumule :</strong> en activant 4 a 5 de ces leviers sur 12-18 mois,
             un proprietaire peut passer de 40 a 70 keur de revenu net annuel, sans investissement
-            supplementaire majeur. C'est exactement ce que les 500+ restaurateurs equipes RestauMargin
+            supplementaire majeur. C'est exactement ce que les des restaurateurs equipes RestauMargin
             observent en moyenne (gain de 3 a 5 points de marge nette, soit 15-30 keur sur un
             CA de 500-1 000 keur).
           </Callout>

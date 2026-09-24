@@ -353,7 +353,7 @@ export default function BlogPrimeCost() {
           </div>
 
           <p>
-            <strong>Origine du terme</strong> : "prime cost" vient du vocabulaire comptable americain ou "prime" signifie "principal", "primaire". Ce sont les couts directement attribuables a la production et au service. Dans la litterature francaise, on parle parfois de "ratio matieres-personnel" ou de "ratio operationnel principal", mais le terme anglais reste le plus utilise dans la profession.
+            <strong>Origine du terme</strong> : "prime cost" vient du vocabulaire comptable americain ou "prime" signifie "principal", "primaire". Ce sont les couts directement attribuables a la production et au service. Dans la litterature francaise, on parle parfois de "ratio matieres-personnel" ou de "ratio operationnel principal", mais le terme anglais reste largement repandu dans la profession.
           </p>
         </section>
 
@@ -1219,7 +1219,7 @@ export default function BlogPrimeCost() {
             <li>- <strong>URSSAF</strong> : Bareme charges patronales 2026 secteur HCR</li>
           </ul>
           <p className="text-xs text-mono-500 mt-4 italic">
-            Article redige par la redaction RestauMargin. Mis a jour le 26 mai 2026. Methodologie : croisement des donnees publiques INSEE, Fiducial et NRA avec les retours terrain de 200+ restaurateurs accompagnes depuis 2025.
+            Article redige par la redaction RestauMargin. Mis a jour le 26 mai 2026. Methodologie : croisement des donnees publiques INSEE, Fiducial et NRA avec les retours terrain de des restaurateurs accompagnes depuis 2025.
           </p>
         </section>
 

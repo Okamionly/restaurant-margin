@@ -238,7 +238,7 @@ export default function BlogPourquoiPasRentable() {
 
             <Callout type="info">
               <strong>Une certitude rassurante :</strong> dans 80 % des cas que nous avons analyses sur
-              RestauMargin (500+ restaurants connectes), le probleme se resout en 90 a 180 jours sans
+              RestauMargin (etablissements du secteur), le probleme se resout en 90 a 180 jours sans
               changer de concept, sans changer d'equipe, et sans fermer. Il faut juste identifier le bon
               levier et agir avec discipline.
             </Callout>
@@ -323,7 +323,7 @@ export default function BlogPourquoiPasRentable() {
 
           <div className="prose-content">
             <p>
-              Voici, dans l'ordre de frequence observe sur 500+ restaurants connectes a RestauMargin,
+              Voici, dans l'ordre de frequence dans le secteur,
               les 10 causes principales d'un restaurant qui ne rapporte pas d'argent. Lisez attentivement
               chaque cause : votre probleme principal est probablement dans les 3 premieres.
             </p>

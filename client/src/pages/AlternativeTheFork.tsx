@@ -34,7 +34,7 @@ const faqItems = [
   },
   {
     question: "RestauMargin propose-t-il un module reservation en ligne ?",
-    answer: "Non, ce n'est volontairement pas dans notre scope. Nous nous concentrons sur la gestion operationnelle et la rentabilite (marges, food cost, fiches techniques, IA d'optimisation, mercuriale). Pour la reservation, TheFork (le plus utilise en France), Zenchef ou Resy sont des choix solides. La grande majorite de nos clients combinent TheFork (reservations) + RestauMargin (operations) et trouvent cette combinaison parfaitement complementaire.",
+    answer: "Non, ce n'est volontairement pas dans notre scope. Nous nous concentrons sur la gestion operationnelle et la rentabilite (marges, food cost, fiches techniques, IA d'optimisation, mercuriale). Pour la reservation, TheFork (largement repandu en France), Zenchef ou Resy sont des choix solides. La grande majorite de nos clients combinent TheFork (reservations) + RestauMargin (operations) et trouvent cette combinaison parfaitement complementaire.",
   },
   {
     question: "Y a-t-il un essai gratuit chez RestauMargin et chez TheFork Manager ?",

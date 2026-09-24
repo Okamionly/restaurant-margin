@@ -276,7 +276,7 @@ export default function BlogKpiGuide() {
             <p>
               Ce guide présente les <strong>12 KPI restaurant essentiels</strong> en 2026, leurs formules exactes, les
               benchmarks par type d'établissement, et la manière concrète de bâtir votre tableau de bord hebdomadaire.
-              Tous les KPI sont issus de notre base de 500+ restaurants connectés à RestauMargin et croisés avec les
+              Tous les KPI sont issus de sources publiques du secteur et croisés avec les
               études Fiducial 2025 et GIRA Conseil.
             </p>
           </div>

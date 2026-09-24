@@ -910,7 +910,7 @@ export default function BlogCoutRevient() {
 
           <div className="prose-content">
             <p className="text-[#374151] leading-relaxed mb-6">
-              Voici les benchmarks 2026 du coût de revient (matières seules et complet) par type d'établissement. Sources : GIRA Conseil, SNRC et base de données RestauMargin (500+ restaurants connectés).
+              Voici les benchmarks 2026 du coût de revient (matières seules et complet) par type d'établissement. Sources : GIRA Conseil, SNRC.
             </p>
           </div>
 

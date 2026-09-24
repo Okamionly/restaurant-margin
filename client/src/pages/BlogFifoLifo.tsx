@@ -599,7 +599,7 @@ export default function BlogFifoLifo() {
           </div>
 
           <p className="text-sm text-mono-500 mt-3">
-            Estimations basees sur une reduction de 2 a 4 % du food cost apres mise en place d'un FIFO restaurant structure. Sources : donnees agregees RestauMargin sur 500+ restaurants connectes et benchmarks GIRA Conseil 2026.
+            Estimations basees sur une reduction de 2 a 4 % du food cost apres mise en place d'un FIFO restaurant structure. Sources :.
           </p>
 
           <div className="prose-content mt-8">
@@ -762,7 +762,7 @@ export default function BlogFifoLifo() {
               <li>- Paquet Hygiene europeen — Reglements (CE) 852/2004, 853/2004 et 854/2004</li>
               <li>- INSEE — Statistiques sectorielles de la restauration en France (donnees 2024-2026)</li>
               <li>- GIRA Conseil — Etude annuelle profitabilite restaurants HCR France 2026</li>
-              <li>- Base RestauMargin — 500+ restaurants connectes, donnees agregees 2025-2026</li>
+              <li>- — etablissements du secteur, donnees agregees 2025-2026</li>
             </ul>
           </div>
         </section>

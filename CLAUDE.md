@@ -105,3 +105,66 @@
 - NE PAS supprimer du code existant sauf si demandé
 - Toujours tester que la page se charge sans erreur
 - Responsive : mobile-first, fonctionne sur tablette (Samsung Tab A9+)
+
+---
+
+## ⛔ RÈGLE ABSOLUE — Aucune preuve sociale fabriquée
+
+**Applicable à TOUT agent qui écrit du contenu sur ce dépôt** (blog-writer,
+seo-writer, cmo, workforce, saas-build, et toute session Claude Code).
+
+### Ce qui est INTERDIT, sans exception
+
+Il est interdit d'écrire, dans le code, le contenu ou les métadonnées :
+
+- **Un nom de client** — personne, établissement, ville, fonction. Même
+  plausible, même « à titre d'exemple », même en attendant les vrais.
+- **Une citation de client** ou un témoignage.
+- **Une note** (« 4,8/5 »), un nombre d'avis (« sur 47 avis »), un classement.
+- **Un nombre d'utilisateurs, de clients ou d'établissements** (« 150+
+  restaurants », « 320+ brigades », « 500+ restaurants »).
+- **Un résultat chiffré attribué à un client** (« -7 points de food cost »,
+  « +12 % de marge », « 800 € économisés le premier mois »).
+- **Un label de popularité** non mesuré (« plateforme n°1 », « le plus utilisé »).
+
+### Pourquoi
+
+Publier de faux avis de consommateurs est une **pratique commerciale trompeuse**
+(Code de la consommation, art. L121-2 et suivants ; directive Omnibus). Ce n'est
+pas une licence marketing, c'est un risque juridique.
+
+Constat du 2026-09-24 : **24 faux témoignages nominatifs** et **trois chiffres
+d'adoption contradictoires** étaient en ligne et indexés, produits par ces mêmes
+agents. Voir le commit `adaa14b`.
+
+Et sur le fond : un prospect qui cherche « Le Jardin des Saveurs Lyon » et ne
+trouve rien est perdu **définitivement**. Une fausse preuve sociale coûte plus
+cher que son absence.
+
+### L'état réel du produit — à connaître avant d'écrire
+
+Une vingtaine de comptes, **aucun abonné payant**, aucun avis client collecté.
+Toute formulation qui laisse entendre une adoption large est fausse.
+
+### Ce qu'on écrit à la place
+
+Uniquement des faits vérifiables en un clic : essai 7 jours sans carte bancaire,
+sans engagement, tarif 29 €/mois, fiches techniques illimitées, périmètre
+fonctionnel réel. « Outil récent » est une formulation acceptable et honnête —
+elle se défend mieux qu'un chiffre inventé.
+
+### Le test avant de publier
+
+> *Si un journaliste me demandait la source de cette phrase, pourrais-je la
+> fournir en trente secondes ?*
+
+Non → la phrase ne part pas. Dans le doute, écrire moins.
+
+### Ce qui existe déjà et ne doit pas être ressuscité
+
+`client/src/pages/Temoignages.tsx` est **conservé mais dé-routé** (hors sitemap,
+`Disallow`, 301 vers l'accueil). Les tableaux `testimonials` de `Landing.tsx`,
+`Subscription.tsx`, `LogicielMargeRestaurant.tsx` et `LogicielMargeFoodTruck.tsx`
+sont **volontairement vides**. Ne pas les remplir : ils se rallumeront seuls le
+jour où de vrais témoignages, obtenus et autorisés par leurs auteurs, y seront
+ajoutés par un humain.

@@ -225,7 +225,7 @@ const TERMS: Term[] = [
     letter: 'F',
     name: 'Food cost',
     shortDef: 'Coût matières exprimé en % du prix de vente HT.',
-    long: "Le food cost est l'indicateur le plus utilisé en restauration. Formule : Food cost (%) = (Coût matières / Prix de vente HT) × 100. Fourchettes cibles : pizzeria 22-25 %, restaurant traditionnel 28-33 %, gastronomique 35-40 %, fast food 30-32 %. Un food cost qui dérive de 2 points peut faire disparaître toute la marge nette.",
+    long: "Le food cost est l'indicateur largement repandu en restauration. Formule : Food cost (%) = (Coût matières / Prix de vente HT) × 100. Fourchettes cibles : pizzeria 22-25 %, restaurant traditionnel 28-33 %, gastronomique 35-40 %, fast food 30-32 %. Un food cost qui dérive de 2 points peut faire disparaître toute la marge nette.",
     link: { to: '/blog/reduire-food-cost', label: 'Reduire son food cost' },
   },
   {

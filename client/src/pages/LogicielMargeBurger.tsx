@@ -590,7 +590,7 @@ export default function LogicielMargeBurger() {
             <p>
               Pour comprendre la specificite economique du burger, comparons la marge brute
               unitaire avec d'autres concepts de restauration commerciale. Les chiffres ci-dessous
-              sont des moyennes constatees en France 2026 sur 200+ etablissements.
+              sont des moyennes constatees en France 2026 sur des etablissements.
             </p>
           </div>
 

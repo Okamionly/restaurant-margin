@@ -825,7 +825,7 @@ export default function BlogFideliserClients() {
             </p>
             <ul className="list-disc pl-6 space-y-2 text-mono-350 mt-4 leading-relaxed">
               <li><strong>Tripadvisor</strong> : critique pour le tourisme. Reponse aux avis &lt; 7 jours, photos professionnelles, mise a jour menu mensuelle.</li>
-              <li><strong>TheFork</strong> : la plateforme #1 en France pour les reservations. Profil complet, photos pro, reponse aux avis, offres specifiques.</li>
+              <li><strong>TheFork</strong> : la plateforme de reference en France pour les reservations. Profil complet, photos pro, reponse aux avis, offres specifiques.</li>
               <li><strong>Instagram</strong> : 3 publications/semaine + 1 Story/jour. Tag des clients (avec accord), Reels courts (15-30s) des plats signature.</li>
             </ul>
           </div>

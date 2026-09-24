@@ -273,7 +273,7 @@ export default function BlogCalcMarge() {
             </table>
           </div>
           <p className="mt-4 text-xs text-mono-500">
-            Sources : INSEE 2026, Federation nationale de l'industrie hoteliere (FNIH), donnees agregees RestauMargin sur 400+ etablissements francais. Les fourchettes varient selon type d'etablissement (voir benchmark detaille section 8).
+            Sources : INSEE 2026, Federation nationale de l'industrie hoteliere (FNIH). Les fourchettes varient selon type d'etablissement (voir benchmark detaille section 8).
           </p>
         </div>
 
@@ -586,7 +586,7 @@ export default function BlogCalcMarge() {
               icon={<Percent className="w-6 h-6" />}
               title="Cout matiere (Food Cost)"
               color="amber"
-              desc="Le ratio entre le cout de vos ingredients et votre prix de vente. C'est l'indicateur le plus utilise dans la profession. Un food cost maitrise signifie des achats optimises et des fiches techniques respectees."
+              desc="Le ratio entre le cout de vos ingredients et votre prix de vente. C'est l'indicateur largement repandu dans la profession. Un food cost maitrise signifie des achats optimises et des fiches techniques respectees."
               formula="Cout ingredients / Prix de vente x 100"
               target="25 % a 35 %"
             />
@@ -972,7 +972,7 @@ export default function BlogCalcMarge() {
             <p>
               Voici les ratios de marge brute observes en France en 2026 sur 6 types d'etablissement.
               Ces fourchettes sont issues des donnees agregees de la GIRA Conseil, du SNRC et de notre
-              propre base de donnees RestauMargin (500+ restaurants connectes).
+              propre analyse de terrain.
             </p>
           </div>
 
@@ -1135,7 +1135,7 @@ export default function BlogCalcMarge() {
               alertes en cas de derive.
             </p>
             <p>
-              Les benefices concrets observes sur 500+ etablissements connectes : <strong>gain de 3 a 5 points
+              Les benefices concrets observes sur etablissements du secteur : <strong>gain de 3 a 5 points
               de marge brute en 6 mois</strong>, reduction de 8 heures par semaine sur la gestion administrative,
               detection automatique des hausses de prix fournisseurs. Les fiches techniques sont synchronisees
               avec les factures (OCR), ce qui elimine la double saisie. Pour comprendre comment choisir,
@@ -1493,7 +1493,7 @@ export default function BlogCalcMarge() {
           <p className="text-sm text-mono-500 mb-6 max-w-3xl">
             Les seuils de marge, taux de TVA et fourchettes de food cost cites dans ce guide s'appuient sur des
             sources officielles et professionnelles reconnues du secteur, recoupees avec les donnees agregees de
-            RestauMargin (400+ etablissements francais). Ces references sont verifiables et mises a jour pour 2026.
+            RestauMargin (des etablissements francais). Ces references sont verifiables et mises a jour pour 2026.
           </p>
 
           <ul className="grid sm:grid-cols-2 gap-4 mb-6">

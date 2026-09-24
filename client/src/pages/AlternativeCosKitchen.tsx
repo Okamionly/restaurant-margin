@@ -327,7 +327,7 @@ export default function AlternativeCosKitchen() {
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Interface simple, calcul de food cost instantane</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Benchmarks sectoriels integres au plan gratuit</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Import de bons de livraison par email (plan Pro)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Communaute large revendiquee : 2 500+ restaurateurs</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Communaute large revendiquee : des restaurateurs</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Modeles gratuits telechargeables (fiches, tableaux)</span></li>
               </ul>
             </div>

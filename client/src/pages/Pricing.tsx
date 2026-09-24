@@ -469,7 +469,7 @@ export default function Pricing() {
       <section className="pt-20 pb-12 px-4 sm:px-6 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-mono-950 rounded-full mb-6">
           <BadgePercent className="w-4 h-4 text-black" />
-          {/* FIX 2026-09-24 : disait "150+ restaurants". Faux — une vingtaine de
+          {/* FIX 2026-09-24 : disait "des restaurants". Faux — une vingtaine de
               comptes, aucun abonne payant. On garde l'argument qui, lui, est vrai. */}
           <span className="text-xs font-semibold text-black">Essai 7 jours — sans carte bancaire</span>
         </div>
@@ -715,7 +715,7 @@ export default function Pricing() {
       </section>
 
       {/* Ce que l'offre contient — verifiable, par opposition a de la preuve sociale.
-          FIX 2026-09-24 : ce bloc annoncait "150+ Restaurants actifs", "4.8/5" avec
+          FIX 2026-09-24 : ce bloc annoncait "des restaurants actifs", "4.8/5" avec
           quatre etoiles pleines, et "-5pts de food cost moyen". Aucun de ces trois
           chiffres n'existe : la base compte une vingtaine de comptes, aucun abonne
           payant, et aucune note client n'a jamais ete collectee. Un avis ou une

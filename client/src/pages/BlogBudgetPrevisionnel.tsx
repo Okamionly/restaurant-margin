@@ -475,7 +475,7 @@ export default function BlogBudgetPrevisionnel() {
 
           <div className="prose-content">
             <p>
-              Ces benchmarks sont issus des données BPI France, Fiducial, GIRA Conseil et de notre base de données RestauMargin (500+ restaurants connectés). Ils sont à adapter à votre contexte local et à votre niveau de gamme.
+              Ces benchmarks sont issus des données BPI France, Fiducial, GIRA Conseil. Ils sont à adapter à votre contexte local et à votre niveau de gamme.
             </p>
           </div>
 

@@ -829,7 +829,7 @@ export default function BlogFicheTechnique() {
             <p>
               La structure d'une fiche technique est universelle, mais les ratios cibles
               (food cost, coefficient multiplicateur) varient selon le type d'etablissement.
-              Voici les benchmarks 2026 issus de notre base de donnees de 500+ restaurants.
+              Voici les benchmarks 2026 issus de notre base de donnees de des restaurants.
             </p>
           </div>
 
@@ -1119,7 +1119,7 @@ export default function BlogFicheTechnique() {
             <li>GIRA Conseil - Benchmarks operationnels restauration 2025</li>
             <li>SNRC - Syndicat National de la Restauration Collective - guides nutritionnels</li>
             <li>DGCCRF - Recommandations sur la traceabilite et les fiches techniques HACCP</li>
-            <li>Base interne RestauMargin : 500+ restaurants connectes, 12 000+ fiches techniques analysees</li>
+            <li> : etablissements du secteur, 12 000+ fiches techniques analysees</li>
           </ul>
         </section>
 

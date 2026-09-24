@@ -781,7 +781,7 @@ export default function BlogMethodeFifo() {
               <li>- Plan Comptable General — Article 213-1 et 214-1 (methodes de valorisation)</li>
               <li>- INSEE — Statistiques sectorielles HCR France (donnees 2024-2026)</li>
               <li>- GIRA Conseil — Etude annuelle profitabilite restaurants HCR France 2026</li>
-              <li>- Base RestauMargin — 500+ restaurants connectes, donnees agregees 2025-2026</li>
+              <li>- — etablissements du secteur, donnees agregees 2025-2026</li>
             </ul>
           </div>
         </section>

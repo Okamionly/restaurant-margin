@@ -74,7 +74,7 @@ const faqItems = [
   {
     question: "Le machine learning vaut-il vraiment le coup pour un restaurant independant ?",
     answer:
-      "En dessous de 2 ans de donnees ou 1 million d'euros de CA, le ML apporte rarement plus de 2-3 points de precision vs une bonne moyenne ponderee. Au-dela, les modeles type Prophet, ARIMA ou XGBoost peuvent gagner 5-8 points de MAPE en captant les interactions complexes (meteo x evenement x saison). Les chaines avec 20+ restaurants tirent le plus grand benefice du ML grace au mutualisation des donnees.",
+      "En dessous de 2 ans de donnees ou 1 million d'euros de CA, le ML apporte rarement plus de 2-3 points de precision vs une bonne moyenne ponderee. Au-dela, les modeles type Prophet, ARIMA ou XGBoost peuvent gagner 5-8 points de MAPE en captant les interactions complexes (meteo x evenement x saison). Les chaines avec des restaurants tirent le plus grand benefice du ML grace au mutualisation des donnees.",
   },
   {
     question: "Comment expliquer un ecart prevision/realise important ?",
@@ -516,7 +516,7 @@ export default function BlogPrevisionVentes() {
                     { m: 'Moyenne ponderee', h: '3 mois', mape: '12-18 %', c: 'Faible', p: 'Independant solo' },
                     { m: 'Regression multi-facteurs', h: '12 mois', mape: '8-14 %', c: 'Moyenne', p: 'Bistrot / brasserie' },
                     { m: 'Holt-Winters', h: '24 mois', mape: '7-12 %', c: 'Moyenne', p: 'Restaurant mature' },
-                    { m: 'ML (Prophet, ARIMA)', h: '24 mois', mape: '4-8 %', c: 'Elevee', p: 'Chaine 5+ etablissements' },
+                    { m: 'ML (Prophet, ARIMA)', h: '24 mois', mape: '4-8 %', c: 'Elevee', p: 'Chaine des etablissements' },
                   ].map((row, i) => (
                     <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
                       <td className="py-3 px-4 font-medium text-mono-100">{row.m}</td>
@@ -666,14 +666,14 @@ export default function BlogPrevisionVentes() {
                   price: 'Gratuit',
                   pros: 'Open source, ML state-of-the-art, regresseurs externes, detection changepoints auto.',
                   cons: 'Necessite competences Python/data, infrastructure cloud, pas d\'UI.',
-                  ideal: 'Chaines 10+ etablissements avec equipe data.',
+                  ideal: 'Chaines des etablissements avec equipe data.',
                 },
                 {
                   name: 'AWS Forecast / Vertex AI',
                   price: '50-500 EUR/mois',
                   pros: 'Cloud managed, ML automatique, scalable, integration ERP, MAPE 3-6 pourcent.',
                   cons: 'Cout variable, configuration complexe, vendor lock-in.',
-                  ideal: 'Grandes chaines 50+ etablissements.',
+                  ideal: 'Grandes chaines des etablissements.',
                 },
               ].map((o, i) => (
                 <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5">

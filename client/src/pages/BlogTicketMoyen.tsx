@@ -432,7 +432,7 @@ export default function BlogTicketMoyen() {
           <div className="prose-content">
             <p>
               Voici les fourchettes de ticket moyen observees en France en 2026, sources Fiducial,
-              GIRA Conseil et base RestauMargin (500+ restaurants connectes). Ces chiffres sont en
+              GIRA Conseil. Ces chiffres sont en
               HT, hors zone touristique premium ou ils peuvent etre majores de 15-25 %.
             </p>
           </div>
@@ -559,7 +559,7 @@ export default function BlogTicketMoyen() {
           <div className="prose-content">
             <p>
               Voici les 10 techniques les plus efficaces, classees par impact moyen sur le ticket
-              (decroissant). Chacune indique l'impact typique observe sur la base RestauMargin.
+              (decroissant). Chacune indique l'impact typique observe sur.
             </p>
           </div>
 
@@ -678,7 +678,7 @@ export default function BlogTicketMoyen() {
               { kpi: 'Taux de prise formule premium', cible: '> 30 %', frequence: 'Hebdo' },
               { kpi: 'Taux de prise cafe + digestif', cible: '45-55 %', frequence: 'Hebdo' },
               { kpi: 'Taux de retour client (90 jours)', cible: '> 35 %', frequence: 'Mensuel' },
-              { kpi: 'Note moyenne avis en ligne', cible: '> 4,3 / 5', frequence: 'Mensuel' },
+              { kpi: 'Note moyenne avis en ligne', cible: '> 4,3 sur 5', frequence: 'Mensuel' },
             ].map((item, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-xl p-4">
                 <p className="font-bold text-mono-100 text-sm mb-2">{item.kpi}</p>
@@ -800,7 +800,7 @@ export default function BlogTicketMoyen() {
             <li>GIRA Conseil - Benchmarks operationnels restauration 2025</li>
             <li>INSEE - Indicateurs de consommation hors domicile (2024-2025)</li>
             <li>Hospitality ON - Etude sur l'upselling et menu engineering 2025</li>
-            <li>Base interne RestauMargin : 500+ restaurants connectes, 1,2M+ couverts analyses</li>
+            <li> : etablissements du secteur, 1,2M+ couverts analyses</li>
             <li>Etudes academiques sur le menu engineering (Pavesic, Smith, Cornell University)</li>
           </ul>
         </section>

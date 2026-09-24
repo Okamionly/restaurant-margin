@@ -650,7 +650,7 @@ export default function BlogStrategieDigitale() {
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Voici un benchmark des <strong>ROI moyens par canal marketing restaurant</strong> observés
-            sur 500+ établissements français en 2025-2026. Ces chiffres vous aident à prioriser vos
+            sur des etablissements français en 2025-2026. Ces chiffres vous aident à prioriser vos
             investissements selon votre maturité et votre cible.
           </p>
           <div className="mt-6 overflow-x-auto">

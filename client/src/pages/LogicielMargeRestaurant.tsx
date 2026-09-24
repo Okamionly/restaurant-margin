@@ -185,8 +185,8 @@ export default function LogicielMargeRestaurant() {
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-mono-500">
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans carte bancaire</span>
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans engagement</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> 500+ restaurants clients</span>
-            <span className="flex items-center gap-1.5"><Star className="w-4 h-4 text-amber-500 fill-amber-500" /> 4,8/5 (150 avis)</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> des restaurants clients</span>
+            <span className="flex items-center gap-1.5"><Star className="w-4 h-4 text-amber-500 fill-amber-500" /> Essai 7 jours sans carte</span>
           </div>
         </div>
       </header>
@@ -516,7 +516,7 @@ export default function LogicielMargeRestaurant() {
               Ce que disent nos clients
             </h2>
             <p className="text-lg text-mono-400">
-              500+ restaurants utilisent RestauMargin au quotidien.
+              des restaurants utilisent RestauMargin au quotidien.
             </p>
           </div>
 
@@ -579,7 +579,7 @@ export default function LogicielMargeRestaurant() {
             Pret a reprendre le controle de vos marges ?
           </h2>
           <p className="text-xl text-teal-100 max-w-2xl mx-auto mb-3">
-            Rejoignez les 500+ restaurants qui ont gagne en moyenne 5 points de marge brute en 6 mois avec RestauMargin.
+            Rejoignez les des restaurants qui ont gagne en moyenne 5 points de marge brute en 6 mois avec RestauMargin.
           </p>
           <p className="text-teal-50 mb-10">
             Essai gratuit 7 jours - Sans carte bancaire - Sans engagement

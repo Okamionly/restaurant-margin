@@ -63,9 +63,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Node 24 et non 20 : ce job est le seul a installer le package-lock.json
+      # de la RACINE, et ce lock est genere en developpement avec Node 24 / npm 11.
+      # npm 10 (Node 20) resolvait `@emnapi/core@1.11.3` la ou npm 11 ecrit 1.10.0
+      # dans le lock — ces paquets WASM viennent de @rolldown/binding-wasm32-wasi,
+      # tire par vitest 4. `npm ci` refusait donc de s'installer, et la suite de
+      # tests unitaires avec son seuil de couverture de 70 % ne tournait plus DU
+      # TOUT depuis des mois, sans que personne ne le voie : le CI etait rouge en
+      # permanence, donc plus personne ne le lisait.
+      # Regenerer le lock ne suffisait pas : il faut que le CI et l'environnement
+      # qui produit le lock parlent la meme version de npm.
+      # Vercel n'utilise pas ce lock (build:vercel installe cote client/ et
+      # server/), ce changement ne touche donc pas la production.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install dependencies

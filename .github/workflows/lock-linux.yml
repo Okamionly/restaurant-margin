@@ -56,11 +56,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add package-lock.json
-          git commit -m "chore(deps): regenerer package-lock.json sous Linux
-
-Produit par .github/workflows/lock-linux.yml sur ubuntu-latest avec Node 24,
-c'est-a-dire l'environnement exact ou tourne le job Unit Tests. Un lock genere
-sous Windows n'enregistre pas les variantes Linux des dependances optionnelles,
-ce qui faisait echouer npm ci et empechait toute la suite de tests de tourner."
+          git commit \
+            -m "chore(deps): regenerer package-lock.json sous Linux" \
+            -m "Produit par .github/workflows/lock-linux.yml sur ubuntu-latest avec Node 24, c'est-a-dire l'environnement exact ou tourne le job Unit Tests." \
+            -m "Un lock genere sous Windows n'enregistre pas les variantes Linux des dependances optionnelles, ce qui faisait echouer npm ci et empechait toute la suite de tests de tourner."
           git push
-          echo "✓ Lock regenere et pousse."
+          echo "Lock regenere et pousse."

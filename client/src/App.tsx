@@ -815,7 +815,14 @@ function AppLayout() {
       </nav>
 
       {/* Bottom section */}
-      <div className="border-t border-mono-900/60 dark:border-white/5 px-3 py-3 space-y-1">
+      {/* FIX 2026-09-24 : cette section (4 liens + mode sombre + install + statut +
+          profil, ~350 px) n'avait pas flex-shrink-0. En flexbox, flex-shrink vaut 1
+          par defaut : quand la hauteur manquait — le cas sur mobile — elle etait
+          compressee alors que ses enfants ont des hauteurs fixes, donc son contenu
+          debordait SANS pouvoir defiler, coupe en haut comme en bas.
+          flex-shrink-0 la rend incompressible : c'est le <nav> au-dessus, deja en
+          flex-1 overflow-y-auto, qui absorbe le manque de place. */}
+      <div className="flex-shrink-0 border-t border-mono-900/60 dark:border-white/5 px-3 py-3 space-y-1">
         {/* Bottom nav items */}
         {bottomNavItems.map((item) => renderNavItem(item, collapsed))}
 
@@ -888,7 +895,7 @@ function AppLayout() {
         Aller au contenu principal
       </a>
       {/* Sidebar — always full width with labels (desktop + tablet) */}
-      <aside className="hidden md:flex flex-col fixed inset-y-0 left-0 w-64 sidebar-glass z-30 no-print" style={{ top: '2px' }}>
+      <aside className="hidden md:flex flex-col fixed top-0 left-0 w-64 sidebar-glass z-30 no-print" style={{ top: '2px', height: 'calc(100dvh - 2px)' }}>
         {sidebarContent(false)}
       </aside>
 
@@ -901,7 +908,12 @@ function AppLayout() {
             onClick={() => setMobileMenuOpen(false)}
           />
           {/* Sidebar panel */}
-          <aside className="md:hidden fixed inset-y-0 left-0 w-72 sidebar-glass z-50 no-print animate-slide-in" style={{ top: '2px' }}>
+              {/* FIX 2026-09-24 : inset-y-0 (top:0 + bottom:0) se resout en 100vh, qui sur
+              mobile inclut la zone masquee par la barre d'adresse du navigateur — le bas
+              du panneau (statut, profil, deconnexion) tombait donc hors de l'ecran.
+              100dvh suit la hauteur REELLEMENT visible et se reajuste quand la barre
+              se retracte. */}
+          <aside className="md:hidden fixed top-0 left-0 w-72 sidebar-glass z-50 no-print animate-slide-in" style={{ top: '2px', height: 'calc(100dvh - 2px)' }}>
             <button
               onClick={() => setMobileMenuOpen(false)}
               aria-label="Fermer le menu"
@@ -917,7 +929,12 @@ function AppLayout() {
       {/* Main content area */}
       <div className="flex-1 min-w-0 flex flex-col min-h-screen md:ml-64 ml-0" style={{ paddingTop: '2px' }}>
         {/* Mobile top bar */}
-        <header className="md:hidden bg-white/90 dark:bg-mono-50/90 backdrop-blur-lg border-b border-mono-900 dark:border-mono-200 px-4 py-3 flex items-center justify-between no-print">
+        {/* FIX 2026-09-24 : le header etait dans le flux normal, donc il defilait avec
+            la page. Sur mobile, le bouton d'ouverture du menu disparaissait des qu'on
+            descendait : il fallait remonter en haut de page pour naviguer. sticky top-0
+            le garde accessible en permanence. z-30 le place sous le panneau (z-50) et
+            son fond (z-40), pour qu'il ne passe pas par-dessus le menu ouvert. */}
+        <header className="md:hidden sticky top-0 z-30 bg-white/90 dark:bg-mono-50/90 backdrop-blur-lg border-b border-mono-900 dark:border-mono-200 px-4 py-3 flex items-center justify-between no-print">
           <button
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Ouvrir le menu"

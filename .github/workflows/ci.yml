@@ -81,21 +81,21 @@ jobs:
           cache: npm
 
       # `npm install` et non `npm ci`, a contrecoeur et pour une raison mesuree.
-      # `npm ci` exige un lock strictement en phase. Or package-lock.json est
-      # genere en developpement sous WINDOWS, et npm n'y ecrit pas les variantes
-      # LINUX des dependances optionnelles : @emnapi/core@1.11.3 et
-      # @emnapi/runtime@1.11.3 (paquets WASM tires par vitest 4 via rolldown)
-      # manquent a l'appel des que le runner est Linux. Verifie deux fois : ni la
-      # regeneration du lock, ni l'alignement sur Node 24 n'y changent quoi que ce
-      # soit — il faudrait produire le lock SOUS Linux.
-      # Arbitrage : `npm ci` garantissait la reproductibilite mais ne s'installait
-      # jamais, donc la suite de tests et son seuil de couverture de 70 % ne
-      # tournaient PLUS DU TOUT depuis des mois. Des tests qui s'executent avec une
-      # resolution un peu plus souple valent mieux que des tests qui ne
-      # s'executent jamais. A repasser en `npm ci` le jour ou le lock sera
-      # regenere sous Linux (WSL, conteneur, ou une etape CI dediee).
+      # `npm ci` retabli le 2026-09-24. Il avait du ceder la place a `npm install`
+      # parce que package-lock.json, genere en developpement sous WINDOWS,
+      # n'enregistre pas les variantes LINUX des dependances optionnelles
+      # (@emnapi/core, @emnapi/runtime — paquets WASM tires par vitest 4 via
+      # rolldown) : npm ci les reclamait, echouait, et la suite de tests avec son
+      # seuil de couverture de 70 % ne tournait donc plus du tout depuis des mois,
+      # sans que personne ne le voie, le CI etant rouge en permanence.
+      # Ni la regeneration du lock sous Windows ni l'alignement sur Node 24 n'y
+      # changeaient quoi que ce soit : il fallait produire le lock SOUS Linux.
+      # C'est ce que fait desormais .github/workflows/lock-linux.yml, dans cet
+      # environnement exact — npm ci l'accepte, et l'installation redevient
+      # reproductible. Relancer ce workflow apres toute modification des
+      # dependances de la racine.
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci
 
       - name: Run Vitest with coverage gate (≥70%)
         run: npm run test:coverage

@@ -469,7 +469,9 @@ export default function Pricing() {
       <section className="pt-20 pb-12 px-4 sm:px-6 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-mono-950 rounded-full mb-6">
           <BadgePercent className="w-4 h-4 text-black" />
-          <span className="text-xs font-semibold text-black">150+ restaurants — essai 7j sans carte bancaire</span>
+          {/* FIX 2026-09-24 : disait "150+ restaurants". Faux — une vingtaine de
+              comptes, aucun abonne payant. On garde l'argument qui, lui, est vrai. */}
+          <span className="text-xs font-semibold text-black">Essai 7 jours — sans carte bancaire</span>
         </div>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-black">
           Tarifs simples,{' '}
@@ -712,24 +714,28 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* Social Proof Bar */}
+      {/* Ce que l'offre contient — verifiable, par opposition a de la preuve sociale.
+          FIX 2026-09-24 : ce bloc annoncait "150+ Restaurants actifs", "4.8/5" avec
+          quatre etoiles pleines, et "-5pts de food cost moyen". Aucun de ces trois
+          chiffres n'existe : la base compte une vingtaine de comptes, aucun abonne
+          payant, et aucune note client n'a jamais ete collectee. Un avis ou une
+          statistique client fabriques relevent de la pratique commerciale trompeuse
+          (Code de la consommation, art. L121-2 et suivants), et le premier prospect
+          qui verifie perd confiance pour de bon.
+          Remplace par ce qui est vrai AUJOURD'HUI et qui se verifie en un clic. */}
       <section className="border-y border-mono-900 bg-mono-1000 py-12 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
-            <p className="text-3xl font-extrabold text-black">150+</p>
-            <p className="text-sm text-[#6B7280] mt-1">Restaurants actifs</p>
+            <p className="text-3xl font-extrabold text-black">7 jours</p>
+            <p className="text-sm text-[#6B7280] mt-1">Essai gratuit, sans carte</p>
           </div>
           <div>
-            <p className="text-3xl font-extrabold text-black">4.8/5</p>
-            <div className="flex items-center justify-center gap-0.5 mt-1">
-              {[1,2,3,4,5].map(i => (
-                <Star key={i} className={`w-3.5 h-3.5 ${i <= 4 ? 'fill-black text-black' : 'fill-black/40 text-black/40'}`} />
-              ))}
-            </div>
+            <p className="text-3xl font-extrabold text-black">Sans</p>
+            <p className="text-sm text-[#6B7280] mt-1">engagement ni frais cache</p>
           </div>
           <div>
-            <p className="text-3xl font-extrabold text-black">-5pts</p>
-            <p className="text-sm text-[#6B7280] mt-1">Food cost moyen</p>
+            <p className="text-3xl font-extrabold text-black">Illimite</p>
+            <p className="text-sm text-[#6B7280] mt-1">Fiches techniques et recettes</p>
           </div>
           <div>
             <p className="text-3xl font-extrabold text-black">2 min</p>

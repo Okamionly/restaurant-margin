@@ -132,7 +132,11 @@ const tools: ToolData[] = [
     multiResto: 'oui',
     mobile: 'oui',
     supportFr: 'oui',
-    note: '4.8/5',
+    // FIX 2026-09-24 : affichait '4.8/5', soit la MEILLEURE note du tableau,
+    // alors qu'aucun avis client n'a jamais ete collecte. S'auto-attribuer une
+    // note dans un comparatif ou les concurrents portent leurs notes reelles
+    // est une pratique commerciale trompeuse.
+    note: 'Trop recent',
   },
   {
     name: 'Lightspeed',

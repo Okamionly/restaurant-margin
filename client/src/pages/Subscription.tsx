@@ -159,32 +159,14 @@ const FAQ_ITEMS: FAQItem[] = [
   },
 ];
 
-const TESTIMONIALS: Testimonial[] = [
-  {
-    name: 'Sophie Martin',
-    restaurant: 'Le Petit Bistrot',
-    city: 'Lyon',
-    quote: 'En 3 mois, on a reduit notre food cost de 34% a 28%. RestauMargin a change notre maniere de gerer les achats. Le scanner de factures nous fait gagner 2h par semaine.',
-    rating: 5,
-    initials: 'SM',
-  },
-  {
-    name: 'Karim Benali',
-    restaurant: 'Dar Essalam',
-    city: 'Paris',
-    quote: 'Avec 3 restaurants, le plan Business est indispensable. Les rapports IA hebdomadaires me montrent exactement ou je perds de l\'argent. ROI en moins d\'un mois.',
-    rating: 5,
-    initials: 'KB',
-  },
-  {
-    name: 'Marie Dupont',
-    restaurant: 'La Table de Marie',
-    city: 'Bordeaux',
-    quote: 'L\'IA m\'a suggere des recettes alternatives qui ont reduit mes couts de 18% sans changer le gout. Mes clients ne voient pas la difference, mon comptable si.',
-    rating: 5,
-    initials: 'MD',
-  },
-];
+// FIX 2026-09-24 : ce tableau contenait des temoignages nominatifs ENTIEREMENT
+// INVENTES (nom, etablissement, ville, citation et resultats chiffres), alors que
+// la base compte une vingtaine de comptes et aucun abonne payant. Publier de faux
+// avis de consommateurs est une pratique commerciale trompeuse (Code de la
+// consommation, art. L121-2 et suivants) — et un prospect qui cherche un de ces
+// etablissements et ne le trouve pas est perdu definitivement.
+// Vide, pas supprime : y remettre de VRAIS temoignages autorises rallume la section.
+const TESTIMONIALS: Testimonial[] = [];
 
 // Simulated usage data (would come from API in production)
 const USAGE_STATS: UsageStat[] = [

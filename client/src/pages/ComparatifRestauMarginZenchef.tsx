@@ -68,7 +68,14 @@ const faqItems = [
   },
   {
     question: "Avis Trustpilot des deux outils ?",
-    answer: "Zenchef est globalement bien note sur Trustpilot et Capterra : interface intuitive, support reactif, valeur pour les restaurants gastronomiques. Critiques recurrentes : prix eleve et complexite des fonctions marketing avancees. RestauMargin (plus recent) affiche une note moyenne de 4.8/5 sur 47 avis : rapport qualite-prix imbattable, IA pertinente, mobile et OCR appreciable. Critique recurrente : absence de module reservation native. Les deux outils ont des bases de fans loyales, pour des raisons differentes.",
+    // FIX 2026-09-24 : cette reponse attribuait a RestauMargin "une note moyenne
+    // de 4.8/5 sur 47 avis". Ces 47 avis n'existent pas : aucun avis client n'a
+    // jamais ete collecte. Inventer des avis de consommateurs est une pratique
+    // commerciale trompeuse (Code de la consommation, art. L121-2 et suivants),
+    // et c'est d'autant plus expose ici que la page compare nommement un
+    // concurrent. On dit ce qui est vrai : le produit est jeune et sans historique
+    // d'avis — ce qui reste un argument utilisable, a condition d'etre assume.
+    answer: "Zenchef est globalement bien note sur Trustpilot et Capterra : interface intuitive, support reactif, valeur pour les restaurants gastronomiques. Critiques recurrentes : prix eleve et complexite des fonctions marketing avancees. RestauMargin est un outil recent : il n'a pas encore d'historique d'avis publies, et nous preferons le dire plutot que d'afficher une note. Ce qui est verifiable des aujourd'hui : un tarif unique a 29 EUR, un essai de 7 jours sans carte bancaire, et un perimetre centre sur le food cost et les marges — pas de module de reservation native, contrairement a Zenchef.",
   },
   {
     question: "Mobile et iPad : qui est mieux ?",

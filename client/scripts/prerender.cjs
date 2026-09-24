@@ -35,11 +35,6 @@ const ROUTES = [
     description: "Découvrez RestauMargin, la plateforme SaaS française de gestion de marge pour restaurateurs. Basée à Montpellier, notre mission est d'aider les chefs à maîtriser leur food cost et leurs marges.",
   },
   {
-    path: '/temoignages',
-    title: 'Témoignages clients RestauMargin : avis de restaurateurs (2026)',
-    description: "Avis et retours de restaurateurs qui ont gagné en marge avec RestauMargin : food cost maîtrisé, fiches techniques, mercuriale et menu engineering. Résultats chiffrés par établissement.",
-  },
-  {
     path: '/launch',
     title: 'RestauMargin : le logiciel de marge restaurant tout-en-un (lancement 2026)',
     description: "Calculez vos marges, votre food cost et vos fiches techniques en quelques minutes. IA cuisine, OCR factures, mercuriale et menu engineering. Essai gratuit 7 jours, 29 EUR/mois ensuite.",

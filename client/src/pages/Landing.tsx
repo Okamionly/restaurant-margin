@@ -1191,11 +1191,27 @@ function TestimonialsSection() {
     return () => ctx.revert();
   }, []);
 
-  const testimonials = [
-    { stars: 5, quote: '+4 points de marge en 3 mois. Les fiches techniques automatiques nous ont tout changé. Avant on calculait à la main sur des Post-it, maintenant tout est précis au centime près.', initials: 'LD', name: 'Laurent Dubois', role: 'Chef propriétaire', restaurant: 'Le Jardin des Saveurs, Lyon' },
-    { stars: 5, quote: "On a réduit notre food cost de 34 % à 27 % en 2 mois. L'IA qui crée les fiches techniques en 10 secondes, c'est un vrai gain de temps. Mon équipe ne peut plus s'en passer.", initials: 'SM', name: 'Sophie Martin', role: 'Directrice', restaurant: 'Brasserie Le Comptoir, Paris' },
-    { stars: 5, quote: "Chaque centime compte en food truck. Les alertes sur les prix fournisseurs m'ont fait économiser 800 € le premier mois. L'app est simple, rapide, parfaite pour le terrain.", initials: 'KB', name: 'Karim Benali', role: 'Gérant', restaurant: 'Street Flavors, Bordeaux' },
-  ];
+  // FIX 2026-09-24 : ce tableau contenait TROIS temoignages entierement inventes
+  // — Laurent Dubois (Le Jardin des Saveurs, Lyon), Sophie Martin (Brasserie Le
+  // Comptoir, Paris), Karim Benali (Street Flavors, Bordeaux) — note cinq etoiles
+  // et resultats chiffres a l'appui ("+4 points de marge", "de 34 % a 27 %",
+  // "800 € economises"). Aucun de ces clients n'existe : la base compte une
+  // vingtaine de comptes et aucun abonne payant.
+  // Publier de faux avis de consommateurs est une pratique commerciale trompeuse
+  // (Code de la consommation, art. L121-2 et suivants). Et sur le fond : un
+  // prospect qui cherche "Le Jardin des Saveurs Lyon" et ne trouve rien est perdu
+  // definitivement — la fausse preuve sociale coute plus cher que son absence.
+  //
+  // Le tableau est VIDE, pas supprime : y remettre de vrais temoignages, obtenus
+  // et autorises par leurs auteurs, suffit a rallumer la section.
+  const testimonials: Array<{
+    stars: number; quote: string; initials: string;
+    name: string; role: string; restaurant: string;
+  }> = [];
+
+  // Sans temoignage reel, on n'affiche pas une section vide : on n'affiche rien.
+  if (testimonials.length === 0) return null;
+
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">

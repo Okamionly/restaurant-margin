@@ -827,8 +827,8 @@ export default function Demo() {
             </div>
             <div className="mt-6 flex items-center justify-center gap-6 text-xs text-white/40">
               <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Sans engagement</span>
-              <span className="flex items-center gap-1"><UtensilsCrossed className="w-3 h-3" /> 150+ restaurants</span>
-              <span className="flex items-center gap-1"><TrendingUp className="w-3 h-3" /> -5 pts food cost</span>
+              <span className="flex items-center gap-1"><UtensilsCrossed className="w-3 h-3" /> Essai 7 jours</span>
+              <span className="flex items-center gap-1"><TrendingUp className="w-3 h-3" /> Sans carte bancaire</span>
             </div>
           </div>
         </section>

@@ -90,29 +90,14 @@ const faqItems = [
   },
 ];
 
-const testimonials = [
-  {
-    name: 'Julien Mercier',
-    role: 'Fondateur Food Truck',
-    company: 'Burger Brothers, Lyon',
-    text: "Avant RestauMargin, je tournais a 18 % de marge nette en pensant en faire 25. Le logiciel m'a montre que mon emplacement du jeudi soir etait deficitaire : 80 EUR de location + 60 EUR de carburant pour 280 EUR de CA. J'ai bascule sur la zone Confluence, je suis a 28 % de marge nette aujourd'hui.",
-    rating: 5,
-  },
-  {
-    name: 'Camille Dufour',
-    role: 'Cheffe-proprietaire',
-    company: 'La Roulotte Bio, Bordeaux',
-    text: "Le mode hors-ligne dans le camion change tout. Plus de Wi-Fi qui rame en plein service. Je rentre mes ventes en temps reel, le food cost s'ajuste, et le soir au laboratoire tout est consolide. Gain de 4h/semaine sur la compta.",
-    rating: 5,
-  },
-  {
-    name: 'Karim Benali',
-    role: 'Gerant 2 trucks',
-    company: 'Couscous Express, Marseille',
-    text: "Le multi-truck consolide tout. Je vois en un coup d'oeil quel truck gagne le plus, quel emplacement plombe, quel plat ne se vend pas. Resultat : j'ai retire 3 plats de la carte, gagne 5 points de marge brute en 4 mois.",
-    rating: 5,
-  },
-];
+// FIX 2026-09-24 : ce tableau contenait des temoignages nominatifs ENTIEREMENT
+// INVENTES (nom, etablissement, ville, citation et resultats chiffres), alors que
+// la base compte une vingtaine de comptes et aucun abonne payant. Publier de faux
+// avis de consommateurs est une pratique commerciale trompeuse (Code de la
+// consommation, art. L121-2 et suivants) — et un prospect qui cherche un de ces
+// etablissements et ne le trouve pas est perdu definitivement.
+// Vide, pas supprime : y remettre de VRAIS temoignages autorises rallume la section.
+const testimonials: Array<{ name: string; role: string; company: string; text: string; rating: number }> = [];
 
 const platsFoodTruck = [
   { plat: 'Burger signature 150g', cout: '3,30 EUR', pv: '11 EUR', foodCost: '30 %', marge: '7,70 EUR' },
@@ -838,6 +823,8 @@ export default function LogicielMargeFoodTruck() {
       </section>
 
       {/* ── Temoignages ── */}
+      {/* Section masquee tant qu aucun temoignage REEL n existe (cf. note sur le tableau). */}
+      {testimonials.length > 0 && (
       <section className="py-16 px-4 bg-mono-1000">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -865,6 +852,7 @@ export default function LogicielMargeFoodTruck() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ── FAQ ── */}
       <section className="py-16 px-4">

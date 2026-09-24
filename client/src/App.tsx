@@ -1306,7 +1306,18 @@ function App() {
           <Route path="/logiciel-marge-glacier" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-pink-500 animate-spin" /></div>}><LogicielMargeGlacier /></Suspense>} />
           <Route path="/alternative-zenchef" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeZenchef /></Suspense>} />
           <Route path="/alternative-laddition" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeLAddition /></Suspense>} />
-          <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-mono-100" /></div>}><Temoignages /></Suspense>} />
+          {/* Route /temoignages RETIREE le 2026-09-24 — le fichier est conserve.
+              La page publiait DOUZE temoignages nominatifs entierement inventes
+              ("Thomas Renard, Le Comptoir de Tom, Paris 11e"), avec citations,
+              gains chiffres ("+12% de marge") et une note de 4.8/5, alors
+              qu'aucun avis client n'a jamais ete collecte. Publier de faux avis de
+              consommateurs est une pratique commerciale trompeuse (Code de la
+              consommation, art. L121-2 et suivants) : ce n'est pas un exces de
+              marketing, c'est un risque juridique reel, aggrave par le fait que la
+              page etait indexee (sitemap + robots Allow + prerendu).
+              Le composant Temoignages.tsx reste dans le depot : rebrancher cette
+              route le jour ou de VRAIS temoignages, obtenus et autorises, pourront
+              y figurer. */}
           <Route path="/demo" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Demo /></Suspense>} />
           <Route path="/blog/coefficient-multiplicateur" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoefficient /></Suspense>} />
           <Route path="/blog/reduire-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFoodCost /></Suspense>} />

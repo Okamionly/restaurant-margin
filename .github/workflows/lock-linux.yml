@@ -1,0 +1,66 @@
+# ══════════════════════════════════════════════════════════════════════════
+# Regenerer package-lock.json SOUS LINUX
+#
+# POURQUOI CE FICHIER EXISTE
+# Le lock de la racine est produit en developpement sous Windows, et npm n'y
+# ecrit pas les variantes Linux des dependances optionnelles. Resultat mesure le
+# 2026-09-24 : sur un runner Linux, `npm ci` reclamait @emnapi/core@1.11.3 et
+# @emnapi/runtime@1.11.3 (paquets WASM tires par vitest 4 via rolldown) absents
+# du lock, echouait, et la suite de tests unitaires ne s'executait donc PLUS DU
+# TOUT depuis des mois — sans que personne ne le voie, le CI etant rouge en
+# permanence. Ni la regeneration du lock sous Windows ni l'alignement des
+# versions de Node n'y changeaient quoi que ce soit.
+#
+# La seule facon d'obtenir un lock que `npm ci` accepte sur Linux est de le
+# produire SUR Linux. Ce workflow le fait dans l'environnement exact du CI, ce
+# qui le rend correct par construction plutot que par approximation.
+#
+# Usage : lancer a la main (onglet Actions, ou `gh workflow run lock-linux.yml`)
+# apres toute modification des dependances de package.json a la racine.
+# ══════════════════════════════════════════════════════════════════════════
+
+name: Regenerer le lock sous Linux
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  regenerer:
+    name: npm install sous Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # MEME version que le job Unit Tests : deux versions de npm ne produisent
+      # pas le meme arbre de resolution, et c'est precisement ce decalage qui
+      # avait casse l'installation.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Regenerer le lock (sans toucher node_modules)
+        run: npm install --package-lock-only --no-audit --no-fund
+
+      - name: Verifier que npm ci l'accepte desormais
+        run: npm ci --dry-run --no-audit --no-fund
+
+      - name: Commiter si le lock a change
+        run: |
+          if git diff --quiet -- package-lock.json; then
+            echo "✓ Le lock etait deja correct pour Linux — rien a commiter."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git commit -m "chore(deps): regenerer package-lock.json sous Linux
+
+Produit par .github/workflows/lock-linux.yml sur ubuntu-latest avec Node 24,
+c'est-a-dire l'environnement exact ou tourne le job Unit Tests. Un lock genere
+sous Windows n'enregistre pas les variantes Linux des dependances optionnelles,
+ce qui faisait echouer npm ci et empechait toute la suite de tests de tourner."
+          git push
+          echo "✓ Lock regenere et pousse."

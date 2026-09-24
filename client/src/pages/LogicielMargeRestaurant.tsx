@@ -43,29 +43,14 @@ const faqItems = [
   },
 ];
 
-const testimonials = [
-  {
-    name: 'Marc Dubois',
-    role: 'Chef-proprietaire',
-    company: 'Le Bistrot du Marche, Lyon',
-    text: "Avant RestauMargin, je passais 6h par semaine sur Excel. Aujourd'hui c'est 30 minutes. J'ai recupere 3 points de food cost en 3 mois grace aux alertes automatiques sur les hausses fournisseurs.",
-    rating: 5,
-  },
-  {
-    name: 'Sophie Lambert',
-    role: 'Gerante',
-    company: 'La Pizzeria di Marco, Toulouse',
-    text: "Le scan de factures par OCR change la vie. Je photographie mes bordereaux Metro et tous les prix se mettent a jour automatiquement dans mes fiches techniques. Je n'avais jamais vu un outil aussi simple a utiliser.",
-    rating: 5,
-  },
-  {
-    name: 'Thomas Renaud',
-    role: 'Directeur',
-    company: 'Groupe Brasseries Renaud (3 etablissements)',
-    text: "Le menu engineering integre m'a permis de reorganiser ma carte sur 3 brasseries. Resultat : +8 % de ticket moyen et +5 points de marge brute en 6 mois. Investissement rentabilise des le premier mois.",
-    rating: 5,
-  },
-];
+// FIX 2026-09-24 : ce tableau contenait des temoignages nominatifs ENTIEREMENT
+// INVENTES (nom, etablissement, ville, citation et resultats chiffres), alors que
+// la base compte une vingtaine de comptes et aucun abonne payant. Publier de faux
+// avis de consommateurs est une pratique commerciale trompeuse (Code de la
+// consommation, art. L121-2 et suivants) — et un prospect qui cherche un de ces
+// etablissements et ne le trouve pas est perdu definitivement.
+// Vide, pas supprime : y remettre de VRAIS temoignages autorises rallume la section.
+const testimonials: Array<{ name: string; role: string; company: string; text: string; rating: number }> = [];
 
 export default function LogicielMargeRestaurant() {
   return (
@@ -522,6 +507,8 @@ export default function LogicielMargeRestaurant() {
       </section>
 
       {/* ── Temoignages ── */}
+      {/* Section masquee tant qu aucun temoignage REEL n existe (cf. note sur le tableau). */}
+      {testimonials.length > 0 && (
       <section className="py-16 px-4 bg-mono-1000">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -559,6 +546,7 @@ export default function LogicielMargeRestaurant() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ── FAQ ── */}
       <section className="py-16 px-4">

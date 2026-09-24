@@ -9,11 +9,11 @@ Allow: /outils/
 Allow: /menu-public
 Allow: /guide-marge/
 Allow: /a-propos
-Allow: /temoignages
 Allow: /station-produit
 Allow: /landing
 
 # Private / authenticated pages
+Disallow: /temoignages
 Disallow: /api/
 Disallow: /dashboard
 Disallow: /recipes

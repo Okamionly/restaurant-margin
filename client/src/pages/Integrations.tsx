@@ -114,23 +114,11 @@ const INTEGRATIONS: Integration[] = [
       'Collez-le dans les parametres ci-dessous',
     ],
   },
-  {
-    id: 'crisp',
-    name: 'Crisp',
-    description: 'Chat en direct et support client integre',
-    features: ['Chat en direct', 'Base de connaissances', 'Chatbot automatise', 'Historique des conversations'],
-    icon: MessageCircle,
-    iconColor: 'text-purple-600 dark:text-purple-400',
-    iconBg: 'bg-purple-100 dark:bg-purple-900/30',
-    status: 'available',
-    category: 'communication',
-    setupSteps: [
-      'Creez un compte sur crisp.chat',
-      'Ajoutez votre site web dans Crisp',
-      'Copiez l\'identifiant du site',
-      'Collez-le dans le champ de configuration',
-    ],
-  },
+  // Carte "Crisp" retiree le 2026-09-24 avec le widget. Elle etait annoncee en
+  // status 'available' avec ses etapes de configuration, alors que le chat n'est
+  // plus charge par l'application : la marche a suivre ne menait plus a rien.
+  // Le support passe desormais par l'assistant IA (visiteurs) et par
+  // contact@restaumargin.fr, boite relevee par la synchronisation d'inbox.
   {
     id: 'resend',
     name: 'Resend',

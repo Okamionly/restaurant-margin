@@ -77,13 +77,13 @@ export default function HelpButton() {
     return () => document.removeEventListener('keydown', handleKey);
   }, [open]);
 
+  // Crisp retire le 2026-09-24 (widget mort depuis le 28/04). Le repli mailto
+  // existait deja, mais pointait vers support@restaumargin.fr — une adresse
+  // utilisee 3 fois dans tout le code, contre 139 pour contact@restaumargin.fr,
+  // qui est la boite reellement relevee par la synchronisation d'inbox.
   const openCrisp = useCallback(() => {
-    // Open Crisp chat if available
-    if ((window as any).$crisp) {
-      (window as any).$crisp.push(['do', 'chat:open']);
-    } else {
-      window.open('mailto:support@restaumargin.fr', '_blank');
-    }
+    window.location.href = 'mailto:contact@restaumargin.fr?subject=' +
+      encodeURIComponent('Question depuis RestauMargin');
   }, []);
 
   const tabs = [

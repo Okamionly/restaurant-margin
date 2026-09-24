@@ -7,6 +7,20 @@ on:
     branches: [main]
 
 jobs:
+  # Le depot porte DEUX schemas Prisma qui doivent rester identiques :
+  # prisma/schema.prisma (dont derive le client des serverless api/ et api-lib/)
+  # et server/prisma/schema.prisma (que `build:vercel` regenere).
+  # Constate le 2026-09-18 : ils avaient diverge sur `signupSource` sans que rien
+  # ne casse ni n'alerte. Ce job est rapide et sans installation : il echoue vite,
+  # avant les jobs lourds.
+  schemas-prisma:
+    name: Schemas Prisma identiques
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Comparer les deux schemas
+        run: node scripts/verifier-schemas-prisma.cjs
+
   typecheck:
     name: TypeScript Check
     runs-on: ubuntu-latest

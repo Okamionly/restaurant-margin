@@ -64,7 +64,6 @@
           browser.sentry-cdn.com, qui garde son dns-prefetch ci-dessous.
     -->
     <link rel="dns-prefetch" href="https://browser.sentry-cdn.com" />
-    <link rel="dns-prefetch" href="https://client.crisp.chat" />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -287,29 +286,15 @@
       </noscript>
     </div>
     <script type="module" src="/src/main.tsx"></script>
-    <script type="text/javascript">
-      // Crisp chat — deferred until first user interaction or 8s idle to avoid
-      // blocking the main thread on landing (improves Lighthouse TBT/LCP/FCP).
-      window.$crisp=[];window.CRISP_WEBSITE_ID="36da3045-b580-428d-a8df-9697abe29963";
-      (function(){
-        var crispLoaded = false;
-        function loadCrisp() {
-          if (crispLoaded) return;
-          crispLoaded = true;
-          var d=document, s=d.createElement("script");
-          s.src="https://client.crisp.chat/l.js";
-          s.async=1;
-          d.getElementsByTagName("head")[0].appendChild(s);
-          ['mousemove','touchstart','scroll','keydown','click'].forEach(function(evt){
-            window.removeEventListener(evt, loadCrisp, {passive:true});
-          });
-        }
-        ['mousemove','touchstart','scroll','keydown','click'].forEach(function(evt){
-          window.addEventListener(evt, loadCrisp, {passive:true, once:true});
-        });
-        // Fallback: load after 8s even if user is idle
-        setTimeout(loadCrisp, 8000);
-      })();
-    </script>
+    <!--
+      Crisp retire le 2026-09-24. Motif mesure, pas esthetique :
+      le widget affichait "Actif 28/04/2026", soit cinq mois sans reponse — un
+      visiteur qui y ecrivait n'obtenait jamais de reponse. Il faisait en plus
+      doublon avec l'assistant IA maison (AssistantWidget), qui lui repond, et sa
+      bulle recouvrait le bouton "Accepter" du bandeau cookies sur mobile (375 px).
+      Les points d'entree qui l'appelaient (ErrorBoundary, HelpButton,
+      FloatingActionBubble) pointent desormais vers contact@restaumargin.fr, une
+      boite relevee par la synchronisation d'inbox.
+    -->
   </body>
 </html>

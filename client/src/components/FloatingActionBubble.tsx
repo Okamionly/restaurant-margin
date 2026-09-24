@@ -137,14 +137,21 @@ export default function FloatingActionBubble() {
               </div>
             ))}
             {/* Contact support */}
+            {/* Crisp retire le 2026-09-24 (widget mort depuis le 28/04). Ce bouton
+                n'avait AUCUN repli : sans $crisp le clic ne produisait rien, et il
+                promettait un "Chat en direct" que personne ne relevait. On annonce
+                maintenant ce qu'on tient vraiment — un email, releve. */}
             <button
-              onClick={() => { if ((window as any).$crisp) (window as any).$crisp.push(['do', 'chat:open']); }}
+              onClick={() => {
+                window.location.href = 'mailto:contact@restaumargin.fr?subject=' +
+                  encodeURIComponent('Question depuis RestauMargin');
+              }}
               className="w-full flex items-center gap-3 p-3 rounded-xl bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800/30 hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
             >
               <MessageSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               <div className="text-left">
-                <p className="text-sm font-semibold text-teal-700 dark:text-teal-300">Chat en direct</p>
-                <p className="text-[11px] text-teal-600/70 dark:text-teal-400/70">Parlez a l'equipe RestauMargin</p>
+                <p className="text-sm font-semibold text-teal-700 dark:text-teal-300">Nous ecrire</p>
+                <p className="text-[11px] text-teal-600/70 dark:text-teal-400/70">contact@restaumargin.fr — reponse sous 24 h</p>
               </div>
             </button>
           </div>

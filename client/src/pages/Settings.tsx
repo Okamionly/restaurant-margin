@@ -464,7 +464,6 @@ export default function Settings() {
   // Integration states
   const [stripeConnected, setStripeConnected] = useState(true);
   const [gaConnected, setGaConnected] = useState(false);
-  const [crispConnected, setCrispConnected] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
 
   // ------ Sync profile from user when it loads ------
@@ -1857,19 +1856,11 @@ export default function Settings() {
           showToast(gaConnected ? 'Google Analytics déconnecté' : 'Google Analytics connecté', gaConnected ? 'info' : 'success');
         },
       },
-      {
-        id: 'crisp',
-        name: 'Crisp Chat',
-        description: 'Support client en temps reel via chat',
-        icon: <Mail className="w-6 h-6" />,
-        color: 'text-blue-500',
-        bgColor: 'bg-blue-100 dark:bg-blue-900/30',
-        connected: crispConnected,
-        onToggle: () => {
-          setCrispConnected(!crispConnected);
-          showToast(crispConnected ? 'Crisp déconnecté' : 'Crisp connecté', crispConnected ? 'info' : 'success');
-        },
-      },
+      // Carte "Crisp Chat" retiree le 2026-09-24 avec le widget lui-meme.
+      // Son toggle n'avait de toute facon aucun effet reel : il ne faisait que
+      // basculer un state local et afficher un toast "Crisp connecte", sans rien
+      // connecter. Il annoncait donc un support en temps reel qui, cote visiteur,
+      // affichait "Actif 28/04/2026" et ne repondait plus.
       {
         id: 'bluetooth',
         name: 'Balance Bluetooth',

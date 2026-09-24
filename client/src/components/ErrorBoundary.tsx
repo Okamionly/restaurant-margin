@@ -28,11 +28,23 @@ export default class ErrorBoundary extends Component<Props, State> {
     }
   }
 
+  // Crisp retire le 2026-09-24 (widget mort depuis le 28/04, aucune reponse cote
+  // support). Ce handler ne testait QUE la presence de $crisp, sans repli : sans
+  // Crisp il ne se passait rien du tout, le bouton de rapport de bug etait muet.
+  // Il ouvre desormais un brouillon d'email pre-rempli avec l'erreur et la page,
+  // vers une adresse reellement relevee.
   handleOpenCrisp = () => {
-    if (typeof window !== 'undefined' && (window as any).$crisp) {
-      (window as any).$crisp.push(['do', 'chat:open']);
-      (window as any).$crisp.push(['do', 'message:send', ['text', `[Bug Report] Erreur: ${this.state.error?.message || 'Unknown error'}`]]);
-    }
+    if (typeof window === 'undefined') return;
+    const message = this.state.error?.message || 'Erreur inconnue';
+    const sujet = encodeURIComponent(`[Bug] ${message.slice(0, 80)}`);
+    const corps = encodeURIComponent(
+      `Bonjour,\n\nUne erreur s'est produite dans l'application.\n\n` +
+      `Erreur : ${message}\n` +
+      `Page : ${window.location.href}\n` +
+      `Date : ${new Date().toLocaleString('fr-FR')}\n\n` +
+      `Ce que je faisais au moment du probleme :\n`
+    );
+    window.location.href = `mailto:contact@restaumargin.fr?subject=${sujet}&body=${corps}`;
   };
 
   render() {

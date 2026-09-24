@@ -30,11 +30,26 @@ function createPrismaClient(): PrismaClient {
   });
 
   // Log queries slower than 200ms — helps identify Prisma/Supabase bottlenecks.
-  client.$on('query', (e: Prisma.QueryEvent) => {
-    if (e.duration >= 200) {
-      console.warn(`SLOW_QUERY ${e.duration}ms | ${e.query.slice(0, 120)}`);
-    }
-  });
+  //
+  // FIX 2026-09-24 : cet appel etait inconditionnel et faisait tomber 24 tests
+  // sur 93. Les suites unitaires remplacent @prisma/client par une classe
+  // PrismaClient factice qui n'expose que les modeles dont elles ont besoin, sans
+  // `$on` — or ce module instancie le client des l'import, donc tout test
+  // important middleware.ts explosait sur "client.$on is not a function".
+  // Le defaut vivait depuis des mois sans etre vu, parce que `npm ci` echouait en
+  // amont dans le CI : les tests ne s'executaient tout simplement plus.
+  //
+  // On garde la sonde optionnelle plutot que de rustiner chaque mock : un
+  // journal de requetes lentes est un confort d'observabilite, il n'a aucune
+  // raison d'empecher le client de se construire. Ainsi un mock, ou un futur
+  // changement d'API Prisma, degrade l'observabilite sans casser l'application.
+  if (typeof (client as any).$on === 'function') {
+    client.$on('query', (e: Prisma.QueryEvent) => {
+      if (e.duration >= 200) {
+        console.warn(`SLOW_QUERY ${e.duration}ms | ${e.query.slice(0, 120)}`);
+      }
+    });
+  }
 
   return client;
 }

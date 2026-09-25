@@ -173,14 +173,19 @@ export default function Login() {
         if (referralCode) {
           try {
             const token = localStorage.getItem('token');
-            await fetch('/api/referrals/apply', {
+            // FIX 2026-09-25 : l'appel visait /api/referrals/apply, qui n'existe pas (404
+            // avale par fetch) : aucun parrainage n'a jamais ete enregistre.
+            const res = await fetch('/api/referrals/track', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-              body: JSON.stringify({ referralCode }),
+              body: JSON.stringify({ code: referralCode }),
             });
+            if (!res.ok) {
+              const body = await res.json().catch(() => ({}));
+              showToast(body.error || "Le code de parrainage n'a pas pu être appliqué", 'info');
+            }
           } catch (err) {
-            // Referral system not yet available — silently ignore
-            console.warn('Referral apply failed (non-blocking):', err);
+            console.warn('Referral track failed (non-blocking):', err);
           }
         }
         showToast(t('login.welcomeTrialMessage'), 'success');

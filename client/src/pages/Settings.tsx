@@ -577,15 +577,20 @@ export default function Settings() {
   async function loadReferrals() {
     setReferralLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/referrals/my`, { headers: authHeaders() });
+      // FIX 2026-09-25 : /referrals/my n'existe pas (404 : section toujours vide). La
+      // route est /me, et ses champs ont d'autres noms (shareUrl, totalReferred...).
+      const res = await fetch(`${API_BASE}/referrals/me`, { headers: authHeaders() });
       if (res.ok) {
         const data = await res.json();
         setReferralCode(data.referralCode || '');
-        setReferralLink(data.referralLink || '');
+        setReferralLink(data.shareUrl || '');
         setReferrals(data.referrals || []);
-        setReferralStats(data.stats || { total: 0, active: 0, freeMonths: 0 });
+        setReferralStats({
+          total: data.stats?.totalReferred ?? 0,
+          active: data.stats?.converted ?? 0,
+          freeMonths: data.stats?.rewardsEarned ?? 0,
+        });
       }
-      // 404 = referral system not available yet — show empty data
     } catch (err) {
       console.warn('Referral system unavailable (non-blocking):', err);
       setReferralCode('');

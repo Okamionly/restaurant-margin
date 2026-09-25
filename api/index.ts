@@ -15,7 +15,7 @@ import authRoutes from '../api-lib/routes/auth';
 import aiRoutes, { checkAiRateLimit, checkMonthlyQuota, enregistrerUsageIA, exigerAccesIA } from '../api-lib/routes/ai';
 import mercurialeRoutes from '../api-lib/routes/mercuriale';
 import exportRoutes from '../api-lib/routes/export';
-import referralsRoutes from '../api-lib/routes/referrals';
+import referralsRoutes, { qualifierParrainage } from '../api-lib/routes/referrals';
 import adminRoutes from '../api-lib/routes/admin';
 import npsRoutes from '../api-lib/routes/nps';
 import clientsRoutes from '../api-lib/routes/clients';
@@ -138,6 +138,8 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
           },
         });
         console.log(`[STRIPE WEBHOOK] User ${metaUserId} upgraded to ${plan}, stripeCustomer=${session.customer}`);
+        // Un filleul qui paie qualifie son parrainage (jamais appele avant le 2026-09-25).
+        await qualifierParrainage(metaUserId).catch((e: any) => console.error('[STRIPE WEBHOOK] parrainage', e?.message));
       } else if (customerEmail) {
         // Fallback: find user by email
         const user = await prisma.user.findUnique({ where: { email: customerEmail } });
@@ -152,6 +154,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
             },
           });
           console.log(`[STRIPE WEBHOOK] User ${user.id} (by email) upgraded to ${plan}`);
+          await qualifierParrainage(user.id).catch((e: any) => console.error('[STRIPE WEBHOOK] parrainage', e?.message));
         }
       }
 

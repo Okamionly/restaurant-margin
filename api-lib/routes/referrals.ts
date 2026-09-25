@@ -15,6 +15,40 @@ import { prisma, authMiddleware } from '../middleware';
 
 const router = Router();
 
+/**
+ * Passe le parrainage d'un filleul de 'pending' a 'qualified' quand il paie.
+ * Appelee par le webhook Stripe (checkout.session.completed) et par /qualify.
+ *
+ * FIX 2026-09-25 : rien ne l'appelait jamais (0 ligne dans referrals). Et l'email
+ * envoye au parrain promettait « 1 mois Pro gratuit » alors qu'aucune recompense
+ * n'est appliquee par le code (ni credit, ni coupon Stripe). En attendant une
+ * decision sur les recompenses, c'est le FONDATEUR qui est prevenu : il peut
+ * honorer la promesse a la main, et aucun email n'annonce ce qui n'existe pas.
+ */
+export async function qualifierParrainage(userId: number): Promise<{ qualified: boolean; referralId?: number; referrerId?: number | null }> {
+  const referral = await prisma.referral.findFirst({
+    where: { refereeId: userId, status: 'pending' },
+  });
+  if (!referral) return { qualified: false };
+  await prisma.referral.update({ where: { id: referral.id }, data: { status: 'qualified' } });
+  const cle = process.env.RESEND_API_KEY;
+  if (cle) {
+    try {
+      const r = await new Resend(cle).emails.send({
+        from: 'RestauMargin <contact@restaumargin.fr>',
+        to: 'mr.guessousyoussef@gmail.com',
+        subject: 'Parrainage qualifié : un filleul vient de payer',
+        html: `<p>Le compte n° ${userId} (filleul) vient de souscrire. Parrain : compte n° ${referral.referrerId ?? '?'}.</p>
+<p>Aucune récompense n'est appliquée automatiquement : à attribuer à la main si vous la maintenez.</p>`,
+      });
+      if ((r as any)?.error) console.error('[qualifierParrainage] refus Resend :', (r as any).error.message);
+    } catch (e: any) {
+      console.error('[qualifierParrainage]', e?.message);
+    }
+  }
+  return { qualified: true, referralId: referral.id, referrerId: referral.referrerId };
+}
+
 // ── Utilitaire : génère un code unique déterministe pour un user ──
 function generateCodeFromUserId(userId: number): string {
   // Hash déterministe basé sur userId + salt → code de 8 caractères alphanum
@@ -193,40 +227,9 @@ router.post('/qualify', async (req, res) => {
     const { userId } = req.body;
     if (!userId) return res.status(400).json({ error: 'userId requis' });
 
-    const referral = await prisma.referral.findFirst({
-      where: { refereeId: userId, status: 'pending' },
-    });
-
-    if (!referral) return res.json({ qualified: false, reason: 'Aucun parrainage pending' });
-
-    await prisma.referral.update({
-      where: { id: referral.id },
-      data: { status: 'qualified' },
-    });
-
-    const resendKey = process.env.RESEND_API_KEY;
-    if (resendKey && referral.referrerId) {
-      const referrer = await prisma.user.findUnique({
-        where: { id: referral.referrerId },
-        select: { email: true, name: true },
-      });
-      if (referrer?.email) {
-        const resend = new Resend(resendKey);
-        await resend.emails.send({
-          from: 'RestauMargin <contact@restaumargin.fr>',
-          to: referrer.email,
-          subject: 'Bonne nouvelle ! Votre filleul a souscrit 🎉',
-          html: `<p>Bonjour${referrer.name ? ` ${referrer.name}` : ''},</p>
-<p>Votre filleul vient de souscrire à RestauMargin. Vous gagnez <strong>1 mois Pro gratuit</strong> sur votre prochain cycle de facturation.</p>
-<p>Merci de faire confiance à RestauMargin et de nous recommander !</p>
-<p>— L'équipe RestauMargin</p>`,
-        }).catch((err: Error) => {
-          console.error('[REFERRALS/qualify] email parrain failed:', err.message);
-        });
-      }
-    }
-
-    res.json({ qualified: true, referralId: referral.id, referrerId: referral.referrerId });
+    const resultat = await qualifierParrainage(Number(userId));
+    if (!resultat.qualified) return res.json({ qualified: false, reason: 'Aucun parrainage pending' });
+    res.json(resultat);
   } catch (e: any) {
     console.error('[REFERRALS/qualify]', e.message);
     res.status(500).json({ error: 'Erreur qualification parrainage' });

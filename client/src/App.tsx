@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy, Handshake, Timer, Mail, Gift, Activity, Leaf } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy, Handshake, Timer, Mail, Gift, Activity, Leaf, Utensils } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import { isOnboardingCompleted } from './utils/onboardingFlags';
 import CookieBanner from './components/CookieBanner';
@@ -265,6 +265,7 @@ const LogicielMargeGlacier = lazyRetry(() => import('./pages/LogicielMargeGlacie
 const LogicielMargeCafeBar = lazyRetry(() => import('./pages/LogicielMargeCafeBar'));
 const GlossaireRestauration = lazyRetry(() => import('./pages/GlossaireRestauration'));
 const BlogPourquoiPasRentable = lazyRetry(() => import('./pages/BlogPourquoiPasRentable'));
+const CoutCouvert = lazyRetry(() => import('./pages/CoutCouvert'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -607,6 +608,7 @@ function AppLayout() {
         { to: '/cout-main-oeuvre', icon: Users, label: 'Coût main d\'œuvre' },
         { to: '/prime-saisonniere', icon: Gift, label: 'Prime saisonnière' },
         { to: '/roi-equipement', icon: TrendingUp, label: 'ROI Équipement' },
+        { to: '/cout-couvert', icon: Utensils, label: 'Coût par couvert' },
         // Integrations masqué pour l'instant
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
         { to: '/abonnement', icon: CreditCard, label: 'Mon abonnement' },
@@ -1150,6 +1152,7 @@ function AppLayout() {
               <Route path="/chrono-preparation" element={<ChronoPreparation />} />
               <Route path="/saisonnalite" element={<SaisonnaliteIngredients />} />
               <Route path="/roi-equipement" element={<RoiEquipement />} />
+              <Route path="/cout-couvert" element={<CoutCouvert />} />
               <Route path="/bon-cadeau" element={<BonCadeau />} />
               <Route path="/restaurants" element={<TrialPaywallGuard feature="Multi-restaurant"><Restaurants /></TrialPaywallGuard>} />
               <Route path="/pricing" element={<Pricing />} />

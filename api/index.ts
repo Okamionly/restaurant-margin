@@ -888,7 +888,7 @@ app.get('/api/cron/editorial-weekly', async (req: any, res) => {
   if (!verifyCron(req, res)) return;
   try {
     if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure' });
-    const tavilyKey = process.env.TAVILY_API_KEY || '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';
+    const tavilyKey = process.env.TAVILY_API_KEY;
 
     // Etape 1 : recherche produits/marches saisonniers
     const month = new Date().toLocaleDateString('fr-FR', { month: 'long' });
@@ -1124,7 +1124,7 @@ app.get('/api/cron/onboarding-nurture', async (req: any, res) => {
 app.get('/api/cron/lead-finder', async (req: any, res) => {
   if (!verifyCron(req, res)) return;
   try {
-    const exaKey = process.env.EXA_API_KEY || '85caf1c5-927c-4053-8dfb-9ea249872cb9';
+    const exaKey = process.env.EXA_API_KEY;
     const cities = ['Montpellier', 'Lyon', 'Marseille', 'Paris', 'Toulouse'];
     const city = cities[new Date().getDay() % cities.length]; // rotate daily
 
@@ -1158,7 +1158,7 @@ app.get('/api/cron/lead-finder', async (req: any, res) => {
 app.get('/api/cron/market-intel', async (req: any, res) => {
   if (!verifyCron(req, res)) return;
   try {
-    const tavilyKey = process.env.TAVILY_API_KEY || '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';
+    const tavilyKey = process.env.TAVILY_API_KEY;
 
     const response = await fetch('https://api.tavily.com/search', {
       method: 'POST',
@@ -1191,7 +1191,7 @@ app.get('/api/cron/daily-digest', async (req: any, res) => {
   if (!verifyCron(req, res)) return;
   try {
     if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure' });
-    const tavilyKey = process.env.TAVILY_API_KEY || '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';
+    const tavilyKey = process.env.TAVILY_API_KEY;
     const today = new Date().toISOString().slice(0, 10);
     const month = new Date().toLocaleDateString('fr-FR', { month: 'long' });
 

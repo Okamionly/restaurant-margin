@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 // ── Config ──────────────────────────────────────────────────
-const TAVILY_API_KEY = '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';
+const TAVILY_API_KEY = process.env.TAVILY_API_KEY || ''; // retire du code le 2026-09-25 (depot public)
 const TAVILY_BASE = 'https://api.tavily.com';
 
 const OUTPUT_DIR = path.resolve(__dirname, '..', '..', 'data', 'agents');

@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 // ── Config ──────────────────────────────────────────────────
-const EXA_API_KEY = '85caf1c5-927c-4053-8dfb-9ea249872cb9';
+const EXA_API_KEY = process.env.EXA_API_KEY || ''; // retire du code le 2026-09-25 (depot public)
 const EXA_BASE = 'https://api.exa.ai';
 
 const OUTPUT_DIR = path.resolve(__dirname, '..', '..', 'data', 'agents');

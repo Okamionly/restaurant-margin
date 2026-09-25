@@ -48,6 +48,21 @@ const MOTIFS = [
     pourquoi: 'revendique une adoption qui ne peut pas etre justifiee.',
   },
   {
+    nom: 'temoignage ecrit en dur',
+    // Ajoute le 2026-09-25 : 21 temoignages inventes (18 sur /guide-marge/*, 3 sur
+    // /launch) avaient ECHAPPE a cette garde. Ils ne contenaient ni chiffre
+    // d'adoption ni note ecrite : un prenom, une ville, un gain, et des etoiles
+    // DESSINEES par une boucle. On detecte donc la STRUCTURE — un texte litteral
+    // affecte a une cle de temoignage — plutot qu'un motif de texte.
+    // (`author:` seul est exclu : il sert aussi au champ schema.org d'une recette.)
+    // Apres le guillemet ouvrant : .{3,} et PAS [^'"`]{3,}. La premiere version
+    // exigeait trois caracteres sans apostrophe — elle etait donc AVEUGLE a tout
+    // temoignage commencant par « J'ai », « C'est », « L'outil »... Un sabotage l'a
+    // montre avant la mise en service.
+    regex: /^\s*(quote|testimonial|temoignage|citation)\s*:\s*['"`].{3,}/gi,
+    pourquoi: "un temoignage ne s'ecrit pas dans le code : il vient d'un client reel qui l'a autorise.",
+  },
+  {
     nom: 'note client auto-attribuee',
     regex: /\b[0-5][.,]\d\s*\/\s*5\b/g,
     pourquoi: "aucune note client n'a jamais ete collectee.",

@@ -40,7 +40,13 @@ interface NicheConfig {
   avgCoef: string;
   challenges: string[];
   stats: Array<{ label: string; value: string; color: 'teal' | 'emerald' | 'amber' | 'rose' }>;
-  testimonial: { quote: string; author: string; role: string };
+  // FIX 2026-09-25 : les 18 niches portaient chacune un temoignage INVENTE (« Marco,
+  // Pizzaiolo, Montpellier : j'ai recupere 8 % de marge en 2 mois »), affiche avec
+  // cinq etoiles. Ils avaient echappe a la garde anti-preuve-sociale : un prenom,
+  // une ville et un gain ne ressemblent a aucun chiffre d'adoption, et les etoiles
+  // etaient DESSINEES par une boucle, jamais ecrites « 5/5 ». Tous retires.
+  // Champ optionnel : a ne remplir qu'avec un temoignage reel et autorise.
+  testimonial?: { quote: string; author: string; role: string };
   faqs: Array<{ q: string; a: string }>;
 }
 
@@ -68,11 +74,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '3,8x', color: 'amber' },
       { label: 'Fiches techniques RestauMargin', value: '225+', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Avec RestauMargin j'ai identifie 3 pizzas en dessous du seuil de rentabilite. En ajustant les garnitures et le prix, j'ai recupere 8% de marge en 2 mois.",
-      author: 'Marco',
-      role: 'Pizzaiolo, Montpellier',
-    },
     faqs: [
       { q: 'Quelle est la marge moyenne d\'une pizzeria ?', a: 'La marge brute d\'une pizzeria tourne autour de 65-75%. Les pizzerias bien gerees atteignent 72-75% grace a un food cost maitrise (28-32%) et des garnitures standardisees.' },
       { q: 'Comment calculer le cout d\'une pizza ?', a: 'Cout matiere = pate (farine, eau, huile, levure, sel) + base tomate + mozzarella + garnitures. Pesez chaque composant pour une fiche technique precise. RestauMargin automatise ce calcul pour chaque pizza.' },
@@ -103,11 +104,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '4,2x', color: 'amber' },
       { label: 'Marge boissons', value: '80%+', color: 'rose' },
     ],
-    testimonial: {
-      quote: "En 3 mois j'ai gagne 4 points de marge brute en identifiant les plats du menu qui coutaient trop cher en matiere premiere. Le dashboard RestauMargin me montre ca en temps reel.",
-      author: 'Sylvie',
-      role: 'Gerante de brasserie, Lyon',
-    },
     faqs: [
       { q: 'Quelle marge moyenne pour une brasserie ?', a: 'La marge brute d\'une brasserie se situe entre 70% et 75% sur les solides, et atteint 80%+ sur les boissons. La marge globale moyenne apres charges est de 4% a 8% selon la gestion.' },
       { q: 'Comment gerer le menu du jour ?', a: 'Le menu du jour doit etre cree chaque matin avec fiche technique validee avant service. RestauMargin permet de generer la fiche en 2 minutes avec ingredients + grammages + calcul marge automatique.' },
@@ -138,11 +134,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '4x', color: 'amber' },
       { label: 'Ticket moyen', value: '18-25€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Je bossais avec Excel, je perdais 2h par semaine. Avec RestauMargin je saisis un plat en 1 minute et ma marge est calculee automatiquement.",
-      author: 'Antoine',
-      role: 'Patron de bistrot, Paris',
-    },
     faqs: [
       { q: 'Quelle marge moyenne pour un bistrot ?', a: 'La marge brute d\'un bistrot est generalement de 68-73% sur les plats et 80%+ sur les boissons. La marge nette apres charges tourne autour de 3% a 6%.' },
       { q: 'Comment gerer l\'ardoise du jour ?', a: 'RestauMargin permet de creer une fiche technique en 1 minute : ingredients + grammages + prix automatiques depuis votre base. Vous imprimez directement l\'ardoise avec prix optimal.' },
@@ -173,11 +164,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '3,2x', color: 'amber' },
       { label: 'Ticket moyen', value: '10-15€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "J'ai 4 food trucks sur Montpellier. RestauMargin me permet de voir les marges de chaque truck separement. J'ai identifie lequel sous-performait et reajuste en 1 mois.",
-      author: 'Karim',
-      role: 'Patron de 4 food trucks',
-    },
     faqs: [
       { q: 'Quelle marge moyenne pour un food truck ?', a: 'La marge brute d\'un food truck se situe entre 60% et 70%, avec un ticket moyen de 10-15€ et un food cost de 30-35%. La marge nette est souvent superieure a un restaurant classique grace aux charges reduites.' },
       { q: 'RestauMargin fonctionne hors ligne ?', a: 'Oui, le mode PWA permet de continuer a saisir ventes et gerer stocks meme sans connexion. Les donnees se syncent automatiquement quand le reseau revient.' },
@@ -208,11 +194,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '3,5x', color: 'amber' },
       { label: 'Ticket moyen', value: '80-250€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "La balance connectee RestauMargin avec les fiches techniques au mg pres, c'est un gain de temps enorme pour mon equipe. Et l'HACCP est integre, plus besoin de carnets papier.",
-      author: 'Chef Laurent',
-      role: 'Chef etoile, Occitanie',
-    },
     faqs: [
       { q: 'Quelle marge moyenne pour un restaurant gastronomique ?', a: 'La marge brute d\'un restaurant gastronomique tourne autour de 65-75%, avec un food cost plus eleve (25-35%) a cause des produits nobles. La marge nette est impactee par le cout de la brigade (plus elevee qu\'un restaurant classique).' },
       { q: 'Precision des fiches techniques ?', a: 'RestauMargin permet de travailler au milligramme. Idealement avec une balance Bluetooth connectee, vous saisissez les grammages en direct lors de la preparation.' },
@@ -243,11 +224,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient espresso', value: '12-15x', color: 'amber' },
       { label: 'Ticket moyen', value: '6-12€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "J'avais l'impression de vendre beaucoup mais la fin du mois etait serree. RestauMargin m'a montre que mes formules petit-dej avec jus de fruit frais avaient un food cost de 42%. J'ai reajuste les grammages et le prix : +6 points de marge en 3 semaines.",
-      author: 'Camille',
-      role: 'Fondatrice de coffee shop, Bordeaux',
-    },
     faqs: [
       {
         q: 'Quelle est la marge moyenne d\'un cafe ou coffee shop ?',
@@ -290,11 +266,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '3,2x', color: 'amber' },
       { label: 'Ticket moyen', value: '18-35€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Le prix du saumon m'a grignote ma marge pendant 3 mois sans que je m'en rende compte. RestauMargin m'a montre que ma California roll principale avait un food cost de 47%. J'ai recalibre le grammage saumon de 25g a 20g et ajuste le prix de vente : 11 points de marge recuperes en 6 semaines.",
-      author: 'Minh',
-      role: 'Patron de restaurant sushi, Nantes',
-    },
     faqs: [
       {
         q: 'Quelle est la marge moyenne d\'un restaurant sushi ?',
@@ -337,11 +308,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '3,5x', color: 'amber' },
       { label: 'Ticket moyen', value: '14-20€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Mes steaks haches representaient 45% du food cost global. Avec RestauMargin j'ai optimise les grammages par formule et negocie mon fournisseur viande. 9 points de marge gagnes en 6 semaines.",
-      author: 'Thomas',
-      role: 'Patron de burger restaurant, Toulouse',
-    },
     faqs: [
       {
         q: 'Quelle est la marge moyenne d\'un burger restaurant ?',
@@ -384,11 +350,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '3,2x', color: 'amber' },
       { label: 'Ticket moyen', value: '9-15€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Je ne savais pas que mes grandes assiettes perdaient de l'argent. RestauMargin m'a montre que le kebab XXL avec frites avait un food cost de 48% a cause du grammage viande non controle. J'ai standardise a 160g et ajuste le prix : 12 points de marge recuperes en 1 mois.",
-      author: 'Rachid',
-      role: 'Patron de kebab, Marseille',
-    },
     faqs: [
       {
         q: 'Quelle est la marge moyenne d\'un kebab ou fast-food ?',
@@ -431,11 +392,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '3x', color: 'amber' },
       { label: 'Ticket moyen', value: '5-14€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Je produisais 120 croissants par jour sans savoir exactement ce qu'ils me coutaient. RestauMargin m'a permis de faire la fiche technique complete — beurre de tourage, farine T45, oeufs, sel, sucre — et j'ai decouvert que mon food cost croissant etait a 44% a cause du beurre qui avait augmente. J'ai recalibre le grammage et reajuste le prix de vente. Resultat : 9 points de marge retrouves en 3 semaines.",
-      author: 'Jerome',
-      role: 'Artisan boulanger-patissier, Rennes',
-    },
     faqs: [
       {
         q: "Quelle est la marge moyenne d'une boulangerie-patisserie ?",
@@ -478,11 +434,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient cocktail', value: '6x', color: 'amber' },
       { label: 'Ticket moyen soir', value: '20-35€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Je savais que mes cocktails etaient rentables, mais je ne savais pas a quel point le gaspillage me coutait. RestauMargin m'a montre que mes bartenders surdosaient en moyenne de 15%. En standardisant les doses avec jigger et en creant les fiches techniques de chaque cocktail, j'ai recupere 11 points de marge en 5 semaines.",
-      author: 'Sebastien',
-      role: 'Patron de bar cocktails, Bordeaux',
-    },
     faqs: [
       {
         q: "Quelle est la marge moyenne d'un bar ou pub ?",
@@ -525,11 +476,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '4,2x', color: 'amber' },
       { label: 'Ticket moyen', value: '14-22€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Je pensais que mes galettes completes etaient tres rentables. RestauMargin m'a montre que le comte vieux AOP et le jambon artisanal pesaient 46% de food cost sur cette reference. En ajustant les grammages et en reequilibrant la carte avec des crepes dessert a forte marge, j'ai retrouve 11 points en 6 semaines.",
-      author: 'Nolwenn',
-      role: 'Crepiere, Quimper',
-    },
     faqs: [
       {
         q: "Quelle est la marge moyenne d'une creperie ?",
@@ -572,11 +518,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '4x', color: 'amber' },
       { label: 'Ticket moyen convive', value: '25-65€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Je faisais des devis au feeling depuis 10 ans. RestauMargin m'a montre que mon buffet cocktail dinatoire etait facture a perte : le food cost reel avec les pertes et le personnel depasse 38%. J'ai restructure mes formules et augmente les tarifs. Resultat : 13 points de marge recuperes sur chaque prestation.",
-      author: 'Patricia',
-      role: 'Traiteur independante, Aix-en-Provence',
-    },
     faqs: [
       {
         q: "Quelle est la marge moyenne d'un restaurant traiteur ?",
@@ -619,11 +560,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '3,8x', color: 'amber' },
       { label: 'Ticket moyen', value: '15-25€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Je pensais que mon bowl signature au tempeh etait mon plat phare. RestauMargin m'a montre que son food cost atteignait 46% a cause du tempeh bio artisanal et du fromage de cajou maison. En reequilibrant les grammages et en ajustant le prix de vente, j'ai recupere 14 points de marge en 4 semaines sans toucher a la qualite.",
-      author: 'Sarah',
-      role: 'Fondatrice de restaurant vegan, Lyon',
-    },
     faqs: [
       {
         q: "Quelle est la marge moyenne d'un restaurant vegan ?",
@@ -666,11 +602,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Commission plateforme', value: '27%', color: 'amber' },
       { label: 'Ticket moyen livraison', value: '18-28€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "J'avais 3 marques depuis ma dark kitchen et je ne savais pas laquelle etait rentable. RestauMargin m'a montre que ma marque bowls perdait de l'argent : le food cost reel avec les emballages non integres etait a 43%. J'ai restructure les fiches techniques et ajuste les prix plateformes. Neuf points de marge recuperes en 6 semaines.",
-      author: 'Yann',
-      role: 'Operateur dark kitchen, Nantes',
-    },
     faqs: [
       {
         q: "Quelle est la marge moyenne d'une dark kitchen ou ghost kitchen ?",
@@ -713,11 +644,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Surcout viande halal', value: '+20%', color: 'amber' },
       { label: 'Ticket moyen', value: '12-20€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Je ne savais pas que mon assiette mechoui perdait de l'argent. RestauMargin m'a montre que le food cost de l'agneau halal bio atteignait 52% sur cette reference. En reajustant la portion et le prix de vente, j'ai recupere 15 points de marge en cinq semaines.",
-      author: 'Rachid',
-      role: 'Patron de restaurant halal, Marseille',
-    },
     faqs: [
       {
         q: "Quelle est la marge moyenne d'un restaurant halal ?",
@@ -760,11 +686,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '3,6x', color: 'amber' },
       { label: 'Ticket moyen', value: '35-60€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "J'avais une carte courte de 12 plats et je pensais bien gerer. RestauMargin m'a revele que 3 plats sur 12 etaient en dessous de 62% de marge brute — dont mon plat signature. En recalibrant les grammages et en renegociant mon grossiste en viande, j'ai recupere 8 points de marge sans toucher aux prix de la carte.",
-      author: 'Charlotte',
-      role: 'Chef-patronne de bistro gastronomique, Bordeaux',
-    },
     faqs: [
       {
         q: "Quelle est la marge moyenne d'un bistro gastronomique ?",
@@ -807,11 +728,6 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Coefficient type', value: '4x', color: 'amber' },
       { label: 'Ticket moyen convive', value: '35-75€', color: 'rose' },
     ],
-    testimonial: {
-      quote: "Je signais des contrats seminaires au feeling depuis des annees. RestauMargin m'a montre que ma formule cocktail dinatoire groupe etait a 39% de food cost quand on integrait le gaspillage et les boissons ouvertes. En restructurant les formules et en fixant un ratio boissons par convive, j'ai recupere 12 points de marge sur chaque prestation.",
-      author: 'Guillaume',
-      role: 'Directeur de restaurant seminaire, Versailles',
-    },
     faqs: [
       {
         q: "Quelle est la marge moyenne d'un restaurant specialise seminaires et groupes ?",
@@ -1016,7 +932,8 @@ export default function NicheLanding() {
         </div>
       </section>
 
-      {/* Testimonial */}
+      {/* Testimonial — rendu seulement s'il existe un temoignage reel. */}
+      {config.testimonial && (
       <section className="py-16 px-4 sm:px-6 max-w-3xl mx-auto">
         <div className="bg-gradient-to-br from-mono-100 to-[#1f2937] rounded-3xl p-8 sm:p-12 text-white text-center">
           <Quote className="w-8 h-8 text-teal-400 mx-auto mb-4" />
@@ -1036,6 +953,7 @@ export default function NicheLanding() {
           </div>
         </div>
       </section>
+      )}
 
       {/* FAQ */}
       <section className="py-16 px-4 sm:px-6 max-w-3xl mx-auto">

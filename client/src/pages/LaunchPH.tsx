@@ -339,57 +339,10 @@ export default function LaunchPH() {
           </div>
         </section>
 
-        {/* TESTIMONIALS placeholder (à remplir avec vrais témoignages users) */}
-        <section className="relative py-20 px-4 sm:px-6">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-black text-[#0F172A] text-center mb-4 tracking-tight">
-              Premiers retours du terrain
-            </h2>
-            <p className="text-center text-mono-400 text-lg mb-12 max-w-2xl mx-auto">
-              Phase pilote en cours avec des restaurants indépendants français.
-            </p>
-
-            <div className="grid sm:grid-cols-3 gap-6">
-              {[
-                {
-                  quote: 'J\'ai dicté ma recette pendant la prep. 8 secondes plus tard, j\'avais le coût exact à 2 centimes près.',
-                  author: 'Karim L.',
-                  role: 'Pizzeria, Lyon',
-                },
-                {
-                  quote: 'Plus besoin de re-saisir tout mon Excel quand un fournisseur augmente. Les marges se mettent à jour seules.',
-                  author: 'Sophie M.',
-                  role: 'Bistrot, Bordeaux',
-                },
-                {
-                  quote: 'Le menu engineering Boston m\'a fait virer 3 plats qui me coûtaient. +4 points de marge en 2 mois.',
-                  author: 'Thomas R.',
-                  role: 'Brasserie, Paris',
-                },
-              ].map((t) => (
-                <figure
-                  key={t.author}
-                  className="bg-white/90 backdrop-blur border border-mono-900 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow"
-                >
-                  <svg className="w-8 h-8 text-emerald-200 mb-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                  </svg>
-                  <blockquote className="text-[#0F172A] leading-relaxed mb-4 italic">
-                    « {t.quote} »
-                  </blockquote>
-                  <figcaption className="text-sm">
-                    <div className="font-bold text-[#0F172A]">{t.author}</div>
-                    <div className="text-mono-500">{t.role}</div>
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-
-            <p className="mt-8 text-center text-xs text-mono-700">
-              Témoignages issus de la phase pilote — RestauMargin peut afficher de vrais témoignages clients dès le launch officiel.
-            </p>
-          </div>
-        </section>
+        {/* Section « Premiers retours du terrain » RETIREE le 2026-09-25 : elle affichait
+            trois temoignages inventes (Karim L., Sophie M., Thomas R.) presentes comme
+            « issus de la phase pilote », alors que le code les marquait lui-meme comme
+            un placeholder a remplir. Voir la regle anti-preuve-sociale de CLAUDE.md. */}
 
         {/* FAQ */}
         <section className="relative py-20 px-4 sm:px-6 bg-white/60 backdrop-blur">

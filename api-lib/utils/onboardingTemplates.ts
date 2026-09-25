@@ -122,7 +122,12 @@ ${footer()}
 export function buildOnboardingDay3Email(data: NurtureEmailData): string {
   const dashboardUrl = data.dashboardUrl || 'https://www.restaumargin.fr/dashboard';
   const recipesUrl = `${dashboardUrl}/recipes`;
-  const bookingUrl = 'https://www.restaumargin.fr/booking-demo';
+  // FIX 2026-09-25 : pointait vers /booking-demo, redirige vers une page Calendly qui
+  // renvoie 404 (« 404 | Calendly », verifie). Chaque nouvel inscrit cliquant sur la
+  // demo tombait sur une erreur. Sans outil de reservation, le canal reel est une
+  // reponse par email : contact@ est releve toutes les 2 h par inbox-sync et arrive
+  // dans la messagerie du site.
+  const bookingUrl = 'mailto:contact@restaumargin.fr?subject=Demande%20de%20d%C3%A9mo%20RestauMargin&body=Bonjour%2C%20je%20souhaite%20une%20d%C3%A9mo%20de%2015%20minutes.%20Mes%20disponibilit%C3%A9s%20%3A%20';
 
   const content = `
 ${header('RestauMargin', 'Ce que vos confrères font cette semaine')}
@@ -167,7 +172,7 @@ ${header('RestauMargin', 'Ce que vos confrères font cette semaine')}
     R&eacute;servez 15 minutes &mdash; je vous montre comment cr&eacute;er vos 5 premi&egrave;res fiches en visio.
   </p>
   <a href="${bookingUrl}" style="color:${TEAL};font-size:13px;text-decoration:underline;font-weight:600;">
-    R&eacute;server un cr&eacute;neau &#8594;
+    Demander un cr&eacute;neau &#8594;
   </a>
 </td></tr>
 

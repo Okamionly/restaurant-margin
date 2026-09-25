@@ -161,7 +161,7 @@
     },
     {
       "source": "/booking-demo",
-      "destination": "https://calendly.com/restaumargin/demo-15min",
+      "destination": "/demo",
       "permanent": false
     },
     {

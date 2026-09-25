@@ -71,7 +71,14 @@ jobs:
             -H "Authorization: Bearer $CRON_SECRET" \
             --max-time 120 --retry 2 --retry-delay 10 --retry-connrefused)
           echo "HTTP $code"
-          head -c 1200 "$corps"; echo
+          # Le depot est PUBLIC, donc ces journaux aussi. On n'y imprime JAMAIS le
+          # corps brut de la reponse : il contenait les adresses email des prospects
+          # importes (constat d'audit du 2026-09-25). On ne garde que les compteurs
+          # et indicateurs de premier niveau (nombres, booleens) et un message
+          # d'erreur eventuel, tronque — de quoi diagnostiquer, rien de personnel.
+          jq -c '(with_entries(select(.value|type=="number" or type=="boolean")))
+                 + (if .error then {error: (.error|tostring|gsub("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+";"[email]")|.[0:160])} else {} end)' "$corps" 2>/dev/null \
+            || echo "(reponse non JSON, $(wc -c < "$corps") octets — corps non affiche)"
           if [ "$code" != "200" ]; then
             echo "::error::$nom a echoue (HTTP $code)"
             exit 1
@@ -111,7 +118,8 @@ jobs:
         run: |
           echo "▶ Controle de sante"
           corps=$(curl -s "https://www.restaumargin.fr/api/health?deep=1" --max-time 60 --retry 2)
-          echo "$corps"
+          # Seulement l'etat des services, pas le corps complet (journaux publics).
+          echo "$corps" | jq -c '{status, services}' 2>/dev/null || echo "(reponse non JSON)"
           echo "$corps" | grep -q '"database":"ok"' || { echo "::error::base de donnees KO"; exit 1; }
           echo "$corps" | grep -q '"ai":"ok"'       || { echo "::error::service IA KO"; exit 1; }
           echo "✓ site, base et IA operationnels"

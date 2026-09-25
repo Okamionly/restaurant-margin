@@ -59,14 +59,14 @@ export default function BlogEnergieRestaurant() {
       <SEOHead
         title="Cout energie restaurant 2026 : budget, repartition et 25 actions d'economie"
         description="Guide complet du cout energie en restauration 2026 : budget moyen 3-7 % du CA, repartition cuisine 60 %, tarifs elec/gaz/eau, 25 actions concretes pour reduire la facture de 25 a 40 %, aides CEE et France 2030."
-        path="/blog/cout-energie-restaurant"
+        path="/blog/reduire-facture-energie-restaurant"
         type="article"
         schema={[
           buildFAQSchema(faqItems),
           buildBreadcrumbSchema([
             { name: 'Accueil', url: 'https://www.restaumargin.fr/' },
             { name: 'Blog', url: 'https://www.restaumargin.fr/blog' },
-            { name: 'Cout energie restaurant', url: 'https://www.restaumargin.fr/blog/cout-energie-restaurant' },
+            { name: 'Cout energie restaurant', url: 'https://www.restaumargin.fr/blog/reduire-facture-energie-restaurant' },
           ]),
           {
             '@context': 'https://schema.org',
@@ -101,7 +101,7 @@ export default function BlogEnergieRestaurant() {
             dateModified: '2026-05-26',
             wordCount: 3200,
             inLanguage: 'fr-FR',
-            mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/cout-energie-restaurant' },
+            mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/reduire-facture-energie-restaurant' },
           },
         ]}
       />

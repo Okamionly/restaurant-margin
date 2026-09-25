@@ -320,7 +320,12 @@ export function buildWelcomeEmail(data: WelcomeEmailData): string {
   // Use sending-domain URL to satisfy Resend "Ensure link URLs match sending
   // domain" check + reduce spam-filter false positives. Vercel redirects
   // /booking-demo -> calendly.com/restaumargin/demo-15min (302).
-  const calendlyUrl = 'https://www.restaumargin.fr/booking-demo';
+  // FIX 2026-09-25 : pointait vers /booking-demo, redirige vers une page Calendly qui
+  // renvoie 404 (« 404 | Calendly », verifie). Chaque nouvel inscrit cliquant sur la
+  // demo tombait sur une erreur. Sans outil de reservation, le canal reel est une
+  // reponse par email : contact@ est releve toutes les 2 h par inbox-sync et arrive
+  // dans la messagerie du site.
+  const calendlyUrl = 'mailto:contact@restaumargin.fr?subject=Demande%20de%20d%C3%A9mo%20RestauMargin&body=Bonjour%2C%20je%20souhaite%20une%20d%C3%A9mo%20de%2015%20minutes.%20Mes%20disponibilit%C3%A9s%20%3A%20';
   const loomVideoUrl = 'https://www.restaumargin.fr/dashboard';
   const loomThumbnailUrl = 'https://www.restaumargin.fr/og-image.png';
 
@@ -386,7 +391,7 @@ ${header('RestauMargin', 'Bienvenue !')}
     </p>
     <div style="text-align:center;">
       <a href="${calendlyUrl}" style="display:inline-block;background:${TEAL};color:white;padding:11px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
-        R&eacute;server ma d&eacute;mo gratuite &#8594;
+        Demander ma d&eacute;mo gratuite &#8594;
       </a>
     </div>
   </div>

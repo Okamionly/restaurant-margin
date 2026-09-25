@@ -194,6 +194,12 @@ const ROUTES = [
     description: "Articles et guides pratiques pour restaurateurs : calcul de marge, food cost, HACCP, fiches techniques, IA en restauration. Conseils d'experts pour optimiser votre restaurant.",
   },
   {
+    path: '/blog/prix-vente-menu-restaurant-methode',
+    title: "Calcul du prix de vente d'un menu restaurant : la methode rentable",
+    description: "Comment calculer le prix d'une formule entree-plat-dessert avec le food cost pondere, la regle des trois contraintes et la psychologie du prix fixe. Methode pratique avec exemples chiffres.",
+    type: 'article',
+  },
+  {
     path: '/blog/calcul-marge-restaurant',
     title: 'Marge restaurant 2026 : calcul, formule, food cost (guide complet)',
     description: 'Marge restaurant : tout savoir en 2026. Calcul, formule, food cost, coefficient multiplicateur, marge brute et nette. Methode pas a pas, exemples chiffres, benchmarks par type de restaurant et outils gratuits.',

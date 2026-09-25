@@ -47,6 +47,14 @@ const posts: BlogPost[] = [
     date: '2026-05-26',
   },
   {
+    slug: 'prix-vente-menu-restaurant-methode',
+    title: "Calcul du prix de vente d'un menu restaurant : la methode rentable",
+    excerpt: "Comment calculer le prix d'une formule entree-plat-dessert avec le food cost pondere, la regle des trois contraintes et la psychologie du prix fixe. Methode pratique avec exemples chiffres.",
+    category: 'Marges',
+    readTime: '12 min',
+    date: '2026-09-25',
+  },
+  {
     slug: 'calcul-marge-restaurant',
     title: 'Comment calculer la marge de votre restaurant en 2026',
     excerpt: 'Guide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.',

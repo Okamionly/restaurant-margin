@@ -56,7 +56,8 @@ export default function BlogPrixVenteMenu() {
       <SEOHead
         title="Calcul du prix de vente d'un menu restaurant : la méthode rentable | RestauMargin"
         description="Comment calculer le prix d'une formule entrée-plat-dessert avec le food cost pondéré, la règle des trois contraintes et la psychologie du prix fixe. Méthode pratique avec exemples chiffrés."
-        canonical="https://www.restaumargin.fr/blog/prix-vente-menu-restaurant-methode"
+        path="/blog/prix-vente-menu-restaurant-methode"
+        type="article"
       />
 
       <script

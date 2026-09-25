@@ -72,10 +72,13 @@ vi.mock('@prisma/client', () => {
   return { PrismaClient, Prisma: {} };
 });
 
-// Mock Resend (just in case env leaks)
+// Mock Resend (just in case env leaks). Les envois sont memorises pour que le
+// test de notification du fondateur puisse les lire ; la reponse imite le vrai
+// SDK, qui renvoie { data, error } et ne leve jamais.
+const envois = vi.hoisted(() => [] as any[]);
 vi.mock('resend', () => {
   class Resend {
-    emails = { send: vi.fn(async () => ({ id: 'mock' })) };
+    emails = { send: vi.fn(async (p: any) => { envois.push(p); return { data: { id: 'mock' }, error: null }; }) };
     constructor(_apiKey?: string) {}
   }
   return { Resend };
@@ -178,6 +181,37 @@ describe('POST /api/auth/register', () => {
     expect(res.status).toHaveBeenCalledWith(403);
     expect(res.json).toHaveBeenCalledWith({ error: 'Ce code a déjà été utilisé' });
     expect(mockPrismaState.createdUser).toBeNull();
+  });
+
+  // Ajoute le 2026-09-25 : ce signal passait par une routine cloud dont la cle
+  // Resend etait revoquee depuis juillet — plus aucune inscription n'etait
+  // signalee, sans que rien ne rougisse. Il vit desormais dans le serveur.
+  it("previent le fondateur a chaque inscription, avec les champs saisis echappes", async () => {
+    process.env['RESEND_API_KEY'] = 're_test_factice';
+    envois.length = 0;
+    try {
+      const req = makeReq({
+        email: 'nouveau@bistro.fr',
+        password: 'StrongPass1',
+        name: 'Nouveau',
+        restaurantName: 'Chez <b>Nous</b>',
+        acceptedCgu: true,
+      });
+      const res = makeRes();
+      await callRegister(req, res);
+      expect(res.status).toHaveBeenCalledWith(201);
+      const auFondateur = envois.filter((e) => e.to === 'mr.guessousyoussef@gmail.com');
+      expect(auFondateur).toHaveLength(1);
+      expect(auFondateur[0].subject).toContain('Nouvelle inscription');
+      expect(auFondateur[0].html).toContain('nouveau@bistro.fr');
+      // Le nom du restaurant est saisi par l'inscrit : il doit arriver echappe.
+      expect(auFondateur[0].html).toContain('Chez &lt;b&gt;Nous&lt;/b&gt;');
+      expect(auFondateur[0].html).not.toContain('<b>Nous</b>');
+      // L'email de bienvenue part toujours, a l'inscrit.
+      expect(envois.some((e) => e.to === 'nouveau@bistro.fr')).toBe(true);
+    } finally {
+      delete process.env['RESEND_API_KEY'];
+    }
   });
 
   it('returns 409 on duplicate email', async () => {

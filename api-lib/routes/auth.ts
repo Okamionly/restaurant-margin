@@ -16,6 +16,7 @@ import {
 } from '../middleware';
 import { revokeJti } from '../jti-blocklist';
 import { buildWelcomeEmail, buildVerifyEmail, buildResetPasswordEmail } from '../utils/emailTemplates';
+import { notifierInscription } from '../utils/notifierFondateur';
 import {
   loginRequestSchema,
   registerRequestSchema,
@@ -156,6 +157,13 @@ router.post('/register', validateRequest(registerRequestSchema), async (req: any
       data: { name: restaurantName?.trim() || 'Mon Restaurant', ownerId: user.id, members: { create: { userId: user.id, role: 'owner' } } },
     });
 
+    // Notification au fondateur, lancee en parallele de l'email de bienvenue
+    // (ne leve jamais ; attendue plus bas pour que Vercel ne coupe pas l'envoi).
+    const notificationFondateur = notifierInscription({
+      userId: user.id, email: user.email, nom: user.name, restaurant: restaurant.name,
+      methode: 'email', plan, finEssai: trialEndsAt, provenance: safeSignupSource,
+    });
+
     // Send welcome onboarding email (non-blocking)
     try {
       const resendApiKey = process.env.RESEND_API_KEY;
@@ -171,6 +179,7 @@ router.post('/register', validateRequest(registerRequestSchema), async (req: any
     } catch (emailErr) {
       console.error('Failed to send welcome email:', emailErr);
     }
+    await notificationFondateur;
 
     const { token } = signAuthToken({ userId: user.id, email: user.email, role: user.role });
     setAuthCookie(res, token);
@@ -730,6 +739,11 @@ router.get('/google/callback', async (req, res) => {
       },
     });
 
+    const notificationFondateur = notifierInscription({
+      userId: user.id, email: user.email, nom: user.name, restaurant: 'Mon Restaurant',
+      methode: 'google', plan: user.plan, finEssai: user.trialEndsAt, provenance: oauthSignupSource,
+    });
+
     // Send welcome email (non-blocking)
     try {
       const resendApiKey = process.env.RESEND_API_KEY;
@@ -745,6 +759,7 @@ router.get('/google/callback', async (req, res) => {
     } catch (emailErr) {
       console.error('Failed to send welcome email (Google OAuth):', emailErr);
     }
+    await notificationFondateur;
 
     // New user → issue one-time code (no JWT in URL)
     const oauthCode = crypto.randomBytes(32).toString('hex');

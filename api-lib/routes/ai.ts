@@ -51,6 +51,70 @@ export async function checkMonthlyQuota(restaurantId: number, res: any): Promise
   }
 }
 
+/**
+ * Compte un appel IA dans ai_usage (le compteur que lit checkMonthlyQuota).
+ *
+ * FIX 2026-09-25 : six routes Sonnet (/forecast, /menu-analysis,
+ * /order-recommendation, /invoice-check, /optimize-recipe, /optimize-menu) et
+ * le scan de factures verifiaient le quota mais n'incrementaient jamais ce
+ * compteur : le plafond mensuel ne se declenchait donc jamais pour elles.
+ * Cout estime au tarif Sonnet (3 $ / 15 $ par million de jetons) ; n'echoue
+ * jamais la requete appelante.
+ */
+export async function enregistrerUsageIA(
+  restaurantId: number,
+  usage?: { input_tokens?: number; output_tokens?: number } | null,
+): Promise<void> {
+  const month = new Date().toISOString().slice(0, 7);
+  const entree = usage?.input_tokens || 0;
+  const sortie = usage?.output_tokens || 0;
+  const cout = (entree * 3 + sortie * 15) / 1_000_000;
+  try {
+    await prisma.$executeRaw`
+      INSERT INTO ai_usage (restaurant_id, month, requests_count, tokens_used, estimated_cost, updated_at)
+      VALUES (${restaurantId}, ${month}, 1, ${entree + sortie}, ${cout}, NOW())
+      ON CONFLICT (restaurant_id, month)
+      DO UPDATE SET
+        requests_count = ai_usage.requests_count + 1,
+        tokens_used = ai_usage.tokens_used + ${entree + sortie},
+        estimated_cost = ai_usage.estimated_cost + ${cout},
+        updated_at = NOW()
+    `;
+  } catch (e) {
+    console.error('[enregistrerUsageIA]', e);
+  }
+}
+
+/**
+ * Refuse les routes IA (facturees a l'appel) a un essai termine, avec la MEME
+ * regle que le client (client/src/components/TrialPaywallGuard.tsx) :
+ * abonne pro/business, essai en cours, ou compte basic sans date de fin
+ * (onboarding) -> autorise ; sinon 402.
+ * FIX 2026-09-25 : seul le client appliquait cette regle, et sur trois pages
+ * seulement ; l'API restait ouverte a tout essai expire.
+ * A placer APRES authWithRestaurant (il lit req.user).
+ */
+export async function exigerAccesIA(req: any, res: any, next: any) {
+  try {
+    if (req.user?.role === 'admin') return next();
+    const u = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+      select: { plan: true, trialEndsAt: true },
+    });
+    if (!u) return res.status(401).json({ error: 'Compte introuvable' });
+    if (u.plan === 'pro' || u.plan === 'business') return next();
+    if (!u.trialEndsAt || new Date(u.trialEndsAt) > new Date()) return next();
+    return res.status(402).json({
+      error: "Votre essai est terminé : les fonctions IA sont réservées aux abonnés. Abonnez-vous depuis la page Abonnement.",
+      code: 'trial_expired',
+    });
+  } catch (e) {
+    // Lecture impossible : on laisse passer (le quota mensuel reste actif).
+    console.error('[exigerAccesIA]', e);
+    return next();
+  }
+}
+
 function getResponseCacheKey(restaurantId: number, message: string, intent: string): string {
   return `${restaurantId}:${intent}:${message.toLowerCase().trim().substring(0, 100)}`;
 }
@@ -127,7 +191,7 @@ export function checkAiRateLimit(restaurantId: number): boolean {
 }
 
 // ── AI Chat ──
-router.post('/chat', authWithRestaurant, async (req: any, res) => {
+router.post('/chat', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     const { message, history, image } = req.body;
     if (!message) return res.status(400).json({ error: 'Message requis' });
@@ -1342,7 +1406,7 @@ ${context}`;
 });
 
 // ── AI: Forecast ──
-router.post('/forecast', authWithRestaurant, async (req: any, res) => {
+router.post('/forecast', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     const { historicalData, days } = req.body;
     if (!historicalData || !Array.isArray(historicalData) || !days) {
@@ -1366,6 +1430,7 @@ router.post('/forecast', authWithRestaurant, async (req: any, res) => {
         content: `Données historiques de ventes:\n${JSON.stringify(historicalData)}\n\nPrédis les ${days} prochains jours. Tiens compte des tendances, saisonnalité et jours de la semaine.`,
       }],
     });
+    await enregistrerUsageIA(req.restaurantId, response.usage);
 
     const text = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
     try {
@@ -1381,7 +1446,7 @@ router.post('/forecast', authWithRestaurant, async (req: any, res) => {
 });
 
 // ── AI: Menu Analysis (Menu Engineering) ──
-router.post('/menu-analysis', authWithRestaurant, async (req: any, res) => {
+router.post('/menu-analysis', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     const { recipes } = req.body;
     if (!recipes || !Array.isArray(recipes)) {
@@ -1411,6 +1476,7 @@ Réponds UNIQUEMENT en JSON valide: { "analysis": { "stars": ["nom"], "puzzles":
         content: `Voici les plats du menu avec leur coût, prix de vente et nombre de ventes:\n${JSON.stringify(recipes)}`,
       }],
     });
+    await enregistrerUsageIA(req.restaurantId, response.usage);
 
     const text = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
     try {
@@ -1426,7 +1492,7 @@ Réponds UNIQUEMENT en JSON valide: { "analysis": { "stars": ["nom"], "puzzles":
 });
 
 // ── AI: Order Recommendation ──
-router.post('/order-recommendation', authWithRestaurant, async (req: any, res) => {
+router.post('/order-recommendation', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     const { stock, forecast, supplierPrices } = req.body;
     if (!stock || !Array.isArray(stock)) {
@@ -1452,6 +1518,7 @@ Réponds UNIQUEMENT en JSON valide: { "orders": [{ "ingredient": "nom", "quantit
         content: `Stock actuel:\n${JSON.stringify(stock)}\n\nPrévisions de ventes:\n${JSON.stringify(forecast || [])}\n\nPrix fournisseurs:\n${JSON.stringify(supplierPrices || [])}`,
       }],
     });
+    await enregistrerUsageIA(req.restaurantId, response.usage);
 
     const text = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
     try {
@@ -1467,7 +1534,7 @@ Réponds UNIQUEMENT en JSON valide: { "orders": [{ "ingredient": "nom", "quantit
 });
 
 // ── AI: Invoice Check ──
-router.post('/invoice-check', authWithRestaurant, async (req: any, res) => {
+router.post('/invoice-check', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     const { invoiceData, historicalPrices } = req.body;
     if (!invoiceData) {
@@ -1493,6 +1560,7 @@ Réponds UNIQUEMENT en JSON valide: { "anomalies": [{ "item": "nom produit", "in
         content: `Données de la facture:\n${JSON.stringify(invoiceData)}\n\nHistorique des prix:\n${JSON.stringify(historicalPrices || [])}`,
       }],
     });
+    await enregistrerUsageIA(req.restaurantId, response.usage);
 
     const text = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
     try {
@@ -1540,7 +1608,7 @@ router.get('/usage', authWithRestaurant, async (req: any, res) => {
 });
 
 // ── AI: Recipe Cost Optimizer ──
-router.post('/optimize-recipe', authWithRestaurant, async (req: any, res) => {
+router.post('/optimize-recipe', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     const { recipeId } = req.body;
     if (!recipeId) {
@@ -1635,6 +1703,7 @@ ${ingredientDetails.map((i: any) => `- ${i.name} (${i.category}): ${i.quantity} 
 Propose des optimisations concretes et realistes pour reduire le cout de cette recette.`,
       }],
     });
+    await enregistrerUsageIA(req.restaurantId, response.usage);
 
     const text = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
 
@@ -1684,7 +1753,7 @@ Propose des optimisations concretes et realistes pour reduire le cout de cette r
 });
 
 // ── AI Menu Optimizer (BCG Matrix) ────────────────────────────────────────
-router.post('/optimize-menu', authWithRestaurant, async (req: any, res) => {
+router.post('/optimize-menu', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
@@ -1795,6 +1864,7 @@ Popularité moyenne: ${avgPopularity.toFixed(1)}%
 Analyse mon menu et donne-moi des recommandations concrètes d'optimisation avec la matrice BCG.`,
       }],
     });
+    await enregistrerUsageIA(req.restaurantId, response.usage);
 
     const text = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
 
@@ -1833,7 +1903,7 @@ Analyse mon menu et donne-moi des recommandations concrètes d'optimisation avec
 });
 
 // ── Weekly AI Report ──────────────────────────────────────────────────────
-router.post('/weekly-report', authWithRestaurant, async (req: any, res) => {
+router.post('/weekly-report', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
@@ -2078,7 +2148,7 @@ router.post('/weekly-report/send-email', authWithRestaurant, async (req: any, re
 });
 
 // ── POST /api/ai/waste-analysis — AI-powered waste analysis ──
-router.post('/waste-analysis', authWithRestaurant, async (req: any, res) => {
+router.post('/waste-analysis', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
@@ -2280,7 +2350,7 @@ Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
 });
 
 // ── POST /api/ai/allergen-check — AI-powered allergen detection for a recipe ──
-router.post('/allergen-check', authWithRestaurant, async (req: any, res) => {
+router.post('/allergen-check', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
@@ -2373,7 +2443,7 @@ IMPORTANT: Tu DOIS inclure les 14 allergenes dans la liste, meme ceux absents (s
 });
 
 // ── POST /api/ai/nutrition-estimate — AI-powered nutrition estimation for a recipe ──
-router.post('/nutrition-estimate', authWithRestaurant, async (req: any, res) => {
+router.post('/nutrition-estimate', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
@@ -2553,7 +2623,7 @@ router.get('/allergen-matrix', authWithRestaurant, async (req: any, res) => {
 // ══════════════════════════════════════════════════════════════════════════
 // POST /api/ai/demand-forecast — Demand Forecasting (90 days sales data)
 // ══════════════════════════════════════════════════════════════════════════
-router.post('/demand-forecast', authWithRestaurant, async (req: any, res) => {
+router.post('/demand-forecast', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     const restaurantId = req.restaurantId;
     if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
@@ -2658,7 +2728,7 @@ Genere les predictions pour les 7 prochains jours a partir d'aujourd'hui (${new 
 // ══════════════════════════════════════════════════════════════════════════
 // POST /api/ai/pricing-suggestions — Dynamic Pricing Suggestions
 // ══════════════════════════════════════════════════════════════════════════
-router.post('/pricing-suggestions', authWithRestaurant, async (req: any, res) => {
+router.post('/pricing-suggestions', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     const restaurantId = req.restaurantId;
     if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
@@ -2746,7 +2816,7 @@ Concentre-toi sur les 10 recettes avec le plus de potentiel d'amelioration.`;
 // ══════════════════════════════════════════════════════════════════════════
 // POST /api/ai/supplier-brief — Supplier Negotiation Brief
 // ══════════════════════════════════════════════════════════════════════════
-router.post('/supplier-brief', authWithRestaurant, async (req: any, res) => {
+router.post('/supplier-brief', authWithRestaurant, exigerAccesIA, async (req: any, res) => {
   try {
     const restaurantId = req.restaurantId;
     const { supplierId } = req.body;

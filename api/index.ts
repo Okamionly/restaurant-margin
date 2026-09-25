@@ -12,7 +12,7 @@ import Stripe from 'stripe';
 import { llmComplete, llmJson, llmProvidersStatus } from '../api-lib/llm';
 import { ratelimit } from '../api-lib/ratelimit';
 import authRoutes from '../api-lib/routes/auth';
-import aiRoutes from '../api-lib/routes/ai';
+import aiRoutes, { checkAiRateLimit, checkMonthlyQuota, enregistrerUsageIA, exigerAccesIA } from '../api-lib/routes/ai';
 import mercurialeRoutes from '../api-lib/routes/mercuriale';
 import exportRoutes from '../api-lib/routes/export';
 import referralsRoutes from '../api-lib/routes/referrals';
@@ -514,60 +514,76 @@ app.use('/api/auth/forgot-password', (req, _res, next) => {
 });
 
 // --- Health Check Endpoint (monitoring) ---
-// Public endpoint: returns minimal `{ status: 'ok' }` so any uptime probe can ping it
-// without leaking infrastructure details (uptime, response time, service map).
-// Detailed payload (uptime, responseTime, services) is only returned when an admin
-// JWT is presented via Authorization header.
+// Public : renvoie l'etat des services (database, ai, api), sans aucun secret.
+// C'est la sonde de GitHub Actions (crons.yml, « Controle de sante ») et des
+// routines cloud. (Le commentaire precedent promettait une reponse minimale aux
+// anonymes : ce n'etait pas le cas, et les sondes ont besoin de ces champs.)
+
+// Sonde IA mise en cache : ?deep=1 est public, et chaque appel declenchait un
+// vrai appel au modele, facture, sans limite (audit du 2026-09-25). Un resultat
+// 'ok' est reutilise 5 minutes ; un echec n'est pas mis en cache (il est
+// re-verifie, et un appel en echec n'est pas facture).
+const aiProbeCache: { status: string; detail?: string; at: number } = { status: '', at: 0 };
+const AI_PROBE_TTL_MS = 5 * 60_000;
+
+// Un SEUL echec ne suffit pas a declarer la base en panne : sur serverless, le
+// tout premier SELECT d'une instance peut echouer (connexion Prisma pas encore
+// etablie au cold start). Mesure du 2026-08-31 : health disait db:error alors que
+// 8 appels reels sur 8 passaient. On retente donc une fois avant de conclure.
+async function verifierBase(): Promise<'ok' | 'error'> {
+  try { await prisma.$queryRaw`SELECT 1`; return 'ok'; } catch { /* on retente */ }
+  try { await prisma.$queryRaw`SELECT 1`; return 'ok'; } catch { return 'error'; }
+}
 
 app.get('/api/health', async (req: any, res) => {
   const start = Date.now();
-  const now = Date.now();
-  const cacheExpired = now - dbHealthCache.cachedAt >= DB_HEALTH_TTL_MS;
-  // Stale-while-revalidate: always serve cached value immediately (<1ms),
-  // then kick off a background SELECT 1 when the cache window expires.
-  // This eliminates the ~1s Supabase round-trip that blocked the response.
-  const dbStatus = dbHealthCache.status || 'ok';
-  if (cacheExpired) {
-    // Un SEUL echec ne suffit pas a declarer la base en panne : sur serverless, le
-    // tout premier SELECT d'une instance peut echouer (connexion Prisma pas encore
-    // etablie au cold start). Or le statut mis en cache restait 'error' pendant
-    // toute la duree de vie de l'instance -> fausses alertes recurrentes
-    // (mesure du 2026-08-31 : health disait db:error alors que 8 appels reels sur
-    // 8 passaient). On retente donc une fois avant de conclure a la panne.
-    (prisma.$queryRaw`SELECT 1` as Promise<unknown>)
-      .then(() => {
-        dbHealthCache.status = 'ok';
-        dbHealthCache.cachedAt = Date.now();
-      })
-      .catch(async () => {
-        try {
-          await prisma.$queryRaw`SELECT 1`;
-          dbHealthCache.status = 'ok';
-        } catch {
-          dbHealthCache.status = 'error';
-        }
+  const deep = !!req.query?.deep;
+  let dbStatus: string;
+  if (deep || dbHealthCache.cachedAt === 0) {
+    // Mesure SYNCHRONE pour la sonde de supervision (deep) et pour le premier
+    // appel d'une instance : le cache demarre a 'ok' sans avoir rien mesure, et
+    // une instance neuve repondait donc « base ok » sans l'avoir verifiee.
+    dbStatus = await verifierBase();
+    dbHealthCache.status = dbStatus;
+    dbHealthCache.cachedAt = Date.now();
+  } else {
+    // Sondes legeres (disponibilite) : valeur en cache servie tout de suite,
+    // rafraichie en arriere-plan quand elle a expire.
+    dbStatus = dbHealthCache.status;
+    if (Date.now() - dbHealthCache.cachedAt >= DB_HEALTH_TTL_MS) {
+      verifierBase().then((s) => {
+        dbHealthCache.status = s;
         dbHealthCache.cachedAt = Date.now();
       });
+    }
   }
-  // Shallow = presence de la cle. Deep (?deep=1) = vrai appel modele 1 token, pour
+  // Shallow = presence de la cle. Deep (?deep=1) = vrai appel modele, pour
   // qu'un modele retire ou une cle revoquee soit detecte tout de suite (les deux
   // sont passes ~1 mois sous le radar car ce check ne verifiait que la presence).
   let aiStatus = process.env.ANTHROPIC_API_KEY ? 'ok' : 'missing_key';
   let aiDetail: string | undefined;
-  if (req.query?.deep && process.env.ANTHROPIC_API_KEY) {
-    try {
-      const r = await anthropic.messages.create({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 5,
-        messages: [{ role: 'user', content: 'ping' }],
-      });
-      // Un appel qui NE JETTE PAS = modele joignable + cle valide (le but du check).
-      // On teste r.id, pas content.length (max_tokens bas peut renvoyer un content vide).
-      aiStatus = r?.id ? 'ok' : 'error';
-      aiDetail = 'claude-sonnet-4-6';
-    } catch (e: any) {
-      aiStatus = 'error';
-      aiDetail = `${e?.status || ''} ${(e?.error?.error?.message || e?.message || 'unknown').slice(0, 120)}`.trim();
+  if (deep && process.env.ANTHROPIC_API_KEY) {
+    if (aiProbeCache.status === 'ok' && Date.now() - aiProbeCache.at < AI_PROBE_TTL_MS) {
+      aiStatus = aiProbeCache.status;
+      aiDetail = aiProbeCache.detail;
+    } else {
+      try {
+        const r = await anthropic.messages.create({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 5,
+          messages: [{ role: 'user', content: 'ping' }],
+        });
+        // Un appel qui NE JETTE PAS = modele joignable + cle valide (le but du check).
+        // On teste r.id, pas content.length (max_tokens bas peut renvoyer un content vide).
+        aiStatus = r?.id ? 'ok' : 'error';
+        aiDetail = 'claude-sonnet-4-6';
+      } catch (e: any) {
+        aiStatus = 'error';
+        aiDetail = `${e?.status || ''} ${(e?.error?.error?.message || e?.message || 'unknown').slice(0, 120)}`.trim();
+      }
+      aiProbeCache.status = aiStatus;
+      aiProbeCache.detail = aiDetail;
+      aiProbeCache.at = Date.now();
     }
   }
   const responseTime = Date.now() - start;
@@ -723,7 +739,11 @@ REGLES ABSOLUES :
 });
 
 // Sante des fournisseurs IA (quel LLM est configure / lequel repond)
-app.get('/api/assistant/health', async (_req: any, res) => {
+// Reservee au secret des taches planifiees depuis le 2026-09-25 : route publique,
+// sans limite, qui appelait un LLM a chaque GET (repli facture sur Anthropic si
+// Groq refuse). Aucun code client ne l'appelle ; c'est un outil de diagnostic.
+app.get('/api/assistant/health', async (req: any, res) => {
+  if (!verifyCron(req, res)) return;
   const status = llmProvidersStatus();
   try {
     // maxTokens genereux : gpt-oss (Groq) est un modele de RAISONNEMENT — avec 10 tokens
@@ -2973,8 +2993,14 @@ app.delete('/api/invoices/:id', authWithRestaurant, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression facture' }); }
 });
 
-app.post('/api/invoices/scan', authWithRestaurant, async (req, res) => {
+app.post('/api/invoices/scan', authWithRestaurant, exigerAccesIA, async (req, res) => {
   try {
+    // FIX 2026-09-25 : ce scan (Sonnet, jusqu'a 8192 jetons de sortie) n'avait ni
+    // limite de debit, ni quota mensuel, ni controle de l'essai : c'etait la route
+    // IA la plus chere, et la seule sans aucun frein.
+    const rid = (req as any).restaurantId as number;
+    if (!checkAiRateLimit(rid)) return res.status(429).json({ error: 'Limite IA atteinte (10 requêtes/min). Réessayez dans 1 minute.' });
+    if (await checkMonthlyQuota(rid, res)) return;
     if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
     const { imageBase64, fileBase64, mimeType, fileName } = req.body as { imageBase64?: string; fileBase64?: string; mimeType: string; fileName?: string };
     const data = fileBase64 || imageBase64;
@@ -3036,6 +3062,7 @@ Regles :
       system: "Tu es un expert-comptable specialise en restauration (CHR). Tu lis des factures et bons de livraison fournisseurs et tu extrais les donnees en JSON strict. Tu ramenes systematiquement chaque prix a l'unite de base (kg, L ou unite) pour qu'il soit directement comparable au cout matiere d'un ingredient. Reponds UNIQUEMENT avec un objet JSON valide : pas de markdown, pas de commentaire, pas d'explication.",
       messages: [{ role: 'user', content }],
     });
+    await enregistrerUsageIA(rid, response.usage);
 
     const rawText = (response.content[0] as any).text as string;
     const truncatedByModel = (response as any).stop_reason === 'max_tokens';

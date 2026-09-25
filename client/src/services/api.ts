@@ -411,7 +411,9 @@ async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
     const friendlyMsg = STATUS_MESSAGES[res.status];
     const body = await res.json().catch(() => ({}));
-    const errorMsg = friendlyMsg || body.error || 'Erreur serveur';
+    // Un 429 peut etre le quota IA MENSUEL, dont le message serveur dit quoi faire :
+    // le remplacer par « reessayez dans 1 minute » envoyait l'utilisateur reessayer en vain.
+    const errorMsg = (res.status === 429 && body.error) || friendlyMsg || body.error || 'Erreur serveur';
     emitToast(errorMsg, 'error');
     throw new Error(errorMsg);
   }

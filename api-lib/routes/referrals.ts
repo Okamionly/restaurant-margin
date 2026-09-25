@@ -178,9 +178,15 @@ router.post('/track', authMiddleware, async (req: any, res) => {
 // Appelé depuis le webhook Stripe checkout.session.completed
 router.post('/qualify', async (req, res) => {
   try {
-    // Sécurité : vérifier un secret pour éviter les appels externes
+    // Sécurité : vérifier un secret pour éviter les appels externes.
+    // FIX 2026-09-25 : la comparaison `secret !== process.env.INTERNAL_WEBHOOK_SECRET`
+    // laissait passer quand la variable est ABSENTE — ce qui est le cas en production :
+    // un appel sans en-tête donnait undefined === undefined, donc « autorisé ».
+    // N'importe qui pouvait qualifier un parrainage. Un secret absent ou vide ferme
+    // desormais la route.
+    const attendu = process.env.INTERNAL_WEBHOOK_SECRET;
     const secret = req.headers['x-internal-secret'];
-    if (secret !== process.env.INTERNAL_WEBHOOK_SECRET) {
+    if (!attendu || typeof secret !== 'string' || secret !== attendu) {
       return res.status(403).json({ error: 'Non autorisé' });
     }
 

@@ -3511,12 +3511,22 @@ app.put('/api/messages/conversations/:id/star', authWithRestaurant, async (req: 
 });
 
 // ── Resend webhook signature verification (svix, CWE-345) ──
-// Graceful degradation: if RESEND_WEBHOOK_SECRET is not set, all requests pass
-// (backward-compat during deploy). Once the secret is added to env, all unsigned
-// requests are rejected with 401.
+// FIX 2026-09-25 : la verification ECHOUAIT OUVERTE. « Si le secret n'est pas
+// defini, tout passe » devait etre transitoire le temps d'un deploiement ; il est
+// reste tel quel, et le secret n'a jamais ete pose en production (verifie :
+// absent de `vercel env ls production`). N'importe qui pouvait donc POSTer un faux
+// email entrant : ecriture dans la messagerie d'un restaurant, et HTML d'attaquant
+// relaye au fondateur dans la notification.
+// Desormais : pas de secret = pas d'acces. Cout fonctionnel nul — Resend n'appelle
+// plus ce webhook (aucun evenement configure) ; l'import passe par le cron
+// inbox-sync, qui interroge l'API Resend lui-meme. Pour reactiver le webhook, poser
+// RESEND_WEBHOOK_SECRET (whsec_...) dans Vercel ET configurer l'evenement chez Resend.
 function verifyResendSignature(req: any): boolean {
   const secret = process.env.RESEND_WEBHOOK_SECRET;
-  if (!secret) return true;
+  if (!secret) {
+    console.warn('[INBOUND] RESEND_WEBHOOK_SECRET absent : webhook refuse (fail-closed).');
+    return false;
+  }
 
   const svixId = req.headers['svix-id'] as string | undefined;
   const svixTimestamp = req.headers['svix-timestamp'] as string | undefined;
@@ -3660,13 +3670,39 @@ app.post('/api/inbound/email', async (req: any, res) => {
 // ── Email ──
 const sentEmails: any[] = [];
 
+// FIX 2026-09-25 (relais d'email ouvert, audit confirme) : tout compte, meme en
+// essai gratuit, pouvait envoyer du HTML ARBITRAIRE depuis contact@restaumargin.fr,
+// a une liste de destinataires, sans plafond ; les reponses revenaient chez le
+// fondateur ; et un echec Resend etait compte comme un succes. Un seul abus
+// suffisait a faire blacklister le domaine — et avec lui TOUS les emails
+// transactionnels (inscription, mot de passe, onboarding).
+// Desormais, hors administrateur : texte seul (echappe et mis en page), UN
+// destinataire, plafond durable par restaurant, et reponses renvoyees a l'expediteur.
+const PLAFOND_EMAILS_RESTAURANT_24H = 20;
+
 app.post('/api/email/send', authWithRestaurant, async (req: any, res) => {
   try {
     const { to, subject, body, html } = req.body;
-    if (!to || !subject || (!body && !html)) return res.status(400).json({ error: 'to, subject, et body ou html requis' });
+    const estAdmin = req.user?.role === 'admin';
+    if (typeof to !== 'string' || !/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(to.trim()) || !subject || (!body && !html)) {
+      return res.status(400).json({ error: 'to (une seule adresse valide), subject, et body ou html requis' });
+    }
+    if (html && !estAdmin) return res.status(403).json({ error: 'Le HTML brut est réservé à l\'administrateur : envoyez un texte (body).' });
 
     const resendKey = process.env.RESEND_API_KEY;
     if (!resendKey) return res.status(503).json({ error: 'Service email non configuré (RESEND_API_KEY manquant)' });
+
+    // Plafond DURABLE (en base) : le limiteur en memoire ne tient pas sur des
+    // fonctions serverless, chaque instance a son propre compteur.
+    if (!estAdmin) {
+      const depuis = new Date(Date.now() - 24 * 3600 * 1000);
+      const compte: any[] = await prisma.$queryRaw`
+        SELECT count(*)::int AS n FROM notif_log
+        WHERE kind = 'email_send' AND meta->>'restaurantId' = ${String(req.restaurantId)} AND created_at > ${depuis}`;
+      if ((compte[0]?.n ?? 0) >= PLAFOND_EMAILS_RESTAURANT_24H) {
+        return res.status(429).json({ error: `Limite de ${PLAFOND_EMAILS_RESTAURANT_24H} emails par 24 h atteinte pour ce restaurant.` });
+      }
+    }
 
     const restaurant = await prisma.restaurant.findFirst({ where: { id: req.restaurantId } });
     const restaurantName = restaurant?.name || 'RestauMargin';
@@ -3692,17 +3728,34 @@ app.post('/api/email/send', authWithRestaurant, async (req: any, res) => {
     const resend = new Resend(resendKey);
     const result = await resend.emails.send({
       from: `${restaurantName} <contact@restaumargin.fr>`,
-      to,
-      replyTo: 'contact@restaumargin.fr',
+      to: to.trim(),
+      // Les reponses vont a l'EXPEDITEUR reel, plus dans la boite du fondateur.
+      replyTo: estAdmin ? 'contact@restaumargin.fr' : (req.user?.email || 'contact@restaumargin.fr'),
       subject,
       html: emailHtml,
     });
 
-    const messageId = result?.data?.id || `resend-${Date.now()}`;
-    const email = { id: `e-${Date.now()}`, to, subject, body: body || '(html)', from: `${restaurantName} <contact@restaumargin.fr>`, messageId, sentAt: new Date().toISOString() };
+    // Le SDK Resend ne leve PAS d'exception : il renvoie { data, error }. Sans ce
+    // test, un envoi refuse etait annonce comme reussi.
+    if ((result as any)?.error || !result?.data?.id) {
+      console.error('[EMAIL SEND] refus Resend :', (result as any)?.error?.message || 'reponse sans id');
+      return res.status(502).json({ error: "L'envoi a été refusé par le service email." });
+    }
+    const messageId = result.data.id;
+
+    try {
+      await prisma.$executeRaw`
+        INSERT INTO notif_log (kind, ref, category, meta, notified)
+        VALUES ('email_send', ${messageId}, 'email_send',
+                ${JSON.stringify({ restaurantId: String(req.restaurantId), userId: req.user?.userId })}::jsonb, true)
+        ON CONFLICT (kind, ref) DO NOTHING`;
+    } catch (logErr: any) { console.warn('[EMAIL SEND] journal non ecrit :', logErr.message); }
+
+    const email = { id: `e-${Date.now()}`, restaurantId: req.restaurantId, to, subject, body: body || '(html)', from: `${restaurantName} <contact@restaumargin.fr>`, messageId, sentAt: new Date().toISOString() };
     sentEmails.push(email);
 
-    console.log(`[EMAIL SEND] Sent to ${to} — subject: ${subject} — id: ${messageId}`);
+    // Pas l'adresse du destinataire dans les journaux : donnee personnelle.
+    console.log(`[EMAIL SEND] envoye — restaurant ${req.restaurantId} — id: ${messageId}`);
     res.json({ success: true, messageId });
   } catch (e: any) {
     console.error('[EMAIL SEND ERROR]', e.message);
@@ -3710,10 +3763,18 @@ app.post('/api/email/send', authWithRestaurant, async (req: any, res) => {
   }
 });
 
-app.get('/api/email/sent', authWithRestaurant, (_req, res) => { res.json(sentEmails); });
+// FIX 2026-09-25 : renvoyait le tableau ENTIER, donc les emails envoyes par tous
+// les restaurants servis par cette instance (destinataire, sujet, contenu).
+app.get('/api/email/sent', authWithRestaurant, (req: any, res) => {
+  res.json(sentEmails.filter((e: any) => e.restaurantId === req.restaurantId));
+});
 
 // ── Campaign email (auto-generates beautiful HTML from restaurant name + cuisine type) ──
 app.post('/api/campaign/send', authWithRestaurant, async (req: any, res) => {
+  // FIX 2026-09-25 (relais ouvert) : outil de prospection du FONDATEUR, ouvert a
+  // tout compte connecte : n importe quel compte d essai pouvait envoyer des emails
+  // de prospection depuis contact@restaumargin.fr. Reserve a l administrateur.
+  if (req.user?.role !== 'admin') return res.status(403).json({ error: 'Admin requis' });
   try {
     const { to, restaurantName, cuisineType, contactName } = req.body;
     if (!to || !restaurantName) return res.status(400).json({ error: 'to et restaurantName requis' });
@@ -3735,8 +3796,13 @@ app.post('/api/campaign/send', authWithRestaurant, async (req: any, res) => {
       html,
     });
 
-    const messageId = result?.data?.id || `resend-${Date.now()}`;
-    const email = { id: `c-${Date.now()}`, to, subject, body: '(campaign)', from: 'RestauMargin <contact@restaumargin.fr>', messageId, sentAt: new Date().toISOString() };
+    // Le SDK Resend ne leve pas : { data, error }. Un refus etait compte comme envoye.
+    if ((result as any)?.error || !result?.data?.id) {
+      console.error('[CAMPAIGN] refus Resend :', (result as any)?.error?.message || 'reponse sans id');
+      return res.status(502).json({ error: "L'envoi a été refusé par le service email." });
+    }
+    const messageId = result.data.id;
+    const email = { id: `c-${Date.now()}`, restaurantId: req.restaurantId, to, subject, body: '(campaign)', from: 'RestauMargin <contact@restaumargin.fr>', messageId, sentAt: new Date().toISOString() };
     sentEmails.push(email);
 
     console.log(`[CAMPAIGN SEND] Sent to ${to} (${restaurantName}, ${cuisineType || 'general'}) — id: ${messageId}`);
@@ -6229,6 +6295,10 @@ app.post('/api/public/launch-notify', async (req, res) => {
 // Auth-protected (only logged-in users) to avoid abuse, but does NOT require
 // a restaurant context (the founder may send from any account).
 app.post('/api/outreach/send', authMiddleware, async (req: any, res) => {
+  // FIX 2026-09-25 (relais ouvert) : outil de prospection du FONDATEUR, ouvert a
+  // tout compte connecte : n importe quel compte d essai pouvait envoyer des emails
+  // de prospection depuis contact@restaumargin.fr. Reserve a l administrateur.
+  if (req.user?.role !== 'admin') return res.status(403).json({ error: 'Admin requis' });
   try {
     const { to, subject, intro, articles, pitch, signOff, recipientName } = req.body as {
       to: string;

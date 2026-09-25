@@ -651,6 +651,16 @@ app.get('/api/cron-test', (_req, res) => {
 
 // Faits VERIFIES sur le produit. L'assistant n'a le droit de s'appuyer que la-dessus.
 // Ne JAMAIS y ajouter de chiffre client, de temoignage ou de reference inventes.
+// Accuse de reception envoye aux contacts par inbox-sync : texte FIXE, sans
+// rien de genere ni de recopie de l'email recu (voir l'etape 3b d'inbox-sync).
+const ACCUSE_RECEPTION = `Bonjour,
+
+Nous avons bien reçu votre message et nous vous répondrons personnellement dans les meilleurs délais.
+
+En attendant, vous pouvez tester RestauMargin gratuitement pendant 7 jours, sans carte bancaire, sur https://www.restaumargin.fr
+
+L'équipe RestauMargin`;
+
 const ASSISTANT_FACTS = `RestauMargin est un logiciel francais de gestion de marge pour la restauration.
 Ce qu'il fait reellement :
 - Fiches techniques de recettes avec calcul automatique du cout de revient au gramme
@@ -1439,11 +1449,16 @@ app.get('/api/cron/inbox-sync', async (req: any, res) => {
       let category = 'inconnu';
       let summary = subject;
       let draft = '';
-      let autoOk = false;
       try {
+        // Le brouillon n'est JAMAIS envoye tel quel : il va au fondateur, qui repond
+        // lui-meme. Il est redige a partir des faits produit (le prompt n'en
+        // contenait aucun jusqu'au 2026-09-25).
         const { data } = await llmJson<any>({
           system: "Tu tries la boite de reception d'un logiciel SaaS francais pour restaurateurs (RestauMargin). Tu reponds UNIQUEMENT en JSON valide, sans texte autour.",
-          user: `Email recu :
+          user: `Faits sur le produit (seule source autorisee pour le brouillon) :
+${ASSISTANT_FACTS}
+
+Email recu :
 De: ${from}
 Objet: ${subject}
 Message: ${text.slice(0, 1500)}
@@ -1453,15 +1468,9 @@ Reponds avec ce JSON strict :
   "category": "client_question" | "prospect" | "spam" | "phishing" | "demarchage" | "administratif" | "autre",
   "summary": "1 phrase resumant la demande",
   "needs_reply": true | false,
-  "auto_ok": true | false,
-  "draft_reply": "si needs_reply est true : brouillon de reponse en francais, poli, concret, 4-8 lignes, signe 'L'equipe RestauMargin'. Sinon chaine vide."
+  "draft_reply": "si needs_reply est true : brouillon de reponse en francais, poli, concret, 4-8 lignes, signe 'L'equipe RestauMargin', fonde UNIQUEMENT sur les faits ci-dessus (s'ils ne suffisent pas, le dire et proposer un echange). Il sera relu par un humain avant tout envoi. Sinon chaine vide."
 }
-Regles de categorie : "phishing" pour les faux avis de suspension de domaine / fausses factures. "demarchage" pour la prospection commerciale non sollicitee. "client_question"/"prospect" seulement si une vraie personne pose une question sur le produit.
-
-Regle pour "auto_ok" (une reponse automatique partira SANS relecture humaine — sois prudent) :
-- true UNIQUEMENT si la demande est simple et FACTUELLE, entierement couverte par les faits produit : tarif, duree d'essai, fonctionnalites, comment ca marche, compatibilite.
-- false des qu'il y a le moindre enjeu : question juridique, structure de la societe, mentions legales, SIREN, demande de chiffres (clients, references, resultats), presse/journaliste/etude de marche, reclamation, remboursement, facturation, resiliation, incident technique, ton mecontent, demande de partenariat, ou toute question a laquelle tu ne peux pas repondre avec certitude a partir des faits.
-- Dans le doute : false. Un accuse de reception partira a la place, et un humain repondra.`,
+Regles de categorie : "phishing" pour les faux avis de suspension de domaine / fausses factures. "demarchage" pour la prospection commerciale non sollicitee. "client_question"/"prospect" seulement si une vraie personne pose une question sur le produit.`,
           maxTokens: 700,
           timeoutMs: 15000,
         });
@@ -1469,7 +1478,6 @@ Regle pour "auto_ok" (une reponse automatique partira SANS relecture humaine —
           category = String(data.category || 'inconnu');
           summary = String(data.summary || subject).slice(0, 300);
           draft = String(data.draft_reply || '').slice(0, 2000);
-          autoOk = data.auto_ok === true;
         }
       } catch (e: any) {
         console.warn('[INBOX-SYNC] classification indisponible:', e?.message);
@@ -1495,49 +1503,56 @@ Regle pour "auto_ok" (une reponse automatique partira SANS relecture humaine —
 
       const isJunk = ['spam', 'phishing', 'demarchage'].includes(category);
 
-      // ── 3b. REPONSE AUTOMATIQUE au contact ────────────────────────────────
-      // Deux niveaux, jamais un seul :
-      //  - auto_ok = true  -> la reponse IA part directement (question factuelle
-      //    entierement couverte par les faits produit : tarif, essai, features).
-      //  - auto_ok = false -> simple accuse de reception, et un humain repond.
-      // Le 2e niveau existe parce qu'une reponse automatique EVASIVE est pire que
-      // pas de reponse : le prospect du 22/08 posait des questions sur la structure
-      // juridique et les chiffres — y repondre automatiquement aurait aggrave les choses.
-      // Jamais de reponse auto au spam/phishing/demarchage (on ne confirme pas
-      // l'existence de l'adresse a un spammeur).
-      let autoReplied: 'reponse' | 'accuse' | null = null;
+      // ── 3b. ACCUSE DE RECEPTION automatique ──────────────────────────────
+      // FIX 2026-09-25 : quand l'IA jugeait une question « factuelle », son
+      // brouillon partait SANS relecture - redige sans les faits produit - vers
+      // l'adresse de l'en-tete From, que n'importe qui peut falsifier, avec le sujet
+      // de l'expediteur recopie. Desormais : un accuse de reception FIXE (aucun
+      // texte genere, rien de l'expediteur recopie), au plus un par adresse et par
+      // jour ; le brouillon IA va au fondateur, qui repond lui-meme.
+      // Jamais d'accuse au spam/phishing/demarchage (on ne confirme pas l'existence
+      // de l'adresse a un spammeur).
+      let autoReplied: 'accuse' | null = null;
       if (!isJunk && ['client_question', 'prospect'].includes(category) && process.env.AUTO_REPLY_DISABLED !== '1') {
         try {
-          const { Resend } = await import('resend');
-          const resendAuto = new Resend(resendKey);
-          const corps = autoOk && draft
-            ? draft
-            : `Bonjour,\n\nNous avons bien recu votre message${subject ? ` au sujet de "${subject}"` : ''}.\n\nVotre demande demande une reponse precise : nous revenons vers vous personnellement dans les meilleurs delais.\n\nEn attendant, vous pouvez tester RestauMargin gratuitement pendant 7 jours, sans carte bancaire, sur https://www.restaumargin.fr`;
-          await resendAuto.emails.send({
-            from: 'RestauMargin <contact@restaumargin.fr>',
-            to: senderEmail,
-            replyTo: 'contact@restaumargin.fr',
-            subject: subject ? `Re: ${String(subject).slice(0, 120)}` : 'Votre message — RestauMargin',
-            html: `<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;color:#111;line-height:1.6;">
-  <p style="white-space:pre-wrap;">${String(corps).replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+          // Garde atomique « 1 par adresse et par jour » : la ligne n'est inseree
+          // que si elle n'existe pas encore (0 ligne affectee sinon).
+          const jour = new Date().toISOString().slice(0, 10);
+          const premiereDuJour = await prisma.$executeRaw`
+            INSERT INTO notif_log (kind, ref, category, notified)
+            VALUES ('auto_ack', ${`${senderEmail}|${jour}`}, 'accuse', true)
+            ON CONFLICT (kind, ref) DO NOTHING`;
+          if (premiereDuJour > 0) {
+            const { Resend } = await import('resend');
+            const resendAuto = new Resend(resendKey);
+            const envoi = await resendAuto.emails.send({
+              from: 'RestauMargin <contact@restaumargin.fr>',
+              to: senderEmail,
+              replyTo: 'contact@restaumargin.fr',
+              subject: 'Votre message a bien été reçu — RestauMargin',
+              html: `<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;color:#111;line-height:1.6;">
+  <p style="white-space:pre-wrap;">${ACCUSE_RECEPTION}</p>
   <hr style="border:none;border-top:1px solid #E5E7EB;margin:22px 0;">
   <p style="font-size:12px;color:#737373;margin:0;">RestauMargin — gestion de marge pour la restauration<br>
-  Repondez directement a cet email, nous le lisons.</p>
+  Répondez directement à cet email, nous le lisons.</p>
 </div>`,
-          });
-          autoReplied = autoOk && draft ? 'reponse' : 'accuse';
-          // Trace la reponse dans la conversation, pour que l'historique du site
-          // reflete exactement ce que le contact a recu.
-          await prisma.message.create({
-            data: {
-              conversationId: conv.id,
-              senderId: 'user',
-              senderName: autoReplied === 'reponse' ? 'RestauMargin (reponse auto IA)' : 'RestauMargin (accuse de reception auto)',
-              content: corps,
-              timestamp: new Date().toISOString(),
-              read: true,
-            },
-          });
+            });
+            // Le SDK Resend ne leve pas : il renvoie { data, error }.
+            if ((envoi as any)?.error || !envoi?.data?.id) throw new Error((envoi as any)?.error?.message || 'reponse Resend sans id');
+            autoReplied = 'accuse';
+            // Trace l'accuse dans la conversation : l'historique du site reflete
+            // exactement ce que le contact a recu.
+            await prisma.message.create({
+              data: {
+                conversationId: conv.id,
+                senderId: 'user',
+                senderName: 'RestauMargin (accuse de reception auto)',
+                content: ACCUSE_RECEPTION,
+                timestamp: new Date().toISOString(),
+                read: true,
+              },
+            });
+          }
         } catch (autoErr: any) {
           console.error('[INBOX-SYNC auto-reply]', autoErr.message);
         }
@@ -1581,11 +1596,9 @@ Regle pour "auto_ok" (une reponse automatique partira SANS relecture humaine —
           `<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px;">
              <b>${m.subject}</b><br>
              <span style="color:#737373;font-size:13px;">de ${m.from} — ${m.category}</span>
-             ${m.autoReplied === 'reponse'
-               ? '<p style="margin:6px 0 0;font-size:12px;color:#059669;"><b>Reponse automatique deja envoyee</b> (question factuelle)</p>'
-               : m.autoReplied === 'accuse'
-                 ? '<p style="margin:6px 0 0;font-size:12px;color:#B45309;"><b>Accuse de reception envoye</b> — cette demande attend VOTRE reponse</p>'
-                 : ''}
+             ${m.autoReplied === 'accuse'
+               ? '<p style="margin:6px 0 0;font-size:12px;color:#B45309;"><b>Accuse de reception envoye</b> — cette demande attend VOTRE reponse</p>'
+               : '<p style="margin:6px 0 0;font-size:12px;color:#B45309;">Cette demande attend VOTRE reponse</p>'}
              <p style="margin:8px 0 0;line-height:1.5;">${m.summary}</p>
              ${m.draft ? `<details style="margin-top:8px;"><summary style="cursor:pointer;color:#0D9488;">Brouillon de reponse propose</summary><p style="white-space:pre-wrap;background:#F5F5F5;padding:10px;border-radius:8px;margin-top:8px;line-height:1.5;">${m.draft}</p></details>` : ''}
            </div>`).join('');
@@ -1633,7 +1646,6 @@ Regle pour "auto_ok" (une reponse automatique partira SANS relecture humaine —
       questionsVisiteurs: visitorQuestions.length,
       emailSent,
       resteATraiter: Math.max(fresh.length - batch.length, 0),
-      reponsesAutoEnvoyees: imported.filter((m) => m.autoReplied === 'reponse').length,
       accusesReceptionEnvoyes: imported.filter((m) => m.autoReplied === 'accuse').length,
       details: imported.map((m) => ({ from: m.from, subject: m.subject, category: m.category, autoReplied: m.autoReplied })),
     });

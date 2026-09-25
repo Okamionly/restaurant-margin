@@ -30,6 +30,7 @@ const mockPrismaState = {
   createdUser: null as any,
   createdRestaurant: null as any,
   activationUpdated: false,
+  requetesBrutes: [] as string[],
 };
 
 vi.mock('@prisma/client', () => {
@@ -68,6 +69,11 @@ vi.mock('@prisma/client', () => {
       }),
     };
     auditLog = { create: vi.fn() };
+    // Requetes brutes (marquage notif_log de la notification d'inscription).
+    $executeRaw = vi.fn(async (morceaux: TemplateStringsArray) => {
+      mockPrismaState.requetesBrutes.push(Array.from(morceaux).join('?'));
+      return 1;
+    });
   }
   return { PrismaClient, Prisma: {} };
 });
@@ -91,6 +97,7 @@ function resetMockState() {
   mockPrismaState.createdUser = null;
   mockPrismaState.createdRestaurant = null;
   mockPrismaState.activationUpdated = false;
+  mockPrismaState.requetesBrutes = [];
 }
 
 function makeReq(body: any): any {
@@ -209,6 +216,9 @@ describe('POST /api/auth/register', () => {
       expect(auFondateur[0].html).not.toContain('<b>Nous</b>');
       // L'email de bienvenue part toujours, a l'inscrit.
       expect(envois.some((e) => e.to === 'nouveau@bistro.fr')).toBe(true);
+      // L'inscription est marquee comme signalee : le recapitulatif d'inbox-sync
+      // (toutes les 2 h) ne la renverra pas une seconde fois.
+      expect(mockPrismaState.requetesBrutes.some((q) => q.includes("VALUES ('signup'"))).toBe(true);
     } finally {
       delete process.env['RESEND_API_KEY'];
     }

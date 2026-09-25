@@ -1,14 +1,16 @@
 import { Resend } from 'resend';
+import { prisma } from '../prisma';
 
 // Prévient le fondateur à chaque inscription, au moment où elle a lieu.
 //
 // POURQUOI CE FICHIER EXISTE (2026-09-25)
-// Ce signal dépendait d'une routine cloud (« signup-watcher ») qui interrogeait
-// /api/agents/data toutes les 6 h puis envoyait l'email avec une clé Resend
-// écrite dans son prompt. Cette clé est révoquée depuis juillet (réponse
-// « 401 API key is invalid ») : aucune inscription n'était plus signalée, et la
-// routine consommait 28 exécutions par semaine du quota Claude pour rien.
-// Le serveur a déjà la clé valide : c'est ici que la notification doit vivre.
+// Deux chemins signalaient les inscriptions, avec retard : le récapitulatif du
+// cron inbox-sync (GitHub Actions, toutes les 2 h, qui marchait) et une routine
+// cloud (« signup-watcher », toutes les 6 h) dont la clé Resend était révoquée
+// depuis juillet (« 401 API key is invalid ») et qui consommait 28 exécutions
+// par semaine du quota Claude pour rien. La notification part désormais à
+// l'inscription même ; elle marque l'inscription dans notif_log pour que le
+// récapitulatif d'inbox-sync ne la signale pas une seconde fois.
 
 const FONDATEUR_EMAIL = 'mr.guessousyoussef@gmail.com';
 
@@ -67,8 +69,15 @@ export async function notifierInscription(i: Inscription): Promise<void> {
     });
     // Le SDK Resend ne lève pas : il renvoie { data, error }.
     if ((r as any)?.error || !r?.data?.id) {
+      // Pas de marquage : le récapitulatif d'inbox-sync la signalera à la place.
       console.error('[notifierInscription] refus Resend :', (r as any)?.error?.message || 'réponse sans id');
+      return;
     }
+    // Même ligne que celle qu'écrit inbox-sync après son récapitulatif : il
+    // ne renverra donc pas cette inscription.
+    await prisma.$executeRaw`INSERT INTO notif_log (kind, ref, category, meta, notified)
+      VALUES ('signup', ${String(i.userId)}, 'signup', ${JSON.stringify({ email: i.email, instantane: true })}::jsonb, true)
+      ON CONFLICT (kind, ref) DO NOTHING`;
   } catch (e: any) {
     console.error('[notifierInscription] échec :', e?.message);
   }

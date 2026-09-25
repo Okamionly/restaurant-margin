@@ -1712,6 +1712,15 @@ app.get('/api/agents/data', async (_req, res) => {
     const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
 
+    // FIX 2026-09-25 : ces chiffres nourrissent les agents CEO, CFO, CMO, COO et CTO,
+    // qui repetaient chaque jour « 1 abonne Pro, MRR 29 € ». Or ce seul « pro » etait
+    // le compte ADMIN du fondateur, sans aucun abonnement Stripe (verifie en base) :
+    // MRR reel = 0. Et les essais etaient cherches sous plan 'trial', qui n'existe
+    // pas — un essai est un compte 'basic' dont trialEndsAt est dans le futur — d'ou
+    // « 0 essai » en permanence, meme quand il y en avait.
+    // Regles : un abonne PAYANT a un abonnement Stripe ; les comptes internes
+    // (admin) et supprimes ne comptent ni comme utilisateurs, ni comme abonnes.
+    const comptesReels = { role: { notIn: ['admin', 'deleted'] } };
     const [
       userCount,
       recipeCount,
@@ -1722,14 +1731,14 @@ app.get('/api/agents/data', async (_req, res) => {
       businessCount,
       trialUsers,
     ] = await Promise.all([
-      prisma.user.count(),
+      prisma.user.count({ where: comptesReels }),
       prisma.recipe.count(),
       prisma.ingredient.count(),
-      prisma.user.count({ where: { createdAt: { gte: dayAgo } } }),
-      prisma.user.count({ where: { createdAt: { gte: twoDaysAgo } } }),
-      prisma.user.count({ where: { plan: 'pro' } }),
-      prisma.user.count({ where: { plan: 'business' } }),
-      prisma.user.count({ where: { plan: 'trial' } }),
+      prisma.user.count({ where: { ...comptesReels, createdAt: { gte: dayAgo } } }),
+      prisma.user.count({ where: { ...comptesReels, createdAt: { gte: twoDaysAgo } } }),
+      prisma.user.count({ where: { ...comptesReels, plan: 'pro', stripeSubId: { not: null } } }),
+      prisma.user.count({ where: { ...comptesReels, plan: 'business', stripeSubId: { not: null } } }),
+      prisma.user.count({ where: { ...comptesReels, plan: 'basic', trialEndsAt: { gt: now } } }),
     ]);
 
     const recentUsers = await prisma.user.findMany({

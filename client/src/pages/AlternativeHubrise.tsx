@@ -127,7 +127,7 @@ export default function AlternativeHubrise() {
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
+          <Link to="/" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -809,7 +809,7 @@ export default function AlternativeHubrise() {
       {/* ── Footer ── */}
       <footer className="bg-[#F9FAFB] border-t border-[#E5E7EB] py-12 px-4">
         <div className="max-w-4xl mx-auto text-center text-sm text-[#737373]">
-          <Link to="/landing" className="flex items-center justify-center gap-2 text-[#111111] font-bold text-lg mb-4">
+          <Link to="/" className="flex items-center justify-center gap-2 text-[#111111] font-bold text-lg mb-4">
             <ChefHat className="w-6 h-6 text-teal-600" />
             RestauMargin
           </Link>

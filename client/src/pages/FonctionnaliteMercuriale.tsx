@@ -116,7 +116,7 @@ export default function FonctionnaliteMercuriale() {
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b" style={{ borderColor: BORDER }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 font-extrabold text-lg tracking-tight" style={{ color: TEXT }}>
+          <Link to="/" className="flex items-center gap-2 font-extrabold text-lg tracking-tight" style={{ color: TEXT }}>
             <ChefHat className="w-7 h-7" style={{ color: ACCENT }} />
             <span>RestauMargin</span>
           </Link>
@@ -617,7 +617,7 @@ export default function FonctionnaliteMercuriale() {
       {/* ── Footer ── */}
       <footer className="border-t py-12 px-4" style={{ borderColor: BORDER, backgroundColor: '#FAFAFA' }}>
         <div className="max-w-6xl mx-auto text-center text-sm" style={{ color: TEXT_MUTED }}>
-          <Link to="/landing" className="flex items-center justify-center gap-2 font-extrabold text-lg tracking-tight mb-4" style={{ color: TEXT }}>
+          <Link to="/" className="flex items-center justify-center gap-2 font-extrabold text-lg tracking-tight mb-4" style={{ color: TEXT }}>
             <ChefHat className="w-6 h-6" style={{ color: ACCENT }} />
             RestauMargin
           </Link>

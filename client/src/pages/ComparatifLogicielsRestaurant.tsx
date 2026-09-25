@@ -362,7 +362,7 @@ export default function ComparatifLogicielsRestaurant() {
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
+          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -980,7 +980,7 @@ export default function ComparatifLogicielsRestaurant() {
       {/* ── Footer ── */}
       <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
         <div className="max-w-5xl mx-auto text-center text-sm text-mono-500">
-          <Link to="/landing" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
+          <Link to="/" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
             <ChefHat className="w-6 h-6 text-teal-600" />
             RestauMargin
           </Link>

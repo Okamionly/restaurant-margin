@@ -228,7 +228,7 @@ export default function PublicRecipe() {
               Calculez vos marges, optimisez vos recettes et gerez votre restaurant.
             </p>
             <Link
-              to="/landing"
+              to="/"
               className="inline-flex items-center gap-2 mt-4 px-6 py-2.5 rounded-xl bg-mono-100 text-white text-sm font-semibold hover:bg-[#333333] transition-colors"
             >
               Decouvrir RestauMargin

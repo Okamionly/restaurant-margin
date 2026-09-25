@@ -69,7 +69,7 @@ export default function BlogGestionTresorerie() {
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 font-bold text-lg text-[#111111] dark:text-white">
+          <Link to="/" className="flex items-center gap-2 font-bold text-lg text-[#111111] dark:text-white">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -86,7 +86,7 @@ export default function BlogGestionTresorerie() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-[#737373] dark:text-[#A3A3A3] mb-8">
-          <Link to="/landing" className="hover:text-teal-600">Accueil</Link>
+          <Link to="/" className="hover:text-teal-600">Accueil</Link>
           <span>/</span>
           <Link to="/blog" className="hover:text-teal-600">Blog</Link>
           <span>/</span>
@@ -309,7 +309,7 @@ export default function BlogGestionTresorerie() {
       {/* Footer */}
       <footer className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] mt-16 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#737373] dark:text-[#A3A3A3]">
-          <Link to="/landing" className="flex items-center gap-2 font-bold text-[#111111] dark:text-white">
+          <Link to="/" className="flex items-center gap-2 font-bold text-[#111111] dark:text-white">
             <ChefHat className="w-5 h-5 text-teal-600" />
             RestauMargin
           </Link>

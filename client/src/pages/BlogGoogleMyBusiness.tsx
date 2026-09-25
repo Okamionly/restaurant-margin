@@ -72,7 +72,7 @@ export default function BlogGoogleMyBusiness() {
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#E5E7EB]">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 font-bold text-[#111111]">
+          <Link to="/" className="flex items-center gap-2 font-bold text-[#111111]">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>

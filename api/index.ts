@@ -1430,7 +1430,8 @@ app.get('/api/cron/inbox-sync', async (req: any, res) => {
     const all: any[] = listJson?.data || listJson?.emails || [];
     const fresh = all.filter((e: any) => e?.id && !seen.has(String(e.id)));
 
-    // Cap par run (maxDuration 60s) — le cron repasse toutes les 2h pour le reste.
+    // Cap par run (5 messages) — le cron repasse toutes les 2h pour le reste. (maxDuration
+    // releve de 60 a 300 s le 2026-09-25 : la marge ne justifie pas de gros lots.)
     const batch = fresh.slice(0, 5);
 
     for (const item of batch) {
@@ -3475,7 +3476,10 @@ app.post('/api/messages/conversations/:id/ai-draft', authWithRestaurant, async (
     const restaurant = await prisma.restaurant.findUnique({ where: { id: req.restaurantId } });
     const moi = (req.user?.email || '').toLowerCase();
     const transcript = history.map((m: any) => {
-      const isUs = m.senderId === 'user' || String(m.senderId).toLowerCase() === moi || String(m.senderId).includes('restaumargin.fr');
+      // 'me' = message envoye depuis l'interface ; 'user' = accuse automatique du cron.
+      // FIX 2026-09-25 : 'me' manquait, donc nos propres reponses etaient presentees
+      // a l'IA comme venant du CLIENT.
+      const isUs = m.senderId === 'user' || m.senderId === 'me' || String(m.senderId).toLowerCase() === moi || String(m.senderId).includes('restaumargin.fr');
       return `${isUs ? 'NOUS' : 'CLIENT'} : ${String(m.content).slice(0, 1200)}`;
     }).join('\n\n');
 

@@ -599,7 +599,7 @@ export default function Messagerie() {
         });
         if (!res.ok) throw new Error('Erreur creation');
         const created = await res.json();
-        await fetch(`${API}/conversations/${created.id}/messages`, {
+        const envoi = await fetch(`${API}/conversations/${created.id}/messages`, {
           method: 'POST',
           headers: getHeaders(),
           body: JSON.stringify({
@@ -609,7 +609,10 @@ export default function Messagerie() {
             subject: composeSubject || 'Sans objet',
           }),
         });
+        // FIX 2026-09-25 : le resultat n'etait pas lu : « message envoye » s'affichait
+        // meme quand le serveur refusait le message (la conversation restait vide).
         fetchConversations(true);
+        if (!envoi.ok) throw new Error('Erreur envoi');
       }
       setShowCompose(false);
       setComposeTo('');
@@ -933,7 +936,9 @@ export default function Messagerie() {
                 )}
 
                 {activeConv.messages.map((msg, i) => {
-                  const isMine = msg.senderId === ME || msg.senderId === 'me';
+                  // 'user' = accuse de reception automatique du serveur : c'est nous aussi
+                  // (il s'affichait comme un message du client).
+                  const isMine = msg.senderId === ME || msg.senderId === 'me' || msg.senderId === 'user';
                   const prevMsg = i > 0 ? activeConv.messages[i - 1] : null;
                   const showDateSep = !prevMsg || new Date(msg.timestamp).toDateString() !== new Date(prevMsg.timestamp).toDateString();
                   const isAnimated = newMsgIds.has(msg.id);

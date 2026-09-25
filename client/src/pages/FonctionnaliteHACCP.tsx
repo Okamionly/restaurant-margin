@@ -138,7 +138,7 @@ export default function FonctionnaliteHACCP() {
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link
-            to="/landing"
+            to="/"
             className="flex items-center gap-2 font-extrabold tracking-tight text-lg"
             style={{ color: TEXT }}
           >
@@ -168,7 +168,7 @@ export default function FonctionnaliteHACCP() {
             Accueil
           </Link>
           <span>/</span>
-          <Link to="/landing" className="hover:underline" style={{ color: TEXT_MUTED }}>
+          <Link to="/" className="hover:underline" style={{ color: TEXT_MUTED }}>
             Fonctionnalités
           </Link>
           <span>/</span>
@@ -848,7 +848,7 @@ export default function FonctionnaliteHACCP() {
       <footer className="border-t py-12 px-4 sm:px-6 bg-white" style={{ borderColor: BORDER }}>
         <div className="max-w-6xl mx-auto text-center text-sm" style={{ color: TEXT_MUTED }}>
           <Link
-            to="/landing"
+            to="/"
             className="flex items-center justify-center gap-2 font-extrabold tracking-tight text-lg mb-4"
             style={{ color: TEXT }}
           >

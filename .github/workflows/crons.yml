@@ -46,7 +46,7 @@ concurrency:
 jobs:
   taches:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 40
     steps:
       - name: Verifier que le secret est configure
         run: |
@@ -66,10 +66,24 @@ jobs:
           echo "──────────────────────────────────────────"
           echo "▶ $nom"
           corps=$(mktemp)
-          code=$(curl -s -o "$corps" -w '%{http_code}' \
-            "https://www.restaumargin.fr$chemin" \
-            -H "Authorization: Bearer $CRON_SECRET" \
-            --max-time 120 --retry 2 --retry-delay 10 --retry-connrefused)
+          # PAS de `curl --retry` : il rejoue sur tout 5xx. Or une tache qui repond
+          # 500/502 a pu envoyer une partie de ses emails avant d'echouer (ex. fin
+          # d'essai : 4 envois reussis, 1 refuse -> 502) ; la rejouer renverrait
+          # les 4 premiers. On ne retente QUE si le serveur n'a pas repondu du tout
+          # (code 000 : DNS, TCP, TLS). --max-time (310 s) depasse le maxDuration
+          # de la fonction (300 s) : une tache longue repond (ou Vercel renvoie
+          # 504) avant que curl n'abandonne, donc 000 ne masque jamais une tache
+          # encore en cours.
+          code=000
+          for essai in 1 2 3; do
+            code=$(curl -s -o "$corps" -w '%{http_code}' \
+              "https://www.restaumargin.fr$chemin" \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              --max-time 310) || true
+            [ "$code" != "000" ] && break
+            echo "(pas de reponse du serveur, essai $essai/3)"
+            sleep 15
+          done
           echo "HTTP $code"
           # Le depot est PUBLIC, donc ces journaux aussi. On n'y imprime JAMAIS le
           # corps brut de la reponse : il contenait les adresses email des prospects

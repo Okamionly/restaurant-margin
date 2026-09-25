@@ -134,7 +134,7 @@ export default function FonctionnaliteMenuEngineering() {
         style={{ borderColor: BORDER }}
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 font-extrabold text-lg tracking-tight" style={{ color: TEXT }}>
+          <Link to="/" className="flex items-center gap-2 font-extrabold text-lg tracking-tight" style={{ color: TEXT }}>
             <span
               className="w-9 h-9 rounded-xl flex items-center justify-center"
               style={{ backgroundColor: ACCENT_BG }}
@@ -193,7 +193,7 @@ export default function FonctionnaliteMenuEngineering() {
       {/* ───────── Breadcrumb ───────── */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-5">
         <nav className="text-xs sm:text-sm flex flex-wrap items-center gap-1.5" style={{ color: TEXT_MUTED }} aria-label="Fil d'ariane">
-          <Link to="/landing" className="hover:text-emerald-700 transition-colors">
+          <Link to="/" className="hover:text-emerald-700 transition-colors">
             Accueil
           </Link>
           <span aria-hidden>/</span>
@@ -729,7 +729,7 @@ export default function FonctionnaliteMenuEngineering() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
-              <Link to="/landing" className="flex items-center gap-2 font-extrabold tracking-tight" style={{ color: TEXT }}>
+              <Link to="/" className="flex items-center gap-2 font-extrabold tracking-tight" style={{ color: TEXT }}>
                 <span className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: ACCENT_BG }}>
                   <ChefHat className="w-5 h-5" style={{ color: ACCENT_DARK }} />
                 </span>

@@ -702,7 +702,7 @@ export default function StationLanding() {
           </div>
           <div className="flex gap-6 text-xs text-mono-500 dark:text-mono-700">
             <a href="#order-form" className="hover:text-mono-100 dark:hover:text-white transition">Contact</a>
-            <Link to="/landing" className="hover:text-mono-100 dark:hover:text-white transition">App RestauMargin</Link>
+            <Link to="/" className="hover:text-mono-100 dark:hover:text-white transition">App RestauMargin</Link>
           </div>
         </div>
       </footer>

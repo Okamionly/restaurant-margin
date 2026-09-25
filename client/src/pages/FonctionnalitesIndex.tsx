@@ -57,7 +57,7 @@ export default function FonctionnalitesIndex() {
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md" style={{ borderBottom: `1px solid ${BORDER}` }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 font-bold text-lg" style={{ color: TEXT, textDecoration: 'none' }}>
+          <Link to="/" className="flex items-center gap-2 font-bold text-lg" style={{ color: TEXT, textDecoration: 'none' }}>
             <ChefHat className="w-7 h-7" style={{ color: ACCENT }} />
             <span>RestauMargin</span>
           </Link>
@@ -74,7 +74,7 @@ export default function FonctionnalitesIndex() {
       {/* Breadcrumb */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6">
         <nav className="text-sm" style={{ color: TEXT_MUTED }} aria-label="Fil d'Ariane">
-          <Link to="/landing" style={{ color: ACCENT_DARK, textDecoration: 'none' }}>Accueil</Link>
+          <Link to="/" style={{ color: ACCENT_DARK, textDecoration: 'none' }}>Accueil</Link>
           <span> › </span>
           <span>Fonctionnalités</span>
         </nav>

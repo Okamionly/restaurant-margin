@@ -137,7 +137,7 @@ export default function BlogMargeBoissons() {
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
+          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
           </Link>
@@ -618,7 +618,7 @@ export default function BlogMargeBoissons() {
       {/* ── Footer ── */}
       <footer className="border-t border-mono-900 py-8 px-4 bg-white">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-mono-700">
-          <Link to="/landing" className="flex items-center gap-1.5 hover:text-teal-600 transition-colors">
+          <Link to="/" className="flex items-center gap-1.5 hover:text-teal-600 transition-colors">
             <ArrowLeft className="w-4 h-4" />
             Retour a l'accueil
           </Link>

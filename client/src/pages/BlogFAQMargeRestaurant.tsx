@@ -222,7 +222,7 @@ export default function BlogFAQMargeRestaurant() {
   return (
     <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
-        title="FAQ Marge Restaurant 2026 : 25 questions essentielles (reponses chefs)"
+        title="FAQ Marge Restaurant 2026 : 25 questions essentielles (formules + benchmarks)"
         description="Toutes les reponses sur la marge restaurant en 2026 : taux moyen, calcul, regle 30/30/30/10, rentabilite, plat le plus rentable, salaire proprietaire. 25 questions essentielles + formules + benchmarks."
         path="/blog/faq-marge-restaurant-25-questions"
         type="article"
@@ -246,7 +246,7 @@ export default function BlogFAQMargeRestaurant() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-05-26',
-            dateModified: '2026-05-26',
+            dateModified: '2026-09-25',
             wordCount: 4500,
             inLanguage: 'fr-FR',
             mainEntityOfPage: {

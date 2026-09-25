@@ -254,6 +254,10 @@ export default function Inventory() {
   const [scannerError, setScannerError] = useState('');
   const [lastScannedBarcode, setLastScannedBarcode] = useState('');
   const [allIngredients, setAllIngredients] = useState<Ingredient[]>([]);
+  // FIX 2026-09-25 : la boucle du scanner (setInterval) garde la fonction du rendu
+  // ou elle a ete creee, ou allIngredients valait encore [] : le premier scan ne
+  // trouvait jamais l'ingredient. La reference voit toujours la liste a jour.
+  const allIngredientsRef = useRef<Ingredient[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const scanIntervalRef = useRef<number | null>(null);
@@ -929,6 +933,7 @@ export default function Inventory() {
     // Load all ingredients for barcode lookup
     try {
       const ings = await fetchIngredients();
+      allIngredientsRef.current = ings;
       setAllIngredients(ings);
     } catch {
       // fallback: use suggestions + items
@@ -986,7 +991,7 @@ export default function Inventory() {
     }
 
     // Search in all ingredients (not yet in inventory)
-    const ingredientMatch = allIngredients.find(ing => ing.barcode === barcode);
+    const ingredientMatch = (allIngredientsRef.current.length ? allIngredientsRef.current : allIngredients).find(ing => ing.barcode === barcode);
     if (ingredientMatch) {
       // Pre-fill add form with this ingredient
       setAddForm({

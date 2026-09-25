@@ -66,7 +66,8 @@ interface RestaurantContext {
   totalRecipes: number;
   totalIngredients: number;
   totalSuppliers: number;
-  avgMargin: number;
+  /** null quand aucune recette n'a de marge calculee : on n'affiche rien plutot qu'un chiffre invente. */
+  avgMargin: number | null;
 }
 
 interface PromptCard {
@@ -321,19 +322,21 @@ async function fetchRestaurantContext(): Promise<RestaurantContext> {
     totalRecipes: 0,
     totalIngredients: 0,
     totalSuppliers: 0,
-    avgMargin: 75,
+    avgMargin: null,
   };
 
   try {
-    const [ingredientsRes, recipesRes, suppliersRes] = await Promise.allSettled([
+    const [ingredientsRes, recipesRes, suppliersRes, inventoryRes] = await Promise.allSettled([
       fetch('/api/ingredients', { headers }),
       fetch('/api/recipes', { headers }),
       fetch('/api/suppliers', { headers }),
+      fetch('/api/inventory', { headers }),
     ]);
 
     let ingredients: any[] = [];
     let recipes: any[] = [];
     let suppliers: any[] = [];
+    let inventory: any[] = [];
 
     if (ingredientsRes.status === 'fulfilled' && ingredientsRes.value.ok) {
       ingredients = await ingredientsRes.value.json();
@@ -344,15 +347,23 @@ async function fetchRestaurantContext(): Promise<RestaurantContext> {
     if (suppliersRes.status === 'fulfilled' && suppliersRes.value.ok) {
       suppliers = await suppliersRes.value.json();
     }
+    if (inventoryRes.status === 'fulfilled' && inventoryRes.value.ok) {
+      inventory = await inventoryRes.value.json();
+    }
 
-    const lowStock = ingredients.filter((i: any) =>
-      i.currentStock !== undefined && i.minStock !== undefined && i.currentStock <= i.minStock
+    // FIX 2026-09-25 : le stock vit dans l'inventaire, pas sur l'ingredient (qui n'a
+    // ni currentStock ni minStock) : ce compteur valait toujours 0.
+    const lowStock = (Array.isArray(inventory) ? inventory : []).filter((i: any) =>
+      typeof i.currentStock === 'number' && typeof i.minStock === 'number' && i.currentStock <= i.minStock
     ).length;
 
+    // FIX 2026-09-25 : la marge est dans r.margin.marginPercent (types/index.ts). La
+    // lecture de r.marginPercent ne trouvait rien, et le repli affichait « Marge moy.
+    // 75 % » a TOUS les comptes, recettes ou pas. Sans marge calculee : null, pas de badge.
     const margins = recipes
-      .map((r: any) => r.marginPercent || r.margin_percent || 0)
+      .map((r: any) => r.margin?.marginPercent ?? r.marginPercent ?? 0)
       .filter((m: number) => m > 0);
-    const avgMargin = margins.length > 0 ? margins.reduce((a: number, b: number) => a + b, 0) / margins.length : 75;
+    const avgMargin = margins.length > 0 ? margins.reduce((a: number, b: number) => a + b, 0) / margins.length : null;
     const lowMarginRecipes = margins.filter((m: number) => m < 60).length;
 
     const oneWeekAgo = new Date();
@@ -370,7 +381,7 @@ async function fetchRestaurantContext(): Promise<RestaurantContext> {
       totalRecipes: recipes.length,
       totalIngredients: ingredients.length,
       totalSuppliers: Array.isArray(suppliers) ? suppliers.length : 0,
-      avgMargin: Math.round(avgMargin),
+      avgMargin: avgMargin === null ? null : Math.round(avgMargin),
     };
   } catch {
     return defaults;
@@ -1061,10 +1072,12 @@ export default function AIAssistant() {
             <ShoppingCart className="w-3 h-3 text-purple-500" />
             <span className="text-[11px] font-medium text-black dark:text-white">{restaurantContext.totalSuppliers} fournisseurs</span>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-full">
-            <Ratio className="w-3 h-3 text-amber-500" />
-            <span className="text-[11px] font-medium text-black dark:text-white">Marge moy. {restaurantContext.avgMargin}%</span>
-          </div>
+          {restaurantContext.avgMargin !== null && (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-200 rounded-full">
+              <Ratio className="w-3 h-3 text-amber-500" />
+              <span className="text-[11px] font-medium text-black dark:text-white">Marge moy. {restaurantContext.avgMargin}%</span>
+            </div>
+          )}
           {restaurantContext.lowStockCount > 0 && (
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-full">
               <AlertTriangle className="w-3 h-3 text-red-500" />

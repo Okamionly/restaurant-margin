@@ -399,7 +399,8 @@ export default function InvoiceScanner() {
         }));
         setInvoices(mapped);
       })
-      .catch(() => {})
+      // FIX 2026-09-25 : un echec affichait une liste vide, comme s'il n'y avait aucune facture.
+      .catch(() => showToast('Impossible de charger vos factures. Rechargez la page.', 'error'))
       .finally(() => setLoadingInvoices(false));
   }, [selectedRestaurant, restaurantLoading]);
 
@@ -543,8 +544,16 @@ export default function InvoiceScanner() {
         const created = await res.json();
         dbId = created.id;
       }
-    } catch { /* silent */ }
+    } catch { /* traite ci-dessous */ }
     setSavingInvoice(false);
+    // FIX 2026-09-25 : en cas d'echec, la facture etait ajoutee avec un id LOCAL et un
+    // toast de succes - puis disparaissait au rechargement. On le dit, et le
+    // formulaire reste ouvert pour reessayer.
+    if (!dbId) {
+      if (url) URL.revokeObjectURL(url);
+      showToast("La facture n'a pas pu être enregistrée. Vérifiez la connexion et réessayez.", 'error');
+      return;
+    }
 
     const newInvoice: InvoiceFile = {
       id: dbId ? `db-${dbId}` : generateId(),
@@ -611,18 +620,23 @@ export default function InvoiceScanner() {
   };
 
   /* Delete */
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!window.confirm('Supprimer cette facture ?')) return;
     const inv = invoices.find((i) => i.id === id);
+    // FIX 2026-09-25 : le toast de succes partait AVANT l'appel, dont le resultat
+    // n'etait pas lu : une facture « supprimee » reapparaissait au rechargement.
+    if (inv?.dbId) {
+      try {
+        const res = await fetch(`/api/invoices/${inv.dbId}`, { method: 'DELETE', headers: authHeaders() });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      } catch {
+        showToast("La facture n'a pas pu être supprimée. Réessayez.", 'error');
+        return;
+      }
+    }
     if (inv?.previewUrl && inv.file) URL.revokeObjectURL(inv.previewUrl);
     setInvoices((prev) => prev.filter((i) => i.id !== id));
     showToast(t('invoiceScanner.invoiceDeleted'), 'success');
-    if (inv?.dbId) {
-      fetch(`/api/invoices/${inv.dbId}`, {
-        method: 'DELETE',
-        headers: authHeaders(),
-      }).catch(() => {});
-    }
   };
 
   /* ─── OCR handlers ─── */

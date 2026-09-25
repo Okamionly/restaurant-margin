@@ -2698,6 +2698,7 @@ export default function Suppliers() {
                   onClick={async () => {
                     setAddingCatalog(true);
                     let added = 0;
+                    let echecs = 0;
                     const existingNames = new Set(ingredients.map(i => i.name.toLowerCase()));
                     const fc = catalogData.filter(p => (!catalogSearch || p.name.toLowerCase().includes(catalogSearch.toLowerCase())) && (!catalogCat || p.category === catalogCat));
                     for (const idx of catalogSelected) {
@@ -2707,12 +2708,13 @@ export default function Suppliers() {
                           await createIngredient({ name: p.name, unit: p.unit, pricePerUnit: p.prixMoy, category: p.category, allergens: [] } as any);
                           added++;
                           existingNames.add(p.name.toLowerCase());
-                        } catch {}
+                        } catch { echecs++; }
                       }
                     }
                     setCatalogSelected(new Set());
                     await loadData();
                     showToast(`${added} ${t('suppliers.productsAdded')}`, 'success');
+                    if (echecs > 0) showToast(`${echecs} produit${echecs > 1 ? 's' : ''} n'${echecs > 1 ? 'ont' : 'a'} pas pu être ajouté${echecs > 1 ? 's' : ''}`, 'error');
                     setAddingCatalog(false);
                   }}
                   className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-lg disabled:opacity-50"
@@ -2728,12 +2730,12 @@ export default function Suppliers() {
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-mono-500" />
                 <input
                   type="text" placeholder={t('suppliers.searchProduct')} value={catalogSearch}
-                  onChange={e => { setCatalogSearch(e.target.value); setCatalogPage(0); }}
+                  onChange={e => { setCatalogSearch(e.target.value); setCatalogPage(0); setCatalogSelected(new Set()); }}
                   className="input pl-10 w-full"
                 />
               </div>
               <select
-                value={catalogCat} onChange={e => { setCatalogCat(e.target.value); setCatalogPage(0); }}
+                value={catalogCat} onChange={e => { setCatalogCat(e.target.value); setCatalogPage(0); setCatalogSelected(new Set()); }}
                 className="input w-full sm:w-48"
               >
                 <option value="">{t('suppliers.allCategories')}</option>

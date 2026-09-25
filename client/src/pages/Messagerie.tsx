@@ -225,6 +225,8 @@ export default function Messagerie() {
   const [composeBody, setComposeBody] = useState('');
   const [mobileShowChat, setMobileShowChat] = useState(false);
   const [loading, setLoading] = useState(true);
+  // Echec du chargement : distinct d'une boite vide (qui ne s'affichait qu'a tort).
+  const [loadError, setLoadError] = useState(false);
   const [sending, setSending] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [useMock, setUseMock] = useState(false);
@@ -256,9 +258,12 @@ export default function Messagerie() {
       );
       setConversations(mapped);
       setUseMock(false);
+      setLoadError(false);
     } catch (err) {
+      // FIX 2026-09-25 : un echec affichait « aucune conversation », comme une boite
+      // vide. On garde la liste deja chargee et on dit que le chargement a echoue.
       console.warn('API messages indisponible:', err);
-      setConversations([]);
+      setLoadError(true);
       setUseMock(false);
     } finally {
       setLoading(false);
@@ -295,7 +300,8 @@ export default function Messagerie() {
       return;
     }
     try {
-      await fetch(`${API}/conversations/${convId}/read`, { method: 'PUT', headers: getHeaders() });
+      const res = await fetch(`${API}/conversations/${convId}/read`, { method: 'PUT', headers: getHeaders() });
+      if (!res.ok) return;
       setConversations((prev) =>
         prev.map((c) => c.id === convId
           ? { ...c, unread: 0, messages: c.messages.map((m) => ({ ...m, read: true })) }
@@ -316,16 +322,9 @@ export default function Messagerie() {
     markAsRead(activeId);
   }, [activeId, fetchMessages, markAsRead]);
 
-  // Simulate typing indicator after sending a message
-  useEffect(() => {
-    if (!activeConv || activeConv.messages.length === 0) return;
-    const lastMsg = activeConv.messages[activeConv.messages.length - 1];
-    if (lastMsg.senderId === 'me' || lastMsg.senderId === ME) {
-      setIsTyping(true);
-      const timer = setTimeout(() => setIsTyping(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [activeConv?.messages.length]);
+  // FIX 2026-09-25 : un effet affichait « ... ecrit... » pendant 3 s apres CHAQUE
+  // message envoye, sans que rien ne l'alimente (aucun signal de frappe n'existe) :
+  // un faux signal de presence, retire. isTyping reste pour un vrai signal futur.
 
   const totalUnread = conversations.reduce((sum, c) => sum + c.unread, 0);
 
@@ -350,7 +349,8 @@ export default function Messagerie() {
     if (!confirm(t('messagerie.deleteConfirm'))) return;
     if (!useMock) {
       try {
-        await fetch(`${API}/conversations/${convId}`, { method: 'DELETE', headers: getHeaders() });
+        const res = await fetch(`${API}/conversations/${convId}`, { method: 'DELETE', headers: getHeaders() });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
       } catch { showToast(t('messagerie.deleteError'), 'error'); return; }
     }
     setConversations((prev) => prev.filter((c) => c.id !== convId));
@@ -365,7 +365,8 @@ export default function Messagerie() {
     const newStarred = !conv.starred;
     if (!useMock) {
       try {
-        await fetch(`${API}/conversations/${convId}/star`, { method: 'PUT', headers: getHeaders() });
+        const res = await fetch(`${API}/conversations/${convId}/star`, { method: 'PUT', headers: getHeaders() });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
       } catch { showToast(t('messagerie.starError'), 'error'); return; }
     }
     setConversations((prev) =>
@@ -730,7 +731,18 @@ export default function Messagerie() {
                 <p className="text-xs text-[#9CA3AF] dark:text-mono-400">Chargement...</p>
               </div>
             )}
-            {!loading && filtered.length === 0 && (
+            {!loading && loadError && (
+              <div className="p-8 text-center">
+                <p className="text-sm font-medium text-red-600 dark:text-red-400">Impossible de charger la messagerie.</p>
+                <button
+                  onClick={() => fetchConversations()}
+                  className="mt-3 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#111111] dark:bg-white text-white dark:text-[#111111]"
+                >
+                  Réessayer
+                </button>
+              </div>
+            )}
+            {!loading && !loadError && filtered.length === 0 && (
               <div className="p-8 text-center">
                 <div className="w-16 h-16 rounded-2xl bg-mono-950 dark:bg-mono-50 flex items-center justify-center mx-auto mb-3">
                   <Inbox className="w-8 h-8 text-[#D1D5DB] dark:text-mono-350" />

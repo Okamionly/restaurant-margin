@@ -211,7 +211,7 @@ router.get('/auto-reorder', async (req: any, res) => {
     const bySupplier: Record<string, {
       supplierId: number | null;
       supplier: string;
-      items: { ingredientId: number; ingredient: string; currentStock: number; minQuantity: number; unit: string; suggestedQty: number; estimatedCost: number }[];
+      items: { ingredientId: number; ingredient: string; currentStock: number; minQuantity: number; unit: string; suggestedQty: number; estimatedCost: number; portionsPossibles: number | null; recipesUsing: number }[];
       totalCost: number;
     }> = {};
 

@@ -1286,6 +1286,12 @@ ${context}`;
     const cleanedText = fullText.replace(/```action\s*\n?[\s\S]*?```/g, '').trim();
 
     // ── Track AI usage ──
+    // FIX 2026-09-25 : `month` n'etait PAS defini dans cette route (il l'est dans
+    // les autres). L'evaluation du gabarit SQL levait donc une ReferenceError... a
+    // l'interieur du try ci-dessous, qui l'avalait. Resultat : la consommation de
+    // /chat — l'assistant le plus utilise — n'etait JAMAIS comptee, et son plafond
+    // mensuel ne progressait pas. Trouve par tsc sur le code serveur.
+    const month = new Date().toISOString().slice(0, 7);
     const inputTokens = usageData?.input_tokens || 0;
     const outputTokens = usageData?.output_tokens || 0;
     const estimatedCost = (inputTokens * 0.00025 + outputTokens * 0.00125) / 1000;

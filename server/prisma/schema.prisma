@@ -156,6 +156,7 @@ model Ingredient {
   inventoryItem InventoryItem?
   wasteLogs     WasteLog[]
 
+  priceHistory PriceHistory[]
   @@index([restaurantId, name])
   @@index([restaurantId, barcode])
   @@map("ingredients")
@@ -181,6 +182,7 @@ model Recipe {
   ingredients      RecipeIngredient[]
 
   @@index([restaurantId, category])
+  menuCalendar MenuCalendar[]
   @@map("recipes")
 }
 
@@ -255,6 +257,10 @@ model InvoiceItem {
 model PriceHistory {
   id           Int        @id @default(autoincrement())
   ingredientId Int
+  // Relation declaree le 2026-09-25 : la cle etrangere existe en base depuis
+  // longtemps, mais son absence du schema faisait planter tout include de
+  // l'ingredient (GET /api/price-history) et de l'historique (routes IA).
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
   price        Float
   date         String
   source       String     @default("manual")
@@ -377,6 +383,7 @@ model Employee {
   createdAt    DateTime   @default(now())
 
   @@index([restaurantId])
+  timeEntries  TimeEntry[]
   @@map("employees")
 }
 
@@ -667,4 +674,65 @@ model CustomerFeedback {
   @@index([restaurantId, createdAt])
   @@index([restaurantId, rating])
   @@map("customer_feedback")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tables presentes en base depuis longtemps mais ABSENTES du schema jusqu au
+// 2026-09-25 : le client Prisma ne les connaissait pas, donc prisma.referral,
+// prisma.newsletterSubscriber, prisma.timeEntry et prisma.menuCalendar valaient
+// undefined et CHAQUE route qui les utilisait plantait en 500 — parrainage,
+// inscription newsletter (formulaire public compris), pointage, calendrier des
+// menus. tsc le signalait (37 erreurs), mais le CI ne verifiait que client/.
+// Modeles ecrits d apres information_schema : colonnes, types, nullabilite,
+// defauts et contraintes REELS. Aucune migration : la base ne change pas.
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Referral {
+  id            Int       @id @default(autoincrement())
+  referrerId    Int?      @map("referrer_id")
+  refereeId     Int?      @map("referee_id")
+  referralCode  String    @unique @map("referral_code")
+  status        String?   @default("pending")
+  rewardApplied Boolean?  @default(false) @map("reward_applied")
+  createdAt     DateTime? @default(now()) @map("created_at")
+
+  @@map("referrals")
+}
+
+model NewsletterSubscriber {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+  unsubscribed Boolean? @default(false)
+
+  @@map("newsletter_subscribers")
+}
+
+model TimeEntry {
+  id           Int       @id @default(autoincrement())
+  employeeId   Int
+  employee     Employee  @relation(fields: [employeeId], references: [id])
+  restaurantId Int
+  // Colonne de type DATE : le code doit passer un objet Date, pas une chaine.
+  date         DateTime  @default(dbgenerated("CURRENT_DATE")) @db.Date
+  punchIn      DateTime  @default(now())
+  punchOut     DateTime?
+  totalMinutes Int?
+  notes        String?
+  createdAt    DateTime  @default(now())
+
+  @@map("time_entries")
+}
+
+model MenuCalendar {
+  id           Int      @id @default(autoincrement())
+  restaurantId Int
+  date         DateTime @db.Date
+  mealType     String   @default("lunch")
+  recipeId     Int
+  recipe       Recipe   @relation(fields: [recipeId], references: [id])
+  category     String?
+  createdAt    DateTime @default(now())
+
+  @@map("menu_calendar")
 }

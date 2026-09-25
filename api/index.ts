@@ -5010,12 +5010,12 @@ app.post('/api/timeclock/punch-in', authWithRestaurant, async (req: any, res) =>
     // Check if already punched in (open entry with no punchOut)
     const today = new Date().toISOString().slice(0, 10);
     const openEntry = await prisma.timeEntry.findFirst({
-      where: { employeeId, restaurantId: req.restaurantId, date: today, punchOut: null },
+      where: { employeeId, restaurantId: req.restaurantId, date: new Date(today), punchOut: null },
     });
     if (openEntry) return res.status(400).json({ error: 'Employé déjà pointé. Faites un punch-out d\'abord.' });
     const now = new Date();
     const entry = await prisma.timeEntry.create({
-      data: { employeeId, date: today, punchIn: now, notes: notes || null, restaurantId: req.restaurantId },
+      data: { employeeId, date: new Date(today), punchIn: now, notes: notes || null, restaurantId: req.restaurantId },
       include: { employee: { select: { id: true, name: true, role: true, color: true, hourlyRate: true } } },
     });
     res.status(201).json(entry);
@@ -5028,7 +5028,7 @@ app.post('/api/timeclock/punch-out', authWithRestaurant, async (req: any, res) =
     if (!employeeId) return res.status(400).json({ error: 'employeeId requis' });
     const today = new Date().toISOString().slice(0, 10);
     const openEntry = await prisma.timeEntry.findFirst({
-      where: { employeeId, restaurantId: req.restaurantId, date: today, punchOut: null },
+      where: { employeeId, restaurantId: req.restaurantId, date: new Date(today), punchOut: null },
     });
     if (!openEntry) return res.status(400).json({ error: 'Aucun pointage en cours pour cet employé.' });
     const now = new Date();
@@ -5047,7 +5047,7 @@ app.get('/api/timeclock/today', authWithRestaurant, async (req: any, res) => {
   try {
     const today = new Date().toISOString().slice(0, 10);
     const entries = await prisma.timeEntry.findMany({
-      where: { restaurantId: req.restaurantId, date: today },
+      where: { restaurantId: req.restaurantId, date: new Date(today) },
       include: { employee: { select: { id: true, name: true, role: true, color: true, hourlyRate: true } } },
       orderBy: { punchIn: 'asc' },
     });
@@ -5058,9 +5058,10 @@ app.get('/api/timeclock/today', authWithRestaurant, async (req: any, res) => {
 app.get('/api/timeclock/summary', authWithRestaurant, async (req: any, res) => {
   try {
     const { from, to } = req.query;
-    if (!from || !to) return res.status(400).json({ error: 'Paramètres requis : from, to (YYYY-MM-DD)' });
+    const JOUR = /^\d{4}-\d{2}-\d{2}$/;
+    if (!from || !to || !JOUR.test(String(from)) || !JOUR.test(String(to))) return res.status(400).json({ error: 'Paramètres requis : from, to (YYYY-MM-DD)' });
     const entries = await prisma.timeEntry.findMany({
-      where: { restaurantId: req.restaurantId, date: { gte: from as string, lte: to as string }, punchOut: { not: null } },
+      where: { restaurantId: req.restaurantId, date: { gte: new Date(from as string), lte: new Date(to as string) }, punchOut: { not: null } },
       include: { employee: { select: { id: true, name: true, role: true, color: true, hourlyRate: true } } },
       orderBy: [{ date: 'asc' }, { punchIn: 'asc' }],
     });
@@ -5075,7 +5076,8 @@ app.get('/api/timeclock/summary', authWithRestaurant, async (req: any, res) => {
       existing.totalMinutes += mins;
       existing.totalCost += (mins / 60) * entry.employee.hourlyRate;
       existing.entryCount++;
-      existing.days[entry.date] = (existing.days[entry.date] || 0) + mins;
+      const jourCle = new Date(entry.date).toISOString().slice(0, 10); // l interface indexe par AAAA-MM-JJ
+      existing.days[jourCle] = (existing.days[jourCle] || 0) + mins;
       employeeMap.set(entry.employeeId, existing);
     }
     const employees = Array.from(employeeMap.values()).map(e => ({
@@ -6842,38 +6844,51 @@ app.get('/api/presence/active', authMiddleware, (req: any, res) => {
 // afficher les actions recentes des autres users connectes. Si pas d'audit
 // log dispo (single user), on retourne array vide pour eviter 404 spam dans
 // la console. FIX 2026-05-07.
-app.get('/api/presence/audit-log', authMiddleware, async (req: any, res) => {
+// FIX 2026-09-25 — deux defauts qui se masquaient l'un l'autre :
+// 1. La requete selectionnait entityName et userName, qui n'existent pas sur
+//    AuditLog : elle echouait A CHAQUE APPEL, et le catch renvoyait [] en silence.
+//    Le fil d'activite collaboratif etait donc toujours vide, sans aucune trace.
+// 2. Le restaurant venait de l'en-tete x-restaurant-id SANS verifier que
+//    l'appelant en est membre (authMiddleware seul). Reparer la requete sans
+//    corriger ceci aurait ouvert une fuite : lire le journal d'un autre restaurant.
+// Desormais : authWithRestaurant (appartenance verifiee), champs reels, noms
+// d'utilisateurs resolus par jointure, et l'echec est journalise.
+app.get('/api/presence/audit-log', authWithRestaurant, async (req: any, res) => {
   try {
-    const limit = Math.min(parseInt(String(req.query.limit || '5'), 10), 20);
-    const since = req.query.since ? new Date(String(req.query.since)) : new Date(Date.now() - 60_000);
-    const restaurantId = req.headers['x-restaurant-id']
-      ? parseInt(String(req.headers['x-restaurant-id']), 10)
-      : null;
-
-    if (!restaurantId) {
-      return res.json([]);
-    }
+    const limit = Math.min(parseInt(String(req.query.limit || '5'), 10) || 5, 20);
+    const sinceBrut = req.query.since ? new Date(String(req.query.since)) : new Date(Date.now() - 60_000);
+    const since = isNaN(sinceBrut.getTime()) ? new Date(Date.now() - 60_000) : sinceBrut;
 
     const logs = await prisma.auditLog.findMany({
       where: {
-        restaurantId,
+        restaurantId: req.restaurantId,
         createdAt: { gte: since },
         userId: { not: req.user.userId },
       },
       orderBy: { createdAt: 'desc' },
       take: limit,
-      select: {
-        id: true,
-        action: true,
-        entityType: true,
-        entityName: true,
-        userName: true,
-        createdAt: true,
-      },
+      select: { id: true, action: true, entityType: true, entityId: true, userId: true, createdAt: true },
     });
-    res.json(logs);
+
+    const ids = Array.from(new Set(logs.map((l) => l.userId)));
+    const auteurs = ids.length
+      ? await prisma.user.findMany({ where: { id: { in: ids } }, select: { id: true, name: true, email: true } })
+      : [];
+    const nomDe = new Map(auteurs.map((u) => [u.id, u.name || u.email]));
+
+    res.json(logs.map((l) => ({
+      id: l.id,
+      action: l.action,
+      entityType: l.entityType,
+      entityId: l.entityId,
+      // Le journal ne stocke pas le libelle de l'entite : null plutot qu'un nom invente.
+      entityName: null,
+      userName: nomDe.get(l.userId) || 'Utilisateur',
+      createdAt: l.createdAt,
+    })));
   } catch (e: any) {
-    // Silently return empty — pas critique pour l'app
+    // Non bloquant pour l'app — mais plus jamais silencieux.
+    console.error('[PRESENCE AUDIT-LOG]', e?.message);
     res.json([]);
   }
 });

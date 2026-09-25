@@ -29,6 +29,41 @@ jobs:
       - name: Aucune preuve sociale fabriquee
         run: node scripts/verifier-preuve-sociale.cjs
 
+  # Le job « TypeScript Check » ne verifiait QUE client/. Le code serveur (api/ et
+  # api-lib/) n'etait controle par personne : le 2026-09-25, tsc y comptait 37
+  # erreurs, dont QUATRE modeles Prisma absents du schema depuis avril — parrainage,
+  # newsletter, pointage et calendrier des menus plantaient en 500 a chaque appel —,
+  # une variable non definie qui empechait de compter la consommation de l'assistant
+  # IA, et une relation manquante qui cassait l'historique des prix. Ramene a 0 ; ce
+  # job empeche d'y revenir.
+  typecheck-api:
+    name: TypeScript Check (API)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Le client Prisma porte les types des modeles : sans generation, tsc ne
+      # verrait pas qu'un modele manque au schema.
+      - name: Generer le client Prisma
+        run: npx prisma generate --schema prisma/schema.prisma
+        env:
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+          DIRECT_URL: postgresql://ci:ci@localhost:5432/ci
+
+      - name: Verifier les types du serveur
+        run: >
+          npx --yes -p typescript@5.9.3 tsc --noEmit --skipLibCheck --esModuleInterop
+          --target es2020 --module commonjs --moduleResolution node
+          --resolveJsonModule --allowSyntheticDefaultImports api/index.ts
+
   typecheck:
     name: TypeScript Check
     runs-on: ubuntu-latest

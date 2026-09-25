@@ -32,7 +32,7 @@ export const CIBLES: Cible[] = [
 export function ciblesDuJour(jour: number, adressePostale: string | undefined): Cible[] {
   const actives = CIBLES.filter((c) => c.pays !== 'Canada' || !!adressePostale);
   const n = actives.length;
-  return [0, 1, 2].map((k) => actives[(jour + k) % n]);
+  return [0, 1, 2, 3].map((k) => actives[(jour + k) % n]);
 }
 
 // Annuaires, guides, plateformes de livraison et reseaux : jamais le site du restaurant.

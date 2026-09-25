@@ -1959,6 +1959,8 @@ app.get('/api/cron/prospection', async (req: any, res) => {
     const adressePostale = process.env.PROSPECTION_ADRESSE_POSTALE || undefined;
     let candidats = 0;
     let pagesLues = 0;
+    let acceptes = 0;
+    let adressesVues = 0;
     let trouve: null | { nom: string; pays: string; ville: string; site: string; domaine: string; email: string; sourceUrl: string } = null;
 
     for (const cible of ciblesDuJour(Math.floor(Date.now() / 86_400_000), adressePostale)) {
@@ -1966,7 +1968,7 @@ app.get('/api/cron/prospection', async (req: any, res) => {
       const r = await fetch('https://api.tavily.com/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ api_key: tavilyKey, query: `restaurant ${cible.ville} ${cible.pays} site officiel contact réservation`, max_results: 10, search_depth: 'basic' }),
+        body: JSON.stringify({ api_key: tavilyKey, query: `restaurant ${cible.ville} ${cible.pays} site officiel contact réservation`, max_results: 15, search_depth: 'basic', include_raw_content: true }),
         signal: AbortSignal.timeout(15_000),
       });
       const resultats: any[] = ((await r.json().catch(() => ({}))) as any).results || [];
@@ -1985,10 +1987,13 @@ app.get('/api/cron/prospection', async (req: any, res) => {
           timeoutMs: 12_000,
         }).catch(() => ({ data: null as any }));
         if (!avis?.restaurant || !avis?.nom) continue;
-        // Adresse publiee sur le site lui-meme : accueil, puis pages de contact.
+        acceptes++;
+        // Adresse publiee sur le site lui-meme : la page trouvee, l'accueil, puis les
+        // pages de contact et les mentions legales (obligatoires en France, et qui
+        // portent souvent l'adresse quand la page contact n'a qu'un formulaire).
         const origine = new URL(url).origin;
-        const emails: string[] = [];
-        for (const chemin of ['', '/contact', '/nous-contacter', '/contactez-nous', '/infos']) {
+        const emails: string[] = extraireEmails(String(item.raw_content || ''));
+        for (const chemin of ['', '/contact', '/nous-contacter', '/contactez-nous', '/mentions-legales', '/fr/contact', '/contact.html', '/infos']) {
           if (choisirEmail(emails, domaine) || tempsRestant() < 20_000) break;
           try {
             const page = await fetch(origine + chemin, {
@@ -2001,13 +2006,14 @@ app.get('/api/cron/prospection', async (req: any, res) => {
             emails.push(...extraireEmails(await page.text()));
           } catch { /* page lente ou absente : on passe a la suivante */ }
         }
+        adressesVues += new Set(emails).size;
         const email = choisirEmail(emails, domaine);
         if (!email) continue;
         if (await prisma.prospect.findFirst({ where: { email }, select: { id: true } })) continue;
         trouve = { nom: String(avis.nom).slice(0, 120), pays: cible.pays, ville: cible.ville, site: origine, domaine, email, sourceUrl: url };
       }
     }
-    if (!trouve) return res.json({ envoye: 0, trouve: false, candidats, pages_lues: pagesLues });
+    if (!trouve) return res.json({ envoye: 0, trouve: false, candidats, restaurants_retenus: acceptes, adresses_vues: adressesVues, pages_lues: pagesLues });
 
     const code = 'RM-' + crypto.randomBytes(4).toString('hex').toUpperCase();
     const jeton = crypto.randomBytes(24).toString('hex');

@@ -14,6 +14,13 @@ beforeAll(() => {
   process.env['JWT_SECRET'] = TEST_SECRET;
 });
 
+// Chauffe du routeur d'authentification HORS du premier test (FIX 2026-09-25) :
+// voir la meme note dans auth-register.test.ts. L'import a froid comptait dans le
+// delai de 5 s du premier test et le faisait echouer sous charge.
+beforeAll(async () => {
+  await import('../api-lib/routes/auth');
+}, 30_000);
+
 const mockState = {
   user: null as null | {
     id: number;

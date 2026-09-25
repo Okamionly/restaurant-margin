@@ -534,6 +534,9 @@ model Conversation {
   unreadCount  Int        @default(0)
   isGroup      Boolean    @default(false)
   avatar       String     @default("")
+  // Colonne presente en base depuis longtemps mais absente du schema : le client
+  // Prisma ne la connaissait pas, et PUT /conversations/:id/star renvoyait 500.
+  starred      Boolean?   @default(false)
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())

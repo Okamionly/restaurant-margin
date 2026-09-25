@@ -5,6 +5,12 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['tests/**/*.test.ts'],
+    // Marge contre la charge machine (CI, build concurrent) : les 5 s par defaut
+    // etaient depassees par des tests par ailleurs corrects. Ce n'est pas un pansement
+    // sur un test lent : la cause (import a froid dans le 1er test) est traitee dans
+    // les fichiers auth-*.test.ts ; ceci n'est que la marge.
+    testTimeout: 15_000,
+    hookTimeout: 30_000,
     coverage: {
       provider: 'v8',
       // Coverage target = pure utility modules + middleware. Route files

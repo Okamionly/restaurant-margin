@@ -82,6 +82,20 @@ router.get('/:id', async (req: any, res) => {
 });
 
 // ============ POST /api/recipes ============
+// FIX 2026-09-25 (fuite inter-restaurants, audit confirme) : la creation et la
+// mise a jour d une recette acceptaient N IMPORTE QUEL ingredientId. Rattacher
+// l ingredient d un autre restaurant a sa propre recette suffisait a lire ensuite
+// son nom et son prix via GET de la recette. On exige que chaque ingredient
+// reference appartienne au restaurant de l appelant.
+async function ingredientsHorsRestaurant(ingredients: any, restaurantId: number): Promise<boolean> {
+  if (!Array.isArray(ingredients) || ingredients.length === 0) return false;
+  const brut = ingredients.map((i: any) => Number(i?.ingredientId));
+  if (brut.some((n: number) => !Number.isInteger(n))) return true; // id absent ou invalide
+  const ids = Array.from(new Set(brut));
+  const trouves = await prisma.ingredient.count({ where: { id: { in: ids }, restaurantId, deletedAt: null } });
+  return trouves !== ids.length;
+}
+
 router.post('/', async (req: any, res) => {
   try {
     const { name, category, sellingPrice, nbPortions, description, prepTimeMinutes, cookTimeMinutes, laborCostPerHour, ingredients } = req.body;
@@ -95,6 +109,7 @@ router.post('/', async (req: any, res) => {
       const lCheck = validatePositiveNumber(laborCostPerHour, 'Coût main d\'oeuvre/h');
       if (!lCheck.valid) return res.status(400).json({ error: 'Erreur création recette', details: lCheck.error });
     }
+    if (await ingredientsHorsRestaurant(ingredients, req.restaurantId)) return res.status(400).json({ error: 'Erreur création recette', details: 'Ingrédient inconnu pour ce restaurant' });
     const recipe = await prisma.recipe.create({
       data: {
         name: safeName, category: safeCategory, sellingPrice: spCheck.valid && spCheck.value !== undefined ? spCheck.value : (parseFloat(sellingPrice) || 0), nbPortions: parseInt(nbPortions) || 1,
@@ -142,6 +157,7 @@ router.put('/:id', async (req: any, res) => {
     if (cookTimeMinutes !== undefined) updateData.cookTimeMinutes = cookTimeMinutes != null ? parseInt(cookTimeMinutes) : null;
     if (laborCostPerHour !== undefined) updateData.laborCostPerHour = laborCostPerHour != null ? parseFloat(laborCostPerHour) : 0;
 
+    if (ingredients && await ingredientsHorsRestaurant(ingredients, req.restaurantId)) return res.status(400).json({ error: 'Erreur mise à jour recette', details: 'Ingrédient inconnu pour ce restaurant' });
     const updated = await prisma.$transaction(async (tx) => {
       await tx.recipe.update({ where: { id: recipeId }, data: updateData });
       if (ingredients) {

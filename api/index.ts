@@ -2820,12 +2820,29 @@ app.post('/api/invoices', authWithRestaurant, async (req, res) => {
 app.post('/api/invoices/:id/apply', authWithRestaurant, async (req, res) => {
   try {
     const invoiceId = parseInt(req.params.id);
+    const restaurantId = (req as any).restaurantId;
     const { matches } = req.body; // [{ itemId, ingredientId }]
+    // FIX 2026-09-25 (ecriture inter-restaurants, audit confirme) : ni la facture,
+    // ni la ligne, ni l'ingredient n'etaient filtres par restaurant. Un compte
+    // d'essai pouvait reecrire le prix de N'IMPORTE QUEL ingredient de la base (416
+    // ingredients, 13 restaurants, ids sequentiels) et passer n'importe quelle facture
+    // en « processed ». La voie jumelle /api/invoices/import, elle, filtrait bien :
+    // c'est un second chemin qui echappait a la garde du premier.
+    // On verifie maintenant les TROIS appartenances avant toute ecriture.
+    const facture = await prisma.invoice.findFirst({ where: { id: invoiceId, restaurantId, deletedAt: null } });
+    if (!facture) return res.status(404).json({ error: 'Facture introuvable' });
     const applied = await prisma.$transaction(async (tx) => {
       let count = 0;
       for (const match of matches || []) {
-        const item = await tx.invoiceItem.findUnique({ where: { id: match.itemId } });
+        // La ligne doit appartenir a CETTE facture...
+        const item = await tx.invoiceItem.findFirst({ where: { id: match.itemId, invoiceId } });
         if (!item || !item.unitPrice) continue;
+        // ...et l'ingredient a CE restaurant.
+        const ingredientAutorise = await tx.ingredient.findFirst({
+          where: { id: match.ingredientId, restaurantId, deletedAt: null },
+          select: { id: true },
+        });
+        if (!ingredientAutorise) continue;
         // Update ingredient price
         await tx.ingredient.update({
           where: { id: match.ingredientId },
@@ -3290,8 +3307,27 @@ app.get('/api/messages/conversations/:id', authWithRestaurant, async (req: any, 
   } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur chargement conversation' }); }
 });
 
+// ── Appartenance d'une conversation au restaurant de l'appelant ──
+// FIX 2026-09-25 (IDOR, audit confirme par un verificateur independant) : cinq
+// routes ci-dessous (lecture des messages, envoi, marquage lu, suppression,
+// favori) cherchaient la conversation par son SEUL id, sans jamais verifier son
+// restaurant — alors que GET /conversations/:id et ai-draft le faisaient. Un
+// compte d'essai pouvait donc lire, supprimer, ou ECRIRE dans la conversation
+// d'un autre restaurant ; et l'envoi partait par email reel depuis contact@ vers
+// le correspondant de cet autre restaurant. Les ids ont la forme `conv-<horodatage>`,
+// donc devinables.
+// Toute route /conversations/:id doit passer par ici : 404 plutot que 403, pour ne
+// pas confirmer l'existence d'une conversation etrangere.
+async function conversationDuRestaurant(req: any) {
+  return prisma.conversation.findFirst({
+    where: { id: String(req.params.id), restaurantId: req.restaurantId },
+  });
+}
+
 app.get('/api/messages/conversations/:id/messages', authWithRestaurant, async (req: any, res) => {
   try {
+    const conv = await conversationDuRestaurant(req);
+    if (!conv) return res.status(404).json({ error: 'Conversation introuvable' });
     const messages = await prisma.message.findMany({
       where: { conversationId: req.params.id },
       orderBy: { createdAt: 'asc' },
@@ -3304,6 +3340,8 @@ app.post('/api/messages/conversations/:id/messages', authWithRestaurant, async (
   try {
     const { content, senderId, senderName, subject } = req.body;
     if (!content?.trim()) return res.status(400).json({ error: 'Erreur envoi message', details: 'Le contenu est requis' });
+    const convAutorisee = await conversationDuRestaurant(req);
+    if (!convAutorisee) return res.status(404).json({ error: 'Conversation introuvable' });
     const safeContent = sanitizeInput(content);
     const safeSenderName = senderName ? sanitizeInput(senderName) : (req.user?.email || 'Moi');
     const safeSubject = subject ? sanitizeInput(subject) : undefined;
@@ -3327,7 +3365,9 @@ app.post('/api/messages/conversations/:id/messages', authWithRestaurant, async (
     try {
       const resendKey = process.env.RESEND_API_KEY;
       if (resendKey) {
-        const conv = await prisma.conversation.findUnique({ where: { id: req.params.id } });
+        // La conversation deja verifiee comme appartenant a ce restaurant : on ne
+        // la relit plus par son seul id.
+        const conv = convAutorisee;
         if (conv && conv.participants && conv.participants.length > 0) {
           const recipientEmail = conv.participants[0];
           // Only send if recipient is an external email (not ourselves)
@@ -3432,6 +3472,7 @@ REGLES ABSOLUES :
 
 app.put('/api/messages/conversations/:id/read', authWithRestaurant, async (req: any, res) => {
   try {
+    if (!(await conversationDuRestaurant(req))) return res.status(404).json({ error: 'Conversation introuvable' });
     await prisma.conversation.update({
       where: { id: req.params.id },
       data: { unreadCount: 0 },
@@ -3447,6 +3488,7 @@ app.put('/api/messages/conversations/:id/read', authWithRestaurant, async (req: 
 // ── Delete conversation ──
 app.delete('/api/messages/conversations/:id', authWithRestaurant, async (req: any, res) => {
   try {
+    if (!(await conversationDuRestaurant(req))) return res.status(404).json({ error: 'Conversation introuvable' });
     await prisma.$transaction(async (tx) => {
       await tx.message.deleteMany({ where: { conversationId: req.params.id } });
       await tx.conversation.delete({ where: { id: req.params.id } });
@@ -3458,7 +3500,7 @@ app.delete('/api/messages/conversations/:id', authWithRestaurant, async (req: an
 // ── Toggle star on conversation ──
 app.put('/api/messages/conversations/:id/star', authWithRestaurant, async (req: any, res) => {
   try {
-    const conv = await prisma.conversation.findUnique({ where: { id: req.params.id } });
+    const conv = await conversationDuRestaurant(req);
     if (!conv) return res.status(404).json({ error: 'Conversation introuvable' });
     const updated = await prisma.conversation.update({
       where: { id: req.params.id },
@@ -4052,7 +4094,9 @@ app.post('/api/waste', authWithRestaurant, async (req: any, res) => {
     if (!ingredientId || quantity == null || !unit || !reason || !date) return res.status(400).json({ error: 'Champs requis : ingredientId, quantity, unit, reason, date' });
     const validReasons = ['expired', 'spoiled', 'overproduction', 'damaged', 'other'];
     if (!validReasons.includes(reason)) return res.status(400).json({ error: `Raison invalide. Valeurs acceptées : ${validReasons.join(', ')}` });
-    const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId, deletedAt: null } });
+    // FIX 2026-09-25 : filtre par restaurant ajoute. Sans lui, declarer une perte sur
+    // l id d un ingredient ETRANGER renvoyait son nom et son prix (fuite en lecture).
+    const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId, restaurantId: req.restaurantId, deletedAt: null } });
     if (!ingredient) return res.status(404).json({ error: 'Ingrédient non trouvé' });
     // Cost = quantity converted to bulk unit * pricePerUnit
     // The waste form sends quantity in `unit`, but price is always per bulk unit (kg/L).
@@ -5231,8 +5275,11 @@ app.post('/api/marketplace/orders/:id/receive', authWithRestaurant, async (req: 
     if (Array.isArray(receivedItems)) {
       for (const ri of receivedItems) {
         if (ri.itemId && ri.receivedQuantity !== undefined) {
-          await prisma.marketplaceOrderItem.update({
-            where: { id: ri.itemId },
+          // FIX 2026-09-25 : la commande etait verifiee, mais pas que la ligne lui
+          // appartient. updateMany + orderId : une ligne d une autre commande (d un
+          // autre restaurant) n est plus modifiable par ce biais.
+          await prisma.marketplaceOrderItem.updateMany({
+            where: { id: ri.itemId, orderId: id },
             data: { receivedQuantity: parseFloat(ri.receivedQuantity) },
           });
         }

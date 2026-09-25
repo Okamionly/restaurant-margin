@@ -12,6 +12,16 @@ beforeAll(() => {
   delete process.env['RESEND_API_KEY'];
 });
 
+// Chauffe du routeur d'authentification HORS du premier test (FIX 2026-09-25).
+// Son import charge express, resend, otplib, qrcode, jsonwebtoken, upstash et zod :
+// fait dans le corps du premier test, ce cout comptait dans son delai de 5 s, qui
+// sautait des que la machine etait chargee (9 fichiers en parallele, ou juste apres
+// un vite build) — d'ou des echecs a 5 014 / 6 600 ms qui repassaient en relancant.
+// Une fois importe ici, le import() de callRegister est servi par le cache.
+beforeAll(async () => {
+  await import('../api-lib/routes/auth');
+}, 30_000);
+
 // ── Prisma mock factory ──────────────────────────────────────────────────────
 const mockPrismaState = {
   userCount: 0,

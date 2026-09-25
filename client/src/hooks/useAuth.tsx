@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import type { User, LoginCredentials, RegisterData } from '../types';
-import { login as apiLogin, register as apiRegister, getMe, getToken, setToken, removeToken, setActiveRestaurantId, removeActiveRestaurantId, getActiveRestaurantId } from '../services/api';
+import { login as apiLogin, register as apiRegister, getMe, getToken, setToken, removeToken, setActiveRestaurantId, removeActiveRestaurantId, getActiveRestaurantId, logoutServer } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -67,6 +67,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    // Revoque le jeton et efface le cookie cote serveur, purge les caches de
+    // reponses API. Lance AVANT removeToken() : ses en-tetes sont lus a l'appel.
+    void logoutServer();
     removeToken();
     removeActiveRestaurantId();
     setUser(null);

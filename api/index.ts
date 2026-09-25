@@ -28,7 +28,7 @@ import { getOpenApiSpec } from '../api-lib/openapi/spec';
 import { getUnitDivisor } from '../api-lib/utils/unitConversion';
 import { getTemperatureStatus } from '../api-lib/utils/haccp';
 import { calculateRecipeMargin } from '../api-lib/utils/marginCalculator';
-import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit, requireMFA, setGUC } from '../api-lib/middleware';
+import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit, requireMFA, setGUC, authMiddleware, authWithRestaurant } from '../api-lib/middleware';
 import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail, buildTrialExpiringEmail, buildTrialLastDayEmail, buildTrialExpiredEmail } from '../api-lib/utils/emailTemplates';
 import { buildOnboardingDay1Email, buildOnboardingDay3Email, buildOnboardingDay7Email } from '../api-lib/utils/onboardingTemplates';
 
@@ -587,54 +587,13 @@ app.get('/api/health', async (req: any, res) => {
 });
 
 // --- Auth Middleware ---
-interface JwtPayload { userId: number; email: string; role: string; }
-
-function authMiddleware(req: any, res: any, next: any) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Token requis' });
-  }
-  try {
-    const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload;
-    req.user = decoded;
-    next();
-  } catch {
-    return res.status(401).json({ error: 'Token invalide' });
-  }
-}
-
-async function authWithRestaurant(req: any, res: any, next: any) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Token requis' });
-  }
-  try {
-    const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload;
-    req.user = decoded;
-  } catch {
-    return res.status(401).json({ error: 'Token invalide' });
-  }
-  const restaurantHeader = req.headers['x-restaurant-id'];
-  if (!restaurantHeader) {
-    return res.status(400).json({ error: 'X-Restaurant-Id header requis' });
-  }
-  const restaurantId = parseInt(String(restaurantHeader), 10);
-  if (isNaN(restaurantId)) {
-    return res.status(400).json({ error: 'X-Restaurant-Id invalide' });
-  }
-  try {
-    const member = await prisma.restaurantMember.findFirst({
-      where: { userId: req.user.userId, restaurantId },
-    });
-    if (!member) {
-      return res.status(403).json({ error: 'Accès refusé à ce restaurant' });
-    }
-    req.restaurantId = restaurantId;
-    next();
-  } catch {
-    return res.status(500).json({ error: 'Erreur vérification restaurant' });
-  }
-}
+// FIX 2026-09-25 : ce fichier redefinissait ses propres authMiddleware et
+// authWithRestaurant, qui ne consultaient NI la liste de revocation (jti) NI le
+// statut du compte. Toutes les routes d'index.ts et les routeurs montes plus bas
+// acceptaient donc un jeton revoque par /api/auth/logout ou par la suppression
+// RGPD, jusqu'a son expiration (7 jours). Les versions partagees
+// (api-lib/middleware.ts) font ces controles : on les importe, on ne les recopie
+// plus. Une garde (tests/auth-revocation.test.ts) refuse le retour d'une copie locale.
 
 // --- Margin Calculator (extracted to api-lib/utils/marginCalculator.ts) ---
 function calculateMargin(recipe: any) {

@@ -1,5 +1,5 @@
 import type { Ingredient, Recipe, Supplier, User, LoginCredentials, RegisterData, InventoryItem, InventoryValue, RecipeOptimizationResult } from '../types';
-import { saveToOffline, getFromOffline, addPendingAction, isOffline, type OfflineStoreName } from './offlineStore';
+import { saveToOffline, getFromOffline, addPendingAction, isOffline, clearCachedData, type OfflineStoreName } from './offlineStore';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -212,6 +212,29 @@ export function setToken(token: string): void {
 
 export function removeToken(): void {
   localStorage.removeItem('token');
+}
+
+/**
+ * Deconnexion cote serveur + purge des caches de reponses API du compte.
+ *
+ * FIX 2026-09-25 : la deconnexion ne faisait que vider le localStorage. Le jeton
+ * restait valide 7 jours, le cookie httpOnly aussi (le JS ne peut pas
+ * l'effacer : seul le serveur le peut), et les caches de reponses servaient les
+ * donnees de l'ancien compte au suivant sur le meme appareil.
+ * A appeler AVANT removeToken() : les en-tetes sont lus a l'appel.
+ * keepalive : la requete survit a une navigation qui decharge la page.
+ */
+export async function logoutServer(): Promise<void> {
+  const requete = fetch(`${API_BASE}/auth/logout`, {
+    method: 'POST',
+    headers: authHeaders(),
+    credentials: 'include',
+    keepalive: true,
+  }).catch(() => { /* hors ligne : le nettoyage local a lieu quand meme */ });
+  apiCache.clear();
+  try { if ('caches' in window) await caches.delete('api-get-cache'); } catch { /* navigateur sans Cache API */ }
+  try { await clearCachedData(); } catch { /* IndexedDB indisponible */ }
+  await requete;
 }
 
 // --- CSRF Token Management (Double-Submit Cookie Pattern) ---

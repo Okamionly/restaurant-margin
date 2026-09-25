@@ -20,14 +20,19 @@ export interface JwtPayload {
 }
 
 /**
- * Pull a JWT off the request: cookie first (preferred, httpOnly), Authorization
- * header second (back-compat for native clients and pre-cookie sessions).
+ * Pull a JWT off the request: Authorization header first, httpOnly cookie second.
+ *
+ * FIX 2026-09-25 : l'ordre etait inverse (cookie d'abord). Or le client envoie
+ * TOUJOURS le Bearer de la session en cours, alors que le cookie peut appartenir
+ * au compte precedent (7 jours, que le JS ne peut pas effacer) : sur un poste
+ * partage, une requete pouvait etre servie au nom de l'ancien compte. Le Bearer
+ * designe sans ambiguite la session que l'utilisateur voit a l'ecran.
  */
 function extractToken(req: any): string | null {
-  const cookieToken = req.cookies?.[AUTH_COOKIE_NAME];
-  if (cookieToken && typeof cookieToken === 'string') return cookieToken;
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) return authHeader.split(' ')[1];
+  const cookieToken = req.cookies?.[AUTH_COOKIE_NAME];
+  if (cookieToken && typeof cookieToken === 'string') return cookieToken;
   return null;
 }
 
@@ -69,8 +74,11 @@ export async function authWithRestaurant(req: any, res: any, next: any) {
     return res.status(400).json({ error: 'X-Restaurant-Id invalide' });
   }
   try {
+    // Un compte supprime (RGPD ou admin) garde ses lignes de membre et, sur ses
+    // autres appareils, un jeton encore signe : c'est ici qu'on le coupe, sans
+    // requete supplementaire (jointure dans la verification d'appartenance).
     const member = await prisma.restaurantMember.findFirst({
-      where: { userId: req.user.userId, restaurantId },
+      where: { userId: req.user.userId, restaurantId, user: { role: { not: 'deleted' } } },
     });
     if (!member) {
       return res.status(403).json({ error: 'Accès refusé à ce restaurant' });

@@ -74,15 +74,13 @@ export default function Login() {
   // redirige vers /login?code=XXX, le frontend POST /api/auth/oauth/exchange
   // pour echanger le code (one-time, 60s TTL) contre un JWT. Plus secure
   // qu'un token-in-URL (OWASP A01).
+  //
+  // FIX 2026-09-25 : la branche historique ?token= est retiree. Le serveur n'emet
+  // plus ce format (seulement ?code=, verifie par recherche dans api/ et api-lib/),
+  // et elle ecrivait dans le navigateur N'IMPORTE QUEL jeton passe dans l'URL :
+  // un lien piege suffisait a connecter une victime au compte d'un attaquant
+  // (login CSRF), qui aurait ensuite lu tout ce qu'elle saisissait.
   useEffect(() => {
-    const oauthToken = searchParams.get('token');
-    if (oauthToken) {
-      localStorage.setItem('token', oauthToken);
-      trackEvent('login', { method: 'google' });
-      window.location.replace('/dashboard');
-      return;
-    }
-
     // OAuth one-time code exchange (pattern principal utilise par backend)
     const oauthCode = searchParams.get('code');
     if (oauthCode) {

@@ -82,6 +82,22 @@ export async function saveToOffline(storeName: OfflineStoreName, data: any[]): P
  * Get all records from an offline store.
  * Used as fallback when network requests fail.
  */
+/**
+ * Vide les copies locales des donnees serveur (recettes, ingredients,
+ * fournisseurs, inventaire). Appele a la deconnexion : ces magasins ne sont pas
+ * partitionnes par compte, et le compte suivant sur le meme appareil les aurait
+ * vus hors ligne. La file des ecritures en attente n'est PAS touchee.
+ */
+export async function clearCachedData(): Promise<void> {
+  const db = await openDB();
+  await Promise.all(DATA_STORES.map((name) => new Promise<void>((resolve, reject) => {
+    const tx = db.transaction(name, 'readwrite');
+    tx.objectStore(name).clear();
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  })));
+}
+
 export async function getFromOffline(storeName: OfflineStoreName): Promise<any[]> {
   const db = await openDB();
   return new Promise((resolve, reject) => {

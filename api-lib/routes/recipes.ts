@@ -57,7 +57,9 @@ const recipeInclude = { ingredients: { include: { ingredient: true } } } as cons
 router.get('/', async (req: any, res) => {
   try {
     const { limit, offset, search } = req.query;
-    if (!search) res.set('Cache-Control', 'private, max-age=300');
+    // FIX 2026-09-25 : max-age=300 resservait 5 min des marges perimees apres une
+    // modification de prix (voir le meme correctif dans ingredients.ts).
+    res.set('Cache-Control', 'private, no-cache');
     if (limit !== undefined || offset !== undefined) {
       const take = Math.min(parseInt(limit) || 100, 500);
       const skip = parseInt(offset) || 0;

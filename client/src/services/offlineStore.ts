@@ -90,12 +90,16 @@ export async function saveToOffline(storeName: OfflineStoreName, data: any[]): P
  */
 export async function clearCachedData(): Promise<void> {
   const db = await openDB();
-  await Promise.all(DATA_STORES.map((name) => new Promise<void>((resolve, reject) => {
-    const tx = db.transaction(name, 'readwrite');
-    tx.objectStore(name).clear();
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  })));
+  try {
+    await Promise.all(DATA_STORES.map((name) => new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(name, 'readwrite');
+      tx.objectStore(name).clear();
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    })));
+  } finally {
+    db.close();
+  }
 }
 
 export async function getFromOffline(storeName: OfflineStoreName): Promise<any[]> {

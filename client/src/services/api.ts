@@ -1,5 +1,5 @@
 import type { Ingredient, Recipe, Supplier, User, LoginCredentials, RegisterData, InventoryItem, InventoryValue, RecipeOptimizationResult } from '../types';
-import { saveToOffline, getFromOffline, addPendingAction, isOffline, clearCachedData, type OfflineStoreName } from './offlineStore';
+import { saveToOffline, getFromOffline, addPendingAction, getPendingActions, removePendingAction, isOffline, clearCachedData, type OfflineStoreName, type PendingAction } from './offlineStore';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -96,21 +96,29 @@ function setCache(key: string, data: unknown): void {
   apiCache.set(key, { data, timestamp: Date.now() });
 }
 
-/** Invalidate all cache entries matching a base path (on write operations) */
-function invalidateCacheByPath(url: string): void {
-  // Extract the base resource path, e.g. /api/ingredients/5 -> /api/ingredients
-  const basePath = url.replace(/\/\d+(?:\/.*)?$/, '');
-  for (const key of apiCache.keys()) {
-    if (key.startsWith(basePath)) {
-      apiCache.delete(key);
-    }
-  }
+/**
+ * Invalide le cache GET apres une ecriture.
+ * FIX 2026-09-25 : seul le prefixe de la ressource ecrite etait invalide ; or une
+ * ecriture sur /api/ingredients change aussi les marges servies par
+ * /api/recipes, qui restaient perimees jusqu'a 60 s. Les ecritures sont rares
+ * devant les lectures : on vide tout, c'est toujours juste.
+ */
+function invalidateCacheByPath(_url: string): void {
+  apiCache.clear();
+}
+
+/**
+ * Cle du cache memoire : l'URL ET le restaurant actif. Indexe par l'URL seule, le
+ * cache servait les donnees d'un restaurant apres un changement de restaurant.
+ */
+function cleCache(url: string): string {
+  return `${getActiveRestaurantId() || '-'}|${url}`;
 }
 
 /** Cached GET: check in-memory cache, fetch if miss, store result */
 async function cachedGet<T>(url: string, options: RequestInit): Promise<T> {
   if (!shouldSkipCache(url)) {
-    const hit = getFromCache<T>(url);
+    const hit = getFromCache<T>(cleCache(url));
     if (hit !== null) return hit;
   }
   let res: Response;
@@ -122,7 +130,7 @@ async function cachedGet<T>(url: string, options: RequestInit): Promise<T> {
   }
   const data = await handleResponse<T>(res);
   if (!shouldSkipCache(url)) {
-    setCache(url, data);
+    setCache(cleCache(url), data);
   }
   return data;
 }
@@ -142,7 +150,7 @@ function urlToStore(url: string): OfflineStoreName | null {
 async function offlineAwareGet<T>(url: string, options: RequestInit): Promise<T> {
   // Check in-memory cache first (skip for auth/ai paths)
   if (!shouldSkipCache(url)) {
-    const cached = getFromCache<T>(url);
+    const cached = getFromCache<T>(cleCache(url));
     if (cached !== null) return cached;
   }
 
@@ -152,7 +160,7 @@ async function offlineAwareGet<T>(url: string, options: RequestInit): Promise<T>
     const data = await handleResponse<T>(res);
     // Write to in-memory cache
     if (!shouldSkipCache(url)) {
-      setCache(url, data);
+      setCache(cleCache(url), data);
     }
     // Cache list responses (arrays only) in IndexedDB
     if (store && Array.isArray(data)) {
@@ -176,16 +184,21 @@ async function offlineAwareGet<T>(url: string, options: RequestInit): Promise<T>
 /** Wrap a write fetch (POST/PUT/DELETE): queue if offline, invalidate cache on success */
 async function offlineAwareWrite<T>(url: string, options: RequestInit): Promise<T> {
   if (isOffline()) {
-    // Queue the action for later sync
+    // Mise en file pour rejeu au retour du reseau (rejouerFileHorsLigne). Le jeton
+    // et le jeton CSRF ne sont PAS stockes : ils sont reconstruits au rejeu (ils
+    // peuvent avoir change, et un jeton n'a rien a faire dans IndexedDB). Le
+    // restaurant d'origine, lui, est garde.
+    const entetes = { ...(options.headers as Record<string, string> | undefined) };
+    delete entetes['Authorization'];
+    delete entetes['X-CSRF-Token'];
     await addPendingAction({
       timestamp: Date.now(),
       method: (options.method || 'POST') as 'POST' | 'PUT' | 'DELETE',
       url,
       body: options.body as string | undefined,
-      headers: options.headers as Record<string, string> | undefined,
+      headers: entetes,
     });
-    // Return a placeholder so the UI can continue
-    throw new Error('Action enregistrée hors-ligne. Elle sera synchronisée automatiquement.');
+    throw new Error('Hors ligne : modification enregistrée sur cet appareil. Elle sera envoyée automatiquement au retour du réseau.');
   }
   let res: Response;
   try {
@@ -198,6 +211,67 @@ async function offlineAwareWrite<T>(url: string, options: RequestInit): Promise<
   // Invalidate in-memory GET cache for the same resource path
   invalidateCacheByPath(url);
   return data;
+}
+
+// --- Rejeu de la file hors ligne ---
+
+export interface BilanRejeu { appliquees: number; refusees: number; restantes: number }
+let rejeuEnCours: Promise<BilanRejeu> | null = null;
+
+/** Nombre d'ecritures faites hors ligne qui attendent le reseau. */
+export async function compterFileHorsLigne(): Promise<number> {
+  try { return (await getPendingActions()).length; } catch { return 0; }
+}
+
+/**
+ * Rejoue, dans l'ordre, les ecritures faites hors ligne.
+ *
+ * FIX 2026-09-25 : la file etait remplie mais JAMAIS relue (aucun appelant de
+ * getPendingActions), alors que le message promettait une synchronisation
+ * automatique ; et la barre « Synchroniser » vidait une autre file, que rien
+ * n'ecrivait, sans rien envoyer.
+ * - en-tetes reconstruits (jeton et CSRF du moment), restaurant d'ORIGINE garde ;
+ * - 2xx : appliquee, retiree de la file ;
+ * - autre 4xx : definitivement refusee par le serveur, retiree et signalee ;
+ * - 401, 5xx ou reseau : on s'arrete et on garde la suite (l'ordre compte).
+ */
+export function rejouerFileHorsLigne(): Promise<BilanRejeu> {
+  if (rejeuEnCours) return rejeuEnCours;
+  rejeuEnCours = (async () => {
+    let appliquees = 0;
+    let refusees = 0;
+    let actions: PendingAction[] = [];
+    try { actions = await getPendingActions(); } catch { /* IndexedDB indisponible */ }
+    for (const a of actions) {
+      if (isOffline() || !getToken()) break;
+      const headers = authHeaders();
+      const restaurantOrigine = a.headers?.['X-Restaurant-Id'];
+      if (restaurantOrigine) headers['X-Restaurant-Id'] = restaurantOrigine;
+      let res: Response;
+      try {
+        res = await fetch(a.url, { method: a.method, headers, body: a.body });
+      } catch {
+        break; // reseau retombe : on reessaiera
+      }
+      if (res.ok) {
+        appliquees++;
+        if (a.id != null) await removePendingAction(a.id).catch(() => {});
+        continue;
+      }
+      if (res.status === 401 || res.status >= 500) break;
+      refusees++;
+      if (a.id != null) await removePendingAction(a.id).catch(() => {});
+    }
+    if (appliquees > 0) {
+      apiCache.clear();
+      emitToast(`${appliquees} modification${appliquees > 1 ? 's' : ''} faite${appliquees > 1 ? 's' : ''} hors ligne envoyée${appliquees > 1 ? 's' : ''}`, 'success');
+    }
+    if (refusees > 0) {
+      emitToast(`${refusees} modification${refusees > 1 ? 's' : ''} faite${refusees > 1 ? 's' : ''} hors ligne refusée${refusees > 1 ? 's' : ''} par le serveur`, 'error');
+    }
+    return { appliquees, refusees, restantes: await compterFileHorsLigne() };
+  })().finally(() => { rejeuEnCours = null; });
+  return rejeuEnCours;
 }
 
 // --- Token Management ---

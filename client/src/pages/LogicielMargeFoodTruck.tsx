@@ -66,7 +66,7 @@ const faqItems = [
   {
     question: "Le logiciel fonctionne-t-il dans le camion sans Wi-Fi ?",
     answer:
-      "Oui. RestauMargin est une PWA (Progressive Web App) avec mode hors-ligne complet. Vous saisissez vos commandes, encaissements et stocks dans le truck meme sans 4G. La synchronisation se fait automatiquement des que vous retrouvez du reseau (retour au laboratoire ou zone couverte). Aucune donnee perdue.",
+      "En partie. RestauMargin est une application web installable (PWA). Sans reseau, vous consultez les ingredients, fiches techniques, fournisseurs et stocks deja charges, et vous pouvez les modifier : ces modifications sont conservees sur l'appareil et envoyees automatiquement des que le reseau revient, l'application ouverte. Les autres fonctions (commandes fournisseurs, assistant IA, messagerie) demandent une connexion.",
   },
   {
     question: "Comment gerer la preparation centralisee en laboratoire ?",

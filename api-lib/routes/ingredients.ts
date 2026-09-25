@@ -32,9 +32,11 @@ const recipeInclude = { ingredients: { include: { ingredient: true } } } as cons
 router.get('/', async (req: any, res) => {
   try {
     const { limit, offset, search } = req.query;
-    // Hint browsers/CDN to cache for 5 min on idempotent list reads.
-    // Skipped when ?search is present (per-user, per-query — too granular).
-    if (!search) res.set('Cache-Control', 'private, max-age=300');
+    // FIX 2026-09-25 : 'private, max-age=300' laissait le navigateur resservir la
+    // liste 5 min SANS demander au serveur : apres une modification de prix, la
+    // liste reaffichait l'ancien prix, et la cle de cache (l'URL seule) ignorait le
+    // restaurant actif. no-cache = le navigateur doit revalider a chaque lecture.
+    res.set('Cache-Control', 'private, no-cache');
     if (limit !== undefined || offset !== undefined) {
       const take = Math.min(parseInt(limit) || 100, 500);
       const skip = parseInt(offset) || 0;

@@ -129,12 +129,18 @@ export default defineConfig({
           /^\/carrieres$/,
         ],
         runtimeCaching: [
-          // API GET requests: serve stale while revalidating
+          // API GET : le reseau d'abord ; le cache ne sert que de repli hors ligne.
+          // FIX 2026-09-25 : StaleWhileRevalidate servait TOUJOURS la reponse en
+          // cache en premier : apres une modification (prix, recette), l'ecran
+          // reaffichait l'ancienne valeur jusqu'a 5 min. Les reponses portent
+          // Vary: Authorization, X-Restaurant-Id : le repli ne melange ni les
+          // comptes ni les restaurants.
           {
             urlPattern: /\/api\/(?!auth\/)(?!ai\/)(.*)/i,
-            handler: 'StaleWhileRevalidate',
+            handler: 'NetworkFirst',
             method: 'GET',
             options: {
+              networkTimeoutSeconds: 4,
               cacheName: 'api-get-cache',
               expiration: {
                 maxEntries: 150,

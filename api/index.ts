@@ -77,6 +77,15 @@ app.use(cors({
 // Parse cookies (auth_token httpOnly cookie + csrf_token); must run before
 // any route that calls req.cookies (auth middleware reads auth_token cookie).
 app.use(cookieParser());
+// Les reponses API dependent du compte (Authorization) et du restaurant actif
+// (X-Restaurant-Id) : tout cache - navigateur, service worker - doit les
+// distinguer. Sans ce Vary, un repli hors ligne pouvait servir la liste d'un
+// restaurant a un autre (reproduit lors de l'audit du 2026-09-25).
+app.use('/api', (_req, res, next) => {
+  res.vary('Authorization');
+  res.vary('X-Restaurant-Id');
+  next();
+});
 // ── Stripe Webhook (must be before express.json() for raw body) ──
 app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   try {

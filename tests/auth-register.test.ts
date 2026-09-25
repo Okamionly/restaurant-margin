@@ -174,6 +174,36 @@ describe('POST /api/auth/register', () => {
     expect(days).toBeLessThanOrEqual(7);
   });
 
+  // 2026-09-26 : les codes d'offre de la prospection (3 mois offerts) donnent un
+  // ESSAI de 90 jours, pas un plan a vie.
+  it("code d'offre : essai de 90 jours sur le plan basic, pas un plan a vie", async () => {
+    mockPrismaState.activationCode = { code: 'RM-OFFRE123', plan: 'basic', used: false, trialDays: 90 } as any;
+    const req = makeReq({
+      email: 'prospect@bistro.fr',
+      password: 'StrongPass1',
+      name: 'Prospect',
+      activationCode: 'rm-offre123',
+      acceptedCgu: true,
+    });
+    const res = makeRes();
+    await callRegister(req, res);
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(mockPrismaState.createdUser?.plan).toBe('basic');
+    const jours = Math.round((mockPrismaState.createdUser.trialEndsAt.getTime() - Date.now()) / 86_400_000);
+    expect(jours).toBeGreaterThanOrEqual(89);
+    expect(jours).toBeLessThanOrEqual(90);
+    expect(mockPrismaState.activationUpdated).toBe(true);
+  });
+
+  it('refuse un code expire', async () => {
+    mockPrismaState.activationCode = { code: 'RM-VIEUX', plan: 'basic', used: false, trialDays: 90, expiresAt: new Date(Date.now() - 1000) } as any;
+    const req = makeReq({ email: 'x@bistro.fr', password: 'StrongPass1', name: 'X', activationCode: 'rm-vieux', acceptedCgu: true });
+    const res = makeRes();
+    await callRegister(req, res);
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(mockPrismaState.createdUser).toBeNull();
+  });
+
   it('returns 403 on already-used activation code', async () => {
     mockPrismaState.activationCode = { code: 'USED99', plan: 'pro', used: true };
     const req = makeReq({

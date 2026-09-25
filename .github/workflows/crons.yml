@@ -30,6 +30,7 @@ on:
     - cron: '0 7 * * *'      # Emails d'onboarding + fin d'essai — 09h Paris (ete) / 08h (hiver)
     - cron: '0 4 * * 1'      # Recettes de la semaine — lundi 06h Paris (ete)
     - cron: '30 */6 * * *'   # Controle de sante — toutes les 6 h
+    - cron: '30 7 * * 1-5'   # Prospection (1 email) — 09h30 Paris (ete) / 08h30 (hiver), jours ouvres
   workflow_dispatch:
     inputs:
       tache:
@@ -37,7 +38,7 @@ on:
         required: true
         default: inbox-sync
         type: choice
-        options: [inbox-sync, daily-digest, onboarding-nurture, trial-expiry, editorial-weekly, sante, toutes]
+        options: [inbox-sync, daily-digest, onboarding-nurture, trial-expiry, editorial-weekly, sante, prospection, toutes]
 
 concurrency:
   group: crons-restaumargin
@@ -129,6 +130,14 @@ jobs:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: "$RUNNER_TEMP/appeler.sh 'Emails fin d essai' '/api/cron/trial-expiry'"
 
+      # Prospection : 1 restaurant par jour ouvre (decision du fondateur, 2026-09-26).
+      # Volontairement HORS de « toutes » : un lancement groupe ne doit jamais envoyer.
+      # Sans PROSPECTION_ACTIVE=1 cote Vercel, la tache tourne en simulation.
+      - name: Prospection (1 email)
+        if: ${{ !cancelled() && (github.event.schedule == '30 7 * * 1-5' || inputs.tache == 'prospection') }}
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: "$RUNNER_TEMP/appeler.sh 'Prospection' '/api/cron/prospection'"
       - name: Recettes de la semaine
         if: ${{ !cancelled() && (github.event.schedule == '0 4 * * 1' || inputs.tache == 'editorial-weekly' || inputs.tache == 'toutes') }}
         env:

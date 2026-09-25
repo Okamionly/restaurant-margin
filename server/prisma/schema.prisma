@@ -47,6 +47,11 @@ model ActivationCode {
   usedAt          DateTime?
   stripePaymentId String?
   createdAt       DateTime  @default(now())
+  // Offres (2026-09-26) : duree d'essai offerte en jours (ex. 90 = 3 mois),
+  // campagne d'origine, date limite d'utilisation.
+  trialDays       Int?
+  campagne        String?
+  expiresAt       DateTime?
 
   @@index([code])
   @@map("activation_codes")
@@ -735,4 +740,27 @@ model MenuCalendar {
   createdAt    DateTime @default(now())
 
   @@map("menu_calendar")
+}
+
+// Prospection (2026-09-26) : un restaurant n'est contacte qu'une fois (email et
+// domaine uniques). RLS active et droits publics retires en base.
+model Prospect {
+  id                  Int       @id @default(autoincrement())
+  createdAt           DateTime  @default(now())
+  nom                 String
+  pays                String
+  ville               String?
+  site                String
+  domaine             String    @unique
+  email               String    @unique
+  sourceUrl           String?
+  statut              String    @default("nouveau")
+  codeActivation      String?
+  jetonDesinscription String    @unique
+  envoyeAt            DateTime?
+  resendId            String?
+  erreur              String?
+
+  @@index([envoyeAt])
+  @@map("prospects")
 }

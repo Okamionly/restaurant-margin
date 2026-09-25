@@ -10,6 +10,7 @@ import { Resend } from 'resend';
 import Anthropic from '@anthropic-ai/sdk';
 import Stripe from 'stripe';
 import { llmComplete, llmJson, llmProvidersStatus } from '../api-lib/llm';
+import { ciblesDuJour, estAgregateur, domaineDe, extraireEmails, choisirEmail, composerMessage } from '../api-lib/utils/prospection';
 import { ratelimit } from '../api-lib/ratelimit';
 import authRoutes from '../api-lib/routes/auth';
 import aiRoutes, { checkAiRateLimit, checkMonthlyQuota, enregistrerUsageIA, exigerAccesIA } from '../api-lib/routes/ai';
@@ -313,6 +314,12 @@ app.use((req, res, next) => {
   // du site), qui n'ont ni session ni token CSRF. Sans cette exemption le widget
   // renvoie 403 pour tout le monde. L'abus est contenu par le rate-limit par IP
   // dans le handler, et l'endpoint ne fait qu'appeler un LLM en lecture seule.
+  // Desinscription de la prospection : POST « un clic » (RFC 8058) envoye par la
+  // messagerie du destinataire, sans session ni jeton CSRF. Le jeton aleatoire de
+  // l'URL suffit, et la route ne fait que retirer une adresse.
+  if (req.path === '/api/prospection/desinscription') {
+    return next();
+  }
   if (req.path === '/api/assistant/ask') {
     return next();
   }
@@ -1919,6 +1926,155 @@ app.get('/api/cron/trial-expiry', async (req: any, res) => {
     console.error('[CRON TRIAL-EXPIRY]', e.message);
     res.status(500).json({ error: e.message });
   }
+});
+
+// ── PROSPECTION : un restaurant par jour ouvre (2026-09-26) ─────────────────
+// Decision du fondateur (2026-09-26) : gratuit, 1 email par jour, via Resend. Les
+// conditions de Resend interdisent la prospection : risque connu et accepte par le
+// fondateur, contenu par le plafond d'1 envoi par jour, des adresses generiques
+// publiees par les restaurants eux-memes, et une desinscription honoree a vie.
+// RESEND_PROSPECTION_API_KEY (compte Resend separe) est preferee si elle existe :
+// une suspension ne toucherait alors pas les emails transactionnels.
+// Interrupteur : PROSPECTION_ACTIVE=1 ; sinon simulation (rien envoye ni stocke).
+// Regles par pays et message : api-lib/utils/prospection.ts.
+app.get('/api/cron/prospection', async (req: any, res) => {
+  if (!verifyCron(req, res)) return;
+  const actif = process.env.PROSPECTION_ACTIVE === '1' && req.query?.simulation !== '1';
+  // Apercu du message pour une verification MANUELLE uniquement (jamais depuis le
+  // workflow public : ses journaux sont publics).
+  const details = req.query?.details === '1';
+  const debut = Date.now();
+  const tempsRestant = () => 220_000 - (Date.now() - debut);
+  try {
+    // Un envoi par jour au plus.
+    if (actif) {
+      const recent = await prisma.prospect.findFirst({
+        where: { envoyeAt: { gt: new Date(Date.now() - 20 * 3600_000) } },
+        select: { id: true },
+      });
+      if (recent) return res.json({ envoye: 0, deja_envoye_aujourdhui: true });
+    }
+    const tavilyKey = process.env.TAVILY_API_KEY;
+    if (!tavilyKey) return res.status(500).json({ error: 'TAVILY_API_KEY absente' });
+    const adressePostale = process.env.PROSPECTION_ADRESSE_POSTALE || undefined;
+    let candidats = 0;
+    let pagesLues = 0;
+    let trouve: null | { nom: string; pays: string; ville: string; site: string; domaine: string; email: string; sourceUrl: string } = null;
+
+    for (const cible of ciblesDuJour(Math.floor(Date.now() / 86_400_000), adressePostale)) {
+      if (trouve || tempsRestant() < 30_000) break;
+      const r = await fetch('https://api.tavily.com/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: tavilyKey, query: `restaurant ${cible.ville} ${cible.pays} site officiel contact réservation`, max_results: 10, search_depth: 'basic' }),
+        signal: AbortSignal.timeout(15_000),
+      });
+      const resultats: any[] = ((await r.json().catch(() => ({}))) as any).results || [];
+      for (const item of resultats) {
+        if (trouve || tempsRestant() < 30_000) break;
+        const url = String(item.url || '');
+        const domaine = domaineDe(url);
+        if (!url || !domaine || estAgregateur(url)) continue;
+        candidats++;
+        if (await prisma.prospect.findFirst({ where: { domaine }, select: { id: true } })) continue;
+        // Site officiel d'UN restaurant ? (le moteur remonte aussi guides et blogs)
+        const { data: avis } = await llmJson<any>({
+          system: 'Tu reponds UNIQUEMENT en JSON valide.',
+          user: `Page : ${url}\nTitre : ${String(item.title || '').slice(0, 200)}\nExtrait : ${String(item.content || '').slice(0, 600)}\n\nEst-ce le site officiel d'UN restaurant (pas un guide, un annuaire, un blog, un hotel, une chaine ni une plateforme) situe a ${cible.ville} (${cible.pays}) ? Reponds {"restaurant": true ou false, "nom": "nom de l'etablissement"}.`,
+          maxTokens: 120,
+          timeoutMs: 12_000,
+        }).catch(() => ({ data: null as any }));
+        if (!avis?.restaurant || !avis?.nom) continue;
+        // Adresse publiee sur le site lui-meme : accueil, puis pages de contact.
+        const origine = new URL(url).origin;
+        const emails: string[] = [];
+        for (const chemin of ['', '/contact', '/nous-contacter', '/contactez-nous', '/infos']) {
+          if (choisirEmail(emails, domaine) || tempsRestant() < 20_000) break;
+          try {
+            const page = await fetch(origine + chemin, {
+              headers: { 'User-Agent': 'RestauMarginBot/1.0 (+https://www.restaumargin.fr)' },
+              signal: AbortSignal.timeout(8_000),
+              redirect: 'follow',
+            });
+            if (!page.ok) continue;
+            pagesLues++;
+            emails.push(...extraireEmails(await page.text()));
+          } catch { /* page lente ou absente : on passe a la suivante */ }
+        }
+        const email = choisirEmail(emails, domaine);
+        if (!email) continue;
+        if (await prisma.prospect.findFirst({ where: { email }, select: { id: true } })) continue;
+        trouve = { nom: String(avis.nom).slice(0, 120), pays: cible.pays, ville: cible.ville, site: origine, domaine, email, sourceUrl: url };
+      }
+    }
+    if (!trouve) return res.json({ envoye: 0, trouve: false, candidats, pages_lues: pagesLues });
+
+    const code = 'RM-' + crypto.randomBytes(4).toString('hex').toUpperCase();
+    const jeton = crypto.randomBytes(24).toString('hex');
+    const message = composerMessage({ nom: trouve.nom, site: trouve.site, email: trouve.email, code, jeton, adressePostale });
+    if (!actif) {
+      return res.json({
+        envoye: 0, simulation: true, trouve: true, candidats, pages_lues: pagesLues,
+        ...(details ? { apercu: { ...trouve, sujet: message.sujet, texte: message.texte } } : {}),
+      });
+    }
+
+    await prisma.activationCode.create({
+      data: { code, plan: 'basic', trialDays: 90, campagne: 'prospection', expiresAt: new Date(Date.now() + 90 * 86_400_000) },
+    });
+    const prospect = await prisma.prospect.create({
+      data: { ...trouve, statut: 'pret', codeActivation: code, jetonDesinscription: jeton },
+    });
+    const { Resend } = await import('resend');
+    const envoi = await new Resend(process.env.RESEND_PROSPECTION_API_KEY || process.env.RESEND_API_KEY).emails.send({
+      from: 'Youssef de RestauMargin <contact@restaumargin.fr>',
+      to: trouve.email,
+      replyTo: 'contact@restaumargin.fr',
+      subject: message.sujet,
+      text: message.texte,
+      html: message.html,
+      headers: {
+        'List-Unsubscribe': `<https://www.restaumargin.fr/api/prospection/desinscription?t=${jeton}>, <mailto:contact@restaumargin.fr?subject=desinscription>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
+    });
+    // Le SDK Resend ne leve pas : il renvoie { data, error }.
+    if ((envoi as any)?.error || !envoi?.data?.id) {
+      await prisma.prospect.update({
+        where: { id: prospect.id },
+        data: { statut: 'erreur', erreur: String((envoi as any)?.error?.message || 'reponse sans id').slice(0, 300) },
+      });
+      return res.status(502).json({ envoye: 0, erreur_envoi: true });
+    }
+    await prisma.prospect.update({ where: { id: prospect.id }, data: { statut: 'envoye', envoyeAt: new Date(), resendId: envoi.data.id } });
+    res.json({ envoye: 1, candidats, pages_lues: pagesLues });
+  } catch (e: any) {
+    console.error('[CRON PROSPECTION]', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Desinscription de la prospection : GET (lien du message) et POST (desinscription
+// en un clic, RFC 8058, envoyee par la messagerie). Publique : le jeton suffit.
+async function desinscrireProspect(jeton: string): Promise<boolean> {
+  if (!/^[a-f0-9]{48}$/.test(jeton)) return false;
+  const r = await prisma.prospect.updateMany({ where: { jetonDesinscription: jeton }, data: { statut: 'opposition' } });
+  return r.count > 0;
+}
+app.get('/api/prospection/desinscription', async (req: any, res) => {
+  const ok = await desinscrireProspect(String(req.query?.t || '')).catch(() => false);
+  res.status(ok ? 200 : 404).type('html').send(
+    '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RestauMargin</title></head>'
+    + '<body style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#FFFFFF;color:#111111"><div style="max-width:520px;margin:15vh auto;padding:0 16px">'
+    + (ok
+      ? "<h1 style=\"font-size:22px\">C'est noté.</h1><p>Vous ne recevrez plus de message de RestauMargin.</p>"
+      : '<h1 style="font-size:22px">Lien invalide ou expiré</h1><p>Écrivez à contact@restaumargin.fr et nous retirerons votre adresse.</p>')
+    + '</div></body></html>',
+  );
+});
+app.post('/api/prospection/desinscription', async (req: any, res) => {
+  const ok = await desinscrireProspect(String(req.query?.t || '')).catch(() => false);
+  res.status(ok ? 200 : 404).json({ ok });
 });
 
 // ── Mount extracted route modules ──

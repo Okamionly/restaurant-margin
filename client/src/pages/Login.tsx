@@ -42,6 +42,9 @@ export default function Login() {
   const [restaurantName, setRestaurantName] = useState('');
   const [acceptCgu, setAcceptCgu] = useState(false);
   const [referralCode] = useState(searchParams.get('ref') || '');
+  // Code d'offre des emails de prospection (?offre=RM-XXXXXXXX : 3 mois offerts).
+  // Pas ?code= : ce parametre porte deja l'echange OAuth de Google.
+  const [codeOffre] = useState((searchParams.get('offre') || '').trim().toUpperCase());
 
   useEffect(() => {
     document.title = t('login.pageTitle');
@@ -60,6 +63,11 @@ export default function Login() {
     });
     // Auto-switch to register mode if referral code present
     if (searchParams.get('ref')) setIsRegisterMode(true);
+    if (searchParams.get('offre')) {
+      setIsRegisterMode(true);
+      // Garde le code pour une inscription par Google (le retour OAuth perd l'URL).
+      try { sessionStorage.setItem('rm_offre', (searchParams.get('offre') || '').trim().toUpperCase()); } catch { /* stockage indisponible */ }
+    }
     // FIX 2026-05-06 : check si Google OAuth est configure cote serveur
     // pour decider d'afficher ou non le bouton "Continuer avec Google".
     fetch('/api/auth/google/status')
@@ -97,6 +105,15 @@ export default function Login() {
           }
           localStorage.setItem('token', data.token);
           trackEvent('login', { method: 'google' });
+          let offre: string | null = null;
+          try { offre = sessionStorage.getItem('rm_offre'); sessionStorage.removeItem('rm_offre'); } catch { /* rien */ }
+          if (offre) {
+            await fetch('/api/auth/appliquer-offre', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${data.token}` },
+              body: JSON.stringify({ code: offre }),
+            }).catch(() => { /* l'essai standard reste acquis */ });
+          }
           window.location.replace('/dashboard');
         })
         .catch((e) => {
@@ -159,7 +176,9 @@ export default function Login() {
           acceptedCgu: true,
           // Tracking acquisition : utm + referrer + landing_path captured au 1er load.
           signupSource: getSignupSource(),
+          ...(codeOffre ? { activationCode: codeOffre } : {}),
         });
+        try { sessionStorage.removeItem('rm_offre'); } catch { /* rien */ }
         trackEvent('sign_up');
         // Google Ads conversion tracking
         if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -346,6 +365,11 @@ export default function Login() {
                 {isForgotPassword ? t('login.forgotPassword') : isRegisterMode ? t('login.createAccount') : t('login.title')}
               </h2>
 
+              {codeOffre && isRegisterMode && (
+                <p className="rounded-lg p-3 mb-4 text-sm" style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46' }}>
+                  Offre appliquée : 3 mois offerts avec le code <strong>{codeOffre}</strong>, sans carte bancaire.
+                </p>
+              )}
               {error && (
                 <p
                   id="login-error"

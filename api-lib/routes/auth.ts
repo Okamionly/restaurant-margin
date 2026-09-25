@@ -103,7 +103,15 @@ router.post('/register', validateRequest(registerRequestSchema), async (req: any
         const activation = await prisma.activationCode.findUnique({ where: { code: activationCode.trim().toUpperCase() } });
         if (!activation) return res.status(403).json({ error: "Code d'activation invalide" });
         if (activation.used) return res.status(403).json({ error: "Ce code a déjà été utilisé" });
-        plan = activation.plan;
+        if (activation.expiresAt && activation.expiresAt < new Date()) return res.status(403).json({ error: "Ce code a expiré" });
+        if (activation.trialDays) {
+          // Code d'OFFRE (ex. prospection : 3 mois offerts) : un essai long, pas un
+          // plan a vie. A la fin, le paywall habituel des essais s'applique.
+          plan = 'basic';
+          trialEndsAt = new Date(Date.now() + activation.trialDays * 24 * 60 * 60 * 1000);
+        } else {
+          plan = activation.plan;
+        }
         await prisma.activationCode.update({ where: { code: activation.code }, data: { used: true, usedBy: email, usedAt: new Date() } });
       } else {
         // Free trial: basic plan with 7-day trial period
@@ -362,6 +370,36 @@ router.post('/me/delete', authMiddleware, async (req: any, res) => {
   } catch (e: any) {
     console.error('[RGPD DELETE]', e.message);
     res.status(500).json({ error: 'Erreur suppression RGPD' });
+  }
+});
+
+// POST /api/auth/appliquer-offre — code d'offre (ex. « 3 mois offerts » de la
+// prospection) pour un compte cree SANS passer par /register : inscription Google,
+// ou code arrive apres coup. Reserve a un compte basic de moins de 24 h ; le code
+// n'est consomme qu'une fois, meme sous requetes concurrentes (updateMany conditionnel).
+router.post('/appliquer-offre', authMiddleware, async (req: any, res) => {
+  try {
+    const code = String(req.body?.code || '').trim().toUpperCase();
+    if (!code) return res.status(400).json({ error: 'Code manquant' });
+    const activation = await prisma.activationCode.findUnique({ where: { code } });
+    if (!activation || !activation.trialDays) return res.status(400).json({ error: 'Code invalide' });
+    if (activation.used) return res.status(400).json({ error: 'Ce code a déjà été utilisé' });
+    if (activation.expiresAt && activation.expiresAt < new Date()) return res.status(400).json({ error: 'Ce code a expiré' });
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { plan: true, createdAt: true, email: true } });
+    if (!user || user.plan !== 'basic' || Date.now() - new Date(user.createdAt).getTime() > 24 * 60 * 60 * 1000) {
+      return res.status(400).json({ error: 'Offre réservée aux nouveaux comptes' });
+    }
+    const pris = await prisma.activationCode.updateMany({
+      where: { code, used: false },
+      data: { used: true, usedBy: user.email, usedAt: new Date() },
+    });
+    if (pris.count !== 1) return res.status(400).json({ error: 'Ce code a déjà été utilisé' });
+    const trialEndsAt = new Date(Date.now() + activation.trialDays * 24 * 60 * 60 * 1000);
+    await prisma.user.update({ where: { id: req.user.userId }, data: { trialEndsAt } });
+    res.json({ ok: true, trialEndsAt });
+  } catch (e: any) {
+    console.error('[APPLIQUER-OFFRE]', e.message);
+    res.status(500).json({ error: "Erreur lors de l'application du code" });
   }
 });
 

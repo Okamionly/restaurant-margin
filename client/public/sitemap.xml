@@ -819,4 +819,9 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://www.restaumargin.fr/blog/prix-vente-menu-restaurant-methode</loc>
+    <lastmod>2026-09-25</lastmod>
+    <priority>0.7</priority>
+  </url>
 </urlset>

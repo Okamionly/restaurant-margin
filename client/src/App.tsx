@@ -211,6 +211,7 @@ const BlogLogicielGestion = lazyRetry(() => import('./pages/BlogLogicielGestion'
 const BlogRotationStocks = lazyRetry(() => import('./pages/BlogRotationStocks'));
 const BlogBudgetPrevisionnel = lazyRetry(() => import('./pages/BlogBudgetPrevisionnel'));
 const BlogSalaireProprietaireRestaurant = lazyRetry(() => import('./pages/BlogSalaireProprietaireRestaurant'));
+const BlogPrixVenteMenu = lazyRetry(() => import('./pages/BlogPrixVenteMenu'));
 const BlogPrevisionVentes = lazyRetry(() => import('./pages/BlogPrevisionVentes'));
 const BlogFormationPersonnel = lazyRetry(() => import('./pages/BlogFormationPersonnel'));
 const BlogStrategieDigitale = lazyRetry(() => import('./pages/BlogStrategieDigitale'));
@@ -1382,6 +1383,7 @@ function App() {
           <Route path="/blog/avis-google-negatifs-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogAvisGoogleNegatifs /></Suspense>} />
           <Route path="/blog/no-show-restaurant-solutions" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogNoShowRestaurant /></Suspense>} />
           <Route path="/blog/brigade-cuisine-organisation-postes" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogBrigadeCuisine /></Suspense>} />
+          <Route path="/blog/prix-vente-menu-restaurant-methode" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogPrixVenteMenu /></Suspense>} />
           <Route path="/blog/logiciel-reservation-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogLogicielReservation /></Suspense>} />
           {/* SEO long-tail 2026-05-26 : Glossaire restauration (60+ termes : food cost, marge, prime cost, fiche technique, HACCP, GMP, RevPASH). */}
           <Route path="/glossaire-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><GlossaireRestauration /></Suspense>} />

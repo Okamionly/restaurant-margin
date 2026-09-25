@@ -14,6 +14,8 @@ Triées par impact décroissant. La feature en cours est retirée par le Feature
 
 ### COMMUNICATION
 
+<!-- Backlog vide : le Feature Builder ajoutera les prochaines idées ici -->
+
 ---
 
 ## Complétées
@@ -21,6 +23,8 @@ Triées par impact décroissant. La feature en cours est retirée par le Feature
 - ✅ **Calculateur ROI Équipement** (2026-09-16) — Page `/roi-equipement` dans BUSINESS. Saisie équipement (nom, prix achat, durée amortissement, gain CA mensuel, économies mensuelles) → ROI %, délai de retour en mois, gain net sur la durée totale. Comparaison jusqu'à 4 équipements en onglets, barre de progression payback vs amortissement, tableau détail.
 
 - ✅ **Générateur de bon cadeau PDF** (2026-09-09) — Page `/bon-cadeau` dans COMMUNICATION. Création de bons-cadeaux personnalisés (restaurant, destinataire, expéditeur, montant, message, expiration, code unique) avec 3 designs (Classique, Moderne, Festif). Export PDF via impression navigateur.
+
+- ✅ **Calculateur Coût par Couvert** (2026-09-25) — Page `/cout-couvert` dans BUSINESS. CA mensuel, couverts/mois, food cost %, masse salariale %, charges fixes € + autres variables % → coût total/couvert, marge nette/couvert et %, barre de ventilation par poste de charge, benchmarks UMIH (food cost 28-34 %, masse salariale 30-35 %, marge nette ≥ 10 %).
 
 - ✅ **Analyse saisonnalité ingrédients** (2026-09-02) — Page `/saisonnalite` dans INTELLIGENCE. Calendrier mensuel pour 56 ingrédients (Légumes/Fruits/Champignons/Herbes/Poissons), filtre par catégorie, mois, et recherche texte. Astuces food cost intégrées.
 

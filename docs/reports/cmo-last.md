@@ -1,41 +1,39 @@
-# Rapport CMO — 22 septembre 2026
+# Rapport CMO — 25 septembre 2026
 
-## Métriques du jour
+## Métriques du jour (06:17 UTC)
 
 | Indicateur | Valeur |
 |---|---|
-| Utilisateurs totaux | 20 |
-| Nouveaux users 24h | 0 |
-| Leads qualifiés | 0 |
-| Abonnés Pro | 1 |
-| Abonnés Business | 0 |
+| Utilisateurs total | 20 |
+| Nouveaux utilisateurs (24h) | 0 |
+| Leads réels | 0 |
 | MRR estimé | 29 € |
 | ARR estimé | 348 € |
-| Articles blog | 63 |
+| Abonnés Pro | 1 |
+| Abonnés Business | 0 |
+| Pages blog | 63 |
+| Recettes créées | 56 |
+| Ingrédients référencés | 416 |
 
 ## Analyse
 
-### Situation
-MRR stable à 29€ avec 1 abonné Pro actif. Aucun nouveau utilisateur ni lead en 24h, ce qui est cohérent avec un lundi de rentrée post-weekend. La base utilisateurs (20 comptes) reste en phase d'amorçage précoce.
+- **Stagnation acquisition** : 0 nouveaux inscrits sur 24h. La base reste à 20 comptes depuis hier.
+- **1 seul abonné payant** (Pro 29 €/mois). Aucun Business. MRR = 29 €.
+- **0 leads qualifiés** remontés par l'API. Le funnel amont n'alimente pas encore le bas.
+- **Volume de contenu blog solide** : 63 pages Blog indexées — SEO en construction.
+- **Usage produit correct** : 56 recettes et 416 ingrédients enregistrés (ratio ~2,8 recettes/user).
 
-### Points d'attention
-- **Acquisition** : 0 nouveaux users en 24h — la croissance organique n'a pas encore décollé. Le blog (63 articles) est le principal levier SEO, mais les conversions tardent à arriver.
-- **Monétisation** : Un seul abonné Pro. L'objectif à court terme est d'atteindre 5-10 abonnés pour valider la proposition de valeur et le pricing.
-- **Leads** : 0 lead qualifié — indiquer si le endpoint `/api/agents/data` remonte bien les trials et signups incomplets, ou si la définition de "real lead" est trop stricte.
+## Action marketing du jour
 
-### Actions recommandées (CEO à valider)
-1. **Activer une campagne LinkedIn** avec le post du jour — thème rentrée + food cost — pour générer des signups trial
-2. **A/B test pricing** : envisager un tier Starter à 9€/mois pour réduire le friction d'entrée
-3. **Relancer les 19 users non-payants** avec un email onboarding ciblé (food cost calculator en entrée de gamme)
-4. **SEO** : 63 articles publiés — vérifier le positionnement sur "food cost restaurant" et "calcul marge restaurant" avec un audit Search Console
+**Post social rédigé** : "5 signaux silencieux qui grignotent vos marges"
+- Format : LinkedIn + Instagram
+- Longueur : ~270 mots
+- CTA double : /pricing + /outils/calculateur-food-cost
+- Fichier : `docs/marketing/social-posts/2026-09-25.md`
 
-## Post social publié
-- Fichier : `docs/marketing/social-posts/2026-09-22.md`
-- Thème : Food cost rentrée septembre — 4 réflexes concrets
-- CTA : calculateur gratuit + pricing
-- Hashtags : #restauration #restaurateur #foodcost #gestion #margerestaurant
+## Priorités pour la semaine
 
-## Source données
-Endpoint : `https://www.restaumargin.fr/api/agents/data`  
-Horodatage API : 2026-09-22T06:12:55.858Z  
-Cache : false
+1. **Activation des 20 inscrits** — email de rappel sur les fonctionnalités non utilisées (fiches techniques, mercuriale).
+2. **Conversion trial → payant** — séquence onboarding à vérifier/renforcer.
+3. **SEO** : 63 articles blog en ligne, surveiller les premières remontées sur requêtes "food cost restaurant" et "fiche technique restaurant".
+4. **Réseaux sociaux** : maintenir la cadence quotidienne. Thèmes prochains : pricing des menus, gestion des pertes, rentabilité par service.

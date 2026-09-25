@@ -9,6 +9,9 @@
       "includeFiles": "api-lib/**"
     }
   },
+  "regions": [
+    "dub1"
+  ],
   "headers": [
     {
       "source": "/(.*)",

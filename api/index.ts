@@ -2630,12 +2630,14 @@ app.get('/api/price-history', authWithRestaurant, async (req: any, res) => {
     const periodDays = period ? parseInt(period) : days ? parseInt(days) : null;
     if (periodDays) where.createdAt = { gte: new Date(Date.now() - periodDays * 86400000) };
     where.restaurantId = req.restaurantId;
-    const history = await prisma.priceHistory.findMany({
+    // Les 1000 points les plus RECENTS, remis ensuite dans l'ordre chronologique :
+    // trier en asc avant le take aurait ampute l'historique de sa fin.
+    const history = (await prisma.priceHistory.findMany({
       where,
       include: { ingredient: { select: { id: true, name: true, unit: true, category: true, pricePerUnit: true, supplier: true, supplierId: true } } },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
       take: 1000,
-    });
+    })).reverse();
 
     // If a specific ingredientId is requested, compute enhanced stats
     if (ingredientId) {

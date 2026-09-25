@@ -481,6 +481,23 @@ export async function fetchIngredients(): Promise<Ingredient[]> {
   return offlineAwareGet<Ingredient[]>(`${API_BASE}/ingredients`, { headers: authHeaders() });
 }
 
+// Historique des prix. FIX 2026-09-25 : les trois appels de la page Ingredients
+// construisaient leurs en-tetes a la main, sans X-Restaurant-Id ; la route
+// (authWithRestaurant) repondait 400 a chaque fois, et le client transformait ce
+// 400 en tableau vide : courbes et suivi des prix morts pour tous, sans erreur
+// visible. Sans ingredientId, la route renvoie les lignes brutes du restaurant ;
+// avec, un objet { data, minPrice, ... }. Pas de toast ici : les appelants
+// chargent souvent en arriere-plan et decident eux-memes quoi afficher.
+export async function fetchPriceHistory<T = unknown>(params: { ingredientId?: number; period?: number }): Promise<T> {
+  const qs = new URLSearchParams();
+  if (params.ingredientId != null) qs.set('ingredientId', String(params.ingredientId));
+  if (params.period != null) qs.set('period', String(params.period));
+  const res = await fetch(`${API_BASE}/price-history?${qs.toString()}`, { headers: authHeaders() });
+  if (res.status === 401) return handleResponse<T>(res);
+  if (!res.ok) throw new Error(`Historique des prix indisponible (HTTP ${res.status})`);
+  return res.json();
+}
+
 export async function createIngredient(data: Omit<Ingredient, 'id' | 'createdAt' | 'updatedAt'>): Promise<Ingredient> {
   return offlineAwareWrite<Ingredient>(`${API_BASE}/ingredients`, {
     method: 'POST',

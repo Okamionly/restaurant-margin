@@ -5,7 +5,7 @@ import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
 import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
-import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier, fetchInventory, addToInventory, restockInventoryItem, updateInventoryItem } from '../services/api';
+import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier, fetchInventory, addToInventory, restockInventoryItem, updateInventoryItem, fetchPriceHistory } from '../services/api';
 import type { Ingredient, Supplier, InventoryItem } from '../types';
 import { INGREDIENT_CATEGORIES, UNITS, ALLERGENS } from '../types';
 import { useToast } from '../hooks/useToast';
@@ -379,41 +379,27 @@ export default function Ingredients() {
       return;
     }
     setPriceHistoryLoading(true);
-    const token = localStorage.getItem('token');
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    fetch(`/api/price-history?ingredientId=${editingId}`, { headers })
-      .then(res => res.ok ? res.json() : [])
-      .then((data: { date: string; price: number }[]) => {
-        setPriceHistory(data);
-      })
+    // La route renvoie { data, minPrice, ... } quand ingredientId est fourni :
+    // c'est data qui porte les points de la mini-courbe.
+    fetchPriceHistory<PriceHistoryResponse>({ ingredientId: editingId })
+      .then((r) => setPriceHistory(Array.isArray(r?.data) ? r.data : []))
       .catch(() => setPriceHistory([]))
       .finally(() => setPriceHistoryLoading(false));
   }, [editingId]);
 
-  // Load sparkline data for all ingredients
+  // Mini-courbes : UN seul appel pour tout le restaurant, regroupe ici par
+  // ingredient (auparavant une requete par ingredient, jusqu'a 231 par chargement).
   useEffect(() => {
     if (ingredients.length === 0) return;
-    const token = localStorage.getItem('token');
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    // Fetch price histories for all ingredients in batch (or individually)
-    const histories: Record<number, number[]> = {};
-    const promises = ingredients.map((ing) =>
-      fetch(`/api/price-history?ingredientId=${ing.id}&period=90`, { headers })
-        .then(res => res.ok ? res.json() : null)
-        .then((data) => {
-          if (data && Array.isArray(data.data) && data.data.length > 0) {
-            histories[ing.id] = data.data.map((d: { price: number }) => d.price);
-          } else if (data && Array.isArray(data) && data.length > 0) {
-            histories[ing.id] = data.map((d: { price: number }) => d.price);
-          }
-        })
-        .catch(() => {})
-    );
-    Promise.all(promises).then(() => {
-      setAllPriceHistories(histories);
-    });
+    fetchPriceHistory<{ ingredientId: number; price: number }[]>({ period: 90 })
+      .then((rows) => {
+        const histories: Record<number, number[]> = {};
+        for (const r of Array.isArray(rows) ? rows : []) {
+          (histories[r.ingredientId] ||= []).push(r.price);
+        }
+        setAllPriceHistories(histories);
+      })
+      .catch((e) => console.warn('[Ingredients] historique des prix :', e?.message));
   }, [ingredients]);
 
   async function loadIngredients() {
@@ -449,16 +435,7 @@ export default function Ingredients() {
   async function fetchTrackerData(ingredientId: number, period: number) {
     setTrackerLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
-      const res = await fetch(`/api/price-history?ingredientId=${ingredientId}&period=${period}`, { headers });
-      if (res.ok) {
-        const data: PriceHistoryResponse = await res.json();
-        setTrackerData(data);
-      } else {
-        setTrackerData(null);
-      }
+      setTrackerData(await fetchPriceHistory<PriceHistoryResponse>({ ingredientId, period }));
     } catch {
       setTrackerData(null);
     } finally {

@@ -850,7 +850,7 @@ app.get('/api/cron/sentry-monitor', async (req: any, res) => {
     res.json({ issues: issues.length, critical: critical.length, timestamp: new Date().toISOString() });
   } catch (e: any) {
     console.error('[CRON SENTRY]', e.message);
-    res.json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
 });
 
@@ -864,7 +864,7 @@ app.get('/api/cron/email-sequence', async (req: any, res) => {
     res.json({ status: 'ok', message: 'Email sequence agent ran', timestamp: new Date().toISOString() });
   } catch (e: any) {
     console.error('[CRON EMAIL]', e.message);
-    res.json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
 });
 
@@ -1094,12 +1094,19 @@ app.get('/api/cron/onboarding-nurture', async (req: any, res) => {
 
       for (const u of candidates) {
         try {
-          await resend.emails.send({
+          const envoi = await resend.emails.send({
             from: 'RestauMargin <contact@restaumargin.fr>',
             to: u.email,
             subject: w.subject,
             html: w.build({ userName: u.name }),
           });
+          // FIX 2026-09-25 : le SDK Resend ne leve PAS d'exception, il renvoie
+          // { data, error }. Sans ce test, un envoi refuse (cle revoquee, domaine
+          // non verifie, quota) etait marque comme envoye : l'utilisateur ne
+          // recevait jamais l'email et la fenetre de grace ne le renvoyait plus.
+          if ((envoi as any)?.error || !envoi?.data?.id) {
+            throw new Error((envoi as any)?.error?.message || 'reponse Resend sans id');
+          }
           // Mark as sent (race-safe: one row, one column).
           await prisma.user.update({
             where: { id: u.id },
@@ -1107,16 +1114,24 @@ app.get('/api/cron/onboarding-nurture', async (req: any, res) => {
           });
           results[`day${w.day}Sent`]++;
         } catch (sendErr: any) {
-          console.error(`[CRON NURTURE day${w.day}] failed for ${u.email}:`, sendErr.message);
+          // Pas l'adresse dans le journal : donnee personnelle.
+          console.error(`[CRON NURTURE day${w.day}] echec pour l'utilisateur ${u.id}:`, sendErr.message);
           results.errors++;
         }
       }
     }
 
-    res.json({ status: 'ok', timestamp: new Date().toISOString(), ...results });
+    // Au moins un echec -> HTTP 502 : le job GitHub Actions rougit et envoie son
+    // email d'alerte. Les envois rates restent non marques et seront retentes au
+    // prochain passage, tant que la fenetre de grace le permet.
+    res.status(results.errors > 0 ? 502 : 200).json({
+      status: results.errors > 0 ? 'partiel' : 'ok',
+      timestamp: new Date().toISOString(),
+      ...results,
+    });
   } catch (e: any) {
     console.error('[CRON NURTURE]', e.message);
-    res.json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
 });
 
@@ -1150,7 +1165,7 @@ app.get('/api/cron/lead-finder', async (req: any, res) => {
     res.json({ city, leads: leads.length, results: leads, timestamp: new Date().toISOString() });
   } catch (e: any) {
     console.error('[CRON LEADS]', e.message);
-    res.json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
 });
 
@@ -1181,7 +1196,7 @@ app.get('/api/cron/market-intel', async (req: any, res) => {
     res.json({ articles: articles.length, answer: data.answer?.slice(0, 500), results: articles, timestamp: new Date().toISOString() });
   } catch (e: any) {
     console.error('[CRON MARKET]', e.message);
-    res.json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
 });
 
@@ -1676,7 +1691,7 @@ app.get('/api/cron/daily-report', async (req: any, res) => {
     res.json({ status: 'sent', users: userCount, recipes: recipeCount, ingredients: ingredientCount, timestamp: new Date().toISOString() });
   } catch (e: any) {
     console.error('[CRON REPORT]', e.message);
-    res.json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
 });
 
@@ -1807,7 +1822,14 @@ app.get('/api/cron/trial-expiry', async (req: any, res) => {
 
     const { Resend } = await import('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const results: string[] = [];
+    // FIX 2026-09-25 : le SDK Resend ne leve pas, il renvoie { data, error }. Les
+    // emails de fin d'essai refuses etaient comptes comme envoyes. Ce helper leve
+    // en cas de refus, pour que le catch de chaque boucle le compte en echec.
+    const envoyer = async (payload: any) => {
+      const r = await resend.emails.send(payload);
+      if ((r as any)?.error || !r?.data?.id) throw new Error((r as any)?.error?.message || 'reponse Resend sans id');
+    };
+    const compte = { j12: 0, j13: 0, j14: 0, echecs: 0 };
 
     // J+12: 2 days left
     for (const u of usersJ12) {
@@ -1822,15 +1844,15 @@ app.get('/api/cron/trial-expiry', async (req: any, res) => {
           ]);
         }
 
-        await resend.emails.send({
+        await envoyer({
           from: 'RestauMargin <contact@restaumargin.fr>',
           to: u.email,
           subject: 'Votre essai se termine dans 2 jours',
           html: buildTrialExpiringEmail({ userName: u.name, daysLeft: 2, recipesCount, ingredientsCount }),
         });
-        results.push(`J+12: ${u.email}`);
+        compte.j12++;
       } catch (err: any) {
-        results.push(`J+12 FAIL: ${u.email} - ${err.message}`);
+        compte.echecs++; console.error(`[CRON TRIAL-EXPIRY] J+12 echec utilisateur ${u.id} :`, err.message);
       }
     }
 
@@ -1846,42 +1868,43 @@ app.get('/api/cron/trial-expiry', async (req: any, res) => {
           ]);
         }
 
-        await resend.emails.send({
+        await envoyer({
           from: 'RestauMargin <contact@restaumargin.fr>',
           to: u.email,
           subject: 'Dernier jour d\'essai — ne perdez pas vos donnees',
           html: buildTrialLastDayEmail({ userName: u.name, recipesCount, ingredientsCount }),
         });
-        results.push(`J+13: ${u.email}`);
+        compte.j13++;
       } catch (err: any) {
-        results.push(`J+13 FAIL: ${u.email} - ${err.message}`);
+        compte.echecs++; console.error(`[CRON TRIAL-EXPIRY] J+13 echec utilisateur ${u.id} :`, err.message);
       }
     }
 
     // J+14: expired today
     for (const u of usersJ14) {
       try {
-        await resend.emails.send({
+        await envoyer({
           from: 'RestauMargin <contact@restaumargin.fr>',
           to: u.email,
           subject: 'Votre essai est termine — Passez au Pro',
           html: buildTrialExpiredEmail({ userName: u.name }),
         });
-        results.push(`J+14: ${u.email}`);
+        compte.j14++;
       } catch (err: any) {
-        results.push(`J+14 FAIL: ${u.email} - ${err.message}`);
+        compte.echecs++; console.error(`[CRON TRIAL-EXPIRY] J+14 echec utilisateur ${u.id} :`, err.message);
       }
     }
 
-    res.json({
-      status: 'done',
-      sent: { j12: usersJ12.length, j13: usersJ13.length, j14: usersJ14.length },
-      details: results,
+    res.status(compte.echecs > 0 ? 502 : 200).json({
+      status: compte.echecs > 0 ? 'partiel' : 'ok',
+      candidats: usersJ12.length + usersJ13.length + usersJ14.length,
+      envoyes_j12: compte.j12, envoyes_j13: compte.j13, envoyes_j14: compte.j14,
+      echecs: compte.echecs,
       timestamp: new Date().toISOString(),
     });
   } catch (e: any) {
     console.error('[CRON TRIAL-EXPIRY]', e.message);
-    res.json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
 });
 

@@ -27,7 +27,7 @@ on:
   schedule:
     - cron: '15 */2 * * *'   # Import des emails — toutes les 2 h
     - cron: '5 5 * * *'      # Digest du jour — 07h05 Paris (ete) / 06h05 (hiver)
-    - cron: '0 7 * * *'      # Emails d'onboarding — 09h Paris (ete) / 08h (hiver)
+    - cron: '0 7 * * *'      # Emails d'onboarding + fin d'essai — 09h Paris (ete) / 08h (hiver)
     - cron: '0 4 * * 1'      # Recettes de la semaine — lundi 06h Paris (ete)
     - cron: '30 */6 * * *'   # Controle de sante — toutes les 6 h
   workflow_dispatch:
@@ -37,7 +37,7 @@ on:
         required: true
         default: inbox-sync
         type: choice
-        options: [inbox-sync, daily-digest, onboarding-nurture, editorial-weekly, sante, toutes]
+        options: [inbox-sync, daily-digest, onboarding-nurture, trial-expiry, editorial-weekly, sante, toutes]
 
 concurrency:
   group: crons-restaumargin
@@ -88,25 +88,35 @@ jobs:
           chmod +x "$RUNNER_TEMP/appeler.sh"
 
       - name: Import des emails (messagerie + notifications)
-        if: github.event.schedule == '15 */2 * * *' || inputs.tache == 'inbox-sync' || inputs.tache == 'toutes'
+        if: ${{ !cancelled() && (github.event.schedule == '15 */2 * * *' || inputs.tache == 'inbox-sync' || inputs.tache == 'toutes') }}
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: "$RUNNER_TEMP/appeler.sh 'Import des emails' '/api/cron/inbox-sync'"
 
       - name: Digest du jour
-        if: github.event.schedule == '5 5 * * *' || inputs.tache == 'daily-digest' || inputs.tache == 'toutes'
+        if: ${{ !cancelled() && (github.event.schedule == '5 5 * * *' || inputs.tache == 'daily-digest' || inputs.tache == 'toutes') }}
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: "$RUNNER_TEMP/appeler.sh 'Digest du jour' '/api/cron/daily-digest'"
 
       - name: Emails d'onboarding
-        if: github.event.schedule == '0 7 * * *' || inputs.tache == 'onboarding-nurture' || inputs.tache == 'toutes'
+        if: ${{ !cancelled() && (github.event.schedule == '0 7 * * *' || inputs.tache == 'onboarding-nurture' || inputs.tache == 'toutes') }}
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: "$RUNNER_TEMP/appeler.sh 'Emails onboarding' '/api/cron/onboarding-nurture'"
 
+      # Emails de fin d'essai (J-2, dernier jour, expire). Ajoute le 2026-09-25 :
+      # cette tache n'etait declenchee par RIEN de fonctionnel. La routine cloud
+      # « trial-rescue » l'appelait en POST sans secret -> refus CSRF, et rapportait
+      # « success » quand meme ; elle etait absente de ce fichier.
+      - name: Emails de fin d'essai
+        if: ${{ !cancelled() && (github.event.schedule == '0 7 * * *' || inputs.tache == 'trial-expiry' || inputs.tache == 'toutes') }}
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: "$RUNNER_TEMP/appeler.sh 'Emails fin d essai' '/api/cron/trial-expiry'"
+
       - name: Recettes de la semaine
-        if: github.event.schedule == '0 4 * * 1' || inputs.tache == 'editorial-weekly' || inputs.tache == 'toutes'
+        if: ${{ !cancelled() && (github.event.schedule == '0 4 * * 1' || inputs.tache == 'editorial-weekly' || inputs.tache == 'toutes') }}
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: "$RUNNER_TEMP/appeler.sh 'Recettes de la semaine' '/api/cron/editorial-weekly'"
@@ -114,7 +124,7 @@ jobs:
       # Sante : endpoint PUBLIC (pas de secret). On verifie le contenu, pas juste
       # le code HTTP — la sonde a deja renvoye 200 en annoncant une base en panne.
       - name: Controle de sante
-        if: github.event.schedule == '30 */6 * * *' || inputs.tache == 'sante' || inputs.tache == 'toutes'
+        if: ${{ !cancelled() && (github.event.schedule == '30 */6 * * *' || inputs.tache == 'sante' || inputs.tache == 'toutes') }}
         run: |
           echo "▶ Controle de sante"
           corps=$(curl -s "https://www.restaumargin.fr/api/health?deep=1" --max-time 60 --retry 2)

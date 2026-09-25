@@ -201,9 +201,9 @@ export default function CoutCouvert() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                 {[
-                  { label: 'Food cost', target: '28–34 %', current: pct(inputs.foodCostPct), warning: v => v > 36 },
-                  { label: 'Masse salariale', target: '30–35 %', current: pct(inputs.personnelPct), warning: v => v > 38 },
-                  { label: 'Marge nette', target: '≥ 10 %', current: calc.margeNettePct, warning: v => v < 5 },
+                  { label: 'Food cost', target: '28–34 %', current: pct(inputs.foodCostPct), warning: (v: number) => v > 36 },
+                  { label: 'Masse salariale', target: '30–35 %', current: pct(inputs.personnelPct), warning: (v: number) => v > 38 },
+                  { label: 'Marge nette', target: '≥ 10 %', current: calc.margeNettePct, warning: (v: number) => v < 5 },
                 ].map(({ label, target, current, warning }) => (
                   <div key={label} className={`rounded-xl p-3 border ${warning(current) ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800' : 'bg-[#F5F5F5] dark:bg-[#262626] border-[#E5E7EB] dark:border-[#1A1A1A]'}`}>
                     <div className="font-semibold text-[#111111] dark:text-white mb-0.5">{label}</div>

@@ -122,3 +122,60 @@ if (!JWT_SECRET) throw new Error('JWT_SECRET manquant');
 | HAUTE    | 3     | 1-2 semaines  |
 | MOYENNE  | 3     | 1 semaine     |
 | BASSE    | 4     | Continu       |
+
+---
+
+## Dette ouverte — audit du 2026-09-25 (reportee a une prochaine vague)
+
+> L'audit de 8 dimensions du 2026-09-25 a ete corrige en grande partie le jour meme
+> (commits 280ceee → e0d8c5d : isolation multi-restaurant, webhooks, relais d'email,
+> revocation des jetons, cout IA, caches, file hors ligne, prerendu, routines cloud...).
+> Restent ici les points NON traites, du plus au moins important. Aucun n'est ouvert
+> par accident : chacun a ete lu, et reporte.
+
+### Decisions produit (a trancher par le fondateur, pas par un agent)
+
+1. **Parrainage : recompenses promises, jamais appliquees.** L'interface promet -20 % au
+   filleul et 1 mois offert au parrain ; aucun coupon ni credit Stripe n'est applique par
+   le code. Le suivi et la qualification sont cables depuis 27b0016 (le fondateur est
+   prevenu quand un filleul paie). Choisir : implementer (coupon Stripe au checkout +
+   credit client a la qualification) ou reformuler `MesParrainages.tsx`.
+2. **Contacts de prospection dans un depot PUBLIC.** `docs/campaigns/montpellier-contacts*.csv`
+   (~200 restaurants : emails dont ~25 adresses Gmail/Hotmail, telephones, adresses).
+   Retirer du depot (et de l'historique si necessaire) ou justifier.
+3. **Prospection automatique** (routine `outreach-bot`, desactivee) : ne la relancer
+   qu'avec une liste reelle constituee legalement et un envoi cote serveur.
+
+### Technique
+
+4. **Resend : erreurs encore non lues.** Lisent `{ data, error }` : inscription (notification
+   fondateur), fin d'essai, onboarding, campagne, email/send, accuse inbox-sync, parrainage.
+   Ne le lisent pas encore : email de bienvenue, verification, reinitialisation du mot de
+   passe, notifications diverses (~20 appels). Le SDK ne leve jamais.
+5. **Limite de debit IA en memoire par instance** (`Map` dans `api-lib/routes/ai.ts`) :
+   Upstash n'est pas configure sur Vercel. Brancher `UPSTASH_REDIS_REST_URL/TOKEN` et
+   passer `checkAiRateLimit` sur `ratelimit()`.
+6. **inbox-sync non atomique** : import du message puis marquage `notif_log` ; un crash
+   entre les deux peut re-importer. Envisager une transaction ou marquer d'abord.
+7. **Soft 404** : toute URL inconnue repond 200 avec la page d'accueil, et un visiteur
+   anonyme est renvoye sur /login (catch-all `/*` -> ProtectedRoute dans `App.tsx`).
+   Ajouter une 404 publique `noindex` pour les chemins inconnus.
+8. **Donnees structurees** : FAQPage en double sur 7 articles ; `dateModified` = date du
+   build (`BUILD_DATE` dans `client/scripts/prerender.cjs`) : change a chaque deploiement.
+9. **CSP** : `'unsafe-eval'` et `'unsafe-inline'` dans `script-src` (`vercel.json`). A retirer
+   apres test page par page (une lib WASM exigerait `'wasm-unsafe-eval'`).
+10. **Observabilite** : journaux Vercel ~1 h (Hobby), aucun log drain, aucune capture
+    d'erreurs serveur.
+11. **Planification GitHub Actions** : les crons derivent de plusieurs heures et sautent des
+    passages (limite connue de GitHub). Si la ponctualite compte, planificateur externe.
+12. **Cannibalisation du blog** (TVA, KPI, FIFO, prix de vente) : fusionner ou rediriger.
+13. **EmailMarketing.tsx** : compteurs de destinataires ecrits en dur (342 / 67 / 89) a
+    verifier et retirer s'ils sont fictifs (signal fabrique).
+14. **Monolithe** `api/index.ts` (~7 500 lignes) : toujours d'actualite (voir point 2 ci-dessus).
+
+### Actions humaines en attente (hors code)
+
+- Revoquer puis recreer les cles **Tavily** et **Exa** (presentes dans l'historique git
+  public), puis mettre a jour les variables Vercel.
+- Ajouter les secrets `E2E_DEMO_EMAIL` / `E2E_DEMO_PASSWORD` au depot (tests E2E).
+- Revoquer les jetons Vercel temporaires utilises pendant les sessions d'audit.

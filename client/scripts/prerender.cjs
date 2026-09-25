@@ -1018,6 +1018,8 @@ function run() {
 
   const baseHtml = fs.readFileSync(indexPath, 'utf-8');
   let count = 0;
+  // H1 reellement injectes, pour le controle final (voir fin de run()).
+  const h1Produits = new Set();
 
   for (const route of ROUTES) {
     let html = baseHtml;
@@ -1369,12 +1371,39 @@ function run() {
       </article>
     `;
 
-    // Replace the generic <noscript> fallback with route-specific visible content
-    // Pattern matches the empty <div id="root"> OR existing noscript fallback
+    // Remplace le fallback <noscript> generique par le contenu propre a la route.
+    //
+    // FIX 2026-09-25 : l'ancienne regex exigeait un <script> JUSTE APRES le </div>
+    // de #root : /<div id="root">[\s\S]*?<\/div>(\s*<script)/. Or Vite remonte le
+    // script module dans le <head> du HTML construit ; le seul <script> qui suivait
+    // encore #root etait celui de Crisp. Crisp retire (commit 974c72f), la regex ne
+    // trouvait plus rien, replace() rendait la chaine inchangee — et le log
+    // ci-dessous affirmait quand meme « Generated 132 static HTML files ... with
+    // route-specific H1 ». Resultat mesure en prod : 133 pages, UN SEUL H1, UN SEUL
+    // body, pour tous les robots qui n'executent pas le JavaScript.
+    //
+    // Deux changements :
+    // 1. On ancre sur des marqueurs EXPLICITES poses dans client/index.html
+    //    (<!--prerender:root--> ... <!--/prerender:root-->), qui ne dependent plus
+    //    de ce qui entoure #root.
+    // 2. Si l'injection n'a pas lieu, le build ECHOUE. Un replace() qui ne trouve
+    //    rien ne leve aucune erreur : c'est exactement ce silence qu'il faut casser.
+    // Remplacement par FONCTION : seoBody peut contenir des « $ » que le
+    // remplacement par chaine interpreterait ($&, $1...).
+    const avantInjection = html;
     html = html.replace(
-      /<div id="root">[\s\S]*?<\/div>(\s*<script)/,
-      `<div id="root">${seoStaticContent}</div>$1`
+      /<!--prerender:root-->[\s\S]*?<!--\/prerender:root-->/,
+      () => `<!--prerender:root-->${seoStaticContent}<!--/prerender:root-->`
     );
+    if (html === avantInjection || !html.includes(`>${h1}</h1>`)) {
+      console.error(
+        `[prerender] ECHEC : contenu non injecte pour ${route.path}. ` +
+        `Les marqueurs <!--prerender:root--> / <!--/prerender:root--> sont-ils ` +
+        `toujours presents dans client/index.html (et conserves par Vite) ?`
+      );
+      process.exit(1);
+    }
+    h1Produits.add(h1);
 
     // Write the file
     const dir = path.join(DIST, route.path);
@@ -1383,7 +1412,16 @@ function run() {
     count++;
   }
 
-  console.log(`[prerender] Generated ${count} static HTML files for SEO (with route-specific H1 + content baked in).`);
+  // Controle final : le log ci-dessous a menti pendant 24 h en annoncant
+  // « route-specific H1 » alors qu un seul H1 etait servi pour 133 pages. On ne
+  // l ecrit plus que si c est vrai : autant de H1 DISTINCTS que de pages.
+  // (Deux routes peuvent legitimement partager un titre : on tolere un ecart de
+  // quelques unites, mais pas l effondrement a 1 qui signe une injection morte.)
+  if (h1Produits.size < Math.max(2, Math.floor(count * 0.9))) {
+    console.error(`[prerender] ECHEC : seulement ${h1Produits.size} H1 distincts pour ${count} pages.`);
+    process.exit(1);
+  }
+  console.log(`[prerender] Generated ${count} static HTML files for SEO (${h1Produits.size} H1 distincts verifies).`);
 }
 
 run();

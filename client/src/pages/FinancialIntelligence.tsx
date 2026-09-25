@@ -1,4 +1,5 @@
 import { formatCurrency, getCurrencySymbol } from '../utils/currency';
+import ErrorState from '../components/ErrorState';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   TrendingUp, TrendingDown, DollarSign, Target, Printer,
@@ -254,6 +255,7 @@ export default function FinancialIntelligence() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [selectedDot, setSelectedDot] = useState<DotData | null>(null);
 
   // Break-even inputs
@@ -265,26 +267,27 @@ export default function FinancialIntelligence() {
 
   const printRef = useRef<HTMLDivElement>(null);
 
-  // ── Fetch data ──
-  useEffect(() => {
-    (async () => {
-      try {
-        const [r, ing] = await Promise.all([fetchRecipes(), fetchIngredients()]);
-        setRecipes(r);
-        setIngredients(ing);
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    setLoadError(false);
+    try {
+      const [r, ing] = await Promise.all([fetchRecipes(), fetchIngredients()]);
+      setRecipes(r);
+      setIngredients(ing);
 
-        // Initialize avg ticket from recipes
-        if (r.length > 0) {
-          const avg = r.reduce((s, recipe) => s + recipe.sellingPrice, 0) / r.length;
-          if (avg > 0) setAvgTicket(Math.round(avg));
-        }
-      } catch (e) {
-        console.error('Failed to load data', e);
-      } finally {
-        setLoading(false);
+      if (r.length > 0) {
+        const avg = r.reduce((s, recipe) => s + recipe.sellingPrice, 0) / r.length;
+        if (avg > 0) setAvgTicket(Math.round(avg));
       }
-    })();
+    } catch (e) {
+      console.error('Failed to load data', e);
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => { loadData(); }, [loadData]);
 
   // ══════════════════════════════════════════════════════════════════════════
   // ██  COMPUTED DATA
@@ -513,6 +516,18 @@ export default function FinancialIntelligence() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-mono-100 dark:text-white" />
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-8">
+        <ErrorState
+          title="Impossible de charger les données"
+          message="Une erreur est survenue lors du chargement. Vérifiez votre connexion puis réessayez."
+          onRetry={loadData}
+        />
       </div>
     );
   }

@@ -62,8 +62,18 @@ describe('le message', () => {
     expect(m.texte).toContain('offre=RM-ABCD1234');
     expect(m.texte).toContain(`/api/prospection/desinscription?t=${'a'.repeat(48)}`);
     expect(m.texte).toContain("l'adresse contact@lebistrot.fr est publiée sur https://www.lebistrot.fr");
-    expect(m.texte).toContain('29 € par mois, sans engagement');
+    expect(m.texte).toContain('29 € par mois si vous continuez, sans engagement');
     expect(m.html).toContain('Ne plus recevoir de message');
+    // Charte de l'email de bienvenue : visuel produit et bouton d'offre.
+    expect(m.html).toContain('og-image.png');
+    expect(m.html).toContain('Activer mes 3 mois offerts');
+    // Les points forts demandes par le fondateur.
+    for (const f of ['Inventaire', 'Balance Bluetooth', 'Une recette de saison par jour', 'IA']) expect(m.texte).toContain(f);
+  });
+
+  it('ne porte aucun prenom : l expediteur est l equipe RestauMargin', () => {
+    expect(m.texte + m.html).not.toMatch(/Youssef/);
+    expect(m.texte).toContain("L'équipe RestauMargin");
   });
 
   it("ne contient aucune preuve sociale (regle absolue du CLAUDE.md)", () => {

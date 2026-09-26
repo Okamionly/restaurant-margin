@@ -914,15 +914,23 @@ app.get('/api/cron/editorial-weekly', async (req: any, res) => {
     const tavilyData = await tavilyRes.json();
     const articles = (tavilyData.results || []).slice(0, 6).map((r: any) => `- ${r.title}: ${r.content?.slice(0, 250)}`).join('\n');
 
-    // Etape 2 : Claude Sonnet genere 3 recettes saisonnieres
+    // Etape 2 : Claude Sonnet genere les recettes saisonnieres.
+    // ?nombre=1 : la recette DU JOUR (demande du fondateur, 2026-09-26 : une recette
+    // par jour avec sa fiche technique et son cout) ; sans parametre : 3 (ancien rythme).
+    const nombre = Math.min(Math.max(parseInt(String(req.query?.nombre || '')) || 3, 1), 3);
+    const lundi = new Date();
+    lundi.setDate(lundi.getDate() - ((lundi.getDay() + 6) % 7));
+    const dejaPubliees: any[] = await prisma.$queryRaw`SELECT title FROM editorial_recipes WHERE week_date = ${lundi.toISOString().slice(0, 10)}::date`;
+    const eviter = dejaPubliees.map((x: any) => x.title).filter(Boolean).join(' ; ');
     const prompt = `Tu es un chef cuisinier français expert. Voici les actualités produits/marchés cette semaine (${month}) :
 
 ${articles}
 
 Question utilisateur du restaurant : "${tavilyData.answer?.slice(0, 400) || 'Quels produits sont en saison cette semaine ?'}"
 
-Génère 3 recettes éditoriales saisonnières mettant en valeur les produits mentionnés.
-Chaque recette doit être réaliste, professionnelle, calculable en marge.
+Génère ${nombre} recette(s) éditoriale(s) saisonnière(s) mettant en valeur les produits mentionnés.
+Chaque recette doit être réaliste, professionnelle, calculable en marge.${eviter ? `
+Ne reprends aucun de ces plats déjà publiés cette semaine : ${eviter}.` : ''}
 
 Format JSON STRICT (réponds UNIQUEMENT avec le JSON, pas de texte avant/après) :
 [
@@ -2033,7 +2041,7 @@ app.get('/api/cron/prospection', async (req: any, res) => {
     });
     const { Resend } = await import('resend');
     const envoi = await new Resend(process.env.RESEND_PROSPECTION_API_KEY || process.env.RESEND_API_KEY).emails.send({
-      from: 'Youssef de RestauMargin <contact@restaumargin.fr>',
+      from: 'RestauMargin <contact@restaumargin.fr>',
       to: trouve.email,
       replyTo: 'contact@restaumargin.fr',
       subject: message.sujet,

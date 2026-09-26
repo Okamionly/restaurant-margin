@@ -1,3 +1,5 @@
+import { buildProspectionEmail } from './emailTemplates';
+
 // Prospection de restaurants (2026-09-26) — fonctions PURES, testees dans
 // tests/prospection.test.ts. Le cron /api/cron/prospection les orchestre.
 //
@@ -119,46 +121,45 @@ export function echapperHtml(s: string): string {
 
 export interface MessageProspection { sujet: string; texte: string; html: string }
 
-/** Le message envoye. Uniquement des faits verifiables (tarif, essai, perimetre reel). */
+/**
+ * Le message envoye. Uniquement des faits verifiables (tarif, essai, perimetre reel).
+ * Aucun prenom : l'expediteur est l'equipe RestauMargin (demande du fondateur,
+ * 2026-09-26). Le HTML reprend la charte de l'email de bienvenue (emailTemplates.ts).
+ */
 export function composerMessage(p: {
   nom: string; site: string; email: string; code: string; jeton: string; adressePostale?: string;
 }): MessageProspection {
   const base = 'https://www.restaumargin.fr';
   const lienOffre = `${base}/login?mode=register&offre=${encodeURIComponent(p.code)}`;
   const lienStop = `${base}/api/prospection/desinscription?t=${encodeURIComponent(p.jeton)}`;
-  const sujet = `${p.nom} : 3 mois offerts pour calculer la marge de vos plats`;
-  const lignes = [
+  const sujet = `${p.nom} : 3 mois offerts pour piloter les marges de votre restaurant`;
+  const texte = [
     'Bonjour,',
     '',
-    "Je m'appelle Youssef et je développe RestauMargin, un logiciel français qui calcule le coût de revient et la marge de chaque plat : fiches techniques, food cost, suivi des prix fournisseurs, lecture des factures par photo.",
+    "RestauMargin est un logiciel français qui calcule le coût de revient et la marge de chaque plat de votre carte. Nous vous proposons de l'essayer 3 mois, gratuitement et sans carte bancaire.",
     '',
-    "L'outil est récent, et je cherche des restaurateurs prêts à l'essayer vraiment et à me dire ce qui leur manque. Je vous propose 3 mois d'accès complet, gratuits et sans carte bancaire, avec ce code personnel :",
+    'Ce que RestauMargin fait pour vous :',
+    '- Inventaire et stocks : vos stocks suivis, avec une alerte avant la rupture',
+    '- Balance Bluetooth : une station de pesée connectée, directement en cuisine',
+    '- Une recette de saison par jour, avec sa fiche technique, son coût par portion et son prix conseillé ; vos menus de la semaine',
+    "- Actualité et IA : l'actualité des prix et du secteur, et un assistant IA pour vos questions de marge",
     '',
-    `    ${p.code}`,
-    '',
+    `Votre code personnel (3 mois offerts) : ${p.code}`,
     `Pour l'activer (le code est déjà rempli) : ${lienOffre}`,
-    'Ensuite, si vous continuez : 29 € par mois, sans engagement.',
+    'Ensuite : 29 € par mois si vous continuez, sans engagement.',
     '',
-    "Si ce n'est pas le bon moment, aucun souci : un clic ici et je ne vous écrirai plus.",
-    lienStop,
+    "L'outil est récent : vos retours nous aident à l'améliorer. Une question ? Répondez simplement à cet email.",
     '',
-    'Youssef — RestauMargin',
+    "L'équipe RestauMargin",
     `contact@restaumargin.fr — ${base}`,
     ...(p.adressePostale ? [p.adressePostale] : []),
     '',
-    `Vous recevez ce message car l'adresse ${p.email} est publiée sur ${p.site}. Mentions légales : ${base}/mentions-legales`,
-  ];
-  const texte = lignes.join('\n');
-  const html = `<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:600px;color:#111111;line-height:1.6;font-size:15px">`
-    + lignes.map((l) => {
-      if (l === '') return '<br>';
-      const e = echapperHtml(l);
-      if (l === lienStop) return `<p style="margin:0"><a href="${echapperHtml(lienStop)}" style="color:#737373">Ne plus recevoir de message</a></p>`;
-      if (l.startsWith("Pour l'activer")) return `<p style="margin:0">Pour l'activer (le code est déjà rempli) : <a href="${echapperHtml(lienOffre)}">créer mon compte avec 3 mois offerts</a></p>`;
-      if (l.trim() === p.code) return `<p style="margin:0;font-size:18px;font-weight:700;letter-spacing:1px">${e.trim()}</p>`;
-      if (l.startsWith('Vous recevez ce message')) return `<p style="margin:0;font-size:12px;color:#737373">${e}</p>`;
-      return `<p style="margin:0">${e}</p>`;
-    }).join('')
-    + '</div>';
+    `Vous recevez ce message car l'adresse ${p.email} est publiée sur ${p.site}.`,
+    `Ne plus recevoir de message : ${lienStop}`,
+    `Mentions légales : ${base}/mentions-legales`,
+  ].join('\n');
+  const html = buildProspectionEmail({
+    nom: p.nom, site: p.site, email: p.email, code: p.code, lienOffre, lienStop, adressePostale: p.adressePostale,
+  });
   return { sujet, texte, html };
 }

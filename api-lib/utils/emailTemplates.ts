@@ -103,10 +103,10 @@ function footer(text?: string): string {
     ${text || 'Email envoy&eacute; via RestauMargin &mdash; www.restaumargin.fr'}
   </p>
   <p style="color:#94a3b8;font-size:10px;margin:8px 0 0;">
-    RestauMargin SAS &mdash; contact@restaumargin.fr<br>
-    <a href="https://www.restaumargin.fr/unsubscribe" style="color:#94a3b8;text-decoration:underline;">Se d&eacute;sabonner</a>
+    RestauMargin, entreprise individuelle &mdash; contact@restaumargin.fr<br>
+    <a href="mailto:contact@restaumargin.fr?subject=D%C3%A9sinscription" style="color:#94a3b8;text-decoration:underline;">Se d&eacute;sabonner</a>
     &nbsp;|&nbsp;
-    <a href="https://www.restaumargin.fr/privacy" style="color:#94a3b8;text-decoration:underline;">Politique de confidentialit&eacute;</a>
+    <a href="https://www.restaumargin.fr/politique-confidentialite" style="color:#94a3b8;text-decoration:underline;">Politique de confidentialit&eacute;</a>
   </p>
 </td></tr>`;
 }
@@ -350,7 +350,7 @@ ${header('RestauMargin', 'Bienvenue !')}
 <tr><td style="padding:30px 25px 16px;">
   <p style="font-size:19px;color:${DARK};margin:0;font-weight:700;">Bonjour ${esc(data.userName)},</p>
   <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.7;">
-    Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">14&nbsp;jours</strong> est activ&eacute;.
+    Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">7&nbsp;jours</strong> est activ&eacute;.
     Voici comment d&eacute;marrer en 3 &eacute;tapes simples :
   </p>
 </td></tr>
@@ -408,6 +408,102 @@ ${header('RestauMargin', 'Bienvenue !')}
 </td></tr>
 
 ${footer('www.restaumargin.fr')}`;
+
+  return wrapper(content);
+}
+
+// ---------- Template C2 : Prospection (3 mois offerts) ----------
+//
+// Meme charte que l'email de bienvenue (en-tete, visuel produit, blocs, bouton).
+// Aucun prenom : l'expediteur est « l'equipe RestauMargin » (demande du fondateur,
+// 2026-09-26). Aucune preuve sociale (CLAUDE.md) : l'outil est dit recent, l'offre
+// et le tarif sont exacts. Pied de page propre : identite reelle, origine de
+// l'adresse, desinscription par jeton (le lien generique du footer() ne s'y prete pas).
+
+export interface ProspectionEmailData {
+  nom: string;
+  site: string;
+  email: string;
+  code: string;
+  lienOffre: string;
+  lienStop: string;
+  adressePostale?: string;
+}
+
+export function buildProspectionEmail(d: ProspectionEmailData): string {
+  const fonction = (titre: string, texte: string) => `
+    <tr>
+      <td style="padding:10px 0;border-bottom:1px solid ${BORDER};vertical-align:top;">
+        <table width="100%" cellspacing="0" cellpadding="0"><tr>
+          <td style="width:28px;vertical-align:top;padding-top:2px;">
+            <div style="width:22px;height:22px;border-radius:50%;background:#f0fdfa;border:2px solid #99f6e4;text-align:center;line-height:18px;font-size:12px;font-weight:bold;color:${TEAL};">&#10003;</div>
+          </td>
+          <td style="padding-left:12px;">
+            <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 2px;">${titre}</p>
+            <p style="color:${MUTED};font-size:12px;margin:0;line-height:1.5;">${texte}</p>
+          </td>
+        </tr></table>
+      </td>
+    </tr>`;
+
+  const content = `
+${header('RestauMargin', `3 mois offerts pour ${esc(d.nom)}`)}
+
+<tr><td style="padding:30px 25px 16px;">
+  <p style="font-size:19px;color:${DARK};margin:0;font-weight:700;">Bonjour,</p>
+  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.7;">
+    RestauMargin est un logiciel fran&ccedil;ais qui calcule le <strong style="color:${DARK};">co&ucirc;t de revient et la marge de chaque plat</strong> de votre carte.
+    Nous vous proposons de l&rsquo;essayer <strong style="color:${DARK};">3&nbsp;mois, gratuitement et sans carte bancaire</strong>.
+  </p>
+</td></tr>
+
+<tr><td style="padding:0 25px 20px;">
+  <a href="${esc(d.lienOffre)}" style="display:block;text-decoration:none;border-radius:10px;overflow:hidden;border:1px solid ${BORDER};">
+    <img src="https://www.restaumargin.fr/og-image.png" alt="RestauMargin : calculez vos marges restaurant" width="550" style="width:100%;max-width:550px;display:block;" />
+  </a>
+</td></tr>
+
+<tr><td style="padding:0 25px 20px;">
+  <p style="color:${DARK};font-size:15px;font-weight:700;margin:0 0 12px;">Ce que RestauMargin fait pour vous :</p>
+  <table width="100%" cellspacing="0" cellpadding="0">
+    ${fonction('Inventaire et stocks', 'Vos stocks suivis, avec une alerte avant la rupture')}
+    ${fonction('Balance Bluetooth', 'Une station de pes&eacute;e connect&eacute;e, directement en cuisine')}
+    ${fonction('Une recette de saison par jour', 'Avec sa fiche technique, son co&ucirc;t par portion et son prix conseill&eacute; ; vos menus de la semaine')}
+    ${fonction('Actualit&eacute; et IA', 'L&rsquo;actualit&eacute; des prix et du secteur, et un assistant IA pour vos questions de marge')}
+  </table>
+</td></tr>
+
+<tr><td style="padding:0 25px 20px;">
+  <div style="background:#f0fdfa;border:1px solid #99f6e4;border-radius:10px;padding:20px;text-align:center;">
+    <p style="color:${TEAL};font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 8px;">Votre code personnel &mdash; 3 mois offerts</p>
+    <p style="color:${DARK};font-size:26px;font-weight:800;letter-spacing:2px;margin:0 0 16px;font-family:Consolas,'Courier New',monospace;">${esc(d.code)}</p>
+    <a href="${esc(d.lienOffre)}" style="display:inline-block;background:linear-gradient(135deg,${TEAL},${TEAL_LIGHT});color:white;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
+      Activer mes 3 mois offerts &#8594;
+    </a>
+    <p style="color:#0f766e;font-size:12px;margin:12px 0 0;line-height:1.6;">Le code est d&eacute;j&agrave; rempli. Ensuite : 29&nbsp;&euro; par mois si vous continuez, sans engagement.</p>
+  </div>
+</td></tr>
+
+<tr><td style="padding:0 25px 15px;">
+  <div style="background:${BG_LIGHT};border-radius:8px;padding:14px 16px;">
+    <p style="color:${MUTED};font-size:13px;margin:0;line-height:1.6;">
+      L&rsquo;outil est r&eacute;cent : vos retours nous aident &agrave; l&rsquo;am&eacute;liorer. Une question ? R&eacute;pondez simplement &agrave; cet email.
+    </p>
+    <p style="color:${DARK};font-size:13px;font-weight:600;margin:10px 0 0;">L&rsquo;&eacute;quipe RestauMargin</p>
+  </div>
+</td></tr>
+
+<tr><td style="background:${BG_LIGHT};padding:20px;text-align:center;border-top:1px solid ${BORDER};">
+  <p style="color:#94a3b8;font-size:11px;margin:0;line-height:1.6;">
+    Vous recevez ce message car l&rsquo;adresse ${esc(d.email)} est publi&eacute;e sur ${esc(d.site)}.<br>
+    <a href="${esc(d.lienStop)}" style="color:#94a3b8;text-decoration:underline;">Ne plus recevoir de message</a>
+    &nbsp;|&nbsp;
+    <a href="https://www.restaumargin.fr/mentions-legales" style="color:#94a3b8;text-decoration:underline;">Mentions l&eacute;gales</a>
+  </p>
+  <p style="color:#94a3b8;font-size:10px;margin:8px 0 0;">
+    RestauMargin &mdash; contact@restaumargin.fr &mdash; www.restaumargin.fr${d.adressePostale ? `<br>${esc(d.adressePostale)}` : ''}
+  </p>
+</td></tr>`;
 
   return wrapper(content);
 }
@@ -1137,16 +1233,16 @@ export function buildMarketingEmail(data: MarketingEmailData): string {
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td style="font-family:${MKT_FONT};font-size:12px;line-height:1.6;color:${MKT_GRAY};">
-                    RestauMargin SAS &mdash; Montpellier<br>
+                    RestauMargin, entreprise individuelle &mdash; Montpellier<br>
                     <a href="https://www.restaumargin.fr" style="color:${MKT_GRAY};text-decoration:underline;">restaumargin.fr</a>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding-top:12px;font-family:${MKT_FONT};font-size:11px;line-height:1.5;color:#999999;">
                     Vous recevez cet email car votre &eacute;tablissement correspond &agrave; notre audience professionnelle.<br>
-                    <a href="https://www.restaumargin.fr/unsubscribe" style="color:#999999;text-decoration:underline;">Se d&eacute;sabonner</a>
+                    <a href="mailto:contact@restaumargin.fr?subject=D%C3%A9sinscription" style="color:#999999;text-decoration:underline;">Se d&eacute;sabonner</a>
                     &nbsp;&middot;&nbsp;
-                    <a href="https://www.restaumargin.fr/privacy" style="color:#999999;text-decoration:underline;">Politique de confidentialit&eacute;</a>
+                    <a href="https://www.restaumargin.fr/politique-confidentialite" style="color:#999999;text-decoration:underline;">Politique de confidentialit&eacute;</a>
                   </td>
                 </tr>
               </table>
@@ -1459,10 +1555,10 @@ export function buildCampaignEmail(restaurant: CampaignRestaurant, cuisineType?:
         Vous recevez cet email car votre restaurant est r&eacute;f&eacute;renc&eacute; publiquement sur Internet.<br>
         <a href="mailto:contact@restaumargin.fr?subject=Desabonnement" style="color:#6b7280;text-decoration:underline;">Se d&eacute;sabonner</a>
         &nbsp;|&nbsp;
-        <a href="https://www.restaumargin.fr/privacy" style="color:#6b7280;text-decoration:underline;">Politique de confidentialit&eacute;</a>
+        <a href="https://www.restaumargin.fr/politique-confidentialite" style="color:#6b7280;text-decoration:underline;">Politique de confidentialit&eacute;</a>
       </p>
       <p style="color:#4b5563;font-size:10px;margin:8px 0 0;font-family:'Segoe UI',Roboto,Arial,sans-serif;">
-        &copy; 2026 RestauMargin SAS &mdash; Montpellier, France &mdash; Tous droits r&eacute;serv&eacute;s.
+        &copy; 2026 RestauMargin &mdash; Montpellier, France &mdash; Tous droits r&eacute;serv&eacute;s.
       </p>
     </td></tr>
   </table>

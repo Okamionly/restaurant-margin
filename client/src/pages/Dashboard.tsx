@@ -1537,7 +1537,7 @@ export default function Dashboard() {
                     : 'bg-white dark:bg-mono-50 text-[#737373] border border-mono-900 dark:border-mono-200 hover:text-[#525252]'
                   }`}
               >
-                {p === 'week' ? 'Semaine' : p === 'month' ? 'Mois' : 'Annee'}
+                {p === 'week' ? t('dashboard.week') : p === 'month' ? t('dashboard.month') : t('dashboard.year')}
               </button>
             ))}
           </div>

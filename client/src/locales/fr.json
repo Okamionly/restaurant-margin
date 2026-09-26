@@ -1570,6 +1570,8 @@
   "dashboard.materialOnly": "Matière seule",
   "dashboard.minMax": "Min / Max",
   "dashboard.month": "Mois",
+  "dashboard.week": "Semaine",
+  "dashboard.year": "Année",
   "dashboard.name": "Nom",
   "dashboard.nbRecipes": "Nb recettes",
   "dashboard.newRecipe": "Nouvelle recette",

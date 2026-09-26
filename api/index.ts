@@ -317,6 +317,11 @@ app.use((req, res, next) => {
   // Desinscription de la prospection : POST « un clic » (RFC 8058) envoye par la
   // messagerie du destinataire, sans session ni jeton CSRF. Le jeton aleatoire de
   // l'URL suffit, et la route ne fait que retirer une adresse.
+  // Proposition de la routine Claude de prospection : pas de session. Le serveur
+  // re-verifie tout et borne a un envoi par jour (voir /api/prospection/proposer).
+  if (req.path === '/api/prospection/proposer') {
+    return next();
+  }
   if (req.path === '/api/prospection/desinscription') {
     return next();
   }
@@ -1936,6 +1941,175 @@ app.get('/api/cron/trial-expiry', async (req: any, res) => {
   }
 });
 
+// ── AGENTS CLOUD (routines Claude) : points d'entree publics, bornes cote serveur ──
+// Decision du fondateur (2026-09-26) : la prospection et la recette du jour sont
+// menees par des routines Claude (claude.ai). Aucune routine ne detient de secret :
+// elles proposent, le serveur verifie tout et agit avec ses propres cles. Les taches
+// GitHub Actions restent en FILET DE SECOURS plus tard dans la matinee (quota Claude
+// epuise = routine muette) ; les gardes atomiques du jour empechent tout doublon.
+
+function estWeekEndParis(): boolean {
+  const j = new Date().toLocaleDateString('en-US', { weekday: 'short', timeZone: 'Europe/Paris' });
+  return j === 'Sat' || j === 'Sun';
+}
+
+// Envoi d'UN email de prospection : code d'offre, fiche prospect, envoi Resend, trace.
+// Partage par la routine (/api/prospection/proposer) et le cron de secours.
+// Garde ATOMIQUE : une seule ligne 'prospection_jour' par date dans notif_log.
+async function envoyerProspection(
+  t: { nom: string; pays: string; ville: string; site: string; domaine: string; email: string; sourceUrl: string },
+  adressePostale: string | undefined,
+): Promise<{ envoye: boolean; raison?: string }> {
+  const jour = new Date().toISOString().slice(0, 10);
+  const place = await prisma.$executeRaw`INSERT INTO notif_log (kind, ref, category, notified) VALUES ('prospection_jour', ${jour}, 'prospection', true) ON CONFLICT (kind, ref) DO NOTHING`;
+  if (place === 0) return { envoye: false, raison: 'deja_fait_aujourdhui' };
+  const code = 'RM-' + crypto.randomBytes(4).toString('hex').toUpperCase();
+  const jeton = crypto.randomBytes(24).toString('hex');
+  const message = composerMessage({ nom: t.nom, site: t.site, email: t.email, code, jeton, adressePostale });
+  await prisma.activationCode.create({
+    data: { code, plan: 'basic', trialDays: 90, campagne: 'prospection', expiresAt: new Date(Date.now() + 90 * 86_400_000) },
+  });
+  const prospect = await prisma.prospect.create({
+    data: { ...t, statut: 'pret', codeActivation: code, jetonDesinscription: jeton },
+  });
+  const { Resend } = await import('resend');
+  const envoi = await new Resend(process.env.RESEND_PROSPECTION_API_KEY || process.env.RESEND_API_KEY).emails.send({
+    from: 'RestauMargin <contact@restaumargin.fr>',
+    to: t.email,
+    replyTo: 'contact@restaumargin.fr',
+    subject: message.sujet,
+    text: message.texte,
+    html: message.html,
+    headers: {
+      'List-Unsubscribe': `<https://www.restaumargin.fr/api/prospection/desinscription?t=${jeton}>, <mailto:contact@restaumargin.fr?subject=desinscription>`,
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+    },
+  });
+  // Le SDK Resend ne leve pas : il renvoie { data, error }.
+  if ((envoi as any)?.error || !envoi?.data?.id) {
+    await prisma.prospect.update({
+      where: { id: prospect.id },
+      data: { statut: 'erreur', erreur: String((envoi as any)?.error?.message || 'reponse sans id').slice(0, 300) },
+    });
+    return { envoye: false, raison: 'erreur_envoi' };
+  }
+  await prisma.prospect.update({ where: { id: prospect.id }, data: { statut: 'envoye', envoyeAt: new Date(), resendId: envoi.data.id } });
+  return { envoye: true };
+}
+
+// Pages lues sur le site propose (accueil, contact, mentions legales).
+async function lirePagesSite(origine: string): Promise<{ emails: string[]; texte: string }> {
+  const emails: string[] = [];
+  let texte = '';
+  for (const chemin of ['', '/contact', '/nous-contacter', '/contactez-nous', '/mentions-legales', '/fr/contact', '/contact.html', '/infos']) {
+    try {
+      const page = await fetch(origine + chemin, {
+        headers: { 'User-Agent': 'RestauMarginBot/1.0 (+https://www.restaumargin.fr)' },
+        signal: AbortSignal.timeout(8_000),
+        redirect: 'follow',
+      });
+      if (!page.ok) continue;
+      const html = (await page.text()).slice(0, 400_000);
+      if (!texte) texte = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 1500);
+      emails.push(...extraireEmails(html));
+    } catch { /* page lente ou absente */ }
+  }
+  return { emails, texte };
+}
+
+// POST /api/prospection/proposer — la routine Claude propose UN site de restaurant.
+// Le serveur ne croit rien : il refuse les URL internes, relit le site lui-meme,
+// y cherche une adresse generique publiee, verifie que c'est un restaurant, et
+// n'envoie qu'une fois par jour ouvre. Aucun texte de la routine n'est envoye.
+app.post('/api/prospection/proposer', async (req: any, res) => {
+  try {
+    const ip = (req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'anon').toString().split(',')[0].trim();
+    const rl = await ratelimit(`prospection:${ip}`);
+    if (!rl.success) return res.status(429).json({ envoye: 0, raison: 'trop_de_requetes' });
+    if (process.env.PROSPECTION_ACTIVE !== '1') return res.json({ envoye: 0, raison: 'inactif' });
+    if (estWeekEndParis()) return res.json({ envoye: 0, raison: 'week-end' });
+    const pays = String(req.body?.pays || '');
+    const ville = String(req.body?.ville || '').slice(0, 80);
+    if (!['France', 'Belgique', 'Suisse', 'Canada'].includes(pays)) return res.status(400).json({ envoye: 0, raison: 'pays_invalide' });
+    const adressePostale = process.env.PROSPECTION_ADRESSE_POSTALE || undefined;
+    if (pays === 'Canada' && !adressePostale) return res.json({ envoye: 0, raison: 'canada_sans_adresse_postale' });
+    let u: URL;
+    try { u = new URL(String(req.body?.url || '')); } catch { return res.status(400).json({ envoye: 0, raison: 'url_invalide' }); }
+    const hote = u.hostname.toLowerCase();
+    // Anti-SSRF : jamais d'IP, d'hote local ou interne.
+    if (!['http:', 'https:'].includes(u.protocol) || !hote.includes('.') || /^[\d.]+$/.test(hote) || hote.includes(':')
+      || /(^|\.)(localhost|local|internal|intranet|vercel\.app)$/.test(hote)) {
+      return res.status(400).json({ envoye: 0, raison: 'url_refusee' });
+    }
+    if (estAgregateur(u.href)) return res.json({ envoye: 0, raison: 'annuaire_ou_plateforme' });
+    const domaine = domaineDe(u.href);
+    if (await prisma.prospect.findFirst({ where: { domaine }, select: { id: true } })) return res.json({ envoye: 0, raison: 'deja_contacte' });
+    const { emails, texte } = await lirePagesSite(u.origin);
+    const email = choisirEmail(emails, domaine);
+    if (!email) return res.json({ envoye: 0, raison: 'aucune_adresse' });
+    if (await prisma.prospect.findFirst({ where: { email }, select: { id: true } })) return res.json({ envoye: 0, raison: 'deja_contacte' });
+    const { data: avis } = await llmJson<any>({
+      system: 'Tu reponds UNIQUEMENT en JSON valide.',
+      user: `Site : ${u.origin}\nTexte de la page : ${texte}\n\nEst-ce le site officiel d'UN restaurant (pas un guide, un annuaire, un blog, un hotel, une chaine ni une plateforme) ? Reponds {"restaurant": true ou false, "nom": "nom de l'etablissement"}.`,
+      maxTokens: 120,
+      timeoutMs: 12_000,
+    }).catch(() => ({ data: null as any }));
+    if (!avis?.restaurant || !avis?.nom) return res.json({ envoye: 0, raison: 'pas_un_restaurant' });
+    const nom = String(avis.nom).slice(0, 120);
+    const r = await envoyerProspection({ nom, pays, ville, site: u.origin, domaine, email, sourceUrl: u.href }, adressePostale);
+    if (!r.envoye) return res.status(r.raison === 'erreur_envoi' ? 502 : 200).json({ envoye: 0, raison: r.raison });
+    res.json({ envoye: 1, nom });
+  } catch (e: any) {
+    console.error('[PROSPECTION/PROPOSER]', e.message);
+    res.status(500).json({ envoye: 0, raison: 'erreur_serveur' });
+  }
+});
+
+// GET /api/recettes/du-jour — la routine Claude (et le cron de secours) demande la
+// recette du jour. Au plus UNE generation par jour (garde atomique) ; ensuite la
+// meme recette est renvoyee. La generation reutilise le pipeline editorial, appele
+// par le serveur avec son propre secret : la routine n'en detient aucun.
+app.get('/api/recettes/du-jour', async (req: any, res) => {
+  try {
+    const ip = (req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'anon').toString().split(',')[0].trim();
+    const rl = await ratelimit(`recette-du-jour:${ip}`);
+    if (!rl.success) return res.status(429).json({ error: 'trop_de_requetes' });
+    const duJour = async () => ((await prisma.$queryRaw`
+      SELECT title, cost_per_portion, suggested_price, margin_percent FROM editorial_recipes
+      WHERE created_at >= date_trunc('day', now()) ORDER BY created_at DESC LIMIT 1`) as any[])[0];
+    let r = await duJour();
+    let generee = false;
+    if (!r) {
+      const jour = new Date().toISOString().slice(0, 10);
+      const place = await prisma.$executeRaw`INSERT INTO notif_log (kind, ref, category, notified) VALUES ('recette_jour', ${jour}, 'recette', true) ON CONFLICT (kind, ref) DO NOTHING`;
+      if (place > 0) {
+        const g = await fetch('https://www.restaumargin.fr/api/cron/editorial-weekly?nombre=1', {
+          headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
+          signal: AbortSignal.timeout(250_000),
+        }).catch(() => null);
+        if (!g || !g.ok) {
+          // Echec : on libere la place du jour pour qu'un autre passage retente.
+          await prisma.$executeRaw`DELETE FROM notif_log WHERE kind = 'recette_jour' AND ref = ${jour}`;
+          return res.status(502).json({ error: 'generation_echouee' });
+        }
+        generee = true;
+      }
+      r = await duJour();
+    }
+    if (!r) return res.status(202).json({ en_cours: true });
+    res.json({
+      generee,
+      titre: r.title,
+      cout_par_portion: Number(r.cost_per_portion),
+      prix_conseille: Number(r.suggested_price),
+      marge_pct: Number(r.margin_percent),
+    });
+  } catch (e: any) {
+    console.error('[RECETTE DU JOUR]', e.message);
+    res.status(500).json({ error: 'erreur_serveur' });
+  }
+});
+
 // ── PROSPECTION : un restaurant par jour ouvre (2026-09-26) ─────────────────
 // Decision du fondateur (2026-09-26) : gratuit, 1 email par jour, via Resend. Les
 // conditions de Resend interdisent la prospection : risque connu et accepte par le
@@ -2023,44 +2197,15 @@ app.get('/api/cron/prospection', async (req: any, res) => {
     }
     if (!trouve) return res.json({ envoye: 0, trouve: false, candidats, restaurants_retenus: acceptes, adresses_vues: adressesVues, pages_lues: pagesLues });
 
-    const code = 'RM-' + crypto.randomBytes(4).toString('hex').toUpperCase();
-    const jeton = crypto.randomBytes(24).toString('hex');
-    const message = composerMessage({ nom: trouve.nom, site: trouve.site, email: trouve.email, code, jeton, adressePostale });
     if (!actif) {
+      const apercu = composerMessage({ nom: trouve.nom, site: trouve.site, email: trouve.email, code: 'RM-APERCU00', jeton: '0'.repeat(48), adressePostale });
       return res.json({
         envoye: 0, simulation: true, trouve: true, candidats, pages_lues: pagesLues,
-        ...(details ? { apercu: { ...trouve, sujet: message.sujet, texte: message.texte } } : {}),
+        ...(details ? { apercu: { ...trouve, sujet: apercu.sujet, texte: apercu.texte } } : {}),
       });
     }
-
-    await prisma.activationCode.create({
-      data: { code, plan: 'basic', trialDays: 90, campagne: 'prospection', expiresAt: new Date(Date.now() + 90 * 86_400_000) },
-    });
-    const prospect = await prisma.prospect.create({
-      data: { ...trouve, statut: 'pret', codeActivation: code, jetonDesinscription: jeton },
-    });
-    const { Resend } = await import('resend');
-    const envoi = await new Resend(process.env.RESEND_PROSPECTION_API_KEY || process.env.RESEND_API_KEY).emails.send({
-      from: 'RestauMargin <contact@restaumargin.fr>',
-      to: trouve.email,
-      replyTo: 'contact@restaumargin.fr',
-      subject: message.sujet,
-      text: message.texte,
-      html: message.html,
-      headers: {
-        'List-Unsubscribe': `<https://www.restaumargin.fr/api/prospection/desinscription?t=${jeton}>, <mailto:contact@restaumargin.fr?subject=desinscription>`,
-        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-      },
-    });
-    // Le SDK Resend ne leve pas : il renvoie { data, error }.
-    if ((envoi as any)?.error || !envoi?.data?.id) {
-      await prisma.prospect.update({
-        where: { id: prospect.id },
-        data: { statut: 'erreur', erreur: String((envoi as any)?.error?.message || 'reponse sans id').slice(0, 300) },
-      });
-      return res.status(502).json({ envoye: 0, erreur_envoi: true });
-    }
-    await prisma.prospect.update({ where: { id: prospect.id }, data: { statut: 'envoye', envoyeAt: new Date(), resendId: envoi.data.id } });
+    const r = await envoyerProspection(trouve, adressePostale);
+    if (!r.envoye) return res.status(r.raison === 'erreur_envoi' ? 502 : 200).json({ envoye: 0, raison: r.raison });
     res.json({ envoye: 1, candidats, pages_lues: pagesLues });
   } catch (e: any) {
     console.error('[CRON PROSPECTION]', e.message);

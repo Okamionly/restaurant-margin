@@ -86,7 +86,9 @@ describe('le message', () => {
 });
 
 describe('gardes du cron de prospection', () => {
-  const src = readFileSync(join(__dirname, '..', 'api', 'index.ts'), 'utf8');
+  // Fins de ligne normalisees : sur un poste Windows (CRLF), une borne de fin comme
+  // "\n}\n" ne serait jamais trouvee et le bloc teste deviendrait tout le fichier.
+  const src = readFileSync(join(__dirname, '..', 'api', 'index.ts'), 'utf8').replace(/\r\n/g, '\n');
   const i = src.indexOf("app.get('/api/cron/prospection'");
   const corps = src.slice(i, src.indexOf('\n});', i));
 
@@ -97,10 +99,46 @@ describe('gardes du cron de prospection', () => {
     expect(corps).toMatch(/if \(recent\) return/);
   });
 
-  it("verifie un domaine et une adresse jamais contactes, et lit l'erreur Resend", () => {
+  it('verifie un domaine et une adresse jamais contactes, puis passe par l envoi partage', () => {
     expect(corps).toMatch(/where: \{ domaine \}/);
     expect(corps).toMatch(/where: \{ email \}/);
-    expect(corps).toMatch(/\(envoi as any\)\?\.error \|\| !envoi\?\.data\?\.id/);
-    expect(corps).toMatch(/'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'/);
+    expect(corps).toMatch(/await envoyerProspection\(trouve, adressePostale\)/);
+  });
+});
+
+// Routines Claude (2026-09-26) : elles proposent, le serveur verifie et agit.
+describe('envoi partage et points d entree des routines', () => {
+  // Fins de ligne normalisees : voir le bloc precedent.
+  const src = readFileSync(join(__dirname, '..', 'api', 'index.ts'), 'utf8').replace(/\r\n/g, '\n');
+  const bloc = (debut: string, fin: string) => {
+    const i = src.indexOf(debut);
+    return i < 0 ? '' : src.slice(i, src.indexOf(fin, i));
+  };
+  const envoi = bloc('async function envoyerProspection(', '\n}\n');
+  const proposer = bloc("app.post('/api/prospection/proposer'", '\n});');
+  const recette = bloc("app.get('/api/recettes/du-jour'", '\n});');
+
+  it('un seul envoi par jour, garanti par une place atomique, et l erreur Resend lue', () => {
+    expect(envoi).toMatch(/VALUES \('prospection_jour', \$\{jour\}/);
+    expect(envoi).toMatch(/if \(place === 0\) return \{ envoye: false, raison: 'deja_fait_aujourdhui' \}/);
+    expect(envoi).toMatch(/\(envoi as any\)\?\.error \|\| !envoi\?\.data\?\.id/);
+    expect(envoi).toMatch(/'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'/);
+  });
+
+  it('la proposition de la routine est bornee : limite de debit, interrupteur, anti-SSRF, re-verification', () => {
+    expect(proposer).toMatch(/ratelimit\(`prospection:\$\{ip\}`\)/);
+    expect(proposer).toMatch(/PROSPECTION_ACTIVE !== '1'/);
+    expect(proposer).toMatch(/estWeekEndParis\(\)/);
+    expect(proposer).toMatch(/\/\^\[\\d\.\]\+\$\/\.test\(hote\)/);
+    expect(proposer).toMatch(/localhost\|local\|internal/);
+    // Le serveur relit le site lui-meme : l'adresse ne vient jamais de la routine.
+    expect(proposer).toMatch(/await lirePagesSite\(u\.origin\)/);
+    expect(proposer).not.toMatch(/req\.body\?\.email/);
+  });
+
+  it('la recette du jour est generee au plus une fois par jour', () => {
+    expect(recette).toMatch(/VALUES \('recette_jour', \$\{jour\}/);
+    expect(recette).toMatch(/if \(place > 0\)/);
+    expect(recette).toMatch(/ratelimit\(`recette-du-jour:\$\{ip\}`\)/);
   });
 });

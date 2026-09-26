@@ -28,9 +28,9 @@ on:
     - cron: '15 */2 * * *'   # Import des emails — toutes les 2 h
     - cron: '5 5 * * *'      # Digest du jour — 07h05 Paris (ete) / 06h05 (hiver)
     - cron: '0 7 * * *'      # Emails d'onboarding + fin d'essai — 09h Paris (ete) / 08h (hiver)
-    - cron: '0 4 * * *'      # Recette du jour (fiche technique + cout) — 06h Paris (ete) / 05h (hiver)
+    - cron: '0 10 * * *'     # Recette du jour, FILET DE SECOURS de la routine Claude (qui passe a 06:00 UTC)
     - cron: '30 */6 * * *'   # Controle de sante — toutes les 6 h
-    - cron: '30 7 * * 1-5'   # Prospection (1 email) — 09h30 Paris (ete) / 08h30 (hiver), jours ouvres
+    - cron: '0 10 * * 1-5'   # Prospection, FILET DE SECOURS de la routine Claude (07:00 UTC) — plafond 1/jour
   workflow_dispatch:
     inputs:
       tache:
@@ -134,15 +134,15 @@ jobs:
       # Volontairement HORS de « toutes » : un lancement groupe ne doit jamais envoyer.
       # Sans PROSPECTION_ACTIVE=1 cote Vercel, la tache tourne en simulation.
       - name: Prospection (1 email)
-        if: ${{ !cancelled() && (github.event.schedule == '30 7 * * 1-5' || inputs.tache == 'prospection') }}
+        if: ${{ !cancelled() && (github.event.schedule == '0 10 * * 1-5' || inputs.tache == 'prospection') }}
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: "$RUNNER_TEMP/appeler.sh 'Prospection' '/api/cron/prospection'"
       - name: Recette du jour
-        if: ${{ !cancelled() && (github.event.schedule == '0 4 * * *' || inputs.tache == 'editorial-weekly' || inputs.tache == 'toutes') }}
+        if: ${{ !cancelled() && (github.event.schedule == '0 10 * * *' || inputs.tache == 'editorial-weekly' || inputs.tache == 'toutes') }}
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
-        run: "$RUNNER_TEMP/appeler.sh 'Recette du jour' '/api/cron/editorial-weekly?nombre=1'"
+        run: "$RUNNER_TEMP/appeler.sh 'Recette du jour' '/api/recettes/du-jour'"
 
       # Sante : endpoint PUBLIC (pas de secret). On verifie le contenu, pas juste
       # le code HTTP — la sonde a deja renvoye 200 en annoncant une base en panne.

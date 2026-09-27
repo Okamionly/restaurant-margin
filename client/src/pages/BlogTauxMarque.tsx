@@ -160,7 +160,7 @@ export default function BlogTauxMarque() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-07-13',
-            dateModified: '2026-07-13',
+            dateModified: '2026-09-27',
             wordCount: 3500,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/taux-de-marque-taux-de-marge' },

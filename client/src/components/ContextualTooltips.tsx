@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { X, Lightbulb } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 
 // ── Storage key ──────────────────────────────────────────────────────────────
 const TOOLTIPS_KEY = 'contextual-tooltips-shown';
@@ -8,66 +9,22 @@ const TOOLTIPS_KEY = 'contextual-tooltips-shown';
 // ── Tooltip definitions per route ────────────────────────────────────────────
 interface TooltipConfig {
   route: string;
-  message: string;
+  messageKey: string;
   position: 'top' | 'bottom';
 }
 
 const TOOLTIPS: TooltipConfig[] = [
-  {
-    route: '/dashboard',
-    message: 'Voici votre tableau de bord. Les KPIs se remplissent automatiquement a mesure que vous ajoutez des recettes et ingredients.',
-    position: 'top',
-  },
-  {
-    route: '/ingredients',
-    message: 'Ajoutez vos ingredients avec leurs prix pour calculer vos couts. L\'IA peut suggerer les prix du marche.',
-    position: 'top',
-  },
-  {
-    route: '/recipes',
-    message: 'Creez vos fiches techniques ici. L\'IA peut suggerer les ingredients et optimiser vos marges automatiquement.',
-    position: 'top',
-  },
-  {
-    route: '/suppliers',
-    message: 'Gerez vos fournisseurs et comparez les prix. Liez-les a vos ingredients pour un suivi precis.',
-    position: 'top',
-  },
-  {
-    route: '/inventory',
-    message: 'Suivez votre stock en temps reel. Les alertes de stock bas se declenchent automatiquement.',
-    position: 'top',
-  },
-  {
-    route: '/menu',
-    message: 'Construisez votre carte ici. Glissez-deposez vos recettes et fixez vos prix de vente.',
-    position: 'top',
-  },
-  {
-    route: '/analytics',
-    message: 'Analysez vos performances : marges, food cost, rentabilite par plat. Tout se calcule automatiquement.',
-    position: 'top',
-  },
-  {
-    route: '/scanner-factures',
-    message: 'Scannez vos factures fournisseurs. L\'IA extrait les prix et met a jour vos ingredients automatiquement.',
-    position: 'top',
-  },
-  {
-    route: '/station',
-    message: 'Pesez vos ingredients directement avec une balance connectee pour des fiches techniques ultra-precises.',
-    position: 'top',
-  },
-  {
-    route: '/kitchen-mode',
-    message: 'Affichez les fiches techniques en cuisine sur tablette — les equipes suivent chaque etape en temps reel.',
-    position: 'top',
-  },
-  {
-    route: '/service-tracker',
-    message: 'Suivez le service en direct : plats envoyes, temps de preparation et performance de chaque poste.',
-    position: 'top',
-  },
+  { route: '/dashboard',       messageKey: 'tooltip.dashboard',        position: 'top' },
+  { route: '/ingredients',     messageKey: 'tooltip.ingredients',      position: 'top' },
+  { route: '/recipes',         messageKey: 'tooltip.recipes',          position: 'top' },
+  { route: '/suppliers',       messageKey: 'tooltip.suppliers',        position: 'top' },
+  { route: '/inventory',       messageKey: 'tooltip.inventory',        position: 'top' },
+  { route: '/menu',            messageKey: 'tooltip.menu',             position: 'top' },
+  { route: '/analytics',       messageKey: 'tooltip.analytics',        position: 'top' },
+  { route: '/scanner-factures',messageKey: 'tooltip.scannerFactures',  position: 'top' },
+  { route: '/station',         messageKey: 'tooltip.station',          position: 'top' },
+  { route: '/kitchen-mode',    messageKey: 'tooltip.kitchenMode',      position: 'top' },
+  { route: '/service-tracker', messageKey: 'tooltip.serviceTracker',   position: 'top' },
 ];
 
 function getShownTooltips(): Record<string, boolean> {
@@ -87,6 +44,7 @@ function markTooltipShown(route: string): void {
 // ── Component ────────────────────────────────────────────────────────────────
 export default function ContextualTooltips() {
   const location = useLocation();
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [tooltip, setTooltip] = useState<TooltipConfig | null>(null);
   const [fading, setFading] = useState(false);
@@ -147,7 +105,7 @@ export default function ContextualTooltips() {
             <Lightbulb className="w-4 h-4" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm leading-relaxed">{tooltip.message}</p>
+            <p className="text-sm leading-relaxed">{t(tooltip.messageKey)}</p>
           </div>
           <button
             onClick={dismiss}

@@ -2686,5 +2686,16 @@
   "recipeDetail.errorOptimize": "Error during cost optimization",
   "recipeDetail.errorAllergens": "Error during allergen analysis",
   "recipeDetail.errorNutrition": "Error during nutrition estimation",
-  "Erreur lors de la création": "Creation error"
+  "Erreur lors de la création": "Creation error",
+  "tooltip.dashboard": "This is your dashboard. KPIs fill in automatically as you add recipes and ingredients.",
+  "tooltip.ingredients": "Add your ingredients with their prices to calculate your costs. AI can suggest market prices.",
+  "tooltip.recipes": "Create your recipe sheets here. AI can suggest ingredients and automatically optimise your margins.",
+  "tooltip.suppliers": "Manage your suppliers and compare prices. Link them to your ingredients for precise tracking.",
+  "tooltip.inventory": "Track your stock in real time. Low-stock alerts trigger automatically.",
+  "tooltip.menu": "Build your menu here. Drag and drop your recipes and set your selling prices.",
+  "tooltip.analytics": "Analyse your performance: margins, food cost, profitability per dish. Everything is calculated automatically.",
+  "tooltip.scannerFactures": "Scan your supplier invoices. AI extracts the prices and updates your ingredients automatically.",
+  "tooltip.station": "Weigh your ingredients directly with a connected scale for ultra-precise recipe sheets.",
+  "tooltip.kitchenMode": "Display recipe sheets in the kitchen on a tablet — teams follow each step in real time.",
+  "tooltip.serviceTracker": "Track service live: dishes sent, preparation times, and performance of each station."
 }

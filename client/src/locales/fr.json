@@ -2686,5 +2686,16 @@
   "recipeDetail.errorOptimize": "Erreur lors de l'optimisation",
   "recipeDetail.errorAllergens": "Erreur lors de l'analyse des allergènes",
   "recipeDetail.errorNutrition": "Erreur lors de l'estimation nutritionnelle",
-  "Erreur lors de la création": "Erreur lors de la création"
+  "Erreur lors de la création": "Erreur lors de la création",
+  "tooltip.dashboard": "Voici votre tableau de bord. Les KPIs se remplissent automatiquement à mesure que vous ajoutez des recettes et ingrédients.",
+  "tooltip.ingredients": "Ajoutez vos ingrédients avec leurs prix pour calculer vos coûts. L'IA peut suggérer les prix du marché.",
+  "tooltip.recipes": "Créez vos fiches techniques ici. L'IA peut suggérer les ingrédients et optimiser vos marges automatiquement.",
+  "tooltip.suppliers": "Gérez vos fournisseurs et comparez les prix. Liez-les à vos ingrédients pour un suivi précis.",
+  "tooltip.inventory": "Suivez votre stock en temps réel. Les alertes de stock bas se déclenchent automatiquement.",
+  "tooltip.menu": "Construisez votre carte ici. Glissez-déposez vos recettes et fixez vos prix de vente.",
+  "tooltip.analytics": "Analysez vos performances : marges, food cost, rentabilité par plat. Tout se calcule automatiquement.",
+  "tooltip.scannerFactures": "Scannez vos factures fournisseurs. L'IA extrait les prix et met à jour vos ingrédients automatiquement.",
+  "tooltip.station": "Pesez vos ingrédients directement avec une balance connectée pour des fiches techniques ultra-précises.",
+  "tooltip.kitchenMode": "Affichez les fiches techniques en cuisine sur tablette — les équipes suivent chaque étape en temps réel.",
+  "tooltip.serviceTracker": "Suivez le service en direct : plats envoyés, temps de préparation et performance de chaque poste."
 }

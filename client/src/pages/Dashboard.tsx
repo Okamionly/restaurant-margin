@@ -734,7 +734,7 @@ export default function Dashboard() {
     { key: 'margins', label: t("dashboard.tabMargins") },
     { key: 'costs', label: t("dashboard.tabCosts") },
     { key: 'profitability', label: t("dashboard.tabProfitability") },
-    { key: 'pnl', label: 'P&L' },
+    { key: 'pnl', label: t('dashboard.tabPnl') },
   ];
 
   // ── Data fetching ──────────────────────────────────────────────────────
@@ -1543,21 +1543,21 @@ export default function Dashboard() {
           </div>
 
           {pnlLoading ? (
-            <LoadingState label="Chargement du compte de resultat…" />
+            <LoadingState label={t('dashboard.pnlLoading')} />
           ) : pnlData ? (
             <div className="rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black p-6">
-              <h3 className="text-base font-bold text-mono-100 dark:text-white font-satoshi mb-6">Compte de resultat</h3>
+              <h3 className="text-base font-bold text-mono-100 dark:text-white font-satoshi mb-6">{t('dashboard.compteResultat')}</h3>
               <div className="space-y-4">
                 {/* CA */}
                 <div className="flex items-center justify-between py-3 border-b border-mono-900 dark:border-mono-200">
-                  <span className="text-sm font-medium text-mono-100 dark:text-white">Chiffre d'affaires</span>
+                  <span className="text-sm font-medium text-mono-100 dark:text-white">{t('dashboard.chiffreAffaires')}</span>
                   <span className="text-lg font-black text-mono-100 dark:text-white tabular-nums">{formatCurrency(pnlData.revenue)}</span>
                 </div>
                 {/* Food cost */}
                 <div className="flex items-center justify-between py-3 border-b border-mono-900 dark:border-mono-200">
                   <div>
-                    <span className="text-sm font-medium text-mono-100 dark:text-white">Cout matieres</span>
-                    <span className="text-xs text-[#737373] ml-2">{pnlData.foodCostPercent}% du CA</span>
+                    <span className="text-sm font-medium text-mono-100 dark:text-white">{t('dashboard.coutMatieres')}</span>
+                    <span className="text-xs text-[#737373] ml-2">{pnlData.foodCostPercent}% {t('dashboard.ofRevenue')}</span>
                   </div>
                   <span className="text-lg font-bold text-red-600 dark:text-red-400 tabular-nums">- {formatCurrency(pnlData.foodCost)}</span>
                 </div>
@@ -1565,8 +1565,8 @@ export default function Dashboard() {
                 {pnlData.laborCost > 0 && (
                   <div className="flex items-center justify-between py-3 border-b border-mono-900 dark:border-mono-200">
                     <div>
-                      <span className="text-sm font-medium text-mono-100 dark:text-white">Cout main d'oeuvre</span>
-                      <span className="text-xs text-[#737373] ml-2">{pnlData.laborCostPercent}% du CA</span>
+                      <span className="text-sm font-medium text-mono-100 dark:text-white">{t('dashboard.coutMainOeuvre')}</span>
+                      <span className="text-xs text-[#737373] ml-2">{pnlData.laborCostPercent}% {t('dashboard.ofRevenue')}</span>
                     </div>
                     <span className="text-lg font-bold text-red-600 dark:text-red-400 tabular-nums">- {formatCurrency(pnlData.laborCost)}</span>
                   </div>
@@ -1576,7 +1576,7 @@ export default function Dashboard() {
                   pnlData.grossMargin >= 0 ? 'bg-emerald-50 dark:bg-emerald-900/10' : 'bg-red-50 dark:bg-red-900/10'
                 }`}>
                   <div>
-                    <span className="text-sm font-bold text-mono-100 dark:text-white">= Marge brute</span>
+                    <span className="text-sm font-bold text-mono-100 dark:text-white">{t('dashboard.margebrute')}</span>
                     <span className={`text-xs ml-2 font-bold ${pnlData.grossMargin >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                       {pnlData.grossMarginPercent}%
                     </span>
@@ -1590,18 +1590,18 @@ export default function Dashboard() {
           ) : stats ? (
             /* Fallback P&L from local recipe data */
             <div className="rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black p-6">
-              <h3 className="text-base font-bold text-mono-100 dark:text-white font-satoshi mb-6">Estimation P&L (donnees locales)</h3>
+              <h3 className="text-base font-bold text-mono-100 dark:text-white font-satoshi mb-6">{t('dashboard.pnlLocalEstimation')}</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between py-3 border-b border-mono-900 dark:border-mono-200">
-                  <span className="text-sm text-mono-100 dark:text-white">Cout moyen / portion</span>
+                  <span className="text-sm text-mono-100 dark:text-white">{t('dashboard.coutParPortion')}</span>
                   <span className="text-lg font-bold text-mono-100 dark:text-white tabular-nums">{formatCurrency(stats.avgTotalCost)}</span>
                 </div>
                 <div className="flex items-center justify-between py-3 border-b border-mono-900 dark:border-mono-200">
-                  <span className="text-sm text-mono-100 dark:text-white">Food Cost moyen</span>
+                  <span className="text-sm text-mono-100 dark:text-white">{t('dashboard.foodCostMoyen')}</span>
                   <span className={`text-lg font-bold tabular-nums ${foodCostColor(stats.avgFoodCostPct)}`}>{stats.avgFoodCostPct.toFixed(1)}%</span>
                 </div>
                 <div className={`flex items-center justify-between py-4 rounded-xl px-4 ${marginBg(stats.avgMargin)}`}>
-                  <span className="text-sm font-bold text-mono-100 dark:text-white">Marge moyenne</span>
+                  <span className="text-sm font-bold text-mono-100 dark:text-white">{t('dashboard.avgMargin')}</span>
                   <span className={`text-xl font-black tabular-nums ${marginColor(stats.avgMargin)}`}>{stats.avgMargin.toFixed(1)}%</span>
                 </div>
               </div>
@@ -1614,9 +1614,9 @@ export default function Dashboard() {
       {activeTab !== 'overview' && activeTab !== 'pnl' && !stats && (
         <div className="text-center py-16 rounded-2xl border border-mono-900 dark:border-mono-200 bg-white dark:bg-black">
           <ChefHat className="w-12 h-12 mx-auto text-[#737373] dark:text-mono-400 mb-3" aria-hidden="true" />
-          <p className="text-sm text-[#737373]">Ajoutez des recettes pour voir les analyses</p>
+          <p className="text-sm text-[#737373]">{t('dashboard.addRecipesForAnalysis')}</p>
           <Link to="/recipes?action=new" className="inline-flex items-center gap-1.5 px-4 py-2 mt-4 bg-mono-100 dark:bg-white text-white dark:text-black text-sm font-medium rounded-xl">
-            <Plus className="w-4 h-4" aria-hidden="true" /> Creer une recette
+            <Plus className="w-4 h-4" aria-hidden="true" /> {t('dashboard.createRecipe')}
           </Link>
         </div>
       )}

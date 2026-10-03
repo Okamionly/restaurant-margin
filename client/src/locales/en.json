@@ -2706,6 +2706,14 @@
   "wasteTracker.week": "Week",
   "wasteTracker.zeroWasteGoal": "Zero waste goal",
   "wasteTracker.zeroWasteObjective": "Goal: zero waste",
+  "editorialRecipes": {
+    "errorLoadingList": "Unable to load this week's recipes",
+    "errorLoadingDetail": "Unable to load recipe details",
+    "recipeAdded": "Recipe added to your recipe sheets!",
+    "errorAdding": "Error adding recipe",
+    "orderCreated": "Order created successfully!",
+    "errorOrdering": "Error creating order"
+  },
   "www.restaumargin.fr/pricing": "www.restaumargin.fr/pricing",
   "Événement créé avec succès": "Event created successfully",
   "Événement supprimé": "Event deleted"

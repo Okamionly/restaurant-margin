@@ -4,6 +4,7 @@ import { ChefHat, Clock, Users, Flame, ShoppingCart, Plus, ArrowLeft, Truck, X }
 import { useToast } from '../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 import { useApiClient } from '../hooks/useApiClient';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface EditorialIngredient {
   id: number;
@@ -65,6 +66,7 @@ export default function EditorialRecipes() {
   const { showToast } = useToast();
   const navigate = useNavigate();
   const { authHeaders } = useApiClient();
+  const { t } = useTranslation();
 
   const weekNum = getWeekNumber(new Date());
 
@@ -79,7 +81,7 @@ export default function EditorialRecipes() {
       const data = await res.json();
       setRecipes(data);
     } catch {
-      showToast('Impossible de charger les recettes de la semaine', 'error');
+      showToast(t('editorialRecipes.errorLoadingList'), 'error');
     } finally {
       setLoading(false);
     }
@@ -93,7 +95,7 @@ export default function EditorialRecipes() {
       const data = await res.json();
       setSelectedRecipe(data);
     } catch {
-      showToast('Impossible de charger le détail', 'error');
+      showToast(t('editorialRecipes.errorLoadingDetail'), 'error');
     } finally {
       setDetailLoading(false);
     }
@@ -111,9 +113,9 @@ export default function EditorialRecipes() {
         const data = await res.json();
         throw new Error(data.error || 'Erreur');
       }
-      showToast('Recette ajoutée à vos fiches techniques !', 'success');
+      showToast(t('editorialRecipes.recipeAdded'), 'success');
     } catch (err: any) {
-      showToast(err.message || 'Erreur lors de l\'ajout', 'error');
+      showToast(err.message || t('editorialRecipes.errorAdding'), 'error');
     } finally {
       setAddingId(null);
     }
@@ -131,10 +133,10 @@ export default function EditorialRecipes() {
         const data = await res.json();
         throw new Error(data.error || 'Erreur');
       }
-      showToast('Commande créée avec succès !', 'success');
+      showToast(t('editorialRecipes.orderCreated'), 'success');
       navigate('/commandes');
     } catch (err: any) {
-      showToast(err.message || 'Erreur lors de la commande', 'error');
+      showToast(err.message || t('editorialRecipes.errorOrdering'), 'error');
     } finally {
       setOrderingId(null);
     }

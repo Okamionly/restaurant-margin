@@ -2706,6 +2706,14 @@
   "wasteTracker.week": "Semaine",
   "wasteTracker.zeroWasteGoal": "Objectif zéro déchet",
   "wasteTracker.zeroWasteObjective": "Objectif : zéro gaspillage",
+  "editorialRecipes": {
+    "errorLoadingList": "Impossible de charger les recettes de la semaine",
+    "errorLoadingDetail": "Impossible de charger le détail",
+    "recipeAdded": "Recette ajoutée à vos fiches techniques !",
+    "errorAdding": "Erreur lors de l'ajout",
+    "orderCreated": "Commande créée avec succès !",
+    "errorOrdering": "Erreur lors de la commande"
+  },
   "www.restaumargin.fr/pricing": "www.restaumargin.fr/pricing",
   "Événement créé avec succès": "Événement créé avec succès",
   "Événement supprimé": "Événement supprimé"

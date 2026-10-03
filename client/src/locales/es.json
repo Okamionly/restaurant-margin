@@ -486,5 +486,13 @@
     "create": "Crear",
     "deleteSupplier": "Eliminar proveedor",
     "deleteConfirm": "Esta seguro de que desea eliminar"
+  },
+  "editorialRecipes": {
+    "errorLoadingList": "No se pudieron cargar las recetas de la semana",
+    "errorLoadingDetail": "No se pudieron cargar los detalles",
+    "recipeAdded": "¡Receta añadida a sus fichas técnicas!",
+    "errorAdding": "Error al añadir la receta",
+    "orderCreated": "¡Pedido creado con éxito!",
+    "errorOrdering": "Error al crear el pedido"
   }
 }

@@ -476,5 +476,13 @@
     "create": "إنشاء",
     "deleteSupplier": "حذف المورد",
     "deleteConfirm": "هل أنت متأكد من حذف"
+  },
+  "editorialRecipes": {
+    "errorLoadingList": "تعذّر تحميل وصفات الأسبوع",
+    "errorLoadingDetail": "تعذّر تحميل التفاصيل",
+    "recipeAdded": "تمت إضافة الوصفة إلى بطاقاتك التقنية!",
+    "errorAdding": "خطأ عند إضافة الوصفة",
+    "orderCreated": "تم إنشاء الطلب بنجاح!",
+    "errorOrdering": "خطأ عند إنشاء الطلب"
   }
 }

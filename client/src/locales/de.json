@@ -486,5 +486,13 @@
     "create": "Erstellen",
     "deleteSupplier": "Lieferant loeschen",
     "deleteConfirm": "Sind Sie sicher, dass Sie loeschen moechten"
+  },
+  "editorialRecipes": {
+    "errorLoadingList": "Die Rezepte der Woche konnten nicht geladen werden",
+    "errorLoadingDetail": "Die Details konnten nicht geladen werden",
+    "recipeAdded": "Rezept zu Ihren Rezeptblättern hinzugefügt!",
+    "errorAdding": "Fehler beim Hinzufügen des Rezepts",
+    "orderCreated": "Bestellung erfolgreich erstellt!",
+    "errorOrdering": "Fehler beim Erstellen der Bestellung"
   }
 }

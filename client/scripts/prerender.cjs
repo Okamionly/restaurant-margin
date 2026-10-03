@@ -1053,6 +1053,14 @@ function run() {
   // H1 reellement injectes, pour le controle final (voir fin de run()).
   const h1Produits = new Set();
 
+  // Corps rendus par scripts/prerender-ssr.mjs (renderToString des vraies pages).
+  // Absent = build sans l'etape SSR : on garde le resume, sans echouer.
+  const ssrPath = path.join(DIST, '.ssr', 'manifest.json');
+  const ssrBodies = fs.existsSync(ssrPath) ? JSON.parse(fs.readFileSync(ssrPath, 'utf-8')) : {};
+  let ssrCount = 0;
+  // Fichier de travail : il ne doit pas etre servi par Vercel (plusieurs Mo).
+  fs.rmSync(path.join(DIST, '.ssr'), { recursive: true, force: true });
+
   for (const route of ROUTES) {
     let html = baseHtml;
     const fullUrl = `${BASE_URL}${route.path}`;
@@ -1422,12 +1430,19 @@ function run() {
     //    rien ne leve aucune erreur : c'est exactement ce silence qu'il faut casser.
     // Remplacement par FONCTION : seoBody peut contenir des « $ » que le
     // remplacement par chaine interpreterait ($&, $1...).
+    // Si la page a ete rendue au build (scripts/prerender-ssr.mjs), on sert son
+    // VRAI corps — le meme DOM que React affichera — au lieu du resume. Son H1
+    // est alors celui de l'article, pas celui derive du <title>.
+    const ssrBody = ssrBodies[route.path];
+    const ssrH1 = ssrBody && (ssrBody.match(/<h1[^>]*>([\s\S]*?)<\/h1>/) || [])[1];
+    const rootContent = ssrH1 ? ssrBody : seoStaticContent;
+    const h1Attendu = ssrH1 || h1;
     const avantInjection = html;
     html = html.replace(
       /<!--prerender:root-->[\s\S]*?<!--\/prerender:root-->/,
-      () => `<!--prerender:root-->${seoStaticContent}<!--/prerender:root-->`
+      () => `<!--prerender:root-->${rootContent}<!--/prerender:root-->`
     );
-    if (html === avantInjection || !html.includes(`>${h1}</h1>`)) {
+    if (html === avantInjection || !html.includes(`>${h1Attendu}</h1>`)) {
       console.error(
         `[prerender] ECHEC : contenu non injecte pour ${route.path}. ` +
         `Les marqueurs <!--prerender:root--> / <!--/prerender:root--> sont-ils ` +
@@ -1435,7 +1450,8 @@ function run() {
       );
       process.exit(1);
     }
-    h1Produits.add(h1);
+    h1Produits.add(h1Attendu.replace(/<[^>]+>/g, '').trim());
+    if (ssrH1) ssrCount++;
 
     // Write the file
     const dir = path.join(DIST, route.path);
@@ -1453,7 +1469,7 @@ function run() {
     console.error(`[prerender] ECHEC : seulement ${h1Produits.size} H1 distincts pour ${count} pages.`);
     process.exit(1);
   }
-  console.log(`[prerender] Generated ${count} static HTML files for SEO (${h1Produits.size} H1 distincts verifies).`);
+  console.log(`[prerender] Generated ${count} static HTML files for SEO (${h1Produits.size} H1 distincts verifies, ${ssrCount} avec corps complet SSR).`);
 }
 
 run();

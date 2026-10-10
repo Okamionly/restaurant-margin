@@ -1,85 +1,73 @@
-# Audit CTO — 2026-10-03
+# Audit CTO — 2026-10-10
 
 ## Santé globale : 🟢 VERT
 
-| Service    | Statut | Détail                  |
-|------------|--------|-------------------------|
-| database   | ✅ ok  | Connexion Supabase OK   |
-| ai         | ✅ ok  | claude-sonnet-4-6       |
-| api        | ✅ ok  | —                       |
-| site       | ✅ ok  | responseTime 1116 ms    |
-
-> ⚠️ Temps de réponse santé : **1116 ms** — à surveiller, seuil d'alerte 2000 ms.
+| Service    | Statut | Détail                    |
+|------------|--------|---------------------------|
+| database   | ✅ ok  | PostgreSQL / Supabase      |
+| ai         | ✅ ok  | claude-sonnet-4-6          |
+| api        | ✅ ok  | responseTime 1384 ms       |
+| site web   | ✅ ok  | restaumargin.fr accessible |
 
 ## CI (source de vérité)
 
-Tous les runs récents sur `main` : **✅ success**
+| Run | Workflow | Conclusion | SHA     | Titre |
+|-----|----------|------------|---------|-------|
+| 38040697160 | CI | ✅ success | d732aa9 | coo: operations |
+| 38040606620 | CI | ✅ success | d71fe07 | docs: bug-fixer log 2026-10-10 |
+| 38040592914 | CI | ✅ success | 1135926 | fix: alert() → toast FloatingActionBubble |
+| 38033734888 | CI | ✅ success | a2508ab | docs(seo): guides SSR vérifiés en prod |
+| 38033358579 | CI | ✅ success | e13f2ab | perf(seo): 18 pages guide-marge HTML statique |
 
-| Run ID       | Workflow                        | Résultat | SHA     |
-|--------------|---------------------------------|----------|---------|
-| 37112448450  | CI                              | success  | 1b0e2f1 |
-| 37112436287  | CI                              | success  | ff9fc9b |
-| 37112420931  | CI                              | success  | 9a08c9d |
-| 37106141447  | CI                              | success  | 8279834 |
-| 37105913772  | CI                              | success  | 36acde5 |
-
-Dernier commit de référence : `1b0e2f1` — docs: bug-fixer log 2026-10-03
+Dernière CI sur `main` : **success** (d732aa9). Aucun job rouge.
 
 ## Métriques
 
-| Indicateur            | Valeur      |
-|-----------------------|-------------|
-| Pages (client/src)    | 185         |
-| LOC total TS/TSX      | 233 116     |
-| LOC api/index.ts      | 7 817       |
-| Commits (24 h)        | 8           |
-| TODO / FIXME / HACK   | 0           |
-
-## Données produit (snapshot)
-
-| Indicateur            | Valeur  |
-|-----------------------|---------|
-| Utilisateurs total    | 18      |
-| Nouveaux (24 h)       | 0       |
-| Abonnés Pro           | 0       |
-| Abonnés Business      | 0       |
-| Trials actifs         | 1       |
-| MRR estimé            | 0 €     |
-| Recettes créées       | 62      |
-| Ingrédients indexés   | 436     |
+| Indicateur        | Valeur  |
+|-------------------|---------|
+| Pages frontend    | 185     |
+| LOC total projet  | ~220 912 |
+| LOC api/index.ts  | 7 817   |
+| Commits 24 h      | 7       |
+| TODO/FIXME/HACK   | 0       |
+| Utilisateurs      | 18      |
+| Recettes          | 62      |
+| Ingrédients       | 436     |
+| Abonnés payants   | 0       |
+| MRR estimé        | 0 €     |
+| Nouveaux users 24h| 0       |
 
 ## Dette technique — Top 3
 
-1. **`api/index.ts` monolithique (7 817 LOC)** — priorité haute.
-   Ce fichier concentre l'intégralité du backend. Il dépasse largement le seuil
-   de lisibilité ; tout changement global y est risqué. Refacto à planifier :
-   découpage en modules `routes/`, `middleware/`, `controllers/`.
+### 1. 🔴 api/index.ts : 7 817 LOC (fichier monolithique critique)
+Ce fichier concentre toutes les routes, middlewares et logique métier en un seul bloc.  
+**Risque** : couplage total, impossibilité de tester unitairement, temps de lecture/merge prohibitif.  
+**Priorité** : découpage en modules par domaine (`auth`, `recipes`, `ingredients`, `ai`, `mercuriale`, etc.).
 
-2. **ResponseTime santé > 1 s** — à investiguer.
-   Le endpoint `/api/health?deep=1` répond en 1116 ms. Pour un health-check,
-   c'est élevé ; cela suggère soit une requête DB lente au démarrage, soit un
-   cold start container Render. À mesurer sur plusieurs appels consécutifs.
+### 2. 🟡 185 pages frontend — ratio pages/composants à auditer
+Le projet compte 185 pages. Sans inventaire des composants partagés, le risque de duplication silencieuse est élevé.  
+**Action** : audit de réutilisation sur les 20 pages les plus récentes.
 
-3. **0 test unitaire backend visible** — risque de régression silencieuse.
-   La CI passe grâce aux checks TypeScript et build. Il n'y a pas de suite de
-   tests unitaires backend identifiable ; toute modification dans `api/index.ts`
-   reste non-couverte.
+### 3. 🟡 responseTime API : 1 384 ms au health check
+Le health check `?deep=1` prend > 1 s — indicateur que la connexion Supabase (cold start ou pool insuffisant) ralentit chaque requête.  
+**Action** : mesurer le temps de query Prisma isolément, envisager un pool persistent ou PgBouncer.
 
 ## Refacto prioritaire
 
-**Découper `api/index.ts`** en modules par domaine fonctionnel :
-- `api/routes/auth.ts` — authentification (déjà prévu, à migrer)
-- `api/routes/recipes.ts` — CRUD recettes
-- `api/routes/ingredients.ts` — CRUD ingrédients
-- `api/routes/ai.ts` — endpoints IA (déjà prévu)
-- `api/middleware/` — auth guard, error handler, rate limit
+**Découper api/index.ts** en fichiers de routes séparés par domaine.  
+Gain : lisibilité, testabilité, onboarding accéléré, CI plus rapide (tree-shaking possible).  
+Effort estimé : 2–3 sessions ciblées sans breaking change (Express Router modulaire).
 
-Chaque module < 500 LOC. Durée estimée : 3 sessions de travail isolées.
-Aucune nouvelle fonctionnalité à débloquer — risque zéro de régression si
-fait module par module avec CI verte à chaque étape.
+## Activité récente (24 h)
 
-## Résumé
+- `fix`: remplacement `alert()` navigateur → toast dans `FloatingActionBubble`
+- `perf(seo)`: 18 pages `guide-marge/:slug` rendues en HTML statique (108/108 pages totales, +18 vs 90 avant)
+- `docs(seo)`: rapport SSR vérification prod
+- `coo`: opérations COO planifiées
+- `docs`: log bug-fixer
 
-CI verte sur tous les commits récents, santé production ✅. Aucun TODO/FIXME
-en base de code. Le seul risque structurel immédiat reste le monolithe
-`api/index.ts`. Priorité : planifier son découpage avant qu'il dépasse 10 000 LOC.
+## Conclusion
+
+Situation saine. CI verte sur tous les commits du jour. Services prod opérationnels.  
+La dette majeure reste concentrée sur `api/index.ts` (7 817 LOC) — aucun risque immédiat mais l'entropie s'accélère à chaque feature ajoutée.  
+Aucune alerte à envoyer.

@@ -38,12 +38,20 @@ function routesFromApp() {
   for (const m of app.matchAll(/const (\w+) = lazy(?:Retry)?\(\(\) => import\('(\.\/[^']+)'\)\)/g)) {
     imports.set(m[1], m[2]);
   }
+  // Routes dynamiques (/guide-marge/:slug) : on les deplie sur les chemins que
+  // prerender.cjs declare deja — c'est lui qui decide quelles pages existent.
+  const declares = [...fs.readFileSync(path.join(ROOT, 'scripts', 'prerender.cjs'), 'utf8')
+    .matchAll(/path: '([^']+)'/g)].map((x) => x[1]);
   const routes = [];
   for (const m of app.matchAll(/<Route path="([^"]+)" element=\{([\s\S]*?)\} \/>/g)) {
     const p = m[1];
-    if (!PREFIXES.some((x) => p.startsWith(x)) || p.includes(':') || p.includes('*')) continue;
+    if (!PREFIXES.some((x) => p.startsWith(x)) || p.includes('*')) continue;
     const comp = [...m[2].matchAll(/<(\w+) \/>/g)].map((x) => x[1]).find((n) => imports.has(n));
-    if (comp) routes.push({ path: p, file: imports.get(comp).replace(/^\.\//, '/src/') });
+    if (!comp) continue;
+    const file = imports.get(comp).replace(/^\.\//, '/src/');
+    if (!p.includes(':')) { routes.push({ path: p, file }); continue; }
+    const motif = new RegExp('^' + p.replace(/:[^/]+/g, '[^/]+') + '$');
+    for (const d of declares) if (motif.test(d)) routes.push({ path: d, pattern: p, file });
   }
   return routes;
 }
@@ -74,7 +82,7 @@ async function main() {
   // node_modules, donc les pages importent ces MEMES instances (un seul React).
   const { renderToString } = await import('react-dom/server');
   const React = (await import('react')).default;
-  const { MemoryRouter } = await import('react-router-dom');
+  const { MemoryRouter, Routes, Route } = await import('react-router-dom');
   const { HelmetProvider } = await import('react-helmet-async');
 
   const manifest = {};
@@ -86,7 +94,12 @@ async function main() {
       const html = renderToString(
         React.createElement(HelmetProvider, { context: {} },
           React.createElement(MemoryRouter, { initialEntries: [r.path] },
-            React.createElement(Page)))
+            // Une route a parametre a besoin de son <Route> pour que useParams
+            // rende le slug ; sans lui la page redirige et n'a pas de <h1>.
+            r.pattern
+              ? React.createElement(Routes, null,
+                  React.createElement(Route, { path: r.pattern, element: React.createElement(Page) }))
+              : React.createElement(Page)))
       );
       const body = clean(html);
       if (!/<h1[\s>]/.test(body)) throw new Error('aucun <h1> dans le rendu');

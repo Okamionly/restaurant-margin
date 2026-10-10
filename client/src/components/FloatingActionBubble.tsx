@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AnimatedTutorial from './AnimatedTutorial';
+import { useToast } from '../hooks/useToast';
 import {
   Plus, X, Mic, Timer, HelpCircle, Brain, Scale, FileText,
   ShoppingCart, BarChart3, Keyboard, MessageSquare, Play
@@ -26,6 +27,7 @@ export default function FloatingActionBubble() {
   const bubbleRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const recognitionRef = useRef<any>(null);
+  const { showToast } = useToast();
 
   // Close on outside click
   useEffect(() => {
@@ -52,7 +54,7 @@ export default function FloatingActionBubble() {
 
   function startListening() {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) { alert('Navigateur non supporte. Utilisez Chrome.'); return; }
+    if (!SpeechRecognition) { showToast('Navigateur non supporté. Utilisez Chrome.', 'error'); return; }
     const recognition = new SpeechRecognition();
     recognition.lang = 'fr-FR';
     recognition.continuous = false;

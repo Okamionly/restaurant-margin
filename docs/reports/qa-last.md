@@ -1,6 +1,11 @@
-# Rapport QA — 2026-10-09
+# Rapport QA — 2026-10-16
 
-## Pages HTTP — 15/15 OK
+**Heure d'exécution :** 2026-10-16T18:24 UTC  
+**Statut global :** ✅ TOUT OK
+
+---
+
+## 1. Pages HTTP (15/15)
 
 | Code | H1 | URL |
 |------|----|-----|
@@ -20,30 +25,44 @@
 | 200 | 1 | /guide-marge/pizzeria |
 | 200 | 1 | /guide-marge/brasserie |
 
-H1 manquants : **aucun**
+- Pages OK : **15/15**
+- H1 manquants : **0**
+- Préréndu : **OK** (toutes les 14 pages prérendues ont ≥1 `<h1>`)
 
-## API
+---
+
+## 2. Tests API
 
 | Test | Attendu | Résultat |
 |------|---------|----------|
-| POST /api/auth/login (mauvaises credentials) | 401 | **401 ✓** |
-| GET /api/health?deep=1 — database | "ok" | **ok ✓** |
-| GET /api/health?deep=1 — ai | "ok" | **ok ✓** |
+| POST /api/auth/login (identifiants invalides) | 401 | ✅ 401 |
+| GET /api/health?deep=1 — database | "ok" | ✅ ok |
+| GET /api/health?deep=1 — ai | "ok" | ✅ ok (claude-sonnet-4-6) |
 
-Modèle IA actif : `claude-sonnet-4-6`
+---
 
-## CI GitHub (main)
+## 3. CI GitHub (branch main)
 
 | Workflow | Conclusion | Commit | Titre |
 |----------|-----------|--------|-------|
-| Taches automatiques RestauMargin | success | ef88d04 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | ef88d04 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | ef88d04 | Taches automatiques RestauMargin |
-| CI | **success** | ef88d04 | cfo: analyse quotidienne 2026-10-09 |
-| Taches automatiques RestauMargin | success | df4ff73 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 2aa1dba | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 2aa1dba | Taches automatiques RestauMargin |
+| CI | success | 2aa1dba | cfo: analyse quotidienne |
+| Taches automatiques RestauMargin | success | 4b2ff28 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 4b2ff28 | Taches automatiques RestauMargin |
 
-Dernier CI sur main : **success** ✓
+Dernier commit CI : **success** ✅
 
-## Conclusion
+---
 
-**Aucune régression détectée.** Toutes les vérifications sont passées.
+## Résumé
+
+| Catégorie | Statut |
+|-----------|--------|
+| Pages (HTTP + H1) | ✅ 15/15 |
+| API login 401 | ✅ |
+| Santé base de données | ✅ |
+| Santé IA | ✅ |
+| CI main | ✅ |
+
+Aucune régression détectée.

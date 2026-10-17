@@ -1,73 +1,71 @@
-# Audit CTO — 2026-10-10
+# Audit CTO — 2026-10-17
 
-## Santé globale : 🟢 VERT
+## Santé production : 🟢 VERT
 
-| Service    | Statut | Détail                    |
-|------------|--------|---------------------------|
-| database   | ✅ ok  | PostgreSQL / Supabase      |
-| ai         | ✅ ok  | claude-sonnet-4-6          |
-| api        | ✅ ok  | responseTime 1384 ms       |
-| site web   | ✅ ok  | restaumargin.fr accessible |
+| Service    | Statut |
+|------------|--------|
+| database   | ✅ ok  |
+| ai         | ✅ ok (claude-sonnet-4-6) |
+| api        | ✅ ok  |
+| site       | ✅ joignable |
 
-## CI (source de vérité)
+- Temps de réponse `/api/health` : **1401 ms** (lent pour un health check — à surveiller)
+- Endpoint testé : `https://www.restaumargin.fr/api/health?deep=1`
 
-| Run | Workflow | Conclusion | SHA     | Titre |
-|-----|----------|------------|---------|-------|
-| 38040697160 | CI | ✅ success | d732aa9 | coo: operations |
-| 38040606620 | CI | ✅ success | d71fe07 | docs: bug-fixer log 2026-10-10 |
-| 38040592914 | CI | ✅ success | 1135926 | fix: alert() → toast FloatingActionBubble |
-| 38033734888 | CI | ✅ success | a2508ab | docs(seo): guides SSR vérifiés en prod |
-| 38033358579 | CI | ✅ success | e13f2ab | perf(seo): 18 pages guide-marge HTML statique |
+## CI : 🟢 VERT
 
-Dernière CI sur `main` : **success** (d732aa9). Aucun job rouge.
+- Dernier run CI (push sur main) : **success** — run #1321, commit `1576202` (`coo: operations`)
+- 3 derniers runs CI push : tous success
+- Note : workflow "Taches automatiques" run #311 en échec ce matin (~06:58 UTC) sur commit `0ff04b0` — c'est un job cron interne, pas le pipeline de build/lint/typecheck. Pas de régression code.
 
-## Métriques
+## Métriques produit
 
-| Indicateur        | Valeur  |
-|-------------------|---------|
-| Pages frontend    | 185     |
-| LOC total projet  | ~220 912 |
-| LOC api/index.ts  | 7 817   |
-| Commits 24 h      | 7       |
-| TODO/FIXME/HACK   | 0       |
-| Utilisateurs      | 18      |
-| Recettes          | 62      |
-| Ingrédients       | 436     |
-| Abonnés payants   | 0       |
-| MRR estimé        | 0 €     |
-| Nouveaux users 24h| 0       |
+| Métrique               | Valeur |
+|------------------------|--------|
+| Utilisateurs totaux    | 18     |
+| Nouveaux utilisateurs (24h) | 0 |
+| Abonnés payants        | 0      |
+| MRR estimé             | 0 €    |
+| Recettes créées        | 62     |
+| Ingrédients enregistrés| 436    |
+
+## Métriques code
+
+| Métrique               | Valeur   |
+|------------------------|----------|
+| Pages frontend         | 185      |
+| LOC TypeScript total   | ~220 920 |
+| LOC api/index.ts       | 7 817    |
+| TODO/FIXME/HACK        | 0        |
+| Commits (24h)          | 9        |
+
+## Activité 24h (9 commits)
+
+1. `1576202` coo: operations
+2. `3cc29b6` docs: bug-fixer log 2026-10-17
+3. `e6e6e76` fix: alert() → toast dans AdminDashboard
+4. `03fcd2a` docs(seo): rapport quotidien — @import police bloquant retiré
+5. `3b3c823` perf(seo): retire l'@import Google Fonts bloquant du CSS global
+6. `0ff04b0` cmo: post + analyse
+7. `242da42` ceo: digest quotidien
+8. `0056f72` qa: tests quotidiens 2026-10-16
+9. `2aa1dba` cfo: analyse quotidienne
 
 ## Dette technique — Top 3
 
-### 1. 🔴 api/index.ts : 7 817 LOC (fichier monolithique critique)
-Ce fichier concentre toutes les routes, middlewares et logique métier en un seul bloc.  
-**Risque** : couplage total, impossibilité de tester unitairement, temps de lecture/merge prohibitif.  
-**Priorité** : découpage en modules par domaine (`auth`, `recipes`, `ingredients`, `ai`, `mercuriale`, etc.).
+### 1. 🔴 `api/index.ts` monolithique (7 817 LOC)
+Tout le backend tient dans un seul fichier. Maintenance impossible au-delà d'une certaine taille, conflits git constants entre agents, lisibilité nulle. **Refacto prioritaire** : éclater en `api/routes/` (auth, recipes, ingredients, ai, mercuriale…) comme prévu dans l'architecture cible du CLAUDE.md.
 
-### 2. 🟡 185 pages frontend — ratio pages/composants à auditer
-Le projet compte 185 pages. Sans inventaire des composants partagés, le risque de duplication silencieuse est élevé.  
-**Action** : audit de réutilisation sur les 20 pages les plus récentes.
+### 2. 🟠 220k LOC pour un produit early-stage (0 payants)
+Ratio code/valeur déséquilibré. Beaucoup de pages et fonctionnalités dont l'usage réel n'est pas mesuré. Risque de maintenance croissant. Audit d'utilisation à faire avant d'ajouter de nouvelles pages.
 
-### 3. 🟡 responseTime API : 1 384 ms au health check
-Le health check `?deep=1` prend > 1 s — indicateur que la connexion Supabase (cold start ou pool insuffisant) ralentit chaque requête.  
-**Action** : mesurer le temps de query Prisma isolément, envisager un pool persistent ou PgBouncer.
+### 3. 🟡 Temps de réponse health check élevé (1401 ms)
+Un `/api/health` ne devrait pas mettre 1,4 s. Soit la connexion DB est lente (cold start Supabase), soit le check est trop lourd. À investiguer — impact SEO indirect (TTFB).
 
 ## Refacto prioritaire
 
-**Découper api/index.ts** en fichiers de routes séparés par domaine.  
-Gain : lisibilité, testabilité, onboarding accéléré, CI plus rapide (tree-shaking possible).  
-Effort estimé : 2–3 sessions ciblées sans breaking change (Express Router modulaire).
+**Éclater `api/index.ts`** : créer `api/routes/` avec un fichier par domaine métier et importer dans `api/index.ts` via `app.use('/api/...', router)`. Réduction immédiate des conflits entre agents concurrents. Estimé : 2-3 sessions de travail.
 
-## Activité récente (24 h)
+## Incidents / alertes
 
-- `fix`: remplacement `alert()` navigateur → toast dans `FloatingActionBubble`
-- `perf(seo)`: 18 pages `guide-marge/:slug` rendues en HTML statique (108/108 pages totales, +18 vs 90 avant)
-- `docs(seo)`: rapport SSR vérification prod
-- `coo`: opérations COO planifiées
-- `docs`: log bug-fixer
-
-## Conclusion
-
-Situation saine. CI verte sur tous les commits du jour. Services prod opérationnels.  
-La dette majeure reste concentrée sur `api/index.ts` (7 817 LOC) — aucun risque immédiat mais l'entropie s'accélère à chaque feature ajoutée.  
-Aucune alerte à envoyer.
+Aucun. Pas de notification envoyée (CI vert, santé OK, site joignable).

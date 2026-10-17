@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { useToast } from '../hooks/useToast';
 import { getToken } from '../services/api';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
@@ -209,6 +210,7 @@ function downloadCSV(rows: string[][], filename: string) {
 export default function AdminDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [tab, setTab] = useState<Tab>('overview');
   const [loading, setLoading] = useState(true);
 
@@ -348,7 +350,7 @@ export default function AdminDashboard() {
       setEditingUser(null);
       loadUsers();
     } catch (e: any) {
-      alert(e.message);
+      showToast(e.message || 'Erreur lors de la sauvegarde', 'error');
     }
   };
 
@@ -358,7 +360,7 @@ export default function AdminDashboard() {
       await adminPut(`/newsletter/${id}/unsubscribe`, {});
       loadNewsletter();
     } catch (e: any) {
-      alert(e.message);
+      showToast(e.message || 'Erreur lors de la désabonnement', 'error');
     }
   };
 

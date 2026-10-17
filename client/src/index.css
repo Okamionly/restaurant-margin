@@ -5,8 +5,12 @@
    par le navigateur. Verifie en prod : zero requete vers fonts.googleapis.com,
    donc "JetBrains Mono" (utilise 4x sur Landing.tsx, la homepage) ne se
    chargeait jamais et retombait sur la police mono systeme. Space Grotesk
-   retire du import : aucun usage trouve dans tout client/src (poids mort). */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
+   retire du import : aucun usage trouve dans tout client/src (poids mort).
+   Perf 2026-10-17 : @import RETIRE. Une fois rendu valide, il bloquait le rendu
+   des ~130 pages (HTML -> index.css -> fonts.googleapis.com, origine froide)
+   alors que JetBrains Mono ne sert que sur Landing.tsx (styles inline ; les
+   classes font-mono utilisent la pile systeme Tailwind). La feuille est
+   desormais chargee par Landing.tsx via Helmet, sur la seule page d'accueil. */
 
 @tailwind base;
 @tailwind components;

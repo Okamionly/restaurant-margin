@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Helmet } from 'react-helmet-async';
 import SEOHead from '../components/SEOHead';
 import ShaderBackground from '../components/landing/ShaderBackground';
 // PaperFoldBackground = WebGL2 shader = ~30KB + GPU work that blocks the main
@@ -2440,6 +2441,11 @@ export default function Landing() {
         description="RestauMargin, logiciel SaaS pour calculer la marge de votre restaurant, optimiser le food cost et automatiser les fiches techniques. Essai gratuit 7 jours."
         path="/"
       />
+      {/* JetBrains Mono : seule page qui l'utilise (voir index.css, perf 2026-10-17) */}
+      <Helmet>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" />
+      </Helmet>
       <StructuredData />
       <ScrollProgressBar />
       <PHLaunchBanner />

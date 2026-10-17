@@ -1,63 +1,69 @@
-# Digest RestauMargin — 2026-10-03
+# Digest RestauMargin — 2026-10-17
 
 ## Santé — site, base, IA, CI
 
-| Service    | Statut | Détail |
-|------------|--------|--------|
-| Site web   | ✅ ok  | restaumargin.fr joignable |
-| Database   | ✅ ok  | PostgreSQL / Supabase |
-| AI         | ✅ ok  | claude-sonnet-4-6 |
-| API        | ✅ ok  | RT 1115 ms, uptime 243 s |
-| CI (main)  | ✅ ok  | 3 derniers runs : success (#156, #157, #158) |
+| Service  | Statut | Détail |
+|----------|--------|--------|
+| API      | ✅ ok  | restaumargin.fr répond |
+| Database | ✅ ok  | PostgreSQL / Supabase |
+| IA       | ✅ ok  | claude-sonnet-4-6 |
+| CI       | ✅ ok  | 3 derniers runs success (crons.yml) |
 
-Dernier commit CI : `2225cff` — qa: tests quotidiens 2026-10-02 — tout OK
+Dernière CI : `0056f72` — success (00:30 UTC, 17/10).
+Temps de réponse API : 1 342 ms.
 
-## Chiffres — MRR, inscriptions 24h, essais, commits
+---
 
-| Indicateur           | Valeur |
-|----------------------|--------|
-| MRR                  | 0 €    |
-| Abonnés payants      | 0 (Pro 0, Business 0) |
-| Trials actifs        | 1      |
-| Utilisateurs totaux  | 18     |
-| Nouveaux inscrits 24h| 0      |
-| Leads qualifiés      | 0      |
-| Recettes             | 62     |
-| Ingrédients          | 436    |
-| Commits 24h          | 2      |
+## Chiffres
 
-> Rupture de série 2026-09-25 : MRR 0 € = correction de mesure (Stripe réel), pas une perte client.
-> Signal positif : 1 trial actif (0 → 1 depuis le rapport CFO J-5).
+| Indicateur           | Valeur | Note |
+|----------------------|--------|------|
+| MRR                  | 0 €    | 22e jour consécutif post-correction (depuis 2026-09-25) |
+| Inscriptions 24 h    | 0      | |
+| Essais en cours      | 0      | |
+| Utilisateurs totaux  | 18     | |
+| Leads qualifiés      | 0      | |
+| Recettes             | 62     | |
+| Ingrédients          | 436    | |
+| Commits 24 h         | 2      | QA + CFO |
+
+---
 
 ## Rapports C-suite
 
-| Agent | Dernier rapport | État |
-|-------|----------------|------|
-| CTO   | 2026-09-28 (J-5) | ⚠️ EN PANNE — >48h |
-| CMO   | 2026-09-27 (J-6) | ⚠️ EN PANNE — >48h |
-| CFO   | 2026-10-02 (J-1) | ✅ OK |
-| COO   | 2026-09-28 (J-5) | ⚠️ EN PANNE — >48h |
-| QA    | 2026-10-02 (J-1) | ✅ OK |
+| Agent | Dernier rapport | Statut |
+|-------|----------------|--------|
+| CFO   | 2026-10-16     | ✅ OK |
+| QA    | 2026-10-16     | ✅ OK |
+| CTO   | 2026-10-10     | ⚠️ EN PANNE (7 jours) — quota Claude probable |
+| COO   | 2026-10-10     | ⚠️ EN PANNE (7 jours) — quota Claude probable |
+| CMO   | 2026-09-27     | 🔴 EN PANNE (20 jours) — quota Claude probable |
 
-Cause probable des pannes CTO/CMO/COO : quota hebdomadaire Claude épuisé.
+---
 
-## Actions des agents (24h)
+## Actions des agents (24 h)
 
-- **QA (2026-10-02)** : tests quotidiens — 15/15 pages HTTP 200, 13/13 H1 présents, API login 401 OK, health DB+AI OK, CI success.
-- **CFO (2026-10-02)** : analyse quotidienne — 1 trial actif apparu, +1 utilisateur total vs J-5, activité produit en hausse (+6 recettes, +20 ingrédients sur 5 jours).
-- Aucune action dans `docs/actions/` sur 24h (dernier log SEO : 2026-09-15).
+- **QA** (0056f72) : tests quotidiens 2026-10-16 — 15/15 pages OK, API OK, CI OK
+- **CFO** (2aa1dba) : analyse quotidienne — MRR 0 €, stagnation 21 jours confirmée
+
+Aucune action onboarder récente (dernière : juillet 2026).
+
+---
 
 ## Top 3 actions du jour
 
-1. **QA** : site 100% opérationnel, toutes les pages répondent, CI vert.
-2. **CFO** : 1 trial actif identifié — compte à surveiller pour conversion payante.
-3. **CTO/CMO/COO** : agents en panne depuis 5-6 jours — relancer manuellement ou attendre réinitialisation quota.
+1. **QA** : validation complète 15/15 pages HTTP 200, H1 présents, préréndu OK
+2. **CFO** : analyse financière — 22 jours sans mouvement facturable
+3. **CI** : 3 runs crons.yml success (tâches automatiques opérationnelles)
+
+---
 
 ## Risques
 
-| Priorité | Risque | Action suggérée |
-|----------|--------|-----------------|
-| 🔴 Élevé | CTO, CMO, COO hors ligne (5-6j) — aucun rapport technique, marketing ni opérationnel | Vérifier quota Claude, relancer les agents |
-| 🟡 Moyen | 0 acquisition 24h, 0 lead, 0 MRR — croissance bloquée | Activer une action CMO (post social, SEO, outreach) |
-| 🟡 Moyen | 1 trial actif sans suivi CMO/COO | Surveiller la conversion manuellement |
-| 🟢 Faible | RT API 1115 ms — dans les normes mais à surveiller | Aucune action immédiate |
+| Risque | Gravité | Détail |
+|--------|---------|--------|
+| 0 inscription depuis 22 jours | 🔴 CRITIQUE | Aucun nouveau compte depuis la correction MRR du 25/09. Acquisition à lancer d'urgence. |
+| CMO en panne depuis 20 jours | 🔴 CRITIQUE | Quota Claude probablement épuisé. Aucune action marketing depuis le 27/09. |
+| CTO + COO en panne depuis 7 jours | 🟠 ÉLEVÉ | Pas d'audit technique ni opérationnel depuis le 10/10. |
+| MRR = 0 € | 🟠 ÉLEVÉ | 22e jour consécutif. Aucun abonné payant. |
+| Actions onboarder arrêtées | 🟡 MOYEN | Dernier journal : juillet 2026. Agent onboarder inactif. |

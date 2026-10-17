@@ -1,39 +1,44 @@
-# Rapport CMO — 27 septembre 2026
+# Rapport CMO — 17 octobre 2026
 
 ## Métriques du jour
 
-| Indicateur | Valeur |
+| Métrique | Valeur |
 |---|---|
-| Utilisateurs totaux | 17 |
-| Nouveaux inscrits (24h) | 0 |
-| Leads qualifiés | 0 |
-| MRR estimé | 0 € |
+| Utilisateurs totaux | 18 |
+| Nouveaux utilisateurs (24h) | 0 |
+| Nouveaux utilisateurs (48h) | 0 |
+| Leads réels | 0 |
 | Abonnés Pro | 0 |
 | Abonnés Business | 0 |
-| Utilisateurs en trial | 0 |
-| Pages blog | 64 |
-| Recettes dans la base | 56 |
-| Ingrédients référencés | 416 |
+| Utilisateurs en essai | 0 |
+| MRR estimé | 0 € |
+| ARR estimé | 0 € |
+| Pages Blog | 64 |
+| Recettes créées | 62 |
+| Ingrédients enregistrés | 436 |
 
-Source API : `https://www.restaumargin.fr/api/agents/data` — 2026-09-27T06:13:14Z (non caché)
+Données horodatées : 2026-10-17T06:11:58.980Z
 
-## Action du jour
+---
 
-**Post social publié** : `docs/marketing/social-posts/2026-09-27.md`
-- Sujet : 5 réflexes pour corriger un food cost trop élevé
-- Format : LinkedIn / Instagram, ~280 mots
-- CTA : calculateur food cost gratuit
-- Aucune preuve sociale fabriquée (respect CLAUDE.md)
+## Post social du jour
 
-## Tendances et observations
+Fichier : `docs/marketing/social-posts/2026-10-17.md`
 
-- **Croissance** : stagnation (0 nouveau utilisateur sur 24h, 0 sur 48h d'après la donnée précédente). Le produit existe, l'acquisition reste à lancer.
-- **Monétisation** : MRR à 0 €, aucun abonné payant. L'objectif prioritaire reste de convertir les 17 comptes existants vers un trial puis un abonnement payant.
-- **Contenu** : 64 pages blog — capital SEO conséquent. Prochaine priorité : chaîner les articles entre eux (maillage interne) pour renforcer l'autorité sur les requêtes food cost et fiche technique.
-- **Base produit** : 416 ingrédients et 56 recettes créés — signal que les utilisateurs actifs testent réellement l'outil.
+Thème : Audit food cost carte d'automne — 4 repères pratiques  
+Format : LinkedIn / Instagram  
+CTA principal : https://www.restaumargin.fr/outils/calculateur-food-cost  
+CTA secondaire : https://www.restaumargin.fr/pricing  
+Règle preuve sociale : respectée — aucun témoignage, aucun chiffre d'adoption, aucun nom de client
 
-## Recommandation immédiate
+---
 
-1. Activer un email de nurturing vers les 17 comptes : démonstration courte (2 min) du calculateur de marge + rappel de l'offre d'essai.
-2. Suivre le taux d'ouverture des posts sociaux pour ajuster le calendrier éditorial.
-3. Prioriser le maillage interne entre les 64 articles de blog pour consolider le SEO.
+## Analyse et actions suggérées
+
+**Acquisition** : 0 nouveaux utilisateurs en 24h, stock à 18 comptes. La phase d'acquisition n'est pas encore activée à l'échelle. Les 64 pages de blog constituent un levier SEO structurel à long terme ; le retour organique est attendu sur 3 à 6 mois.
+
+**Conversion** : 0 abonnés payants. L'essai gratuit (7 jours, sans CB) n'a pas encore converti. Priorité : analyser le parcours d'onboarding des 18 comptes existants et identifier le point de friction avant la souscription.
+
+**Rétention** : 436 ingrédients et 62 recettes créés par 18 utilisateurs, soit ~24 ingrédients et ~3,4 recettes par compte en moyenne. Signal d'engagement modéré : les utilisateurs qui complètent leurs fiches ne partent pas tout de suite.
+
+**Action recommandée** : mettre en place un email d'onboarding automatique à J+1 et J+3 pour guider les nouveaux inscrits vers la création de leur première fiche technique complète.

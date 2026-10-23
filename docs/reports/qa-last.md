@@ -1,68 +1,59 @@
-# Rapport QA — 2026-10-16
+# Rapport QA — 2026-10-23
 
-**Heure d'exécution :** 2026-10-16T18:24 UTC  
-**Statut global :** ✅ TOUT OK
-
----
-
-## 1. Pages HTTP (15/15)
+## Pages HTTP — 15/15 OK
 
 | Code | H1 | URL |
 |------|----|-----|
-| 200 | 1 | / |
-| 200 | 1 | /pricing |
-| 200 | 1 | /login |
-| 200 | 1 | /demo |
-| 200 | 1 | /a-propos |
-| 200 | 1 | /blog |
-| 200 | 1 | /blog/calcul-marge-restaurant |
-| 200 | 1 | /outils/calculateur-food-cost |
-| 200 | 1 | /outils/generateur-qr-menu |
-| 200 | 1 | /station-produit |
-| 200 | 1 | /mentions-legales |
-| 200 | 1 | /cgv |
-| 200 | 1 | /reactivation |
-| 200 | 1 | /guide-marge/pizzeria |
-| 200 | 1 | /guide-marge/brasserie |
+| 200  | 1  | / |
+| 200  | 1  | /pricing |
+| 200  | 1  | /login |
+| 200  | 1  | /demo |
+| 200  | 1  | /a-propos |
+| 200  | 1  | /blog |
+| 200  | 1  | /blog/calcul-marge-restaurant |
+| 200  | 1  | /outils/calculateur-food-cost |
+| 200  | 1  | /outils/generateur-qr-menu |
+| 200  | 1  | /station-produit |
+| 200  | 1  | /mentions-legales |
+| 200  | 1  | /cgv |
+| 200  | 1  | /reactivation |
+| 200  | 1  | /guide-marge/pizzeria |
+| 200  | 1  | /guide-marge/brasserie |
 
-- Pages OK : **15/15**
-- H1 manquants : **0**
-- Préréndu : **OK** (toutes les 14 pages prérendues ont ≥1 `<h1>`)
+H1 manquants : **aucun**
 
----
+## API
 
-## 2. Tests API
+| Test | Résultat | Attendu | Statut |
+|------|----------|---------|--------|
+| POST /api/auth/login (mauvais identifiants) | 401 | 401 | ✅ OK |
+| GET /api/health?deep=1 — database | ok | ok | ✅ OK |
+| GET /api/health?deep=1 — ai | ok | ok | ✅ OK |
 
-| Test | Attendu | Résultat |
-|------|---------|----------|
-| POST /api/auth/login (identifiants invalides) | 401 | ✅ 401 |
-| GET /api/health?deep=1 — database | "ok" | ✅ ok |
-| GET /api/health?deep=1 — ai | "ok" | ✅ ok (claude-sonnet-4-6) |
+Réponse health complète :
+```json
+{"status":"ok","timestamp":"2026-10-23T18:24:33.482Z","uptime":3,"responseTime":"1266ms","services":{"database":"ok","ai":"ok","aiDetail":"claude-sonnet-4-6","api":"ok"}}
+```
 
----
-
-## 3. CI GitHub (branch main)
+## CI — main
 
 | Workflow | Conclusion | Commit | Titre |
-|----------|-----------|--------|-------|
-| Taches automatiques RestauMargin | success | 2aa1dba | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 2aa1dba | Taches automatiques RestauMargin |
-| CI | success | 2aa1dba | cfo: analyse quotidienne |
-| Taches automatiques RestauMargin | success | 4b2ff28 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 4b2ff28 | Taches automatiques RestauMargin |
+|----------|------------|--------|-------|
+| Taches automatiques RestauMargin | success | 47f3ce9 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 47f3ce9 | Taches automatiques RestauMargin |
+| CI | success | 47f3ce9 | cfo: analyse quotidienne |
+| Taches automatiques RestauMargin | success | f83fdc1 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | f83fdc1 | Taches automatiques RestauMargin |
 
-Dernier commit CI : **success** ✅
-
----
+Dernier CI sur main : **success** ✅
 
 ## Résumé
 
-| Catégorie | Statut |
-|-----------|--------|
-| Pages (HTTP + H1) | ✅ 15/15 |
-| API login 401 | ✅ |
-| Santé base de données | ✅ |
-| Santé IA | ✅ |
-| CI main | ✅ |
+- Pages OK : **15/15**
+- H1 manquants : **0**
+- Login 401 : **OK**
+- Santé BDD : **OK**
+- Santé IA : **OK**
+- CI main : **success**
 
-Aucune régression détectée.
+**Aucune régression détectée.**

@@ -1,44 +1,42 @@
-# Rapport CMO — 17 octobre 2026
+# Rapport CMO — 24 octobre 2026
 
-## Métriques du jour
+## Métriques du jour (source : /api/agents/data)
 
-| Métrique | Valeur |
+| Indicateur | Valeur |
 |---|---|
-| Utilisateurs totaux | 18 |
-| Nouveaux utilisateurs (24h) | 0 |
-| Nouveaux utilisateurs (48h) | 0 |
-| Leads réels | 0 |
-| Abonnés Pro | 0 |
-| Abonnés Business | 0 |
-| Utilisateurs en essai | 0 |
+| Utilisateurs total | 19 |
+| Nouveaux utilisateurs 24h | 0 |
+| Leads qualifiés | 0 |
 | MRR estimé | 0 € |
 | ARR estimé | 0 € |
-| Pages Blog | 64 |
-| Recettes créées | 62 |
-| Ingrédients enregistrés | 436 |
+| Pages blog | 64 |
+| Abonnés Pro | 0 |
+| Abonnés Business | 0 |
+| Utilisateurs en trial | 0 |
 
-Données horodatées : 2026-10-17T06:11:58.980Z
-
----
-
-## Post social du jour
-
-Fichier : `docs/marketing/social-posts/2026-10-17.md`
-
-Thème : Audit food cost carte d'automne — 4 repères pratiques  
-Format : LinkedIn / Instagram  
-CTA principal : https://www.restaumargin.fr/outils/calculateur-food-cost  
-CTA secondaire : https://www.restaumargin.fr/pricing  
-Règle preuve sociale : respectée — aucun témoignage, aucun chiffre d'adoption, aucun nom de client
+Données horodatées : 2026-10-24T06:12:06 UTC — non cachées.
 
 ---
 
-## Analyse et actions suggérées
+## Action du jour
 
-**Acquisition** : 0 nouveaux utilisateurs en 24h, stock à 18 comptes. La phase d'acquisition n'est pas encore activée à l'échelle. Les 64 pages de blog constituent un levier SEO structurel à long terme ; le retour organique est attendu sur 3 à 6 mois.
+**Post social rédigé** : `docs/marketing/social-posts/2026-10-24.md`
 
-**Conversion** : 0 abonnés payants. L'essai gratuit (7 jours, sans CB) n'a pas encore converti. Priorité : analyser le parcours d'onboarding des 18 comptes existants et identifier le point de friction avant la souscription.
+- Thème : food cost réel vs théorique, identification des plats non rentables, standardisation des fiches techniques, révision de carte
+- Ton : pédagogique, sans preuve sociale fabriquée, exemples chiffrés présentés comme fourchettes indicatives
+- CTA : calculateur food cost gratuit (https://www.restaumargin.fr/outils/calculateur-food-cost)
+- Conforme CLAUDE.md § "Aucune preuve sociale fabriquée" : aucun témoignage, aucun nombre d'utilisateurs, aucune note
 
-**Rétention** : 436 ingrédients et 62 recettes créés par 18 utilisateurs, soit ~24 ingrédients et ~3,4 recettes par compte en moyenne. Signal d'engagement modéré : les utilisateurs qui complètent leurs fiches ne partent pas tout de suite.
+---
 
-**Action recommandée** : mettre en place un email d'onboarding automatique à J+1 et J+3 pour guider les nouveaux inscrits vers la création de leur première fiche technique complète.
+## Observations
+
+- 0 nouvel utilisateur en 24h → acquisition stagnante. Levier à activer : SEO (64 pages blog en place), partage des posts sociaux sur les canaux restaurateur (LinkedIn, Instagram, groupes Facebook pros).
+- 0 abonné payant → aucun MRR. Priorité : convertir les 19 comptes existants via communication directe (onboarding email, démo).
+- Le calculateur food cost public est le principal point d'entrée SEO et social. Tous les CTA doivent y pointer en priorité.
+
+---
+
+## Prochaine action recommandée (CEO)
+
+Activer une séquence email vers les 19 comptes inscrits : présentation des fonctionnalités, invitation à prendre rendez-vous ou à passer en essai gratuit. Objectif : premier abonné payant dans les 30 jours.

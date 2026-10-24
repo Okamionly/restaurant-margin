@@ -1,6 +1,6 @@
-# Rapport QA — 2026-10-23
+# Rapport QA — 2026-10-24
 
-## Pages HTTP — 15/15 OK
+## Pages HTTP (200 + H1)
 
 | Code | H1 | URL |
 |------|----|-----|
@@ -20,40 +20,34 @@
 | 200  | 1  | /guide-marge/pizzeria |
 | 200  | 1  | /guide-marge/brasserie |
 
-H1 manquants : **aucun**
+**Pages OK : 15/15 — H1 manquants : 0**
 
 ## API
 
-| Test | Résultat | Attendu | Statut |
-|------|----------|---------|--------|
-| POST /api/auth/login (mauvais identifiants) | 401 | 401 | ✅ OK |
-| GET /api/health?deep=1 — database | ok | ok | ✅ OK |
-| GET /api/health?deep=1 — ai | ok | ok | ✅ OK |
+| Test | Attendu | Obtenu | Statut |
+|------|---------|--------|--------|
+| POST /api/auth/login (mauvais identifiants) | 401 | 401 | ✅ |
+| GET /api/health?deep=1 — database | ok | ok | ✅ |
+| GET /api/health?deep=1 — ai | ok | ok (claude-sonnet-4-6) | ✅ |
 
-Réponse health complète :
-```json
-{"status":"ok","timestamp":"2026-10-23T18:24:33.482Z","uptime":3,"responseTime":"1266ms","services":{"database":"ok","ai":"ok","aiDetail":"claude-sonnet-4-6","api":"ok"}}
-```
+## CI GitHub (branch main)
 
-## CI — main
+| Workflow | Conclusion | SHA | Titre |
+|----------|-----------|-----|-------|
+| Taches automatiques RestauMargin | success | dedca6e | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | dedca6e | Taches automatiques RestauMargin |
+| CI | success | dedca6e | cfo: analyse quotidienne |
+| Taches automatiques RestauMargin | success | 15a0f31 | Taches automatiques RestauMargin |
+| CI | success | 15a0f31 | cto: audit quotidien |
 
-| Workflow | Conclusion | Commit | Titre |
-|----------|------------|--------|-------|
-| Taches automatiques RestauMargin | success | 47f3ce9 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 47f3ce9 | Taches automatiques RestauMargin |
-| CI | success | 47f3ce9 | cfo: analyse quotidienne |
-| Taches automatiques RestauMargin | success | f83fdc1 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | f83fdc1 | Taches automatiques RestauMargin |
-
-Dernier CI sur main : **success** ✅
+**CI : ✅ Tous les runs sont en succès**
 
 ## Résumé
 
-- Pages OK : **15/15**
-- H1 manquants : **0**
-- Login 401 : **OK**
-- Santé BDD : **OK**
-- Santé IA : **OK**
-- CI main : **success**
+- Pages : **15/15 OK**, aucun H1 manquant
+- API login : **401 ✅**
+- Santé DB : **ok ✅**
+- Santé IA : **ok ✅**
+- CI main : **success ✅**
 
-**Aucune régression détectée.**
+Aucune régression détectée.

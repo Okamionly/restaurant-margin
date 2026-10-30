@@ -1,20 +1,20 @@
-# CFO Analyse — 2026-10-24
+# CFO Analyse — 2026-10-30
 
-> **Période couverte :** analyse du 2026-10-24. Données issues de `/api/agents/data` à 15:19 UTC. Rapport précédent : 2026-10-23.
+> **Période couverte :** analyse du 2026-10-30. Données issues de `/api/agents/data` à 16:25 UTC. Rapport précédent : 2026-10-24.
 
 ---
 
 ## Métriques Clés
 
-| Indicateur | Valeur | Variation vs J-1 (2026-10-23) |
+| Indicateur | Valeur | Variation vs J-6 (2026-10-24) |
 |---|---|---|
 | **MRR** | 0 € (Pro 0 + Biz 0) | 0 € — stable |
 | **ARR** | 0 € | 0 € — stable |
-| **Utilisateurs totaux** | 19 | 0 — stable |
-| **Trials actifs** | 0 | 0 — stable |
-| **Leads qualifiés (7j)** | 0 | 0 — pipeline vide |
-| **Nouveaux inscrits 24h** | 0 | — |
-| **Nouveaux inscrits 48h** | 0 | — |
+| **Utilisateurs totaux** | 20 | +1 (19 → 20) |
+| **Trials actifs** | 1 | +1 (0 → 1) ✅ |
+| **Leads qualifiés (7j)** | 1 | +1 (0 → 1) ✅ |
+| **Nouveaux inscrits 24h** | 1 | +1 |
+| **Nouveaux inscrits 48h** | 1 | — |
 | **Recettes** | 63 | 0 — stable |
 | **Ingrédients** | 439 | 0 — stable |
 
@@ -22,10 +22,11 @@
 
 ## Variation MRR
 
-- MRR J-1 (2026-10-23) : **0 €** → MRR J (2026-10-24) : **0 €**
+- MRR J-6 (2026-10-24) : **0 €** → MRR J (2026-10-30) : **0 €**
 - Variation : **0 €** — aucun mouvement facturable.
-- Durée de stagnation post-correction de mesure : **29 jours consécutifs** (depuis le 2026-09-25).
-- Aucune inscription, aucun trial, aucun lead en 24h. Base figée à 19 comptes.
+- Durée de stagnation post-correction de mesure : **35 jours consécutifs** (depuis le 2026-09-25).
+- **Signal positif :** 1 nouveau compte inscrit en 24h, 1 trial actif, 1 lead qualifié — premier mouvement depuis 35 jours.
+- Lead actif : domaine gmail.com, plan basic, première vue le 2026-10-30 à 10:18 UTC.
 
 ---
 
@@ -33,15 +34,15 @@
 
 ### 🔴 Alerte 1 — Phase amorçage, focus acquisition
 - **Condition :** MRR < 100 €
-- **Constat :** MRR = 0 €. Aucun abonné Stripe actif. J+29 post-correction de mesure (rupture 2026-09-25).
+- **Constat :** MRR = 0 €. Aucun abonné Stripe actif. J+35 post-correction de mesure (rupture 2026-09-25).
 
-### 🔴 Alerte 2 — Investiguer acquisition
+### ⚪ Alerte 2 — Investiguer acquisition (non déclenchée)
 - **Condition :** LEADS = 0 sur 7 jours
-- **Constat :** 0 lead qualifié. 0 inscription sur 24h et 48h. Pipeline acquisition vide depuis 29 jours consécutifs.
+- **Constat :** 1 lead qualifié aujourd'hui — alerte non déclenchée pour la première fois depuis 35 jours.
 
-### ⚪ Alerte 3 — Conversion lente (non déclenchée)
+### 🟡 Alerte 3 — Conversion lente
 - **Condition :** TRIAL > 5× payants
-- **Constat :** Trials = 0, payants = 0. Condition non applicable.
+- **Constat :** Trials = 1, payants = 0. 1 > 5×0 = 0 → condition vérifiée. Le trial actif doit être converti.
 
 ---
 
@@ -49,36 +50,36 @@
 
 | Étape | Nb | Taux |
 |---|---|---|
-| Utilisateurs inscrits | 19 | 100 % |
-| Trials actifs | 0 | 0 % |
+| Utilisateurs inscrits | 20 | 100 % |
+| Trials actifs | 1 | 5 % |
 | Clients payants (Stripe) | 0 | 0 % |
 | Taux global inscription → paiement | — | 0 % |
 
 - **ARPU :** 0 €/mois (aucun abonné actif)
 - **LTV estimée :** non calculable
-- **Durée de stagnation MRR :** 29 jours consécutifs à MRR = 0 € (post-correction mesure)
-- **Constat :** Base totalement inactive. 0 mouvement en 24h sur tous les indicateurs.
+- **Durée de stagnation MRR :** 35 jours consécutifs à MRR = 0 € (post-correction mesure)
+- **Constat :** Un trial est maintenant actif — premier signal de conversion depuis la correction de mesure. Fenêtre de conversion critique à surveiller.
 
 ---
 
 ## 3 Recommandations Chiffrées
 
-### Recommandation 1 — Contacter les 19 comptes avant le 31/10 (Impact cible : 1–2 trials → MRR potentiel 29–58 €)
-- **Action :** Email personnalisé aux 19 inscrits : mise en avant d'une fonctionnalité récente (calcul food cost IA, mercuriale), proposition d'appel découverte 15 min. Délai restant avant fin du mois : 7 jours.
-- **Effort :** 2h
-- **Objectif mesurable :** 1–2 trials actifs avant le 31/10
-- **ROI :** Coût cash = 0 €.
+### Recommandation 1 — Convertir le trial actif avant expiration (Impact cible : MRR 29 €)
+- **Action :** Identifier le compte trial actif (gmail.com, inscrit le 2026-10-30) et l'accompagner : email de bienvenue personnalisé dans les 24h, proposition d'appel découverte 15 min, mise en avant du food cost IA. La fenêtre de conversion du premier trial est la plus critique.
+- **Effort :** 1h
+- **Objectif mesurable :** 1 abonné payant Pro (29 €/mois) avant J+7
+- **ROI :** MRR passe de 0 € à 29 €. Premier abonné Stripe réel.
 
 ### Recommandation 2 — Tester le flux Stripe en conditions réelles (Impact cible : validation technique, risque bloquant écarté)
-- **Action :** Réaliser un paiement test complet (inscription → trial → upgrade Pro 29 €/mois) pour confirmer qu'aucun obstacle technique ne bloque la conversion. 29 jours sans abonné sur 19 inscrits = signal que le problème peut être technique autant que commercial.
+- **Action :** Réaliser un paiement test complet (inscription → trial → upgrade Pro 29 €/mois) pour confirmer qu'aucun obstacle technique ne bloque la conversion. 35 jours sans abonné sur 20 inscrits = signal que le problème peut être technique autant que commercial.
 - **Effort :** 30 min
 - **Objectif mesurable :** Flux Stripe validé ou bug identifié
-- **ROI :** Coût = 29 € (remboursable). Risque d'écarter : blocage silencieux du paiement non détecté.
+- **ROI :** Coût = 29 € (remboursable). Risque d'écarter : blocage silencieux du paiement non détecté avant l'arrivée du premier trial.
 
-### Recommandation 3 — Publication organique LinkedIn/Facebook cette semaine (Impact cible : 3–5 inscriptions en 14 jours)
-- **Action :** 1 post LinkedIn restaurateurs indépendants + 1 publication groupe Facebook restauration, axés outil gratuit food cost (`/outils/calculateur-food-cost`). Rythme minimal : 1 publication/semaine/canal.
+### Recommandation 3 — Capitaliser sur l'élan de cette semaine (Impact cible : 3–5 nouvelles inscriptions en 14 jours)
+- **Action :** 1 post LinkedIn restaurateurs indépendants + 1 publication groupe Facebook restauration, axés outil gratuit food cost (`/outils/calculateur-food-cost`). Le signal d'aujourd'hui (1 inscrit, 1 trial) indique une fenêtre active.
 - **Effort :** 1h
-- **Objectif mesurable :** 3–5 nouvelles inscriptions → base > 22 utilisateurs, pipeline trials non nul
+- **Objectif mesurable :** Base > 23 utilisateurs, 2+ trials actifs simultanés
 - **ROI :** Coût = 0 €.
 
 ---
@@ -87,11 +88,10 @@
 
 | Risque | Probabilité | Impact | Mitigation |
 |---|---|---|---|
-| MRR = 0 € depuis 29 jours post-correction | Constaté | Stagnation prolongée | Recommandation 1 avant 31/10 |
-| 0 lead qualifié sur 7 jours | Constaté | Pipeline d'acquisition tari | Recommandation 3 immédiate |
+| Trial actif non converti | Élevé | MRR reste à 0 € | Recommandation 1 sous 24h |
 | Flux Stripe non testé en conditions réelles | Élevé | Blocage silencieux non détecté | Recommandation 2 cette semaine |
-| 19 utilisateurs sans aucun abonné | Élevé | Base inactive sans valeur | Recommandation 1 sous 7 jours |
+| MRR = 0 € depuis 35 jours post-correction | Constaté | Stagnation prolongée | Recommandation 1 avant J+7 |
 
 ---
 
-*Rapport généré automatiquement le 2026-10-24 — CFO Agent RestauMargin*
+*Rapport généré automatiquement le 2026-10-30 — CFO Agent RestauMargin*

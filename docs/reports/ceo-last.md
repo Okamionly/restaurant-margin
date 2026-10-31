@@ -1,73 +1,77 @@
-# Digest RestauMargin — 2026-10-24
+# Digest RestauMargin — 2026-10-31
 
 ## Santé — site, base, IA, CI
 
-| Service    | État |
-|------------|------|
-| Site       | ✅ joignable |
-| Base de données | ✅ ok |
-| IA         | ✅ ok (claude-sonnet-4-6) |
-| API        | ✅ ok |
-| CI (push)  | ✅ success — run #1324, commit `d16bc12` (qa: tests quotidiens) |
-| CI (crons) | ✅ success — run #394, dernier 2026-10-23 23:09 UTC |
+| Service  | État    | Détail                      |
+|----------|---------|-----------------------------|
+| database | ✅ ok   |                             |
+| ai       | ✅ ok   | claude-sonnet-4-6           |
+| api      | ✅ ok   |                             |
+| site     | ✅ ok   | https://www.restaumargin.fr |
 
-Temps de réponse `/api/health` : **1103 ms** — légèrement lent, dans les limites acceptables.
+Temps de réponse health : 1 218 ms. Aucune anomalie détectée.
 
----
+**CI (3 derniers runs — branche main) :**
 
-## Chiffres
-
-| Métrique | Valeur |
-|---|---|
-| MRR estimé | **0 €** |
-| Nouveaux inscrits 24 h | **0** |
-| Essais actifs (trial) | **0** |
-| Utilisateurs totaux | **19** |
-| Leads qualifiés | **0** |
-| Commits 24 h | **2** (qa + cfo) |
-| Recettes créées | 63 |
-| Ingrédients enregistrés | 439 |
-
-MRR à 0 € depuis la correction de mesure du 2026-09-25 (29 jours consécutifs). Aucun abonné payant Stripe actif.
+| Run | Workflow                         | Commit    | Résultat  |
+|-----|----------------------------------|-----------|-----------|
+| #472 | Taches automatiques RestauMargin | `233d450f` | ✅ success |
+| #471 | Taches automatiques RestauMargin | `233d450f` | ✅ success |
+| #470 | Taches automatiques RestauMargin | `233d450f` | ✅ success |
 
 ---
 
-## Rapports C-suite
+## Chiffres — MRR, inscriptions, essais, commits
 
-| Agent | Dernier rapport | État |
-|---|---|---|
-| CTO | 2026-10-17 | 🔴 **EN PANNE** — rapport vieux de 7 jours (> 48 h) |
-| CMO | 2026-10-17 | 🔴 **EN PANNE** — rapport vieux de 7 jours (> 48 h) |
-| CFO | 2026-10-23 | ✅ OK — hier |
-| COO | 2026-10-17 | 🔴 **EN PANNE** — rapport vieux de 7 jours (> 48 h) |
-| QA  | 2026-10-23 | ✅ OK — hier |
+| Indicateur               | Valeur        |
+|--------------------------|---------------|
+| MRR estimé               | 0 €           |
+| Abonnés Pro              | 0             |
+| Abonnés Business         | 0             |
+| Utilisateurs totaux      | 20            |
+| Nouveaux inscrits 24h    | 1             |
+| Trials actifs            | 1             |
+| Leads qualifiés          | 1             |
+| Commits dernières 24h    | 1             |
 
-Cause probable pannes CTO/CMO/COO : quota hebdomadaire Claude épuisé.
+> Note : lead actif = gmail.com, plan basic, première vue le 2026-10-30 à 10:18 UTC.
+> MRR à 0 € depuis le 2026-09-25 (correction de mesure, aucun abonné payant).
 
 ---
 
-## Actions des agents (24 h)
+## Rapports C-suite — état au 2026-10-31
 
-- `qa: tests quotidiens` — commit `d16bc12` (2026-10-23 ~18:24 UTC) — 15 pages HTTP OK, API OK
-- `cfo: analyse quotidienne` — commit `47f3ce9` (2026-10-23 ~18:22 UTC) — MRR 0 €, utilisateur 19 (+1 vs semaine), stagnation 28 jours
+| Agent | Dernier rapport | Délai | État              |
+|-------|----------------|-------|-------------------|
+| CTO   | 2026-10-24     | 7j    | ⛔ EN PANNE (>48h) |
+| CMO   | 2026-10-24     | 7j    | ⛔ EN PANNE (>48h) |
+| CFO   | 2026-10-30     | 1j    | ✅ Actif           |
+| COO   | 2026-10-17     | 14j   | ⛔ EN PANNE (>48h) |
+| QA    | 2026-10-24     | 7j    | ⛔ EN PANNE (>48h) |
 
-Pas de journaux `docs/actions/` récents — les 5 derniers datent d'avril/mai 2026 (articles blog).
+Cause habituelle : quota hebdomadaire Claude épuisé. 4 agents sur 5 hors service.
+
+---
+
+## Actions des agents (24h)
+
+Aucune action d'agent documentée dans `docs/actions/` en lien direct avec les dernières 24h.
+Dernier fichier d'action daté : 2026-09-22 (outreach / onboarder).
 
 ---
 
 ## Top 3 actions du jour
 
-1. **Relancer les agents en panne (CTO, CMO, COO)** — 3 agents silencieux depuis 7 jours.
-2. **Zéro acquisition 24 h** — aucun nouvel inscrit, aucun lead. À surveiller.
-3. **Santé infra stable** — CI vert, tous les services up.
+1. **CFO actif** — rapport publié le 2026-10-30 : 1 nouvel inscrit, 1 trial, 1 lead qualifié détectés.
+2. **1 commit livré** sur main (cfo: analyse quotidienne).
+3. **Lead gmail.com actif en trial** — premier mouvement en 35 jours.
 
 ---
 
 ## Risques
 
 | Risque | Niveau | Détail |
-|---|---|---|
-| 3 agents C-suite muets | 🔴 Élevé | CTO, CMO, COO sans rapport depuis 7 jours — quota Claude probable |
-| 0 inscription 24 h | 🟡 Moyen | Canal d'acquisition inactif — pas de traction mesurée |
-| MRR 0 € — 29e jour consécutif | 🟡 Moyen | Aucun abonné payant depuis la correction de mesure |
-| Temps de réponse API 1103 ms | 🟡 Faible | Lent pour un health check — à monitorer si ça monte |
+|--------|--------|--------|
+| 4 agents C-suite en panne | 🔴 Élevé | CTO, CMO, COO, QA sans rapport depuis 7 à 14 jours — quota Claude probablement épuisé |
+| MRR 0 € | 🟠 Moyen | 35+ jours sans abonné payant ; 1 trial actif à convertir |
+| Docs/actions vides (24h) | 🟡 Faible | Aucune action agent documentée — monitoring réduit |

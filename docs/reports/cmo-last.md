@@ -1,42 +1,47 @@
-# Rapport CMO — 24 octobre 2026
+# Rapport CMO — 31 octobre 2026
 
-## Métriques du jour (source : /api/agents/data)
+## Métriques (source : /api/agents/data, 07:11 UTC)
 
 | Indicateur | Valeur |
 |---|---|
-| Utilisateurs total | 19 |
-| Nouveaux utilisateurs 24h | 0 |
-| Leads qualifiés | 0 |
-| MRR estimé | 0 € |
-| ARR estimé | 0 € |
-| Pages blog | 64 |
+| Utilisateurs totaux | 20 |
+| Nouveaux utilisateurs (24h) | 1 |
+| Nouveaux utilisateurs (48h) | 1 |
+| Leads réels | 1 |
 | Abonnés Pro | 0 |
 | Abonnés Business | 0 |
-| Utilisateurs en trial | 0 |
+| Utilisateurs en trial | 1 |
+| MRR estimé | 0 € |
+| ARR estimé | 0 € |
+| Pages Blog (*.tsx) | 64 |
+| Recettes enregistrées | 63 |
+| Ingrédients enregistrés | 439 |
 
-Données horodatées : 2026-10-24T06:12:06 UTC — non cachées.
+**Lead anonymisé :** domaine gmail.com, plan basic, premier vu le 2026-10-30.
+
+---
+
+## Analyse
+
+**Situation :** Base de 20 comptes inscrits, aucun abonné payant. 1 utilisateur en trial actif. Croissance lente (+1 utilisateur en 24h). Le produit génère des inscriptions organiques à rythme faible mais constant.
+
+**Signal positif :** 439 ingrédients et 63 recettes créés — les comptes existants utilisent activement le produit. Le taux d'engagement fonctionnel est réel.
+
+**Point de vigilance :** 0 MRR. La conversion trial → payant est l'enjeu numéro un. L'absence de données sur le comportement des trials rend difficile l'identification du point de friction.
 
 ---
 
 ## Action du jour
 
-**Post social rédigé** : `docs/marketing/social-posts/2026-10-24.md`
-
-- Thème : food cost réel vs théorique, identification des plats non rentables, standardisation des fiches techniques, révision de carte
-- Ton : pédagogique, sans preuve sociale fabriquée, exemples chiffrés présentés comme fourchettes indicatives
-- CTA : calculateur food cost gratuit (https://www.restaumargin.fr/outils/calculateur-food-cost)
-- Conforme CLAUDE.md § "Aucune preuve sociale fabriquée" : aucun témoignage, aucun nombre d'utilisateurs, aucune note
-
----
-
-## Observations
-
-- 0 nouvel utilisateur en 24h → acquisition stagnante. Levier à activer : SEO (64 pages blog en place), partage des posts sociaux sur les canaux restaurateur (LinkedIn, Instagram, groupes Facebook pros).
-- 0 abonné payant → aucun MRR. Priorité : convertir les 19 comptes existants via communication directe (onboarding email, démo).
-- Le calculateur food cost public est le principal point d'entrée SEO et social. Tous les CTA doivent y pointer en priorité.
+**Post social rédigé** (voir `docs/marketing/social-posts/2026-10-31.md`)
+- Thème : food cost de fin de mois / transition saisonnière
+- Format : LinkedIn + Instagram (~270 mots)
+- CTA principal : calculateur food cost gratuit
+- CTA secondaire : pricing / essai 7 jours sans CB
+- Conforme règle CLAUDE.md : aucune preuve sociale fabriquée
 
 ---
 
-## Prochaine action recommandée (CEO)
+## Recommandation prioritaire
 
-Activer une séquence email vers les 19 comptes inscrits : présentation des fonctionnalités, invitation à prendre rendez-vous ou à passer en essai gratuit. Objectif : premier abonné payant dans les 30 jours.
+Mettre en place un email de nurturing automatique à J+3 du trial, focalisé sur une seule action : créer une fiche technique et voir sa marge en temps réel. Réduire le time-to-value est le levier le plus direct sur la conversion.

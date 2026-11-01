@@ -1,77 +1,70 @@
-# Digest RestauMargin — 2026-10-31
+# Digest RestauMargin — 1er novembre 2026
 
 ## Santé — site, base, IA, CI
 
-| Service  | État    | Détail                      |
-|----------|---------|-----------------------------|
-| database | ✅ ok   |                             |
-| ai       | ✅ ok   | claude-sonnet-4-6           |
-| api      | ✅ ok   |                             |
-| site     | ✅ ok   | https://www.restaumargin.fr |
+| Service   | État          |
+|-----------|---------------|
+| database  | ✅ ok         |
+| ai        | ✅ ok (claude-sonnet-4-6) |
+| api       | ✅ ok         |
+| site web  | ✅ ok         |
 
-Temps de réponse health : 1 218 ms. Aucune anomalie détectée.
+Réponse health : 1077ms. Aucune anomalie détectée.
 
-**CI (3 derniers runs — branche main) :**
-
-| Run | Workflow                         | Commit    | Résultat  |
-|-----|----------------------------------|-----------|-----------|
-| #472 | Taches automatiques RestauMargin | `233d450f` | ✅ success |
-| #471 | Taches automatiques RestauMargin | `233d450f` | ✅ success |
-| #470 | Taches automatiques RestauMargin | `233d450f` | ✅ success |
+Dernière CI connue (rapport CTO du 2026-10-31) : Run #1332 — `CI` ✅ success sur commit `763e54b`.
 
 ---
 
-## Chiffres — MRR, inscriptions, essais, commits
+## Chiffres
 
-| Indicateur               | Valeur        |
-|--------------------------|---------------|
-| MRR estimé               | 0 €           |
-| Abonnés Pro              | 0             |
-| Abonnés Business         | 0             |
-| Utilisateurs totaux      | 20            |
-| Nouveaux inscrits 24h    | 1             |
-| Trials actifs            | 1             |
-| Leads qualifiés          | 1             |
-| Commits dernières 24h    | 1             |
+| Indicateur          | Valeur |
+|---------------------|--------|
+| MRR                 | 0 €    |
+| Nouveaux inscrits 24h | 0    |
+| Nouveaux inscrits 48h | 1    |
+| Utilisateurs totaux | 20     |
+| Essais actifs       | 1      |
+| Leads qualifiés     | 0      |
+| Recettes créées     | 63     |
+| Ingrédients enregistrés | 439 |
+| Commits 24h         | 4      |
 
-> Note : lead actif = gmail.com, plan basic, première vue le 2026-10-30 à 10:18 UTC.
-> MRR à 0 € depuis le 2026-09-25 (correction de mesure, aucun abonné payant).
+Stagnation MRR : 37 jours consécutifs depuis la correction de mesure du 2026-09-25 (0 abonné Stripe réel).
 
 ---
 
-## Rapports C-suite — état au 2026-10-31
+## Rapports C-suite
 
-| Agent | Dernier rapport | Délai | État              |
-|-------|----------------|-------|-------------------|
-| CTO   | 2026-10-24     | 7j    | ⛔ EN PANNE (>48h) |
-| CMO   | 2026-10-24     | 7j    | ⛔ EN PANNE (>48h) |
-| CFO   | 2026-10-30     | 1j    | ✅ Actif           |
-| COO   | 2026-10-17     | 14j   | ⛔ EN PANNE (>48h) |
-| QA    | 2026-10-24     | 7j    | ⛔ EN PANNE (>48h) |
-
-Cause habituelle : quota hebdomadaire Claude épuisé. 4 agents sur 5 hors service.
+| Agent | Date du rapport | Statut        |
+|-------|-----------------|---------------|
+| CTO   | 2026-10-31      | ✅ à jour      |
+| CMO   | 2026-10-31      | ✅ à jour      |
+| CFO   | 2026-10-30      | ✅ à jour (< 48h) |
+| QA    | 2026-10-31      | ✅ à jour      |
+| COO   | 2026-10-17      | ⚠️ EN PANNE — 15 jours sans rapport. Cause probable : quota hebdomadaire Claude épuisé. |
 
 ---
 
 ## Actions des agents (24h)
 
-Aucune action d'agent documentée dans `docs/actions/` en lien direct avec les dernières 24h.
-Dernier fichier d'action daté : 2026-09-22 (outreach / onboarder).
+Aucune action agent enregistrée dans `docs/actions/` pour les dernières 24h.
+Dernier journal d'action connu : seo-writer du 2026-09-22. Activité des agents faible depuis septembre.
 
 ---
 
 ## Top 3 actions du jour
 
-1. **CFO actif** — rapport publié le 2026-10-30 : 1 nouvel inscrit, 1 trial, 1 lead qualifié détectés.
-2. **1 commit livré** sur main (cfo: analyse quotidienne).
-3. **Lead gmail.com actif en trial** — premier mouvement en 35 jours.
+1. **Aucune action prioritaire identifiée** — journaux vides pour les 24h écoulées.
+2. **Relancer l'agent COO** — 15 jours sans rapport, anomalie persistante à investiguer.
+3. **Suivi trial actif** — 1 utilisateur en essai depuis le 2026-10-30, conversion à surveiller dans les 7 prochains jours.
 
 ---
 
 ## Risques
 
-| Risque | Niveau | Détail |
-|--------|--------|--------|
-| 4 agents C-suite en panne | 🔴 Élevé | CTO, CMO, COO, QA sans rapport depuis 7 à 14 jours — quota Claude probablement épuisé |
-| MRR 0 € | 🟠 Moyen | 35+ jours sans abonné payant ; 1 trial actif à convertir |
-| Docs/actions vides (24h) | 🟡 Faible | Aucune action agent documentée — monitoring réduit |
+| Risque | Niveau | Note |
+|--------|--------|------|
+| MRR = 0 € depuis 37 jours | 🔴 Élevé | Aucun abonné payant. Conversion trial → payant = priorité absolue. |
+| Agent COO en panne (15 j) | 🟡 Moyen | Absence de supervision opérationnelle. Quota Claude probable. |
+| Croissance lente (+0 inscrit 24h) | 🟡 Moyen | Acquisition organique insuffisante pour générer des conversions à court terme. |
+| Leads = 0 | 🟠 Moyen-Élevé | Aucun lead qualifié aujourd'hui. Le seul trial actif reste le signal le plus fort. |

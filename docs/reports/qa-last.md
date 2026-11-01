@@ -1,4 +1,9 @@
-# Rapport QA — 2026-10-31
+# QA Report — 2026-11-01
+
+**Heure** : 19:24 UTC  
+**Résultat global** : ✅ TOUT OK
+
+---
 
 ## Pages HTTP (15/15 OK)
 
@@ -20,35 +25,36 @@
 | 200 | 1 | /guide-marge/pizzeria |
 | 200 | 1 | /guide-marge/brasserie |
 
-**Pages OK : 15/15 — H1 manquants : 0**
+H1 manquants : **0**
+
+---
 
 ## API
 
 | Endpoint | Attendu | Obtenu | Statut |
 |----------|---------|--------|--------|
-| POST /api/auth/login (mauvaises credentials) | 401 | 401 | ✅ |
-| GET /api/health?deep=1 — database | ok | ok | ✅ |
-| GET /api/health?deep=1 — ai | ok | ok (claude-sonnet-4-6) | ✅ |
+| POST /api/auth/login (mauvais credentials) | 401 | 401 | ✅ |
+| GET /api/health?deep=1 — database | "ok" | "ok" | ✅ |
+| GET /api/health?deep=1 — ai | "ok" | "ok" | ✅ |
 
-## CI (derniers runs sur main)
+Modèle IA détecté : `claude-sonnet-4-6`
 
-| Workflow | Conclusion | SHA | Titre |
-|----------|-----------|-----|-------|
-| Taches automatiques RestauMargin | success | 4da5091 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 4da5091 | Taches automatiques RestauMargin |
-| CI | success | 4da5091 | cto: audit quotidien |
-| Taches automatiques RestauMargin | success | 763e54b | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 763e54b | Taches automatiques RestauMargin |
+---
 
-**Dernier commit CI : success ✅**
+## CI (GitHub Actions — branch main)
 
-## Résumé
+| Workflow | Conclusion | Commit | Titre |
+|----------|-----------|--------|-------|
+| Taches automatiques RestauMargin | success | 1150518 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 1150518 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 1150518 | Taches automatiques RestauMargin |
+| CI | success | 1150518 | cfo: analyse quotidienne |
+| Taches automatiques RestauMargin | success | 9bb403e | Taches automatiques RestauMargin |
 
-- Pages OK : **15/15**
-- H1 manquants (prérendu) : **0**
-- Login 401 : **✅**
-- Santé DB : **ok**
-- Santé IA : **ok**
-- CI main : **success**
+Aucune regression CI détectée.
 
-> Aucune régression détectée.
+---
+
+## Conclusion
+
+Aucune régression détectée. Pas de notification envoyée.

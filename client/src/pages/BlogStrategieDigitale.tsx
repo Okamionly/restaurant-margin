@@ -483,7 +483,7 @@ export default function BlogStrategieDigitale() {
 
           <h3 className="text-xl font-bold text-mono-100 mt-6 mb-3">Instagram : la base</h3>
           <ul className="space-y-2 text-[#374151] mb-4">
-            <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-purple-400 mt-2 flex-shrink-0" /><span><strong>Reels {'>'}  posts statiques</strong> : l'algorithme favorise les vidéos verticales 15-30 s</span></li>
+            <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-purple-400 mt-2 flex-shrink-0" /><span><strong>Réels {'>'}  posts statiques</strong> : l'algorithme favorise les vidéos verticales 15-30 s</span></li>
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-purple-400 mt-2 flex-shrink-0" /><span><strong>Hashtags locaux</strong> : #restaurantlyon #foodbordeaux #brunchparis (5-10 par post)</span></li>
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-purple-400 mt-2 flex-shrink-0" /><span><strong>Heures clés</strong> : 11h30 (avant midi), 18h30 (avant dîner), 21h (recherche pour demain)</span></li>
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-purple-400 mt-2 flex-shrink-0" /><span><strong>Ratio idéal</strong> : 80 % inspiration (plats, ambiance, coulisses) / 20 % vente (offres, événements)</span></li>
@@ -650,7 +650,7 @@ export default function BlogStrategieDigitale() {
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
             Voici un benchmark des <strong>ROI moyens par canal marketing restaurant</strong> observés
-            sur des etablissements français en 2025-2026. Ces chiffres vous aident à prioriser vos
+            sur des établissements français en 2025-2026. Ces chiffres vous aident à prioriser vos
             investissements selon votre maturité et votre cible.
           </p>
           <div className="mt-6 overflow-x-auto">
@@ -770,7 +770,7 @@ export default function BlogStrategieDigitale() {
               <ol className="space-y-1.5 text-sm text-mono-400 list-decimal list-inside" start={11}>
                 <li>Optimiser le profil Instagram (bio, lien, highlights)</li>
                 <li>Créer un compte TikTok pro (si cible 18-35 ans)</li>
-                <li>Planifier 12 posts Instagram + 12 reels (1 mois)</li>
+                <li>Planifier 12 posts Instagram + 12 réels (1 mois)</li>
                 <li>Organiser une séance photo pro (300-800 EUR)</li>
                 <li>Mettre en place un QR code "Donnez votre avis" sur l'addition</li>
                 <li>Activer la collecte d'emails via Wi-Fi gratuit (opt-in RGPD)</li>

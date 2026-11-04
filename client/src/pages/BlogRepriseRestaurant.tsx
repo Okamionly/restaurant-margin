@@ -159,7 +159,7 @@ export default function BlogRepriseRestaurant() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
-                <p className="text-xs font-semibold text-emerald-600 uppercase mb-2">Valorise</p>
+                <p className="text-xs font-semibold text-emerald-600 uppercase mb-2">Valorisé</p>
                 <ul className="space-y-1 text-sm text-[#737373] dark:text-[#A3A3A3]">
                   <li>✓ Bail long avec loyer &lt; 8 % du CA</li>
                   <li>✓ Matériel récent (&lt; 5 ans)</li>

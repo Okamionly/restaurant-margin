@@ -862,7 +862,7 @@ export default function BlogSeuilRentabilite() {
           <p className="text-sm text-mono-500 mb-6 max-w-3xl">
             Les seuils de rentabilité, taux de marge sur coût variable, ratios de charges et fourchettes de food cost cités
             dans ce guide s'appuient sur des sources officielles et professionnelles reconnues du secteur CHR, recoupées avec
-            les données agrégées de RestauMargin (des etablissements français). Ces références sont vérifiables et mises à jour pour 2026.
+            les données agrégées de RestauMargin (des établissements français). Ces références sont vérifiables et mises à jour pour 2026.
           </p>
 
           <ul className="grid sm:grid-cols-2 gap-4 mb-6">

@@ -13,43 +13,43 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 const faqItems = [
   {
     question: "Comment calculer le ticket moyen d'un restaurant ?",
-    answer: "Ticket moyen = Chiffre d'affaires (HT ou TTC) / Nombre de couverts servis. Toujours diviser par le nombre de couverts, jamais par le nombre d'additions (sinon biais : une table de 4 pese autant qu'un solo). Calculez separement midi et soir : l'ecart typique est de 30-45 %. Utilisez du HT pour comparer entre etablissements (les TVA different selon les boissons).",
+    answer: "Ticket moyen = Chiffre d'affaires (HT ou TTC) / Nombre de couverts servis. Toujours diviser par le nombre de couverts, jamais par le nombre d'additions (sinon biais : une table de 4 pèse autant qu'un solo). Calculez séparément midi et soir : l'écart typique est de 30-45 %. Utilisez du HT pour comparer entre établissements (les TVA diffèrent selon les boissons).",
   },
   {
     question: "Quel est le ticket moyen normal pour un restaurant en France ?",
-    answer: "Selon le segment : bistrot 22-48 EUR, brasserie 25-58 EUR, pizzeria 18-32 EUR, sushi a la carte 28-65 EUR, gastronomique 1 etoile 65-160 EUR. Toujours interpreter midi/soir separement. En zone touristique, ajoutez 15-25 %. En zone bureau midi, ticket moyen plus bas mais volume plus eleve.",
+    answer: "Selon le segment : bistrot 22-48 EUR, brasserie 25-58 EUR, pizzeria 18-32 EUR, sushi à la carte 28-65 EUR, gastronomique 1 étoile 65-160 EUR. Toujours interpréter midi/soir séparément. En zone touristique, ajoutez 15-25 %. En zone bureau midi, ticket moyen plus bas mais volume plus élevé.",
   },
   {
     question: "Mon ticket moyen baisse depuis 6 mois, que faire ?",
-    answer: "Trois pistes principales : (1) cannibalisation par une formule trop bon marche qui detourne les clients de la carte ; (2) baisse de la prise de boissons (bouteilles vers carafes) ; (3) changement de profil clientele (passage du business au familial). Comparer midi et soir separement aide a identifier la zone problematique. Verifier aussi le mix de plats vendus.",
+    answer: "Trois pistes principales : (1) cannibalisation par une formule trop bon marché qui détourne les clients de la carte ; (2) baisse de la prise de boissons (bouteilles vers carafes) ; (3) changement de profil clientèle (passage du business au familial). Comparer midi et soir séparément aide à identifier la zone problématique. Vérifier aussi le mix de plats vendus.",
   },
   {
-    question: "Comment mesurer l'efficacite d'une nouvelle technique d'upselling ?",
-    answer: "Comparez le ticket moyen sur 2 semaines avant et 2 semaines apres la mise en place. Segmentez par jour de la semaine (un mardi vs un mardi) car les profils diffuserent. Une hausse superieure a 5 % est statistiquement significative. Si possible, A/B testez : moitie de l'equipe applique la technique, l'autre non, vous comparez les tickets generes.",
+    question: "Comment mesurer l'efficacité d'une nouvelle technique d'upselling ?",
+    answer: "Comparez le ticket moyen sur 2 semaines avant et 2 semaines après la mise en place. Segmentez par jour de la semaine (un mardi vs un mardi) car les profils diffusèrent. Une hausse supérieure à 5 % est statistiquement significative. Si possible, A/B testez : moitié de l'équipe applique la technique, l'autre non, vous comparez les tickets générés.",
   },
   {
     question: "Faut-il augmenter ses prix ou augmenter le ticket moyen ?",
-    answer: "Les deux sont des leviers complementaires. Combiner legere hausse de prix annuelle (3-4 % pour suivre l'inflation) plus travail continu sur le ticket via les 10 techniques d'upselling est la strategie la plus durable. Une hausse de prix brute risque la perte de clients (elasticite prix), alors qu'augmenter le ticket via upselling preserve la perception value-for-money.",
+    answer: "Les deux sont des leviers complémentaires. Combiner légère hausse de prix annuelle (3-4 % pour suivre l'inflation) plus travail continu sur le ticket via les 10 techniques d'upselling est la stratégie la plus durable. Une hausse de prix brute risque la perte de clients (élasticité prix), alors qu'augmenter le ticket via upselling préserve la perception value-for-money.",
   },
   {
     question: "Comment ne pas frustrer le client en proposant trop de produits ?",
-    answer: "Maximum 3 suggestions durant un repas : a l'arrivee (aperitif/eau), entre commande et plat (vin ou entree a partager), en fin de plat (dessert et cafe). Au-dela, l'experience devient pesante et la perception passe de service attentionne a forcage commercial. Respectez systematiquement les refus, n'insistez jamais sur un produit refuse.",
+    answer: "Maximum 3 suggestions durant un repas : à l'arrivée (apéritif/eau), entre commande et plat (vin ou entrée à partager), en fin de plat (dessert et café). Au-delà, l'expérience devient pesante et la perception passe de service attentionné à forçage commercial. Respectez systématiquement les refus, n'insistez jamais sur un produit refusé.",
   },
   {
-    question: "Le digital peut-il aider a augmenter le ticket moyen ?",
-    answer: "Oui, enormement. La commande au QR code ou tablette montre toujours toutes les options et boissons, suggere automatiquement des desserts et accompagnements, propose des accords mets-vins. Augmente le ticket de 8 a 15 % par rapport a une prise de commande traditionnelle. Particulierement efficace sur le dessert (+25 % de prise) et les boissons additionnelles (+18 %).",
+    question: "Le digital peut-il aider à augmenter le ticket moyen ?",
+    answer: "Oui, énormément. La commande au QR code ou tablette montre toujours toutes les options et boissons, suggère automatiquement des desserts et accompagnements, propose des accords mets-vins. Augmente le ticket de 8 à 15 % par rapport à une prise de commande traditionnelle. Particulièrement efficace sur le dessert (+25 % de prise) et les boissons additionnelles (+18 %).",
   },
   {
     question: "Quel est l'impact d'une hausse de ticket moyen de 5 EUR ?",
-    answer: "Pour un restaurant a 1 200 couverts/mois : +5 EUR x 1 200 = +6 000 EUR de CA/mois, soit 72 000 EUR/an. Avec un food cost incremental de 30 % (boissons et desserts ont un food cost plus bas que les plats), la marge nette additionnelle est de 50 400 EUR/an. C'est l'equivalent de 1,5 salaire charge sans aucun cout d'acquisition supplementaire.",
+    answer: "Pour un restaurant à 1 200 couverts/mois : +5 EUR x 1 200 = +6 000 EUR de CA/mois, soit 72 000 EUR/an. Avec un food cost incremental de 30 % (boissons et desserts ont un food cost plus bas que les plats), la marge nette additionnelle est de 50 400 EUR/an. C'est l'équivalent de 1,5 salaire charge sans aucun coût d'acquisition supplémentaire.",
   },
   {
     question: "Quelles boissons ont la meilleure marge en restauration ?",
-    answer: "Cafe et digestifs (marge 80-92 %), vins au verre haut de gamme (marge 72-80 %), eaux gazeuses bouteille (marge 88-94 %), cocktails maison (marge 75-85 %), bieres pression (marge 75-82 %). La biere bouteille et les softs en bouteille ont des marges plus faibles (60-70 %). Concentrez vos efforts d'upselling sur les categories a marge maximale.",
+    answer: "Café et digestifs (marge 80-92 %), vins au verre haut de gamme (marge 72-80 %), eaux gazeuses bouteille (marge 88-94 %), cocktails maison (marge 75-85 %), bières pression (marge 75-82 %). La bière bouteille et les softs en bouteille ont des marges plus faibles (60-70 %). Concentrez vos efforts d'upselling sur les catégories à marge maximale.",
   },
   {
-    question: "Comment former mon equipe a l'upselling sans pression ?",
-    answer: "Quatre sessions de 2 heures sur 2 mois : (1) connaissance produits et accords, (2) scripts d'upselling adaptes a votre carte, (3) gestion d'objections clients, (4) lecture de la table (cible business vs famille vs couple). Mettez en place un incentive financier sur les ventes additionnelles (1 % du delta de CA upselle). Faites des roleplays mensuels. Le but est de transformer la suggestion en service, pas en forcage.",
+    question: "Comment former mon équipe à l'upselling sans pression ?",
+    answer: "Quatre sessions de 2 heures sur 2 mois : (1) connaissance produits et accords, (2) scripts d'upselling adaptés à votre carte, (3) gestion d'objections clients, (4) lecture de la table (cible business vs famille vs couple). Mettez en place un incentive financier sur les ventes additionnelles (1 % du delta de CA upsellé). Faites des roleplays mensuels. Le but est de transformer la suggestion en service, pas en forçage.",
   },
 ];
 
@@ -58,7 +58,7 @@ export default function BlogTicketMoyen() {
     <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Ticket moyen restaurant : calcul + 10 techniques pour l'augmenter"
-        description="Comment calculer et augmenter le ticket moyen de votre restaurant : formules, benchmarks par type, 10 techniques d'upselling ethique, cas pratique chiffre +50 400 EUR/an."
+        description="Comment calculer et augmenter le ticket moyen de votre restaurant : formules, benchmarks par type, 10 techniques d'upselling éthique, cas pratique chiffré +50 400 EUR/an."
         path="/blog/augmenter-ticket-moyen-restaurant"
         type="article"
         schema={[
@@ -71,24 +71,24 @@ export default function BlogTicketMoyen() {
           {
             '@context': 'https://schema.org',
             '@type': 'HowTo',
-            name: 'Comment augmenter le ticket moyen de son restaurant en 6 etapes',
-            description: 'Methode complete pour calculer, analyser et augmenter le ticket moyen d\'un restaurant via l\'upselling ethique et le menu engineering.',
+            name: 'Comment augmenter le ticket moyen de son restaurant en 6 étapes',
+            description: 'Méthode complète pour calculer, analyser et augmenter le ticket moyen d\'un restaurant via l\'upselling éthique et le menu engineering.',
             totalTime: 'PT60M',
             tool: ['Outil de caisse / POS', 'Tableur', 'Cartes des vins et menus', 'RestauMargin pour le suivi automatique'],
             step: [
-              { '@type': 'HowToStep', name: 'Calculer son ticket moyen actuel', text: 'Divisez le chiffre d\'affaires (HT) par le nombre de couverts sur 30 jours minimum. Separez midi/soir et par jour de la semaine pour identifier les segments faibles.' },
-              { '@type': 'HowToStep', name: 'Benchmarker contre son segment', text: 'Comparez votre ticket moyen aux benchmarks 2026 de votre type de restaurant. Identifiez l\'ecart en EUR et en pourcentage.' },
-              { '@type': 'HowToStep', name: 'Identifier les leviers prioritaires', text: 'Analysez votre menu mix : taux de prise d\'entree, de dessert, de boissons. Repérez les categories sous-performantes vs les normes professionnelles (70 % entree, 60 % dessert, 1,5 boissons par couvert).' },
-              { '@type': 'HowToStep', name: 'Implementer 3 techniques d\'upselling', text: 'Choisissez 3 techniques parmi les 10 (upselling boissons, suggestions desserts, formules premium...) et formez l\'equipe sur scripts precis. Roleplays obligatoires avant deploiement.' },
-              { '@type': 'HowToStep', name: 'Suivre les KPIs pendant 4 semaines', text: 'Mesurez chaque semaine : ticket moyen midi/soir, taux de prise par categorie, marge brute par couvert. Identifiez ce qui marche et ce qui ne marche pas.' },
-              { '@type': 'HowToStep', name: 'Ajuster et passer aux techniques suivantes', text: 'Apres 4 semaines de stabilisation, deployez 2-3 nouvelles techniques. Iterez par cycles de 4 semaines pendant 6 mois pour atteindre votre ticket cible.' },
+              { '@type': 'HowToStep', name: 'Calculer son ticket moyen actuel', text: 'Divisez le chiffre d\'affaires (HT) par le nombre de couverts sur 30 jours minimum. Séparez midi/soir et par jour de la semaine pour identifier les segments faibles.' },
+              { '@type': 'HowToStep', name: 'Benchmarker contre son segment', text: 'Comparez votre ticket moyen aux benchmarks 2026 de votre type de restaurant. Identifiez l\'écart en EUR et en pourcentage.' },
+              { '@type': 'HowToStep', name: 'Identifier les leviers prioritaires', text: 'Analysez votre menu mix : taux de prise d\'entrée, de dessert, de boissons. Repérez les catégories sous-performantes vs les normes professionnelles (70 % entrée, 60 % dessert, 1,5 boissons par couvert).' },
+              { '@type': 'HowToStep', name: 'Implémenter 3 techniques d\'upselling', text: 'Choisissez 3 techniques parmi les 10 (upselling boissons, suggestions desserts, formules premium...) et formez l\'équipe sur scripts précis. Roleplays obligatoires avant déploiement.' },
+              { '@type': 'HowToStep', name: 'Suivre les KPIs pendant 4 semaines', text: 'Mesurez chaque semaine : ticket moyen midi/soir, taux de prise par catégorie, marge brute par couvert. Identifiez ce qui marche et ce qui ne marche pas.' },
+              { '@type': 'HowToStep', name: 'Ajuster et passer aux techniques suivantes', text: 'Après 4 semaines de stabilisation, déployez 2-3 nouvelles techniques. Itérez par cycles de 4 semaines pendant 6 mois pour atteindre votre ticket cible.' },
             ],
           },
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Ticket moyen restaurant : calcul et 10 techniques pour l\'augmenter',
-            description: 'Guide complet du ticket moyen restaurant : definition, formule de calcul, benchmarks par type d\'etablissement, 10 techniques d\'upselling ethique, cas pratique chiffre, KPIs a suivre.',
+            description: 'Guide complet du ticket moyen restaurant : définition, formule de calcul, benchmarks par type d\'établissement, 10 techniques d\'upselling éthique, cas pratique chiffré, KPIs à suivre.',
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -142,10 +142,10 @@ export default function BlogTicketMoyen() {
       <BlogArticleHero
         category="Revenus"
         readTime="14 min"
-        date="Avril 2026 - Mise a jour mai 2026"
+        date="Avril 2026 - Mise à jour mai 2026"
         title="Ticket moyen restaurant : calcul + 10 techniques pour l'augmenter"
         accentWord="ticket moyen"
-        subtitle="+3 EUR de ticket moyen sur 800 couverts/mois = +28 800 EUR de CA annuel sur des couverts deja acquis, avec marge nette quasi pure. Le levier le plus rentable et le plus sous-exploite de la restauration."
+        subtitle="+3 EUR de ticket moyen sur 800 couverts/mois = +28 800 EUR de CA annuel sur des couverts déjà acquis, avec marge nette quasi pure. Le levier le plus rentable et le plus sous-exploité de la restauration."
       />
 
       {/* Body */}
@@ -160,19 +160,19 @@ export default function BlogTicketMoyen() {
             <span className="text-xs font-bold uppercase tracking-wider text-teal-100">Ticket moyen restaurant en 1 minute</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold mb-4">
-            La formule essentielle a retenir
+            La formule essentielle à retenir
           </h2>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 space-y-3 font-mono text-sm sm:text-base">
             <div>
               <strong className="text-white">Ticket moyen (EUR)</strong> = CA HT / Nombre de couverts servis
             </div>
             <div>
-              <strong className="text-white">Indicateur d'evolution</strong> = (Ticket N - Ticket N-1) / Ticket N-1 x 100
+              <strong className="text-white">Indicateur d'évolution</strong> = (Ticket N - Ticket N-1) / Ticket N-1 x 100
             </div>
           </div>
           <p className="mt-4 text-teal-50 text-sm">
             Toujours diviser par les <strong className="text-white">couverts</strong>, jamais par les additions.
-            Calculer separement midi et soir (ecart 30-45 %). Comparer en HT pour benchmarker.
+            Calculer séparément midi et soir (écart 30-45 %). Comparer en HT pour benchmarker.
           </p>
         </div>
 
@@ -184,17 +184,17 @@ export default function BlogTicketMoyen() {
           </h2>
           <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
-              { href: '#definition', label: 'Definition et calcul du ticket moyen restaurant' },
+              { href: '#definition', label: 'Définition et calcul du ticket moyen restaurant' },
               { href: '#actionnable', label: "Pourquoi c'est plus actionnable que le volume" },
               { href: '#impact', label: "Calcul d'impact d'une hausse de 3 EUR (cas pratique)" },
               { href: '#benchmarks', label: 'Benchmarks 2026 par type de restaurant' },
-              { href: '#howto', label: 'Comment augmenter son ticket moyen en 6 etapes' },
-              { href: '#techniques', label: 'Les 10 techniques d\'upselling a deployer' },
+              { href: '#howto', label: 'Comment augmenter son ticket moyen en 6 étapes' },
+              { href: '#techniques', label: 'Les 10 techniques d\'upselling à déployer' },
               { href: '#tableau', label: 'Tableau d\'impact selon volume de couverts' },
-              { href: '#kpi', label: 'KPIs et indicateurs a suivre semaine apres semaine' },
-              { href: '#ethique', label: 'Upselling ethique : la frontiere a ne pas franchir' },
+              { href: '#kpi', label: 'KPIs et indicateurs à suivre semaine après semaine' },
+              { href: '#ethique', label: 'Upselling éthique : la frontière à ne pas franchir' },
               { href: '#outils', label: 'Outils digitaux pour piloter son ticket moyen' },
-              { href: '#faq', label: 'Questions frequentes' },
+              { href: '#faq', label: 'Questions fréquentes' },
             ].map((item, i) => (
               <li key={i}>
                 <a href={item.href} className="hover:text-teal-600 transition-colors flex items-start gap-2">
@@ -211,27 +211,27 @@ export default function BlogTicketMoyen() {
         {/* Intro */}
         <div className="prose-content mb-14">
           <p>
-            Beaucoup de restaurateurs cherchent a remplir davantage la salle (plus dur, plus couteux
-            en marketing) plutot qu'a valoriser chaque client deja present. Pourtant, augmenter le
-            <strong> ticket moyen restaurant </strong>de 3-5 EUR genere des revenus quasi-purs : ces
-            euros supplementaires arrivent sur des couverts deja acquis, sur des charges fixes deja
-            payees (loyer, salaires de structure, energie). La marge nette additionnelle est donc
+            Beaucoup de restaurateurs cherchent à remplir davantage la salle (plus dur, plus coûteux
+            en marketing) plutôt qu'à valoriser chaque client déjà présent. Pourtant, augmenter le
+            <strong> ticket moyen restaurant </strong>de 3-5 EUR génère des revenus quasi-purs : ces
+            euros supplémentaires arrivent sur des couverts déjà acquis, sur des charges fixes déjà
+            payées (loyer, salaires de structure, énergie). La marge nette additionnelle est donc
             spectaculaire : <strong>70-80 % du delta</strong> de CA tombe en marge nette, contre 8-12 %
             en moyenne sur un CA classique.
           </p>
           <p>
-            Selon les donnees Fiducial 2025, le ticket moyen national en restauration commerciale est
-            de 24,80 EUR HT au dejeuner et 36,40 EUR HT au diner. Pourtant, ces chiffres masquent une
-            disparite enorme : entre un restaurant peu performant (18 EUR/dejeuner) et un restaurant
-            optimise (32 EUR/dejeuner), l'ecart est de <strong>14 EUR par couvert</strong>. Sur 1 000
-            couverts mensuels, c'est 168 000 EUR de CA annuel d'ecart, pour des charges fixes
+            Selon les données Fiducial 2025, le ticket moyen national en restauration commerciale est
+            de 24,80 EUR HT au déjeuner et 36,40 EUR HT au dîner. Pourtant, ces chiffres masquent une
+            disparité énorme : entre un restaurant peu performant (18 EUR/déjeuner) et un restaurant
+            optimisé (32 EUR/déjeuner), l'écart est de <strong>14 EUR par couvert</strong>. Sur 1 000
+            couverts mensuels, c'est 168 000 EUR de CA annuel d'écart, pour des charges fixes
             quasi-identiques.
           </p>
           <p>
             Dans ce guide, vous trouverez la formule exacte de calcul, les benchmarks par segment,
-            une methode HowTo en 6 etapes, les <strong>10 techniques d'upselling</strong> les plus
-            efficaces (avec leur impact chiffre), un cas pratique +50 400 EUR/an, et la frontiere
-            ethique a ne pas franchir. Pour aller plus loin, consultez aussi notre guide du
+            une méthode HowTo en 6 étapes, les <strong>10 techniques d'upselling</strong> les plus
+            efficaces (avec leur impact chiffré), un cas pratique +50 400 EUR/an, et la frontière
+            éthique à ne pas franchir. Pour aller plus loin, consultez aussi notre guide du
             <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">calcul de marge restaurant</Link>
             et notre article sur le
             <Link to="/blog/coefficient-multiplicateur" className="text-teal-700 underline hover:text-teal-800 ml-1">coefficient multiplicateur</Link>.
@@ -241,14 +241,14 @@ export default function BlogTicketMoyen() {
         {/* Section 1 - Définition */}
         <section id="definition" className="mb-16">
           <SectionHeading icon={<Calculator className="w-6 h-6" />} number="1">
-            Definition et calcul du ticket moyen restaurant
+            Définition et calcul du ticket moyen restaurant
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Le <strong>ticket moyen restaurant</strong> est l'indicateur cle de la valorisation
+              Le <strong>ticket moyen restaurant</strong> est l'indicateur clé de la valorisation
               de chaque client. Il se distingue du panier moyen (qui peut englober plusieurs personnes
-              sur une meme addition) et constitue le KPI le plus surveille apres le chiffre d'affaires
+              sur une même addition) et constitue le KPI le plus surveillé après le chiffre d'affaires
               global.
             </p>
           </div>
@@ -263,36 +263,36 @@ export default function BlogTicketMoyen() {
             </div>
             <p className="text-sm text-mono-400 leading-relaxed">
               Toujours diviser par le <strong>nombre de couverts</strong>, jamais par le nombre
-              d'additions. Une table de 4 represente 4 couverts (un par personne) et non 1 (l'addition).
-              Le ticket moyen midi est typiquement <strong>30-45 % inferieur</strong> au soir :
-              suivez-les separement pour piloter correctement.
+              d'additions. Une table de 4 représente 4 couverts (un par personne) et non 1 (l'addition).
+              Le ticket moyen midi est typiquement <strong>30-45 % inférieur</strong> au soir :
+              suivez-les séparément pour piloter correctement.
             </p>
           </div>
 
           <div className="prose-content mt-8">
             <h3 className="text-xl font-bold text-mono-100 mb-3">HT ou TTC ?</h3>
             <p>
-              Pour comparer entre etablissements, utilisez le ticket moyen <strong>HT</strong> car les
-              taux de TVA different selon les boissons (5,5 % sur eau plate, 10 % sur plat sur place,
-              20 % sur alcools). Pour vos analyses internes (suivi semaine vs semaine du meme
-              etablissement), le TTC est plus simple. Choisissez une convention et tenez-la.
+              Pour comparer entre établissements, utilisez le ticket moyen <strong>HT</strong> car les
+              taux de TVA diffèrent selon les boissons (5,5 % sur eau plate, 10 % sur plat sur place,
+              20 % sur alcools). Pour vos analyses internes (suivi semaine vs semaine du même
+              établissement), le TTC est plus simple. Choisissez une convention et tenez-la.
             </p>
-            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-6">Variantes utiles a calculer</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-6">Variantes utiles à calculer</h3>
             <ul className="list-disc list-inside space-y-2 text-mono-350">
-              <li><strong>Ticket moyen par service</strong> : midi vs soir, ecart typique 30-45 %</li>
-              <li><strong>Ticket moyen par jour</strong> : lundi vs samedi, ecart typique 20-40 %</li>
+              <li><strong>Ticket moyen par service</strong> : midi vs soir, écart typique 30-45 %</li>
+              <li><strong>Ticket moyen par jour</strong> : lundi vs samedi, écart typique 20-40 %</li>
               <li><strong>Ticket moyen par segment</strong> : sur place vs livraison, terrasse vs salle</li>
-              <li><strong>Ticket moyen par categorie de plat</strong> : entree, plat, dessert, boisson</li>
+              <li><strong>Ticket moyen par catégorie de plat</strong> : entrée, plat, dessert, boisson</li>
               <li><strong>Ratio boissons/CA total</strong> : viser 25-35 % (en-dessous = sous-exploitation)</li>
               <li><strong>Taux de prise dessert</strong> : viser 55-65 % (en-dessous = potentiel inexploité)</li>
             </ul>
           </div>
 
           <Callout type="info">
-            <strong>Le piege classique :</strong> calculer un ticket moyen global qui melange midi
-            (deque rapide a 20 EUR) et soir (carte completee a 45 EUR). Vous obtenez un chiffre flou
-            qui masque les vrais problemes. Si votre soir tombe de 45 a 40 EUR mais que le midi grimpe
-            de 20 a 25 EUR, votre moyenne ne bouge pas, mais vous avez perdu 5 EUR de marge sur le
+            <strong>Le piège classique :</strong> calculer un ticket moyen global qui mélange midi
+            (deque rapide à 20 EUR) et soir (carte complétée à 45 EUR). Vous obtenez un chiffre flou
+            qui masque les vrais problèmes. Si votre soir tombe de 45 à 40 EUR mais que le midi grimpe
+            de 20 à 25 EUR, votre moyenne ne bouge pas, mais vous avez perdu 5 EUR de marge sur le
             service le plus rentable. Toujours segmenter.
           </Callout>
         </section>
@@ -307,7 +307,7 @@ export default function BlogTicketMoyen() {
             <p>
               Pour augmenter son chiffre d'affaires, un restaurateur a deux leviers principaux :
               augmenter le volume (plus de couverts) ou augmenter le ticket moyen (plus de chiffre
-              par couvert). Le second est bien plus rentable et plus rapide a deployer.
+              par couvert). Le second est bien plus rentable et plus rapide à déployer.
             </p>
           </div>
 
@@ -318,11 +318,11 @@ export default function BlogTicketMoyen() {
                 <h3 className="font-bold text-red-900">Augmenter le volume (+10 %)</h3>
               </div>
               <ul className="space-y-2 text-sm text-red-800">
-                <li>Cout marketing eleve (acquisition client)</li>
-                <li>Charges variables proportionnelles (matieres, personnel extra)</li>
-                <li>Risque de saturation cuisine et qualite</li>
-                <li>Investissement possible en capacite</li>
-                <li>Delai de retour : 6-12 mois</li>
+                <li>Coût marketing élevé (acquisition client)</li>
+                <li>Charges variables proportionnelles (matières, personnel extra)</li>
+                <li>Risque de saturation cuisine et qualité</li>
+                <li>Investissement possible en capacité</li>
+                <li>Délai de retour : 6-12 mois</li>
                 <li>Marge nette additionnelle : 8-12 % du delta CA</li>
               </ul>
             </div>
@@ -332,23 +332,23 @@ export default function BlogTicketMoyen() {
                 <h3 className="font-bold text-emerald-900">Augmenter le ticket moyen (+10 %)</h3>
               </div>
               <ul className="space-y-2 text-sm text-emerald-800">
-                <li>Cout marketing nul (clients deja acquis)</li>
-                <li>Charges variables limitees au food cost (less than 35 %)</li>
-                <li>Aucun stress operationnel supplementaire</li>
-                <li>Aucun investissement (juste formation equipe)</li>
-                <li>Delai de retour : 4-8 semaines</li>
+                <li>Coût marketing nul (clients déjà acquis)</li>
+                <li>Charges variables limitées au food cost (less than 35 %)</li>
+                <li>Aucun stress opérationnel supplémentaire</li>
+                <li>Aucun investissement (juste formation équipe)</li>
+                <li>Délai de retour : 4-8 semaines</li>
                 <li><strong>Marge nette additionnelle : 65-75 % du delta CA</strong></li>
               </ul>
             </div>
           </div>
 
           <div className="border-l-4 border-emerald-400 bg-emerald-50 rounded-r-xl p-5 mt-6">
-            <p className="text-sm font-bold text-emerald-700 mb-1">La regle d'or</p>
+            <p className="text-sm font-bold text-emerald-700 mb-1">La règle d'or</p>
             <p className="text-sm text-emerald-700">
-              Pour un restaurant qui tourne deja bien (taux de remplissage greater than 65 %), augmenter
-              le ticket est statistiquement <strong>3 a 5 fois plus rentable</strong> que d'augmenter
-              le volume. C'est pourquoi les chaines pro (Big Mama, Cojean, Big Fernand) investissent
-              massivement dans l'upselling avant de chercher a multiplier les couverts.
+              Pour un restaurant qui tourne déjà bien (taux de remplissage greater than 65 %), augmenter
+              le ticket est statistiquement <strong>3 à 5 fois plus rentable</strong> que d'augmenter
+              le volume. C'est pourquoi les chaînes pro (Big Mama, Cojean, Big Fernand) investissent
+              massivement dans l'upselling avant de chercher à multiplier les couverts.
             </p>
           </div>
         </section>
@@ -361,7 +361,7 @@ export default function BlogTicketMoyen() {
 
           <div className="prose-content">
             <p>
-              Mettons des chiffres reels sur la table avec un cas concret : <strong>Le Marais</strong>,
+              Mettons des chiffres réels sur la table avec un cas concret : <strong>Le Marais</strong>,
               brasserie parisienne de 60 couverts, ouverte 6 jours sur 7, midi et soir.
             </p>
           </div>
@@ -382,7 +382,7 @@ export default function BlogTicketMoyen() {
               ))}
             </div>
 
-            <h3 className="font-bold text-mono-100 mb-4 text-lg pt-4 border-t border-mono-900">Apres deploiement upselling : +3 EUR de ticket</h3>
+            <h3 className="font-bold text-mono-100 mb-4 text-lg pt-4 border-t border-mono-900">Après déploiement upselling : +3 EUR de ticket</h3>
             <div className="space-y-3 mb-6">
               <div className="bg-white rounded-xl p-4 border border-mono-900 flex justify-between items-center">
                 <span className="text-mono-100">Nouveau ticket moyen</span>
@@ -401,12 +401,12 @@ export default function BlogTicketMoyen() {
                 <span className="text-red-700">-12 960 EUR</span>
               </div>
               <div className="bg-white rounded-xl p-4 border border-mono-900 flex justify-between items-center">
-                <span className="text-mono-100">Cout personnel additionnel</span>
-                <span className="text-red-700">0 EUR (deja en poste)</span>
+                <span className="text-mono-100">Coût personnel additionnel</span>
+                <span className="text-red-700">0 EUR (déjà en poste)</span>
               </div>
               <div className="bg-white rounded-xl p-4 border border-mono-900 flex justify-between items-center">
                 <span className="text-mono-100">Charges fixes additionnelles</span>
-                <span className="text-red-700">0 EUR (deja payees)</span>
+                <span className="text-red-700">0 EUR (déjà payées)</span>
               </div>
               <div className="bg-emerald-100 rounded-xl p-4 border border-emerald-300 flex justify-between items-center">
                 <span className="font-bold text-emerald-900">MARGE NETTE ANNUELLE ADDITIONNELLE</span>
@@ -417,7 +417,7 @@ export default function BlogTicketMoyen() {
             <p className="text-sm text-mono-400 leading-relaxed">
               <strong>Pour aller plus loin sur le volume :</strong> sur 2 000 couverts/mois (restaurant
               plus important), la marge nette additionnelle annuelle serait de +50 400 EUR. Sur 3 000
-              couverts, +75 600 EUR. C'est l'equivalent de 1 a 2 salaires charges, generes sans aucun
+              couverts, +75 600 EUR. C'est l'équivalent de 1 à 2 salaires charges, générés sans aucun
               investissement initial.
             </p>
           </div>
@@ -431,9 +431,9 @@ export default function BlogTicketMoyen() {
 
           <div className="prose-content">
             <p>
-              Voici les fourchettes de ticket moyen observees en France en 2026, sources Fiducial,
+              Voici les fourchettes de ticket moyen observées en France en 2026, sources Fiducial,
               GIRA Conseil. Ces chiffres sont en
-              HT, hors zone touristique premium ou ils peuvent etre majores de 15-25 %.
+              HT, hors zone touristique premium où ils peuvent être majorés de 15-25 %.
             </p>
           </div>
 
@@ -455,8 +455,8 @@ export default function BlogTicketMoyen() {
                   { type: 'Pizzeria assise', midi: '18-25 EUR', soir: '22-32 EUR', dessert: '38-48 %', boiss: '22-28 %' },
                   { type: 'Restaurant traditionnel', midi: '24-32 EUR', soir: '35-52 EUR', dessert: '60-70 %', boiss: '28-35 %' },
                   { type: 'Bistronomie', midi: '32-45 EUR', soir: '55-85 EUR', dessert: '70-80 %', boiss: '35-45 %' },
-                  { type: 'Sushi a la carte', midi: '28-40 EUR', soir: '38-65 EUR', dessert: '25-35 %', boiss: '20-28 %' },
-                  { type: 'Gastronomique 1 etoile', midi: '65-95 EUR', soir: '95-160 EUR', dessert: '85-95 %', boiss: '40-55 %' },
+                  { type: 'Sushi à la carte', midi: '28-40 EUR', soir: '38-65 EUR', dessert: '25-35 %', boiss: '20-28 %' },
+                  { type: 'Gastronomique 1 étoile', midi: '65-95 EUR', soir: '95-160 EUR', dessert: '85-95 %', boiss: '40-55 %' },
                   { type: 'Fast casual', midi: '12-18 EUR', soir: '14-22 EUR', dessert: '20-30 %', boiss: '25-32 %' },
                   { type: 'Coffee shop', midi: '8-15 EUR', soir: 'N/A', dessert: 'N/A', boiss: '60-75 %' },
                   { type: 'Food truck', midi: '10-16 EUR', soir: '12-20 EUR', dessert: '15-25 %', boiss: '20-28 %' },
@@ -474,23 +474,23 @@ export default function BlogTicketMoyen() {
           </div>
 
           <div className="prose-content mt-8">
-            <p><strong>Comment interpreter votre position :</strong></p>
+            <p><strong>Comment interpréter votre position :</strong></p>
             <ul className="list-disc list-inside space-y-2 text-mono-350 mt-4">
               <li>
-                <strong>Dans le bas de fourchette</strong> : potentiel d'amelioration evident,
+                <strong>Dans le bas de fourchette</strong> : potentiel d'amélioration évident,
                 appliquez les 10 techniques prioritairement.
               </li>
               <li>
                 <strong>Au milieu</strong> : situation correcte mais optimisable, focus sur 3-4
-                techniques alignees a votre positionnement.
+                techniques alignées à votre positionnement.
               </li>
               <li>
-                <strong>En haut de fourchette</strong> : vous etes au top de votre segment. Concentrez-vous
-                sur le menu engineering et la fidelisation.
+                <strong>En haut de fourchette</strong> : vous êtes au top de votre segment. Concentrez-vous
+                sur le menu engineering et la fidélisation.
               </li>
               <li>
-                <strong>Au-dela de la fourchette</strong> : verifiez que vos prix ne sont pas trop eleves
-                vs votre positionnement, sinon risque de perte de clientele.
+                <strong>Au-delà de la fourchette</strong> : vérifiez que vos prix ne sont pas trop élevés
+                vs votre positionnement, sinon risque de perte de clientèle.
               </li>
             </ul>
           </div>
@@ -499,13 +499,13 @@ export default function BlogTicketMoyen() {
         {/* Section 5 - HowTo */}
         <section id="howto" className="mb-16">
           <SectionHeading icon={<Target className="w-6 h-6" />} number="5">
-            Comment augmenter son ticket moyen en 6 etapes
+            Comment augmenter son ticket moyen en 6 étapes
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Voici la methode pas-a-pas pour deployer une strategie d'augmentation du ticket moyen
-              dans votre etablissement. Comptez 6 semaines pour les premiers resultats visibles,
+              Voici la méthode pas-à-pas pour déployer une stratégie d'augmentation du ticket moyen
+              dans votre établissement. Comptez 6 semaines pour les premiers résultats visibles,
               6 mois pour atteindre votre objectif.
             </p>
           </div>
@@ -514,27 +514,27 @@ export default function BlogTicketMoyen() {
             {[
               {
                 title: "Calculer votre ticket moyen actuel par segment",
-                body: "Sortez les donnees de votre POS sur 30 jours minimum. Calculez le ticket moyen global, puis par service (midi/soir), par jour de la semaine (lundi a dimanche), et par segment client (terrasse/salle, sur place/livraison). Identifiez vos points faibles : un mardi soir a 24 EUR alors que votre samedi est a 42 EUR signale un potentiel sous-exploite.",
+                body: "Sortez les données de votre POS sur 30 jours minimum. Calculez le ticket moyen global, puis par service (midi/soir), par jour de la semaine (lundi à dimanche), et par segment client (terrasse/salle, sur place/livraison). Identifiez vos points faibles : un mardi soir à 24 EUR alors que votre samedi est à 42 EUR signale un potentiel sous-exploité.",
               },
               {
                 title: "Benchmarker contre votre segment",
-                body: "Comparez vos chiffres aux fourchettes 2026 (tableau ci-dessus). Calculez l'ecart en EUR et en %. Un bistrot a 28 EUR midi (fourchette 22-32) est en milieu, un a 22 EUR est en bas. Quantifiez le potentiel theorique : si vous montez du bas vers le haut de votre fourchette, combien de CA additionnel ?",
+                body: "Comparez vos chiffres aux fourchettes 2026 (tableau ci-dessus). Calculez l'écart en EUR et en %. Un bistrot à 28 EUR midi (fourchette 22-32) est en milieu, un à 22 EUR est en bas. Quantifiez le potentiel théorique : si vous montez du bas vers le haut de votre fourchette, combien de CA additionnel ?",
               },
               {
                 title: "Analyser votre menu mix",
-                body: "Sortez le detail des ventes : combien de prises d'entree, de plat, de dessert, de boissons (et leur type). Calculez les taux : prise entree (cible 65-75 %), prise dessert (cible 55-65 %), nombre de boissons par couvert (cible 1,5-2,5). Reperez les categories sous-performantes. C'est la qui se trouvent vos leviers prioritaires.",
+                body: "Sortez le détail des ventes : combien de prises d'entrée, de plat, de dessert, de boissons (et leur type). Calculez les taux : prise entrée (cible 65-75 %), prise dessert (cible 55-65 %), nombre de boissons par couvert (cible 1,5-2,5). Repérez les catégories sous-performantes. C'est la qui se trouvent vos leviers prioritaires.",
               },
               {
-                title: "Choisir 3 techniques d'upselling adaptees",
-                body: "Selon votre analyse : ticket faible cause par boissons basses -- technique 1 (upselling carafe vers bouteille). Dessert sous-performant -- technique 7 (cafe et digestif systematiques). Faute de formule premium -- technique 5 (formule dejeuner premium). Choisissez 3 techniques, pas plus. Vouloir tout faire en meme temps fait echouer l'equipe.",
+                title: "Choisir 3 techniques d'upselling adaptées",
+                body: "Selon votre analyse : ticket faible causé par boissons basses -- technique 1 (upselling carafe vers bouteille). Dessert sous-performant -- technique 7 (café et digestif systématiques). Faute de formule premium -- technique 5 (formule déjeuner premium). Choisissez 3 techniques, pas plus. Vouloir tout faire en même temps fait échouer l'équipe.",
               },
               {
-                title: "Former l'equipe : scripts, roleplays, incentives",
-                body: "Quatre sessions de 2 heures sur 2 mois : connaissance produits, scripts upselling (avec mots exacts), gestion d'objections, lecture de la table. Faites des roleplays par binomes. Mettez en place un incentive financier : 1 % du delta de CA upselle reverse a l'equipe (a partager mensuellement). Sans incentive, motivation tombe.",
+                title: "Former l'équipe : scripts, roleplays, incentives",
+                body: "Quatre sessions de 2 heures sur 2 mois : connaissance produits, scripts upselling (avec mots exacts), gestion d'objections, lecture de la table. Faites des roleplays par binomes. Mettez en place un incentive financier : 1 % du delta de CA upsellé reversé à l'équipe (à partager mensuellement). Sans incentive, motivation tombe.",
               },
               {
-                title: "Mesurer pendant 4 semaines, iterer, deployer plus",
-                body: "Suivez chaque semaine vos KPIs (ticket moyen midi/soir, taux de prise, ratio boissons). Identifiez ce qui marche et ce qui ne marche pas. Apres 4 semaines de stabilisation, deployez 2-3 nouvelles techniques. Iterez par cycles de 4 semaines pendant 6 mois. Objectif realiste : +15-25 % de ticket moyen en 6 mois.",
+                title: "Mesurer pendant 4 semaines, itérer, déployer plus",
+                body: "Suivez chaque semaine vos KPIs (ticket moyen midi/soir, taux de prise, ratio boissons). Identifiez ce qui marche et ce qui ne marche pas. Après 4 semaines de stabilisation, déployez 2-3 nouvelles techniques. Itérez par cycles de 4 semaines pendant 6 mois. Objectif réaliste : +15-25 % de ticket moyen en 6 mois.",
               },
             ].map((step, i) => (
               <li key={i} className="bg-white border border-mono-900 rounded-2xl p-6 sm:p-7 flex gap-5">
@@ -553,28 +553,28 @@ export default function BlogTicketMoyen() {
         {/* Section 6 - 10 techniques */}
         <section id="techniques" className="mb-16">
           <SectionHeading icon={<Wine className="w-6 h-6" />} number="6">
-            Les 10 techniques d'upselling a deployer
+            Les 10 techniques d'upselling à déployer
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Voici les 10 techniques les plus efficaces, classees par impact moyen sur le ticket
-              (decroissant). Chacune indique l'impact typique observe sur.
+              Voici les 10 techniques les plus efficaces, classées par impact moyen sur le ticket
+              (décroissant). Chacune indique l'impact typique observé sur.
             </p>
           </div>
 
           <div className="space-y-5 mt-8">
             {[
-              { num: 1, icon: <Wine className="w-4 h-4 text-purple-600" />, title: "Upselling boissons : carafe vers bouteille", impact: "+1,50 a +3 EUR/couvert", desc: '"Une grande bouteille pour la table ?" - Une bouteille a 32 EUR = meme CA que 4 verres mais marge superieure et reincitation a recommander. Script type : "Pour votre table, je vous suggere [nom du vin], qui se marie tres bien avec [plat commande]." Toujours nommer le vin precisement.' },
-              { num: 2, icon: <Utensils className="w-4 h-4 text-purple-600" />, title: "Suggerer entrees et desserts systematiquement", impact: "+4 a +7 EUR/couvert", desc: 'La regle des 70 % : viser 70 % de prise d\'entree et 60 % de prise de dessert. Approche : "Vous prendrez peut-etre une entree avec votre plat ?" + suggestion specifique adaptee. Pour le dessert : presenter le chariot ou apporter physiquement la carte des desserts (taux +35 %).' },
-              { num: 3, icon: <Star className="w-4 h-4 text-purple-600" />, title: 'Construire une formule "offre complete"', impact: "+6 a +12 EUR/couvert", desc: "Plat 22 EUR + dessert 8 EUR + cafe 3 EUR = 33 EUR a la carte -- formule a 32 EUR. L'addition gonfle (vs juste plat), food cost incremental faible. Le client a la sensation d'avoir economise 1 EUR, vous gagnez 10 EUR de CA supplementaire vs prise plat seul." },
-              { num: 4, icon: <Wine className="w-4 h-4 text-purple-600" />, title: "Carte des vins intelligente", impact: "+3 a +6 EUR/couvert", desc: "3 niveaux de prix (entree 22-28 EUR, milieu 35-48 EUR, haut 60-90 EUR), accords mets-vins suggeres par plat, vins au verre de qualite (15cl a 8-12 EUR), 3 coups de coeur du chef. Eviter les cartes trop longues qui paralysent le choix (effet decision fatigue)." },
-              { num: 5, icon: <DollarSign className="w-4 h-4 text-purple-600" />, title: "Formule dejeuner premium", impact: "+4 a +7 EUR/couvert midi", desc: 'Ajouter une formule 24-29 EUR a cote du 15-19 EUR habituel. Effet "ancrage" : 30-40 % des clients basculent vers la formule superieure (entree + plat + dessert + cafe + verre de vin). La formule basse devient le minimum, pas le standard. Booste mecaniquement le ticket midi.' },
-              { num: 6, icon: <Sparkles className="w-4 h-4 text-purple-600" />, title: "Plats du jour a marge elevee", impact: "+1 a +2 EUR de marge/couvert", desc: 'Annonce oralement par le serveur a l\'arrivee, taux de prise 35-50 % (effet effort de recherche economise + suggestion implicite). Choisissez-le pour sa marge brute (food cost inferieur a 25 %), pas necessairement pour son prix de vente. C\'est la votre meilleur generateur de marge.' },
-              { num: 7, icon: <Coffee className="w-4 h-4 text-purple-600" />, title: "Cafe et digestif systematiques", impact: "+3 a +6 EUR/couvert", desc: "Marges 80-92 % - les categories les plus rentables de la restauration. Cafe avec mignardise = ticket 5-6 EUR pour 80 centimes de food cost. Digestif (grappa, armagnac, calvados) = 8-12 EUR pour 1,50 EUR de cout. Script type : 'Un cafe et eventuellement un petit digestif pour cloturer ?'" },
-              { num: 8, icon: <BookIcon className="w-4 h-4 text-purple-600" />, title: "Design de carte (menu engineering)", impact: "+2 a +4 EUR/couvert", desc: 'Lecture en Z (regard naturel haut-gauche puis bas-droite), plats Stars positionnes dans ces zones, prix sans le signe EUR (38 plutot que 38 EUR : reduction de l\'effet \"prix\"), descriptions de 12-18 mots emotionnelles (+28 % de prise sur le meme plat). Eviter les visuels d\'argent (additions stylisees).' },
-              { num: 9, icon: <GraduationCap className="w-4 h-4 text-purple-600" />, title: "Former intensivement la salle", impact: "+3 a +6 EUR/couvert", desc: '4 sessions de 2 heures : produits (chaque plat goute par toute l\'equipe), scripts upselling, vins (rudiments de degustation et accords), gestion d\'objections. Incentive sur ventes additionnelles (1-3 % du delta CA). Roleplays mensuels obligatoires. C\'est l\'investissement le plus rentable.' },
-              { num: 10, icon: <Star className="w-4 h-4 text-purple-600" />, title: "Offres speciales premium", impact: "+1 a +3 EUR/couvert moyen", desc: 'Plateau anniversaire (45 EUR), magnum du chef (130 EUR a partager a 6), soiree accord mets-vins (65 EUR), menu degustation (48 EUR). Booste le panier moyen sur creneaux specifiques (couples, anniversaires, groupes). Communique via reseaux sociaux et site web.' },
+              { num: 1, icon: <Wine className="w-4 h-4 text-purple-600" />, title: "Upselling boissons : carafe vers bouteille", impact: "+1,50 à +3 EUR/couvert", desc: '"Une grande bouteille pour la table ?" - Une bouteille à 32 EUR = même CA que 4 verres mais marge supérieure et reincitation à recommander. Script type : "Pour votre table, je vous suggère [nom du vin], qui se marie très bien avec [plat commandé]." Toujours nommer le vin précisément.' },
+              { num: 2, icon: <Utensils className="w-4 h-4 text-purple-600" />, title: "Suggérer entrées et desserts systématiquement", impact: "+4 à +7 EUR/couvert", desc: 'La règle des 70 % : viser 70 % de prise d\'entrée et 60 % de prise de dessert. Approche : "Vous prendrez peut-être une entrée avec votre plat ?" + suggestion spécifique adaptée. Pour le dessert : présenter le chariot ou apporter physiquement la carte des desserts (taux +35 %).' },
+              { num: 3, icon: <Star className="w-4 h-4 text-purple-600" />, title: 'Construire une formule "offre complète"', impact: "+6 à +12 EUR/couvert", desc: "Plat 22 EUR + dessert 8 EUR + café 3 EUR = 33 EUR à la carte -- formule à 32 EUR. L'addition gonfle (vs juste plat), food cost incremental faible. Le client a la sensation d'avoir économisé 1 EUR, vous gagnez 10 EUR de CA supplémentaire vs prise plat seul." },
+              { num: 4, icon: <Wine className="w-4 h-4 text-purple-600" />, title: "Carte des vins intelligente", impact: "+3 à +6 EUR/couvert", desc: "3 niveaux de prix (entrée 22-28 EUR, milieu 35-48 EUR, haut 60-90 EUR), accords mets-vins suggérés par plat, vins au verre de qualité (15cl à 8-12 EUR), 3 coups de coeur du chef. Éviter les cartes trop longues qui paralysent le choix (effet décision fatigue)." },
+              { num: 5, icon: <DollarSign className="w-4 h-4 text-purple-600" />, title: "Formule déjeuner premium", impact: "+4 à +7 EUR/couvert midi", desc: 'Ajouter une formule 24-29 EUR à côté du 15-19 EUR habituel. Effet "ancrage" : 30-40 % des clients basculent vers la formule supérieure (entrée + plat + dessert + café + verre de vin). La formule basse devient le minimum, pas le standard. Booste mécaniquement le ticket midi.' },
+              { num: 6, icon: <Sparkles className="w-4 h-4 text-purple-600" />, title: "Plats du jour à marge élevée", impact: "+1 à +2 EUR de marge/couvert", desc: 'Annoncé oralement par le serveur à l\'arrivée, taux de prise 35-50 % (effet effort de recherche économisé + suggestion implicite). Choisissez-le pour sa marge brute (food cost inférieur à 25 %), pas nécessairement pour son prix de vente. C\'est la votre meilleur générateur de marge.' },
+              { num: 7, icon: <Coffee className="w-4 h-4 text-purple-600" />, title: "Café et digestif systématiques", impact: "+3 à +6 EUR/couvert", desc: "Marges 80-92 % - les catégories les plus rentables de la restauration. Café avec mignardise = ticket 5-6 EUR pour 80 centimes de food cost. Digestif (grappa, armagnac, calvados) = 8-12 EUR pour 1,50 EUR de coût. Script type : 'Un café et éventuellement un petit digestif pour clôturer ?'" },
+              { num: 8, icon: <BookIcon className="w-4 h-4 text-purple-600" />, title: "Design de carte (menu engineering)", impact: "+2 à +4 EUR/couvert", desc: 'Lecture en Z (regard naturel haut-gauche puis bas-droite), plats Stars positionnés dans ces zones, prix sans le signe EUR (38 plutôt que 38 EUR : réduction de l\'effet \"prix\"), descriptions de 12-18 mots émotionnelles (+28 % de prise sur le même plat). Éviter les visuels d\'argent (additions stylisées).' },
+              { num: 9, icon: <GraduationCap className="w-4 h-4 text-purple-600" />, title: "Former intensivement la salle", impact: "+3 à +6 EUR/couvert", desc: '4 sessions de 2 heures : produits (chaque plat goûté par toute l\'équipe), scripts upselling, vins (rudiments de dégustation et accords), gestion d\'objections. Incentive sur ventes additionnelles (1-3 % du delta CA). Roleplays mensuels obligatoires. C\'est l\'investissement le plus rentable.' },
+              { num: 10, icon: <Star className="w-4 h-4 text-purple-600" />, title: "Offres spéciales premium", impact: "+1 à +3 EUR/couvert moyen", desc: 'Plateau anniversaire (45 EUR), magnum du chef (130 EUR à partager à 6), soirée accord mets-vins (65 EUR), menu dégustation (48 EUR). Booste le panier moyen sur créneaux spécifiques (couples, anniversaires, groupes). Communique via réseaux sociaux et site web.' },
             ].map((tech) => (
               <div key={tech.num} className="border border-mono-900 rounded-xl p-5 bg-white">
                 <div className="flex items-start gap-3 mb-2">
@@ -590,9 +590,9 @@ export default function BlogTicketMoyen() {
           </div>
 
           <Callout type="info">
-            <strong>Ne deployez pas tout en meme temps :</strong> commencez par 2-3 techniques alignees
-            a votre diagnostic initial. Stabilisez sur 4-6 semaines, mesurez l'impact, puis ajoutez
-            d'autres techniques. Vouloir tout faire d'un coup epuise l'equipe et brouille les KPIs.
+            <strong>Ne déployez pas tout en même temps :</strong> commencez par 2-3 techniques alignées
+            à votre diagnostic initial. Stabilisez sur 4-6 semaines, mesurez l'impact, puis ajoutez
+            d'autres techniques. Vouloir tout faire d'un coup épuise l'équipe et brouille les KPIs.
           </Callout>
         </section>
 
@@ -604,9 +604,9 @@ export default function BlogTicketMoyen() {
 
           <div className="prose-content">
             <p>
-              Combien generera concretement une hausse de votre ticket moyen ? Voici la projection
-              en marge nette additionnelle annuelle (food cost incremental hypothese 30 %, charges
-              fixes deja absorbees).
+              Combien générera concrètement une hausse de votre ticket moyen ? Voici la projection
+              en marge nette additionnelle annuelle (food cost incremental hypothèse 30 %, charges
+              fixes déjà absorbées).
             </p>
           </div>
 
@@ -645,11 +645,11 @@ export default function BlogTicketMoyen() {
 
           <div className="prose-content mt-8">
             <p>
-              Un restaurant a 1 200 couverts/mois qui reussit +5 EUR de ticket genere
-              <strong> 50 400 EUR de marge nette annuelle additionnelle</strong>. C'est l'equivalent
-              de 1,5 salaire charge, sans cout d'acquisition, sans investissement. Multiplie par
+              Un restaurant à 1 200 couverts/mois qui réussit +5 EUR de ticket génère
+              <strong> 50 400 EUR de marge nette annuelle additionnelle</strong>. C'est l'équivalent
+              de 1,5 salaire charge, sans coût d'acquisition, sans investissement. Multiplié par
               5-10 ans d'exploitation, c'est entre 252 000 EUR et 504 000 EUR de marge nette qui
-              entrent dans votre poche grace a une discipline operationnelle sur l'upselling.
+              entrent dans votre poche grâce à une discipline opérationnelle sur l'upselling.
             </p>
           </div>
         </section>
@@ -657,13 +657,13 @@ export default function BlogTicketMoyen() {
         {/* Section 8 - KPIs */}
         <section id="kpi" className="mb-16">
           <SectionHeading icon={<BarChart3 className="w-6 h-6" />} number="8">
-            KPIs et indicateurs a suivre semaine apres semaine
+            KPIs et indicateurs à suivre semaine après semaine
           </SectionHeading>
 
           <div className="prose-content">
             <p>
               Pour piloter efficacement, suivez ces 10 KPIs chaque semaine. Ils donnent une vue
-              360 degres sur votre ticket et permettent d'identifier rapidement les derives.
+              360 degrés sur votre ticket et permettent d'identifier rapidement les dérives.
             </p>
           </div>
 
@@ -671,12 +671,12 @@ export default function BlogTicketMoyen() {
             {[
               { kpi: 'Ticket moyen midi (HT)', cible: 'Selon segment', frequence: 'Hebdo' },
               { kpi: 'Ticket moyen soir (HT)', cible: 'Selon segment', frequence: 'Hebdo' },
-              { kpi: 'Taux de prise entree', cible: '65-75 %', frequence: 'Hebdo' },
+              { kpi: 'Taux de prise entrée', cible: '65-75 %', frequence: 'Hebdo' },
               { kpi: 'Taux de prise dessert', cible: '55-65 %', frequence: 'Hebdo' },
               { kpi: 'Nombre de boissons / couvert', cible: '1,5 - 2,5', frequence: 'Hebdo' },
               { kpi: 'Ratio boissons / CA total', cible: '28-38 %', frequence: 'Mensuel' },
               { kpi: 'Taux de prise formule premium', cible: '> 30 %', frequence: 'Hebdo' },
-              { kpi: 'Taux de prise cafe + digestif', cible: '45-55 %', frequence: 'Hebdo' },
+              { kpi: 'Taux de prise café + digestif', cible: '45-55 %', frequence: 'Hebdo' },
               { kpi: 'Taux de retour client (90 jours)', cible: '> 35 %', frequence: 'Mensuel' },
               { kpi: 'Note moyenne avis en ligne', cible: '> 4,3 sur 5', frequence: 'Mensuel' },
             ].map((item, i) => (
@@ -691,25 +691,25 @@ export default function BlogTicketMoyen() {
           </div>
 
           <Callout type="warning">
-            <strong>L'indicateur a ne JAMAIS sacrifier : taux de retour client.</strong> Si votre
+            <strong>L'indicateur à ne JAMAIS sacrifier : taux de retour client.</strong> Si votre
             ticket moyen monte mais que le taux de retour baisse, vous avez franchi la ligne de
-            l'upselling agressif. C'est un signal d'alarme. Stabilisez immediatement et reformez
-            l'equipe sur les principes ethiques.
+            l'upselling agressif. C'est un signal d'alarme. Stabilisez immédiatement et réformez
+            l'équipe sur les principes éthiques.
           </Callout>
         </section>
 
         {/* Section 9 - Ethique */}
         <section id="ethique" className="mb-16">
           <SectionHeading icon={<Shield className="w-6 h-6" />} number="9">
-            Upselling ethique : la frontiere a ne pas franchir
+            Upselling éthique : la frontière à ne pas franchir
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              L'upselling agressif detruit la fidelisation. Un client qui sort en ayant l'impression
-              qu'on lui a "vendu" plutot que servi ne revient pas. La frontiere entre suggestion et
-              forcage est subtile mais cruciale : c'est elle qui differencie un service attentionne
-              d'un piege commercial.
+              L'upselling agressif détruit la fidélisation. Un client qui sort en ayant l'impression
+              qu'on lui a "vendu" plutôt que servi ne revient pas. La frontière entre suggestion et
+              forçage est subtile mais cruciale : c'est elle qui différencie un service attentionné
+              d'un piège commercial.
             </p>
           </div>
 
@@ -732,12 +732,12 @@ export default function BlogTicketMoyen() {
           </div>
 
           <div className="border-l-4 border-rose-400 bg-rose-50 rounded-r-xl p-5 mt-6">
-            <p className="text-sm font-bold text-rose-700 mb-2">Le KPI ethique : le taux de retour client</p>
+            <p className="text-sm font-bold text-rose-700 mb-2">Le KPI éthique : le taux de retour client</p>
             <p className="text-sm text-rose-700">
               Un bon restaurant maintient un taux de retour client (clients qui reviennent dans les
               90 jours) <strong>supérieur à 35 %</strong> tout en faisant grimper son ticket moyen.
               Si vous voyez le ticket monter mais le retour client chuter, vous avez franchi la ligne.
-              Stop immediat, retour aux fondamentaux ethiques, et reformation de l'equipe.
+              Stop immédiat, retour aux fondamentaux éthiques, et reformation de l'équipe.
             </p>
           </div>
         </section>
@@ -750,20 +750,20 @@ export default function BlogTicketMoyen() {
 
           <div className="prose-content">
             <p>
-              Le pilotage manuel a ses limites. Un outil de gestion automatise comme RestauMargin
-              connecte a votre POS calcule en temps reel votre ticket moyen, vos taux de prise par
-              categorie, et vous alerte sur les derives. C'est un copilote indispensable pour
-              progresser sur la duree.
+              Le pilotage manuel a ses limites. Un outil de gestion automatisé comme RestauMargin
+              connecté à votre POS calcule en temps réel votre ticket moyen, vos taux de prise par
+              catégorie, et vous alerte sur les dérives. C'est un copilote indispensable pour
+              progresser sur la durée.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4 mt-8">
             {[
-              { icon: <BarChart3 className="w-5 h-5 text-teal-600" />, title: 'Dashboard ticket moyen', desc: 'Suivi en temps reel midi/soir/semaine, evolution sur 12 mois, comparaison N vs N-1.' },
-              { icon: <Target className="w-5 h-5 text-teal-600" />, title: 'Analyse menu mix', desc: 'Taux de prise par categorie et par plat, identification automatique des Stars / Puzzles / Dogs.' },
-              { icon: <Wine className="w-5 h-5 text-teal-600" />, title: 'Suivi du ratio boissons', desc: 'Visualisation immediate du % boissons sur CA total, par service, par jour de semaine.' },
-              { icon: <Users className="w-5 h-5 text-teal-600" />, title: 'Performance par serveur', desc: 'Ticket moyen genere par membre d\'equipe, pour identifier les top performers en upselling.' },
-              { icon: <AlertTriangle className="w-5 h-5 text-teal-600" />, title: 'Alertes derives', desc: 'Notifications si le ticket moyen chute de plus de 5 % sur une semaine vs la moyenne historique.' },
+              { icon: <BarChart3 className="w-5 h-5 text-teal-600" />, title: 'Dashboard ticket moyen', desc: 'Suivi en temps réel midi/soir/semaine, évolution sur 12 mois, comparaison N vs N-1.' },
+              { icon: <Target className="w-5 h-5 text-teal-600" />, title: 'Analyse menu mix', desc: 'Taux de prise par catégorie et par plat, identification automatique des Stars / Puzzles / Dogs.' },
+              { icon: <Wine className="w-5 h-5 text-teal-600" />, title: 'Suivi du ratio boissons', desc: 'Visualisation immédiate du % boissons sur CA total, par service, par jour de semaine.' },
+              { icon: <Users className="w-5 h-5 text-teal-600" />, title: 'Performance par serveur', desc: 'Ticket moyen généré par membre d\'équipe, pour identifier les top performers en upselling.' },
+              { icon: <AlertTriangle className="w-5 h-5 text-teal-600" />, title: 'Alertes dérives', desc: 'Notifications si le ticket moyen chute de plus de 5 % sur une semaine vs la moyenne historique.' },
               { icon: <DollarSign className="w-5 h-5 text-teal-600" />, title: 'Simulateur d\'impact', desc: 'Tester en amont l\'impact d\'une hausse de prix, d\'ajout de formule, d\'une nouvelle technique.' },
             ].map((f, i) => (
               <div key={i} className="flex items-start gap-3 bg-white border border-mono-900 rounded-xl p-4">
@@ -781,7 +781,7 @@ export default function BlogTicketMoyen() {
 
         {/* FAQ visible */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes sur le ticket moyen</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes sur le ticket moyen</h2>
           <div className="space-y-4">
             {faqItems.map((item, i) => (
               <FAQItem key={i} q={item.question} a={item.answer} />
@@ -793,15 +793,15 @@ export default function BlogTicketMoyen() {
         <section className="mb-16 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
           <h3 className="text-base font-bold text-mono-100 mb-3 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-teal-600" />
-            Sources et references
+            Sources et références
           </h3>
           <ul className="space-y-2 text-sm text-mono-400">
-            <li>Fiducial Restauration - Etude annuelle des marges et tickets moyens (2025)</li>
-            <li>GIRA Conseil - Benchmarks operationnels restauration 2025</li>
+            <li>Fiducial Restauration - Étude annuelle des marges et tickets moyens (2025)</li>
+            <li>GIRA Conseil - Benchmarks opérationnels restauration 2025</li>
             <li>INSEE - Indicateurs de consommation hors domicile (2024-2025)</li>
-            <li>Hospitality ON - Etude sur l'upselling et menu engineering 2025</li>
-            <li> : etablissements du secteur, 1,2M+ couverts analyses</li>
-            <li>Etudes academiques sur le menu engineering (Pavesic, Smith, Cornell University)</li>
+            <li>Hospitality ON - Étude sur l'upselling et menu engineering 2025</li>
+            <li> : établissements du secteur, 1,2M+ couverts analysés</li>
+            <li>Études académiques sur le menu engineering (Pavesic, Smith, Cornell University)</li>
           </ul>
         </section>
 
@@ -810,8 +810,8 @@ export default function BlogTicketMoyen() {
           <ChefHat className="w-10 h-10 mx-auto mb-4 opacity-80" />
           <h2 className="text-2xl sm:text-3xl font-extrabold mb-3">Pilotez votre ticket moyen comme un pro</h2>
           <p className="text-teal-100 mb-8 max-w-xl mx-auto text-base leading-relaxed">
-            Suivi automatique du ticket moyen par jour, par service et par categorie de plat.
-            Identification des plats Stars, Puzzles et Dogs. Calcul d'impact de chaque action sur le resultat.
+            Suivi automatique du ticket moyen par jour, par service et par catégorie de plat.
+            Identification des plats Stars, Puzzles et Dogs. Calcul d'impact de chaque action sur le résultat.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -858,7 +858,7 @@ export default function BlogTicketMoyen() {
         {/* Nav bas */}
         <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">- Tous les articles</Link>
-          <Link to="/blog/prevision-ventes-restaurant" className="text-sm text-teal-600 hover:underline">Prevision des ventes -</Link>
+          <Link to="/blog/prevision-ventes-restaurant" className="text-sm text-teal-600 hover:underline">Prévision des ventes -</Link>
         </div>
 
         </article>
@@ -873,13 +873,13 @@ export default function BlogTicketMoyen() {
           </Link>
           <p className="mb-4">La plateforme de gestion de marge pour les restaurateurs.</p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
+            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
+            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
           </div>
           <p className="mt-6 text-xs text-mono-700">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
+            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
           </p>
         </div>
       </footer>

@@ -12,36 +12,36 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 const faqItems = [
   {
-    question: 'La regle 30/30/30/10 est-elle adaptee a tous les types de restaurants ?',
-    answer: "Non. Cette regle s'applique principalement a la restauration traditionnelle assise avec service a table. Une pizzeria, un fast-food ou un restaurant gastronomique ont des structures de couts tres differentes. La regle 30/30/30/10 est un cadre de reference, pas une obligation. Adaptez les ratios a votre concept (voir tableau benchmarks par segment).",
+    question: 'La règle 30/30/30/10 est-elle adaptée à tous les types de restaurants ?',
+    answer: "Non. Cette règle s'applique principalement à la restauration traditionnelle assise avec service à table. Une pizzeria, un fast-food ou un restaurant gastronomique ont des structures de coûts très différentes. La règle 30/30/30/10 est un cadre de référence, pas une obligation. Adaptez les ratios à votre concept (voir tableau benchmarks par segment).",
   },
   {
     question: 'Que comprennent les 30 % de masse salariale exactement ?',
-    answer: "Les 30 % de masse salariale englobent le salaire brut + les charges patronales (40-45 % sur le brut en France) + les avantages en nature (repas du personnel valorises a 4,40 EUR/jour environ) + l'interim et les extras. C'est le cout complet employeur, pas seulement le salaire net verse.",
+    answer: "Les 30 % de masse salariale englobent le salaire brut + les charges patronales (40-45 % sur le brut en France) + les avantages en nature (repas du personnel valorisés à 4,40 EUR/jour environ) + l'intérim et les extras. C'est le coût complet employeur, pas seulement le salaire net versé.",
   },
   {
     question: 'Pourquoi 10 % de marge nette et pas plus en restauration ?',
-    answer: "La restauration est un secteur a forte intensite humaine et capitalistique : 60 % des couts sont fixes (loyer, personnel, energie). Une marge nette de 10 % est consideree comme excellente. La moyenne reelle du secteur en France oscille entre 4 et 8 %. Atteindre les 10 % de marge nette demande une gestion rigoureuse et un concept solide.",
+    answer: "La restauration est un secteur à forte intensité humaine et capitalistique : 60 % des coûts sont fixes (loyer, personnel, énergie). Une marge nette de 10 % est considérée comme excellente. La moyenne réelle du secteur en France oscille entre 4 et 8 %. Atteindre les 10 % de marge nette demande une gestion rigoureuse et un concept solide.",
   },
   {
-    question: 'Comment savoir si mon restaurant respecte la regle 30/30/30/10 ?',
-    answer: "Recuperez vos comptes de resultat des 12 derniers mois. Calculez : (achats matieres / CA HT) x 100, (masse salariale chargee / CA HT) x 100, (charges fixes hors personnel et matieres / CA HT) x 100. La marge nette est ce qui reste. Si un poste depasse 32-33 %, vous avez un signal d'alerte a creuser.",
+    question: 'Comment savoir si mon restaurant respecte la règle 30/30/30/10 ?',
+    answer: "Récupérez vos comptes de résultat des 12 derniers mois. Calculez : (achats matières / CA HT) x 100, (masse salariale chargée / CA HT) x 100, (charges fixes hors personnel et matières / CA HT) x 100. La marge nette est ce qui reste. Si un poste dépasse 32-33 %, vous avez un signal d'alerte à creuser.",
   },
   {
-    question: 'Que faire si mon food cost depasse 35 % ?',
-    answer: "Plusieurs leviers : auditer vos fiches techniques (grammages reels vs theoriques), peser le gaspillage pendant 2 semaines, negocier 3 devis sur vos 10 plus gros postes d'achat, ajuster les prix de vente des plats a faible marge, retirer les plats non-rentables de la carte (menu engineering Boston Matrix), reduire les portions sur les plats premium discrets.",
+    question: 'Que faire si mon food cost dépasse 35 % ?',
+    answer: "Plusieurs leviers : auditer vos fiches techniques (grammages réels vs théoriques), peser le gaspillage pendant 2 semaines, négocier 3 devis sur vos 10 plus gros postes d'achat, ajuster les prix de vente des plats à faible marge, retirer les plats non-rentables de la carte (menu engineering Boston Matrix), réduire les portions sur les plats premium discrets.",
   },
   {
-    question: 'La regle 30/30/30/10 inclut-elle les boissons ?',
-    answer: "Oui, la regle s'applique au CA total HT (cuisine + bar). Mais attention : la marge brute sur les boissons est generalement bien meilleure (food cost 18-22 % sur les vins, 25-30 % sur les alcools forts) que sur les plats. Plus votre ratio boissons/cuisine est eleve, plus vous pouvez vous permettre un food cost cuisine eleve. Le mix moyen vise est 25-30 % de CA sur les boissons.",
+    question: 'La règle 30/30/30/10 inclut-elle les boissons ?',
+    answer: "Oui, la règle s'applique au CA total HT (cuisine + bar). Mais attention : la marge brute sur les boissons est généralement bien meilleure (food cost 18-22 % sur les vins, 25-30 % sur les alcools forts) que sur les plats. Plus votre ratio boissons/cuisine est élevé, plus vous pouvez vous permettre un food cost cuisine élevé. Le mix moyen visé est 25-30 % de CA sur les boissons.",
   },
   {
-    question: "Le loyer doit-il representer une part precise des 30 % de charges ?",
-    answer: "Oui. Le loyer ideal en restauration represente 6 a 10 % du CA HT. Au-dela de 12 %, il devient tres difficile de degager une marge nette correcte. Dans les zones premium parisiennes ou cote d'azur, certains restaurants paient 15-18 % de loyer : ils doivent compenser par un ticket moyen plus eleve ou un volume plus important.",
+    question: "Le loyer doit-il représenter une part précise des 30 % de charges ?",
+    answer: "Oui. Le loyer idéal en restauration représente 6 à 10 % du CA HT. Au-delà de 12 %, il devient très difficile de dégager une marge nette correcte. Dans les zones premium parisiennes ou côte d'azur, certains restaurants paient 15-18 % de loyer : ils doivent compenser par un ticket moyen plus élevé ou un volume plus important.",
   },
   {
-    question: "La regle 30/30/30/10 est-elle differente pour les chaines et franchises ?",
-    answer: "Oui. Une franchise integre une redevance (5-8 % du CA) + un fonds marketing (2-3 %) qui s'ajoutent aux charges. Le 30 % d'autres charges peut grimper a 35-40 %. En contrepartie, les achats sont mutualises (food cost reduit a 26-28 %) et la masse salariale optimisee par les process. Le 10 % de marge nette reste un objectif realiste pour une franchise performante.",
+    question: "La règle 30/30/30/10 est-elle différente pour les chaînes et franchises ?",
+    answer: "Oui. Une franchise intègre une redevance (5-8 % du CA) + un fonds marketing (2-3 %) qui s'ajoutent aux charges. Le 30 % d'autres charges peut grimper à 35-40 %. En contrepartie, les achats sont mutualises (food cost réduit à 26-28 %) et la masse salariale optimisée par les process. Le 10 % de marge nette reste un objectif réaliste pour une franchise performante.",
   },
 ];
 
@@ -49,8 +49,8 @@ export default function BlogRegle30303010() {
   return (
     <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
-        title="Regle 30/30/30/10 restaurant : guide complet 2026 (food cost, personnel, charges, marge)"
-        description="Comprendre la regle 30/30/30/10 en restauration : 30% food cost + 30% masse salariale + 30% charges + 10% marge nette. Adaptations par segment, calculs, erreurs courantes."
+        title="Règle 30/30/30/10 restaurant : guide complet 2026 (food cost, personnel, charges, marge)"
+        description="Comprendre la règle 30/30/30/10 en restauration : 30% food cost + 30% masse salariale + 30% charges + 10% marge nette. Adaptations par segment, calculs, erreurs courantes."
         path="/blog/regle-30-30-30-10-restaurant"
         type="article"
         schema={[
@@ -58,28 +58,28 @@ export default function BlogRegle30303010() {
           buildBreadcrumbSchema([
             { name: 'Accueil', url: 'https://www.restaumargin.fr/' },
             { name: 'Blog', url: 'https://www.restaumargin.fr/blog' },
-            { name: 'Regle 30/30/30/10 restaurant', url: 'https://www.restaumargin.fr/blog/regle-30-30-30-10-restaurant' },
+            { name: 'Règle 30/30/30/10 restaurant', url: 'https://www.restaumargin.fr/blog/regle-30-30-30-10-restaurant' },
           ]),
           {
             '@context': 'https://schema.org',
             '@type': 'HowTo',
-            name: 'Comment calculer la regle 30/30/30/10 pour votre restaurant',
-            description: "Methode pas-a-pas pour verifier si votre restaurant respecte la regle 30/30/30/10 a partir de vos comptes de resultat.",
+            name: 'Comment calculer la règle 30/30/30/10 pour votre restaurant',
+            description: "Méthode pas-à-pas pour vérifier si votre restaurant respecte la règle 30/30/30/10 à partir de vos comptes de résultat.",
             totalTime: 'PT30M',
-            tool: ['Compte de resultat 12 mois', 'Tableur ou logiciel RestauMargin', 'Calculatrice'],
+            tool: ['Compte de résultat 12 mois', 'Tableur ou logiciel RestauMargin', 'Calculatrice'],
             step: [
-              { '@type': 'HowToStep', name: 'Reunir vos comptes de resultat', text: "Recuperez votre compte de resultat des 12 derniers mois (ou 3 a 6 derniers mois si demarrage recent). Identifiez le chiffre d'affaires HT total." },
-              { '@type': 'HowToStep', name: 'Calculer le ratio food cost', text: "Additionnez tous les achats matieres (denrees alimentaires + boissons). Divisez par le CA HT. Multipliez par 100. Cible : 28-32 %." },
-              { '@type': 'HowToStep', name: 'Calculer le ratio masse salariale', text: "Additionnez salaires bruts + charges patronales + interim + avantages en nature. Divisez par le CA HT. Multipliez par 100. Cible : 28-32 %." },
-              { '@type': 'HowToStep', name: 'Calculer les autres charges', text: "Additionnez loyer + energie + assurances + marketing + comptable + telecoms + entretien + amortissements + frais bancaires + impots locaux. Divisez par le CA HT. Multipliez par 100. Cible : 28-32 %." },
-              { '@type': 'HowToStep', name: 'Verifier la marge nette', text: "Marge nette = 100 - (food cost + masse salariale + autres charges). Si vous obtenez 10 % ou plus, vous respectez la regle. Sinon, identifiez le poste en derive." },
+              { '@type': 'HowToStep', name: 'Réunir vos comptes de résultat', text: "Récupérez votre compte de résultat des 12 derniers mois (ou 3 à 6 derniers mois si démarrage récent). Identifiez le chiffre d'affaires HT total." },
+              { '@type': 'HowToStep', name: 'Calculer le ratio food cost', text: "Additionnez tous les achats matières (denrées alimentaires + boissons). Divisez par le CA HT. Multipliez par 100. Cible : 28-32 %." },
+              { '@type': 'HowToStep', name: 'Calculer le ratio masse salariale', text: "Additionnez salaires bruts + charges patronales + intérim + avantages en nature. Divisez par le CA HT. Multipliez par 100. Cible : 28-32 %." },
+              { '@type': 'HowToStep', name: 'Calculer les autres charges', text: "Additionnez loyer + énergie + assurances + marketing + comptable + telecoms + entretien + amortissements + frais bancaires + impôts locaux. Divisez par le CA HT. Multipliez par 100. Cible : 28-32 %." },
+              { '@type': 'HowToStep', name: 'Vérifier la marge nette', text: "Marge nette = 100 - (food cost + masse salariale + autres charges). Si vous obtenez 10 % ou plus, vous respectez la règle. Sinon, identifiez le poste en dérive." },
             ],
           },
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
-            headline: 'Regle 30/30/30/10 restaurant : guide complet 2026',
-            description: "Comprendre la regle 30/30/30/10 en restauration : 30% food cost + 30% masse salariale + 30% charges + 10% marge nette. Adaptations par segment, calculs, erreurs courantes.",
+            headline: 'Règle 30/30/30/10 restaurant : guide complet 2026',
+            description: "Comprendre la règle 30/30/30/10 en restauration : 30% food cost + 30% masse salariale + 30% charges + 10% marge nette. Adaptations par segment, calculs, erreurs courantes.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -128,18 +128,18 @@ export default function BlogRegle30303010() {
           <span>/</span>
           <Link to="/blog" className="hover:text-teal-600">Blog</Link>
           <span>/</span>
-          <span className="text-mono-100 font-medium">Regle 30/30/30/10 restaurant</span>
+          <span className="text-mono-100 font-medium">Règle 30/30/30/10 restaurant</span>
         </div>
       </div>
 
       {/* ── Hero / H1 ── */}
       <BlogArticleHero
-        category="Rentabilite"
+        category="Rentabilité"
         readTime="14 min"
         date="Mai 2026"
-        title="Regle 30/30/30/10 restaurant : guide complet 2026"
+        title="Règle 30/30/30/10 restaurant : guide complet 2026"
         accentWord="30/30/30/10"
-        subtitle="La regle 30/30/30/10 est le cadre de reference pour mesurer la rentabilite d'un restaurant traditionnel. Decouvrez la decomposition des 4 postes, les adaptations par segment et les leviers pour rentrer dans les clous."
+        subtitle="La règle 30/30/30/10 est le cadre de référence pour mesurer la rentabilité d'un restaurant traditionnel. Découvrez la décomposition des 4 postes, les adaptations par segment et les leviers pour rentrer dans les clous."
       />
 
       {/* ── Contenu principal ── */}
@@ -151,18 +151,18 @@ export default function BlogRegle30303010() {
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
           <div className="flex items-center gap-2 mb-3">
             <Zap className="w-5 h-5" />
-            <span className="text-xs font-bold uppercase tracking-wider text-teal-100">Definition rapide</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-100">Définition rapide</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold mb-4">
-            Qu'est-ce que la regle 30/30/30/10 ?
+            Qu'est-ce que la règle 30/30/30/10 ?
           </h2>
           <p className="text-teal-50 text-base sm:text-lg leading-relaxed">
-            La regle 30/30/30/10 en restauration definit la repartition ideale du chiffre d'affaires :
-            <strong className="text-white"> 30 % pour le cout matieres (food cost)</strong>,
+            La règle 30/30/30/10 en restauration définit la répartition idéale du chiffre d'affaires :
+            <strong className="text-white"> 30 % pour le coût matières (food cost)</strong>,
             <strong className="text-white"> 30 % pour la masse salariale (incluant charges)</strong>,
-            <strong className="text-white"> 30 % pour les autres charges fixes</strong> (loyer, energie, assurances),
+            <strong className="text-white"> 30 % pour les autres charges fixes</strong> (loyer, énergie, assurances),
             et <strong className="text-white">10 % de marge nette</strong> pour le restaurateur.
-            C'est un cadre theorique qui sert de reference pour mesurer la rentabilite d'un restaurant traditionnel.
+            C'est un cadre théorique qui sert de référence pour mesurer la rentabilité d'un restaurant traditionnel.
           </p>
         </div>
 
@@ -174,17 +174,17 @@ export default function BlogRegle30303010() {
           </h2>
           <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
-              { href: '#definition', label: "Qu'est-ce que la regle 30/30/30/10 ?" },
-              { href: '#origine', label: 'Origine et histoire de la regle' },
-              { href: '#decomposition', label: 'Decomposition des 4 postes' },
+              { href: '#definition', label: "Qu'est-ce que la règle 30/30/30/10 ?" },
+              { href: '#origine', label: 'Origine et histoire de la règle' },
+              { href: '#decomposition', label: 'Décomposition des 4 postes' },
               { href: '#benchmarks', label: 'Tableau benchmarks par segment' },
-              { href: '#exemple', label: 'Exemple chiffre : restaurant 500 k EUR de CA' },
-              { href: '#calcul', label: 'Comment calculer la regle pour votre restaurant' },
+              { href: '#exemple', label: 'Exemple chiffré : restaurant 500 k EUR de CA' },
+              { href: '#calcul', label: 'Comment calculer la règle pour votre restaurant' },
               { href: '#adaptations', label: 'Adaptations selon votre concept' },
-              { href: '#leviers', label: '5 leviers pour respecter la regle' },
-              { href: '#erreurs', label: 'Erreurs courantes a eviter' },
-              { href: '#faq', label: 'Questions frequentes' },
-              { href: '#cta', label: 'Pilotez votre rentabilite avec RestauMargin' },
+              { href: '#leviers', label: '5 leviers pour respecter la règle' },
+              { href: '#erreurs', label: 'Erreurs courantes à éviter' },
+              { href: '#faq', label: 'Questions fréquentes' },
+              { href: '#cta', label: 'Pilotez votre rentabilité avec RestauMargin' },
             ].map((item, i) => (
               <li key={i}>
                 <a href={item.href} className="hover:text-teal-600 transition-colors flex items-start gap-2">
@@ -201,37 +201,37 @@ export default function BlogRegle30303010() {
         {/* ═════════════ SECTION 1 : Definition ═════════════ */}
         <section id="definition" className="mb-16">
           <SectionHeading icon={<TrendingUp className="w-6 h-6" />} number="1">
-            Qu'est-ce que la regle 30/30/30/10 en restauration ?
+            Qu'est-ce que la règle 30/30/30/10 en restauration ?
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              La regle 30/30/30/10 est un cadre de gestion utilise par les restaurateurs pour piloter
-              leur rentabilite. Elle decompose chaque euro de chiffre d'affaires HT en quatre postes
-              de depenses ou de profit. Sa simplicite est ce qui en fait sa force : trois nombres a
-              memoriser pour evaluer la sante financiere de votre etablissement.
+              La règle 30/30/30/10 est un cadre de gestion utilisé par les restaurateurs pour piloter
+              leur rentabilité. Elle décompose chaque euro de chiffre d'affaires HT en quatre postes
+              de dépenses ou de profit. Sa simplicité est ce qui en fait sa force : trois nombres à
+              mémoriser pour évaluer la santé financière de votre établissement.
             </p>
             <p>
-              Concretement, sur 100 EUR encaisses (hors taxes) dans votre restaurant :
+              Concrètement, sur 100 EUR encaissés (hors taxes) dans votre restaurant :
             </p>
             <ul className="list-disc list-inside space-y-1.5 text-mono-350 mt-3">
-              <li><strong>30 EUR</strong> doivent partir en achats de denrees alimentaires et boissons (food cost)</li>
+              <li><strong>30 EUR</strong> doivent partir en achats de denrées alimentaires et boissons (food cost)</li>
               <li><strong>30 EUR</strong> doivent couvrir le personnel (salaires + charges + extras)</li>
-              <li><strong>30 EUR</strong> doivent couvrir tous les autres frais fixes (loyer, energie, assurances, marketing, comptable, amortissements)</li>
+              <li><strong>30 EUR</strong> doivent couvrir tous les autres frais fixes (loyer, énergie, assurances, marketing, comptable, amortissements)</li>
               <li><strong>10 EUR</strong> doivent rester comme marge nette pour le restaurateur</li>
             </ul>
             <p>
-              C'est un objectif et non une regle stricte. Tres peu de restaurants atteignent
-              parfaitement cette repartition. La moyenne nationale en France oscille entre
-              4 et 8 % de marge nette, ce qui signifie que beaucoup d'etablissements sont en
-              derive sur un ou plusieurs postes. La regle 30/30/30/10 sert donc de boussole :
-              elle indique la direction, pas une obligation immediate.
+              C'est un objectif et non une règle stricte. Très peu de restaurants atteignent
+              parfaitement cette répartition. La moyenne nationale en France oscille entre
+              4 et 8 % de marge nette, ce qui signifie que beaucoup d'établissements sont en
+              dérive sur un ou plusieurs postes. La règle 30/30/30/10 sert donc de boussole :
+              elle indique la direction, pas une obligation immédiate.
             </p>
 
             <Callout type="info">
-              <strong>A retenir :</strong> la regle 30/30/30/10 s'applique au CA HT (hors taxes).
+              <strong>À retenir :</strong> la règle 30/30/30/10 s'applique au CA HT (hors taxes).
               Calculer en TTC fausserait tous les ratios. En France, la TVA en restauration sur
-              place est de 10 %, et de 5,5 % pour la vente a emporter.
+              place est de 10 %, et de 5,5 % pour la vente à emporter.
             </Callout>
           </div>
         </section>
@@ -239,38 +239,38 @@ export default function BlogRegle30303010() {
         {/* ═════════════ SECTION 2 : Origine ═════════════ */}
         <section id="origine" className="mb-16">
           <SectionHeading icon={<BookOpen className="w-6 h-6" />} number="2">
-            Origine et histoire de la regle 30/30/30/10
+            Origine et histoire de la règle 30/30/30/10
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              La regle 30/30/30/10 trouve son origine dans la litterature financiere
-              americaine de la restauration, popularisee dans les annees 1980-1990 par
-              les cabinets de conseil specialises et les ecoles hotelieres. Elle est
-              une declinaison simplifiee du concept de <Link to="/blog/prime-cost-restaurant" className="text-teal-700 underline hover:text-teal-800">prime cost</Link>
-              {' '}(food cost + masse salariale), considere comme l'indicateur cle de
-              la rentabilite operationnelle.
+              La règle 30/30/30/10 trouve son origine dans la littérature financière
+              américaine de la restauration, popularisée dans les années 1980-1990 par
+              les cabinets de conseil spécialisés et les écoles hôtelières. Elle est
+              une déclinaison simplifiée du concept de <Link to="/blog/prime-cost-restaurant" className="text-teal-700 underline hover:text-teal-800">prime cost</Link>
+              {' '}(food cost + masse salariale), considéré comme l'indicateur clé de
+              la rentabilité opérationnelle.
             </p>
             <p>
-              Aux Etats-Unis, on parle plutot de la "rule of thirds" (regle des tiers) :
+              Aux États-Unis, on parle plutôt de la "rule of thirds" (règle des tiers) :
               un tiers pour la nourriture, un tiers pour le travail, un tiers pour tout
-              le reste. Le 10 % de marge nette est une cible europeenne, plus realiste
-              dans un contexte fiscal et social plus charge qu'aux Etats-Unis.
+              le reste. Le 10 % de marge nette est une cible européenne, plus réaliste
+              dans un contexte fiscal et social plus chargé qu'aux États-Unis.
             </p>
             <p>
-              En France, la regle a ete largement diffusee par les organisations
-              professionnelles (UMIH, GNI) et les centres de formation (CCI, CFA hoteliers).
-              Elle reste aujourd'hui le cadre de reference le plus enseigne en gestion
-              restaurant, meme si les realites du terrain — inflation matieres, hausse
-              continue du SMIC, energie volatile — la rendent de plus en plus difficile
-              a atteindre sans pilotage rigoureux.
+              En France, la règle a été largement diffusée par les organisations
+              professionnelles (UMIH, GNI) et les centres de formation (CCI, CFA hôteliers).
+              Elle reste aujourd'hui le cadre de référence le plus enseigné en gestion
+              restaurant, même si les réalités du terrain — inflation matières, hausse
+              continue du SMIC, énergie volatile — la rendent de plus en plus difficile
+              à atteindre sans pilotage rigoureux.
             </p>
 
             <Callout type="warning">
-              <strong>Limite de la regle :</strong> la regle 30/30/30/10 a ete pensee pour
-              un restaurant traditionnel avec service a table. Un fast-food, une pizzeria,
-              un food truck ou un restaurant gastronomique ont des structures de couts
-              fondamentalement differentes (voir tableau benchmarks plus bas).
+              <strong>Limite de la règle :</strong> la règle 30/30/30/10 a été pensée pour
+              un restaurant traditionnel avec service à table. Un fast-food, une pizzeria,
+              un food truck ou un restaurant gastronomique ont des structures de coûts
+              fondamentalement différentes (voir tableau benchmarks plus bas).
             </Callout>
           </div>
         </section>
@@ -278,15 +278,15 @@ export default function BlogRegle30303010() {
         {/* ═════════════ SECTION 3 : Decomposition ═════════════ */}
         <section id="decomposition" className="mb-16">
           <SectionHeading icon={<BarChart3 className="w-6 h-6" />} number="3">
-            Decomposition des 4 postes de la regle
+            Décomposition des 4 postes de la règle
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Comprendre en detail ce que recouvre chacun des quatre 30 % et 10 % est
-              essentiel pour bien piloter sa rentabilite. Beaucoup de restaurateurs
-              sous-estiment certains postes (charges patronales, energie, amortissements)
-              et surevaluent leur marge reelle.
+              Comprendre en détail ce que recouvre chacun des quatre 30 % et 10 % est
+              essentiel pour bien piloter sa rentabilité. Beaucoup de restaurateurs
+              sous-estiment certains postes (charges patronales, énergie, amortissements)
+              et surévaluent leur marge réelle.
             </p>
           </div>
 
@@ -296,14 +296,14 @@ export default function BlogRegle30303010() {
               percent="30%"
               title="Food cost"
               color="amber"
-              subtitle="Cout matieres premieres"
+              subtitle="Coût matières premières"
               items={[
-                "Denrees alimentaires (viandes, poissons, fruits, legumes)",
-                "Epicerie, condiments, epices, huiles",
-                "Boissons (vins, bieres, spiritueux, softs)",
-                "Pains, viennoiseries, desserts achetes",
-                "Emballages a usage unique (vente a emporter)",
-                "Pertes et casses inevitables",
+                "Denrées alimentaires (viandes, poissons, fruits, légumes)",
+                "Épicerie, condiments, épices, huiles",
+                "Boissons (vins, bières, spiritueux, softs)",
+                "Pains, viennoiseries, desserts achetés",
+                "Emballages à usage unique (vente à emporter)",
+                "Pertes et casses inévitables",
               ]}
             />
             <RatioCard
@@ -315,10 +315,10 @@ export default function BlogRegle30303010() {
               items={[
                 "Salaires bruts (cuisine, service, plonge, directeur)",
                 "Charges patronales URSSAF (40-45 % du brut)",
-                "Cotisations retraite, prevoyance, mutuelle",
+                "Cotisations retraite, prévoyance, mutuelle",
                 "Avantages en nature (repas du personnel 4,40 EUR/jour)",
-                "Interim, extras, contrats saisonniers",
-                "Formation continue, medecine du travail",
+                "Intérim, extras, contrats saisonniers",
+                "Formation continue, médecine du travail",
               ]}
             />
             <RatioCard
@@ -326,16 +326,16 @@ export default function BlogRegle30303010() {
               percent="30%"
               title="Autres charges"
               color="purple"
-              subtitle="Tous les frais fixes hors personnel et matieres"
+              subtitle="Tous les frais fixes hors personnel et matières"
               items={[
-                "Loyer + charges locatives (6-10 % du CA ideal)",
-                "Energie : electricite, gaz, eau",
+                "Loyer + charges locatives (6-10 % du CA idéal)",
+                "Énergie : électricité, gaz, eau",
                 "Assurances RC pro, multirisque, perte d'exploitation",
-                "Marketing : reseaux sociaux, plateformes (TheFork, UberEats)",
+                "Marketing : réseaux sociaux, plateformes (TheFork, UberEats)",
                 "Comptable, juridique, conseil",
-                "Amortissements mobilier et materiel cuisine",
+                "Amortissements mobilier et matériel cuisine",
                 "Telecoms, internet, logiciel de caisse",
-                "Entretien, reparations, blanchisserie linge",
+                "Entretien, réparations, blanchisserie linge",
               ]}
             />
             <RatioCard
@@ -345,21 +345,21 @@ export default function BlogRegle30303010() {
               color="emerald"
               subtitle="Ce qui reste pour le restaurateur"
               items={[
-                "Remuneration du dirigeant",
-                "Capacite d'autofinancement (renouvellement materiel)",
+                "Rémunération du dirigeant",
+                "Capacité d'autofinancement (renouvellement matériel)",
                 "Remboursement emprunts en cours",
-                "Reserves pour aleas (panne, baisse activite)",
+                "Réserves pour aléas (panne, baisse activité)",
                 "Distribution de dividendes en SARL/SAS",
-                "Impot sur les benefices (IS 15-25 %)",
+                "Impôt sur les bénéfices (IS 15-25 %)",
               ]}
             />
           </div>
 
           <Callout type="info">
-            <strong>Point cle :</strong> les 10 % de marge nette sont la marge avant impot
-            sur les societes. Apres IS (15 % jusqu'a 42 500 EUR de benefice, 25 % au-dela
-            en 2026), il reste 7,5 a 8,5 % de marge nette apres impot pour le restaurateur.
-            C'est ce qui finance la croissance et la remuneration du dirigeant.
+            <strong>Point clé :</strong> les 10 % de marge nette sont la marge avant impôt
+            sur les sociétés. Après IS (15 % jusqu'à 42 500 EUR de bénéfice, 25 % au-delà
+            en 2026), il reste 7,5 à 8,5 % de marge nette après impôt pour le restaurateur.
+            C'est ce qui finance la croissance et la rémunération du dirigeant.
           </Callout>
         </section>
 
@@ -371,9 +371,9 @@ export default function BlogRegle30303010() {
 
           <div className="prose-content">
             <p>
-              La regle 30/30/30/10 est calibree pour la restauration traditionnelle assise.
-              D'autres segments ont des structures tres differentes. Voici les ratios de
-              reference observes en France en 2026, issus des etudes sectorielles (Xerfi,
+              La règle 30/30/30/10 est calibrée pour la restauration traditionnelle assise.
+              D'autres segments ont des structures très différentes. Voici les ratios de
+              référence observés en France en 2026, issus des études sectorielles (Xerfi,
               INSEE, UMIH, GNI).
             </p>
           </div>
@@ -391,7 +391,7 @@ export default function BlogRegle30303010() {
               </thead>
               <tbody className="text-mono-350">
                 <tr className="bg-emerald-50">
-                  <td className="py-3 px-4 font-bold text-emerald-900">Traditionnelle (regle classique)</td>
+                  <td className="py-3 px-4 font-bold text-emerald-900">Traditionnelle (règle classique)</td>
                   <td className="py-3 px-4 text-right font-bold text-emerald-900">30 %</td>
                   <td className="py-3 px-4 text-right font-bold text-emerald-900">30 %</td>
                   <td className="py-3 px-4 text-right font-bold text-emerald-900">30 %</td>
@@ -405,7 +405,7 @@ export default function BlogRegle30303010() {
                   <td className="py-3 px-4 text-right font-semibold">10 %</td>
                 </tr>
                 <tr className="bg-mono-1000">
-                  <td className="py-3 px-4 font-medium text-mono-100">Gastronomique (etoiles)</td>
+                  <td className="py-3 px-4 font-medium text-mono-100">Gastronomique (étoiles)</td>
                   <td className="py-3 px-4 text-right">35 %</td>
                   <td className="py-3 px-4 text-right">40 %</td>
                   <td className="py-3 px-4 text-right">22 %</td>
@@ -426,7 +426,7 @@ export default function BlogRegle30303010() {
                   <td className="py-3 px-4 text-right font-semibold text-emerald-700">20 %</td>
                 </tr>
                 <tr className="bg-white">
-                  <td className="py-3 px-4 font-medium text-mono-100">Boulangerie / patisserie</td>
+                  <td className="py-3 px-4 font-medium text-mono-100">Boulangerie / pâtisserie</td>
                   <td className="py-3 px-4 text-right">25 %</td>
                   <td className="py-3 px-4 text-right">30 %</td>
                   <td className="py-3 px-4 text-right">35 %</td>
@@ -440,7 +440,7 @@ export default function BlogRegle30303010() {
                   <td className="py-3 px-4 text-right font-semibold text-emerald-700">27 %</td>
                 </tr>
                 <tr className="bg-white">
-                  <td className="py-3 px-4 font-medium text-mono-100">Bar a vins / a tapas</td>
+                  <td className="py-3 px-4 font-medium text-mono-100">Bar à vins / à tapas</td>
                   <td className="py-3 px-4 text-right">26 %</td>
                   <td className="py-3 px-4 text-right">28 %</td>
                   <td className="py-3 px-4 text-right">32 %</td>
@@ -453,14 +453,14 @@ export default function BlogRegle30303010() {
           <div className="prose-content mt-8">
             <p>
               <strong>Lecture du tableau :</strong> un restaurant gastronomique a typiquement
-              un food cost plus eleve (produits nobles, fournisseurs locaux d'exception) et
-              une masse salariale enorme (brigade de 8-15 personnes). Sa marge nette est
-              tres faible (2-5 %) mais les chefs etoiles misent sur les revenus annexes
-              (cours de cuisine, livres, image, consulting) pour atteindre la rentabilite.
+              un food cost plus élevé (produits nobles, fournisseurs locaux d'exception) et
+              une masse salariale énorme (brigade de 8-15 personnes). Sa marge nette est
+              très faible (2-5 %) mais les chefs étoilés misent sur les revenus annexes
+              (cours de cuisine, livres, image, consulting) pour atteindre la rentabilité.
             </p>
             <p>
-              A l'oppose, une pizzeria ou un fast-food fait du volume avec peu de personnel
-              et des matieres optimisees : la marge nette peut atteindre 20 %. C'est pour
+              À l'opposé, une pizzeria ou un fast-food fait du volume avec peu de personnel
+              et des matières optimisées : la marge nette peut atteindre 20 %. C'est pour
               cela que ces concepts sont si attractifs en franchise.
             </p>
           </div>
@@ -469,15 +469,15 @@ export default function BlogRegle30303010() {
         {/* ═════════════ SECTION 5 : Exemple chiffre ═════════════ */}
         <section id="exemple" className="mb-16">
           <SectionHeading icon={<Calculator className="w-6 h-6" />} number="5">
-            Exemple chiffre complet : restaurant 500 k EUR de CA
+            Exemple chiffré complet : restaurant 500 k EUR de CA
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Prenons un cas concret : une brasserie de 60 couverts en region, qui realise
+              Prenons un cas concret : une brasserie de 60 couverts en région, qui réalise
               500 000 EUR de CA HT annuel (soit environ 1 850 EUR de CA par jour, ouvert
-              270 jours par an). Voici comment la regle 30/30/30/10 se decline en euros et
-              quel est l'enjeu reel sur chaque poste.
+              270 jours par an). Voici comment la règle 30/30/30/10 se décline en euros et
+              quel est l'enjeu réel sur chaque poste.
             </p>
           </div>
 
@@ -493,10 +493,10 @@ export default function BlogRegle30303010() {
               </thead>
               <tbody className="text-mono-350">
                 <tr className="bg-white"><td className="py-3 px-4 font-medium text-mono-100">Chiffre d'affaires HT</td><td className="py-3 px-4 text-right font-bold">100 %</td><td className="py-3 px-4 text-right font-bold">500 000 EUR</td><td className="py-3 px-4 text-right font-bold">41 667 EUR</td></tr>
-                <tr className="bg-amber-50"><td className="py-3 px-4 font-medium text-amber-900">- Food cost (matieres + boissons)</td><td className="py-3 px-4 text-right text-amber-900">30 %</td><td className="py-3 px-4 text-right text-amber-900">150 000 EUR</td><td className="py-3 px-4 text-right text-amber-900">12 500 EUR</td></tr>
-                <tr className="bg-blue-50"><td className="py-3 px-4 font-medium text-blue-900">- Masse salariale chargee</td><td className="py-3 px-4 text-right text-blue-900">30 %</td><td className="py-3 px-4 text-right text-blue-900">150 000 EUR</td><td className="py-3 px-4 text-right text-blue-900">12 500 EUR</td></tr>
+                <tr className="bg-amber-50"><td className="py-3 px-4 font-medium text-amber-900">- Food cost (matières + boissons)</td><td className="py-3 px-4 text-right text-amber-900">30 %</td><td className="py-3 px-4 text-right text-amber-900">150 000 EUR</td><td className="py-3 px-4 text-right text-amber-900">12 500 EUR</td></tr>
+                <tr className="bg-blue-50"><td className="py-3 px-4 font-medium text-blue-900">- Masse salariale chargée</td><td className="py-3 px-4 text-right text-blue-900">30 %</td><td className="py-3 px-4 text-right text-blue-900">150 000 EUR</td><td className="py-3 px-4 text-right text-blue-900">12 500 EUR</td></tr>
                 <tr className="bg-mono-1000"><td className="py-3 px-4 text-mono-100 pl-8">Loyer + charges locatives</td><td className="py-3 px-4 text-right">8 %</td><td className="py-3 px-4 text-right">40 000 EUR</td><td className="py-3 px-4 text-right">3 333 EUR</td></tr>
-                <tr className="bg-white"><td className="py-3 px-4 text-mono-100 pl-8">Energie (elec + gaz + eau)</td><td className="py-3 px-4 text-right">5 %</td><td className="py-3 px-4 text-right">25 000 EUR</td><td className="py-3 px-4 text-right">2 083 EUR</td></tr>
+                <tr className="bg-white"><td className="py-3 px-4 text-mono-100 pl-8">Énergie (élec + gaz + eau)</td><td className="py-3 px-4 text-right">5 %</td><td className="py-3 px-4 text-right">25 000 EUR</td><td className="py-3 px-4 text-right">2 083 EUR</td></tr>
                 <tr className="bg-mono-1000"><td className="py-3 px-4 text-mono-100 pl-8">Marketing + plateformes</td><td className="py-3 px-4 text-right">4 %</td><td className="py-3 px-4 text-right">20 000 EUR</td><td className="py-3 px-4 text-right">1 667 EUR</td></tr>
                 <tr className="bg-white"><td className="py-3 px-4 text-mono-100 pl-8">Assurances</td><td className="py-3 px-4 text-right">2 %</td><td className="py-3 px-4 text-right">10 000 EUR</td><td className="py-3 px-4 text-right">833 EUR</td></tr>
                 <tr className="bg-mono-1000"><td className="py-3 px-4 text-mono-100 pl-8">Comptable + conseil</td><td className="py-3 px-4 text-right">2 %</td><td className="py-3 px-4 text-right">10 000 EUR</td><td className="py-3 px-4 text-right">833 EUR</td></tr>
@@ -510,16 +510,16 @@ export default function BlogRegle30303010() {
 
           <div className="prose-content mt-8">
             <p>
-              <strong>Lecture :</strong> avec une regle 30/30/30/10 respectee, la brasserie
-              degage 50 000 EUR de marge nette annuelle, soit environ 4 167 EUR par mois.
-              Apres impot sur les societes (15 % jusqu'a 42 500 EUR, 25 % au-dela), il reste
-              environ 41 500 EUR pour la remuneration du dirigeant et la capacite d'autofinancement.
+              <strong>Lecture :</strong> avec une règle 30/30/30/10 respectée, la brasserie
+              dégage 50 000 EUR de marge nette annuelle, soit environ 4 167 EUR par mois.
+              Après impôt sur les sociétés (15 % jusqu'à 42 500 EUR, 25 % au-delà), il reste
+              environ 41 500 EUR pour la rémunération du dirigeant et la capacité d'autofinancement.
             </p>
             <p>
-              Si la masse salariale derive de 30 a 35 % (un seul recrutement de plus), la marge
-              nette tombe a 5 % : <strong>25 000 EUR/an, soit 2 100 EUR/mois</strong>. Et a 38 %
-              de masse salariale, le restaurateur est a l'equilibre... ou en perte. C'est la
-              fragilite du modele restauration : chaque point de derive coute tres cher.
+              Si la masse salariale dérive de 30 à 35 % (un seul recrutement de plus), la marge
+              nette tombe à 5 % : <strong>25 000 EUR/an, soit 2 100 EUR/mois</strong>. Et à 38 %
+              de masse salariale, le restaurateur est à l'équilibre... ou en perte. C'est la
+              fragilité du modèle restauration : chaque point de dérive coûte très cher.
             </p>
           </div>
         </section>
@@ -527,38 +527,38 @@ export default function BlogRegle30303010() {
         {/* ═════════════ SECTION 6 : Comment calculer ═════════════ */}
         <section id="calcul" className="mb-16">
           <SectionHeading icon={<ListChecks className="w-6 h-6" />} number="6">
-            Comment calculer la regle pour votre restaurant ?
+            Comment calculer la règle pour votre restaurant ?
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Voici la methode pas-a-pas pour verifier si votre restaurant respecte la regle
-              30/30/30/10. Comptez 30 minutes la premiere fois si vos comptes sont a jour,
-              plus si vous devez retraiter des donnees.
+              Voici la méthode pas-à-pas pour vérifier si votre restaurant respecte la règle
+              30/30/30/10. Comptez 30 minutes la première fois si vos comptes sont à jour,
+              plus si vous devez retraiter des données.
             </p>
           </div>
 
           <ol className="mt-8 space-y-5">
             {[
               {
-                title: 'Reunir vos comptes de resultat des 12 derniers mois',
-                body: "Recuperez votre dernier bilan ou un export comptable sur 12 mois glissants. Si vous demarrez, prenez les 3 ou 6 derniers mois. Identifiez la ligne chiffre d'affaires HT total (sans TVA). C'est votre base 100.",
+                title: 'Réunir vos comptes de résultat des 12 derniers mois',
+                body: "Récupérez votre dernier bilan ou un export comptable sur 12 mois glissants. Si vous démarrez, prenez les 3 ou 6 derniers mois. Identifiez la ligne chiffre d'affaires HT total (sans TVA). C'est votre base 100.",
               },
               {
                 title: 'Calculer le ratio food cost',
-                body: "Additionnez tous les achats matieres : compte 601 (denrees alimentaires) + 602 (boissons) + 6064 (fournitures non stockables) si vous integrez les emballages. Divisez par le CA HT. Multipliez par 100. Cible : 28-32 % en traditionnel, 25 % en pizzeria, 35 % en gastronomique.",
+                body: "Additionnez tous les achats matières : compte 601 (denrées alimentaires) + 602 (boissons) + 6064 (fournitures non stockables) si vous intégrez les emballages. Divisez par le CA HT. Multipliez par 100. Cible : 28-32 % en traditionnel, 25 % en pizzeria, 35 % en gastronomique.",
               },
               {
                 title: 'Calculer le ratio masse salariale',
-                body: "Additionnez les comptes 641 (remunerations brutes) + 645 (charges sociales) + 6411 (interim) + 648 (avantages en nature). Divisez par le CA HT. Multipliez par 100. Cible : 28-32 % en traditionnel.",
+                body: "Additionnez les comptes 641 (rémunérations brutes) + 645 (charges sociales) + 6411 (intérim) + 648 (avantages en nature). Divisez par le CA HT. Multipliez par 100. Cible : 28-32 % en traditionnel.",
               },
               {
                 title: 'Calculer le total autres charges',
-                body: "Additionnez tout le reste : 612 (loyer), 606 (energie), 616 (assurances), 622 (honoraires comptable), 623 (publicite), 6256 (telecoms), 615 (entretien), 681 (amortissements), 661 (frais financiers), 635 (impots locaux). Divisez par CA HT, multipliez par 100. Cible : 28-32 %.",
+                body: "Additionnez tout le reste : 612 (loyer), 606 (énergie), 616 (assurances), 622 (honoraires comptable), 623 (publicité), 6256 (telecoms), 615 (entretien), 681 (amortissements), 661 (frais financiers), 635 (impôts locaux). Divisez par CA HT, multipliez par 100. Cible : 28-32 %.",
               },
               {
-                title: "Verifier la marge nette et identifier les derives",
-                body: "Marge nette = 100 - (food cost + masse salariale + autres charges). Si vous obtenez 10 % ou plus, vous respectez la regle. Si vous etes a 5 %, identifiez le poste en derive et appliquez les leviers correspondants (voir section 8). Si vous etes a 0 % ou negatif, urgence : auditez complet en moins de 30 jours.",
+                title: "Vérifier la marge nette et identifier les dérives",
+                body: "Marge nette = 100 - (food cost + masse salariale + autres charges). Si vous obtenez 10 % ou plus, vous respectez la règle. Si vous êtes à 5 %, identifiez le poste en dérive et appliquez les leviers correspondants (voir section 8). Si vous êtes à 0 % ou négatif, urgence : auditez complet en moins de 30 jours.",
               },
             ].map((step, i) => (
               <li key={i} className="bg-white border border-mono-900 rounded-2xl p-6 sm:p-7 flex gap-5">
@@ -575,9 +575,9 @@ export default function BlogRegle30303010() {
 
           <Callout type="info">
             <strong>Astuce gain de temps :</strong> RestauMargin calcule vos ratios
-            automatiquement a partir de vos achats et de votre caisse, sans Excel.
-            Vous voyez en temps reel si vous respectez la regle 30/30/30/10 et quels
-            postes derivent.{' '}
+            automatiquement à partir de vos achats et de votre caisse, sans Excel.
+            Vous voyez en temps réel si vous respectez la règle 30/30/30/10 et quels
+            postes dérivent.{' '}
             <Link to="/login?mode=register" className="underline font-semibold hover:text-teal-700">
               Essai gratuit 7 jours
             </Link>.
@@ -592,40 +592,40 @@ export default function BlogRegle30303010() {
 
           <div className="prose-content">
             <p>
-              La regle 30/30/30/10 est un cadre de reference, pas un dogme. Voici comment
-              l'ajuster en fonction de votre concept et de vos contraintes specifiques.
+              La règle 30/30/30/10 est un cadre de référence, pas un dogme. Voici comment
+              l'ajuster en fonction de votre concept et de vos contraintes spécifiques.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">Restaurant a forte intensite vins</h3>
+            <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">Restaurant à forte intensité vins</h3>
             <p>
-              Si les boissons (vins surtout) representent 35 a 45 % de votre CA, vous pouvez
-              accepter un food cost cuisine plus eleve (32-34 %) car la marge brute boissons
+              Si les boissons (vins surtout) représentent 35 à 45 % de votre CA, vous pouvez
+              accepter un food cost cuisine plus élevé (32-34 %) car la marge brute boissons
               compense largement. Cible food cost global : 28 %, masse salariale 30 %, autres
               30 %, marge 12 %.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-3">Restaurant a forte composante a emporter</h3>
+            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-3">Restaurant à forte composante à emporter</h3>
             <p>
-              La TVA a 5,5 % (au lieu de 10 %) augmente mecaniquement votre marge brute si
-              vous gardez le meme prix TTC. Mais les couts d'emballages (boites, sacs, couverts
-              jetables, sacs de transport) ajoutent 2 a 4 % au food cost. Cible : food cost
+              La TVA à 5,5 % (au lieu de 10 %) augmente mécaniquement votre marge brute si
+              vous gardez le même prix TTC. Mais les coûts d'emballages (boîtes, sacs, couverts
+              jetables, sacs de transport) ajoutent 2 à 4 % au food cost. Cible : food cost
               32 %, masse salariale 26 % (moins de service), autres 30 %, marge 12 %.
             </p>
 
             <h3 className="text-xl font-bold text-mono-100 mt-6 mb-3">Restaurant en franchise</h3>
             <p>
               La redevance franchiseur (5-8 % du CA) et le fonds publicitaire (2-3 %)
-              s'ajoutent aux autres charges. Le 30 % grimpe a 35-40 %. En contrepartie, les
-              achats centralises baissent le food cost a 26-28 %. Cible franchise mature :
+              s'ajoutent aux autres charges. Le 30 % grimpe à 35-40 %. En contrepartie, les
+              achats centralisés baissent le food cost à 26-28 %. Cible franchise mature :
               food cost 27 %, masse salariale 28 %, autres 35 %, marge 10 %.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-3">Restaurant en demarrage (moins de 18 mois)</h3>
+            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-3">Restaurant en démarrage (moins de 18 mois)</h3>
             <p>
-              Les 18 premiers mois supportent des couts d'investissement initiaux non amortis :
+              Les 18 premiers mois supportent des coûts d'investissement initiaux non amortis :
               communication de lancement, formation du personnel, ajustements de la carte,
-              gaspillage en hausse. Acceptez une marge nette negative ou faible (0-3 %) pendant
-              cette phase, en visant la regle complete a partir du mois 18-24.
+              gaspillage en hausse. Acceptez une marge nette négative ou faible (0-3 %) pendant
+              cette phase, en visant la règle complète à partir du mois 18-24.
             </p>
           </div>
         </section>
@@ -633,14 +633,14 @@ export default function BlogRegle30303010() {
         {/* ═════════════ SECTION 8 : 5 leviers ═════════════ */}
         <section id="leviers" className="mb-16">
           <SectionHeading icon={<TrendingUp className="w-6 h-6" />} number="8">
-            5 leviers pour respecter la regle si vous derivez
+            5 leviers pour respecter la règle si vous dérivez
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Si votre marge nette est inferieure a 5 %, voici les 5 leviers prioritaires
-              pour rentrer dans la regle 30/30/30/10. Commencez par celui qui correspond
-              au poste le plus en derive identifie dans le diagnostic.
+              Si votre marge nette est inférieure à 5 %, voici les 5 leviers prioritaires
+              pour rentrer dans la règle 30/30/30/10. Commencez par celui qui correspond
+              au poste le plus en dérive identifié dans le diagnostic.
             </p>
           </div>
 
@@ -648,28 +648,28 @@ export default function BlogRegle30303010() {
             {[
               {
                 num: 1,
-                title: "Reduire le food cost (objectif : -2 a -4 points)",
-                body: "Auditer les fiches techniques (grammages reels vs theoriques), peser le gaspillage pendant 2 semaines pour identifier les gisements, renegocier 3 devis sur vos 10 plus gros postes d'achat (effet immediat de 3-5 % sur les produits concernes), retirer 2-3 plats non-rentables de la carte. Lien : guide complet sur le food cost dans la section ressources.",
+                title: "Réduire le food cost (objectif : -2 à -4 points)",
+                body: "Auditer les fiches techniques (grammages réels vs théoriques), peser le gaspillage pendant 2 semaines pour identifier les gisements, renégocier 3 devis sur vos 10 plus gros postes d'achat (effet immédiat de 3-5 % sur les produits concernés), retirer 2-3 plats non-rentables de la carte. Lien : guide complet sur le food cost dans la section ressources.",
               },
               {
                 num: 2,
-                title: "Optimiser la masse salariale (objectif : -2 a -3 points)",
-                body: "Refaire le planning au quart d'heure pres en fonction de la frequentation reelle (souvent 10-15 % de surstaffing en heures creuses), reduire le turnover (un recrutement coute 3 a 6 mois de salaire en formation et perte de productivite), former la polyvalence cuisine/salle pour reduire les effectifs creux.",
+                title: "Optimiser la masse salariale (objectif : -2 à -3 points)",
+                body: "Refaire le planning au quart d'heure près en fonction de la fréquentation réelle (souvent 10-15 % de surstaffing en heures creuses), réduire le turnover (un recrutement coûte 3 à 6 mois de salaire en formation et perte de productivité), former la polyvalence cuisine/salle pour réduire les effectifs creux.",
               },
               {
                 num: 3,
-                title: "Renegocier le loyer ou demenager",
-                body: "Si votre loyer depasse 12 % du CA, c'est un blocage structurel. Negociez une baisse en presentant votre compte de resultat (les bailleurs preferent un locataire viable a un local vide). Sinon, planifiez un demenagement vers un local a 8-10 % du CA dans un rayon de 1-2 km pour conserver la clientele.",
+                title: "Renégocier le loyer ou déménager",
+                body: "Si votre loyer dépasse 12 % du CA, c'est un blocage structurel. Négociez une baisse en présentant votre compte de résultat (les bailleurs préfèrent un locataire viable à un local vide). Sinon, planifiez un déménagement vers un local à 8-10 % du CA dans un rayon de 1-2 km pour conserver la clientèle.",
               },
               {
                 num: 4,
-                title: "Augmenter le ticket moyen (objectif : +5 a +10 %)",
-                body: "Upselling boissons (verre de vin, eau gazeuse, cafe gourmand), suggestion desserts systematique, ajout d'une formule premium a +30 % du prix moyen, mise en avant des plats a forte marge (menu engineering Boston Matrix). Une hausse de 8 % du ticket moyen ajoute directement 6-7 % de marge nette.",
+                title: "Augmenter le ticket moyen (objectif : +5 à +10 %)",
+                body: "Upselling boissons (verre de vin, eau gazeuse, café gourmand), suggestion desserts systématique, ajout d'une formule premium à +30 % du prix moyen, mise en avant des plats à forte marge (menu engineering Boston Matrix). Une hausse de 8 % du ticket moyen ajoute directement 6-7 % de marge nette.",
               },
               {
                 num: 5,
-                title: "Augmenter la frequence et la rotation des tables",
-                body: "Reduire le temps de service en optimisant les process cuisine (mise en place plus rigoureuse, batch cooking), passer de 1 a 1,3 services le midi en pic, ouvrir un 7e jour ou un service supplementaire le soir. Chaque hausse de 10 % du nombre de couverts genere 8-9 % de CA supplementaire sans hausse proportionnelle des charges fixes.",
+                title: "Augmenter la fréquence et la rotation des tables",
+                body: "Réduire le temps de service en optimisant les process cuisine (mise en place plus rigoureuse, batch cooking), passer de 1 à 1,3 services le midi en pic, ouvrir un 7e jour ou un service supplémentaire le soir. Chaque hausse de 10 % du nombre de couverts génère 8-9 % de CA supplémentaire sans hausse proportionnelle des charges fixes.",
               },
             ].map(({ num, title, body }) => (
               <div key={num} className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 sm:p-6 flex gap-4">
@@ -688,13 +688,13 @@ export default function BlogRegle30303010() {
         {/* ═════════════ SECTION 9 : Erreurs courantes ═════════════ */}
         <section id="erreurs" className="mb-16">
           <SectionHeading icon={<AlertTriangle className="w-6 h-6" />} number="9">
-            Erreurs courantes a eviter
+            Erreurs courantes à éviter
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Voici les 5 erreurs les plus frequentes que je rencontre chez les restaurateurs
-              qui essaient d'appliquer la regle 30/30/30/10 sans la maitriser.
+              Voici les 5 erreurs les plus fréquentes que je rencontre chez les restaurateurs
+              qui essaient d'appliquer la règle 30/30/30/10 sans la maîtriser.
             </p>
           </div>
 
@@ -702,23 +702,23 @@ export default function BlogRegle30303010() {
             {[
               {
                 title: "Calculer en TTC au lieu de HT",
-                body: "C'est l'erreur n1. La TVA collectee n'est pas a vous, vous la reversez a l'Etat. Calculer le food cost sur un prix TTC donne un ratio artificiellement bas (-10 % d'erreur en restauration sur place). Tous les ratios de la regle s'appliquent au CA HT.",
+                body: "C'est l'erreur n1. La TVA collectée n'est pas à vous, vous la reversez à l'État. Calculer le food cost sur un prix TTC donne un ratio artificiellement bas (-10 % d'erreur en restauration sur place). Tous les ratios de la règle s'appliquent au CA HT.",
               },
               {
                 title: "Oublier les charges patronales dans la masse salariale",
-                body: "Les charges sociales en CCN HCR representent 40-45 % du salaire brut en France. Un cuisinier paye 2 200 EUR brut coute 3 080 EUR a l'entreprise. Si vous ne comptez que le brut, vous sous-estimez votre masse salariale de 25 % et votre marge nette apparente est fausse.",
+                body: "Les charges sociales en CCN HCR représentent 40-45 % du salaire brut en France. Un cuisinier payé 2 200 EUR brut coûte 3 080 EUR à l'entreprise. Si vous ne comptez que le brut, vous sous-estimez votre masse salariale de 25 % et votre marge nette apparente est fausse.",
               },
               {
-                title: "Ne pas integrer les amortissements",
-                body: "Le materiel cuisine, le mobilier, les travaux d'amenagement sont amortis sur 5 a 10 ans. C'est une charge non-cash mais reelle : sans amortissement, vous ne pouvez pas renouveler votre materiel quand il casse. Comptez 4-6 % du CA en amortissements.",
+                title: "Ne pas intégrer les amortissements",
+                body: "Le matériel cuisine, le mobilier, les travaux d'aménagement sont amortis sur 5 à 10 ans. C'est une charge non-cash mais réelle : sans amortissement, vous ne pouvez pas renouveler votre matériel quand il casse. Comptez 4-6 % du CA en amortissements.",
               },
               {
-                title: "Comparer une journee, une semaine ou un mois aux ratios annuels",
-                body: "Les ratios 30/30/30/10 sont des cibles annuelles. Sur une semaine creuse de janvier, votre masse salariale peut atteindre 40 % du CA — c'est normal. Calculez toujours sur 12 mois glissants pour lisser la saisonnalite.",
+                title: "Comparer une journée, une semaine ou un mois aux ratios annuels",
+                body: "Les ratios 30/30/30/10 sont des cibles annuelles. Sur une semaine creuse de janvier, votre masse salariale peut atteindre 40 % du CA — c'est normal. Calculez toujours sur 12 mois glissants pour lisser la saisonnalité.",
               },
               {
-                title: "Ignorer les revenus annexes (terrasse, prive, evenementiel)",
-                body: "Un restaurant qui privatise sa salle 30 fois par an genere 30 000 a 60 000 EUR de CA annexe a tres haute marge (food cost contractualise, masse salariale identique a un service normal). Ces revenus boostent la marge nette et doivent etre suivis a part dans votre comptabilite analytique.",
+                title: "Ignorer les revenus annexes (terrasse, privé, événementiel)",
+                body: "Un restaurant qui privatise sa salle 30 fois par an génère 30 000 à 60 000 EUR de CA annexe à très haute marge (food cost contractualisé, masse salariale identique à un service normal). Ces revenus boostent la marge nette et doivent être suivis à part dans votre comptabilité analytique.",
               },
             ].map((err, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-xl p-5 sm:p-6 flex gap-4">
@@ -738,7 +738,7 @@ export default function BlogRegle30303010() {
 
         {/* ═════════════ FAQ visible ═════════════ */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-4">
             {faqItems.map((item, i) => (
               <FAQItem key={i} q={item.question} a={item.answer} />
@@ -750,12 +750,12 @@ export default function BlogRegle30303010() {
         <section id="cta" className="mb-16">
           <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 sm:p-12 text-center">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-4">
-              Pilotez votre regle 30/30/30/10 en temps reel
+              Pilotez votre règle 30/30/30/10 en temps réel
             </h2>
             <p className="text-teal-100 text-lg max-w-xl mx-auto mb-3 leading-relaxed">
               RestauMargin connecte vos achats, votre caisse et votre paie pour calculer
-              automatiquement vos quatre ratios. Vous voyez si vous respectez la regle,
-              quels postes derivent et quels leviers activer en priorite.
+              automatiquement vos quatre ratios. Vous voyez si vous respectez la règle,
+              quels postes dérivent et quels leviers activer en priorité.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
               <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
@@ -788,20 +788,20 @@ export default function BlogRegle30303010() {
               <p className="text-xs text-mono-500">Marge brute, marge nette, food cost et coefficient multiplicateur.</p>
             </Link>
             <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le food cost</h3>
-              <p className="text-xs text-mono-500">Definition, formule, benchmarks par segment et 10 leviers de reduction.</p>
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Réduire le food cost</h3>
+              <p className="text-xs text-mono-500">Définition, formule, benchmarks par segment et 10 leviers de réduction.</p>
             </Link>
             <Link to="/blog/reduire-cout-personnel-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le cout personnel</h3>
-              <p className="text-xs text-mono-500">Planning, turnover, formation : 5 leviers concrets pour -10 a -20 %.</p>
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Réduire le coût personnel</h3>
+              <p className="text-xs text-mono-500">Planning, turnover, formation : 5 leviers concrets pour -10 à -20 %.</p>
             </Link>
             <Link to="/blog/prime-cost-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Prime cost : l'indicateur n1</h3>
-              <p className="text-xs text-mono-500">Food cost + masse salariale : passer de 72 % a 62 % en 3 mois.</p>
+              <p className="text-xs text-mono-500">Food cost + masse salariale : passer de 72 % à 62 % en 3 mois.</p>
             </Link>
             <Link to="/blog/seuil-rentabilite-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Seuil de rentabilite restaurant</h3>
-              <p className="text-xs text-mono-500">Calculer le point mort et le nombre de couverts necessaires.</p>
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Seuil de rentabilité restaurant</h3>
+              <p className="text-xs text-mono-500">Calculer le point mort et le nombre de couverts nécessaires.</p>
             </Link>
             <Link to="/outils/calculateur-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calculateur food cost gratuit</h3>
@@ -825,13 +825,13 @@ export default function BlogRegle30303010() {
             La plateforme de gestion de marge pour les restaurateurs.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
+            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
+            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
           </div>
           <p className="mt-6 text-xs text-mono-700">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
+            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
           </p>
         </div>
       </footer>

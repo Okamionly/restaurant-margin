@@ -32,85 +32,85 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 const faqItems = [
   {
-    question: "Quelle est la difference entre le taux de marge et le taux de marque ?",
+    question: "Quelle est la différence entre le taux de marge et le taux de marque ?",
     answer:
-      "La marge en euros est identique (Prix de vente HT moins Cout d'achat HT), mais le denominateur change. Le taux de marque rapporte la marge au PRIX DE VENTE : Taux de marque = Marge / Prix de vente HT x 100. Le taux de marge la rapporte au COUT D'ACHAT : Taux de marge = Marge / Cout d'achat HT x 100. Pour un plat coutant 4 EUR vendu 16 EUR HT, le taux de marque est de 75 % (12/16) et le taux de marge de 300 % (12/4). C'est le meme plat, deux lectures differentes.",
+      "La marge en euros est identique (Prix de vente HT moins Coût d'achat HT), mais le dénominateur change. Le taux de marque rapporte la marge au PRIX DE VENTE : Taux de marque = Marge / Prix de vente HT x 100. Le taux de marge la rapporte au COÛT D'ACHAT : Taux de marge = Marge / Coût d'achat HT x 100. Pour un plat coûtant 4 EUR vendu 16 EUR HT, le taux de marque est de 75 % (12/16) et le taux de marge de 300 % (12/4). C'est le même plat, deux lectures différentes.",
   },
   {
     question: "Comment calculer le taux de marque d'un restaurant ?",
     answer:
-      "Taux de marque = (Prix de vente HT moins Cout matiere HT) / Prix de vente HT x 100. Exemple : un plat vendu 18 EUR HT avec un cout matiere de 5 EUR a un taux de marque de (18-5)/18 = 72 %. Le taux de marque est le complement du food cost : Taux de marque = 100 % moins Food cost. Un food cost de 28 % correspond donc a un taux de marque de 72 %. C'est le taux largement repandu pour piloter un restaurant car il se rapporte directement au chiffre d'affaires.",
+      "Taux de marque = (Prix de vente HT moins Coût matière HT) / Prix de vente HT x 100. Exemple : un plat vendu 18 EUR HT avec un coût matière de 5 EUR a un taux de marque de (18-5)/18 = 72 %. Le taux de marque est le complément du food cost : Taux de marque = 100 % moins Food cost. Un food cost de 28 % correspond donc à un taux de marque de 72 %. C'est le taux largement répandu pour piloter un restaurant car il se rapporte directement au chiffre d'affaires.",
   },
   {
     question: "Comment calculer le taux de marge ?",
     answer:
-      "Taux de marge = (Prix de vente HT moins Cout d'achat HT) / Cout d'achat HT x 100. Exemple : un plat coutant 5 EUR vendu 18 EUR HT a un taux de marge de (18-5)/5 = 260 %. En restauration, le taux de marge est souvent tres eleve (200 a 400 %) car le cout matiere est faible par rapport au prix de vente. Il correspond au coefficient multiplicateur exprime en pourcentage : coefficient 4 = taux de marge de 300 %.",
+      "Taux de marge = (Prix de vente HT moins Coût d'achat HT) / Coût d'achat HT x 100. Exemple : un plat coûtant 5 EUR vendu 18 EUR HT a un taux de marge de (18-5)/5 = 260 %. En restauration, le taux de marge est souvent très élevé (200 à 400 %) car le coût matière est faible par rapport au prix de vente. Il correspond au coefficient multiplicateur exprimé en pourcentage : coefficient 4 = taux de marge de 300 %.",
   },
   {
     question: "La marge brute d'un restaurant, c'est un taux de marge ou un taux de marque ?",
     answer:
-      "C'est un taux de marque. Quand un restaurateur dit qu'il fait 70 % de marge brute, il divise sa marge par le chiffre d'affaires (le prix de vente), pas par le cout d'achat. Il s'agit donc d'un taux de marque. Le taux de marge equivalent serait de 233 %. Cette confusion de vocabulaire est la source d'erreurs de pricing majeures : un restaurateur qui applique un taux de marge de 70 % au lieu d'un taux de marque de 70 % vend ses plats bien trop bas.",
+      "C'est un taux de marque. Quand un restaurateur dit qu'il fait 70 % de marge brute, il divise sa marge par le chiffre d'affaires (le prix de vente), pas par le coût d'achat. Il s'agit donc d'un taux de marque. Le taux de marge équivalent serait de 233 %. Cette confusion de vocabulaire est la source d'erreurs de pricing majeures : un restaurateur qui applique un taux de marge de 70 % au lieu d'un taux de marque de 70 % vend ses plats bien trop bas.",
   },
   {
     question: "Comment passer du taux de marge au taux de marque ?",
     answer:
-      "Deux formules de conversion. Du marge vers la marque : Taux de marque = Taux de marge / (1 + Taux de marge). Un taux de marge de 300 % (soit 3) donne 3 / (1+3) = 75 % de taux de marque. Inversement : Taux de marge = Taux de marque / (1 moins Taux de marque). Un taux de marque de 75 % (soit 0,75) donne 0,75 / (1-0,75) = 300 %. Gardez ces deux formules sous la main, elles evitent 90 % des erreurs de calcul.",
+      "Deux formules de conversion. Du marge vers la marque : Taux de marque = Taux de marge / (1 + Taux de marge). Un taux de marge de 300 % (soit 3) donne 3 / (1+3) = 75 % de taux de marque. Inversement : Taux de marge = Taux de marque / (1 moins Taux de marque). Un taux de marque de 75 % (soit 0,75) donne 0,75 / (1-0,75) = 300 %. Gardez ces deux formules sous la main, elles évitent 90 % des erreurs de calcul.",
   },
   {
-    question: "Pourquoi le taux de marge est-il toujours superieur au taux de marque ?",
+    question: "Pourquoi le taux de marge est-il toujours supérieur au taux de marque ?",
     answer:
-      "Parce que le cout d'achat (denominateur du taux de marge) est toujours inferieur au prix de vente (denominateur du taux de marque). Diviser la meme marge par un nombre plus petit donne un pourcentage plus grand. Le taux de marge peut depasser 100 % (et atteindre 300 a 400 % en restauration), alors que le taux de marque reste par definition inferieur a 100 % : la marge ne peut jamais depasser le prix de vente.",
+      "Parce que le coût d'achat (dénominateur du taux de marge) est toujours inférieur au prix de vente (dénominateur du taux de marque). Diviser la même marge par un nombre plus petit donne un pourcentage plus grand. Le taux de marge peut dépasser 100 % (et atteindre 300 à 400 % en restauration), alors que le taux de marque reste par définition inférieur à 100 % : la marge ne peut jamais dépasser le prix de vente.",
   },
   {
     question: "Quel est le lien entre le taux de marque et le coefficient multiplicateur ?",
     answer:
-      "Ils decrivent la meme realite. Coefficient multiplicateur = 1 / (1 moins Taux de marque). Un taux de marque de 75 % correspond a un coefficient de 1 / 0,25 = 4. Inversement : Taux de marque = 1 moins (1 / Coefficient). Un coefficient de 3,5 donne un taux de marque de 1 - 1/3,5 = 71,4 %. Le coefficient s'applique au cout pour trouver le prix, le taux de marque decrit la part de marge dans ce prix.",
+      "Ils décrivent la même réalité. Coefficient multiplicateur = 1 / (1 moins Taux de marque). Un taux de marque de 75 % correspond à un coefficient de 1 / 0,25 = 4. Inversement : Taux de marque = 1 moins (1 / Coefficient). Un coefficient de 3,5 donne un taux de marque de 1 - 1/3,5 = 71,4 %. Le coefficient s'applique au coût pour trouver le prix, le taux de marque décrit la part de marge dans ce prix.",
   },
   {
     question: "Quel est le lien entre le taux de marque et le food cost ?",
     answer:
-      "Ils sont complementaires et leur somme fait toujours 100 %. Taux de marque = 100 % moins Food cost. Un food cost de 30 % donne un taux de marque de 70 %. Un food cost de 25 % donne un taux de marque de 75 %. C'est la relation la plus utile au quotidien : suivre son food cost, c'est suivre son taux de marque a l'envers. Un bon food cost restaurant se situe entre 25 et 33 %, soit un taux de marque de 67 a 75 %.",
+      "Ils sont complémentaires et leur somme fait toujours 100 %. Taux de marque = 100 % moins Food cost. Un food cost de 30 % donne un taux de marque de 70 %. Un food cost de 25 % donne un taux de marque de 75 %. C'est la relation la plus utile au quotidien : suivre son food cost, c'est suivre son taux de marque à l'envers. Un bon food cost restaurant se situe entre 25 et 33 %, soit un taux de marque de 67 à 75 %.",
   },
   {
     question: "Un taux de marque de 70 % est-il bon pour un restaurant ?",
     answer:
-      "Oui, c'est une cible saine. Un taux de marque de 68 a 75 % (food cost de 25 a 32 %) est considere comme sain en restauration traditionnelle en 2026. En dessous de 65 % de taux de marque, la marge matiere devient insuffisante pour couvrir la masse salariale et les charges fixes. Attention : le taux de marque ne mesure que la matiere premiere. Il faut ensuite retrancher le personnel (labour cost) et les charges fixes pour connaitre la rentabilite reelle, ce que mesure le prime cost.",
+      "Oui, c'est une cible saine. Un taux de marque de 68 à 75 % (food cost de 25 à 32 %) est considéré comme sain en restauration traditionnelle en 2026. En dessous de 65 % de taux de marque, la marge matière devient insuffisante pour couvrir la masse salariale et les charges fixes. Attention : le taux de marque ne mesure que la matière première. Il faut ensuite retrancher le personnel (labour cost) et les charges fixes pour connaître la rentabilité réelle, ce que mesure le prime cost.",
   },
   {
-    question: "Peut-on avoir un taux de marque superieur a 100 % ?",
+    question: "Peut-on avoir un taux de marque supérieur à 100 % ?",
     answer:
-      "Non, jamais. Le taux de marque rapporte la marge au prix de vente. Comme la marge (prix de vente moins cout) est forcement inferieure ou egale au prix de vente, le taux de marque plafonne a 100 %, atteint seulement si le cout d'achat est nul. Si vous obtenez un taux de marque de 120 %, vous avez confondu avec le taux de marge, qui lui n'a pas de plafond et depasse regulierement 100 % en restauration.",
+      "Non, jamais. Le taux de marque rapporte la marge au prix de vente. Comme la marge (prix de vente moins coût) est forcément inférieure ou égale au prix de vente, le taux de marque plafonne à 100 %, atteint seulement si le coût d'achat est nul. Si vous obtenez un taux de marque de 120 %, vous avez confondu avec le taux de marge, qui lui n'a pas de plafond et dépasse régulièrement 100 % en restauration.",
   },
   {
     question: "Faut-il calculer ces taux en HT ou en TTC ?",
     answer:
-      "Toujours en HT. La TVA n'est pas un revenu du restaurant : elle est collectee pour l'Etat et reversee. Calculer un taux de marque sur des prix TTC gonfle artificiellement la marge et fausse toutes les comparaisons. Ramenez systematiquement le prix de vente en HT (Prix TTC / 1,10 pour la restauration sur place, / 1,20 pour l'alcool) avant de calculer marge, marque ou coefficient. Le cout matiere fournisseur est deja generalement exprime en HT.",
+      "Toujours en HT. La TVA n'est pas un revenu du restaurant : elle est collectée pour l'État et reversée. Calculer un taux de marque sur des prix TTC gonfle artificiellement la marge et fausse toutes les comparaisons. Ramenez systématiquement le prix de vente en HT (Prix TTC / 1,10 pour la restauration sur place, / 1,20 pour l'alcool) avant de calculer marge, marque ou coefficient. Le coût matière fournisseur est déjà généralement exprimé en HT.",
   },
   {
     question: "Quel taux utiliser pour fixer le prix d'un plat ?",
     answer:
-      "Le plus simple en restauration est de partir du food cost cible (donc du taux de marque cible). Fixez votre taux de marque cible (par exemple 72 %, soit un food cost de 28 %), puis calculez le prix : Prix de vente HT = Cout matiere / (1 moins Taux de marque). Pour un cout de 5 EUR et un taux de marque de 72 % : 5 / 0,28 = 17,86 EUR HT. Le taux de marge, lui, sert davantage a comparer le rendement d'un achat lors des negociations fournisseurs.",
+      "Le plus simple en restauration est de partir du food cost cible (donc du taux de marque cible). Fixez votre taux de marque cible (par exemple 72 %, soit un food cost de 28 %), puis calculez le prix : Prix de vente HT = Coût matière / (1 moins Taux de marque). Pour un coût de 5 EUR et un taux de marque de 72 % : 5 / 0,28 = 17,86 EUR HT. Le taux de marge, lui, sert davantage à comparer le rendement d'un achat lors des négociations fournisseurs.",
   },
   {
-    question: "Le taux de marque est-il la meme chose que le taux de marge nette ?",
+    question: "Le taux de marque est-il la même chose que le taux de marge nette ?",
     answer:
-      "Non. Le taux de marque se calcule sur le seul cout matiere : c'est un indicateur de marge brute. La marge nette, elle, tient compte de TOUTES les charges (personnel, loyer, energie, amortissements, impots). Un restaurant peut afficher un excellent taux de marque de 74 % et une marge nette de 3 % seulement si sa masse salariale et ses charges fixes sont trop lourdes. Ne jamais confondre marge matiere (marque) et rentabilite finale (marge nette).",
+      "Non. Le taux de marque se calcule sur le seul coût matière : c'est un indicateur de marge brute. La marge nette, elle, tient compte de TOUTES les charges (personnel, loyer, énergie, amortissements, impôts). Un restaurant peut afficher un excellent taux de marque de 74 % et une marge nette de 3 % seulement si sa masse salariale et ses charges fixes sont trop lourdes. Ne jamais confondre marge matière (marque) et rentabilité finale (marge nette).",
   },
   {
-    question: "Comment eviter de confondre le taux de marge et le taux de marque ?",
+    question: "Comment éviter de confondre le taux de marge et le taux de marque ?",
     answer:
-      "Retenez un moyen mnemotechnique : la marQue se calcule sur le prix de vente (Q comme le prix qu'on affiche au client), la marGe se calcule sur le cout d'achat. Autre reflexe : si le pourcentage depasse 100 %, c'est forcement un taux de marge. En restauration, sauf mention contraire, la marge brute et les 65-75 % couramment cites sont des taux de marque. En cas de doute, revenez toujours a la marge en euros, puis choisissez le denominateur.",
+      "Retenez un moyen mnémotechnique : la marQue se calcule sur le prix de vente (Q comme le prix qu'on affiche au client), la marGe se calcule sur le coût d'achat. Autre réflexe : si le pourcentage dépasse 100 %, c'est forcément un taux de marge. En restauration, sauf mention contraire, la marge brute et les 65-75 % couramment cités sont des taux de marque. En cas de doute, revenez toujours à la marge en euros, puis choisissez le dénominateur.",
   },
 ];
 
 const howToSteps = [
-  { name: "Reunir le cout d'achat HT et le prix de vente HT", text: "Prenez le cout matiere HT d'un plat (via sa fiche technique) et son prix de vente affiche ramene en HT (Prix TTC / 1,10 en restauration sur place). Travaillez toujours en HT pour ne pas fausser le calcul avec la TVA." },
-  { name: "Calculer la marge en euros", text: "Marge = Prix de vente HT moins Cout d'achat HT. C'est la base commune aux deux taux. Exemple : 16 EUR de prix de vente HT moins 4 EUR de cout = 12 EUR de marge." },
-  { name: "Calculer le taux de marque", text: "Taux de marque = Marge / Prix de vente HT x 100. Exemple : 12 / 16 = 75 %. C'est le taux a rapporter au chiffre d'affaires, celui qu'on appelle marge brute en restauration." },
-  { name: "Calculer le taux de marge", text: "Taux de marge = Marge / Cout d'achat HT x 100. Exemple : 12 / 4 = 300 %. Il correspond au coefficient multiplicateur exprime en pourcentage (coefficient 4 = 300 % de taux de marge)." },
-  { name: "Verifier la coherence avec le coefficient et le food cost", text: "Controle croise : Taux de marque + Food cost = 100 %, et Coefficient = 1 / (1 moins Taux de marque). Un taux de marque de 75 % implique un food cost de 25 % et un coefficient de 4. Si les trois ne collent pas, il y a une erreur." },
-  { name: "Comparer aux benchmarks restauration", text: "Cible saine en 2026 : taux de marque de 68 a 75 % sur les plats (food cost de 25 a 32 %), et jusqu'a 80-90 % sur les boissons. En dessous de 65 %, la marge matiere devient insuffisante." },
-  { name: "Suivre l'evolution dans le temps", text: "Recalculez chaque mois par plat et en moyenne. Une baisse du taux de marque signale une hausse des couts fournisseurs ou du gaspillage. Un logiciel comme RestauMargin automatise le suivi a partir des fiches techniques." },
+  { name: "Réunir le coût d'achat HT et le prix de vente HT", text: "Prenez le coût matière HT d'un plat (via sa fiche technique) et son prix de vente affiché ramené en HT (Prix TTC / 1,10 en restauration sur place). Travaillez toujours en HT pour ne pas fausser le calcul avec la TVA." },
+  { name: "Calculer la marge en euros", text: "Marge = Prix de vente HT moins Coût d'achat HT. C'est la base commune aux deux taux. Exemple : 16 EUR de prix de vente HT moins 4 EUR de coût = 12 EUR de marge." },
+  { name: "Calculer le taux de marque", text: "Taux de marque = Marge / Prix de vente HT x 100. Exemple : 12 / 16 = 75 %. C'est le taux à rapporter au chiffre d'affaires, celui qu'on appelle marge brute en restauration." },
+  { name: "Calculer le taux de marge", text: "Taux de marge = Marge / Coût d'achat HT x 100. Exemple : 12 / 4 = 300 %. Il correspond au coefficient multiplicateur exprimé en pourcentage (coefficient 4 = 300 % de taux de marge)." },
+  { name: "Vérifier la cohérence avec le coefficient et le food cost", text: "Contrôle croisé : Taux de marque + Food cost = 100 %, et Coefficient = 1 / (1 moins Taux de marque). Un taux de marque de 75 % implique un food cost de 25 % et un coefficient de 4. Si les trois ne collent pas, il y a une erreur." },
+  { name: "Comparer aux benchmarks restauration", text: "Cible saine en 2026 : taux de marque de 68 à 75 % sur les plats (food cost de 25 à 32 %), et jusqu'à 80-90 % sur les boissons. En dessous de 65 %, la marge matière devient insuffisante." },
+  { name: "Suivre l'évolution dans le temps", text: "Recalculez chaque mois par plat et en moyenne. Une baisse du taux de marque signale une hausse des coûts fournisseurs ou du gaspillage. Un logiciel comme RestauMargin automatise le suivi à partir des fiches techniques." },
 ];
 
 const conversions = [
@@ -127,8 +127,8 @@ export default function BlogTauxMarque() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
-        title="Taux de marque ou taux de marge : quelle difference ? (calcul restaurant 2026)"
-        description="Taux de marge vs taux de marque : la difference expliquee simplement. Formules, exemple chiffre, tableau de conversion, lien avec le coefficient multiplicateur et le food cost. Guide restaurant 2026."
+        title="Taux de marque ou taux de marge : quelle différence ? (calcul restaurant 2026)"
+        description="Taux de marge vs taux de marque : la différence expliquée simplement. Formules, exemple chiffré, tableau de conversion, lien avec le coefficient multiplicateur et le food cost. Guide restaurant 2026."
         path="/blog/taux-de-marque-taux-de-marge"
         type="article"
         schema={[
@@ -142,7 +142,7 @@ export default function BlogTauxMarque() {
             '@context': 'https://schema.org',
             '@type': 'HowTo',
             name: 'Comment calculer le taux de marque et le taux de marge en restauration',
-            description: 'Methode pas a pas pour calculer et distinguer le taux de marque et le taux de marge d\'un plat de restaurant : marge en euros, denominateur, controle croise avec le coefficient et le food cost.',
+            description: 'Méthode pas à pas pour calculer et distinguer le taux de marque et le taux de marge d\'un plat de restaurant : marge en euros, dénominateur, contrôle croisé avec le coefficient et le food cost.',
             totalTime: 'PT10M',
             tool: ['Fiche technique', 'Calculatrice ou logiciel RestauMargin'],
             step: howToSteps.map((s) => ({ '@type': 'HowToStep', name: s.name, text: s.text })),
@@ -150,8 +150,8 @@ export default function BlogTauxMarque() {
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
-            headline: 'Taux de marque ou taux de marge : quelle difference ? (calcul restaurant 2026)',
-            description: 'Difference entre taux de marge et taux de marque en restauration : formules, exemple chiffre complet, tableau de conversion, lien avec le coefficient multiplicateur et le food cost, erreurs de pricing a eviter.',
+            headline: 'Taux de marque ou taux de marge : quelle différence ? (calcul restaurant 2026)',
+            description: 'Différence entre taux de marge et taux de marque en restauration : formules, exemple chiffré complet, tableau de conversion, lien avec le coefficient multiplicateur et le food cost, erreurs de pricing à éviter.',
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -165,9 +165,9 @@ export default function BlogTauxMarque() {
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/taux-de-marque-taux-de-marge' },
             citation: [
-              { '@type': 'CreativeWork', name: 'Plan comptable general - notions de marge commerciale' },
-              { '@type': 'CreativeWork', name: 'GHR - Groupement des Hotelleries et Restaurations, ratios 2026' },
-              { '@type': 'CreativeWork', name: 'INSEE - Secteur 56 hebergement et restauration' },
+              { '@type': 'CreativeWork', name: 'Plan comptable général - notions de marge commerciale' },
+              { '@type': 'CreativeWork', name: 'GHR - Groupement des Hôtelleries et Restaurations, ratios 2026' },
+              { '@type': 'CreativeWork', name: 'INSEE - Secteur 56 hébergement et restauration' },
             ],
           },
         ]}
@@ -214,9 +214,9 @@ export default function BlogTauxMarque() {
         category="Marges"
         readTime="16 min"
         date="Juillet 2026"
-        title="Taux de marque ou taux de marge : quelle difference en restauration ?"
+        title="Taux de marque ou taux de marge : quelle différence en restauration ?"
         accentWord="marque"
-        subtitle="Deux ratios que tout restaurateur confond au moins une fois. Meme marge en euros, mais un denominateur different qui change tout. Voici les formules, un exemple chiffre complet, un tableau de conversion et les erreurs de pricing a ne plus jamais commettre."
+        subtitle="Deux ratios que tout restaurateur confond au moins une fois. Même marge en euros, mais un dénominateur différent qui change tout. Voici les formules, un exemple chiffré complet, un tableau de conversion et les erreurs de pricing à ne plus jamais commettre."
       />
 
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
@@ -224,9 +224,9 @@ export default function BlogTauxMarque() {
 
         {/* ── Intro / Featured snippet ── */}
         <div className="bg-gradient-to-br from-teal-50 to-emerald-50 border-l-4 border-teal-600 rounded-r-2xl p-5 sm:p-6 my-8">
-          <p className="text-xs font-bold uppercase tracking-wider text-teal-700 mb-2">Reponse rapide</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-teal-700 mb-2">Réponse rapide</p>
           <p className="text-base sm:text-lg text-mono-100 leading-relaxed">
-            Le <strong>taux de marque</strong> et le <strong>taux de marge</strong> partent de la meme marge en euros (Prix de vente HT moins Cout d'achat HT), mais divisent par un nombre different. Le <strong>taux de marque = Marge / Prix de vente HT</strong> (base : le prix de vente). Le <strong>taux de marge = Marge / Cout d'achat HT</strong> (base : le cout). Pour un plat coutant 4 EUR vendu 16 EUR HT : taux de marque de <strong>75 %</strong>, taux de marge de <strong>300 %</strong>. En restauration, la "marge brute" dont tout le monde parle est en realite un taux de marque.
+            Le <strong>taux de marque</strong> et le <strong>taux de marge</strong> partent de la même marge en euros (Prix de vente HT moins Coût d'achat HT), mais divisent par un nombre différent. Le <strong>taux de marque = Marge / Prix de vente HT</strong> (base : le prix de vente). Le <strong>taux de marge = Marge / Coût d'achat HT</strong> (base : le coût). Pour un plat coûtant 4 EUR vendu 16 EUR HT : taux de marque de <strong>75 %</strong>, taux de marge de <strong>300 %</strong>. En restauration, la "marge brute" dont tout le monde parle est en réalité un taux de marque.
           </p>
         </div>
 
@@ -234,7 +234,7 @@ export default function BlogTauxMarque() {
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
           <div className="flex items-center gap-2 mb-3">
             <Scale className="w-5 h-5" />
-            <span className="text-xs font-bold uppercase tracking-wider text-teal-100">Les formules a retenir</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-100">Les formules à retenir</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold mb-4">
             Marque, marge et leurs conversions
@@ -242,7 +242,7 @@ export default function BlogTauxMarque() {
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 space-y-3 font-mono text-sm sm:text-base">
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">1.</span>
-              <span><strong className="text-white">Marge (EUR)</strong> = Prix de vente HT moins Cout d'achat HT</span>
+              <span><strong className="text-white">Marge (EUR)</strong> = Prix de vente HT moins Coût d'achat HT</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">2.</span>
@@ -250,7 +250,7 @@ export default function BlogTauxMarque() {
             </div>
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">3.</span>
-              <span><strong className="text-white">Taux de marge</strong> = Marge / Cout d'achat HT x 100</span>
+              <span><strong className="text-white">Taux de marge</strong> = Marge / Coût d'achat HT x 100</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">4.</span>
@@ -262,7 +262,7 @@ export default function BlogTauxMarque() {
             </div>
           </div>
           <p className="mt-4 text-teal-100 text-sm">
-            Reflexe cle en restauration : Taux de marque + Food cost = 100 %. Un food cost de 28 % correspond a un taux de marque de 72 %.
+            Réflexe clé en restauration : Taux de marque + Food cost = 100 %. Un food cost de 28 % correspond à un taux de marque de 72 %.
           </p>
         </div>
 
@@ -274,17 +274,17 @@ export default function BlogTauxMarque() {
           </h2>
           <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
-              { href: '#difference', label: 'La difference en 30 secondes' },
-              { href: '#formules', label: 'Les deux formules : tout est dans le denominateur' },
-              { href: '#exemple', label: 'Exemple chiffre complet : le plat a 4 EUR vendu 16 EUR' },
-              { href: '#confusion', label: 'Pourquoi la confusion est si frequente en restauration' },
+              { href: '#difference', label: 'La différence en 30 secondes' },
+              { href: '#formules', label: 'Les deux formules : tout est dans le dénominateur' },
+              { href: '#exemple', label: 'Exemple chiffré complet : le plat à 4 EUR vendu 16 EUR' },
+              { href: '#confusion', label: 'Pourquoi la confusion est si fréquente en restauration' },
               { href: '#triangle', label: 'Marque, coefficient multiplicateur et food cost' },
               { href: '#conversion', label: 'Tableau de conversion marge <-> marque' },
               { href: '#marge-brute', label: 'La marge brute du restaurant est un taux de marque' },
               { href: '#quel-taux', label: 'Quel taux utiliser, et quand ?' },
               { href: '#erreurs', label: 'Les 5 erreurs qui faussent vos prix' },
               { href: '#methode', label: 'Comment calculer et suivre ces taux' },
-              { href: '#faq', label: 'FAQ : 14 questions frequentes' },
+              { href: '#faq', label: 'FAQ : 14 questions fréquentes' },
             ].map((item, i) => (
               <li key={i}>
                 <a href={item.href} className="hover:text-teal-600 transition-colors flex items-start gap-2">
@@ -304,15 +304,15 @@ export default function BlogTauxMarque() {
             <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
               <Scale className="w-6 h-6 text-teal-700" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">1. La difference en 30 secondes</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">1. La différence en 30 secondes</h2>
           </div>
 
           <p>
-            Un plat vous coute <strong>4 EUR</strong> de matiere premiere. Vous le vendez <strong>16 EUR HT</strong>. Votre marge est de 12 EUR. Jusque-la, tout le monde est d'accord. La ou naissent les malentendus, c'est au moment d'exprimer cette marge en pourcentage. Selon la base de calcul choisie, vous obtenez <strong>75 %</strong> ou <strong>300 %</strong> pour exactement le meme plat.
+            Un plat vous coûte <strong>4 EUR</strong> de matière première. Vous le vendez <strong>16 EUR HT</strong>. Votre marge est de 12 EUR. Jusque-là, tout le monde est d'accord. Là où naissent les malentendus, c'est au moment d'exprimer cette marge en pourcentage. Selon la base de calcul choisie, vous obtenez <strong>75 %</strong> ou <strong>300 %</strong> pour exactement le même plat.
           </p>
 
           <p>
-            Ces deux pourcentages ont un nom precis :
+            Ces deux pourcentages ont un nom précis :
           </p>
 
           <div className="grid sm:grid-cols-2 gap-4 my-6">
@@ -322,7 +322,7 @@ export default function BlogTauxMarque() {
                 <h3 className="text-base font-bold text-mono-100">Taux de marque</h3>
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-3">
-                La marge rapportee au <strong>prix de vente</strong>. On regarde quelle part du prix affiche au client reste dans la poche du restaurant.
+                La marge rapportée au <strong>prix de vente</strong>. On regarde quelle part du prix affiché au client reste dans la poche du restaurant.
               </p>
               <div className="bg-teal-50 rounded-lg p-3 font-mono text-sm text-teal-900">
                 12 / 16 = <strong>75 %</strong>
@@ -334,7 +334,7 @@ export default function BlogTauxMarque() {
                 <h3 className="text-base font-bold text-mono-100">Taux de marge</h3>
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-3">
-                La marge rapportee au <strong>cout d'achat</strong>. On regarde combien la matiere premiere a rapporte par rapport a ce qu'elle a coute.
+                La marge rapportée au <strong>coût d'achat</strong>. On regarde combien la matière première a rapporté par rapport à ce qu'elle a coûté.
               </p>
               <div className="bg-blue-50 rounded-lg p-3 font-mono text-sm text-blue-900">
                 12 / 4 = <strong>300 %</strong>
@@ -343,7 +343,7 @@ export default function BlogTauxMarque() {
           </div>
 
           <p>
-            Retenez le moyen mnemotechnique : la <strong>marQue</strong> se calcule sur le prix de vente (la valeur affichee au client), la <strong>marGe</strong> sur le cout d'achat. Les deux mesurent la meme chose vue sous deux angles, comme la temperature en Celsius et en Fahrenheit. Ni l'un ni l'autre n'est faux : ce qui est faux, c'est de comparer un taux de marque a un taux de marge sans le savoir.
+            Retenez le moyen mnémotechnique : la <strong>marQue</strong> se calcule sur le prix de vente (la valeur affichée au client), la <strong>marGe</strong> sur le coût d'achat. Les deux mesurent la même chose vue sous deux angles, comme la température en Celsius et en Fahrenheit. Ni l'un ni l'autre n'est faux : ce qui est faux, c'est de comparer un taux de marque à un taux de marge sans le savoir.
           </p>
 
           <div className="bg-amber-50 border-l-4 border-amber-400 rounded-r-xl p-5 my-6">
@@ -352,7 +352,7 @@ export default function BlogTauxMarque() {
               <div>
                 <p className="text-sm font-bold text-amber-900 mb-1">L'enjeu concret</p>
                 <p className="text-sm text-amber-800">
-                  Un restaurateur qui veut "70 % de marge" et applique par erreur un taux de marge de 70 % (au lieu d'un taux de marque) fixe des prix <strong>bien trop bas</strong> : son plat a 4 EUR de cout serait vendu 6,80 EUR au lieu de 13,33 EUR. Une erreur de vocabulaire qui coute la moitie de la marge.
+                  Un restaurateur qui veut "70 % de marge" et applique par erreur un taux de marge de 70 % (au lieu d'un taux de marque) fixe des prix <strong>bien trop bas</strong> : son plat à 4 EUR de coût serait vendu 6,80 EUR au lieu de 13,33 EUR. Une erreur de vocabulaire qui coûte la moitié de la marge.
                 </p>
               </div>
             </div>
@@ -365,19 +365,19 @@ export default function BlogTauxMarque() {
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
               <Calculator className="w-6 h-6 text-blue-700" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">2. Les deux formules : tout est dans le denominateur</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">2. Les deux formules : tout est dans le dénominateur</h2>
           </div>
 
           <p>
-            Les deux taux partagent le meme numerateur, <strong>la marge en euros</strong>. La seule variable, c'est le denominateur.
+            Les deux taux partagent le même numérateur, <strong>la marge en euros</strong>. La seule variable, c'est le dénominateur.
           </p>
 
-          <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">La marge en euros (le point de depart commun)</h3>
+          <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">La marge en euros (le point de départ commun)</h3>
           <div className="bg-mono-100 rounded-xl p-5 my-4 font-mono text-sm text-white text-center">
-            Marge (EUR) = Prix de vente HT moins Cout d'achat HT
+            Marge (EUR) = Prix de vente HT moins Coût d'achat HT
           </div>
           <p>
-            Cette marge s'appelle aussi la <strong>marge brute unitaire</strong> quand on raisonne par plat. Elle doit toujours se calculer en HT, jamais en TTC : la TVA n'appartient pas au restaurant, elle est collectee pour l'Etat.
+            Cette marge s'appelle aussi la <strong>marge brute unitaire</strong> quand on raisonne par plat. Elle doit toujours se calculer en HT, jamais en TTC : la TVA n'appartient pas au restaurant, elle est collectée pour l'État.
           </p>
 
           <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">Le taux de marque : base prix de vente</h3>
@@ -385,24 +385,24 @@ export default function BlogTauxMarque() {
             Taux de marque (%) = (Marge / Prix de vente HT) x 100
           </div>
           <p>
-            Le taux de marque repond a la question : <strong>quelle part de mon prix de vente est de la marge ?</strong> Comme la marge est forcement inferieure au prix de vente, le taux de marque est toujours compris entre 0 et 100 %. C'est le taux naturellement utilise en restauration, car il se rapporte directement au chiffre d'affaires.
+            Le taux de marque répond à la question : <strong>quelle part de mon prix de vente est de la marge ?</strong> Comme la marge est forcément inférieure au prix de vente, le taux de marque est toujours compris entre 0 et 100 %. C'est le taux naturellement utilisé en restauration, car il se rapporte directement au chiffre d'affaires.
           </p>
 
-          <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">Le taux de marge : base cout d'achat</h3>
+          <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">Le taux de marge : base coût d'achat</h3>
           <div className="bg-blue-600 rounded-xl p-5 my-4 font-mono text-sm text-white text-center">
-            Taux de marge (%) = (Marge / Cout d'achat HT) x 100
+            Taux de marge (%) = (Marge / Coût d'achat HT) x 100
           </div>
           <p>
-            Le taux de marge repond a une autre question : <strong>combien mon cout matiere a-t-il rapporte par rapport a ce qu'il a coute ?</strong> Comme le cout d'achat est faible en restauration (4 EUR pour un plat vendu 16 EUR), ce taux explose facilement au-dela de 100 % et atteint couramment 200 a 400 %. Il correspond, exprime autrement, au <Link to="/blog/coefficient-multiplicateur" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">coefficient multiplicateur</Link>.
+            Le taux de marge répond à une autre question : <strong>combien mon coût matière a-t-il rapporté par rapport à ce qu'il a coûté ?</strong> Comme le coût d'achat est faible en restauration (4 EUR pour un plat vendu 16 EUR), ce taux explose facilement au-delà de 100 % et atteint couramment 200 à 400 %. Il correspond, exprimé autrement, au <Link to="/blog/coefficient-multiplicateur" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">coefficient multiplicateur</Link>.
           </p>
 
           <div className="bg-emerald-50 border-l-4 border-emerald-400 rounded-r-xl p-5 my-6">
             <div className="flex items-start gap-3">
               <Lightbulb className="w-5 h-5 text-emerald-700 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-bold text-emerald-900 mb-1">Le reflexe qui evite l'erreur</p>
+                <p className="text-sm font-bold text-emerald-900 mb-1">Le réflexe qui évite l'erreur</p>
                 <p className="text-sm text-emerald-800">
-                  Si un pourcentage de "marge" depasse 100 %, c'est <strong>forcement</strong> un taux de marge. Un taux de marque ne peut jamais depasser 100 %. Ce simple controle detecte instantanement la majorite des confusions.
+                  Si un pourcentage de "marge" dépasse 100 %, c'est <strong>forcément</strong> un taux de marge. Un taux de marque ne peut jamais dépasser 100 %. Ce simple contrôle détecte instantanément la majorité des confusions.
                 </p>
               </div>
             </div>
@@ -415,11 +415,11 @@ export default function BlogTauxMarque() {
             <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
               <BarChart3 className="w-6 h-6 text-emerald-700" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">3. Exemple chiffre complet : le plat a 4 EUR vendu 16 EUR</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">3. Exemple chiffré complet : le plat à 4 EUR vendu 16 EUR</h2>
           </div>
 
           <p>
-            Prenons un plat signature : un <strong>risotto aux champignons</strong>. Sa fiche technique donne un cout matiere de <strong>4 EUR HT</strong>. Il est vendu <strong>17,60 EUR TTC</strong>, soit <strong>16 EUR HT</strong> (TVA restauration a 10 %). Deroulons tous les indicateurs.
+            Prenons un plat signature : un <strong>risotto aux champignons</strong>. Sa fiche technique donne un coût matière de <strong>4 EUR HT</strong>. Il est vendu <strong>17,60 EUR TTC</strong>, soit <strong>16 EUR HT</strong> (TVA restauration à 10 %). Déroulons tous les indicateurs.
           </p>
 
           <div className="overflow-x-auto my-6">
@@ -428,12 +428,12 @@ export default function BlogTauxMarque() {
                 <tr className="bg-mono-1000">
                   <th className="text-left px-4 py-3 font-semibold text-mono-400">Indicateur</th>
                   <th className="text-left px-4 py-3 font-semibold text-mono-400">Calcul</th>
-                  <th className="text-left px-4 py-3 font-semibold text-mono-400">Resultat</th>
+                  <th className="text-left px-4 py-3 font-semibold text-mono-400">Résultat</th>
                 </tr>
               </thead>
               <tbody>
                 {[
-                  ['Cout matiere HT', 'Fiche technique', '4,00 EUR'],
+                  ['Coût matière HT', 'Fiche technique', '4,00 EUR'],
                   ['Prix de vente HT', '17,60 / 1,10', '16,00 EUR'],
                   ['Marge brute (EUR)', '16 moins 4', '12,00 EUR'],
                   ['Taux de marque', '12 / 16', '75 %'],
@@ -452,20 +452,20 @@ export default function BlogTauxMarque() {
           </div>
 
           <p>
-            Observez la coherence de l'ensemble : le <strong>taux de marque (75 %)</strong> et le <strong>food cost (25 %)</strong> s'additionnent pour faire 100 %. Le <strong>coefficient (4)</strong> est l'inverse du food cost (1 / 0,25 = 4). Et le <strong>taux de marge (300 %)</strong> vaut le coefficient moins 1, exprime en pourcentage. Ces quatre chiffres decrivent la meme realite economique.
+            Observez la cohérence de l'ensemble : le <strong>taux de marque (75 %)</strong> et le <strong>food cost (25 %)</strong> s'additionnent pour faire 100 %. Le <strong>coefficient (4)</strong> est l'inverse du food cost (1 / 0,25 = 4). Et le <strong>taux de marge (300 %)</strong> vaut le coefficient moins 1, exprimé en pourcentage. Ces quatre chiffres décrivent la même réalité économique.
           </p>
 
           <p>
-            C'est precisement pour cette raison que la confusion est dangereuse : un restaurateur qui lit "300 % de marge" pourrait croire son plat trois fois plus rentable qu'un plat "a 75 % de marge". Ce sont pourtant strictement les memes 12 EUR. Pour aller plus loin sur la construction du prix, consultez notre guide <Link to="/blog/prix-de-vente-restaurant" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">calculer le prix de vente d'un plat</Link>.
+            C'est précisément pour cette raison que la confusion est dangereuse : un restaurateur qui lit "300 % de marge" pourrait croire son plat trois fois plus rentable qu'un plat "à 75 % de marge". Ce sont pourtant strictement les mêmes 12 EUR. Pour aller plus loin sur la construction du prix, consultez notre guide <Link to="/blog/prix-de-vente-restaurant" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">calculer le prix de vente d'un plat</Link>.
           </p>
 
           <div className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 my-8">
             <h3 className="text-base font-bold text-mono-100 mb-3 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-teal-600" />
-              Le meme plat vu par un fournisseur de vin
+              Le même plat vu par un fournisseur de vin
             </h3>
             <p className="text-sm text-mono-400 leading-relaxed">
-              Une bouteille achetee <strong>6 EUR HT</strong> et vendue <strong>24 EUR HT</strong> (verre compris) affiche une marge de 18 EUR. Taux de marque : 18/24 = <strong>75 %</strong>. Taux de marge : 18/6 = <strong>300 %</strong>. Coefficient : 4. Les boissons offrent souvent des taux de marque encore plus eleves (80 a 90 %) : voir notre article sur la <Link to="/blog/marge-boissons-restaurant" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">marge sur les boissons</Link>.
+              Une bouteille achetée <strong>6 EUR HT</strong> et vendue <strong>24 EUR HT</strong> (verre compris) affiche une marge de 18 EUR. Taux de marque : 18/24 = <strong>75 %</strong>. Taux de marge : 18/6 = <strong>300 %</strong>. Coefficient : 4. Les boissons offrent souvent des taux de marque encore plus élevés (80 à 90 %) : voir notre article sur la <Link to="/blog/marge-boissons-restaurant" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">marge sur les boissons</Link>.
             </p>
           </div>
         </section>
@@ -476,11 +476,11 @@ export default function BlogTauxMarque() {
             <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center">
               <AlertTriangle className="w-6 h-6 text-rose-700" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">4. Pourquoi la confusion est si frequente en restauration</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">4. Pourquoi la confusion est si fréquente en restauration</h2>
           </div>
 
           <p>
-            Trois raisons expliquent pourquoi ces deux notions se melangent en permanence dans la profession :
+            Trois raisons expliquent pourquoi ces deux notions se mélangent en permanence dans la profession :
           </p>
 
           <ul className="space-y-3 my-5">
@@ -489,7 +489,7 @@ export default function BlogTauxMarque() {
                 <span className="text-rose-700 font-bold text-sm">1</span>
               </div>
               <div>
-                <strong className="text-mono-100">Le mot "marge" est utilise pour les deux.</strong> Dans le langage courant, "je fais 70 % de marge" ne precise jamais le denominateur. Le contexte comptable (marge brute rapportee au CA) impose pourtant un taux de marque, mais personne ne le dit.
+                <strong className="text-mono-100">Le mot "marge" est utilisé pour les deux.</strong> Dans le langage courant, "je fais 70 % de marge" ne précise jamais le dénominateur. Le contexte comptable (marge brute rapportée au CA) impose pourtant un taux de marque, mais personne ne le dit.
               </div>
             </li>
             <li className="flex items-start gap-3">
@@ -497,7 +497,7 @@ export default function BlogTauxMarque() {
                 <span className="text-rose-700 font-bold text-sm">2</span>
               </div>
               <div>
-                <strong className="text-mono-100">Le commerce de detail raisonne en taux de marge.</strong> Un grossiste ou un caviste parle spontanement de taux de marge (rendement sur le cout d'achat). Le restaurateur, lui, pilote au chiffre d'affaires, donc en taux de marque. Les deux mondes se croisent sans utiliser le meme referentiel.
+                <strong className="text-mono-100">Le commerce de détail raisonne en taux de marge.</strong> Un grossiste ou un caviste parle spontanément de taux de marge (rendement sur le coût d'achat). Le restaurateur, lui, pilote au chiffre d'affaires, donc en taux de marque. Les deux mondes se croisent sans utiliser le même référentiel.
               </div>
             </li>
             <li className="flex items-start gap-3">
@@ -505,13 +505,13 @@ export default function BlogTauxMarque() {
                 <span className="text-rose-700 font-bold text-sm">3</span>
               </div>
               <div>
-                <strong className="text-mono-100">Les tableurs maison melangent les formules.</strong> Beaucoup de restaurateurs bricolent un Excel ou une cellule divise par le cout, la suivante par le prix de vente. Resultat : des colonnes "% marge" incoherentes d'une ligne a l'autre.
+                <strong className="text-mono-100">Les tableurs maison mélangent les formules.</strong> Beaucoup de restaurateurs bricolent un Excel où une cellule divise par le coût, la suivante par le prix de vente. Résultat : des colonnes "% marge" incohérentes d'une ligne à l'autre.
               </div>
             </li>
           </ul>
 
           <p>
-            Cette confusion n'est pas anodine. Elle conduit soit a <strong>surestimer sa rentabilite</strong> (croire gagner 300 % quand on gagne 75 % de son prix), soit a <strong>sous-tarifer ses plats</strong> (appliquer 70 % de marge sur le cout au lieu du prix). Dans les deux cas, le compte de resultat trinque. Un logiciel qui applique une definition unique et coherente supprime le probleme a la source.
+            Cette confusion n'est pas anodine. Elle conduit soit à <strong>surestimer sa rentabilité</strong> (croire gagner 300 % quand on gagne 75 % de son prix), soit à <strong>sous-tarifer ses plats</strong> (appliquer 70 % de marge sur le coût au lieu du prix). Dans les deux cas, le compte de résultat trinque. Un logiciel qui applique une définition unique et cohérente supprime le problème à la source.
           </p>
         </section>
 
@@ -525,35 +525,35 @@ export default function BlogTauxMarque() {
           </div>
 
           <p>
-            En restauration, le taux de marque n'est jamais seul. Il vit dans un <strong>triangle</strong> avec le coefficient multiplicateur et le food cost. Connaitre l'un permet de retrouver les deux autres instantanement.
+            En restauration, le taux de marque n'est jamais seul. Il vit dans un <strong>triangle</strong> avec le coefficient multiplicateur et le food cost. Connaître l'un permet de retrouver les deux autres instantanément.
           </p>
 
           <div className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 my-6 space-y-4">
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-mono-100 mb-1">Taux de marque et food cost sont complementaires</p>
+                <p className="font-semibold text-mono-100 mb-1">Taux de marque et food cost sont complémentaires</p>
                 <p className="font-mono text-sm text-mono-400">Taux de marque = 100 % moins Food cost</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-mono-100 mb-1">Le coefficient decoule du taux de marque</p>
+                <p className="font-semibold text-mono-100 mb-1">Le coefficient découle du taux de marque</p>
                 <p className="font-mono text-sm text-mono-400">Coefficient = 1 / (1 moins Taux de marque) = 1 / Food cost</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-mono-100 mb-1">Le taux de marge se deduit du coefficient</p>
+                <p className="font-semibold text-mono-100 mb-1">Le taux de marge se déduit du coefficient</p>
                 <p className="font-mono text-sm text-mono-400">Taux de marge = (Coefficient moins 1) x 100</p>
               </div>
             </div>
           </div>
 
           <p>
-            Concretement, si vous fixez un <strong>food cost cible de 28 %</strong> (une cible saine en restauration traditionnelle), alors :
+            Concrètement, si vous fixez un <strong>food cost cible de 28 %</strong> (une cible saine en restauration traditionnelle), alors :
           </p>
 
           <ul className="space-y-2 my-4">
@@ -572,7 +572,7 @@ export default function BlogTauxMarque() {
           </ul>
 
           <p>
-            Ces quatre chiffres sont interchangeables. Le plus pratique au quotidien reste le <strong>food cost</strong> (et donc le taux de marque), car il se compare directement aux benchmarks du secteur et se retrouve dans le <Link to="/blog/prime-cost-restaurant" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">prime cost</Link>. Pour approfondir la mecanique du multiplicateur, lisez le guide dedie au <Link to="/blog/coefficient-multiplicateur" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">coefficient multiplicateur en restauration</Link>.
+            Ces quatre chiffres sont interchangeables. Le plus pratique au quotidien reste le <strong>food cost</strong> (et donc le taux de marque), car il se compare directement aux benchmarks du secteur et se retrouve dans le <Link to="/blog/prime-cost-restaurant" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">prime cost</Link>. Pour approfondir la mécanique du multiplicateur, lisez le guide dédié au <Link to="/blog/coefficient-multiplicateur" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">coefficient multiplicateur en restauration</Link>.
           </p>
         </section>
 
@@ -613,13 +613,13 @@ export default function BlogTauxMarque() {
           </div>
 
           <p>
-            Lecture : un <strong>coefficient de 4</strong> equivaut a un taux de marge de 300 %, un taux de marque de 75 % et un food cost de 25 %. Toutes ces valeurs decrivent le meme plat. La colonne surlignee correspond a l'exemple du risotto vu plus haut.
+            Lecture : un <strong>coefficient de 4</strong> équivaut à un taux de marge de 300 %, un taux de marque de 75 % et un food cost de 25 %. Toutes ces valeurs décrivent le même plat. La colonne surlignee correspond à l'exemple du risotto vu plus haut.
           </p>
 
           <div className="bg-teal-50 border border-teal-200 rounded-2xl p-6 my-8">
             <h3 className="text-base font-bold text-mono-100 mb-3 flex items-center gap-2">
               <Calculator className="w-5 h-5 text-teal-600" />
-              Les deux formules de conversion a memoriser
+              Les deux formules de conversion à mémoriser
             </h3>
             <div className="space-y-3 font-mono text-sm">
               <p className="text-mono-100">
@@ -630,7 +630,7 @@ export default function BlogTauxMarque() {
               </p>
             </div>
             <p className="text-sm text-mono-500 mt-3">
-              Exemple : un taux de marge de 250 % (2,5) donne 2,5 / 3,5 = 71,4 % de taux de marque. Verification dans le tableau : coefficient 3,5, ligne correspondante.
+              Exemple : un taux de marge de 250 % (2,5) donne 2,5 / 3,5 = 71,4 % de taux de marque. Vérification dans le tableau : coefficient 3,5, ligne correspondante.
             </p>
           </div>
         </section>
@@ -645,33 +645,33 @@ export default function BlogTauxMarque() {
           </div>
 
           <p>
-            Voici le point le plus important pour un restaurateur. Quand vous lisez qu'un restaurant sain vise une <strong>marge brute de 65 a 75 %</strong>, ce pourcentage est un <strong>taux de marque</strong>, car il rapporte la marge matiere au chiffre d'affaires (le prix de vente), pas au cout d'achat.
+            Voici le point le plus important pour un restaurateur. Quand vous lisez qu'un restaurant sain vise une <strong>marge brute de 65 à 75 %</strong>, ce pourcentage est un <strong>taux de marque</strong>, car il rapporte la marge matière au chiffre d'affaires (le prix de vente), pas au coût d'achat.
           </p>
 
           <div className="bg-mono-100 rounded-xl p-5 my-6 font-mono text-sm text-white text-center">
-            Marge brute (%) = (CA HT moins Cout matiere) / CA HT x 100 = Taux de marque
+            Marge brute (%) = (CA HT moins Coût matière) / CA HT x 100 = Taux de marque
           </div>
 
           <p>
-            Autrement dit, tous les benchmarks de marge brute que vous croisez en restauration sont des taux de marque. Les traduire par erreur en taux de marge conduit a des non-sens. Voici la correspondance :
+            Autrement dit, tous les benchmarks de marge brute que vous croisez en restauration sont des taux de marque. Les traduire par erreur en taux de marge conduit à des non-sens. Voici la correspondance :
           </p>
 
           <div className="overflow-x-auto my-6">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-mono-1000">
-                  <th className="text-left px-4 py-3 font-semibold text-mono-400">Type d'etablissement</th>
+                  <th className="text-left px-4 py-3 font-semibold text-mono-400">Type d'établissement</th>
                   <th className="text-left px-4 py-3 font-semibold text-mono-400">Marge brute (taux de marque)</th>
-                  <th className="text-left px-4 py-3 font-semibold text-mono-400">Taux de marge equivalent</th>
+                  <th className="text-left px-4 py-3 font-semibold text-mono-400">Taux de marge équivalent</th>
                 </tr>
               </thead>
               <tbody>
                 {[
-                  ['Pizzeria', '72 a 78 %', '257 a 355 %'],
-                  ['Bistrot / brasserie', '68 a 74 %', '213 a 285 %'],
-                  ['Restaurant traditionnel', '65 a 72 %', '186 a 257 %'],
-                  ['Gastronomique', '68 a 75 %', '213 a 300 %'],
-                  ['Boissons (bar)', '80 a 90 %', '400 a 900 %'],
+                  ['Pizzeria', '72 à 78 %', '257 à 355 %'],
+                  ['Bistrot / brasserie', '68 à 74 %', '213 à 285 %'],
+                  ['Restaurant traditionnel', '65 à 72 %', '186 à 257 %'],
+                  ['Gastronomique', '68 à 75 %', '213 à 300 %'],
+                  ['Boissons (bar)', '80 à 90 %', '400 à 900 %'],
                 ].map(([type, marque, marge]) => (
                   <tr key={type} className="border-t border-mono-975">
                     <td className="px-4 py-2.5 font-bold text-mono-100">{type}</td>
@@ -684,7 +684,7 @@ export default function BlogTauxMarque() {
           </div>
 
           <p>
-            Attention a ne pas s'arreter la : le taux de marque ne mesure que la <strong>marge matiere</strong>. Une fois la matiere payee, il reste a couvrir le personnel, le loyer, l'energie et les charges. C'est le role de la <Link to="/blog/marge-beneficiaire-restaurant-ideal" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">marge beneficiaire</Link> et du <Link to="/blog/seuil-rentabilite-restaurant" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">seuil de rentabilite</Link>. Un excellent taux de marque de 74 % peut coexister avec une marge nette de 2 %.
+            Attention à ne pas s'arrêter la : le taux de marque ne mesure que la <strong>marge matière</strong>. Une fois la matière payée, il reste à couvrir le personnel, le loyer, l'énergie et les charges. C'est le rôle de la <Link to="/blog/marge-beneficiaire-restaurant-ideal" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">marge bénéficiaire</Link> et du <Link to="/blog/seuil-rentabilite-restaurant" className="text-teal-600 hover:text-teal-700 font-semibold underline decoration-teal-300">seuil de rentabilité</Link>. Un excellent taux de marque de 74 % peut coexister avec une marge nette de 2 %.
           </p>
         </section>
 
@@ -709,7 +709,7 @@ export default function BlogTauxMarque() {
               </div>
               <ul className="space-y-2 text-sm text-mono-400">
                 <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" /> Piloter votre marge brute au chiffre d'affaires</li>
-                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" /> Fixer le prix de vente a partir d'un food cost cible</li>
+                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" /> Fixer le prix de vente à partir d'un food cost cible</li>
                 <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" /> Comparer vos plats entre eux et aux benchmarks</li>
                 <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" /> Communiquer avec votre comptable</li>
               </ul>
@@ -720,16 +720,16 @@ export default function BlogTauxMarque() {
                 <h3 className="text-base font-bold text-mono-100">Utilisez le taux de marge pour...</h3>
               </div>
               <ul className="space-y-2 text-sm text-mono-400">
-                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" /> Evaluer le rendement d'un achat fournisseur</li>
-                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" /> Negocier un tarif d'achat (base cout)</li>
+                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" /> Évaluer le rendement d'un achat fournisseur</li>
+                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" /> Négocier un tarif d'achat (base coût)</li>
                 <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" /> Dialoguer avec un grossiste ou un caviste</li>
-                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" /> Raisonner comme dans le commerce de detail</li>
+                <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" /> Raisonner comme dans le commerce de détail</li>
               </ul>
             </div>
           </div>
 
           <p>
-            En pratique, un restaurateur passe 90 % de son temps en <strong>taux de marque</strong> (ou son miroir, le food cost), car toute sa gestion se rapporte au chiffre d'affaires. Le taux de marge reste utile ponctuellement, surtout cote achats. La regle d'or : ne jamais melanger les deux dans un meme tableau, et toujours preciser la base quand on annonce un pourcentage.
+            En pratique, un restaurateur passe 90 % de son temps en <strong>taux de marque</strong> (ou son miroir, le food cost), car toute sa gestion se rapporte au chiffre d'affaires. Le taux de marge reste utile ponctuellement, surtout côté achats. La règle d'or : ne jamais mélanger les deux dans un même tableau, et toujours préciser la base quand on annonce un pourcentage.
           </p>
         </section>
 
@@ -745,24 +745,24 @@ export default function BlogTauxMarque() {
           <div className="space-y-4 my-6">
             {[
               {
-                titre: 'Appliquer un taux de marge la ou il faut un taux de marque',
-                desc: "Vouloir 70 % de marge et diviser par le cout au lieu du prix de vente : le plat a 4 EUR est vendu 6,80 EUR au lieu de 13,33 EUR. La marge est divisee par deux. C'est l'erreur la plus couteuse.",
+                titre: 'Appliquer un taux de marge là où il faut un taux de marque',
+                desc: "Vouloir 70 % de marge et diviser par le coût au lieu du prix de vente : le plat à 4 EUR est vendu 6,80 EUR au lieu de 13,33 EUR. La marge est divisée par deux. C'est l'erreur la plus coûteuse.",
               },
               {
                 titre: 'Calculer sur des prix TTC',
-                desc: 'Inclure la TVA dans le prix de vente gonfle le taux de marque de 8 a 10 points. Un plat a 75 % de marque reelle affiche 77-78 % si on oublie de passer en HT. Toujours retirer la TVA d\'abord.',
+                desc: 'Inclure la TVA dans le prix de vente gonfle le taux de marque de 8 à 10 points. Un plat à 75 % de marque réelle affiche 77-78 % si on oublie de passer en HT. Toujours retirer la TVA d\'abord.',
               },
               {
                 titre: 'Oublier les pertes et le gaspillage',
-                desc: "Le cout matiere theorique de la fiche technique ignore les pertes (epluchures, ratees, DLC depassees). Le taux de marque reel est souvent 3 a 5 points sous le theorique. Suivez l'ecart via l'inventaire.",
+                desc: "Le coût matière théorique de la fiche technique ignore les pertes (épluchures, ratées, DLC dépassées). Le taux de marque réel est souvent 3 à 5 points sous le théorique. Suivez l'écart via l'inventaire.",
               },
               {
                 titre: 'Confondre marge brute et marge nette',
-                desc: 'Un taux de marque de 74 % ne veut pas dire 74 % de benefice. Il reste a payer le personnel, le loyer et les charges. La rentabilite reelle se lit sur la marge nette, pas sur le taux de marque.',
+                desc: 'Un taux de marque de 74 % ne veut pas dire 74 % de bénéfice. Il reste à payer le personnel, le loyer et les charges. La rentabilité réelle se lit sur la marge nette, pas sur le taux de marque.',
               },
               {
-                titre: 'Melanger les bases dans un meme tableau',
-                desc: 'Un Excel maison qui divise une ligne par le cout et la suivante par le prix produit des colonnes incoherentes. Definissez une base unique (le taux de marque) et tenez-vous-y sur toute la carte.',
+                titre: 'Mélanger les bases dans un même tableau',
+                desc: 'Un Excel maison qui divise une ligne par le coût et la suivante par le prix produit des colonnes incohérentes. Définissez une base unique (le taux de marque) et tenez-vous-y sur toute la carte.',
               },
             ].map((err, i) => (
               <div key={i} className="flex items-start gap-4 bg-rose-50 border border-rose-100 rounded-xl p-5">
@@ -788,7 +788,7 @@ export default function BlogTauxMarque() {
           </div>
 
           <p>
-            Voici la methode en 7 etapes pour calculer, verifier et piloter vos taux sans jamais les confondre.
+            Voici la méthode en 7 étapes pour calculer, vérifier et piloter vos taux sans jamais les confondre.
           </p>
 
           <ol className="space-y-4 my-6">
@@ -814,7 +814,7 @@ export default function BlogTauxMarque() {
               RestauMargin calcule marque, marge, coefficient et food cost pour chaque plat
             </h3>
             <p className="text-teal-50 leading-relaxed mb-5">
-              A partir de vos fiches techniques, RestauMargin affiche automatiquement le cout matiere, le taux de marque, le food cost et le coefficient, en HT et de facon coherente sur toute la carte. Fini les Excel qui melangent les bases. Vous voyez d'un coup d'oeil quels plats tirent votre marge vers le haut ou vers le bas.
+              À partir de vos fiches techniques, RestauMargin affiche automatiquement le coût matière, le taux de marque, le food cost et le coefficient, en HT et de façon cohérente sur toute la carte. Fini les Excel qui mélangent les bases. Vous voyez d'un coup d'oeil quels plats tirent votre marge vers le haut ou vers le bas.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
@@ -828,7 +828,7 @@ export default function BlogTauxMarque() {
                 to="/logiciel-marge-restaurant"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-800/50 text-white font-semibold rounded-full hover:bg-teal-800 transition-colors border border-teal-400/30"
               >
-                Decouvrir le logiciel
+                Découvrir le logiciel
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -841,7 +841,7 @@ export default function BlogTauxMarque() {
             <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
               <BookOpen className="w-6 h-6 text-emerald-700" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">FAQ : 14 questions frequentes</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">FAQ : 14 questions fréquentes</h2>
           </div>
 
           <div className="space-y-4">
@@ -870,10 +870,10 @@ export default function BlogTauxMarque() {
               ['/blog/calcul-marge-restaurant', 'Marge restaurant 2026 : calcul, formule, food cost'],
               ['/blog/coefficient-multiplicateur', 'Le coefficient multiplicateur en restauration'],
               ['/blog/prix-de-vente-restaurant', "Calculer le prix de vente d'un plat"],
-              ['/blog/reduire-food-cost', 'Reduire le food cost : 10 strategies'],
-              ['/blog/prime-cost-restaurant', "Prime cost : l'indicateur n 1 de rentabilite"],
-              ['/blog/5-ratios-cles-restaurant', 'Les 5 ratios cles a suivre en restaurant'],
-              ['/blog/marge-beneficiaire-restaurant-ideal', 'Quelle marge beneficiaire viser ?'],
+              ['/blog/reduire-food-cost', 'Réduire le food cost : 10 stratégies'],
+              ['/blog/prime-cost-restaurant', "Prime cost : l'indicateur n 1 de rentabilité"],
+              ['/blog/5-ratios-cles-restaurant', 'Les 5 ratios clés à suivre en restaurant'],
+              ['/blog/marge-beneficiaire-restaurant-ideal', 'Quelle marge bénéficiaire viser ?'],
               ['/blog/marge-boissons-restaurant', 'Quelle marge sur les boissons ?'],
             ].map(([href, label]) => (
               <Link

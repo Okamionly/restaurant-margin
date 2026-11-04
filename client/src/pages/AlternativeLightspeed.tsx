@@ -15,44 +15,44 @@ import PublicFooter from '../components/public/PublicFooter';
 
 const faqItems = [
   {
-    question: "Peut-on utiliser RestauMargin et Lightspeed Restaurant en parallele ?",
-    answer: "Oui, les deux outils se combinent sans difficulte. Lightspeed Restaurant gere la prise de commande, l'encaissement et le plan de salle. RestauMargin recupere les ventes via integration ou export CSV et calcule la marge reelle par plat servi, le food cost global et l'evolution des couts ingredients. Les deux outils sont complementaires : l'un encaisse, l'autre garantit la rentabilite de chaque plat encaisse.",
+    question: "Peut-on utiliser RestauMargin et Lightspeed Restaurant en parallèle ?",
+    answer: "Oui, les deux outils se combinent sans difficulté. Lightspeed Restaurant gère la prise de commande, l'encaissement et le plan de salle. RestauMargin récupère les ventes via intégration ou export CSV et calcule la marge réelle par plat servi, le food cost global et l'évolution des coûts ingrédients. Les deux outils sont complémentaires : l'un encaisse, l'autre garantit la rentabilité de chaque plat encaissé.",
   },
   {
-    question: "Combien coute RestauMargin par rapport a Lightspeed Restaurant ?",
-    answer: "RestauMargin demarre a 29 EUR/mois (formule Pro). Lightspeed Restaurant demarre autour de 89 EUR/mois (formule Starter, 1 caisse) et peut atteindre 200 EUR/mois et plus pour les formules Plus et Premium avec modules avances (multi-resto, KDS, advanced insights). Sur un an, RestauMargin coute 348 EUR contre 1 068 a 2 400 EUR pour Lightspeed selon la formule. La difference de prix s'explique par les scopes : Lightspeed inclut une caisse logicielle complete avec matos, RestauMargin se concentre sur la gestion de la marge.",
+    question: "Combien coûte RestauMargin par rapport à Lightspeed Restaurant ?",
+    answer: "RestauMargin démarre à 29 EUR/mois (formule Pro). Lightspeed Restaurant démarre autour de 89 EUR/mois (formule Starter, 1 caisse) et peut atteindre 200 EUR/mois et plus pour les formules Plus et Premium avec modules avancés (multi-resto, KDS, advanced insights). Sur un an, RestauMargin coûte 348 EUR contre 1 068 à 2 400 EUR pour Lightspeed selon la formule. La différence de prix s'explique par les scopes : Lightspeed inclut une caisse logicielle complète avec matos, RestauMargin se concentre sur la gestion de la marge.",
   },
   {
     question: "Lightspeed Restaurant calcule-t-il le food cost et les marges ?",
-    answer: "Lightspeed propose des rapports de ventes detailles et un module Inventory en option qui suit la consommation theorique des ingredients. C'est une bonne base, mais ce n'est pas un outil de pilotage de marge au sens strict : pas de fiches techniques pesees au gramme, pas de mercuriale fournisseurs avec historique de prix, pas d'IA d'optimisation, pas d'alerte sur derive de food cost en temps reel. Une approche courante consiste a garder Lightspeed pour la caisse et a ajouter un outil dedie au pilotage de la marge.",
+    answer: "Lightspeed propose des rapports de ventes détaillés et un module Inventory en option qui suit la consommation théorique des ingrédients. C'est une bonne base, mais ce n'est pas un outil de pilotage de marge au sens strict : pas de fiches techniques pesées au gramme, pas de mercuriale fournisseurs avec historique de prix, pas d'IA d'optimisation, pas d'alerte sur dérive de food cost en temps réel. Une approche courante consiste à garder Lightspeed pour la caisse et à ajouter un outil dédié au pilotage de la marge.",
   },
   {
-    question: "Puis-je connecter RestauMargin a ma caisse Lightspeed ?",
-    answer: "Oui. RestauMargin se connecte aux principaux logiciels de caisse francais et internationaux dont Lightspeed Restaurant via export CSV des ventes ou import API selon la formule Lightspeed que vous avez. Les ventes par produit sont rapatriees automatiquement, ce qui permet de calculer la marge reelle par plat en croisant prix de vente Lightspeed et cout matiere RestauMargin. L'integration prend en general 10 a 20 minutes a configurer.",
+    question: "Puis-je connecter RestauMargin à ma caisse Lightspeed ?",
+    answer: "Oui. RestauMargin se connecte aux principaux logiciels de caisse français et internationaux dont Lightspeed Restaurant via export CSV des ventes ou import API selon la formule Lightspeed que vous avez. Les ventes par produit sont rapatriées automatiquement, ce qui permet de calculer la marge réelle par plat en croisant prix de vente Lightspeed et coût matière RestauMargin. L'intégration prend en général 10 à 20 minutes à configurer.",
   },
   {
     question: "RestauMargin propose-t-il un module de caisse / POS ?",
-    answer: "Non, ce n'est pas dans notre scope. Nous nous concentrons sur la gestion operationnelle et la rentabilite (marges, food cost, fiches techniques, IA d'optimisation). Si vous avez besoin d'une caisse complete avec encaissement, plan de salle et impression cuisine, Lightspeed Restaurant, Tiller, L'Addition ou Sumup POS sont des choix solides. RestauMargin s'utilise sans difficulte en parallele de l'un de ces outils.",
+    answer: "Non, ce n'est pas dans notre scope. Nous nous concentrons sur la gestion opérationnelle et la rentabilité (marges, food cost, fiches techniques, IA d'optimisation). Si vous avez besoin d'une caisse complète avec encaissement, plan de salle et impression cuisine, Lightspeed Restaurant, Tiller, L'Addition ou Sumup POS sont des choix solides. RestauMargin s'utilise sans difficulté en parallèle de l'un de ces outils.",
   },
   {
     question: "Y a-t-il un essai gratuit chez RestauMargin et chez Lightspeed ?",
-    answer: "RestauMargin offre 7 jours d'essai gratuit, sans carte bancaire, avec acces a toutes les fonctionnalites (food cost, IA, mercuriale, multi-restaurant). Lightspeed propose une demo personnalisee avec un commercial et parfois 14 jours d'essai selon les promotions du moment, mais le processus passe systematiquement par un appel commercial. RestauMargin permet de tester reellement le produit avant de payer, sans interaction commerciale obligatoire.",
+    answer: "RestauMargin offre 7 jours d'essai gratuit, sans carte bancaire, avec accès à toutes les fonctionnalités (food cost, IA, mercuriale, multi-restaurant). Lightspeed propose une démo personnalisée avec un commercial et parfois 14 jours d'essai selon les promotions du moment, mais le processus passe systématiquement par un appel commercial. RestauMargin permet de tester réellement le produit avant de payer, sans interaction commerciale obligatoire.",
   },
   {
-    question: "Quelle alternative a Lightspeed pour un restaurant qui veut surtout suivre ses marges ?",
-    answer: "Si votre vrai besoin est de comprendre pourquoi votre marge brute se degrade malgre des ventes correctes, ce n'est pas une caisse plus chere qui vous aidera. RestauMargin (29 EUR/mois) couvre exactement cette problematique : fiches techniques pesees, food cost theorique vs reel, mercuriale fournisseurs avec alertes sur hausses de prix, menu engineering. Vous pouvez garder votre caisse actuelle, voire une caisse simple type Sumup POS a tres bas cout, et investir le reste du budget logiciel dans le pilotage marge.",
+    question: "Quelle alternative à Lightspeed pour un restaurant qui veut surtout suivre ses marges ?",
+    answer: "Si votre vrai besoin est de comprendre pourquoi votre marge brute se dégrade malgré des ventes correctes, ce n'est pas une caisse plus chère qui vous aidera. RestauMargin (29 EUR/mois) couvre exactement cette problématique : fiches techniques pesées, food cost théorique vs réel, mercuriale fournisseurs avec alertes sur hausses de prix, menu engineering. Vous pouvez garder votre caisse actuelle, voire une caisse simple type Sumup POS à très bas coût, et investir le reste du budget logiciel dans le pilotage marge.",
   },
   {
-    question: "Lightspeed est-il adapte aux petits restaurants ou aux food trucks ?",
-    answer: "Lightspeed Restaurant est puissant et bien adapte aux brasseries, restaurants gastronomiques, chaines et groupes multi-etablissements qui ont besoin d'une caisse complete avec plan de salle, gestion des serveurs et reporting avance. Pour un food truck ou un tres petit restaurant qui veut juste encaisser et suivre sa marge, le tarif et la complexite de Lightspeed sont souvent surdimensionnes. Une caisse legere + RestauMargin couvre 90 % du besoin pour 30 a 60 % du prix.",
+    question: "Lightspeed est-il adapté aux petits restaurants ou aux food trucks ?",
+    answer: "Lightspeed Restaurant est puissant et bien adapté aux brasseries, restaurants gastronomiques, chaînes et groupes multi-établissements qui ont besoin d'une caisse complète avec plan de salle, gestion des serveurs et reporting avancé. Pour un food truck ou un très petit restaurant qui veut juste encaisser et suivre sa marge, le tarif et la complexité de Lightspeed sont souvent surdimensionnés. Une caisse légère + RestauMargin couvre 90 % du besoin pour 30 à 60 % du prix.",
   },
   {
-    question: "Quelle est la difference entre l'Inventory de Lightspeed et RestauMargin ?",
-    answer: "Le module Inventory de Lightspeed suit la consommation theorique des ingredients via le mapping recette / produit vendu. C'est efficace pour les stocks. Mais il ne gere pas la mercuriale fournisseur (historique de prix par fournisseur), ne propose pas d'IA de suggestion de recettes, ne fait pas de menu engineering (Boston Matrix), et n'integre pas l'OCR de factures fournisseurs. RestauMargin va plus loin sur la gestion de la marge, du cout ingredient et de l'optimisation de carte. Les deux peuvent coexister : l'Inventory Lightspeed pour le suivi stock, RestauMargin pour le pilotage marge.",
+    question: "Quelle est la différence entre l'Inventory de Lightspeed et RestauMargin ?",
+    answer: "Le module Inventory de Lightspeed suit la consommation théorique des ingrédients via le mapping recette / produit vendu. C'est efficace pour les stocks. Mais il ne gère pas la mercuriale fournisseur (historique de prix par fournisseur), ne propose pas d'IA de suggestion de recettes, ne fait pas de menu engineering (Boston Matrix), et n'intègre pas l'OCR de factures fournisseurs. RestauMargin va plus loin sur la gestion de la marge, du coût ingrédient et de l'optimisation de carte. Les deux peuvent coexister : l'Inventory Lightspeed pour le suivi stock, RestauMargin pour le pilotage marge.",
   },
   {
     question: "Quel est le meilleur outil pour un groupe de plusieurs restaurants ?",
-    answer: "Pour un groupe, la combinaison la plus efficace est : Lightspeed Restaurant Plus ou Premium pour la caisse multi-site avec consolidation des ventes, et RestauMargin Business (79 EUR/mois) pour la consolidation des marges, le benchmarking entre etablissements et les alertes sur derive de food cost. Les deux outils repondent a des besoins differents et peuvent etre branches sur la meme architecture sans conflit.",
+    answer: "Pour un groupe, la combinaison la plus efficace est : Lightspeed Restaurant Plus ou Premium pour la caisse multi-site avec consolidation des ventes, et RestauMargin Business (79 EUR/mois) pour la consolidation des marges, le benchmarking entre établissements et les alertes sur dérive de food cost. Les deux outils répondent à des besoins différents et peuvent être branchés sur la même architecture sans conflit.",
   },
 ];
 
@@ -75,7 +75,7 @@ export default function AlternativeLightspeed() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Alternative à Lightspeed Restaurant : RestauMargin (29€/mois)',
-            description: "Comparatif detaille entre RestauMargin (29 EUR/mois, gestion des marges et food cost) et Lightspeed Restaurant (89-200 EUR/mois, POS complet). Tableau 18 criteres, cas d'usage, FAQ.",
+            description: "Comparatif détaillé entre RestauMargin (29 EUR/mois, gestion des marges et food cost) et Lightspeed Restaurant (89-200 EUR/mois, POS complet). Tableau 18 critères, cas d'usage, FAQ.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -113,7 +113,7 @@ export default function AlternativeLightspeed() {
                       unitText: 'MONTH',
                     },
                   },
-                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs independants et groupes.",
+                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs indépendants et groupes.",
                 },
               },
               {
@@ -251,7 +251,7 @@ export default function AlternativeLightspeed() {
             <ReasonCard
               icon={<XCircle className="w-6 h-6" />}
               title="Le scope POS"
-              desc="Lightspeed est excellent pour la caisse mais pas focalisé marge. Le module Inventory en option suit les stocks mais ne propose ni mercuriale fournisseurs avec historique, ni IA d'optimisation, ni alertes sur derive de food cost."
+              desc="Lightspeed est excellent pour la caisse mais pas focalisé marge. Le module Inventory en option suit les stocks mais ne propose ni mercuriale fournisseurs avec historique, ni IA d'optimisation, ni alertes sur dérive de food cost."
             />
             <ReasonCard
               icon={<AlertTriangle className="w-6 h-6" />}
@@ -305,7 +305,7 @@ export default function AlternativeLightspeed() {
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Plan de salle visuel avec gestion des serveurs et des couverts</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Gestion multi-restaurant native avec consolidation des ventes</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Module Payments intégré (terminaux Lightspeed) pour fluidifier l'encaissement</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Écosystème d'intégrations large (Deliveroo, Uber Eats, comptabilité, fidelité)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Écosystème d'intégrations large (Deliveroo, Uber Eats, comptabilité, fidélité)</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Support en français et accompagnement personnalisé</span></li>
               </ul>
             </div>
@@ -377,7 +377,7 @@ export default function AlternativeLightspeed() {
                 <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de terminal de paiement intégré</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de KDS (écran cuisine) ni d'impression bons</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de conformité directe loi anti-fraude TVA (rôle de la caisse)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de module fidelité client intégré</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de module fidélité client intégré</span></li>
               </ul>
             </div>
           </div>

@@ -178,11 +178,11 @@ export default function QRCodeGenerator() {
   const qrRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    document.title = 'Generateur de QR Code Menu Restaurant Gratuit | RestauMargin';
+    document.title = 'Générateur de QR Code Menu Restaurant Gratuit | RestauMargin';
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute('content',
-        'Generez un QR code gratuit pour le menu de votre restaurant. Couleurs, tailles, formats PNG/SVG/PDF. Generation par lot pour toutes vos tables. Outil 100% gratuit par RestauMargin.'
+        'Générez un QR code gratuit pour le menu de votre restaurant. Couleurs, tailles, formats PNG/SVG/PDF. Génération par lot pour toutes vos tables. Outil 100% gratuit par RestauMargin.'
       );
     }
   }, []);
@@ -305,7 +305,7 @@ export default function QRCodeGenerator() {
       cards += `
         <div style="display:inline-flex;flex-direction:column;align-items:center;padding:20px;margin:10px;border:2px solid #e5e7eb;border-radius:16px;page-break-inside:avoid;">
           <h3 style="font-size:16px;font-weight:700;margin:0 0 4px 0;color:#000;">${restaurantName}</h3>
-          <p style="font-size:11px;color:#666;margin:0 0 12px 0;">Scannez pour decouvrir notre carte</p>
+          <p style="font-size:11px;color:#666;margin:0 0 12px 0;">Scannez pour découvrir notre carte</p>
           ${svgStr}
           <p style="font-size:18px;font-weight:800;margin:12px 0 0 0;color:#000;">Table ${i}</p>
         </div>
@@ -334,12 +334,12 @@ export default function QRCodeGenerator() {
           Outil 100% gratuit
         </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold text-black dark:text-white leading-tight tracking-tight font-satoshi">
-          Generateur de QR Code
+          Générateur de QR Code
           <br />
           <span className="text-black/40 dark:text-white/40">pour votre restaurant</span>
         </h1>
         <p className="mt-4 text-black/50 dark:text-white/50 max-w-xl mx-auto text-base sm:text-lg">
-          QR code personnalise en 10 secondes. Couleurs, formats, impression par lot pour chaque table.
+          QR code personnalisé en 10 secondes. Couleurs, formats, impression par lot pour chaque table.
         </p>
       </header>
 
@@ -534,7 +534,7 @@ export default function QRCodeGenerator() {
               >
                 <h2 className="text-sm font-bold text-black dark:text-white uppercase tracking-wider flex items-center gap-2">
                   <Table2 className="w-4 h-4 text-black/40 dark:text-white/40" />
-                  Generation par lot (tables)
+                  Génération par lot (tables)
                 </h2>
                 <span className={`text-black/40 dark:text-white/40 transition-transform ${showBatch ? 'rotate-45' : ''}`}>
                   <Plus className="w-5 h-5" />
@@ -545,7 +545,7 @@ export default function QRCodeGenerator() {
                 <div className="space-y-4 pt-2">
                   <div>
                     <label className="block text-sm font-medium text-black/60 dark:text-white/60 mb-1.5">
-                      Nom du restaurant (affiche sur les QR)
+                      Nom du restaurant (affiché sur les QR)
                     </label>
                     <input
                       type="text"
@@ -574,7 +574,7 @@ export default function QRCodeGenerator() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-black/50 dark:text-white/50 mb-1">A la table</label>
+                      <label className="block text-xs font-medium text-black/50 dark:text-white/50 mb-1">À la table</label>
                       <div className="flex items-center gap-2">
                         <button onClick={() => setBatchTo(Math.max(batchFrom, batchTo - 1))} className="p-2 rounded-lg border border-black/10 dark:border-white/10 text-black/50 dark:text-white/50 hover:bg-black/5 dark:hover:bg-white/5 transition">
                           <Minus className="w-4 h-4" />
@@ -594,7 +594,7 @@ export default function QRCodeGenerator() {
                   </div>
 
                   <p className="text-xs text-black/40 dark:text-white/40">
-                    {batchTo - batchFrom + 1} QR codes seront generes avec le parametre <code className="bg-black/5 dark:bg-white/10 px-1 rounded">?table=N</code>
+                    {batchTo - batchFrom + 1} QR codes seront générés avec le paramètre <code className="bg-black/5 dark:bg-white/10 px-1 rounded">?table=N</code>
                   </p>
 
                   <div className="flex gap-3">
@@ -604,7 +604,7 @@ export default function QRCodeGenerator() {
                       className="flex-1 flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black font-semibold text-sm px-4 py-2.5 rounded-xl hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed transition"
                     >
                       <Download className="w-4 h-4" />
-                      {batchGenerating ? 'Telechargement...' : `Telecharger ${batchTo - batchFrom + 1} QR codes`}
+                      {batchGenerating ? 'Téléchargement...' : `Télécharger ${batchTo - batchFrom + 1} QR codes`}
                     </button>
                     <button
                       onClick={handlePrintLayout}
@@ -627,7 +627,7 @@ export default function QRCodeGenerator() {
               <div className="bg-white dark:bg-black border border-black/10 dark:border-white/10 rounded-2xl p-8 flex flex-col items-center" ref={qrRef}>
                 <div className="flex items-center gap-2 mb-4 text-xs font-semibold text-black/40 dark:text-white/40 uppercase tracking-wider">
                   <Eye className="w-3.5 h-3.5" />
-                  Apercu en direct
+                  Aperçu en direct
                 </div>
 
                 {finalUrl ? (
@@ -638,7 +638,7 @@ export default function QRCodeGenerator() {
                   <div className="w-60 h-60 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-black/10 dark:border-white/10 text-black/30 dark:text-white/30">
                     <QrCode className="w-16 h-16 mb-3 opacity-30" />
                     <span className="text-sm font-medium">Entrez une URL</span>
-                    <span className="text-xs mt-1 opacity-60">pour voir l'apercu</span>
+                    <span className="text-xs mt-1 opacity-60">pour voir l'aperçu</span>
                   </div>
                 )}
 
@@ -655,7 +655,7 @@ export default function QRCodeGenerator() {
                   className="w-full flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black font-bold text-sm px-6 py-3 rounded-xl hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed transition"
                 >
                   <Download className="w-4 h-4" />
-                  Telecharger {exportFormat.toUpperCase()} ({size}px)
+                  Télécharger {exportFormat.toUpperCase()} ({size}px)
                 </button>
 
                 <button
@@ -668,7 +668,7 @@ export default function QRCodeGenerator() {
                   }`}
                 >
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  {copied ? 'Lien copie !' : 'Copier le lien'}
+                  {copied ? 'Lien copié !' : 'Copier le lien'}
                 </button>
               </div>
 
@@ -696,10 +696,10 @@ export default function QRCodeGenerator() {
         {/* ── CTA ── */}
         <div className="mt-16 text-center bg-black dark:bg-white rounded-2xl p-8 sm:p-12">
           <h2 className="text-xl sm:text-2xl font-bold text-white dark:text-black mb-2 font-satoshi">
-            Creez votre menu digital complet avec RestauMargin
+            Créez votre menu digital complet avec RestauMargin
           </h2>
           <p className="text-white/60 dark:text-black/60 text-sm sm:text-base mb-6 max-w-md mx-auto">
-            Gerez vos recettes, calculez vos marges et publiez un menu QR professionnel.
+            Gérez vos recettes, calculez vos marges et publiez un menu QR professionnel.
           </p>
           <Link
             to="/login?mode=register"
@@ -716,22 +716,22 @@ export default function QRCodeGenerator() {
             Pourquoi utiliser un QR code pour votre menu ?
           </h2>
           <p>
-            Un QR code sur chaque table permet a vos clients de consulter votre carte sans contact, directement sur leur smartphone.
-            Plus besoin de reimprimer vos menus a chaque changement de prix ou de plat : modifiez votre page en ligne et le QR code reste le meme.
+            Un QR code sur chaque table permet à vos clients de consulter votre carte sans contact, directement sur leur smartphone.
+            Plus besoin de réimprimer vos menus à chaque changement de prix ou de plat : modifiez votre page en ligne et le QR code reste le même.
           </p>
-          <h3 className="text-base font-bold text-black dark:text-white">Comment utiliser ce generateur ?</h3>
+          <h3 className="text-base font-bold text-black dark:text-white">Comment utiliser ce générateur ?</h3>
           <ol className="list-decimal pl-5 space-y-1">
-            <li>Choisissez le type de lien (menu, avis Google, Instagram ou personnalise).</li>
+            <li>Choisissez le type de lien (menu, avis Google, Instagram ou personnalisé).</li>
             <li>Personnalisez la couleur et la taille du QR code.</li>
-            <li>Telechargez en PNG, SVG ou PDF.</li>
-            <li>Utilisez la generation par lot pour creer un QR code par table avec impression directe.</li>
+            <li>Téléchargez en PNG, SVG ou PDF.</li>
+            <li>Utilisez la génération par lot pour créer un QR code par table avec impression directe.</li>
           </ol>
           <p>
-            Cet outil est 100 % gratuit et ne necessite aucune inscription. Pour aller plus loin, decouvrez
+            Cet outil est 100 % gratuit et ne nécessite aucune inscription. Pour aller plus loin, découvrez
             {' '}
             <Link to="/" className="text-black dark:text-white underline hover:opacity-70 transition">RestauMargin</Link>
             {' '}
-            et gerez tout votre restaurant depuis une seule plateforme.
+            et gérez tout votre restaurant depuis une seule plateforme.
           </p>
         </section>
       </main>

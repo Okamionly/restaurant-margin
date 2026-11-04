@@ -17,43 +17,43 @@ import PublicFooter from '../components/public/PublicFooter';
 const faqItems = [
   {
     question: "Qu'est-ce que COS Kitchen ?",
-    answer: "COS Kitchen est une plateforme en ligne francaise qui calcule le food cost, la marge brute et le prix de vente conseille de chaque plat. Elle revendique plus de 2 500 restaurateurs utilisateurs et met en avant un positionnement freemium : le calculateur de base, les fiches techniques (limitees a 10) et un menu complet restent gratuits a vie.",
+    answer: "COS Kitchen est une plateforme en ligne française qui calcule le food cost, la marge brute et le prix de vente conseillé de chaque plat. Elle revendique plus de 2 500 restaurateurs utilisateurs et met en avant un positionnement freemium : le calculateur de base, les fiches techniques (limitées à 10) et un menu complet restent gratuits à vie.",
   },
   {
     question: "COS Kitchen est-il vraiment gratuit ?",
-    answer: "Le plan Decouverte est effectivement gratuit sans limite de temps, mais il est limite a 10 fiches techniques et 1 menu avec resultats complets. Pour des fiches et menus illimites, l'export PDF/Excel et l'optimisation par IA, il faut passer au plan Essentiel (29€ HT/mois). Le suivi des fournisseurs et les alertes de hausse de prix ne sont disponibles qu'au plan Pro (59€ HT/mois).",
+    answer: "Le plan Découverte est effectivement gratuit sans limite de temps, mais il est limité à 10 fiches techniques et 1 menu avec résultats complets. Pour des fiches et menus illimités, l'export PDF/Excel et l'optimisation par IA, il faut passer au plan Essentiel (29€ HT/mois). Le suivi des fournisseurs et les alertes de hausse de prix ne sont disponibles qu'au plan Pro (59€ HT/mois).",
   },
   {
-    question: "Quelle est la difference entre COS Kitchen et RestauMargin ?",
-    answer: "COS Kitchen est concu comme un calculateur de food cost, avec une montee en gamme progressive vers le suivi fournisseurs. RestauMargin est une plateforme operationnelle complete des l'entree : food cost, fiches techniques illimitees, mercuriale fournisseurs avec alertes de prix, gestion de stock, menu engineering, HACCP digital et 19 actions IA sont tous inclus des le plan Pro a 29€/mois, sans palier supplementaire a payer pour le suivi fournisseurs.",
+    question: "Quelle est la différence entre COS Kitchen et RestauMargin ?",
+    answer: "COS Kitchen est conçu comme un calculateur de food cost, avec une montée en gamme progressive vers le suivi fournisseurs. RestauMargin est une plateforme opérationnelle complète dès l'entrée : food cost, fiches techniques illimitées, mercuriale fournisseurs avec alertes de prix, gestion de stock, menu engineering, HACCP digital et 19 actions IA sont tous inclus dès le plan Pro à 29€/mois, sans palier supplémentaire à payer pour le suivi fournisseurs.",
   },
   {
     question: "RestauMargin propose-t-il un plan gratuit comme COS Kitchen ?",
-    answer: "Non, RestauMargin ne propose pas de plan gratuit permanent : nous offrons un essai gratuit de 7 jours, sans carte bancaire, avec acces a l'integralite des fonctionnalites (pas de version bridee). Si votre besoin se limite a calculer occasionnellement le food cost de quelques plats, le plan Decouverte gratuit de COS Kitchen (10 fiches, 1 menu) peut suffire. Si vous geriez une carte complete au quotidien, l'essai RestauMargin vous montrera l'ecart des le premier jour.",
+    answer: "Non, RestauMargin ne propose pas de plan gratuit permanent : nous offrons un essai gratuit de 7 jours, sans carte bancaire, avec accès à l'intégralité des fonctionnalités (pas de version bridée). Si votre besoin se limite à calculer occasionnellement le food cost de quelques plats, le plan Découverte gratuit de COS Kitchen (10 fiches, 1 menu) peut suffire. Si vous gériez une carte complète au quotidien, l'essai RestauMargin vous montrera l'écart dès le premier jour.",
   },
   {
-    question: "COS Kitchen gere-t-il les stocks et les fournisseurs ?",
-    answer: "COS Kitchen propose un import des bons de livraison par email et des alertes de hausse de prix fournisseur, mais uniquement au plan Pro (59€ HT/mois). Aucune gestion de stock (inventaire, alertes de rupture, valorisation) n'est mentionnee sur leur site. RestauMargin inclut la mercuriale fournisseurs avec historique de prix et le scan OCR de factures des le plan Pro a 29€/mois, plus une gestion de stock complete.",
+    question: "COS Kitchen gère-t-il les stocks et les fournisseurs ?",
+    answer: "COS Kitchen propose un import des bons de livraison par email et des alertes de hausse de prix fournisseur, mais uniquement au plan Pro (59€ HT/mois). Aucune gestion de stock (inventaire, alertes de rupture, valorisation) n'est mentionnée sur leur site. RestauMargin inclut la mercuriale fournisseurs avec historique de prix et le scan OCR de factures dès le plan Pro à 29€/mois, plus une gestion de stock complète.",
   },
   {
-    question: "Puis-je migrer mes donnees de COS Kitchen vers RestauMargin ?",
-    answer: "Les deux outils stockent le meme type de donnees de base (ingredients, recettes, fiches techniques), ce qui facilite une migration manuelle ou via export CSV/Excel (fonction disponible sur les deux plateformes a partir de leurs plans payants). Notre equipe support peut vous accompagner pour reimporter vos fiches techniques existantes lors de votre essai gratuit.",
+    question: "Puis-je migrer mes données de COS Kitchen vers RestauMargin ?",
+    answer: "Les deux outils stockent le même type de données de base (ingrédients, recettes, fiches techniques), ce qui facilite une migration manuelle ou via export CSV/Excel (fonction disponible sur les deux plateformes à partir de leurs plans payants). Notre équipe support peut vous accompagner pour réimporter vos fiches techniques existantes lors de votre essai gratuit.",
   },
   {
     question: "Quel est le meilleur outil pour un groupe de plusieurs restaurants ?",
-    answer: "COS Kitchen ne mentionne aucune fonctionnalite multi-etablissement sur son site public : chaque compte semble concu pour un seul restaurant. RestauMargin gere nativement le multi-restaurant avec une vue consolidee des marges (formule Business, 79€/mois), ce qui en fait le choix par defaut pour un groupe de 2 etablissements ou plus.",
+    answer: "COS Kitchen ne mentionne aucune fonctionnalité multi-établissement sur son site public : chaque compte semble conçu pour un seul restaurant. RestauMargin gère nativement le multi-restaurant avec une vue consolidée des marges (formule Business, 79€/mois), ce qui en fait le choix par défaut pour un groupe de 2 établissements ou plus.",
   },
   {
     question: "COS Kitchen propose-t-il de l'intelligence artificielle ?",
-    answer: "Oui, COS Kitchen mentionne une 'optimisation de cout par IA' et des suggestions d'ingredients alternatifs des le plan Essentiel (29€ HT/mois). RestauMargin va plus loin avec 19 actions IA couvrant les suggestions de recettes, l'optimisation des marges, la detection d'anomalies de prix et la commande vocale, disponibles des le plan Pro.",
+    answer: "Oui, COS Kitchen mentionne une 'optimisation de coût par IA' et des suggestions d'ingrédients alternatifs dès le plan Essentiel (29€ HT/mois). RestauMargin va plus loin avec 19 actions IA couvrant les suggestions de recettes, l'optimisation des marges, la détection d'anomalies de prix et la commande vocale, disponibles dès le plan Pro.",
   },
   {
-    question: "Quel outil choisir pour debuter a moindre cout ?",
-    answer: "Si votre restaurant ne gere qu'une poignee de plats et que vous voulez tester le concept de calcul de food cost sans depenser un centime, le plan Decouverte gratuit de COS Kitchen (10 fiches techniques) est un bon point d'entree. Des que votre carte depasse 10 plats ou que vous voulez suivre vos fournisseurs, l'essai gratuit de 7 jours de RestauMargin vous donne acces a une solution complete sans palier a franchir.",
+    question: "Quel outil choisir pour débuter à moindre coût ?",
+    answer: "Si votre restaurant ne gère qu'une poignée de plats et que vous voulez tester le concept de calcul de food cost sans dépenser un centime, le plan Découverte gratuit de COS Kitchen (10 fiches techniques) est un bon point d'entrée. Dès que votre carte dépasse 10 plats ou que vous voulez suivre vos fournisseurs, l'essai gratuit de 7 jours de RestauMargin vous donne accès à une solution complète sans palier à franchir.",
   },
   {
     question: "RestauMargin est-il plus cher que COS Kitchen sur un an ?",
-    answer: "Sur le premier palier payant, les deux outils sont proches : COS Kitchen Essentiel facture 29€ HT/mois (348€ HT/an) et RestauMargin Pro facture 29€/mois (348€/an), pour un perimetre de fonctionnalites plus large chez RestauMargin (mercuriale et alertes fournisseurs incluses, non disponibles avant le palier Pro a 59€ HT/mois chez COS Kitchen). A fonctionnalites egales, RestauMargin Pro est donc moins cher que COS Kitchen Pro (59€ HT/mois, soit 708€ HT/an).",
+    answer: "Sur le premier palier payant, les deux outils sont proches : COS Kitchen Essentiel facture 29€ HT/mois (348€ HT/an) et RestauMargin Pro facture 29€/mois (348€/an), pour un périmètre de fonctionnalités plus large chez RestauMargin (mercuriale et alertes fournisseurs incluses, non disponibles avant le palier Pro à 59€ HT/mois chez COS Kitchen). À fonctionnalités égales, RestauMargin Pro est donc moins cher que COS Kitchen Pro (59€ HT/mois, soit 708€ HT/an).",
   },
 ];
 
@@ -76,7 +76,7 @@ export default function AlternativeCosKitchen() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'RestauMargin : la meilleure alternative à COS Kitchen en 2026',
-            description: "Comparatif detaille entre RestauMargin (29 EUR/mois, plateforme operationnelle complete) et COS Kitchen (freemium, 0 a 59 EUR HT/mois, calculateur food cost). Tableau 15 criteres, cas d'usage, FAQ.",
+            description: "Comparatif détaillé entre RestauMargin (29 EUR/mois, plateforme opérationnelle complète) et COS Kitchen (freemium, 0 à 59 EUR HT/mois, calculateur food cost). Tableau 15 critères, cas d'usage, FAQ.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -114,7 +114,7 @@ export default function AlternativeCosKitchen() {
                       unitText: 'MONTH',
                     },
                   },
-                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs independants et groupes.",
+                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs indépendants et groupes.",
                 },
               },
               {
@@ -136,7 +136,7 @@ export default function AlternativeCosKitchen() {
                       unitText: 'MONTH',
                     },
                   },
-                  description: "Calculateur de food cost et de marge en ligne, plans Decouverte gratuit, Essentiel (29 EUR HT/mois) et Pro (59 EUR HT/mois).",
+                  description: "Calculateur de food cost et de marge en ligne, plans Découverte gratuit, Essentiel (29 EUR HT/mois) et Pro (59 EUR HT/mois).",
                 },
               },
             ],
@@ -165,7 +165,7 @@ export default function AlternativeCosKitchen() {
         date="Septembre 2026"
         title="RestauMargin : la meilleure alternative à COS Kitchen en 2026"
         accentWord="alternative à COS Kitchen"
-        subtitle="COS Kitchen a seduit plus de 2 500 restaurateurs avec un calculateur de food cost gratuit. Voici un comparatif honnete pour savoir si son offre freemium suffit a votre restaurant, ou si une plateforme operationnelle complete comme RestauMargin est le meilleur choix."
+        subtitle="COS Kitchen a séduit plus de 2 500 restaurateurs avec un calculateur de food cost gratuit. Voici un comparatif honnête pour savoir si son offre freemium suffit à votre restaurant, ou si une plateforme opérationnelle complète comme RestauMargin est le meilleur choix."
       />
 
       {/* ── Contenu principal ── */}
@@ -184,13 +184,13 @@ export default function AlternativeCosKitchen() {
           </h2>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 space-y-3 text-sm sm:text-base">
             <p className="leading-relaxed">
-              <strong className="text-white">COS Kitchen</strong> est un <strong>calculateur de food cost</strong> freemium : gratuit jusqu'a 10 fiches et 1 menu, puis 29€ HT/mois (Essentiel) et 59€ HT/mois (Pro) pour debloquer le suivi des fournisseurs.
+              <strong className="text-white">COS Kitchen</strong> est un <strong>calculateur de food cost</strong> freemium : gratuit jusqu'à 10 fiches et 1 menu, puis 29€ HT/mois (Essentiel) et 59€ HT/mois (Pro) pour débloquer le suivi des fournisseurs.
             </p>
             <p className="leading-relaxed">
-              <strong className="text-white">RestauMargin</strong> est une <strong>plateforme operationnelle complete</strong> a 29€/mois : food cost, fiches illimitees, stock, mercuriale fournisseurs avec alertes, menu engineering, HACCP et 19 actions IA, tout inclus des l'entree.
+              <strong className="text-white">RestauMargin</strong> est une <strong>plateforme opérationnelle complète</strong> à 29€/mois : food cost, fiches illimitées, stock, mercuriale fournisseurs avec alertes, menu engineering, HACCP et 19 actions IA, tout inclus dès l'entrée.
             </p>
             <p className="leading-relaxed pt-2 border-t border-white/20">
-              <strong className="text-white">Verdict :</strong> pour un simple calcul ponctuel, le plan gratuit COS Kitchen suffit. Pour piloter une carte au quotidien avec fournisseurs et stock, RestauMargin couvre plus large pour un prix d'entree identique.
+              <strong className="text-white">Verdict :</strong> pour un simple calcul ponctuel, le plan gratuit COS Kitchen suffit. Pour piloter une carte au quotidien avec fournisseurs et stock, RestauMargin couvre plus large pour un prix d'entrée identique.
             </p>
           </div>
         </div>
@@ -232,15 +232,15 @@ export default function AlternativeCosKitchen() {
 
           <div className="prose-content">
             <p>
-              COS Kitchen s'est fait une place dans le paysage francais de la gestion de food cost avec
-              une promesse simple : un calculateur gratuit, sans engagement, pour connaitre le cout et
+              COS Kitchen s'est fait une place dans le paysage français de la gestion de food cost avec
+              une promesse simple : un calculateur gratuit, sans engagement, pour connaître le coût et
               la marge de chaque plat. C'est un outil établi dans la restauration.
-              C'est une porte d'entree accessible pour qui n'a jamais mis un chiffre precis
+              C'est une porte d'entrée accessible pour qui n'a jamais mis un chiffre précis
               sur ses fiches techniques.
             </p>
             <p>
-              Mais un calculateur gratuit et une plateforme de gestion operationnelle repondent a des
-              besoins differents. Trois questions se posent quand on hesite entre
+              Mais un calculateur gratuit et une plateforme de gestion opérationnelle répondent à des
+              besoins différents. Trois questions se posent quand on hésite entre
               les deux :
             </p>
           </div>
@@ -249,32 +249,32 @@ export default function AlternativeCosKitchen() {
             <ReasonCard
               icon={<Package className="w-6 h-6" />}
               title="Les fournisseurs et le stock"
-              desc="Le plan gratuit et le plan Essentiel de COS Kitchen ne suivent pas vos fournisseurs. Il faut passer au plan Pro (59€ HT/mois) pour les alertes de prix, et aucune gestion de stock n'est mentionnee."
+              desc="Le plan gratuit et le plan Essentiel de COS Kitchen ne suivent pas vos fournisseurs. Il faut passer au plan Pro (59€ HT/mois) pour les alertes de prix, et aucune gestion de stock n'est mentionnée."
             />
             <ReasonCard
               icon={<XCircle className="w-6 h-6" />}
               title="Les limites du plan gratuit"
-              desc="10 fiches techniques et 1 menu complet, c'est suffisant pour tester mais pas pour gerer une carte de 20 a 40 plats au quotidien avec entrees, plats, desserts et boissons."
+              desc="10 fiches techniques et 1 menu complet, c'est suffisant pour tester mais pas pour gérer une carte de 20 à 40 plats au quotidien avec entrées, plats, desserts et boissons."
             />
             <ReasonCard
               icon={<AlertTriangle className="w-6 h-6" />}
               title="Le multi-restaurant"
-              desc="Aucune fonctionnalite de gestion multi-etablissement n'apparait sur le site de COS Kitchen. Pour un groupe de plusieurs restaurants, c'est un manque structurant."
+              desc="Aucune fonctionnalité de gestion multi-établissement n'apparaît sur le site de COS Kitchen. Pour un groupe de plusieurs restaurants, c'est un manque structurant."
             />
           </div>
 
           <div className="prose-content mt-8">
             <p>
               Soyons justes : ces limites ne font pas de COS Kitchen un mauvais outil. Pour un
-              restaurateur qui veut juste verifier le food cost de trois nouveaux plats avant de les
-              mettre a la carte, le plan gratuit suffit largement. Le probleme apparait quand la carte
-              grandit, quand les fournisseurs changent leurs prix chaque mois, ou quand un deuxieme
-              etablissement ouvre.
+              restaurateur qui veut juste vérifier le food cost de trois nouveaux plats avant de les
+              mettre à la carte, le plan gratuit suffit largement. Le problème apparaît quand la carte
+              grandit, quand les fournisseurs changent leurs prix chaque mois, ou quand un deuxième
+              établissement ouvre.
             </p>
             <p>
-              C'est cette difference de perimetre qui explique pourquoi nous nous presentons comme une
-              <strong> alternative a COS Kitchen</strong> pour les restaurateurs qui ont depasse le stade
-              du simple calcul ponctuel. Voyons les deux approches en detail.
+              C'est cette différence de périmètre qui explique pourquoi nous nous présentons comme une
+              <strong> alternative à COS Kitchen</strong> pour les restaurateurs qui ont dépassé le stade
+              du simple calcul ponctuel. Voyons les deux approches en détail.
             </p>
           </div>
         </section>
@@ -287,10 +287,10 @@ export default function AlternativeCosKitchen() {
 
           <div className="prose-content">
             <p>
-              COS Kitchen est positionne comme un <strong>calculateur de food cost et de marge en
-              ligne</strong>, avec une montee en gamme progressive vers le suivi fournisseurs. Le produit
-              met en avant sa simplicite ("configurez en 2 minutes") et un modele freemium : les outils
-              essentiels restent gratuits a vie, les fonctions avancees sont reservees aux plans
+              COS Kitchen est positionné comme un <strong>calculateur de food cost et de marge en
+              ligne</strong>, avec une montée en gamme progressive vers le suivi fournisseurs. Le produit
+              met en avant sa simplicité ("configurez en 2 minutes") et un modèle freemium : les outils
+              essentiels restent gratuits à vie, les fonctions avancées sont réservées aux plans
               Essentiel et Pro.
             </p>
           </div>
@@ -302,12 +302,12 @@ export default function AlternativeCosKitchen() {
                 <h3 className="font-bold text-emerald-900">Points forts de COS Kitchen</h3>
               </div>
               <ul className="space-y-2.5 text-sm text-emerald-800 leading-relaxed">
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Plan Decouverte gratuit a vie, sans carte bancaire (10 fiches, 1 menu)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Interface simple, calcul de food cost instantane</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Benchmarks sectoriels integres au plan gratuit</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Plan Découverte gratuit à vie, sans carte bancaire (10 fiches, 1 menu)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Interface simple, calcul de food cost instantané</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Benchmarks sectoriels intégrés au plan gratuit</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Import de bons de livraison par email (plan Pro)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Communaute large revendiquee : des restaurateurs</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Modeles gratuits telechargeables (fiches, tableaux)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Communauté large revendiquée : des restaurateurs</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Modèles gratuits téléchargeables (fiches, tableaux)</span></li>
               </ul>
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
@@ -316,10 +316,10 @@ export default function AlternativeCosKitchen() {
                 <h3 className="font-bold text-amber-900">Limites de COS Kitchen</h3>
               </div>
               <ul className="space-y-2.5 text-sm text-amber-800 leading-relaxed">
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Plan gratuit limite a 10 fiches techniques et 1 menu</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Suivi fournisseurs et alertes prix reserves au plan Pro (59€ HT/mois)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Aucune gestion de stock ou d'inventaire mentionnee</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de multi-restaurant identifie sur le site</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Plan gratuit limité à 10 fiches techniques et 1 menu</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Suivi fournisseurs et alertes prix réservés au plan Pro (59€ HT/mois)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Aucune gestion de stock ou d'inventaire mentionnée</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de multi-restaurant identifié sur le site</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de menu engineering (matrice Boston) ni de HACCP digital</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas d'application mobile PWA ni de mode kiosk</span></li>
               </ul>
@@ -327,9 +327,9 @@ export default function AlternativeCosKitchen() {
           </div>
 
           <Callout type="info">
-            <strong>A noter :</strong> les informations ci-dessus sont issues du site public
-            coskitchen.fr (accueil et page tarifs) consulte le 3 septembre 2026. Si une fonctionnalite
-            existe sans etre publiee sur leur site, elle n'a pas pu etre integree a ce comparatif.
+            <strong>À noter :</strong> les informations ci-dessus sont issues du site public
+            coskitchen.fr (accueil et page tarifs) consulté le 3 septembre 2026. Si une fonctionnalité
+            existe sans être publiée sur leur site, elle n'a pas pu être intégrée à ce comparatif.
           </Callout>
         </section>
 
@@ -341,11 +341,11 @@ export default function AlternativeCosKitchen() {
 
           <div className="prose-content">
             <p>
-              RestauMargin est positionne comme la <strong>solution de reference pour la gestion
-              operationnelle et la rentabilite</strong> en restauration. Contrairement a un simple
-              calculateur, notre plateforme couvre l'ensemble du cycle : ingredients, fiches techniques,
+              RestauMargin est positionné comme la <strong>solution de référence pour la gestion
+              opérationnelle et la rentabilité</strong> en restauration. Contrairement à un simple
+              calculateur, notre plateforme couvre l'ensemble du cycle : ingrédients, fiches techniques,
               mercuriale fournisseurs, stock, marges par plat et par carte, et optimisation par IA — tout
-              inclus des le premier palier payant.
+              inclus dès le premier palier payant.
             </p>
           </div>
 
@@ -356,11 +356,11 @@ export default function AlternativeCosKitchen() {
                 <h3 className="font-bold text-emerald-900">Points forts de RestauMargin</h3>
               </div>
               <ul className="space-y-2.5 text-sm text-emerald-800 leading-relaxed">
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Fiches techniques et menus illimites des le plan Pro (29€/mois)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Mercuriale fournisseurs avec historique de prix et alertes, incluse des l'entree</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Gestion de stock complete (inventaire, valorisation, alertes rupture)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>19 actions IA : suggestions recettes, optimisation marges, detection d'anomalies</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Multi-restaurant natif avec vue consolidee (plan Business)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Fiches techniques et menus illimités dès le plan Pro (29€/mois)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Mercuriale fournisseurs avec historique de prix et alertes, incluse dès l'entrée</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Gestion de stock complète (inventaire, valorisation, alertes rupture)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>19 actions IA : suggestions recettes, optimisation marges, détection d'anomalies</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Multi-restaurant natif avec vue consolidée (plan Business)</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>PWA mobile + mode kiosk + scan de factures par OCR</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Menu engineering (matrice Boston) et HACCP digital inclus</span></li>
               </ul>
@@ -372,19 +372,19 @@ export default function AlternativeCosKitchen() {
               </div>
               <ul className="space-y-2.5 text-sm text-amber-800 leading-relaxed">
                 <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de plan gratuit permanent (seulement un essai de 7 jours)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de modeles telechargeables gratuits type "kit de demarrage"</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de module de reservation en ligne (utilisez TheFork ou Zenchef)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de creation de site web restaurant</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de marketing email automatise</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de modèles téléchargeables gratuits type "kit de démarrage"</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de module de réservation en ligne (utilisez TheFork ou Zenchef)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de création de site web restaurant</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de marketing email automatisé</span></li>
               </ul>
             </div>
           </div>
 
           <Callout type="info">
-            <strong>Notre conviction :</strong> si votre besoin se limite a calculer occasionnellement
-            le cout de quelques plats, un outil gratuit et simple comme COS Kitchen est parfaitement
-            legitime. RestauMargin est concu pour les restaurateurs qui veulent piloter leur rentabilite
-            au quotidien, avec fournisseurs, stock et IA integres.
+            <strong>Notre conviction :</strong> si votre besoin se limite à calculer occasionnellement
+            le coût de quelques plats, un outil gratuit et simple comme COS Kitchen est parfaitement
+            légitime. RestauMargin est conçu pour les restaurateurs qui veulent piloter leur rentabilité
+            au quotidien, avec fournisseurs, stock et IA intégrés.
           </Callout>
         </section>
 
@@ -397,8 +397,8 @@ export default function AlternativeCosKitchen() {
           <div className="prose-content">
             <p>
               Voici une comparaison point par point entre COS Kitchen et RestauMargin. Pour COS Kitchen,
-              nous indiquons le palier (Decouverte / Essentiel / Pro) ou la fonctionnalite devient
-              disponible, base sur les informations publiques au 3 septembre 2026.
+              nous indiquons le palier (Découverte / Essentiel / Pro) où la fonctionnalité devient
+              disponible, basé sur les informations publiques au 3 septembre 2026.
             </p>
           </div>
 
@@ -442,8 +442,8 @@ export default function AlternativeCosKitchen() {
           </div>
 
           <Callout type="info">
-            <strong>Lecture du tableau :</strong> COS Kitchen gagne sur l'accessibilite immediate (plan
-            gratuit, modeles telechargeables). RestauMargin gagne sur la profondeur fonctionnelle des le
+            <strong>Lecture du tableau :</strong> COS Kitchen gagne sur l'accessibilité immédiate (plan
+            gratuit, modèles téléchargeables). RestauMargin gagne sur la profondeur fonctionnelle dès le
             premier palier payant, notamment le stock, la mercuriale fournisseurs et le multi-restaurant.
           </Callout>
         </section>
@@ -456,8 +456,8 @@ export default function AlternativeCosKitchen() {
 
           <div className="prose-content">
             <p>
-              Plutot qu'un verdict unique, voici trois profils types.
-              Identifiez celui qui ressemble le plus a votre situation.
+              Plutôt qu'un verdict unique, voici trois profils types.
+              Identifiez celui qui ressemble le plus à votre situation.
             </p>
           </div>
 
@@ -467,29 +467,29 @@ export default function AlternativeCosKitchen() {
               title="Vous testez le concept, carte de moins de 10 plats"
               recommendation="COS Kitchen (plan gratuit)"
               recoColor="blue"
-              desc="Vous voulez simplement verifier le food cost de quelques plats avant d'ajuster vos prix, sans depenser un centime. Le plan Decouverte de COS Kitchen (10 fiches, 1 menu, gratuit a vie) est suffisant pour ce besoin ponctuel."
+              desc="Vous voulez simplement vérifier le food cost de quelques plats avant d'ajuster vos prix, sans dépenser un centime. Le plan Découverte de COS Kitchen (10 fiches, 1 menu, gratuit à vie) est suffisant pour ce besoin ponctuel."
             />
             <ScenarioCard
               badge="Profil 2"
               title="Vous gérez une carte complète avec fournisseurs actifs"
               recommendation="RestauMargin (Pro)"
               recoColor="emerald"
-              desc="Votre carte depasse 15-20 plats, vos fournisseurs changent leurs prix regulierement et vous voulez etre alerte automatiquement. RestauMargin inclut la mercuriale et les alertes des 29€/mois, la ou COS Kitchen exige de passer a son plan Pro a 59€ HT/mois pour la meme chose."
+              desc="Votre carte dépasse 15-20 plats, vos fournisseurs changent leurs prix régulièrement et vous voulez être alerté automatiquement. RestauMargin inclut la mercuriale et les alertes dès 29€/mois, là où COS Kitchen exige de passer à son plan Pro à 59€ HT/mois pour la même chose."
             />
             <ScenarioCard
               badge="Profil 3"
               title="Vous êtes un groupe de plusieurs restaurants"
               recommendation="RestauMargin (Business)"
               recoColor="purple"
-              desc="Vous avez besoin d'une vue consolidee des marges entre etablissements. Aucune fonctionnalite multi-restaurant n'est publiee chez COS Kitchen. RestauMargin Business (79€/mois) gere nativement plusieurs restaurants avec comparaison des performances."
+              desc="Vous avez besoin d'une vue consolidée des marges entre établissements. Aucune fonctionnalité multi-restaurant n'est publiée chez COS Kitchen. RestauMargin Business (79€/mois) gère nativement plusieurs restaurants avec comparaison des performances."
             />
           </div>
 
           <Callout type="info">
-            <strong>Notre engagement :</strong> si apres votre essai de 7 jours vous constatez que vos
-            besoins se limitent a un calcul occasionnel, nous vous recommandons honnetement de rester
+            <strong>Notre engagement :</strong> si après votre essai de 7 jours vous constatez que vos
+            besoins se limitent à un calcul occasionnel, nous vous recommandons honnêtement de rester
             sur une solution gratuite comme COS Kitchen. Notre objectif est que vous ayez le bon outil
-            pour votre besoin reel, pas que vous payiez RestauMargin par defaut.
+            pour votre besoin réel, pas que vous payiez RestauMargin par défaut.
           </Callout>
         </section>
 
@@ -502,8 +502,8 @@ export default function AlternativeCosKitchen() {
 
           <div className="prose-content">
             <p>
-              Le point d'entree gratuit de COS Kitchen n'a pas d'equivalent chez RestauMargin. En
-              revanche, des que le suivi fournisseurs devient necessaire, l'ecart de prix s'inverse en
+              Le point d'entrée gratuit de COS Kitchen n'a pas d'équivalent chez RestauMargin. En
+              revanche, dès que le suivi fournisseurs devient nécessaire, l'écart de prix s'inverse en
               faveur de RestauMargin.
             </p>
           </div>
@@ -556,25 +556,25 @@ export default function AlternativeCosKitchen() {
           <div className="prose-content mt-8">
             <p>
               Pour obtenir le suivi fournisseurs et les alertes de prix chez COS Kitchen, il faut compter
-              <strong> 708€ HT par an</strong> (plan Pro). Le meme perimetre fonctionnel — plus la gestion
-              de stock, le menu engineering, le HACCP digital et 19 actions IA — coute
-              <strong> 348€ par an</strong> chez RestauMargin Pro, soit une economie de l'ordre de 360€
-              par an a fonctionnalites egales ou superieures.
+              <strong> 708€ HT par an</strong> (plan Pro). Le même périmètre fonctionnel — plus la gestion
+              de stock, le menu engineering, le HACCP digital et 19 actions IA — coûte
+              <strong> 348€ par an</strong> chez RestauMargin Pro, soit une économie de l'ordre de 360€
+              par an à fonctionnalités égales ou supérieures.
             </p>
             <p>
               Si votre seul besoin est de calculer ponctuellement quelques fiches sans aucun suivi
               fournisseur, le plan gratuit de COS Kitchen reste imbattable sur le prix : 0€ contre 348€
-              chez RestauMargin. Le choix depend donc entierement de la profondeur de gestion dont vous
+              chez RestauMargin. Le choix dépend donc entièrement de la profondeur de gestion dont vous
               avez besoin.
             </p>
           </div>
 
           <Callout type="info">
-            <strong>Le saviez-vous ?</strong> Une hausse de prix fournisseur non detectee pendant un mois
-            sur un ingredient representant 10% du cout matiere d'un plat vendu 200 fois par mois peut
+            <strong>Le saviez-vous ?</strong> Une hausse de prix fournisseur non détectée pendant un mois
+            sur un ingrédient représentant 10% du coût matière d'un plat vendu 200 fois par mois peut
             faire perdre plusieurs centaines d'euros de marge brute sans que le restaurateur s'en
-            apercoive. Les alertes automatiques de prix se rentabilisent generalement des le premier
-            incident evite.
+            aperçoive. Les alertes automatiques de prix se rentabilisent généralement dès le premier
+            incident évité.
           </Callout>
         </section>
 

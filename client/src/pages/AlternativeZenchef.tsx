@@ -15,44 +15,44 @@ import PublicFooter from '../components/public/PublicFooter';
 
 const faqItems = [
   {
-    question: "Peut-on utiliser RestauMargin et Zenchef en parallele ?",
-    answer: "Oui, les deux outils se combinent sans difficulte. Zenchef gere votre presence en ligne (reservations, marketing), tandis que RestauMargin pilote vos operations internes (food cost, fiches techniques, marges). Les deux outils sont complementaires : l'un capte les clients, l'autre garantit que chaque couvert servi est rentable. Aucune integration native n'existe entre les deux, mais ils n'ont pas besoin d'echanger de donnees pour coexister.",
+    question: "Peut-on utiliser RestauMargin et Zenchef en parallèle ?",
+    answer: "Oui, les deux outils se combinent sans difficulté. Zenchef gère votre présence en ligne (réservations, marketing), tandis que RestauMargin pilote vos opérations internes (food cost, fiches techniques, marges). Les deux outils sont complémentaires : l'un capte les clients, l'autre garantit que chaque couvert servi est rentable. Aucune intégration native n'existe entre les deux, mais ils n'ont pas besoin d'échanger de données pour coexister.",
   },
   {
-    question: "Combien coute RestauMargin par rapport a Zenchef ?",
-    answer: "RestauMargin commence a 29 EUR/mois (formule Pro). Zenchef demarre autour de 89 EUR/mois pour la formule Essential et peut atteindre 189 EUR/mois pour la formule Premium avec marketing avance. Sur un an, RestauMargin coute 348 EUR contre 1 068 a 2 268 EUR pour Zenchef. La difference de prix s'explique par les scopes differents : Zenchef inclut un site web et un module reservation, RestauMargin se concentre sur la rentabilite operationnelle.",
+    question: "Combien coûte RestauMargin par rapport à Zenchef ?",
+    answer: "RestauMargin commence à 29 EUR/mois (formule Pro). Zenchef démarre autour de 89 EUR/mois pour la formule Essential et peut atteindre 189 EUR/mois pour la formule Premium avec marketing avancé. Sur un an, RestauMargin coûte 348 EUR contre 1 068 à 2 268 EUR pour Zenchef. La différence de prix s'explique par les scopes différents : Zenchef inclut un site web et un module réservation, RestauMargin se concentre sur la rentabilité opérationnelle.",
   },
   {
-    question: "Zenchef gere-t-il le food cost et les marges ?",
-    answer: "Non. Zenchef est specialise dans la gestion de la relation client (reservations en ligne, fiche Google, marketing email, gestion des avis). Il n'integre ni calcul de food cost, ni fiches techniques, ni gestion de mercuriale fournisseurs, ni menu engineering. Pour la gestion des marges, il faut un outil dedie comme RestauMargin ou un tableur Excel.",
+    question: "Zenchef gère-t-il le food cost et les marges ?",
+    answer: "Non. Zenchef est spécialisé dans la gestion de la relation client (réservations en ligne, fiche Google, marketing email, gestion des avis). Il n'intègre ni calcul de food cost, ni fiches techniques, ni gestion de mercuriale fournisseurs, ni menu engineering. Pour la gestion des marges, il faut un outil dédié comme RestauMargin ou un tableur Excel.",
   },
   {
-    question: "Puis-je migrer mes donnees de Zenchef vers RestauMargin ?",
-    answer: "Les deux outils ne stockent pas les memes donnees, donc la question de migration ne se pose pas vraiment. Zenchef garde vos reservations et votre base clients ; RestauMargin gere vos ingredients, recettes, fiches techniques et factures. Vous pouvez tout a fait conserver Zenchef pour les reservations et ajouter RestauMargin par-dessus sans rien casser.",
+    question: "Puis-je migrer mes données de Zenchef vers RestauMargin ?",
+    answer: "Les deux outils ne stockent pas les mêmes données, donc la question de migration ne se pose pas vraiment. Zenchef garde vos réservations et votre base clients ; RestauMargin gère vos ingrédients, recettes, fiches techniques et factures. Vous pouvez tout à fait conserver Zenchef pour les réservations et ajouter RestauMargin par-dessus sans rien casser.",
   },
   {
-    question: "RestauMargin propose-t-il un module reservation en ligne ?",
-    answer: "Non, ce n'est pas dans notre scope. Nous nous concentrons sur la gestion operationnelle et la rentabilite (marges, food cost, fiches techniques, IA d'optimisation). Si vous avez besoin d'un module reservation, Zenchef, TheFork ou SevenRooms sont des choix solides. RestauMargin s'utilise sans difficulte en parallele de l'un de ces outils.",
+    question: "RestauMargin propose-t-il un module réservation en ligne ?",
+    answer: "Non, ce n'est pas dans notre scope. Nous nous concentrons sur la gestion opérationnelle et la rentabilité (marges, food cost, fiches techniques, IA d'optimisation). Si vous avez besoin d'un module réservation, Zenchef, TheFork ou SevenRooms sont des choix solides. RestauMargin s'utilise sans difficulté en parallèle de l'un de ces outils.",
   },
   {
     question: "Y a-t-il un essai gratuit chez RestauMargin et chez Zenchef ?",
-    answer: "RestauMargin offre 7 jours d'essai gratuit, sans carte bancaire, avec acces a toutes les fonctionnalites (food cost, IA, mercuriale, multi-restaurant). Zenchef ne propose pas d'essai gratuit standard, mais une demo personnalisee avec un commercial. RestauMargin permet donc de tester reellement le produit avant de payer, sans interaction commerciale obligatoire.",
+    answer: "RestauMargin offre 7 jours d'essai gratuit, sans carte bancaire, avec accès à toutes les fonctionnalités (food cost, IA, mercuriale, multi-restaurant). Zenchef ne propose pas d'essai gratuit standard, mais une démo personnalisée avec un commercial. RestauMargin permet donc de tester réellement le produit avant de payer, sans interaction commerciale obligatoire.",
   },
   {
-    question: "Quelle alternative a Zenchef est la plus adaptee a un restaurant independant ?",
-    answer: "Pour un restaurant independant qui souhaite reprendre le controle de ses marges sans exploser son budget logiciel, RestauMargin est un excellent choix. Pour la partie reservation, TheFork (gratuit jusqu'a un certain volume) ou Resy (modele freemium) sont des alternatives plus accessibles que Zenchef.",
+    question: "Quelle alternative à Zenchef est la plus adaptée à un restaurant indépendant ?",
+    answer: "Pour un restaurant indépendant qui souhaite reprendre le contrôle de ses marges sans exploser son budget logiciel, RestauMargin est un excellent choix. Pour la partie réservation, TheFork (gratuit jusqu'à un certain volume) ou Resy (modèle freemium) sont des alternatives plus accessibles que Zenchef.",
   },
   {
-    question: "Comment RestauMargin se compare-t-il a Zenchef sur la qualite du support ?",
-    answer: "Les deux outils proposent un support en francais par email et chat. RestauMargin inclut le support dans toutes les formules, y compris la formule Pro a 29 EUR. Zenchef reserve une partie de son accompagnement (formation, onboarding personnalise) aux formules superieures.",
+    question: "Comment RestauMargin se compare-t-il à Zenchef sur la qualité du support ?",
+    answer: "Les deux outils proposent un support en français par email et chat. RestauMargin inclut le support dans toutes les formules, y compris la formule Pro à 29 EUR. Zenchef réserve une partie de son accompagnement (formation, onboarding personnalisé) aux formules supérieures.",
   },
   {
-    question: "Existe-t-il une integration entre RestauMargin et un logiciel de caisse ?",
-    answer: "RestauMargin se connecte aux principaux logiciels de caisse francais (Tiller, L'Addition, Lightspeed Restaurant, Sumup) pour importer automatiquement les ventes et calculer les marges reelles par plat vendu. Zenchef, lui, s'integre principalement avec les systemes de reservation et les CRM marketing. Les deux outils repondent a des besoins differents et peuvent etre branches sur la meme caisse sans conflit.",
+    question: "Existe-t-il une intégration entre RestauMargin et un logiciel de caisse ?",
+    answer: "RestauMargin se connecte aux principaux logiciels de caisse français (Tiller, L'Addition, Lightspeed Restaurant, Sumup) pour importer automatiquement les ventes et calculer les marges réelles par plat vendu. Zenchef, lui, s'intègre principalement avec les systèmes de réservation et les CRM marketing. Les deux outils répondent à des besoins différents et peuvent être branchés sur la même caisse sans conflit.",
   },
   {
     question: "Quel est le meilleur outil pour un groupe de plusieurs restaurants ?",
-    answer: "RestauMargin gere nativement les multi-restaurants avec une vue consolidee (food cost groupe, comparaison entre etablissements, alertes sur derive de marges). Zenchef propose aussi une vue groupe pour la partie reservation et marketing. Pour un groupe de 3 a 10 restaurants, il est possible de combiner les deux : RestauMargin pour piloter les marges par etablissement, Zenchef pour centraliser la gestion clientele.",
+    answer: "RestauMargin gère nativement les multi-restaurants avec une vue consolidée (food cost groupe, comparaison entre établissements, alertes sur dérive de marges). Zenchef propose aussi une vue groupe pour la partie réservation et marketing. Pour un groupe de 3 à 10 restaurants, il est possible de combiner les deux : RestauMargin pour piloter les marges par établissement, Zenchef pour centraliser la gestion clientèle.",
   },
 ];
 
@@ -75,7 +75,7 @@ export default function AlternativeZenchef() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'RestauMargin : la meilleure alternative à Zenchef en 2026',
-            description: "Comparatif detaille entre RestauMargin (29 EUR/mois, gestion des marges + IA) et Zenchef (89-189 EUR/mois, reservations + marketing). Tableau 15 criteres, cas d'usage, FAQ.",
+            description: "Comparatif détaillé entre RestauMargin (29 EUR/mois, gestion des marges + IA) et Zenchef (89-189 EUR/mois, réservations + marketing). Tableau 15 critères, cas d'usage, FAQ.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -113,7 +113,7 @@ export default function AlternativeZenchef() {
                       unitText: 'MONTH',
                     },
                   },
-                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs independants et groupes.",
+                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs indépendants et groupes.",
                 },
               },
               {
@@ -135,7 +135,7 @@ export default function AlternativeZenchef() {
                       unitText: 'MONTH',
                     },
                   },
-                  description: "Plateforme de reservation en ligne, site web restaurant, marketing email et gestion de la relation client pour la restauration.",
+                  description: "Plateforme de réservation en ligne, site web restaurant, marketing email et gestion de la relation client pour la restauration.",
                 },
               },
             ],

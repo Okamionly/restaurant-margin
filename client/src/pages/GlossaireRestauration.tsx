@@ -39,14 +39,14 @@ const TERMS: Term[] = [
     name: 'Affichage des allergènes',
     shortDef: "Obligation légale d'indiquer en cuisine et sur la carte les 14 allergènes majeurs.",
     long: "Depuis le règlement européen INCO 1169/2011, tout restaurant doit afficher la présence éventuelle des 14 allergènes majeurs (gluten, crustacés, œufs, poisson, arachides, soja, lait, fruits à coque, céleri, moutarde, sésame, sulfites, lupin, mollusques) sur l'ensemble de ses plats. Un défaut d'affichage expose à 1 500 EUR d'amende par infraction. Une matrice allergènes par plat est aujourd'hui la pratique standard.",
-    link: { to: '/blog/allergenes-restaurant-obligations-legales', label: 'Allergenes en restauration : guide complet' },
+    link: { to: '/blog/allergenes-restaurant-obligations-legales', label: 'Allergènes en restauration : guide complet' },
   },
   {
     letter: 'A',
     name: 'AGEC (loi)',
     shortDef: "Loi anti-gaspillage pour une économie circulaire (2020) : doggy bag, vrac, fin du plastique à usage unique.",
     long: "La loi AGEC oblige les restaurants à proposer un contenant pour emporter les restes (doggy bag), interdit le polystyrène, impose la vaisselle réutilisable pour la consommation sur place dans les chaînes de plus de 20 couverts et impose un diagnostic anti-gaspillage. Non-respect : jusqu'à 75 000 EUR d'amende pour une personne morale.",
-    link: { to: '/blog/gaspillage-alimentaire', label: 'Reduire le gaspillage alimentaire' },
+    link: { to: '/blog/gaspillage-alimentaire', label: 'Réduire le gaspillage alimentaire' },
   },
   {
     letter: 'A',
@@ -142,7 +142,7 @@ const TERMS: Term[] = [
     name: 'Coût de revient',
     shortDef: 'Somme de tous les coûts directs et indirects nécessaires à la production d\'un plat.',
     long: "Le coût de revient intègre : matières premières + part de main-d'œuvre productive + part des charges fixes (loyer, énergie, amortissement). Il est différent et plus complet que le simple coût matières. Pour un plat à 18 EUR de PV : coût matières 5,40 + main-d'œuvre 2 + charges 3 = coût de revient 10,40 EUR.",
-    link: { to: '/blog/cout-revient-plat-restaurant', label: 'Calcul du cout de revient d\'un plat' },
+    link: { to: '/blog/cout-revient-plat-restaurant', label: 'Calcul du coût de revient d\'un plat' },
   },
   {
     letter: 'C',
@@ -226,8 +226,8 @@ const TERMS: Term[] = [
     letter: 'F',
     name: 'Food cost',
     shortDef: 'Coût matières exprimé en % du prix de vente HT.',
-    long: "Le food cost est l'indicateur largement repandu en restauration. Formule : Food cost (%) = (Coût matières / Prix de vente HT) × 100. Fourchettes cibles : pizzeria 22-25 %, restaurant traditionnel 28-33 %, gastronomique 35-40 %, fast food 30-32 %. Un food cost qui dérive de 2 points peut faire disparaître toute la marge nette.",
-    link: { to: '/blog/reduire-food-cost', label: 'Reduire son food cost' },
+    long: "Le food cost est l'indicateur largement répandu en restauration. Formule : Food cost (%) = (Coût matières / Prix de vente HT) × 100. Fourchettes cibles : pizzeria 22-25 %, restaurant traditionnel 28-33 %, gastronomique 35-40 %, fast food 30-32 %. Un food cost qui dérive de 2 points peut faire disparaître toute la marge nette.",
+    link: { to: '/blog/reduire-food-cost', label: 'Réduire son food cost' },
   },
   {
     letter: 'F',
@@ -249,7 +249,7 @@ const TERMS: Term[] = [
     name: 'Gaspillage alimentaire',
     shortDef: 'Pertes de matières premières (péremption, surproduction, déchets de préparation).',
     long: "Le gaspillage représente en moyenne 6 à 9 % du coût matières d'un restaurant, soit 1,5 à 3 points de food cost. Trois sources principales : préparation (épluchures, parures), production (surproduction), service (assiettes non finies). Pesée hebdomadaire des poubelles + analyse FIFO + ajustement des portions = -50 % de gaspillage en 3 mois.",
-    link: { to: '/blog/gaspillage-alimentaire', label: 'Reduire le gaspillage alimentaire' },
+    link: { to: '/blog/gaspillage-alimentaire', label: 'Réduire le gaspillage alimentaire' },
   },
   {
     letter: 'G',
@@ -321,7 +321,7 @@ const TERMS: Term[] = [
     name: 'Labour cost (coût du personnel)',
     shortDef: 'Masse salariale chargée — typiquement 30 à 40 % du CA HT en restauration.',
     long: "Le labour cost inclut salaires bruts + charges patronales + avantages (nourriture du personnel, mutuelle, primes). C'est le second poste de dépense après le food cost. Combiné au food cost, il forme le prime cost qui doit rester sous 65 % du CA pour préserver la marge nette.",
-    link: { to: '/blog/reduire-cout-personnel-restaurant', label: 'Reduire le cout du personnel' },
+    link: { to: '/blog/reduire-cout-personnel-restaurant', label: 'Réduire le coût du personnel' },
   },
   {
     letter: 'L',
@@ -390,7 +390,7 @@ const TERMS: Term[] = [
     name: 'NPS (Net Promoter Score)',
     shortDef: 'Indicateur de satisfaction client (% promoteurs - % détracteurs).',
     long: "Le NPS demande au client : « Sur une échelle de 0 à 10, recommanderiez-vous notre restaurant ? ». Promoteurs (9-10), Passifs (7-8), Détracteurs (0-6). NPS = % Promoteurs - % Détracteurs. Un NPS > 50 en restauration est excellent. C'est le meilleur prédicteur de la croissance organique (bouche-à-oreille).",
-    link: { to: '/blog/fideliser-clients-restaurant-strategies', label: 'Fideliser les clients restaurant' },
+    link: { to: '/blog/fideliser-clients-restaurant-strategies', label: 'Fidéliser les clients restaurant' },
   },
 
   // O
@@ -500,7 +500,7 @@ const TERMS: Term[] = [
     name: 'Saisonnalité',
     shortDef: 'Variation de l\'activité selon les périodes (jours, mois, saisons).',
     long: "Très marquée en restauration : différences de CA jusqu'à 50 % entre saison haute et basse. Anticipation : planning flexible (CDD saisonniers), prévision des stocks (réduction matières en basse saison), animation marketing pour lisser. Connaître son indice de saisonnalité par mois est la base d'un budget prévisionnel sérieux.",
-    link: { to: '/blog/budget-previsionnel-restaurant', label: 'Budget previsionnel restaurant' },
+    link: { to: '/blog/budget-previsionnel-restaurant', label: 'Budget prévisionnel restaurant' },
   },
   {
     letter: 'S',
@@ -996,7 +996,7 @@ function Quiz() {
       q: 'Le prime cost est la somme de :',
       options: [
         'Food cost + loyer',
-        'Food cost + cout du personnel',
+        'Food cost + coût du personnel',
         'Marge brute + marge nette',
         'CA HT + charges sociales',
       ],

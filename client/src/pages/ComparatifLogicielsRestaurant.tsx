@@ -138,7 +138,7 @@ const tools: ToolData[] = [
     // alors qu'aucun avis client n'a jamais ete collecte. S'auto-attribuer une
     // note dans un comparatif ou les concurrents portent leurs notes reelles
     // est une pratique commerciale trompeuse.
-    note: 'Trop recent',
+    note: 'Trop récent',
   },
   {
     name: 'Lightspeed',
@@ -301,7 +301,7 @@ const articleSchema = {
   '@type': 'Article',
   headline: 'Comparatif logiciels restaurant 2026 : 12 outils analysés',
   description:
-    "Comparatif honnete et detaille de 12 logiciels restaurant en 2026 : RestauMargin, Lightspeed, Zenchef, Innovorder, Hubrise, TheFork, L'Addition, Tiller, Sunday, Marketman, Easilys, Deliverect. Prix, fonctionnalites, profils restaurateurs, FAQ.",
+    "Comparatif honnête et détaillé de 12 logiciels restaurant en 2026 : RestauMargin, Lightspeed, Zenchef, Innovorder, Hubrise, TheFork, L'Addition, Tiller, Sunday, Marketman, Easilys, Deliverect. Prix, fonctionnalités, profils restaurateurs, FAQ.",
   image: 'https://www.restaumargin.fr/og-image.png',
   author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
   publisher: {
@@ -331,7 +331,7 @@ const itemListSchema = {
       name: t.name,
       applicationCategory: 'BusinessApplication',
       operatingSystem: 'Web, iOS, Android',
-      description: `${t.name} - ${t.speciality}. Tarif a partir de ${t.price}/mois.`,
+      description: `${t.name} - ${t.speciality}. Tarif à partir de ${t.price}/mois.`,
       offers: {
         '@type': 'Offer',
         price: t.price.replace(/[^\d]/g, '') || '0',

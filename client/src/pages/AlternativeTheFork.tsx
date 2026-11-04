@@ -15,44 +15,44 @@ import PublicFooter from '../components/public/PublicFooter';
 
 const faqItems = [
   {
-    question: "Peut-on utiliser RestauMargin et TheFork Manager en parallele ?",
-    answer: "Oui. TheFork (LaFourchette) couvre le visible : reservations en ligne, fiche restaurant, marketing client. RestauMargin couvre la partie operationnelle : food cost, fiches techniques, mercuriale, marges par plat. Les deux outils n'ont pas besoin d'echanger de donnees, ils repondent a des besoins differents et coexistent sans probleme.",
+    question: "Peut-on utiliser RestauMargin et TheFork Manager en parallèle ?",
+    answer: "Oui. TheFork (LaFourchette) couvre le visible : réservations en ligne, fiche restaurant, marketing client. RestauMargin couvre la partie opérationnelle : food cost, fiches techniques, mercuriale, marges par plat. Les deux outils n'ont pas besoin d'échanger de données, ils répondent à des besoins différents et coexistent sans problème.",
   },
   {
-    question: "Combien coute RestauMargin par rapport a TheFork Manager ?",
-    answer: "RestauMargin commence a 29 EUR/mois (formule Pro). TheFork Manager propose plusieurs formules : Basic autour de 39 EUR/mois + commission de 2 EUR par couvert reserve, Premium autour de 69-89 EUR/mois + commission. Sur un an, RestauMargin coute 348 EUR contre 468 a 1 068 EUR pour TheFork (hors commissions par couvert). La difference de positionnement explique l'ecart : TheFork est un outil de visibilite et d'acquisition, RestauMargin un outil de pilotage des marges.",
+    question: "Combien coûte RestauMargin par rapport à TheFork Manager ?",
+    answer: "RestauMargin commence à 29 EUR/mois (formule Pro). TheFork Manager propose plusieurs formules : Basic autour de 39 EUR/mois + commission de 2 EUR par couvert réservé, Premium autour de 69-89 EUR/mois + commission. Sur un an, RestauMargin coûte 348 EUR contre 468 à 1 068 EUR pour TheFork (hors commissions par couvert). La différence de positionnement explique l'écart : TheFork est un outil de visibilité et d'acquisition, RestauMargin un outil de pilotage des marges.",
   },
   {
-    question: "TheFork Manager gere-t-il le food cost et les fiches techniques ?",
-    answer: "Non. TheFork Manager est specialise dans la gestion des reservations en ligne, l'optimisation du remplissage de salle (plan de salle, gestion des no-show, listes d'attente), le marketing client (emails, promotions, fidelisation) et la presence sur l'annuaire TheFork (1.7 million d'utilisateurs en France). Il n'inclut ni calcul de food cost, ni gestion de mercuriale fournisseurs, ni fiches techniques de recettes. Pour ces fonctions, il faut un outil specialise comme RestauMargin.",
+    question: "TheFork Manager gère-t-il le food cost et les fiches techniques ?",
+    answer: "Non. TheFork Manager est spécialisé dans la gestion des réservations en ligne, l'optimisation du remplissage de salle (plan de salle, gestion des no-show, listes d'attente), le marketing client (emails, promotions, fidélisation) et la présence sur l'annuaire TheFork (1.7 million d'utilisateurs en France). Il n'inclut ni calcul de food cost, ni gestion de mercuriale fournisseurs, ni fiches techniques de recettes. Pour ces fonctions, il faut un outil spécialisé comme RestauMargin.",
   },
   {
     question: "Quelle est la commission TheFork Manager par couvert ?",
-    answer: "TheFork facture historiquement entre 2 EUR HT et 6 EUR HT par couvert reserve via leur plateforme, selon le type de programme. Le programme TheFork PAY (paiement integre) modifie legerement ces tarifs. A ces commissions s'ajoute l'abonnement mensuel Manager (39 EUR a 89 EUR/mois selon la formule). Pour un restaurant qui realise 800 couverts via TheFork par mois, la commission seule peut atteindre 1 600 EUR. RestauMargin n'a aucune commission par couvert puisque ce n'est pas un outil de reservation.",
+    answer: "TheFork facture historiquement entre 2 EUR HT et 6 EUR HT par couvert réservé via leur plateforme, selon le type de programme. Le programme TheFork PAY (paiement intégré) modifie légèrement ces tarifs. À ces commissions s'ajoute l'abonnement mensuel Manager (39 EUR à 89 EUR/mois selon la formule). Pour un restaurant qui réalise 800 couverts via TheFork par mois, la commission seule peut atteindre 1 600 EUR. RestauMargin n'a aucune commission par couvert puisque ce n'est pas un outil de réservation.",
   },
   {
-    question: "Puis-je migrer mes donnees de TheFork vers RestauMargin ?",
-    answer: "Les deux outils ne stockent pas les memes donnees, donc la question de migration ne se pose pas. TheFork conserve vos reservations, votre base clients et votre historique de couverts. RestauMargin gere vos ingredients, fiches techniques, factures fournisseurs et marges. Vous pouvez tout a fait garder TheFork pour les reservations et ajouter RestauMargin par-dessus sans rien casser, ni dans un sens, ni dans l'autre.",
+    question: "Puis-je migrer mes données de TheFork vers RestauMargin ?",
+    answer: "Les deux outils ne stockent pas les mêmes données, donc la question de migration ne se pose pas. TheFork conserve vos réservations, votre base clients et votre historique de couverts. RestauMargin gère vos ingrédients, fiches techniques, factures fournisseurs et marges. Vous pouvez tout à fait garder TheFork pour les réservations et ajouter RestauMargin par-dessus sans rien casser, ni dans un sens, ni dans l'autre.",
   },
   {
-    question: "RestauMargin propose-t-il un module reservation en ligne ?",
-    answer: "Non, ce n'est volontairement pas dans notre scope. Nous nous concentrons sur la gestion operationnelle et la rentabilite (marges, food cost, fiches techniques, IA d'optimisation, mercuriale). Pour la reservation, TheFork (largement repandu en France), Zenchef ou Resy sont des choix solides. TheFork (reservations) et RestauMargin (operations) se combinent sans difficulte.",
+    question: "RestauMargin propose-t-il un module réservation en ligne ?",
+    answer: "Non, ce n'est volontairement pas dans notre scope. Nous nous concentrons sur la gestion opérationnelle et la rentabilité (marges, food cost, fiches techniques, IA d'optimisation, mercuriale). Pour la réservation, TheFork (largement répandu en France), Zenchef ou Resy sont des choix solides. TheFork (réservations) et RestauMargin (opérations) se combinent sans difficulté.",
   },
   {
     question: "Y a-t-il un essai gratuit chez RestauMargin et chez TheFork Manager ?",
-    answer: "RestauMargin offre 7 jours d'essai gratuit, sans carte bancaire, avec acces a toutes les fonctionnalites (food cost, IA, mercuriale, multi-restaurant). TheFork Manager ne propose pas d'essai gratuit standard mais une demo commerciale. RestauMargin permet donc de tester reellement le produit avant de payer, sans interaction commerciale obligatoire. Pour TheFork, il faut generalement passer par un commercial pour obtenir un acces de test.",
+    answer: "RestauMargin offre 7 jours d'essai gratuit, sans carte bancaire, avec accès à toutes les fonctionnalités (food cost, IA, mercuriale, multi-restaurant). TheFork Manager ne propose pas d'essai gratuit standard mais une démo commerciale. RestauMargin permet donc de tester réellement le produit avant de payer, sans interaction commerciale obligatoire. Pour TheFork, il faut généralement passer par un commercial pour obtenir un accès de test.",
   },
   {
-    question: "Quelle alternative a TheFork Manager est la plus adaptee a un restaurant independant ?",
-    answer: "Pour un restaurant independant, la verite est qu'il n'existe pas vraiment d'alternative a TheFork pour la partie reservation : leur reseau de 1.7 million d'utilisateurs en France constitue une vraie barriere a l'entree. Mais pour la partie gestion operationnelle, qui n'est pas le coeur de TheFork, RestauMargin est un excellent choix (29 EUR/mois, sans commission par couvert, gestion complete des marges).",
+    question: "Quelle alternative à TheFork Manager est la plus adaptée à un restaurant indépendant ?",
+    answer: "Pour un restaurant indépendant, la vérité est qu'il n'existe pas vraiment d'alternative à TheFork pour la partie réservation : leur réseau de 1.7 million d'utilisateurs en France constitue une vraie barrière à l'entrée. Mais pour la partie gestion opérationnelle, qui n'est pas le coeur de TheFork, RestauMargin est un excellent choix (29 EUR/mois, sans commission par couvert, gestion complète des marges).",
   },
   {
-    question: "Comment RestauMargin se compare-t-il a TheFork sur la qualite du support ?",
-    answer: "Les deux outils proposent un support en francais par email et chat. RestauMargin inclut le support dans toutes les formules, y compris la formule Pro a 29 EUR, avec un temps de reponse moyen inferieur a 4 heures en jours ouvres. TheFork dispose d'un service client structure (heritage du groupe TripAdvisor) avec accompagnement commercial dedie pour les formules superieures. Les deux equipes sont reactives sur leur scope respectif.",
+    question: "Comment RestauMargin se compare-t-il à TheFork sur la qualité du support ?",
+    answer: "Les deux outils proposent un support en français par email et chat. RestauMargin inclut le support dans toutes les formules, y compris la formule Pro à 29 EUR, avec un temps de réponse moyen inférieur à 4 heures en jours ouvrés. TheFork dispose d'un service client structuré (héritage du groupe TripAdvisor) avec accompagnement commercial dédié pour les formules supérieures. Les deux équipes sont réactives sur leur scope respectif.",
   },
   {
-    question: "Existe-t-il une integration directe entre RestauMargin et TheFork Manager ?",
-    answer: "Il n'existe pas d'integration native entre RestauMargin et TheFork Manager, mais elle n'est pas necessaire. TheFork gere vos couverts et vos reservations cote front, RestauMargin gere vos couts et vos marges cote back. Les deux mondes n'ont pas besoin d'echanger en temps reel : vous pouvez tres bien suivre votre nombre de couverts servis dans RestauMargin via la saisie quotidienne ou la connexion avec votre logiciel de caisse, sans dependre de TheFork pour cela.",
+    question: "Existe-t-il une intégration directe entre RestauMargin et TheFork Manager ?",
+    answer: "Il n'existe pas d'intégration native entre RestauMargin et TheFork Manager, mais elle n'est pas nécessaire. TheFork gère vos couverts et vos réservations côté front, RestauMargin gère vos coûts et vos marges côté back. Les deux mondes n'ont pas besoin d'échanger en temps réel : vous pouvez très bien suivre votre nombre de couverts servis dans RestauMargin via la saisie quotidienne ou la connexion avec votre logiciel de caisse, sans dépendre de TheFork pour cela.",
   },
 ];
 
@@ -114,7 +114,7 @@ export default function AlternativeTheFork() {
                     },
                   },
 
-                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs independants et groupes.",
+                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs indépendants et groupes.",
                 },
               },
               {
@@ -136,7 +136,7 @@ export default function AlternativeTheFork() {
                       unitText: 'MONTH',
                     },
                   },
-                  description: "Plateforme de reservation en ligne, gestion de salle, marketing client et visibilite sur l'annuaire TheFork (1.7M utilisateurs France).",
+                  description: "Plateforme de réservation en ligne, gestion de salle, marketing client et visibilité sur l'annuaire TheFork (1.7M utilisateurs France).",
                 },
               },
             ],

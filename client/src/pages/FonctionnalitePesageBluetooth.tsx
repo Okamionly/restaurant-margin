@@ -47,41 +47,41 @@ const faqItems = [
   {
     question: 'Quelles balances Bluetooth sont compatibles avec RestauMargin ?',
     answer:
-      "RestauMargin se connecte aux balances Bluetooth Low Energy (BLE) du commerce qui exposent un profil de poids standard (portee 0 a 5 ou 0 a 15 kg, precision 1 g). Contactez-nous avec la reference de votre balance pour verifier la compatibilite.",
+      "RestauMargin se connecte aux balances Bluetooth Low Energy (BLE) du commerce qui exposent un profil de poids standard (portée 0 à 5 ou 0 à 15 kg, précision 1 g). Contactez-nous avec la référence de votre balance pour vérifier la compatibilité.",
   },
   {
     question: 'Faut-il obligatoirement une tablette pour utiliser le pesage Bluetooth ?',
     answer:
-      "Le pesage Bluetooth fonctionne sur tout appareil ouvrant RestauMargin dans un navigateur compatible Web Bluetooth : tablette ou smartphone Android, ordinateur Chrome/Edge. A vous de choisir l'appareil le plus pratique pour votre cuisine.",
+      "Le pesage Bluetooth fonctionne sur tout appareil ouvrant RestauMargin dans un navigateur compatible Web Bluetooth : tablette ou smartphone Android, ordinateur Chrome/Edge. À vous de choisir l'appareil le plus pratique pour votre cuisine.",
   },
   {
     question: 'Le pesage fonctionne-t-il hors-ligne, sans connexion internet ?',
     answer:
-      "Oui pour la lecture du poids. La balance communique avec votre appareil en Bluetooth direct, sans passer par internet : meme en plein creux de reseau, le poids s'affiche et s'inscrit dans la fiche technique. RestauMargin etant une PWA (Progressive Web App), les fiches techniques deja consultees restent disponibles en cache. La synchronisation des couts et l'enregistrement definitif se font des que la connexion revient. En clair : on continue de peser et de produire meme quand la box du restaurant fait des siennes.",
+      "Oui pour la lecture du poids. La balance communique avec votre appareil en Bluetooth direct, sans passer par internet : même en plein creux de réseau, le poids s'affiche et s'inscrit dans la fiche technique. RestauMargin étant une PWA (Progressive Web App), les fiches techniques déjà consultées restent disponibles en cache. La synchronisation des coûts et l'enregistrement définitif se font dès que la connexion revient. En clair : on continue de peser et de produire même quand la box du restaurant fait des siennes.",
   },
   {
     question: 'Le pesage Bluetooth est-il inclus dans l\'abonnement ?',
     answer:
-      "Oui, la fonction pesage Bluetooth est incluse dans l'abonnement RestauMargin, sans surcout.",
+      "Oui, la fonction pesage Bluetooth est incluse dans l'abonnement RestauMargin, sans surcoût.",
   },
   {
-    question: 'Peut-on connecter plusieurs balances en meme temps ?',
+    question: 'Peut-on connecter plusieurs balances en même temps ?',
     answer:
-      "Oui. Un restaurant avec plusieurs postes (garde-manger, patisserie, chaud) peut equiper chaque poste de sa propre balance et de son propre appareil : chacun se connecte independamment. Un meme appareil peut aussi memoriser plusieurs balances et basculer de l'une a l'autre selon le poste. Chaque pesee est rattachee a la fiche technique ouverte sur l'appareil concerne, sans melange entre les postes.",
+      "Oui. Un restaurant avec plusieurs postes (garde-manger, pâtisserie, chaud) peut équiper chaque poste de sa propre balance et de son propre appareil : chacun se connecte indépendamment. Un même appareil peut aussi mémoriser plusieurs balances et basculer de l'une à l'autre selon le poste. Chaque pesée est rattachée à la fiche technique ouverte sur l'appareil concerné, sans mélange entre les postes.",
   },
   {
-    question: 'Quelle est la precision du pesage et est-elle suffisante pour le food cost ?',
+    question: 'Quelle est la précision du pesage et est-elle suffisante pour le food cost ?',
     answer:
-      "Les balances compatibles affichent une precision de 1 gramme sur les petites portées (0 a 5 kg), largement suffisante pour la cuisine : epices, levure, sel, beurre, garnitures. Pour les grosses quantites (viandes, pates, sauces), une precision de 1 a 2 g reste négligeable face au cout reel. L'essentiel est que le poids inscrit soit le vrai poids pese, pas une estimation de memoire : c'est exactement ce que garantit la connexion directe balance vers fiche technique, et c'est ce qui rend votre food cost juste au gramme pres.",
+      "Les balances compatibles affichent une précision de 1 gramme sur les petites portées (0 à 5 kg), largement suffisante pour la cuisine : épices, levure, sel, beurre, garnitures. Pour les grosses quantités (viandes, pâtes, sauces), une précision de 1 à 2 g reste négligeable face au coût réel. L'essentiel est que le poids inscrit soit le vrai poids pesé, pas une estimation de mémoire : c'est exactement ce que garantit la connexion directe balance vers fiche technique, et c'est ce qui rend votre food cost juste au gramme près.",
   },
 ];
 
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'Pesage Bluetooth en plein service : la balance connectee a vos fiches techniques',
+  headline: 'Pesage Bluetooth en plein service : la balance connectée à vos fiches techniques',
   description:
-    "Connectez une balance Bluetooth a vos fiches techniques RestauMargin. Pesez un ingredient en plein service, le poids et le cout s'inscrivent tout seuls. Fini les post-it et les food cost approximatifs.",
+    "Connectez une balance Bluetooth à vos fiches techniques RestauMargin. Pesez un ingrédient en plein service, le poids et le coût s'inscrivent tout seuls. Fini les post-it et les food cost approximatifs.",
   image: 'https://www.restaumargin.fr/og-image.png',
   author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
   publisher: {

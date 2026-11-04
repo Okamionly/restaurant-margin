@@ -37,52 +37,52 @@ const faqItems = [
   {
     question: "Hubrise et RestauMargin sont-ils en concurrence directe ?",
     answer:
-      "Non, ils servent des besoins differents et sont meme complementaires. Hubrise est un hub d'integrations qui connecte votre caisse a UberEats, Deliveroo, JustEat, Click&Collect, etc. RestauMargin pilote votre food cost, vos fiches techniques et votre marge brute. Un restaurant multi-canaux peut tout a fait utiliser les deux : Hubrise pour la connectivite commandes, RestauMargin pour la rentabilite reelle.",
+      "Non, ils servent des besoins différents et sont même complémentaires. Hubrise est un hub d'intégrations qui connecte votre caisse à UberEats, Deliveroo, JustEat, Click&Collect, etc. RestauMargin pilote votre food cost, vos fiches techniques et votre marge brute. Un restaurant multi-canaux peut tout à fait utiliser les deux : Hubrise pour la connectivité commandes, RestauMargin pour la rentabilité réelle.",
   },
   {
-    question: "Quel est le prix de Hubrise compare a RestauMargin ?",
+    question: "Quel est le prix de Hubrise comparé à RestauMargin ?",
     answer:
-      "Hubrise se positionne entre 50 EUR et 200 EUR par mois selon le nombre d'integrations actives et le volume de commandes. RestauMargin est a 29 EUR par mois avec acces complet a la gestion de marge, fiches techniques, scanner de factures, menu engineering et IA. L'investissement n'a pas le meme objectif : Hubrise vous fait gagner du temps operationnel, RestauMargin vous fait gagner de la marge.",
+      "Hubrise se positionne entre 50 EUR et 200 EUR par mois selon le nombre d'intégrations actives et le volume de commandes. RestauMargin est à 29 EUR par mois avec accès complet à la gestion de marge, fiches techniques, scanner de factures, menu engineering et IA. L'investissement n'a pas le même objectif : Hubrise vous fait gagner du temps opérationnel, RestauMargin vous fait gagner de la marge.",
   },
   {
     question: "Puis-je remplacer Hubrise par RestauMargin pour la livraison ?",
     answer:
-      "Pas directement. RestauMargin n'est pas un middleware d'integration de commandes : nous ne synchronisons pas votre menu sur UberEats ou Deliveroo. Notre force est ailleurs : nous integrons les commissions des plateformes dans votre calcul de marge reel pour vous dire combien chaque plat vendu en livraison rapporte vraiment. Si vous avez besoin de la connectivite operationnelle, Hubrise reste pertinent.",
+      "Pas directement. RestauMargin n'est pas un middleware d'intégration de commandes : nous ne synchronisons pas votre menu sur UberEats ou Deliveroo. Notre force est ailleurs : nous intégrons les commissions des plateformes dans votre calcul de marge réel pour vous dire combien chaque plat vendu en livraison rapporte vraiment. Si vous avez besoin de la connectivité opérationnelle, Hubrise reste pertinent.",
   },
   {
-    question: "RestauMargin se connecte-t-il a UberEats, Deliveroo ou JustEat ?",
+    question: "RestauMargin se connecte-t-il à UberEats, Deliveroo ou JustEat ?",
     answer:
-      "Nous proposons l'import des rapports financiers UberEats, Deliveroo et JustEat (CSV ou via le scanner OCR de releves) pour reconcilier vos ventes livraison avec vos marges reelles. Pour la synchronisation en temps reel du menu, nous laissons cela aux specialistes comme Hubrise, Deliverect ou Otter, qui sont concus pour ce cas d'usage.",
+      "Nous proposons l'import des rapports financiers UberEats, Deliveroo et JustEat (CSV ou via le scanner OCR de relevés) pour réconcilier vos ventes livraison avec vos marges réelles. Pour la synchronisation en temps réel du menu, nous laissons cela aux spécialistes comme Hubrise, Deliverect ou Otter, qui sont conçus pour ce cas d'usage.",
   },
   {
-    question: "Combien coute une commande UberEats apres commissions ?",
+    question: "Combien coûte une commande UberEats après commissions ?",
     answer:
-      "Les plateformes prelevent generalement 25 a 35 % de commission (parfois plus pour les nouveaux restaurants). Sur un plat vendu 18 EUR TTC, vous touchez en realite 11 a 12 EUR HT. Si votre food cost est de 30 % (5,40 EUR), votre marge brute reelle tombe a environ 5,60 a 6,60 EUR au lieu de 11 EUR en vente directe. RestauMargin calcule automatiquement cette marge ajustee pour chaque canal.",
+      "Les plateformes prélèvent généralement 25 à 35 % de commission (parfois plus pour les nouveaux restaurants). Sur un plat vendu 18 EUR TTC, vous touchez en réalité 11 à 12 EUR HT. Si votre food cost est de 30 % (5,40 EUR), votre marge brute réelle tombe à environ 5,60 à 6,60 EUR au lieu de 11 EUR en vente directe. RestauMargin calcule automatiquement cette marge ajustée pour chaque canal.",
   },
   {
-    question: "Hubrise gere-t-il le food cost ou les fiches techniques ?",
+    question: "Hubrise gère-t-il le food cost ou les fiches techniques ?",
     answer:
-      "Non. Hubrise est un hub d'integration : il route les commandes, synchronise les menus, met a jour les stocks via API. Il ne gere ni les fiches techniques, ni le calcul du cout matiere, ni la marge plat par plat. C'est exactement la lacune que RestauMargin comble. Les deux outils sont donc parfaitement complementaires dans un stack restaurant moderne.",
+      "Non. Hubrise est un hub d'intégration : il route les commandes, synchronise les menus, met à jour les stocks via API. Il ne gère ni les fiches techniques, ni le calcul du coût matière, ni la marge plat par plat. C'est exactement la lacune que RestauMargin comble. Les deux outils sont donc parfaitement complémentaires dans un stack restaurant moderne.",
   },
   {
     question: "Pour un mono-restaurant qui ne fait pas de livraison, lequel choisir ?",
     answer:
-      "Si vous ne faites ni livraison ni click&collect ni vente sur les marketplaces, Hubrise n'a pas grand interet pour vous. RestauMargin reste pertinent : meme sans livraison, vous avez besoin de calculer vos marges, gerer vos fiches techniques, scanner vos factures fournisseurs et optimiser votre carte. Notre essai gratuit 7 jours sans CB vous permet de tester sans risque.",
+      "Si vous ne faites ni livraison ni click&collect ni vente sur les marketplaces, Hubrise n'a pas grand intérêt pour vous. RestauMargin reste pertinent : même sans livraison, vous avez besoin de calculer vos marges, gérer vos fiches techniques, scanner vos factures fournisseurs et optimiser votre carte. Notre essai gratuit 7 jours sans CB vous permet de tester sans risque.",
   },
   {
-    question: "Quelles plateformes Hubrise integre-t-il ?",
+    question: "Quelles plateformes Hubrise intègre-t-il ?",
     answer:
-      "Hubrise se connecte a un large ecosysteme : UberEats, Deliveroo, JustEat, Stuart, Yper pour la livraison ; Lightspeed, Tiller, Cashpad, Sumup, JDC pour la caisse ; Square, Wix, Shopify pour les sites web ; ainsi que de nombreux outils metiers (KDS, fidelite, paiement). C'est son point fort : la profondeur du catalogue d'integrations.",
+      "Hubrise se connecte à un large écosystème : UberEats, Deliveroo, JustEat, Stuart, Yper pour la livraison ; Lightspeed, Tiller, Cashpad, Sumup, JDC pour la caisse ; Square, Wix, Shopify pour les sites web ; ainsi que de nombreux outils métiers (KDS, fidélité, paiement). C'est son point fort : la profondeur du catalogue d'intégrations.",
   },
   {
-    question: "Quelle est la duree d'implementation de chaque outil ?",
+    question: "Quelle est la durée d'implementation de chaque outil ?",
     answer:
-      "Hubrise demande generalement 1 a 4 semaines selon le nombre d'integrations a parametrer (mapping menus, tests commandes, formation equipe). RestauMargin est operationnel en 30 minutes : creez un compte, importez vos premieres recettes, le calcul de marge se fait automatiquement. C'est volontaire : nous voulons que la prise en main soit immediate.",
+      "Hubrise demande généralement 1 à 4 semaines selon le nombre d'intégrations à paramétrer (mapping menus, tests commandes, formation équipe). RestauMargin est opérationnel en 30 minutes : créez un compte, importez vos premières recettes, le calcul de marge se fait automatiquement. C'est volontaire : nous voulons que la prise en main soit immédiate.",
   },
   {
     question: "Y a-t-il un engagement avec RestauMargin ?",
     answer:
-      "Aucun. RestauMargin est sans engagement, sans carte bancaire requise pour l'essai 7 jours, et vous pouvez resilier en un clic depuis votre espace abonnement. C'est une difference notable avec certains hubs d'integration qui demandent souvent un engagement annuel ou des frais de setup. 29 EUR/mois flat, sans surprise.",
+      "Aucun. RestauMargin est sans engagement, sans carte bancaire requise pour l'essai 7 jours, et vous pouvez résilier en un clic depuis votre espace abonnement. C'est une différence notable avec certains hubs d'intégration qui demandent souvent un engagement annuel ou des frais de setup. 29 EUR/mois flat, sans surprise.",
   },
 ];
 
@@ -91,7 +91,7 @@ export default function AlternativeHubrise() {
     <div className="min-h-screen bg-white">
       <SEOHead
         title="Alternative Hubrise | RestauMargin food cost | Comparatif 2026"
-        description="Hubrise = hub d'integrations livraison (UberEats, Deliveroo). RestauMargin = pilotage de marge (food cost, fiches techniques). Comparatif complet 2026, prix, cas d'usage et complementarite."
+        description="Hubrise = hub d'intégrations livraison (UberEats, Deliveroo). RestauMargin = pilotage de marge (food cost, fiches techniques). Comparatif complet 2026, prix, cas d'usage et complémentarité."
         path="/alternative-hubrise"
         type="article"
         schema={[
@@ -99,14 +99,14 @@ export default function AlternativeHubrise() {
           buildBreadcrumbSchema([
             { name: 'Accueil', url: 'https://www.restaumargin.fr/' },
             { name: 'Comparatifs', url: 'https://www.restaumargin.fr/' },
-            { name: 'Alternative a Hubrise', url: 'https://www.restaumargin.fr/alternative-hubrise' },
+            { name: 'Alternative à Hubrise', url: 'https://www.restaumargin.fr/alternative-hubrise' },
           ]),
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
-            headline: 'Alternative a Hubrise : RestauMargin pour la gestion de marge',
+            headline: 'Alternative à Hubrise : RestauMargin pour la gestion de marge',
             description:
-              "Comparatif Hubrise vs RestauMargin : positionnement, prix, fonctionnalites, cas d'usage et complementarite pour les restaurants modernes.",
+              "Comparatif Hubrise vs RestauMargin : positionnement, prix, fonctionnalités, cas d'usage et complémentarité pour les restaurants modernes.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -136,7 +136,7 @@ export default function AlternativeHubrise() {
           <span>/</span>
           <span className="hover:text-teal-600">Comparatifs</span>
           <span>/</span>
-          <span className="text-[#111111] font-medium">Alternative a Hubrise</span>
+          <span className="text-[#111111] font-medium">Alternative à Hubrise</span>
         </div>
       </div>
 
@@ -145,9 +145,9 @@ export default function AlternativeHubrise() {
         category="Comparatif"
         readTime="12 min"
         date="Mai 2026"
-        title="Alternative a Hubrise : RestauMargin pour la gestion de marge"
+        title="Alternative à Hubrise : RestauMargin pour la gestion de marge"
         accentWord="marge"
-        subtitle="Hubrise connecte vos plateformes de livraison. RestauMargin pilote votre rentabilite reelle. Decouvrez les differences, les complementarites, les prix et le bon choix pour votre restaurant en 2026."
+        subtitle="Hubrise connecte vos plateformes de livraison. RestauMargin pilote votre rentabilité réelle. Découvrez les différences, les complémentarités, les prix et le bon choix pour votre restaurant en 2026."
       />
 
       {/* ── Contenu principal ── */}
@@ -159,7 +159,7 @@ export default function AlternativeHubrise() {
           <div className="flex items-center gap-2 mb-3">
             <Zap className="w-5 h-5" />
             <span className="text-xs font-bold uppercase tracking-wider text-teal-100">
-              Resume en 30 secondes
+              Résumé en 30 secondes
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold mb-4">
@@ -169,7 +169,7 @@ export default function AlternativeHubrise() {
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold flex-shrink-0">1.</span>
               <span>
-                <strong className="text-white">Hubrise</strong> = hub d'integration (caisse, UberEats,
+                <strong className="text-white">Hubrise</strong> = hub d'intégration (caisse, UberEats,
                 Deliveroo, JustEat, KDS, site web). Connecte tout, ne calcule rien.
               </span>
             </div>
@@ -177,27 +177,27 @@ export default function AlternativeHubrise() {
               <span className="text-teal-200 font-bold flex-shrink-0">2.</span>
               <span>
                 <strong className="text-white">RestauMargin</strong> = pilote de marge (food cost,
-                fiches techniques, scanner factures, menu engineering). Calcule la rentabilite reelle.
+                fiches techniques, scanner factures, menu engineering). Calcule la rentabilité réelle.
               </span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold flex-shrink-0">3.</span>
               <span>
-                <strong className="text-white">Complementaires</strong>, pas concurrents. Un
-                restaurant multi-canaux peut utiliser les deux : Hubrise pour l'operationnel, RestauMargin pour la marge.
+                <strong className="text-white">Complémentaires</strong>, pas concurrents. Un
+                restaurant multi-canaux peut utiliser les deux : Hubrise pour l'opérationnel, RestauMargin pour la marge.
               </span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold flex-shrink-0">4.</span>
               <span>
-                <strong className="text-white">Prix</strong> : Hubrise 50 a 200 EUR/mois (selon integrations).
+                <strong className="text-white">Prix</strong> : Hubrise 50 à 200 EUR/mois (selon intégrations).
                 RestauMargin 29 EUR/mois flat.
               </span>
             </div>
           </div>
           <p className="mt-4 text-teal-100 text-sm">
-            Vous ne faites pas de livraison ? Hubrise n'est pas pour vous. Vous voulez connaitre la
-            marge reelle de chaque plat vendu sur chaque canal ? RestauMargin est indispensable.
+            Vous ne faites pas de livraison ? Hubrise n'est pas pour vous. Vous voulez connaître la
+            marge réelle de chaque plat vendu sur chaque canal ? RestauMargin est indispensable.
           </p>
         </div>
 
@@ -209,14 +209,14 @@ export default function AlternativeHubrise() {
           </h2>
           <ol className="space-y-2 text-sm sm:text-base text-[#404040]">
             {[
-              { href: '#positionnement', label: "Positionnement : pourquoi ces 2 outils ne font pas la meme chose" },
-              { href: '#hubrise', label: "Hubrise en detail : ce qu'il fait (et ce qu'il ne fait pas)" },
-              { href: '#restaumargin', label: 'RestauMargin en detail : pilote de marge restaurant' },
-              { href: '#comparatif', label: 'Tableau comparatif : 15 criteres face-a-face' },
+              { href: '#positionnement', label: "Positionnement : pourquoi ces 2 outils ne font pas la même chose" },
+              { href: '#hubrise', label: "Hubrise en détail : ce qu'il fait (et ce qu'il ne fait pas)" },
+              { href: '#restaumargin', label: 'RestauMargin en détail : pilote de marge restaurant' },
+              { href: '#comparatif', label: 'Tableau comparatif : 15 critères face-à-face' },
               { href: '#cas-usage', label: 'Cas d\'usage : qui choisir, ou combiner les 2' },
-              { href: '#livraison', label: "Couts livraison et commissions : l'impact reel sur votre marge" },
-              { href: '#pricing', label: 'Pricing 1 an : combien ca coute reellement' },
-              { href: '#faq', label: 'Questions frequentes' },
+              { href: '#livraison', label: "Coûts livraison et commissions : l'impact réel sur votre marge" },
+              { href: '#pricing', label: 'Pricing 1 an : combien ça coûte réellement' },
+              { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Tester RestauMargin gratuitement' },
             ].map((item, i) => (
               <li key={i}>
@@ -234,45 +234,45 @@ export default function AlternativeHubrise() {
         {/* ═════════════ SECTION 1 : Positionnement ═════════════ */}
         <section id="positionnement" className="mb-16">
           <SectionHeading icon={<Network className="w-6 h-6" />} number="1">
-            Positionnement : pourquoi ces 2 outils ne font pas la meme chose
+            Positionnement : pourquoi ces 2 outils ne font pas la même chose
           </SectionHeading>
 
           <div className="prose-content space-y-4">
             <p className="text-[#404040] leading-relaxed">
-              Avant de comparer les fonctionnalites, il faut comprendre que Hubrise et RestauMargin appartiennent
-              a deux familles d'outils completement differentes. Les confondre, c'est se priver de la valeur de
-              chacun. Voici le decoupage de l'ecosysteme tech restauration en 2026.
+              Avant de comparer les fonctionnalités, il faut comprendre que Hubrise et RestauMargin appartiennent
+              a deux familles d'outils complètement différentes. Les confondre, c'est se priver de la valeur de
+              chacun. Voici le découpage de l'écosystème tech restauration en 2026.
             </p>
 
             <p className="text-[#404040] leading-relaxed">
-              D'un cote, vous avez les <strong>hubs d'integration</strong> (Hubrise, Deliverect, Otter, Cuboh).
-              Leur job : rendre vos differents canaux de vente compatibles entre eux. Vous mettez a jour un plat
+              D'un côté, vous avez les <strong>hubs d'intégration</strong> (Hubrise, Deliverect, Otter, Cuboh).
+              Leur job : rendre vos différents canaux de vente compatibles entre eux. Vous mettez à jour un plat
               dans votre caisse Lightspeed ? Le menu UberEats, Deliveroo, JustEat et votre site web se mettent
-              automatiquement a jour. Vous recevez une commande UberEats ? Elle arrive directement dans votre caisse
-              et votre KDS, sans ressaisie. Sans ce middleware, votre equipe passe son temps a faire du copier-coller
-              entre plateformes — et a faire des erreurs.
+              automatiquement à jour. Vous recevez une commande UberEats ? Elle arrive directement dans votre caisse
+              et votre KDS, sans ressaisie. Sans ce middleware, votre équipe passe son temps à faire du copier-coller
+              entre plateformes — et à faire des erreurs.
             </p>
 
             <p className="text-[#404040] leading-relaxed">
-              De l'autre cote, vous avez les <strong>pilotes de marge</strong> (RestauMargin, MarginEdge aux US,
-              certains modules Cegid Restauration). Leur job : transformer vos donnees brutes (factures fournisseurs,
-              ventes par plat, fiches techniques) en decisions actionnables : ce plat vous fait perdre de l'argent
-              en livraison, ce fournisseur a augmente ses prix sans vous prevenir, votre food cost a derive de 3 points
-              depuis le mois dernier. Sans cet outil, vous pilotez a l'aveugle.
+              De l'autre côté, vous avez les <strong>pilotes de marge</strong> (RestauMargin, MarginEdge aux US,
+              certains modules Cegid Restauration). Leur job : transformer vos données brutes (factures fournisseurs,
+              ventes par plat, fiches techniques) en décisions actionnables : ce plat vous fait perdre de l'argent
+              en livraison, ce fournisseur a augmenté ses prix sans vous prévenir, votre food cost a dérivé de 3 points
+              depuis le mois dernier. Sans cet outil, vous pilotez à l'aveugle.
             </p>
 
             <Callout type="info">
-              <strong>L'analogie qui clarifie tout :</strong> Hubrise est a votre restaurant ce que Zapier est a un
+              <strong>L'analogie qui clarifie tout :</strong> Hubrise est à votre restaurant ce que Zapier est à un
               SaaS — un connecteur qui fait parler vos outils entre eux. RestauMargin est ce que serait Stripe Radar
-              pour la marge — une intelligence qui analyse vos flux financiers pour vous proteger des fuites.
+              pour la marge — une intelligence qui analyse vos flux financiers pour vous protéger des fuites.
             </Callout>
 
             <p className="text-[#404040] leading-relaxed">
-              Beaucoup de restaurateurs cherchent une "alternative a Hubrise" en pensant qu'un seul outil va tout faire.
-              La realite du marche 2026 est plus nuancee : aucun outil generaliste ne fait correctement les deux jobs.
-              Les hubs sont concus pour la connectivite (et c'est tres complexe : chaque plateforme a sa propre API,
-              ses propres mises a jour, ses propres bugs). Les pilotes de marge sont concus pour la finance operationnelle
-              (calcul de cout matiere, scoring, alertes). Mieux vaut deux excellents outils specialises qu'un outil
+              Beaucoup de restaurateurs cherchent une "alternative à Hubrise" en pensant qu'un seul outil va tout faire.
+              La réalité du marché 2026 est plus nuancée : aucun outil généraliste ne fait correctement les deux jobs.
+              Les hubs sont conçus pour la connectivité (et c'est très complexe : chaque plateforme a sa propre API,
+              ses propres mises à jour, ses propres bugs). Les pilotes de marge sont conçus pour la finance opérationnelle
+              (calcul de coût matière, scoring, alertes). Mieux vaut deux excellents outils spécialisés qu'un outil
               moyen sur les deux fronts.
             </p>
           </div>
@@ -281,14 +281,14 @@ export default function AlternativeHubrise() {
         {/* ═════════════ SECTION 2 : Hubrise en detail ═════════════ */}
         <section id="hubrise" className="mb-16">
           <SectionHeading icon={<Plug className="w-6 h-6" />} number="2">
-            Hubrise en detail : ce qu'il fait (et ce qu'il ne fait pas)
+            Hubrise en détail : ce qu'il fait (et ce qu'il ne fait pas)
           </SectionHeading>
 
           <div className="prose-content space-y-4">
             <p className="text-[#404040] leading-relaxed">
-              Hubrise est une startup francaise (basee a Lille) fondee en 2017, qui s'est positionnee tres tot sur
-              le creneau du middleware pour la restauration. Aujourd'hui, c'est l'un des hubs les plus reconnus en
-              France, avec un catalogue d'integrations particulierement profond cote francophone.
+              Hubrise est une startup française (basée à Lille) fondée en 2017, qui s'est positionnée très tôt sur
+              le créneau du middleware pour la restauration. Aujourd'hui, c'est l'un des hubs les plus reconnus en
+              France, avec un catalogue d'intégrations particulièrement profond côté francophone.
             </p>
           </div>
 
@@ -296,7 +296,7 @@ export default function AlternativeHubrise() {
             <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle className="w-5 h-5 text-emerald-700" />
-                <h3 className="font-bold text-emerald-900">Ce que Hubrise fait tres bien</h3>
+                <h3 className="font-bold text-emerald-900">Ce que Hubrise fait très bien</h3>
               </div>
               <ul className="space-y-2 text-sm text-emerald-900 leading-relaxed">
                 <li className="flex items-start gap-2">
@@ -313,11 +313,11 @@ export default function AlternativeHubrise() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-emerald-600 font-bold">+</span>
-                  Connexion a un large ecosysteme : Lightspeed, Tiller, Cashpad, Sumup, JDC
+                  Connexion à un large écosystème : Lightspeed, Tiller, Cashpad, Sumup, JDC
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-emerald-600 font-bold">+</span>
-                  Stock partage entre tous les canaux (rupture instantanee)
+                  Stock partagé entre tous les canaux (rupture instantanée)
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-emerald-600 font-bold">+</span>
@@ -338,7 +338,7 @@ export default function AlternativeHubrise() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-amber-600 font-bold">-</span>
-                  Fiches techniques avec grammages et couts ingredients
+                  Fiches techniques avec grammages et coûts ingrédients
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-amber-600 font-bold">-</span>
@@ -346,11 +346,11 @@ export default function AlternativeHubrise() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-amber-600 font-bold">-</span>
-                  Menu engineering (matrice popularite x marge)
+                  Menu engineering (matrice popularité x marge)
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-amber-600 font-bold">-</span>
-                  Alertes de derive de prix fournisseurs
+                  Alertes de dérive de prix fournisseurs
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-amber-600 font-bold">-</span>
@@ -362,17 +362,17 @@ export default function AlternativeHubrise() {
 
           <div className="prose-content mt-8 space-y-4">
             <p className="text-[#404040] leading-relaxed">
-              Le modele economique Hubrise est base sur le volume : plus vous avez d'integrations actives et plus
-              vos commandes mensuelles sont nombreuses, plus la facture monte. En entree de gamme, comptez 50 EUR
+              Le modèle économique Hubrise est basé sur le volume : plus vous avez d'intégrations actives et plus
+              vos commandes mensuelles sont nombreuses, plus la facture monte. En entrée de gamme, comptez 50 EUR
               par mois pour un setup minimal (caisse + 1 plateforme). Pour un restaurant multi-canaux mature
-              (caisse + 3 plateformes livraison + site web Click & Collect + KDS), la facture peut grimper a
+              (caisse + 3 plateformes livraison + site web Click & Collect + KDS), la facture peut grimper à
               150-200 EUR par mois, parfois davantage selon les volumes.
             </p>
 
             <p className="text-[#404040] leading-relaxed">
-              Le ROI est evident pour qui souffrait de double saisie : moins d'erreurs de commande, plus de temps
-              en cuisine, menus toujours a jour. En revanche, Hubrise ne vous dira jamais qu'un plat vendu en
-              livraison vous fait perdre 3 EUR a cause des commissions UberEats. Cette analyse, c'est le job de RestauMargin.
+              Le ROI est évident pour qui souffrait de double saisie : moins d'erreurs de commande, plus de temps
+              en cuisine, menus toujours à jour. En revanche, Hubrise ne vous dira jamais qu'un plat vendu en
+              livraison vous fait perdre 3 EUR à cause des commissions UberEats. Cette analyse, c'est le job de RestauMargin.
             </p>
           </div>
         </section>
@@ -380,20 +380,20 @@ export default function AlternativeHubrise() {
         {/* ═════════════ SECTION 3 : RestauMargin en detail ═════════════ */}
         <section id="restaumargin" className="mb-16">
           <SectionHeading icon={<Calculator className="w-6 h-6" />} number="3">
-            RestauMargin en detail : pilote de marge restaurant
+            RestauMargin en détail : pilote de marge restaurant
           </SectionHeading>
 
           <div className="prose-content space-y-4">
             <p className="text-[#404040] leading-relaxed">
-              RestauMargin est ne d'un constat simple : la grande majorite des outils de gestion restaurant
-              s'arretent au pointage des commandes et a la sortie de caisse, sans jamais repondre a la question
+              RestauMargin est né d'un constat simple : la grande majorité des outils de gestion restaurant
+              s'arrêtent au pointage des commandes et à la sortie de caisse, sans jamais répondre à la question
               vitale : <em>est-ce que ce plat me rapporte vraiment de l'argent, sur ce canal de vente, ce mois-ci ?</em>
             </p>
 
             <p className="text-[#404040] leading-relaxed">
-              Notre positionnement est clair : <strong>nous sommes le pilote de marge, pas le hub d'integration</strong>.
-              Nous nous concentrons sur la partie financiere et operationnelle qui transforme un restaurant qui survit
-              en un restaurant qui prospere. La connectivite operationnelle, nous la laissons aux specialistes
+              Notre positionnement est clair : <strong>nous sommes le pilote de marge, pas le hub d'intégration</strong>.
+              Nous nous concentrons sur la partie financière et opérationnelle qui transforme un restaurant qui survit
+              en un restaurant qui prospère. La connectivité opérationnelle, nous la laissons aux spécialistes
               comme Hubrise — et nous nous interface avec eux quand c'est pertinent.
             </p>
           </div>
@@ -401,41 +401,41 @@ export default function AlternativeHubrise() {
           <div className="grid sm:grid-cols-2 gap-6 mt-8">
             <FeatureCard
               icon={<Calculator className="w-5 h-5" />}
-              title="Fiches techniques precises"
-              desc="Saisissez les grammages exacts de chaque ingredient. Le food cost et la marge brute se calculent automatiquement avec les prix fournisseurs en temps reel."
+              title="Fiches techniques précises"
+              desc="Saisissez les grammages exacts de chaque ingrédient. Le food cost et la marge brute se calculent automatiquement avec les prix fournisseurs en temps réel."
             />
             <FeatureCard
               icon={<Receipt className="w-5 h-5" />}
               title="Scanner de factures OCR"
-              desc="Photographiez vos factures fournisseurs. Les prix sont extraits automatiquement et vos fiches techniques mises a jour. Plus de saisie manuelle."
+              desc="Photographiez vos factures fournisseurs. Les prix sont extraits automatiquement et vos fiches techniques mises à jour. Plus de saisie manuelle."
             />
             <FeatureCard
               icon={<TrendingUp className="w-5 h-5" />}
-              title="Suivi marge en temps reel"
-              desc="Visualisez marge brute, food cost et marge nette au jour le jour, par plat, par categorie, par canal de vente (sur place, livraison, takeaway)."
+              title="Suivi marge en temps réel"
+              desc="Visualisez marge brute, food cost et marge nette au jour le jour, par plat, par catégorie, par canal de vente (sur place, livraison, takeaway)."
             />
             <FeatureCard
               icon={<Target className="w-5 h-5" />}
               title="Menu engineering"
-              desc="Matrice Boston (popularite x rentabilite). Identifiez vos stars, chevaux de labour, enigmes et poids morts pour optimiser votre carte."
+              desc="Matrice Boston (popularité x rentabilité). Identifiez vos stars, chevaux de labour, énigmes et poids morts pour optimiser votre carte."
             />
             <FeatureCard
               icon={<AlertTriangle className="w-5 h-5" />}
-              title="Alertes derive"
-              desc="Recevez une notification quand un prix fournisseur augmente, quand un food cost depasse votre seuil, ou quand un plat passe en perte sur un canal."
+              title="Alertes dérive"
+              desc="Recevez une notification quand un prix fournisseur augmente, quand un food cost dépasse votre seuil, ou quand un plat passe en perte sur un canal."
             />
             <FeatureCard
               icon={<Sparkles className="w-5 h-5" />}
-              title="Assistant IA integre"
-              desc="19 actions IA : suggestions de recettes, optimisation marges, detection d'anomalies, analyse des derives de prix, commande vocale, generation de fiches."
+              title="Assistant IA intégré"
+              desc="19 actions IA : suggestions de recettes, optimisation marges, détection d'anomalies, analyse des dérives de prix, commande vocale, génération de fiches."
             />
           </div>
 
           <div className="prose-content mt-8">
             <p className="text-[#404040] leading-relaxed">
               Le tarif est volontairement simple : 29 EUR par mois flat, essai gratuit 7 jours sans carte bancaire,
-              resiliation en 1 clic. Pas de paliers compliques par volume de commandes, pas de surfacturation par
-              integration ajoutee. C'est le compromis que nous avons fait : un produit puissant, un tarif lisible.
+              résiliation en 1 clic. Pas de paliers compliqués par volume de commandes, pas de surfacturation par
+              intégration ajoutée. C'est le compromis que nous avons fait : un produit puissant, un tarif lisible.
             </p>
           </div>
         </section>
@@ -443,13 +443,13 @@ export default function AlternativeHubrise() {
         {/* ═════════════ SECTION 4 : Tableau comparatif ═════════════ */}
         <section id="comparatif" className="mb-16">
           <SectionHeading icon={<BarChart3 className="w-6 h-6" />} number="4">
-            Tableau comparatif : 15 criteres face-a-face
+            Tableau comparatif : 15 critères face-à-face
           </SectionHeading>
 
           <div className="prose-content">
             <p className="text-[#404040] leading-relaxed">
-              Comparaison objective Hubrise vs RestauMargin sur les criteres qui comptent pour un restaurateur en 2026.
-              Tout est public et verifiable sur les sites respectifs.
+              Comparaison objective Hubrise vs RestauMargin sur les critères qui comptent pour un restaurateur en 2026.
+              Tout est public et vérifiable sur les sites respectifs.
             </p>
           </div>
 
@@ -457,7 +457,7 @@ export default function AlternativeHubrise() {
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-[#F5F5F5] text-[#111111]">
-                  <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Critere</th>
+                  <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Critère</th>
                   <th className="text-center py-3 px-4 font-semibold">Hubrise</th>
                   <th className="text-center py-3 px-4 font-semibold rounded-tr-xl bg-teal-50 text-teal-900">
                     RestauMargin
@@ -466,12 +466,12 @@ export default function AlternativeHubrise() {
               </thead>
               <tbody className="text-[#404040]">
                 {[
-                  { critere: 'Categorie outil', h: 'Hub d\'integration', r: 'Pilote de marge' },
-                  { critere: 'Prix entree de gamme', h: '50 EUR/mois', r: '29 EUR/mois' },
+                  { critere: 'Catégorie outil', h: 'Hub d\'intégration', r: 'Pilote de marge' },
+                  { critere: 'Prix entrée de gamme', h: '50 EUR/mois', r: '29 EUR/mois' },
                   { critere: 'Prix haut de gamme', h: '150-200 EUR/mois', r: '29 EUR/mois (flat)' },
-                  { critere: 'Engagement', h: 'Souvent annuel', r: 'Aucun, resiliable 1 clic' },
-                  { critere: 'Essai gratuit', h: 'Demo commerciale', r: '7 jours sans CB' },
-                  { critere: 'Temps mise en place', h: '1 a 4 semaines', r: '30 minutes' },
+                  { critere: 'Engagement', h: 'Souvent annuel', r: 'Aucun, résiliable 1 clic' },
+                  { critere: 'Essai gratuit', h: 'Démo commerciale', r: '7 jours sans CB' },
+                  { critere: 'Temps mise en place', h: '1 à 4 semaines', r: '30 minutes' },
                   { critere: 'Synchro menus livraison', h: 'Oui (forte)', r: 'Non' },
                   { critere: 'Routing commandes UberEats / Deliveroo', h: 'Oui', r: 'Non' },
                   { critere: 'Fiches techniques avec grammages', h: 'Non', r: 'Oui' },
@@ -479,11 +479,11 @@ export default function AlternativeHubrise() {
                   { critere: 'Scanner factures OCR', h: 'Non', r: 'Oui' },
                   { critere: 'Menu engineering (matrice Boston)', h: 'Non', r: 'Oui' },
                   { critere: 'Suivi marge par canal de vente', h: 'Non', r: 'Oui' },
-                  { critere: 'Alertes derive prix fournisseur', h: 'Non', r: 'Oui' },
-                  { critere: 'Assistant IA integre', h: 'Non', r: 'Oui (19 actions)' },
+                  { critere: 'Alertes dérive prix fournisseur', h: 'Non', r: 'Oui' },
+                  { critere: 'Assistant IA intégré', h: 'Non', r: 'Oui (19 actions)' },
                   { critere: 'Mode offline / PWA', h: 'Non', r: 'Oui (installable)' },
                   { critere: 'Multi-restaurants', h: 'Oui', r: 'Oui (plan business)' },
-                  { critere: 'Support francais', h: 'Oui', r: 'Oui' },
+                  { critere: 'Support français', h: 'Oui', r: 'Oui' },
                 ].map((row, i) => (
                   <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#F9FAFB]'}>
                     <td className="py-3 px-4 font-medium text-[#111111]">{row.critere}</td>
@@ -497,15 +497,15 @@ export default function AlternativeHubrise() {
 
           <div className="prose-content mt-8 space-y-4">
             <p className="text-[#404040] leading-relaxed">
-              Le tableau parle de lui-meme : ce sont deux outils orthogonaux. Sur la moitie des criteres, les deux
-              repondent positivement mais pour des raisons differentes (ex : "multi-restaurants"). Sur l'autre moitie,
-              chacun excelle dans son domaine et n'empiete pas sur celui de l'autre.
+              Le tableau parle de lui-même : ce sont deux outils orthogonaux. Sur la moitié des critères, les deux
+              répondent positivement mais pour des raisons différentes (ex : "multi-restaurants"). Sur l'autre moitié,
+              chacun excelle dans son domaine et n'empiète pas sur celui de l'autre.
             </p>
             <p className="text-[#404040] leading-relaxed">
               La question n'est donc pas <em>Hubrise OU RestauMargin</em>, mais <em>quel mix pour mon restaurant</em> :
               suis-je un mono-restaurant 100 % sur place qui n'a besoin que de piloter sa marge (RestauMargin seul) ?
               Suis-je un dark kitchen avec 4 marques virtuelles sur UberEats, Deliveroo et JustEat qui a besoin des deux
-              (Hubrise + RestauMargin) ? La reponse depend de votre modele.
+              (Hubrise + RestauMargin) ? La réponse dépend de votre modèle.
             </p>
           </div>
         </section>
@@ -518,41 +518,41 @@ export default function AlternativeHubrise() {
 
           <div className="space-y-6 mt-8">
             <UsecaseCard
-              title="Bistrot 100 % sur place, 1 etablissement"
+              title="Bistrot 100 % sur place, 1 établissement"
               recommendation="RestauMargin seul"
-              detail="Pas de livraison, pas de takeaway via plateformes : Hubrise n'a pas d'usage. RestauMargin couvre l'integralite de votre besoin : fiches techniques, food cost, scanner factures, menu engineering. 29 EUR/mois suffisent largement."
+              detail="Pas de livraison, pas de takeaway via plateformes : Hubrise n'a pas d'usage. RestauMargin couvre l'intégralité de votre besoin : fiches techniques, food cost, scanner factures, menu engineering. 29 EUR/mois suffisent largement."
               color="emerald"
             />
             <UsecaseCard
               title="Restaurant traditionnel multi-canaux (sur place + 2 plateformes livraison)"
               recommendation="RestauMargin + Hubrise (ou Deliverect)"
-              detail="L'addition tient la route : 29 + 80 EUR = environ 110 EUR/mois pour un setup complet. Hubrise gere la connectivite operationnelle (menus synchros, commandes routees), RestauMargin gere la marge reelle ajustee des commissions plateformes. Combinaison gagnante."
+              detail="L'addition tient la route : 29 + 80 EUR = environ 110 EUR/mois pour un setup complet. Hubrise gère la connectivité opérationnelle (menus synchros, commandes routées), RestauMargin gère la marge réelle ajustée des commissions plateformes. Combinaison gagnante."
               color="teal"
             />
             <UsecaseCard
               title="Dark kitchen avec 3-5 marques virtuelles"
               recommendation="Hubrise indispensable + RestauMargin critique"
-              detail="Sans Hubrise (ou equivalent), votre equipe va passer ses journees a saisir manuellement les commandes entre 4 plateformes. Sans RestauMargin, vous ne saurez jamais quelle marque virtuelle est rentable et laquelle vous fait perdre de l'argent. Les deux sont mandatory."
+              detail="Sans Hubrise (ou équivalent), votre équipe va passer ses journées à saisir manuellement les commandes entre 4 plateformes. Sans RestauMargin, vous ne saurez jamais quelle marque virtuelle est rentable et laquelle vous fait perdre de l'argent. Les deux sont mandatory."
               color="amber"
             />
             <UsecaseCard
-              title="Chaine multi-restaurants (des etablissements)"
+              title="Chaîne multi-restaurants (des établissements)"
               recommendation="Hubrise + RestauMargin business + outil BI"
-              detail="A cette echelle, il vous faut Hubrise pour normaliser l'operationnel sur tous les sites, RestauMargin pour avoir un pilotage de marge consolide multi-restaurants, et idealement un outil BI (Metabase, Tableau) connecte aux deux pour reporting consolide."
+              detail="À cette échelle, il vous faut Hubrise pour normaliser l'opérationnel sur tous les sites, RestauMargin pour avoir un pilotage de marge consolidé multi-restaurants, et idéalement un outil BI (Metabase, Tableau) connecté aux deux pour reporting consolidé."
               color="blue"
             />
             <UsecaseCard
               title="Food truck / mono-canal Click&Collect"
-              recommendation="RestauMargin + integrateur leger (Sumup, Square)"
-              detail="Si vous n'avez qu'un canal de vente (votre propre site Click&Collect ou un POS portable), Hubrise est surdimensionne. RestauMargin couvre la marge, le POS gere les ventes, votre site fait les commandes. Stack minimal et efficace."
+              recommendation="RestauMargin + intégrateur léger (Sumup, Square)"
+              detail="Si vous n'avez qu'un canal de vente (votre propre site Click&Collect ou un POS portable), Hubrise est surdimensionné. RestauMargin couvre la marge, le POS gère les ventes, votre site fait les commandes. Stack minimal et efficace."
               color="emerald"
             />
           </div>
 
           <Callout type="info">
-            <strong>Methode de decision rapide :</strong> Si plus de 30 % de votre chiffre d'affaires passe par
+            <strong>Méthode de décision rapide :</strong> Si plus de 30 % de votre chiffre d'affaires passe par
             des plateformes externes (UberEats, Deliveroo, JustEat, Click&Collect via site web), Hubrise se rentabilise
-            via le gain de temps operationnel. Si moins de 30 %, l'investissement est discutable. Dans tous les cas,
+            via le gain de temps opérationnel. Si moins de 30 %, l'investissement est discutable. Dans tous les cas,
             RestauMargin peut se rentabiliser rapidement via la simple identification des plats en perte.
           </Callout>
         </section>
@@ -560,13 +560,13 @@ export default function AlternativeHubrise() {
         {/* ═════════════ SECTION 6 : Couts livraison et commissions ═════════════ */}
         <section id="livraison" className="mb-16">
           <SectionHeading icon={<Truck className="w-6 h-6" />} number="6">
-            Couts livraison et commissions : l'impact reel sur votre marge
+            Coûts livraison et commissions : l'impact réel sur votre marge
           </SectionHeading>
 
           <div className="prose-content space-y-4">
             <p className="text-[#404040] leading-relaxed">
-              Voici le sujet que Hubrise ne traitera jamais et qui justifie a lui seul l'usage d'un outil comme
-              RestauMargin : <strong>les commissions des plateformes detruisent votre marge a un niveau que vous
+              Voici le sujet que Hubrise ne traitera jamais et qui justifie à lui seul l'usage d'un outil comme
+              RestauMargin : <strong>les commissions des plateformes détruisent votre marge à un niveau que vous
               sous-estimez.</strong> Faisons les chiffres ensemble.
             </p>
           </div>
@@ -579,7 +579,7 @@ export default function AlternativeHubrise() {
                   <th className="text-center py-3 px-4 font-semibold">Commission moyenne</th>
                   <th className="text-center py-3 px-4 font-semibold">Prix vente HT pour 18 EUR TTC</th>
                   <th className="text-center py-3 px-4 font-semibold">Net restaurateur</th>
-                  <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Marge brute reelle (FC 30 %)</th>
+                  <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Marge brute réelle (FC 30 %)</th>
                 </tr>
               </thead>
               <tbody className="text-[#404040]">
@@ -608,28 +608,28 @@ export default function AlternativeHubrise() {
               Le constat est brutal : <strong>un plat qui vous rapporte 11 EUR de marge brute sur place ne vous
               rapporte plus que 5-6 EUR via les plateformes</strong>. Cela ne veut pas dire qu'il faut quitter les
               plateformes — elles apportent du volume et de l'acquisition client. Mais cela signifie que vous devez
-              piloter ces canaux avec une vision financiere differenciee.
+              piloter ces canaux avec une vision financière différenciée.
             </p>
 
             <p className="text-[#404040] leading-relaxed">
               RestauMargin permet exactement cela : pour chaque plat de votre carte, vous voyez la marge brute
-              consolidee (toutes ventes confondues) ET la marge brute par canal. Vous decouvrez par exemple que
-              votre burger signature est tres rentable sur place (72 % de marge) mais perdant sur Deliveroo
-              (38 % apres commission). Decisions possibles : majorer le prix sur Deliveroo de 15 a 20 % (pratique
-              autorisee), reduire la portion pour le canal livraison, ou retirer ce plat de la carte digitale.
+              consolidée (toutes ventes confondues) ET la marge brute par canal. Vous découvrez par exemple que
+              votre burger signature est très rentable sur place (72 % de marge) mais perdant sur Deliveroo
+              (38 % après commission). Décisions possibles : majorer le prix sur Deliveroo de 15 à 20 % (pratique
+              autorisée), réduire la portion pour le canal livraison, ou retirer ce plat de la carte digitale.
             </p>
 
             <p className="text-[#404040] leading-relaxed">
-              Hubrise vous permet de mettre a jour rapidement ces prix differencies sur chaque plateforme. RestauMargin
-              vous dit lesquels modifier. C'est la combinaison parfaite : un outil pour decider, un outil pour executer.
+              Hubrise vous permet de mettre à jour rapidement ces prix différenciés sur chaque plateforme. RestauMargin
+              vous dit lesquels modifier. C'est la combinaison parfaite : un outil pour décider, un outil pour exécuter.
             </p>
 
             <Callout type="warning">
-              <strong>Piege a eviter :</strong> beaucoup de restaurateurs croient que le service "+10 %" UberEats
+              <strong>Piège à éviter :</strong> beaucoup de restaurateurs croient que le service "+10 %" UberEats
               compense la commission. C'est faux. Si vous vendez un plat 20 EUR (au lieu de 18 EUR), UberEats prend
               30 % de 20 EUR = 6 EUR de commission, et non 30 % de 18 EUR. Vous touchez 14 EUR au lieu de 12,60 EUR.
-              Le gain net est de 1,40 EUR, pas de 2 EUR comme on pourrait le croire. Surtout, vos clients reguliers
-              detectent cette pratique et la sanctionnent.
+              Le gain net est de 1,40 EUR, pas de 2 EUR comme on pourrait le croire. Surtout, vos clients réguliers
+              détectent cette pratique et la sanctionnent.
             </Callout>
           </div>
         </section>
@@ -637,14 +637,14 @@ export default function AlternativeHubrise() {
         {/* ═════════════ SECTION 7 : Pricing 1 an ═════════════ */}
         <section id="pricing" className="mb-16">
           <SectionHeading icon={<DollarSign className="w-6 h-6" />} number="7">
-            Pricing 1 an : combien ca coute reellement
+            Pricing 1 an : combien ça coûte réellement
           </SectionHeading>
 
           <div className="prose-content space-y-4">
             <p className="text-[#404040] leading-relaxed">
               Projection annuelle pour les 4 profils types de restaurant. Les chiffres Hubrise sont des estimations
-              moyennes : la facture reelle depend de votre nombre d'integrations et de votre volume de commandes,
-              et nous recommandons un devis personnalise.
+              moyennes : la facture réelle dépend de votre nombre d'intégrations et de votre volume de commandes,
+              et nous recommandons un devis personnalisé.
             </p>
           </div>
 
@@ -654,14 +654,14 @@ export default function AlternativeHubrise() {
               hubrise="0 EUR (inutile)"
               restaumargin="348 EUR/an (29 EUR/mois)"
               total="348 EUR/an"
-              note="RestauMargin seul suffit. Le ROI sur la marge depasse de loin l'investissement."
+              note="RestauMargin seul suffit. Le ROI sur la marge dépasse de loin l'investissement."
             />
             <PricingCard
               title="Restaurant multi-canaux"
               hubrise="960 EUR/an (80 EUR/mois)"
               restaumargin="348 EUR/an (29 EUR/mois)"
               total="1 308 EUR/an"
-              note="Stack equilibre. Le couple Hubrise + RestauMargin couvre les deux besoins de ce profil."
+              note="Stack équilibré. Le couple Hubrise + RestauMargin couvre les deux besoins de ce profil."
             />
             <PricingCard
               title="Dark kitchen 3-5 marques"
@@ -671,18 +671,18 @@ export default function AlternativeHubrise() {
               note="Indispensable pour piloter le complexe. Le ROI vient du gain de temps + identification marques perdantes."
             />
             <PricingCard
-              title="Chaine des etablissements"
+              title="Chaîne des établissements"
               hubrise="3 000+ EUR/an (250 EUR/mois)"
               restaumargin="588 EUR/an (49 EUR/mois business)"
               total="3 588+ EUR/an"
-              note="Stack mature. Ajoutez un outil BI (Metabase gratuit) pour les rapports consolides multi-sites."
+              note="Stack mature. Ajoutez un outil BI (Metabase gratuit) pour les rapports consolidés multi-sites."
             />
           </div>
 
           <div className="prose-content mt-8">
             <p className="text-[#404040] leading-relaxed">
-              Sur les 4 profils, RestauMargin represente entre 8 % et 100 % du budget total (selon que Hubrise est
-              necessaire ou non). Dans tous les cas, c'est l'investissement le plus rentable : la simple identification
+              Sur les 4 profils, RestauMargin représente entre 8 % et 100 % du budget total (selon que Hubrise est
+              nécessaire ou non). Dans tous les cas, c'est l'investissement le plus rentable : la simple identification
               d'un plat en perte sur la livraison rembourse l'abonnement annuel en quelques semaines.
             </p>
           </div>
@@ -692,7 +692,7 @@ export default function AlternativeHubrise() {
 
         {/* ═════════════ FAQ visible ═════════════ */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions frequentes</h2>
+          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions fréquentes</h2>
           <div className="space-y-4">
             {faqItems.map((item, i) => (
               <FAQItem key={i} q={item.question} a={item.answer} />
@@ -707,7 +707,7 @@ export default function AlternativeHubrise() {
               Testez RestauMargin gratuitement
             </h2>
             <p className="text-teal-100 text-lg max-w-xl mx-auto mb-3 leading-relaxed">
-              Que vous utilisiez Hubrise ou non, le pilotage de marge est indispensable. Decouvrez en 30 minutes
+              Que vous utilisiez Hubrise ou non, le pilotage de marge est indispensable. Découvrez en 30 minutes
               comment chaque plat de votre carte performe, par canal de vente.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
@@ -741,10 +741,10 @@ export default function AlternativeHubrise() {
               className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group"
             >
               <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">
-                Livraison restaurant : la rentabilite reelle
+                Livraison restaurant : la rentabilité réelle
               </h3>
               <p className="text-xs text-[#737373]">
-                Commissions plateformes, marge differenciee, strategies de pricing.
+                Commissions plateformes, marge différenciée, stratégies de pricing.
               </p>
             </Link>
             <Link
@@ -752,10 +752,10 @@ export default function AlternativeHubrise() {
               className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group"
             >
               <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">
-                Reduire le food cost en 10 strategies
+                Réduire le food cost en 10 stratégies
               </h3>
               <p className="text-xs text-[#737373]">
-                Fiches techniques, negociation, gaspillage, menu engineering.
+                Fiches techniques, négociation, gaspillage, menu engineering.
               </p>
             </Link>
             <Link
@@ -766,7 +766,7 @@ export default function AlternativeHubrise() {
                 Logiciel de gestion restaurant
               </h3>
               <p className="text-xs text-[#737373]">
-                Comparatif des solutions de gestion en 2026, criteres de choix.
+                Comparatif des solutions de gestion en 2026, critères de choix.
               </p>
             </Link>
             <Link
@@ -777,7 +777,7 @@ export default function AlternativeHubrise() {
                 Calculer la marge de votre restaurant
               </h3>
               <p className="text-xs text-[#737373]">
-                Guide complet : formules, benchmarks, cas pratiques chiffres.
+                Guide complet : formules, benchmarks, cas pratiques chiffrés.
               </p>
             </Link>
           </div>

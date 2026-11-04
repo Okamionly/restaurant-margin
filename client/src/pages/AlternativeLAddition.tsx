@@ -15,44 +15,44 @@ import PublicFooter from '../components/public/PublicFooter';
 
 const faqItems = [
   {
-    question: "L'Addition et RestauMargin sont-ils concurrents ou complementaires ?",
-    answer: "Les deux outils sont avant tout complementaires. L'Addition est un logiciel de caisse (POS) qui prend la commande, encaisse, gere les tables et imprime les tickets. RestauMargin gere ce qui se passe avant et apres le service : fiches techniques, food cost, mercuriale fournisseurs, marges par plat. Rien n'empeche d'utiliser L'Addition en caisse et RestauMargin pour le pilotage financier. Aucune integration native n'existe encore entre les deux, mais ils n'ont pas besoin d'echanger automatiquement pour coexister.",
+    question: "L'Addition et RestauMargin sont-ils concurrents ou complémentaires ?",
+    answer: "Les deux outils sont avant tout complémentaires. L'Addition est un logiciel de caisse (POS) qui prend la commande, encaisse, gère les tables et imprime les tickets. RestauMargin gère ce qui se passe avant et après le service : fiches techniques, food cost, mercuriale fournisseurs, marges par plat. Rien n'empêche d'utiliser L'Addition en caisse et RestauMargin pour le pilotage financier. Aucune intégration native n'existe encore entre les deux, mais ils n'ont pas besoin d'échanger automatiquement pour coexister.",
   },
   {
-    question: "Combien coute L'Addition par rapport a RestauMargin ?",
-    answer: "L'Addition propose plusieurs formules generalement comprises entre 89 EUR et 159 EUR par mois et par caisse, hors materiel (tablette, imprimante, tiroir). RestauMargin commence a 29 EUR/mois pour la formule Pro, sans materiel obligatoire. Sur un an, RestauMargin coute 348 EUR contre 1 068 a 1 908 EUR pour L'Addition selon la formule choisie. La difference s'explique par la nature differente des deux produits : L'Addition est une caisse complete avec hardware ; RestauMargin est un outil de pilotage financier 100 % logiciel.",
+    question: "Combien coûte L'Addition par rapport à RestauMargin ?",
+    answer: "L'Addition propose plusieurs formules généralement comprises entre 89 EUR et 159 EUR par mois et par caisse, hors matériel (tablette, imprimante, tiroir). RestauMargin commence à 29 EUR/mois pour la formule Pro, sans matériel obligatoire. Sur un an, RestauMargin coûte 348 EUR contre 1 068 à 1 908 EUR pour L'Addition selon la formule choisie. La différence s'explique par la nature différente des deux produits : L'Addition est une caisse complète avec hardware ; RestauMargin est un outil de pilotage financier 100 % logiciel.",
   },
   {
-    question: "L'Addition gere-t-il le food cost et les marges plat par plat ?",
-    answer: "L'Addition propose un module statistiques avec le top des plats vendus, le chiffre d'affaires par categorie et l'historique d'encaissement. Il permet aussi d'associer un cout matiere indicatif par plat, mais la gestion fine des fiches techniques (ingredients peses, rendements, allergenes) et la mise a jour automatique du food cost en fonction des prix fournisseurs n'est pas son metier. Pour cela, il faut un outil dedie comme RestauMargin, qui se concentre sur la rentabilite operationnelle reelle, pas seulement sur l'encaissement.",
+    question: "L'Addition gère-t-il le food cost et les marges plat par plat ?",
+    answer: "L'Addition propose un module statistiques avec le top des plats vendus, le chiffre d'affaires par catégorie et l'historique d'encaissement. Il permet aussi d'associer un coût matière indicatif par plat, mais la gestion fine des fiches techniques (ingrédients pesés, rendements, allergènes) et la mise à jour automatique du food cost en fonction des prix fournisseurs n'est pas son métier. Pour cela, il faut un outil dédié comme RestauMargin, qui se concentre sur la rentabilité opérationnelle réelle, pas seulement sur l'encaissement.",
   },
   {
-    question: "Peut-on remplacer entierement L'Addition par RestauMargin ?",
-    answer: "Non. RestauMargin n'est pas une caisse enregistreuse. Nous ne gerons ni la prise de commande sur tablette, ni l'encaissement carte bancaire, ni l'edition de tickets clients, ni la certification fiscale NF525. Si vous cherchez a remplacer votre POS, regardez plutot des concurrents directs de L'Addition comme Tiller, Sumup POS, Lightspeed Restaurant ou Innovorder. RestauMargin se branche au-dessus de votre caisse pour transformer les ventes en analyse de marges.",
+    question: "Peut-on remplacer entièrement L'Addition par RestauMargin ?",
+    answer: "Non. RestauMargin n'est pas une caisse enregistreuse. Nous ne gérons ni la prise de commande sur tablette, ni l'encaissement carte bancaire, ni l'édition de tickets clients, ni la certification fiscale NF525. Si vous cherchez à remplacer votre POS, regardez plutôt des concurrents directs de L'Addition comme Tiller, Sumup POS, Lightspeed Restaurant ou Innovorder. RestauMargin se branche au-dessus de votre caisse pour transformer les ventes en analyse de marges.",
   },
   {
-    question: "L'Addition et RestauMargin peuvent-ils echanger les donnees automatiquement ?",
-    answer: "Une integration directe n'est pas encore disponible cote L'Addition cote API publique grand public, mais il est possible d'importer les ventes via export CSV hebdomadaire. RestauMargin sait lire ces fichiers et les rapprocher des fiches techniques pour calculer la marge reelle par plat vendu.",
+    question: "L'Addition et RestauMargin peuvent-ils échanger les données automatiquement ?",
+    answer: "Une intégration directe n'est pas encore disponible côté L'Addition côté API publique grand public, mais il est possible d'importer les ventes via export CSV hebdomadaire. RestauMargin sait lire ces fichiers et les rapprocher des fiches techniques pour calculer la marge réelle par plat vendu.",
   },
   {
-    question: "L'Addition est-il certifie NF525 et conforme a la loi anti-fraude TVA ?",
-    answer: "Oui, L'Addition est un logiciel de caisse certifie NF525 et conforme aux obligations francaises (loi de finances 2018, anti-fraude TVA). C'est l'un de ses points forts pour les restaurateurs qui veulent etre serein cote fiscalite. RestauMargin n'a pas besoin de cette certification car nous ne sommes pas un logiciel d'encaissement : nous ne gerons aucun flux de paiement client final.",
+    question: "L'Addition est-il certifié NF525 et conforme à la loi anti-fraude TVA ?",
+    answer: "Oui, L'Addition est un logiciel de caisse certifié NF525 et conforme aux obligations françaises (loi de finances 2018, anti-fraude TVA). C'est l'un de ses points forts pour les restaurateurs qui veulent être serein côté fiscalité. RestauMargin n'a pas besoin de cette certification car nous ne sommes pas un logiciel d'encaissement : nous ne gérons aucun flux de paiement client final.",
   },
   {
     question: "Quel est le meilleur outil pour un restaurant qui ouvre en 2026 ?",
-    answer: "Pour ouvrir un restaurant en 2026, vous avez besoin de trois briques : un POS de caisse certifie NF525 (L'Addition, Tiller, Sumup, Lightspeed), un module reservation (TheFork, Zenchef ou Google), un outil de pilotage des marges (RestauMargin). Beaucoup de chefs commettent l'erreur de prendre seulement une caisse et de gerer leurs marges sur Excel. A titre d'illustration, sur 300 000 EUR de CA, un seul point de food cost regagne represente 3 000 EUR par an, soit bien plus que les 348 EUR de l'abonnement RestauMargin.",
+    answer: "Pour ouvrir un restaurant en 2026, vous avez besoin de trois briques : un POS de caisse certifié NF525 (L'Addition, Tiller, Sumup, Lightspeed), un module réservation (TheFork, Zenchef ou Google), un outil de pilotage des marges (RestauMargin). Beaucoup de chefs commettent l'erreur de prendre seulement une caisse et de gérer leurs marges sur Excel. À titre d'illustration, sur 300 000 EUR de CA, un seul point de food cost regagné représente 3 000 EUR par an, soit bien plus que les 348 EUR de l'abonnement RestauMargin.",
   },
   {
     question: "Y a-t-il un essai gratuit chez L'Addition et chez RestauMargin ?",
-    answer: "RestauMargin offre 7 jours d'essai gratuit, sans carte bancaire, avec acces a toutes les fonctionnalites (food cost, fiches techniques, IA, mercuriale, multi-restaurant). L'Addition ne propose pas d'essai gratuit standard et passe par une demo personnalisee suivie d'un devis sur mesure incluant le hardware. RestauMargin permet donc de tester reellement le produit avant de payer, sans interaction commerciale obligatoire.",
+    answer: "RestauMargin offre 7 jours d'essai gratuit, sans carte bancaire, avec accès à toutes les fonctionnalités (food cost, fiches techniques, IA, mercuriale, multi-restaurant). L'Addition ne propose pas d'essai gratuit standard et passe par une démo personnalisée suivie d'un devis sur mesure incluant le hardware. RestauMargin permet donc de tester réellement le produit avant de payer, sans interaction commerciale obligatoire.",
   },
   {
-    question: "L'Addition gere-t-il le multi-restaurant et la consolidation ?",
-    answer: "Oui, L'Addition propose une console centrale pour les groupes avec plusieurs etablissements (ventes consolidees, parametrage central des cartes, droits par site). RestauMargin gere lui aussi le multi-restaurant nativement avec vue consolidee des marges, benchmarking inter-etablissements et alertes de derive. Les deux outils sont valables pour les groupes, mais sur des perimetres differents : L'Addition pour la consolidation des ventes et la coherence operationnelle, RestauMargin pour la rentabilite par site.",
+    question: "L'Addition gère-t-il le multi-restaurant et la consolidation ?",
+    answer: "Oui, L'Addition propose une console centrale pour les groupes avec plusieurs établissements (ventes consolidées, paramétrage central des cartes, droits par site). RestauMargin gère lui aussi le multi-restaurant nativement avec vue consolidée des marges, benchmarking inter-établissements et alertes de dérive. Les deux outils sont valables pour les groupes, mais sur des périmètres différents : L'Addition pour la consolidation des ventes et la cohérence opérationnelle, RestauMargin pour la rentabilité par site.",
   },
   {
     question: "Quel support client chez L'Addition vs RestauMargin ?",
-    answer: "L'Addition dispose d'une force commerciale et d'un support 7j/7 en francais, avec installation sur site et formation incluses dans les formules superieures. RestauMargin propose un support email et chat en francais avec un temps de reponse moyen inferieur a 4 heures en jours ouvres, inclus dans toutes les formules (y compris Pro a 29 EUR). Nous compensons l'absence de support telephonique par une UX simple et un onboarding self-service de 5 minutes.",
+    answer: "L'Addition dispose d'une force commerciale et d'un support 7j/7 en français, avec installation sur site et formation incluses dans les formules supérieures. RestauMargin propose un support email et chat en français avec un temps de réponse moyen inférieur à 4 heures en jours ouvrés, inclus dans toutes les formules (y compris Pro à 29 EUR). Nous compensons l'absence de support téléphonique par une UX simple et un onboarding self-service de 5 minutes.",
   },
 ];
 
@@ -74,8 +74,8 @@ export default function AlternativeLAddition() {
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
-            headline: "Alternative a L'Addition : RestauMargin pour piloter vos marges",
-            description: "Comparatif detaille entre L'Addition (POS de caisse leader en France, 89-159 EUR/mois) et RestauMargin (food cost + marges + IA, 29 EUR/mois). Tableau 18 criteres, cas d'usage, FAQ.",
+            headline: "Alternative à L'Addition : RestauMargin pour piloter vos marges",
+            description: "Comparatif détaillé entre L'Addition (POS de caisse leader en France, 89-159 EUR/mois) et RestauMargin (food cost + marges + IA, 29 EUR/mois). Tableau 18 critères, cas d'usage, FAQ.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -114,7 +114,7 @@ export default function AlternativeLAddition() {
                     },
                   },
 
-                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs independants et groupes.",
+                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs et IA d'optimisation pour restaurateurs indépendants et groupes.",
                 },
               },
               {
@@ -136,7 +136,7 @@ export default function AlternativeLAddition() {
                       unitText: 'MONTH',
                     },
                   },
-                  description: "Logiciel de caisse (POS) certifie NF525 pour restaurants, brasseries et bars. Gestion des commandes, encaissement, plan de salle, ticket dematerialise.",
+                  description: "Logiciel de caisse (POS) certifié NF525 pour restaurants, brasseries et bars. Gestion des commandes, encaissement, plan de salle, ticket dématérialisé.",
                 },
               },
             ],
@@ -256,7 +256,7 @@ export default function AlternativeLAddition() {
             />
             <ReasonCard
               icon={<AlertTriangle className="w-6 h-6" />}
-              title="L'ecosystème iPad"
+              title="L'écosystème iPad"
               desc="L'Addition repose sur iPad. Si vous voulez utiliser une tablette Android, un PC de comptoir ou une PWA mobile pour vos chefs, ce n'est pas son terrain naturel. Vous restez dépendant du matériel Apple."
             />
           </div>

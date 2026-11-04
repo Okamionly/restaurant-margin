@@ -31,7 +31,7 @@ const FAKE_RECIPES = [
       { name: 'Vin blanc sec', qty: '80ml', cost: 0.48 },
       { name: 'Beurre doux', qty: '30g', cost: 0.24 },
       { name: 'Oignon', qty: '50g', cost: 0.08 },
-      { name: 'Bouillon de legumes', qty: '500ml', cost: 0.25 },
+      { name: 'Bouillon de légumes', qty: '500ml', cost: 0.25 },
     ],
   },
   {
@@ -45,7 +45,7 @@ const FAKE_RECIPES = [
     status: 'star' as const,
     ingredients: [
       { name: 'Magret de canard', qty: '350g', cost: 7.88 },
-      { name: 'Cerises fraiches', qty: '120g', cost: 1.02 },
+      { name: 'Cerises fraîches', qty: '120g', cost: 1.02 },
       { name: 'Vinaigre balsamique', qty: '30ml', cost: 0.45 },
       { name: 'Miel', qty: '20g', cost: 0.18 },
       { name: 'Thym frais', qty: '5g', cost: 0.10 },
@@ -53,7 +53,7 @@ const FAKE_RECIPES = [
     ],
   },
   {
-    name: 'Creme brulee a la vanille',
+    name: 'Crème brûlée à la vanille',
     category: 'Dessert',
     foodCost: 20.0,
     costPerServing: 1.20,
@@ -62,15 +62,15 @@ const FAKE_RECIPES = [
     popularity: 200,
     status: 'star' as const,
     ingredients: [
-      { name: 'Creme liquide 35%', qty: '200ml', cost: 0.76 },
+      { name: 'Crème liquide 35%', qty: '200ml', cost: 0.76 },
       { name: 'Oeufs frais (jaunes)', qty: '3 pcs', cost: 0.84 },
       { name: 'Sucre en poudre', qty: '60g', cost: 0.07 },
       { name: 'Gousse de vanille', qty: '0.5 pcs', cost: 2.25 },
     ],
   },
   {
-    name: 'Salade Nicoise revisitee',
-    category: 'Entree',
+    name: 'Salade Niçoise revisitée',
+    category: 'Entrée',
     foodCost: 32.5,
     costPerServing: 3.90,
     sellingPrice: 12.00,
@@ -97,8 +97,8 @@ const FAKE_RECIPES = [
     popularity: 60,
     status: 'dog' as const,
     ingredients: [
-      { name: 'Boeuf hache (rumsteck)', qty: '180g', cost: 2.61 },
-      { name: 'Capres', qty: '15g', cost: 0.23 },
+      { name: 'Boeuf haché (rumsteck)', qty: '180g', cost: 2.61 },
+      { name: 'Câpres', qty: '15g', cost: 0.23 },
       { name: 'Cornichons', qty: '20g', cost: 0.12 },
       { name: 'Oignon rouge', qty: '30g', cost: 0.09 },
       { name: 'Jaune oeuf', qty: '1 pc', cost: 0.28 },
@@ -114,20 +114,20 @@ const FAKE_INGREDIENTS = [
   { name: 'Champignons de Paris', unit: 'kg', price: 4.50, stock: 3.2, alert: false },
   { name: 'Parmesan AOP', unit: 'kg', price: 18.00, stock: 2.1, alert: false },
   { name: 'Magret de canard', unit: 'kg', price: 22.50, stock: 4.0, alert: false },
-  { name: 'Creme liquide 35%', unit: 'L', price: 3.80, stock: 6.0, alert: false },
+  { name: 'Crème liquide 35%', unit: 'L', price: 3.80, stock: 6.0, alert: false },
   { name: 'Beurre doux', unit: 'kg', price: 8.00, stock: 5.5, alert: false },
-  { name: 'Oeufs frais', unit: 'piece', price: 0.28, stock: 120, alert: false },
+  { name: 'Oeufs frais', unit: 'pièce', price: 0.28, stock: 120, alert: false },
   { name: 'Vanille Bourbon', unit: 'gousse', price: 4.50, stock: 15, alert: false },
   { name: 'Thon frais', unit: 'kg', price: 28.00, stock: 1.8, alert: true },
-  { name: 'Boeuf hache', unit: 'kg', price: 14.50, stock: 3.5, alert: false },
+  { name: 'Boeuf haché', unit: 'kg', price: 14.50, stock: 3.5, alert: false },
   { name: 'Huile olive extra vierge', unit: 'L', price: 9.20, stock: 4.0, alert: false },
   { name: 'Tomates grappe', unit: 'kg', price: 3.50, stock: 5.0, alert: false },
   { name: 'Haricots verts frais', unit: 'kg', price: 5.80, stock: 2.5, alert: false },
   { name: 'Olives noires Kalamata', unit: 'kg', price: 11.00, stock: 1.5, alert: true },
-  { name: 'Cerises fraiches', unit: 'kg', price: 8.50, stock: 2.0, alert: false },
+  { name: 'Cerises fraîches', unit: 'kg', price: 8.50, stock: 2.0, alert: false },
   { name: 'Vin blanc sec', unit: 'L', price: 6.00, stock: 3.0, alert: false },
   { name: 'Moutarde de Dijon', unit: 'kg', price: 5.50, stock: 1.0, alert: false },
-  { name: 'Capres', unit: 'kg', price: 15.00, stock: 0.5, alert: true },
+  { name: 'Câpres', unit: 'kg', price: 15.00, stock: 0.5, alert: true },
   { name: 'Sucre en poudre', unit: 'kg', price: 1.20, stock: 10.0, alert: false },
   { name: 'Farine T55', unit: 'kg', price: 0.90, stock: 12.0, alert: false },
 ];
@@ -151,9 +151,9 @@ const FAKE_KPIS = {
 // l'app peut faire. Pas un vrai dashboard. Banner "Mode démo" affiché.
 const MARGIN_EVOLUTION = [
   { month: 'Nov', margin: 68.5, foodCost: 31.5 },
-  { month: 'Dec', margin: 69.2, foodCost: 30.8 },
+  { month: 'Déc', margin: 69.2, foodCost: 30.8 },
   { month: 'Jan', margin: 70.1, foodCost: 29.9 },
-  { month: 'Fev', margin: 71.8, foodCost: 28.2 },
+  { month: 'Fév', margin: 71.8, foodCost: 28.2 },
   { month: 'Mar', margin: 72.5, foodCost: 27.5 },
   { month: 'Avr', margin: 73.2, foodCost: 26.8 },
 ];
@@ -161,7 +161,7 @@ const MARGIN_EVOLUTION = [
 // Category distribution for donut-style chart
 const CATEGORY_DIST = [
   { name: 'Plats', pct: 45, color: '#0d9488' },
-  { name: 'Entrees', pct: 20, color: '#111111' },
+  { name: 'Entrées', pct: 20, color: '#111111' },
   { name: 'Desserts', pct: 18, color: '#6B7280' },
   { name: 'Boissons', pct: 12, color: '#D4D4D4' },
   { name: 'Accomp.', pct: 5, color: '#E5E7EB' },
@@ -212,7 +212,7 @@ export default function Demo() {
   const recipeTrapRef = useFocusTrap<HTMLDivElement>(selectedRecipe !== null);
 
   useEffect(() => {
-    document.title = 'Demo — RestauMargin';
+    document.title = 'Démo — RestauMargin';
     window.scrollTo(0, 0);
   }, []);
 
@@ -253,7 +253,7 @@ export default function Demo() {
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <Eye className="w-4 h-4 text-white/60" />
               <span className="font-semibold text-sm">
-                Mode demo -- Donnees fictives du "Bistrot de Marie"
+                Mode démo -- Données fictives du "Bistrot de Marie"
               </span>
             </div>
           </div>
@@ -262,7 +262,7 @@ export default function Demo() {
             className="inline-flex items-center gap-1.5 px-6 py-2 bg-white text-mono-100 font-bold text-sm rounded-full hover:bg-white/90 transition-colors shadow-lg shadow-white/10"
           >
             <Sparkles className="w-4 h-4" />
-            Creer mon compte gratuit
+            Créer mon compte gratuit
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -274,7 +274,7 @@ export default function Demo() {
           <div className="flex items-center gap-2 text-mono-100 font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span>RestauMargin</span>
-            <span className="ml-2 text-xs font-medium text-mono-700 bg-mono-975 px-2 py-0.5 rounded-full">DEMO</span>
+            <span className="ml-2 text-xs font-medium text-mono-700 bg-mono-975 px-2 py-0.5 rounded-full">DÉMO</span>
           </div>
           <div className="flex items-center gap-3">
             <Link
@@ -310,7 +310,7 @@ export default function Demo() {
             </div>
             <div className="flex items-center gap-2">
               <div className="text-right">
-                <p className="text-[10px] text-mono-700 uppercase tracking-wider font-semibold">Derniere MAJ</p>
+                <p className="text-[10px] text-mono-700 uppercase tracking-wider font-semibold">Dernière MAJ</p>
                 <p className="text-sm font-bold text-mono-100">Aujourd'hui, 14h32</p>
               </div>
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -368,7 +368,7 @@ export default function Demo() {
                 <UtensilsCrossed className="w-5 h-5 text-mono-500" />
               </div>
               <p className="text-3xl font-extrabold text-mono-100">{couvertsAnim.value.toLocaleString('fr-FR')}</p>
-              <p className="text-xs text-mono-700 mt-1">{FAKE_KPIS.recipeCount} recettes / {FAKE_KPIS.ingredientCount} ingredients</p>
+              <p className="text-xs text-mono-700 mt-1">{FAKE_KPIS.recipeCount} recettes / {FAKE_KPIS.ingredientCount} ingrédients</p>
             </div>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
@@ -394,7 +394,7 @@ export default function Demo() {
             <KPICard
               label="Objectif food cost"
               value={`${FAKE_KPIS.foodCostTarget}%`}
-              sub="Seuil configure"
+              sub="Seuil configuré"
               icon={<Target className="w-5 h-5 text-teal-600" />}
             />
           </div>
@@ -405,7 +405,7 @@ export default function Demo() {
           {/* Margin Evolution Chart */}
           <div className="lg:col-span-2">
             <h2 className="text-lg font-bold text-mono-100 mb-4 font-satoshi">
-              Evolution de la marge (6 derniers mois)
+              Évolution de la marge (6 derniers mois)
             </h2>
             <div className="bg-white border border-mono-900 rounded-2xl p-6">
               <div className="flex items-end gap-3 h-52">
@@ -437,7 +437,7 @@ export default function Demo() {
           {/* Category Distribution */}
           <div>
             <h2 className="text-lg font-bold text-mono-100 mb-4 font-satoshi">
-              Repartition par categorie
+              Répartition par catégorie
             </h2>
             <div className="bg-white border border-mono-900 rounded-2xl p-6 h-[calc(100%-2rem)]">
               <div className="space-y-3">
@@ -522,7 +522,7 @@ export default function Demo() {
                   <div className="flex items-center justify-between">
                     <p className="text-[10px] text-mono-700">PV: {formatCurrency(r.sellingPrice)}</p>
                     <span className="text-[10px] text-teal-600 font-semibold group-hover:underline">
-                      Voir details
+                      Voir détails
                     </span>
                   </div>
                 </button>
@@ -576,7 +576,7 @@ export default function Demo() {
                           <p className="text-xl font-bold text-mono-100 mt-1">{formatCurrency(r.sellingPrice)}</p>
                         </div>
                         <div className="bg-mono-975 rounded-xl p-3 text-center">
-                          <p className="text-[10px] text-mono-700 uppercase tracking-wider font-semibold">Cout matiere</p>
+                          <p className="text-[10px] text-mono-700 uppercase tracking-wider font-semibold">Coût matière</p>
                           <p className="text-xl font-bold text-mono-100 mt-1">{formatCurrency(totalCost)}</p>
                         </div>
                         <div className="bg-emerald-50 rounded-xl p-3 text-center">
@@ -609,14 +609,14 @@ export default function Demo() {
 
                       {/* Ingredients table */}
                       <div>
-                        <h4 className="text-sm font-bold text-mono-100 mb-3">Ingredients ({r.ingredients.length})</h4>
+                        <h4 className="text-sm font-bold text-mono-100 mb-3">Ingrédients ({r.ingredients.length})</h4>
                         <div className="bg-mono-1000 rounded-xl overflow-hidden border border-mono-900">
                           <table className="w-full text-sm">
                             <thead>
                               <tr className="text-[10px] text-mono-700 uppercase tracking-wider">
-                                <th className="text-left px-4 py-2 font-semibold">Ingredient</th>
-                                <th className="text-right px-4 py-2 font-semibold">Quantite</th>
-                                <th className="text-right px-4 py-2 font-semibold">Cout</th>
+                                <th className="text-left px-4 py-2 font-semibold">Ingrédient</th>
+                                <th className="text-right px-4 py-2 font-semibold">Quantité</th>
+                                <th className="text-right px-4 py-2 font-semibold">Coût</th>
                                 <th className="text-right px-4 py-2 font-semibold">% du total</th>
                               </tr>
                             </thead>
@@ -643,7 +643,7 @@ export default function Demo() {
 
                       {/* Cost breakdown mini-chart */}
                       <div>
-                        <h4 className="text-sm font-bold text-mono-100 mb-3">Repartition des couts</h4>
+                        <h4 className="text-sm font-bold text-mono-100 mb-3">Répartition des coûts</h4>
                         <div className="flex gap-1 h-6 rounded-full overflow-hidden">
                           {r.ingredients.map((ing, i) => {
                             const pct = (ing.cost / totalCost) * 100;
@@ -677,7 +677,7 @@ export default function Demo() {
                       {/* Popularity indicator */}
                       <div className="bg-mono-975 rounded-xl p-4 flex items-center justify-between">
                         <div>
-                          <p className="text-xs font-semibold text-mono-700 uppercase tracking-wider">Popularite</p>
+                          <p className="text-xs font-semibold text-mono-700 uppercase tracking-wider">Popularité</p>
                           <p className="text-lg font-bold text-mono-100">{r.popularity} ventes/mois</p>
                         </div>
                         <div className={`text-xs font-semibold px-3 py-1.5 rounded-full ${st.color}`}>
@@ -689,7 +689,7 @@ export default function Demo() {
                     <div className="px-6 py-4 border-t border-mono-975 bg-mono-1000 rounded-b-3xl">
                       <div className="flex items-center gap-2 text-xs text-mono-700">
                         <Lock className="w-3 h-3" />
-                        <span>Mode demo -- Donnees fictives. <Link to="/login?mode=register" className="text-teal-600 font-semibold hover:underline">Creez votre compte</Link> pour gerer vos propres recettes.</span>
+                        <span>Mode démo -- Données fictives. <Link to="/login?mode=register" className="text-teal-600 font-semibold hover:underline">Créez votre compte</Link> pour gérer vos propres recettes.</span>
                       </div>
                     </div>
                   </>
@@ -702,16 +702,16 @@ export default function Demo() {
         {/* -- Ingredients -- */}
         <section>
           <h2 className="text-lg font-bold text-mono-100 mb-4 font-satoshi">
-            Ingredients ({FAKE_INGREDIENTS.length})
+            Ingrédients ({FAKE_INGREDIENTS.length})
           </h2>
           <div className="bg-white border border-mono-900 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-mono-1000 text-mono-500 text-xs uppercase tracking-wider">
-                    <th className="text-left px-5 py-3 font-semibold">Ingredient</th>
+                    <th className="text-left px-5 py-3 font-semibold">Ingrédient</th>
                     <th className="text-right px-5 py-3 font-semibold">Prix unitaire</th>
-                    <th className="text-right px-5 py-3 font-semibold">Unite</th>
+                    <th className="text-right px-5 py-3 font-semibold">Unité</th>
                     <th className="text-right px-5 py-3 font-semibold">Stock</th>
                     <th className="text-center px-5 py-3 font-semibold">Alerte</th>
                   </tr>
@@ -747,13 +747,13 @@ export default function Demo() {
             <div className="grid grid-cols-2 gap-4 h-64 relative">
               {/* Axes */}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 -rotate-90 text-[10px] font-semibold text-mono-700 uppercase tracking-wider">Marge</div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-[10px] font-semibold text-mono-700 uppercase tracking-wider">Popularite</div>
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-[10px] font-semibold text-mono-700 uppercase tracking-wider">Popularité</div>
 
               {/* Quadrants */}
               <div className="bg-amber-50 rounded-tl-xl border border-amber-100 p-3 flex flex-col items-center justify-center text-center">
                 <Target className="w-5 h-5 text-amber-500 mb-1" />
                 <p className="text-xs font-bold text-amber-700">Puzzle</p>
-                <p className="text-[10px] text-amber-600 mt-1">Marge haute, popularite basse</p>
+                <p className="text-[10px] text-amber-600 mt-1">Marge haute, popularité basse</p>
                 <div className="mt-2 flex gap-1 flex-wrap justify-center">
                   {FAKE_RECIPES.filter(r => r.status === 'puzzle').map(r => (
                     <span key={r.name} className="text-[9px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">{r.name.split(' ').slice(0, 2).join(' ')}</span>
@@ -763,7 +763,7 @@ export default function Demo() {
               <div className="bg-emerald-50 rounded-tr-xl border border-emerald-100 p-3 flex flex-col items-center justify-center text-center">
                 <TrendingUp className="w-5 h-5 text-emerald-500 mb-1" />
                 <p className="text-xs font-bold text-emerald-700">Star</p>
-                <p className="text-[10px] text-emerald-600 mt-1">Marge haute, popularite haute</p>
+                <p className="text-[10px] text-emerald-600 mt-1">Marge haute, popularité haute</p>
                 <div className="mt-2 flex gap-1 flex-wrap justify-center">
                   {FAKE_RECIPES.filter(r => r.status === 'star').map(r => (
                     <span key={r.name} className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">{r.name.split(' ').slice(0, 2).join(' ')}</span>
@@ -773,7 +773,7 @@ export default function Demo() {
               <div className="bg-red-50 rounded-bl-xl border border-red-100 p-3 flex flex-col items-center justify-center text-center">
                 <AlertTriangle className="w-5 h-5 text-red-400 mb-1" />
                 <p className="text-xs font-bold text-red-700">Poids mort</p>
-                <p className="text-[10px] text-red-600 mt-1">Marge basse, popularite basse</p>
+                <p className="text-[10px] text-red-600 mt-1">Marge basse, popularité basse</p>
                 <div className="mt-2 flex gap-1 flex-wrap justify-center">
                   {FAKE_RECIPES.filter(r => r.status === 'dog').map(r => (
                     <span key={r.name} className="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full">{r.name.split(' ').slice(0, 2).join(' ')}</span>
@@ -783,7 +783,7 @@ export default function Demo() {
               <div className="bg-blue-50 rounded-br-xl border border-blue-100 p-3 flex flex-col items-center justify-center text-center">
                 <ShoppingBasket className="w-5 h-5 text-blue-500 mb-1" />
                 <p className="text-xs font-bold text-blue-700">Cheval de labour</p>
-                <p className="text-[10px] text-blue-600 mt-1">Marge basse, popularite haute</p>
+                <p className="text-[10px] text-blue-600 mt-1">Marge basse, popularité haute</p>
                 <div className="mt-2 flex gap-1 flex-wrap justify-center">
                   {FAKE_RECIPES.filter(r => r.status === 'workhorse').map(r => (
                     <span key={r.name} className="text-[9px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">{r.name.split(' ').slice(0, 2).join(' ')}</span>
@@ -805,17 +805,17 @@ export default function Demo() {
               Essai gratuit 7 jours -- Sans carte bancaire
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 font-satoshi">
-              Impressionne ? Creez votre compte gratuit
+              Impressionné ? Créez votre compte gratuit
             </h2>
             <p className="text-white/60 max-w-md mx-auto mb-8 text-lg">
-              Ce que vous voyez avec des donnees fictives, RestauMargin le fait avec les donnees reelles de votre restaurant.
+              Ce que vous voyez avec des données fictives, RestauMargin le fait avec les données réelles de votre restaurant.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/login?mode=register"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-white/90 text-mono-100 font-bold text-lg rounded-xl transition-colors shadow-lg shadow-white/10"
               >
-                Creer mon compte gratuit
+                Créer mon compte gratuit
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
@@ -836,7 +836,7 @@ export default function Demo() {
 
       {/* -- Footer -- */}
       <footer className="border-t border-mono-900 py-8 text-center text-sm text-mono-700">
-        <p>&copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.</p>
+        <p>&copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.</p>
       </footer>
     </div>
   );

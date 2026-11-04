@@ -21,7 +21,7 @@ interface Ingredient {
   unite: string;
 }
 
-const UNITES = ['kg', 'g', 'L', 'cL', 'mL', 'piece(s)', 'botte(s)', 'tranche(s)'];
+const UNITES = ['kg', 'g', 'L', 'cL', 'mL', 'pièce(s)', 'botte(s)', 'tranche(s)'];
 
 let nextId = 1;
 
@@ -45,27 +45,27 @@ const BENCHMARKS: { label: string; foodCost: number; color: string }[] = [
 const FAQ_ITEMS = [
   {
     q: "Qu'est-ce que le food cost en restauration ?",
-    a: "Le food cost (ou cout matiere) est le pourcentage du prix de vente d'un plat consacre a l'achat des ingredients. C'est l'indicateur numero 1 de rentabilite en restauration. Formule : Food Cost % = (Cout ingredients par portion / Prix de vente HT) x 100."
+    a: "Le food cost (ou coût matière) est le pourcentage du prix de vente d'un plat consacré à l'achat des ingrédients. C'est l'indicateur numéro 1 de rentabilité en restauration. Formule : Food Cost % = (Coût ingrédients par portion / Prix de vente HT) x 100."
   },
   {
-    q: "Quel est le food cost ideal pour un restaurant ?",
-    a: "Un food cost inferieur a 30 % est considere comme excellent. Entre 30 % et 35 %, c'est acceptable mais a surveiller. Au-dela de 35 %, il faut agir : renegocier les fournisseurs, reduire le gaspillage ou ajuster les prix de vente."
+    q: "Quel est le food cost idéal pour un restaurant ?",
+    a: "Un food cost inférieur à 30 % est considéré comme excellent. Entre 30 % et 35 %, c'est acceptable mais à surveiller. Au-delà de 35 %, il faut agir : renégocier les fournisseurs, réduire le gaspillage ou ajuster les prix de vente."
   },
   {
-    q: "Comment reduire son food cost sans baisser la qualite ?",
-    a: "Plusieurs leviers : negocier les prix fournisseurs en volume, standardiser les fiches techniques pour eviter le sur-dosage, utiliser les produits de saison, reduire le gaspillage avec le FIFO (premier entre, premier sorti), et optimiser les portions."
+    q: "Comment réduire son food cost sans baisser la qualité ?",
+    a: "Plusieurs leviers : négocier les prix fournisseurs en volume, standardiser les fiches techniques pour éviter le sur-dosage, utiliser les produits de saison, réduire le gaspillage avec le FIFO (premier entre, premier sorti), et optimiser les portions."
   },
   {
-    q: "Quelle est la difference entre food cost theorique et reel ?",
-    a: "Le food cost theorique est calcule a partir de vos fiches techniques (cout des ingredients prevu). Le food cost reel prend en compte le gaspillage, le vol, les erreurs de dosage et la casse. L'ecart entre les deux revele vos pertes cachees."
+    q: "Quelle est la différence entre food cost théorique et réel ?",
+    a: "Le food cost théorique est calculé à partir de vos fiches techniques (coût des ingrédients prévu). Le food cost réel prend en compte le gaspillage, le vol, les erreurs de dosage et la casse. L'écart entre les deux révèle vos pertes cachées."
   },
   {
     q: "Comment calculer le coefficient multiplicateur ?",
-    a: "Le coefficient multiplicateur est l'inverse du food cost. Si vous visez 30 % de food cost, votre coefficient est 1/0.30 = 3.33. Multipliez le cout matiere par ce coefficient pour obtenir le prix de vente HT minimum."
+    a: "Le coefficient multiplicateur est l'inverse du food cost. Si vous visez 30 % de food cost, votre coefficient est 1/0.30 = 3.33. Multipliez le coût matière par ce coefficient pour obtenir le prix de vente HT minimum."
   },
   {
     q: "Faut-il inclure la TVA dans le calcul du food cost ?",
-    a: "Non. Le food cost se calcule toujours hors taxes (HT). La TVA est un element de prix pour le client final mais ne fait pas partie de votre marge. Utilisez le prix de vente HT dans la formule pour un resultat fiable."
+    a: "Non. Le food cost se calcule toujours hors taxes (HT). La TVA est un élément de prix pour le client final mais ne fait pas partie de votre marge. Utilisez le prix de vente HT dans la formule pour un résultat fiable."
   },
 ];
 
@@ -114,7 +114,7 @@ export default function FoodCostCalculator() {
 
   /* ── Gauge helpers ── */
   const gaugeColor = foodCostPct <= 30 ? '#10b981' : foodCostPct <= 35 ? '#f59e0b' : '#ef4444';
-  const gaugeLabel = foodCostPct <= 30 ? 'Excellent' : foodCostPct <= 35 ? 'Acceptable' : 'Trop eleve';
+  const gaugeLabel = foodCostPct <= 30 ? 'Excellent' : foodCostPct <= 35 ? 'Acceptable' : 'Trop élevé';
   const gaugeAngle = Math.min((foodCostPct / 50) * 360, 360);
 
   /* ── Benchmark data with user value ── */
@@ -149,7 +149,7 @@ export default function FoodCostCalculator() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEOHead title="Calculateur de Food Cost Restaurant Gratuit" description="Calculez gratuitement le food cost de vos plats. Outil en ligne pour restaurateurs : cout matiere, prix de vente, marge brute par recette." path="/outils/calculateur-food-cost" />
+      <SEOHead title="Calculateur de Food Cost Restaurant Gratuit" description="Calculez gratuitement le food cost de vos plats. Outil en ligne pour restaurateurs : coût matière, prix de vente, marge brute par recette." path="/outils/calculateur-food-cost" />
 
       {/* ── Navbar ── */}
       <PublicHeader />
@@ -170,7 +170,7 @@ export default function FoodCostCalculator() {
           </h1>
 
           <p className="text-base sm:text-lg lg:text-xl text-mono-400 max-w-2xl mx-auto leading-relaxed mb-8">
-            Ajoutez vos ingredients, visualisez votre food cost avec une jauge interactive,
+            Ajoutez vos ingrédients, visualisez votre food cost avec une jauge interactive,
             comparez-vous aux standards du secteur et simulez votre profit mensuel.
           </p>
 
@@ -178,7 +178,7 @@ export default function FoodCostCalculator() {
           <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-mono-900 rounded-full">
               <Zap className="w-4 h-4 text-emerald-600" />
-              <strong className="text-[#0F172A]">Calcul instantane</strong>
+              <strong className="text-[#0F172A]">Calcul instantané</strong>
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-mono-900 rounded-full">
               <Target className="w-4 h-4 text-emerald-600" />
@@ -199,19 +199,19 @@ export default function FoodCostCalculator() {
         ══════════════════════════════════════════════ */}
         <section className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-4 sm:p-6 mb-6">
           <h2 className="text-lg font-bold text-[#000000] mb-4 font-satoshi">
-            Ingredients de la recette
+            Ingrédients de la recette
           </h2>
 
           {/* Desktop header */}
           <div className="hidden sm:grid grid-cols-[1fr_100px_120px_110px_40px] gap-3 text-xs font-semibold text-[#999999] uppercase tracking-wide mb-2 px-1">
-            <span>Ingredient</span><span>Quantite</span><span>Prix unitaire</span><span>Unite</span><span />
+            <span>Ingrédient</span><span>Quantité</span><span>Prix unitaire</span><span>Unité</span><span />
           </div>
 
           <div className="space-y-3">
             {ingredients.map((ing) => (
               <div key={ing.id} className="grid grid-cols-1 sm:grid-cols-[1fr_100px_120px_110px_40px] gap-2 sm:gap-3 items-end bg-mono-1000 rounded-2xl p-3 sm:p-2 sm:bg-transparent sm:rounded-none border sm:border-0 border-[#e5e5e5]">
                 <div>
-                  <label className="sm:hidden text-xs text-[#999999] font-medium mb-1 block">Ingredient</label>
+                  <label className="sm:hidden text-xs text-[#999999] font-medium mb-1 block">Ingrédient</label>
                   <input
                     type="text"
                     placeholder="Ex : Tomates cerises"
@@ -221,7 +221,7 @@ export default function FoodCostCalculator() {
                   />
                 </div>
                 <div>
-                  <label className="sm:hidden text-xs text-[#999999] font-medium mb-1 block">Quantite</label>
+                  <label className="sm:hidden text-xs text-[#999999] font-medium mb-1 block">Quantité</label>
                   <input
                     type="number"
                     min={0}
@@ -243,7 +243,7 @@ export default function FoodCostCalculator() {
                   />
                 </div>
                 <div>
-                  <label className="sm:hidden text-xs text-[#999999] font-medium mb-1 block">Unite</label>
+                  <label className="sm:hidden text-xs text-[#999999] font-medium mb-1 block">Unité</label>
                   <select
                     value={ing.unite}
                     onChange={e => updateIngredient(ing.id, 'unite', e.target.value)}
@@ -279,7 +279,7 @@ export default function FoodCostCalculator() {
               </button>
             </div>
             <div className="text-sm text-[#666666]">
-              Cout total : <span className="font-bold text-[#000000]">{formatCurrency(coutTotal)}</span>
+              Coût total : <span className="font-bold text-[#000000]">{formatCurrency(coutTotal)}</span>
             </div>
           </div>
         </section>
@@ -312,7 +312,7 @@ export default function FoodCostCalculator() {
               />
             </div>
             <div>
-              <label className="text-sm text-[#666666] font-medium mb-1.5 block">Prix suggere (30%)</label>
+              <label className="text-sm text-[#666666] font-medium mb-1.5 block">Prix suggéré (30%)</label>
               <div className="w-full px-4 py-3 bg-mono-975 border border-[#e5e5e5] rounded-2xl text-sm text-[#000000] font-bold">
                 {prixVenteSuggere > 0 ? `${formatCurrency(prixVenteSuggere)}` : '--'}
               </div>
@@ -325,7 +325,7 @@ export default function FoodCostCalculator() {
         ══════════════════════════════════════════════ */}
         <section className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-4 sm:p-6 mb-6">
           <h2 className="text-lg font-bold text-[#000000] mb-5 font-satoshi">
-            Resultats
+            Résultats
           </h2>
 
           <div className={`grid grid-cols-1 ${prixVente > 0 ? 'lg:grid-cols-[240px_1fr]' : ''} gap-6 items-start`}>
@@ -356,7 +356,7 @@ export default function FoodCostCalculator() {
             <div className={`grid grid-cols-2 ${prixVente > 0 ? 'lg:grid-cols-2' : 'lg:grid-cols-4'} gap-3`}>
               <KPICard
                 icon={<DollarSign className="w-4 h-4" />}
-                label="Cout / portion"
+                label="Coût / portion"
                 value={formatCurrency(coutParPortion)}
               />
               <KPICard
@@ -439,13 +439,13 @@ export default function FoodCostCalculator() {
                 if (diff <= 3) return (
                   <div className="flex items-center gap-2 text-sm text-[#f59e0b]">
                     <AlertTriangle className="w-4 h-4" />
-                    Votre food cost est dans la moyenne {cuisineType} ({selectedBenchmark.foodCost}%). Marge d'amelioration possible.
+                    Votre food cost est dans la moyenne {cuisineType} ({selectedBenchmark.foodCost}%). Marge d'amélioration possible.
                   </div>
                 );
                 return (
                   <div className="flex items-center gap-2 text-sm text-[#ef4444]">
                     <AlertTriangle className="w-4 h-4" />
-                    Votre food cost depasse la moyenne {cuisineType} de <strong>{diff.toFixed(1)} pts</strong>. Action recommandee.
+                    Votre food cost dépasse la moyenne {cuisineType} de <strong>{diff.toFixed(1)} pts</strong>. Action recommandée.
                   </div>
                 );
               })()}
@@ -525,7 +525,7 @@ export default function FoodCostCalculator() {
               <div className="text-xl sm:text-2xl font-extrabold text-[#10b981]">{formatCurrency(profitBrutMois)}</div>
             </div>
             <div className="bg-mono-1000 rounded-2xl border border-[#e5e5e5] p-4 text-center">
-              <div className="text-xs text-[#999999] font-medium mb-1">Profit net estime</div>
+              <div className="text-xs text-[#999999] font-medium mb-1">Profit net estimé</div>
               <div className="text-xl sm:text-2xl font-extrabold" style={{ color: profitNetMois > 0 ? '#10b981' : '#ef4444' }}>
                 {formatCurrency(profitNetMois)}
               </div>
@@ -554,19 +554,19 @@ export default function FoodCostCalculator() {
           </h2>
           <div className="text-[#666666] text-sm leading-relaxed space-y-3">
             <p>
-              Le <strong className="text-[#000000]">food cost</strong> (ou cout matiere) represente le pourcentage du prix de vente
-              consacre aux ingredients. C'est l'indicateur cle de rentabilite en restauration.
+              Le <strong className="text-[#000000]">food cost</strong> (ou coût matière) représente le pourcentage du prix de vente
+              consacré aux ingrédients. C'est l'indicateur clé de rentabilité en restauration.
             </p>
-            <p><strong className="text-[#000000]">Formule :</strong> Food Cost % = (Cout des ingredients par portion / Prix de vente HT) x 100</p>
+            <p><strong className="text-[#000000]">Formule :</strong> Food Cost % = (Coût des ingrédients par portion / Prix de vente HT) x 100</p>
             <ul className="list-disc pl-5 space-y-1">
-              <li><span className="text-[#10b981] font-semibold">Inferieur a 30%</span> -- Excellente maitrise des couts</li>
+              <li><span className="text-[#10b981] font-semibold">Inférieur à 30%</span> -- Excellente maîtrise des coûts</li>
               <li><span className="text-[#f59e0b] font-semibold">Entre 30% et 35%</span> -- Acceptable, mais surveillez les variations</li>
-              <li><span className="text-[#ef4444] font-semibold">Superieur a 35%</span> -- Alerte : optimisez vos recettes ou renegociez vos fournisseurs</li>
+              <li><span className="text-[#ef4444] font-semibold">Supérieur à 35%</span> -- Alerte : optimisez vos recettes ou renégociez vos fournisseurs</li>
             </ul>
             <p>
               Le <strong className="text-[#000000]">coefficient multiplicateur</strong> est l'inverse du food cost : il indique par combien
-              multiplier le cout matiere pour obtenir le prix de vente. Un coefficient de 3,3 correspond
-              environ a un food cost de 30%.
+              multiplier le coût matière pour obtenir le prix de vente. Un coefficient de 3,3 correspond
+              environ à un food cost de 30%.
             </p>
           </div>
         </section>
@@ -577,7 +577,7 @@ export default function FoodCostCalculator() {
         <section className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-4 sm:p-6 mb-6">
           <h2 className="text-lg font-bold text-[#000000] mb-5 font-satoshi">
             <HelpCircle className="w-5 h-5 inline mr-2" />
-            Questions frequentes sur le food cost
+            Questions fréquentes sur le food cost
           </h2>
 
           <div className="space-y-0 divide-y divide-[#e5e5e5]">
@@ -625,7 +625,7 @@ export default function FoodCostCalculator() {
             className="text-xl sm:text-2xl font-extrabold text-[#000000] mb-3"
            
           >
-            Fatigue de calculer a la main ?
+            Fatigué de calculer à la main ?
           </h2>
           <p className="text-[#666666] mb-6 max-w-lg mx-auto">
             RestauMargin automatise vos fiches techniques avec l'IA. Import de factures, suivi des prix
@@ -646,7 +646,7 @@ export default function FoodCostCalculator() {
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#000000] text-white py-3 px-4 sm:px-6 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
           <p className="text-sm font-medium hidden sm:block">
-            Vous gerez +10 recettes ? Automatisez vos fiches techniques et vos marges.
+            Vous gérez +10 recettes ? Automatisez vos fiches techniques et vos marges.
           </p>
           <p className="text-sm font-medium sm:hidden">
             +10 recettes ? Automatisez tout.

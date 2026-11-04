@@ -18,43 +18,43 @@ import PublicFooter from '../components/public/PublicFooter';
 const faqItems = [
   {
     question: "Qu'est-ce que Marge Brut ?",
-    answer: "Marge Brut (margebrut.fr) est un logiciel francais de gestion et pilotage pour restaurateurs independants, axe sur le controle du food cost, des marges et de la rentabilite. Il propose des fiches techniques avec prix de revient au centime, une lecture par IA des factures fournisseurs, un P&L quotidien et une tresorerie projetee sur 13 semaines.",
+    answer: "Marge Brut (margebrut.fr) est un logiciel français de gestion et pilotage pour restaurateurs indépendants, axé sur le contrôle du food cost, des marges et de la rentabilité. Il propose des fiches techniques avec prix de revient au centime, une lecture par IA des factures fournisseurs, un P&L quotidien et une trésorerie projetée sur 13 semaines.",
   },
   {
     question: "Marge Brut est-il vraiment gratuit ?",
-    answer: "Oui, au 10 septembre 2026, Marge Brut est entierement gratuit, sans carte bancaire requise et sans fonctionnalite bridee, pendant sa phase de developpement active. L'editeur ne communique aucune date de passage a un modele payant sur son site public — c'est un point important a surveiller si vous batissez votre gestion quotidienne sur cet outil.",
+    answer: "Oui, au 10 septembre 2026, Marge Brut est entièrement gratuit, sans carte bancaire requise et sans fonctionnalité bridée, pendant sa phase de développement active. L'éditeur ne communique aucune date de passage à un modèle payant sur son site public — c'est un point important à surveiller si vous bâtissez votre gestion quotidienne sur cet outil.",
   },
   {
-    question: "Quelle est la difference entre Marge Brut et RestauMargin ?",
-    answer: "Marge Brut est un outil jeune, gratuit pendant sa phase de developpement, avec un perimetre oriente pilotage financier : food cost, P&L, tresorerie, factures IA et gestion d'equipe. RestauMargin est une plateforme payante (29€/mois, tarif public fixe) qui ajoute la mercuriale fournisseurs avec alertes de hausse de prix, la gestion de stock complete, le menu engineering (matrice Boston), le HACCP digital et 19 actions IA — des fonctionnalites que Marge Brut ne mentionne pas sur son site.",
+    question: "Quelle est la différence entre Marge Brut et RestauMargin ?",
+    answer: "Marge Brut est un outil jeune, gratuit pendant sa phase de développement, avec un périmètre orienté pilotage financier : food cost, P&L, trésorerie, factures IA et gestion d'équipe. RestauMargin est une plateforme payante (29€/mois, tarif public fixe) qui ajoute la mercuriale fournisseurs avec alertes de hausse de prix, la gestion de stock complète, le menu engineering (matrice Boston), le HACCP digital et 19 actions IA — des fonctionnalités que Marge Brut ne mentionne pas sur son site.",
   },
   {
     question: "Marge Brut propose-t-il la gestion de stock et le menu engineering ?",
-    answer: "Non, ni la gestion de stock (inventaire, valorisation, alertes de rupture) ni le menu engineering (classement des plats stars/vaches a lait/enigmes/poids morts) ne figurent parmi les fonctionnalites publiees de Marge Brut au 10 septembre 2026. RestauMargin inclut les deux des le plan Pro a 29€/mois.",
+    answer: "Non, ni la gestion de stock (inventaire, valorisation, alertes de rupture) ni le menu engineering (classement des plats stars/vaches à lait/énigmes/poids morts) ne figurent parmi les fonctionnalités publiées de Marge Brut au 10 septembre 2026. RestauMargin inclut les deux dès le plan Pro à 29€/mois.",
   },
   {
-    question: "Marge Brut gere-t-il le HACCP et la conformite hygiene ?",
-    answer: "Aucune fonctionnalite HACCP (releves de temperature, checklists hygiene, tracabilite) n'est mentionnee sur le site de Marge Brut. RestauMargin propose un module HACCP digital inclus dans son abonnement, ce qui evite de jongler entre plusieurs outils pour la gestion financiere et la conformite reglementaire.",
+    question: "Marge Brut gère-t-il le HACCP et la conformité hygiène ?",
+    answer: "Aucune fonctionnalité HACCP (relevés de température, checklists hygiène, traçabilité) n'est mentionnée sur le site de Marge Brut. RestauMargin propose un module HACCP digital inclus dans son abonnement, ce qui évite de jongler entre plusieurs outils pour la gestion financière et la conformité réglementaire.",
   },
   {
     question: "Marge Brut restera-t-il gratuit longtemps ?",
-    answer: "L'editeur communique une gratuite pendant la phase de developpement, sans engagement ni date annoncee de bascule vers un modele payant. C'est une situation frequente chez les jeunes editeurs SaaS : le produit est gratuit le temps d'acquerir des utilisateurs et des retours, puis un modele payant est introduit une fois la base installee. Rien ne garantit que les fonctionnalites actuellement gratuites le resteront indefiniment.",
+    answer: "L'éditeur communique une gratuité pendant la phase de développement, sans engagement ni date annoncée de bascule vers un modèle payant. C'est une situation fréquente chez les jeunes éditeurs SaaS : le produit est gratuit le temps d'acquérir des utilisateurs et des retours, puis un modèle payant est introduit une fois la base installée. Rien ne garantit que les fonctionnalités actuellement gratuites le resteront indéfiniment.",
   },
   {
-    question: "Quel outil gere le mieux les fournisseurs ?",
-    answer: "Marge Brut propose une lecture IA des factures fournisseurs avec controle des livraisons et quantification des ecarts en euros — une fonctionnalite solide. RestauMargin va plus loin avec une mercuriale fournisseurs complete : historique de prix par produit et par fournisseur, alertes automatiques des qu'un prix augmente, et scan OCR des factures, le tout inclus des le premier palier payant.",
+    question: "Quel outil gère le mieux les fournisseurs ?",
+    answer: "Marge Brut propose une lecture IA des factures fournisseurs avec contrôle des livraisons et quantification des écarts en euros — une fonctionnalité solide. RestauMargin va plus loin avec une mercuriale fournisseurs complète : historique de prix par produit et par fournisseur, alertes automatiques dès qu'un prix augmente, et scan OCR des factures, le tout inclus dès le premier palier payant.",
   },
   {
-    question: "Marge Brut convient-il a un groupe de plusieurs restaurants ?",
-    answer: "Pas encore de maniere native : la vue multi-etablissements figure dans la roadmap \"a venir\" de Marge Brut, sans date de disponibilite publiee. RestauMargin gere deja le multi-restaurant avec une vue consolidee des marges via la formule Business a 79€/mois.",
+    question: "Marge Brut convient-il à un groupe de plusieurs restaurants ?",
+    answer: "Pas encore de manière native : la vue multi-établissements figure dans la roadmap \"à venir\" de Marge Brut, sans date de disponibilité publiée. RestauMargin gère déjà le multi-restaurant avec une vue consolidée des marges via la formule Business à 79€/mois.",
   },
   {
-    question: "Puis-je migrer mes donnees de Marge Brut vers RestauMargin ?",
-    answer: "Les deux outils manipulent le meme type de donnees de base (ingredients, recettes, fiches techniques, fournisseurs). Une migration manuelle est possible en reprenant vos fiches techniques existantes. Notre equipe support peut vous accompagner pour ce transfert pendant votre essai gratuit de 7 jours.",
+    question: "Puis-je migrer mes données de Marge Brut vers RestauMargin ?",
+    answer: "Les deux outils manipulent le même type de données de base (ingrédients, recettes, fiches techniques, fournisseurs). Une migration manuelle est possible en reprenant vos fiches techniques existantes. Notre équipe support peut vous accompagner pour ce transfert pendant votre essai gratuit de 7 jours.",
   },
   {
-    question: "Quel outil choisir pour debuter sans budget ?",
-    answer: "Si votre priorite absolue est de ne rien depenser tant que votre activite se stabilise, Marge Brut est un choix legitime : c'est aujourd'hui un outil gratuit et fonctionnel pour le food cost, les factures et la tresorerie. Si vous geriez deja une carte complete avec fournisseurs multiples et que vous voulez aussi le stock, le menu engineering et le HACCP dans un seul outil, l'essai gratuit de 7 jours de RestauMargin vous permet de comparer sans engagement.",
+    question: "Quel outil choisir pour débuter sans budget ?",
+    answer: "Si votre priorité absolue est de ne rien dépenser tant que votre activité se stabilise, Marge Brut est un choix légitime : c'est aujourd'hui un outil gratuit et fonctionnel pour le food cost, les factures et la trésorerie. Si vous gériez déjà une carte complète avec fournisseurs multiples et que vous voulez aussi le stock, le menu engineering et le HACCP dans un seul outil, l'essai gratuit de 7 jours de RestauMargin vous permet de comparer sans engagement.",
   },
 ];
 
@@ -77,7 +77,7 @@ export default function AlternativeMargeBrut() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'RestauMargin : la meilleure alternative à Marge Brut en 2026',
-            description: "Comparatif detaille entre RestauMargin (29 EUR/mois, plateforme operationnelle complete) et Marge Brut (gratuit en phase de developpement, pilotage financier). Tableau 15 criteres, cas d'usage, FAQ.",
+            description: "Comparatif détaillé entre RestauMargin (29 EUR/mois, plateforme opérationnelle complète) et Marge Brut (gratuit en phase de développement, pilotage financier). Tableau 15 critères, cas d'usage, FAQ.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -115,7 +115,7 @@ export default function AlternativeMargeBrut() {
                       unitText: 'MONTH',
                     },
                   },
-                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs, stock et IA d'optimisation pour restaurateurs independants et groupes.",
+                  description: "Gestion des marges, food cost, fiches techniques, mercuriale fournisseurs, stock et IA d'optimisation pour restaurateurs indépendants et groupes.",
                 },
               },
               {
@@ -137,7 +137,7 @@ export default function AlternativeMargeBrut() {
                       unitText: 'MONTH',
                     },
                   },
-                  description: "Logiciel gratuit de food cost, factures IA, P&L et tresorerie pour restaurateurs independants, en phase de developpement active.",
+                  description: "Logiciel gratuit de food cost, factures IA, P&L et trésorerie pour restaurateurs indépendants, en phase de développement active.",
                 },
               },
             ],
@@ -185,13 +185,13 @@ export default function AlternativeMargeBrut() {
           </h2>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 space-y-3 text-sm sm:text-base">
             <p className="leading-relaxed">
-              <strong className="text-white">Marge Brut</strong> est un <strong>outil gratuit de pilotage financier</strong> en phase de developpement active : food cost, factures lues par IA, P&L quotidien et tresorerie projetee, sans aucun cout ni carte bancaire.
+              <strong className="text-white">Marge Brut</strong> est un <strong>outil gratuit de pilotage financier</strong> en phase de développement active : food cost, factures lues par IA, P&L quotidien et trésorerie projetée, sans aucun coût ni carte bancaire.
             </p>
             <p className="leading-relaxed">
-              <strong className="text-white">RestauMargin</strong> est une <strong>plateforme operationnelle complete</strong> a 29€/mois : food cost, mercuriale fournisseurs avec alertes, gestion de stock, menu engineering, HACCP digital et 19 actions IA, tout inclus.
+              <strong className="text-white">RestauMargin</strong> est une <strong>plateforme opérationnelle complète</strong> à 29€/mois : food cost, mercuriale fournisseurs avec alertes, gestion de stock, menu engineering, HACCP digital et 19 actions IA, tout inclus.
             </p>
             <p className="leading-relaxed pt-2 border-t border-white/20">
-              <strong className="text-white">Verdict :</strong> pour tester le pilotage financier sans depenser un centime, Marge Brut est un excellent point d'entree. Pour piloter stock, fournisseurs, carte et hygiene dans un seul outil, RestauMargin couvre un perimetre plus large.
+              <strong className="text-white">Verdict :</strong> pour tester le pilotage financier sans dépenser un centime, Marge Brut est un excellent point d'entrée. Pour piloter stock, fournisseurs, carte et hygiène dans un seul outil, RestauMargin couvre un périmètre plus large.
             </p>
           </div>
         </div>
@@ -234,16 +234,16 @@ export default function AlternativeMargeBrut() {
 
           <div className="prose-content">
             <p>
-              Marge Brut (margebrut.fr) est un outil recent qui s'est fait remarquer sur les requetes
-              liees au calcul de marge et de food cost, avec une promesse forte : un logiciel de gestion
-              complet, gratuit sans limite de temps ni carte bancaire, pendant que l'equipe le developpe.
-              Pour un restaurateur qui cherche a arreter les tableurs Excel sans engager de budget
-              logiciel, c'est une offre seduisante.
+              Marge Brut (margebrut.fr) est un outil récent qui s'est fait remarquer sur les requêtes
+              liées au calcul de marge et de food cost, avec une promesse forte : un logiciel de gestion
+              complet, gratuit sans limite de temps ni carte bancaire, pendant que l'équipe le développe.
+              Pour un restaurateur qui cherche à arrêter les tableurs Excel sans engager de budget
+              logiciel, c'est une offre séduisante.
             </p>
             <p>
-              Mais "gratuit pendant la phase de developpement" et "plateforme payante a tarif fixe" ne
-              couvrent pas exactement le meme perimetre ni la meme promesse de perennite. Trois questions
-              se posent quand on hesite entre les deux :
+              Mais "gratuit pendant la phase de développement" et "plateforme payante à tarif fixe" ne
+              couvrent pas exactement le même périmètre ni la même promesse de pérennité. Trois questions
+              se posent quand on hésite entre les deux :
             </p>
           </div>
 
@@ -251,34 +251,34 @@ export default function AlternativeMargeBrut() {
             <ReasonCard
               icon={<Package className="w-6 h-6" />}
               title="Le stock et le menu engineering"
-              desc="Aucune gestion de stock ni classement des plats (matrice Boston) n'est mentionnee sur le site public de Marge Brut au 10 septembre 2026."
+              desc="Aucune gestion de stock ni classement des plats (matrice Boston) n'est mentionnée sur le site public de Marge Brut au 10 septembre 2026."
             />
             <ReasonCard
               icon={<Wallet className="w-6 h-6" />}
-              title="La duree de la gratuite"
-              desc="Marge Brut est gratuit pendant sa phase de developpement, sans date de bascule vers un modele payant annoncee publiquement. C'est un choix d'editeur courant chez les jeunes SaaS, a anticiper."
+              title="La durée de la gratuité"
+              desc="Marge Brut est gratuit pendant sa phase de développement, sans date de bascule vers un modèle payant annoncée publiquement. C'est un choix d'éditeur courant chez les jeunes SaaS, à anticiper."
             />
             <ReasonCard
               icon={<AlertTriangle className="w-6 h-6" />}
               title="Le multi-restaurant et le HACCP"
-              desc="La vue multi-etablissements figure dans la roadmap 'a venir' de Marge Brut. Aucun module HACCP digital n'est mentionne non plus."
+              desc="La vue multi-établissements figure dans la roadmap 'à venir' de Marge Brut. Aucun module HACCP digital n'est mentionné non plus."
             />
           </div>
 
           <div className="prose-content mt-8">
             <p>
               Soyons justes : ces manques ne font pas de Marge Brut un mauvais outil, bien au contraire.
-              La lecture IA des factures fournisseurs, la tresorerie projetee sur 13 semaines et le P&L
-              quotidien sont des fonctionnalites solides, rarement offertes gratuitement ailleurs. Le
-              probleme se pose quand votre besoin depasse le pilotage financier pur : gerer un stock,
-              classer vos plats par rentabilite, digitaliser votre HACCP, ou ouvrir un deuxieme
-              etablissement.
+              La lecture IA des factures fournisseurs, la trésorerie projetée sur 13 semaines et le P&L
+              quotidien sont des fonctionnalités solides, rarement offertes gratuitement ailleurs. Le
+              problème se pose quand votre besoin dépasse le pilotage financier pur : gérer un stock,
+              classer vos plats par rentabilité, digitaliser votre HACCP, ou ouvrir un deuxième
+              établissement.
             </p>
             <p>
-              C'est cette difference de perimetre qui explique pourquoi nous nous presentons comme une
-              <strong> alternative a Marge Brut</strong> pour les restaurateurs qui veulent une plateforme
-              operationnelle complete. Voyons les deux
-              approches en detail.
+              C'est cette différence de périmètre qui explique pourquoi nous nous présentons comme une
+              <strong> alternative à Marge Brut</strong> pour les restaurateurs qui veulent une plateforme
+              opérationnelle complète. Voyons les deux
+              approches en détail.
             </p>
           </div>
         </section>
@@ -292,9 +292,9 @@ export default function AlternativeMargeBrut() {
           <div className="prose-content">
             <p>
               Marge Brut se positionne comme un <strong>logiciel de gestion et de pilotage</strong> pour
-              restaurateurs independants — restaurants, bistrots, bars a vin, brasseries et cafes. Le
-              produit met en avant sa gratuite totale ("gratuit pour tous les restaurateurs, sans carte
-              bancaire") pendant sa phase de developpement actuelle.
+              restaurateurs indépendants — restaurants, bistrots, bars à vin, brasseries et cafés. Le
+              produit met en avant sa gratuité totale ("gratuit pour tous les restaurateurs, sans carte
+              bancaire") pendant sa phase de développement actuelle.
             </p>
           </div>
 
@@ -305,13 +305,13 @@ export default function AlternativeMargeBrut() {
                 <h3 className="font-bold text-emerald-900">Points forts de Marge Brut</h3>
               </div>
               <ul className="space-y-2.5 text-sm text-emerald-800 leading-relaxed">
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Entierement gratuit, sans carte bancaire, sans limite de temps</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Food cost en temps reel par recette et par produit</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Lecture IA des factures fournisseurs et controle des livraisons</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Entièrement gratuit, sans carte bancaire, sans limite de temps</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Food cost en temps réel par recette et par produit</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Lecture IA des factures fournisseurs et contrôle des livraisons</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>P&L quotidien avec export PDF</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Tresorerie projetee sur 13 semaines</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Gestion d'equipe, planning, conges et extras incluse</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Cave a vin et tarification au verre/bouteille</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Trésorerie projetée sur 13 semaines</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Gestion d'équipe, planning, congés et extras incluse</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Cave à vin et tarification au verre/bouteille</span></li>
               </ul>
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
@@ -320,22 +320,22 @@ export default function AlternativeMargeBrut() {
                 <h3 className="font-bold text-amber-900">Limites de Marge Brut</h3>
               </div>
               <ul className="space-y-2.5 text-sm text-amber-800 leading-relaxed">
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Aucune date de bascule vers un modele payant communiquee</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Aucune gestion de stock ou d'inventaire mentionnee</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Aucune date de bascule vers un modèle payant communiquée</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Aucune gestion de stock ou d'inventaire mentionnée</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de menu engineering (matrice Boston)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de module HACCP digital identifie</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Multi-etablissements encore "a venir", sans date</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Integration caisse encore "en developpement"</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de module HACCP digital identifié</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Multi-établissements encore "à venir", sans date</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Intégration caisse encore "en développement"</span></li>
               </ul>
             </div>
           </div>
 
           <Callout type="info">
-            <strong>A noter :</strong> les informations ci-dessus sont issues du site public
-            margebrut.fr consulte le 10 septembre 2026. Marge Brut cite lui-meme des chiffres du secteur
-            (8 714 defaillances en restauration en 2024, +10% sur un an ; marge nette mediane de 3% en
-            2024) pour justifier son approche centree sur le pilotage financier. Si une fonctionnalite
-            existe sans etre publiee sur leur site, elle n'a pas pu etre integree a ce comparatif.
+            <strong>À noter :</strong> les informations ci-dessus sont issues du site public
+            margebrut.fr consulté le 10 septembre 2026. Marge Brut cite lui-même des chiffres du secteur
+            (8 714 défaillances en restauration en 2024, +10% sur un an ; marge nette médiane de 3% en
+            2024) pour justifier son approche centrée sur le pilotage financier. Si une fonctionnalité
+            existe sans être publiée sur leur site, elle n'a pas pu être intégrée à ce comparatif.
           </Callout>
         </section>
 
@@ -347,11 +347,11 @@ export default function AlternativeMargeBrut() {
 
           <div className="prose-content">
             <p>
-              RestauMargin est positionne comme la <strong>solution de reference pour la gestion
-              operationnelle et la rentabilite</strong> en restauration. Contrairement a un outil de
-              pilotage financier seul, notre plateforme couvre l'ensemble du cycle : ingredients, fiches
+              RestauMargin est positionné comme la <strong>solution de référence pour la gestion
+              opérationnelle et la rentabilité</strong> en restauration. Contrairement à un outil de
+              pilotage financier seul, notre plateforme couvre l'ensemble du cycle : ingrédients, fiches
               techniques, mercuriale fournisseurs, stock, marges par plat et par carte, menu engineering,
-              HACCP et optimisation par IA — tout inclus des le premier palier payant.
+              HACCP et optimisation par IA — tout inclus dès le premier palier payant.
             </p>
           </div>
 
@@ -362,12 +362,12 @@ export default function AlternativeMargeBrut() {
                 <h3 className="font-bold text-emerald-900">Points forts de RestauMargin</h3>
               </div>
               <ul className="space-y-2.5 text-sm text-emerald-800 leading-relaxed">
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Fiches techniques et menus illimites des le plan Pro (29€/mois)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Mercuriale fournisseurs avec historique de prix et alertes, incluse des l'entree</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Gestion de stock complete (inventaire, valorisation, alertes rupture)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>19 actions IA : suggestions recettes, optimisation marges, detection d'anomalies</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Fiches techniques et menus illimités dès le plan Pro (29€/mois)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Mercuriale fournisseurs avec historique de prix et alertes, incluse dès l'entrée</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Gestion de stock complète (inventaire, valorisation, alertes rupture)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>19 actions IA : suggestions recettes, optimisation marges, détection d'anomalies</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Menu engineering (matrice Boston) et HACCP digital inclus</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Multi-restaurant natif avec vue consolidee (plan Business)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Multi-restaurant natif avec vue consolidée (plan Business)</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>PWA mobile + mode kiosk + scan de factures par OCR</span></li>
               </ul>
             </div>
@@ -378,19 +378,19 @@ export default function AlternativeMargeBrut() {
               </div>
               <ul className="space-y-2.5 text-sm text-amber-800 leading-relaxed">
                 <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de plan gratuit permanent (seulement un essai de 7 jours)</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de gestion de cave a vin dediee au verre pres</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de planning d'equipe / conges integre nativement</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de tresorerie projetee sur 13 semaines dediee</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de module de reservation en ligne (utilisez TheFork ou Zenchef)</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de gestion de cave à vin dédiée au verre près</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de planning d'équipe / congés intégré nativement</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de trésorerie projetée sur 13 semaines dédiée</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">-</span><span>Pas de module de réservation en ligne (utilisez TheFork ou Zenchef)</span></li>
               </ul>
             </div>
           </div>
 
           <Callout type="info">
-            <strong>Notre conviction :</strong> si votre priorite est le pilotage financier pur
-            (tresorerie, P&L, factures) sans budget logiciel, Marge Brut est un choix legitime et bien
-            construit. RestauMargin est concu pour les restaurateurs qui veulent piloter aussi leur carte,
-            leur stock, leurs fournisseurs et leur conformite hygiene dans un seul outil.
+            <strong>Notre conviction :</strong> si votre priorité est le pilotage financier pur
+            (trésorerie, P&L, factures) sans budget logiciel, Marge Brut est un choix légitime et bien
+            construit. RestauMargin est conçu pour les restaurateurs qui veulent piloter aussi leur carte,
+            leur stock, leurs fournisseurs et leur conformité hygiène dans un seul outil.
           </Callout>
         </section>
 
@@ -402,7 +402,7 @@ export default function AlternativeMargeBrut() {
 
           <div className="prose-content">
             <p>
-              Voici une comparaison point par point entre Marge Brut et RestauMargin, basee sur les
+              Voici une comparaison point par point entre Marge Brut et RestauMargin, basée sur les
               informations publiques disponibles sur margebrut.fr au 10 septembre 2026.
             </p>
           </div>
@@ -428,29 +428,29 @@ export default function AlternativeMargeBrut() {
               </thead>
               <tbody className="bg-white">
                 <ComparisonRow label="Prix actuel" rm="29€/mois" mb="0€ (phase de dev)" winner="mb" />
-                <ComparisonRow label="Perennite du prix" rm="Tarif public fixe (29€/mois)" mb="Aucune date de bascule payante communiquee" winner="rm" />
-                <ComparisonRow label="Essai / accès complet sans CB" rm="7 jours, toutes fonctions" mb="Acces complet gratuit" winner="tie" />
-                <ComparisonRow label="Food cost temps reel" rm={true} mb={true} winner="tie" />
+                <ComparisonRow label="Pérennité du prix" rm="Tarif public fixe (29€/mois)" mb="Aucune date de bascule payante communiquée" winner="rm" />
+                <ComparisonRow label="Essai / accès complet sans CB" rm="7 jours, toutes fonctions" mb="Accès complet gratuit" winner="tie" />
+                <ComparisonRow label="Food cost temps réel" rm={true} mb={true} winner="tie" />
                 <ComparisonRow label="Lecture IA des factures" rm={true} mb={true} winner="tie" />
-                <ComparisonRow label="Mercuriale fournisseurs + alertes prix" rm={true} mb="Controle ecarts uniquement" winner="rm" />
+                <ComparisonRow label="Mercuriale fournisseurs + alertes prix" rm={true} mb="Contrôle écarts uniquement" winner="rm" />
                 <ComparisonRow label="Gestion de stock / inventaire" rm={true} mb={false} winner="rm" />
                 <ComparisonRow label="P&L quotidien" rm={true} mb={true} winner="tie" />
-                <ComparisonRow label="Tresorerie projetee" rm={false} mb="13 semaines" winner="mb" />
+                <ComparisonRow label="Trésorerie projetée" rm={false} mb="13 semaines" winner="mb" />
                 <ComparisonRow label="Menu engineering (matrice Boston)" rm={true} mb={false} winner="rm" />
                 <ComparisonRow label="HACCP digital" rm={true} mb={false} winner="rm" />
-                <ComparisonRow label="Multi-restaurant" rm={true} mb="A venir (sans date)" winner="rm" />
-                <ComparisonRow label="Gestion d'equipe / planning" rm={false} mb={true} winner="mb" />
-                <ComparisonRow label="Cave a vin / tarification verre" rm={false} mb={true} winner="mb" />
-                <ComparisonRow label="Mobile / PWA kiosk" rm="PWA + mode kiosk balance" mb="Non precise" winner="rm" />
+                <ComparisonRow label="Multi-restaurant" rm={true} mb="À venir (sans date)" winner="rm" />
+                <ComparisonRow label="Gestion d'équipe / planning" rm={false} mb={true} winner="mb" />
+                <ComparisonRow label="Cave à vin / tarification verre" rm={false} mb={true} winner="mb" />
+                <ComparisonRow label="Mobile / PWA kiosk" rm="PWA + mode kiosk balance" mb="Non précisé" winner="rm" />
               </tbody>
             </table>
           </div>
 
           <Callout type="info">
-            <strong>Lecture du tableau :</strong> Marge Brut gagne sur le prix immediat et sur des
-            fonctionnalites de pilotage RH/tresorerie que RestauMargin ne propose pas. RestauMargin gagne
-            sur la profondeur operationnelle (stock, mercuriale, menu engineering, HACCP, multi-restaurant)
-            et sur la lisibilite d'un tarif payant deja fixe.
+            <strong>Lecture du tableau :</strong> Marge Brut gagne sur le prix immédiat et sur des
+            fonctionnalités de pilotage RH/trésorerie que RestauMargin ne propose pas. RestauMargin gagne
+            sur la profondeur opérationnelle (stock, mercuriale, menu engineering, HACCP, multi-restaurant)
+            et sur la lisibilité d'un tarif payant déjà fixe.
           </Callout>
         </section>
 
@@ -462,40 +462,40 @@ export default function AlternativeMargeBrut() {
 
           <div className="prose-content">
             <p>
-              Plutot qu'un verdict unique, voici trois profils types.
-              Identifiez celui qui ressemble le plus a votre situation.
+              Plutôt qu'un verdict unique, voici trois profils types.
+              Identifiez celui qui ressemble le plus à votre situation.
             </p>
           </div>
 
           <div className="grid gap-6 mt-8">
             <ScenarioCard
               badge="Profil 1"
-              title="Vous demarrez et votre priorite est de ne rien depenser"
+              title="Vous démarrez et votre priorité est de ne rien dépenser"
               recommendation="Marge Brut"
               recoColor="blue"
-              desc="Vous ouvrez ou reprenez un etablissement et le budget logiciel n'est pas la priorite du moment. Marge Brut vous donne acces gratuitement a du pilotage financier serieux (food cost, factures, tresorerie) sans aucun engagement."
+              desc="Vous ouvrez ou reprenez un établissement et le budget logiciel n'est pas la priorité du moment. Marge Brut vous donne accès gratuitement à du pilotage financier sérieux (food cost, factures, trésorerie) sans aucun engagement."
             />
             <ScenarioCard
               badge="Profil 2"
               title="Vous gérez une carte complète avec fournisseurs et stock actifs"
               recommendation="RestauMargin (Pro)"
               recoColor="emerald"
-              desc="Votre carte depasse 15-20 plats, vous devez suivre un stock et etre alerte des qu'un fournisseur augmente ses prix, et vous voulez classer vos plats par rentabilite. Aucune de ces trois briques n'est publiee chez Marge Brut a ce jour."
+              desc="Votre carte dépasse 15-20 plats, vous devez suivre un stock et être alerté dès qu'un fournisseur augmente ses prix, et vous voulez classer vos plats par rentabilité. Aucune de ces trois briques n'est publiée chez Marge Brut à ce jour."
             />
             <ScenarioCard
               badge="Profil 3"
               title="Vous êtes soumis à des contrôles hygiène réguliers ou gérez plusieurs adresses"
               recommendation="RestauMargin (Pro/Business)"
               recoColor="purple"
-              desc="Le HACCP digital et le multi-restaurant sont deux briques structurantes chez RestauMargin, absentes ou encore en roadmap chez Marge Brut. Pour un groupe ou un etablissement soumis a des controles frequents, c'est un critere de choix direct."
+              desc="Le HACCP digital et le multi-restaurant sont deux briques structurantes chez RestauMargin, absentes ou encore en roadmap chez Marge Brut. Pour un groupe ou un établissement soumis à des contrôles fréquents, c'est un critère de choix direct."
             />
           </div>
 
           <Callout type="info">
-            <strong>Notre engagement :</strong> Marge Brut est un outil recent, bien construit sur son
-            perimetre, et sa gratuite actuelle est un atout reel pour demarrer sans risque. Notre objectif
-            est que vous choisissiez l'outil adapte a votre besoin reel, pas que vous payiez RestauMargin
-            par defaut.
+            <strong>Notre engagement :</strong> Marge Brut est un outil récent, bien construit sur son
+            périmètre, et sa gratuité actuelle est un atout réel pour démarrer sans risque. Notre objectif
+            est que vous choisissiez l'outil adapté à votre besoin réel, pas que vous payiez RestauMargin
+            par défaut.
           </Callout>
         </section>
 
@@ -507,33 +507,33 @@ export default function AlternativeMargeBrut() {
 
           <div className="prose-content">
             <p>
-              Marge Brut communique clairement sur sa gratuite : l'outil est "en developpement actif" et
-              gratuit pour tous les restaurateurs, sans carte bancaire, sans limite de temps annoncee. Ce
-              n'est pas une periode d'essai deguisee — c'est un choix de positionnement assume par
-              l'editeur, courant chez les jeunes SaaS qui construisent leur base d'utilisateurs avant
-              d'introduire un modele payant.
+              Marge Brut communique clairement sur sa gratuité : l'outil est "en développement actif" et
+              gratuit pour tous les restaurateurs, sans carte bancaire, sans limite de temps annoncée. Ce
+              n'est pas une période d'essai déguisée — c'est un choix de positionnement assumé par
+              l'éditeur, courant chez les jeunes SaaS qui construisent leur base d'utilisateurs avant
+              d'introduire un modèle payant.
             </p>
             <p>
-              Pour un restaurateur, ce choix presente deux visages. D'un cote, c'est une opportunite reelle
-              de piloter son food cost et sa tresorerie sans depenser un centime pendant cette phase. De
-              l'autre, cela implique une incertitude structurelle : aucune date de bascule vers un modele
-              payant n'est publiee, ce qui signifie que les conditions (prix, fonctionnalites conservees ou
-              non) pourraient evoluer sans preavis long une fois le produit sorti de sa phase de
-              developpement.
+              Pour un restaurateur, ce choix présente deux visages. D'un côté, c'est une opportunité réelle
+              de piloter son food cost et sa trésorerie sans dépenser un centime pendant cette phase. De
+              l'autre, cela implique une incertitude structurelle : aucune date de bascule vers un modèle
+              payant n'est publiée, ce qui signifie que les conditions (prix, fonctionnalités conservées ou
+              non) pourraient évoluer sans préavis long une fois le produit sorti de sa phase de
+              développement.
             </p>
             <p>
-              Ce n'est pas une critique de Marge Brut — c'est une realite a integrer dans votre decision.
-              Si vous batissez votre gestion quotidienne exclusivement autour d'un outil gratuit sans
-              modele economique stabilise, prevoyez un plan B (export de vos donnees, alternative connue)
-              au cas ou les conditions changeraient. RestauMargin, a l'inverse, fonctionne sur un abonnement
-              payant au tarif public : 29€/mois, connu a l'avance.
+              Ce n'est pas une critique de Marge Brut — c'est une réalité à intégrer dans votre décision.
+              Si vous bâtissez votre gestion quotidienne exclusivement autour d'un outil gratuit sans
+              modèle économique stabilisé, prévoyez un plan B (export de vos données, alternative connue)
+              au cas où les conditions changeraient. RestauMargin, à l'inverse, fonctionne sur un abonnement
+              payant au tarif public : 29€/mois, connu à l'avance.
             </p>
           </div>
 
           <Callout type="warning">
-            <strong>A verifier avant de vous engager sur un outil gratuit :</strong> la possibilite
-            d'exporter vos fiches techniques et vos donnees fournisseurs a tout moment, pour ne jamais
-            etre bloque si l'editeur change son modele economique.
+            <strong>À vérifier avant de vous engager sur un outil gratuit :</strong> la possibilité
+            d'exporter vos fiches techniques et vos données fournisseurs à tout moment, pour ne jamais
+            être bloqué si l'éditeur change son modèle économique.
           </Callout>
         </section>
 
@@ -545,9 +545,9 @@ export default function AlternativeMargeBrut() {
 
           <div className="prose-content">
             <p>
-              A date du 10 septembre 2026, la comparaison de prix est simple : Marge Brut est gratuit,
-              RestauMargin est payant des le premier jour (apres 7 jours d'essai). La question pertinente
-              n'est donc pas seulement le prix affiche aujourd'hui, mais le perimetre fonctionnel couvert
+              À date du 10 septembre 2026, la comparaison de prix est simple : Marge Brut est gratuit,
+              RestauMargin est payant dès le premier jour (après 7 jours d'essai). La question pertinente
+              n'est donc pas seulement le prix affiché aujourd'hui, mais le périmètre fonctionnel couvert
               pour ce prix.
             </p>
           </div>
@@ -587,19 +587,19 @@ export default function AlternativeMargeBrut() {
 
           <div className="prose-content mt-8">
             <p>
-              Sur le seul critere du prix affiche aujourd'hui, Marge Brut est imbattable : 0€ contre 348€
-              par an chez RestauMargin Pro. Mais cette comparaison ne dit rien du perimetre : le stock, le
-              menu engineering et le HACCP digital, inclus chez RestauMargin, n'ont pas d'equivalent public
-              chez Marge Brut a ce jour. Si votre besoin se limite au food cost, aux factures et a la
-              tresorerie, Marge Brut couvre deja l'essentiel gratuitement.
+              Sur le seul critère du prix affiché aujourd'hui, Marge Brut est imbattable : 0€ contre 348€
+              par an chez RestauMargin Pro. Mais cette comparaison ne dit rien du périmètre : le stock, le
+              menu engineering et le HACCP digital, inclus chez RestauMargin, n'ont pas d'équivalent public
+              chez Marge Brut à ce jour. Si votre besoin se limite au food cost, aux factures et à la
+              trésorerie, Marge Brut couvre déjà l'essentiel gratuitement.
             </p>
           </div>
 
           <Callout type="info">
-            <strong>Le saviez-vous ?</strong> Marge Brut cite lui-meme une marge nette mediane de 3% en
-            restauration en 2024, et 8 714 defaillances sectorielles la meme annee (+10% sur un an). Dans
-            ce contexte, chaque euro de food cost non suivi pese lourd — quel que soit l'outil choisi pour
-            le suivre, l'important est de le faire des le premier jour.
+            <strong>Le saviez-vous ?</strong> Marge Brut cite lui-même une marge nette médiane de 3% en
+            restauration en 2024, et 8 714 défaillances sectorielles la même année (+10% sur un an). Dans
+            ce contexte, chaque euro de food cost non suivi pèse lourd — quel que soit l'outil choisi pour
+            le suivre, l'important est de le faire dès le premier jour.
           </Callout>
         </section>
 

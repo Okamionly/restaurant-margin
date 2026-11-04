@@ -191,12 +191,12 @@ export function buildOnboardingDay7Email(data: NurtureEmailData): string {
   void dashboardUrl;
 
   const content = `
-${header('RestauMargin', 'Vous êtes à mi-essai')}
+${header('RestauMargin', 'Votre essai se termine')}
 
 <tr><td style="padding:30px 25px 16px;">
   <p style="font-size:19px;color:${DARK};margin:0;font-weight:700;">${esc(data.userName)},</p>
   <p style="font-size:15px;color:${MUTED};margin:14px 0 0;line-height:1.7;">
-    Il vous reste <strong style="color:${DARK};">7 jours</strong> sur votre essai gratuit.
+    Votre essai gratuit de 7 jours arrive à son terme.
   </p>
 </td></tr>
 

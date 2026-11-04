@@ -115,12 +115,9 @@ const FAQ_ITEMS: FAQItem[] = [
 const TESTIMONIALS: Testimonial[] = [];
 
 // Simulated usage data (would come from API in production)
-const USAGE_STATS: UsageStat[] = [
-  { label: 'Appels IA', used: 43, max: 500, color: 'bg-teal-500' },
-  { label: 'Ingredients', used: 209, max: null, unit: 'illimite', color: 'bg-emerald-500' },
-  { label: 'Recettes', used: 87, max: null, unit: 'illimite', color: 'bg-indigo-500' },
-  { label: 'Stockage', used: 12, max: 1024, unit: 'Mo', color: 'bg-purple-500' },
-];
+// Consommation simulee retiree (2026-11-04) : des chiffres inventes (43 appels IA,
+// 12 Mo) affiches comme « en temps reel ». A brancher sur l'API le jour ou elle existe.
+const USAGE_STATS: UsageStat[] = [];
 
 // ── Component ────────────────────────────────────────────────────────────────
 export default function Subscription() {
@@ -283,7 +280,7 @@ export default function Subscription() {
             </div>
 
             {/* Usage stats bars — only for paying subscribers */}
-            {isSubscribed && (
+            {isSubscribed && USAGE_STATS.length > 0 && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
               {USAGE_STATS.map((stat) => {
                 const percentage = stat.max ? Math.min((stat.used / stat.max) * 100, 100) : 5;
@@ -444,6 +441,7 @@ export default function Subscription() {
         {/* ================================================================ */}
         {/* 3. USAGE STATS (detailed section)                                */}
         {/* ================================================================ */}
+        {USAGE_STATS.length > 0 && (
         <div className="mt-20">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-bold mb-3">
@@ -518,6 +516,7 @@ export default function Subscription() {
             })}
           </div>
         </div>
+        )}
 
         {/* ================================================================ */}
         {/* 4. ROI CALCULATOR                                                */}

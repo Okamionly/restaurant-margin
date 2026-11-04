@@ -54,10 +54,10 @@ export default function MesParrainages() {
 
   function shareViaEmail() {
     if (!data) return;
-    const subject = encodeURIComponent('Découvre RestauMargin avec -20% !');
+    const subject = encodeURIComponent('Découvre RestauMargin');
     const body = encodeURIComponent(
       `Salut,\n\nJe pense que RestauMargin peut vraiment t'aider à gérer tes marges restaurant. ` +
-      `Voici mon lien de parrainage, tu auras 20% de réduction sur ton premier mois :\n\n${data.shareUrl}\n\nÀ bientôt !`
+      `Voici mon lien de parrainage, l'essai est gratuit 7 jours, sans carte bancaire :\n\n${data.shareUrl}\n\nÀ bientôt !`
     );
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   }
@@ -66,7 +66,7 @@ export default function MesParrainages() {
     if (!data) return;
     const text = encodeURIComponent(
       `Salut ! J'utilise RestauMargin pour gérer mes marges restaurant et je pense que ça peut t'intéresser. ` +
-      `Voici mon lien avec -20% sur ton premier mois : ${data.shareUrl}`
+      `Voici mon lien : essai gratuit 7 jours, sans carte bancaire. ${data.shareUrl}`
     );
     window.open(`https://wa.me/?text=${text}`, '_blank');
   }
@@ -99,7 +99,7 @@ export default function MesParrainages() {
           Parrainez vos pairs, gagnez ensemble
         </h1>
         <p className="text-mono-500 dark:text-mono-700">
-          Pour chaque restaurateur que vous parrainez, vous gagnez <strong className="text-teal-600">1 mois d'abonnement offert</strong> et il reçoit <strong className="text-teal-600">20% de réduction</strong> sur son premier mois.
+          Pour chaque restaurateur que vous parrainez, vous gagnez <strong className="text-teal-600">1 mois d'abonnement offert</strong> et il profite de l'essai gratuit de 7 jours.
         </p>
       </div>
 
@@ -195,7 +195,7 @@ export default function MesParrainages() {
         <h3 className="text-xl font-bold text-mono-100 dark:text-white mb-6">Comment ça marche ?</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <Step number={1} title="Partagez votre lien" text="Envoyez votre code ou lien par email, WhatsApp ou SMS à vos pairs restaurateurs." />
-          <Step number={2} title="Ils s'inscrivent" text="Vos filleuls reçoivent automatiquement 20% de réduction sur leur premier mois." />
+          <Step number={2} title="Ils s'inscrivent" text="Vos filleuls profitent de l'essai gratuit de 7 jours, sans carte bancaire." />
           <Step number={3} title="Vous gagnez" text="Quand ils s'abonnent, vous recevez 1 mois gratuit." />
         </div>
       </div>

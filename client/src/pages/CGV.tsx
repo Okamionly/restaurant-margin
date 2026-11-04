@@ -87,9 +87,9 @@ export default function CGV() {
             </p>
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="bg-mono-975 dark:bg-[#171717] rounded-xl p-4 border border-mono-900 dark:border-mono-300">
-                <p className="text-sm text-mono-500 mb-1">Abonnement SaaS</p>
-                <p className="text-2xl font-bold text-mono-100 dark:text-white">29 EUR <span className="text-sm font-normal text-mono-500">/ mois HT</span></p>
-                <p className="text-sm text-mono-500 mt-2">Facturation mensuelle, prélèvement automatique par carte bancaire via prestataire de paiement sécurisé.</p>
+                <p className="text-sm text-mono-500 mb-1">Abonnement SaaS (offre unique)</p>
+                <p className="text-2xl font-bold text-mono-100 dark:text-white">19 EUR <span className="text-sm font-normal text-mono-500">/ mois HT</span></p>
+                <p className="text-sm text-mono-500 mt-2">Une seule offre, donnant accès à l'ensemble des fonctionnalités des Services, sans engagement. Facturation mensuelle, prélèvement automatique par carte bancaire via prestataire de paiement sécurisé.</p>
               </div>
               <div className="bg-mono-975 dark:bg-[#171717] rounded-xl p-4 border border-mono-900 dark:border-mono-300">
                 <p className="text-sm text-mono-500 mb-1">Kit Hardware</p>

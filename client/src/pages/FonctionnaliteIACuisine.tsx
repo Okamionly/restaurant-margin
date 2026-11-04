@@ -82,7 +82,7 @@ const faqItems = [
   {
     question: "Y a-t-il une limite au nombre de requêtes IA ?",
     answer:
-      "Le plan Pro (29 €/mois) inclut un usage IA généreux couvrant largement le quotidien d'un restaurant indépendant : structuration de fiches, suggestions, analyses de marge à volonté pour une exploitation normale. Le plan Business (79 €/mois) lève les plafonds pour les groupes multi-établissements et les usages intensifs. Aucune surfacturation surprise : si vous approchez une limite, vous êtes prévenu en amont. Pour la très grande majorité des restaurants, vous n'atteindrez jamais le plafond.",
+      "L'abonnement RestauMargin (19 €/mois, offre unique) inclut 500 requêtes IA par mois : structuration de fiches, suggestions, analyses de marge. Le compteur repart à zéro le 1er de chaque mois. Aucune surfacturation : si vous atteignez la limite, l'IA est simplement suspendue jusqu'au mois suivant, et vous pouvez écrire à contact@restaumargin.fr pour en demander davantage.",
   },
 ];
 
@@ -632,7 +632,7 @@ export default function FonctionnaliteIACuisine() {
             <Link to="/pricing" className="rounded-2xl border p-6 transition-all hover:shadow-sm group" style={{ borderColor: BORDER }}>
               <Tag className="w-8 h-8 mb-3" style={{ color: ACCENT }} />
               <h3 className="font-bold mb-2 tracking-tight transition-colors group-hover:opacity-70" style={{ color: TEXT }}>Tarifs RestauMargin</h3>
-              <p className="text-sm" style={{ color: TEXT_MUTED }}>Plans Pro et Business, l'IA incluse dès le premier euro. Essai gratuit 7 jours.</p>
+              <p className="text-sm" style={{ color: TEXT_MUTED }}>Une seule offre à 19 €/mois, IA incluse. Essai gratuit 7 jours.</p>
             </Link>
           </div>
         </div>

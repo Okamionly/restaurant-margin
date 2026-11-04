@@ -27,7 +27,7 @@ const ROUTES = [
   {
     path: '/pricing',
     title: 'Tarifs — RestauMargin',
-    description: 'Plans Pro (29 EUR/mois) et Business (79 EUR/mois). Calculez vos marges restaurant, food cost et fiches techniques. Essai gratuit 7 jours sans engagement.',
+    description: 'Une seule offre : RestauMargin à 19 € par mois, toutes les fonctionnalités, sans engagement. Essai gratuit 7 jours sans carte bancaire.',
   },
   {
     path: '/a-propos',
@@ -37,7 +37,7 @@ const ROUTES = [
   {
     path: '/launch',
     title: 'RestauMargin : le logiciel de marge restaurant tout-en-un (lancement 2026)',
-    description: "Calculez vos marges, votre food cost et vos fiches techniques en quelques minutes. IA cuisine, OCR factures, mercuriale et menu engineering. Essai gratuit 7 jours, 29 EUR/mois ensuite.",
+    description: "Calculez vos marges, votre food cost et vos fiches techniques en quelques minutes. IA cuisine, OCR factures, mercuriale et menu engineering. Essai gratuit 7 jours, 19 EUR/mois ensuite.",
   },
   {
     path: '/guide-marge/pizzeria',
@@ -848,27 +848,27 @@ const ROUTES = [
   // === Pages transactionnelles SEO (Wave 3+5+6+7) ===
   {
     path: '/alternative-zenchef',
-    title: 'Alternative Zenchef : RestauMargin (29€/mois) | Comparatif 2026',
-    description: 'Vous cherchez une alternative à Zenchef plus abordable et plus complète ? RestauMargin offre gestion des marges + food cost + IA dès 29€/mois. Comparatif complet.',
+    title: 'Alternative Zenchef : RestauMargin (19€/mois) | Comparatif 2026',
+    description: 'Vous cherchez une alternative à Zenchef plus abordable et plus complète ? RestauMargin offre gestion des marges + food cost + IA pour 19€/mois. Comparatif complet.',
   },
   {
     path: '/alternative-innovorder',
-    title: 'Alternative Innovorder | RestauMargin (29€/mois) | Comparatif 2026',
-    description: 'Innovorder = POS + click and collect. RestauMargin = gestion marge + food cost (29€/mois). Comparatif honnête 2026.',
+    title: 'Alternative Innovorder | RestauMargin (19€/mois) | Comparatif 2026',
+    description: 'Innovorder = POS + click and collect. RestauMargin = gestion marge + food cost (19€/mois). Comparatif honnête 2026.',
   },
   {
     path: '/alternative-hubrise',
     title: 'Alternative Hubrise | RestauMargin food cost | Comparatif 2026',
-    description: 'Hubrise = hub intégrations livraison. RestauMargin = gestion food cost + marges (29€/mois). Comparaison et complémentarité 2026.',
+    description: 'Hubrise = hub intégrations livraison. RestauMargin = gestion food cost + marges (19€/mois). Comparaison et complémentarité 2026.',
   },
   {
     path: '/alternative-lightspeed',
     title: 'Alternative Lightspeed Restaurant | RestauMargin food cost | 2026',
-    description: 'Lightspeed = POS premium (89-200€/mois). RestauMargin = gestion marge + food cost (29€/mois). Comparatif honnête 2026.',
+    description: 'Lightspeed = POS premium (89-200€/mois). RestauMargin = gestion marge + food cost (19€/mois). Comparatif honnête 2026.',
   },
   {
     path: '/alternative-laddition',
-    title: "Alternative L'Addition | RestauMargin food cost 29€/mois | 2026",
+    title: "Alternative L'Addition | RestauMargin food cost 19€/mois | 2026",
     description: "L'Addition = POS français leader. RestauMargin = gestion food cost + marges. Comparatif honnête 2026.",
   },
   {
@@ -879,16 +879,16 @@ const ROUTES = [
   {
     path: '/alternative-cos-kitchen',
     title: 'Alternative COS Kitchen : RestauMargin, la gestion complète | 2026',
-    description: 'COS Kitchen calcule votre food cost. RestauMargin ajoute stock, mercuriale avec alertes, IA et multi-restaurant dès 29€/mois. Comparatif détaillé.',
+    description: 'COS Kitchen calcule votre food cost. RestauMargin ajoute stock, mercuriale avec alertes, IA et multi-restaurant pour 19€/mois. Comparatif détaillé.',
   },
   {
     path: '/alternative-marge-brut',
     title: 'Alternative Marge Brut : RestauMargin, la gestion complète | 2026',
-    description: 'Marge Brut est gratuit en phase de développement. RestauMargin ajoute mercuriale, stock, menu engineering et HACCP dès 29€/mois. Comparatif détaillé.',
+    description: 'Marge Brut est gratuit en phase de développement. RestauMargin ajoute mercuriale, stock, menu engineering et HACCP pour 19€/mois. Comparatif détaillé.',
   },
   {
     path: '/logiciel-marge-restaurant',
-    title: 'Logiciel de marge restaurant : RestauMargin (29€/mois)',
+    title: 'Logiciel de marge restaurant : RestauMargin (19€/mois)',
     description: 'Logiciel pour calculer la marge de votre restaurant. Food cost, fiches techniques, mercuriale, IA. Essai gratuit 7 jours.',
   },
   {
@@ -1242,7 +1242,7 @@ function run() {
         </ul>`,
       landing: `
         <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Pourquoi RestauMargin ?</h2>
-        <p>RestauMargin réunit en une seule application tout ce qui était auparavant éparpillé sur plusieurs outils : calcul automatique du food cost et des marges, fiches techniques précises avec grammages et coûts, mercuriale fournisseurs intelligente, alertes prix matières premières, station de pesée Bluetooth, commandes fournisseurs optimisées par IA et tableau de bord temps réel. Plan Pro à 29 €/mois, essai gratuit 7 jours.</p>`,
+        <p>RestauMargin réunit en une seule application tout ce qui était auparavant éparpillé sur plusieurs outils : calcul automatique du food cost et des marges, fiches techniques précises avec grammages et coûts, mercuriale fournisseurs intelligente, alertes prix matières premières, station de pesée Bluetooth, commandes fournisseurs optimisées par IA et tableau de bord temps réel. Une seule offre à 19 €/mois, essai gratuit 7 jours.</p>`,
     };
 
     const snippetText = snippetTexts[category] || snippetTexts.landing;
@@ -1314,7 +1314,7 @@ function run() {
         ['/blog/reduire-food-cost', 'Réduire le food cost : 10 stratégies'],
         ['/comparatif-logiciels-restaurant', 'Comparatif 12 logiciels restaurant'],
         ['/glossaire-restauration', 'Glossaire restauration 60+ termes'],
-        ['/pricing', 'Tarifs : Pro 29€/mois, Business 79€/mois'],
+        ['/pricing', 'Tarif : 19 €/mois, offre unique'],
       ],
     };
 

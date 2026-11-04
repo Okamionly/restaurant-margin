@@ -20,7 +20,7 @@ const faqItems = [
   },
   {
     question: "Combien coûte RestauMargin par rapport à TheFork Manager ?",
-    answer: "RestauMargin commence à 29 EUR/mois (formule Pro). TheFork Manager propose plusieurs formules : Basic autour de 39 EUR/mois + commission de 2 EUR par couvert réservé, Premium autour de 69-89 EUR/mois + commission. Sur un an, RestauMargin coûte 348 EUR contre 468 à 1 068 EUR pour TheFork (hors commissions par couvert). La différence de positionnement explique l'écart : TheFork est un outil de visibilité et d'acquisition, RestauMargin un outil de pilotage des marges.",
+    answer: "RestauMargin coûte 19 EUR/mois (offre unique, toutes les fonctionnalités). TheFork Manager propose plusieurs formules : Basic autour de 39 EUR/mois + commission de 2 EUR par couvert réservé, Premium autour de 69-89 EUR/mois + commission. Sur un an, RestauMargin coûte 228 EUR contre 468 à 1 068 EUR pour TheFork (hors commissions par couvert). La différence de positionnement explique l'écart : TheFork est un outil de visibilité et d'acquisition, RestauMargin un outil de pilotage des marges.",
   },
   {
     question: "TheFork Manager gère-t-il le food cost et les fiches techniques ?",
@@ -44,11 +44,11 @@ const faqItems = [
   },
   {
     question: "Quelle alternative à TheFork Manager est la plus adaptée à un restaurant indépendant ?",
-    answer: "Pour un restaurant indépendant, la vérité est qu'il n'existe pas vraiment d'alternative à TheFork pour la partie réservation : leur réseau de 1.7 million d'utilisateurs en France constitue une vraie barrière à l'entrée. Mais pour la partie gestion opérationnelle, qui n'est pas le coeur de TheFork, RestauMargin est un excellent choix (29 EUR/mois, sans commission par couvert, gestion complète des marges).",
+    answer: "Pour un restaurant indépendant, la vérité est qu'il n'existe pas vraiment d'alternative à TheFork pour la partie réservation : leur réseau de 1.7 million d'utilisateurs en France constitue une vraie barrière à l'entrée. Mais pour la partie gestion opérationnelle, qui n'est pas le coeur de TheFork, RestauMargin est un excellent choix (19 EUR/mois, sans commission par couvert, gestion complète des marges).",
   },
   {
     question: "Comment RestauMargin se compare-t-il à TheFork sur la qualité du support ?",
-    answer: "Les deux outils proposent un support en français par email et chat. RestauMargin inclut le support dans toutes les formules, y compris la formule Pro à 29 EUR, avec un temps de réponse moyen inférieur à 4 heures en jours ouvrés. TheFork dispose d'un service client structuré (héritage du groupe TripAdvisor) avec accompagnement commercial dédié pour les formules supérieures. Les deux équipes sont réactives sur leur scope respectif.",
+    answer: "Les deux outils proposent un support en français par email et chat. RestauMargin inclut le support par e-mail dans son offre unique à 19 EUR/mois. TheFork dispose d'un service client structuré (héritage du groupe TripAdvisor) avec accompagnement commercial dédié pour les formules supérieures. Les deux équipes sont réactives sur leur scope respectif.",
   },
   {
     question: "Existe-t-il une intégration directe entre RestauMargin et TheFork Manager ?",
@@ -75,7 +75,7 @@ export default function AlternativeTheFork() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Alternative à TheFork Manager : RestauMargin pour gérer vos marges',
-            description: "Comparatif honnête entre RestauMargin (29 EUR/mois, gestion des marges + IA) et TheFork Manager (39-89 EUR/mois + commission/couvert, réservations + marketing). Tableau 18 critères, pricing 1 an, cas d'usage, FAQ.",
+            description: "Comparatif honnête entre RestauMargin (19 EUR/mois, gestion des marges + IA) et TheFork Manager (39-89 EUR/mois + commission/couvert, réservations + marketing). Tableau 18 critères, pricing 1 an, cas d'usage, FAQ.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -104,11 +104,11 @@ export default function AlternativeTheFork() {
                   operatingSystem: 'Web, iOS, Android (PWA)',
                   offers: {
                     '@type': 'Offer',
-                    price: '29',
+                    price: '19',
                     priceCurrency: 'EUR',
                     priceSpecification: {
                       '@type': 'UnitPriceSpecification',
-                      price: '29',
+                      price: '19',
                       priceCurrency: 'EUR',
                       unitText: 'MONTH',
                     },
@@ -187,7 +187,7 @@ export default function AlternativeTheFork() {
               <strong className="text-white">TheFork Manager</strong> est un excellent outil pour <strong>la réservation en ligne, le remplissage de salle et le marketing client</strong>. Tarif : 39 à 89 EUR/mois + commission 2 EUR par couvert. Il ne gère ni food cost, ni fiches techniques, ni marges.
             </p>
             <p className="leading-relaxed">
-              <strong className="text-white">RestauMargin</strong> est l'outil complémentaire pour <strong>la gestion opérationnelle : food cost, marges, fiches techniques, mercuriale, IA</strong>, à 29 EUR/mois sans commission par couvert. Pas de module réservation.
+              <strong className="text-white">RestauMargin</strong> est l'outil complémentaire pour <strong>la gestion opérationnelle : food cost, marges, fiches techniques, mercuriale, IA</strong>, à 19 EUR/mois sans commission par couvert. Pas de module réservation.
             </p>
             <p className="leading-relaxed pt-2 border-t border-white/20">
               <strong className="text-white">Verdict :</strong> les deux outils ne sont pas concurrents, ils sont complémentaires. TheFork couvre le front (réservations), RestauMargin le back (pilotage des marges).
@@ -371,7 +371,7 @@ export default function AlternativeTheFork() {
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>19 actions IA pour suggérer recettes, optimiser marges, détecter anomalies</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Multi-restaurant natif avec vue consolidée du food cost groupe</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>PWA mobile + mode kiosk + scan de factures par OCR</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>29 EUR/mois, essai 7 jours sans carte bancaire, aucune commission</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>19 EUR/mois, essai 7 jours sans carte bancaire, aucune commission</span></li>
               </ul>
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
@@ -434,8 +434,8 @@ export default function AlternativeTheFork() {
                 </tr>
               </thead>
               <tbody className="bg-white">
-                <ComparisonRow label="Prix mensuel (entry)" rm="29 EUR/mois" zc="39 EUR/mois" winner="rm" />
-                <ComparisonRow label="Prix mensuel (top)" rm="79 EUR/mois (Business)" zc="89 EUR/mois (Premium)" winner="rm" />
+                <ComparisonRow label="Prix mensuel (entry)" rm="19 EUR/mois" zc="39 EUR/mois" winner="rm" />
+                <ComparisonRow label="Prix mensuel (top)" rm="19 EUR/mois (offre unique)" zc="89 EUR/mois (Premium)" winner="rm" />
                 <ComparisonRow label="Commission par couvert" rm="0 EUR" zc="2-6 EUR HT/couvert" winner="rm" />
                 <ComparisonRow label="Essai gratuit" rm="7 jours, sans CB" zc="Démo commerciale" winner="rm" />
                 <ComparisonRow label="Calcul food cost" rm={true} zc={false} winner="rm" />
@@ -495,14 +495,14 @@ export default function AlternativeTheFork() {
               title="Vous avez TheFork mais vous ne maîtrisez pas vos marges"
               recommendation="TheFork + RestauMargin en complément"
               recoColor="emerald"
-              desc="Vous générez des couverts via TheFork, mais vous ne savez pas exactement combien rapporte chaque plat, comment vos coûts évoluent, où sont vos fuites de marge. Ajoutez RestauMargin (29 EUR/mois) en parallèle : aucune intégration à faire, les deux outils répondent à des besoins différents."
+              desc="Vous générez des couverts via TheFork, mais vous ne savez pas exactement combien rapporte chaque plat, comment vos coûts évoluent, où sont vos fuites de marge. Ajoutez RestauMargin (19 EUR/mois) en parallèle : aucune intégration à faire, les deux outils répondent à des besoins différents."
             />
             <ScenarioCard
               badge="Profil 3"
               title="Vous êtes un groupe de plusieurs restaurants"
-              recommendation="RestauMargin Business + TheFork Premium"
+              recommendation="RestauMargin + TheFork Premium"
               recoColor="purple"
-              desc="Vous avez besoin d'une vue consolidée des marges et d'un benchmarking entre établissements (RestauMargin Business à 79 EUR/mois). Vous avez aussi besoin de centraliser la gestion de salle et d'optimiser le remplissage sur tous vos sites (TheFork Premium). Cette combinaison totalise environ 170 EUR/mois pour un système complet acquisition + opération."
+              desc="Vous avez besoin d'une vue consolidée des marges et d'un benchmarking entre établissements (RestauMargin à 19 EUR/mois, multi-établissements inclus). Vous avez aussi besoin de centraliser la gestion de salle et d'optimiser le remplissage sur tous vos sites (TheFork Premium). Cette combinaison totalise environ 110 EUR/mois pour un système complet acquisition + opération."
             />
           </div>
 
@@ -542,16 +542,10 @@ export default function AlternativeTheFork() {
               </thead>
               <tbody className="text-mono-350">
                 <tr className="bg-emerald-50 border-t border-mono-900">
-                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin Pro</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">348 EUR</td>
+                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin (offre unique)</td>
+                  <td className="py-3 px-4 text-right font-bold text-emerald-900">228 EUR</td>
                   <td className="py-3 px-4 text-right text-emerald-700">0 EUR</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">348 EUR</td>
-                </tr>
-                <tr className="bg-emerald-50/40 border-t border-mono-900">
-                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin Business</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">948 EUR</td>
-                  <td className="py-3 px-4 text-right text-emerald-700">0 EUR</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">948 EUR</td>
+                  <td className="py-3 px-4 text-right font-bold text-emerald-900">228 EUR</td>
                 </tr>
                 <tr className="bg-white border-t border-mono-900">
                   <td className="py-3 px-4 font-bold text-mono-100">TheFork Basic (300 couv/mois)</td>
@@ -588,7 +582,7 @@ export default function AlternativeTheFork() {
               En revanche, le tableau illustre <strong>pourquoi il est crucial d'optimiser ses
               marges quand on dépend fortement de TheFork</strong>. Plus la commission ronge votre
               marge brute, plus chaque point gagné sur le food cost compte. C'est exactement le
-              rôle de RestauMargin : pour 29 EUR/mois (soit 0,1 % d'un CA de 336 000 EUR), chaque
+              rôle de RestauMargin : pour 19 EUR/mois (soit moins de 0,1 % d'un CA de 336 000 EUR), chaque
               point de marge brute regagné représente environ 3 360 EUR par an dans ce scénario
               (6 720 EUR pour 2 points).
             </p>
@@ -632,7 +626,7 @@ export default function AlternativeTheFork() {
               pour reprendre la main sur vos marges. Sans carte bancaire, sans engagement.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> à partir du 8e jour si vous décidez de continuer.
+              <strong>19 EUR/mois</strong> à partir du 8e jour si vous décidez de continuer.
               Annulation en un clic. Aucune commission par couvert.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -672,7 +666,7 @@ export default function AlternativeTheFork() {
             </Link>
             <Link to="/pricing" className="bg-mono-1000 border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Tarifs RestauMargin</h3>
-              <p className="text-xs text-mono-500">Formules Pro et Business, comparaison détaillée des fonctionnalités.</p>
+              <p className="text-xs text-mono-500">Une seule offre à 19 €/mois, toutes les fonctionnalités.</p>
             </Link>
           </div>
         </section>

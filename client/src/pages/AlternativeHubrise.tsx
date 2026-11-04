@@ -42,7 +42,7 @@ const faqItems = [
   {
     question: "Quel est le prix de Hubrise comparé à RestauMargin ?",
     answer:
-      "Hubrise se positionne entre 50 EUR et 200 EUR par mois selon le nombre d'intégrations actives et le volume de commandes. RestauMargin est à 29 EUR par mois avec accès complet à la gestion de marge, fiches techniques, scanner de factures, menu engineering et IA. L'investissement n'a pas le même objectif : Hubrise vous fait gagner du temps opérationnel, RestauMargin vous fait gagner de la marge.",
+      "Hubrise se positionne entre 50 EUR et 200 EUR par mois selon le nombre d'intégrations actives et le volume de commandes. RestauMargin est à 19 EUR par mois (offre unique) avec accès complet à la gestion de marge, fiches techniques, scanner de factures, menu engineering et IA. L'investissement n'a pas le même objectif : Hubrise vous fait gagner du temps opérationnel, RestauMargin vous fait gagner de la marge.",
   },
   {
     question: "Puis-je remplacer Hubrise par RestauMargin pour la livraison ?",
@@ -82,7 +82,7 @@ const faqItems = [
   {
     question: "Y a-t-il un engagement avec RestauMargin ?",
     answer:
-      "Aucun. RestauMargin est sans engagement, sans carte bancaire requise pour l'essai 7 jours, et vous pouvez résilier en un clic depuis votre espace abonnement. C'est une différence notable avec certains hubs d'intégration qui demandent souvent un engagement annuel ou des frais de setup. 29 EUR/mois flat, sans surprise.",
+      "Aucun. RestauMargin est sans engagement, sans carte bancaire requise pour l'essai 7 jours, et vous pouvez résilier en un clic depuis votre espace abonnement. C'est une différence notable avec certains hubs d'intégration qui demandent souvent un engagement annuel ou des frais de setup. 19 EUR/mois flat, sans surprise.",
   },
 ];
 
@@ -191,7 +191,7 @@ export default function AlternativeHubrise() {
               <span className="text-teal-200 font-bold flex-shrink-0">4.</span>
               <span>
                 <strong className="text-white">Prix</strong> : Hubrise 50 à 200 EUR/mois (selon intégrations).
-                RestauMargin 29 EUR/mois flat.
+                RestauMargin 19 EUR/mois flat.
               </span>
             </div>
           </div>
@@ -433,7 +433,7 @@ export default function AlternativeHubrise() {
 
           <div className="prose-content mt-8">
             <p className="text-[#404040] leading-relaxed">
-              Le tarif est volontairement simple : 29 EUR par mois flat, essai gratuit 7 jours sans carte bancaire,
+              Le tarif est volontairement simple : 19 EUR par mois flat, une seule offre, essai gratuit 7 jours sans carte bancaire,
               résiliation en 1 clic. Pas de paliers compliqués par volume de commandes, pas de surfacturation par
               intégration ajoutée. C'est le compromis que nous avons fait : un produit puissant, un tarif lisible.
             </p>
@@ -467,8 +467,8 @@ export default function AlternativeHubrise() {
               <tbody className="text-[#404040]">
                 {[
                   { critere: 'Catégorie outil', h: 'Hub d\'intégration', r: 'Pilote de marge' },
-                  { critere: 'Prix entrée de gamme', h: '50 EUR/mois', r: '29 EUR/mois' },
-                  { critere: 'Prix haut de gamme', h: '150-200 EUR/mois', r: '29 EUR/mois (flat)' },
+                  { critere: 'Prix entrée de gamme', h: '50 EUR/mois', r: '19 EUR/mois' },
+                  { critere: 'Prix haut de gamme', h: '150-200 EUR/mois', r: '19 EUR/mois (flat)' },
                   { critere: 'Engagement', h: 'Souvent annuel', r: 'Aucun, résiliable 1 clic' },
                   { critere: 'Essai gratuit', h: 'Démo commerciale', r: '7 jours sans CB' },
                   { critere: 'Temps mise en place', h: '1 à 4 semaines', r: '30 minutes' },
@@ -520,13 +520,13 @@ export default function AlternativeHubrise() {
             <UsecaseCard
               title="Bistrot 100 % sur place, 1 établissement"
               recommendation="RestauMargin seul"
-              detail="Pas de livraison, pas de takeaway via plateformes : Hubrise n'a pas d'usage. RestauMargin couvre l'intégralité de votre besoin : fiches techniques, food cost, scanner factures, menu engineering. 29 EUR/mois suffisent largement."
+              detail="Pas de livraison, pas de takeaway via plateformes : Hubrise n'a pas d'usage. RestauMargin couvre l'intégralité de votre besoin : fiches techniques, food cost, scanner factures, menu engineering. 19 EUR/mois suffisent largement."
               color="emerald"
             />
             <UsecaseCard
               title="Restaurant traditionnel multi-canaux (sur place + 2 plateformes livraison)"
               recommendation="RestauMargin + Hubrise (ou Deliverect)"
-              detail="L'addition tient la route : 29 + 80 EUR = environ 110 EUR/mois pour un setup complet. Hubrise gère la connectivité opérationnelle (menus synchros, commandes routées), RestauMargin gère la marge réelle ajustée des commissions plateformes. Combinaison gagnante."
+              detail="L'addition tient la route : 19 + 80 EUR = environ 100 EUR/mois pour un setup complet. Hubrise gère la connectivité opérationnelle (menus synchros, commandes routées), RestauMargin gère la marge réelle ajustée des commissions plateformes. Combinaison gagnante."
               color="teal"
             />
             <UsecaseCard
@@ -652,29 +652,29 @@ export default function AlternativeHubrise() {
             <PricingCard
               title="Bistrot mono-site sur place"
               hubrise="0 EUR (inutile)"
-              restaumargin="348 EUR/an (29 EUR/mois)"
-              total="348 EUR/an"
+              restaumargin="228 EUR/an (19 EUR/mois)"
+              total="228 EUR/an"
               note="RestauMargin seul suffit. Le ROI sur la marge dépasse de loin l'investissement."
             />
             <PricingCard
               title="Restaurant multi-canaux"
               hubrise="960 EUR/an (80 EUR/mois)"
-              restaumargin="348 EUR/an (29 EUR/mois)"
-              total="1 308 EUR/an"
+              restaumargin="228 EUR/an (19 EUR/mois)"
+              total="1 188 EUR/an"
               note="Stack équilibré. Le couple Hubrise + RestauMargin couvre les deux besoins de ce profil."
             />
             <PricingCard
               title="Dark kitchen 3-5 marques"
               hubrise="1 800 EUR/an (150 EUR/mois)"
-              restaumargin="348 EUR/an (29 EUR/mois)"
-              total="2 148 EUR/an"
+              restaumargin="228 EUR/an (19 EUR/mois)"
+              total="2 028 EUR/an"
               note="Indispensable pour piloter le complexe. Le ROI vient du gain de temps + identification marques perdantes."
             />
             <PricingCard
               title="Chaîne des établissements"
               hubrise="3 000+ EUR/an (250 EUR/mois)"
-              restaumargin="588 EUR/an (49 EUR/mois business)"
-              total="3 588+ EUR/an"
+              restaumargin="228 EUR/an (19 EUR/mois, multi-sites inclus)"
+              total="3 228+ EUR/an"
               note="Stack mature. Ajoutez un outil BI (Metabase gratuit) pour les rapports consolidés multi-sites."
             />
           </div>
@@ -711,7 +711,7 @@ export default function AlternativeHubrise() {
               comment chaque plat de votre carte performe, par canal de vente.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
+              <strong>19 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

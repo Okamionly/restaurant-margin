@@ -38,7 +38,7 @@ const faqItems = [
   {
     question: 'Combien coûte Innovorder par rapport à RestauMargin ?',
     answer:
-      "Innovorder se positionne entre 89 et 199 EUR par mois selon les modules (POS, click & collect, kiosque, livraison) avec souvent des frais d'installation et de matériel. RestauMargin coûte 29 EUR par mois tout inclus, sans matériel à acheter, sans engagement, avec un essai gratuit de 7 jours sans carte bancaire. Les deux outils répondent à des besoins différents, donc comparer uniquement le prix n'a pas beaucoup de sens.",
+      "Innovorder se positionne entre 89 et 199 EUR par mois selon les modules (POS, click & collect, kiosque, livraison) avec souvent des frais d'installation et de matériel. RestauMargin coûte 19 EUR par mois tout inclus, sans matériel à acheter, sans engagement, avec un essai gratuit de 7 jours sans carte bancaire. Les deux outils répondent à des besoins différents, donc comparer uniquement le prix n'a pas beaucoup de sens.",
   },
   {
     question: 'Peut-on remplacer entièrement Innovorder par RestauMargin ?',
@@ -48,7 +48,7 @@ const faqItems = [
   {
     question: 'Quels sont les avantages clés de RestauMargin sur Innovorder ?',
     answer:
-      "RestauMargin est radicalement moins cher (29 EUR vs 89-199 EUR), se déploie en 5 minutes sans intervention technicien, intègre l'intelligence artificielle pour optimiser les marges (Négociation IA, Mercuriale, Menu Engineering, Allergènes), et reste 100 % focalisé sur la rentabilité — pas sur la vente. Innovorder est plus complet sur la prise de commande mais beaucoup plus lourd à déployer, plus cher, et sa partie gestion de marge reste limitée.",
+      "RestauMargin est radicalement moins cher (19 EUR vs 89-199 EUR), se déploie en 5 minutes sans intervention technicien, intègre l'intelligence artificielle pour optimiser les marges (Négociation IA, Mercuriale, Menu Engineering, Allergènes), et reste 100 % focalisé sur la rentabilité — pas sur la vente. Innovorder est plus complet sur la prise de commande mais beaucoup plus lourd à déployer, plus cher, et sa partie gestion de marge reste limitée.",
   },
   {
     question: 'Innovorder gère-t-il aussi le food cost et les fiches techniques ?',
@@ -58,7 +58,7 @@ const faqItems = [
   {
     question: 'Faut-il choisir entre Innovorder et RestauMargin ?',
     answer:
-      "Pas nécessairement. Vous pouvez très bien garder votre caisse (Innovorder, Tiller, Zelty, Lightspeed) et ajouter RestauMargin pour la partie marge. C'est 29 EUR de plus par mois ; à titre d'illustration, 2 points de food cost gagnés sur 500 000 EUR de CA représentent 10 000 EUR de marge en plus par an. Pour un début d'activité serré, on peut très bien attendre quelques mois avant de prendre une suite POS complète et commencer par RestauMargin + une caisse basique.",
+      "Pas nécessairement. Vous pouvez très bien garder votre caisse (Innovorder, Tiller, Zelty, Lightspeed) et ajouter RestauMargin pour la partie marge. C'est 19 EUR de plus par mois ; à titre d'illustration, 2 points de food cost gagnés sur 500 000 EUR de CA représentent 10 000 EUR de marge en plus par an. Pour un début d'activité serré, on peut très bien attendre quelques mois avant de prendre une suite POS complète et commencer par RestauMargin + une caisse basique.",
   },
   {
     question: 'Quelle est la durée d\'engagement chez Innovorder vs RestauMargin ?',
@@ -73,12 +73,12 @@ const faqItems = [
   {
     question: 'Quel logiciel choisir pour un restaurant qui ouvre en 2026 ?',
     answer:
-      "Pour un nouveau restaurant : commencez par RestauMargin (29 EUR) pour les fiches techniques et la marge, plus une caisse simple (TPE bancaire ou caisse basique). Quand le CA dépasse 300 000 EUR ou que vous lancez click & collect / livraison, ajoutez ou basculez sur une suite POS comme Innovorder, Tiller ou Zelty. Cela limite les frais fixes au démarrage tout en gardant le contrôle des marges dès le premier jour.",
+      "Pour un nouveau restaurant : commencez par RestauMargin (19 EUR) pour les fiches techniques et la marge, plus une caisse simple (TPE bancaire ou caisse basique). Quand le CA dépasse 300 000 EUR ou que vous lancez click & collect / livraison, ajoutez ou basculez sur une suite POS comme Innovorder, Tiller ou Zelty. Cela limite les frais fixes au démarrage tout en gardant le contrôle des marges dès le premier jour.",
   },
   {
     question: 'RestauMargin est-il adapté aux chaînes multi-restaurants ?',
     answer:
-      "Oui. RestauMargin gère le multi-restaurant nativement : un compte unique, plusieurs établissements, fiches techniques partagées, consolidation des marges, comparaison inter-restaurants. La formule reste à 29 EUR par mois par restaurant. Innovorder propose aussi du multi-site mais avec une grille tarifaire bien plus complexe et orientée grands comptes.",
+      "Oui. RestauMargin gère le multi-restaurant nativement : un compte unique, plusieurs établissements, fiches techniques partagées, consolidation des marges, comparaison inter-restaurants. L'offre unique reste à 19 EUR par mois, plusieurs établissements compris. Innovorder propose aussi du multi-site mais avec une grille tarifaire bien plus complexe et orientée grands comptes.",
   },
 ];
 
@@ -86,8 +86,8 @@ export default function AlternativeInnovorder() {
   return (
     <div className="min-h-screen bg-white">
       <SEOHead
-        title="Alternative Innovorder | RestauMargin (29EUR/mois) | Comparatif 2026"
-        description="Innovorder = POS et click & collect à 89-199 EUR/mois. RestauMargin = gestion de marge, food cost et IA à 29 EUR/mois. Comparatif complet, prix, fonctionnalités et cas d'usage 2026."
+        title="Alternative Innovorder | RestauMargin (19 EUR/mois) | Comparatif 2026"
+        description="Innovorder = POS et click & collect à 89-199 EUR/mois. RestauMargin = gestion de marge, food cost et IA à 19 EUR/mois. Comparatif complet, prix, fonctionnalités et cas d'usage 2026."
         path="/alternative-innovorder"
         type="article"
         schema={[
@@ -102,7 +102,7 @@ export default function AlternativeInnovorder() {
             '@type': 'Article',
             headline: 'RestauMargin vs Innovorder : la meilleure alternative pour gérer votre marge',
             description:
-              "Comparatif honnête entre Innovorder (POS / click & collect 89-199 EUR/mois) et RestauMargin (gestion de marge + IA 29 EUR/mois). Quand utiliser l'un, l'autre, ou les deux.",
+              "Comparatif honnête entre Innovorder (POS / click & collect 89-199 EUR/mois) et RestauMargin (gestion de marge + IA 19 EUR/mois). Quand utiliser l'un, l'autre, ou les deux.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -147,7 +147,7 @@ export default function AlternativeInnovorder() {
         date="Mai 2026"
         title="RestauMargin vs Innovorder : la meilleure alternative pour gérer votre marge"
         accentWord="alternative"
-        subtitle="Innovorder est une excellente suite POS et click & collect pour restaurateurs, mais coûte 89 à 199 EUR par mois. Si votre objectif est de piloter la marge, le food cost et les fiches techniques sans casser la tirelire, RestauMargin à 29 EUR par mois est une alternative redoutablement efficace. Comparatif honnête, sans bullshit."
+        subtitle="Innovorder est une excellente suite POS et click & collect pour restaurateurs, mais coûte 89 à 199 EUR par mois. Si votre objectif est de piloter la marge, le food cost et les fiches techniques sans casser la tirelire, RestauMargin à 19 EUR par mois est une alternative redoutablement efficace. Comparatif honnête, sans bullshit."
       />
 
       {/* ── Contenu principal ── */}
@@ -177,7 +177,7 @@ export default function AlternativeInnovorder() {
               <span className="text-teal-200 font-bold">2.</span>
               <span>
                 <strong className="text-white">RestauMargin</strong> = gestion de marge, food cost,
-                fiches techniques, IA — 29 EUR/mois sans matériel.
+                fiches techniques, IA — 19 EUR/mois sans matériel.
               </span>
             </div>
             <div className="flex items-start gap-2">
@@ -251,7 +251,7 @@ export default function AlternativeInnovorder() {
                 enregistreuse, pas de borne kiosque, pas de site click & collect prêt à l'emploi.
                 Notre obsession depuis le premier jour, c'est une seule chose : aider les
                 restaurateurs à piloter leur marge plat par plat, ingrédient par ingrédient,
-                fournisseur par fournisseur. Et faire ça pour 29 EUR par mois au lieu de 199 EUR.
+                fournisseur par fournisseur. Et faire ça pour 19 EUR par mois au lieu de 199 EUR.
               </p>
               <p>
                 Ce comparatif est honnête. Si vous avez besoin d'un POS complet avec click &
@@ -386,7 +386,7 @@ export default function AlternativeInnovorder() {
                 </div>
                 <ul className="space-y-2 text-sm text-emerald-900 leading-relaxed">
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-600 font-bold">+</span> 29 EUR/mois, sans
+                    <span className="text-emerald-600 font-bold">+</span> 19 EUR/mois, sans
                     engagement, sans carte bancaire pour l'essai.
                   </li>
                   <li className="flex items-start gap-2">
@@ -475,13 +475,13 @@ export default function AlternativeInnovorder() {
                   <CompareRow
                     label="Prix de départ"
                     innovorder="89 EUR / mois"
-                    restaumargin="29 EUR / mois"
+                    restaumargin="19 EUR / mois"
                     winner="restaumargin"
                   />
                   <CompareRow
                     label="Prix module complet"
                     innovorder="199 EUR / mois + matériel"
-                    restaumargin="29 EUR / mois (tout inclus)"
+                    restaumargin="19 EUR / mois (tout inclus)"
                     winner="restaumargin"
                   />
                   <CompareRow
@@ -541,7 +541,7 @@ export default function AlternativeInnovorder() {
                   <CompareRow
                     label="Multi-restaurant"
                     innovorder="Oui (offre Enterprise)"
-                    restaumargin="Oui natif (29 EUR/restaurant)"
+                    restaumargin="Oui natif (inclus dans les 19 EUR/mois)"
                     winner="tie"
                   />
                   <CompareRow
@@ -592,7 +592,7 @@ export default function AlternativeInnovorder() {
                 title="Bistrot indépendant 80 couverts, CA 450K EUR"
                 profile="Un bistrot indépendant. Caisse enregistreuse Tiller déjà en place, pas de click & collect. Marge nette tombée à 3 % à cause de la hausse des produits frais."
                 besoin="Reprendre le contrôle sur le food cost, répercuter les hausses fournisseurs sur les prix de vente, identifier les plats sous-marges."
-                recommandation="RestauMargin seul (29 EUR/mois). Pas besoin d'Innovorder, la caisse existante fait déjà le job. Investissement : 348 EUR/an. Ordre de grandeur : sur 450K EUR de CA, chaque point de food cost regagné représente environ 4 500 EUR de marge."
+                recommandation="RestauMargin seul (19 EUR/mois). Pas besoin d'Innovorder, la caisse existante fait déjà le job. Investissement : 228 EUR/an. Ordre de grandeur : sur 450K EUR de CA, chaque point de food cost regagné représente environ 4 500 EUR de marge."
                 outil="RestauMargin"
               />
               <UseCaseCard
@@ -600,7 +600,7 @@ export default function AlternativeInnovorder() {
                 title="Chaîne de 4 fast-casual, CA 2,5M EUR"
                 profile="Une enseigne healthy de 4 restaurants. Click & collect représente 40 % du CA. Cherche à digitaliser la commande en kiosque pour fluidifier le rush midi."
                 besoin="Suite POS complète avec click & collect, livraison Uber Eats / Deliveroo, kiosques tactiles, gestion multi-site centralisée."
-                recommandation="Innovorder pour la partie front-office (caisse, kiosque, click & collect). RestauMargin en complément pour la marge multi-restaurants (29 EUR x 4 = 116 EUR/mois). Total : Innovorder + RestauMargin."
+                recommandation="Innovorder pour la partie front-office (caisse, kiosque, click & collect). RestauMargin en complément pour la marge multi-restaurants (19 EUR/mois, les 4 restaurants compris). Total : Innovorder + RestauMargin."
                 outil="Innovorder + RestauMargin"
               />
               <UseCaseCard
@@ -643,12 +643,12 @@ export default function AlternativeInnovorder() {
                   <tr className="bg-white">
                     <td className="py-3 px-4 font-medium text-mono-100">Abonnement mensuel</td>
                     <td className="py-3 px-4 text-right">89 à 199 EUR / mois</td>
-                    <td className="py-3 px-4 text-right">29 EUR / mois</td>
+                    <td className="py-3 px-4 text-right">19 EUR / mois</td>
                   </tr>
                   <tr className="bg-mono-1000">
                     <td className="py-3 px-4 font-medium text-mono-100">Abonnement annuel</td>
                     <td className="py-3 px-4 text-right">1 068 à 2 388 EUR</td>
-                    <td className="py-3 px-4 text-right">348 EUR</td>
+                    <td className="py-3 px-4 text-right">228 EUR</td>
                   </tr>
                   <tr className="bg-white">
                     <td className="py-3 px-4 text-red-700">+ Matériel (caisse, imprimante)</td>
@@ -670,7 +670,7 @@ export default function AlternativeInnovorder() {
                     <td className="py-3 px-4 text-right font-bold text-blue-900">
                       ~1 800 à 5 200 EUR
                     </td>
-                    <td className="py-3 px-4 text-right font-bold text-blue-900">348 EUR</td>
+                    <td className="py-3 px-4 text-right font-bold text-blue-900">228 EUR</td>
                   </tr>
                 </tbody>
               </table>
@@ -679,7 +679,7 @@ export default function AlternativeInnovorder() {
             <div className="prose-content mt-8 space-y-4 text-base text-mono-400 leading-relaxed">
               <p>
                 À volume comparable de fonctionnalités (fiches techniques + reporting marge), le
-                ratio est sans appel : RestauMargin est entre 5 et 15 fois moins cher sur la
+                ratio est sans appel : RestauMargin est entre 8 et 22 fois moins cher sur la
                 première année. Sur 3 ans cumulés, l'écart dépasse facilement 10 000 EUR. Pour un
                 restaurant qui démarre ou qui veut tester avant d'investir, c'est décisif.
               </p>
@@ -713,11 +713,11 @@ export default function AlternativeInnovorder() {
               </h2>
               <p className="text-teal-100 text-lg max-w-xl mx-auto mb-3 leading-relaxed">
                 Si votre vrai problème est la marge, ne payez pas 1 800 EUR par an pour une suite
-                complète. Testez RestauMargin à 29 EUR/mois pendant 7 jours, sans engagement, sans
+                complète. Testez RestauMargin à 19 EUR/mois pendant 7 jours, sans engagement, sans
                 carte bancaire.
               </p>
               <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-                <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, gardez Innovorder ou
+                <strong>19 EUR/mois</strong> &mdash; essai gratuit 7 jours, gardez Innovorder ou
                 votre caisse actuelle, RestauMargin se branche en complément en 5 minutes.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

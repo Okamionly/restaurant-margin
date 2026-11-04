@@ -20,7 +20,7 @@ const faqItems = [
   },
   {
     question: "Combien coûte RestauMargin par rapport à Lightspeed Restaurant ?",
-    answer: "RestauMargin démarre à 29 EUR/mois (formule Pro). Lightspeed Restaurant démarre autour de 89 EUR/mois (formule Starter, 1 caisse) et peut atteindre 200 EUR/mois et plus pour les formules Plus et Premium avec modules avancés (multi-resto, KDS, advanced insights). Sur un an, RestauMargin coûte 348 EUR contre 1 068 à 2 400 EUR pour Lightspeed selon la formule. La différence de prix s'explique par les scopes : Lightspeed inclut une caisse logicielle complète avec matos, RestauMargin se concentre sur la gestion de la marge.",
+    answer: "RestauMargin coûte 19 EUR/mois (offre unique, toutes les fonctionnalités). Lightspeed Restaurant démarre autour de 89 EUR/mois (formule Starter, 1 caisse) et peut atteindre 200 EUR/mois et plus pour les formules Plus et Premium avec modules avancés (multi-resto, KDS, advanced insights). Sur un an, RestauMargin coûte 228 EUR contre 1 068 à 2 400 EUR pour Lightspeed selon la formule. La différence de prix s'explique par les scopes : Lightspeed inclut une caisse logicielle complète avec matos, RestauMargin se concentre sur la gestion de la marge.",
   },
   {
     question: "Lightspeed Restaurant calcule-t-il le food cost et les marges ?",
@@ -40,7 +40,7 @@ const faqItems = [
   },
   {
     question: "Quelle alternative à Lightspeed pour un restaurant qui veut surtout suivre ses marges ?",
-    answer: "Si votre vrai besoin est de comprendre pourquoi votre marge brute se dégrade malgré des ventes correctes, ce n'est pas une caisse plus chère qui vous aidera. RestauMargin (29 EUR/mois) couvre exactement cette problématique : fiches techniques pesées, food cost théorique vs réel, mercuriale fournisseurs avec alertes sur hausses de prix, menu engineering. Vous pouvez garder votre caisse actuelle, voire une caisse simple type Sumup POS à très bas coût, et investir le reste du budget logiciel dans le pilotage marge.",
+    answer: "Si votre vrai besoin est de comprendre pourquoi votre marge brute se dégrade malgré des ventes correctes, ce n'est pas une caisse plus chère qui vous aidera. RestauMargin (19 EUR/mois) couvre exactement cette problématique : fiches techniques pesées, food cost théorique vs réel, mercuriale fournisseurs avec alertes sur hausses de prix, menu engineering. Vous pouvez garder votre caisse actuelle, voire une caisse simple type Sumup POS à très bas coût, et investir le reste du budget logiciel dans le pilotage marge.",
   },
   {
     question: "Lightspeed est-il adapté aux petits restaurants ou aux food trucks ?",
@@ -52,7 +52,7 @@ const faqItems = [
   },
   {
     question: "Quel est le meilleur outil pour un groupe de plusieurs restaurants ?",
-    answer: "Pour un groupe, la combinaison la plus efficace est : Lightspeed Restaurant Plus ou Premium pour la caisse multi-site avec consolidation des ventes, et RestauMargin Business (79 EUR/mois) pour la consolidation des marges, le benchmarking entre établissements et les alertes sur dérive de food cost. Les deux outils répondent à des besoins différents et peuvent être branchés sur la même architecture sans conflit.",
+    answer: "Pour un groupe, la combinaison la plus efficace est : Lightspeed Restaurant Plus ou Premium pour la caisse multi-site avec consolidation des ventes, et RestauMargin (19 EUR/mois, multi-établissements inclus) pour la consolidation des marges, le benchmarking entre établissements et les alertes sur dérive de food cost. Les deux outils répondent à des besoins différents et peuvent être branchés sur la même architecture sans conflit.",
   },
 ];
 
@@ -61,7 +61,7 @@ export default function AlternativeLightspeed() {
     <div className="min-h-screen">
       <SEOHead
         title="Alternative Lightspeed Restaurant | RestauMargin food cost | 2026"
-        description="Lightspeed = POS premium (89-200€/mois). RestauMargin = gestion marge + food cost (29€/mois). Comparatif 2026."
+        description="Lightspeed = POS premium (89-200€/mois). RestauMargin = gestion marge + food cost (19 €/mois). Comparatif 2026."
         path="/alternative-lightspeed"
         type="article"
         schema={[
@@ -74,8 +74,8 @@ export default function AlternativeLightspeed() {
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
-            headline: 'Alternative à Lightspeed Restaurant : RestauMargin (29€/mois)',
-            description: "Comparatif détaillé entre RestauMargin (29 EUR/mois, gestion des marges et food cost) et Lightspeed Restaurant (89-200 EUR/mois, POS complet). Tableau 18 critères, cas d'usage, FAQ.",
+            headline: 'Alternative à Lightspeed Restaurant : RestauMargin (19 €/mois)',
+            description: "Comparatif détaillé entre RestauMargin (19 EUR/mois, gestion des marges et food cost) et Lightspeed Restaurant (89-200 EUR/mois, POS complet). Tableau 18 critères, cas d'usage, FAQ.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -104,11 +104,11 @@ export default function AlternativeLightspeed() {
                   operatingSystem: 'Web, iOS, Android (PWA)',
                   offers: {
                     '@type': 'Offer',
-                    price: '29',
+                    price: '19',
                     priceCurrency: 'EUR',
                     priceSpecification: {
                       '@type': 'UnitPriceSpecification',
-                      price: '29',
+                      price: '19',
                       priceCurrency: 'EUR',
                       unitText: 'MONTH',
                     },
@@ -162,7 +162,7 @@ export default function AlternativeLightspeed() {
         category="Comparatif"
         readTime="11 min"
         date="Mai 2026"
-        title="Alternative à Lightspeed Restaurant : RestauMargin (29€/mois)"
+        title="Alternative à Lightspeed Restaurant : RestauMargin (19 €/mois)"
         accentWord="Lightspeed Restaurant"
         subtitle="Vous cherchez une alternative à Lightspeed Restaurant plus abordable, ou un outil complémentaire pour piloter vos marges en plus de votre caisse ? Voici un comparatif honnête entre les deux solutions, avec un tableau de 18 critères, des cas d'usage concrets et un comparatif de prix sur 12 mois."
       />
@@ -186,7 +186,7 @@ export default function AlternativeLightspeed() {
               <strong className="text-white">Lightspeed Restaurant</strong> est un excellent <strong>logiciel de caisse (POS) premium</strong> pour la restauration. Tarif : 89 à 200 EUR/mois selon la formule. Il ne pilote pas la marge plat par plat, ni la mercuriale fournisseurs.
             </p>
             <p className="leading-relaxed">
-              <strong className="text-white">RestauMargin</strong> est une alternative ou un complément pour ceux qui veulent <strong>gérer leur food cost, leurs fiches techniques et leurs marges</strong>, avec IA et mobile, à 29 EUR/mois. Pas de module caisse.
+              <strong className="text-white">RestauMargin</strong> est une alternative ou un complément pour ceux qui veulent <strong>gérer leur food cost, leurs fiches techniques et leurs marges</strong>, avec IA et mobile, à 19 EUR/mois. Pas de module caisse.
             </p>
             <p className="leading-relaxed pt-2 border-t border-white/20">
               <strong className="text-white">Verdict :</strong> les deux outils sont complémentaires, pas concurrents. Si vous devez choisir, RestauMargin si la priorité est la marge ; Lightspeed si la priorité est la caisse et l'encaissement.
@@ -363,7 +363,7 @@ export default function AlternativeLightspeed() {
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Multi-restaurant natif avec vue consolidée et benchmarking</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>PWA mobile + mode kiosk balance + scan de factures par OCR</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Connecteur Lightspeed Restaurant pour rapatrier les ventes</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>29 EUR/mois, essai 7 jours sans carte bancaire</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>19 EUR/mois, essai 7 jours sans carte bancaire</span></li>
               </ul>
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
@@ -424,8 +424,8 @@ export default function AlternativeLightspeed() {
                 </tr>
               </thead>
               <tbody className="bg-white">
-                <ComparisonRow label="Prix mensuel (entry)" rm="29 EUR/mois" ls="89 EUR/mois (Starter)" winner="rm" />
-                <ComparisonRow label="Prix mensuel (top)" rm="79 EUR/mois (Business)" ls="200 EUR/mois et + (Premium + modules)" winner="rm" />
+                <ComparisonRow label="Prix mensuel (entry)" rm="19 EUR/mois" ls="89 EUR/mois (Starter)" winner="rm" />
+                <ComparisonRow label="Prix mensuel (top)" rm="19 EUR/mois (offre unique)" ls="200 EUR/mois et + (Premium + modules)" winner="rm" />
                 <ComparisonRow label="Essai gratuit" rm="7 jours, sans CB" ls="Démo commerciale" winner="rm" />
                 <ComparisonRow label="Module caisse / POS" rm={false} ls={true} winner="ls" />
                 <ComparisonRow label="Plan de salle / serveurs" rm={false} ls={true} winner="ls" />
@@ -477,21 +477,21 @@ export default function AlternativeLightspeed() {
               title="Vous êtes un restaurant indépendant qui veut maîtriser ses marges"
               recommendation="RestauMargin uniquement (caisse légère ou existante)"
               recoColor="emerald"
-              desc="Vous avez déjà une caisse simple (Sumup POS, L'Addition, Tiller basique, ou même Lightspeed Starter) et votre vrai problème est le food cost qui dérive avec l'inflation. Vous n'avez pas besoin de payer Lightspeed Premium pour résoudre ce problème. RestauMargin à 29 EUR/mois fait le job sans vous obliger à payer pour des fonctions caisse que vous avez déjà. Économie annuelle estimée vs Lightspeed Premium : 1 800 à 2 000 EUR."
+              desc="Vous avez déjà une caisse simple (Sumup POS, L'Addition, Tiller basique, ou même Lightspeed Starter) et votre vrai problème est le food cost qui dérive avec l'inflation. Vous n'avez pas besoin de payer Lightspeed Premium pour résoudre ce problème. RestauMargin à 19 EUR/mois fait le job sans vous obliger à payer pour des fonctions caisse que vous avez déjà. Économie annuelle estimée vs Lightspeed Premium : 1 800 à 2 000 EUR."
             />
             <ScenarioCard
               badge="Profil 2"
               title="Vous êtes une brasserie avec gros volume et beaucoup de serveurs"
               recommendation="Lightspeed + RestauMargin en complément"
               recoColor="blue"
-              desc="Vos opérations dépendent fortement de la caisse et du plan de salle (rotation rapide des couverts, gestion serveurs, encaissement fluide). Lightspeed est légitime pour piloter cette partie. Mais vous voulez aussi suivre vos marges plat par plat et anticiper les hausses fournisseurs. Ajoutez RestauMargin (29 EUR/mois) en parallèle : les ventes sont rapatriées via le connecteur et la marge réelle est calculée automatiquement."
+              desc="Vos opérations dépendent fortement de la caisse et du plan de salle (rotation rapide des couverts, gestion serveurs, encaissement fluide). Lightspeed est légitime pour piloter cette partie. Mais vous voulez aussi suivre vos marges plat par plat et anticiper les hausses fournisseurs. Ajoutez RestauMargin (19 EUR/mois) en parallèle : les ventes sont rapatriées via le connecteur et la marge réelle est calculée automatiquement."
             />
             <ScenarioCard
               badge="Profil 3"
               title="Vous êtes un food truck ou un très petit restaurant"
               recommendation="Caisse simple + RestauMargin"
               recoColor="purple"
-              desc="Lightspeed Restaurant est puissant mais surdimensionné pour vos besoins. Une caisse légère type Sumup POS (gratuite + commissions de paiement) ou Square couvre votre besoin d'encaissement. Et vous mettez le budget économisé dans RestauMargin pour comprendre votre marge réelle et optimiser votre carte. Total mensuel : 29 EUR de logiciel + commissions sur paiements, soit 60 à 80 % d'économie vs Lightspeed."
+              desc="Lightspeed Restaurant est puissant mais surdimensionné pour vos besoins. Une caisse légère type Sumup POS (gratuite + commissions de paiement) ou Square couvre votre besoin d'encaissement. Et vous mettez le budget économisé dans RestauMargin pour comprendre votre marge réelle et optimiser votre carte. Total mensuel : 19 EUR de logiciel + commissions sur paiements, soit 60 à 80 % d'économie vs Lightspeed."
             />
           </div>
 
@@ -530,40 +530,34 @@ export default function AlternativeLightspeed() {
               </thead>
               <tbody className="text-mono-350">
                 <tr className="bg-emerald-50 border-t border-mono-900">
-                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin Pro</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">29 EUR</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">348 EUR</td>
+                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin (offre unique)</td>
+                  <td className="py-3 px-4 text-right font-bold text-emerald-900">19 EUR</td>
+                  <td className="py-3 px-4 text-right font-bold text-emerald-900">228 EUR</td>
                   <td className="py-3 px-4 text-right text-emerald-700">Référence</td>
-                </tr>
-                <tr className="bg-emerald-50/40 border-t border-mono-900">
-                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin Business</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">79 EUR</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">948 EUR</td>
-                  <td className="py-3 px-4 text-right text-emerald-700">+ 600 EUR</td>
                 </tr>
                 <tr className="bg-white border-t border-mono-900">
                   <td className="py-3 px-4 font-bold text-mono-100">Lightspeed Starter</td>
                   <td className="py-3 px-4 text-right">89 EUR</td>
                   <td className="py-3 px-4 text-right">1 068 EUR</td>
-                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 720 EUR</td>
+                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 840 EUR</td>
                 </tr>
                 <tr className="bg-mono-1000 border-t border-mono-900">
                   <td className="py-3 px-4 font-bold text-mono-100">Lightspeed Essential</td>
                   <td className="py-3 px-4 text-right">129 EUR</td>
                   <td className="py-3 px-4 text-right">1 548 EUR</td>
-                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 1 200 EUR</td>
+                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 1 320 EUR</td>
                 </tr>
                 <tr className="bg-white border-t border-mono-900">
                   <td className="py-3 px-4 font-bold text-mono-100">Lightspeed Plus</td>
                   <td className="py-3 px-4 text-right">159 EUR</td>
                   <td className="py-3 px-4 text-right">1 908 EUR</td>
-                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 1 560 EUR</td>
+                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 1 680 EUR</td>
                 </tr>
                 <tr className="bg-mono-1000 border-t border-mono-900">
                   <td className="py-3 px-4 font-bold text-mono-100">Lightspeed Premium</td>
                   <td className="py-3 px-4 text-right">200 EUR</td>
                   <td className="py-3 px-4 text-right">2 400 EUR</td>
-                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 2 052 EUR</td>
+                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 2 172 EUR</td>
                 </tr>
               </tbody>
             </table>
@@ -571,15 +565,15 @@ export default function AlternativeLightspeed() {
 
           <div className="prose-content mt-8">
             <p>
-              L'économie annuelle se situe entre <strong>720 EUR et 2 052 EUR</strong> selon la
+              L'économie annuelle se situe entre <strong>840 EUR et 2 172 EUR</strong> selon la
               formule Lightspeed à laquelle on compare RestauMargin. Encore une fois, ces économies ne
               sont valables que si vos besoins sont alignés avec le scope de RestauMargin. Si vous
               avez besoin de la caisse, du plan de salle et du terminal de paiement Lightspeed, le
               coût supplémentaire est justifié par le service rendu.
             </p>
             <p>
-              Si vous combinez les deux outils (Lightspeed Starter 89 EUR + RestauMargin Pro 29 EUR
-              = 118 EUR/mois soit 1 416 EUR/an), vous obtenez un système complet
+              Si vous combinez les deux outils (Lightspeed Starter 89 EUR + RestauMargin 19 EUR
+              = 108 EUR/mois soit 1 296 EUR/an), vous obtenez un système complet
               <strong> caisse + pilotage marge</strong> pour moins cher qu'une formule Lightspeed
               Essential seule.
             </p>
@@ -618,7 +612,7 @@ export default function AlternativeLightspeed() {
               bancaire, sans engagement.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> à partir du 8e jour si vous décidez de continuer.
+              <strong>19 EUR/mois</strong> à partir du 8e jour si vous décidez de continuer.
               Annulation en un clic.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -658,7 +652,7 @@ export default function AlternativeLightspeed() {
             </Link>
             <Link to="/pricing" className="bg-mono-1000 border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Tarifs RestauMargin</h3>
-              <p className="text-xs text-mono-500">Formules Pro et Business, comparaison détaillée des fonctionnalités.</p>
+              <p className="text-xs text-mono-500">Une seule offre à 19 €/mois, toutes les fonctionnalités.</p>
             </Link>
           </div>
         </section>

@@ -48,7 +48,7 @@ const PRICING = [
     price: '1 200',
     period: 'HT',
     desc: 'Station + Tablette Samsung + Abonnement 1 an',
-    features: ['Support-balance intégré', 'Samsung Galaxy Tab A9+ 128GB', 'Moule silicone tablette', 'App RestauMargin Pro (1 an)', 'Support technique prioritaire', 'Mises à jour incluses'],
+    features: ['Support-balance intégré', 'Samsung Galaxy Tab A9+ 128GB', 'Moule silicone tablette', 'Abonnement RestauMargin (1 an)', 'Support technique prioritaire', 'Mises à jour incluses'],
     highlight: true,
   },
   {
@@ -61,8 +61,8 @@ const PRICING = [
   },
   {
     name: 'Abonnement SaaS',
-    price: '29',
-    period: '/mois HT',
+    price: '19',
+    period: '/mois',
     desc: 'Application RestauMargin complète',
     features: ['Fiches techniques illimitées', 'Calcul de marges auto', 'Mercuriale fournisseurs', 'Menu Engineering BCG', 'Multi-restaurant', 'Export comptable'],
     highlight: false,
@@ -92,7 +92,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Puis-je utiliser la station sans abonnement logiciel ?',
-    a: 'La station fonctionne comme balance autonome sans abonnement. Cependant, l\'abonnement RestauMargin Pro débloque les fiches techniques automatiques, le calcul de marges en temps réel et toutes les fonctionnalités logicielles.',
+    a: 'La station fonctionne comme balance autonome sans abonnement. Cependant, l\'abonnement RestauMargin (19 €/mois) débloque les fiches techniques automatiques, le calcul de marges en temps réel et toutes les fonctionnalités logicielles.',
   },
   {
     q: 'Comment nettoyer la station en cuisine ?',

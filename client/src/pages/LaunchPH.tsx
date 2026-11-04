@@ -366,7 +366,7 @@ export default function LaunchPH() {
                 },
                 {
                   q: 'Combien ça coûte ?',
-                  a: 'Essai gratuit 7 jours sans CB. Ensuite 29€/mois (Pro, 1 établissement) ou 79€/mois (Business, multi-établissements). Annulable à tout moment.',
+                  a: 'Essai gratuit 7 jours sans CB. Ensuite 19 €/mois, offre unique avec toutes les fonctionnalités, plusieurs établissements inclus. Sans engagement.',
                 },
                 {
                   q: 'Pourquoi je devrais voter le 6 mai ?',

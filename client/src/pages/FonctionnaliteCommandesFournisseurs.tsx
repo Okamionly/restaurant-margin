@@ -740,7 +740,7 @@ export default function FonctionnaliteCommandesFournisseurs() {
                 Tarifs RestauMargin
               </h3>
               <p className="text-sm" style={{ color: TEXT_MUTED }}>
-                Plans Pro et Business, sans engagement. Démarrez avec l'essai gratuit 7 jours.
+                Une seule offre à 19 €/mois, sans engagement. Démarrez avec l'essai gratuit 7 jours.
               </p>
             </Link>
           </div>

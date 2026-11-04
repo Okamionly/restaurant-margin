@@ -40,11 +40,11 @@ const faqItems = [
   },
   {
     question: "Lequel est le moins cher ?",
-    answer: "RestauMargin est nettement moins cher : 29 EUR/mois en formule Pro et 79 EUR/mois en formule Business. Zenchef démarre à 89 EUR/mois (Essential) et monte à 189 EUR/mois (Premium). Sur un an, l'écart va de 720 à 1 920 EUR selon les formules comparées. RestauMargin coûte donc 30 à 60 % du prix de Zenchef tout en couvrant un périmètre fonctionnel différent (gestion ops vs réservations).",
+    answer: "RestauMargin est nettement moins cher : 19 EUR/mois, en offre unique avec toutes les fonctionnalités. Zenchef démarre à 89 EUR/mois (Essential) et monte à 189 EUR/mois (Premium). Sur un an, l'écart va de 840 à 2 040 EUR selon les formules comparées. RestauMargin coûte donc 10 à 21 % du prix de Zenchef tout en couvrant un périmètre fonctionnel différent (gestion ops vs réservations).",
   },
   {
     question: "Peut-on utiliser RestauMargin et Zenchef en parallèle ?",
-    answer: "Oui, c'est une configuration courante. RestauMargin gère votre back-office (food cost, fiches techniques, marges, fournisseurs) tandis que Zenchef gère votre front-office digital (réservations, marketing, site web). Aucune intégration native n'existe entre les deux, mais ils n'ont pas besoin d'échanger de données pour coexister. Total combiné : 118 EUR/mois (RestauMargin Pro + Zenchef Essential), soit moins cher qu'une formule Zenchef Standard seule.",
+    answer: "Oui, c'est une configuration courante. RestauMargin gère votre back-office (food cost, fiches techniques, marges, fournisseurs) tandis que Zenchef gère votre front-office digital (réservations, marketing, site web). Aucune intégration native n'existe entre les deux, mais ils n'ont pas besoin d'échanger de données pour coexister. Total combiné : 108 EUR/mois (RestauMargin + Zenchef Essential), soit moins cher qu'une formule Zenchef Standard seule.",
   },
   {
     question: "Lequel a la meilleure interface ?",
@@ -52,11 +52,11 @@ const faqItems = [
   },
   {
     question: "Lequel pour un food truck ?",
-    answer: "Pour un food truck, RestauMargin est largement plus adapté. Pas de réservation à gérer (vente directe), pas de site web restaurant complexe à maintenir. Le vrai enjeu est le food cost en mobilité : marges plat par plat, gestion fournisseurs, stocks. RestauMargin (29 EUR/mois) couvre tout ça avec un mode mobile + kiosk + scan factures. Zenchef serait surdimensionné et trop cher pour ce profil.",
+    answer: "Pour un food truck, RestauMargin est largement plus adapté. Pas de réservation à gérer (vente directe), pas de site web restaurant complexe à maintenir. Le vrai enjeu est le food cost en mobilité : marges plat par plat, gestion fournisseurs, stocks. RestauMargin (19 EUR/mois) couvre tout ça avec un mode mobile + kiosk + scan factures. Zenchef serait surdimensionné et trop cher pour ce profil.",
   },
   {
     question: "Lequel pour une chaîne de restaurants ?",
-    answer: "Pour un groupe de 3 à 10 restaurants, la combinaison optimale est RestauMargin Business (79 EUR/mois) pour la vue consolidée des marges + Zenchef Premium (189 EUR/mois) pour la gestion centralisée réservations. RestauMargin offre une vue groupe avec benchmarking entre établissements (food cost par site, dérive de marges, alertes consolidées) que Zenchef ne propose pas. Pour les marques nationales (>20 restaurants), Innovorder ou Lightspeed Restaurant peuvent aussi être considérés en alternative POS.",
+    answer: "Pour un groupe de 3 à 10 restaurants, la combinaison optimale est RestauMargin (19 EUR/mois, multi-établissements inclus) pour la vue consolidée des marges + Zenchef Premium (189 EUR/mois) pour la gestion centralisée réservations. RestauMargin offre une vue groupe avec benchmarking entre établissements (food cost par site, dérive de marges, alertes consolidées) que Zenchef ne propose pas. Pour les marques nationales (>20 restaurants), Innovorder ou Lightspeed Restaurant peuvent aussi être considérés en alternative POS.",
   },
   {
     question: "Migration de Zenchef vers RestauMargin est-elle possible ?",
@@ -75,7 +75,7 @@ const faqItems = [
     // et c'est d'autant plus expose ici que la page compare nommement un
     // concurrent. On dit ce qui est vrai : le produit est jeune et sans historique
     // d'avis — ce qui reste un argument utilisable, a condition d'etre assume.
-    answer: "Zenchef est globalement bien noté sur Trustpilot et Capterra : interface intuitive, support réactif, valeur pour les restaurants gastronomiques. Critiques récurrentes : prix élevé et complexité des fonctions marketing avancées. RestauMargin est un outil récent : il n'a pas encore d'historique d'avis publiés, et nous préférons le dire plutôt que d'afficher une note. Ce qui est vérifiable dès aujourd'hui : un tarif unique à 29 EUR, un essai de 7 jours sans carte bancaire, et un périmètre centré sur le food cost et les marges — pas de module de réservation native, contrairement à Zenchef.",
+    answer: "Zenchef est globalement bien noté sur Trustpilot et Capterra : interface intuitive, support réactif, valeur pour les restaurants gastronomiques. Critiques récurrentes : prix élevé et complexité des fonctions marketing avancées. RestauMargin est un outil récent : il n'a pas encore d'historique d'avis publiés, et nous préférons le dire plutôt que d'afficher une note. Ce qui est vérifiable dès aujourd'hui : un tarif unique à 19 EUR par mois, un essai de 7 jours sans carte bancaire, et un périmètre centré sur le food cost et les marges — pas de module de réservation native, contrairement à Zenchef.",
   },
   {
     question: "Mobile et iPad : qui est mieux ?",
@@ -83,11 +83,11 @@ const faqItems = [
   },
   {
     question: "Pour piloter mes marges au quotidien ?",
-    answer: "Sans hésitation : RestauMargin. C'est le coeur de notre produit. Calcul automatique du food cost en temps réel, marge brute par plat, alertes sur dérive (hausse fournisseur, baisse de marge sur un plat star), IA qui suggère des optimisations. Zenchef ne calcule aucun food cost ni aucune marge, ce n'est tout simplement pas dans son scope. Si la rentabilité opérationnelle est votre priorité, RestauMargin est imbattable à 29 EUR/mois.",
+    answer: "Sans hésitation : RestauMargin. C'est le coeur de notre produit. Calcul automatique du food cost en temps réel, marge brute par plat, alertes sur dérive (hausse fournisseur, baisse de marge sur un plat star), IA qui suggère des optimisations. Zenchef ne calcule aucun food cost ni aucune marge, ce n'est tout simplement pas dans son scope. Si la rentabilité opérationnelle est votre priorité, RestauMargin est imbattable à 19 EUR/mois.",
   },
   {
     question: "Quelle est l'alternative économique à Zenchef ?",
-    answer: "Si votre vrai besoin est uniquement la réservation en ligne et non le marketing avancé, plusieurs alternatives moins chères que Zenchef existent : TheFork (gratuit avec commission), Resy (modèle freemium), Google Reservations (gratuit, intégré à votre fiche Google). Si vous cherchez à économiser tout en gagnant en rentabilité, le combo RestauMargin (29 EUR) + TheFork (commission) est radicalement moins cher que Zenchef (89-189 EUR) tout en couvrant plus de besoins critiques.",
+    answer: "Si votre vrai besoin est uniquement la réservation en ligne et non le marketing avancé, plusieurs alternatives moins chères que Zenchef existent : TheFork (gratuit avec commission), Resy (modèle freemium), Google Reservations (gratuit, intégré à votre fiche Google). Si vous cherchez à économiser tout en gagnant en rentabilité, le combo RestauMargin (19 EUR) + TheFork (commission) est radicalement moins cher que Zenchef (89-189 EUR) tout en couvrant plus de besoins critiques.",
   },
 ];
 
@@ -139,11 +139,11 @@ export default function ComparatifRestauMarginZenchef() {
                   operatingSystem: 'Web, iOS, Android (PWA)',
                   offers: {
                     '@type': 'Offer',
-                    price: '29',
+                    price: '19',
                     priceCurrency: 'EUR',
                     priceSpecification: {
                       '@type': 'UnitPriceSpecification',
-                      price: '29',
+                      price: '19',
                       priceCurrency: 'EUR',
                       unitText: 'MONTH',
                     },
@@ -218,7 +218,7 @@ export default function ComparatifRestauMarginZenchef() {
           </h2>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 space-y-3 text-sm sm:text-base">
             <p className="leading-relaxed">
-              <strong className="text-white">RestauMargin (29 EUR/mois)</strong> et <strong className="text-white">Zenchef (89-189 EUR/mois)</strong> répondent à des besoins différents : RestauMargin excelle sur la gestion food cost, fiches techniques et optimisation des marges, tandis que Zenchef domine sur les réservations en ligne, le plan de salle et le marketing email. Pour piloter vos marges au quotidien, RestauMargin offre plus de fonctionnalités à 70 % du prix. Pour la gestion réservations, Zenchef reste leader.
+              <strong className="text-white">RestauMargin (19 EUR/mois)</strong> et <strong className="text-white">Zenchef (89-189 EUR/mois)</strong> répondent à des besoins différents : RestauMargin excelle sur la gestion food cost, fiches techniques et optimisation des marges, tandis que Zenchef domine sur les réservations en ligne, le plan de salle et le marketing email. Pour piloter vos marges au quotidien, RestauMargin offre plus de fonctionnalités à 70 % du prix. Pour la gestion réservations, Zenchef reste leader.
             </p>
           </div>
           {/* Mini-tableau verdict 5 criteres */}
@@ -316,7 +316,7 @@ export default function ComparatifRestauMarginZenchef() {
                 </tr>
               </thead>
               <tbody className="bg-white">
-                <VerdictRow label="Prix d'entrée" rm="29 EUR/mois" zc="89 EUR/mois" winner="rm" />
+                <VerdictRow label="Prix d'entrée" rm="19 EUR/mois" zc="89 EUR/mois" winner="rm" />
                 <VerdictRow label="Gestion food cost et marges" rm="Coeur du produit" zc="Non couvert" winner="rm" />
                 <VerdictRow label="Réservations en ligne" rm="Non couvert" zc="Coeur du produit" winner="zc" />
                 <VerdictRow label="Marketing automatisé" rm="Non couvert" zc="Mature" winner="zc" />
@@ -334,7 +334,7 @@ export default function ComparatifRestauMarginZenchef() {
               <ul className="space-y-2 text-sm text-emerald-800 leading-relaxed">
                 <li className="flex gap-2"><CheckCircle className="w-4 h-4 mt-0.5 shrink-0" /><span>Votre priorité est la rentabilité opérationnelle (food cost, marges)</span></li>
                 <li className="flex gap-2"><CheckCircle className="w-4 h-4 mt-0.5 shrink-0" /><span>Vous voulez un outil mobile-first pour la cuisine</span></li>
-                <li className="flex gap-2"><CheckCircle className="w-4 h-4 mt-0.5 shrink-0" /><span>Votre budget logiciel est serré (29 EUR/mois)</span></li>
+                <li className="flex gap-2"><CheckCircle className="w-4 h-4 mt-0.5 shrink-0" /><span>Votre budget logiciel est serré (19 EUR/mois)</span></li>
                 <li className="flex gap-2"><CheckCircle className="w-4 h-4 mt-0.5 shrink-0" /><span>Vous avez déjà un module réservation (TheFork, Google)</span></li>
               </ul>
             </div>
@@ -441,15 +441,9 @@ export default function ComparatifRestauMarginZenchef() {
               </thead>
               <tbody className="text-mono-350">
                 <tr className="bg-emerald-50 border-t border-mono-900">
-                  <td className="py-3 px-4 font-bold text-emerald-900 flex items-center gap-2"><BadgeR /> RestauMargin Pro</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">29 EUR</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">348 EUR</td>
-                  <td className="py-3 px-4 text-right text-emerald-700">Aucun</td>
-                </tr>
-                <tr className="bg-emerald-50/40 border-t border-mono-900">
-                  <td className="py-3 px-4 font-bold text-emerald-900 flex items-center gap-2"><BadgeR /> RestauMargin Business</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">79 EUR</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">948 EUR</td>
+                  <td className="py-3 px-4 font-bold text-emerald-900 flex items-center gap-2"><BadgeR /> RestauMargin (offre unique)</td>
+                  <td className="py-3 px-4 text-right font-bold text-emerald-900">19 EUR</td>
+                  <td className="py-3 px-4 text-right font-bold text-emerald-900">228 EUR</td>
                   <td className="py-3 px-4 text-right text-emerald-700">Aucun</td>
                 </tr>
                 <tr className="bg-white border-t border-mono-900">
@@ -478,7 +472,7 @@ export default function ComparatifRestauMarginZenchef() {
             <p>
               <strong>Calcul ROI 12 mois RestauMargin :</strong> sur un restaurant qui réalise 400 000 EUR
               de chiffre d'affaires annuel avec un food cost initial de 32 %, gagner 2 points de marge brute
-              représente 8 000 EUR par an. RestauMargin Pro à 348 EUR/an se rentabiliserait donc en moins de 16
+              représente 8 000 EUR par an. RestauMargin à 228 EUR/an se rentabiliserait donc en moins de 11
               jours si ce gain est atteint (exemple illustratif, le résultat dépend de votre situation).
             </p>
             <p>
@@ -599,28 +593,28 @@ export default function ComparatifRestauMarginZenchef() {
               title="Restaurant traditionnel volume moyen (40 à 100 couverts/jour)"
               recommendation="RestauMargin uniquement"
               recoColor="emerald"
-              desc="Vous gérez vos réservations par téléphone ou via Google Reservations gratuit. Votre vrai problème : le food cost qui dérive avec l'inflation et l'inability à savoir exactement quel plat de votre carte est rentable. RestauMargin (29 EUR/mois) résout ce problème avec fiches techniques, food cost en temps réel, mercuriale fournisseurs et IA. Pas besoin de payer Zenchef. Économie annuelle vs Zenchef Start : 720 EUR."
+              desc="Vous gérez vos réservations par téléphone ou via Google Reservations gratuit. Votre vrai problème : le food cost qui dérive avec l'inflation et l'inability à savoir exactement quel plat de votre carte est rentable. RestauMargin (19 EUR/mois) résout ce problème avec fiches techniques, food cost en temps réel, mercuriale fournisseurs et IA. Pas besoin de payer Zenchef. Économie annuelle vs Zenchef Start : 840 EUR."
             />
             <ScenarioCard
               badge="Profil 2"
               title="Restaurant gastronomique avec forte demande réservations"
               recommendation="Zenchef + RestauMargin combiné"
               recoColor="blue"
-              desc="Votre activité dépend des réservations (souvent 80 % du CA, listes d'attente récurrentes). Vous avez besoin de Zenchef pour piloter cette partie, plus le site web restaurant et les campagnes marketing. Mais vous voulez aussi maîtriser vos marges sur des produits nobles (volaille fermière, foie gras, vins). Ajoutez RestauMargin Pro (29 EUR/mois) en parallèle : les deux outils se complémentent parfaitement sans intégration nécessaire. Total : 118 à 218 EUR/mois selon les formules."
+              desc="Votre activité dépend des réservations (souvent 80 % du CA, listes d'attente récurrentes). Vous avez besoin de Zenchef pour piloter cette partie, plus le site web restaurant et les campagnes marketing. Mais vous voulez aussi maîtriser vos marges sur des produits nobles (volaille fermière, foie gras, vins). Ajoutez RestauMargin (19 EUR/mois) en parallèle : les deux outils se complémentent parfaitement sans intégration nécessaire. Total : 108 à 208 EUR/mois selon les formules."
             />
             <ScenarioCard
               badge="Profil 3"
               title="Brasserie multi-services (volume élevé, marges serrées)"
               recommendation="Combiner les deux outils"
               recoColor="purple"
-              desc="Brasserie avec service midi + soir, formules + carte, vente sur place + livraison. Vous gérez 200+ couverts/jour avec un food cost cible 28-30 %. Vous avez besoin de Zenchef pour la réservation à tables nombreuses + marketing volume, et RestauMargin pour piloter précisément chaque plat de la carte (souvent 30 à 50 références). C'est typiquement le profil où la combinaison est la plus rentable : 118 EUR/mois pour un outil 100 % couvert."
+              desc="Brasserie avec service midi + soir, formules + carte, vente sur place + livraison. Vous gérez 200+ couverts/jour avec un food cost cible 28-30 %. Vous avez besoin de Zenchef pour la réservation à tables nombreuses + marketing volume, et RestauMargin pour piloter précisément chaque plat de la carte (souvent 30 à 50 références). C'est typiquement le profil où la combinaison est la plus rentable : 108 EUR/mois pour un outil 100 % couvert."
             />
             <ScenarioCard
               badge="Profil 4"
               title="Bistrot indépendant (jeune entreprise, budget serré)"
               recommendation="RestauMargin uniquement"
               recoColor="emerald"
-              desc="Vous démarrez votre bistrot de quartier avec un budget logiciel maîtrisé (max 50 EUR/mois). La priorité absolue est la rentabilité par plat (food cost réel), car une dérive de 2 à 3 points peut vous mettre en perte. Les réservations sont gérées par téléphone et Google. RestauMargin Pro (29 EUR/mois) est dimensionné parfaitement. Si vous grossissez, vous ajouterez Zenchef plus tard. Bon plan : utilisez TheFork gratuit en parallèle pour capter les réservations en ligne sans payer."
+              desc="Vous démarrez votre bistrot de quartier avec un budget logiciel maîtrisé (max 50 EUR/mois). La priorité absolue est la rentabilité par plat (food cost réel), car une dérive de 2 à 3 points peut vous mettre en perte. Les réservations sont gérées par téléphone et Google. RestauMargin (19 EUR/mois) est dimensionné parfaitement. Si vous grossissez, vous ajouterez Zenchef plus tard. Bon plan : utilisez TheFork gratuit en parallèle pour capter les réservations en ligne sans payer."
             />
           </div>
         </section>
@@ -650,7 +644,7 @@ export default function ComparatifRestauMarginZenchef() {
               <li><strong>Hebdomadaire :</strong> Zenchef envoie la newsletter clients, RestauMargin alerte sur les dérives</li>
             </ul>
             <p>
-              Le combo RestauMargin Pro + Zenchef Start coûte 118 EUR/mois, soit 1 416 EUR/an. C'est moins
+              Le combo RestauMargin + Zenchef Start coûte 108 EUR/mois, soit 1 296 EUR/an. C'est moins
               cher qu'une formule Zenchef Plus seule (1 668 EUR/an) tout en couvrant un périmètre largement
               plus complet. C'est pour cette raison qu'il est souvent plus pertinent de ne pas
               "choisir entre les deux" et d'adopter la combinaison.
@@ -689,16 +683,10 @@ export default function ComparatifRestauMarginZenchef() {
               </thead>
               <tbody className="text-mono-350">
                 <tr className="bg-emerald-50 border-t border-mono-900">
-                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin Pro</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">29 EUR</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">348 EUR</td>
-                  <td className="py-3 px-4 text-right text-emerald-700 text-xs">1 restaurant, IA, OCR</td>
-                </tr>
-                <tr className="bg-emerald-50/40 border-t border-mono-900">
-                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin Business</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">79 EUR</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">948 EUR</td>
-                  <td className="py-3 px-4 text-right text-emerald-700 text-xs">Multi-resto, API, support prio</td>
+                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin (offre unique)</td>
+                  <td className="py-3 px-4 text-right font-bold text-emerald-900">19 EUR</td>
+                  <td className="py-3 px-4 text-right font-bold text-emerald-900">228 EUR</td>
+                  <td className="py-3 px-4 text-right text-emerald-700 text-xs">Toutes les fonctionnalités, multi-resto, IA, OCR</td>
                 </tr>
                 <tr className="bg-white border-t border-mono-900">
                   <td className="py-3 px-4 font-bold text-mono-100">Zenchef Start</td>
@@ -719,9 +707,9 @@ export default function ComparatifRestauMarginZenchef() {
                   <td className="py-3 px-4 text-right text-mono-500 text-xs">+ Fidélité, multi-site</td>
                 </tr>
                 <tr className="bg-teal-50 border-t-2 border-teal-200">
-                  <td className="py-3 px-4 font-bold text-teal-900">Combo RM Pro + Zenchef Start</td>
-                  <td className="py-3 px-4 text-right font-bold text-teal-900">118 EUR</td>
-                  <td className="py-3 px-4 text-right font-bold text-teal-900">1 416 EUR</td>
+                  <td className="py-3 px-4 font-bold text-teal-900">Combo RestauMargin + Zenchef Start</td>
+                  <td className="py-3 px-4 text-right font-bold text-teal-900">108 EUR</td>
+                  <td className="py-3 px-4 text-right font-bold text-teal-900">1 296 EUR</td>
                   <td className="py-3 px-4 text-right text-teal-700 text-xs">Tout-en-un best value</td>
                 </tr>
               </tbody>
@@ -730,8 +718,8 @@ export default function ComparatifRestauMarginZenchef() {
 
           <div className="prose-content mt-8">
             <p>
-              <strong>Lecture rapide :</strong> si vous prenez le combo RestauMargin Pro + Zenchef Start
-              (1 416 EUR/an), vous couvrez 100 % des besoins back-office (food cost, marges, mercuriale) et
+              <strong>Lecture rapide :</strong> si vous prenez le combo RestauMargin + Zenchef Start
+              (1 296 EUR/an), vous couvrez 100 % des besoins back-office (food cost, marges, mercuriale) et
               95 % des besoins front-office (réservations, site web). Pour un coût inférieur à Zenchef Plus
               seul (1 668 EUR/an), qui ne couvre que 50 % des besoins (acquisition uniquement, zéro
               opérations).
@@ -758,7 +746,7 @@ export default function ComparatifRestauMarginZenchef() {
               profile="Restaurant traditionnel (volume moyen 40-100 couverts/jour)"
               winner="RestauMargin"
               winnerColor="emerald"
-              reasoning="Priorité rentabilité + budget serré. RestauMargin Pro (29 EUR) couvre les besoins critiques. Réservations via Google/TheFork gratuit. Zenchef = surdimensionné."
+              reasoning="Priorité rentabilité + budget serré. RestauMargin (19 EUR/mois) couvre les besoins critiques. Réservations via Google/TheFork gratuit. Zenchef = surdimensionné."
             />
             <VerdictCard
               profile="Restaurant gastronomique avec forte demande réservations"
@@ -780,9 +768,9 @@ export default function ComparatifRestauMarginZenchef() {
             />
             <VerdictCard
               profile="Groupe de 3 à 10 restaurants"
-              winner="Combinaison RestauMargin Business + Zenchef Premium"
+              winner="Combinaison RestauMargin + Zenchef Premium"
               winnerColor="teal"
-              reasoning="Vue consolidée marges (RM Business 79 EUR) + gestion centralisée réservations multi-site (Zenchef Premium 189 EUR). Total 268 EUR/mois imbattable à cette échelle."
+              reasoning="Vue consolidée marges (RestauMargin 19 EUR) + gestion centralisée réservations multi-site (Zenchef Premium 189 EUR). Total 208 EUR/mois imbattable à cette échelle."
             />
           </div>
         </section>
@@ -813,7 +801,7 @@ export default function ComparatifRestauMarginZenchef() {
               Sans carte bancaire, sans engagement. Vous pouvez combiner avec Zenchef si besoin.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> à partir du 8e jour si vous décidez de continuer. Annulation en un clic.
+              <strong>19 EUR/mois</strong> à partir du 8e jour si vous décidez de continuer. Annulation en un clic.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
@@ -852,7 +840,7 @@ export default function ComparatifRestauMarginZenchef() {
             </Link>
             <Link to="/pricing" className="bg-mono-1000 border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Tarifs RestauMargin</h3>
-              <p className="text-xs text-mono-500">Formules Pro et Business, comparaison détaillée.</p>
+              <p className="text-xs text-mono-500">Une seule offre à 19 €/mois, toutes les fonctionnalités.</p>
             </Link>
             <Link to="/comparatif-logiciels-restaurant" className="bg-mono-1000 border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Comparatif 12 logiciels restaurant</h3>

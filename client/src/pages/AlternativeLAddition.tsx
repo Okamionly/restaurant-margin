@@ -20,7 +20,7 @@ const faqItems = [
   },
   {
     question: "Combien coûte L'Addition par rapport à RestauMargin ?",
-    answer: "L'Addition propose plusieurs formules généralement comprises entre 89 EUR et 159 EUR par mois et par caisse, hors matériel (tablette, imprimante, tiroir). RestauMargin commence à 29 EUR/mois pour la formule Pro, sans matériel obligatoire. Sur un an, RestauMargin coûte 348 EUR contre 1 068 à 1 908 EUR pour L'Addition selon la formule choisie. La différence s'explique par la nature différente des deux produits : L'Addition est une caisse complète avec hardware ; RestauMargin est un outil de pilotage financier 100 % logiciel.",
+    answer: "L'Addition propose plusieurs formules généralement comprises entre 89 EUR et 159 EUR par mois et par caisse, hors matériel (tablette, imprimante, tiroir). RestauMargin coûte 19 EUR/mois en offre unique, sans matériel obligatoire. Sur un an, RestauMargin coûte 228 EUR contre 1 068 à 1 908 EUR pour L'Addition selon la formule choisie. La différence s'explique par la nature différente des deux produits : L'Addition est une caisse complète avec hardware ; RestauMargin est un outil de pilotage financier 100 % logiciel.",
   },
   {
     question: "L'Addition gère-t-il le food cost et les marges plat par plat ?",
@@ -40,7 +40,7 @@ const faqItems = [
   },
   {
     question: "Quel est le meilleur outil pour un restaurant qui ouvre en 2026 ?",
-    answer: "Pour ouvrir un restaurant en 2026, vous avez besoin de trois briques : un POS de caisse certifié NF525 (L'Addition, Tiller, Sumup, Lightspeed), un module réservation (TheFork, Zenchef ou Google), un outil de pilotage des marges (RestauMargin). Beaucoup de chefs commettent l'erreur de prendre seulement une caisse et de gérer leurs marges sur Excel. À titre d'illustration, sur 300 000 EUR de CA, un seul point de food cost regagné représente 3 000 EUR par an, soit bien plus que les 348 EUR de l'abonnement RestauMargin.",
+    answer: "Pour ouvrir un restaurant en 2026, vous avez besoin de trois briques : un POS de caisse certifié NF525 (L'Addition, Tiller, Sumup, Lightspeed), un module réservation (TheFork, Zenchef ou Google), un outil de pilotage des marges (RestauMargin). Beaucoup de chefs commettent l'erreur de prendre seulement une caisse et de gérer leurs marges sur Excel. À titre d'illustration, sur 300 000 EUR de CA, un seul point de food cost regagné représente 3 000 EUR par an, soit bien plus que les 228 EUR de l'abonnement RestauMargin.",
   },
   {
     question: "Y a-t-il un essai gratuit chez L'Addition et chez RestauMargin ?",
@@ -52,7 +52,7 @@ const faqItems = [
   },
   {
     question: "Quel support client chez L'Addition vs RestauMargin ?",
-    answer: "L'Addition dispose d'une force commerciale et d'un support 7j/7 en français, avec installation sur site et formation incluses dans les formules supérieures. RestauMargin propose un support email et chat en français avec un temps de réponse moyen inférieur à 4 heures en jours ouvrés, inclus dans toutes les formules (y compris Pro à 29 EUR). Nous compensons l'absence de support téléphonique par une UX simple et un onboarding self-service de 5 minutes.",
+    answer: "L'Addition dispose d'une force commerciale et d'un support 7j/7 en français, avec installation sur site et formation incluses dans les formules supérieures. RestauMargin propose un support par e-mail en français, inclus dans l'offre unique à 19 EUR/mois. Nous compensons l'absence de support téléphonique par une UX simple et un onboarding self-service de 5 minutes.",
   },
 ];
 
@@ -60,7 +60,7 @@ export default function AlternativeLAddition() {
   return (
     <div className="min-h-screen">
       <SEOHead
-        title="Alternative L'Addition | RestauMargin food cost 29€/mois | 2026"
+        title="Alternative L'Addition | RestauMargin food cost 19 €/mois | 2026"
         description="L'Addition = POS français leader. RestauMargin = gestion food cost + marges. Comparatif honnête 2026."
         path="/alternative-laddition"
         type="article"
@@ -75,7 +75,7 @@ export default function AlternativeLAddition() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: "Alternative à L'Addition : RestauMargin pour piloter vos marges",
-            description: "Comparatif détaillé entre L'Addition (POS de caisse leader en France, 89-159 EUR/mois) et RestauMargin (food cost + marges + IA, 29 EUR/mois). Tableau 18 critères, cas d'usage, FAQ.",
+            description: "Comparatif détaillé entre L'Addition (POS de caisse leader en France, 89-159 EUR/mois) et RestauMargin (food cost + marges + IA, 19 EUR/mois). Tableau 18 critères, cas d'usage, FAQ.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -104,11 +104,11 @@ export default function AlternativeLAddition() {
                   operatingSystem: 'Web, iOS, Android (PWA)',
                   offers: {
                     '@type': 'Offer',
-                    price: '29',
+                    price: '19',
                     priceCurrency: 'EUR',
                     priceSpecification: {
                       '@type': 'UnitPriceSpecification',
-                      price: '29',
+                      price: '19',
                       priceCurrency: 'EUR',
                       unitText: 'MONTH',
                     },
@@ -187,7 +187,7 @@ export default function AlternativeLAddition() {
               <strong className="text-white">L'Addition</strong> est un excellent <strong>logiciel de caisse (POS)</strong> certifié NF525, utilisé par plus de 5 000 restaurants en France. Tarif : 89 à 159 EUR/mois par caisse + matériel. Il ne pilote pas le food cost ni les marges plat par plat.
             </p>
             <p className="leading-relaxed">
-              <strong className="text-white">RestauMargin</strong> est une alternative complémentaire pour <strong>piloter vos marges, votre food cost et vos fiches techniques</strong>, avec IA et mobile, à 29 EUR/mois. Pas de fonction de caisse.
+              <strong className="text-white">RestauMargin</strong> est une alternative complémentaire pour <strong>piloter vos marges, votre food cost et vos fiches techniques</strong>, avec IA et mobile, à 19 EUR/mois. Pas de fonction de caisse.
             </p>
             <p className="leading-relaxed pt-2 border-t border-white/20">
               <strong className="text-white">Verdict :</strong> les deux outils ne sont pas concurrents directs. Gardez L'Addition pour la salle, ajoutez RestauMargin pour le back-office et la rentabilité.
@@ -363,7 +363,7 @@ export default function AlternativeLAddition() {
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>19 actions IA pour suggérer recettes, optimiser marges, détecter anomalies</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Multi-restaurant natif avec vue consolidée des marges</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>PWA mobile + mode kiosk + scan de factures par OCR</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>29 EUR/mois, essai 7 jours sans carte bancaire</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>19 EUR/mois, essai 7 jours sans carte bancaire</span></li>
               </ul>
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
@@ -424,8 +424,8 @@ export default function AlternativeLAddition() {
                 </tr>
               </thead>
               <tbody className="bg-white">
-                <ComparisonRow label="Prix mensuel (entry)" rm="29 EUR/mois" zc="89 EUR/mois/caisse" winner="rm" />
-                <ComparisonRow label="Prix mensuel (top)" rm="79 EUR/mois (Business)" zc="159 EUR/mois/caisse" winner="rm" />
+                <ComparisonRow label="Prix mensuel (entry)" rm="19 EUR/mois" zc="89 EUR/mois/caisse" winner="rm" />
+                <ComparisonRow label="Prix mensuel (top)" rm="19 EUR/mois (offre unique)" zc="159 EUR/mois/caisse" winner="rm" />
                 <ComparisonRow label="Matériel requis" rm="Aucun (web + PWA)" zc="iPad + imprimante + tiroir" winner="rm" />
                 <ComparisonRow label="Essai gratuit" rm="7 jours, sans CB" zc="Démo commerciale" winner="rm" />
                 <ComparisonRow label="Calcul food cost détaillé" rm={true} zc={false} winner="rm" />
@@ -475,14 +475,14 @@ export default function AlternativeLAddition() {
               title="Vous avez déjà L'Addition et vous voulez piloter vos marges"
               recommendation="Ajoutez RestauMargin par-dessus"
               recoColor="emerald"
-              desc="Vous tournez sur L'Addition depuis quelques mois ou quelques années, votre salle est bien gérée, mais vous ne savez pas vraiment quelle est votre marge réelle plat par plat. Vous exportez vos ventes en CSV depuis L'Addition et vous les rapprochez de vos fiches techniques dans RestauMargin. Coût supplémentaire : 29 EUR/mois."
+              desc="Vous tournez sur L'Addition depuis quelques mois ou quelques années, votre salle est bien gérée, mais vous ne savez pas vraiment quelle est votre marge réelle plat par plat. Vous exportez vos ventes en CSV depuis L'Addition et vous les rapprochez de vos fiches techniques dans RestauMargin. Coût supplémentaire : 19 EUR/mois."
             />
             <ScenarioCard
               badge="Profil 2"
               title="Vous ouvrez un nouveau restaurant en 2026"
               recommendation="L'Addition + RestauMargin en parallèle dès le démarrage"
               recoColor="blue"
-              desc="Vous avez besoin d'une caisse certifiée NF525 dès l'ouverture pour encaisser légalement (L'Addition fait très bien le job, comptez 89 à 159 EUR/mois par poste). Vous avez aussi besoin d'un outil pour construire vos fiches techniques, fixer vos prix de vente et surveiller votre food cost dès le jour 1 (RestauMargin à 29 EUR/mois). Total : 118 EUR/mois pour un setup complet salle + cuisine."
+              desc="Vous avez besoin d'une caisse certifiée NF525 dès l'ouverture pour encaisser légalement (L'Addition fait très bien le job, comptez 89 à 159 EUR/mois par poste). Vous avez aussi besoin d'un outil pour construire vos fiches techniques, fixer vos prix de vente et surveiller votre food cost dès le jour 1 (RestauMargin à 19 EUR/mois). Total : 108 à 178 EUR/mois pour un setup complet salle + cuisine."
             />
             <ScenarioCard
               badge="Profil 3"
@@ -527,34 +527,28 @@ export default function AlternativeLAddition() {
               </thead>
               <tbody className="text-mono-350">
                 <tr className="bg-emerald-50 border-t border-mono-900">
-                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin Pro</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">29 EUR</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">348 EUR</td>
+                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin (offre unique)</td>
+                  <td className="py-3 px-4 text-right font-bold text-emerald-900">19 EUR</td>
+                  <td className="py-3 px-4 text-right font-bold text-emerald-900">228 EUR</td>
                   <td className="py-3 px-4 text-right text-emerald-700">Référence</td>
-                </tr>
-                <tr className="bg-emerald-50/40 border-t border-mono-900">
-                  <td className="py-3 px-4 font-bold text-emerald-900">RestauMargin Business</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">79 EUR</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-900">948 EUR</td>
-                  <td className="py-3 px-4 text-right text-emerald-700">+ 600 EUR</td>
                 </tr>
                 <tr className="bg-white border-t border-mono-900">
                   <td className="py-3 px-4 font-bold text-mono-100">L'Addition Essential</td>
                   <td className="py-3 px-4 text-right">89 EUR</td>
                   <td className="py-3 px-4 text-right">1 068 EUR</td>
-                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 720 EUR</td>
+                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 840 EUR</td>
                 </tr>
                 <tr className="bg-mono-1000 border-t border-mono-900">
                   <td className="py-3 px-4 font-bold text-mono-100">L'Addition Pro</td>
                   <td className="py-3 px-4 text-right">119 EUR</td>
                   <td className="py-3 px-4 text-right">1 428 EUR</td>
-                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 1 080 EUR</td>
+                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 1 200 EUR</td>
                 </tr>
                 <tr className="bg-white border-t border-mono-900">
                   <td className="py-3 px-4 font-bold text-mono-100">L'Addition Premium</td>
                   <td className="py-3 px-4 text-right">159 EUR</td>
                   <td className="py-3 px-4 text-right">1 908 EUR</td>
-                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 1 560 EUR</td>
+                  <td className="py-3 px-4 text-right text-red-600 font-semibold">+ 1 680 EUR</td>
                 </tr>
               </tbody>
             </table>
@@ -562,14 +556,14 @@ export default function AlternativeLAddition() {
 
           <div className="prose-content mt-8">
             <p>
-              L'écart annuel se situe entre <strong>720 EUR et 1 560 EUR</strong> selon la formule
+              L'écart annuel se situe entre <strong>840 EUR et 1 680 EUR</strong> selon la formule
               L'Addition à laquelle on compare RestauMargin. Encore une fois, ces écarts ne sont pas
               à interpréter comme une économie pure : les deux outils ne couvrent pas le même besoin.
               Si vous voulez un POS, L'Addition reste justifié à son tarif.
             </p>
             <p>
-              Si vous combinez les deux outils (L'Addition Essential 89 EUR + RestauMargin Pro 29 EUR
-              = 118 EUR/mois soit 1 416 EUR/an), vous obtenez un système complet
+              Si vous combinez les deux outils (L'Addition Essential 89 EUR + RestauMargin 19 EUR
+              = 108 EUR/mois soit 1 296 EUR/an), vous obtenez un système complet
               <strong> caisse certifiée + pilotage des marges</strong> pour moins cher qu'un L'Addition
               Premium seul.
             </p>
@@ -608,7 +602,7 @@ export default function AlternativeLAddition() {
               pour votre restaurant, c'est de l'essayer. Sans carte bancaire, sans engagement.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> à partir du 8e jour si vous décidez de continuer.
+              <strong>19 EUR/mois</strong> à partir du 8e jour si vous décidez de continuer.
               Annulation en un clic.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -648,7 +642,7 @@ export default function AlternativeLAddition() {
             </Link>
             <Link to="/pricing" className="bg-mono-1000 border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Tarifs RestauMargin</h3>
-              <p className="text-xs text-mono-500">Formules Pro et Business, comparaison détaillée des fonctionnalités.</p>
+              <p className="text-xs text-mono-500">Une seule offre à 19 €/mois, toutes les fonctionnalités.</p>
             </Link>
           </div>
         </section>

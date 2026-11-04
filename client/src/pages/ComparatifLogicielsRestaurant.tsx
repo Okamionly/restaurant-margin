@@ -43,7 +43,7 @@ const faqItems = [
   {
     question: "Combien faut-il dépenser en logiciels pour un restaurant en 2026 ?",
     answer:
-      "La fourchette varie de 50 à 400 EUR/mois selon la taille et les besoins. Un restaurant indépendant peut s'en sortir avec 60-100 EUR/mois (RestauMargin Pro 29 EUR + TheFork gratuit + Sumup caisse). Un restaurant gastronomique ou un groupe vise plutôt 250-400 EUR/mois (Lightspeed Pro 89 EUR + Zenchef Standard 139 EUR + RestauMargin Business 79 EUR). Le bon ratio est de 1 à 2 % du chiffre d'affaires consacré au stack logiciel.",
+      "La fourchette varie de 50 à 400 EUR/mois selon la taille et les besoins. Un restaurant indépendant peut s'en sortir avec 60-100 EUR/mois (RestauMargin 19 EUR + TheFork gratuit + Sumup caisse). Un restaurant gastronomique ou un groupe vise plutôt 250-400 EUR/mois (Lightspeed Pro 89 EUR + Zenchef Standard 139 EUR + RestauMargin 19 EUR, multi-établissements inclus). Le bon ratio est de 1 à 2 % du chiffre d'affaires consacré au stack logiciel.",
   },
   {
     question: "Combien d'outils différents faut-il pour gérer un restaurant ?",
@@ -78,7 +78,7 @@ const faqItems = [
   {
     question: "Quel logiciel choisir pour un restaurant qui démarre ?",
     answer:
-      "Pour un démarrage, viser la simplicité et un budget < 80 EUR/mois. La combinaison la plus efficace en 2026 : Sumup POS (caisse gratuite + matériel à 39 EUR), TheFork (réservations gratuites), RestauMargin Pro (29 EUR/mois pour les marges). Total mensuel : 29 EUR. Une fois l'activité stabilisée (6-12 mois), passer à une caisse plus pro comme L'Addition ou Lightspeed devient pertinent.",
+      "Pour un démarrage, viser la simplicité et un budget < 80 EUR/mois. La combinaison la plus efficace en 2026 : Sumup POS (caisse gratuite + matériel à 39 EUR), TheFork (réservations gratuites), RestauMargin (19 EUR/mois pour les marges). Total mensuel : 19 EUR. Une fois l'activité stabilisée (6-12 mois), passer à une caisse plus pro comme L'Addition ou Lightspeed devient pertinent.",
   },
   {
     question: "L'IA est-elle vraiment utile dans un logiciel restaurant ?",
@@ -124,7 +124,7 @@ type ToolData = {
 const tools: ToolData[] = [
   {
     name: 'RestauMargin',
-    price: '29 EUR',
+    price: '19 EUR',
     speciality: 'Marges & food cost',
     foodCost: 'oui',
     pos: 'non',
@@ -407,7 +407,7 @@ export default function ComparatifLogicielsRestaurant() {
               <strong className="text-white">Notre approche :</strong> combiner 2 à 3 outils spécialisés plutôt que chercher un tout-en-un médiocre. Budget réaliste : 60 à 250 EUR/mois selon la taille.
             </p>
             <p className="leading-relaxed pt-2 border-t border-white/20">
-              <strong className="text-white">RestauMargin</strong> (29 EUR/mois) excelle sur la gestion des marges et du food cost. Pour les réservations, la caisse et la livraison, d'autres outils sont meilleurs. Une combinaison possible pour un indépendant : <strong>RestauMargin + L'Addition + TheFork</strong>.
+              <strong className="text-white">RestauMargin</strong> (19 EUR/mois) excelle sur la gestion des marges et du food cost. Pour les réservations, la caisse et la livraison, d'autres outils sont meilleurs. Une combinaison possible pour un indépendant : <strong>RestauMargin + L'Addition + TheFork</strong>.
             </p>
           </div>
         </div>
@@ -617,7 +617,7 @@ export default function ComparatifLogicielsRestaurant() {
               icon={<PieChart className="w-6 h-6" />}
               category="Gestion marge / food cost"
               winners={[
-                { name: 'RestauMargin', desc: '29 EUR/mois, IA intégrée, mercuriale, fiches techniques, scan factures OCR. Le meilleur rapport qualité/prix en français.' },
+                { name: 'RestauMargin', desc: '19 EUR/mois, IA intégrée, mercuriale, fiches techniques, scan factures OCR. Le meilleur rapport qualité/prix en français.' },
                 { name: 'Marketman', desc: '149 EUR/mois, leader mondial du food cost, très complet mais cher et orienté chaînes US. Interface en anglais.' },
                 { name: 'Easilys', desc: '149 EUR/mois, fort en collectivités et RHF (restauration hors foyer). Excellent pour cuisines centrales et écoles.' },
               ]}
@@ -655,7 +655,7 @@ export default function ComparatifLogicielsRestaurant() {
               winners={[
                 { name: 'Sunday', desc: '0 EUR + 1.4 % par transaction, paiement à table par QR code, expérience client moderne, déployé en France et UK.' },
                 { name: 'Pi Electronique', desc: 'Bornes de commande et caisses tactiles spécialisées, fort sur boulangerie et brasserie volume, hardware robuste.' },
-                { name: 'RestauMargin', desc: 'PWA mobile native avec mode kiosk balance Bluetooth pour pesage temps réel en cuisine. Inclus dès la formule Pro.' },
+                { name: 'RestauMargin', desc: 'PWA mobile native avec mode kiosk balance Bluetooth pour pesage temps réel en cuisine. Inclus dans l\'offre unique à 19 EUR/mois.' },
               ]}
             />
           </div>
@@ -682,35 +682,35 @@ export default function ComparatifLogicielsRestaurant() {
               title="Restaurant indépendant, 1 établissement, 30 à 80 couverts/jour"
               recommendation={"RestauMargin + L'Addition"}
               recoColor="emerald"
-              desc="Vous gérez seul ou à deux, votre priorité est la rentabilité quotidienne et un service fluide. RestauMargin Pro (29 EUR) pour les marges et le food cost, L'Addition (59 EUR) pour la caisse. Total : 88 EUR/mois. Réservations gérées par TheFork gratuit ou par téléphone."
+              desc="Vous gérez seul ou à deux, votre priorité est la rentabilité quotidienne et un service fluide. RestauMargin (19 EUR) pour les marges et le food cost, L'Addition (59 EUR) pour la caisse. Total : 78 EUR/mois. Réservations gérées par TheFork gratuit ou par téléphone."
             />
             <ScenarioCard
               badge="Profil 2"
               title="Gastronomique étoilé ou très haut de gamme"
               recommendation="RestauMargin + Zenchef + Lightspeed"
               recoColor="purple"
-              desc="Votre ticket moyen est élevé (60 EUR et plus), vous avez besoin d'une gestion fine des marges (RestauMargin Business 79 EUR), d'un module réservation premium avec marketing (Zenchef Standard 139 EUR) et d'une caisse pro multi-postes (Lightspeed Pro 89 EUR). Total : 307 EUR/mois. C'est un investissement qui se rentabilise vite sur ce niveau de gamme."
+              desc="Votre ticket moyen est élevé (60 EUR et plus), vous avez besoin d'une gestion fine des marges (RestauMargin 19 EUR), d'un module réservation premium avec marketing (Zenchef Standard 139 EUR) et d'une caisse pro multi-postes (Lightspeed Pro 89 EUR). Total : 247 EUR/mois. C'est un investissement qui se rentabilise vite sur ce niveau de gamme."
             />
             <ScenarioCard
               badge="Profil 3"
               title="Groupe multi-restaurant, 3 à 10 établissements"
-              recommendation="RestauMargin Business + Lightspeed"
+              recommendation="RestauMargin + Lightspeed"
               recoColor="blue"
-              desc="Vous avez besoin d'une vue consolidée des marges et d'un benchmarking entre établissements (RestauMargin Business 79 EUR multi-resto), et d'une caisse capable de gérer plusieurs sites avec API ouverte (Lightspeed 89 EUR). Total : 168 EUR/mois pour le coeur du stack, à compléter par Zenchef si réservations centralisées nécessaires."
+              desc="Vous avez besoin d'une vue consolidée des marges et d'un benchmarking entre établissements (RestauMargin 19 EUR, multi-resto inclus), et d'une caisse capable de gérer plusieurs sites avec API ouverte (Lightspeed 89 EUR). Total : 108 EUR/mois pour le coeur du stack, à compléter par Zenchef si réservations centralisées nécessaires."
             />
             <ScenarioCard
               badge="Profil 4"
               title="Dark kitchen ou cuisine 100 % livraison"
               recommendation="RestauMargin + Hubrise + Deliverect"
               recoColor="emerald"
-              desc="Pas de salle, pas de réservation, votre vie c'est UberEats, Deliveroo, Just Eat. Hubrise (69 EUR) ou Deliverect (89 EUR) pour centraliser les commandes en une seule interface KDS, RestauMargin (29 EUR) pour piloter le food cost très serré qui caractérise ce business. Total : 98 EUR/mois. Marge optimisée plat par plat critique pour rester rentable."
+              desc="Pas de salle, pas de réservation, votre vie c'est UberEats, Deliveroo, Just Eat. Hubrise (69 EUR) ou Deliverect (89 EUR) pour centraliser les commandes en une seule interface KDS, RestauMargin (19 EUR) pour piloter le food cost très serré qui caractérise ce business. Total : 88 à 108 EUR/mois. Marge optimisée plat par plat critique pour rester rentable."
             />
             <ScenarioCard
               badge="Profil 5"
               title="Brasserie volume ou bistrot 100+ couverts/jour"
               recommendation={"RestauMargin + L'Addition + TheFork"}
               recoColor="blue"
-              desc="Volume élevé, marge faible (entre 60 et 65 % de marge brute selon les cartes), un POS rapide est critique. L'Addition (59 EUR) éprouvé sur la brasserie française, RestauMargin (29 EUR) pour traquer chaque point de food cost, TheFork (gratuit) pour le walk-in et la visibilité Google. Total : 88 EUR/mois. Très bon ratio pour des établissements à fort débit."
+              desc="Volume élevé, marge faible (entre 60 et 65 % de marge brute selon les cartes), un POS rapide est critique. L'Addition (59 EUR) éprouvé sur la brasserie française, RestauMargin (19 EUR) pour traquer chaque point de food cost, TheFork (gratuit) pour le walk-in et la visibilité Google. Total : 78 EUR/mois. Très bon ratio pour des établissements à fort débit."
             />
           </div>
 
@@ -750,12 +750,11 @@ export default function ComparatifLogicielsRestaurant() {
               <tbody className="text-mono-350">
                 <PricingRow name="Sunday" monthly="0 EUR + 1.4 %" yearly="Variable" model="Commission sur transactions" highlight={false} />
                 <PricingRow name="TheFork (basique)" monthly="0 EUR" yearly="0 EUR" model="Gratuit + commissions sur couverts" highlight={false} />
-                <PricingRow name="RestauMargin Pro" monthly="29 EUR" yearly="348 EUR" model="Abonnement, essai 7j gratuit" highlight={true} />
+                <PricingRow name="RestauMargin" monthly="19 EUR" yearly="228 EUR" model="Offre unique, essai 7j gratuit, multi-resto inclus" highlight={true} />
                 <PricingRow name="L'Addition" monthly="59 EUR" yearly="708 EUR" model="Abonnement + matériel à part" highlight={false} />
                 <PricingRow name="Tiller" monthly="69 EUR" yearly="828 EUR" model="Abonnement + matériel à part" highlight={false} />
                 <PricingRow name="Lightspeed" monthly="69 EUR" yearly="828 EUR" model="Abonnement, modulaire" highlight={false} />
                 <PricingRow name="Hubrise" monthly="69 EUR" yearly="828 EUR" model="Abonnement par canal" highlight={false} />
-                <PricingRow name="RestauMargin Business" monthly="79 EUR" yearly="948 EUR" model="Abonnement multi-resto" highlight={true} />
                 <PricingRow name="Zenchef Essential" monthly="89 EUR" yearly="1 068 EUR" model="Abonnement, démo obligatoire" highlight={false} />
                 <PricingRow name="Deliverect" monthly="89 EUR" yearly="1 068 EUR" model="Abonnement par localisation" highlight={false} />
                 <PricingRow name="Innovorder" monthly="99 EUR" yearly="1 188 EUR" model="Abonnement + matériel" highlight={false} />
@@ -852,7 +851,7 @@ export default function ComparatifLogicielsRestaurant() {
               outils complémentaires de votre choix.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> à partir du 8e jour si vous décidez de continuer.
+              <strong>19 EUR/mois</strong> à partir du 8e jour si vous décidez de continuer.
               Annulation en un clic, export complet de vos données à tout moment.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -921,7 +920,7 @@ export default function ComparatifLogicielsRestaurant() {
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">
                 Tarifs RestauMargin
               </h3>
-              <p className="text-xs text-mono-500">Formules Pro (29 EUR) et Business (79 EUR) en détail, comparaison fonctionnalités.</p>
+              <p className="text-xs text-mono-500">Une seule offre à 19 EUR/mois, toutes les fonctionnalités.</p>
             </Link>
             <Link
               to="/blog/calcul-marge-restaurant"

@@ -904,17 +904,17 @@ const ROUTES = [
   {
     path: '/logiciel-marge-pizzeria',
     title: 'Logiciel marge pizzeria | Food cost pizza | RestauMargin',
-    description: 'Logiciel pour calculer la marge d une pizzeria. Cout pate, garniture, livraison. Food cost cible 22-25%. Essai gratuit 7 jours.',
+    description: 'Logiciel pour calculer la marge d une pizzeria. Coût pâte, garniture, livraison. Food cost cible 22-25%. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-restaurant-italien',
-    title: 'Logiciel marge restaurant italien | Food cost pates | RestauMargin',
-    description: 'Logiciel pour calculer la marge d un restaurant italien. Cout pates, antipasti, risotto, vins. Food cost cible 26-30%. Essai gratuit 7 jours.',
+    title: 'Logiciel marge restaurant italien | Food cost pâtes | RestauMargin',
+    description: 'Logiciel pour calculer la marge d un restaurant italien. Coût pâtes, antipasti, risotto, vins. Food cost cible 26-30%. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-restaurant-indien',
     title: 'Logiciel marge restaurant indien | Food cost curry | RestauMargin',
-    description: 'Logiciel pour calculer la marge d un restaurant indien. Cout curry, biryani, naan, dal, boissons. Food cost cible 28-32%. Essai gratuit 7 jours.',
+    description: 'Logiciel pour calculer la marge d un restaurant indien. Coût curry, biryani, naan, dal, boissons. Food cost cible 28-32%. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-gastronomique',
@@ -934,7 +934,7 @@ const ROUTES = [
   {
     path: '/logiciel-marge-sushi',
     title: 'Logiciel marge sushi | Food cost saumon thon | RestauMargin',
-    description: 'Logiciel pour calculer marge restaurant sushi japonais. Food cost 30-35%, ingredients chers, gestion FIFO poisson. Essai gratuit 7 jours.',
+    description: 'Logiciel pour calculer marge restaurant sushi japonais. Food cost 30-35%, ingrédients chers, gestion FIFO poisson. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-burger',
@@ -949,7 +949,7 @@ const ROUTES = [
   {
     path: '/logiciel-marge-salad-bar',
     title: 'Logiciel marge salad bar healthy | Food cost poke bowl | RestauMargin',
-    description: 'Logiciel pour calculer marge salad bar, poke bowl, healthy restaurant. Food cost 30-35%, gestion ingredients frais. Essai gratuit 7 jours.',
+    description: 'Logiciel pour calculer marge salad bar, poke bowl, healthy restaurant. Food cost 30-35%, gestion ingrédients frais. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-kebab',
@@ -959,7 +959,7 @@ const ROUTES = [
   {
     path: '/logiciel-marge-traiteur',
     title: 'Logiciel marge traiteur | Food cost et devis traiteur | RestauMargin',
-    description: "Logiciel pour calculer la marge d'un traiteur evenementiel. Cout prestation, main d'oeuvre, devis, food cost cible 28-35%. Essai gratuit 7 jours.",
+    description: "Logiciel pour calculer la marge d'un traiteur événementiel. Coût prestation, main d'oeuvre, devis, food cost cible 28-35%. Essai gratuit 7 jours.",
   },
   {
     path: '/logiciel-marge-cafe-bar',

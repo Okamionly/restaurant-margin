@@ -12,44 +12,44 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 const faqItems = [
   {
-    question: 'Quel est le food cost ideal pour un traiteur ?',
-    answer: "Le food cost ideal d'un traiteur se situe entre 28 % et 35 % selon le type de prestation. Un cocktail dinatoire premium tourne autour de 28-30 %, un buffet d'entreprise 30-33 %, et une prestation mariage haut de gamme peut monter a 33-35 % a cause des produits nobles (foie gras, saumon, champagne). Contrairement a la restauration assise, le traiteur doit integrer le cout de la main d'oeuvre evenementielle et de la logistique dans son calcul de rentabilite, pas seulement le food cost matieres.",
+    question: 'Quel est le food cost idéal pour un traiteur ?',
+    answer: "Le food cost idéal d'un traiteur se situe entre 28 % et 35 % selon le type de prestation. Un cocktail dînatoire premium tourne autour de 28-30 %, un buffet d'entreprise 30-33 %, et une prestation mariage haut de gamme peut monter à 33-35 % à cause des produits nobles (foie gras, saumon, champagne). Contrairement à la restauration assise, le traiteur doit intégrer le coût de la main d'oeuvre événementielle et de la logistique dans son calcul de rentabilité, pas seulement le food cost matières.",
   },
   {
     question: 'Comment calculer le prix d\'une prestation traiteur ?',
-    answer: "Le prix d'une prestation traiteur se calcule en additionnant quatre postes : (1) le cout matieres premieres (food cost), (2) la main d'oeuvre de production et de service (cuisiniers, extras, maitre d'hotel), (3) la logistique (transport, location de materiel, vaisselle), puis on applique un coefficient multiplicateur global de 3,5 a 4,5 sur le cout matieres OU une marge brute cible de 65-72 % sur le prix total. La formule recommandee : Prix HT = cout matieres x coefficient + couts directs main d'oeuvre et logistique + marge de securite 10-15 %.",
+    answer: "Le prix d'une prestation traiteur se calcule en additionnant quatre postes : (1) le coût matières premières (food cost), (2) la main d'oeuvre de production et de service (cuisiniers, extras, maître d'hôtel), (3) la logistique (transport, location de matériel, vaisselle), puis on applique un coefficient multiplicateur global de 3,5 à 4,5 sur le coût matières OU une marge brute cible de 65-72 % sur le prix total. La formule recommandée : Prix HT = coût matières x coefficient + coûts directs main d'oeuvre et logistique + marge de sécurité 10-15 %.",
   },
   {
-    question: 'Quelle marge nette espérer en traiteur evenementiel ?',
-    answer: "Un traiteur evenementiel bien gere degage entre 12 % et 20 % de marge nette. Beaucoup de traiteurs affichent une marge brute correcte (65-70 %) mais une marge nette faible (4-8 %) car ils sous-estiment systematiquement le cout de la main d'oeuvre extra, des heures supplementaires de week-end et du transport. La maitrise de ces couts variables est le principal levier de rentabilite du metier.",
+    question: 'Quelle marge nette espérer en traiteur événementiel ?',
+    answer: "Un traiteur événementiel bien géré dégage entre 12 % et 20 % de marge nette. Beaucoup de traiteurs affichent une marge brute correcte (65-70 %) mais une marge nette faible (4-8 %) car ils sous-estiment systématiquement le coût de la main d'oeuvre extra, des heures supplémentaires de week-end et du transport. La maîtrise de ces coûts variables est le principal levier de rentabilité du métier.",
   },
   {
-    question: 'Comment chiffrer le cout de la main d\'oeuvre dans un devis traiteur ?',
-    answer: "Le cout de la main d'oeuvre traiteur se chiffre en heures reelles x taux horaire charge. Comptez 25-35 EUR/heure charge pour un cuisinier, 18-25 EUR/heure pour un extra de service, et n'oubliez pas les heures de preparation en amont (souvent 1,5 a 2x les heures de prestation). Pour un cocktail de 100 personnes, prevoyez 3-4 personnes en service pendant 5 heures + 2 cuisiniers sur 8 heures de production : soit 40 a 50 heures de main d'oeuvre a integrer dans le devis.",
+    question: 'Comment chiffrer le coût de la main d\'oeuvre dans un devis traiteur ?',
+    answer: "Le coût de la main d'oeuvre traiteur se chiffre en heures réelles x taux horaire charge. Comptez 25-35 EUR/heure charge pour un cuisinier, 18-25 EUR/heure pour un extra de service, et n'oubliez pas les heures de préparation en amont (souvent 1,5 à 2x les heures de prestation). Pour un cocktail de 100 personnes, prévoyez 3-4 personnes en service pendant 5 heures + 2 cuisiniers sur 8 heures de production : soit 40 à 50 heures de main d'oeuvre à intégrer dans le devis.",
   },
   {
     question: 'Quel coefficient multiplicateur appliquer en traiteur ?',
-    answer: "Le coefficient multiplicateur traiteur se situe entre 3,5 et 4,5 sur le cout matieres, soit plus eleve que la restauration assise classique (coefficient 3-3,5). Cette difference s'explique par les couts caches du metier : transport, location de materiel, vaisselle, perte sur invendus de buffet, et surtout la main d'oeuvre evenementielle ponctuelle. Un coefficient de 4 sur les matieres est un bon point de depart, a affiner selon la prestation.",
+    answer: "Le coefficient multiplicateur traiteur se situe entre 3,5 et 4,5 sur le coût matières, soit plus élevé que la restauration assise classique (coefficient 3-3,5). Cette différence s'explique par les coûts cachés du métier : transport, location de matériel, vaisselle, perte sur invendus de buffet, et surtout la main d'oeuvre événementielle ponctuelle. Un coefficient de 4 sur les matières est un bon point de départ, à affiner selon la prestation.",
   },
   {
-    question: 'Comment gerer le gaspillage et les invendus en traiteur buffet ?',
-    answer: "Le gaspillage en traiteur buffet represente 8 a 15 % des matieres produites si rien n'est suivi. Pour le maitriser : calibrez les quantites a 1,1-1,2x le nombre de convives (et non 1,5x par securite excessive), suivez les retours par type de plat sur plusieurs prestations, et integrez un taux de perte realiste dans vos fiches techniques. Un logiciel de marge permet de stocker ce taux de gaspillage par recette et de l'inclure automatiquement dans le cout reel.",
+    question: 'Comment gérer le gaspillage et les invendus en traiteur buffet ?',
+    answer: "Le gaspillage en traiteur buffet représente 8 à 15 % des matières produites si rien n'est suivi. Pour le maîtriser : calibrez les quantités à 1,1-1,2x le nombre de convives (et non 1,5x par sécurité excessive), suivez les retours par type de plat sur plusieurs prestations, et intégrez un taux de perte réaliste dans vos fiches techniques. Un logiciel de marge permet de stocker ce taux de gaspillage par recette et de l'inclure automatiquement dans le coût réel.",
   },
   {
-    question: 'Faut-il facturer la location de materiel separement ?',
-    answer: "Oui, il est fortement recommande de detailler la location de materiel (mange-debout, vaisselle, nappage, chauffe-plats, tireuse) en ligne distincte du devis traiteur. Cela ameliore la lisibilite pour le client, evite de noyer ces couts dans le prix au couvert, et protege votre marge si le client annule une partie de la prestation. Comptez 2 a 6 EUR/personne de location materiel selon le niveau de la prestation.",
+    question: 'Faut-il facturer la location de matériel séparément ?',
+    answer: "Oui, il est fortement recommandé de détailler la location de matériel (mange-debout, vaisselle, nappage, chauffe-plats, tireuse) en ligne distincte du devis traiteur. Cela améliore la lisibilité pour le client, évite de noyer ces coûts dans le prix au couvert, et protège votre marge si le client annule une partie de la prestation. Comptez 2 à 6 EUR/personne de location matériel selon le niveau de la prestation.",
   },
   {
-    question: 'Quels KPI suivre dans une activite traiteur ?',
-    answer: "Les 6 KPI essentiels d'un traiteur : (1) Food cost par prestation (cible 28-35 %), (2) Cout main d'oeuvre / CA prestation (cible inferieure a 30 %), (3) Marge brute par type de prestation (cocktail vs buffet vs mariage), (4) Ticket moyen par convive, (5) Taux de transformation des devis (cible superieure a 35 %), (6) Taux de gaspillage par prestation. RestauMargin centralise ces indicateurs et compare la rentabilite reelle de chaque type d'evenement.",
+    question: 'Quels KPI suivre dans une activité traiteur ?',
+    answer: "Les 6 KPI essentiels d'un traiteur : (1) Food cost par prestation (cible 28-35 %), (2) Coût main d'oeuvre / CA prestation (cible inférieure à 30 %), (3) Marge brute par type de prestation (cocktail vs buffet vs mariage), (4) Ticket moyen par convive, (5) Taux de transformation des devis (cible supérieure à 35 %), (6) Taux de gaspillage par prestation. RestauMargin centralise ces indicateurs et compare la rentabilité réelle de chaque type d'événement.",
   },
   {
-    question: 'Comment differencier la marge entre cocktail, buffet et plateau-repas ?',
-    answer: "Chaque format traiteur a une structure de marge distincte. Le plateau-repas individuel a le food cost le plus eleve (35-40 %) mais une logistique simple et une main d'oeuvre faible. Le cocktail dinatoire a un bon food cost (28-30 %) mais demande beaucoup de main d'oeuvre de service. Le buffet d'entreprise offre le meilleur compromis (food cost 30-33 %, main d'oeuvre moderee). Une activite traiteur rentable equilibre ces trois formats selon la saison et la demande.",
+    question: 'Comment différencier la marge entre cocktail, buffet et plateau-repas ?',
+    answer: "Chaque format traiteur a une structure de marge distincte. Le plateau-repas individuel a le food cost le plus élevé (35-40 %) mais une logistique simple et une main d'oeuvre faible. Le cocktail dînatoire a un bon food cost (28-30 %) mais demande beaucoup de main d'oeuvre de service. Le buffet d'entreprise offre le meilleur compromis (food cost 30-33 %, main d'oeuvre modérée). Une activité traiteur rentable équilibre ces trois formats selon la saison et la demande.",
   },
   {
     question: 'Pourquoi un logiciel de marge est-il indispensable pour un traiteur ?',
-    answer: "Un traiteur jongle avec des dizaines de fiches techniques, des devis sur mesure, des produits a prix volatils (saumon, foie gras, fruits de mer) et une main d'oeuvre ponctuelle difficile a chiffrer. Sans logiciel, chaque devis est un pari sur la rentabilite. RestauMargin calcule automatiquement le cout reel de chaque prestation (matieres + main d'oeuvre + logistique), met a jour les prix via le scan OCR des factures, et alerte des qu'une prestation passe sous le seuil de marge cible.",
+    answer: "Un traiteur jongle avec des dizaines de fiches techniques, des devis sur mesure, des produits à prix volatils (saumon, foie gras, fruits de mer) et une main d'oeuvre ponctuelle difficile à chiffrer. Sans logiciel, chaque devis est un pari sur la rentabilité. RestauMargin calcule automatiquement le coût réel de chaque prestation (matières + main d'oeuvre + logistique), met à jour les prix via le scan OCR des factures, et alerte dès qu'une prestation passe sous le seuil de marge cible.",
   },
 ];
 
@@ -58,21 +58,21 @@ export default function LogicielMargeTraiteur() {
     <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Logiciel marge traiteur | Food cost et devis traiteur | RestauMargin"
-        description="Logiciel pour calculer la marge d'un traiteur evenementiel. Cout prestation, main d'oeuvre, devis, food cost cible 28-35%. Essai gratuit 7 jours."
+        description="Logiciel pour calculer la marge d'un traiteur événementiel. Coût prestation, main d'oeuvre, devis, food cost cible 28-35%. Essai gratuit 7 jours."
         path="/logiciel-marge-traiteur"
         type="article"
         schema={[
           buildFAQSchema(faqItems),
           buildBreadcrumbSchema([
             { name: 'Accueil', url: 'https://www.restaumargin.fr/' },
-            { name: 'Logiciels metier', url: 'https://www.restaumargin.fr/logiciel-marge-restaurant' },
+            { name: 'Logiciels métier', url: 'https://www.restaumargin.fr/logiciel-marge-restaurant' },
             { name: 'Logiciel marge traiteur', url: 'https://www.restaumargin.fr/logiciel-marge-traiteur' },
           ]),
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
-            headline: 'Logiciel de marge pour traiteur : food cost, devis et rentabilite en 2026',
-            description: "Guide complet du calcul de marge pour traiteur evenementiel : decomposition du cout d'une prestation, food cost cible 28-35 %, chiffrage de la main d'oeuvre, methode de devis, KPI specifiques et cas concret Bordeaux.",
+            headline: 'Logiciel de marge pour traiteur : food cost, devis et rentabilité en 2026',
+            description: "Guide complet du calcul de marge pour traiteur événementiel : décomposition du coût d'une prestation, food cost cible 28-35 %, chiffrage de la main d'oeuvre, méthode de devis, KPI spécifiques et cas concret Bordeaux.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -94,16 +94,16 @@ export default function LogicielMargeTraiteur() {
             applicationSubCategory: 'Catering Margin Software',
             operatingSystem: 'Web, iOS, Android',
             url: 'https://www.restaumargin.fr/logiciel-marge-traiteur',
-            description: "Logiciel SaaS de calcul de marge pour traiteur evenementiel : food cost par prestation, chiffrage de la main d'oeuvre et de la logistique, generation de devis rentables, suivi de la marge par type d'evenement (cocktail, buffet, mariage, plateau-repas), scan OCR des factures fournisseurs, KPI traiteur.",
+            description: "Logiciel SaaS de calcul de marge pour traiteur événementiel : food cost par prestation, chiffrage de la main d'oeuvre et de la logistique, génération de devis rentables, suivi de la marge par type d'événement (cocktail, buffet, mariage, plateau-repas), scan OCR des factures fournisseurs, KPI traiteur.",
             featureList: [
               'Fiches techniques par prestation avec grammages et taux de perte',
-              'Calcul du cout reel : matieres + main d\'oeuvre + logistique',
-              'Chiffrage de la main d\'oeuvre evenementielle (cuisiniers, extras, service)',
+              'Calcul du coût réel : matières + main d\'oeuvre + logistique',
+              'Chiffrage de la main d\'oeuvre événementielle (cuisiniers, extras, service)',
               'Coefficient multiplicateur ajustable par type de prestation',
               'Suivi de la marge par format (cocktail, buffet, mariage, plateau-repas)',
               'Scan factures fournisseurs (OCR) produits volatils',
-              'KPI traiteur : food cost, cout MO/CA, taux de transformation devis',
-              'Compatible PWA tablette en cuisine et sur evenement',
+              'KPI traiteur : food cost, coût MO/CA, taux de transformation devis',
+              'Compatible PWA tablette en cuisine et sur événement',
             ],
             offers: {
               '@type': 'Offer',
@@ -150,7 +150,7 @@ export default function LogicielMargeTraiteur() {
         <div className="max-w-4xl mx-auto text-xs text-mono-500 flex items-center gap-2 flex-wrap">
           <Link to="/" className="hover:text-teal-600">Accueil</Link>
           <span>/</span>
-          <Link to="/logiciel-marge-restaurant" className="hover:text-teal-600">Logiciels metier</Link>
+          <Link to="/logiciel-marge-restaurant" className="hover:text-teal-600">Logiciels métier</Link>
           <span>/</span>
           <span className="text-mono-100 font-medium">Logiciel marge traiteur</span>
         </div>
@@ -161,9 +161,9 @@ export default function LogicielMargeTraiteur() {
         category="Traiteur"
         readTime="14 min"
         date="Mai 2026"
-        title="Logiciel de marge pour traiteur : food cost, devis et rentabilite en 2026"
+        title="Logiciel de marge pour traiteur : food cost, devis et rentabilité en 2026"
         accentWord="traiteur"
-        subtitle="Le metier de traiteur a une economie unique : forte marge brute apparente mais main d'oeuvre evenementielle et logistique qui rongent la marge nette. Methode de calcul, decomposition du cout d'une prestation, chiffrage de devis et cas concret."
+        subtitle="Le métier de traiteur a une économie unique : forte marge brute apparente mais main d'oeuvre événementielle et logistique qui rongent la marge nette. Méthode de calcul, décomposition du coût d'une prestation, chiffrage de devis et cas concret."
       />
 
       {/* ── Contenu principal ── */}
@@ -175,32 +175,32 @@ export default function LogicielMargeTraiteur() {
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
           <div className="flex items-center gap-2 mb-3">
             <Zap className="w-5 h-5" />
-            <span className="text-xs font-bold uppercase tracking-wider text-teal-100">Reperes cles traiteur</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-100">Repères clés traiteur</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold mb-4">
-            Les ratios a memoriser
+            Les ratios à mémoriser
           </h2>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 space-y-3 font-mono text-sm sm:text-base">
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">1.</span>
-              <span><strong className="text-white">Food cost cible traiteur</strong> : 28 % a 35 % selon prestation</span>
+              <span><strong className="text-white">Food cost cible traiteur</strong> : 28 % à 35 % selon prestation</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">2.</span>
-              <span><strong className="text-white">Coefficient multiplicateur</strong> : 3,5 a 4,5 sur le cout matieres</span>
+              <span><strong className="text-white">Coefficient multiplicateur</strong> : 3,5 à 4,5 sur le coût matières</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">3.</span>
-              <span><strong className="text-white">Cout main d'oeuvre / CA</strong> : a maintenir sous 30 %</span>
+              <span><strong className="text-white">Coût main d'oeuvre / CA</strong> : à maintenir sous 30 %</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">4.</span>
-              <span><strong className="text-white">Marge nette saine</strong> : 12 % a 20 %</span>
+              <span><strong className="text-white">Marge nette saine</strong> : 12 % à 20 %</span>
             </div>
           </div>
           <p className="mt-4 text-teal-100 text-sm">
             Un traiteur peut afficher 68 % de marge brute et perdre de l'argent : tout se joue
-            sur la maitrise de la main d'oeuvre evenementielle et de la logistique.
+            sur la maîtrise de la main d'oeuvre événementielle et de la logistique.
           </p>
         </div>
 
@@ -212,16 +212,16 @@ export default function LogicielMargeTraiteur() {
           </h2>
           <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
-              { href: '#intro', label: 'Pourquoi le traiteur est un metier de marge a part' },
+              { href: '#intro', label: 'Pourquoi le traiteur est un métier de marge à part' },
               { href: '#food-cost', label: 'Food cost cible : 28-35 % selon la prestation' },
-              { href: '#decomposition', label: 'Decomposition du cout reel d\'une prestation' },
+              { href: '#decomposition', label: 'Décomposition du coût réel d\'une prestation' },
               { href: '#formats', label: 'Tableau : 6 formats de prestation et leurs marges' },
-              { href: '#main-oeuvre', label: 'Le piege de la main d\'oeuvre evenementielle' },
+              { href: '#main-oeuvre', label: 'Le piège de la main d\'oeuvre événementielle' },
               { href: '#devis', label: 'Le devis traiteur : chiffrer sans se tromper' },
-              { href: '#kpi', label: 'Les 6 KPI a suivre en traiteur' },
-              { href: '#cas-bordeaux', label: 'Cas concret : traiteur Bordeaux, 6 % a 19 % en 12 mois' },
+              { href: '#kpi', label: 'Les 6 KPI à suivre en traiteur' },
+              { href: '#cas-bordeaux', label: 'Cas concret : traiteur Bordeaux, 6 % à 19 % en 12 mois' },
               { href: '#logiciel', label: 'Comment RestauMargin automatise tout' },
-              { href: '#faq', label: 'Questions frequentes traiteur' },
+              { href: '#faq', label: 'Questions fréquentes traiteur' },
               { href: '#cta', label: 'Essayer RestauMargin gratuitement' },
             ].map((item, i) => (
               <li key={i}>
@@ -239,39 +239,39 @@ export default function LogicielMargeTraiteur() {
         {/* ═════════════ SECTION 1 : Intro ═════════════ */}
         <section id="intro" className="mb-16">
           <SectionHeading icon={<PartyPopper className="w-6 h-6" />} number="1">
-            Pourquoi le traiteur est un metier de marge a part
+            Pourquoi le traiteur est un métier de marge à part
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Le metier de traiteur ressemble en apparence a celui d'un restaurant : on achete des
-              matieres premieres, on les transforme, on les vend avec une marge. Mais la realite
-              economique est radicalement differente. Un restaurant assis vend des couverts a la
-              chaine, dans un lieu fixe, avec une equipe permanente. Un traiteur, lui, produit des
+              Le métier de traiteur ressemble en apparence à celui d'un restaurant : on achète des
+              matières premières, on les transforme, on les vend avec une marge. Mais la réalité
+              économique est radicalement différente. Un restaurant assis vend des couverts à la
+              chaîne, dans un lieu fixe, avec une équipe permanente. Un traiteur, lui, produit des
               prestations ponctuelles, sur mesure, hors les murs, avec une main d'oeuvre qui
-              varie d'un evenement a l'autre.
+              varie d'un événement à l'autre.
             </p>
             <p>
-              Cette specificite cree un piege de rentabilite classique : le traiteur regarde son
-              food cost matieres (souvent excellent, autour de 30 %), conclut qu'il gagne bien sa
-              vie, puis decouvre en fin d'annee une marge nette ridicule. La raison ? Il a oublie
-              d'integrer le cout reel de la main d'oeuvre evenementielle, du transport, de la
-              location de materiel et du gaspillage de buffet dans le calcul de chaque prestation.
+              Cette spécificité crée un piège de rentabilité classique : le traiteur regarde son
+              food cost matières (souvent excellent, autour de 30 %), conclut qu'il gagne bien sa
+              vie, puis découvre en fin d'année une marge nette ridicule. La raison ? Il a oublié
+              d'intégrer le coût réel de la main d'oeuvre événementielle, du transport, de la
+              location de matériel et du gaspillage de buffet dans le calcul de chaque prestation.
             </p>
             <p>
               Calculer la marge d'un traiteur ne se limite donc jamais au food cost. Il faut
-              raisonner par prestation complete, en additionnant quatre postes de cout : les
-              matieres premieres, la main d'oeuvre de production et de service, la logistique
-              (transport, materiel, vaisselle) et les couts caches (perte, casse, deplacements).
-              C'est seulement apres avoir consolide ces quatre postes qu'on connait la marge nette
-              reelle d'un cocktail, d'un buffet ou d'un mariage.
+              raisonner par prestation complète, en additionnant quatre postes de coût : les
+              matières premières, la main d'oeuvre de production et de service, la logistique
+              (transport, matériel, vaisselle) et les coûts cachés (perte, casse, déplacements).
+              C'est seulement après avoir consolidé ces quatre postes qu'on connaît la marge nette
+              réelle d'un cocktail, d'un buffet ou d'un mariage.
             </p>
 
             <Callout type="info">
-              <strong>Le saviez-vous ?</strong> Sur une prestation de mariage facturee 90 EUR/convive,
-              un traiteur qui maitrise sa main d'oeuvre degage 16-20 EUR de marge nette par convive.
-              Un traiteur qui sous-estime ses extras et heures sup tombe a 4-6 EUR : pour 120
-              convives, c'est une difference de 1 400 a 1 700 EUR de benefice sur un seul evenement.
+              <strong>Le saviez-vous ?</strong> Sur une prestation de mariage facturée 90 EUR/convive,
+              un traiteur qui maîtrise sa main d'oeuvre dégage 16-20 EUR de marge nette par convive.
+              Un traiteur qui sous-estimé ses extras et heures sup tombe à 4-6 EUR : pour 120
+              convives, c'est une différence de 1 400 à 1 700 EUR de bénéfice sur un seul événement.
             </Callout>
           </div>
         </section>
@@ -284,41 +284,41 @@ export default function LogicielMargeTraiteur() {
 
           <div className="prose-content">
             <p>
-              Le food cost (ratio matieres premieres) d'un traiteur se situe entre 28 % et 35 %
+              Le food cost (ratio matières premières) d'un traiteur se situe entre 28 % et 35 %
               du prix de vente HT, mais cette fourchette varie fortement selon le type de
-              prestation. Contrairement a une pizzeria ou un fast-food qui visent un food cost
+              prestation. Contrairement à une pizzeria ou un fast-food qui visent un food cost
               unique, le traiteur doit raisonner format par format.
             </p>
             <ul className="list-disc list-inside space-y-2 text-mono-350 mt-4">
               <li>
-                <strong>Cocktail dinatoire premium</strong> : food cost 28-30 %. Petites pieces
-                soignees, dressage minutieux, mais cout matieres maitrise par bouchee.
+                <strong>Cocktail dînatoire premium</strong> : food cost 28-30 %. Petites pièces
+                soignées, dressage minutieux, mais coût matières maîtrisé par bouchée.
               </li>
               <li>
                 <strong>Buffet d'entreprise</strong> : food cost 30-33 %. Volume plus important,
-                gaspillage a surveiller, produits de gamme moyenne.
+                gaspillage à surveiller, produits de gamme moyenne.
               </li>
               <li>
                 <strong>Prestation mariage / gastronomique</strong> : food cost 33-35 %. Produits
-                nobles (foie gras, saumon, Saint-Jacques, champagne) qui tirent le ratio vers le haut.
+                nobles (foie gras, saumon, Saint-Jacqués, champagne) qui tirent le ratio vers le haut.
               </li>
               <li>
-                <strong>Plateau-repas individuel</strong> : food cost 35-40 %. Le plus eleve, car
-                portion calibree genereuse et emballage individuel, mais logistique simple.
+                <strong>Plateau-repas individuel</strong> : food cost 35-40 %. Le plus élevé, car
+                portion calibrée généreuse et emballage individuel, mais logistique simple.
               </li>
             </ul>
             <p className="mt-4">
-              La cle est de comprendre que le food cost n'est qu'un des quatre postes de cout. Un
-              plateau-repas a 38 % de food cost peut etre plus rentable qu'un cocktail a 28 % si le
+              La clé est de comprendre que le food cost n'est qu'un des quatre postes de coût. Un
+              plateau-repas à 38 % de food cost peut être plus rentable qu'un cocktail à 28 % si le
               cocktail mobilise quatre extras pendant cinq heures. C'est pourquoi le traiteur doit
-              suivre la <strong>marge nette par prestation</strong>, et non le food cost isole.
+              suivre la <strong>marge nette par prestation</strong>, et non le food cost isolé.
             </p>
 
             <Callout type="warning">
-              <strong>Erreur frequente :</strong> beaucoup de traiteurs appliquent le meme
-              coefficient multiplicateur a toutes leurs prestations. Resultat : ils sur-marginent
-              les plateaux-repas (et perdent des marches) et sous-marginent les mariages (et
-              travaillent a perte les week-ends charges). Chaque format merite son propre coefficient.
+              <strong>Erreur fréquente :</strong> beaucoup de traiteurs appliquent le même
+              coefficient multiplicateur à toutes leurs prestations. Résultat : ils sur-marginent
+              les plateaux-repas (et perdent des marchés) et sous-marginent les mariages (et
+              travaillent à perte les week-ends charges). Chaque format mérite son propre coefficient.
             </Callout>
           </div>
         </section>
@@ -326,14 +326,14 @@ export default function LogicielMargeTraiteur() {
         {/* ═════════════ SECTION 3 : Decomposition ═════════════ */}
         <section id="decomposition" className="mb-16">
           <SectionHeading icon={<Calculator className="w-6 h-6" />} number="3">
-            Decomposition du cout reel d'une prestation
+            Décomposition du coût réel d'une prestation
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Prenons un exemple concret : un cocktail dinatoire de 100 personnes, 12 pieces par
-              personne, facture 45 EUR HT/convive (soit 4 500 EUR HT). Voici comment se decompose
-              le cout reel de cette prestation, poste par poste.
+              Prenons un exemple concret : un cocktail dînatoire de 100 personnes, 12 pièces par
+              personne, facture 45 EUR HT/convive (soit 4 500 EUR HT). Voici comment se décompose
+              le coût réel de cette prestation, poste par poste.
             </p>
           </div>
 
@@ -341,14 +341,14 @@ export default function LogicielMargeTraiteur() {
             <table className="w-full text-sm">
               <thead className="bg-mono-1000 text-mono-100">
                 <tr>
-                  <th className="text-left px-4 py-3 font-semibold">Poste de cout</th>
+                  <th className="text-left px-4 py-3 font-semibold">Poste de coût</th>
                   <th className="text-right px-4 py-3 font-semibold">Montant</th>
                   <th className="text-right px-4 py-3 font-semibold">% du CA</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-mono-900">
                 <tr>
-                  <td className="px-4 py-3 text-mono-300">Matieres premieres (food cost)</td>
+                  <td className="px-4 py-3 text-mono-300">Matières premières (food cost)</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-100">1 320 EUR</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-400">29 %</td>
                 </tr>
@@ -363,12 +363,12 @@ export default function LogicielMargeTraiteur() {
                   <td className="px-4 py-3 text-right font-mono text-mono-400">10 %</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 text-mono-300">Logistique (transport + materiel + vaisselle)</td>
+                  <td className="px-4 py-3 text-mono-300">Logistique (transport + matériel + vaisselle)</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-100">360 EUR</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-400">8 %</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 text-mono-300">Couts caches (perte, casse, deplacements)</td>
+                  <td className="px-4 py-3 text-mono-300">Coûts cachés (perte, casse, déplacements)</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-100">180 EUR</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-400">4 %</td>
                 </tr>
@@ -383,11 +383,11 @@ export default function LogicielMargeTraiteur() {
 
           <div className="prose-content mt-8">
             <p>
-              Cet exemple montre une prestation tres bien geree (38 % de marge nette). Mais il
+              Cet exemple montre une prestation très bien gérée (38 % de marge nette). Mais il
               suffit de doubler le temps de service (mauvaise estimation), d'ajouter une heure de
-              route ou de gaspiller 15 % des matieres pour que cette marge fonde de moitie. C'est
-              precisement ce que la plupart des traiteurs ne voient pas, faute de suivre chaque
-              poste de cout prestation par prestation.
+              route ou de gaspiller 15 % des matières pour que cette marge fonde de moitié. C'est
+              précisément ce que la plupart des traiteurs ne voient pas, faute de suivre chaque
+              poste de coût prestation par prestation.
             </p>
           </div>
         </section>
@@ -400,9 +400,9 @@ export default function LogicielMargeTraiteur() {
 
           <div className="prose-content">
             <p>
-              Chaque format de prestation traiteur a une structure de cout differente. Voici un
+              Chaque format de prestation traiteur a une structure de coût différente. Voici un
               comparatif des 6 formats les plus courants, avec leur food cost typique, leur
-              intensite de main d'oeuvre et la marge nette atteignable lorsqu'ils sont bien geres.
+              intensité de main d'oeuvre et la marge nette atteignable lorsqu'ils sont bien gérés.
             </p>
           </div>
 
@@ -426,7 +426,7 @@ export default function LogicielMargeTraiteur() {
                   <td className="px-4 py-3 text-right font-mono text-teal-700">15-22 %</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-medium text-mono-100">Cocktail dinatoire</td>
+                  <td className="px-4 py-3 font-medium text-mono-100">Cocktail dînatoire</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-300">35-60 EUR</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-300">28-30 %</td>
                   <td className="px-4 py-3 text-center text-amber-700">Forte</td>
@@ -436,28 +436,28 @@ export default function LogicielMargeTraiteur() {
                   <td className="px-4 py-3 font-medium text-mono-100">Buffet d'entreprise</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-300">22-38 EUR</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-300">30-33 %</td>
-                  <td className="px-4 py-3 text-center text-amber-700">Moderee</td>
+                  <td className="px-4 py-3 text-center text-amber-700">Modérée</td>
                   <td className="px-4 py-3 text-right font-mono text-teal-700">16-22 %</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-3 font-medium text-mono-100">Mariage</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-300">70-130 EUR</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-300">33-35 %</td>
-                  <td className="px-4 py-3 text-center text-red-700">Tres forte</td>
+                  <td className="px-4 py-3 text-center text-red-700">Très forte</td>
                   <td className="px-4 py-3 text-right font-mono text-teal-700">12-18 %</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-medium text-mono-100">Brunch / petit-dejeuner</td>
+                  <td className="px-4 py-3 font-medium text-mono-100">Brunch / petit-déjeuner</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-300">12-25 EUR</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-300">30-34 %</td>
-                  <td className="px-4 py-3 text-center text-amber-700">Moderee</td>
+                  <td className="px-4 py-3 text-center text-amber-700">Modérée</td>
                   <td className="px-4 py-3 text-right font-mono text-teal-700">14-20 %</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-medium text-mono-100">Seminaire (pause + dejeuner)</td>
+                  <td className="px-4 py-3 font-medium text-mono-100">Séminaire (pause + déjeuner)</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-300">30-55 EUR</td>
                   <td className="px-4 py-3 text-right font-mono text-mono-300">29-33 %</td>
-                  <td className="px-4 py-3 text-center text-amber-700">Moderee</td>
+                  <td className="px-4 py-3 text-center text-amber-700">Modérée</td>
                   <td className="px-4 py-3 text-right font-mono text-teal-700">15-21 %</td>
                 </tr>
               </tbody>
@@ -466,11 +466,11 @@ export default function LogicielMargeTraiteur() {
 
           <div className="prose-content mt-8">
             <p>
-              Lecon a retenir : le buffet d'entreprise et le seminaire offrent souvent le meilleur
-              rapport rentabilite / complexite. Le mariage, malgre son ticket eleve, est le format
-              le plus risque sur la marge nette a cause de l'intensite de la main d'oeuvre et des
-              exigences de qualite. Un traiteur rentable equilibre son carnet de commandes entre
-              ces formats plutot que de courir uniquement apres les gros mariages.
+              Leçon à retenir : le buffet d'entreprise et le séminaire offrent souvent le meilleur
+              rapport rentabilité / complexité. Le mariage, malgré son ticket élevé, est le format
+              le plus risqué sur la marge nette à cause de l'intensité de la main d'oeuvre et des
+              exigences de qualité. Un traiteur rentable équilibre son carnet de commandes entre
+              ces formats plutôt que de courir uniquement après les gros mariages.
             </p>
           </div>
         </section>
@@ -478,38 +478,38 @@ export default function LogicielMargeTraiteur() {
         {/* ═════════════ SECTION 5 : Main d'oeuvre ═════════════ */}
         <section id="main-oeuvre" className="mb-16">
           <SectionHeading icon={<Users className="w-6 h-6" />} number="5">
-            Le piege de la main d'oeuvre evenementielle
+            Le piège de la main d'oeuvre événementielle
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              La main d'oeuvre est le principal poste qui detruit la marge d'un traiteur, et le plus
-              difficile a chiffrer. Contrairement a un restaurant qui a une equipe fixe, le traiteur
-              recrute des extras a la prestation, paie des heures de nuit et de week-end majorees,
-              et doit compter le temps de production en amont (souvent ignore dans les devis).
+              La main d'oeuvre est le principal poste qui détruit la marge d'un traiteur, et le plus
+              difficile à chiffrer. Contrairement à un restaurant qui a une équipe fixe, le traiteur
+              recrute des extras à la prestation, paie des heures de nuit et de week-end majorées,
+              et doit compter le temps de production en amont (souvent ignoré dans les devis).
             </p>
             <p>
-              Voici les taux horaires charges a integrer dans chaque prestation :
+              Voici les taux horaires charges à intégrer dans chaque prestation :
             </p>
             <ul className="list-disc list-inside space-y-2 text-mono-350 mt-4">
               <li><strong>Cuisinier / chef de partie</strong> : 25-35 EUR/heure charge</li>
               <li><strong>Extra de service</strong> : 18-25 EUR/heure charge</li>
-              <li><strong>Maitre d'hotel</strong> : 28-38 EUR/heure charge</li>
+              <li><strong>Maître d'hôtel</strong> : 28-38 EUR/heure charge</li>
               <li><strong>Plongeur / commis</strong> : 16-20 EUR/heure charge</li>
             </ul>
             <p className="mt-4">
-              Le piege classique : oublier les heures de preparation. Pour un cocktail de 100
-              personnes, les 5 heures de service visibles cachent souvent 12 a 16 heures de
-              production en amont (mise en place, dressage, decoupe). Sans compter le temps de
-              chargement, de route et de demontage. Un traiteur qui ne facture que les heures de
-              service "perd" 60 a 70 % du temps de travail reel.
+              Le piège classique : oublier les heures de préparation. Pour un cocktail de 100
+              personnes, les 5 heures de service visibles cachent souvent 12 à 16 heures de
+              production en amont (mise en place, dressage, découpe). Sans compter le temps de
+              chargement, de route et de démontage. Un traiteur qui ne facture que les heures de
+              service "perd" 60 à 70 % du temps de travail réel.
             </p>
 
             <Callout type="warning">
-              <strong>Regle d'or :</strong> pour chiffrer la main d'oeuvre d'une prestation,
-              multipliez les heures de service par 2 a 2,5 pour obtenir le temps de travail total
-              (production + service + logistique). Un cocktail de 5 h de service represente en
-              realite 11 a 13 h de travail effectif par personne mobilisee.
+              <strong>Règle d'or :</strong> pour chiffrer la main d'oeuvre d'une prestation,
+              multipliez les heures de service par 2 à 2,5 pour obtenir le temps de travail total
+              (production + service + logistique). Un cocktail de 5 h de service représente en
+              réalité 11 à 13 h de travail effectif par personne mobilisée.
             </Callout>
           </div>
         </section>
@@ -522,44 +522,44 @@ export default function LogicielMargeTraiteur() {
 
           <div className="prose-content">
             <p>
-              Le devis est le moment de verite du traiteur. Un devis mal chiffre engage la
-              rentabilite de tout l'evenement, sans rattrapage possible une fois signe. Voici la
-              methode en 4 etapes pour chiffrer une prestation rentable a coup sur.
+              Le devis est le moment de vérité du traiteur. Un devis mal chiffré engage la
+              rentabilité de tout l'événement, sans rattrapage possible une fois signé. Voici la
+              méthode en 4 étapes pour chiffrer une prestation rentable à coup sûr.
             </p>
           </div>
 
           <div className="mt-8 space-y-4">
-            <StepCard number={1} title="Calculer le cout matieres reel">
-              Additionnez le cout de chaque ingredient via vos fiches techniques, en integrant un
-              taux de perte realiste (5-12 % selon le format). C'est la base du chiffrage.
+            <StepCard number={1} title="Calculer le coût matières réel">
+              Additionnez le coût de chaque ingrédient via vos fiches techniques, en intégrant un
+              taux de perte réaliste (5-12 % selon le format). C'est la base du chiffrage.
             </StepCard>
-            <StepCard number={2} title="Chiffrer la main d'oeuvre en heures reelles">
+            <StepCard number={2} title="Chiffrer la main d'oeuvre en heures réelles">
               Estimez les heures de production, de service et de logistique, puis multipliez par les
-              taux horaires charges. N'oubliez jamais les heures de preparation en amont.
+              taux horaires charges. N'oubliez jamais les heures de préparation en amont.
             </StepCard>
             <StepCard number={3} title="Lister la logistique en ligne distincte">
-              Transport, location de materiel, vaisselle, nappage, chauffe-plats : detaillez ces
-              couts separement (2-6 EUR/convive) pour proteger la marge en cas d'annulation partielle.
+              Transport, location de matériel, vaisselle, nappage, chauffe-plats : détaillez ces
+              coûts séparément (2-6 EUR/convive) pour protéger la marge en cas d'annulation partielle.
             </StepCard>
-            <StepCard number={4} title="Appliquer le coefficient et la marge de securite">
-              Appliquez un coefficient multiplicateur de 3,5-4,5 sur le cout matieres, ajoutez les
-              couts directs de main d'oeuvre et de logistique, puis une marge de securite de 10-15 %
-              pour absorber les imprevus.
+            <StepCard number={4} title="Appliquer le coefficient et la marge de sécurité">
+              Appliquez un coefficient multiplicateur de 3,5-4,5 sur le coût matières, ajoutez les
+              coûts directs de main d'oeuvre et de logistique, puis une marge de sécurité de 10-15 %
+              pour absorber les imprévus.
             </StepCard>
           </div>
 
           <div className="prose-content mt-8">
             <p>
-              La formule synthetique du devis traiteur rentable :
+              La formule synthétique du devis traiteur rentable :
             </p>
             <div className="bg-mono-1000 border border-mono-900 rounded-xl p-5 my-4 font-mono text-sm text-mono-200">
-              Prix HT = (cout matieres x coefficient) + main d'oeuvre + logistique + marge de securite
+              Prix HT = (coût matières x coefficient) + main d'oeuvre + logistique + marge de sécurité
             </div>
             <p>
-              Un logiciel de marge comme RestauMargin permet de generer ce calcul automatiquement
+              Un logiciel de marge comme RestauMargin permet de générer ce calcul automatiquement
               pour chaque devis, en partant des fiches techniques et en ajustant le coefficient
-              selon le format. Vous savez instantanement si une prestation atteint votre seuil de
-              marge cible avant meme d'envoyer le devis au client.
+              selon le format. Vous savez instantanément si une prestation atteint votre seuil de
+              marge cible avant même d'envoyer le devis au client.
             </p>
           </div>
         </section>
@@ -567,34 +567,34 @@ export default function LogicielMargeTraiteur() {
         {/* ═════════════ SECTION 7 : KPI ═════════════ */}
         <section id="kpi" className="mb-16">
           <SectionHeading icon={<Target className="w-6 h-6" />} number="7">
-            Les 6 KPI a suivre en traiteur
+            Les 6 KPI à suivre en traiteur
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Piloter une activite traiteur sans indicateurs, c'est avancer a l'aveugle. Voici les
-              6 KPI a suivre prestation apres prestation pour garder le controle de la rentabilite.
+              Piloter une activité traiteur sans indicateurs, c'est avancer à l'aveugle. Voici les
+              6 KPI à suivre prestation après prestation pour garder le contrôle de la rentabilité.
             </p>
           </div>
 
           <div className="mt-8 grid sm:grid-cols-2 gap-4">
             <KpiCard icon={<Percent className="w-5 h-5" />} title="Food cost par prestation" target="Cible : 28-35 %">
-              Le ratio matieres premieres, calcule par format (cocktail, buffet, mariage).
+              Le ratio matières premières, calculé par format (cocktail, buffet, mariage).
             </KpiCard>
-            <KpiCard icon={<Users className="w-5 h-5" />} title="Cout main d'oeuvre / CA" target="Cible : inferieur a 30 %">
-              Le poste qui detruit la marge si mal maitrise. A suivre prestation par prestation.
+            <KpiCard icon={<Users className="w-5 h-5" />} title="Coût main d'oeuvre / CA" target="Cible : inférieur à 30 %">
+              Le poste qui détruit la marge si mal maîtrisé. À suivre prestation par prestation.
             </KpiCard>
-            <KpiCard icon={<FileText className="w-5 h-5" />} title="Taux de transformation des devis" target="Cible : superieur a 35 %">
-              Le ratio devis signes / devis envoyes. Mesure la justesse de votre positionnement prix.
+            <KpiCard icon={<FileText className="w-5 h-5" />} title="Taux de transformation des devis" target="Cible : supérieur à 35 %">
+              Le ratio devis signés / devis envoyés. Mesure la justesse de votre positionnement prix.
             </KpiCard>
             <KpiCard icon={<UtensilsCrossed className="w-5 h-5" />} title="Marge brute par format" target="Cible : 65-72 %">
-              Comparez la rentabilite reelle de chaque type d'evenement pour arbitrer votre carnet.
+              Comparez la rentabilité réelle de chaque type d'événement pour arbitrer votre carnet.
             </KpiCard>
-            <KpiCard icon={<Truck className="w-5 h-5" />} title="Taux de gaspillage" target="Cible : inferieur a 8 %">
-              Les invendus de buffet et les pertes de production, a suivre pour calibrer les quantites.
+            <KpiCard icon={<Truck className="w-5 h-5" />} title="Taux de gaspillage" target="Cible : inférieur à 8 %">
+              Les invendus de buffet et les pertes de production, à suivre pour calibrer les quantités.
             </KpiCard>
             <KpiCard icon={<Calculator className="w-5 h-5" />} title="Ticket moyen par convive" target="Suivi mensuel">
-              L'indicateur de montee en gamme et de pouvoir de negociation commerciale.
+              L'indicateur de montée en gamme et de pouvoir de négociation commerciale.
             </KpiCard>
           </div>
         </section>
@@ -602,35 +602,35 @@ export default function LogicielMargeTraiteur() {
         {/* ═════════════ SECTION 8 : Cas concret ═════════════ */}
         <section id="cas-bordeaux" className="mb-16">
           <SectionHeading icon={<TrendingUpIcon />} number="8">
-            Cas concret : traiteur Bordeaux, 6 % a 19 % en 12 mois
+            Cas concret : traiteur Bordeaux, 6 % à 19 % en 12 mois
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Prenons le cas representatif d'un traiteur evenementiel de la region bordelaise,
-              35 prestations par mois en moyenne, 480 000 EUR de chiffre d'affaires annuel. A son
-              point de depart, l'entreprise affichait une marge nette de seulement 6 %, malgre une
+              Prenons le cas représentatif d'un traiteur événementiel de la région bordelaise,
+              35 prestations par mois en moyenne, 480 000 EUR de chiffre d'affaires annuel. À son
+              point de départ, l'entreprise affichait une marge nette de seulement 6 %, malgré une
               marge brute apparente de 68 %.
             </p>
             <p>
-              Le diagnostic a revele trois fuites majeures :
+              Le diagnostic a révélé trois fuites majeures :
             </p>
             <ul className="list-disc list-inside space-y-2 text-mono-350 mt-4">
               <li>
-                <strong>Main d'oeuvre sous-estimee</strong> : les devis ne facturaient que les
-                heures de service, ignorant 60 % du temps de travail reel (production, logistique).
+                <strong>Main d'oeuvre sous-estimée</strong> : les devis ne facturaient que les
+                heures de service, ignorant 60 % du temps de travail réel (production, logistique).
               </li>
               <li>
-                <strong>Coefficient uniforme</strong> : le meme coefficient appliquait sur les
-                mariages (a perte) et les plateaux-repas (sur-margines, perte de marches).
+                <strong>Coefficient uniforme</strong> : le même coefficient appliquait sur les
+                mariages (à perte) et les plateaux-repas (sur-marginés, perte de marchés).
               </li>
               <li>
                 <strong>Gaspillage non suivi</strong> : 14 % de perte sur les buffets, jamais
-                integree dans le cout reel des prestations.
+                intégrée dans le coût réel des prestations.
               </li>
             </ul>
             <p className="mt-4">
-              Les actions menees sur 12 mois :
+              Les actions menées sur 12 mois :
             </p>
           </div>
 
@@ -639,16 +639,16 @@ export default function LogicielMargeTraiteur() {
               phase="Mois 1-3"
               title="Chiffrage main d'oeuvre"
               actions={[
-                'Integration des heures de production dans chaque devis',
-                'Taux horaires charges par poste',
-                'Modele de devis 4 postes',
+                'Intégration des heures de production dans chaque devis',
+                'Taux horaires chargés par poste',
+                'Modèle de devis 4 postes',
               ]}
             />
             <PhaseCard
               phase="Mois 4-8"
               title="Coefficients par format"
               actions={[
-                'Coefficient ajuste par type de prestation',
+                'Coefficient ajusté par type de prestation',
                 'Re-tarification des plateaux-repas',
                 'Repositionnement des mariages',
               ]}
@@ -666,10 +666,10 @@ export default function LogicielMargeTraiteur() {
 
           <div className="prose-content mt-8">
             <p>
-              Resultat au bout de 12 mois : la marge nette est passee de 6 % a 19 %, sans
-              augmenter le chiffre d'affaires. Sur 480 000 EUR de CA, c'est un benefice net qui
-              passe de 28 800 EUR a 91 200 EUR, soit <strong>62 400 EUR de profit supplementaire
-              annuel</strong>, uniquement en chiffrant correctement les couts caches et en
+              Résultat au bout de 12 mois : la marge nette est passée de 6 % à 19 %, sans
+              augmenter le chiffre d'affaires. Sur 480 000 EUR de CA, c'est un bénéfice net qui
+              passe de 28 800 EUR à 91 200 EUR, soit <strong>62 400 EUR de profit supplémentaire
+              annuel</strong>, uniquement en chiffrant correctement les coûts cachés et en
               ajustant les coefficients par format.
             </p>
           </div>
@@ -683,39 +683,39 @@ export default function LogicielMargeTraiteur() {
 
           <div className="prose-content">
             <p>
-              RestauMargin a ete pense pour la complexite specifique du metier de traiteur. La
-              difference avec un tableur Excel artisanal : tout est automatise, mis a jour en temps
-              reel et accessible depuis une tablette en cuisine ou sur un evenement.
+              RestauMargin a été pensé pour la complexité spécifique du métier de traiteur. La
+              différence avec un tableur Excel artisanal : tout est automatisé, mis à jour en temps
+              réel et accessible depuis une tablette en cuisine ou sur un événement.
             </p>
             <ul className="list-disc list-inside space-y-2 text-mono-350 mt-4">
               <li>
                 <strong>Fiches techniques par prestation</strong> avec grammages, taux de perte et
-                cout matieres recalcule a chaque variation de prix fournisseur.
+                coût matières recalculé à chaque variation de prix fournisseur.
               </li>
               <li>
-                <strong>Chiffrage de la main d'oeuvre</strong> integre au calcul de marge :
+                <strong>Chiffrage de la main d'oeuvre</strong> intégré au calcul de marge :
                 heures de production, service, logistique x taux horaires charges.
               </li>
               <li>
-                <strong>Coefficient ajustable par format</strong> pour ne plus appliquer le meme
-                multiplicateur a un mariage et a un plateau-repas.
+                <strong>Coefficient ajustable par format</strong> pour ne plus appliquer le même
+                multiplicateur à un mariage et à un plateau-repas.
               </li>
               <li>
                 <strong>Scan OCR des factures</strong> fournisseurs pour suivre les prix volatils
-                (saumon, foie gras, fruits de mer) et alerter en cas de derive.
+                (saumon, foie gras, fruits de mer) et alerter en cas de dérive.
               </li>
               <li>
                 <strong>Tableau de bord 6 KPI traiteur</strong> avec comparaison de la marge nette
-                reelle par type de prestation.
+                réelle par type de prestation.
               </li>
               <li>
                 <strong>PWA mobile</strong> : consultez vos fiches et vos marges directement sur
-                l'evenement, sans connexion permanente.
+                l'événement, sans connexion permanente.
               </li>
             </ul>
             <p className="mt-4">
-              Resultat : chaque devis devient une decision eclairee. Vous savez avant de l'envoyer
-              si la prestation atteint votre seuil de marge cible, et vous arretez de travailler a
+              Résultat : chaque devis devient une décision éclairée. Vous savez avant de l'envoyer
+              si la prestation atteint votre seuil de marge cible, et vous arrêtez de travailler à
               perte les week-ends charges.
             </p>
           </div>
@@ -723,7 +723,7 @@ export default function LogicielMargeTraiteur() {
 
         {/* ═════════════ FAQ ═════════════ */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes traiteur</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes traiteur</h2>
           <div className="space-y-4">
             {faqItems.map((item, i) => (
               <FAQItem key={i} q={item.question} a={item.answer} />
@@ -735,12 +735,12 @@ export default function LogicielMargeTraiteur() {
         <section id="cta" className="mb-16">
           <div className="bg-gradient-to-br from-teal-600 via-teal-700 to-teal-800 rounded-2xl p-8 sm:p-12 text-center">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-4">
-              Piloter la marge de votre activite traiteur avec RestauMargin
+              Piloter la marge de votre activité traiteur avec RestauMargin
             </h2>
             <p className="text-teal-100 text-lg max-w-xl mx-auto mb-3 leading-relaxed">
               Food cost par prestation, chiffrage de la main d'oeuvre, coefficient par format,
               devis rentables, suivi de la marge nette : tout ce qu'il faut pour garder une marge
-              nette superieure a 15 % sur chaque evenement.
+              nette supérieure à 15 % sur chaque événement.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
               <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
@@ -770,19 +770,19 @@ export default function LogicielMargeTraiteur() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link to="/blog/calcul-marge-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calcul de marge restaurant</h3>
-              <p className="text-xs text-mono-500">Le guide de reference du calcul de marge en restauration.</p>
+              <p className="text-xs text-mono-500">Le guide de référence du calcul de marge en restauration.</p>
             </Link>
             <Link to="/blog/coefficient-multiplicateur" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Coefficient multiplicateur restaurant</h3>
-              <p className="text-xs text-mono-500">Du cout matieres au prix de vente, methode pas a pas.</p>
+              <p className="text-xs text-mono-500">Du coût matières au prix de vente, méthode pas à pas.</p>
             </Link>
             <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire son food cost</h3>
-              <p className="text-xs text-mono-500">Methodes, benchmarks, leviers d'optimisation.</p>
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Réduire son food cost</h3>
+              <p className="text-xs text-mono-500">Méthodes, benchmarks, leviers d'optimisation.</p>
             </Link>
             <Link to="/login?mode=register" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Essai gratuit 7 jours</h3>
-              <p className="text-xs text-mono-500">Pilotez votre activite traiteur sans carte bancaire requise.</p>
+              <p className="text-xs text-mono-500">Pilotez votre activité traiteur sans carte bancaire requise.</p>
             </Link>
           </div>
         </section>
@@ -802,13 +802,13 @@ export default function LogicielMargeTraiteur() {
             La plateforme de gestion de marge pour les restaurateurs et traiteurs.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
+            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
+            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
           </div>
           <p className="mt-6 text-xs text-mono-700">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
+            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
           </p>
         </div>
       </footer>

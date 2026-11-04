@@ -893,13 +893,13 @@ const ROUTES = [
   },
   {
     path: '/logiciel-marge-bistrot',
-    title: 'Logiciel de marge bistrot brasserie | Food cost cuisine francaise 2026',
-    description: 'Logiciel de gestion marge bistrot et brasserie. Suivi food cost cuisine francaise, fiches techniques, fournisseurs. Essai gratuit 7 jours.',
+    title: 'Logiciel de marge bistrot brasserie | Food cost cuisine française 2026',
+    description: 'Logiciel de gestion marge bistrot et brasserie. Suivi food cost cuisine française, fiches techniques, fournisseurs. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-boulangerie',
-    title: 'Logiciel marge boulangerie | Food cost patisserie | RestauMargin',
-    description: 'Logiciel de calcul de marge pour boulangeries et patisseries. Cout matiere, prix de vente, rendement farine. Essai gratuit 7 jours.',
+    title: 'Logiciel marge boulangerie | Food cost pâtisserie | RestauMargin',
+    description: 'Logiciel de calcul de marge pour boulangeries et pâtisseries. Coût matière, prix de vente, rendement farine. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-pizzeria',
@@ -918,18 +918,18 @@ const ROUTES = [
   },
   {
     path: '/logiciel-marge-gastronomique',
-    title: 'Logiciel marge restaurant gastronomique etoile | RestauMargin',
-    description: 'Logiciel pour piloter marges restaurant gastronomique etoile. Food cost 32-40%, brigades importantes, produits nobles. Essai gratuit 7 jours.',
+    title: 'Logiciel marge restaurant gastronomique étoilé | RestauMargin',
+    description: 'Logiciel pour piloter marges restaurant gastronomique étoilé. Food cost 32-40%, brigades importantes, produits nobles. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-dark-kitchen',
-    title: 'Logiciel marge dark kitchen | Ghost kitchen rentabilite | RestauMargin',
+    title: 'Logiciel marge dark kitchen | Ghost kitchen rentabilité | RestauMargin',
     description: 'Logiciel pour calculer marge dark kitchen. Commissions plateformes, multi-marques, packaging. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-food-truck',
     title: 'Logiciel marge food truck | Food cost + emplacements | RestauMargin',
-    description: 'Logiciel pour calculer marge food truck. Specificites mobile, emplacements, meteo. Essai gratuit 7 jours.',
+    description: 'Logiciel pour calculer marge food truck. Spécificités mobile, emplacements, météo. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-sushi',
@@ -943,8 +943,8 @@ const ROUTES = [
   },
   {
     path: '/logiciel-marge-creperie',
-    title: 'Logiciel marge creperie | Food cost galettes + crepes | RestauMargin',
-    description: 'Logiciel pour calculer marge creperie. Food cost 22-26%, sarrasin, beurre breton AOP, cidre. Essai gratuit 7 jours.',
+    title: 'Logiciel marge crêperie | Food cost galettes + crêpes | RestauMargin',
+    description: 'Logiciel pour calculer marge crêperie. Food cost 22-26%, sarrasin, beurre breton AOP, cidre. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-salad-bar',
@@ -963,13 +963,13 @@ const ROUTES = [
   },
   {
     path: '/logiciel-marge-cafe-bar',
-    title: 'Logiciel marge cafe bar | Coefficient boissons | RestauMargin',
-    description: 'Logiciel pour calculer marge cafe, bar, brasserie de quartier. Marge boissons 80-85%, gestion stocks alcool. Essai gratuit 7 jours.',
+    title: 'Logiciel marge café bar | Coefficient boissons | RestauMargin',
+    description: 'Logiciel pour calculer marge café, bar, brasserie de quartier. Marge boissons 80-85%, gestion stocks alcool. Essai gratuit 7 jours.',
   },
   {
     path: '/logiciel-marge-glacier',
-    title: 'Logiciel marge glacier salon de the | Food cost glace | RestauMargin',
-    description: 'Logiciel pour calculer marge glacier, salon de the. Food cost 20-25%, marge boules 75-80%. Essai gratuit 7 jours.',
+    title: 'Logiciel marge glacier salon de thé | Food cost glace | RestauMargin',
+    description: 'Logiciel pour calculer marge glacier, salon de thé. Food cost 20-25%, marge boules 75-80%. Essai gratuit 7 jours.',
   },
   {
     path: '/comparatif-logiciels-restaurant',

@@ -39,54 +39,54 @@ import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SE
 
 const faqItems = [
   {
-    question: "Pourquoi un logiciel de marge specifique pour food truck ?",
+    question: "Pourquoi un logiciel de marge spécifique pour food truck ?",
     answer:
-      "Un food truck a des contraintes uniques qu'un logiciel resto generaliste ignore : capacite limitee (50-150 couverts/service), dependance meteo, multi-emplacements avec couts variables, absence de loyer fixe remplacee par location quotidienne (50-200 EUR/jour), saisonnalite marquee, et flux de production en chaine ultra-rapide. RestauMargin integre tous ces parametres pour calculer une marge realiste, emplacement par emplacement.",
+      "Un food truck a des contraintes uniques qu'un logiciel resto généraliste ignore : capacité limitée (50-150 couverts/service), dépendance météo, multi-emplacements avec coûts variables, absence de loyer fixe remplacée par location quotidienne (50-200 EUR/jour), saisonnalité marquée, et flux de production en chaîne ultra-rapide. RestauMargin intègre tous ces paramètres pour calculer une marge réaliste, emplacement par emplacement.",
   },
   {
     question: "Quel food cost cible pour un food truck en 2026 ?",
     answer:
-      "Le food cost cible food truck se situe entre 28 % et 33 %, soit legerement plus bas qu'un restaurant traditionnel (30-35 %). Cette discipline est necessaire car les charges fixes sont plus faibles, donc la marge brute par plat doit financer la mobilite, le carburant, l'amortissement vehicule, les permis ambulants et la location des emplacements. Un burger food truck a 11 EUR pour 3,30 EUR de cout matieres = 30 % de food cost, ratio idealement vise.",
+      "Le food cost cible food truck se situe entre 28 % et 33 %, soit légèrement plus bas qu'un restaurant traditionnel (30-35 %). Cette discipline est nécessaire car les charges fixes sont plus faibles, donc la marge brute par plat doit financer la mobilité, le carburant, l'amortissement véhicule, les permis ambulants et la location des emplacements. Un burger food truck à 11 EUR pour 3,30 EUR de coût matières = 30 % de food cost, ratio idéalement visé.",
   },
   {
-    question: "Le logiciel gere-t-il plusieurs emplacements ?",
+    question: "Le logiciel gère-t-il plusieurs emplacements ?",
     answer:
-      "Oui. RestauMargin permet de creer un emplacement par lieu (marche du samedi, zone bureaux la Defense, festival d'ete, etc.) avec ses propres couts (loyer journalier, electricite forfaitaire, deplacement), son CA par service et son taux de retour client. Vous obtenez un classement automatique des emplacements les plus rentables et un seuil de rentabilite par lieu.",
+      "Oui. RestauMargin permet de créer un emplacement par lieu (marché du samedi, zone bureaux la Défense, festival d'été, etc.) avec ses propres coûts (loyer journalier, électricité forfaitaire, déplacement), son CA par service et son taux de retour client. Vous obtenez un classement automatique des emplacements les plus rentables et un seuil de rentabilité par lieu.",
   },
   {
-    question: "Comment integrer la meteo dans le calcul de marge ?",
+    question: "Comment intégrer la météo dans le calcul de marge ?",
     answer:
-      "Le module previsions analyse votre historique CA croise avec la meteo locale (API OpenWeather integree) pour predire votre niveau d'activite : un samedi pluvieux en zone bureaux baisse de 40-60 %, un dimanche ensoleille en zone festival monte de 80-120 %. Le logiciel ajuste vos previsions de stock et alerte sur le risque de gaspillage / rupture par service.",
+      "Le module prévisions analyse votre historique CA croisé avec la météo locale (API OpenWeather intégrée) pour prédire votre niveau d'activité : un samedi pluvieux en zone bureaux baisse de 40-60 %, un dimanche ensoleillé en zone festival monte de 80-120 %. Le logiciel ajuste vos prévisions de stock et alerte sur le risque de gaspillage / rupture par service.",
   },
   {
-    question: "Combien coute le logiciel pour un food truck independant ?",
+    question: "Combien coûte le logiciel pour un food truck indépendant ?",
     answer:
-      "RestauMargin Pro coute 29 EUR/mois pour un food truck independant : illimite en plats, emplacements, fiches techniques et scans de factures. L'investissement se rentabilise des le premier mois en evitant ne serait-ce qu'un gaspillage par mauvaise estimation meteo (15-30 EUR economises par service). Essai gratuit 7 jours sans carte bancaire.",
+      "RestauMargin Pro coûte 29 EUR/mois pour un food truck indépendant : illimité en plats, emplacements, fiches techniques et scans de factures. L'investissement se rentabilise dès le premier mois en évitant ne serait-ce qu'un gaspillage par mauvaise estimation météo (15-30 EUR économisés par service). Essai gratuit 7 jours sans carte bancaire.",
   },
   {
     question: "Le logiciel fonctionne-t-il dans le camion sans Wi-Fi ?",
     answer:
-      "En partie. RestauMargin est une application web installable (PWA). Sans reseau, vous consultez les ingredients, fiches techniques, fournisseurs et stocks deja charges, et vous pouvez les modifier : ces modifications sont conservees sur l'appareil et envoyees automatiquement des que le reseau revient, l'application ouverte. Les autres fonctions (commandes fournisseurs, assistant IA, messagerie) demandent une connexion.",
+      "En partie. RestauMargin est une application web installable (PWA). Sans réseau, vous consultez les ingrédients, fiches techniques, fournisseurs et stocks déjà chargés, et vous pouvez les modifier : ces modifications sont conservées sur l'appareil et envoyées automatiquement dès que le réseau revient, l'application ouverte. Les autres fonctions (commandes fournisseurs, assistant IA, messagerie) demandent une connexion.",
   },
   {
-    question: "Comment gerer la preparation centralisee en laboratoire ?",
+    question: "Comment gérer la préparation centralisée en laboratoire ?",
     answer:
-      "Le module laboratoire permet de declarer une production en amont (ex : 30 kg de boulettes preparees lundi pour 5 services semaine). Le logiciel deduit automatiquement du stock laboratoire a chaque vente, calcule le taux d'utilisation reel vs prevu, et detecte le gaspillage de production. Ideal pour les food trucks avec laboratoire fixe declare DDPP.",
+      "Le module laboratoire permet de déclarer une production en amont (ex : 30 kg de boulettes préparées lundi pour 5 services semaine). Le logiciel déduit automatiquement du stock laboratoire à chaque vente, calcule le taux d'utilisation réel vs prévu, et détecte le gaspillage de production. Idéal pour les food trucks avec laboratoire fixe déclaré DDPP.",
   },
   {
-    question: "Que faire si je vends en evenementiel B2B (festivals, mariages) ?",
+    question: "Que faire si je vends en événementiel B2B (festivals, mariages) ?",
     answer:
-      "Le mode evenementiel cree un projet ponctuel avec ses propres prix (souvent forfait global ou prix groupe), son cout matieres dedie, sa marge cible (40-50 % brute typique pour B2B), et son rapport de rentabilite post-event. Vous facturez le client B2B directement depuis le logiciel et tracez la marge nette evenement / evenement.",
+      "Le mode événementiel crée un projet ponctuel avec ses propres prix (souvent forfait global ou prix groupé), son coût matières dédié, sa marge cible (40-50 % brute typique pour B2B), et son rapport de rentabilité post-event. Vous facturez le client B2B directement depuis le logiciel et tracez la marge nette événement / événement.",
   },
   {
     question: "Peut-on suivre le carburant et le gaz comme charges variables ?",
     answer:
-      "Oui. Le module charges variables food truck distingue carburant deplacement (km parcouru x cout/km), gaz cuisson (bouteilles butane/propane consommees par service), eau, electricite forfait emplacement. Ces couts s'imputent automatiquement sur le bon emplacement pour un calcul de marge nette par lieu fiable.",
+      "Oui. Le module charges variables food truck distingue carburant déplacement (km parcouru x coût/km), gaz cuisson (bouteilles butane/propane consommées par service), eau, électricité forfait emplacement. Ces coûts s'imputent automatiquement sur le bon emplacement pour un calcul de marge nette par lieu fiable.",
   },
   {
-    question: "Le logiciel est-il certifie pour la conformite hygiene HACCP ?",
+    question: "Le logiciel est-il certifié pour la conformité hygiène HACCP ?",
     answer:
-      "RestauMargin inclut un module HACCP food truck adapte : releves temperature frigo / chambre froide / vehicule (obligatoire ambulant), tracabilite lots reception, plan de nettoyage, formation 14h validee. Vous generez les rapports DDPP en 2 clics en cas de controle. Conforme reglementation 2026 (paquet hygiene UE).",
+      "RestauMargin inclut un module HACCP food truck adapté : relevés température frigo / chambre froide / véhicule (obligatoire ambulant), traçabilité lots réception, plan de nettoyage, formation 14h validée. Vous générez les rapports DDPP en 2 clics en cas de contrôle. Conforme réglementation 2026 (paquet hygiène UE).",
   },
 ];
 
@@ -115,7 +115,7 @@ export default function LogicielMargeFoodTruck() {
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Logiciel marge food truck | Food cost + emplacements | RestauMargin"
-        description="Logiciel pour calculer marge food truck. Specificites mobile, emplacements, meteo. Essai gratuit 7 jours."
+        description="Logiciel pour calculer marge food truck. Spécificités mobile, emplacements, météo. Essai gratuit 7 jours."
         path="/logiciel-marge-food-truck"
         type="website"
         schema={[
@@ -129,7 +129,7 @@ export default function LogicielMargeFoodTruck() {
             '@type': 'Article',
             headline: 'Logiciel de marge pour food truck en 2026',
             description:
-              "Logiciel SaaS specialise food truck : calcul food cost (28-33 %), gestion multi-emplacements, ajustement meteo, evenementiel B2B, mode hors-ligne dans le camion.",
+              "Logiciel SaaS spécialisé food truck : calcul food cost (28-33 %), gestion multi-emplacements, ajustement météo, événementiel B2B, mode hors-ligne dans le camion.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -155,18 +155,18 @@ export default function LogicielMargeFoodTruck() {
             operatingSystem: 'Web, iOS, Android',
             url: 'https://www.restaumargin.fr/logiciel-marge-food-truck',
             description:
-              "Logiciel de gestion des marges specifique food truck : calcul food cost, multi-emplacements, ajustement meteo, evenementiel B2B, HACCP ambulant, mode hors-ligne.",
+              "Logiciel de gestion des marges spécifique food truck : calcul food cost, multi-emplacements, ajustement météo, événementiel B2B, HACCP ambulant, mode hors-ligne.",
             featureList: [
               'Calcul food cost food truck (cible 28-33 %)',
-              'Multi-emplacements avec couts variables',
-              "Ajustement automatique meteo (OpenWeather API)",
+              'Multi-emplacements avec coûts variables',
+              "Ajustement automatique météo (OpenWeather API)",
               'Mode hors-ligne complet dans le camion',
-              'Gestion laboratoire / preparation centralisee',
-              'Mode evenementiel B2B (festivals, mariages)',
-              'Suivi carburant, gaz, eau, electricite',
-              'HACCP ambulant et tracabilite lots',
+              'Gestion laboratoire / préparation centralisée',
+              'Mode événementiel B2B (festivals, mariages)',
+              'Suivi carburant, gaz, eau, électricité',
+              'HACCP ambulant et traçabilité lots',
               'Multi-trucks (consolidation parc)',
-              'Saisonnalite et previsions ventes',
+              'Saisonnalité et prévisions ventes',
             ],
             offers: [
               {
@@ -231,14 +231,14 @@ export default function LogicielMargeFoodTruck() {
         <div className="max-w-6xl mx-auto text-center">
           <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
             <Truck className="w-3.5 h-3.5" />
-            Specialise food truck France 2026
+            Spécialisé food truck France 2026
           </span>
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-mono-100 leading-tight mb-6 max-w-4xl mx-auto">
             Logiciel de marge pour food truck en 2026
           </h1>
           <p className="text-lg sm:text-xl text-mono-400 max-w-3xl mx-auto leading-relaxed mb-8">
-            Calculez le food cost reel de chaque plat, pilotez plusieurs emplacements,
-            ajustez vos previsions a la meteo. <strong>Le seul logiciel pense pour la mobilite et la saisonnalite food truck.</strong>
+            Calculez le food cost réel de chaque plat, pilotez plusieurs emplacements,
+            ajustez vos prévisions à la météo. <strong>Le seul logiciel pensé pour la mobilité et la saisonnalité food truck.</strong>
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -260,7 +260,7 @@ export default function LogicielMargeFoodTruck() {
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-mono-500">
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans carte bancaire</span>
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Mode hors-ligne dans le camion</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Multi-emplacements illimites</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Multi-emplacements illimités</span>
             <span className="flex items-center gap-1.5"><Star className="w-4 h-4 text-amber-500 fill-amber-500" /> Essai 7 jours sans carte</span>
           </div>
         </div>
@@ -274,7 +274,7 @@ export default function LogicielMargeFoodTruck() {
               Le food truck en France : 700 M EUR, +8 %/an
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              Un marche en pleine expansion qui exige une gestion ultra-fine pour rester rentable.
+              Un marché en pleine expansion qui exige une gestion ultra-fine pour rester rentable.
             </p>
           </div>
 
@@ -299,14 +299,14 @@ export default function LogicielMargeFoodTruck() {
           <div className="prose-content text-mono-400 leading-relaxed">
             <p>
               Le food truck n'est plus un effet de mode : c'est un format restauration mature,
-              porte par la demande urbaine d'offre rapide et qualitative. Mais derriere l'image
-              romantique du camion libre, la realite est exigeante : marges serrees, dependance
-              meteo, rotation rapide, contraintes reglementaires lourdes.
+              porté par la demande urbaine d'offre rapide et qualitative. Mais derrière l'image
+              romantique du camion libre, la réalité est exigeante : marges serrées, dépendance
+              météo, rotation rapide, contraintes réglementaires lourdes.
             </p>
             <p className="mt-4">
-              La difference entre un food truck rentable et un food truck en survie tient en
-              quelques points de marge nette : 18 % vs 28 % sur 250 000 EUR de CA represente
-              25 000 EUR/an de revenu reel pour l'exploitant. Un logiciel adapte fait la difference.
+              La différence entre un food truck rentable et un food truck en survie tient en
+              quelques points de marge nette : 18 % vs 28 % sur 250 000 EUR de CA représente
+              25 000 EUR/an de revenu réel pour l'exploitant. Un logiciel adapté fait la différence.
             </p>
           </div>
         </div>
@@ -317,10 +317,10 @@ export default function LogicielMargeFoodTruck() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              4 specificites qui changent tout
+              4 spécificités qui changent tout
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              Un food truck ne se gere pas comme un restaurant traditionnel. Voici pourquoi.
+              Un food truck ne se gère pas comme un restaurant traditionnel. Voici pourquoi.
             </p>
           </div>
 
@@ -328,27 +328,27 @@ export default function LogicielMargeFoodTruck() {
             {[
               {
                 icon: <Users className="w-6 h-6" />,
-                title: 'Capacite limitee : 50 a 150 couverts/service',
+                title: 'Capacité limitée : 50 à 150 couverts/service',
                 desc:
-                  "Contrairement a un resto de 60 couverts qui peut faire 2 services (= 120 couverts/jour), le food truck a un plafond physique impose par le format. Chaque commande perdue est definitive. Le calcul de marge doit integrer ce plafond pour ne pas surestimer le seuil de rentabilite.",
+                  "Contrairement à un resto de 60 couverts qui peut faire 2 services (= 120 couverts/jour), le food truck a un plafond physique imposé par le format. Chaque commande perdue est définitive. Le calcul de marge doit intégrer ce plafond pour ne pas surestimer le seuil de rentabilité.",
               },
               {
                 icon: <CloudRain className="w-6 h-6" />,
-                title: 'Meteo dependant',
+                title: 'Météo dépendant',
                 desc:
-                  "Une pluie un samedi midi peut effondrer votre CA de 50 %. Un logiciel de marge food truck doit integrer l'historique meteo et ajuster les previsions de stock et de ventes en consequence. RestauMargin connecte l'API OpenWeather a vos emplacements pour des previsions fiables.",
+                  "Une pluie un samedi midi peut effondrer votre CA de 50 %. Un logiciel de marge food truck doit intégrer l'historique météo et ajuster les prévisions de stock et de ventes en conséquence. RestauMargin connecte l'API OpenWeather à vos emplacements pour des prévisions fiables.",
               },
               {
                 icon: <MapPin className="w-6 h-6" />,
                 title: 'Multi-emplacements',
                 desc:
-                  "Un truck typique tourne sur 5 a 12 emplacements differents par mois : marche du samedi, zone bureaux du midi, festival d'ete, fete de quartier. Chaque lieu a ses propres couts (loyer journalier, electricite, eau) et son propre CA potentiel. La marge nette varie de -10 % a +35 % d'un emplacement a l'autre.",
+                  "Un truck typique tourne sur 5 à 12 emplacements différents par mois : marché du samedi, zone bureaux du midi, festival d'été, fête de quartier. Chaque lieu a ses propres coûts (loyer journalier, électricité, eau) et son propre CA potentiel. La marge nette varie de -10 % à +35 % d'un emplacement à l'autre.",
               },
               {
                 icon: <ChefHat className="w-6 h-6" />,
                 title: 'Pas de salle, pas de service en salle',
                 desc:
-                  "Aucun couvert, dressage minimal, emballage a emporter obligatoire. Les fiches techniques sont differentes (portion calibree pour emporter), le couvert est remplace par un emballage ecolo (0,20 a 0,40 EUR/commande), et la masse salariale est concentree en cuisine (pas de salle). Le calcul de marge brute doit refleter ces specificites.",
+                  "Aucun couvert, dressage minimal, emballage à emporter obligatoire. Les fiches techniques sont différentes (portion calibrée pour emporter), le couvert est remplacé par un emballage écolo (0,20 à 0,40 EUR/commande), et la masse salariale est concentrée en cuisine (pas de salle). Le calcul de marge brute doit refléter ces spécificités.",
               },
             ].map((item, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-2xl p-6">
@@ -374,7 +374,7 @@ export default function LogicielMargeFoodTruck() {
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold mb-6">
-              Food cost food truck : la fourchette gagnante 28 a 33 %
+              Food cost food truck : la fourchette gagnante 28 à 33 %
             </h2>
             <div className="grid sm:grid-cols-3 gap-4 mb-6">
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 text-center">
@@ -391,10 +391,10 @@ export default function LogicielMargeFoodTruck() {
               </div>
             </div>
             <p className="text-teal-50 text-sm leading-relaxed">
-              Au-dela de 33 %, votre marge brute ne couvre plus les charges variables food truck
+              Au-delà de 33 %, votre marge brute ne couvre plus les charges variables food truck
               (carburant, gaz, location emplacement). En dessous de 28 %, vous risquez de baisser
-              la qualite produit et de perdre la fidelite client — fatal en food truck ou la
-              reputation locale est la cle.
+              la qualité produit et de perdre la fidélité client — fatal en food truck où la
+              réputation locale est la clé.
             </p>
           </div>
         </div>
@@ -409,7 +409,7 @@ export default function LogicielMargeFoodTruck() {
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
               Avec moins de charges fixes, le food truck peut convertir une marge brute par plat
-              superieure en marge nette positive plus rapidement.
+              supérieure en marge nette positive plus rapidement.
             </p>
           </div>
 
@@ -421,7 +421,7 @@ export default function LogicielMargeFoodTruck() {
                 </div>
                 <div className="space-y-2 text-sm text-mono-350">
                   <div className="flex justify-between"><span>Burger 14 EUR</span><span className="font-mono">14,00 EUR</span></div>
-                  <div className="flex justify-between text-mono-500"><span>- Cout matieres 35 %</span><span className="font-mono">-4,90 EUR</span></div>
+                  <div className="flex justify-between text-mono-500"><span>- Coût matières 35 %</span><span className="font-mono">-4,90 EUR</span></div>
                   <div className="flex justify-between font-bold text-mono-100 border-t border-mono-900 pt-2"><span>Marge brute</span><span className="font-mono">9,10 EUR</span></div>
                   <div className="flex justify-between text-mono-500"><span>- Loyer + charges fixes (estim. 4 EUR/couvert)</span><span className="font-mono">-4,00 EUR</span></div>
                   <div className="flex justify-between text-mono-500"><span>- Personnel salle 1,5 EUR/couvert</span><span className="font-mono">-1,50 EUR</span></div>
@@ -434,7 +434,7 @@ export default function LogicielMargeFoodTruck() {
                 </div>
                 <div className="space-y-2 text-sm text-mono-350">
                   <div className="flex justify-between"><span>Burger 11 EUR</span><span className="font-mono">11,00 EUR</span></div>
-                  <div className="flex justify-between text-mono-500"><span>- Cout matieres 30 %</span><span className="font-mono">-3,30 EUR</span></div>
+                  <div className="flex justify-between text-mono-500"><span>- Coût matières 30 %</span><span className="font-mono">-3,30 EUR</span></div>
                   <div className="flex justify-between font-bold text-mono-100 border-t border-mono-900 pt-2"><span>Marge brute</span><span className="font-mono">7,70 EUR</span></div>
                   <div className="flex justify-between text-mono-500"><span>- Loyer emplacement (estim. 1 EUR/couvert)</span><span className="font-mono">-1,00 EUR</span></div>
                   <div className="flex justify-between text-mono-500"><span>- Carburant + gaz</span><span className="font-mono">-0,40 EUR</span></div>
@@ -446,7 +446,7 @@ export default function LogicielMargeFoodTruck() {
 
           <Callout type="info">
             <strong>L'arbitrage food truck est gagnant</strong> sur la marge nette par plat
-            (6,30 EUR vs 3,60 EUR), mais penalise par le plafond de couverts/jour (80 vs 120).
+            (6,30 EUR vs 3,60 EUR), mais pénalisé par le plafond de couverts/jour (80 vs 120).
             Le logiciel RestauMargin calcule ce trade-off automatiquement pour chaque emplacement.
           </Callout>
         </div>
@@ -457,10 +457,10 @@ export default function LogicielMargeFoodTruck() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              Decomposition reelle : un burger food truck 11 EUR
+              Décomposition réelle : un burger food truck 11 EUR
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              Cas pratique chiffre d'un burger signature en food truck artisanal.
+              Cas pratique chiffré d'un burger signature en food truck artisanal.
             </p>
           </div>
 
@@ -469,17 +469,17 @@ export default function LogicielMargeFoodTruck() {
               <thead>
                 <tr className="bg-mono-1000 text-mono-500 text-xs uppercase tracking-wider">
                   <th className="text-left py-3 px-4 font-semibold">Composant</th>
-                  <th className="text-left py-3 px-4 font-semibold">Detail</th>
-                  <th className="text-right py-3 px-4 font-semibold">Cout</th>
+                  <th className="text-left py-3 px-4 font-semibold">Détail</th>
+                  <th className="text-right py-3 px-4 font-semibold">Coût</th>
                 </tr>
               </thead>
               <tbody className="text-mono-350">
                 {[
-                  { c: 'Steak hache 150g', d: 'Boeuf race a viande, fournisseur local', p: '1,20 EUR' },
+                  { c: 'Steak haché 150g', d: 'Boeuf race à viande, fournisseur local', p: '1,20 EUR' },
                   { c: 'Pain artisan brioche', d: 'Boulanger partenaire, livraison J', p: '0,40 EUR' },
                   { c: 'Cheddar + salade + tomate + oignons + sauce maison', d: '30g cheddar, 10g salade, 1 rondelle tomate, oignons confits', p: '0,80 EUR' },
                   { c: 'Frites maison portion', d: 'Pomme de terre Bintje, double cuisson', p: '0,60 EUR' },
-                  { c: 'Emballage ecolo', d: 'Boite kraft compostable + serviette', p: '0,30 EUR' },
+                  { c: 'Emballage écolo', d: 'Boîte kraft compostable + serviette', p: '0,30 EUR' },
                 ].map((row, i) => (
                   <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
                     <td className="py-3 px-4 font-medium text-mono-100">{row.c}</td>
@@ -488,7 +488,7 @@ export default function LogicielMargeFoodTruck() {
                   </tr>
                 ))}
                 <tr className="bg-teal-50 border-t-2 border-teal-600">
-                  <td className="py-4 px-4 font-extrabold text-mono-100">COUT MATIERES TOTAL</td>
+                  <td className="py-4 px-4 font-extrabold text-mono-100">COÛT MATIÈRES TOTAL</td>
                   <td className="py-4 px-4 text-xs text-teal-700 font-semibold">Y compris emballage</td>
                   <td className="py-4 px-4 text-right font-mono font-extrabold text-teal-700 text-lg">3,30 EUR</td>
                 </tr>
@@ -504,8 +504,8 @@ export default function LogicielMargeFoodTruck() {
           </div>
 
           <Callout type="warning">
-            <strong>Erreur frequente :</strong> oublier l'emballage dans le food cost. A 0,30 EUR /
-            commande sur 80 couverts/jour = 24 EUR/jour, soit 5 760 EUR/an. RestauMargin integre
+            <strong>Erreur fréquente :</strong> oublier l'emballage dans le food cost. À 0,30 EUR /
+            commande sur 80 couverts/jour = 24 EUR/jour, soit 5 760 EUR/an. RestauMargin intègre
             automatiquement l'emballage dans chaque fiche technique food truck.
           </Callout>
         </div>
@@ -528,7 +528,7 @@ export default function LogicielMargeFoodTruck() {
               <thead>
                 <tr className="bg-mono-1000 text-mono-500 text-xs uppercase tracking-wider">
                   <th className="text-left py-3 px-4 font-semibold">Plat</th>
-                  <th className="text-right py-3 px-4 font-semibold">Cout matieres</th>
+                  <th className="text-right py-3 px-4 font-semibold">Coût matières</th>
                   <th className="text-right py-3 px-4 font-semibold">Prix vente</th>
                   <th className="text-right py-3 px-4 font-semibold">Food cost</th>
                   <th className="text-right py-3 px-4 font-semibold">Marge brute</th>
@@ -559,7 +559,7 @@ export default function LogicielMargeFoodTruck() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              Charges specifiques food truck a integrer
+              Charges spécifiques food truck à intégrer
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
               Quatre postes que l'on retrouve en food truck mais pas en restaurant fixe.
@@ -573,9 +573,9 @@ export default function LogicielMargeFoodTruck() {
               </div>
               <h3 className="font-bold text-mono-100 mb-2 text-lg">Location emplacement (50-200 EUR/jour)</h3>
               <p className="text-sm text-mono-400 leading-relaxed">
-                Variable selon la typologie : marche communal 30-80 EUR, zone bureaux negociee
-                40-120 EUR/jour, festival haut de gamme 150-500 EUR. C'est la charge variable n.1 a
-                imputer par emplacement pour calculer la marge nette reelle de chaque lieu.
+                Variable selon la typologie : marché communal 30-80 EUR, zone bureaux négociée
+                40-120 EUR/jour, festival haut de gamme 150-500 EUR. C'est la charge variable n.1 à
+                imputer par emplacement pour calculer la marge nette réelle de chaque lieu.
               </p>
             </div>
             <div className="bg-white border border-mono-900 rounded-2xl p-6">
@@ -586,7 +586,7 @@ export default function LogicielMargeFoodTruck() {
               <p className="text-sm text-mono-400 leading-relaxed">
                 Le truck consomme entre 8 et 14 L/100 km en charge. Pour 50 km/jour aller-retour
                 = 5-7 EUR/jour de carburant. Gaz cuisson : 1 bouteille butane 13 kg (30 EUR) tient
-                4-6 services soit ~6 EUR/service. Ces charges variables doivent etre imputees au
+                4-6 services soit ~6 EUR/service. Ces charges variables doivent être imputées au
                 pro-rata du CA par emplacement.
               </p>
             </div>
@@ -594,11 +594,11 @@ export default function LogicielMargeFoodTruck() {
               <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center mb-4">
                 <Check className="w-6 h-6" />
               </div>
-              <h3 className="font-bold text-mono-100 mb-2 text-lg">Pas de loyer fixe = avantage cle</h3>
+              <h3 className="font-bold text-mono-100 mb-2 text-lg">Pas de loyer fixe = avantage clé</h3>
               <p className="text-sm text-mono-400 leading-relaxed">
-                Contrairement a un resto qui paie 2 000-8 000 EUR/mois meme en cas de mauvaise
-                affluence, le food truck ne paie l'emplacement que les jours ou il y est. C'est
-                l'avantage structurel n.1 : flexibilite totale de la charge fixe principale.
+                Contrairement à un resto qui paie 2 000-8 000 EUR/mois même en cas de mauvaise
+                affluence, le food truck ne paie l'emplacement que les jours où il y est. C'est
+                l'avantage structurel n.1 : flexibilité totale de la charge fixe principale.
               </p>
             </div>
             <div className="bg-white border border-mono-900 rounded-2xl p-6">
@@ -607,9 +607,9 @@ export default function LogicielMargeFoodTruck() {
               </div>
               <h3 className="font-bold text-mono-100 mb-2 text-lg">Permis et assurances ambulants</h3>
               <p className="text-sm text-mono-400 leading-relaxed">
-                Carte commercant ambulant (60 EUR/4 ans), assurance RC pro food truck (600-1 200
-                EUR/an), controle technique pro (180 EUR/an), redevance occupation domaine public
-                annuelle (200-500 EUR si abonnement marche). Total : ~1 500-2 500 EUR/an a amortir
+                Carte commerçant ambulant (60 EUR/4 ans), assurance RC pro food truck (600-1 200
+                EUR/an), contrôle technique pro (180 EUR/an), redevance occupation domaine public
+                annuelle (200-500 EUR si abonnement marché). Total : ~1 500-2 500 EUR/an à amortir
                 sur chaque service.
               </p>
             </div>
@@ -625,7 +625,7 @@ export default function LogicielMargeFoodTruck() {
               4 leviers d'optimisation marge food truck
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              Les pratiques eprouvees par les food trucks les plus rentables de France.
+              Les pratiques éprouvées par les food trucks les plus rentables de France.
             </p>
           </div>
 
@@ -635,25 +635,25 @@ export default function LogicielMargeFoodTruck() {
                 icon: <Target className="w-6 h-6" />,
                 title: 'Menu court (8-12 items)',
                 desc:
-                  "Limiter la carte a 8-12 plats reduit drastiquement le stock immobilise, accelere le service (75 commandes/h vs 45 avec carte de 25 plats), et concentre la maitrise sur quelques recettes parfaites. Toutes les marques food truck premium suivent cette regle.",
+                  "Limiter la carte à 8-12 plats réduit drastiquement le stock immobilisé, accélère le service (75 commandes/h vs 45 avec carte de 25 plats), et concentre la maîtrise sur quelques recettes parfaites. Toutes les marques food truck premium suivent cette règle.",
               },
               {
                 icon: <Package className="w-6 h-6" />,
-                title: 'Preparation centralisee',
+                title: 'Préparation centralisée',
                 desc:
-                  "Le laboratoire fixe (declare DDPP) permet de pre-produire 60-80 % des composants en amont (sauces, marinades, garnitures, pates). Resultat : 30 % de productivite en plus dans le truck, qualite homogene, gaspillage divise par 2.",
+                  "Le laboratoire fixe (déclaré DDPP) permet de pré-produire 60-80 % des composants en amont (sauces, marinades, garnitures, pâtes). Résultat : 30 % de productivité en plus dans le truck, qualité homogène, gaspillage divisé par 2.",
               },
               {
                 icon: <Calendar className="w-6 h-6" />,
-                title: 'Saisonnalite (printemps-ete peak)',
+                title: 'Saisonnalité (printemps-été peak)',
                 desc:
-                  "Le food truck genere 65-75 % de son CA annuel entre avril et septembre. Le logiciel doit anticiper ce pic (recrutement saisonnier, stock major, multi-emplacements festivals) et lisser l'hiver (B2B evenementiel, marches couverts, pause active).",
+                  "Le food truck génère 65-75 % de son CA annuel entre avril et septembre. Le logiciel doit anticiper ce pic (recrutement saisonnier, stock major, multi-emplacements festivals) et lisser l'hiver (B2B événementiel, marchés couverts, pause active).",
               },
               {
                 icon: <Users className="w-6 h-6" />,
-                title: 'Evenementiel B2B',
+                title: 'Événementiel B2B',
                 desc:
-                  "Festivals, mariages, seminaires d'entreprise : marges nettes 35-50 % vs 18-28 % en service public. Forfait global negocie en amont, pas de risque meteo, paiement garanti. Cible : 25-35 % du CA en evenementiel pour stabiliser la rentabilite.",
+                  "Festivals, mariages, séminaires d'entreprise : marges nettes 35-50 % vs 18-28 % en service public. Forfait global négocié en amont, pas de risque météo, paiement garanti. Cible : 25-35 % du CA en événementiel pour stabiliser la rentabilité.",
               },
             ].map((item, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-2xl p-6">
@@ -673,10 +673,10 @@ export default function LogicielMargeFoodTruck() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              KPI cles food truck a suivre dans le logiciel
+              KPI clés food truck à suivre dans le logiciel
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              Les 5 indicateurs qui pilotent la rentabilite reelle.
+              Les 5 indicateurs qui pilotent la rentabilité réelle.
             </p>
           </div>
 
@@ -684,28 +684,28 @@ export default function LogicielMargeFoodTruck() {
             {[
               {
                 kpi: 'Couverts par service',
-                cible: '60 a 120 selon emplacement',
-                desc: 'Mesure la capacite reelle exploitee. En dessous de 50, l\'emplacement est probablement deficitaire.',
+                cible: '60 à 120 selon emplacement',
+                desc: 'Mesure la capacité réelle exploitée. En dessous de 50, l\'emplacement est probablement déficitaire.',
               },
               {
                 kpi: 'Ticket moyen',
-                cible: '11 a 16 EUR food truck',
-                desc: 'Plus eleve que street food (8-10 EUR) grace au combo plat + accompagnement + boisson. A optimiser via upselling.',
+                cible: '11 à 16 EUR food truck',
+                desc: 'Plus élevé que street food (8-10 EUR) grâce au combo plat + accompagnement + boisson. À optimiser via upselling.',
               },
               {
                 kpi: 'Taux de retour client',
                 cible: '> 35 % en emplacement fixe',
-                desc: 'Reservation, fidelite carte, presence reseaux sociaux. Le taux de retour est le predicteur n.1 de CA stable.',
+                desc: 'Réservation, fidélité carte, présence réseaux sociaux. Le taux de retour est le prédicteur n.1 de CA stable.',
               },
               {
                 kpi: 'CA par emplacement',
-                cible: 'CA / (couts emplacement + charges variables) > 4',
-                desc: 'Ratio de rentabilite par lieu. Sous 3, supprimer ou renegocier l\'emplacement.',
+                cible: 'CA / (coûts emplacement + charges variables) > 4',
+                desc: 'Ratio de rentabilité par lieu. Sous 3, supprimer ou renégocier l\'emplacement.',
               },
               {
-                kpi: 'Food cost reel hebdomadaire',
-                cible: '28 a 33 %',
-                desc: 'Calcule sur cout matieres consomme / CA reel. Au-dela de 35 %, alerte : derive achats ou portions.',
+                kpi: 'Food cost réel hebdomadaire',
+                cible: '28 à 33 %',
+                desc: 'Calculé sur coût matières consommé / CA réel. Au-delà de 35 %, alerte : dérive achats ou portions.',
               },
             ].map((row, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5 flex gap-4">
@@ -736,10 +736,10 @@ export default function LogicielMargeFoodTruck() {
               Cas concret
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              Food truck Lyon : 18 % a 28 % de marge nette en 4 mois
+              Food truck Lyon : 18 % à 28 % de marge nette en 4 mois
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              Comment Burger Brothers Lyon a gagne 10 points de marge nette grace au logiciel.
+              Comment Burger Brothers Lyon a gagné 10 points de marge nette grâce au logiciel.
             </p>
           </div>
 
@@ -754,7 +754,7 @@ export default function LogicielMargeFoodTruck() {
                 <ArrowRight className="w-10 h-10 text-teal-600" />
               </div>
               <div>
-                <div className="text-xs uppercase tracking-wider text-emerald-700 mb-1">Apres 4 mois</div>
+                <div className="text-xs uppercase tracking-wider text-emerald-700 mb-1">Après 4 mois</div>
                 <div className="text-4xl font-extrabold text-emerald-700">28 %</div>
                 <div className="text-xs text-emerald-700 font-semibold">marge nette</div>
               </div>
@@ -763,24 +763,24 @@ export default function LogicielMargeFoodTruck() {
             <div className="space-y-4 text-sm text-mono-400 leading-relaxed">
               <p>
                 <strong className="text-mono-100">Le diagnostic :</strong> Julien tournait sur 7
-                emplacements/semaine et pensait gagner correctement sa vie. Le logiciel a revele
-                que 2 emplacements (jeudi soir Brotteaux + dimanche brunch Tete d'Or) etaient
-                deficitaires nets, plombant la rentabilite globale.
+                emplacements/semaine et pensait gagner correctement sa vie. Le logiciel a révélé
+                que 2 emplacements (jeudi soir Brotteaux + dimanche brunch Tête d'Or) étaient
+                déficitaires nets, plombant la rentabilité globale.
               </p>
               <p>
                 <strong className="text-mono-100">Les actions :</strong>
               </p>
               <ul className="list-disc list-inside space-y-2 ml-2">
-                <li>Suppression de 2 emplacements deficitaires identifies par la matrice rentabilite</li>
-                <li>Ajout 1 emplacement Confluence le vendredi midi (test 4 semaines validees)</li>
-                <li>Renegociation prix steak (-12 %) suite alerte hausse fournisseur</li>
-                <li>Carte reduite de 18 a 10 plats, focus sur 4 best-sellers</li>
-                <li>Mise en place mode evenementiel B2B (3 mariages d'ete reserves)</li>
+                <li>Suppression de 2 emplacements déficitaires identifiés par la matrice rentabilité</li>
+                <li>Ajout 1 emplacement Confluence le vendredi midi (test 4 semaines validées)</li>
+                <li>Renégociation prix steak (-12 %) suite alerte hausse fournisseur</li>
+                <li>Carte réduite de 18 à 10 plats, focus sur 4 best-sellers</li>
+                <li>Mise en place mode événementiel B2B (3 mariages d'été réservés)</li>
               </ul>
               <p>
-                <strong className="text-mono-100">Le resultat :</strong> +12 000 EUR de marge nette
-                annualisee, soit un ROI logiciel x35 des le premier semestre. CA stable a 215 000
-                EUR/an, mais marge nette passee de 38 700 EUR a 60 200 EUR.
+                <strong className="text-mono-100">Le résultat :</strong> +12 000 EUR de marge nette
+                annualisée, soit un ROI logiciel x35 dès le premier semestre. CA stable à 215 000
+                EUR/an, mais marge nette passée de 38 700 EUR à 60 200 EUR.
               </p>
             </div>
           </div>
@@ -792,23 +792,23 @@ export default function LogicielMargeFoodTruck() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              Les 8 fonctionnalites food truck du logiciel
+              Les 8 fonctionnalités food truck du logiciel
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              Tout pense pour la mobilite, la saisonnalite et la rentabilite par emplacement.
+              Tout pensé pour la mobilité, la saisonnalité et la rentabilité par emplacement.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: <MapPin className="w-6 h-6" />, title: 'Multi-emplacements', desc: 'Cout/jour par lieu, CA par service, classement rentabilite.' },
-              { icon: <CloudRain className="w-6 h-6" />, title: 'Module meteo', desc: 'API OpenWeather pour previsions ventes et alertes gaspillage.' },
-              { icon: <Calculator className="w-6 h-6" />, title: 'Fiches techniques mobiles', desc: 'Portion calibree emporter, emballage integre, allergenes.' },
+              { icon: <MapPin className="w-6 h-6" />, title: 'Multi-emplacements', desc: 'Coût/jour par lieu, CA par service, classement rentabilité.' },
+              { icon: <CloudRain className="w-6 h-6" />, title: 'Module météo', desc: 'API OpenWeather pour prévisions ventes et alertes gaspillage.' },
+              { icon: <Calculator className="w-6 h-6" />, title: 'Fiches techniques mobiles', desc: 'Portion calibrée emporter, emballage intégré, allergènes.' },
               { icon: <Receipt className="w-6 h-6" />, title: 'Scan factures OCR', desc: 'Photographiez bordereaux Metro, Promocash, Sysco depuis le truck.' },
-              { icon: <Cloud className="w-6 h-6" />, title: 'Mode hors-ligne', desc: 'PWA fonctionnelle sans Wi-Fi, sync auto au retour reseau.' },
+              { icon: <Cloud className="w-6 h-6" />, title: 'Mode hors-ligne', desc: 'PWA fonctionnelle sans Wi-Fi, sync auto au retour réseau.' },
               { icon: <Brain className="w-6 h-6" />, title: '19 actions IA', desc: 'Suggestions menu, optimisation marges, commande vocale.' },
-              { icon: <Bell className="w-6 h-6" />, title: 'Alertes intelligentes', desc: 'Hausse prix fournisseur, derive food cost, stock critique.' },
-              { icon: <BarChart3 className="w-6 h-6" />, title: 'Reporting multi-truck', desc: 'Consolidation parc, comparaison performance, KPI temps reel.' },
+              { icon: <Bell className="w-6 h-6" />, title: 'Alertes intelligentes', desc: 'Hausse prix fournisseur, dérive food cost, stock critique.' },
+              { icon: <BarChart3 className="w-6 h-6" />, title: 'Reporting multi-truck', desc: 'Consolidation parc, comparaison performance, KPI temps réel.' },
             ].map((feat, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5 hover:border-teal-300 transition-colors">
                 <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-lg flex items-center justify-center mb-3">
@@ -862,7 +862,7 @@ export default function LogicielMargeFoodTruck() {
               FAQ logiciel marge food truck
             </h2>
             <p className="text-lg text-mono-400">
-              Les questions specifiques food truck avant l'inscription.
+              Les questions spécifiques food truck avant l'inscription.
             </p>
           </div>
 
@@ -873,9 +873,9 @@ export default function LogicielMargeFoodTruck() {
           </div>
 
           <Callout type="info">
-            <strong>Une question food truck specifique ?</strong> Contactez l'equipe via la{' '}
+            <strong>Une question food truck spécifique ?</strong> Contactez l'équipe via la{' '}
             <Link to="/demo" className="underline font-semibold hover:text-teal-700">page demo</Link>{' '}
-            ou ecrivez a contact@restaumargin.fr. Reponse sous 4h ouvrees.
+            ou écrivez à contact@restaumargin.fr. Réponse sous 4h ouvrées.
           </Callout>
         </div>
       </section>
@@ -884,11 +884,11 @@ export default function LogicielMargeFoodTruck() {
       <section className="py-20 px-4 bg-gradient-to-br from-teal-600 to-teal-700">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-3xl sm:text-5xl font-extrabold mb-6">
-            Pret a piloter la marge de votre food truck ?
+            Prêt à piloter la marge de votre food truck ?
           </h2>
           <p className="text-xl text-teal-100 max-w-2xl mx-auto mb-3">
-            Rejoignez les food truckeurs qui ont gagne en moyenne 8 points de marge nette
-            en 6 mois grace au logiciel RestauMargin.
+            Rejoignez les food truckeurs qui ont gagné en moyenne 8 points de marge nette
+            en 6 mois grâce au logiciel RestauMargin.
           </p>
           <p className="text-teal-50 mb-10">
             Essai gratuit 7 jours - Sans carte bancaire - Mode hors-ligne dans le camion inclus
@@ -925,7 +925,7 @@ export default function LogicielMargeFoodTruck() {
                 Ouvrir un food truck en France : guide 2026
               </h3>
               <p className="text-sm text-mono-500">
-                Reglementation, couts, emplacements, statuts juridiques. Guide complet de creation.
+                Réglementation, coûts, emplacements, statuts juridiques. Guide complet de création.
               </p>
             </Link>
             <Link
@@ -934,11 +934,11 @@ export default function LogicielMargeFoodTruck() {
             >
               <Calculator className="w-8 h-8 text-teal-600 mb-3" />
               <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">
-                Reduire son food cost restaurant
+                Réduire son food cost restaurant
               </h3>
               <p className="text-sm text-mono-500">
-                10 leviers concrets pour faire baisser son food cost de 3 a 5 points sans toucher
-                a la qualite.
+                10 leviers concrets pour faire baisser son food cost de 3 à 5 points sans toucher
+                à la qualité.
               </p>
             </Link>
             <Link
@@ -947,10 +947,10 @@ export default function LogicielMargeFoodTruck() {
             >
               <Sparkles className="w-8 h-8 text-teal-600 mb-3" />
               <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">
-                Demarrer l'essai gratuit 7 jours
+                Démarrer l'essai gratuit 7 jours
               </h3>
               <p className="text-sm text-mono-500">
-                Sans carte bancaire. Toutes les fonctionnalites food truck activees immediatement.
+                Sans carte bancaire. Toutes les fonctionnalités food truck activées immédiatement.
               </p>
             </Link>
           </div>
@@ -964,15 +964,15 @@ export default function LogicielMargeFoodTruck() {
             <ChefHat className="w-6 h-6 text-teal-600" />
             RestauMargin
           </Link>
-          <p className="mb-4">Le logiciel de marge specialise food truck en France.</p>
+          <p className="mb-4">Le logiciel de marge spécialisé food truck en France.</p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
+            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
+            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
           </div>
           <p className="mt-6 text-xs text-mono-700">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
+            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
           </p>
         </div>
       </footer>

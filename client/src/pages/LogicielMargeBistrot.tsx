@@ -36,54 +36,54 @@ import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SE
 
 const faqItems = [
   {
-    question: 'Quel food cost viser pour un bistrot francais en 2026 ?',
+    question: 'Quel food cost viser pour un bistrot français en 2026 ?',
     answer:
-      "La fourchette cible pour un bistrot ou une brasserie francaise est de 28 a 32 %. En dessous de 28 %, vous risquez de degrader la qualite percue (produits frais quotidiens, viande Charolaise, poisson sauvage). Au-dela de 32 %, votre marge brute devient insuffisante pour absorber le poids du personnel en cuisine francaise (souvent 38-42 % du CA). Le bistrot bien gere stabilise son food cost autour de 30 % avec un prime cost a 65 %.",
+      "La fourchette cible pour un bistrot ou une brasserie française est de 28 à 32 %. En dessous de 28 %, vous risquez de dégrader la qualité perçue (produits frais quotidiens, viande Charolaise, poisson sauvage). Au-delà de 32 %, votre marge brute devient insuffisante pour absorber le poids du personnel en cuisine française (souvent 38-42 % du CA). Le bistrot bien géré stabilise son food cost autour de 30 % avec un prime cost à 65 %.",
   },
   {
     question: 'Comment optimiser la marge sur un boeuf bourguignon ?',
     answer:
-      "Le boeuf bourguignon est un plat marge-friendly s'il est correctement parametre. Avec une joue ou un paleron Charolais a 12 EUR/kg, une portion de 180 g de viande crue (apres reduction 30 % a la cuisson), legumes 80 g, vin 100 ml, fond 50 ml : cout matieres total environ 5,20 EUR. Vendu 19 EUR HT (20,90 EUR TTC) en formule plat, food cost 27 %. Astuce : preparer en grande masse (gain 30 % sur temps cuisson), congeler en portions individuelles.",
+      "Le boeuf bourguignon est un plat marge-friendly s'il est correctement paramétré. Avec une joue ou un paleron Charolais à 12 EUR/kg, une portion de 180 g de viande crue (après réduction 30 % à la cuisson), légumes 80 g, vin 100 ml, fond 50 ml : coût matières total environ 5,20 EUR. Vendu 19 EUR HT (20,90 EUR TTC) en formule plat, food cost 27 %. Astuce : préparer en grande masse (gain 30 % sur temps cuisson), congeler en portions individuelles.",
   },
   {
-    question: 'Comment gerer les fournisseurs multiples d\'un bistrot ?',
+    question: 'Comment gérer les fournisseurs multiples d\'un bistrot ?',
     answer:
-      "Un bistrot type travaille avec 6 a 12 fournisseurs : maraicher local (quotidien), boucher de quartier (2-3x/semaine), poissonnerie (2-3x/semaine), cave independante, epicier sec, fromager, MIN (marche de gros) en complement. Un logiciel comme RestauMargin centralise les bordereaux via scan OCR et compare les prix sur la duree (module Mercuriale). Vous detectez les hausses anormales et negociez en position de force.",
+      "Un bistrot type travaille avec 6 à 12 fournisseurs : maraîcher local (quotidien), boucher de quartier (2-3x/semaine), poissonnerie (2-3x/semaine), cave indépendante, épicier sec, fromager, MIN (marché de gros) en complément. Un logiciel comme RestauMargin centralise les bordereaux via scan OCR et compare les prix sur la durée (module Mercuriale). Vous détectez les hausses anormales et négociez en position de force.",
   },
   {
     question: 'Quelle marge cible sur la carte des vins ?',
     answer:
-      "En bistrot/brasserie, la marge cible sur le vin se situe entre 70 et 75 % (coefficient 3 a 4). Pour une bouteille achetee 6 EUR HT chez votre cave, vente carte autour de 24-28 EUR TTC. Le vin au verre offre une marge encore meilleure (75-80 %) : bouteille 75 cl = 5 verres de 15 cl, prix verre 6-9 EUR. La carafe maison (vin domaine eclate) est un produit signature a fort rendement.",
+      "En bistrot/brasserie, la marge cible sur le vin se situe entre 70 et 75 % (coefficient 3 à 4). Pour une bouteille achetée 6 EUR HT chez votre cave, vente carte autour de 24-28 EUR TTC. Le vin au verre offre une marge encore meilleure (75-80 %) : bouteille 75 cl = 5 verres de 15 cl, prix verre 6-9 EUR. La carafe maison (vin domaine éclaté) est un produit signature à fort rendement.",
   },
   {
-    question: 'Comment gerer la saisonnalite forte en cuisine francaise ?',
+    question: 'Comment gérer la saisonnalité forte en cuisine française ?',
     answer:
-      "La cuisine francaise repose sur la saison (asperges en avril, gibier en automne, truffe en hiver, tomate ete). Une carte changeante hebdomadaire ou bi-mensuelle est la norme. Un logiciel comme RestauMargin permet de creer rapidement de nouvelles fiches techniques et de calculer la marge avant le passage en carte. Le module Menu Calendrier planifie les rotations. Astuce : 70 % de la carte fixe (classiques) + 30 % saisonnier renouvele.",
+      "La cuisine française repose sur la saison (asperges en avril, gibier en automne, truffe en hiver, tomate été). Une carte changeante hebdomadaire ou bi-mensuelle est la norme. Un logiciel comme RestauMargin permet de créer rapidement de nouvelles fiches techniques et de calculer la marge avant le passage en carte. Le module Menu Calendrier planifie les rotations. Astuce : 70 % de la carte fixe (classiques) + 30 % saisonnier renouvelé.",
   },
   {
     question: 'Quel est le ticket moyen d\'un bistrot rentable en 2026 ?',
     answer:
-      "Un bistrot urbain (Paris, Lyon, grandes metropoles) vise un ticket moyen entre 28 et 38 EUR TTC midi et 35 a 55 EUR TTC soir. En province, 22 a 32 EUR midi et 28 a 42 EUR soir. La formule du jour (entree + plat ou plat + dessert) doit representer 60-70 % des couverts du midi. La carte des vins booste le ticket de 15-25 % le soir.",
+      "Un bistrot urbain (Paris, Lyon, grandes métropoles) vise un ticket moyen entre 28 et 38 EUR TTC midi et 35 à 55 EUR TTC soir. En province, 22 à 32 EUR midi et 28 à 42 EUR soir. La formule du jour (entrée + plat ou plat + dessert) doit représenter 60-70 % des couverts du midi. La carte des vins booste le ticket de 15-25 % le soir.",
   },
   {
     question: 'Faut-il proposer une formule du jour ?',
     answer:
-      "Oui, sans hesiter. La formule du jour assure un rendement de 70-80 % des couverts midi et permet de tourner les produits frais (anti-gaspillage). Recommandation : 2 entrees, 2 plats, 2 desserts maximum (rotation hebdomadaire). Prix attractif (16-22 EUR formule plat-dessert en province, 19-26 EUR a Paris). Le food cost de la formule peut etre legerement plus eleve (32-35 %) compense par le volume.",
+      "Oui, sans hésiter. La formule du jour assure un rendement de 70-80 % des couverts midi et permet de tourner les produits frais (anti-gaspillage). Recommandation : 2 entrées, 2 plats, 2 desserts maximum (rotation hebdomadaire). Prix attractif (16-22 EUR formule plat-dessert en province, 19-26 EUR à Paris). Le food cost de la formule peut être légèrement plus élevé (32-35 %) compensé par le volume.",
   },
   {
-    question: 'Comment integrer le nose-to-tail pour ameliorer la marge ?',
+    question: 'Comment intégrer le nose-to-tail pour améliorer la marge ?',
     answer:
-      "Le nose-to-tail (utilisation integrale de l\'animal) est un puissant levier marge en bistrot. Acheter un demi-cochon ou un agneau entier vous donne un prix au kilo 30-40 % inferieur aux pieces decoupees. Vous valorisez les morceaux nobles (filet, cote, gigot) en plats premium et les morceaux abats/bas-morceaux (joue, paleron, langue) en specialites bistrot a forte marge. RestauMargin gere les decoupes via fiches techniques composees.",
+      "Le nose-to-tail (utilisation intégrale de l\'animal) est un puissant levier marge en bistrot. Acheter un demi-cochon ou un agneau entier vous donne un prix au kilo 30-40 % inférieur aux pièces découpées. Vous valorisez les morceaux nobles (filet, côte, gigot) en plats premium et les morceaux abats/bas-morceaux (joue, paleron, langue) en spécialités bistrot à forte marge. RestauMargin gère les découpes via fiches techniques composées.",
   },
   {
     question: 'Combien de temps prend la gestion des marges sans logiciel ?',
     answer:
-      "Sur Excel ou papier, un chef-proprietaire de bistrot passe en moyenne 5 a 8 heures par semaine sur la gestion des marges : saisie bordereaux fournisseurs, mise a jour des fiches techniques, recalcul des food costs, comparaison fournisseurs. Avec RestauMargin (scan OCR, mise a jour automatique, alertes), ce temps tombe a 1 heure par semaine. Soit 200 heures gagnees par an pour vous concentrer sur la cuisine et la salle.",
+      "Sur Excel ou papier, un chef-propriétaire de bistrot passe en moyenne 5 à 8 heures par semaine sur la gestion des marges : saisie bordereaux fournisseurs, mise à jour des fiches techniques, recalcul des food costs, comparaison fournisseurs. Avec RestauMargin (scan OCR, mise à jour automatique, alertes), ce temps tombe à 1 heure par semaine. Soit 200 heures gagnées par an pour vous concentrer sur la cuisine et la salle.",
   },
   {
-    question: 'RestauMargin est-il adapte a un bistrot independant ?',
+    question: 'RestauMargin est-il adapté à un bistrot indépendant ?',
     answer:
-      "Oui, c\'est meme notre coeur de cible. RestauMargin a ete concu pour les bistrots et brasseries independants (1 a 3 etablissements). 70 % de nos clients sont des bistrots traditionnels. Le plan Pro a 29 EUR/mois couvre tous les besoins : fiches techniques illimitees, scan factures, alertes prix, menu engineering, gestion de la carte des vins. Essai gratuit 7 jours sans carte bancaire.",
+      "Oui, c\'est même notre coeur de cible. RestauMargin a été conçu pour les bistrots et brasseries indépendants (1 à 3 établissements). 70 % de nos clients sont des bistrots traditionnels. Le plan Pro à 29 EUR/mois couvre tous les besoins : fiches techniques illimitées, scan factures, alertes prix, menu engineering, gestion de la carte des vins. Essai gratuit 7 jours sans carte bancaire.",
   },
 ];
 
@@ -91,13 +91,13 @@ const faqItems = [
 const platsTypes = [
   { plat: 'Boeuf bourguignon', cout: '5,20 EUR', prix: '19,00 EUR', foodCost: '27 %', marge: '13,80 EUR' },
   { plat: 'Salade nicoise', cout: '3,80 EUR', prix: '14,00 EUR', foodCost: '27 %', marge: '10,20 EUR' },
-  { plat: 'Steak frites entrecote', cout: '6,50 EUR', prix: '22,00 EUR', foodCost: '30 %', marge: '15,50 EUR' },
+  { plat: 'Steak frites entrecôte', cout: '6,50 EUR', prix: '22,00 EUR', foodCost: '30 %', marge: '15,50 EUR' },
   { plat: 'Confit de canard', cout: '6,20 EUR', prix: '21,00 EUR', foodCost: '30 %', marge: '14,80 EUR' },
   { plat: 'Cassoulet maison', cout: '5,80 EUR', prix: '20,00 EUR', foodCost: '29 %', marge: '14,20 EUR' },
   { plat: 'Magret de canard', cout: '7,20 EUR', prix: '24,00 EUR', foodCost: '30 %', marge: '16,80 EUR' },
-  { plat: 'Sole meuniere (200g)', cout: '8,50 EUR', prix: '28,00 EUR', foodCost: '30 %', marge: '19,50 EUR' },
+  { plat: 'Sole meunière (200g)', cout: '8,50 EUR', prix: '28,00 EUR', foodCost: '30 %', marge: '19,50 EUR' },
   { plat: 'Tartare de boeuf', cout: '5,40 EUR', prix: '18,00 EUR', foodCost: '30 %', marge: '12,60 EUR' },
-  { plat: 'Creme brulee', cout: '1,20 EUR', prix: '8,00 EUR', foodCost: '15 %', marge: '6,80 EUR' },
+  { plat: 'Crème brûlée', cout: '1,20 EUR', prix: '8,00 EUR', foodCost: '15 %', marge: '6,80 EUR' },
   { plat: 'Tarte Tatin', cout: '1,50 EUR', prix: '9,00 EUR', foodCost: '17 %', marge: '7,50 EUR' },
 ];
 
@@ -105,8 +105,8 @@ export default function LogicielMargeBistrot() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
-        title="Logiciel marge bistrot brasserie | Food cost cuisine francaise | RestauMargin"
-        description="Logiciel de gestion marge bistrot et brasserie. Suivi food cost cuisine francaise, fiches techniques, fournisseurs. Essai gratuit 7 jours."
+        title="Logiciel marge bistrot brasserie | Food cost cuisine française | RestauMargin"
+        description="Logiciel de gestion marge bistrot et brasserie. Suivi food cost cuisine française, fiches techniques, fournisseurs. Essai gratuit 7 jours."
         path="/logiciel-marge-bistrot"
         type="website"
         schema={[
@@ -120,7 +120,7 @@ export default function LogicielMargeBistrot() {
             '@type': 'Article',
             headline: 'Logiciel de marge pour bistrot et brasserie en 2026',
             description:
-              'Guide complet sur la gestion des marges en bistrot et brasserie : food cost cible 28-32 %, decomposition cout des plats classiques (boeuf bourguignon, salade nicoise, steak frites), gestion des fournisseurs locaux, carte des vins.',
+              'Guide complet sur la gestion des marges en bistrot et brasserie : food cost cible 28-32 %, décomposition coût des plats classiques (boeuf bourguignon, salade nicoise, steak frites), gestion des fournisseurs locaux, carte des vins.',
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -146,10 +146,10 @@ export default function LogicielMargeBistrot() {
             operatingSystem: 'Web, iOS, Android',
             url: 'https://www.restaumargin.fr/logiciel-marge-bistrot',
             description:
-              'Logiciel de gestion des marges specifiquement adapte aux bistrots et brasseries francaises : fiches techniques cuisine francaise, suivi des prix fournisseurs locaux (maraicher, boucher, poissonnier), gestion carte des vins, menu du jour.',
+              'Logiciel de gestion des marges spécifiquement adapté aux bistrots et brasseries françaises : fiches techniques cuisine française, suivi des prix fournisseurs locaux (maraîcher, boucher, poissonnier), gestion carte des vins, menu du jour.',
             featureList: [
-              'Fiches techniques cuisine francaise (boeuf bourguignon, confit, cassoulet)',
-              'Gestion multi-fournisseurs locaux (boucher, maraicher, poissonnerie)',
+              'Fiches techniques cuisine française (boeuf bourguignon, confit, cassoulet)',
+              'Gestion multi-fournisseurs locaux (boucher, maraîcher, poissonnerie)',
               'Suivi marge carte des vins (coefficient 3-4)',
               'Menu du jour avec rotation produits frais',
               'Alertes hausse prix viande/poisson',
@@ -214,13 +214,13 @@ export default function LogicielMargeBistrot() {
         <div className="max-w-6xl mx-auto text-center">
           <span className="inline-flex items-center gap-1.5 text-amber-800 bg-amber-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
             <Sparkles className="w-3.5 h-3.5" />
-            Specialiste bistrot et brasserie francaise
+            Spécialiste bistrot et brasserie française
           </span>
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-mono-100 leading-tight mb-6 max-w-4xl mx-auto">
             Logiciel de marge pour bistrot et brasserie en 2026
           </h1>
           <p className="text-lg sm:text-xl text-mono-400 max-w-3xl mx-auto leading-relaxed mb-8">
-            La solution SaaS dediee aux <strong>bistrots francais</strong> et <strong>brasseries traditionnelles</strong>.
+            La solution SaaS dédiée aux <strong>bistrots français</strong> et <strong>brasseries traditionnelles</strong>.
             Suivi food cost cible 28-32 %, fournisseurs locaux multiples, carte des vins, menu du jour.
           </p>
 
@@ -252,30 +252,30 @@ export default function LogicielMargeBistrot() {
       <section className="py-16 px-4">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-6">
-            Le bistrot francais : un modele rentable mais exigeant
+            Le bistrot français : un modèle rentable mais exigeant
           </h2>
           <p className="text-lg text-mono-400 leading-relaxed mb-4">
-            Le <strong>bistrot francais</strong> est l'institution culinaire emblematique de notre pays.
+            Le <strong>bistrot français</strong> est l'institution culinaire emblématique de notre pays.
             Format classique avec sa carte ardoise, ses plats canailles, sa cave et sa salle conviviale,
-            il represente plus de 38 000 etablissements en France. Mais derriere l'image bonhomme se cache
-            une mecanique de gestion redoutable : marges serrees, charges elevees, produits frais quotidiens
-            a tourner, equipe de cuisine francaise couteuse.
+            il représente plus de 38 000 établissements en France. Mais derrière l'image bonhomme se cache
+            une mécanique de gestion redoutable : marges serrées, charges élevées, produits frais quotidiens
+            à tourner, équipe de cuisine française coûteuse.
           </p>
           <p className="text-lg text-mono-400 leading-relaxed mb-4">
-            La rentabilite d'un bistrot ou d'une brasserie repose sur un <strong>food cost cible de 28 a 32 %</strong>.
-            En dessous, vous degradez la qualite percue (produits surgeles, viande premiere zone, vin standard).
-            Au-dessus, vous ne couvrez plus vos charges. Cette fourchette etroite exige un pilotage permanent
-            des prix matieres, des fiches techniques et des fournisseurs.
+            La rentabilité d'un bistrot ou d'une brasserie repose sur un <strong>food cost cible de 28 à 32 %</strong>.
+            En dessous, vous dégradez la qualité perçue (produits surgelés, viande première zone, vin standard).
+            Au-dessus, vous ne couvrez plus vos charges. Cette fourchette étroite exige un pilotage permanent
+            des prix matières, des fiches techniques et des fournisseurs.
           </p>
           <p className="text-lg text-mono-400 leading-relaxed">
-            <strong>RestauMargin</strong> a ete pense pour cette realite. 70 % de nos clients sont des bistrots
-            et brasseries independantes. Decouvrez comment notre logiciel automatise la gestion specifique
-            de la cuisine francaise.
+            <strong>RestauMargin</strong> a été pensé pour cette réalité. 70 % de nos clients sont des bistrots
+            et brasseries indépendantes. Découvrez comment notre logiciel automatise la gestion spécifique
+            de la cuisine française.
           </p>
 
           <Callout type="info">
-            <strong>Chiffre cle :</strong> Un bistrot urbain bien gere realise entre 350 000 et 800 000 EUR de CA annuel
-            avec une marge nette de 10 a 15 %. Soit 35 000 a 120 000 EUR de resultat net par etablissement.
+            <strong>Chiffre clé :</strong> Un bistrot urbain bien géré réalise entre 350 000 et 800 000 EUR de CA annuel
+            avec une marge nette de 10 à 15 %. Soit 35 000 à 120 000 EUR de résultat net par établissement.
           </Callout>
         </div>
       </section>
@@ -285,10 +285,10 @@ export default function LogicielMargeBistrot() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              Specificites couts de la cuisine francaise
+              Spécificités coûts de la cuisine française
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              4 caracteristiques structurantes qui differencient le bistrot des autres types de restauration.
+              4 caractéristiques structurantes qui différencient le bistrot des autres types de restauration.
             </p>
           </div>
 
@@ -298,25 +298,25 @@ export default function LogicielMargeBistrot() {
                 icon: <Fish className="w-6 h-6" />,
                 title: 'Produits frais quotidiens',
                 desc:
-                  "Poisson sauvage (sole, bar, dorade), viande de boucherie (Charolaise, Limousine), legumes du jour. Pas de stocks longs, livraisons 4-6 fois/semaine.",
+                  "Poisson sauvage (sole, bar, dorade), viande de boucherie (Charolaise, Limousine), légumes du jour. Pas de stocks longs, livraisons 4-6 fois/semaine.",
               },
               {
                 icon: <Carrot className="w-6 h-6" />,
-                title: 'Saisonnalite forte',
+                title: 'Saisonnalité forte',
                 desc:
-                  "Asperges en avril, gibier en automne, truffe en hiver, tomates en ete. La carte evolue tous les mois minimum, voire chaque semaine pour les meilleurs etablissements.",
+                  "Asperges en avril, gibier en automne, truffe en hiver, tomates en été. La carte évolue tous les mois minimum, voire chaque semaine pour les meilleurs établissements.",
               },
               {
                 icon: <Truck className="w-6 h-6" />,
                 title: 'Fournisseurs locaux multiples',
                 desc:
-                  "6 a 12 fournisseurs differents : maraicher de Rungis, boucher de quartier, poissonnerie, cave independante, fromager, epicier. Pas de centrale unique.",
+                  "6 à 12 fournisseurs différents : maraîcher de Rungis, boucher de quartier, poissonnerie, cave indépendante, fromager, épicier. Pas de centrale unique.",
               },
               {
                 icon: <Clock className="w-6 h-6" />,
                 title: 'Carte changeante',
                 desc:
-                  "Mix carte fixe (70 %) + plats du jour saisonniers (30 %). Renouvellement hebdomadaire minimum. Necessite des fiches techniques rapides a creer.",
+                  "Mix carte fixe (70 %) + plats du jour saisonniers (30 %). Renouvellement hebdomadaire minimum. Nécessite des fiches techniques rapides à créer.",
               },
             ].map((spec, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-2xl p-6 hover:border-teal-300 transition-colors">
@@ -335,11 +335,11 @@ export default function LogicielMargeBistrot() {
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-            Decomposition cout de 5 plats classiques bistrot
+            Décomposition coût de 5 plats classiques bistrot
           </h2>
           <p className="text-lg text-mono-400 mb-12">
-            Analyse detaillee des marges sur les emblemes de la cuisine francaise. Tous les chiffres sont
-            calcules sur des prix fournisseurs reels (Rungis, boucheries de quartier).
+            Analyse détaillée des marges sur les emblèmes de la cuisine française. Tous les chiffres sont
+            calculés sur des prix fournisseurs réels (Rungis, boucheries de quartier).
           </p>
 
           <div className="space-y-6">
@@ -349,10 +349,10 @@ export default function LogicielMargeBistrot() {
               ingredients={[
                 'Joue ou paleron Charolais 12 EUR/kg : 180 g cru = 2,16 EUR',
                 'Garniture (oignons, carottes, lardons, champignons) : 1,20 EUR',
-                'Vin rouge cuisine (Cotes du Rhone) : 100 ml = 0,80 EUR',
-                'Fond brun maison + bouquet garni + epices : 0,30 EUR',
+                'Vin rouge cuisine (Côtes du Rhone) : 100 ml = 0,80 EUR',
+                'Fond brun maison + bouquet garni + épices : 0,30 EUR',
                 'Pommes de terre vapeur (180 g) : 0,40 EUR',
-                'Energie cuisson 3h + main d\'oeuvre (allocated) : 0,34 EUR',
+                'Énergie cuisson 3h + main d\'oeuvre (allocated) : 0,34 EUR',
               ]}
               coutTotal="5,20 EUR"
               prixVente="19,00 EUR"
@@ -365,8 +365,8 @@ export default function LogicielMargeBistrot() {
               icon={<Salad className="w-5 h-5" />}
               title="Salade nicoise"
               ingredients={[
-                'Thon rouge frais qualite sashimi 28 EUR/kg : 80 g = 2,24 EUR',
-                'Tomates anciennes (3 varietes) : 100 g = 0,40 EUR',
+                'Thon rouge frais qualité sashimi 28 EUR/kg : 80 g = 2,24 EUR',
+                'Tomates anciennes (3 variétés) : 100 g = 0,40 EUR',
                 'Oeuf bio mollet : 0,35 EUR',
                 'Olives Taggiasche + anchois : 0,30 EUR',
                 'Mesclun + radis + ciboulette : 0,30 EUR',
@@ -381,14 +381,14 @@ export default function LogicielMargeBistrot() {
 
             <PlatBox
               icon={<Beef className="w-5 h-5" />}
-              title="Steak frites entrecote"
+              title="Steak frites entrecôte"
               ingredients={[
-                'Entrecote Charolaise 200 g (achat 22 EUR/kg) : 4,40 EUR',
+                'Entrecôte Charolaise 200 g (achat 22 EUR/kg) : 4,40 EUR',
                 'Frites maison Bintje (200 g cuites, 350 g crues) : 0,60 EUR',
-                'Beurre maitre d\'hotel maison : 0,30 EUR',
+                'Beurre maître d\'hôtel maison : 0,30 EUR',
                 'Sel fleur de sel + poivre Sarawak : 0,15 EUR',
                 'Salade verte garniture (40 g) : 0,15 EUR',
-                'Huile cuisson frites + energie : 0,90 EUR',
+                'Huile cuisson frites + énergie : 0,90 EUR',
               ]}
               coutTotal="6,50 EUR"
               prixVente="22,00 EUR"
@@ -399,11 +399,11 @@ export default function LogicielMargeBistrot() {
 
             <PlatBox
               icon={<Croissant className="w-5 h-5" />}
-              title="Creme brulee"
+              title="Crème brûlée"
               ingredients={[
-                'Creme liquide 35 % MG (150 ml) : 0,45 EUR',
+                'Crème liquide 35 % MG (150 ml) : 0,45 EUR',
                 'Jaunes d\'oeufs (3 jaunes bio) : 0,30 EUR',
-                'Sucre roux + cassonade brulage : 0,15 EUR',
+                'Sucre roux + cassonade brûlage : 0,15 EUR',
                 'Gousse de vanille Bourbon (1/4) : 0,25 EUR',
                 'Ramequin + manutention : 0,05 EUR',
               ]}
@@ -419,9 +419,9 @@ export default function LogicielMargeBistrot() {
               title="Tarte Tatin"
               ingredients={[
                 'Pommes Reinette du Mans (300 g) : 0,75 EUR',
-                'Pate brisee maison (90 g) : 0,25 EUR',
+                'Pâte brisée maison (90 g) : 0,25 EUR',
                 'Sucre roux + beurre (caramel) : 0,30 EUR',
-                'Vanille + epices + cidre : 0,15 EUR',
+                'Vanille + épices + cidre : 0,15 EUR',
                 'Boule glace vanille accompagnement : 0,05 EUR',
               ]}
               coutTotal="1,50 EUR"
@@ -434,8 +434,8 @@ export default function LogicielMargeBistrot() {
 
           <Callout type="info">
             <strong>Insight pricing :</strong> Les desserts (food cost 15-20 %) compensent largement les plats
-            de viande/poisson (food cost 28-32 %). Pousser le dessert via suggestion serveur ameliore le food cost
-            moyen de 2 a 3 points sur le ticket.
+            de viande/poisson (food cost 28-32 %). Pousser le dessert via suggestion serveur améliore le food cost
+            moyen de 2 à 3 points sur le ticket.
           </Callout>
         </div>
       </section>
@@ -445,10 +445,10 @@ export default function LogicielMargeBistrot() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              Tableau de 10 plats bistrot type : couts et marges
+              Tableau de 10 plats bistrot type : coûts et marges
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              Reference complete avec cout matieres, prix de vente et food cost calcules pour 2026.
+              Référence complète avec coût matières, prix de vente et food cost calculés pour 2026.
             </p>
           </div>
 
@@ -457,7 +457,7 @@ export default function LogicielMargeBistrot() {
               <thead>
                 <tr className="bg-mono-975 text-mono-350">
                   <th className="text-left py-4 px-4 font-semibold">Plat</th>
-                  <th className="text-right py-4 px-4 font-semibold">Cout matieres</th>
+                  <th className="text-right py-4 px-4 font-semibold">Coût matières</th>
                   <th className="text-right py-4 px-4 font-semibold">Prix vente HT</th>
                   <th className="text-right py-4 px-4 font-semibold">Food cost</th>
                   <th className="text-right py-4 px-4 font-semibold">Marge brute</th>
@@ -481,8 +481,8 @@ export default function LogicielMargeBistrot() {
             </table>
           </div>
           <p className="text-xs text-mono-500 mt-4 text-center">
-            Prix calcules sur la base des tarifs fournisseurs Rungis et boucheries de quartier (mai 2026).
-            Variation possible selon region et qualite produit.
+            Prix calculés sur la base des tarifs fournisseurs Rungis et boucheries de quartier (mai 2026).
+            Variation possible selon région et qualité produit.
           </p>
         </div>
       </section>
@@ -492,11 +492,11 @@ export default function LogicielMargeBistrot() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              Gestion fournisseurs specifique bistrot
+              Gestion fournisseurs spécifique bistrot
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
               Un bistrot ne travaille pas avec une centrale unique. La diversification fournisseurs garantit
-              la qualite, mais multiplie les bordereaux a saisir.
+              la qualité, mais multiplie les bordereaux à saisir.
             </p>
           </div>
 
@@ -504,31 +504,31 @@ export default function LogicielMargeBistrot() {
             {[
               {
                 icon: <Carrot className="w-6 h-6" />,
-                title: 'Maraicher local',
+                title: 'Maraîcher local',
                 freq: 'Quotidien',
                 desc:
-                  "Legumes du marche (MIN Rungis, marche local) ou direct producteur. Prix variables selon saison. 5-7 livraisons/semaine.",
+                  "Légumes du marché (MIN Rungis, marché local) ou direct producteur. Prix variables selon saison. 5-7 livraisons/semaine.",
               },
               {
                 icon: <Beef className="w-6 h-6" />,
                 title: 'Boucher de quartier',
                 freq: '2-3x/semaine',
                 desc:
-                  "Viande de qualite tracee (Charolaise, Limousine, Aubrac). Decoupes sur mesure. Permet le nose-to-tail. Prix premium mais marge sur originalite.",
+                  "Viande de qualité tracée (Charolaise, Limousine, Aubrac). Découpes sur mesure. Permet le nose-to-tail. Prix premium mais marge sur originalité.",
               },
               {
                 icon: <Fish className="w-6 h-6" />,
                 title: 'Poissonnerie',
                 freq: '2-3x/semaine',
                 desc:
-                  "Poisson sauvage de criees (Bretagne, Mediterranee). Prix tres volatils selon saison/meteo. Necessite un suivi prix quotidien.",
+                  "Poisson sauvage de criées (Bretagne, Méditerranée). Prix très volatils selon saison/météo. Nécessite un suivi prix quotidien.",
               },
               {
                 icon: <Wine className="w-6 h-6" />,
-                title: 'Cave independante',
+                title: 'Cave indépendante',
                 freq: 'Mensuel',
                 desc:
-                  "Vignerons selectionnes hors GD. Prix negocies, exclusivites. Critere de differenciation cle pour la carte des vins.",
+                  "Vignerons sélectionnés hors GD. Prix négociés, exclusivités. Critère de différenciation clé pour la carte des vins.",
               },
             ].map((fournisseur, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-2xl p-6 hover:border-teal-300 transition-colors">
@@ -543,9 +543,9 @@ export default function LogicielMargeBistrot() {
           </div>
 
           <Callout type="warning">
-            <strong>Piege courant :</strong> Sans suivi formalise, un bistrot peut perdre 1,5 a 3 points de food cost
-            par an juste sur les hausses fournisseurs non repercutees. Sur un CA de 500 000 EUR, c'est 7 500 a 15 000 EUR
-            de marge brute envolee chaque annee.
+            <strong>Piège courant :</strong> Sans suivi formalisé, un bistrot peut perdre 1,5 à 3 points de food cost
+            par an juste sur les hausses fournisseurs non répercutées. Sur un CA de 500 000 EUR, c'est 7 500 à 15 000 EUR
+            de marge brute envolée chaque année.
           </Callout>
         </div>
       </section>
@@ -562,22 +562,22 @@ export default function LogicielMargeBistrot() {
             </h2>
           </div>
           <p className="text-lg text-mono-400 leading-relaxed mb-6">
-            La carte des vins represente <strong>20 a 35 % du CA</strong> d'un bistrot et offre la
-            <strong> meilleure marge brute du restaurant</strong> (70-75 %). C'est le levier numero 1 de rentabilite,
-            souvent sous-exploite faute de pilotage.
+            La carte des vins représente <strong>20 à 35 % du CA</strong> d'un bistrot et offre la
+            <strong> meilleure marge brute du restaurant</strong> (70-75 %). C'est le levier numéro 1 de rentabilité,
+            souvent sous-exploité faute de pilotage.
           </p>
 
           <div className="grid sm:grid-cols-2 gap-6 mb-6">
             <div className="bg-white border border-mono-900 rounded-2xl p-6">
               <h3 className="font-bold text-mono-100 mb-3 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-purple-600" />
-                Vin a la bouteille
+                Vin à la bouteille
               </h3>
               <ul className="space-y-2 text-sm text-mono-400">
-                <li>Coefficient cible : <strong>3 a 4</strong></li>
+                <li>Coefficient cible : <strong>3 à 4</strong></li>
                 <li>Achat 6 EUR HT chez vigneron - vente 24-28 EUR TTC</li>
                 <li>Marge brute : 70 % (16-19 EUR par bouteille)</li>
-                <li>Garniture carte : 15-25 references suffit</li>
+                <li>Garniture carte : 15-25 références suffit</li>
               </ul>
             </div>
 
@@ -587,17 +587,17 @@ export default function LogicielMargeBistrot() {
                 Vin au verre / carafe
               </h3>
               <ul className="space-y-2 text-sm text-mono-400">
-                <li>Marge encore plus elevee : <strong>75-80 %</strong></li>
+                <li>Marge encore plus élevée : <strong>75-80 %</strong></li>
                 <li>1 bouteille 75 cl = 5 verres de 15 cl</li>
-                <li>Prix verre : 6 a 9 EUR (selon gamme)</li>
+                <li>Prix verre : 6 à 9 EUR (selon gamme)</li>
                 <li>Carafe maison : produit signature, fort rendement</li>
               </ul>
             </div>
           </div>
 
           <Callout type="info">
-            <strong>Astuce sommelier :</strong> Le ratio ideal est de 3 references vin au verre (1 blanc + 2 rouges)
-            renouvelees tous les 15 jours. Cela cree de la nouveaute pour les habitues et booste le ticket moyen de 20-30 %.
+            <strong>Astuce sommelier :</strong> Le ratio idéal est de 3 références vin au verre (1 blanc + 2 rouges)
+            renouvelées tous les 15 jours. Cela crée de la nouveauté pour les habitués et booste le ticket moyen de 20-30 %.
             <Link to="/blog/construire-carte-vins-restaurant" className="block mt-2 text-teal-700 font-semibold underline">
               Lire notre guide complet sur la carte des vins
             </Link>
@@ -610,10 +610,10 @@ export default function LogicielMargeBistrot() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              KPI bistrot : les chiffres a piloter
+              KPI bistrot : les chiffres à piloter
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              5 indicateurs cles a suivre chaque semaine pour garantir la rentabilite.
+              5 indicateurs clés à suivre chaque semaine pour garantir la rentabilité.
             </p>
           </div>
 
@@ -622,37 +622,37 @@ export default function LogicielMargeBistrot() {
               {
                 kpi: 'Food cost',
                 cible: '28-32 %',
-                desc: 'Ratio cout matieres / CA HT. Au-dela de 32 %, alerte rouge. En dessous de 28 %, risque qualite.',
+                desc: 'Ratio coût matières / CA HT. Au-delà de 32 %, alerte rouge. En dessous de 28 %, risque qualité.',
                 color: 'amber',
               },
               {
                 kpi: 'Prime cost',
                 cible: '< 65 %',
-                desc: 'Food cost + cout personnel. Indicateur cle de la viabilite : au-dela de 70 %, le bistrot ne degage plus de marge nette.',
+                desc: 'Food cost + coût personnel. Indicateur clé de la viabilité : au-delà de 70 %, le bistrot ne dégage plus de marge nette.',
                 color: 'red',
               },
               {
                 kpi: 'Ticket moyen midi',
                 cible: '22-30 EUR TTC',
-                desc: 'Province : 22-28 EUR. Paris : 28-38 EUR. Booste par formule du jour + vin au verre.',
+                desc: 'Province : 22-28 EUR. Paris : 28-38 EUR. Boosté par formule du jour + vin au verre.',
                 color: 'teal',
               },
               {
                 kpi: 'Ticket moyen soir',
                 cible: '35-55 EUR TTC',
-                desc: 'A la carte + entree-plat-dessert + vin. La carte des vins represente 30 % du ticket soir.',
+                desc: 'À la carte + entrée-plat-dessert + vin. La carte des vins représente 30 % du ticket soir.',
                 color: 'purple',
               },
               {
                 kpi: 'Couverts/jour',
                 cible: '40-80',
-                desc: 'Un bistrot de 35 couverts vise 2 services pleins (70 couverts). Soiree : 1 a 1,5 service.',
+                desc: 'Un bistrot de 35 couverts vise 2 services pleins (70 couverts). Soirée : 1 à 1,5 service.',
                 color: 'emerald',
               },
               {
                 kpi: 'Marge nette',
                 cible: '10-15 %',
-                desc: 'Apres charges totales (loyer, personnel, energie, taxes). Un bistrot bien gere atteint 12-15 %.',
+                desc: 'Après charges totales (loyer, personnel, énergie, taxes). Un bistrot bien géré atteint 12-15 %.',
                 color: 'emerald',
               },
             ].map((k, i) => (
@@ -679,10 +679,10 @@ export default function LogicielMargeBistrot() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              Leviers d'optimisation specifiques cuisine francaise
+              Leviers d'optimisation spécifiques cuisine française
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              4 techniques eprouvees pour gagner 2 a 4 points de marge brute sans degrader la qualite.
+              4 techniques éprouvées pour gagner 2 à 4 points de marge brute sans dégrader la qualité.
             </p>
           </div>
 
@@ -692,29 +692,29 @@ export default function LogicielMargeBistrot() {
                 icon: <Beef className="w-6 h-6" />,
                 title: 'Nose-to-tail : utiliser tout l\'animal',
                 desc:
-                  "Acheter un demi-cochon ou un agneau entier reduit le prix au kilo de 30-40 % par rapport aux pieces decoupees. Vous valorisez les morceaux nobles (filet, cote) en plats premium et les morceaux moins demandes (joue, paleron, langue) en specialites a forte marge. Demande un savoir-faire de decoupe et une organisation de production en grandes masses.",
-                impact: '+2 a 3 points marge brute',
+                  "Acheter un demi-cochon ou un agneau entier réduit le prix au kilo de 30-40 % par rapport aux pièces découpées. Vous valorisez les morceaux nobles (filet, côte) en plats premium et les morceaux moins demandés (joue, paleron, langue) en spécialités à forte marge. Demande un savoir-faire de découpe et une organisation de production en grandes masses.",
+                impact: '+2 à 3 points marge brute',
               },
               {
                 icon: <ListChecks className="w-6 h-6" />,
-                title: 'Fiches techniques precises et calibrees',
+                title: 'Fiches techniques précises et calibrées',
                 desc:
-                  "Le bistrot souffre souvent du 'a la louche' qui detruit les marges. Pesee systematique au gramme, portions standardisees, recettes documentees : c'est la base. Une portion mal calibree de 20 g de viande supplementaire sur 100 couverts = 100 EUR de matiere gaspillee/jour, 36 000 EUR/an.",
-                impact: '+1 a 2 points marge brute',
+                  "Le bistrot souffre souvent du 'à la louche' qui détruit les marges. Pesée systématique au gramme, portions standardisées, recettes documentées : c'est la base. Une portion mal calibrée de 20 g de viande supplémentaire sur 100 couverts = 100 EUR de matière gaspillée/jour, 36 000 EUR/an.",
+                impact: '+1 à 2 points marge brute',
               },
               {
                 icon: <Sparkles className="w-6 h-6" />,
                 title: 'Menu du jour : tourner les produits frais',
                 desc:
-                  "Une formule 2 plats (16-22 EUR) renouvelee chaque midi permet d'ecouler les produits frais avant gaspillage. 70-80 % des couverts midi prennent la formule. Food cost legerement plus eleve (32-35 %) compense par le volume et zero perte matiere. Carte du soir reste a la carte pour les marges premium.",
-                impact: 'Reduction 60 % du gaspillage matiere',
+                  "Une formule 2 plats (16-22 EUR) renouvelée chaque midi permet d'écouler les produits frais avant gaspillage. 70-80 % des couverts midi prennent la formule. Food cost légèrement plus élevé (32-35 %) compensé par le volume et zéro perte matière. Carte du soir reste à la carte pour les marges premium.",
+                impact: 'Réduction 60 % du gaspillage matière',
               },
               {
                 icon: <Wine className="w-6 h-6" />,
                 title: 'Vin au verre et carafe maison',
                 desc:
-                  "Proposer 3 references au verre (1 blanc, 2 rouges) augmente le taux de prise de boisson de 35 % a 55 %. La carafe maison (assemblage 2-3 vignerons) cree un produit signature non comparable, marge 80 %. Astuce : ardoise hebdomadaire des vins du moment.",
-                impact: 'Ticket moyen +20 a 30 %',
+                  "Proposer 3 références au verre (1 blanc, 2 rouges) augmente le taux de prise de boisson de 35 % à 55 %. La carafe maison (assemblage 2-3 vignerons) crée un produit signature non comparable, marge 80 %. Astuce : ardoise hebdomadaire des vins du moment.",
+                impact: 'Ticket moyen +20 à 30 %',
               },
             ].map((levier, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-2xl p-6 hover:border-teal-300 transition-colors">
@@ -748,15 +748,15 @@ export default function LogicielMargeBistrot() {
               <div>
                 <div className="text-xs font-semibold uppercase tracking-wider text-amber-700 mb-1">Cas concret client</div>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100">
-                  Bistrot Paris 11e : de 11 % a 22 % de marge nette en 8 mois
+                  Bistrot Paris 11e : de 11 % à 22 % de marge nette en 8 mois
                 </h2>
               </div>
             </div>
 
             <p className="text-lg text-mono-400 leading-relaxed mb-6">
-              Le <em>Bistrot des Vignes</em>, etablissement de 38 couverts en plein 11e arrondissement parisien,
-              etait au bord du depot de bilan en septembre 2025. Chef-proprietaire depuis 6 ans, gestion Excel,
-              marge nette descendue a <strong>11 %</strong> malgre un CA de 720 000 EUR.
+              Le <em>Bistrot des Vignes</em>, établissement de 38 couverts en plein 11e arrondissement parisien,
+              était au bord du dépôt de bilan en septembre 2025. Chef-propriétaire depuis 6 ans, gestion Excel,
+              marge nette descendue à <strong>11 %</strong> malgré un CA de 720 000 EUR.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6 mb-6">
@@ -772,7 +772,7 @@ export default function LogicielMargeBistrot() {
               </div>
 
               <div className="bg-white border border-emerald-200 rounded-xl p-5">
-                <h3 className="font-bold text-emerald-800 mb-3 text-sm uppercase tracking-wider">Situation apres 8 mois</h3>
+                <h3 className="font-bold text-emerald-800 mb-3 text-sm uppercase tracking-wider">Situation après 8 mois</h3>
                 <ul className="space-y-2 text-sm text-mono-400">
                   <li className="flex items-start gap-2"><span className="text-emerald-500 mt-1">●</span> Food cost <strong>29 %</strong></li>
                   <li className="flex items-start gap-2"><span className="text-emerald-500 mt-1">●</span> Prime cost <strong>64 %</strong></li>
@@ -783,21 +783,21 @@ export default function LogicielMargeBistrot() {
               </div>
             </div>
 
-            <h3 className="font-bold text-mono-100 mb-3 mt-6">Actions concretes mises en place avec RestauMargin :</h3>
+            <h3 className="font-bold text-mono-100 mb-3 mt-6">Actions concrètes mises en place avec RestauMargin :</h3>
             <ol className="space-y-2 text-sm text-mono-400 list-decimal list-inside ml-2">
               <li>Numerisation de 47 fiches techniques avec calcul food cost automatique</li>
-              <li>Scan factures OCR : detection 8 hausses fournisseurs non repercutees (boucher +18 %, poissonnerie +12 %)</li>
-              <li>Refonte carte des vins : passage de 8 a 14 references verre, marge moyenne portee a 76 %</li>
-              <li>Menu du jour structure : 2 plats midi a 22 EUR, taux de prise 78 %, zero gaspillage</li>
-              <li>Negociation maraicher (contrat hebdo) : -8 % sur les legumes, +5 % de fraicheur</li>
-              <li>Revalorisation de 6 plats menu : ajustement portions et prix +1 a 2 EUR</li>
-              <li>Mise en place nose-to-tail (1 demi-cochon/semaine) : 3 nouvelles specialites a forte marge</li>
+              <li>Scan factures OCR : détection 8 hausses fournisseurs non répercutées (boucher +18 %, poissonnerie +12 %)</li>
+              <li>Refonte carte des vins : passage de 8 à 14 références verre, marge moyenne portée à 76 %</li>
+              <li>Menu du jour structure : 2 plats midi à 22 EUR, taux de prise 78 %, zéro gaspillage</li>
+              <li>Négociation maraîcher (contrat hebdo) : -8 % sur les légumes, +5 % de fraîcheur</li>
+              <li>Revalorisation de 6 plats menu : ajustement portions et prix +1 à 2 EUR</li>
+              <li>Mise en place nose-to-tail (1 demi-cochon/semaine) : 3 nouvelles spécialités à forte marge</li>
             </ol>
 
             <div className="mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
               <p className="text-sm text-emerald-900 leading-relaxed">
-                <strong>Resultat financier :</strong> CA quasi stable (720k a 750k EUR) mais marge nette
-                passee de 79 000 EUR a 165 000 EUR. <strong>+86 000 EUR de resultat net annuel</strong> pour
+                <strong>Résultat financier :</strong> CA quasi stable (720k à 750k EUR) mais marge nette
+                passée de 79 000 EUR à 165 000 EUR. <strong>+86 000 EUR de résultat net annuel</strong> pour
                 un investissement RestauMargin de 348 EUR/an. ROI : 247x.
               </p>
             </div>
@@ -813,20 +813,20 @@ export default function LogicielMargeBistrot() {
               RestauMargin pour bistrot et brasserie
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              Toutes les fonctionnalites adaptees a la cuisine francaise traditionnelle.
+              Toutes les fonctionnalités adaptées à la cuisine française traditionnelle.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: <Calculator className="w-6 h-6" />, title: 'Fiches techniques FR', desc: 'Boeuf bourguignon, confit, cassoulet : modeles prets pour la cuisine francaise.' },
+              { icon: <Calculator className="w-6 h-6" />, title: 'Fiches techniques FR', desc: 'Boeuf bourguignon, confit, cassoulet : modèles prêts pour la cuisine française.' },
               { icon: <Receipt className="w-6 h-6" />, title: 'Scan factures fournisseurs', desc: 'Bordereaux Metro, Transgourmet, Pomona, Sysco + bouchers locaux.' },
               { icon: <Wine className="w-6 h-6" />, title: 'Carte des vins', desc: 'Suivi marge bouteille + verre, alertes hausse, gestion cave.' },
-              { icon: <Truck className="w-6 h-6" />, title: 'Multi-fournisseurs', desc: '12 fournisseurs simultanes geres facilement. Comparatif prix.' },
+              { icon: <Truck className="w-6 h-6" />, title: 'Multi-fournisseurs', desc: '12 fournisseurs simultanés gérés facilement. Comparatif prix.' },
               { icon: <Target className="w-6 h-6" />, title: 'Menu engineering', desc: 'Identifier vos stars (forte marge + forte vente) vs poids morts.' },
-              { icon: <Bell className="w-6 h-6" />, title: 'Alertes prix viande', desc: 'Notification temps reel quand le prix de la viande/poisson change.' },
-              { icon: <Sparkles className="w-6 h-6" />, title: 'IA cuisine francaise', desc: 'Suggestions de recettes saisonnieres et optimisation de portions.' },
-              { icon: <Users className="w-6 h-6" />, title: 'Multi-restaurants', desc: 'Pour les groupes de 2-3 brasseries : reporting consolide.' },
+              { icon: <Bell className="w-6 h-6" />, title: 'Alertes prix viande', desc: 'Notification temps réel quand le prix de la viande/poisson change.' },
+              { icon: <Sparkles className="w-6 h-6" />, title: 'IA cuisine française', desc: 'Suggestions de recettes saisonnières et optimisation de portions.' },
+              { icon: <Users className="w-6 h-6" />, title: 'Multi-restaurants', desc: 'Pour les groupes de 2-3 brasseries : reporting consolidé.' },
             ].map((feat, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5 hover:border-teal-300 transition-colors">
                 <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-lg flex items-center justify-center mb-3">
@@ -848,7 +848,7 @@ export default function LogicielMargeBistrot() {
               FAQ : marge bistrot et brasserie
             </h2>
             <p className="text-lg text-mono-400">
-              Les 10 questions les plus posees par les chefs-proprietaires de bistrots.
+              Les 10 questions les plus posées par les chefs-propriétaires de bistrots.
             </p>
           </div>
 
@@ -859,9 +859,9 @@ export default function LogicielMargeBistrot() {
           </div>
 
           <Callout type="info">
-            <strong>Une question specifique sur votre bistrot ?</strong> Contactez notre equipe via la{' '}
-            <Link to="/demo" className="underline font-semibold hover:text-teal-700">page demo</Link> ou ecrivez a
-            contact@restaumargin.fr. Reponse sous 4h ouvrees, conseil personnalise gratuit.
+            <strong>Une question spécifique sur votre bistrot ?</strong> Contactez notre équipe via la{' '}
+            <Link to="/demo" className="underline font-semibold hover:text-teal-700">page demo</Link> ou écrivez à
+            contact@restaumargin.fr. Réponse sous 4h ouvrées, conseil personnalisé gratuit.
           </Callout>
         </div>
       </section>
@@ -870,13 +870,13 @@ export default function LogicielMargeBistrot() {
       <section className="py-20 px-4 bg-gradient-to-br from-teal-600 to-teal-700">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-3xl sm:text-5xl font-extrabold mb-6">
-            Pret a doubler la marge nette de votre bistrot ?
+            Prêt à doubler la marge nette de votre bistrot ?
           </h2>
           <p className="text-xl text-teal-100 max-w-2xl mx-auto mb-3">
-            Rejoignez les 350+ bistrots et brasseries qui ont structure leur gestion avec RestauMargin.
+            Rejoignez les 350+ bistrots et brasseries qui ont structuré leur gestion avec RestauMargin.
           </p>
           <p className="text-teal-50 mb-10">
-            Essai gratuit 7 jours - Sans carte bancaire - Modeles fiches techniques cuisine francaise inclus
+            Essai gratuit 7 jours - Sans carte bancaire - Modèles fiches techniques cuisine française inclus
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -904,7 +904,7 @@ export default function LogicielMargeBistrot() {
             <Link to="/blog/coefficient-multiplicateur" className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <Calculator className="w-8 h-8 text-teal-600 mb-3" />
               <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">Coefficient multiplicateur</h3>
-              <p className="text-sm text-mono-500">Methode complete pour fixer le prix de vente a partir du cout matieres.</p>
+              <p className="text-sm text-mono-500">Méthode complète pour fixer le prix de vente à partir du coût matières.</p>
             </Link>
             <Link to="/blog/construire-carte-vins-restaurant" className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <Wine className="w-8 h-8 text-purple-600 mb-3" />
@@ -913,8 +913,8 @@ export default function LogicielMargeBistrot() {
             </Link>
             <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <TrendingUp className="w-8 h-8 text-emerald-600 mb-3" />
-              <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">Reduire le food cost</h3>
-              <p className="text-sm text-mono-500">10 leviers concrets pour optimiser votre cout matieres.</p>
+              <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">Réduire le food cost</h3>
+              <p className="text-sm text-mono-500">10 leviers concrets pour optimiser votre coût matières.</p>
             </Link>
             <Link to="/login?mode=register" className="bg-teal-600 text-white border border-teal-700 rounded-2xl p-6 hover:bg-teal-700 transition-all group">
               <Sparkles className="w-8 h-8 text-teal-100 mb-3" />
@@ -932,15 +932,15 @@ export default function LogicielMargeBistrot() {
             <ChefHat className="w-6 h-6 text-teal-600" />
             RestauMargin
           </Link>
-          <p className="mb-4">Le logiciel de marge restaurant le plus complet du marche francais.</p>
+          <p className="mb-4">Le logiciel de marge restaurant le plus complet du marché français.</p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
+            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
+            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
           </div>
           <p className="mt-6 text-xs text-mono-700">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
+            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
           </p>
         </div>
       </footer>
@@ -1018,7 +1018,7 @@ function PlatBox({
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-mono-900">
         <div>
-          <div className="text-xs text-mono-500 uppercase tracking-wider mb-1">Cout total</div>
+          <div className="text-xs text-mono-500 uppercase tracking-wider mb-1">Coût total</div>
           <div className="font-bold text-mono-100">{coutTotal}</div>
         </div>
         <div>

@@ -31,52 +31,52 @@ const faqItems = [
   {
     question: 'Quelle est la marge nette moyenne d\'une dark kitchen en 2026 ?',
     answer:
-      "La marge nette moyenne d'une dark kitchen oscille entre 8 % et 19 % selon la maturite du concept, la negociation des commissions plateformes et le mix click & collect direct. C'est superieur a un restaurant traditionnel (4-8 %) car les charges fixes sont 40 % plus faibles (pas de salle, pas de service), mais les commissions Uber Eats / Deliveroo / Just Eat (25-32 % du CA) peuvent annihiler tout l'avantage si elles ne sont pas pilotees.",
+      "La marge nette moyenne d'une dark kitchen oscille entre 8 % et 19 % selon la maturité du concept, la négociation des commissions plateformes et le mix click & collect direct. C'est supérieur à un restaurant traditionnel (4-8 %) car les charges fixes sont 40 % plus faibles (pas de salle, pas de service), mais les commissions Uber Eats / Deliveroo / Just Eat (25-32 % du CA) peuvent annihiler tout l'avantage si elles ne sont pas pilotées.",
   },
   {
-    question: "Pourquoi un logiciel specialise pour une dark kitchen ?",
+    question: "Pourquoi un logiciel spécialisé pour une dark kitchen ?",
     answer:
-      "Une dark kitchen n'a pas la meme structure de couts qu'un restaurant classique : commissions plateformes elevees (25-32 %), packaging important (6-10 % du CA), multi-marques sur la meme cuisine. Un logiciel generique ne tracke ni les commissions par plateforme, ni le packaging par plat, ni les marges multi-marques. RestauMargin offre ces 3 modules nativement.",
+      "Une dark kitchen n'a pas la même structure de coûts qu'un restaurant classique : commissions plateformes élevées (25-32 %), packaging important (6-10 % du CA), multi-marques sur la même cuisine. Un logiciel générique ne tracke ni les commissions par plateforme, ni le packaging par plat, ni les marges multi-marques. RestauMargin offre ces 3 modules nativement.",
   },
   {
-    question: "Combien coute le packaging dans une dark kitchen ?",
+    question: "Combien coûte le packaging dans une dark kitchen ?",
     answer:
-      "Le packaging represente 6 a 10 % du chiffre d'affaires d'une dark kitchen (vs 2-3 % pour un restaurant assis). Un bowl healthy emballe coute en moyenne 0,60 a 1,20 EUR (bol + couvercle + sachet + couverts + sauce). Sur un plat vendu 12 EUR, c'est 5 a 10 % du prix qui disparait. RestauMargin permet d'integrer ce cout directement dans la fiche technique pour eviter de l'oublier.",
+      "Le packaging représente 6 à 10 % du chiffre d'affaires d'une dark kitchen (vs 2-3 % pour un restaurant assis). Un bowl healthy emballé coûte en moyenne 0,60 à 1,20 EUR (bol + couvercle + sachet + couverts + sauce). Sur un plat vendu 12 EUR, c'est 5 à 10 % du prix qui disparaît. RestauMargin permet d'intégrer ce coût directement dans la fiche technique pour éviter de l'oublier.",
   },
   {
     question: "Comment piloter plusieurs marques virtuelles dans une seule cuisine ?",
     answer:
-      "Le concept multi-marques (virtual brands) consiste a operer 3 a 8 marques distinctes depuis la meme cuisine. Chaque marque a son menu, son design, sa cible. RestauMargin permet de creer un compte avec plusieurs restaurants virtuels rattaches a une cuisine physique commune, de comparer leurs marges et d'arbitrer les ingredients partages.",
+      "Le concept multi-marques (virtual brands) consiste à opérer 3 à 8 marques distinctes depuis la même cuisine. Chaque marque a son menu, son design, sa cible. RestauMargin permet de créer un compte avec plusieurs restaurants virtuels rattachés à une cuisine physique commune, de comparer leurs marges et d'arbitrer les ingrédients partagés.",
   },
   {
     question: "Quel est le food cost cible pour une dark kitchen ?",
     answer:
-      "Le food cost cible d'une dark kitchen est de 28-32 %, similaire a un restaurant traditionnel. Le piege : apres commission plateforme (-30 %), la marge brute s'effondre. Sur un plat vendu 12 EUR avec 28 % de food cost matiere : il reste 8,64 EUR. Apres commission Uber Eats (30 %), il reste 6,05 EUR. Apres packaging (0,80 EUR), il reste 5,25 EUR. Le vrai food cost effectif est donc de 56 % et non 28 %.",
+      "Le food cost cible d'une dark kitchen est de 28-32 %, similaire à un restaurant traditionnel. Le piège : après commission plateforme (-30 %), la marge brute s'effondre. Sur un plat vendu 12 EUR avec 28 % de food cost matière : il reste 8,64 EUR. Après commission Uber Eats (30 %), il reste 6,05 EUR. Après packaging (0,80 EUR), il reste 5,25 EUR. Le vrai food cost effectif est donc de 56 % et non 28 %.",
   },
   {
-    question: "Peut-on negocier les commissions Uber Eats et Deliveroo ?",
+    question: "Peut-on négocier les commissions Uber Eats et Deliveroo ?",
     answer:
-      "Oui, mais sous conditions : volume mensuel eleve (10 000+ EUR de CA par plateforme), anciennete (> 6 mois), engagement de visibilite exclusive ou semi-exclusive. Les remises typiques sont de 2 a 5 points (30 % vers 25-28 %). Negocier 3 points de commission sur un CA mensuel de 30 000 EUR = 900 EUR de marge nette en plus chaque mois.",
+      "Oui, mais sous conditions : volume mensuel élevé (10 000+ EUR de CA par plateforme), ancienneté (> 6 mois), engagement de visibilité exclusive ou semi-exclusive. Les remises typiques sont de 2 à 5 points (30 % vers 25-28 %). Négocier 3 points de commission sur un CA mensuel de 30 000 EUR = 900 EUR de marge nette en plus chaque mois.",
   },
   {
     question: "Le click & collect est-il rentable pour une dark kitchen ?",
     answer:
-      "Le click & collect (commande en ligne sur site propre, retrait sur place) est le canal le plus rentable d'une dark kitchen : zero commission plateforme, juste 1-3 % de frais Stripe / Lydia. Sur un plat vendu 12 EUR, vous conservez 11,64 EUR au lieu de 8,40 EUR. Construire un site propre avec QR code de retrait peut doubler la marge nette d'une dark kitchen.",
+      "Le click & collect (commande en ligne sur site propre, retrait sur place) est le canal le plus rentable d'une dark kitchen : zéro commission plateforme, juste 1-3 % de frais Stripe / Lydia. Sur un plat vendu 12 EUR, vous conservez 11,64 EUR au lieu de 8,40 EUR. Construire un site propre avec QR code de retrait peut doubler la marge nette d'une dark kitchen.",
   },
   {
-    question: "Combien de marques peut-on operer dans une seule dark kitchen ?",
+    question: "Combien de marques peut-on opérer dans une seule dark kitchen ?",
     answer:
-      "Operationnellement, 3 a 5 marques tiennent dans une dark kitchen de 60-80 m2. Au-dela, la complexite cuisine (preparations, stocks, picking) fait chuter la productivite. Les modeles a 8+ marques (style CloudKitchens / Travis Kalanick) necessitent 120+ m2 et une orchestration logicielle pointue. RestauMargin gere jusqu'a 10 marques par compte cuisine.",
+      "Operationnellement, 3 à 5 marques tiennent dans une dark kitchen de 60-80 m2. Au-delà, la complexité cuisine (préparations, stocks, picking) fait chuter la productivité. Les modèles à 8+ marques (style CloudKitchens / Travis Kalanick) nécessitent 120+ m2 et une orchestration logicielle pointue. RestauMargin gère jusqu'à 10 marques par compte cuisine.",
   },
   {
     question: "Quelles sont les charges fixes d'une dark kitchen vs restaurant classique ?",
     answer:
-      "Une dark kitchen economise 40 % sur les charges fixes : pas de salle (gain de 5-8 points de loyer), pas de service (gain de 8-12 points de personnel), pas de mobilier ni de deco, pas de licence IV, pas d'assurance terrasse. En contrepartie, elle paie 25-32 % de commissions plateformes (vs 0 % pour un restaurant assis qui encaisse direct). Le breakeven est plus rapide mais le plafond de marge est plus bas.",
+      "Une dark kitchen économise 40 % sur les charges fixes : pas de salle (gain de 5-8 points de loyer), pas de service (gain de 8-12 points de personnel), pas de mobilier ni de deco, pas de licence IV, pas d'assurance terrasse. En contrepartie, elle paie 25-32 % de commissions plateformes (vs 0 % pour un restaurant assis qui encaisse direct). Le breakeven est plus rapide mais le plafond de marge est plus bas.",
   },
   {
-    question: "Comment RestauMargin aide une dark kitchen specifiquement ?",
+    question: "Comment RestauMargin aide une dark kitchen spécifiquement ?",
     answer:
-      "RestauMargin propose 4 fonctionnalites cles pour les dark kitchens : (1) Multi-marques sous un meme compte cuisine, (2) Tracking commissions par plateforme avec calcul de la marge nette effective, (3) Integration du cout packaging dans chaque fiche technique, (4) Comparatif rentabilite par canal de vente (Uber / Deliveroo / Just Eat / Click & Collect propre). Tarif Pro a 29 EUR/mois, essai gratuit 7 jours.",
+      "RestauMargin propose 4 fonctionnalités clés pour les dark kitchens : (1) Multi-marques sous un même compte cuisine, (2) Tracking commissions par plateforme avec calcul de la marge nette effective, (3) Intégration du coût packaging dans chaque fiche technique, (4) Comparatif rentabilité par canal de vente (Uber / Deliveroo / Just Eat / Click & Collect propre). Tarif Pro à 29 EUR/mois, essai gratuit 7 jours.",
   },
 ];
 
@@ -84,7 +84,7 @@ export default function LogicielMargeDarkKitchen() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
-        title="Logiciel marge dark kitchen | Ghost kitchen rentabilite | RestauMargin"
+        title="Logiciel marge dark kitchen | Ghost kitchen rentabilité | RestauMargin"
         description="Logiciel pour calculer la marge d'une dark kitchen / ghost kitchen. Suivi commissions plateformes, multi-marques, packaging, food cost. Essai gratuit 7 jours."
         path="/logiciel-marge-dark-kitchen"
         type="website"
@@ -99,7 +99,7 @@ export default function LogicielMargeDarkKitchen() {
             '@type': 'Article',
             headline: 'Logiciel de marge pour dark kitchen et ghost kitchen',
             description:
-              "Guide complet 2026 sur la rentabilite des dark kitchens, ghost kitchens et cloud kitchens. Decomposition des couts, multi-marques, commissions plateformes, packaging et leviers de rentabilite.",
+              "Guide complet 2026 sur la rentabilité des dark kitchens, ghost kitchens et cloud kitchens. Décomposition des coûts, multi-marques, commissions plateformes, packaging et leviers de rentabilité.",
             author: { '@type': 'Organization', name: 'RestauMargin' },
             publisher: {
               '@type': 'Organization',
@@ -122,15 +122,15 @@ export default function LogicielMargeDarkKitchen() {
             operatingSystem: 'Web, iOS, Android',
             url: 'https://www.restaumargin.fr/logiciel-marge-dark-kitchen',
             description:
-              "Logiciel de gestion de marges specialise dark kitchen : suivi commissions plateformes, multi-marques, packaging, food cost effectif post-commission.",
+              "Logiciel de gestion de marges spécialisé dark kitchen : suivi commissions plateformes, multi-marques, packaging, food cost effectif post-commission.",
             featureList: [
-              'Multi-marques (virtual brands) sur une meme cuisine',
+              'Multi-marques (virtual brands) sur une même cuisine',
               'Tracking des commissions Uber Eats / Deliveroo / Just Eat',
-              'Integration du cout packaging dans chaque fiche technique',
+              'Intégration du coût packaging dans chaque fiche technique',
               'Calcul de la marge nette effective post-commission',
-              'Comparatif rentabilite par canal de vente',
-              'Alertes hausse fournisseurs en temps reel',
-              "Click & collect propre integre",
+              'Comparatif rentabilité par canal de vente',
+              'Alertes hausse fournisseurs en temps réel',
+              "Click & collect propre intégré",
               'PWA mobile et tablette',
             ],
             offers: {
@@ -190,13 +190,13 @@ export default function LogicielMargeDarkKitchen() {
         <div className="max-w-6xl mx-auto text-center">
           <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
             <Sparkles className="w-3.5 h-3.5" />
-            Logiciel specialise dark kitchen / ghost kitchen
+            Logiciel spécialisé dark kitchen / ghost kitchen
           </span>
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#111111] leading-tight mb-6 max-w-4xl mx-auto">
             Logiciel de marge pour dark kitchen / ghost kitchen
           </h1>
           <p className="text-lg sm:text-xl text-[#737373] max-w-3xl mx-auto leading-relaxed mb-8">
-            Pilotez la rentabilite reelle de votre cuisine 100 % livraison. <strong>Commissions plateformes, multi-marques, packaging, food cost effectif</strong> : enfin les vrais chiffres post-commission.
+            Pilotez la rentabilité réelle de votre cuisine 100 % livraison. <strong>Commissions plateformes, multi-marques, packaging, food cost effectif</strong> : enfin les vrais chiffres post-commission.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -232,13 +232,13 @@ export default function LogicielMargeDarkKitchen() {
           </h2>
           <div className="prose prose-lg max-w-none text-[#404040] leading-relaxed space-y-4">
             <p>
-              Une <strong>dark kitchen</strong> (egalement appelee <strong>ghost kitchen</strong>, <strong>cloud kitchen</strong> ou <strong>delivery only restaurant</strong>) est un etablissement de restauration <strong>sans salle, sans service, sans client physique</strong>. Toute l'activite passe par la livraison via les plateformes (Uber Eats, Deliveroo, Just Eat) ou le click & collect.
+              Une <strong>dark kitchen</strong> (également appelée <strong>ghost kitchen</strong>, <strong>cloud kitchen</strong> ou <strong>delivery only restaurant</strong>) est un établissement de restauration <strong>sans salle, sans service, sans client physique</strong>. Toute l'activité passe par la livraison via les plateformes (Uber Eats, Deliveroo, Just Eat) ou le click & collect.
             </p>
             <p>
-              Le modele a explose avec la pandemie 2020-2022, mais existait deja. <strong>Deliveroo Editions</strong> a lance ses premieres cuisines partagees a Londres en 2017. <strong>Travis Kalanick</strong> (ex-CEO d'Uber) a fonde <strong>CloudKitchens</strong> en 2018 apres avoir leve plus de 2 milliards de dollars pour deployer des dark kitchens dans les grandes villes mondiales. <strong>Karma Kitchen</strong>, <strong>Taster</strong>, <strong>Not So Dark</strong>, <strong>Frichti Kitchens</strong> : les acteurs francais se sont multiplies entre 2019 et 2024.
+              Le modèle a explosé avec la pandémie 2020-2022, mais existait déjà. <strong>Deliveroo Editions</strong> a lancé ses premières cuisines partagées à Londres en 2017. <strong>Travis Kalanick</strong> (ex-CEO d'Uber) a fondé <strong>CloudKitchens</strong> en 2018 après avoir levé plus de 2 milliards de dollars pour déployer des dark kitchens dans les grandes villes mondiales. <strong>Karma Kitchen</strong>, <strong>Taster</strong>, <strong>Not So Dark</strong>, <strong>Frichti Kitchens</strong> : les acteurs français se sont multipliés entre 2019 et 2024.
             </p>
             <p>
-              Le principe : optimiser une cuisine industrielle pour produire des plats livres, sans les couts d'une salle (loyer commercial premium, mobilier, deco, service). Le restaurateur paie un loyer reduit (zone industrielle ou immeuble residentiel) et concentre ses investissements sur la qualite du plat, le packaging et le marketing digital.
+              Le principe : optimiser une cuisine industrielle pour produire des plats livrés, sans les coûts d'une salle (loyer commercial premium, mobilier, deco, service). Le restaurateur paie un loyer réduit (zone industrielle ou immeuble résidentiel) et concentre ses investissements sur la qualité du plat, le packaging et le marketing digital.
             </p>
           </div>
         </div>
@@ -249,23 +249,23 @@ export default function LogicielMargeDarkKitchen() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4">
-              Le marche dark kitchen en France et dans le monde
+              Le marché dark kitchen en France et dans le monde
             </h2>
             <p className="text-lg text-[#737373] max-w-3xl mx-auto">
-              Une croissance a deux chiffres portee par la digitalisation de la restauration.
+              Une croissance à deux chiffres portée par la digitalisation de la restauration.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatCard value="5 Md EUR" label="Marche dark kitchen France 2026" trend="up" />
+            <StatCard value="5 Md EUR" label="Marché dark kitchen France 2026" trend="up" />
             <StatCard value="+25 %" label="Croissance annuelle moyenne" trend="up" />
-            <StatCard value="71 Md USD" label="Marche mondial 2026" trend="up" />
+            <StatCard value="71 Md USD" label="Marché mondial 2026" trend="up" />
             <StatCard value="156 Md USD" label="Projection mondiale 2030" trend="up" />
           </div>
 
           <div className="mt-12 bg-white border border-[#E5E7EB] rounded-2xl p-6">
             <p className="text-[#404040] leading-relaxed">
-              La France compte environ <strong>1 200 dark kitchens actives en 2026</strong>, principalement concentrees a Paris, Lyon, Marseille, Bordeaux et Lille. Le segment represente desormais <strong>18 % du chiffre d'affaires livraison</strong> contre 6 % en 2020. <strong>Uber Eats</strong> et <strong>Deliveroo</strong> declarent que 1 commande sur 5 dans les grandes villes provient deja d'une dark kitchen.
+              La France compte environ <strong>1 200 dark kitchens actives en 2026</strong>, principalement concentrées à Paris, Lyon, Marseille, Bordeaux et Lille. Le segment représente désormais <strong>18 % du chiffre d'affaires livraison</strong> contre 6 % en 2020. <strong>Uber Eats</strong> et <strong>Deliveroo</strong> déclarent que 1 commande sur 5 dans les grandes villes provient déjà d'une dark kitchen.
             </p>
           </div>
         </div>
@@ -276,7 +276,7 @@ export default function LogicielMargeDarkKitchen() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4">
-              Modele economique : 3 specificites cles
+              Modèle économique : 3 spécificités clés
             </h2>
             <p className="text-lg text-[#737373] max-w-2xl mx-auto">
               Ce qui distingue radicalement une dark kitchen d'un restaurant classique.
@@ -287,19 +287,19 @@ export default function LogicielMargeDarkKitchen() {
             <FeatureCard
               icon={<TrendingDown className="w-6 h-6" />}
               title="Pas de salle, pas de service"
-              desc="Economie de 40 % sur les charges fixes : pas de loyer commercial premium, pas de mobilier, pas de personnel de salle. Une dark kitchen vit avec 70-80 m2 en zone industrielle."
+              desc="Économie de 40 % sur les charges fixes : pas de loyer commercial premium, pas de mobilier, pas de personnel de salle. Une dark kitchen vit avec 70-80 m2 en zone industrielle."
               variant="emerald"
             />
             <FeatureCard
               icon={<TrendingDown className="w-6 h-6 rotate-180" />}
               title="Commissions plateformes lourdes"
-              desc="25 a 32 % de commission Uber Eats / Deliveroo / Just Eat. Sur 100 EUR de CA, vous touchez 68-75 EUR. Le pilotage de la marge effective post-commission est vital."
+              desc="25 à 32 % de commission Uber Eats / Deliveroo / Just Eat. Sur 100 EUR de CA, vous touchez 68-75 EUR. Le pilotage de la marge effective post-commission est vital."
               variant="amber"
             />
             <FeatureCard
               icon={<Layers className="w-6 h-6" />}
               title="Multi-marques sous une cuisine"
-              desc="Une meme cuisine peut operer 3 a 8 marques virtuelles distinctes. Burger, healthy bowl, pizza, sushi : optimisation des stocks et de la productivite cuisine."
+              desc="Une même cuisine peut opérer 3 à 8 marques virtuelles distinctes. Burger, healthy bowl, pizza, sushi : optimisation des stocks et de la productivité cuisine."
               variant="teal"
             />
           </div>
@@ -314,15 +314,15 @@ export default function LogicielMargeDarkKitchen() {
           </h2>
           <div className="prose prose-lg max-w-none text-[#404040] leading-relaxed space-y-4">
             <p>
-              Le <strong>food cost matiere</strong> d'une dark kitchen reste similaire a celui d'un restaurant traditionnel : <strong>30 a 35 %</strong> du prix de vente. Un burger qui se vend 11 EUR coute 3,30 a 3,85 EUR en matieres premieres (pain, steak, fromage, garniture, sauce).
+              Le <strong>food cost matière</strong> d'une dark kitchen reste similaire à celui d'un restaurant traditionnel : <strong>30 à 35 %</strong> du prix de vente. Un burger qui se vend 11 EUR coûte 3,30 à 3,85 EUR en matières premières (pain, steak, fromage, garniture, sauce).
             </p>
             <p>
-              Mais attention : <strong>le food cost affiche ne reflete pas la marge reelle</strong>. C'est l'erreur n 1 des restaurateurs qui se lancent dans le delivery sans logiciel adapte. Le calcul brut "Prix de vente moins matieres" est trompeur car il ignore commissions plateformes et packaging.
+              Mais attention : <strong>le food cost affiché ne reflète pas la marge réelle</strong>. C'est l'erreur n 1 des restaurateurs qui se lancent dans le delivery sans logiciel adapté. Le calcul brut "Prix de vente moins matières" est trompeur car il ignore commissions plateformes et packaging.
             </p>
           </div>
 
           <Callout type="warning">
-            <strong>Piege classique :</strong> un restaurateur calcule un food cost a 28 % et pense avoir 72 % de marge brute. Apres commission Uber Eats (30 %) et packaging (8 %), sa marge brute reelle tombe a <strong>44 %</strong>. Sur 1 000 plats vendus par mois, c'est 280 EUR vs 720 EUR : 2,5 fois moins.
+            <strong>Piège classique :</strong> un restaurateur calcule un food cost à 28 % et pense avoir 72 % de marge brute. Après commission Uber Eats (30 %) et packaging (8 %), sa marge brute réelle tombe à <strong>44 %</strong>. Sur 1 000 plats vendus par mois, c'est 280 EUR vs 720 EUR : 2,5 fois moins.
           </Callout>
         </div>
       </section>
@@ -335,7 +335,7 @@ export default function LogicielMargeDarkKitchen() {
               Prime cost dark kitchen vs restaurant traditionnel
             </h2>
             <p className="text-lg text-[#737373] max-w-2xl mx-auto">
-              Comparatif des structures de couts entre un restaurant assis et une dark kitchen 100 % livraison.
+              Comparatif des structures de coûts entre un restaurant assis et une dark kitchen 100 % livraison.
             </p>
           </div>
 
@@ -343,15 +343,15 @@ export default function LogicielMargeDarkKitchen() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-[#F9FAFB] text-[#404040]">
-                  <th className="text-left py-4 px-4 font-semibold">Poste de cout</th>
+                  <th className="text-left py-4 px-4 font-semibold">Poste de coût</th>
                   <th className="text-center py-4 px-4 font-semibold">Restaurant assis</th>
                   <th className="text-center py-4 px-4 font-bold text-teal-700 bg-teal-50">Dark kitchen</th>
-                  <th className="text-center py-4 px-4 font-semibold">Ecart</th>
+                  <th className="text-center py-4 px-4 font-semibold">Écart</th>
                 </tr>
               </thead>
               <tbody className="text-[#404040]">
                 {[
-                  { p: 'Food cost matieres', r: '28-32 %', d: '30-35 %', e: '+ 2-3 pts', alert: false },
+                  { p: 'Food cost matières', r: '28-32 %', d: '30-35 %', e: '+ 2-3 pts', alert: false },
                   { p: 'Personnel cuisine', r: '30-35 %', d: '22-28 %', e: '- 7 pts', alert: false },
                   { p: 'Loyer + charges', r: '8-12 %', d: '5-8 %', e: '- 3-4 pts', alert: false },
                   { p: 'Commissions plateformes', r: '0 %', d: '25-32 %', e: '+ 28 pts', alert: true },
@@ -371,7 +371,7 @@ export default function LogicielMargeDarkKitchen() {
             </table>
           </div>
           <p className="text-xs text-[#737373] mt-4 text-center">
-            Benchmarks compiles a partir de 50+ dark kitchens francaises (UMIH, GIRA Conseil, Restauration & Tendances 2026).
+            Benchmarks compilés à partir de 50+ dark kitchens françaises (UMIH, GIRA Conseil, Restauration & Tendances 2026).
           </p>
         </div>
       </section>
@@ -380,29 +380,29 @@ export default function LogicielMargeDarkKitchen() {
       <section className="py-16 px-4 bg-[#F9FAFB]">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-extrabold text-[#111111] mb-6">
-            Cas pratique : decomposition d'un bowl healthy a 12 EUR
+            Cas pratique : décomposition d'un bowl healthy à 12 EUR
           </h2>
           <p className="text-lg text-[#737373] mb-8">
-            Voici comment 1 plat vendu 12 EUR sur Uber Eats se decompose reellement.
+            Voici comment 1 plat vendu 12 EUR sur Uber Eats se décompose réellement.
           </p>
 
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 space-y-3">
-            <PriceRow label="Prix de vente affiche Uber Eats" value="12,00 EUR" />
-            <PriceRow label="Matieres premieres (quinoa, poulet, legumes, sauce)" value="- 3,50 EUR" sub="29 % food cost" negative />
+            <PriceRow label="Prix de vente affiché Uber Eats" value="12,00 EUR" />
+            <PriceRow label="Matières premières (quinoa, poulet, légumes, sauce)" value="- 3,50 EUR" sub="29 % food cost" negative />
             <PriceRow label="Packaging (bol carton + couvercle + couverts + sachet)" value="- 0,80 EUR" sub="6,7 % du prix" negative />
             <PriceRow label="Commission Uber Eats" value="- 3,60 EUR" sub="30 % du prix vendu" negative highlight />
             <div className="border-t border-[#E5E7EB] pt-3 mt-3">
               <PriceRow label="Marge brute restante" value="4,10 EUR" bold sub="34 % du prix vendu" />
             </div>
-            <PriceRow label="Personnel cuisine alloue (25 %)" value="- 3,00 EUR" negative />
-            <PriceRow label="Loyer + energie + marketing (15 %)" value="- 1,80 EUR" negative />
+            <PriceRow label="Personnel cuisine alloué (25 %)" value="- 3,00 EUR" negative />
+            <PriceRow label="Loyer + énergie + marketing (15 %)" value="- 1,80 EUR" negative />
             <div className="border-t-2 border-teal-200 pt-3 mt-3 bg-teal-50 -mx-6 -mb-6 px-6 pb-6 rounded-b-2xl">
               <PriceRow label="Marge nette finale" value="- 0,70 EUR" bold sub="PERTE de 5,8 % par plat" alert />
             </div>
           </div>
 
           <Callout type="warning">
-            <strong>Lecon :</strong> sans piloter finement le mix canaux (click & collect, plateformes negociees, plateformes premium), un bowl a 12 EUR vendu uniquement sur Uber Eats fait <strong>perdre de l'argent</strong>. Il faut soit augmenter le prix a 14,50 EUR minimum, soit reduire la commission a 22 %, soit basculer 40 % du volume en click & collect direct.
+            <strong>Leçon :</strong> sans piloter finement le mix canaux (click & collect, plateformes négociées, plateformes premium), un bowl à 12 EUR vendu uniquement sur Uber Eats fait <strong>perdre de l'argent</strong>. Il faut soit augmenter le prix à 14,50 EUR minimum, soit réduire la commission à 22 %, soit basculer 40 % du volume en click & collect direct.
           </Callout>
         </div>
       </section>
@@ -412,17 +412,17 @@ export default function LogicielMargeDarkKitchen() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4">
-              Multi-marques : la cle de la rentabilite
+              Multi-marques : la clé de la rentabilité
             </h2>
             <p className="text-lg text-[#737373] max-w-2xl mx-auto">
-              Une cuisine, plusieurs marques virtuelles. Modele plebiscite par les operateurs experimentes.
+              Une cuisine, plusieurs marques virtuelles. Modèle plébiscité par les opérateurs expérimentés.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <BrandCard name="Burger Co" tagline="Smash burgers premium" foodCost="32 %" avgTicket="13 EUR" color="bg-amber-50 border-amber-200 text-amber-900" />
             <BrandCard name="Healthy Bowl" tagline="Bowls quinoa & poke" foodCost="30 %" avgTicket="12 EUR" color="bg-emerald-50 border-emerald-200 text-emerald-900" />
-            <BrandCard name="Pizza Pronto" tagline="Pates fines napolitaines" foodCost="28 %" avgTicket="11 EUR" color="bg-red-50 border-red-200 text-red-900" />
+            <BrandCard name="Pizza Pronto" tagline="Pâtes fines napolitaines" foodCost="28 %" avgTicket="11 EUR" color="bg-red-50 border-red-200 text-red-900" />
             <BrandCard name="Sushi Express" tagline="Boxes signature" foodCost="34 %" avgTicket="16 EUR" color="bg-rose-50 border-rose-200 text-rose-900" />
           </div>
 
@@ -433,21 +433,21 @@ export default function LogicielMargeDarkKitchen() {
             </h3>
             <div className="grid md:grid-cols-2 gap-4 text-sm text-[#404040]">
               <div className="space-y-2">
-                <p className="font-semibold text-[#111111]">Ingredients partages :</p>
+                <p className="font-semibold text-[#111111]">Ingrédients partagés :</p>
                 <ul className="space-y-1 ml-4">
                   <li><Check className="w-3.5 h-3.5 text-emerald-600 inline-block mr-2" /> Pain burger + base pizza (farine commune)</li>
-                  <li><Check className="w-3.5 h-3.5 text-emerald-600 inline-block mr-2" /> Poulet fume (bowl + burger + pizza)</li>
+                  <li><Check className="w-3.5 h-3.5 text-emerald-600 inline-block mr-2" /> Poulet fumé (bowl + burger + pizza)</li>
                   <li><Check className="w-3.5 h-3.5 text-emerald-600 inline-block mr-2" /> Avocat + tomate (bowl + burger)</li>
                   <li><Check className="w-3.5 h-3.5 text-emerald-600 inline-block mr-2" /> Sauces base (3 marques sur 4)</li>
                 </ul>
               </div>
               <div className="space-y-2">
-                <p className="font-semibold text-[#111111]">Gains operationnels :</p>
+                <p className="font-semibold text-[#111111]">Gains opérationnels :</p>
                 <ul className="space-y-1 ml-4">
-                  <li><TrendingDown className="w-3.5 h-3.5 text-emerald-600 inline-block mr-2" /> Stock - 40 % vs 4 cuisines separees</li>
+                  <li><TrendingDown className="w-3.5 h-3.5 text-emerald-600 inline-block mr-2" /> Stock - 40 % vs 4 cuisines séparées</li>
                   <li><TrendingDown className="w-3.5 h-3.5 text-emerald-600 inline-block mr-2" /> Personnel - 35 % (1 chef + 2 commis)</li>
                   <li><TrendingUp className="w-3.5 h-3.5 text-emerald-600 inline-block mr-2" /> CA + 280 % vs marque unique</li>
-                  <li><TrendingUp className="w-3.5 h-3.5 text-emerald-600 inline-block mr-2" /> Marge nette + 8 pts cumules</li>
+                  <li><TrendingUp className="w-3.5 h-3.5 text-emerald-600 inline-block mr-2" /> Marge nette + 8 pts cumulés</li>
                 </ul>
               </div>
             </div>
@@ -460,36 +460,36 @@ export default function LogicielMargeDarkKitchen() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4">
-              4 leviers pour booster la rentabilite
+              4 leviers pour booster la rentabilité
             </h2>
             <p className="text-lg text-[#737373] max-w-2xl mx-auto">
-              Les strategies eprouvees des dark kitchens qui depassent 15 % de marge nette.
+              Les stratégies éprouvées des dark kitchens qui dépassent 15 % de marge nette.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-6">
             <StrategyCard
               num="01"
-              title="Negocier les commissions plateformes"
-              desc="Au-dela de 10 000 EUR/mois sur une plateforme, demandez systematiquement une remise. Gains typiques : 2-5 points (de 30 % a 25-28 %). Sur 30 000 EUR/mois, c'est 600-1500 EUR de marge supplementaire."
+              title="Négocier les commissions plateformes"
+              desc="Au-delà de 10 000 EUR/mois sur une plateforme, demandez systématiquement une remise. Gains typiques : 2-5 points (de 30 % à 25-28 %). Sur 30 000 EUR/mois, c'est 600-1500 EUR de marge supplémentaire."
               impact="+ 2-5 pts marge"
             />
             <StrategyCard
               num="02"
               title="Click & collect propre"
-              desc="Construisez un site avec QR code de retrait sur place. Zero commission, juste 1-3 % de frais Stripe. Objectif : 30-40 % du volume en direct. Sur 30 000 EUR/mois, c'est 2400 EUR/mois recuperes."
+              desc="Construisez un site avec QR code de retrait sur place. Zéro commission, juste 1-3 % de frais Stripe. Objectif : 30-40 % du volume en direct. Sur 30 000 EUR/mois, c'est 2400 EUR/mois récupérés."
               impact="+ 8-12 pts marge"
             />
             <StrategyCard
               num="03"
-              title="Programme de fidelite direct"
-              desc="Carte de fidelite digitale (10e commande offerte) sur votre site propre uniquement. Cree un comportement de migration des clients depuis les plateformes vers votre canal direct."
-              impact="+ 5-8 pts retention"
+              title="Programme de fidélité direct"
+              desc="Carte de fidélité digitale (10e commande offerte) sur votre site propre uniquement. Crée un comportement de migration des clients depuis les plateformes vers votre canal direct."
+              impact="+ 5-8 pts rétention"
             />
             <StrategyCard
               num="04"
-              title="Marques d'auteur differenciantes"
-              desc="Au lieu de copier les leaders, creez des marques narratives fortes (chef, region, recette signature). Permet un positionnement premium et une elasticite-prix superieure : +20 % sur le ticket moyen."
+              title="Marques d'auteur différenciantes"
+              desc="Au lieu de copier les leaders, créez des marques narratives fortes (chef, région, recette signature). Permet un positionnement premium et une élasticité-prix supérieure : +20 % sur le ticket moyen."
               impact="+ 15-25 % ticket"
             />
           </div>
@@ -501,10 +501,10 @@ export default function LogicielMargeDarkKitchen() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4">
-              RestauMargin : les 4 fonctionnalites cles pour dark kitchen
+              RestauMargin : les 4 fonctionnalités clés pour dark kitchen
             </h2>
             <p className="text-lg text-[#737373] max-w-2xl mx-auto">
-              Concues specifiquement pour la realite operationnelle des cuisines 100 % livraison.
+              Conçues spécifiquement pour la réalité opérationnelle des cuisines 100 % livraison.
             </p>
           </div>
 
@@ -512,7 +512,7 @@ export default function LogicielMargeDarkKitchen() {
             <ToolCard
               icon={<Layers className="w-6 h-6" />}
               title="Multi-marques natif"
-              desc="Gerez jusqu'a 10 marques virtuelles sous un meme compte cuisine. Comparatifs de marges, ingredients partages, reporting consolide ou par marque."
+              desc="Gérez jusqu'à 10 marques virtuelles sous un même compte cuisine. Comparatifs de marges, ingrédients partagés, reporting consolidé ou par marque."
             />
             <ToolCard
               icon={<Receipt className="w-6 h-6" />}
@@ -521,13 +521,13 @@ export default function LogicielMargeDarkKitchen() {
             />
             <ToolCard
               icon={<Package className="w-6 h-6" />}
-              title="Packaging integre"
-              desc="Ajoutez le cout packaging directement dans chaque fiche technique. Bol, couvercle, sachet, couverts, sauce : tout est tracke et impacte la marge."
+              title="Packaging intégré"
+              desc="Ajoutez le coût packaging directement dans chaque fiche technique. Bol, couvercle, sachet, couverts, sauce : tout est tracké et impacte la marge."
             />
             <ToolCard
               icon={<TrendingUp className="w-6 h-6" />}
-              title="Food cost temps reel"
-              desc="Scan de factures OCR, alertes sur les hausses fournisseurs, recalcul auto des marges des qu'un prix matiere change. Plus jamais de marge negative en aveugle."
+              title="Food cost temps réel"
+              desc="Scan de factures OCR, alertes sur les hausses fournisseurs, recalcul auto des marges dès qu'un prix matière change. Plus jamais de marge négative en aveugle."
             />
           </div>
 
@@ -550,32 +550,32 @@ export default function LogicielMargeDarkKitchen() {
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wider text-teal-700 font-semibold">Cas concret</p>
-                <h2 className="text-2xl font-extrabold text-[#111111]">Dark kitchen Paris 11e : 3 marques, 8 % a 19 % de marge nette</h2>
+                <h2 className="text-2xl font-extrabold text-[#111111]">Dark kitchen Paris 11e : 3 marques, 8 % à 19 % de marge nette</h2>
               </div>
             </div>
 
             <div className="prose prose-lg max-w-none text-[#404040] leading-relaxed space-y-4">
               <p>
-                <strong>Profil :</strong> dark kitchen de 75 m2 en rue d'Avron, ouverte en mars 2024 par 2 associes (1 chef + 1 entrepreneur digital). Investissement initial : 95 000 EUR. CA mensuel actuel : 32 000 EUR.
+                <strong>Profil :</strong> dark kitchen de 75 m2 en rue d'Avron, ouverte en mars 2024 par 2 associés (1 chef + 1 entrepreneur digital). Investissement initial : 95 000 EUR. CA mensuel actuel : 32 000 EUR.
               </p>
               <p>
-                <strong>3 marques operees :</strong> "Mama Bowl" (healthy poke), "Smashed" (smash burgers), "Pizzeti" (pizzas napolitaines).
+                <strong>3 marques opérées :</strong> "Mama Bowl" (healthy poke), "Smashed" (smash burgers), "Pizzeti" (pizzas napolitaines).
               </p>
             </div>
 
             <div className="grid sm:grid-cols-3 gap-4 my-8">
-              <CaseCard brand="Mama Bowl" netMargin="19 %" detail="Ticket eleve 13,50 EUR, packaging optimise, 45 % click & collect" color="emerald" />
-              <CaseCard brand="Smashed" netMargin="12 %" detail="Marque la plus visible Uber Eats, commission negociee a 27 %" color="teal" />
+              <CaseCard brand="Mama Bowl" netMargin="19 %" detail="Ticket élevé 13,50 EUR, packaging optimisé, 45 % click & collect" color="emerald" />
+              <CaseCard brand="Smashed" netMargin="12 %" detail="Marque la plus visible Uber Eats, commission négociée à 27 %" color="teal" />
               <CaseCard brand="Pizzeti" netMargin="8 %" detail="Forte concurrence, marge sous pression, en cours de repositionnement" color="amber" />
             </div>
 
             <div className="bg-[#F9FAFB] rounded-xl p-5 text-sm text-[#404040]">
-              <p className="font-semibold text-[#111111] mb-2">Leviers actives via RestauMargin :</p>
+              <p className="font-semibold text-[#111111] mb-2">Leviers activés via RestauMargin :</p>
               <ul className="space-y-1.5">
-                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Tracking commissions par plateforme : detection de 1 200 EUR/mois "perdus" sur Just Eat (commission a 33 %)</li>
-                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Cout packaging integre : suppression d'un sachet inutile sur Mama Bowl, -0,15 EUR/plat x 450 plats = 67 EUR/mois</li>
-                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Multi-marques consolide : ingredients partages identifies (avocat, poulet, mozzarella), stock optimise -28 %</li>
-                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Marge nette globale passee de 9 % a 13 % en 4 mois (gain de 1280 EUR/mois)</li>
+                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Tracking commissions par plateforme : détection de 1 200 EUR/mois "perdus" sur Just Eat (commission à 33 %)</li>
+                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Coût packaging intégré : suppression d'un sachet inutile sur Mama Bowl, -0,15 EUR/plat x 450 plats = 67 EUR/mois</li>
+                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Multi-marques consolidé : ingrédients partagés identifiés (avocat, poulet, mozzarella), stock optimisé -28 %</li>
+                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Marge nette globale passée de 9 % à 13 % en 4 mois (gain de 1280 EUR/mois)</li>
               </ul>
             </div>
           </div>
@@ -590,7 +590,7 @@ export default function LogicielMargeDarkKitchen() {
               FAQ dark kitchen / ghost kitchen
             </h2>
             <p className="text-lg text-[#737373]">
-              Les 10 questions les plus posees par les operateurs de cuisines 100 % livraison.
+              Les 10 questions les plus posées par les opérateurs de cuisines 100 % livraison.
             </p>
           </div>
 
@@ -601,7 +601,7 @@ export default function LogicielMargeDarkKitchen() {
           </div>
 
           <Callout type="info">
-            <strong>Vous lancez votre dark kitchen ?</strong> Reservez une <Link to="/demo" className="underline font-semibold hover:text-teal-700">demo personnalisee de 20 minutes</Link> avec notre equipe specialisee dark kitchen. Nous parametrons gratuitement votre compte avec vos plateformes et vos marques.
+            <strong>Vous lancez votre dark kitchen ?</strong> Réservez une <Link to="/demo" className="underline font-semibold hover:text-teal-700">demo personnalisée de 20 minutes</Link> avec notre équipe spécialisée dark kitchen. Nous paramétrons gratuitement votre compte avec vos plateformes et vos marques.
           </Callout>
         </div>
       </section>
@@ -610,10 +610,10 @@ export default function LogicielMargeDarkKitchen() {
       <section className="py-20 px-4 bg-gradient-to-br from-teal-600 to-teal-700">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-3xl sm:text-5xl font-extrabold mb-6">
-            Pilotez la marge reelle de votre dark kitchen
+            Pilotez la marge réelle de votre dark kitchen
           </h2>
           <p className="text-xl text-teal-100 max-w-2xl mx-auto mb-3">
-            Multi-marques, commissions plateformes, packaging : tout dans un seul logiciel. Concu pour les operateurs de cuisines 100 % livraison.
+            Multi-marques, commissions plateformes, packaging : tout dans un seul logiciel. Conçu pour les opérateurs de cuisines 100 % livraison.
           </p>
           <p className="text-teal-50 mb-10">
             Essai gratuit 7 jours - Sans carte bancaire - Sans engagement
@@ -643,18 +643,18 @@ export default function LogicielMargeDarkKitchen() {
           <div className="grid sm:grid-cols-3 gap-6">
             <Link to="/blog/livraison-restaurant-rentabilite" className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <Truck className="w-8 h-8 text-teal-600 mb-3" />
-              <h3 className="font-bold text-[#111111] mb-2 group-hover:text-teal-700 transition-colors">Rentabilite de la livraison restaurant</h3>
+              <h3 className="font-bold text-[#111111] mb-2 group-hover:text-teal-700 transition-colors">Rentabilité de la livraison restaurant</h3>
               <p className="text-sm text-[#737373]">Uber Eats, Deliveroo, Just Eat : comment piloter la marge sur les plateformes de livraison.</p>
             </Link>
             <Link to="/blog/reduire-food-cost" className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <Calculator className="w-8 h-8 text-teal-600 mb-3" />
-              <h3 className="font-bold text-[#111111] mb-2 group-hover:text-teal-700 transition-colors">Reduire son food cost restaurant</h3>
-              <p className="text-sm text-[#737373]">8 leviers concrets pour faire passer son food cost de 35 % a 28 %. Methode CAP, achats groupes, fiche technique.</p>
+              <h3 className="font-bold text-[#111111] mb-2 group-hover:text-teal-700 transition-colors">Réduire son food cost restaurant</h3>
+              <p className="text-sm text-[#737373]">8 leviers concrets pour faire passer son food cost de 35 % à 28 %. Méthode CAP, achats groupés, fiche technique.</p>
             </Link>
             <Link to="/logiciel-marge-restaurant" className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <Target className="w-8 h-8 text-teal-600 mb-3" />
               <h3 className="font-bold text-[#111111] mb-2 group-hover:text-teal-700 transition-colors">Logiciel de marge restaurant</h3>
-              <p className="text-sm text-[#737373]">La version generaliste de RestauMargin pour tous les restaurants. Comparatif, fonctionnalites, tarifs.</p>
+              <p className="text-sm text-[#737373]">La version généraliste de RestauMargin pour tous les restaurants. Comparatif, fonctionnalités, tarifs.</p>
             </Link>
           </div>
         </div>
@@ -667,15 +667,15 @@ export default function LogicielMargeDarkKitchen() {
             <ChefHat className="w-6 h-6 text-teal-600" />
             RestauMargin
           </Link>
-          <p className="mb-4">Le logiciel de marge restaurant le plus complet du marche francais, specialise dark kitchen.</p>
+          <p className="mb-4">Le logiciel de marge restaurant le plus complet du marché français, spécialisé dark kitchen.</p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-[#9CA3AF]">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
+            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
+            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
           </div>
           <p className="mt-6 text-xs text-[#9CA3AF]">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
+            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
           </p>
         </div>
       </footer>

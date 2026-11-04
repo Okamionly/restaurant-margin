@@ -104,7 +104,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
       return res.status(400).send('Missing stripe-signature header');
     }
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    const stripe = new Stripe(cleStripe(), {
       httpClient: Stripe.createNodeHttpClient(),
       timeout: 30000,
     });
@@ -356,32 +356,34 @@ app.use((req, res, next) => {
 // Set via env vars STRIPE_PRICE_PRO_MONTHLY, etc. or fall back to production IDs
 // Trim env vars to strip any trailing whitespace/newline from shell injection during `vercel env add`
 const STRIPE_PRICES = {
-  PRO_MONTHLY: (process.env.STRIPE_PRICE_PRO_MONTHLY?.trim()) || 'price_1TGSSU3Y5IoWMA5kc6YRt86p', // 29€/mois
+  // Offre unique (2026-11-04) : 19 EUR/mois, toutes les fonctions. Les autres prix sont
+  // archives dans Stripe ; les cles restent pour ne pas casser d'anciens appels.
+  PRO_MONTHLY: (process.env.STRIPE_PRICE_PRO_MONTHLY?.trim()) || 'price_1UY8oy3Y5IoWMA5kshk8nrxP', // 19€/mois
   PRO_ANNUAL: (process.env.STRIPE_PRICE_PRO_ANNUAL?.trim()) || 'price_1TNJcy3Y5IoWMA5k7T7ZOyI9', // 278€/an (-20%)
   BUSINESS_MONTHLY: (process.env.STRIPE_PRICE_BUSINESS_MONTHLY?.trim()) || 'price_1TGSSV3Y5IoWMA5k8Elzb9RU', // 79€/mois
   BUSINESS_ANNUAL: (process.env.STRIPE_PRICE_BUSINESS_ANNUAL?.trim()) || 'price_1TNJd03Y5IoWMA5kMN2CPkNc', // 758€/an (-20%)
 } as const;
+
+// La cle Stripe stockee dans Vercel finissait par un « \n » litteral (constat du
+// 2026-11-04) : Stripe la refusait (« Invalid API Key »), le paiement etait casse.
+// On nettoie a la lecture pour que cela ne puisse pas se reproduire.
+function cleStripe(): string {
+  return (process.env.STRIPE_SECRET_KEY || '').replace(/(\\n|\\r)+$/, '').trim();
+}
 
 // ── Stripe Checkout Session ──
 // Use raw fetch() instead of Stripe SDK to avoid SDK v22 / Node v24 incompatibility
 // that caused StripeConnectionError on every request.
 app.post('/api/stripe/checkout', authMiddleware, async (req: any, res) => {
   try {
-    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    const stripeKey = cleStripe();
     if (!stripeKey) return res.status(503).json({ error: 'Stripe non configuré' });
 
-    const { planId, annual } = req.body;
-    if (!planId || !['pro', 'business'].includes(planId)) {
-      return res.status(400).json({ error: 'planId invalide (pro ou business)' });
-    }
-
-    // Resolve the correct Stripe Price ID
-    let priceId: string;
-    if (planId === 'pro') {
-      priceId = annual ? STRIPE_PRICES.PRO_ANNUAL : STRIPE_PRICES.PRO_MONTHLY;
-    } else {
-      priceId = annual ? STRIPE_PRICES.BUSINESS_ANNUAL : STRIPE_PRICES.BUSINESS_MONTHLY;
-    }
+    // Offre unique (2026-11-04) : quel que soit le planId recu (ancien client « pro »,
+    // « business », annuel), on vend le seul prix actif, 19 EUR/mois, plan interne « pro »
+    // (toutes les fonctions : pro et business donnaient deja les memes acces).
+    const planId = 'pro';
+    const priceId: string = STRIPE_PRICES.PRO_MONTHLY;
 
     // Get the authenticated user
     const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
@@ -434,7 +436,7 @@ app.post('/api/stripe/checkout', authMiddleware, async (req: any, res) => {
 // ── Stripe Customer Portal ──
 app.post('/api/stripe/portal', authMiddleware, async (req: any, res) => {
   try {
-    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    const stripeKey = cleStripe();
     if (!stripeKey) return res.status(503).json({ error: 'Stripe non configuré' });
     const stripe = new Stripe(stripeKey, {
       httpClient: Stripe.createNodeHttpClient(),
@@ -472,7 +474,7 @@ app.post('/api/stripe/portal', authMiddleware, async (req: any, res) => {
 // GET /api/billing/history — liste les factures Stripe de l'utilisateur connecté
 app.get('/api/billing/history', authMiddleware, async (req: any, res) => {
   try {
-    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    const stripeKey = cleStripe();
     if (!stripeKey) return res.json({ invoices: [] });
 
     const user = await prisma.user.findUnique({ where: { id: req.user.userId } });

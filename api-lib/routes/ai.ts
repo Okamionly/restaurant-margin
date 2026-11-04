@@ -38,7 +38,7 @@ export async function checkMonthlyQuota(restaurantId: number, res: any): Promise
     const used = usageRows[0]?.requests_count || 0;
     if (used >= MONTHLY_AI_LIMIT) {
       res.status(429).json({
-        error: 'Quota IA mensuel atteint (500 requetes). Passez au plan Business pour plus.',
+        error: 'Quota IA mensuel atteint (500 requêtes). Il se renouvelle le 1er du mois ; écrivez à contact@restaumargin.fr si vous avez besoin de plus.',
         usage: { used, limit: MONTHLY_AI_LIMIT }
       });
       return true;

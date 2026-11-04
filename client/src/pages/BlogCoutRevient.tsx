@@ -716,7 +716,7 @@ export default function BlogCoutRevient() {
                 <tr><td className="py-2 px-3">Magret de canard</td><td className="py-2 px-3 text-right">70-80 %</td><td className="py-2 px-3 text-right">20-30 %</td><td className="py-2 px-3 text-right font-medium">×1,3</td></tr>
                 <tr><td className="py-2 px-3">Côte de bœuf à l'os</td><td className="py-2 px-3 text-right">65-75 %</td><td className="py-2 px-3 text-right">25-35 %</td><td className="py-2 px-3 text-right font-medium">×1,4</td></tr>
                 <tr><td className="py-2 px-3">Dorade royale entière</td><td className="py-2 px-3 text-right">35-45 %</td><td className="py-2 px-3 text-right">55-65 %</td><td className="py-2 px-3 text-right font-medium">×2,5</td></tr>
-                <tr><td className="py-2 px-3">Saint-Jacques avec coquille</td><td className="py-2 px-3 text-right">15-20 %</td><td className="py-2 px-3 text-right">80-85 %</td><td className="py-2 px-3 text-right font-medium">×6</td></tr>
+                <tr><td className="py-2 px-3">Saint-Jacqués avec coquille</td><td className="py-2 px-3 text-right">15-20 %</td><td className="py-2 px-3 text-right">80-85 %</td><td className="py-2 px-3 text-right font-medium">×6</td></tr>
                 <tr><td className="py-2 px-3">Saumon entier vidé</td><td className="py-2 px-3 text-right">55-65 %</td><td className="py-2 px-3 text-right">35-45 %</td><td className="py-2 px-3 text-right font-medium">×1,8</td></tr>
                 <tr><td className="py-2 px-3">Champignons de Paris</td><td className="py-2 px-3 text-right">75-85 %</td><td className="py-2 px-3 text-right">15-25 %</td><td className="py-2 px-3 text-right font-medium">×1,2</td></tr>
                 <tr><td className="py-2 px-3">Pommes de terre Bintje</td><td className="py-2 px-3 text-right">80-85 %</td><td className="py-2 px-3 text-right">15-20 %</td><td className="py-2 px-3 text-right font-medium">×1,2</td></tr>
@@ -729,8 +729,8 @@ export default function BlogCoutRevient() {
           </div>
 
           <div className="border-l-4 border-red-400 bg-red-50 rounded-r-xl p-5 my-6">
-            <p className="text-sm font-semibold text-red-700 mb-2">Calcul concret avec exemple Saint-Jacques</p>
-            <p className="text-sm text-red-600">Saint-Jacques avec coquille achetées 35 €/kg, rendement 18 % (chair seule). Prix réel utilisable = 35 / 0,18 = <strong>194,40 €/kg de chair</strong>. Beaucoup de restaurateurs facturent leur fiche technique à 35 €/kg — d'où des marges totalement noyées. Pour une portion de 80 g de chair : coût réel matière = 15,55 € (et non 2,80 €).</p>
+            <p className="text-sm font-semibold text-red-700 mb-2">Calcul concret avec exemple Saint-Jacqués</p>
+            <p className="text-sm text-red-600">Saint-Jacqués avec coquille achetées 35 €/kg, rendement 18 % (chair seule). Prix réel utilisable = 35 / 0,18 = <strong>194,40 €/kg de chair</strong>. Beaucoup de restaurateurs facturent leur fiche technique à 35 €/kg — d'où des marges totalement noyées. Pour une portion de 80 g de chair : coût réel matière = 15,55 € (et non 2,80 €).</p>
           </div>
 
           <div className="prose-content">
@@ -791,7 +791,7 @@ export default function BlogCoutRevient() {
           </div>
 
           <Callout type="warning">
-            <strong>Impact cumulé :</strong> ces 7 erreurs combinées peuvent représenter une perte de 8 à 15 points de marge brute. Sur un restaurant qui fait 600 000 € de CA annuel, c'est entre 48 000 € et 90 000 € de bénéfice net potentiel qui disparait chaque année.
+            <strong>Impact cumulé :</strong> ces 7 erreurs combinées peuvent représenter une perte de 8 à 15 points de marge brute. Sur un restaurant qui fait 600 000 € de CA annuel, c'est entre 48 000 € et 90 000 € de bénéfice net potentiel qui disparaît chaque année.
           </Callout>
 
           <div className="prose-content mt-6">

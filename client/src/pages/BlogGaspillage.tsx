@@ -73,9 +73,9 @@ export default function BlogGaspillage() {
         category="Gaspillage"
         readTime="9 min"
         date="Avril 2026"
-        title="Comment reduire le gaspillage alimentaire en restaurant"
+        title="Comment réduire le gaspillage alimentaire en restaurant"
         accentWord="gaspillage"
-        subtitle="En France, un restaurant jette en moyenne 14 % de ses achats alimentaires. Cela represente entre 5 000 et 20 000 EUR par an de pertes directes sur vos marges. Decouvrez 5 methodes concretes pour reduire ce gaspillage de 30 % et plus."
+        subtitle="En France, un restaurant jette en moyenne 14 % de ses achats alimentaires. Cela représente entre 5 000 et 20 000 EUR par an de pertes directes sur vos marges. Découvrez 5 méthodes concrètes pour réduire ce gaspillage de 30 % et plus."
       />
 
       {/* ── Contenu principal ── */}
@@ -91,16 +91,16 @@ export default function BlogGaspillage() {
           </h2>
           <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
-              { href: '#chiffres', label: 'Le gaspillage alimentaire en restauration : les chiffres cles' },
+              { href: '#chiffres', label: 'Le gaspillage alimentaire en restauration : les chiffres clés' },
               { href: '#causes', label: 'Les principales causes du gaspillage en cuisine' },
-              { href: '#astuce-1', label: 'Astuce 1 : Le systeme FIFO et la gestion des DLC' },
-              { href: '#astuce-2', label: 'Astuce 2 : Les fiches techniques calibrees' },
-              { href: '#astuce-3', label: 'Astuce 3 : La pesee et le suivi des dechets' },
-              { href: '#astuce-4', label: 'Astuce 4 : L\'ajustement des commandes par prevision' },
+              { href: '#astuce-1', label: 'Astuce 1 : Le système FIFO et la gestion des DLC' },
+              { href: '#astuce-2', label: 'Astuce 2 : Les fiches techniques calibrées' },
+              { href: '#astuce-3', label: 'Astuce 3 : La pesée et le suivi des déchets' },
+              { href: '#astuce-4', label: 'Astuce 4 : L\'ajustement des commandes par prévision' },
               { href: '#astuce-5', label: 'Astuce 5 : La valorisation des surplus' },
               { href: '#calculateur', label: 'Calculez votre gaspillage annuel' },
-              { href: '#faq', label: 'Questions frequentes' },
-              { href: '#cta', label: 'RestauMargin vous aide a reduire votre gaspillage' },
+              { href: '#faq', label: 'Questions fréquentes' },
+              { href: '#cta', label: 'RestauMargin vous aide à réduire votre gaspillage' },
             ].map((item, i) => (
               <li key={i}>
                 <a href={item.href} className="hover:text-teal-600 transition-colors flex items-start gap-2">
@@ -115,57 +115,57 @@ export default function BlogGaspillage() {
         {/* ═════════════ SECTION 1 : Chiffres cles ═════════════ */}
         <section id="chiffres" className="mb-16">
           <SectionHeading icon={<BarChart3 className="w-6 h-6" />} number="1">
-            Le gaspillage alimentaire en restauration : les chiffres cles
+            Le gaspillage alimentaire en restauration : les chiffres clés
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Le gaspillage alimentaire en restaurant est un fleau economique, ecologique et ethique.
-              Selon l'ADEME, la restauration commerciale et collective genere chaque annee environ
-              900 000 tonnes de dechets alimentaires en France. Cela represente 14 % des achats
-              alimentaires qui finissent a la poubelle au lieu d'etre servis aux clients.
+              Le gaspillage alimentaire en restaurant est un fléau économique, écologique et éthique.
+              Selon l'ADEME, la restauration commerciale et collective génère chaque année environ
+              900 000 tonnes de déchets alimentaires en France. Cela représente 14 % des achats
+              alimentaires qui finissent à la poubelle au lieu d'être servis aux clients.
             </p>
             <p>
-              Pour un restaurant realisant 500 000 EUR de chiffre d'affaires annuel avec un food cost
-              de 30 %, cela signifie 150 000 EUR d'achats alimentaires. Si 14 % sont gaspilles, ce sont
-              21 000 EUR de pertes seches chaque annee — l'equivalent de deux mois de loyer pour un
-              restaurant moyen a Paris.
+              Pour un restaurant réalisant 500 000 EUR de chiffre d'affaires annuel avec un food cost
+              de 30 %, cela signifie 150 000 EUR d'achats alimentaires. Si 14 % sont gaspillés, ce sont
+              21 000 EUR de pertes sèches chaque année — l'équivalent de deux mois de loyer pour un
+              restaurant moyen à Paris.
             </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3 mt-8">
-            <StatCard value="14 %" label="des achats alimentaires gaspilles en moyenne" color="red" />
+            <StatCard value="14 %" label="des achats alimentaires gaspillés en moyenne" color="red" />
             <StatCard value="21 000 EUR" label="de pertes annuelles pour un restaurant moyen" color="amber" />
-            <StatCard value="30 %" label="de reduction possible avec les bonnes pratiques" color="emerald" />
+            <StatCard value="30 %" label="de réduction possible avec les bonnes pratiques" color="emerald" />
           </div>
 
           <div className="prose-content mt-8">
             <p>
-              Le gaspillage alimentaire en restauration intervient a plusieurs niveaux : lors de la
-              reception des marchandises (produits abimes ou non conformes), en stockage (mauvaise
-              rotation, rupture de la chaine du froid), en preparation (epluchures excessives, erreurs
-              de decoupe, surproduction), au service (portions surdimensionnees, retours d'assiettes)
-              et apres le service (restes non reutilises, surplus non valorises).
+              Le gaspillage alimentaire en restauration intervient à plusieurs niveaux : lors de la
+              réception des marchandises (produits abîmés ou non conformes), en stockage (mauvaise
+              rotation, rupture de la chaîne du froid), en préparation (épluchures excessives, erreurs
+              de découpe, surproduction), au service (portions surdimensionnées, retours d'assiettes)
+              et après le service (restes non réutilisés, surplus non valorisés).
             </p>
             <p>
-              La loi AGEC (Anti-Gaspillage pour une Economie Circulaire), renforcee en 2025, impose
-              desormais aux restaurants de plus de 150 couverts par jour de realiser un diagnostic
+              La loi AGEC (Anti-Gaspillage pour une Économie Circulaire), renforcée en 2025, impose
+              désormais aux restaurants de plus de 150 couverts par jour de réaliser un diagnostic
               de gaspillage alimentaire et de mettre en place un plan d'action. Les sanctions peuvent
-              aller jusqu'a 3 750 EUR d'amende pour les contrevenants.
+              aller jusqu'à 3 750 EUR d'amende pour les contrevenants.
             </p>
 
             <Callout type="info">
-              <strong>Chiffre cle :</strong> Selon une etude de The World Resources Institute, reduire
-              le gaspillage alimentaire de seulement 1 EUR genere en moyenne 14 EUR de retour sur
+              <strong>Chiffre clé :</strong> Selon une étude de The World Resources Institute, réduire
+              le gaspillage alimentaire de seulement 1 EUR génère en moyenne 14 EUR de retour sur
               investissement pour un restaurant. C'est l'un des meilleurs ROI que vous puissiez
               obtenir en restauration.
             </Callout>
 
             <p>
-              La bonne nouvelle, c'est que les marges de progression sont enormes. Les restaurants
-              les plus performants parviennent a limiter leur taux de gaspillage a 3-5 % de leurs
+              La bonne nouvelle, c'est que les marges de progression sont énormes. Les restaurants
+              les plus performants parviennent à limiter leur taux de gaspillage à 3-5 % de leurs
               achats, soit quatre fois moins que la moyenne du secteur. Ce n'est pas une question
-              de budget ou de taille d'etablissement — c'est une question de methode.
+              de budget ou de taille d'établissement — c'est une question de méthode.
             </p>
           </div>
         </section>
@@ -178,8 +178,8 @@ export default function BlogGaspillage() {
 
           <div className="prose-content">
             <p>
-              Avant de parler solutions, il faut comprendre d'ou vient le gaspillage alimentaire dans
-              votre restaurant. Voici les cinq causes les plus courantes, classees par ordre d'impact
+              Avant de parler solutions, il faut comprendre d'où vient le gaspillage alimentaire dans
+              votre restaurant. Voici les cinq causes les plus courantes, classées par ordre d'impact
               financier.
             </p>
           </div>
@@ -188,27 +188,27 @@ export default function BlogGaspillage() {
             <CauseCard
               number={1}
               title="La surproduction en mise en place"
-              desc="C'est la cause numero un. Par securite ou par habitude, les cuisiniers preparent trop de sauces, garnitures et accompagnements. En fin de service, ces surplus sont souvent jetes. Un restaurant moyen surpoduit de 15 a 25 % par rapport a ses besoins reels."
+              desc="C'est la cause numéro un. Par sécurité ou par habitude, les cuisiniers préparent trop de sauces, garnitures et accompagnements. En fin de service, ces surplus sont souvent jetés. Un restaurant moyen surpoduit de 15 à 25 % par rapport à ses besoins réels."
             />
             <CauseCard
               number={2}
               title="La mauvaise rotation des stocks (pas de FIFO)"
-              desc="Sans un systeme rigoureux de rotation (Premier Entre, Premier Sorti), les produits au fond du frigo depassent leur DLC. Les nouveaux arrivages sont places devant les anciens, condamnant les stocks existants."
+              desc="Sans un système rigoureux de rotation (Premier Entre, Premier Sorti), les produits au fond du frigo dépassent leur DLC. Les nouveaux arrivages sont placés devant les anciens, condamnant les stocks existants."
             />
             <CauseCard
               number={3}
-              title="Les portions non standardisees"
-              desc="Sans fiches techniques precises et sans pesee systematique, chaque cuisinier sert des quantites differentes. La moyenne des portions depasse souvent de 10 a 20 % la portion prevue, engendrant des couts matieres supplementaires et des retours d'assiettes."
+              title="Les portions non standardisées"
+              desc="Sans fiches techniques précises et sans pesée systématique, chaque cuisinier sert des quantités différentes. La moyenne des portions dépasse souvent de 10 à 20 % la portion prévue, engendrant des coûts matières supplémentaires et des retours d'assiettes."
             />
             <CauseCard
               number={4}
-              title="Les commandes non optimisees"
-              desc="Commander 'au feeling' sans analyser les previsions de frequentation conduit a des stocks excessifs sur certains produits et des ruptures sur d'autres. Le resultat : des denrees perissables qui finissent a la poubelle."
+              title="Les commandes non optimisées"
+              desc="Commander 'au feeling' sans analyser les prévisions de fréquentation conduit à des stocks excessifs sur certains produits et des ruptures sur d'autres. Le résultat : des denrées périssables qui finissent à la poubelle."
             />
             <CauseCard
               number={5}
               title="L'absence de valorisation des surplus"
-              desc="Les epluchures de legumes, les parures de viande, les fruits trop murs — autant de 'dechets' qui pourraient etre transformes en bouillons, garnitures, desserts ou confits. Sans une culture culinaire anti-gaspi, ces ressources sont perdues."
+              desc="Les épluchures de légumes, les parures de viande, les fruits trop mûrs — autant de 'déchets' qui pourraient être transformés en bouillons, garnitures, desserts ou confits. Sans une culture culinaire anti-gaspi, ces ressources sont perdues."
             />
           </div>
         </section>
@@ -216,41 +216,41 @@ export default function BlogGaspillage() {
         {/* ═════════════ ASTUCE 1 : FIFO ═════════════ */}
         <section id="astuce-1" className="mb-16">
           <SectionHeading icon={<ShoppingBasket className="w-6 h-6" />} number="3">
-            Astuce 1 : Le systeme FIFO et la gestion des DLC
+            Astuce 1 : Le système FIFO et la gestion des DLC
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Le FIFO (First In, First Out — Premier Entre, Premier Sorti) est la regle d'or de
-              la gestion des stocks en restauration. Le principe est simple : les produits recus en
-              premier doivent etre utilises en premier. Pourtant, seulement 40 % des restaurants
-              l'appliquent systematiquement.
+              Le FIFO (First In, First Out — Premier Entre, Premier Sorti) est la règle d'or de
+              la gestion des stocks en restauration. Le principe est simple : les produits reçus en
+              premier doivent être utilisés en premier. Pourtant, seulement 40 % des restaurants
+              l'appliquent systématiquement.
             </p>
             <p>
-              Pour mettre en place un FIFO efficace, commencez par etiqueter chaque produit a la reception
-              avec la date de reception et la DLC (Date Limite de Consommation). Organisez vos etageres
-              de maniere a ce que les produits les plus anciens soient toujours devant. Instaurez une
-              verification quotidienne des DLC en debut de service — 5 minutes qui peuvent vous
-              economiser des centaines d'euros par semaine.
+              Pour mettre en place un FIFO efficace, commencez par étiqueter chaque produit à la réception
+              avec la date de réception et la DLC (Date Limite de Consommation). Organisez vos étagères
+              de manière à ce que les produits les plus anciens soient toujours devant. Instaurez une
+              vérification quotidienne des DLC en début de service — 5 minutes qui peuvent vous
+              économiser des centaines d'euros par semaine.
             </p>
 
             <Callout type="warning">
-              <strong>Attention :</strong> Ne confondez pas DLC et DDM (Date de Durabilite Minimale).
-              La DLC est imperative (produits frais, viandes, produits laitiers) — au-dela, le produit
-              doit etre jete. La DDM ("a consommer de preference avant") est indicative : un produit
-              peut encore etre utilise apres cette date si son aspect, odeur et gout sont corrects.
+              <strong>Attention :</strong> Ne confondez pas DLC et DDM (Date de Durabilité Minimale).
+              La DLC est impérative (produits frais, viandes, produits laitiers) — au-delà, le produit
+              doit être jeté. La DDM ("à consommer de préférence avant") est indicative : un produit
+              peut encore être utilisé après cette date si son aspect, odeur et goût sont corrects.
             </Callout>
 
             <p>
-              <strong>Exemple concret :</strong> Le restaurant Le Petit Jardin a Lyon a reduit ses
-              pertes liees aux DLC depassees de 68 % en trois mois simplement en instaurant un
-              code couleur sur les etiquettes : vert (plus de 3 jours), orange (1 a 3 jours),
+              <strong>Exemple concret :</strong> Le restaurant Le Petit Jardin à Lyon a réduit ses
+              pertes liées aux DLC dépassées de 68 % en trois mois simplement en instaurant un
+              code couleur sur les étiquettes : vert (plus de 3 jours), orange (1 à 3 jours),
               rouge (dernier jour). Les produits "orange" et "rouge" sont prioritaires en mise en place.
             </p>
             <p>
-              Le gain moyen constate par les restaurants qui mettent en place un FIFO rigoureux est
-              de 3 000 a 6 000 EUR par an de pertes evitees, pour un investissement quasi nul
-              (etiquettes et un peu de discipline).
+              Le gain moyen constaté par les restaurants qui mettent en place un FIFO rigoureux est
+              de 3 000 à 6 000 EUR par an de pertes évitées, pour un investissement quasi nul
+              (étiquettes et un peu de discipline).
             </p>
           </div>
         </section>
@@ -258,32 +258,32 @@ export default function BlogGaspillage() {
         {/* ═════════════ ASTUCE 2 : Fiches techniques ═════════════ */}
         <section id="astuce-2" className="mb-16">
           <SectionHeading icon={<Scale className="w-6 h-6" />} number="4">
-            Astuce 2 : Les fiches techniques calibrees
+            Astuce 2 : Les fiches techniques calibrées
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Une fiche technique de cuisine, c'est la recette detaillee d'un plat avec les quantites
-              precises de chaque ingredient pour une portion. C'est l'outil fondamental pour maitriser
-              vos couts et reduire le gaspillage alimentaire en restaurant.
+              Une fiche technique de cuisine, c'est la recette détaillée d'un plat avec les quantités
+              précises de chaque ingrédient pour une portion. C'est l'outil fondamental pour maîtriser
+              vos coûts et réduire le gaspillage alimentaire en restaurant.
             </p>
             <p>
-              Sans fiche technique, chaque cuisinier prepare le plat "a sa facon" avec des quantites
-              variables. Le resultat : des portions irregulieres, un food cost imprevisible et du
-              gaspillage systematique. Une etude de Cornell University montre que les restaurants
+              Sans fiche technique, chaque cuisinier prépare le plat "à sa façon" avec des quantités
+              variables. Le résultat : des portions irrégulières, un food cost imprévisible et du
+              gaspillage systématique. Une étude de Cornell University montre que les restaurants
               sans fiches techniques gaspillent en moyenne 22 % de plus que ceux qui les utilisent.
             </p>
             <p>
-              Votre fiche technique doit inclure : la liste exacte des ingredients avec les grammages
-              par portion, le rendement apres cuisson (un filet de boeuf perd 25 % de son poids a
-              la cuisson), le cout matiere par portion, le prix de vente recommande et les instructions
+              Votre fiche technique doit inclure : la liste exacte des ingrédients avec les grammages
+              par portion, le rendement après cuisson (un filet de boeuf perd 25 % de son poids à
+              la cuisson), le coût matière par portion, le prix de vente recommandé et les instructions
               de dressage avec photo.
             </p>
 
             <Callout type="info">
               <strong>Astuce :</strong> Pesez vos portions pendant une semaine et comparez avec vos
-              fiches techniques. Vous serez surpris de l'ecart. La plupart des restaurants decouvrent
-              un ecart moyen de 15 % entre la portion theorique et la portion reelle — soit 15 %
+              fiches techniques. Vous serez surpris de l'écart. La plupart des restaurants découvrent
+              un écart moyen de 15 % entre la portion théorique et la portion réelle — soit 15 %
               de food cost en plus.
             </Callout>
 
@@ -292,7 +292,7 @@ export default function BlogGaspillage() {
               <Link to="/blog/fiche-technique-restaurant" className="text-teal-600 hover:text-teal-700 underline underline-offset-2">
                 guide complet sur les fiches techniques de cuisine
               </Link>{' '}
-              pour apprendre a creer et maintenir vos fiches techniques efficacement.
+              pour apprendre à créer et maintenir vos fiches techniques efficacement.
             </p>
           </div>
         </section>
@@ -300,40 +300,40 @@ export default function BlogGaspillage() {
         {/* ═════════════ ASTUCE 3 : Pesee des dechets ═════════════ */}
         <section id="astuce-3" className="mb-16">
           <SectionHeading icon={<Trash2 className="w-6 h-6" />} number="5">
-            Astuce 3 : La pesee et le suivi des dechets
+            Astuce 3 : La pesée et le suivi des déchets
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Ce qui ne se mesure pas ne s'ameliore pas. La pesee des dechets alimentaires est l'une
-              des methodes les plus efficaces pour reduire le gaspillage, car elle rend le probleme
-              visible et mesurable. C'est aussi une obligation reglementaire pour les restaurants
-              produisant plus de 5 tonnes de biodechets par an (seuil abaisse en 2024).
+              Ce qui ne se mesure pas ne s'améliore pas. La pesée des déchets alimentaires est l'une
+              des méthodes les plus efficaces pour réduire le gaspillage, car elle rend le problème
+              visible et mesurable. C'est aussi une obligation réglementaire pour les restaurants
+              produisant plus de 5 tonnes de biodéchets par an (seuil abaissé en 2024).
             </p>
             <p>
-              Le protocole est simple : placez une balance et un cahier (ou une tablette) a cote de
+              Le protocole est simple : placez une balance et un cahier (ou une tablette) à côté de
               chaque poubelle de cuisine. Chaque fois qu'un cuisinier jette un aliment, il note le
-              type de produit, la quantite et la raison (DLC depassee, erreur de preparation,
-              retour d'assiette, surplus de production). En fin de semaine, analysez les donnees.
+              type de produit, la quantité et la raison (DLC dépassée, erreur de préparation,
+              retour d'assiette, surplus de production). En fin de semaine, analysez les données.
             </p>
             <p>
-              Les restaurants qui pratiquent la pesee des dechets constatent une reduction moyenne de
-              20 % du gaspillage des le premier mois — simplement parce que l'equipe prend conscience
-              des quantites jetees. C'est l'effet "miroir" : quand on sait qu'on est observe (ou
-              qu'on s'observe soi-meme), on fait naturellement plus attention.
+              Les restaurants qui pratiquent la pesée des déchets constatent une réduction moyenne de
+              20 % du gaspillage dès le premier mois — simplement parce que l'équipe prend conscience
+              des quantités jetées. C'est l'effet "miroir" : quand on sait qu'on est observé (ou
+              qu'on s'observe soi-même), on fait naturellement plus attention.
             </p>
             <p>
-              Concretement, categorisez vos dechets en quatre familles : preparations non servies
-              (surproduction), produits perimes (rotation insuffisante), epluchures et parures
-              (rendement), retours d'assiettes (portions trop grandes ou plats peu apprecies).
-              Chaque categorie appelle une action correctrice differente.
+              Concrètement, catégorisez vos déchets en quatre familles : préparations non servies
+              (surproduction), produits périmés (rotation insuffisante), épluchures et parures
+              (rendement), retours d'assiettes (portions trop grandes ou plats peu appréciés).
+              Chaque catégorie appelle une action correctrice différente.
             </p>
 
             <Callout type="info">
-              <strong>Le saviez-vous ?</strong> La chaine de restaurants Nando's a reduit son gaspillage
-              alimentaire de 32 % en un an grace a un programme de pesee quotidienne des dechets combine
-              avec des objectifs d'amelioration par equipe. Le jeu de competition entre equipes a
-              renforce l'engagement de tout le personnel.
+              <strong>Le saviez-vous ?</strong> La chaîne de restaurants Nando's a réduit son gaspillage
+              alimentaire de 32 % en un an grâce à un programme de pesée quotidienne des déchets combiné
+              avec des objectifs d'amélioration par équipe. Le jeu de compétition entre équipes a
+              renforcé l'engagement de tout le personnel.
             </Callout>
           </div>
         </section>
@@ -341,38 +341,38 @@ export default function BlogGaspillage() {
         {/* ═════════════ ASTUCE 4 : Previsions ═════════════ */}
         <section id="astuce-4" className="mb-16">
           <SectionHeading icon={<TrendingDown className="w-6 h-6" />} number="6">
-            Astuce 4 : L'ajustement des commandes par prevision
+            Astuce 4 : L'ajustement des commandes par prévision
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Commander la bonne quantite au bon moment, c'est le Saint-Graal de la gestion des
+              Commander la bonne quantité au bon moment, c'est le Saint-Graal de la gestion des
               stocks en restauration. Trop de stock = gaspillage. Pas assez = ruptures et clients
-              decus. La cle, c'est la prevision.
+              déçus. La clé, c'est la prévision.
             </p>
             <p>
               Analysez votre historique de ventes par jour de la semaine, par semaine du mois et par
               saison. Un restaurant moyen sert 30 % de couverts en plus le vendredi et le samedi
-              que le mardi. Les plats a base de salade se vendent 40 % de plus en ete. En janvier,
-              apres les fetes, la frequentation baisse de 15 a 20 %.
+              que le mardi. Les plats à base de salade se vendent 40 % de plus en été. En janvier,
+              après les fêtes, la fréquentation baisse de 15 à 20 %.
             </p>
             <p>
-              Utilisez ces donnees pour ajuster vos commandes. Un bon reflexe : commandez pour 2 a
-              3 jours maximum sur les produits frais (viandes, poissons, legumes fragiles), et
-              verifiez vos stocks chaque matin avant de passer commande. Evitez les commandes
-              automatiques "fixes" qui ne tiennent pas compte de la realite du moment.
+              Utilisez ces données pour ajuster vos commandes. Un bon réflexe : commandez pour 2 à
+              3 jours maximum sur les produits frais (viandes, poissons, légumes fragiles), et
+              vérifiez vos stocks chaque matin avant de passer commande. Évitez les commandes
+              automatiques "fixes" qui ne tiennent pas compte de la réalité du moment.
             </p>
             <p>
-              Integrez aussi les evenements exterieurs : matches de football, jours feries, meteo
-              (une terrasse pleine en ete, vide sous la pluie), travaux dans la rue, greves de
-              transports. Chaque facteur impacte votre frequentation et donc vos besoins en
-              matieres premieres.
+              Intégrez aussi les événements extérieurs : matches de football, jours fériés, météo
+              (une terrasse pleine en été, vide sous la pluie), travaux dans la rue, grèves de
+              transports. Chaque facteur impacte votre fréquentation et donc vos besoins en
+              matières premières.
             </p>
             <p>
-              <strong>Exemple :</strong> Le Bistrot du Marche a Bordeaux a reduit ses achats
+              <strong>Exemple :</strong> Le Bistrot du Marché à Bordeaux a réduit ses achats
               excessifs de 18 % en installant un simple tableur de suivi des ventes par jour et par
-              plat. En 6 mois, le gain cumule a depasse 8 000 EUR. RestauMargin automatise cette
-              analyse avec ses outils de prevision intelligente.
+              plat. En 6 mois, le gain cumulé a dépassé 8 000 EUR. RestauMargin automatise cette
+              analyse avec ses outils de prévision intelligente.
             </p>
           </div>
         </section>
@@ -385,44 +385,44 @@ export default function BlogGaspillage() {
 
           <div className="prose-content">
             <p>
-              Avant d'etre un dechet, chaque aliment est une ressource potentielle. La cuisine
-              anti-gaspi, c'est l'art de transformer ce qui aurait ete jete en un produit vendable
+              Avant d'être un déchet, chaque aliment est une ressource potentielle. La cuisine
+              anti-gaspi, c'est l'art de transformer ce qui aurait été jeté en un produit vendable
               ou au moins utilisable. Cette approche est au coeur de la gastronomie durable et de
-              plus en plus valorisee par les clients.
+              plus en plus valorisée par les clients.
             </p>
             <p>
-              Les epluchures de legumes deviennent des bouillons, des chips ou des poudres aromatiques.
+              Les épluchures de légumes deviennent des bouillons, des chips ou des poudres aromatiques.
               Les parures de viande se transforment en terrines, rillettes ou fonds de sauce. Le pain
-              rassis devient du pain perdu, de la chapelure ou un gaspacho. Les fruits trop murs
+              rassis devient du pain perdu, de la chapelure ou un gaspacho. Les fruits trop mûrs
               font des compotes, des coulis ou des smoothies.
             </p>
 
             <div className="mt-6 mb-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <h3 className="font-bold text-mono-100 mb-4 flex items-center gap-2">
                 <Recycle className="w-5 h-5 text-emerald-600" />
-                Idees de valorisation par type de dechet
+                Idées de valorisation par type de déchet
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
-                <ValorizationCard item="Epluchures de legumes" idea="Bouillon, chips deshydratees, pesto de fanes" />
+                <ValorizationCard item="Épluchures de légumes" idea="Bouillon, chips déshydratées, pesto de fanes" />
                 <ValorizationCard item="Parures de viande" idea="Fond brun, terrine, rillettes" />
                 <ValorizationCard item="Pain rassis" idea="Pain perdu, chapelure, crotons" />
-                <ValorizationCard item="Fruits trop murs" idea="Compote, coulis, glace, confiture" />
-                <ValorizationCard item="Herbes fanees" idea="Huile aromatisee, beurre compose" />
+                <ValorizationCard item="Fruits trop mûrs" idea="Compote, coulis, glace, confiture" />
+                <ValorizationCard item="Herbes fanées" idea="Huile aromatisée, beurre composé" />
                 <ValorizationCard item="Surplus de production" idea="Plat du jour, doggy bag, partenariat Too Good To Go" />
               </div>
             </div>
 
             <p>
-              Au-dela de la cuisine, pensez aux partenariats avec des applications anti-gaspi comme
-              Too Good To Go ou Phenix. Ces plateformes vous permettent de vendre vos surplus a
-              prix reduit en fin de service. C'est du chiffre d'affaires supplementaire sur des
-              produits qui auraient ete jetes — une victoire economique et ecologique.
+              Au-delà de la cuisine, pensez aux partenariats avec des applications anti-gaspi comme
+              Too Good To Go ou Phenix. Ces plateformes vous permettent de vendre vos surplus à
+              prix réduit en fin de service. C'est du chiffre d'affaires supplémentaire sur des
+              produits qui auraient été jetés — une victoire économique et écologique.
             </p>
             <p>
-              Les doggy bags (emballages pour emporter les restes) sont desormais une obligation
-              legale en France. Proposez-les systematiquement a vos clients : cela reduit le
-              gaspillage cote salle et renforce votre image responsable. Investissez dans des
-              emballages eco-responsables alignes avec votre positionnement.
+              Les doggy bags (emballages pour emporter les restes) sont désormais une obligation
+              légale en France. Proposez-les systématiquement à vos clients : cela réduit le
+              gaspillage côté salle et renforce votre image responsable. Investissez dans des
+              emballages eco-responsables alignés avec votre positionnement.
             </p>
           </div>
         </section>
@@ -435,9 +435,9 @@ export default function BlogGaspillage() {
 
           <div className="prose-content mb-6">
             <p>
-              Utilisez ce calculateur simple pour estimer le cout du gaspillage alimentaire dans
+              Utilisez ce calculateur simple pour estimer le coût du gaspillage alimentaire dans
               votre restaurant. Entrez votre chiffre d'affaires annuel et votre food cost, et
-              decouvrez combien vous pourriez economiser en reduisant vos pertes.
+              découvrez combien vous pourriez économiser en réduisant vos pertes.
             </p>
           </div>
 
@@ -446,50 +446,50 @@ export default function BlogGaspillage() {
 
         {/* ═════════════ Articles lies ═════════════ */}
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-mono-100 mb-6">Articles complementaires</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Articles complémentaires</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             <Link to="/blog/fiche-technique-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Fiche technique de cuisine : le guide complet</h3>
-              <p className="text-sm text-mono-500">Creez des fiches techniques precises pour maitriser vos portions et couts.</p>
+              <p className="text-sm text-mono-500">Créez des fiches techniques précises pour maîtriser vos portions et coûts.</p>
             </Link>
             <Link to="/blog/haccp-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Guide HACCP pour les restaurants</h3>
-              <p className="text-sm text-mono-500">Temperatures, principes et checklist pour respecter l'hygiene alimentaire.</p>
+              <p className="text-sm text-mono-500">Températures, principes et checklist pour respecter l'hygiène alimentaire.</p>
             </Link>
             <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">5 methodes pour reduire votre food cost</h3>
-              <p className="text-sm text-mono-500">Fiches techniques, negociation fournisseurs, menu engineering et plus.</p>
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">5 méthodes pour réduire votre food cost</h3>
+              <p className="text-sm text-mono-500">Fiches techniques, négociation fournisseurs, menu engineering et plus.</p>
             </Link>
           </div>
         </section>
 
         {/* ═════════════ FAQ ═════════════ */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-4">
             <FAQItem
               q="Quel est le taux de gaspillage moyen dans un restaurant ?"
-              a="En France, un restaurant gaspille en moyenne 14 % de ses achats alimentaires, soit entre 5 000 et 20 000 EUR par an selon le chiffre d'affaires. Les restaurants les plus performants parviennent a descendre a 3-5 % grace a des methodes rigoureuses de gestion des stocks et de production."
+              a="En France, un restaurant gaspille en moyenne 14 % de ses achats alimentaires, soit entre 5 000 et 20 000 EUR par an selon le chiffre d'affaires. Les restaurants les plus performants parviennent à descendre à 3-5 % grâce à des méthodes rigoureuses de gestion des stocks et de production."
             />
             <FAQItem
               q="Comment mesurer le gaspillage alimentaire dans mon restaurant ?"
-              a="La methode la plus simple est la pesee quotidienne des dechets alimentaires, categorises en quatre types : surproduction (plats prepares non vendus), produits perimes (DLC depassee), epluchures et parures (rendement), retours d'assiettes (restes clients). Pesez pendant une semaine pour avoir un diagnostic precis."
+              a="La méthode la plus simple est la pesée quotidienne des déchets alimentaires, categorises en quatre types : surproduction (plats préparés non vendus), produits périmés (DLC dépassée), épluchures et parures (rendement), retours d'assiettes (restes clients). Pesez pendant une semaine pour avoir un diagnostic précis."
             />
             <FAQItem
-              q="Quelles sont les obligations legales sur le gaspillage alimentaire ?"
-              a="La loi AGEC impose aux restaurants de plus de 150 couverts/jour un diagnostic de gaspillage et un plan d'action. Depuis 2024, tous les restaurants doivent trier leurs biodechets. Les doggy bags doivent etre proposes aux clients. Les sanctions peuvent atteindre 3 750 EUR d'amende."
+              q="Quelles sont les obligations légales sur le gaspillage alimentaire ?"
+              a="La loi AGEC impose aux restaurants de plus de 150 couverts/jour un diagnostic de gaspillage et un plan d'action. Depuis 2024, tous les restaurants doivent trier leurs biodéchets. Les doggy bags doivent être proposés aux clients. Les sanctions peuvent atteindre 3 750 EUR d'amende."
             />
             <FAQItem
-              q="Combien peut-on economiser en reduisant le gaspillage ?"
-              a="En appliquant rigoureusement les 5 methodes decrites dans cet article (FIFO, fiches techniques, pesee des dechets, prevision des commandes, valorisation des surplus), un restaurant moyen peut reduire son gaspillage de 30 %, soit une economie de 6 000 a 12 000 EUR par an."
+              q="Combien peut-on économiser en réduisant le gaspillage ?"
+              a="En appliquant rigoureusement les 5 méthodes décrites dans cet article (FIFO, fiches techniques, pesée des déchets, prévision des commandes, valorisation des surplus), un restaurant moyen peut réduire son gaspillage de 30 %, soit une économie de 6 000 à 12 000 EUR par an."
             />
             <FAQItem
               q="Too Good To Go est-il rentable pour un restaurant ?"
-              a="Oui, dans la majorite des cas. Vous vendez vos surplus a un prix reduit (generalement 3 a 5 EUR le panier) au lieu de les jeter. L'application prend une commission de 1,09 EUR par panier. C'est du chiffre d'affaires supplementaire sur des produits qui auraient ete perdus. En plus, cela vous apporte de la visibilite."
+              a="Oui, dans la majorité des cas. Vous vendez vos surplus à un prix réduit (généralement 3 à 5 EUR le panier) au lieu de les jeter. L'application prend une commission de 1,09 EUR par panier. C'est du chiffre d'affaires supplémentaire sur des produits qui auraient été perdus. En plus, cela vous apporte de la visibilité."
             />
             <FAQItem
-              q="Comment impliquer mon equipe dans la lutte contre le gaspillage ?"
-              a="Commencez par rendre le probleme visible : affichez les chiffres de pesee en cuisine. Fixez des objectifs collectifs (par exemple, reduire les dechets de 10 % en un mois). Organisez des challenges entre equipes. Formez vos cuisiniers aux techniques de valorisation. Et surtout, valorisez les progres — un compliment motive autant qu'une prime."
+              q="Comment impliquer mon équipe dans la lutte contre le gaspillage ?"
+              a="Commencez par rendre le problème visible : affichez les chiffres de pesée en cuisine. Fixez des objectifs collectifs (par exemple, réduire les déchets de 10 % en un mois). Organisez des challenges entre équipes. Formez vos cuisiniers aux techniques de valorisation. Et surtout, valorisez les progrès — un compliment motive autant qu'une prime."
             />
           </div>
         </section>
@@ -501,11 +501,11 @@ export default function BlogGaspillage() {
           <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-8 sm:p-12 text-center text-white">
             <Leaf className="w-12 h-12 mx-auto mb-4 opacity-90" />
             <h2 className="text-2xl sm:text-3xl font-extrabold mb-4">
-              RestauMargin vous aide a reduire votre gaspillage de 30 %
+              RestauMargin vous aide à réduire votre gaspillage de 30 %
             </h2>
             <p className="text-emerald-100 max-w-xl mx-auto mb-8 leading-relaxed">
-              Suivi des stocks en temps reel, alertes DLC, fiches techniques calibrees, previsions
-              de ventes et analyse des dechets — tout est automatise pour que vous vous concentriez
+              Suivi des stocks en temps réel, alertes DLC, fiches techniques calibrées, prévisions
+              de ventes et analyse des déchets — tout est automatisé pour que vous vous concentriez
               sur la cuisine.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -540,13 +540,13 @@ export default function BlogGaspillage() {
             La plateforme de gestion de marge pour les restaurateurs.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
+            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
+            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
           </div>
           <p className="mt-6 text-xs text-mono-700">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
+            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
           </p>
         </div>
       </footer>
@@ -558,8 +558,8 @@ export default function BlogGaspillage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'Article',
-            headline: 'Comment reduire le gaspillage alimentaire en restaurant : 5 astuces concretes',
-            description: 'Reduisez le gaspillage alimentaire de votre restaurant de 30 %. 5 methodes concretes, calculateur de pertes et FAQ complete pour les restaurateurs.',
+            headline: 'Comment réduire le gaspillage alimentaire en restaurant : 5 astuces concrètes',
+            description: 'Réduisez le gaspillage alimentaire de votre restaurant de 30 %. 5 méthodes concrètes, calculateur de pertes et FAQ complète pour les restaurateurs.',
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -594,12 +594,12 @@ export default function BlogGaspillage() {
                 name: 'Comment mesurer le gaspillage alimentaire dans mon restaurant ?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'La methode la plus simple est la pesee quotidienne des dechets alimentaires, categorises en quatre types : surproduction, produits perimes, epluchures/parures, retours d\'assiettes.',
+                  text: 'La méthode la plus simple est la pesée quotidienne des déchets alimentaires, categorises en quatre types : surproduction, produits périmés, épluchures/parures, retours d\'assiettes.',
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Quelles sont les obligations legales sur le gaspillage alimentaire ?',
+                name: 'Quelles sont les obligations légales sur le gaspillage alimentaire ?',
                 acceptedAnswer: {
                   '@type': 'Answer',
                   text: 'La loi AGEC impose aux restaurants de plus de 150 couverts/jour un diagnostic de gaspillage et un plan d\'action. Les sanctions peuvent atteindre 3 750 EUR d\'amende.',
@@ -607,10 +607,10 @@ export default function BlogGaspillage() {
               },
               {
                 '@type': 'Question',
-                name: 'Combien peut-on economiser en reduisant le gaspillage ?',
+                name: 'Combien peut-on économiser en réduisant le gaspillage ?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Un restaurant moyen peut reduire son gaspillage de 30 %, soit une economie de 6 000 a 12 000 EUR par an.',
+                  text: 'Un restaurant moyen peut réduire son gaspillage de 30 %, soit une économie de 6 000 à 12 000 EUR par an.',
                 },
               },
               {
@@ -618,15 +618,15 @@ export default function BlogGaspillage() {
                 name: 'Too Good To Go est-il rentable pour un restaurant ?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Oui, vous vendez vos surplus a prix reduit au lieu de les jeter. L\'application prend une commission de 1,09 EUR par panier. C\'est du chiffre d\'affaires supplementaire.',
+                  text: 'Oui, vous vendez vos surplus à prix réduit au lieu de les jeter. L\'application prend une commission de 1,09 EUR par panier. C\'est du chiffre d\'affaires supplémentaire.',
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Comment impliquer mon equipe dans la lutte contre le gaspillage ?',
+                name: 'Comment impliquer mon équipe dans la lutte contre le gaspillage ?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Rendez le probleme visible avec les chiffres de pesee, fixez des objectifs collectifs, organisez des challenges entre equipes et formez aux techniques de valorisation.',
+                  text: 'Rendez le problème visible avec les chiffres de pesée, fixez des objectifs collectifs, organisez des challenges entre équipes et formez aux techniques de valorisation.',
                 },
               },
             ],
@@ -706,12 +706,12 @@ function GaspillageCalculator() {
             color="text-mono-100"
           />
           <ResultCard
-            label="Pertes liees au gaspillage"
+            label="Pertes liées au gaspillage"
             value={`${pertes.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} EUR`}
             color="text-red-600"
           />
           <ResultCard
-            label="Economie potentielle (-30 %)"
+            label="Économie potentielle (-30 %)"
             value={`${economie30.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} EUR`}
             color="text-emerald-600"
           />

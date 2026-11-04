@@ -12,44 +12,44 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 const faqItems = [
   {
-    question: "A quoi sert une fiche technique en restauration ?",
-    answer: "La fiche technique est un document de gestion qui standardise une recette : grammages exacts, cout matieres, procedure, allergenes, photo de dressage. Elle garantit la constance qualitative independamment du cuisinier qui prepare le plat et permet de calculer precisement le food cost. Sans fiche technique, votre marge derive d'un service a l'autre.",
+    question: "À quoi sert une fiche technique en restauration ?",
+    answer: "La fiche technique est un document de gestion qui standardise une recette : grammages exacts, coût matières, procédure, allergènes, photo de dressage. Elle garantit la constance qualitative indépendamment du cuisinier qui prépare le plat et permet de calculer précisément le food cost. Sans fiche technique, votre marge dérive d'un service à l'autre.",
   },
   {
-    question: "Quelle est la difference entre quantite brute et quantite nette ?",
-    answer: "La quantite brute est ce que vous achetez (un kilo de carottes entieres). La quantite nette est ce qui se retrouve dans l'assiette apres epluchage, parage, cuisson (800 g de carottes epluchees). Le ratio net/brut est appele coefficient de rendement et doit figurer sur chaque fiche technique pour ne pas sous-estimer le cout reel.",
+    question: "Quelle est la différence entre quantité brute et quantité nette ?",
+    answer: "La quantité brute est ce que vous achetez (un kilo de carottes entières). La quantité nette est ce qui se retrouve dans l'assiette après épluchage, parage, cuisson (800 g de carottes épluchées). Le ratio net/brut est appelé coefficient de rendement et doit figurer sur chaque fiche technique pour ne pas sous-estimer le coût réel.",
   },
   {
     question: "Quel food cost viser pour un restaurant traditionnel ?",
-    answer: "En restauration traditionnelle, le food cost ideal se situe entre 28 % et 35 % du prix de vente HT. Un bistrot vise 28-33 %, une brasserie 28-35 %, un gastronomique peut accepter jusqu'a 40 % (produits premium). En dessous de 25 %, les portions sont souvent trop reduites et nuisent a la satisfaction client.",
+    answer: "En restauration traditionnelle, le food cost idéal se situe entre 28 % et 35 % du prix de vente HT. Un bistrot vise 28-33 %, une brasserie 28-35 %, un gastronomique peut accepter jusqu'à 40 % (produits premium). En dessous de 25 %, les portions sont souvent trop réduites et nuisent à la satisfaction client.",
   },
   {
-    question: "A quelle frequence mettre a jour les prix dans ses fiches techniques ?",
-    answer: "Les prix doivent etre mis a jour tous les trimestres minimum, ou apres chaque changement tarifaire significatif d'un fournisseur. Pour les produits frais volatils (poisson, viande), idealement chaque mois. Des prix obsoletes donnent un food cost errone : un beurre passe de 4 a 6 EUR/kg fausse votre marge de 50 % sur cet ingredient.",
+    question: "À quelle fréquence mettre à jour les prix dans ses fiches techniques ?",
+    answer: "Les prix doivent être mis à jour tous les trimestres minimum, ou après chaque changement tarifaire significatif d'un fournisseur. Pour les produits frais volatils (poisson, viande), idéalement chaque mois. Des prix obsolètes donnent un food cost erroné : un beurre passe de 4 à 6 EUR/kg fausse votre marge de 50 % sur cet ingrédient.",
   },
   {
-    question: "Quels logiciels pour creer des fiches techniques restaurant ?",
-    answer: "Plusieurs options : tableurs Excel/Google Sheets (gratuit mais manuel), logiciels metiers comme RestauMargin, MarketMan, Inpulse. Un outil specialise automatise les mises a jour de prix, calcule le food cost en temps reel, lie les fiches aux stocks et genere les listes de courses. Un tableur reste viable pour moins de 30 plats, au-dela il faut un outil dedie.",
+    question: "Quels logiciels pour créer des fiches techniques restaurant ?",
+    answer: "Plusieurs options : tableurs Excel/Google Sheets (gratuit mais manuel), logiciels métiers comme RestauMargin, MarketMan, Inpulse. Un outil spécialisé automatise les mises à jour de prix, calcule le food cost en temps réel, lie les fiches aux stocks et génère les listes de courses. Un tableur reste viable pour moins de 30 plats, au-delà il faut un outil dédié.",
   },
   {
     question: "Combien de fiches techniques faut-il dans un restaurant ?",
-    answer: "Une fiche par plat propose a la carte, y compris les variantes (steak frites, steak salade), les amuses-bouches, les sauces meres, les preparations de base (fond brun, jus de viande, mayonnaise maison). Un restaurant traditionnel de 25 plats genere typiquement 40-60 fiches techniques au total avec les preparations annexes.",
+    answer: "Une fiche par plat proposé à la carte, y compris les variantes (steak frites, steak salade), les amuses-bouches, les sauces mères, les préparations de base (fond brun, jus de viande, mayonnaise maison). Un restaurant traditionnel de 25 plats génère typiquement 40-60 fiches techniques au total avec les préparations annexes.",
   },
   {
-    question: "Comment integrer les pertes a la cuisson dans une fiche technique ?",
-    answer: "Une viande perd 15-30 % de son poids a la cuisson, un poisson 10-15 %. Pour calculer juste : indiquez la quantite brute achetee (200 g de filet cru), le rendement post-cuisson (75 % = 150 g servis), et le cout reel base sur la quantite brute. Si vous comptez 150 g a 30 EUR/kg, vous oubliez les 50 g qui ont disparu a la cuisson.",
+    question: "Comment intégrer les pertes à la cuisson dans une fiche technique ?",
+    answer: "Une viande perd 15-30 % de son poids à la cuisson, un poisson 10-15 %. Pour calculer juste : indiquez la quantité brute achetée (200 g de filet cru), le rendement post-cuisson (75 % = 150 g servis), et le coût réel basé sur la quantité brute. Si vous comptez 150 g à 30 EUR/kg, vous oubliez les 50 g qui ont disparu à la cuisson.",
   },
   {
     question: "Les fiches techniques sont-elles obligatoires en France ?",
-    answer: "Aucune obligation legale stricto sensu, mais elles sont fortement recommandees par la DGCCRF dans le cadre du suivi de la traceabilite alimentaire et indispensables pour respecter le reglement INCO (information sur les allergenes). En cas de controle sanitaire, des fiches techniques structurees demontrent une bonne maitrise HACCP de l'etablissement.",
+    answer: "Aucune obligation légale stricto sensu, mais elles sont fortement recommandées par la DGCCRF dans le cadre du suivi de la traceabilite alimentaire et indispensables pour respecter le règlement INCO (information sur les allergènes). En cas de contrôle sanitaire, des fiches techniques structurées démontrent une bonne maîtrise HACCP de l'établissement.",
   },
   {
-    question: "Quelle difference entre fiche technique et fiche recette ?",
-    answer: "Une fiche recette decrit comment cuisiner le plat (proportions, etapes). Une fiche technique va plus loin : elle integre les couts, les rendements, le food cost, le prix de vente conseille, les allergenes, la duree de conservation, le materiel necessaire. La fiche recette est culinaire, la fiche technique est un outil de gestion.",
+    question: "Quelle différence entre fiche technique et fiche recette ?",
+    answer: "Une fiche recette décrit comment cuisiner le plat (proportions, étapes). Une fiche technique va plus loin : elle intègre les coûts, les rendements, le food cost, le prix de vente conseillé, les allergènes, la durée de conservation, le matériel nécessaire. La fiche recette est culinaire, la fiche technique est un outil de gestion.",
   },
   {
-    question: "Comment former mon equipe a utiliser les fiches techniques ?",
-    answer: "Trois leviers : (1) integrer la lecture des fiches dans l'onboarding chaque nouveau commis, (2) plastifier et afficher les fiches au poste de travail (jamais dans un classeur ferme), (3) faire un audit hebdomadaire en cuisine pour verifier que les grammages sont respectes. Une fiche que personne ne consulte vaut zero, formez activement.",
+    question: "Comment former mon équipe à utiliser les fiches techniques ?",
+    answer: "Trois leviers : (1) intégrer la lecture des fiches dans l'onboarding chaque nouveau commis, (2) plastifier et afficher les fiches au poste de travail (jamais dans un classeur fermé), (3) faire un audit hebdomadaire en cuisine pour vérifier que les grammages sont respectés. Une fiche que personne ne consulte vaut zéro, formez activement.",
   },
 ];
 
@@ -58,7 +58,7 @@ export default function BlogFicheTechnique() {
     <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Fiche technique restaurant : guide complet + exemple recette 2026"
-        description="Tout sur la fiche technique restaurant : elements obligatoires, calcul cout matieres, exemple magret de canard chiffre, modele gratuit, erreurs a eviter."
+        description="Tout sur la fiche technique restaurant : éléments obligatoires, calcul coût matières, exemple magret de canard chiffré, modèle gratuit, erreurs à éviter."
         path="/blog/fiche-technique-restaurant"
         type="article"
         schema={[
@@ -71,25 +71,25 @@ export default function BlogFicheTechnique() {
           {
             '@context': 'https://schema.org',
             '@type': 'HowTo',
-            name: 'Comment creer une fiche technique restaurant en 7 etapes',
-            description: 'Methode pas-a-pas pour creer une fiche technique professionnelle, avec calcul du cout matieres, des rendements et du food cost.',
+            name: 'Comment créer une fiche technique restaurant en 7 étapes',
+            description: 'Méthode pas-à-pas pour créer une fiche technique professionnelle, avec calcul du coût matières, des rendements et du food cost.',
             totalTime: 'PT30M',
-            tool: ['Balance de cuisine de precision', 'Calculatrice', 'Tableur ou logiciel RestauMargin', 'Appareil photo (smartphone)'],
+            tool: ['Balance de cuisine de précision', 'Calculatrice', 'Tableur ou logiciel RestauMargin', 'Appareil photo (smartphone)'],
             step: [
-              { '@type': 'HowToStep', name: "Lister les ingredients et grammages bruts", text: "Notez chaque ingredient avec sa quantite brute (poids a l'achat). Sans omettre les petits ingredients (sel, huile, herbes) qui cumulent 3-5 % du food cost." },
-              { '@type': 'HowToStep', name: 'Mesurer les coefficients de rendement', text: 'Pesez chaque ingredient avant et apres preparation (epluchage, parage). Un kilo de carottes brutes = 820 g epluchees, un filet de boeuf 200 g = 180 g pare. Ne vous fiez pas aux chiffres generiques.' },
-              { '@type': 'HowToStep', name: 'Relever les prix d\'achat reels', text: "Utilisez vos dernieres factures fournisseurs, jamais des prix de tete. Prevoyez une revision trimestrielle des prix dans toutes vos fiches." },
-              { '@type': 'HowToStep', name: 'Calculer le cout matieres total', text: 'Pour chaque ligne : (quantite brute x prix au kg/litre). Additionnez. Ajoutez un forfait de 3 a 5 % pour les matieres seches (sel, poivre, herbes, huiles). C\'est votre cout matieres par portion.' },
-              { '@type': 'HowToStep', name: 'Integrer les pertes a la cuisson', text: 'Mesurez la perte cuisson de chaque ingredient sensible (viande, poisson). Une volaille perd 20-25 %, un boeuf 15-20 %. La quantite servie sera inferieure a la quantite brute payee.' },
-              { '@type': 'HowToStep', name: 'Calculer le food cost et le prix de vente', text: 'Food cost (%) = (Cout matieres / Prix de vente HT) x 100. Visez 28-35 % en restauration traditionnelle. Determinez le prix de vente en multipliant le cout matieres par votre coefficient cible (3,0 a 3,5).' },
-              { '@type': 'HowToStep', name: 'Documenter procedure, allergenes, photo', text: 'Decrivez la mise en place et la procedure dans l\'ordre chronologique. Listez les 14 allergenes obligatoires INCO. Photographiez le dressage final en reference pour l\'equipe.' },
+              { '@type': 'HowToStep', name: "Lister les ingrédients et grammages bruts", text: "Notez chaque ingrédient avec sa quantité brute (poids à l'achat). Sans omettre les petits ingrédients (sel, huile, herbes) qui cumulent 3-5 % du food cost." },
+              { '@type': 'HowToStep', name: 'Mesurer les coefficients de rendement', text: 'Pesez chaque ingrédient avant et après préparation (épluchage, parage). Un kilo de carottes brutes = 820 g épluchées, un filet de boeuf 200 g = 180 g paré. Ne vous fiez pas aux chiffres génériques.' },
+              { '@type': 'HowToStep', name: 'Relever les prix d\'achat réels', text: "Utilisez vos dernières factures fournisseurs, jamais des prix de tête. Prévoyez une révision trimestrielle des prix dans toutes vos fiches." },
+              { '@type': 'HowToStep', name: 'Calculer le coût matières total', text: 'Pour chaque ligne : (quantité brute x prix au kg/litre). Additionnez. Ajoutez un forfait de 3 à 5 % pour les matières sèches (sel, poivre, herbes, huiles). C\'est votre coût matières par portion.' },
+              { '@type': 'HowToStep', name: 'Intégrer les pertes à la cuisson', text: 'Mesurez la perte cuisson de chaque ingrédient sensible (viande, poisson). Une volaille perd 20-25 %, un boeuf 15-20 %. La quantité servie sera inférieure à la quantité brute payée.' },
+              { '@type': 'HowToStep', name: 'Calculer le food cost et le prix de vente', text: 'Food cost (%) = (Coût matières / Prix de vente HT) x 100. Visez 28-35 % en restauration traditionnelle. Déterminez le prix de vente en multipliant le coût matières par votre coefficient cible (3,0 à 3,5).' },
+              { '@type': 'HowToStep', name: 'Documenter procédure, allergènes, photo', text: 'Décrivez la mise en place et la procédure dans l\'ordre chronologique. Listez les 14 allergènes obligatoires INCO. Photographiez le dressage final en référence pour l\'équipe.' },
             ],
           },
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Fiche technique restaurant : guide complet + exemple recette 2026',
-            description: "Guide exhaustif pour creer et exploiter des fiches techniques restaurant : structure, calcul du cout matieres, exemple chiffre magret de canard, modele gratuit, bonnes pratiques.",
+            description: "Guide exhaustif pour créer et exploiter des fiches techniques restaurant : structure, calcul du coût matières, exemple chiffré magret de canard, modèle gratuit, bonnes pratiques.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -143,10 +143,10 @@ export default function BlogFicheTechnique() {
       <BlogArticleHero
         category="Fiches techniques"
         readTime="15 min"
-        date="Avril 2026 - Mise a jour mai 2026"
+        date="Avril 2026 - Mise à jour mai 2026"
         title="Fiche technique restaurant : le guide complet 2026"
         accentWord="fiche technique"
-        subtitle="La fiche technique est le document le plus sous-estime de la cuisine professionnelle. Bien construite, elle elimine les derives de couts, garantit la constance de vos plats et devient le fondement de votre rentabilite. Guide complet avec exemple chiffre magret de canard."
+        subtitle="La fiche technique est le document le plus sous-estime de la cuisine professionnelle. Bien construite, elle élimine les dérives de coûts, garantit la constance de vos plats et devient le fondement de votre rentabilité. Guide complet avec exemple chiffré magret de canard."
       />
 
       {/* ── Contenu principal ── */}
@@ -165,13 +165,13 @@ export default function BlogFicheTechnique() {
           </h2>
           <p className="text-teal-50 leading-relaxed mb-4">
             Une <strong className="text-white">fiche technique restaurant</strong> est un document de gestion qui standardise une recette en
-            integrant : ingredients avec grammages brut et net, coefficients de rendement, prix unitaires,
-            cout matieres calcule, procedure de preparation, allergenes INCO et photo de dressage.
+            intégrant : ingrédients avec grammages brut et net, coefficients de rendement, prix unitaires,
+            coût matières calculé, procédure de préparation, allergènes INCO et photo de dressage.
             Elle remplit trois fonctions : <strong>garantir la constance qualitative</strong>,
-            <strong> maitriser le food cost</strong> et <strong>former les equipes</strong>.
+            <strong> maîtriser le food cost</strong> et <strong>former les équipes</strong>.
           </p>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 font-mono text-sm">
-            <div><strong>Food cost</strong> = (Cout matieres / Prix de vente HT) x 100</div>
+            <div><strong>Food cost</strong> = (Coût matières / Prix de vente HT) x 100</div>
             <div className="mt-1"><strong>Cible</strong> : 28-35 % en restauration traditionnelle</div>
           </div>
         </div>
@@ -185,16 +185,16 @@ export default function BlogFicheTechnique() {
           <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
               { href: '#definition', label: "Qu'est-ce qu'une fiche technique de cuisine ?" },
-              { href: '#elements', label: "Les 8 elements essentiels d'une fiche technique" },
-              { href: '#howto', label: "Comment creer une fiche technique en 7 etapes" },
-              { href: '#cout', label: 'Comment calculer precisement le cout de revient' },
+              { href: '#elements', label: "Les 8 éléments essentiels d'une fiche technique" },
+              { href: '#howto', label: "Comment créer une fiche technique en 7 étapes" },
+              { href: '#cout', label: 'Comment calculer précisément le coût de revient' },
               { href: '#exemple-magret', label: 'Exemple complet : fiche technique magret de canard' },
-              { href: '#modele', label: 'Modele de fiche technique gratuit (template)' },
+              { href: '#modele', label: 'Modèle de fiche technique gratuit (template)' },
               { href: '#types-restaurants', label: 'Fiches techniques par type de restaurant' },
-              { href: '#bonnes-pratiques', label: 'Bonnes pratiques pour des fiches reellement utilisees' },
-              { href: '#erreurs', label: 'Les 5 erreurs a eviter absolument' },
+              { href: '#bonnes-pratiques', label: 'Bonnes pratiques pour des fiches réellement utilisées' },
+              { href: '#erreurs', label: 'Les 5 erreurs à éviter absolument' },
               { href: '#digital', label: 'Fiches techniques digitales avec RestauMargin' },
-              { href: '#faq', label: 'Questions frequentes' },
+              { href: '#faq', label: 'Questions fréquentes' },
             ].map((item, i) => (
               <li key={i}>
                 <a href={item.href} className="hover:text-teal-600 transition-colors flex items-start gap-2">
@@ -211,27 +211,27 @@ export default function BlogFicheTechnique() {
         {/* ── Intro ── */}
         <div className="prose-content mb-14">
           <p>
-            Imaginez deux cuisiniers qui preparent le meme plat. L'un utilise 180 g de filet de
-            boeuf, l'autre 220 g. L'ecart semble anodin — 40 grammes seulement. Multipliez par
+            Imaginez deux cuisiniers qui préparent le même plat. L'un utilise 180 g de filet de
+            boeuf, l'autre 220 g. L'écart semble anodin — 40 grammes seulement. Multipliez par
             30 couverts par soir, 25 jours par mois : vous perdez <strong>3 kg de filet chaque mois</strong>,
-            soit plus de 100 EUR envoles sur un seul plat. Sur l'ensemble d'une carte de 25 references,
-            ces derives invisibles cumulees representent entre 8 000 et 15 000 EUR de marge perdue par an
+            soit plus de 100 EUR envolés sur un seul plat. Sur l'ensemble d'une carte de 25 références,
+            ces dérives invisibles cumulées représentent entre 8 000 et 15 000 EUR de marge perdue par an
             dans un bistrot moyen.
           </p>
           <p>
-            La <strong>fiche technique restaurant</strong> est l'outil qui elimine ces derives silencieuses.
-            C'est votre document de reference : il standardise chaque recette, fixe les grammages,
-            calcule le cout matieres et garantit que votre plat a exactement le meme gout et le meme cout,
-            que vous soyez en cuisine ou non. Selon une etude Fiducial 2025, les etablissements equipes
-            de fiches techniques structurees affichent un food cost inferieur de 4 a 7 points par rapport
-            a ceux qui n'en ont pas — l'equivalent de 24 000 a 42 000 EUR de marge supplementaire sur
+            La <strong>fiche technique restaurant</strong> est l'outil qui élimine ces dérives silencieuses.
+            C'est votre document de référence : il standardise chaque recette, fixe les grammages,
+            calcule le coût matières et garantit que votre plat a exactement le même goût et le même coût,
+            que vous soyez en cuisine ou non. Selon une étude Fiducial 2025, les établissements équipés
+            de fiches techniques structurées affichent un food cost inférieur de 4 à 7 points par rapport
+            à ceux qui n'en ont pas — l'équivalent de 24 000 à 42 000 EUR de marge supplémentaire sur
             un CA de 600 000 EUR.
           </p>
           <p>
-            Dans ce guide, vous trouverez la definition complete, les 8 elements obligatoires,
-            la methode pas-a-pas pour calculer le cout de revient, un <strong>exemple chiffre detaille
-            pour un magret de canard</strong>, un modele gratuit a dupliquer, et les erreurs qui plombent
-            la rentabilite. Pour aller plus loin sur les calculs, consultez notre guide complet du
+            Dans ce guide, vous trouverez la définition complète, les 8 éléments obligatoires,
+            la méthode pas-à-pas pour calculer le coût de revient, un <strong>exemple chiffré détaillé
+            pour un magret de canard</strong>, un modèle gratuit à dupliquer, et les erreurs qui plombent
+            la rentabilité. Pour aller plus loin sur les calculs, consultez notre guide complet du
             <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">calcul de marge restaurant</Link>
             et notre article sur le
             <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800 ml-1">food cost en restauration</Link>.
@@ -246,25 +246,25 @@ export default function BlogFicheTechnique() {
 
           <div className="prose-content">
             <p>
-              Une <strong>fiche technique</strong> (ou fiche recette) est un document structure qui decrit avec
-              precision les ingredients necessaires a la confection d'un plat (et leurs quantites exactes
-              en brut et en net), la procedure de preparation etape par etape, le temps de preparation et
-              de cuisson, le nombre de portions produites, le cout matieres detaille, le food cost, le prix
-              de vente HT et TTC conseille, les allergenes INCO et une photo de reference du dressage final.
+              Une <strong>fiche technique</strong> (ou fiche recette) est un document structure qui décrit avec
+              précision les ingrédients nécessaires à la confection d'un plat (et leurs quantités exactes
+              en brut et en net), la procédure de préparation étape par étape, le temps de préparation et
+              de cuisson, le nombre de portions produites, le coût matières détaillé, le food cost, le prix
+              de vente HT et TTC conseillé, les allergènes INCO et une photo de référence du dressage final.
             </p>
             <p>
               En restauration professionnelle, la fiche technique est bien plus qu'une simple
-              recette — c'est un <strong>outil de gestion financiere</strong>, un
+              recette — c'est un <strong>outil de gestion financière</strong>, un
               <strong> garant de la constance qualitative</strong> et un
-              <strong> support de formation des equipes</strong>. Elle constitue la brique de base
-              de tout systeme de pilotage de marges. Sans elle, le calcul du food cost devient
-              une approximation grossiere et le menu engineering est impossible.
+              <strong> support de formation des équipes</strong>. Elle constitue la brique de base
+              de tout système de pilotage de marges. Sans elle, le calcul du food cost devient
+              une approximation grossière et le menu engineering est impossible.
             </p>
             <p>
               Historiquement, la fiche technique vient des cuisines de palaces et brigades d'Escoffier
-              au debut du XXe siecle. A l'epoque, il s'agissait de garantir la reproductibilite des plats
-              malgre les rotations de cuisiniers. Aujourd'hui, avec la complexification des reglementations
-              (INCO sur les allergenes, traceabilite HACCP) et la pression sur les marges, elle est devenue
+              au début du XXe siècle. À l'époque, il s'agissait de garantir la reproductibilité des plats
+              malgré les rotations de cuisiniers. Aujourd'hui, avec la complexification des réglementations
+              (INCO sur les allergènes, traceabilite HACCP) et la pression sur les marges, elle est devenue
               indispensable dans tous les segments de la restauration commerciale.
             </p>
           </div>
@@ -274,33 +274,33 @@ export default function BlogFicheTechnique() {
             {[
               {
                 icon: <TrendingDown className="w-5 h-5 text-teal-600" />,
-                title: 'Maitrise financiere',
-                desc: 'Sans fiche technique, votre food cost fluctue a chaque service. Avec elle, vous savez exactement ce que vous coute chaque plat et pouvez piloter vos marges au jour le jour. Gain typique : 3-5 points de marge brute.',
+                title: 'Maîtrise financière',
+                desc: 'Sans fiche technique, votre food cost fluctue à chaque service. Avec elle, vous savez exactement ce que vous coûte chaque plat et pouvez piloter vos marges au jour le jour. Gain typique : 3-5 points de marge brute.',
               },
               {
                 icon: <CheckCircle className="w-5 h-5 text-teal-600" />,
                 title: 'Constance qualitative',
-                desc: 'Un client qui revient doit retrouver exactement le meme plat. La fiche technique est votre assurance qualite : meme grammages, meme dressage, meme cuisson. Critique pour la fidelisation.',
+                desc: 'Un client qui revient doit retrouver exactement le même plat. La fiche technique est votre assurance qualité : même grammages, même dressage, même cuisson. Critique pour la fidélisation.',
               },
               {
                 icon: <Users className="w-5 h-5 text-teal-600" />,
                 title: 'Formation du personnel',
-                desc: 'Un nouveau commis peut reproduire un plat fidelement grace a la fiche technique, meme sans la presence du chef. Reduction du temps d\'onboarding de 50 % en moyenne, selon les retours terrain.',
+                desc: 'Un nouveau commis peut reproduire un plat fidèlement grâce à la fiche technique, même sans la présence du chef. Réduction du temps d\'onboarding de 50 % en moyenne, selon les retours terrain.',
               },
               {
                 icon: <ClipboardList className="w-5 h-5 text-teal-600" />,
                 title: 'Gestion des stocks',
-                desc: 'En croisant fiches techniques et couverts servis, vous prevoyez vos commandes avec precision et reduisez les pertes. Base indispensable pour la prevision des achats et le calcul des inventaires theoriques.',
+                desc: 'En croisant fiches techniques et couverts servis, vous prévoyez vos commandes avec précision et réduisez les pertes. Base indispensable pour la prévision des achats et le calcul des inventaires théoriques.',
               },
               {
                 icon: <Award className="w-5 h-5 text-teal-600" />,
-                title: 'Conformite reglementaire',
-                desc: 'Le reglement INCO impose l\'affichage des allergenes presents dans chaque plat. La fiche technique structuree centralise ces informations et facilite les controles DGCCRF et HACCP.',
+                title: 'Conformité réglementaire',
+                desc: 'Le règlement INCO impose l\'affichage des allergènes présents dans chaque plat. La fiche technique structurée centralise ces informations et facilite les contrôles DGCCRF et HACCP.',
               },
               {
                 icon: <BarChart3 className="w-5 h-5 text-teal-600" />,
                 title: 'Menu engineering',
-                desc: 'Identifier vos Stars (rentables + populaires), Puzzles, Plowhorses et Dogs necessite des donnees de cout fiables. Les fiches techniques sont l\'input numero un de toute strategie d\'optimisation de carte.',
+                desc: 'Identifier vos Stars (rentables + populaires), Puzzles, Plowhorses et Dogs nécessite des données de coût fiables. Les fiches techniques sont l\'input numéro un de toute stratégie d\'optimisation de carte.',
               },
             ].map((b, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5">
@@ -317,112 +317,112 @@ export default function BlogFicheTechnique() {
         {/* ═════════════ SECTION 2 : Elements ═════════════ */}
         <section id="elements" className="mb-16">
           <SectionHeading icon={<ClipboardList className="w-6 h-6" />} number="2">
-            Les 8 elements essentiels d'une fiche technique
+            Les 8 éléments essentiels d'une fiche technique
           </SectionHeading>
 
           <div className="prose-content">
             <p>
               Une fiche technique professionnelle comprend huit sections incontournables.
-              Voici ce qu'elle doit absolument contenir pour etre exploitable au quotidien
-              et conforme aux exigences reglementaires.
+              Voici ce qu'elle doit absolument contenir pour être exploitable au quotidien
+              et conforme aux exigences réglementaires.
             </p>
           </div>
 
           <div className="space-y-4 mt-6">
             <ElementCard
               number={1}
-              title="L'en-tete d'identification"
+              title="L'en-tête d'identification"
               items={[
-                "Nom du plat (avec eventuellement le numero de carte)",
-                "Categorie (entree, plat, dessert, amuse-bouche, accompagnement, sauce)",
-                "Nombre de portions pour lesquelles la fiche est calculee (souvent 1 ou 10)",
-                "Date de creation et version (car les recettes evoluent : v1.0, v1.2, v2.0)",
-                "Auteur / Chef responsable et eventuel valideur",
+                "Nom du plat (avec éventuellement le numéro de carte)",
+                "Catégorie (entrée, plat, dessert, amuse-bouche, accompagnement, sauce)",
+                "Nombre de portions pour lesquelles la fiche est calculée (souvent 1 ou 10)",
+                "Date de création et version (car les recettes évoluent : v1.0, v1.2, v2.0)",
+                "Auteur / Chef responsable et éventuel valideur",
               ]}
             />
             <ElementCard
               number={2}
-              title="La liste des ingredients avec grammages bruts et nets"
+              title="La liste des ingrédients avec grammages bruts et nets"
               items={[
-                "Quantite brute : ce que vous achetez (avant epluchage/parage)",
-                "Coefficient de rendement : ratio net/brut (ex : carotte epluchee = 0,82, filet de boeuf pare = 0,90)",
-                "Quantite nette : ce qui se retrouve dans l'assiette apres preparation",
-                "Prix unitaire par kg/L (mis a jour trimestriellement minimum)",
-                "Cout total par ingredient pour le calcul du food cost",
+                "Quantité brute : ce que vous achetez (avant épluchage/parage)",
+                "Coefficient de rendement : ratio net/brut (ex : carotte épluchée = 0,82, filet de boeuf paré = 0,90)",
+                "Quantité nette : ce qui se retrouve dans l'assiette après préparation",
+                "Prix unitaire par kg/L (mis à jour trimestriellement minimum)",
+                "Coût total par ingrédient pour le calcul du food cost",
               ]}
             />
             <ElementCard
               number={3}
-              title="La procedure de preparation"
+              title="La procédure de préparation"
               items={[
-                "Mise en place : marinades, reductions, preparations prealables (la veille si necessaire)",
-                "Deroulement de la recette dans l'ordre chronologique (numerote)",
-                "Points critiques : temperatures de cuisson, durees, textures attendues, points de coloration",
-                "Materiel specifique requis (four basse temperature, thermometre sonde, bain-marie)",
-                "Dressage : description detaillee et photo de reference du rendu final",
+                "Mise en place : marinades, réductions, préparations préalables (la veille si nécessaire)",
+                "Déroulement de la recette dans l'ordre chronologique (numéroté)",
+                "Points critiques : températures de cuisson, durées, textures attendues, points de coloration",
+                "Matériel spécifique requis (four basse température, thermomètre sonde, bain-marie)",
+                "Dressage : description détaillée et photo de référence du rendu final",
               ]}
             />
             <ElementCard
               number={4}
               title="Les informations de production"
               items={[
-                "Temps de preparation (mise en place), temps de cuisson, temps de dressage",
-                "Materiel necessaire (fours specifiques, ustensiles, bains-marie)",
-                "Consignes de conservation et duree de vie de la preparation (jours, sous vide, refrigeration)",
-                "Procedure de remise en temperature pour les preparations a l'avance",
+                "Temps de préparation (mise en place), temps de cuisson, temps de dressage",
+                "Matériel nécessaire (fours spécifiques, ustensiles, bains-marie)",
+                "Consignes de conservation et durée de vie de la préparation (jours, sous vide, réfrigération)",
+                "Procédure de remise en température pour les préparations à l'avance",
               ]}
             />
             <ElementCard
               number={5}
-              title="Les couts et indicateurs financiers"
+              title="Les coûts et indicateurs financiers"
               items={[
-                "Cout matieres total par portion (somme des couts ingredients + matieres seches)",
-                "Forfait matieres seches : 3 a 5 % du cout matieres (sel, poivre, huiles, herbes)",
-                "Prix de vente HT et TTC conseille (avec coefficient multiplicateur applique)",
+                "Coût matières total par portion (somme des coûts ingrédients + matières sèches)",
+                "Forfait matières sèches : 3 à 5 % du coût matières (sel, poivre, huiles, herbes)",
+                "Prix de vente HT et TTC conseillé (avec coefficient multiplicateur appliqué)",
                 "Food cost en pourcentage et marge brute en euros et pourcentage",
-                "Coefficient multiplicateur applique et coefficient cible",
+                "Coefficient multiplicateur appliqué et coefficient cible",
               ]}
             />
             <ElementCard
               number={6}
-              title="Les allergenes (obligation INCO)"
+              title="Les allergènes (obligation INCO)"
               items={[
-                "Les 14 allergenes obligatoires : gluten, crustaces, oeufs, poissons, arachides, soja, lait, fruits a coque, celeri, moutarde, sesame, sulfites, lupin, mollusques",
-                "Indication claire et lisible pour chaque allergene present",
-                "Mention des contaminations croisees possibles (traces)",
-                "Compatible avec la procedure d'information du client (carte, panneau, support digital)",
+                "Les 14 allergènes obligatoires : gluten, crustacés, oeufs, poissons, arachides, soja, lait, fruits à coque, céleri, moutarde, sésame, sulfites, lupin, mollusques",
+                "Indication claire et lisible pour chaque allergène présent",
+                "Mention des contaminations croisées possibles (traces)",
+                "Compatible avec la procédure d'information du client (carte, panneau, support digital)",
               ]}
             />
             <ElementCard
               number={7}
-              title="Les valeurs nutritionnelles (optionnel mais recommande)"
+              title="Les valeurs nutritionnelles (optionnel mais recommandé)"
               items={[
                 "Calories par portion (kcal)",
-                "Macronutriments : proteines, glucides, lipides (g et %)",
+                "Macronutriments : protéines, glucides, lipides (g et %)",
                 "Information utile pour les clients soucieux de leur alimentation",
                 "Obligatoire pour la restauration collective et utile en restaurant commercial",
               ]}
             />
             <ElementCard
               number={8}
-              title="La photo de dressage de reference"
+              title="La photo de dressage de référence"
               items={[
-                "Photo prise en conditions reelles, eclairage neutre",
-                "Idealement vue en plongee 45 degres et plongee verticale (top shot)",
+                "Photo prise en conditions réelles, éclairage neutre",
+                "Idéalement vue en plongée 45 degrés et plongée verticale (top shot)",
                 "Indication du type d'assiette ou de contenant (ronde 28 cm, ardoise rectangulaire, bol)",
-                "Reference visuelle indispensable pour la constance entre services",
+                "Référence visuelle indispensable pour la constance entre services",
               ]}
             />
           </div>
 
           <div className="mt-8">
             <Callout type="info">
-              <strong>Coefficients de rendement courants (sources Fiducial 2025) :</strong> Carotte entiere
-              epluchee (~82 % net), filet de boeuf pare (~90 % net), poisson entier en filets (45-55 % net),
-              herbes fraiches effeuillees (~60 % net), oignon emince (~85 % net), pomme de terre epluchee
-              (~78 % net). Ne vous fiez pas a ces chiffres generiques : mesurez dans votre cuisine avec
+              <strong>Coefficients de rendement courants (sources Fiducial 2025) :</strong> Carotte entière
+              épluchée (~82 % net), filet de boeuf paré (~90 % net), poisson entier en filets (45-55 % net),
+              herbes fraîches effeuillées (~60 % net), oignon émincé (~85 % net), pomme de terre épluchée
+              (~78 % net). Ne vous fiez pas à ces chiffres génériques : mesurez dans votre cuisine avec
               vos produits et votre personnel. Les variations peuvent atteindre 5-8 points selon la
-              qualite d'origine.
+              qualité d'origine.
             </Callout>
           </div>
         </section>
@@ -430,47 +430,47 @@ export default function BlogFicheTechnique() {
         {/* ═════════════ SECTION HOWTO : 7 etapes ═════════════ */}
         <section id="howto" className="mb-16">
           <SectionHeading icon={<ListChecks className="w-6 h-6" />} number="3">
-            Comment creer une fiche technique en 7 etapes
+            Comment créer une fiche technique en 7 étapes
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Voici la methode pas-a-pas pour creer une fiche technique professionnelle. Comptez 30 a 45
-              minutes par recette la premiere fois, puis 10-15 minutes une fois le pli pris. Le retour sur
-              investissement est immediat : chaque fiche correctement faite economise des dizaines d'euros
-              par mois en derives evitees.
+              Voici la méthode pas-à-pas pour créer une fiche technique professionnelle. Comptez 30 à 45
+              minutes par recette la première fois, puis 10-15 minutes une fois le pli pris. Le retour sur
+              investissement est immédiat : chaque fiche correctement faite économise des dizaines d'euros
+              par mois en dérives évitées.
             </p>
           </div>
 
           <ol className="mt-8 space-y-5">
             {[
               {
-                title: 'Lister tous les ingredients et leurs grammages bruts',
-                body: "Pour chaque plat, listez chaque ingredient avec sa quantite exacte en grammes ou en millilitres. N'oubliez pas les ingredients de garniture, les sauces, les huiles de cuisson, les epices, les herbes, les decors. Plus la fiche est complete, plus le calcul est juste. Pesez systematiquement plutot que d'estimer a l'oeil. Une difference de 10 g par ingredient sur 5 ingredients = 50 g d'ecart cumule, soit 8-12 % de derive.",
+                title: 'Lister tous les ingrédients et leurs grammages bruts',
+                body: "Pour chaque plat, listez chaque ingrédient avec sa quantité exacte en grammes ou en millilitres. N'oubliez pas les ingrédients de garniture, les sauces, les huiles de cuisson, les épices, les herbes, les décors. Plus la fiche est complète, plus le calcul est juste. Pesez systématiquement plutôt que d'estimer à l'oeil. Une différence de 10 g par ingrédient sur 5 ingrédients = 50 g d'écart cumulé, soit 8-12 % de dérive.",
               },
               {
-                title: 'Mesurer les coefficients de rendement reels',
-                body: "Pour chaque ingredient transforme, pesez avant et apres preparation (epluchage, parage, desossage). Un kilo de carottes brutes ne donne pas 1 kg de carottes a cuisiner : compter 800-820 g. Un filet de boeuf de 2 kg pare donne 1,8 kg. Ne vous contentez pas des chiffres generiques : votre rendement depend de la qualite du produit, de la dexterite de votre equipe et de votre materiel. Mesurez sur 5-10 essais et faites la moyenne.",
+                title: 'Mesurer les coefficients de rendement réels',
+                body: "Pour chaque ingrédient transformé, pesez avant et après préparation (épluchage, parage, désossage). Un kilo de carottes brutes ne donne pas 1 kg de carottes à cuisiner : compter 800-820 g. Un filet de boeuf de 2 kg paré donne 1,8 kg. Ne vous contentez pas des chiffres génériques : votre rendement dépend de la qualité du produit, de la dextérité de votre équipe et de votre matériel. Mesurez sur 5-10 essais et faites la moyenne.",
               },
               {
-                title: 'Relever les prix d\'achat reels depuis vos factures',
-                body: "Consultez vos dernieres factures fournisseurs (mois courant). Ne jamais utiliser des prix \"de tete\" ou de l'annee derniere. Les prix varient selon les saisons et les fournisseurs : la tomate passe de 1,80 EUR/kg en aout a 3,20 EUR/kg en janvier. Prevoyez une revision trimestrielle minimum, idealement mensuelle pour les produits volatils (poisson, fruits, legumes). Un outil comme RestauMargin connecte aux factures automatise cette mise a jour.",
+                title: 'Relever les prix d\'achat réels depuis vos factures',
+                body: "Consultez vos dernières factures fournisseurs (mois courant). Ne jamais utiliser des prix \"de tête\" ou de l'année dernière. Les prix varient selon les saisons et les fournisseurs : la tomate passe de 1,80 EUR/kg en août à 3,20 EUR/kg en janvier. Prévoyez une révision trimestrielle minimum, idéalement mensuelle pour les produits volatils (poisson, fruits, légumes). Un outil comme RestauMargin connecte aux factures automatise cette mise à jour.",
               },
               {
-                title: 'Calculer le cout matieres total avec matieres seches',
-                body: "Pour chaque ligne, multipliez la quantite brute (et non la quantite nette, car vous payez la quantite brute) par le prix au gramme ou millilitre. Exemple : 220 g de magret a 18 EUR/kg = 0,220 x 18 = 3,96 EUR. Additionnez toutes les lignes. Ajoutez un forfait de 3 a 5 % du sous-total pour les matieres seches (sel fin, poivre, huile cuisson, vinaigre, herbes seches) qui sont impossibles a chiffrer ligne par ligne.",
+                title: 'Calculer le coût matières total avec matières sèches',
+                body: "Pour chaque ligne, multipliez la quantité brute (et non la quantité nette, car vous payez la quantité brute) par le prix au gramme ou millilitre. Exemple : 220 g de magret à 18 EUR/kg = 0,220 x 18 = 3,96 EUR. Additionnez toutes les lignes. Ajoutez un forfait de 3 à 5 % du sous-total pour les matières sèches (sel fin, poivre, huile cuisson, vinaigre, herbes sèches) qui sont impossibles à chiffrer ligne par ligne.",
               },
               {
-                title: 'Integrer les pertes a la cuisson',
-                body: "Une viande perd 15-30 % de son poids a la cuisson selon le type et le degre de cuisson. Un filet de volaille de 200 g cru pese 150-160 g a la sortie du four. Un poisson 10-15 %. Votre portion servie sera donc plus petite que la quantite brute payee. Cette perte ne change pas votre cout matieres (vous avez paye la quantite brute) mais affecte la perception client du grammage. Indiquez sur la fiche : quantite brute, perte cuisson en %, quantite servie.",
+                title: 'Intégrer les pertes à la cuisson',
+                body: "Une viande perd 15-30 % de son poids à la cuisson selon le type et le degré de cuisson. Un filet de volaille de 200 g cru pèse 150-160 g à la sortie du four. Un poisson 10-15 %. Votre portion servie sera donc plus petite que la quantité brute payée. Cette perte ne change pas votre coût matières (vous avez payé la quantité brute) mais affecte la perception client du grammage. Indiquez sur la fiche : quantité brute, perte cuisson en %, quantité servie.",
               },
               {
-                title: "Calculer le food cost et determiner le prix de vente",
-                body: "Food cost (%) = (Cout matieres / Prix de vente HT) x 100. Si vous fixez le prix : food cost = cout / prix. Si vous calculez le prix : prix = cout x coefficient multiplicateur (typiquement 3,0 a 3,5 en restauration traditionnelle pour un food cost de 28-33 %). Verifiez la coherence avec le marche local : un magret a 32 EUR dans une brasserie est dans le marche, a 45 EUR vous risquez de plomber le menu mix.",
+                title: "Calculer le food cost et déterminer le prix de vente",
+                body: "Food cost (%) = (Coût matières / Prix de vente HT) x 100. Si vous fixez le prix : food cost = coût / prix. Si vous calculez le prix : prix = coût x coefficient multiplicateur (typiquement 3,0 à 3,5 en restauration traditionnelle pour un food cost de 28-33 %). Vérifiez la cohérence avec le marché local : un magret à 32 EUR dans une brasserie est dans le marché, à 45 EUR vous risquez de plomber le menu mix.",
               },
               {
-                title: "Documenter procedure, allergenes et photographier le dressage",
-                body: "Decrivez la mise en place et la procedure de preparation dans l'ordre chronologique, en numerotant chaque etape. Indiquez les temperatures de cuisson, les durees, les textures attendues, les points critiques. Listez les 14 allergenes obligatoires INCO presents. Photographiez le dressage final avec un eclairage neutre (vue plongee 45 degres ideale) : cette photo devient la reference de l'equipe pour reproduire le plat fidelement.",
+                title: "Documenter procédure, allergènes et photographier le dressage",
+                body: "Décrivez la mise en place et la procédure de préparation dans l'ordre chronologique, en numérotant chaque étape. Indiquez les températures de cuisson, les durées, les textures attendues, les points critiques. Listez les 14 allergènes obligatoires INCO présents. Photographiez le dressage final avec un éclairage neutre (vue plongée 45 degrés idéale) : cette photo devient la référence de l'équipe pour reproduire le plat fidèlement.",
               },
             ].map((step, i) => (
               <li key={i} className="bg-white border border-mono-900 rounded-2xl p-6 sm:p-7 flex gap-5">
@@ -486,23 +486,23 @@ export default function BlogFicheTechnique() {
           </ol>
 
           <Callout type="info">
-            <strong>Astuce gain de temps :</strong> au lieu de refaire ce calcul a la main pour chaque plat,
+            <strong>Astuce gain de temps :</strong> au lieu de refaire ce calcul à la main pour chaque plat,
             utilisez le <Link to="/outils/calculateur-food-cost" className="underline font-semibold hover:text-teal-700">calculateur de food cost gratuit RestauMargin</Link>.
-            Vous saisissez ingredients, grammages et prix : le food cost et la marge brute s'affichent instantanement.
-            Vous pouvez ensuite exporter le resultat au format PDF ou Excel pour archivage.
+            Vous saisissez ingrédients, grammages et prix : le food cost et la marge brute s'affichent instantanément.
+            Vous pouvez ensuite exporter le résultat au format PDF ou Excel pour archivage.
           </Callout>
         </section>
 
         {/* ═════════════ SECTION 4 : Calcul cout ═════════════ */}
         <section id="cout" className="mb-16">
           <SectionHeading icon={<Calculator className="w-6 h-6" />} number="4">
-            Comment calculer precisement le cout de revient
+            Comment calculer précisément le coût de revient
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              C'est la partie la plus importante de la fiche technique. Voici la methode
-              etape par etape, avec les pieges a eviter pour ne pas sous-estimer votre cout reel.
+              C'est la partie la plus importante de la fiche technique. Voici la méthode
+              étape par étape, avec les pièges à éviter pour ne pas sous-estimer votre coût réel.
             </p>
           </div>
 
@@ -511,28 +511,28 @@ export default function BlogFicheTechnique() {
             {[
               {
                 step: '1',
-                title: 'Relevez vos prix d\'achat reels',
-                desc: 'Consultez vos dernieres factures fournisseurs. Les prix varient selon les saisons et les fournisseurs — prevoyez une revision trimestrielle. Ne jamais utiliser des prix "de tete". La precision a +/- 5 % suffit pour le food cost, +/- 2 % pour le menu engineering.',
+                title: 'Relevez vos prix d\'achat réels',
+                desc: 'Consultez vos dernières factures fournisseurs. Les prix varient selon les saisons et les fournisseurs — prévoyez une révision trimestrielle. Ne jamais utiliser des prix "de tête". La précision à +/- 5 % suffit pour le food cost, +/- 2 % pour le menu engineering.',
               },
               {
                 step: '2',
-                title: 'Mesurez les pertes reelles',
-                desc: 'Pesez vos produits avant et apres preparation. Ne vous fiez pas aux coefficients generiques — mesurez dans votre cuisine, avec votre personnel, sur vos produits specifiques. Refaites les mesures 1 a 2 fois par an pour suivre les evolutions (qualite fournisseur, changement equipe).',
+                title: 'Mesurez les pertes réelles',
+                desc: 'Pesez vos produits avant et après préparation. Ne vous fiez pas aux coefficients génériques — mesurez dans votre cuisine, avec votre personnel, sur vos produits spécifiques. Refaites les mesures 1 à 2 fois par an pour suivre les évolutions (qualité fournisseur, changement équipe).',
               },
               {
                 step: '3',
-                title: 'Additionnez tous les couts, meme les petits',
-                desc: 'Sel, poivre, huile, fonds de cuisine, garnitures, decors... Comptez-les en ajoutant un forfait de 3 a 5 % du cout total. Ces "matieres seches" s\'accumulent sur l\'ensemble de votre carte. Sur un cout matieres de 6 EUR, le forfait represente 18-30 centimes, soit 0,5-1 point de food cost.',
+                title: 'Additionnez tous les coûts, même les petits',
+                desc: 'Sel, poivre, huile, fonds de cuisine, garnitures, décors... Comptez-les en ajoutant un forfait de 3 à 5 % du coût total. Ces "matières sèches" s\'accumulent sur l\'ensemble de votre carte. Sur un coût matières de 6 EUR, le forfait représente 18-30 centimes, soit 0,5-1 point de food cost.',
               },
               {
                 step: '4',
-                title: 'Integrez les pertes a la cuisson',
-                desc: 'Un filet de volaille de 200 g (cru) peut perdre 20 a 25 % de son poids a la cuisson. Votre portion servie sera de 150 a 160 g — mais vous avez paye 200 g. Cette perte doit figurer dans la fiche pour deux raisons : (1) communiquer la portion reelle au client, (2) ajuster le grammage achete si vous voulez une portion servie precise.',
+                title: 'Intégrez les pertes à la cuisson',
+                desc: 'Un filet de volaille de 200 g (cru) peut perdre 20 à 25 % de son poids à la cuisson. Votre portion servie sera de 150 à 160 g — mais vous avez payé 200 g. Cette perte doit figurer dans la fiche pour deux raisons : (1) communiquer la portion réelle au client, (2) ajuster le grammage acheté si vous voulez une portion servie précise.',
               },
               {
                 step: '5',
-                title: 'Verifiez la coherence avec l\'inventaire reel',
-                desc: 'Croisez vos calculs theoriques avec l\'inventaire mensuel. Si votre theorique dit "j\'ai utilise 50 kg de magret" et que l\'inventaire montre 58 kg sortis, vous avez 16 % de derive. Identifiez la source : portions trop genereuses, pertes a la cuisson sous-estimees, vols, casse. C\'est le test de verite de vos fiches techniques.',
+                title: 'Vérifiez la cohérence avec l\'inventaire réel',
+                desc: 'Croisez vos calculs théoriques avec l\'inventaire mensuel. Si votre théorique dit "j\'ai utilisé 50 kg de magret" et que l\'inventaire montre 58 kg sortis, vous avez 16 % de dérive. Identifiez la source : portions trop généreuses, pertes à la cuisson sous-estimées, vols, casse. C\'est le test de vérité de vos fiches techniques.',
               },
             ].map((s) => (
               <div key={s.step} className="flex gap-4 bg-white border border-mono-900 rounded-2xl p-5">
@@ -554,13 +554,13 @@ export default function BlogFicheTechnique() {
               Formule du food cost
             </h3>
             <div className="bg-white rounded-xl p-4 text-center font-mono text-base sm:text-lg font-semibold text-teal-700 border border-teal-100 mb-4">
-              Food cost (%) = (Cout matieres par portion / Prix de vente HT) x 100
+              Food cost (%) = (Coût matières par portion / Prix de vente HT) x 100
             </div>
             <div className="text-sm text-mono-400 space-y-1">
-              <p><strong>Exemple :</strong> Cout matieres = 4,63 EUR / Portion vendue HT = 28 EUR -- Food cost = <strong>16,5 %</strong></p>
+              <p><strong>Exemple :</strong> Coût matières = 4,63 EUR / Portion vendue HT = 28 EUR -- Food cost = <strong>16,5 %</strong></p>
               <p>En restauration traditionnelle, visez un food cost entre <strong>28 % et 35 %</strong>.</p>
-              <p>En dessous de 25 %, vos portions sont peut-etre trop reduites et nuisent a la satisfaction client.</p>
-              <p>Au-dela de 38 %, votre marge nette devient critique sauf compensation par un fort volume.</p>
+              <p>En dessous de 25 %, vos portions sont peut-être trop réduites et nuisent à la satisfaction client.</p>
+              <p>Au-delà de 38 %, votre marge nette devient critique sauf compensation par un fort volume.</p>
             </div>
           </div>
         </section>
@@ -573,10 +573,10 @@ export default function BlogFicheTechnique() {
 
           <div className="prose-content">
             <p>
-              Passons a un cas concret et chiffre. Voici la fiche technique complete d'un
-              <strong> magret de canard rotis, sauce au miel, pommes grenailles et legumes de saison</strong>,
-              servi dans une brasserie de centre-ville a 28 EUR TTC (soit 25,45 EUR HT, TVA 10 %).
-              Cette fiche est calibree pour <strong>1 portion</strong>. Multipliez les quantites pour
+              Passons à un cas concret et chiffré. Voici la fiche technique complète d'un
+              <strong> magret de canard rôtis, sauce au miel, pommes grenailles et légumes de saison</strong>,
+              servi dans une brasserie de centre-ville à 28 EUR TTC (soit 25,45 EUR HT, TVA 10 %).
+              Cette fiche est calibrée pour <strong>1 portion</strong>. Multipliez les quantités pour
               calculer une production de 10, 20 ou 50 portions.
             </p>
           </div>
@@ -589,23 +589,23 @@ export default function BlogFicheTechnique() {
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wider text-mono-500 font-medium">Fiche Technique - v1.0</p>
-                <p className="font-bold text-mono-100 text-lg">Magret de canard roti, sauce miel</p>
-                <p className="text-xs text-mono-500 mt-1">Categorie : Plat principal | 1 portion | Brasserie</p>
+                <p className="font-bold text-mono-100 text-lg">Magret de canard rôti, sauce miel</p>
+                <p className="text-xs text-mono-500 mt-1">Catégorie : Plat principal | 1 portion | Brasserie</p>
               </div>
             </div>
 
             {/* Tableau ingredients */}
-            <h4 className="text-sm font-bold uppercase tracking-wider text-mono-500 mb-3">Ingredients et couts</h4>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-mono-500 mb-3">Ingrédients et coûts</h4>
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-sm border-collapse">
                 <thead>
                   <tr className="bg-mono-975 text-mono-100">
-                    <th className="text-left py-2 px-3 font-semibold">Ingredient</th>
-                    <th className="text-right py-2 px-3 font-semibold">Qte brute</th>
+                    <th className="text-left py-2 px-3 font-semibold">Ingrédient</th>
+                    <th className="text-right py-2 px-3 font-semibold">Qté brute</th>
                     <th className="text-right py-2 px-3 font-semibold">Rendement</th>
-                    <th className="text-right py-2 px-3 font-semibold">Qte nette</th>
+                    <th className="text-right py-2 px-3 font-semibold">Qté nette</th>
                     <th className="text-right py-2 px-3 font-semibold">Prix kg/L</th>
-                    <th className="text-right py-2 px-3 font-semibold">Cout</th>
+                    <th className="text-right py-2 px-3 font-semibold">Coût</th>
                   </tr>
                 </thead>
                 <tbody className="text-mono-350">
@@ -613,22 +613,22 @@ export default function BlogFicheTechnique() {
                   <tr className="bg-mono-1000"><td className="py-2 px-3">Pommes grenailles</td><td className="py-2 px-3 text-right">180 g</td><td className="py-2 px-3 text-right">88 %</td><td className="py-2 px-3 text-right">158 g</td><td className="py-2 px-3 text-right">2,40 EUR</td><td className="py-2 px-3 text-right font-semibold">0,43 EUR</td></tr>
                   <tr className="bg-white"><td className="py-2 px-3">Haricots verts frais</td><td className="py-2 px-3 text-right">120 g</td><td className="py-2 px-3 text-right">85 %</td><td className="py-2 px-3 text-right">102 g</td><td className="py-2 px-3 text-right">4,80 EUR</td><td className="py-2 px-3 text-right font-semibold">0,58 EUR</td></tr>
                   <tr className="bg-mono-1000"><td className="py-2 px-3">Carottes des sables</td><td className="py-2 px-3 text-right">100 g</td><td className="py-2 px-3 text-right">82 %</td><td className="py-2 px-3 text-right">82 g</td><td className="py-2 px-3 text-right">1,90 EUR</td><td className="py-2 px-3 text-right font-semibold">0,19 EUR</td></tr>
-                  <tr className="bg-white"><td className="py-2 px-3">Miel de chataignier</td><td className="py-2 px-3 text-right">15 g</td><td className="py-2 px-3 text-right">100 %</td><td className="py-2 px-3 text-right">15 g</td><td className="py-2 px-3 text-right">14,00 EUR</td><td className="py-2 px-3 text-right font-semibold">0,21 EUR</td></tr>
-                  <tr className="bg-mono-1000"><td className="py-2 px-3">Echalotes</td><td className="py-2 px-3 text-right">30 g</td><td className="py-2 px-3 text-right">88 %</td><td className="py-2 px-3 text-right">26 g</td><td className="py-2 px-3 text-right">5,80 EUR</td><td className="py-2 px-3 text-right font-semibold">0,17 EUR</td></tr>
+                  <tr className="bg-white"><td className="py-2 px-3">Miel de châtaignier</td><td className="py-2 px-3 text-right">15 g</td><td className="py-2 px-3 text-right">100 %</td><td className="py-2 px-3 text-right">15 g</td><td className="py-2 px-3 text-right">14,00 EUR</td><td className="py-2 px-3 text-right font-semibold">0,21 EUR</td></tr>
+                  <tr className="bg-mono-1000"><td className="py-2 px-3">Échalotes</td><td className="py-2 px-3 text-right">30 g</td><td className="py-2 px-3 text-right">88 %</td><td className="py-2 px-3 text-right">26 g</td><td className="py-2 px-3 text-right">5,80 EUR</td><td className="py-2 px-3 text-right font-semibold">0,17 EUR</td></tr>
                   <tr className="bg-white"><td className="py-2 px-3">Vinaigre balsamique</td><td className="py-2 px-3 text-right">10 ml</td><td className="py-2 px-3 text-right">100 %</td><td className="py-2 px-3 text-right">10 ml</td><td className="py-2 px-3 text-right">8,50 EUR</td><td className="py-2 px-3 text-right font-semibold">0,09 EUR</td></tr>
                   <tr className="bg-mono-1000"><td className="py-2 px-3">Bouillon de volaille</td><td className="py-2 px-3 text-right">40 ml</td><td className="py-2 px-3 text-right">100 %</td><td className="py-2 px-3 text-right">40 ml</td><td className="py-2 px-3 text-right">2,00 EUR</td><td className="py-2 px-3 text-right font-semibold">0,08 EUR</td></tr>
                   <tr className="bg-white"><td className="py-2 px-3">Beurre demi-sel AOP</td><td className="py-2 px-3 text-right">20 g</td><td className="py-2 px-3 text-right">100 %</td><td className="py-2 px-3 text-right">20 g</td><td className="py-2 px-3 text-right">8,80 EUR</td><td className="py-2 px-3 text-right font-semibold">0,18 EUR</td></tr>
                   <tr className="bg-mono-1000"><td className="py-2 px-3">Thym frais</td><td className="py-2 px-3 text-right">2 g</td><td className="py-2 px-3 text-right">60 %</td><td className="py-2 px-3 text-right">1,2 g</td><td className="py-2 px-3 text-right">35,00 EUR</td><td className="py-2 px-3 text-right font-semibold">0,07 EUR</td></tr>
                   <tr className="border-t-2 border-mono-900 bg-amber-50">
-                    <td className="py-3 px-3 font-bold text-mono-100" colSpan={5}>Sous-total ingredients</td>
+                    <td className="py-3 px-3 font-bold text-mono-100" colSpan={5}>Sous-total ingrédients</td>
                     <td className="py-3 px-3 text-right font-bold text-amber-900">6,07 EUR</td>
                   </tr>
                   <tr className="bg-amber-50">
-                    <td className="py-2 px-3 italic text-mono-400" colSpan={5}>+ Forfait matieres seches (4 %) : sel, poivre, fleur de sel, huile</td>
+                    <td className="py-2 px-3 italic text-mono-400" colSpan={5}>+ Forfait matières sèches (4 %) : sel, poivre, fleur de sel, huile</td>
                     <td className="py-2 px-3 text-right font-medium text-amber-900">0,24 EUR</td>
                   </tr>
                   <tr className="bg-teal-100">
-                    <td className="py-3 px-3 font-extrabold text-mono-100" colSpan={5}>TOTAL COUT MATIERES</td>
+                    <td className="py-3 px-3 font-extrabold text-mono-100" colSpan={5}>TOTAL COÛT MATIÈRES</td>
                     <td className="py-3 px-3 text-right font-extrabold text-teal-800 text-base">6,31 EUR</td>
                   </tr>
                 </tbody>
@@ -657,26 +657,26 @@ export default function BlogFicheTechnique() {
             </div>
 
             {/* Procedure */}
-            <h4 className="text-sm font-bold uppercase tracking-wider text-mono-500 mb-3">Procedure (45 min total)</h4>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-mono-500 mb-3">Procédure (45 min total)</h4>
             <ol className="space-y-2 text-sm text-mono-400 mb-6">
-              <li className="bg-white rounded-lg px-3 py-2"><strong>1. Mise en place (15 min) :</strong> Quadriller le gras du magret en croisillons (sans entamer la chair). Eplucher les pommes grenailles, les couper en deux. Equeuter les haricots verts. Tailler les carottes en sifflets. Hacher finement les echalotes.</li>
-              <li className="bg-white rounded-lg px-3 py-2"><strong>2. Cuisson magret (12 min) :</strong> Saisir le magret cote peau a froid dans une poele sans matiere grasse. Cuire 8 min cote peau (feu moyen, dorer), retourner 4 min cote chair. Reserver au repos sous papier alu 5 min. Cuisson recommandee : rose (62 degres a coeur).</li>
-              <li className="bg-white rounded-lg px-3 py-2"><strong>3. Sauce miel (8 min) :</strong> Faire suer les echalotes dans 1 cuillere du gras de canard. Deglacer au vinaigre balsamique, ajouter le miel, le bouillon de volaille. Reduire de moitie. Monter au beurre froid en fouettant. Saler, poivrer.</li>
-              <li className="bg-white rounded-lg px-3 py-2"><strong>4. Garnitures (10 min) :</strong> Rotir les pommes grenailles 12 min au four 200 degres avec thym, fleur de sel. Cuire les haricots verts 4 min a l'anglaise, refraichir, sauter au beurre 1 min. Glacer les carottes a brun 6 min (eau, beurre, sucre).</li>
-              <li className="bg-white rounded-lg px-3 py-2"><strong>5. Dressage :</strong> Trancher le magret en 5 tranches de 1 cm dans le sens contraire des fibres. Disposer en eventail au centre. Pommes grenailles a droite, haricots verts en fagot, carottes en sifflets. Napper de sauce miel autour. Fleur de thym frais en decor.</li>
+              <li className="bg-white rounded-lg px-3 py-2"><strong>1. Mise en place (15 min) :</strong> Quadriller le gras du magret en croisillons (sans entamer la chair). Éplucher les pommes grenailles, les couper en deux. Équeuter les haricots verts. Tailler les carottes en sifflets. Hacher finement les échalotes.</li>
+              <li className="bg-white rounded-lg px-3 py-2"><strong>2. Cuisson magret (12 min) :</strong> Saisir le magret côté peau à froid dans une poêle sans matière grasse. Cuire 8 min côté peau (feu moyen, dorer), retourner 4 min côté chair. Réserver au repos sous papier alu 5 min. Cuisson recommandée : rosé (62 degrés à coeur).</li>
+              <li className="bg-white rounded-lg px-3 py-2"><strong>3. Sauce miel (8 min) :</strong> Faire suer les échalotes dans 1 cuillère du gras de canard. Déglacer au vinaigre balsamique, ajouter le miel, le bouillon de volaille. Réduire de moitié. Monter au beurre froid en fouettant. Saler, poivrer.</li>
+              <li className="bg-white rounded-lg px-3 py-2"><strong>4. Garnitures (10 min) :</strong> Rôtir les pommes grenailles 12 min au four 200 degrés avec thym, fleur de sel. Cuire les haricots verts 4 min à l'anglaise, refraichir, sauter au beurre 1 min. Glacer les carottes à brun 6 min (eau, beurre, sucre).</li>
+              <li className="bg-white rounded-lg px-3 py-2"><strong>5. Dressage :</strong> Trancher le magret en 5 tranches de 1 cm dans le sens contraire des fibres. Disposer en éventail au centre. Pommes grenailles à droite, haricots verts en fagot, carottes en sifflets. Napper de sauce miel autour. Fleur de thym frais en décor.</li>
             </ol>
 
             {/* Allergenes + conservation */}
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="bg-white rounded-xl p-4 border border-mono-900">
-                <h5 className="text-xs font-bold uppercase text-mono-500 mb-2">Allergenes INCO</h5>
+                <h5 className="text-xs font-bold uppercase text-mono-500 mb-2">Allergènes INCO</h5>
                 <p className="text-sm text-mono-100">Lait (beurre), sulfites (vinaigre balsamique)</p>
                 <p className="text-xs text-mono-500 mt-1">Possible traces de gluten, moutarde</p>
               </div>
               <div className="bg-white rounded-xl p-4 border border-mono-900">
                 <h5 className="text-xs font-bold uppercase text-mono-500 mb-2">Conservation</h5>
-                <p className="text-sm text-mono-100">Magret cru : 5 jours +3 degres</p>
-                <p className="text-xs text-mono-500 mt-1">Sauce miel : 48 h refrigerees, reduire avant service</p>
+                <p className="text-sm text-mono-100">Magret cru : 5 jours +3 degrés</p>
+                <p className="text-xs text-mono-500 mt-1">Sauce miel : 48 h réfrigérées, réduire avant service</p>
               </div>
             </div>
           </div>
@@ -684,47 +684,47 @@ export default function BlogFicheTechnique() {
           <div className="prose-content mt-8">
             <p><strong>Analyse de cette fiche technique :</strong></p>
             <ul className="list-disc list-inside space-y-1.5 text-mono-350">
-              <li>Cout matieres : <strong>6,31 EUR</strong> par portion (avec matieres seches)</li>
+              <li>Coût matières : <strong>6,31 EUR</strong> par portion (avec matières sèches)</li>
               <li>Prix de vente HT : 25,45 EUR (28 EUR TTC, TVA 10 %)</li>
               <li>Food cost : <strong>24,8 %</strong> — excellent ratio, en-dessous du benchmark brasserie (28-33 %)</li>
               <li>Marge brute : <strong>19,14 EUR</strong> par couvert, soit <strong>75,2 %</strong></li>
               <li>Coefficient multiplicateur : 25,45 / 6,31 = <strong>4,03</strong></li>
             </ul>
             <p className="mt-4">
-              Ce magret est un excellent generateur de marge brute en valeur absolue (19,14 EUR par
+              Ce magret est un excellent générateur de marge brute en valeur absolue (19,14 EUR par
               couvert). Sur 30 ventes par jour, il rapporte 574 EUR de marge brute quotidienne. C'est
-              typiquement le type de plat a positionner comme "Star" en menu engineering : populaire et
-              tres rentable. La sauce miel maison apporte un differenciateur perceptible vs concurrence,
+              typiquement le type de plat à positionner comme "Star" en menu engineering : populaire et
+              très rentable. La sauce miel maison apporte un différenciateur perceptible vs concurrence,
               ce qui justifie le prix premium.
             </p>
           </div>
 
           <Callout type="info">
-            <strong>Astuce production :</strong> les fiches techniques peuvent etre dupliquees pour
+            <strong>Astuce production :</strong> les fiches techniques peuvent être dupliquées pour
             calculer des productions plus grandes (10, 20, 50 portions). Pour un service de 30 magrets,
-            multipliez toutes les quantites par 30 : 6,6 kg de magret brut, 5,4 kg de pommes grenailles,
+            multipliez toutes les quantités par 30 : 6,6 kg de magret brut, 5,4 kg de pommes grenailles,
             3,6 kg de haricots verts, etc. Cela facilite les commandes fournisseurs et la mise en place.
-            RestauMargin genere automatiquement la liste de courses a partir d'une prevision de couverts.
+            RestauMargin génère automatiquement la liste de courses à partir d'une prévision de couverts.
           </Callout>
         </section>
 
         {/* ═════════════ SECTION 6 : Modele ═════════════ */}
         <section id="modele" className="mb-16">
           <SectionHeading icon={<FileText className="w-6 h-6" />} number="6">
-            Modele de fiche technique gratuit (template a dupliquer)
+            Modèle de fiche technique gratuit (template à dupliquer)
           </SectionHeading>
 
           <div className="prose-content mb-6">
             <p>
               Voici la structure d'une fiche technique vierge que vous pouvez reproduire ou adapter
-              a votre etablissement. Elle couvre tous les elements essentiels en restant
+              à votre établissement. Elle couvre tous les éléments essentiels en restant
               lisible sur une page A4 et exploitable en cuisine.
             </p>
             <p>
-              <strong>Format conseille :</strong> A4 recto-verso, police 11pt minimum (lisible
-              sous eclairage de cuisine), tableau d'ingredients en haut, procedure au milieu,
-              photo et allergenes en bas. A imprimer, plastifier, et fixer au poste de travail
-              concerne (pas dans un classeur ferme).
+              <strong>Format conseillé :</strong> A4 recto-verso, police 11pt minimum (lisible
+              sous éclairage de cuisine), tableau d'ingrédients en haut, procédure au milieu,
+              photo et allergènes en bas. À imprimer, plastifier, et fixer au poste de travail
+              concerné (pas dans un classeur fermé).
             </p>
           </div>
 
@@ -743,11 +743,11 @@ export default function BlogFicheTechnique() {
             {/* Info grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
               {[
-                { label: 'Categorie', value: 'Plat / Entree / Dessert' },
+                { label: 'Catégorie', value: 'Plat / Entrée / Dessert' },
                 { label: 'Nb. de portions', value: 'X portions' },
-                { label: 'Tps. preparation', value: 'XX min' },
+                { label: 'Tps. préparation', value: 'XX min' },
                 { label: 'Tps. de cuisson', value: 'XX min' },
-                { label: 'Cout / portion', value: 'X,XX EUR' },
+                { label: 'Coût / portion', value: 'X,XX EUR' },
                 { label: 'Food cost', value: 'XX %' },
               ].map((f, i) => (
                 <div key={i} className="bg-mono-1000 rounded-xl p-3 text-sm">
@@ -758,12 +758,12 @@ export default function BlogFicheTechnique() {
             </div>
 
             {/* Ingredients table */}
-            <p className="text-xs font-bold uppercase tracking-wider text-mono-500 mb-2">Ingredients</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-mono-500 mb-2">Ingrédients</p>
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-sm border-collapse">
                 <thead>
                   <tr className="bg-mono-975">
-                    {['Ingredient', 'Qte brute', 'Coeff. perte', 'Qte nette', 'Prix/kg', 'Cout'].map((h) => (
+                    {['Ingrédient', 'Qté brute', 'Coeff. perte', 'Qté nette', 'Prix/kg', 'Coût'].map((h) => (
                       <th key={h} className="text-left px-3 py-2 font-semibold text-mono-100 border-b border-mono-900">{h}</th>
                     ))}
                   </tr>
@@ -771,7 +771,7 @@ export default function BlogFicheTechnique() {
                 <tbody>
                   {[
                     ['Filet de boeuf', '220 g', '0,90', '198 g', '32 EUR/kg', '7,04 EUR'],
-                    ['Echalotes', '60 g', '0,85', '51 g', '4 EUR/kg', '0,24 EUR'],
+                    ['Échalotes', '60 g', '0,85', '51 g', '4 EUR/kg', '0,24 EUR'],
                     ['Beurre', '30 g', '1,00', '30 g', '8 EUR/kg', '0,24 EUR'],
                     ['...', '...', '...', '...', '...', '...'],
                   ].map((row, i) => (
@@ -792,7 +792,7 @@ export default function BlogFicheTechnique() {
             {/* Other sections */}
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-mono-500 mb-2">Procedure</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-mono-500 mb-2">Procédure</p>
                 <div className="space-y-1 text-sm text-mono-400">
                   {['1. Mise en place...', '2. Cuisson...', '3. Dressage...'].map((s, i) => (
                     <p key={i} className="bg-mono-1000 rounded-lg px-3 py-2">{s}</p>
@@ -800,22 +800,22 @@ export default function BlogFicheTechnique() {
                 </div>
               </div>
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-mono-500 mb-2">Allergenes &amp; Conservation</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-mono-500 mb-2">Allergènes &amp; Conservation</p>
                 <div className="space-y-1 text-sm text-mono-400">
-                  <p className="bg-mono-1000 rounded-lg px-3 py-2">Allergenes : gluten, lait, oeuf...</p>
-                  <p className="bg-mono-1000 rounded-lg px-3 py-2">Conservation : 48h sous vide a +3 degres</p>
+                  <p className="bg-mono-1000 rounded-lg px-3 py-2">Allergènes : gluten, lait, oeuf...</p>
+                  <p className="bg-mono-1000 rounded-lg px-3 py-2">Conservation : 48h sous vide à +3 degrés</p>
                 </div>
               </div>
             </div>
           </div>
 
           <Callout type="info">
-            <strong>Template Excel a telecharger :</strong> RestauMargin propose un modele Excel
-            pre-formate avec formules de calcul automatiques (food cost, marge brute, coefficient
+            <strong>Template Excel à télécharger :</strong> RestauMargin propose un modèle Excel
+            pré-formate avec formules de calcul automatiques (food cost, marge brute, coefficient
             multiplicateur, conversion HT/TTC). Ce template inclut 5 onglets : fiche vierge, exemple
-            magret, table des coefficients de rendement, liste des 14 allergenes INCO, tableau de
+            magret, table des coefficients de rendement, liste des 14 allergènes INCO, tableau de
             conversion HT/TTC pour les 3 taux de TVA restauration (5,5 %, 10 %, 20 %). Disponible
-            apres creation d'un compte gratuit.
+            après création d'un compte gratuit.
           </Callout>
         </section>
 
@@ -828,8 +828,8 @@ export default function BlogFicheTechnique() {
           <div className="prose-content">
             <p>
               La structure d'une fiche technique est universelle, mais les ratios cibles
-              (food cost, coefficient multiplicateur) varient selon le type d'etablissement.
-              Voici les benchmarks 2026 issus de notre base de donnees de des restaurants.
+              (food cost, coefficient multiplicateur) varient selon le type d'établissement.
+              Voici les benchmarks 2026 issus de notre base de données de des restaurants.
             </p>
           </div>
 
@@ -837,23 +837,23 @@ export default function BlogFicheTechnique() {
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-mono-975 text-mono-350">
-                  <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Type d'etablissement</th>
+                  <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Type d'établissement</th>
                   <th className="text-center py-3 px-4 font-semibold">Food cost cible</th>
                   <th className="text-center py-3 px-4 font-semibold">Coefficient</th>
                   <th className="text-center py-3 px-4 font-semibold">Nb fiches typique</th>
-                  <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Specificite</th>
+                  <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Spécificité</th>
                 </tr>
               </thead>
               <tbody className="text-mono-350">
                 {[
                   { type: 'Bistrot', fc: '28-33 %', coef: '3,0-3,6', nb: '30-50', spec: 'Carte courte, plats du jour, fiches simples' },
                   { type: 'Brasserie', fc: '28-35 %', coef: '2,9-3,6', nb: '60-100', spec: 'Carte large, beaucoup de variantes' },
-                  { type: 'Pizzeria', fc: '15-28 %', coef: '3,6-6,5', nb: '20-40', spec: 'Garnitures multiples, base pate standardisee' },
-                  { type: 'Gastronomique', fc: '30-40 %', coef: '2,5-3,3', nb: '20-40', spec: 'Fiches ultra-detaillees, photos obligatoires' },
+                  { type: 'Pizzeria', fc: '15-28 %', coef: '3,6-6,5', nb: '20-40', spec: 'Garnitures multiples, base pâte standardisée' },
+                  { type: 'Gastronomique', fc: '30-40 %', coef: '2,5-3,3', nb: '20-40', spec: 'Fiches ultra-détaillées, photos obligatoires' },
                   { type: 'Coffee shop', fc: '12-22 %', coef: '4,5-8,0', nb: '40-80', spec: 'Boissons + snacking, modulaires' },
                   { type: 'Food truck', fc: '22-30 %', coef: '3,3-4,5', nb: '10-20', spec: 'Carte courte, production rapide' },
                   { type: 'Restauration collective', fc: '35-45 %', coef: '2,2-2,9', nb: '100-300', spec: 'Valeurs nutritionnelles obligatoires' },
-                  { type: 'Dark kitchen', fc: '28-35 %', coef: '2,9-3,6', nb: '20-40', spec: 'Optimisees pour livraison (tenue dans le pack)' },
+                  { type: 'Dark kitchen', fc: '28-35 %', coef: '2,9-3,6', nb: '20-40', spec: 'Optimisées pour livraison (tenue dans le pack)' },
                 ].map((row, i) => (
                   <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
                     <td className="py-3 px-4 font-medium text-mono-100">{row.type}</td>
@@ -869,32 +869,32 @@ export default function BlogFicheTechnique() {
 
           <div className="prose-content mt-8">
             <p>
-              <strong>Quelques observations cles :</strong>
+              <strong>Quelques observations clés :</strong>
             </p>
             <ul className="list-disc list-inside space-y-2 text-mono-350 mt-4">
               <li>
                 Les <strong>pizzerias et coffee shops</strong> ont les plus hauts coefficients
-                multiplicateurs (4,5-8,0) car leurs ingredients de base coutent peu (farine, lait, cafe)
-                et le client est habitue a un certain prix. Leurs fiches sont en general plus simples,
-                avec des bases standardisees (pate a pizza, lait vapeur) reutilisees sur de nombreuses
+                multiplicateurs (4,5-8,0) car leurs ingrédients de base coûtent peu (farine, lait, café)
+                et le client est habitué à un certain prix. Leurs fiches sont en général plus simples,
+                avec des bases standardisées (pâte à pizza, lait vapeur) réutilisées sur de nombreuses
                 recettes.
               </li>
               <li>
-                Le <strong>gastronomique</strong> a un food cost plus eleve (30-40 %) du fait des produits
-                premium (truffe, foie gras, poisson noble), mais ses fiches sont ultra-detaillees avec
-                souvent 15-25 ingredients par plat et des temps de preparation longs (cuissons basse
-                temperature, marinades de 24-48 h, sauces meres).
+                Le <strong>gastronomique</strong> a un food cost plus élevé (30-40 %) du fait des produits
+                premium (truffe, foie gras, poisson noble), mais ses fiches sont ultra-détaillées avec
+                souvent 15-25 ingrédients par plat et des temps de préparation longs (cuissons basse
+                température, marinades de 24-48 h, sauces mères).
               </li>
               <li>
-                La <strong>restauration collective</strong> a des fiches obligatoirement enrichies des
+                La <strong>restauration collective</strong> à des fiches obligatoirement enrichies des
                 valeurs nutritionnelles (calories, macronutriments) pour le respect du PNNS (Programme
-                National Nutrition Sante). Les coefficients sont plus faibles car la marge se fait sur
+                National Nutrition Santé). Les coefficients sont plus faibles car la marge se fait sur
                 le volume.
               </li>
               <li>
-                Les <strong>dark kitchens</strong> ont des fiches specifiques optimisees pour la
-                livraison : ingredients qui ne se delitent pas (sauces a part), pack designe en fonction,
-                conservation 30-45 min apres preparation.
+                Les <strong>dark kitchens</strong> ont des fiches spécifiques optimisées pour la
+                livraison : ingrédients qui ne se délitent pas (sauces à part), pack désigné en fonction,
+                conservation 30-45 min après préparation.
               </li>
             </ul>
           </div>
@@ -903,13 +903,13 @@ export default function BlogFicheTechnique() {
         {/* ═════════════ SECTION 8 : Bonnes pratiques ═════════════ */}
         <section id="bonnes-pratiques" className="mb-16">
           <SectionHeading icon={<Lightbulb className="w-6 h-6" />} number="8">
-            Bonnes pratiques pour des fiches reellement utilisees
+            Bonnes pratiques pour des fiches réellement utilisées
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Creer des fiches techniques est une chose. S'assurer qu'elles sont effectivement
-              utilisees en est une autre. Voici comment passer de la theorie a la pratique
+              Créer des fiches techniques est une chose. S'assurer qu'elles sont effectivement
+              utilisées en est une autre. Voici comment passer de la théorie à la pratique
               et faire de la fiche technique un outil vivant en cuisine.
             </p>
           </div>
@@ -918,31 +918,31 @@ export default function BlogFicheTechnique() {
             {[
               {
                 title: 'Simplifiez le format',
-                desc: 'Une fiche technique de 15 pages que personne ne lit est inutile. Visez une page recto-verso maximum. Priorisez grammages, couts et photo. Texte minimum, tableaux maximum. Lisibilite police 11pt minimum.',
+                desc: 'Une fiche technique de 15 pages que personne ne lit est inutile. Visez une page recto-verso maximum. Priorisez grammages, coûts et photo. Texte minimum, tableaux maximum. Lisibilité police 11pt minimum.',
               },
               {
                 title: 'Plastifiez et affichez en cuisine',
-                desc: 'Imprimez, plastifiez (epaisseur 80 microns minimum pour resister), et accrochez aux postes concernes : entremets pour les plats, patisserie pour les desserts, garde-manger pour les entrees. La fiche doit etre sous la main du cuisinier, pas dans le bureau du chef.',
+                desc: 'Imprimez, plastifiez (épaisseur 80 microns minimum pour résister), et accrochez aux postes concernés : entremets pour les plats, pâtisserie pour les desserts, garde-manger pour les entrées. La fiche doit être sous la main du cuisinier, pas dans le bureau du chef.',
               },
               {
-                title: 'Formez votre equipe',
-                desc: 'Lors de l\'integration d\'un nouveau membre, prenez 30 minutes pour expliquer pourquoi les fiches existent et comment les utiliser. Faites une demonstration de pesee. Repassez en revue les 5 plats les plus vendus.',
+                title: 'Formez votre équipe',
+                desc: 'Lors de l\'intégration d\'un nouveau membre, prenez 30 minutes pour expliquer pourquoi les fiches existent et comment les utiliser. Faites une démonstration de pesée. Repassez en revue les 5 plats les plus vendus.',
               },
               {
-                title: 'Mettez-les a jour regulierement',
-                desc: 'Prix : tous les trimestres minimum, mensuels pour produits volatils. Recettes : a chaque evolution du plat (meme mineure). Photos : a chaque changement de dressage. Une fiche obsolete est trompeuse et perd toute credibilite aupres de l\'equipe.',
+                title: 'Mettez-les à jour régulièrement',
+                desc: 'Prix : tous les trimestres minimum, mensuels pour produits volatils. Recettes : à chaque évolution du plat (même mineure). Photos : à chaque changement de dressage. Une fiche obsolète est trompeuse et perd toute crédibilité auprès de l\'équipe.',
               },
               {
                 title: 'Liez fiches techniques et commandes',
-                desc: 'En croisant le nombre de couverts prevus avec les quantites par portion, vous passez des commandes precises et reduisez les pertes de stock. Un outil comme RestauMargin genere automatiquement la liste de courses a partir d\'une prevision de service.',
+                desc: 'En croisant le nombre de couverts prévus avec les quantités par portion, vous passez des commandes précises et réduisez les pertes de stock. Un outil comme RestauMargin génère automatiquement la liste de courses à partir d\'une prévision de service.',
               },
               {
                 title: 'Auditez le respect des grammages',
-                desc: 'Une fois par semaine, faites un audit surprise : pesez 5 portions du meme plat servies par l\'equipe. Comparez aux grammages de la fiche. Une derive de plus de 5 % doit etre corrigee par un brief equipe. Sans audit, les portions augmentent insidieusement.',
+                desc: 'Une fois par semaine, faites un audit surprise : pesez 5 portions du même plat servies par l\'équipe. Comparez aux grammages de la fiche. Une dérive de plus de 5 % doit être corrigée par un brief équipe. Sans audit, les portions augmentent insidieusement.',
               },
               {
                 title: 'Versionnez vos fiches',
-                desc: 'Indiquez le numero de version (v1.0, v1.1, v2.0) et la date de derniere mise a jour sur chaque fiche. Archivez les versions precedentes pour suivre l\'historique. En cas de probleme client, vous pouvez retracer ce qui a change.',
+                desc: 'Indiquez le numéro de version (v1.0, v1.1, v2.0) et la date de dernière mise à jour sur chaque fiche. Archivez les versions précédentes pour suivre l\'historique. En cas de problème client, vous pouvez retracer ce qui a changé.',
               },
             ].map((bp, i) => (
               <div key={i} className="flex gap-3 bg-white border border-mono-900 rounded-xl p-4">
@@ -959,35 +959,35 @@ export default function BlogFicheTechnique() {
         {/* ═════════════ SECTION 9 : Erreurs ═════════════ */}
         <section id="erreurs" className="mb-16">
           <SectionHeading icon={<AlertTriangle className="w-6 h-6" />} number="9">
-            Les 5 erreurs a eviter absolument
+            Les 5 erreurs à éviter absolument
           </SectionHeading>
 
           <div className="space-y-4 mt-2">
             {[
               {
                 n: '01',
-                title: 'Ne pas mesurer les pertes reelles',
-                desc: 'Utiliser des coefficients theoriques sans les verifier dans votre contexte est risque. Les pertes varient selon la qualite des produits, les competences de vos equipes, le materiel utilise. Une carotte achetee en bio peut perdre 25 % a l\'epluchage, en conventionnel seulement 18 %. Mesurez chez vous.',
+                title: 'Ne pas mesurer les pertes réelles',
+                desc: 'Utiliser des coefficients théoriques sans les vérifier dans votre contexte est risqué. Les pertes varient selon la qualité des produits, les compétences de vos équipes, le matériel utilisé. Une carotte achetée en bio peut perdre 25 % à l\'épluchage, en conventionnel seulement 18 %. Mesurez chez vous.',
               },
               {
                 n: '02',
-                title: 'Oublier les petites quantites',
-                desc: 'Huile d\'olive, fleur de sel, herbes fraiches, micro-pousses, decors floraux... Individuellement negligeables, cumules ils representent 3 a 5 points de food cost. Chiffrez-les via un forfait matieres seches en pourcentage du sous-total ingredients.',
+                title: 'Oublier les petites quantités',
+                desc: 'Huile d\'olive, fleur de sel, herbes fraîches, micro-pousses, décors floraux... Individuellement négligeables, cumulés ils représentent 3 à 5 points de food cost. Chiffrez-les via un forfait matières sèches en pourcentage du sous-total ingrédients.',
               },
               {
                 n: '03',
                 title: 'Calculer sur des prix anciens',
-                desc: 'Un cout matieres calcule avec les prix d\'il y a 18 mois n\'a aucune valeur decisionnelle. L\'inflation alimentaire cumulee depuis 2022 atteint 21 % en France. La revision des prix est un travail regulier, non optionnel. Reservez 2-3 heures par trimestre pour cette tache.',
+                desc: 'Un coût matières calculé avec les prix d\'il y a 18 mois n\'a aucune valeur décisionnelle. L\'inflation alimentaire cumulée depuis 2022 atteint 21 % en France. La révision des prix est un travail régulier, non optionnel. Réservez 2-3 heures par trimestre pour cette tâche.',
               },
               {
                 n: '04',
-                title: 'Creer des fiches que personne ne lit',
-                desc: 'La plus belle fiche technique du monde ne sert a rien si elle est rangee dans un tiroir. L\'implementation operationnelle est aussi importante que la creation : plastification, affichage au poste, formation de l\'equipe, audit hebdomadaire des grammages.',
+                title: 'Créer des fiches que personne ne lit',
+                desc: 'La plus belle fiche technique du monde ne sert à rien si elle est rangée dans un tiroir. L\'implementation opérationnelle est aussi importante que la création : plastification, affichage au poste, formation de l\'équipe, audit hebdomadaire des grammages.',
               },
               {
                 n: '05',
-                title: 'Ne pas inclure les pertes a la cuisson',
-                desc: 'Une perte de 20 % a la cuisson sur un produit a 30 EUR/kg, c\'est 6 EUR perdus par kilo. Sur 10 kg/semaine, c\'est 60 EUR non comptabilises chaque semaine, soit 3 120 EUR/an. La quantite a indiquer dans la fiche est la quantite brute (payee), pas la quantite servie.',
+                title: 'Ne pas inclure les pertes à la cuisson',
+                desc: 'Une perte de 20 % à la cuisson sur un produit à 30 EUR/kg, c\'est 6 EUR perdus par kilo. Sur 10 kg/semaine, c\'est 60 EUR non comptabilisés chaque semaine, soit 3 120 EUR/an. La quantité à indiquer dans la fiche est la quantité brute (payée), pas la quantité servie.',
               },
             ].map((err) => (
               <div key={err.n} className="flex gap-4 bg-red-50 border border-red-100 rounded-2xl p-5">
@@ -1001,17 +1001,17 @@ export default function BlogFicheTechnique() {
           </div>
 
           <Callout type="warning">
-            <strong>Impact cumule :</strong> ces cinq erreurs combinees peuvent representer
-            une perte de 6 a 10 points de food cost, soit l'equivalent de 4-7 points de marge brute.
+            <strong>Impact cumulé :</strong> ces cinq erreurs combinées peuvent représenter
+            une perte de 6 à 10 points de food cost, soit l'équivalent de 4-7 points de marge brute.
             Sur un restaurant qui fait 600 000 EUR de CA annuel, c'est entre 24 000 EUR et 42 000 EUR
-            de benefice potentiel qui disparait silencieusement chaque annee. La creation et le suivi
+            de bénéfice potentiel qui disparaît silencieusement chaque année. La création et le suivi
             rigoureux des fiches techniques est l'investissement temporel le plus rentable en restauration.
           </Callout>
 
           <div className="prose-content mt-6">
             <p>
-              Pour aller plus loin sur la reduction du food cost et l'optimisation des marges,
-              consultez nos guides complementaires :
+              Pour aller plus loin sur la réduction du food cost et l'optimisation des marges,
+              consultez nos guides complémentaires :
             </p>
             <ul className="list-disc list-inside space-y-1 text-mono-350 mt-3">
               <li>
@@ -1021,7 +1021,7 @@ export default function BlogFicheTechnique() {
               </li>
               <li>
                 <Link to="/blog/coefficient-multiplicateur" className="text-teal-700 underline hover:text-teal-800">
-                  Le coefficient multiplicateur expliquee
+                  Le coefficient multiplicateur expliquée
                 </Link>
               </li>
               <li>
@@ -1046,30 +1046,30 @@ export default function BlogFicheTechnique() {
 
           <div className="prose-content">
             <p>
-              La fiche technique papier a ses limites : elle devient vite obsolete, difficile a
-              dupliquer en cas de changement de prix, et ne se met pas a jour automatiquement
-              quand votre fournisseur modifie ses tarifs. La digitalisation resout ces problemes
-              et ajoute des fonctionnalites impossibles sur papier.
+              La fiche technique papier a ses limites : elle devient vite obsolète, difficile à
+              dupliquer en cas de changement de prix, et ne se met pas à jour automatiquement
+              quand votre fournisseur modifie ses tarifs. La digitalisation résout ces problèmes
+              et ajoute des fonctionnalités impossibles sur papier.
             </p>
             <p>
               Quand les prix de votre beurre augmentent de 15 %, RestauMargin recalcule
-              instantanement le food cost de <em>tous les plats</em> qui l'utilisent (parfois 30-40
-              recettes interconnectees) et vous alerte sur ceux dont la marge est devenue insuffisante.
-              Le temps de mise a jour passe de 4-6 heures (revision manuelle de chaque fiche papier)
-              a 30 secondes.
+              instantanément le food cost de <em>tous les plats</em> qui l'utilisent (parfois 30-40
+              recettes interconnectées) et vous alerte sur ceux dont la marge est devenue insuffisante.
+              Le temps de mise à jour passe de 4-6 heures (révision manuelle de chaque fiche papier)
+              à 30 secondes.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4 mt-8">
             {[
-              { icon: <FileText className="w-5 h-5 text-teal-600" />, label: 'Creation et stockage des fiches en quelques minutes', desc: 'Interface intuitive, autocompletion intelligente des ingredients, suggestion de grammages standard.' },
-              { icon: <TrendingDown className="w-5 h-5 text-teal-600" />, label: 'Mise a jour des prix en masse', desc: 'Connectez vos fournisseurs, scannez vos factures (OCR), prix mis a jour automatiquement sur toutes les fiches concernees.' },
-              { icon: <Calculator className="w-5 h-5 text-teal-600" />, label: 'Calcul automatique du food cost', desc: 'Pour chaque plat, en temps reel, avec alerte si depassement du seuil cible que vous avez defini (ex : 32 % max).' },
-              { icon: <ClipboardList className="w-5 h-5 text-teal-600" />, label: 'Generation des listes de courses', desc: 'A partir d\'une prevision de service (X couverts du plat A, Y couverts du plat B), genere automatiquement la liste consolidee a commander.' },
-              { icon: <BarChart3 className="w-5 h-5 text-teal-600" />, label: 'Analyse de rentabilite de votre carte', desc: 'Menu engineering integre : identification des Stars, Puzzles, Plowhorses, Dogs avec recommandations de pricing et de positionnement.' },
-              { icon: <AlertTriangle className="w-5 h-5 text-teal-600" />, label: 'Alertes automatiques en cas de derive', desc: 'Notifications push ou email quand un food cost depasse votre seuil, quand un prix fournisseur augmente fortement, quand un plat devient non rentable.' },
-              { icon: <Percent className="w-5 h-5 text-teal-600" />, label: 'Versioning automatique des fiches', desc: 'Historique complet de chaque modification : qui, quand, quoi. Possibilite de revenir a une version anterieure si necessaire.' },
-              { icon: <DollarSign className="w-5 h-5 text-teal-600" />, label: 'Export PDF et impression optimisee', desc: 'Export PDF pret a imprimer et plastifier (format A4 recto-verso), avec photo, allergenes et tableau ingredients lisibles.' },
+              { icon: <FileText className="w-5 h-5 text-teal-600" />, label: 'Création et stockage des fiches en quelques minutes', desc: 'Interface intuitive, autocomplétion intelligente des ingrédients, suggestion de grammages standard.' },
+              { icon: <TrendingDown className="w-5 h-5 text-teal-600" />, label: 'Mise à jour des prix en masse', desc: 'Connectez vos fournisseurs, scannez vos factures (OCR), prix mis à jour automatiquement sur toutes les fiches concernées.' },
+              { icon: <Calculator className="w-5 h-5 text-teal-600" />, label: 'Calcul automatique du food cost', desc: 'Pour chaque plat, en temps réel, avec alerte si dépassement du seuil cible que vous avez défini (ex : 32 % max).' },
+              { icon: <ClipboardList className="w-5 h-5 text-teal-600" />, label: 'Génération des listes de courses', desc: 'À partir d\'une prévision de service (X couverts du plat A, Y couverts du plat B), génère automatiquement la liste consolidée à commander.' },
+              { icon: <BarChart3 className="w-5 h-5 text-teal-600" />, label: 'Analyse de rentabilité de votre carte', desc: 'Menu engineering intégré : identification des Stars, Puzzles, Plowhorses, Dogs avec recommandations de pricing et de positionnement.' },
+              { icon: <AlertTriangle className="w-5 h-5 text-teal-600" />, label: 'Alertes automatiques en cas de dérive', desc: 'Notifications push ou email quand un food cost dépasse votre seuil, quand un prix fournisseur augmente fortement, quand un plat devient non rentable.' },
+              { icon: <Percent className="w-5 h-5 text-teal-600" />, label: 'Versioning automatique des fiches', desc: 'Historique complet de chaque modification : qui, quand, quoi. Possibilité de revenir à une version antérieure si nécessaire.' },
+              { icon: <DollarSign className="w-5 h-5 text-teal-600" />, label: 'Export PDF et impression optimisée', desc: 'Export PDF prêt a imprimer et plastifier (format À4 recto-verso), avec photo, allergènes et tableau ingrédients lisibles.' },
             ].map((f, i) => (
               <div key={i} className="flex items-start gap-3 bg-white border border-mono-900 rounded-xl p-4">
                 <div className="shrink-0 mt-0.5">{f.icon}</div>
@@ -1083,10 +1083,10 @@ export default function BlogFicheTechnique() {
 
           <div className="prose-content mt-8">
             <p>
-              Plus de 500 restaurants en France utilisent deja RestauMargin pour digitaliser leurs
-              fiches techniques. Le gain moyen constate est de <strong>3 a 5 points de food cost dans
-              les 6 premiers mois</strong> d'utilisation, grace a une meilleure maitrise des portions,
-              des achats et de la construction du menu. Decouvrez nos
+              Plus de 500 restaurants en France utilisent déjà RestauMargin pour digitaliser leurs
+              fiches techniques. Le gain moyen constaté est de <strong>3 à 5 points de food cost dans
+              les 6 premiers mois</strong> d'utilisation, grâce à une meilleure maîtrise des portions,
+              des achats et de la construction du menu. Découvrez nos
               <Link to="/pricing" className="text-teal-700 underline hover:text-teal-800 ml-1">tarifs RestauMargin</Link>
               ou commencez tout de suite avec le
               <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800 ml-1">calculateur de food cost gratuit</Link>.
@@ -1098,7 +1098,7 @@ export default function BlogFicheTechnique() {
 
         {/* ═════════════ FAQ visible ═════════════ */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes sur la fiche technique restaurant</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes sur la fiche technique restaurant</h2>
           <div className="space-y-4">
             {faqItems.map((item, i) => (
               <FAQItem key={i} q={item.question} a={item.answer} />
@@ -1110,16 +1110,16 @@ export default function BlogFicheTechnique() {
         <section className="mb-16 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
           <h3 className="text-base font-bold text-mono-100 mb-3 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-teal-600" />
-            Sources et references
+            Sources et références
           </h3>
           <ul className="space-y-2 text-sm text-mono-400">
-            <li>Fiducial Restauration - Etude annuelle des marges en restauration commerciale (2025)</li>
+            <li>Fiducial Restauration - Étude annuelle des marges en restauration commerciale (2025)</li>
             <li>INSEE - Indices des prix alimentaires (2022-2025)</li>
-            <li>Reglement (UE) n degres 1169/2011 - INCO (information du consommateur sur les denrees alimentaires)</li>
-            <li>GIRA Conseil - Benchmarks operationnels restauration 2025</li>
+            <li>Règlement (UE) n degrés 1169/2011 - INCO (information du consommateur sur les denrées alimentaires)</li>
+            <li>GIRA Conseil - Benchmarks opérationnels restauration 2025</li>
             <li>SNRC - Syndicat National de la Restauration Collective - guides nutritionnels</li>
             <li>DGCCRF - Recommandations sur la traceabilite et les fiches techniques HACCP</li>
-            <li> : etablissements du secteur, 12 000+ fiches techniques analysees</li>
+            <li> : établissements du secteur, 12 000+ fiches techniques analysées</li>
           </ul>
         </section>
 
@@ -1130,8 +1130,8 @@ export default function BlogFicheTechnique() {
             Digitalisez vos fiches techniques
           </h2>
           <p className="text-teal-100 max-w-xl mx-auto mb-8 text-base leading-relaxed">
-            Crees, mises a jour automatiquement et analysees en temps reel. Vos fiches techniques
-            deviennent un veritable tableau de bord de votre rentabilite.
+            Créés, mises à jour automatiquement et analysées en temps réel. Vos fiches techniques
+            deviennent un véritable tableau de bord de votre rentabilité.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -1195,13 +1195,13 @@ export default function BlogFicheTechnique() {
           </Link>
           <p className="mb-4">La plateforme de gestion de marge pour les restaurateurs.</p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
+            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
+            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
           </div>
           <p className="mt-6 text-xs text-mono-700">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
+            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
           </p>
         </div>
       </footer>

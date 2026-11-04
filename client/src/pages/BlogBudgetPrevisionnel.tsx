@@ -429,7 +429,7 @@ export default function BlogBudgetPrevisionnel() {
                 <div>Marge brute = 70% du CA</div>
                 <div className="border-t border-blue-300 pt-1.5 font-bold">CA mini = 37 000 / 0,70 = 52 857€</div>
               </div>
-              <p className="text-xs text-blue-700 mt-3">Avantage : oriente sur l'objectif. Limite : peut surestimer la demande.</p>
+              <p className="text-xs text-blue-700 mt-3">Avantage : orienté sur l'objectif. Limite : peut surestimer la demande.</p>
             </div>
           </div>
 
@@ -495,7 +495,7 @@ export default function BlogBudgetPrevisionnel() {
                   { type: "Fast-food / restauration rapide", fc: "25-30%", ms: "25-32%", l: "8-12%", mn: "8-15%" },
                   { type: "Bistrot / brasserie urbaine", fc: "28-33%", ms: "32-38%", l: "8-10%", mn: "5-12%" },
                   { type: "Restaurant traditionnel", fc: "30-35%", ms: "34-40%", l: "7-10%", mn: "5-10%" },
-                  { type: "Pizzeria / créperie", fc: "22-28%", ms: "28-34%", l: "8-12%", mn: "10-18%" },
+                  { type: "Pizzeria / crêperie", fc: "22-28%", ms: "28-34%", l: "8-12%", mn: "10-18%" },
                   { type: "Coffee shop / brunch", fc: "20-26%", ms: "30-38%", l: "10-14%", mn: "8-16%" },
                   { type: "Restaurant gastronomique", fc: "32-40%", ms: "40-48%", l: "6-9%", mn: "3-10%" },
                   { type: "Food truck", fc: "22-30%", ms: "25-32%", l: "2-5%", mn: "10-18%" },
@@ -572,7 +572,7 @@ export default function BlogBudgetPrevisionnel() {
                   </tr>
                 ))}
                 <tr className="bg-teal-50 font-bold">
-                  <td className="py-3 px-3 text-teal-900">TOTAL ANNEE</td>
+                  <td className="py-3 px-3 text-teal-900">TOTAL ANNÉE</td>
                   <td className="py-3 px-3 text-right text-teal-900">610 000€</td>
                   <td className="py-3 px-3 text-right text-teal-900">183 000€</td>
                   <td className="py-3 px-3 text-right text-teal-900">214 500€</td>

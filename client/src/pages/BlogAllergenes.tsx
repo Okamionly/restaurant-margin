@@ -6,26 +6,26 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 export default function BlogAllergenes() {
   const faqSchema = buildFAQSchema([
-    { question: "Doit-on mentionner les traces possibles d'allergenes ?", answer: "Pas obligatoirement (pas dans le reglement INCO), mais fortement recommande si vos plats peuvent en contenir par contamination croisee. Phrase type : Prepare dans une cuisine utilisant gluten, lait, oeufs, fruits a coque." },
-    { question: "Si un client demande un plat allergique, suis-je oblige de le preparer ?", answer: "Non, vous pouvez refuser. Mieux vaut refuser que mal preparer. Reponse pro : Je ne peux malheureusement pas garantir l'absence totale de cet allergene dans notre cuisine, je prefere vous proposer un autre plat." },
-    { question: "Le QR code menu remplit-il l'obligation INCO ?", answer: "Oui, a condition qu'il soit immediatement consultable (sans connexion 4G defaillante, sans inscription). Beaucoup de DGCCRF preferent encore le classeur papier." },
-    { question: "Le sarrasin et la chataigne sont-ils dans la liste ?", answer: "Non. Ce ne sont pas des allergenes obligatoires INCO. Mais le sarrasin est en surveillance dans certains pays. A mentionner volontairement si vous l'utilisez." },
-    { question: "Que faire en cas de reaction d'un client en plein service ?", answer: "1. Appeler le 15 (SAMU) immediatement. 2. Demander si le client a un stylo d'adrenaline (Anapen, EpiPen). 3. Allonger le client jambes surelevees. 4. Noter ce qu'il a mange. 5. Conserver le plat consomme pour analyse." },
-    { question: "Un menu peut-il etre garanti 100% sans allergene ?", answer: "Non. Vous pouvez garantir l'absence d'UN allergene precis dans UN plat donne avec des precautions strictes, mais un menu global zero risque n'existe pas legalement ni en pratique — le principe de precaution s'applique toujours." },
-    { question: "Les allergenes doivent-ils etre affiches sur Uber Eats ou Deliveroo ?", answer: "Oui, l'obligation INCO s'applique aussi a la vente a distance. Les plateformes imposent generalement de renseigner les 14 allergenes a la creation de chaque fiche produit." },
-    { question: "Faut-il former un extra ou un saisonnier des son premier service ?", answer: "Oui. L'obligation de moyens s'applique des le premier service, meme pour un contrat de quelques heures. Un briefing de 5 minutes sur les 14 allergenes et la procedure d'alerte suffit a couvrir l'essentiel." },
-    { question: "Le menu enfant echappe-t-il a l'obligation d'affichage ?", answer: "Non, aucune exception d'age n'existe dans le reglement INCO. Le menu enfant doit afficher ses allergenes comme n'importe quelle autre carte." },
-    { question: "Que risque-t-on si on rassure a tort un client allergique ?", answer: "Une sanction bien plus lourde qu'un simple defaut d'affichage : une fausse information donnee sciemment pour rassurer un client constitue une tromperie aggravee car elle met en jeu sa sante, avec des consequences penales nettement plus severes que l'omission." }
+    { question: "Doit-on mentionner les traces possibles d'allergènes ?", answer: "Pas obligatoirement (pas dans le règlement INCO), mais fortement recommandé si vos plats peuvent en contenir par contamination croisée. Phrase type : Préparé dans une cuisine utilisant gluten, lait, oeufs, fruits à coque." },
+    { question: "Si un client demande un plat allergique, suis-je obligé de le préparer ?", answer: "Non, vous pouvez refuser. Mieux vaut refuser que mal préparer. Réponse pro : Je ne peux malheureusement pas garantir l'absence totale de cet allergène dans notre cuisine, je préfère vous proposer un autre plat." },
+    { question: "Le QR code menu remplit-il l'obligation INCO ?", answer: "Oui, à condition qu'il soit immédiatement consultable (sans connexion 4G défaillante, sans inscription). Beaucoup de DGCCRF préfèrent encore le classeur papier." },
+    { question: "Le sarrasin et la châtaigne sont-ils dans la liste ?", answer: "Non. Ce ne sont pas des allergènes obligatoires INCO. Mais le sarrasin est en surveillance dans certains pays. À mentionner volontairement si vous l'utilisez." },
+    { question: "Que faire en cas de réaction d'un client en plein service ?", answer: "1. Appeler le 15 (SAMU) immédiatement. 2. Demander si le client a un stylo d'adrénaline (Anapen, EpiPen). 3. Allonger le client jambes surélevées. 4. Noter ce qu'il a mangé. 5. Conserver le plat consommé pour analyse." },
+    { question: "Un menu peut-il être garanti 100% sans allergène ?", answer: "Non. Vous pouvez garantir l'absence d'UN allergène précis dans UN plat donné avec des précautions strictes, mais un menu global zéro risque n'existe pas légalement ni en pratique — le principe de précaution s'applique toujours." },
+    { question: "Les allergènes doivent-ils être affichés sur Uber Eats ou Deliveroo ?", answer: "Oui, l'obligation INCO s'applique aussi à la vente à distance. Les plateformes imposent généralement de renseigner les 14 allergènes à la création de chaque fiche produit." },
+    { question: "Faut-il former un extra ou un saisonnier dès son premier service ?", answer: "Oui. L'obligation de moyens s'applique dès le premier service, même pour un contrat de quelques heures. Un briefing de 5 minutes sur les 14 allergènes et la procédure d'alerte suffit à couvrir l'essentiel." },
+    { question: "Le menu enfant échappe-t-il à l'obligation d'affichage ?", answer: "Non, aucune exception d'âge n'existe dans le règlement INCO. Le menu enfant doit afficher ses allergènes comme n'importe quelle autre carte." },
+    { question: "Que risque-t-on si on rassure à tort un client allergique ?", answer: "Une sanction bien plus lourde qu'un simple défaut d'affichage : une fausse information donnée sciemment pour rassurer un client constitue une tromperie aggravée car elle met en jeu sa santé, avec des conséquences pénales nettement plus sévères que l'omission." }
   ]);
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Accueil", url: "https://www.restaumargin.fr/" },
     { name: "Blog", url: "https://www.restaumargin.fr/blog" },
-    { name: "Allergenes restaurant obligations legales", url: "https://www.restaumargin.fr/blog/allergenes-restaurant-obligations-legales" }
+    { name: "Allergènes restaurant obligations légales", url: "https://www.restaumargin.fr/blog/allergenes-restaurant-obligations-legales" }
   ]);
 
   return (
     <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-      <SEOHead title="Allergenes en restauration : obligations legales et affichage 2026" description="Les 14 allergenes obligatoires INCO, modele d'affichage, sanctions DDPP, allergie severe vs intolerance, et bonnes pratiques en cuisine pour rester conforme." path="/blog/allergenes-restaurant-obligations-legales" type="article" schema={[faqSchema, breadcrumbSchema]} />
+      <SEOHead title="Allergènes en restauration : obligations légales et affichage 2026" description="Les 14 allergènes obligatoires INCO, modèle d'affichage, sanctions DDPP, allergie sévère vs intolérance, et bonnes pratiques en cuisine pour rester conforme." path="/blog/allergenes-restaurant-obligations-legales" type="article" schema={[faqSchema, breadcrumbSchema]} />
 
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -34,106 +34,106 @@ export default function BlogAllergenes() {
         </div>
       </nav>
 
-      <BlogArticleHero category="Reglementation" readTime="17 min" date="Mai 2026" title="Allergenes en restauration : obligations legales 2026" accentWord="Allergenes" subtitle="Les 14 allergenes obligatoires, modele d'affichage, sanctions DDPP, bonnes pratiques en cuisine. Le reflexe metier non negociable." />
+      <BlogArticleHero category="Réglementation" readTime="17 min" date="Mai 2026" title="Allergènes en restauration : obligations légales 2026" accentWord="Allergènes" subtitle="Les 14 allergènes obligatoires, modèle d'affichage, sanctions DDPP, bonnes pratiques en cuisine. Le réflexe métier non négociable." />
 
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
         <BlogAuthor publishedDate="2026-05-05" updatedDate="2026-09-08" readTime="17 min" variant="header" />
 
         <div className="prose-content my-10">
-          <p>Une cliente arrive en cuisine en pleine crise anaphylactique. Personne dans l'equipe ne sait precisement ce qu'il y a dans la sauce du plat servi. C'est le pire scenario imaginable pour un restaurateur — et il est plus frequent qu'on ne le croit. Connaitre la reglementation allergenes n'est pas une option. C'est un reflexe metier.</p>
+          <p>Une cliente arrive en cuisine en pleine crise anaphylactique. Personne dans l'équipe ne sait précisément ce qu'il y a dans la sauce du plat servi. C'est le pire scénario imaginable pour un restaurateur — et il est plus fréquent qu'on ne le croit. Connaître la réglementation allergènes n'est pas une option. C'est un réflexe métier.</p>
         </div>
 
-        <Section icon={<ShieldAlert />} number="1" title="Le cadre legal : reglement INCO">
-          <p>Depuis le 13 decembre 2014, le reglement europeen <strong>INCO (1169/2011)</strong> impose la mention obligatoire des <strong>14 allergenes majeurs</strong>. En France, le decret 2015-447 precise les modalites d'affichage. En 2026, la DGCCRF mene 2 vagues de controle ciblees par an, avec amendes systematiques en cas d'absence d'information.</p>
+        <Section icon={<ShieldAlert />} number="1" title="Le cadre légal : règlement INCO">
+          <p>Depuis le 13 décembre 2014, le règlement européen <strong>INCO (1169/2011)</strong> impose la mention obligatoire des <strong>14 allergènes majeurs</strong>. En France, le décret 2015-447 précise les modalités d'affichage. En 2026, la DGCCRF mène 2 vagues de contrôle ciblées par an, avec amendes systématiques en cas d'absence d'information.</p>
         </Section>
 
-        <Section icon={<ListChecks />} number="2" title="Les 14 allergenes obligatoires">
+        <Section icon={<ListChecks />} number="2" title="Les 14 allergènes obligatoires">
           <ol>
-            <li>Cereales contenant du gluten (ble, seigle, orge, avoine)</li>
-            <li>Crustaces</li>
+            <li>Céréales contenant du gluten (blé, seigle, orge, avoine)</li>
+            <li>Crustacés</li>
             <li>Oeufs</li>
             <li>Poissons</li>
-            <li>Arachides (cacahuetes)</li>
+            <li>Arachides (cacahuètes)</li>
             <li>Soja</li>
             <li>Lait (et lactose)</li>
-            <li>Fruits a coque (amandes, noisettes, noix, cajou, pistaches)</li>
-            <li>Celeri</li>
+            <li>Fruits à coque (amandes, noisettes, noix, cajou, pistaches)</li>
+            <li>Céleri</li>
             <li>Moutarde</li>
-            <li>Graines de sesame</li>
+            <li>Graines de sésame</li>
             <li>Anhydride sulfureux et sulfites (&gt; 10 mg/kg ou /L)</li>
             <li>Lupin</li>
             <li>Mollusques</li>
           </ol>
-          <p><strong>Important</strong> : la liste est figee. Pas d'autres allergenes obligatoires (sarrasin et kiwi ne sont PAS dans la liste).</p>
+          <p><strong>Important</strong> : la liste est figée. Pas d'autres allergènes obligatoires (sarrasin et kiwi ne sont PAS dans la liste).</p>
         </Section>
 
-        <Section icon={<Eye />} number="3" title="Comment afficher l'information allergenes">
+        <Section icon={<Eye />} number="3" title="Comment afficher l'information allergènes">
           <p><strong>Option 1</strong> : affichage permanent par plat (Ex : "Magret de canard, sauce moutarde-miel, gratin dauphinois — Contient : gluten, lait, moutarde, sulfites").</p>
-          <p><strong>Option 2</strong> : information sur demande. Phrase type : "L'information sur les allergenes presents dans nos plats est tenue a votre disposition sur simple demande. Demandez-nous le classeur allergenes." Le classeur doit lister chaque plat × les 14 allergenes.</p>
-          <p>Format obligatoire : caracteres lisibles (taille minimum 1,2 mm), en français, couleur contrastee.</p>
+          <p><strong>Option 2</strong> : information sur demande. Phrase type : "L'information sur les allergènes présents dans nos plats est tenue à votre disposition sur simple demande. Demandez-nous le classeur allergènes." Le classeur doit lister chaque plat × les 14 allergènes.</p>
+          <p>Format obligatoire : caractères lisibles (taille minimum 1,2 mm), en français, couleur contrastée.</p>
         </Section>
 
-        <Section icon={<AlertTriangle />} number="4" title="Allergie severe vs intolerance">
-          <p><strong>Allergie severe</strong> : reaction immunitaire violente parfois fatale (oedeme, choc anaphylactique). Quantite minime suffit. Eviction stricte. 5-7 % des Français.</p>
-          <p><strong>Intolerance</strong> (lactose, gluten) : reaction digestive. Pas de risque vital immediat. Tolerance de petites quantites. 15-30 % de la population pour le lactose.</p>
-          <p><strong>Pour le restaurateur</strong> : traitez toute mention d'allergene comme une allergie severe (principe de precaution).</p>
+        <Section icon={<AlertTriangle />} number="4" title="Allergie sévère vs intolérance">
+          <p><strong>Allergie sévère</strong> : réaction immunitaire violente parfois fatale (oedème, choc anaphylactique). Quantité minime suffit. Éviction stricte. 5-7 % des Français.</p>
+          <p><strong>Intolérance</strong> (lactose, gluten) : réaction digestive. Pas de risque vital immédiat. Tolérance de petites quantités. 15-30 % de la population pour le lactose.</p>
+          <p><strong>Pour le restaurateur</strong> : traitez toute mention d'allergène comme une allergie sévère (principe de précaution).</p>
         </Section>
 
         <Section icon={<Utensils />} number="5" title="Bonnes pratiques en cuisine">
           <ul>
-            <li>Etiqueter clairement les contenants (farines, sauces, marinades)</li>
-            <li>Separer le rangement des allergenes courants</li>
-            <li>Listing complet ingredients de chaque preparation</li>
-            <li>Planches de decoupe dediees pour client allergique</li>
-            <li>Ustensiles propres non utilises sur autres plats</li>
-            <li>Friteuses a part si beignets de crevettes ≠ frites</li>
-            <li>Lavage des mains entre 2 preparations</li>
-            <li>Demander la liste complete des ingredients de tout produit transforme achete</li>
+            <li>Étiqueter clairement les contenants (farines, sauces, marinades)</li>
+            <li>Séparer le rangement des allergènes courants</li>
+            <li>Listing complet ingrédients de chaque préparation</li>
+            <li>Planches de découpe dédiées pour client allergique</li>
+            <li>Ustensiles propres non utilisés sur autres plats</li>
+            <li>Friteuses à part si beignets de crevettes ≠ frites</li>
+            <li>Lavage des mains entre 2 préparations</li>
+            <li>Demander la liste complète des ingrédients de tout produit transformé acheté</li>
           </ul>
         </Section>
 
-        <Section icon={<Users />} number="6" title="Le role de l'equipe en salle">
-          <p>Tous les serveurs doivent connaitre les 14 allergenes par coeur. Procedure : "Si un client mentionne une allergie, je previens immediatement le chef avant de prendre la commande."</p>
-          <p>Phrase a integrer : <em>"Avez-vous des allergies ou intolerances dont nous devrions etre informes ?"</em></p>
-          <p>Outils : tablette ou classeur consultable en 30 secondes, code couleur sur tickets cuisine ("ALL CRT"), plat marque d'un sticker.</p>
+        <Section icon={<Users />} number="6" title="Le rôle de l'équipe en salle">
+          <p>Tous les serveurs doivent connaître les 14 allergènes par coeur. Procédure : "Si un client mentionne une allergie, je préviens immédiatement le chef avant de prendre la commande."</p>
+          <p>Phrase à intégrer : <em>"Avez-vous des allergies ou intolérances dont nous devrions être informés ?"</em></p>
+          <p>Outils : tablette ou classeur consultable en 30 secondes, code couleur sur tickets cuisine ("ALL CRT"), plat marqué d'un sticker.</p>
         </Section>
 
-        <Section icon={<Coffee />} number="7" title="Sanctions en cas de non-conformite">
-          <p>Amendes administratives DGCCRF : jusqu'a 1 500 EUR (TPE) ou 3 000 EUR en recidive (decret 2015-447). Information erronee ayant entraine prejudice = tromperie (art. L. 441-1 Code conso) : jusqu'a 2 ans de prison + 300 000 EUR d'amende.</p>
-          <p>Si reaction anaphylactique grave : mise en danger d'autrui, ou homicide involontaire si deces. Cas judiciaire recent : restaurant condamne a 80 000 EUR de dommages + 6 mois sursis pour avoir servi un plat aux cacahuetes a un client qui avait pourtant prevenu.</p>
+        <Section icon={<Coffee />} number="7" title="Sanctions en cas de non-conformité">
+          <p>Amendes administratives DGCCRF : jusqu'à 1 500 EUR (TPE) ou 3 000 EUR en récidive (décret 2015-447). Information erronée ayant entraîné préjudice = tromperie (art. L. 441-1 Code conso) : jusqu'à 2 ans de prison + 300 000 EUR d'amende.</p>
+          <p>Si réaction anaphylactique grave : mise en danger d'autrui, ou homicide involontaire si décès. Cas judiciaire récent : restaurant condamné à 80 000 EUR de dommages + 6 mois sursis pour avoir servi un plat aux cacahuètes à un client qui avait pourtant prévenu.</p>
         </Section>
 
-        <Section icon={<Truck />} number="8" title="Allergenes en livraison et dark kitchen">
-          <p>La vente a distance ne dispense pas de l'obligation INCO. Sur Uber Eats, Deliveroo ou Just Eat, chaque plat doit afficher ses allergenes dans la fiche produit — la plupart des plateformes imposent d'ailleurs de cocher les 14 allergenes a la creation de la carte, sous peine de blocage de la fiche.</p>
-          <p>Pour une dark kitchen ou un service en cuisine fermee sans contact client, le risque de contamination croisee est identique a celui d'une salle classique, mais le filet de rattrapage disparait : personne ne peut confirmer une info oralement au dernier moment. Trois reflexes reduisent le risque : scellage systematique des contenants avant remise au livreur, etiquette allergenes collee sur l'emballage (pas seulement dans l'appli), et procedure stricte de double-verification entre le poste qui prepare et celui qui emballe.</p>
-          <p>En cas de commande signalee comme allergene-sensible via l'appli, le meilleur reflexe reste souvent le meme qu'en salle : proposer une alternative sure plutot que de tenter une adaptation risquee en pleine rush.</p>
+        <Section icon={<Truck />} number="8" title="Allergènes en livraison et dark kitchen">
+          <p>La vente à distance ne dispense pas de l'obligation INCO. Sur Uber Eats, Deliveroo ou Just Eat, chaque plat doit afficher ses allergènes dans la fiche produit — la plupart des plateformes imposent d'ailleurs de cocher les 14 allergènes à la création de la carte, sous peine de blocage de la fiche.</p>
+          <p>Pour une dark kitchen ou un service en cuisine fermée sans contact client, le risque de contamination croisée est identique à celui d'une salle classique, mais le filet de rattrapage disparaît : personne ne peut confirmer une info oralement au dernier moment. Trois réflexes réduisent le risque : scellage systématique des contenants avant remise au livreur, étiquette allergènes collée sur l'emballage (pas seulement dans l'appli), et procédure stricte de double-vérification entre le poste qui prépare et celui qui emballe.</p>
+          <p>En cas de commande signalée comme allergène-sensible via l'appli, le meilleur réflexe reste souvent le même qu'en salle : proposer une alternative sûre plutôt que de tenter une adaptation risquée en pleine rush.</p>
         </Section>
 
-        <Section icon={<FileText />} number="9" title="Construire son classeur allergenes en 5 etapes">
-          <p>Le classeur allergenes (ou fichier numerique equivalent) est l'outil le plus consulte lors d'un controle DGCCRF. Voici la methode pour le construire sans y passer une semaine :</p>
+        <Section icon={<FileText />} number="9" title="Construire son classeur allergènes en 5 étapes">
+          <p>Le classeur allergènes (ou fichier numérique équivalent) est l'outil le plus consulté lors d'un contrôle DGCCRF. Voici la méthode pour le construire sans y passer une semaine :</p>
           <ol>
-            <li>Lister tous les plats et boissons de la carte, y compris les suggestions du jour et les a-cotes (sauces, pain, garnitures)</li>
-            <li>Decomposer chaque recette ingredient par ingredient — pas seulement les produits bruts, mais aussi les produits transformes achetes (sauce soja, fond de veau industriel, moutarde en tube)</li>
-            <li>Croiser chaque ingredient avec la liste des 14 allergenes INCO et cocher les cases concernees</li>
-            <li>Faire relire le tableau par un second membre de l'equipe : les oublis viennent presque toujours d'un ingredient "cache" (sulfites dans un vin de cuisson, moutarde dans une vinaigrette du commerce)</li>
-            <li>Mettre a jour le classeur a chaque changement de recette ou de fournisseur — un fournisseur qui change la composition d'un produit transforme peut faire apparaitre un allergene du jour au lendemain sans prevenir</li>
+            <li>Lister tous les plats et boissons de la carte, y compris les suggestions du jour et les à-côtés (sauces, pain, garnitures)</li>
+            <li>Décomposer chaque recette ingrédient par ingrédient — pas seulement les produits bruts, mais aussi les produits transformés achetés (sauce soja, fond de veau industriel, moutarde en tube)</li>
+            <li>Croiser chaque ingrédient avec la liste des 14 allergènes INCO et cocher les cases concernées</li>
+            <li>Faire relire le tableau par un second membre de l'équipe : les oublis viennent presque toujours d'un ingrédient "caché" (sulfites dans un vin de cuisson, moutarde dans une vinaigrette du commerce)</li>
+            <li>Mettre à jour le classeur à chaque changement de recette ou de fournisseur — un fournisseur qui change la composition d'un produit transformé peut faire apparaître un allergène du jour au lendemain sans prévenir</li>
           </ol>
-          <p>Un logiciel de fiches techniques qui calcule les allergenes automatiquement a partir des ingredients evite l'essentiel du travail manuel et surtout le risque d'oubli lors d'une mise a jour de recette.</p>
+          <p>Un logiciel de fiches techniques qui calcule les allergènes automatiquement à partir des ingrédients évite l'essentiel du travail manuel et surtout le risque d'oubli lors d'une mise à jour de recette.</p>
         </Section>
 
         <BlogAuthor publishedDate="2026-05-05" updatedDate="2026-09-08" readTime="17 min" variant="footer" />
         <CTABlock />
 
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-mono-100 mb-6">Articles complementaires</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Articles complémentaires</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <Link to="/blog/haccp-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Guide HACCP complet</h3>
-              <p className="text-sm text-mono-500">Les 7 principes, temperatures, checklist quotidienne.</p>
+              <p className="text-sm text-mono-500">Les 7 principes, températures, checklist quotidienne.</p>
             </Link>
             <Link to="/blog/calendrier-haccp-restaurant-modele-gratuit" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Calendrier HACCP</h3>
-              <p className="text-sm text-mono-500">Modele gratuit, grilles quotidienne / hebdomadaire / mensuelle.</p>
+              <p className="text-sm text-mono-500">Modèle gratuit, grilles quotidienne / hebdomadaire / mensuelle.</p>
             </Link>
             <Link to="/blog/formation-personnel-restauration" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Formation du personnel</h3>
@@ -141,7 +141,7 @@ export default function BlogAllergenes() {
             </Link>
             <Link to="/blog/fiche-technique-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Fiche technique restaurant</h3>
-              <p className="text-sm text-mono-500">Grammages, couts matieres, allergenes, process de fabrication.</p>
+              <p className="text-sm text-mono-500">Grammages, coûts matières, allergènes, process de fabrication.</p>
             </Link>
             <Link to="/blog/contrat-travail-restauration-guide" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Contrat de travail en restauration</h3>
@@ -151,16 +151,16 @@ export default function BlogAllergenes() {
         </section>
 
         <FAQSection items={[
-          { q: "Doit-on mentionner les traces possibles d'allergenes ?", a: "Pas obligatoire (hors INCO), mais recommande. Phrase type : Prepare dans une cuisine utilisant gluten, lait, oeufs, fruits a coque." },
-          { q: "Si un client demande un plat allergique, suis-je oblige de le preparer ?", a: "Non, vous pouvez refuser. Mieux vaut refuser que mal preparer." },
-          { q: "Le QR code menu remplit-il l'obligation INCO ?", a: "Oui s'il est immediatement consultable. Beaucoup de DGCCRF preferent encore le classeur papier." },
-          { q: "Le sarrasin et la chataigne sont-ils dans la liste ?", a: "Non. Pas dans la liste INCO. A mentionner volontairement si utilise." },
-          { q: "Que faire en cas de reaction d'un client en plein service ?", a: "1. SAMU 15. 2. Stylo adrenaline si dispo. 3. Allonger jambes surelevees. 4. Noter ce qu'il a mange. 5. Conserver le plat." },
-          { q: "Un menu peut-il etre garanti 100% sans allergene ?", a: "Non. Vous pouvez garantir l'absence d'UN allergene precis dans UN plat donne, mais un menu global zero risque n'existe pas legalement — le principe de precaution s'applique toujours." },
-          { q: "Les allergenes doivent-ils etre affiches sur Uber Eats ou Deliveroo ?", a: "Oui, l'obligation INCO s'applique aussi a la vente a distance. Les plateformes imposent generalement de renseigner les 14 allergenes a la creation de la fiche produit." },
-          { q: "Faut-il former un extra ou un saisonnier des son premier service ?", a: "Oui. L'obligation de moyens s'applique des le premier service. Un briefing de 5 minutes sur les 14 allergenes suffit a couvrir l'essentiel." },
-          { q: "Le menu enfant echappe-t-il a l'obligation d'affichage ?", a: "Non, aucune exception d'age n'existe dans le reglement INCO." },
-          { q: "Que risque-t-on si on rassure a tort un client allergique ?", a: "Une sanction plus lourde qu'un simple defaut d'affichage : une fausse information donnee sciemment constitue une tromperie aggravee car elle met en jeu la sante du client." }
+          { q: "Doit-on mentionner les traces possibles d'allergènes ?", a: "Pas obligatoire (hors INCO), mais recommandé. Phrase type : Préparé dans une cuisine utilisant gluten, lait, oeufs, fruits à coque." },
+          { q: "Si un client demande un plat allergique, suis-je obligé de le préparer ?", a: "Non, vous pouvez refuser. Mieux vaut refuser que mal préparer." },
+          { q: "Le QR code menu remplit-il l'obligation INCO ?", a: "Oui s'il est immédiatement consultable. Beaucoup de DGCCRF préfèrent encore le classeur papier." },
+          { q: "Le sarrasin et la châtaigne sont-ils dans la liste ?", a: "Non. Pas dans la liste INCO. À mentionner volontairement si utilisé." },
+          { q: "Que faire en cas de réaction d'un client en plein service ?", a: "1. SAMU 15. 2. Stylo adrénaline si dispo. 3. Allonger jambes surélevées. 4. Noter ce qu'il a mangé. 5. Conserver le plat." },
+          { q: "Un menu peut-il être garanti 100% sans allergène ?", a: "Non. Vous pouvez garantir l'absence d'UN allergène précis dans UN plat donné, mais un menu global zéro risque n'existe pas légalement — le principe de précaution s'applique toujours." },
+          { q: "Les allergènes doivent-ils être affichés sur Uber Eats ou Deliveroo ?", a: "Oui, l'obligation INCO s'applique aussi à la vente à distance. Les plateformes imposent généralement de renseigner les 14 allergènes à la création de la fiche produit." },
+          { q: "Faut-il former un extra ou un saisonnier dès son premier service ?", a: "Oui. L'obligation de moyens s'applique dès le premier service. Un briefing de 5 minutes sur les 14 allergènes suffit à couvrir l'essentiel." },
+          { q: "Le menu enfant échappe-t-il à l'obligation d'affichage ?", a: "Non, aucune exception d'âge n'existe dans le règlement INCO." },
+          { q: "Que risque-t-on si on rassure à tort un client allergique ?", a: "Une sanction plus lourde qu'un simple défaut d'affichage : une fausse information donnée sciemment constitue une tromperie aggravée car elle met en jeu la santé du client." }
         ]} />
       </main>
 
@@ -184,7 +184,7 @@ function Section({ icon, number, title, children }: { icon: React.ReactNode; num
 function FAQSection({ items }: { items: { q: string; a: string }[] }) {
   return (
     <section className="mb-16">
-      <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes</h2>
+      <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
       <div className="space-y-4">
         {items.map((item, i) => (
           <details key={i} className="bg-mono-1000 border border-mono-900 rounded-xl group">
@@ -202,8 +202,8 @@ function CTABlock() {
     <section className="mb-16">
       <div className="bg-gradient-to-br from-rose-600 to-red-700 rounded-2xl p-8 sm:p-12 text-white text-center">
         <ShieldAlert className="w-12 h-12 mx-auto mb-4 opacity-90" />
-        <h2 className="text-2xl sm:text-3xl font-extrabold mb-4">Allergenes traces automatiquement avec RestauMargin</h2>
-        <p className="text-rose-50 max-w-xl mx-auto mb-8 leading-relaxed">Module fiches techniques : declaration automatique des 14 allergenes par plat, exportable en classeur PDF pret pour la DGCCRF.</p>
+        <h2 className="text-2xl sm:text-3xl font-extrabold mb-4">Allergènes traces automatiquement avec RestauMargin</h2>
+        <p className="text-rose-50 max-w-xl mx-auto mb-8 leading-relaxed">Module fiches techniques : déclaration automatique des 14 allergènes par plat, exportable en classeur PDF prêt pour la DGCCRF.</p>
         <Link to="/login" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-rose-700 font-bold rounded-full hover:bg-rose-50 transition-colors">Essayer gratuitement<ArrowRight className="w-4 h-4" /></Link>
       </div>
     </section>
@@ -215,7 +215,7 @@ function SiteFooter() {
     <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
       <div className="max-w-4xl mx-auto text-center text-sm text-mono-500">
         <Link to="/" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4"><ChefHat className="w-6 h-6 text-teal-600" />RestauMargin</Link>
-        <p className="mt-6 text-xs text-mono-700">&copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.</p>
+        <p className="mt-6 text-xs text-mono-700">&copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.</p>
       </div>
     </footer>
   );

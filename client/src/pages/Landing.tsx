@@ -1,1091 +1,499 @@
 /**
  * @file client/src/pages/Landing.tsx
- * RestauMargin landing — v3 "Claude Design Integration" — 2026-04-26.
+ * Page d'accueil de RestauMargin.
  *
- * Architecture : 9 sections numérotées + 4 widgets globaux flottants.
- * Match exact des screenshots claude.design partagés par l'utilisateur.
+ * Refonte « sobre » du 2026-11-04 (demande du fondateur : « suppression du vibe
+ * coding, rendre le site plus professionnel ») :
+ *  - en-tete et pied de page partages par tout le site public (PublicHeader,
+ *    PublicFooter) ;
+ *  - retires : le bandeau Product Hunt (lancement du 6 mai, perime), la barre de
+ *    progression lumineuse, la fenetre de sortie « Avant de partir... » (elle
+ *    promettait des economies calculees sur un gain invente de 4 % du CA), le faux
+ *    cadre de navigateur (pastilles macOS, fausse barre d'adresse) et les deux
+ *    fonds WebGL animes ;
+ *  - plus de GSAP : le CLAUDE.md du depot n'autorise que les transitions
+ *    Tailwind, et le contenu s'affiche sans attendre un declencheur de defilement
+ *    (les compteurs de la maquette montraient « 0.0 % » au premier affichage) ;
+ *  - aucun resultat promis : la section « Simulation » calcule sur l'hypothese
+ *    que le visiteur choisit lui-meme (regle « Aucune preuve sociale fabriquee »
+ *    du CLAUDE.md : une vingtaine de comptes, aucun abonne payant).
+ *
+ * Structure en sections numerotees validee par le fondateur. Ancres utilisees par
+ * d'autres pages : #tarifs, #fonctionnalites, #contact — et #temoignages, rendue
+ * seulement quand de vrais temoignages existent.
  */
 
-import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
+import { useEffect, useState } from 'react';
+import type { ComponentType, FormEvent, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ChefHat, Menu, X as XIcon, ArrowRight, Calculator, X, Check,
-  Send, Sparkles, ClipboardList, BarChart3, Truck, Scale, Thermometer,
-  Star, ShieldCheck, MapPin, Headphones, FileCheck, CreditCard,
-  Play, Tablet, ScanLine, ArrowUpRight, Camera, TrendingUp, Mic,
+  AlertTriangle, ArrowRight, ArrowUpRight, Bell, CalendarX, Calculator, Camera, Check,
+  ChefHat, ClipboardList, CreditCard, FileCheck, LayoutDashboard, Mail, Mic, Newspaper,
+  Scale, Send, ShieldCheck, Sparkles, Star, Thermometer, TrendingUp, Truck,
 } from 'lucide-react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Helmet } from 'react-helmet-async';
 import SEOHead from '../components/SEOHead';
-import ShaderBackground from '../components/landing/ShaderBackground';
-// PaperFoldBackground = WebGL2 shader = ~30KB + GPU work that blocks the main
-// thread during landing FCP. We lazy-load it so the LCP text renders first;
-// the shader fades in once React has finished initial paint.
-const PaperFoldBackground = lazy(() => import('../components/landing/PaperFoldBackground'));
-
-gsap.registerPlugin(ScrollTrigger);
-
-const ACCENT = '#10B981';
-const ACCENT_DARK = '#047857';
-const ACCENT_LIGHT = '#6EE7B7';
-const ACCENT_BG = '#ECFDF5';
-const TEXT = '#0F172A';
-const TEXT_MUTED = '#64748B';
-const BORDER = '#E5E7EB';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 // ═══════════════════════════════════════════════════════════════════════════
-// HOOKS
+// TYPOGRAPHIE ET STYLES PARTAGES
 // ═══════════════════════════════════════════════════════════════════════════
 
-function useReveal<T extends HTMLElement>() {
-  const ref = useRef<T>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const ctx = gsap.context(() => {
-      gsap.from(el, {
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
-      });
-    });
-    return () => ctx.revert();
-  }, []);
-  return ref;
+// Espace insecable : avant « : », « % », « € » et a l'interieur des guillemets.
+const NBSP = ' ';
+const nombreFr = new Intl.NumberFormat('fr-FR');
+function euros(n: number) {
+  return `${nombreFr.format(n)}${NBSP}€`;
 }
 
-function useCounter(target: number, decimals = 0) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [v, setV] = useState(0);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obj = { v: 0 };
-    const ctx = gsap.context(() => {
-      gsap.to(obj, {
-        v: target,
-        duration: 1.6,
-        ease: 'power2.out',
-        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
-        onUpdate: () => setV(obj.v),
-      });
-    });
-    return () => ctx.revert();
-  }, [target]);
-  return { ref, value: decimals === 0 ? Math.round(v) : Number(v.toFixed(decimals)) };
-}
+// Vert d'accent : #047857 (contraste 5,5:1 sur blanc). Le #10B981 d'avant tombait
+// a 2,5:1, sous le seuil AA meme pour un titre ; il ne sert plus qu'au decor
+// (barres, points), jamais au texte.
+const BOUTON_PRINCIPAL =
+  'inline-flex items-center justify-center gap-2 rounded-xl bg-[#047857] px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-[#065F46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#047857] focus-visible:ring-offset-2';
+const TITRE_H2 =
+  'font-satoshi text-3xl font-extrabold leading-[1.1] tracking-tight text-[#111111] sm:text-4xl lg:text-5xl';
+const CARTE = 'rounded-2xl border border-[#E5E7EB] bg-white';
+const SECTION = 'px-4 py-20 sm:px-6 sm:py-24 lg:px-8';
 
-// Stagger multiple children on scroll-enter
-function useStagger<T extends HTMLElement>(staggerDelay = 0.1) {
-  const ref = useRef<T>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const children = Array.from(el.children) as HTMLElement[];
-    if (!children.length) return;
-    const ctx = gsap.context(() => {
-      // fromTo guarantees a deterministic final state if the ScrollTrigger
-      // never fires (defensive : we'd rather show the cards than hide them).
-      gsap.fromTo(
-        children,
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.7,
-          ease: 'power3.out',
-          stagger: staggerDelay,
-          // 'top bottom' = trigger as soon as the grid top touches the bottom
-          // of the viewport (was 'top 85%', which left ~15% of cases unfired).
-          scrollTrigger: { trigger: el, start: 'top bottom-=80', toggleActions: 'play none none none' },
-        }
-      );
-    });
-    // Force a refresh once the rest of the page (lazy images, fonts) has
-    // settled — guards against stale measurements after Vite HMR or fonts.
-    const t = setTimeout(() => ScrollTrigger.refresh(), 250);
-    return () => {
-      clearTimeout(t);
-      ctx.revert();
-    };
-  }, [staggerDelay]);
-  return ref;
-}
-
-// Typing effect for a string — returns displayed text
-function useTypingEffect(text: string, active: boolean, speed = 60) {
-  const [displayed, setDisplayed] = useState('');
-  useEffect(() => {
-    if (!active) { setDisplayed(text); return; }
-    setDisplayed('');
-    let i = 0;
-    const id = setInterval(() => {
-      i++;
-      setDisplayed(text.slice(0, i));
-      if (i >= text.length) clearInterval(id);
-    }, speed);
-    return () => clearInterval(id);
-  }, [text, active, speed]);
-  return displayed;
-}
-
-// Pulse glow on value change
-function usePulseOnChange(value: number) {
-  const ref = useRef<HTMLDivElement>(null);
-  const prevRef = useRef(value);
-  useEffect(() => {
-    if (prevRef.current === value) return;
-    prevRef.current = value;
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    gsap.fromTo(el, { scale: 1.04 }, { scale: 1, duration: 0.35, ease: 'power2.out' });
-  }, [value]);
-  return ref;
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════════════════════
-
-function SectionNumber({ n, label }: { n: string; label?: string }) {
+function SectionNumber({ n, label }: { n: string; label: string }) {
   return (
-    <div className="inline-flex items-center gap-3 mb-4">
-      <span
-        className="inline-flex items-center justify-center min-w-[44px] h-10 px-3 rounded-full text-sm font-mono font-bold tracking-wide"
-        style={{ background: 'white', border: `1px solid ${BORDER}`, color: TEXT }}
-      >
+    <div className="mb-4 inline-flex items-center gap-3">
+      <span className="inline-flex h-9 min-w-[40px] items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3 text-sm font-semibold tabular-nums text-[#111111]">
         {n}
       </span>
-      {label && (
-        <span className="text-xs uppercase tracking-[0.2em] font-semibold" style={{ color: TEXT_MUTED }}>
-          {label}
-        </span>
-      )}
+      <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#737373]">{label}</span>
     </div>
   );
 }
 
-function DashboardMiniCard({ animated = false }: { animated?: boolean }) {
-  const counter = useCounter(479, 0);
+// En-tete commun des sections numerotees : numero et titre a gauche, texte
+// d'introduction a droite, aligne sur la derniere ligne du titre (et non plus
+// decale a la main par un padding fixe qui ne tombait juste qu'a une largeur).
+function EnTeteSection({ n, label, titre, intro }: { n: string; label: string; titre: ReactNode; intro?: ReactNode }) {
   return (
-    <div
-      ref={counter.ref}
-      className="relative rounded-3xl p-6 bg-white shadow-xl"
-      style={{ border: `1px solid ${BORDER}` }}
-    >
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: TEXT_MUTED }}>
-          Économies / mois
-        </span>
-        <ArrowUpRight className="w-4 h-4" style={{ color: ACCENT }} />
+    <div className="grid gap-5 lg:grid-cols-2 lg:items-end lg:gap-12">
+      <div>
+        <SectionNumber n={n} label={label} />
+        <h2 className={TITRE_H2}>{titre}</h2>
       </div>
-      <div className="text-4xl font-extrabold tabular-nums" style={{ color: TEXT }}>
-        {animated ? counter.value : 479}.00 €
-      </div>
-      <div className="flex items-center gap-1 mt-2 text-xs font-semibold" style={{ color: ACCENT_DARK }}>
-        <span>↗ +12%</span>
-        <span style={{ color: TEXT_MUTED, fontWeight: 400 }}>vs mois dernier</span>
-      </div>
-      <svg viewBox="0 0 240 80" className="w-full mt-4" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={ACCENT} stopOpacity="0.4" />
-            <stop offset="100%" stopColor={ACCENT} stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <path d="M0,60 Q30,55 50,45 T100,40 T150,28 T200,18 T240,8 L240,80 L0,80 Z" fill="url(#sparkGrad)" />
-        <path d="M0,60 Q30,55 50,45 T100,40 T150,28 T200,18 T240,8" fill="none" stroke={ACCENT} strokeWidth="2.5" strokeLinecap="round" />
-      </svg>
+      {intro && <p className="max-w-xl text-base leading-relaxed text-[#525252] sm:text-lg lg:pb-1">{intro}</p>}
     </div>
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// Rich Dashboard Mockup — auto-cycling carousel between 2 variants.
-// V1: Light dashboard (food cost, marge, alerts)
-// V2: Voice mode "Nouvelle fiche · dictée" (audio waveform → recipe card)
-// 3D tilt is driven by GSAP scrollTrigger so the mockup leans towards the
-// viewer as it enters the viewport (Apple-style "lift" effect). Neon blue
-// (#06B6D4 cyan) is interleaved with the emerald green for a fluo accent.
-// ═══════════════════════════════════════════════════════════════════════════
-const NEON_BLUE = '#06B6D4'; // cyan/electric blue companion to ACCENT (emerald)
-const MONO_STYLE = { fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, monospace' } as React.CSSProperties;
+function Vert({ children }: { children: ReactNode }) {
+  return <span className="text-[#047857]">{children}</span>;
+}
 
-// ── Variant A : Dashboard ──────────────────────────────────────────────────
-function DashboardVariant({ active }: { active: boolean }) {
-  const foodCost = useCounter(27.3, 1);
-  const marge = useCounter(72.7, 1);
-  const ca = useCounter(38, 0);
-  const economies = useCounter(2.6, 1);
+// ═══════════════════════════════════════════════════════════════════════════
+// HERO
+// ═══════════════════════════════════════════════════════════════════════════
 
-  const platBars = [
-    { n: 'Entrecôte', pct: 62, color: '#F59E0B', warn: true },
-    { n: 'Saumon', pct: 38, color: ACCENT },
-    { n: 'Poulet', pct: 24, color: ACCENT },
-    { n: 'Risotto', pct: 18, color: NEON_BLUE },
+// Maquettes du hero : valeurs FIXES, affichees telles quelles des le premier
+// rendu. Ce sont des donnees d'exemple, annoncees comme telles sous la maquette.
+function MaquetteTableauDeBord() {
+  const kpis = [
+    { l: 'Food cost', v: `27,3${NBSP}%`, sub: `Objectif${NBSP}: 30${NBSP}%`, vert: true },
+    { l: 'Marge brute', v: `72,7${NBSP}%`, sub: `Objectif${NBSP}: 70${NBSP}%` },
+    { l: 'Chiffre d’affaires', v: `38${NBSP}k€`, sub: `+4,2${NBSP}% sur un an` },
+    { l: 'Alertes prix', v: '3', sub: 'Cette semaine' },
   ];
-
+  const OBJECTIF = 30;
+  const plats = [
+    { n: 'Entrecôte', pct: 41 },
+    { n: 'Saumon', pct: 29 },
+    { n: 'Poulet rôti', pct: 24 },
+    { n: 'Risotto', pct: 18 },
+  ];
   return (
-    <div ref={foodCost.ref} className="rounded-2xl overflow-hidden bg-white"
-      style={{ border: `1px solid ${BORDER}`, boxShadow: `0 30px 80px -20px rgba(15, 23, 42, 0.18), 0 0 0 1px ${ACCENT}1A, 0 0 60px ${NEON_BLUE}1A` }}
-    >
-      {/* URL bar */}
-      <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b" style={{ borderColor: BORDER, background: '#FAFBFC' }}>
-        <div className="flex gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
+    <div className="overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-[0_24px_60px_-28px_rgba(17,17,17,0.22)]">
+      <div className="flex items-center justify-between gap-3 border-b border-[#E5E7EB] px-4 py-3 sm:px-5">
+        <div className="flex items-center gap-2">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ECFDF5]">
+            <ChefHat className="h-4 w-4 text-[#047857]" aria-hidden="true" />
+          </span>
+          <span className="text-sm font-semibold text-[#111111]">Tableau de bord</span>
         </div>
-        <div className="ml-2 text-[11px] font-bold flex items-center gap-1" style={{ color: TEXT }}>
-          RestauMargin<span style={{ color: TEXT_MUTED, fontWeight: 400 }}>/ Dashboard</span>
-        </div>
-        <span className="ml-auto px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-[0.14em]"
-          style={{ background: `linear-gradient(135deg, ${ACCENT}22, ${NEON_BLUE}22)`, color: ACCENT_DARK, border: `1px solid ${ACCENT}33` }}
-        >
-          Nouveau 2026
-        </span>
+        <span className="text-xs text-[#737373]">Ce mois-ci</span>
       </div>
-
-      <div className="p-4 sm:p-5 space-y-4">
-        {/* 4 KPI cards */}
-        <div className="grid grid-cols-2 gap-2.5">
-          {[
-            { l: 'FOOD COST', v: (active ? foodCost.value : 27.3).toFixed(1), unit: '%', sub: '▼ 6.7pts vs janvier', subColor: ACCENT_DARK, mainColor: ACCENT_DARK },
-            { l: 'MARGE BRUTE', v: (active ? marge.value : 72.7).toFixed(1), unit: '%', sub: 'Objectif : 70%', subColor: TEXT_MUTED, mainColor: TEXT },
-            { l: 'CA CE MOIS', v: Math.round(active ? ca.value : 38).toString(), unit: 'k€', sub: '▲ +4.2% vs N-1', subColor: ACCENT_DARK, mainColor: TEXT },
-            { l: 'ÉCONOMIES/MOIS', v: (active ? economies.value : 2.6).toFixed(1), unit: 'k€', sub: 'vs avant RM', subColor: TEXT_MUTED, mainColor: NEON_BLUE },
-          ].map((k) => (
-            <div key={k.l} className="rounded-xl p-3" style={{ background: '#FAFBFC', border: `1px solid ${BORDER}` }}>
-              <div className="text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: TEXT_MUTED }}>{k.l}</div>
-              <div className="mt-1.5 flex items-baseline gap-0.5">
-                <span className="text-2xl font-extrabold tabular-nums leading-none" style={{ ...MONO_STYLE, color: k.mainColor }}>{k.v}</span>
-                <span className="text-[11px] font-semibold opacity-70" style={{ ...MONO_STYLE, color: k.mainColor }}>{k.unit}</span>
+      <div className="space-y-5 p-4 sm:p-5">
+        <div className="grid grid-cols-2 gap-3">
+          {kpis.map((k) => (
+            <div key={k.l} className="rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] p-3">
+              <div className="text-xs font-medium text-[#737373]">{k.l}</div>
+              <div className={`mt-1 font-satoshi text-2xl font-bold tabular-nums ${k.vert ? 'text-[#047857]' : 'text-[#111111]'}`}>
+                {k.v}
               </div>
-              <div className="text-[9px] mt-1.5" style={{ color: k.subColor }}>{k.sub}</div>
+              <div className="mt-0.5 text-xs text-[#737373]">{k.sub}</div>
             </div>
           ))}
         </div>
 
-        {/* Food cost par plat bars */}
         <div>
-          <div className="text-[9px] font-bold uppercase tracking-[0.14em] mb-2.5" style={{ color: TEXT_MUTED }}>Food cost par plat</div>
-          <div className="space-y-1.5">
-            {platBars.map((p) => (
-              <div key={p.n} className="grid grid-cols-[60px_1fr_auto] gap-3 items-center text-[10px]">
-                <span style={{ color: TEXT }}>{p.n}</span>
-                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#F1F5F9' }}>
-                  <div className="h-full rounded-full" style={{
-                    width: `${p.pct}%`,
-                    background: p.warn ? p.color : p.color === NEON_BLUE ? `linear-gradient(90deg, ${NEON_BLUE}, ${ACCENT})` : `linear-gradient(90deg, ${ACCENT}, ${ACCENT_DARK})`,
-                    boxShadow: `0 0 8px ${p.color}66`,
-                  }} />
+          <div className="mb-3 flex items-baseline justify-between gap-3">
+            <span className="text-xs font-semibold text-[#111111]">Food cost par plat</span>
+            <span className="flex items-center gap-1.5 text-xs text-[#737373]">
+              <span className="h-3 w-px bg-[#111111]/40" aria-hidden="true" />
+              Objectif {OBJECTIF}{NBSP}%
+            </span>
+          </div>
+          <div className="space-y-2.5">
+            {plats.map((p) => {
+              const auDessus = p.pct > OBJECTIF;
+              return (
+                <div key={p.n} className="grid grid-cols-[80px_1fr_40px] items-center gap-3 text-xs">
+                  <span className="text-[#111111]">{p.n}</span>
+                  {/* Echelle de 0 a 50 % : la barre fait le double du pourcentage. */}
+                  <div className="relative h-2 rounded-full bg-[#F5F5F5]">
+                    <div
+                      className={`h-full rounded-full ${auDessus ? 'bg-[#F59E0B]' : 'bg-[#10B981]'}`}
+                      style={{ width: `${p.pct * 2}%` }}
+                    />
+                    <span
+                      className="absolute -bottom-1 -top-1 w-px bg-[#111111]/40"
+                      style={{ left: `${OBJECTIF * 2}%` }}
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <span className={`text-right font-semibold tabular-nums ${auDessus ? 'text-[#B45309]' : 'text-[#525252]'}`}>
+                    {p.pct}{NBSP}%
+                  </span>
                 </div>
-                <span className="font-semibold tabular-nums" style={{ ...MONO_STYLE, color: TEXT_MUTED }}>{p.pct}%</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        {/* Alert */}
-        <div className="rounded-lg px-3 py-2 flex items-center gap-2 text-[10px]" style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#991B1B' }}>
-          <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626] shrink-0" />
-          <span><strong>Entrecôte 62%</strong> — revoir grammage ou tarif fournisseur</span>
+        <div className="flex items-start gap-2 rounded-lg border border-[#FDE68A] bg-[#FFFBEB] px-3 py-2 text-xs leading-relaxed text-[#92400E]">
+          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          <span>
+            <strong className="font-semibold">Entrecôte à 41{NBSP}%</strong>, au-dessus de l’objectif{NBSP}: revoir le grammage
+            ou le prix d’achat.
+          </span>
         </div>
       </div>
     </div>
   );
 }
 
-// ── Variant B : Voice fiche dictée ─────────────────────────────────────────
-function VoiceFicheVariant({ active }: { active: boolean }) {
-  const [seconds, setSeconds] = useState(14);
-  useEffect(() => {
-    if (!active) { setSeconds(14); return; }
-    const id = setInterval(() => setSeconds((s) => (s >= 30 ? 14 : s + 1)), 1000);
-    return () => clearInterval(id);
-  }, [active]);
-
-  // Animated waveform bars heights
-  const bars = Array.from({ length: 28 }, (_, i) => {
-    const base = 0.3 + 0.7 * Math.abs(Math.sin(i * 0.7 + (active ? Date.now() / 400 : 0)));
-    return Math.round(base * 100);
-  });
-
+function MaquetteFicheDictee() {
+  // Chiffres coherents entre eux : 4,84 + 0,45 + 0,84 + 0,95 = 7,08 € de cout
+  // matiere ; 7,08 / 26,90 = 26,3 % ; 26,90 / 7,08 = coefficient 3,8.
+  const lignes = [
+    { n: 'Magret de canard', q: `220${NBSP}g`, p: `4,84${NBSP}€` },
+    { n: 'Pommes grenailles', q: `150${NBSP}g`, p: `0,45${NBSP}€` },
+    { n: 'Haricots verts', q: `80${NBSP}g`, p: `0,84${NBSP}€` },
+    { n: 'Sauce miel et thym', q: `6${NBSP}cl`, p: `0,95${NBSP}€` },
+  ];
+  // Forme d'onde figee (pas d'animation) : hauteurs deterministes.
+  const barres = Array.from({ length: 36 }, (_, i) => 6 + Math.round(24 * Math.abs(Math.sin(i * 0.9) * Math.cos(i * 0.31))));
   return (
-    <div className="rounded-2xl overflow-hidden bg-white"
-      style={{ border: `1px solid ${BORDER}`, boxShadow: `0 30px 80px -20px rgba(15, 23, 42, 0.18), 0 0 0 1px ${NEON_BLUE}1A, 0 0 60px ${ACCENT}1A` }}
-    >
-      {/* Header with mic icon */}
-      <div className="flex items-center gap-3 px-5 sm:px-6 py-4">
-        <div className="relative w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: ACCENT_BG }}>
-          <span className="absolute inset-0 rounded-full animate-ping opacity-40" style={{ background: ACCENT }} />
-          <Mic className="w-5 h-5 relative" style={{ color: ACCENT_DARK }} />
+    <div className="overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-[0_24px_60px_-28px_rgba(17,17,17,0.22)]">
+      <div className="flex items-center justify-between gap-3 border-b border-[#E5E7EB] px-4 py-3 sm:px-5">
+        <div className="flex items-center gap-2">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ECFDF5]">
+            <Mic className="h-4 w-4 text-[#047857]" aria-hidden="true" />
+          </span>
+          <span className="text-sm font-semibold text-[#111111]">Nouvelle fiche dictée</span>
         </div>
-        <div className="flex-1">
-          <div className="text-sm font-bold" style={{ color: TEXT }}>Nouvelle fiche · dictée</div>
-          <div className="text-xs flex items-center gap-1.5" style={{ color: ACCENT_DARK }}>
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            Enregistrement…
-          </div>
-        </div>
-        <div className="text-sm font-bold tabular-nums" style={{ ...MONO_STYLE, color: TEXT }}>
-          00:{String(seconds).padStart(2, '0')}
-        </div>
+        <span className="text-xs tabular-nums text-[#737373]">0:14</span>
       </div>
-
-      {/* Audio waveform */}
-      <div className="px-5 sm:px-6 pt-1 pb-3">
-        <div className="flex items-center justify-center gap-[3px] h-12">
-          {bars.map((h, i) => (
-            <span
-              key={i}
-              className="rounded-full"
-              style={{
-                width: 3,
-                height: `${Math.max(6, h * 0.36)}px`,
-                background: i < 16 ? ACCENT : ACCENT_DARK,
-                opacity: 0.4 + (h / 100) * 0.6,
-                animation: active ? `waveBar 0.8s ease-in-out ${i * 50}ms infinite alternate` : 'none',
-              }}
-            />
+      <div className="space-y-4 p-4 sm:p-5">
+        <div className="flex h-9 items-center justify-between overflow-hidden" aria-hidden="true">
+          {barres.map((h, i) => (
+            <span key={i} className="w-[3px] shrink-0 rounded-full bg-[#10B981]" style={{ height: h, opacity: 0.35 + h / 50 }} />
           ))}
         </div>
-      </div>
-
-      {/* Quote */}
-      <div className="px-5 sm:px-6 py-3">
-        <p className="text-sm leading-relaxed" style={{ color: TEXT }}>
-          <span className="text-lg font-bold" style={{ color: ACCENT_DARK }}>« </span>
-          Magret de canard, sauce miel et thym, pommes grenailles rôties, 220 g par portion, coefficient 3,8.
-          <span className="text-lg font-bold ml-0.5" style={{ color: ACCENT_DARK }}> »</span>
+        <p className="text-sm leading-relaxed text-[#111111]">
+          «{NBSP}Magret de canard sauce miel et thym, pommes grenailles et haricots verts. 220{NBSP}grammes de magret
+          par portion, coefficient 3,8.{NBSP}»
         </p>
-      </div>
-
-      {/* Divider with label */}
-      <div className="px-5 sm:px-6 py-2 flex items-center gap-3">
-        <div className="flex-1 h-px" style={{ background: BORDER }} />
-        <span className="text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: ACCENT_DARK }}>L'IA structure</span>
-        <div className="flex-1 h-px" style={{ background: BORDER }} />
-      </div>
-
-      {/* Recipe card */}
-      <div className="px-5 sm:px-6 pb-5 space-y-3">
+        <div className="flex items-center gap-3" aria-hidden="true">
+          <div className="h-px flex-1 bg-[#E5E7EB]" />
+          <span className="text-xs font-semibold text-[#047857]">Fiche générée</span>
+          <div className="h-px flex-1 bg-[#E5E7EB]" />
+        </div>
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h4 className="text-base font-extrabold" style={{ color: TEXT }}>Magret · sauce miel & thym</h4>
-            <p className="text-xs mt-0.5" style={{ color: TEXT_MUTED }}>Plat · 220 g · 1 portion</p>
+            <div className="text-base font-semibold text-[#111111]">Magret, sauce miel et thym</div>
+            <div className="mt-0.5 text-xs text-[#737373]">Plat · 1 portion</div>
           </div>
-          <div className="text-right shrink-0">
-            <div className="text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: TEXT_MUTED }}>Coût matière</div>
-            <div className="text-2xl font-extrabold tabular-nums" style={{ ...MONO_STYLE, color: ACCENT_DARK }}>7,08 €</div>
+          <div className="shrink-0 text-right">
+            <div className="text-xs text-[#737373]">Coût matière</div>
+            <div className="font-satoshi text-xl font-bold tabular-nums text-[#111111]">7,08{NBSP}€</div>
           </div>
         </div>
-
-        {/* Ingredient lines */}
-        <div className="space-y-1.5">
-          {[
-            { n: 'Magret de canard', q: '180 g', p: '3,42 €' },
-            { n: 'Pommes grenailles', q: '120 g', p: '0,82 €' },
-            { n: 'Miel de châtaignier', q: '15 g', p: '0,38 €' },
-            { n: 'Thym frais · ail · beurre', q: '—', p: '2,46 €' },
-          ].map((it) => (
-            <div key={it.n} className="rounded-lg px-3 py-2 grid grid-cols-[1fr_auto_auto] gap-3 items-center text-xs" style={{ background: ACCENT_BG }}>
-              <span className="text-right font-medium" style={{ color: TEXT }}>{it.n}</span>
-              <span className="font-semibold tabular-nums" style={{ ...MONO_STYLE, color: TEXT_MUTED, minWidth: 38 }}>{it.q}</span>
-              <span className="font-semibold tabular-nums" style={{ ...MONO_STYLE, color: TEXT, minWidth: 48 }}>{it.p}</span>
+        <div className="divide-y divide-[#F5F5F5] rounded-xl border border-[#E5E7EB]">
+          {lignes.map((l) => (
+            <div key={l.n} className="grid grid-cols-[1fr_auto_auto] items-center gap-4 px-3 py-2 text-xs">
+              <span className="text-[#111111]">{l.n}</span>
+              <span className="tabular-nums text-[#737373]">{l.q}</span>
+              <span className="w-14 text-right font-semibold tabular-nums text-[#111111]">{l.p}</span>
             </div>
           ))}
         </div>
-
-        {/* Stats row */}
-        <div className="grid grid-cols-3 gap-3 pt-2">
-          <div>
-            <div className="text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: TEXT_MUTED }}>Food cost</div>
-            <div className="mt-1 text-xl font-extrabold tabular-nums" style={{ ...MONO_STYLE, color: ACCENT_DARK }}>26,3 %</div>
-          </div>
-          <div>
-            <div className="text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: TEXT_MUTED }}>Coefficient</div>
-            <div className="mt-1 text-xl font-extrabold tabular-nums" style={{ ...MONO_STYLE, color: TEXT }}>×3,8</div>
-          </div>
-          <div>
-            <div className="text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: TEXT_MUTED }}>Prix de vente</div>
-            <div className="mt-1 text-xl font-extrabold tabular-nums" style={{ ...MONO_STYLE, color: ACCENT_DARK }}>26,90 €</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Carousel orchestrator ──────────────────────────────────────────────────
-function RichDashboardMockup() {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const tiltRef = useRef<HTMLDivElement>(null);
-
-  // Auto-cycle every 6.5s between the 2 variants. Pause on hover.
-  const [paused, setPaused] = useState(false);
-  useEffect(() => {
-    if (paused) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const id = setInterval(() => setActiveIdx((i) => (i === 0 ? 1 : 0)), 6500);
-    return () => clearInterval(id);
-  }, [paused]);
-
-  // 3D tilt sur scroll (lift Apple-style).
-  useEffect(() => {
-    const el = tiltRef.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        el,
-        { rotateX: 12, rotateY: -10, scale: 0.95 },
-        {
-          rotateX: 0,
-          rotateY: 0,
-          scale: 1,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: el, start: 'top 90%', end: 'top 30%', scrub: 0.6 },
-        }
-      );
-    });
-    return () => ctx.revert();
-  }, []);
-
-  // Pre-measure the taller variant so the wrapper height stays stable.
-  // Each variant is absolute-positioned in the wrapper; without a min-height
-  // the parent collapses on flip. Use min-height matching variant B (taller).
-  return (
-    <div
-      className="relative"
-      style={{ perspective: '1400px', perspectiveOrigin: '50% 60%' }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      <div ref={tiltRef} className="relative" style={{ transformStyle: 'preserve-3d' }}>
-        {/* Neon glow halo */}
-        <div
-          className="absolute inset-0 -z-10 rounded-3xl pointer-events-none"
-          style={{
-            background: `radial-gradient(ellipse at 30% 50%, ${ACCENT}33 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, ${NEON_BLUE}33 0%, transparent 50%)`,
-            filter: 'blur(40px)',
-            transform: 'translateZ(-40px) scale(1.05)',
-          }}
-        />
-
-        {/* 3D flip stage. Each variant occupies the same slot; non-active rotates Y to hide. */}
-        <div className="relative" style={{ transformStyle: 'preserve-3d', minHeight: '560px' }}>
-          <div
-            className="transition-all duration-700 ease-out"
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: activeIdx === 0 ? 'rotateY(0deg)' : 'rotateY(-90deg)',
-              opacity: activeIdx === 0 ? 1 : 0,
-              pointerEvents: activeIdx === 0 ? 'auto' : 'none',
-              position: activeIdx === 0 ? 'relative' : 'absolute',
-              inset: 0,
-              backfaceVisibility: 'hidden',
-            }}
-          >
-            <DashboardVariant active={activeIdx === 0} />
-          </div>
-          <div
-            className="transition-all duration-700 ease-out"
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: activeIdx === 1 ? 'rotateY(0deg)' : 'rotateY(90deg)',
-              opacity: activeIdx === 1 ? 1 : 0,
-              pointerEvents: activeIdx === 1 ? 'auto' : 'none',
-              position: activeIdx === 1 ? 'relative' : 'absolute',
-              inset: 0,
-              backfaceVisibility: 'hidden',
-            }}
-          >
-            <VoiceFicheVariant active={activeIdx === 1} />
-          </div>
-        </div>
-
-        {/* Carousel dots indicator */}
-        <div className="flex items-center justify-center gap-1.5 mt-4">
-          {[0, 1].map((i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setActiveIdx(i)}
-              aria-label={i === 0 ? 'Voir le dashboard' : 'Voir la fiche dictée'}
-              className="rounded-full transition-all"
-              style={{
-                width: activeIdx === i ? 24 : 6,
-                height: 6,
-                background: activeIdx === i ? ACCENT : '#CBD5E1',
-              }}
-            />
+        <div className="grid grid-cols-3 gap-3 pt-1">
+          {[
+            { l: 'Food cost', v: `26,3${NBSP}%`, vert: true },
+            { l: 'Coefficient', v: `×${NBSP}3,8` },
+            { l: 'Prix de vente HT', v: `26,90${NBSP}€`, vert: true },
+          ].map((s) => (
+            <div key={s.l}>
+              <div className="text-xs text-[#737373]">{s.l}</div>
+              <div className={`mt-0.5 font-satoshi text-lg font-bold tabular-nums ${s.vert ? 'text-[#047857]' : 'text-[#111111]'}`}>
+                {s.v}
+              </div>
+            </div>
           ))}
         </div>
       </div>
-
-      {/* Floating cards stay outside the carousel so they're visible on both variants */}
-      <div
-        className="hidden md:flex absolute items-center gap-2.5 rounded-xl bg-white shadow-2xl px-3 py-2.5"
-        style={{
-          left: '-20px',
-          bottom: '18%',
-          border: `1px solid ${ACCENT}33`,
-          boxShadow: `0 20px 40px rgba(15, 23, 42, 0.12), 0 0 24px ${ACCENT}22`,
-          animation: 'floatY 6s ease-in-out infinite',
-        }}
-      >
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: `linear-gradient(135deg, ${ACCENT_BG}, ${NEON_BLUE}22)`, color: ACCENT_DARK }}>
-          <Sparkles className="w-3.5 h-3.5" />
-        </div>
-        <div>
-          <div className="text-xs font-bold leading-tight" style={{ color: TEXT }}>Fiche technique générée</div>
-          <div className="text-[10px] mt-0.5" style={{ color: TEXT_MUTED }}>
-            <span style={{ ...MONO_STYLE, color: ACCENT_DARK, fontWeight: 600 }}>10,4 s</span> · Magret sauce miel
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="hidden md:flex absolute items-center gap-2.5 rounded-xl bg-white shadow-2xl px-3 py-2.5"
-        style={{
-          right: '-12px',
-          top: '6%',
-          border: `1px solid ${NEON_BLUE}33`,
-          boxShadow: `0 20px 40px rgba(15, 23, 42, 0.12), 0 0 24px ${NEON_BLUE}22`,
-          animation: 'floatY 7s ease-in-out -2s infinite',
-        }}
-      >
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: `linear-gradient(135deg, ${NEON_BLUE}22, ${ACCENT_BG})`, color: NEON_BLUE }}>
-          <BarChart3 className="w-3.5 h-3.5" />
-        </div>
-        <div>
-          <div className="text-xs font-bold leading-tight" style={{ color: TEXT }}>Coefficient appliqué</div>
-          <div className="text-[10px] mt-0.5" style={{ color: TEXT_MUTED }}>
-            <span style={{ ...MONO_STYLE, fontWeight: 600 }}>×3,8</span> → prix de vente <span style={{ ...MONO_STYLE, color: ACCENT_DARK, fontWeight: 600 }}>26,90 €</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// 01 — HERO
-// ═══════════════════════════════════════════════════════════════════════════
-function HeroKpis() {
-  // Format inspired from claude.design "RestauMargin Nouveau" — big number on top
-  // (mono font for the technical feel), small uppercase tracking-wide label below.
-  // Chaque accroche decrit une capacite REELLE du produit, verifiable dans le
-  // code : aucune statistique client, aucun resultat promis.
-  //  - essai 7 j sans CB  -> api-lib/routes/auth.ts (trialEndsAt = +7 j, aucun
-  //    moyen de paiement demande a l'inscription)
-  //  - inventaire         -> client/src/pages/Inventory.tsx, route /inventory
-  //  - historique de prix -> modele Prisma PriceHistory, affiche dans
-  //    Ingredients / Mercuriale / Suppliers / RecipeDetail
-  //  - mises a jour       -> changelog produit, page /actualites
-  const kpis = [
-    { value: '7 j', label: 'Essai gratuit sans CB' },
-    { value: 'Stock', label: 'Inventaire temps réel' },
-    { value: 'Suivi', label: 'Historique des prix' },
-    { value: 'Nouveau', label: 'Mises à jour régulières' },
+// Deux vues au choix du visiteur. L'ancien carrousel basculait seul toutes les
+// 6,5 s avec une rotation 3D et une inclinaison au defilement ; ici, rien ne
+// bouge tant qu'on ne clique pas.
+function ApercuProduit() {
+  const [vue, setVue] = useState<'tableau' | 'fiche'>('tableau');
+  const vues = [
+    { id: 'tableau' as const, label: 'Tableau de bord', Icone: LayoutDashboard },
+    { id: 'fiche' as const, label: 'Fiche dictée', Icone: Mic },
   ];
-  const containerRef = useStagger<HTMLDivElement>(0.12);
   return (
-    <div ref={containerRef} className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-10">
-      {kpis.map((k) => (
-        <div
-          key={k.label}
-          className="rounded-2xl px-4 py-4 sm:py-5"
-          style={{ background: 'white', border: `1px solid ${BORDER}` }}
-        >
-          <div
-            className="text-2xl sm:text-3xl font-extrabold tabular-nums tracking-tight"
-            style={{ color: TEXT, fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, monospace' }}
-          >
-            {k.value}
-          </div>
-          <div
-            className="text-[10px] sm:text-[11px] mt-1.5 font-semibold uppercase tracking-[0.12em]"
-            style={{ color: TEXT_MUTED }}
-          >
-            {k.label}
-          </div>
-        </div>
-      ))}
+    <div className="min-w-0">
+      <div role="group" aria-label="Choisir la vue de l’aperçu" className="mb-4 inline-flex rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] p-1">
+        {vues.map(({ id, label, Icone }) => {
+          const actif = vue === id;
+          return (
+            <button
+              key={id}
+              type="button"
+              aria-pressed={actif}
+              onClick={() => setVue(id)}
+              className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#047857] ${
+                actif ? 'bg-white text-[#111111] shadow-sm' : 'text-[#525252] hover:text-[#111111]'
+              }`}
+            >
+              <Icone className="h-4 w-4" aria-hidden="true" />
+              {label}
+            </button>
+          );
+        })}
+      </div>
+      {vue === 'tableau' ? <MaquetteTableauDeBord /> : <MaquetteFicheDictee />}
+      <p className="mt-3 text-xs text-[#737373]">Aperçu de l’application, données d’exemple.</p>
     </div>
+  );
+}
+
+// Faits verifiables en un clic (CLAUDE.md) : essai, tarif, fiches illimitees,
+// inventaire (client/src/pages/Inventory.tsx) et historique des prix (modele
+// PriceHistory). Aucune statistique client, aucun resultat promis.
+function FaitsProduit() {
+  const faits = [
+    { v: '7 jours', l: 'd’essai gratuit, sans carte bancaire' },
+    { v: `29${NBSP}€`, l: 'par mois, sans engagement' },
+    { v: 'Illimitées', l: 'fiches techniques' },
+    { v: 'Inventaire', l: 'et historique des prix fournisseurs' },
+  ];
+  return (
+    <ul className="mx-auto mt-14 grid max-w-7xl grid-cols-2 gap-3 sm:gap-4 lg:mt-20 lg:grid-cols-4">
+      {faits.map((f) => (
+        <li key={f.v} className={`${CARTE} px-4 py-4 sm:px-5 sm:py-5`}>
+          <div className="font-satoshi text-2xl font-bold tracking-tight text-[#111111] sm:text-3xl">{f.v}</div>
+          <div className="mt-1 text-sm leading-snug text-[#525252]">{f.l}</div>
+        </li>
+      ))}
+    </ul>
   );
 }
 
 function HeroSection() {
-  const ref = useReveal<HTMLDivElement>();
-  const bgRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = bgRef.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const ctx = gsap.context(() => {
-      gsap.to(el, {
-        yPercent: 18,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: el.parentElement,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
-      });
-    });
-    return () => ctx.revert();
-  }, []);
-
+  const atouts = [
+    'Coût matière recalculé dès qu’un prix change',
+    'Fiches techniques illimitées, allergènes compris',
+    'Alerte quand un fournisseur augmente ses prix',
+  ];
   return (
-    <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden isolate">
-      {/* Paper Fold shader inside the browser frame — animated folded paper
-          texture with neon emerald creases that follow the cursor. The
-          shader's own paper-white base (#FAFAF7) guarantees text contrast,
-          no veil needed on top. `isolate` on the parent + z-0 here creates
-          a fresh stacking context so the negative z-index of nothing below
-          us can clip the canvas. */}
-      <Suspense fallback={<div className="absolute inset-0 z-0 bg-[#FAFAF7]" />}>
-        <PaperFoldBackground intensity={1.0} className="z-0" />
-      </Suspense>
-      {/* Scroll parallax stub — visible above the shader, transparent. */}
-      <div
-        ref={bgRef}
-        className="absolute inset-0 z-0 pointer-events-none"
-      />
-      <div className="relative z-10 max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-        <div ref={ref}>
-          {/* Eyebrow badge with pulse dot — replaces the "01 RestauMargin" SectionNumber. */}
-          <span
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase tracking-[0.14em]"
-            style={{ background: ACCENT_BG, color: ACCENT_DARK, border: `1px solid ${ACCENT_LIGHT}` }}
-          >
-            <span className="relative flex w-2 h-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: ACCENT }} />
-              <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: ACCENT }} />
-            </span>
-            Pensee pour les restaurateurs
+    <section className="bg-white px-4 pb-16 pt-10 sm:px-6 sm:pt-14 lg:px-8 lg:pb-24 lg:pt-20">
+      <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
+        <div>
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#A7F3D0] bg-[#ECFDF5] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-[#047857]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" aria-hidden="true" />
+            Pensée pour les restaurateurs
           </span>
-          <h1 className="mt-6 text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.02] tracking-tight" style={{ color: TEXT }}>
-            Logiciel marge restaurant{' '}
+          {/* « Logiciel marge restaurant » reste en tete du H1 : la page est 1re
+              sur Google pour cette requete. */}
+          <h1 className="mt-6 font-satoshi text-4xl font-extrabold leading-[1.05] tracking-tight text-[#111111] sm:text-5xl lg:text-6xl">
+            Logiciel marge restaurant{NBSP}:
             <br />
-            <span style={{ color: ACCENT }}>qui transforme vos data en cash.</span>
+            <Vert>la marge réelle de chaque plat.</Vert>
           </h1>
-          <p className="mt-6 text-xl leading-relaxed" style={{ color: TEXT_MUTED }}>
-            Logiciel food cost restaurant + SaaS restauration tout-en-un : calcul marge resto en temps réel, fiches techniques IA et commandes fournisseurs automatisées.
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#525252] sm:text-xl">
+            RestauMargin calcule le coût de vos plats à partir de vos prix d’achat et réunit fiches techniques,
+            food cost, commandes fournisseurs et inventaire dans un seul outil.
           </p>
           <ul className="mt-8 space-y-3">
-            {['Marges optimisées', 'Fiches techniques en quelques clics', 'Analyse et alertes en temps réel'].map((item) => (
-              <li key={item} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: ACCENT }}>
-                  <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                </div>
-                <span className="text-base font-medium" style={{ color: TEXT }}>{item}</span>
+            {atouts.map((a) => (
+              <li key={a} className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#047857]">
+                  <Check className="h-3 w-3 text-white" strokeWidth={3} aria-hidden="true" />
+                </span>
+                <span className="text-base font-medium text-[#111111]">{a}</span>
               </li>
             ))}
           </ul>
-          <div className="mt-10 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-            <Link
-              to="/login?mode=register"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold text-base shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-              style={{ background: `linear-gradient(135deg, ${ACCENT} 0%, ${ACCENT_DARK} 100%)`, boxShadow: `0 12px 30px ${ACCENT}40`, '--tw-ring-color': ACCENT } as React.CSSProperties}
-            >
-              Essayer gratuitement <ArrowRight className="w-4 h-4" />
+          <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+            <Link to="/login?mode=register" className={BOUTON_PRINCIPAL}>
+              Essayer gratuitement <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
-            <span className="text-xs flex items-center gap-3 font-medium" style={{ color: TEXT_MUTED }}>
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: ACCENT }} />
-                7 jours gratuits
-              </span>
-              <span>·</span>
-              <span>Sans carte bancaire</span>
-            </span>
+            <p className="text-sm text-[#525252]">7 jours gratuits · Sans carte bancaire · Sans engagement</p>
           </div>
-          <HeroKpis />
         </div>
-        <div className="relative">
-          <RichDashboardMockup />
-        </div>
+        <ApercuProduit />
       </div>
+      <FaitsProduit />
     </section>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 02 — ROI CALCULATOR
+// SIMULATION (ex « calculateur d'economies »)
 // ═══════════════════════════════════════════════════════════════════════════
-function RoiCalculatorSection() {
-  const titleRef = useReveal<HTMLDivElement>();
-  const cardsRef = useReveal<HTMLDivElement>();
+
+// Avant : « Quatre points de marge recuperes sur des milliers de couverts »,
+// « sur la base de +4 pts de marge », « RETOUR ×7 », « DELAI 30 j » — des
+// resultats annonces sans aucune preuve, et un curseur « Plats a la carte » qui
+// n'entrait dans aucun calcul. Ici l'hypothese est CHOISIE par le visiteur, la
+// formule est affichee, et le rapport a l'abonnement dit ce qu'il compare.
+const JOURS_OUVERTURE = 26; // 6 jours sur 7 ; affiche dans la formule.
+const ABONNEMENT_PRO = 29; // € par mois, tarif public du plan Pro.
+
+function SimulationSection({ n }: { n: string }) {
   const [couverts, setCouverts] = useState(80);
-  const [prix, setPrix] = useState(18);
-  const [plats, setPlats] = useState(25);
-  // Same model as the claude.design "RestauMargin Nouveau" ROI card —
-  // 4 % marge récupérée × 20 % de l'amélioration adressable.
-  const monthly = Math.round(couverts * prix * 30 * 0.04 * 0.20);
-  const annual = monthly * 12;
-  const retour = Math.max(1, Math.round(monthly / 49));
-  const pulseRef = usePulseOnChange(monthly);
-  const fmtEur = (n: number) => n.toLocaleString('fr-FR');
+  const [ticket, setTicket] = useState(18);
+  const [points, setPoints] = useState(2);
 
-  const monoStyle = { fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, monospace' } as React.CSSProperties;
+  const caMensuel = couverts * ticket * JOURS_OUVERTURE;
+  const gainMensuel = Math.round((caMensuel * points) / 100);
+  const gainAnnuel = gainMensuel * 12;
+  const rapport = gainMensuel / ABONNEMENT_PRO;
+  const rapportTexte = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: rapport < 10 ? 1 : 0 }).format(rapport);
+  const pointsTexte = `${points}${NBSP}point${points > 1 ? 's' : ''}`;
 
-  // Slider rows extracted to drive a single map and shave repetition.
-  const rows = [
-    { label: 'Couverts par jour', value: couverts, set: setCouverts, min: 20, max: 300, suffix: '' },
-    { label: 'Ticket moyen', value: prix, set: setPrix, min: 8, max: 60, suffix: ' €' },
-    { label: 'Plats à la carte', value: plats, set: setPlats, min: 5, max: 80, suffix: '' },
+  const curseurs = [
+    { id: 'sim-couverts', label: 'Couverts par jour', valeur: couverts, set: setCouverts, min: 20, max: 300, pas: 5, format: (v: number) => String(v) },
+    { id: 'sim-ticket', label: 'Ticket moyen HT', valeur: ticket, set: setTicket, min: 8, max: 60, pas: 1, format: (v: number) => euros(v) },
+    {
+      id: 'sim-points',
+      label: 'Points de marge gagnés (hypothèse)',
+      valeur: points,
+      set: setPoints,
+      min: 1,
+      max: 5,
+      pas: 1,
+      format: (v: number) => `${v}${NBSP}point${v > 1 ? 's' : ''}`,
+    },
   ];
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
-      <div className="max-w-7xl mx-auto">
-        <div ref={titleRef} className="grid lg:grid-cols-[1fr_1fr] gap-8 lg:gap-12 items-start mb-10 lg:mb-14">
-          <div>
-            <SectionNumber n="02" label="Calcul de marge" />
-            <h2 className="text-4xl sm:text-5xl font-extrabold leading-[1.05] tracking-tight" style={{ color: TEXT }}>
-              Votre cuisine,
-              <br />
-              <span style={{ color: ACCENT }}>en chiffres.</span>
-            </h2>
-          </div>
-          <p className="text-base lg:text-lg lg:pt-16" style={{ color: TEXT_MUTED }}>
-            Quatre points de marge récupérés sur des milliers de couverts.
-            Bougez les curseurs : votre service vous parle.
-          </p>
-        </div>
+    <section className={`${SECTION} bg-[#FAFAFA]`}>
+      <div className="mx-auto max-w-7xl">
+        <EnTeteSection
+          n={n}
+          label="Simulation"
+          titre={<>Ce que valent <Vert>quelques points de marge.</Vert></>}
+          intro={`Indiquez votre activité et le gain de marge que vous visez${NBSP}: le calcul s’applique à votre propre chiffre d’affaires. C’est une simulation, pas une promesse de résultat.`}
+        />
 
-        <div ref={cardsRef} className="grid lg:grid-cols-2 gap-6 lg:gap-8">
-          {/* ── Sliders card ──────────────────────────────────────── */}
-          <div className="rounded-3xl p-6 sm:p-8 bg-white shadow-xl" style={{ border: `1px solid ${BORDER}` }}>
-            {rows.map((field, i) => (
-              <div key={field.label} className={i < rows.length - 1 ? 'mb-7' : ''}>
-                <div className="flex items-center justify-between mb-3">
-                  <label className="text-sm font-semibold" style={{ color: TEXT }}>
-                    {field.label}
+        <div className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
+          <div className={`${CARTE} flex flex-col rounded-3xl p-6 sm:p-8`}>
+            {curseurs.map((c, i) => (
+              <div key={c.id} className={i < curseurs.length - 1 ? 'mb-8' : ''}>
+                <div className="mb-3 flex items-center justify-between gap-4">
+                  <label htmlFor={c.id} className="text-sm font-semibold text-[#111111]">
+                    {c.label}
                   </label>
-                  <span
-                    className="px-3 py-1 rounded-full text-sm font-bold tabular-nums"
-                    style={{ ...monoStyle, background: ACCENT_BG, color: ACCENT_DARK }}
-                  >
-                    {field.value}{field.suffix}
+                  <span className="shrink-0 rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold tabular-nums text-[#047857]">
+                    {c.format(c.valeur)}
                   </span>
                 </div>
                 <input
+                  id={c.id}
                   type="range"
-                  min={field.min}
-                  max={field.max}
-                  value={field.value}
-                  onChange={(e) => field.set(parseInt(e.target.value))}
-                  className="w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-full"
-                  style={{ accentColor: ACCENT, '--tw-ring-color': ACCENT } as React.CSSProperties}
-                  aria-label={field.label}
+                  min={c.min}
+                  max={c.max}
+                  step={c.pas}
+                  value={c.valeur}
+                  onChange={(e) => c.set(Number(e.target.value))}
+                  className="w-full rounded-full accent-[#047857] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#047857] focus-visible:ring-offset-2"
                 />
-                <div className="flex justify-between text-xs mt-2" style={{ color: TEXT_MUTED }}>
-                  <span>{field.min}{field.suffix}</span>
-                  <span>{field.max}{field.suffix}</span>
+                <div className="mt-2 flex justify-between text-xs text-[#737373]">
+                  <span>{c.format(c.min)}</span>
+                  <span>{c.format(c.max)}</span>
                 </div>
               </div>
             ))}
+            <div className="mt-8 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] p-4 lg:mt-auto">
+              <div className="text-xs font-semibold text-[#111111]">Hypothèses du calcul</div>
+              <ul className="mt-2 space-y-1 text-xs leading-relaxed text-[#525252]">
+                <li>{JOURS_OUVERTURE}{NBSP}jours d’ouverture par mois (6{NBSP}jours sur{NBSP}7).</li>
+                <li>Montants hors taxes.</li>
+                <li>Un point de marge gagné = 1{NBSP}% du chiffre d’affaires conservé.</li>
+              </ul>
+            </div>
           </div>
 
-          {/* ── Result card ───────────────────────────────────────── */}
-          <div
-            ref={pulseRef}
-            className="rounded-3xl p-6 sm:p-8 bg-white shadow-xl transition-shadow duration-300 flex flex-col"
-            style={{ border: `1px solid ${BORDER}` }}
-          >
-            <div className="text-xs uppercase tracking-[0.18em] font-semibold" style={{ color: TEXT_MUTED }}>
-              Économies estimées
+          <div className={`${CARTE} flex flex-col rounded-3xl p-6 sm:p-8`} aria-live="polite">
+            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[#737373]">Résultat de la simulation</div>
+            <p className="mt-3 text-base text-[#111111]">
+              Si vous gagnez <strong className="font-semibold">{pointsTexte} de marge</strong>, cela représente{NBSP}:
+            </p>
+            <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="font-satoshi text-5xl font-extrabold tabular-nums leading-none text-[#111111] sm:text-6xl">
+                {euros(gainMensuel)}
+              </span>
+              <span className="text-lg text-[#525252]">par mois</span>
             </div>
-            <div className="mt-3 flex items-baseline gap-2">
-              <div
-                className="text-6xl sm:text-7xl font-extrabold tabular-nums leading-none"
-                style={{ ...monoStyle, color: TEXT }}
-              >
-                {fmtEur(monthly)}
+            <p className="mt-4 text-sm leading-relaxed text-[#525252]">
+              {couverts} couverts × {euros(ticket)} × {JOURS_OUVERTURE} jours d’ouverture = {euros(caMensuel)} de chiffre
+              d’affaires HT par mois. {points}{NBSP}% de ce montant = {euros(gainMensuel)}.
+            </p>
+
+            <dl className="mt-6 grid grid-cols-2 gap-4 border-t border-[#E5E7EB] pt-5">
+              <div>
+                <dt className="text-xs font-medium text-[#737373]">Sur un an</dt>
+                <dd className="mt-1 font-satoshi text-xl font-bold tabular-nums text-[#047857]">{euros(gainAnnuel)}</dd>
               </div>
-              <span className="text-2xl font-semibold" style={{ color: TEXT_MUTED }}>€</span>
-            </div>
-            <p className="mt-2 text-sm" style={{ color: TEXT_MUTED }}>
-              par mois — sur la base de +4 pts de marge
+              <div>
+                <dt className="text-xs font-medium text-[#737373]">Rapporté à l’abonnement Pro</dt>
+                <dd className="mt-1 font-satoshi text-xl font-bold tabular-nums text-[#111111]">{rapportTexte} fois</dd>
+                <dd className="mt-0.5 text-xs text-[#737373]">
+                  gain simulé ÷ {ABONNEMENT_PRO}{NBSP}€ d’abonnement mensuel
+                </dd>
+              </div>
+            </dl>
+
+            <p className="mt-5 text-xs leading-relaxed text-[#737373]">
+              Ordre de grandeur, pas une promesse{NBSP}: le résultat réel dépend de votre carte, de vos prix d’achat et
+              des décisions que vous prendrez.
             </p>
 
-            {/* Progress bar */}
-            <div className="mt-5 h-1.5 rounded-full overflow-hidden" style={{ background: '#F1F5F9' }}>
-              <div
-                className="h-full rounded-full transition-[width] duration-300"
-                style={{
-                  width: `${Math.min(100, monthly / 60)}%`,
-                  background: `linear-gradient(90deg, ${ACCENT}, ${ACCENT_DARK})`,
-                }}
-              />
-            </div>
-
-            {/* /AN · RETOUR · DÉLAI grid */}
-            <div className="mt-6 grid grid-cols-3 gap-3 sm:gap-4">
-              {[
-                { l: '/ AN', v: `${fmtEur(annual)} €`, accent: true },
-                { l: 'RETOUR', v: `×${retour}`, accent: false },
-                { l: 'DÉLAI', v: '30 j', accent: false },
-              ].map((s) => (
-                <div key={s.l}>
-                  <div
-                    className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.14em] mb-1"
-                    style={{ color: TEXT_MUTED }}
-                  >
-                    {s.l}
-                  </div>
-                  <div
-                    className="text-lg sm:text-xl font-extrabold tabular-nums"
-                    style={{ ...monoStyle, color: s.accent ? ACCENT_DARK : TEXT }}
-                  >
-                    {s.v}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <Link
-              to="/login?mode=register"
-              className="mt-6 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-              style={{
-                background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`,
-                boxShadow: `0 12px 30px ${ACCENT}40`,
-                '--tw-ring-color': ACCENT,
-              } as React.CSSProperties}
-            >
-              Lancer mon essai 7 jours <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              to="/outils/calculateur-marge-restaurant"
-              className="mt-3 inline-flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors hover:underline"
-              style={{ color: ACCENT_DARK }}
-            >
-              <Calculator className="w-4 h-4" />
-              Ou calculez la marge d'un plat — outil gratuit, sans inscription
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 03 — PRICING
-// ═══════════════════════════════════════════════════════════════════════════
-function PricingSection() {
-  const ref = useReveal<HTMLDivElement>();
-  const [annual, setAnnual] = useState(false);
-
-  const pricing = {
-    pro: { monthly: 29, annual: 23, features: ['Fiches techniques illimitées', '19 actions IA', 'Commandes fournisseurs', 'Scanner de factures IA', '500 requêtes IA / mois'] },
-    business: { monthly: 79, annual: 63, features: ['Tout du plan Pro', 'Multi-restaurants', '2000 requêtes IA / mois', 'Rapports IA hebdomadaires', 'Menu Engineering', 'Support prioritaire'] },
-  };
-
-  return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-      <div ref={ref} className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-start mb-12">
-          <div>
-            <SectionNumber n="03" label="Tarifs" />
-            <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
-              Des tarifs <span style={{ color: ACCENT }}>simples</span>
-              <br />
-              et <span style={{ color: ACCENT }}>transparents</span>
-            </h2>
-            <p className="mt-4 text-lg" style={{ color: TEXT_MUTED }}>
-              Sans engagement. Annulez quand vous voulez.
-            </p>
-          </div>
-          <div className="flex justify-start lg:justify-end">
-            <div className="inline-flex items-center gap-1 p-1 rounded-full" style={{ background: '#F5F5F5' }}>
-              <button
-                type="button"
-                onClick={() => setAnnual(false)}
-                className="px-5 py-2 rounded-full text-sm font-semibold transition-all"
-                style={{ background: !annual ? 'white' : 'transparent', color: !annual ? TEXT : TEXT_MUTED, boxShadow: !annual ? '0 1px 3px rgba(0,0,0,0.06)' : 'none' }}
-              >Mensuel</button>
-              <button
-                type="button"
-                onClick={() => setAnnual(true)}
-                className="px-5 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2"
-                style={{ background: annual ? 'white' : 'transparent', color: annual ? TEXT : TEXT_MUTED, boxShadow: annual ? '0 1px 3px rgba(0,0,0,0.06)' : 'none' }}
-              >
-                Annuel
-                <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ background: ACCENT, color: 'white' }}>-20%</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <div
-            className="rounded-3xl p-8 bg-white transition-all duration-200 hover:-translate-y-1"
-            style={{ border: `1px solid ${BORDER}`, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }}
-          >
-            <h3 className="text-2xl font-bold mb-4" style={{ color: TEXT }}>Pro</h3>
-            <div className="flex items-baseline gap-1 mb-2">
-              <span className="text-5xl font-extrabold" style={{ color: TEXT }}>
-                {annual ? pricing.pro.annual : pricing.pro.monthly}
-              </span>
-              <span className="text-lg font-semibold" style={{ color: TEXT_MUTED }}>€/mois</span>
-            </div>
-            {annual && (
-              <p className="text-xs font-semibold mb-6" style={{ color: ACCENT_DARK }}>
-                Soit {pricing.pro.annual * 12} €/an au lieu de {pricing.pro.monthly * 12} €
-              </p>
-            )}
-            <ul className="space-y-3 mb-8">
-              {pricing.pro.features.map((feat) => (
-                <li key={feat} className="flex items-start gap-3 text-sm" style={{ color: TEXT }}>
-                  <Check className="w-5 h-5 shrink-0 mt-0.5" style={{ color: ACCENT_DARK }} strokeWidth={2.5} />
-                  <span>{feat}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/login?mode=register"
-              className="block w-full text-center py-3.5 rounded-xl font-bold text-sm transition-all hover:bg-mono-975 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-              style={{ background: 'white', color: TEXT, border: `2px solid ${BORDER}`, '--tw-ring-color': ACCENT } as React.CSSProperties}
-            >Commencer l'essai gratuit</Link>
-          </div>
-
-          <div
-            className="rounded-3xl p-8 bg-white relative transition-all duration-200 hover:-translate-y-1"
-            style={{ border: `2px solid ${ACCENT}`, boxShadow: `0 20px 40px ${ACCENT}1A` }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = `0 28px 48px ${ACCENT}28`; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = `0 20px 40px ${ACCENT}1A`; }}
-          >
-            <div
-              className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider animate-pulse-badge"
-              style={{ background: ACCENT, color: 'white' }}
-            >
-              Populaire
-            </div>
-            <h3 className="text-2xl font-bold mb-4" style={{ color: TEXT }}>Business</h3>
-            <div className="flex items-baseline gap-1 mb-2">
-              <span className="text-5xl font-extrabold" style={{ color: TEXT }}>
-                {annual ? pricing.business.annual : pricing.business.monthly}
-              </span>
-              <span className="text-lg font-semibold" style={{ color: TEXT_MUTED }}>€/mois</span>
-            </div>
-            {annual && (
-              <p className="text-xs font-semibold mb-6" style={{ color: ACCENT_DARK }}>
-                Soit {pricing.business.annual * 12} €/an au lieu de {pricing.business.monthly * 12} €
-              </p>
-            )}
-            <ul className="space-y-3 mb-8">
-              {pricing.business.features.map((feat) => (
-                <li key={feat} className="flex items-start gap-3 text-sm" style={{ color: TEXT }}>
-                  <Check className="w-5 h-5 shrink-0 mt-0.5" style={{ color: ACCENT_DARK }} strokeWidth={2.5} />
-                  <span>{feat}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/login?mode=register"
-              className="block w-full text-center py-3.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-              style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, boxShadow: `0 12px 30px ${ACCENT}40`, '--tw-ring-color': ACCENT } as React.CSSProperties}
-            >Commencer l'essai gratuit</Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 04 — FONCTIONNALITÉS
-// ═══════════════════════════════════════════════════════════════════════════
-function FeaturesSection() {
-  const titleRef = useReveal<HTMLDivElement>();
-  const gridRef = useStagger<HTMLDivElement>(0.06);
-  // 8 features (port from claude.design "RestauMargin Nouveau" Features grid).
-  const features = [
-    { icon: Send, title: 'Commandes fournisseurs en 1 clic', body: 'Email ou WhatsApp envoyés directement depuis la mercuriale, avec votre BL pré-rempli.', slug: 'commandes-fournisseurs' },
-    { icon: Sparkles, title: "L'IA qui parle cuisine", body: "Dictez la recette, l'IA structure ingrédients, allergènes et coût. Pas de jargon SaaS.", slug: 'ia-cuisine' },
-    { icon: ClipboardList, title: 'Fiches techniques en 10 s', body: 'Food cost, marge, coefficient, allergènes — calculés en temps réel, prêts pour l\'inspection.', slug: 'fiches-techniques' },
-    { icon: Truck, title: 'Mercuriale & alertes prix', body: 'Suivi automatique des prix par fournisseur. Alerte dès que le beurre dérive.', slug: 'mercuriale-alertes-prix' },
-    { icon: Scale, title: 'Pesage Bluetooth', body: 'Balance connectée à la fiche, en plein service. Plus de Post-it sur le plan de travail.', slug: 'pesage-bluetooth' },
-    { icon: Thermometer, title: 'HACCP digital', body: 'Températures, nettoyage, traçabilité — un tap. Inspection : un PDF. Fini le classeur.', slug: 'haccp-digital' },
-    { icon: Camera, title: 'OCR factures', body: 'Photo de la facture, prix injectés dans la mercuriale en 4 secondes. Aucune saisie.', slug: 'ocr-factures' },
-    { icon: TrendingUp, title: 'Menu Engineering', body: 'Stars, puzzles, plowhorses, dogs. Sait quel plat sortir de la carte avant qu\'il vous coûte cher.', slug: 'menu-engineering' },
-  ];
-
-  const monoStyle = { fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, monospace' } as React.CSSProperties;
-
-  return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-[1fr_1fr] gap-8 lg:gap-12 items-start mb-10 lg:mb-14">
-          <div ref={titleRef}>
-            <SectionNumber n="04" label="Fonctionnalités" />
-            <h2 className="text-4xl sm:text-5xl font-extrabold leading-[1.05] tracking-tight" style={{ color: TEXT }}>
-              Tout ce qu'il faut
-              <br />
-              pour piloter une
-              <br />
-              <span style={{ color: ACCENT }}>cuisine rentable.</span>
-            </h2>
-          </div>
-          <p className="text-base lg:text-lg lg:pt-24" style={{ color: TEXT_MUTED }}>
-            Huit modules qui se parlent — pas une suite d'outils dispersés.
-            Construits avec des chefs, sur le pass, à 23 h.
-          </p>
-        </div>
-        <div ref={gridRef} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
-          {features.map((f, i) => {
-            const Icon = f.icon;
-            const num = String(i + 1).padStart(2, '0');
-            return (
-              <Link
-                to={`/fonctionnalites/${f.slug}`}
-                key={f.title}
-                className="rounded-2xl p-5 lg:p-6 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-md group flex flex-col no-underline"
-                style={{ border: `1px solid ${BORDER}`, textDecoration: 'none' }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget;
-                  el.style.borderColor = ACCENT;
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget;
-                  el.style.borderColor = BORDER;
-                }}
-              >
-                <div className="text-xs font-semibold mb-3" style={{ ...monoStyle, color: TEXT_MUTED }}>
-                  {num}
-                </div>
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 transition-transform duration-200 group-hover:scale-110"
-                  style={{ background: ACCENT_BG, color: ACCENT_DARK }}
-                >
-                  <Icon className="w-5 h-5" />
-                </div>
-                <h3 className="text-sm sm:text-base font-bold mb-2" style={{ color: TEXT }}>
-                  {f.title}
-                </h3>
-                <p className="text-xs sm:text-sm leading-relaxed mb-3" style={{ color: TEXT_MUTED }}>
-                  {f.body}
-                </p>
-                <span className="mt-auto text-xs font-semibold inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: ACCENT_DARK }}>
-                  En savoir plus →
-                </span>
+            <div className="mt-auto pt-6">
+              <Link to="/login?mode=register" className={`${BOUTON_PRINCIPAL} w-full`}>
+                Lancer mon essai de 7 jours <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-            );
-          })}
+              <Link
+                to="/outils/calculateur-marge-restaurant"
+                className="mt-3 flex items-center justify-center gap-1.5 text-center text-sm font-semibold text-[#047857] hover:underline"
+              >
+                <Calculator className="h-4 w-4 shrink-0" aria-hidden="true" />
+                Ou calculez la marge d’un plat avec l’outil gratuit, sans inscription
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1093,164 +501,252 @@ function FeaturesSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 05 — PROCESSUS
+// TARIFS
 // ═══════════════════════════════════════════════════════════════════════════
-function ProcessSection() {
-  const titleRef = useReveal<HTMLDivElement>();
-  const stepsRef = useStagger<HTMLDivElement>(0.15);
-  const timelineRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = timelineRef.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const ctx = gsap.context(() => {
-      gsap.from(el, {
-        scaleX: 0,
-        transformOrigin: 'left center',
-        duration: 1.2,
-        ease: 'power2.out',
-        scrollTrigger: { trigger: el, start: 'top 80%', toggleActions: 'play none none none' },
-      });
-    });
-    return () => ctx.revert();
-  }, []);
-
-  const steps = [
-    { n: '01', icon: ScanLine, title: 'Ajoutez vos ingrédients', desc: "Importez votre liste depuis Excel ou dictez-les à l'IA. Prix, fournisseurs, unités : tout est organisé automatiquement." },
-    { n: '02', icon: ClipboardList, title: 'Créez vos fiches techniques', desc: "L'assistant IA génère vos fiches en 10 secondes. Food cost, marge, allergènes, coefficient — calculés en temps réel." },
-    { n: '03', icon: BarChart3, title: 'Optimisez vos marges', desc: "Dashboard KPIs, alertes prix fournisseurs, Menu Engineering. Vos marges s'améliorent dès le premier jour." },
+function PricingSection({ n }: { n: string }) {
+  const [annuel, setAnnuel] = useState(false);
+  // Memes prix que /pricing (annuel = mensuel × 0,8, arrondi) et que Stripe.
+  const offres = [
+    {
+      nom: 'Pro',
+      pour: 'Pour un restaurant indépendant',
+      mensuel: 29,
+      annuel: 23,
+      fonctions: ['Fiches techniques illimitées', '19 actions IA', 'Commandes fournisseurs', 'Lecture des factures par IA', '500 requêtes IA par mois'],
+    },
+    {
+      nom: 'Business',
+      pour: 'Pour plusieurs établissements',
+      mensuel: 79,
+      annuel: 63,
+      fonctions: ['Tout le plan Pro', 'Plusieurs établissements', '2 000 requêtes IA par mois', 'Rapport IA hebdomadaire', 'Ingénierie de menu', 'Support prioritaire'],
+    },
   ];
+
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
-      <div ref={titleRef} className="max-w-6xl mx-auto">
-        <SectionNumber n="05" label="Processus" />
-        <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
-          Trois étapes <span style={{ color: ACCENT }}>simples</span>
-        </h2>
-        <p className="mt-4 text-lg" style={{ color: TEXT_MUTED }}>
-          De l'inscription à l'optimisation de vos marges en quelques minutes.
-        </p>
-        <div className="mt-16 relative">
-          {/* Animated dotted timeline */}
-          <div
-            ref={timelineRef}
-            className="hidden md:block absolute top-7 left-[calc(16.67%+28px)] right-[calc(16.67%+28px)] h-px -z-10"
-            style={{ backgroundImage: `repeating-linear-gradient(to right, ${ACCENT} 0 8px, transparent 8px 16px)` }}
-          />
-          <div ref={stepsRef} className="grid md:grid-cols-3 gap-6">
-            {steps.map((step) => {
-              const Icon = step.icon;
+    <section id="tarifs" className={`${SECTION} scroll-mt-20 bg-white`}>
+      <div className="mx-auto max-w-7xl">
+        <EnTeteSection
+          n={n}
+          label="Tarifs"
+          titre={<>Des tarifs <Vert>simples</Vert> et <Vert>transparents.</Vert></>}
+          intro={`Sans engagement${NBSP}: vous arrêtez quand vous voulez. Chaque offre commence par 7${NBSP}jours d’essai gratuit, sans carte bancaire.`}
+        />
+
+        <div className="mt-10 flex justify-center lg:mt-12">
+          <div role="group" aria-label="Période de facturation" className="inline-flex items-center gap-1 rounded-full bg-[#F5F5F5] p-1">
+            {[
+              { val: false, label: 'Mensuel' },
+              { val: true, label: 'Annuel' },
+            ].map((o) => {
+              const actif = annuel === o.val;
               return (
-                <div key={step.n} className="text-center">
-                  <div
-                    className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-4 font-mono font-bold text-sm transition-transform duration-200 hover:scale-110"
-                    style={{ background: 'white', border: `2px solid ${ACCENT}`, color: ACCENT_DARK }}
-                  >
-                    {step.n}
-                  </div>
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4 mx-auto" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
-                    <Icon className="w-6 h-6" style={{ color: ACCENT_DARK }} />
-                  </div>
-                  <h3 className="text-lg font-bold mb-2" style={{ color: TEXT }}>{step.title}</h3>
-                  <p className="text-sm leading-relaxed max-w-xs mx-auto" style={{ color: TEXT_MUTED }}>{step.desc}</p>
-                </div>
+                <button
+                  key={o.label}
+                  type="button"
+                  aria-pressed={actif}
+                  onClick={() => setAnnuel(o.val)}
+                  className={`flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#047857] ${
+                    actif ? 'bg-white text-[#111111] shadow-sm' : 'text-[#525252] hover:text-[#111111]'
+                  }`}
+                >
+                  {o.label}
+                  {o.val && (
+                    <span className="rounded-full bg-[#ECFDF5] px-2 py-0.5 text-xs font-semibold text-[#047857]">
+                      −20{NBSP}%
+                    </span>
+                  )}
+                </button>
               );
             })}
           </div>
         </div>
+
+        <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-2">
+          {offres.map((o) => {
+            const prix = annuel ? o.annuel : o.mensuel;
+            return (
+              <div key={o.nom} className={`${CARTE} flex flex-col rounded-3xl p-7 sm:p-8`}>
+                <h3 className="font-satoshi text-2xl font-bold text-[#111111]">{o.nom}</h3>
+                <p className="mt-1 text-sm text-[#525252]">{o.pour}</p>
+                <div className="mt-6 flex items-baseline gap-2">
+                  <span className="font-satoshi text-5xl font-extrabold tabular-nums text-[#111111]">{euros(prix)}</span>
+                  <span className="text-base text-[#525252]">par mois</span>
+                </div>
+                {/* Ligne toujours presente : le bloc ne saute pas quand on bascule. */}
+                <p className={`mt-2 min-h-[20px] text-sm ${annuel ? 'text-[#047857]' : 'text-[#737373]'}`}>
+                  {annuel ? `Soit ${euros(o.annuel * 12)} par an au lieu de ${euros(o.mensuel * 12)}` : 'Facturation mensuelle'}
+                </p>
+                <ul className="mt-6 flex-1 space-y-3">
+                  {o.fonctions.map((f) => (
+                    <li key={f} className="flex items-start gap-3 text-sm text-[#111111]">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#047857]" strokeWidth={2.5} aria-hidden="true" />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/login?mode=register" className={`${BOUTON_PRINCIPAL} mt-8 w-full`}>
+                  Commencer l’essai gratuit
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="mt-8 text-center text-sm text-[#525252]">
+          Plusieurs sites ou besoin d’un accompagnement{NBSP}?{' '}
+          <Link to="/pricing" className="font-semibold text-[#047857] hover:underline">
+            Voir toutes les offres
+          </Link>
+        </p>
       </div>
     </section>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 06 — TÉMOIGNAGES
+// FONCTIONNALITES
 // ═══════════════════════════════════════════════════════════════════════════
-function TestimonialsSection() {
-  const titleRef = useReveal<HTMLDivElement>();
-  const cardsRef = useRef<HTMLDivElement>(null);
+function FeaturesSection({ n }: { n: string }) {
+  const fonctions = [
+    { Icone: Send, titre: 'Commandes fournisseurs en un clic', texte: 'Le bon de commande part par e-mail ou WhatsApp depuis la mercuriale, prérempli avec vos quantités.', slug: 'commandes-fournisseurs' },
+    { Icone: Sparkles, titre: 'Un assistant IA qui parle cuisine', texte: `Dictez la recette${NBSP}: l’assistant structure les ingrédients, les allergènes et le coût.`, slug: 'ia-cuisine' },
+    { Icone: ClipboardList, titre: 'Fiches techniques complètes', texte: 'Food cost, marge, coefficient et allergènes calculés automatiquement, prêts pour un contrôle.', slug: 'fiches-techniques' },
+    { Icone: Truck, titre: 'Mercuriale et alertes de prix', texte: 'Les prix de chaque fournisseur sont suivis, et vous êtes alerté dès qu’un produit augmente.', slug: 'mercuriale-alertes-prix' },
+    { Icone: Scale, titre: 'Pesage Bluetooth', texte: 'Une balance reliée à la fiche technique pour respecter les grammages en plein service.', slug: 'pesage-bluetooth' },
+    { Icone: Thermometer, titre: 'HACCP numérique', texte: 'Relevés de températures, plan de nettoyage et traçabilité sur tablette, exportables en PDF.', slug: 'haccp-digital' },
+    { Icone: Camera, titre: 'Lecture des factures', texte: `Photographiez une facture${NBSP}: les prix sont reportés dans la mercuriale, sans ressaisie.`, slug: 'ocr-factures' },
+    { Icone: TrendingUp, titre: 'Ingénierie de menu', texte: 'Chaque plat classé selon sa popularité et sa marge, pour savoir lesquels mettre en avant ou retirer.', slug: 'menu-engineering' },
+  ];
 
-  useEffect(() => {
-    const container = cardsRef.current;
-    if (!container) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const cards = Array.from(container.children) as HTMLElement[];
-    const xOffsets = [-60, 0, 60];
-    const ctx = gsap.context(() => {
-      cards.forEach((card, i) => {
-        gsap.from(card, {
-          x: xOffsets[i] ?? 0,
-          opacity: 0,
-          duration: 0.75,
-          ease: 'power3.out',
-          delay: i * 0.12,
-          scrollTrigger: { trigger: container, start: 'top 85%', toggleActions: 'play none none none' },
-        });
-      });
-    });
-    return () => ctx.revert();
-  }, []);
+  return (
+    <section id="fonctionnalites" className={`${SECTION} scroll-mt-20 bg-[#FAFAFA]`}>
+      <div className="mx-auto max-w-7xl">
+        <EnTeteSection
+          n={n}
+          label="Fonctionnalités"
+          titre={<>Tout ce qu’il faut pour piloter <Vert>une cuisine rentable.</Vert></>}
+          intro={`Huit modules reliés entre eux${NBSP}: quand un prix fournisseur change, vos fiches techniques et vos marges se mettent à jour.`}
+        />
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-5">
+          {fonctions.map(({ Icone, titre, texte, slug }, i) => (
+            <Link
+              key={slug}
+              to={`/fonctionnalites/${slug}`}
+              className={`${CARTE} group flex flex-col p-5 transition-colors hover:border-[#047857] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#047857] lg:p-6`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#047857]">
+                  <Icone className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <span className="text-xs font-semibold tabular-nums text-[#A3A3A3]">{String(i + 1).padStart(2, '0')}</span>
+              </div>
+              <h3 className="mt-4 text-base font-semibold text-[#111111]">{titre}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#525252]">{texte}</p>
+              <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-semibold text-[#047857]">
+                En savoir plus <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
-  // FIX 2026-09-24 : ce tableau contenait TROIS temoignages entierement inventes
-  // — Laurent Dubois (Le Jardin des Saveurs, Lyon), Sophie Martin (Brasserie Le
-  // Comptoir, Paris), Karim Benali (Street Flavors, Bordeaux) — note cinq etoiles
-  // et resultats chiffres a l'appui ("+4 points de marge", "de 34 % a 27 %",
-  // "800 € economises"). Aucun de ces clients n'existe : la base compte une
-  // vingtaine de comptes et aucun abonne payant.
-  // Publier de faux avis de consommateurs est une pratique commerciale trompeuse
-  // (Code de la consommation, art. L121-2 et suivants). Et sur le fond : un
-  // prospect qui cherche "Le Jardin des Saveurs Lyon" et ne trouve rien est perdu
-  // definitivement — la fausse preuve sociale coute plus cher que son absence.
-  //
-  // Le tableau est VIDE, pas supprime : y remettre de vrais temoignages, obtenus
-  // et autorises par leurs auteurs, suffit a rallumer la section.
-  const testimonials: Array<{
-    stars: number; quote: string; initials: string;
-    name: string; role: string; restaurant: string;
-  }> = [];
+// ═══════════════════════════════════════════════════════════════════════════
+// MISE EN ROUTE
+// ═══════════════════════════════════════════════════════════════════════════
+function ProcessSection({ n }: { n: string }) {
+  const etapes = [
+    { n: '1', titre: 'Ajoutez vos ingrédients', texte: 'Importez votre liste en fichier CSV (exportable depuis Excel) ou dictez-la. Prix, fournisseurs et unités sont rangés au même endroit.' },
+    { n: '2', titre: 'Créez vos fiches techniques', texte: 'Décrivez le plat, l’assistant prépare la fiche. Food cost, marge, allergènes et coefficient sont calculés automatiquement.' },
+    { n: '3', titre: 'Pilotez vos marges', texte: `Tableau de bord, alertes de prix et ingénierie de menu${NBSP}: vous voyez où agir, plat par plat.` },
+  ];
+  return (
+    <section className={`${SECTION} bg-white`}>
+      <div className="mx-auto max-w-7xl">
+        <EnTeteSection
+          n={n}
+          label="Mise en route"
+          titre={<>Trois étapes <Vert>pour démarrer.</Vert></>}
+          intro="De l’inscription à vos premières fiches techniques chiffrées."
+        />
+        <div className="relative mt-14 lg:mt-16">
+          <div
+            className="absolute left-[16.67%] right-[16.67%] top-6 hidden h-px md:block"
+            style={{ backgroundImage: 'repeating-linear-gradient(to right, #A7F3D0 0 8px, transparent 8px 16px)' }}
+            aria-hidden="true"
+          />
+          <ol className="grid gap-10 md:grid-cols-3 md:gap-8">
+            {etapes.map((e) => (
+              <li key={e.n} className="relative text-center">
+                <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border-2 border-[#047857] bg-white font-satoshi text-base font-bold tabular-nums text-[#047857]">
+                  {e.n}
+                </span>
+                <h3 className="mt-5 text-lg font-semibold text-[#111111]">{e.titre}</h3>
+                <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-[#525252]">{e.texte}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+  );
+}
 
+// ═══════════════════════════════════════════════════════════════════════════
+// TEMOIGNAGES
+// ═══════════════════════════════════════════════════════════════════════════
+type Temoignage = {
+  stars: number; quote: string; initials: string;
+  name: string; role: string; restaurant: string;
+};
+
+// FIX 2026-09-24 : ce tableau contenait TROIS temoignages entierement inventes
+// — Laurent Dubois (Le Jardin des Saveurs, Lyon), Sophie Martin (Brasserie Le
+// Comptoir, Paris), Karim Benali (Street Flavors, Bordeaux) — note cinq etoiles
+// et resultats chiffres a l'appui ("+4 points de marge", "de 34 % a 27 %",
+// "800 € economises"). Aucun de ces clients n'existe : la base compte une
+// vingtaine de comptes et aucun abonne payant.
+// Publier de faux avis de consommateurs est une pratique commerciale trompeuse
+// (Code de la consommation, art. L121-2 et suivants). Et sur le fond : un
+// prospect qui cherche "Le Jardin des Saveurs Lyon" et ne trouve rien est perdu
+// definitivement — la fausse preuve sociale coute plus cher que son absence.
+//
+// Le tableau est VIDE, pas supprime : y remettre de vrais temoignages, obtenus
+// et autorises par leurs auteurs, suffit a rallumer la section — son ancre
+// #temoignages et son numero (les sections suivantes se renumerotent seules).
+const testimonials: Temoignage[] = [];
+
+function TestimonialsSection({ n }: { n: string }) {
   // Sans temoignage reel, on n'affiche pas une section vide : on n'affiche rien.
   if (testimonials.length === 0) return null;
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <div ref={titleRef} className="text-center mb-12">
-          <div className="flex justify-center"><SectionNumber n="06" label="Témoignages" /></div>
-          <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
-            Ils ont <span style={{ color: ACCENT }}>transformé</span>
-            <br />
-            leurs marges
-          </h2>
-          <p className="mt-4 text-lg" style={{ color: TEXT_MUTED }}>
-            Des restaurateurs comme vous partagent leur expérience.
-          </p>
-        </div>
-        <div ref={cardsRef} className="grid md:grid-cols-3 gap-6">
+    <section id="temoignages" className={`${SECTION} scroll-mt-20 bg-white`}>
+      <div className="mx-auto max-w-7xl">
+        <EnTeteSection n={n} label="Témoignages" titre={<>Ils en <Vert>parlent.</Vert></>} />
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
           {testimonials.map((t) => (
-            <div
-              key={t.name}
-              className="rounded-3xl p-7 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
-              style={{ border: `1px solid ${BORDER}` }}
-            >
-              <div className="flex gap-0.5 mb-4">
+            <figure key={t.name} className={`${CARTE} flex flex-col rounded-3xl p-7`}>
+              <div className="mb-4 flex gap-0.5" role="img" aria-label={`${t.stars} sur 5`}>
                 {Array.from({ length: t.stars }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-current" style={{ color: '#0F172A' }} />
+                  <Star key={i} className="h-4 w-4 fill-current text-[#111111]" aria-hidden="true" />
                 ))}
               </div>
-              <p className="text-sm leading-relaxed mb-6" style={{ color: TEXT }}>"{t.quote}"</p>
-              <div className="pt-5 mt-auto flex items-center gap-3" style={{ borderTop: `1px solid ${BORDER}` }}>
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
+              <blockquote className="mb-6 text-sm leading-relaxed text-[#111111]">«{NBSP}{t.quote}{NBSP}»</blockquote>
+              <figcaption className="mt-auto flex items-center gap-3 border-t border-[#E5E7EB] pt-5">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFDF5] text-xs font-semibold text-[#047857]">
                   {t.initials}
-                </div>
-                <div>
-                  <div className="text-sm font-bold" style={{ color: TEXT }}>{t.name}</div>
-                  <div className="text-xs" style={{ color: TEXT_MUTED }}>{t.role}</div>
-                  <div className="text-xs" style={{ color: TEXT_MUTED }}>{t.restaurant}</div>
-                </div>
-              </div>
-            </div>
+                </span>
+                <span>
+                  <span className="block text-sm font-semibold text-[#111111]">{t.name}</span>
+                  <span className="block text-xs text-[#525252]">{t.role}</span>
+                  <span className="block text-xs text-[#525252]">{t.restaurant}</span>
+                </span>
+              </figcaption>
+            </figure>
           ))}
         </div>
       </div>
@@ -1259,53 +755,62 @@ function TestimonialsSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 07 — TUTORIELS ANIMÉS — 5 mockups TSX réalistes des écrans de l'app
+// APERCU — cinq ecrans de l'application, avec des donnees d'exemple
 // ═══════════════════════════════════════════════════════════════════════════
+// Plus de faux chrome de navigateur (pastilles, adresse « app.restaumargin.fr »
+// tapee lettre par lettre, voyant « Live »), plus de defilement automatique :
+// le visiteur choisit l'ecran. Fournisseurs generiques (grossiste, mareyeur,
+// primeur) plutot que des enseignes reelles qui laisseraient croire a un
+// partenariat. Aucun element de maquette n'est un vrai bouton.
 
-function MockupBalance() {
-  const [weight, setWeight] = useState(0);
-  useEffect(() => {
-    const obj = { v: 0 };
-    const tw = gsap.to(obj, { v: 156, duration: 1.4, ease: 'power2.out', onUpdate: () => setWeight(Math.round(obj.v)) });
-    return () => { tw.kill(); };
-  }, []);
+function MaquetteBalance() {
+  const lignes = [
+    { n: 'Saumon', poids: `120${NBSP}g`, cout: `2,45${NBSP}€`, etat: 'fait' as const },
+    { n: 'Avocat', poids: `80${NBSP}g`, cout: `1,10${NBSP}€`, etat: 'fait' as const },
+    { n: 'Tomate', poids: `78${NBSP}g`, cout: '—', etat: 'encours' as const },
+    { n: 'Riz basmati', poids: `150${NBSP}g`, cout: `0,35${NBSP}€`, etat: 'attente' as const },
+  ];
   return (
     <>
-      <div className="flex items-center justify-between mb-5">
+      <div className="mb-5 flex items-center justify-between gap-3">
         <div>
-          <div className="text-xs uppercase tracking-widest font-semibold" style={{ color: TEXT_MUTED }}>Pesage en cours</div>
-          <h4 className="text-base font-bold mt-0.5" style={{ color: TEXT }}>Bowl Saumon · Tomate</h4>
+          <div className="text-xs font-medium text-[#737373]">Pesée en cours</div>
+          <div className="mt-0.5 text-base font-semibold text-[#111111]">Bowl saumon</div>
         </div>
-        <span className="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
-          <span className="w-1.5 h-1.5 rounded-full" style={{ background: ACCENT }} />
+        <span className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-[#ECFDF5] px-3 py-1.5 text-xs font-semibold text-[#047857]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" aria-hidden="true" />
           Connectée
         </span>
       </div>
-      <div className="rounded-2xl p-6 mb-4 text-center" style={{ background: '#0F172A' }}>
-        <div className="text-xs uppercase tracking-widest font-semibold text-white/50 mb-2">Poids actuel</div>
-        <div className="text-6xl font-extrabold tabular-nums font-mono" style={{ color: ACCENT }}>
-          {weight}<span className="text-2xl ml-2 text-white/60">g</span>
+      <div className="mb-4 rounded-2xl bg-[#111111] p-6 text-center">
+        <div className="text-xs font-medium text-white/60">Tomate · poids actuel</div>
+        <div className="mt-1 font-satoshi text-5xl font-bold tabular-nums text-[#34D399] sm:text-6xl">
+          78<span className="ml-1 text-2xl text-white/60">g</span>
         </div>
-        <div className="text-xs text-white/40 mt-2 font-mono">Cible: 150g · Tolérance ±5g</div>
-        <div className="mt-3 h-1 rounded-full bg-white/10 overflow-hidden mx-8">
-          <div className="h-full rounded-full transition-all duration-300" style={{ width: `${Math.min(100, (weight / 156) * 100)}%`, background: ACCENT }} />
+        <div className="mt-2 text-xs text-white/60">Cible{NBSP}: 80{NBSP}g · tolérance ±{NBSP}5{NBSP}g</div>
+        <div className="mx-8 mt-3 h-1 overflow-hidden rounded-full bg-white/10">
+          <div className="h-full rounded-full bg-[#34D399]" style={{ width: `${(78 / 80) * 100}%` }} />
         </div>
       </div>
       <div className="space-y-2">
-        {[
-          { name: 'Saumon', weight: '120g', cost: '2.45€', done: true },
-          { name: 'Avocat', weight: '80g', cost: '1.10€', done: true },
-          { name: 'Tomate', weight: weight + 'g', cost: '—', current: true },
-          { name: 'Riz basmati', weight: '150g', cost: '0.35€' },
-        ].map((it, i) => (
-          <div key={i} className="rounded-xl px-4 py-2.5 flex items-center justify-between text-sm" style={{ background: it.current ? ACCENT_BG : '#F8FAFC', border: `1px solid ${it.current ? ACCENT_LIGHT : BORDER}` }}>
+        {lignes.map((l) => (
+          <div
+            key={l.n}
+            className={`flex items-center justify-between rounded-xl border px-4 py-2.5 text-sm ${
+              l.etat === 'encours' ? 'border-[#A7F3D0] bg-[#ECFDF5]' : 'border-[#E5E7EB] bg-[#FAFAFA]'
+            }`}
+          >
             <div className="flex items-center gap-3">
-              {it.done ? <Check className="w-4 h-4" style={{ color: ACCENT }} /> : it.current ? <span className="w-3 h-3 rounded-full animate-pulse" style={{ background: ACCENT }} /> : <span className="w-3 h-3 rounded-full" style={{ background: BORDER }} />}
-              <span style={{ color: TEXT, fontWeight: it.current ? 700 : 500 }}>{it.name}</span>
+              {l.etat === 'fait' ? (
+                <Check className="h-4 w-4 text-[#047857]" aria-hidden="true" />
+              ) : (
+                <span className={`h-3 w-3 rounded-full ${l.etat === 'encours' ? 'bg-[#10B981]' : 'bg-[#E5E7EB]'}`} aria-hidden="true" />
+              )}
+              <span className={l.etat === 'encours' ? 'font-semibold text-[#111111]' : 'text-[#111111]'}>{l.n}</span>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-mono" style={{ color: it.current ? ACCENT_DARK : TEXT_MUTED }}>{it.weight}</span>
-              <span className="text-xs font-mono font-semibold" style={{ color: it.cost === '—' ? TEXT_MUTED : ACCENT_DARK }}>{it.cost}</span>
+            <div className="flex items-center gap-4 text-xs tabular-nums">
+              <span className="text-[#525252]">{l.poids}</span>
+              <span className="w-12 text-right font-semibold text-[#111111]">{l.cout}</span>
             </div>
           </div>
         ))}
@@ -1314,134 +819,118 @@ function MockupBalance() {
   );
 }
 
-function MockupCommandes() {
-  return (
-    <>
-      <div className="flex items-center justify-between mb-5">
-        <div>
-          <div className="text-xs uppercase tracking-widest font-semibold" style={{ color: TEXT_MUTED }}>Commandes du jour</div>
-          <h4 className="text-base font-bold mt-0.5" style={{ color: TEXT }}>3 fournisseurs · 12 produits</h4>
-        </div>
-        <button type="button" className="px-4 py-2 rounded-lg text-xs font-bold text-white flex items-center gap-1.5" style={{ background: ACCENT }}>
-          <Send className="w-3.5 h-3.5" />Envoyer tout
-        </button>
-      </div>
-      {[
-        { name: 'Métro Lyon', items: 5, total: '127.40€', status: 'Suggéré par IA', icon: 'M', color: '#F59E0B' },
-        { name: 'Pêcheur du Nord', items: 3, total: '218.70€', status: 'WhatsApp prêt', icon: 'P', color: '#3B82F6' },
-        { name: 'Sysco France', items: 4, total: '94.20€', status: 'Email envoyé', icon: 'S', color: ACCENT, sent: true },
-      ].map((sup, i) => (
-        <div key={i} className="rounded-xl p-3 mb-2 flex items-center gap-3" style={{ background: '#F8FAFC', border: `1px solid ${BORDER}` }}>
-          <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm shrink-0" style={{ background: sup.color }}>{sup.icon}</div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-bold" style={{ color: TEXT }}>{sup.name}</div>
-            <div className="text-xs flex items-center gap-2" style={{ color: TEXT_MUTED }}>
-              <span>{sup.items} produits</span>
-              <span>·</span>
-              <span className="flex items-center gap-1">
-                {sup.sent && <Check className="w-3 h-3" style={{ color: ACCENT }} />}
-                {sup.status}
-              </span>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-sm font-bold tabular-nums" style={{ color: TEXT }}>{sup.total}</div>
-            <div className="text-xs" style={{ color: TEXT_MUTED }}>HT</div>
-          </div>
-        </div>
-      ))}
-      <div className="mt-4 rounded-xl p-3 flex items-center gap-2" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
-        <Sparkles className="w-4 h-4 shrink-0" style={{ color: ACCENT_DARK }} />
-        <p className="text-xs" style={{ color: ACCENT_DARK }}>
-          <strong>L'IA suggère</strong> de regrouper Métro + Sysco → économie estimée 24€
-        </p>
-      </div>
-    </>
-  );
-}
-
-function MockupIA() {
-  const messages = [
-    { who: 'user', text: "Crée une fiche pour bowl saumon 4 portions" },
-    { who: 'ia', text: "Bowl Saumon créé · Food cost 27.3% · Marge 72.7% · 4 allergènes (poisson, gluten, lait, sésame). Voulez-vous l'enregistrer ?" },
-    { who: 'user', text: "Oui, et propose 2 variantes vegan" },
+function MaquetteCommandes() {
+  const fournisseurs = [
+    { n: 'Grossiste', lettre: 'G', teinte: 'bg-amber-50 text-amber-700', produits: 5, total: `127,40${NBSP}€`, etat: 'Proposée par l’assistant', envoye: false },
+    { n: 'Mareyeur', lettre: 'M', teinte: 'bg-sky-50 text-sky-700', produits: 3, total: `218,70${NBSP}€`, etat: 'Prête à partir par WhatsApp', envoye: false },
+    { n: 'Primeur', lettre: 'P', teinte: 'bg-[#ECFDF5] text-[#047857]', produits: 4, total: `94,20${NBSP}€`, etat: 'Envoyée par e-mail', envoye: true },
   ];
   return (
     <>
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <div>
-            <h4 className="text-base font-bold" style={{ color: TEXT }}>Assistant IA</h4>
-            <div className="text-xs flex items-center gap-1.5" style={{ color: ACCENT_DARK }}>
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-              En ligne · 19 actions disponibles
-            </div>
-          </div>
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-xs font-medium text-[#737373]">Commandes du jour</div>
+          <div className="mt-0.5 whitespace-nowrap text-sm font-semibold text-[#111111] sm:text-base">3 fournisseurs · 12 produits</div>
         </div>
-      </div>
-      <div className="space-y-2 max-h-[260px] overflow-y-auto pr-2">
-        {messages.map((m, i) => (
-          <div key={i} className={`flex ${m.who === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className="rounded-2xl px-4 py-2.5 max-w-[80%] text-sm" style={{
-              background: m.who === 'user' ? ACCENT : '#F1F5F9',
-              color: m.who === 'user' ? 'white' : TEXT,
-              borderTopRightRadius: m.who === 'user' ? 4 : undefined,
-              borderTopLeftRadius: m.who === 'ia' ? 4 : undefined,
-            }}>
-              {m.text}
-            </div>
-          </div>
-        ))}
-        <div className="flex justify-start">
-          <div className="rounded-2xl px-4 py-3 inline-flex gap-1" style={{ background: '#F1F5F9' }}>
-            {[0, 1, 2].map(i => (
-              <span key={i} className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: TEXT_MUTED, animationDelay: `${i * 0.15}s` }} />
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="mt-3 flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: '#F8FAFC', border: `1px solid ${BORDER}` }}>
-        <Sparkles className="w-4 h-4 shrink-0" style={{ color: ACCENT }} />
-        <input type="text" disabled placeholder="Posez votre question..." className="flex-1 bg-transparent text-sm outline-none" style={{ color: TEXT_MUTED }} />
-        <button type="button" className="px-3 py-1.5 rounded-lg text-xs font-bold text-white" style={{ background: ACCENT }}>Envoyer</button>
-      </div>
-    </>
-  );
-}
-
-function MockupMessages() {
-  const notifs = [
-    { icon: '⚠', title: 'Hausse prix · Tomate', desc: 'Métro +12% (1.40€ → 1.57€/kg). Impact: -0.3 pt marge sur 4 plats.', time: '2 min', accent: '#EF4444' },
-    { icon: '✓', title: 'Commande livrée', desc: 'Pêcheur du Nord · 218.70€ · Toutes les références conformes.', time: '14 min', accent: ACCENT },
-    { icon: '⊙', title: 'Plat le plus rentable', desc: 'Bowl Saumon · marge 72.7% · 18 ventes cette semaine.', time: '1h', accent: '#3B82F6' },
-    { icon: '☆', title: 'Suggestion IA', desc: 'Augmentez "Tartare bœuf" de 1€ pour récupérer la marge perdue.', time: '2h', accent: ACCENT_DARK },
-  ];
-  return (
-    <>
-      <div className="flex items-center justify-between mb-5">
-        <div>
-          <div className="text-xs uppercase tracking-widest font-semibold" style={{ color: TEXT_MUTED }}>Notifications</div>
-          <h4 className="text-base font-bold mt-0.5" style={{ color: TEXT }}>4 nouvelles · Aujourd'hui</h4>
-        </div>
-        <button type="button" className="px-3 py-1.5 rounded-lg text-xs font-semibold" style={{ background: '#F5F5F5', color: TEXT }}>
-          Tout marquer lu
-        </button>
+        <span className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-[#047857] px-3 py-1.5 text-xs font-semibold text-white">
+          <Send className="h-3.5 w-3.5" aria-hidden="true" /> Tout envoyer
+        </span>
       </div>
       <div className="space-y-2">
-        {notifs.map((n, i) => (
-          <div key={i} className="rounded-xl p-3 flex items-start gap-3" style={{ background: '#F8FAFC', border: `1px solid ${BORDER}` }}>
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0" style={{ background: n.accent + '22', color: n.accent }}>
-              {n.icon}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2">
-                <div className="text-sm font-bold truncate" style={{ color: TEXT }}>{n.title}</div>
-                <span className="text-xs shrink-0" style={{ color: TEXT_MUTED }}>il y a {n.time}</span>
+        {fournisseurs.map((f) => (
+          <div key={f.n} className="flex items-center gap-3 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] p-3">
+            <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-semibold ${f.teinte}`}>{f.lettre}</span>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-semibold text-[#111111]">{f.n}</div>
+              <div className="flex flex-wrap items-center gap-x-2 text-xs text-[#525252]">
+                <span>{f.produits} produits</span>
+                <span aria-hidden="true">·</span>
+                <span className="flex items-center gap-1">
+                  {f.envoye && <Check className="h-3 w-3 text-[#047857]" aria-hidden="true" />}
+                  {f.etat}
+                </span>
               </div>
-              <p className="text-xs mt-0.5 leading-relaxed" style={{ color: TEXT_MUTED }}>{n.desc}</p>
+            </div>
+            <div className="shrink-0 text-right">
+              <div className="text-sm font-semibold tabular-nums text-[#111111]">{f.total}</div>
+              <div className="text-xs text-[#737373]">HT</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 flex items-start gap-2 rounded-xl border border-[#A7F3D0] bg-[#ECFDF5] p-3 text-xs leading-relaxed text-[#065F46]">
+        <Sparkles className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+        <span>
+          <strong className="font-semibold">L’assistant suggère</strong> de regrouper les commandes du grossiste et du
+          primeur{NBSP}: économie estimée 24{NBSP}€.
+        </span>
+      </div>
+      <div className="mt-4 flex items-baseline justify-between border-t border-[#E5E7EB] pt-4 text-sm">
+        <span className="text-[#525252]">Total du jour</span>
+        <span className="font-semibold tabular-nums text-[#111111]">440,30{NBSP}€ HT</span>
+      </div>
+    </>
+  );
+}
+
+function MaquetteAssistant() {
+  const messages = [
+    { de: 'vous', texte: 'Crée une fiche pour un bowl saumon, 4 portions' },
+    { de: 'ia', texte: `Fiche «${NBSP}Bowl saumon${NBSP}» créée${NBSP}: food cost 27,3${NBSP}%, marge 72,7${NBSP}%, 4 allergènes (poisson, gluten, lait, sésame). Je l’enregistre${NBSP}?` },
+    { de: 'vous', texte: 'Oui, et propose deux variantes végétariennes' },
+    { de: 'ia', texte: `Fiche enregistrée. Deux variantes${NBSP}: «${NBSP}Bowl tofu mariné${NBSP}» (food cost 22,1${NBSP}%) et «${NBSP}Bowl falafels${NBSP}» (food cost 19,8${NBSP}%). Je crée les fiches${NBSP}?` },
+  ];
+  return (
+    <>
+      <div className="mb-4 text-xs text-[#737373]">19 actions disponibles · fiches, prix, commandes, analyses</div>
+      <div className="space-y-2">
+        {messages.map((m, i) => (
+          <div key={i} className={`flex ${m.de === 'vous' ? 'justify-end' : 'justify-start'}`}>
+            <div
+              className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                m.de === 'vous' ? 'rounded-tr-md bg-[#047857] text-white' : 'rounded-tl-md bg-[#F5F5F5] text-[#111111]'
+              }`}
+            >
+              {m.texte}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] px-3 py-2.5">
+        <Sparkles className="h-4 w-4 shrink-0 text-[#047857]" aria-hidden="true" />
+        <span className="flex-1 text-sm text-[#737373]">Posez votre question…</span>
+        <span className="rounded-lg bg-[#047857] px-3 py-1.5 text-xs font-semibold text-white">Envoyer</span>
+      </div>
+    </>
+  );
+}
+
+function MaquetteAlertes() {
+  const alertes = [
+    { Icone: AlertTriangle, teinte: 'bg-amber-50 text-amber-700', titre: `Hausse de prix${NBSP}: tomate`, texte: `Grossiste${NBSP}: +12${NBSP}% (1,40${NBSP}€ → 1,57${NBSP}€ le kg). Impact${NBSP}: −0,3${NBSP}point de marge sur 4 plats.`, quand: `il y a 2${NBSP}min` },
+    { Icone: Check, teinte: 'bg-[#ECFDF5] text-[#047857]', titre: 'Commande livrée', texte: `Mareyeur · 218,70${NBSP}€ · toutes les références sont conformes.`, quand: `il y a 14${NBSP}min` },
+    { Icone: TrendingUp, teinte: 'bg-sky-50 text-sky-700', titre: 'Plat le plus rentable', texte: `Bowl saumon${NBSP}: marge de 72,7${NBSP}%, 18 ventes cette semaine.`, quand: `il y a 1${NBSP}h` },
+    { Icone: Sparkles, teinte: 'bg-[#ECFDF5] text-[#047857]', titre: 'Suggestion de l’assistant', texte: `Augmenter le tartare de bœuf de 1${NBSP}€ pour retrouver la marge perdue.`, quand: `il y a 2${NBSP}h` },
+    { Icone: Bell, teinte: 'bg-[#F5F5F5] text-[#111111]', titre: 'Stock bas', texte: `3 produits sous le seuil d’alerte${NBSP}: crème, beurre, citrons.`, quand: `il y a 3${NBSP}h` },
+  ];
+  return (
+    <>
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <div className="min-w-0 text-base font-semibold text-[#111111]">5 nouvelles aujourd’hui</div>
+        <span className="shrink-0 whitespace-nowrap rounded-lg bg-[#F5F5F5] px-3 py-1.5 text-xs font-semibold text-[#111111]">Tout marquer comme lu</span>
+      </div>
+      <div className="space-y-2">
+        {alertes.map(({ Icone, teinte, titre, texte, quand }) => (
+          <div key={titre} className="flex items-start gap-3 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] p-3">
+            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${teinte}`}>
+              <Icone className="h-4 w-4" aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline justify-between gap-2">
+                <div className="truncate text-sm font-semibold text-[#111111]">{titre}</div>
+                <span className="shrink-0 text-xs text-[#737373]">{quand}</span>
+              </div>
+              <p className="mt-0.5 text-xs leading-relaxed text-[#525252]">{texte}</p>
             </div>
           </div>
         ))}
@@ -1450,35 +939,29 @@ function MockupMessages() {
   );
 }
 
-function MockupActualites() {
-  const news = [
-    { tag: 'Marché', tagColor: '#3B82F6', title: 'Saumon norvégien : prix à la baisse cette semaine', summary: '-8% vs semaine dernière. Bonne fenêtre pour stocker.', date: "Aujourd'hui" },
-    { tag: 'Réglementation', tagColor: '#F59E0B', title: 'Nouvel arrêté traçabilité viande bovine 2026', summary: 'Effet 1er juin. RestauMargin met à jour HACCP automatiquement.', date: 'Hier' },
-    { tag: 'Tendance', tagColor: ACCENT, title: 'Le bowl asiatique en tête des recherches Google', summary: '+34% en 30 jours. Pensez à mettre en avant votre offre.', date: '2 jours' },
+function MaquetteActualites() {
+  // Exemples generiques et vrais : pas d'« arrete 2026 » ni de statistique
+  // de recherche inventee (« +34 % sur Google ») comme dans la version d'avant.
+  const actus = [
+    { tag: 'Marché', teinte: 'bg-sky-50 text-sky-700', titre: `Saumon${NBSP}: prix en baisse cette semaine`, texte: `−8${NBSP}% par rapport à la semaine dernière chez vos fournisseurs.`, quand: 'Aujourd’hui' },
+    { tag: 'Réglementation', teinte: 'bg-amber-50 text-amber-700', titre: `Allergènes${NBSP}: les 14 à signaler sur la carte`, texte: 'Vos fiches techniques indiquent déjà les allergènes de chaque plat.', quand: 'Hier' },
+    { tag: 'Saison', teinte: 'bg-[#ECFDF5] text-[#047857]', titre: 'Courges et champignons en pleine saison', texte: `Souvent moins chers en ce moment${NBSP}: de bons candidats pour la carte.`, quand: 'Il y a 2 jours' },
   ];
   return (
     <>
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <div>
-            <h4 className="text-base font-bold" style={{ color: TEXT }}>Actualités IA</h4>
-            <div className="text-xs" style={{ color: TEXT_MUTED }}>Curated pour votre restaurant · Daily</div>
-          </div>
-        </div>
-        <span className="px-3 py-1.5 rounded-full text-xs font-semibold" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>3 nouveautés</span>
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <div className="min-w-0 text-sm text-[#525252]">Sélectionnées pour votre restaurant</div>
+        <span className="shrink-0 whitespace-nowrap rounded-full bg-[#ECFDF5] px-3 py-1.5 text-xs font-semibold text-[#047857]">3 nouvelles</span>
       </div>
       <div className="space-y-3">
-        {news.map((n, i) => (
-          <div key={i} className="rounded-xl p-4" style={{ background: '#F8FAFC', border: `1px solid ${BORDER}` }}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ background: n.tagColor + '22', color: n.tagColor }}>{n.tag}</span>
-              <span className="text-xs" style={{ color: TEXT_MUTED }}>{n.date}</span>
+        {actus.map((a) => (
+          <div key={a.titre} className="rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] p-4">
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <span className={`rounded-md px-2 py-0.5 text-xs font-semibold ${a.teinte}`}>{a.tag}</span>
+              <span className="text-xs text-[#737373]">{a.quand}</span>
             </div>
-            <h5 className="text-sm font-bold mb-1" style={{ color: TEXT }}>{n.title}</h5>
-            <p className="text-xs leading-relaxed" style={{ color: TEXT_MUTED }}>{n.summary}</p>
+            <div className="text-sm font-semibold text-[#111111]">{a.titre}</div>
+            <p className="mt-1 text-xs leading-relaxed text-[#525252]">{a.texte}</p>
           </div>
         ))}
       </div>
@@ -1486,140 +969,72 @@ function MockupActualites() {
   );
 }
 
-function TutorialsSection() {
-  const ref = useReveal<HTMLDivElement>();
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [autoplay, setAutoplay] = useState(true);
-  const [prevIdx, setPrevIdx] = useState<number | null>(null);
-  const mockupRef = useRef<HTMLDivElement>(null);
-
-  const tutorials = [
-    { icon: Scale, title: 'Balance connectée', desc: 'Pesez vos ingrédients en temps réel.', mockup: MockupBalance, slug: 'weigh' },
-    { icon: Truck, title: 'Commandes fournisseurs', desc: "L'IA suggère, vous envoyez en 1 clic.", mockup: MockupCommandes, slug: 'commandes' },
-    { icon: Sparkles, title: 'Assistant IA', desc: '19 actions disponibles pour piloter votre cuisine.', mockup: MockupIA, slug: 'assistant-ia' },
-    { icon: Send, title: 'Messages & alertes', desc: 'Hausse prix, livraisons, suggestions IA.', mockup: MockupMessages, slug: 'messages' },
-    { icon: ClipboardList, title: 'Actualités IA', desc: 'Veille marché, réglementation, tendances.', mockup: MockupActualites, slug: 'actualites-ia' },
+function TutorialsSection({ n }: { n: string }) {
+  const [actif, setActif] = useState(0);
+  const ecrans: { Icone: ComponentType<{ className?: string }>; titre: string; texte: string; Maquette: ComponentType }[] = [
+    { Icone: Scale, titre: 'Balance connectée', texte: 'Pesez les ingrédients pendant le service.', Maquette: MaquetteBalance },
+    { Icone: Truck, titre: 'Commandes fournisseurs', texte: 'L’assistant prépare, vous envoyez en un clic.', Maquette: MaquetteCommandes },
+    { Icone: Sparkles, titre: 'Assistant IA', texte: '19 actions pour piloter votre cuisine.', Maquette: MaquetteAssistant },
+    { Icone: Bell, titre: 'Alertes', texte: 'Hausses de prix, livraisons, suggestions.', Maquette: MaquetteAlertes },
+    { Icone: Newspaper, titre: 'Actualités', texte: 'Marché, réglementation, saisons.', Maquette: MaquetteActualites },
   ];
-
-  const currentSlug = `app.restaumargin.fr/${tutorials[activeIdx].slug}`;
-  const typedSlug = useTypingEffect(currentSlug, prevIdx !== null, 35);
-  const displayedSlug = prevIdx !== null ? typedSlug : currentSlug;
-
-  const switchTo = useCallback((i: number) => {
-    setPrevIdx(activeIdx);
-    setActiveIdx(i);
-  }, [activeIdx]);
-
-  // Fade+scale transition on mockup switch
-  useEffect(() => {
-    const el = mockupRef.current;
-    if (!el || prevIdx === null) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    gsap.fromTo(el, { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' });
-  }, [activeIdx, prevIdx]);
-
-  useEffect(() => {
-    if (!autoplay) return;
-    const id = setInterval(() => switchTo((activeIdx + 1) % tutorials.length), 5000);
-    return () => clearInterval(id);
-  }, [autoplay, activeIdx, switchTo, tutorials.length]);
-
-  const ActiveMockup = tutorials[activeIdx].mockup;
+  const { Icone: IconeActive, titre: titreActif, Maquette } = ecrans[actif];
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
-      <div ref={ref} className="max-w-7xl mx-auto">
-        <SectionNumber n="07" label="Tutoriels animés" />
-        <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
-          Voyez le produit <span style={{ color: ACCENT }}>en action</span>
-        </h2>
-        <p className="mt-4 text-lg" style={{ color: TEXT_MUTED }}>
-          Cinq scénarios animés directement dans l'application.
-        </p>
-        <div className="mt-12 grid lg:grid-cols-[2fr_1fr] gap-8 items-start">
-          <div className="rounded-3xl bg-[#0F172A] p-3 shadow-2xl relative overflow-hidden aspect-[3/4] sm:aspect-[4/3]">
-            <div className="rounded-2xl bg-white h-full flex flex-col overflow-hidden" style={{ border: `1px solid ${BORDER}` }}>
-              {/* Browser chrome */}
-              <div className="flex items-center gap-2 px-4 py-2.5 border-b" style={{ background: '#FAFAFA', borderColor: BORDER }}>
-                <div className="flex gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
-                </div>
-                <div className="ml-3 flex-1 max-w-md text-center text-xs px-3 py-1 rounded-md font-mono" style={{ background: 'white', border: `1px solid ${BORDER}`, color: TEXT_MUTED }}>
-                  {displayedSlug}
-                </div>
-                <div className="flex items-center gap-2 text-xs" style={{ color: TEXT_MUTED }}>
-                  <span className="w-2 h-2 rounded-full" style={{ background: ACCENT }} />
-                  Live
-                </div>
-              </div>
-              {/* Mockup content with fade+scale transition */}
-              <div ref={mockupRef} className="flex-1 p-5 overflow-hidden">
-                <ActiveMockup />
-              </div>
-            </div>
-            {/* Progress bar + controls */}
-            <div className="absolute bottom-1 left-1 right-1 px-3 flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setAutoplay((a) => !a)}
-                className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-                aria-label={autoplay ? 'Mettre en pause' : 'Lancer la lecture'}
-              >
-                {autoplay ? <span className="block w-2 h-2.5 border-l-2 border-r-2 border-white" /> : <Play className="w-3 h-3 ml-0.5" />}
-              </button>
-              <div className="flex-1 flex gap-1.5">
-                {tutorials.map((_, i) => (
-                  <div key={i} className="flex-1 h-1 rounded-full bg-white/15 overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: i < activeIdx ? '100%' : i === activeIdx ? (autoplay ? '100%' : '50%') : '0%',
-                        background: ACCENT,
-                        transition: i === activeIdx && autoplay ? 'width 5s linear' : 'width 0.4s ease',
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-              <span className="text-xs text-white/60 font-mono">{activeIdx + 1}/{tutorials.length}</span>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            {tutorials.map((tut, i) => {
-              const Icon = tut.icon;
-              const active = i === activeIdx;
+    <section className={`${SECTION} bg-[#FAFAFA]`}>
+      <div className="mx-auto max-w-7xl">
+        <EnTeteSection
+          n={n}
+          label="Aperçu"
+          titre={<>Le produit, <Vert>écran par écran.</Vert></>}
+          intro="Cinq écrans de l’application, présentés avec des données d’exemple. Choisissez celui qui vous intéresse."
+        />
+        <div className="mt-10 grid items-start gap-6 lg:mt-14 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
+          <div role="group" aria-label="Choisir un écran" className="flex flex-wrap gap-2 lg:order-2 lg:flex-col lg:flex-nowrap lg:gap-3">
+            {ecrans.map(({ Icone, titre, texte }, i) => {
+              const choisi = i === actif;
               return (
                 <button
-                  key={tut.title}
+                  key={titre}
                   type="button"
-                  onClick={() => { switchTo(i); setAutoplay(false); }}
-                  className="w-full text-left rounded-2xl p-4 bg-white transition-all duration-200 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                  style={{
-                    border: `2px solid ${active ? ACCENT : BORDER}`,
-                    boxShadow: active ? `0 8px 24px ${ACCENT}1A` : 'none',
-                    '--tw-ring-color': ACCENT,
-                  } as React.CSSProperties}
+                  aria-pressed={choisi}
+                  onClick={() => setActif(i)}
+                  className={`flex items-center gap-2 rounded-full border px-3.5 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#047857] lg:w-full lg:gap-3 lg:rounded-2xl lg:p-4 ${
+                    choisi ? 'border-[#047857] bg-white' : 'border-[#E5E7EB] bg-white hover:border-[#A3A3A3]'
+                  }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors duration-200" style={{ background: active ? ACCENT : '#F5F5F5', color: active ? 'white' : TEXT }}>
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-bold" style={{ color: TEXT }}>{tut.title}</div>
-                      <div className="text-xs mt-0.5 leading-snug" style={{ color: TEXT_MUTED }}>{tut.desc}</div>
-                    </div>
-                  </div>
+                  <span
+                    className={`flex shrink-0 items-center justify-center rounded-lg lg:h-10 lg:w-10 lg:rounded-xl ${
+                      choisi ? 'text-[#047857] lg:bg-[#047857] lg:text-white' : 'text-[#525252] lg:bg-[#F5F5F5] lg:text-[#111111]'
+                    }`}
+                  >
+                    <Icone className="h-4 w-4 lg:h-5 lg:w-5" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold text-[#111111]">{titre}</span>
+                    <span className="mt-0.5 hidden text-xs leading-snug text-[#525252] lg:block">{texte}</span>
+                  </span>
                 </button>
               );
             })}
-            <Link
-              to="/login?mode=register"
-              className="block text-center px-6 py-3 rounded-xl text-white font-bold text-sm shadow-lg mt-4 transition-all hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-              style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, boxShadow: `0 12px 30px ${ACCENT}40`, '--tw-ring-color': ACCENT } as React.CSSProperties}
-            >Essayer maintenant <ArrowRight className="inline w-4 h-4 ml-1" /></Link>
+            <div className="mt-2 hidden lg:block">
+              <Link to="/login?mode=register" className={`${BOUTON_PRINCIPAL} w-full`}>
+                Essayer gratuitement <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-3xl border border-[#E5E7EB] bg-white lg:order-1">
+            <div className="flex items-center justify-between gap-3 border-b border-[#E5E7EB] px-5 py-3">
+              <div className="flex min-w-0 items-center gap-2 text-sm font-semibold text-[#111111]">
+                <IconeActive className="h-4 w-4 shrink-0 text-[#047857]" />
+                <span className="truncate">{titreActif}</span>
+              </div>
+              <span className="shrink-0 whitespace-nowrap rounded-full bg-[#F5F5F5] px-2.5 py-1 text-xs text-[#525252]">Exemple</span>
+            </div>
+            <div className="p-5 sm:p-6 lg:min-h-[470px]">
+              <Maquette />
+            </div>
           </div>
         </div>
       </div>
@@ -1628,245 +1043,97 @@ function TutorialsSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 08 — TRUST BADGES
+// CONFIANCE
 // ═══════════════════════════════════════════════════════════════════════════
-function TrustBadgesSection() {
-  const titleRef = useReveal<HTMLDivElement>();
-  const badgesRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const container = badgesRef.current;
-    if (!container) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const items = Array.from(container.children) as HTMLElement[];
-    const ctx = gsap.context(() => {
-      gsap.from(items, {
-        x: -40,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-        stagger: 0.1,
-        scrollTrigger: { trigger: container, start: 'top 85%', toggleActions: 'play none none none' },
-      });
-    });
-    return () => ctx.revert();
-  }, []);
-
-  const badges = [
-    { icon: ShieldCheck, title: 'Données sécurisées', sub: 'Chiffrement SSL/TLS' },
-    { icon: MapPin, title: 'Made in France', sub: 'Hébergé en Europe' },
-    { icon: Headphones, title: 'Support 7j/7', sub: 'Réponse sous 24h' },
-    { icon: FileCheck, title: 'RGPD Conforme', sub: 'Vos données vous appartiennent' },
-    { icon: CreditCard, title: 'Essai sans CB', sub: '7 jours gratuits' },
-  ];
-
-  return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <div ref={titleRef}>
-          <SectionNumber n="08" label="Confiance & sécurité" />
-        </div>
-        <div ref={badgesRef} className="mt-12 grid grid-cols-2 md:grid-cols-5 gap-8">
-          {badges.map((b) => {
-            const Icon = b.icon;
-            return (
-              <div key={b.title} className="text-center group">
-                <div
-                  className="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center mb-3 transition-transform duration-300 group-hover:rotate-[15deg]"
-                  style={{ background: ACCENT_BG, color: ACCENT_DARK }}
-                >
-                  <Icon className="w-6 h-6" />
-                </div>
-                <p className="text-sm font-bold" style={{ color: TEXT }}>{b.title}</p>
-                <p className="text-xs mt-1" style={{ color: TEXT_MUTED }}>{b.sub}</p>
-              </div>
-            );
-          })}
-        </div>
-        <p className="text-center text-xs mt-10" style={{ color: TEXT_MUTED }}>
-          Votre sécurité est notre priorité. Aucune donnée sensible n'est stockée sans votre consentement.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 09 — CTA FINAL
-// ═══════════════════════════════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════════════════════════════
-// SEO NICHE SECTION — "Pour qui ?" (internal linking vers pages niches)
-// Ajoutée 2026-05-26 pour booster SEO sur KW longue traîne
-// (logiciel-marge-bistrot, pizzeria, boulangerie, gastronomique).
-// ═══════════════════════════════════════════════════════════════════════════
-function SeoNicheSection() {
-  const ref = useReveal<HTMLDivElement>();
-  const niches = [
-    { to: '/logiciel-marge-bistrot', label: 'Bistrot', desc: 'Marge brute 65-70%, food cost 28-32%.' },
-    { to: '/logiciel-marge-pizzeria', label: 'Pizzeria', desc: 'Coût pâte, garnitures et commissions livraison.' },
-    { to: '/logiciel-marge-boulangerie', label: 'Boulangerie', desc: 'Coût farine, pertes invendus, marge viennoiserie.' },
-    { to: '/logiciel-marge-gastronomique', label: 'Gastronomique', desc: 'Produits nobles, food cost 32-40%, cave premium.' },
+// Avant : « Made in France — Hébergé en Europe » (faux : le site est heberge
+// par Vercel Inc., aux Etats-Unis — mentions legales, article 4) et « Support
+// 7j/7 — Réponse sous 24h » (engagement que rien ne garantit). Ne restent que
+// des faits verifiables.
+function TrustSection({ n }: { n: string }) {
+  const garanties = [
+    { Icone: ShieldCheck, titre: 'Connexion chiffrée', texte: 'HTTPS sur tout le site' },
+    { Icone: FileCheck, titre: 'Vos données personnelles', texte: 'Accès, rectification et effacement sur simple demande (RGPD)' },
+    { Icone: Mail, titre: 'Support par e-mail', texte: 'contact@restaumargin.fr', href: 'mailto:contact@restaumargin.fr' },
+    { Icone: CreditCard, titre: 'Essai sans carte bancaire', texte: '7 jours gratuits' },
+    { Icone: CalendarX, titre: 'Sans engagement', texte: 'Résiliable à tout moment' },
   ];
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
-      <div ref={ref} className="max-w-7xl mx-auto">
-        <SectionNumber n="08" label="Pour qui ?" />
-        <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
-          Un <span style={{ color: ACCENT }}>logiciel marge restaurant</span>
-          <br />
-          pensé pour votre métier.
-        </h2>
-        <p className="mt-4 text-lg max-w-2xl" style={{ color: TEXT_MUTED }}>
-          Bistrot, pizzeria, boulangerie ou gastronomique : nos modules s'adaptent à votre food cost cible, vos fournisseurs et vos marges.
-        </p>
-        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {niches.map((n) => (
-            <Link
-              key={n.to}
-              to={n.to}
-              className="group rounded-2xl p-6 bg-white border transition-all hover:scale-[1.02] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2"
-              style={{ borderColor: BORDER, '--tw-ring-color': ACCENT } as React.CSSProperties}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-bold" style={{ color: TEXT }}>{n.label}</h3>
-                <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" style={{ color: ACCENT }} />
-              </div>
-              <p className="text-sm leading-relaxed" style={{ color: TEXT_MUTED }}>{n.desc}</p>
-              <span className="mt-4 inline-block text-xs font-semibold uppercase tracking-wider" style={{ color: ACCENT_DARK }}>
-                Voir la page →
+    <section className={`${SECTION} bg-white`}>
+      <div className="mx-auto max-w-7xl">
+        <EnTeteSection n={n} label="Confiance" titre={<>Clair sur ce qui compte <Vert>avant de s’inscrire.</Vert></>} />
+        <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:mt-12 lg:grid-cols-5 lg:gap-4">
+          {garanties.map(({ Icone, titre, texte, href }) => (
+            <li key={titre} className={`${CARTE} flex items-start gap-4 p-5 lg:flex-col lg:gap-3`}>
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#047857]">
+                <Icone className="h-5 w-5" aria-hidden="true" />
               </span>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// SEO ALTERNATIVES SECTION — comparatifs concurrents
-// Ajoutée 2026-05-26 pour capter requêtes "alternative à X".
-// ═══════════════════════════════════════════════════════════════════════════
-function SeoAlternativesSection() {
-  const ref = useReveal<HTMLDivElement>();
-  const alts = [
-    { to: '/alternative-zenchef', label: 'Zenchef', desc: 'Réservations + marges en une plateforme.' },
-    { to: '/alternative-innovorder', label: 'Innovorder', desc: 'Caisse + food cost sans frais cachés.' },
-    { to: '/alternative-hubrise', label: 'Hubrise', desc: 'Hub commandes + analyse marge unifiée.' },
-    { to: '/alternative-lightspeed', label: 'Lightspeed', desc: 'POS riche + suivi food cost natif.' },
-  ];
-  return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ background: 'white' }}>
-      <div ref={ref} className="max-w-7xl mx-auto">
-        <SectionNumber n="08b" label="Comparatifs" />
-        <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
-          Alternatives à <span style={{ color: ACCENT }}>Zenchef, Innovorder</span>
-          <br />
-          Hubrise et Lightspeed.
-        </h2>
-        <p className="mt-4 text-lg max-w-2xl" style={{ color: TEXT_MUTED }}>
-          RestauMargin remplace ou complète vos outils existants. Comparez prix, fonctionnalités et ROI.
-        </p>
-        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {alts.map((a) => (
-            <Link
-              key={a.label}
-              to={a.to}
-              className="group rounded-2xl p-6 border transition-all hover:scale-[1.02] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2"
-              style={{ background: '#FAFAFA', borderColor: BORDER, '--tw-ring-color': ACCENT } as React.CSSProperties}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-bold" style={{ color: TEXT }}>vs {a.label}</h3>
-                <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" style={{ color: ACCENT }} />
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-[#111111]">{titre}</p>
+                {href ? (
+                  <a href={href} className="mt-1 block break-words text-sm text-[#047857] hover:underline">
+                    {texte}
+                  </a>
+                ) : (
+                  <p className="mt-1 text-sm text-[#525252]">{texte}</p>
+                )}
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: TEXT_MUTED }}>{a.desc}</p>
-              <span className="mt-4 inline-block text-xs font-semibold uppercase tracking-wider" style={{ color: ACCENT_DARK }}>
-                Comparer →
-              </span>
-            </Link>
+            </li>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FinalCtaSection() {
-  const ref = useReveal<HTMLDivElement>();
-  return (
-    <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden" style={{ background: 'white' }}>
-      {/* Animated gradient mesh */}
-      <div
-        className="absolute inset-0 -z-10 opacity-30 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse at 20% 50%, ${ACCENT_BG} 0%, transparent 60%), radial-gradient(ellipse at 80% 50%, ${ACCENT_BG} 0%, transparent 60%)`,
-          animation: 'gradientDrift 8s ease-in-out infinite alternate',
-        }}
-      />
-      <div ref={ref} className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_1fr] gap-12 items-center">
-        <div>
-          <SectionNumber n="09" label="Prêt à augmenter vos marges ?" />
-          <h2 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight" style={{ color: TEXT }}>
-            Prêt à <span style={{ color: ACCENT }}>augmenter</span>
-            <br />
-            vos marges ?
-          </h2>
-          <p className="mt-4 text-lg" style={{ color: TEXT_MUTED }}>Essayez gratuitement pendant 7 jours.</p>
-          <Link
-            to="/login?mode=register"
-            className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-white font-bold text-base shadow-lg mt-8 transition-all hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-            style={{
-              background: `linear-gradient(135deg, ${ACCENT} 0%, ${ACCENT_DARK} 100%)`,
-              boxShadow: `0 12px 30px ${ACCENT}40`,
-              animation: 'ctaGlow 2.5s ease-in-out infinite',
-              '--tw-ring-color': ACCENT,
-            } as React.CSSProperties}
-          >
-            Commencer gratuitement <ArrowRight className="w-4 h-4" />
+        </ul>
+        <p className="mt-8 text-sm text-[#525252]">
+          Hébergement, sous-traitants et durées de conservation sont détaillés dans la{' '}
+          <Link to="/politique-confidentialite" className="font-semibold text-[#047857] hover:underline">
+            politique de confidentialité
+          </Link>{' '}
+          et les{' '}
+          <Link to="/mentions-legales" className="font-semibold text-[#047857] hover:underline">
+            mentions légales
           </Link>
-          <p className="mt-3 text-xs flex items-center gap-2" style={{ color: TEXT_MUTED }}>
-            <Check className="w-3.5 h-3.5" style={{ color: ACCENT }} />
-            Sans engagement.
-            <Check className="w-3.5 h-3.5 ml-2" style={{ color: ACCENT }} />
-            Annulez quand vous voulez.
-          </p>
-        </div>
-        <div>
-          <div className="rounded-3xl p-6 bg-white shadow-2xl" style={{ border: `1px solid ${BORDER}` }}>
-            <div className="flex items-center gap-2 mb-3">
-              <Tablet className="w-4 h-4" style={{ color: TEXT_MUTED }} />
-              <span className="text-sm font-bold" style={{ color: TEXT }}>Vue d'ensemble</span>
-            </div>
-            <div className="text-xs uppercase tracking-widest font-semibold mb-1" style={{ color: TEXT_MUTED }}>Économies ce mois</div>
-            <div className="text-4xl font-extrabold tabular-nums mb-2" style={{ color: ACCENT_DARK }}>
-              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(479)}
-            </div>
-            <div className="flex items-center gap-1 text-xs font-semibold mb-5" style={{ color: ACCENT_DARK }}>
-              ↗ +12 % <span className="font-normal" style={{ color: TEXT_MUTED }}>vs mois dernier</span>
-            </div>
-            <svg viewBox="0 0 240 80" className="w-full mb-5" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="g09" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={ACCENT} stopOpacity="0.4" />
-                  <stop offset="100%" stopColor={ACCENT} stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              <path d="M0,55 Q40,50 60,42 T120,36 T180,22 T240,8 L240,80 L0,80 Z" fill="url(#g09)" />
-              <path d="M0,55 Q40,50 60,42 T120,36 T180,22 T240,8" fill="none" stroke={ACCENT} strokeWidth="2.5" strokeLinecap="round" />
-            </svg>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl p-3" style={{ background: '#F8FAFC' }}>
-                <div className="text-xs font-semibold" style={{ color: TEXT_MUTED }}>Marge moyenne</div>
-                <div className="text-2xl font-extrabold mt-1 tabular-nums" style={{ color: TEXT }}>4,8 %</div>
-                <div className="text-xs font-semibold mt-0.5" style={{ color: ACCENT_DARK }}>+0,0 %</div>
+          .
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// POUR QUI ? — maillage interne vers les pages par type d'etablissement
+// (ajoute le 2026-05-26 pour la longue traine : bistrot, pizzeria, boulangerie,
+// gastronomique).
+// ═══════════════════════════════════════════════════════════════════════════
+function SeoNicheSection({ n }: { n: string }) {
+  const niches = [
+    // Food cost et marge brute se completent a 100 % : 28-32 % <-> 68-72 %
+    // (la version d'avant annoncait 65-70 % de marge pour 28-32 % de food cost).
+    { to: '/logiciel-marge-bistrot', label: 'Bistrot', desc: `Food cost de 28 à 32${NBSP}%, soit une marge brute de 68 à 72${NBSP}%.` },
+    { to: '/logiciel-marge-pizzeria', label: 'Pizzeria', desc: 'Coût de la pâte, des garnitures et des commissions de livraison.' },
+    { to: '/logiciel-marge-boulangerie', label: 'Boulangerie', desc: 'Coût de la farine, pertes sur invendus, marge des viennoiseries.' },
+    { to: '/logiciel-marge-gastronomique', label: 'Gastronomique', desc: `Produits nobles, food cost de 32 à 40${NBSP}%, cave haut de gamme.` },
+  ];
+  return (
+    <section className={`${SECTION} bg-[#FAFAFA]`}>
+      <div className="mx-auto max-w-7xl">
+        <EnTeteSection
+          n={n}
+          label="Pour qui"
+          titre={<>Un <Vert>logiciel marge restaurant</Vert> pensé pour votre métier.</>}
+          intro={`Bistrot, pizzeria, boulangerie ou restaurant gastronomique${NBSP}: objectifs de food cost, fournisseurs et marges ne sont pas les mêmes.`}
+        />
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
+          {niches.map((x) => (
+            <Link
+              key={x.to}
+              to={x.to}
+              className={`${CARTE} group flex flex-col p-6 transition-colors hover:border-[#047857] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#047857]`}
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-[#111111]">{x.label}</h3>
+                <ArrowUpRight className="h-4 w-4 text-[#047857] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
               </div>
-              <div className="rounded-xl p-3" style={{ background: '#F8FAFC' }}>
-                <div className="text-xs font-semibold" style={{ color: TEXT_MUTED }}>Food cost moyen</div>
-                <div className="text-2xl font-extrabold mt-1 tabular-nums" style={{ color: TEXT }}>27,4 %</div>
-                <div className="text-xs font-semibold mt-0.5" style={{ color: ACCENT_DARK }}>-2,1 %</div>
-              </div>
-            </div>
-          </div>
+              <p className="mt-2 text-sm leading-relaxed text-[#525252]">{x.desc}</p>
+              <span className="mt-auto pt-4 text-sm font-semibold text-[#047857]">Voir la page</span>
+            </Link>
+          ))}
         </div>
       </div>
     </section>
@@ -1874,16 +1141,102 @@ function FinalCtaSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// NEWSLETTER — light theme variant
+// COMPARATIFS (ajoute le 2026-05-26 pour les requetes « alternative à X »)
+// ═══════════════════════════════════════════════════════════════════════════
+// Chaque ligne dit ce que fait l'autre outil et ce que fait RestauMargin, comme
+// les pages comparatives elles-memes : RestauMargin ne remplace ni une caisse ni
+// un outil de reservation (l'ancien texte promettait « remplace ou complète » et
+// « Réservations + marges en une plateforme »).
+function SeoAlternativesSection({ n }: { n: string }) {
+  const alternatives = [
+    { to: '/alternative-zenchef', label: 'Zenchef', desc: `Zenchef gère les réservations${NBSP}; RestauMargin, les marges et le food cost.` },
+    { to: '/alternative-innovorder', label: 'Innovorder', desc: `Innovorder gère la caisse et la commande en ligne${NBSP}; RestauMargin, les marges.` },
+    { to: '/alternative-hubrise', label: 'Hubrise', desc: `Hubrise relie les plateformes de livraison${NBSP}; RestauMargin calcule ce qu’il vous reste.` },
+    { to: '/alternative-lightspeed', label: 'Lightspeed', desc: `Lightspeed gère l’encaissement${NBSP}; RestauMargin, le coût de chaque plat.` },
+  ];
+  return (
+    <section className={`${SECTION} bg-white`}>
+      <div className="mx-auto max-w-7xl">
+        <EnTeteSection
+          n={n}
+          label="Comparatifs"
+          titre={<><Vert>Alternatives</Vert> à Zenchef, Innovorder, Hubrise et Lightspeed.</>}
+          intro={`Ces outils gèrent la réservation, la caisse ou les commandes${NBSP}; RestauMargin s’occupe des marges et les complète. Comparez les fonctions et les prix.`}
+        />
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
+          {alternatives.map((a) => (
+            <Link
+              key={a.to}
+              to={a.to}
+              className="group flex flex-col rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-6 transition-colors hover:border-[#047857] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#047857]"
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-[#111111]">{a.label}</h3>
+                <ArrowUpRight className="h-4 w-4 text-[#047857] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-[#525252]">{a.desc}</p>
+              <span className="mt-auto pt-4 text-sm font-semibold text-[#047857]">Voir le comparatif</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DEMARRER
+// ═══════════════════════════════════════════════════════════════════════════
+// La carte de droite affichait « Économies ce mois 479,00 € ↗ +12 % » et une
+// « Marge moyenne 4,8 % / +0,0 % » : un resultat sans source, et un chiffre
+// casse. Elle resume desormais les conditions de l'essai, verifiables en un clic.
+function FinalCtaSection({ n }: { n: string }) {
+  const conditions = [
+    { l: 'Essai gratuit', v: '7 jours' },
+    { l: 'Carte bancaire', v: 'Non demandée' },
+    { l: 'Fiches techniques', v: 'Illimitées' },
+    { l: 'Ensuite', v: `${euros(ABONNEMENT_PRO)} par mois (Pro)` },
+    { l: 'Engagement', v: 'Aucun' },
+  ];
+  return (
+    <section className={`${SECTION} bg-[#FAFAFA]`}>
+      <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
+        <div>
+          <SectionNumber n={n} label="Démarrer" />
+          <h2 className={TITRE_H2}>
+            Testez RestauMargin <Vert>sur votre propre carte.</Vert>
+          </h2>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-[#525252] sm:text-lg">
+            Ajoutez vos ingrédients et vos plats{NBSP}: la marge de chaque plat s’affiche dès la première fiche technique.
+          </p>
+          <Link to="/login?mode=register" className={`${BOUTON_PRINCIPAL} mt-8`}>
+            Commencer l’essai gratuit <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+          <p className="mt-3 text-sm text-[#525252]">Sans carte bancaire · Sans engagement</p>
+        </div>
+        <dl className={`${CARTE} divide-y divide-[#E5E7EB] rounded-3xl px-6 sm:px-8`}>
+          {conditions.map((c) => (
+            <div key={c.l} className="flex items-baseline justify-between gap-6 py-4">
+              <dt className="text-sm text-[#525252]">{c.l}</dt>
+              <dd className="text-right text-base font-semibold text-[#111111]">{c.v}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LETTRE D'INFORMATION
 // ═══════════════════════════════════════════════════════════════════════════
 function NewsletterSection() {
-  const ref = useReveal<HTMLDivElement>();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (!email) return;
     setLoading(true);
@@ -1894,7 +1247,7 @@ function NewsletterSection() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-      if (!res.ok) throw new Error("Echec de l'inscription. Reessayez.");
+      if (!res.ok) throw new Error('Échec de l’inscription. Réessayez.');
       setSent(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
@@ -1904,44 +1257,44 @@ function NewsletterSection() {
   }
 
   return (
-    <section className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8 bg-white">
-      <div ref={ref} className="max-w-xl mx-auto text-center">
-        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ color: TEXT }}>
-          Restez informé
-        </h2>
-        <p className="mt-3 text-base" style={{ color: TEXT_MUTED }}>
-          Recevez nos conseils marge, actualités fournisseurs et mises à jour produit.
+    <section className={`${SECTION} bg-white`}>
+      <div className="mx-auto max-w-xl text-center">
+        <h2 className="font-satoshi text-2xl font-extrabold tracking-tight text-[#111111] sm:text-3xl">Restez informé</h2>
+        <p className="mt-3 text-base text-[#525252]">
+          Nos conseils sur les marges, l’actualité des fournisseurs et les nouveautés du produit, par e-mail.
         </p>
 
         {sent ? (
-          <div className="mt-8 rounded-2xl p-8" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
-            <Check className="w-10 h-10 mx-auto mb-3" style={{ color: ACCENT_DARK }} strokeWidth={3} />
-            <p className="text-lg font-semibold" style={{ color: TEXT }}>Merci !</p>
-            <p className="text-sm mt-1" style={{ color: TEXT_MUTED }}>Vous recevrez nos actualités restaurant.</p>
+          <div className="mt-8 rounded-2xl border border-[#A7F3D0] bg-[#ECFDF5] p-8">
+            <Check className="mx-auto mb-3 h-10 w-10 text-[#047857]" strokeWidth={3} aria-hidden="true" />
+            <p className="text-lg font-semibold text-[#111111]">Merci{NBSP}!</p>
+            <p className="mt-1 text-sm text-[#525252]">Votre inscription est enregistrée.</p>
           </div>
         ) : (
           <form onSubmit={onSubmit} className="mt-8">
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <label htmlFor="lettre-email" className="sr-only">
+                Adresse e-mail
+              </label>
               <input
+                id="lettre-email"
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="votre@email.com"
-                className="flex-1 min-w-0 px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-offset-2"
-                style={{ background: 'white', border: `1px solid ${BORDER}`, color: TEXT, '--tw-ring-color': ACCENT } as React.CSSProperties}
+                placeholder="vous@restaurant.fr"
+                className="min-w-0 flex-1 rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111111] placeholder:text-[#A3A3A3] focus:outline-none focus:ring-2 focus:ring-[#047857] focus:ring-offset-2"
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-3 rounded-xl text-white font-semibold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap"
-                style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, boxShadow: `0 8px 20px ${ACCENT}40` }}
+                className="whitespace-nowrap rounded-xl bg-[#047857] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#065F46] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {loading ? '...' : "S'inscrire"}
+                {loading ? 'Inscription…' : 'S’inscrire'}
               </button>
             </div>
-            {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
-            <p className="text-xs mt-3" style={{ color: TEXT_MUTED }}>Pas de spam. Désinscription en un clic.</p>
+            {error && <p className="mt-2 text-xs text-[#B91C1C]">{error}</p>}
+            <p className="mt-3 text-xs text-[#737373]">Désinscription en un clic, à tout moment.</p>
           </form>
         )}
       </div>
@@ -1950,16 +1303,15 @@ function NewsletterSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// CONTACT — "Parlons de votre projet" form, light variant
+// CONTACT
 // ═══════════════════════════════════════════════════════════════════════════
 function ContactSection() {
-  const ref = useReveal<HTMLDivElement>();
   const [form, setForm] = useState({ nom: '', email: '', telephone: '', message: '' });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -1969,7 +1321,7 @@ function ContactSection() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-      if (!res.ok) throw new Error("Echec de l'envoi. Réessayez.");
+      if (!res.ok) throw new Error('Échec de l’envoi. Réessayez.');
       setSent(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
@@ -1978,93 +1330,85 @@ function ContactSection() {
     }
   }
 
-  const fieldClass = 'w-full px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-offset-1';
-  const fieldStyle = {
-    background: 'white',
-    border: `1px solid ${BORDER}`,
-    color: TEXT,
-    '--tw-ring-color': ACCENT,
-  } as React.CSSProperties;
+  const champ =
+    'w-full rounded-lg border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm text-[#111111] placeholder:text-[#A3A3A3] focus:outline-none focus:ring-2 focus:ring-[#047857] focus:ring-offset-1';
 
   return (
-    <section id="contact" className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8" style={{ background: '#FAFAFA' }}>
-      <div ref={ref} className="max-w-xl mx-auto">
-        <div className="text-center mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: TEXT_MUTED }}>Contact</p>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight" style={{ color: TEXT }}>
-            Parlons de votre projet
-          </h2>
-          <p className="mt-3" style={{ color: TEXT_MUTED }}>Notre équipe vous recontacte sous 24 h.</p>
+    <section id="contact" className={`${SECTION} scroll-mt-20 bg-[#FAFAFA]`}>
+      <div className="mx-auto max-w-xl">
+        <div className="mb-10 text-center">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#737373]">Contact</p>
+          <h2 className="font-satoshi text-3xl font-extrabold tracking-tight text-[#111111] sm:text-4xl">Parlons de votre projet</h2>
+          <p className="mt-3 text-[#525252]">Une question, une démonstration{NBSP}? Écrivez-nous, nous vous répondons par e-mail.</p>
         </div>
 
         {sent ? (
-          <div className="rounded-2xl p-8 text-center" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
-            <Check className="w-12 h-12 mx-auto mb-4" style={{ color: ACCENT_DARK }} strokeWidth={3} />
-            <p className="text-lg font-semibold" style={{ color: TEXT }}>Demande envoyée !</p>
-            <p className="text-sm mt-1" style={{ color: TEXT_MUTED }}>Nous vous recontactons très vite.</p>
+          <div className="rounded-2xl border border-[#A7F3D0] bg-[#ECFDF5] p-8 text-center">
+            <Check className="mx-auto mb-4 h-12 w-12 text-[#047857]" strokeWidth={3} aria-hidden="true" />
+            <p className="text-lg font-semibold text-[#111111]">Demande envoyée{NBSP}!</p>
+            <p className="mt-1 text-sm text-[#525252]">Nous vous répondons par e-mail.</p>
           </div>
         ) : (
-          <form onSubmit={onSubmit} className="rounded-2xl p-6 sm:p-8 space-y-5 bg-white" style={{ border: `1px solid ${BORDER}` }}>
-            <div className="grid sm:grid-cols-2 gap-4">
+          <form onSubmit={onSubmit} className={`${CARTE} space-y-5 p-6 sm:p-8`}>
+            <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium mb-1.5" style={{ color: TEXT }}>Nom</label>
+                <label htmlFor="contact-nom" className="mb-1.5 block text-sm font-medium text-[#111111]">Nom</label>
                 <input
+                  id="contact-nom"
                   type="text"
                   required
                   value={form.nom}
                   onChange={(e) => setForm({ ...form, nom: e.target.value })}
-                  className={fieldClass}
-                  style={fieldStyle}
+                  className={champ}
                   placeholder="Votre nom"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1.5" style={{ color: TEXT }}>Email</label>
+                <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium text-[#111111]">E-mail</label>
                 <input
+                  id="contact-email"
                   type="email"
                   required
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className={fieldClass}
-                  style={fieldStyle}
-                  placeholder="votre@email.com"
+                  className={champ}
+                  placeholder="vous@restaurant.fr"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5" style={{ color: TEXT }}>Téléphone</label>
+              <label htmlFor="contact-telephone" className="mb-1.5 block text-sm font-medium text-[#111111]">
+                Téléphone <span className="font-normal text-[#737373]">(facultatif)</span>
+              </label>
               <input
+                id="contact-telephone"
                 type="tel"
                 value={form.telephone}
                 onChange={(e) => setForm({ ...form, telephone: e.target.value })}
-                className={fieldClass}
-                style={fieldStyle}
+                className={champ}
                 placeholder="06 12 34 56 78"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5" style={{ color: TEXT }}>Message</label>
+              <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium text-[#111111]">Message</label>
               <textarea
+                id="contact-message"
                 rows={4}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className={`${fieldClass} resize-none`}
-                style={fieldStyle}
-                placeholder="Décrivez votre besoin..."
+                className={`${champ} resize-none`}
+                placeholder="Décrivez votre besoin…"
               />
             </div>
             {error && (
-              <div className="rounded-lg p-3 text-sm" style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#991B1B' }}>
-                {error}
-              </div>
+              <div className="rounded-lg border border-[#FECACA] bg-[#FEF2F2] p-3 text-sm text-[#991B1B]">{error}</div>
             )}
             <button
               type="submit"
               disabled={loading}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-bold text-base transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, boxShadow: `0 12px 30px ${ACCENT}40` }}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#047857] px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-[#065F46] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? 'Envoi en cours...' : <>Envoyer <Send className="w-4 h-4" /></>}
+              {loading ? 'Envoi en cours…' : <>Envoyer <Send className="h-4 w-4" aria-hidden="true" /></>}
             </button>
           </form>
         )}
@@ -2074,283 +1418,35 @@ function ContactSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// FOOTER
+// BARRE D'APPEL A L'ACTION (mobile)
 // ═══════════════════════════════════════════════════════════════════════════
-function Footer() {
-  return (
-    <footer className="bg-[#0F172A] text-white/70 py-12 sm:py-16 px-4 sm:px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
-        <div>
-          <div className="flex items-center gap-2.5 mb-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: ACCENT_BG }}>
-              <ChefHat className="w-5 h-5" style={{ color: ACCENT_DARK }} />
-            </div>
-            <span className="text-xl font-extrabold text-white">RestauMargin</span>
-          </div>
-          <p className="text-sm text-white/50">Le logiciel de marges pensé pour les restaurateurs français.</p>
-          <div className="mt-4 flex items-center gap-2 text-xs">
-            <span className="w-2 h-2 rounded-full" style={{ background: ACCENT, boxShadow: `0 0 8px ${ACCENT}` }} />
-            <span className="text-white/60">Serveurs opérationnels</span>
-          </div>
-        </div>
-        <div>
-          <p className="text-white font-bold text-sm uppercase tracking-wider mb-4">Produit</p>
-          <ul className="space-y-2 text-sm">
-            <li><a href="#fonctionnalites" className="hover:text-white">Fonctionnalités</a></li>
-            <li><a href="#tarifs" className="hover:text-white">Tarifs</a></li>
-            <li><a href="#temoignages" className="hover:text-white">Témoignages</a></li>
-            <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-white font-bold text-sm uppercase tracking-wider mb-4">Ressources</p>
-          <ul className="space-y-2 text-sm">
-            <li><Link to="/blog/calcul-marge-restaurant" className="hover:text-white">Marge restaurant : taux moyen et calcul</Link></li>
-            <li><Link to="/outils/calculateur-food-cost" className="hover:text-white">Calculateur food cost</Link></li>
-            <li><Link to="/outils/generateur-qr-menu" className="hover:text-white">Générateur QR menu</Link></li>
-            <li><a href="#contact" className="hover:text-white">Réserver une démo</a></li>
-            <li><Link to="/launch" className="hover:text-white inline-flex items-center gap-1.5">🚀 Launch Product Hunt</Link></li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-white font-bold text-sm uppercase tracking-wider mb-4">Légal</p>
-          <ul className="space-y-2 text-sm">
-            <li><Link to="/mentions-legales" className="hover:text-white">Mentions légales</Link></li>
-            <li><Link to="/cgu" className="hover:text-white">CGU</Link></li>
-            <li><Link to="/cgv" className="hover:text-white">CGV</Link></li>
-            <li><Link to="/politique-confidentialite" className="hover:text-white">Politique de confidentialité</Link></li>
-            <li><a href="mailto:contact@restaumargin.fr" className="hover:text-white">Contact</a></li>
-          </ul>
-        </div>
-      </div>
-      <div className="max-w-7xl mx-auto border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-        {/* Pas de mention « hébergé en Europe » : le site est déployé sur Vercel
-            (société américaine, aucune région EU épinglée dans vercel.json).
-            Le détail exact figure dans les mentions légales, article 4. */}
-        <p className="text-xs text-white/40">
-          © {new Date().getFullYear()} RestauMargin · <Link to="/mentions-legales" className="hover:text-white/70 underline underline-offset-2">Mentions légales</Link>
-        </p>
-        <p className="text-xs text-white/40">Made with care in France 🇫🇷</p>
-      </div>
-    </footer>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// NAVBAR + WIDGETS
-// ═══════════════════════════════════════════════════════════════════════════
-function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-  return (
-    <nav
-      className="sticky top-0 inset-x-0 z-50 transition-all duration-300"
-      style={{
-        background: scrolled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.85)',
-        backdropFilter: 'blur(16px)',
-        borderBottom: scrolled ? `1px solid ${BORDER}` : '1px solid transparent',
-      }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: ACCENT_BG }}>
-            <ChefHat className="w-5 h-5" style={{ color: ACCENT_DARK }} />
-          </div>
-          <span className="text-xl font-extrabold" style={{ color: TEXT }}>RestauMargin</span>
-        </Link>
-        <div className="hidden lg:flex items-center gap-8 text-sm font-medium" style={{ color: TEXT_MUTED }}>
-          <a href="#fonctionnalites" className="hover:text-[#0F172A] transition-colors">Fonctionnalités</a>
-          <a href="#tarifs" className="hover:text-[#0F172A] transition-colors">Tarifs</a>
-          <Link to="/outils/calculateur-marge-restaurant" className="inline-flex items-center gap-1 hover:text-[#0F172A] transition-colors" style={{ color: ACCENT_DARK }}>
-            <Calculator className="w-3.5 h-3.5" /> Calculateur gratuit
-          </Link>
-          <Link to="/blog" className="hover:text-[#0F172A] transition-colors">Blog</Link>
-        </div>
-        <div className="hidden lg:flex items-center gap-3">
-          <Link
-            to="/login"
-            className="text-sm font-semibold transition-colors hover:text-[#0F172A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md px-2 py-1"
-            style={{ color: TEXT, '--tw-ring-color': ACCENT } as React.CSSProperties}
-          >Se connecter</Link>
-          <Link
-            to="/login?mode=register"
-            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-white font-semibold text-sm shadow-md transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-            style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`, '--tw-ring-color': ACCENT } as React.CSSProperties}
-          >
-            Essai 7 jours <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-        <button type="button" onClick={() => setOpen((o) => !o)} className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2" style={{ '--tw-ring-color': ACCENT } as React.CSSProperties} aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}>
-          {open ? <XIcon className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-      </div>
-      {open && (
-        <div className="lg:hidden bg-white border-t border-mono-900 px-6 py-6 space-y-4 text-base font-medium">
-          <a href="#fonctionnalites" className="block py-2" onClick={() => setOpen(false)}>Fonctionnalités</a>
-          <a href="#tarifs" className="block py-2" onClick={() => setOpen(false)}>Tarifs</a>
-          <Link to="/outils/calculateur-marge-restaurant" className="flex items-center gap-1.5 py-2 font-semibold" style={{ color: ACCENT_DARK }} onClick={() => setOpen(false)}>
-            <Calculator className="w-4 h-4" /> Calculateur de marge gratuit
-          </Link>
-          <Link to="/blog" className="block py-2" onClick={() => setOpen(false)}>Blog</Link>
-          <hr className="border-mono-900" />
-          <Link to="/login" className="block py-2" onClick={() => setOpen(false)}>Se connecter</Link>
-          <Link to="/login?mode=register" className="block text-center px-5 py-3 rounded-xl text-white font-semibold shadow-md" style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})` }} onClick={() => setOpen(false)}>
-            Essai 7 jours
-          </Link>
-        </div>
-      )}
-    </nav>
-  );
-}
-
-/**
- * Sticky banner top "Coming soon on Product Hunt".
- * Drives traffic vers /launch pour capturer les emails early supporters.
- * Dismissible via localStorage (réapparait après 7 jours).
- */
-function PHLaunchBanner() {
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    const dismissed = localStorage.getItem('ph_banner_dismissed_at');
-    if (dismissed) {
-      const age = Date.now() - parseInt(dismissed, 10);
-      if (age < 7 * 24 * 60 * 60 * 1000) return; // 7 jours
-    }
-    setShow(true);
-  }, []);
-
-  const dismiss = () => {
-    localStorage.setItem('ph_banner_dismissed_at', String(Date.now()));
-    setShow(false);
-  };
-
-  if (!show) return null;
-  return (
-    <div className="fixed top-0 inset-x-0 z-[55] bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
-        <Link to="/launch" className="flex-1 flex items-center gap-2 sm:gap-3 hover:opacity-90 transition-opacity">
-          <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/20 backdrop-blur text-xs font-bold uppercase tracking-wider">
-            🚀 Bientôt
-          </span>
-          <span className="text-sm sm:text-base font-semibold">
-            <span className="sm:hidden">🚀 </span>
-            On lance sur <strong className="font-extrabold">Product Hunt le 6 mai</strong>
-            <span className="hidden sm:inline"> — sois prévenu·e jour-J</span>
-          </span>
-          <span className="ml-auto text-sm font-bold opacity-90 hover:opacity-100 underline-offset-2 hover:underline">
-            En savoir plus →
-          </span>
-        </Link>
-        <button
-          onClick={dismiss}
-          className="p-1 rounded-full hover:bg-white/10 transition-colors flex-shrink-0"
-          aria-label="Fermer la bannière"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function ScrollProgressBar() {
-  const [p, setP] = useState(0);
-  useEffect(() => {
-    const onScroll = () => {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      setP(total > 0 ? (window.scrollY / total) * 100 : 0);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-  return <div className="fixed top-0 left-0 z-[60] h-[3px] transition-[width] duration-100" style={{ width: `${p}%`, background: ACCENT, boxShadow: `0 0 8px ${ACCENT}` }} />;
-}
-
+// Fond uni, sans lueur animee en boucle. Elle se place a GAUCHE de la bulle de
+// l'assistant (AssistantWidget : 56 px, fixed right-4 / sm:right-6, z-50) — avant,
+// elle courait sur toute la largeur et passait sous la bulle — et remonte comme
+// elle au-dessus du bandeau cookies (--cookie-banner-h, publiee par CookieBanner).
 function StickyCtaBar() {
-  const [show, setShow] = useState(false);
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
-    const onScroll = () => setShow(window.scrollY > window.innerHeight * 0.6);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    const surDefilement = () => setVisible(window.scrollY > window.innerHeight * 0.6);
+    surDefilement();
+    window.addEventListener('scroll', surDefilement, { passive: true });
+    return () => window.removeEventListener('scroll', surDefilement);
   }, []);
   return (
-    <div className={`lg:hidden fixed bottom-4 inset-x-4 z-40 transition-transform duration-300 ${show ? 'translate-y-0' : 'translate-y-32'}`}>
+    <div
+      className={`fixed left-4 right-[88px] z-40 transition-transform duration-300 sm:left-6 sm:right-[100px] lg:hidden ${
+        visible ? 'translate-y-0' : 'translate-y-[200%]'
+      }`}
+      style={{ bottom: 'calc(1rem + var(--cookie-banner-h, 0px))' }}
+      aria-hidden={!visible}
+    >
       <Link
         to="/login?mode=register"
-        className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-white font-bold shadow-2xl active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-        style={{
-          background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})`,
-          boxShadow: `0 10px 30px ${ACCENT}66`,
-          '--tw-ring-color': ACCENT,
-          animation: show ? 'ctaGlow 2.5s ease-in-out infinite' : 'none',
-        } as React.CSSProperties}
+        tabIndex={visible ? undefined : -1}
+        className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-[#047857] px-5 text-base font-semibold text-white shadow-lg transition-colors hover:bg-[#065F46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#047857] focus-visible:ring-offset-2"
       >
-        Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
+        Essai gratuit 7 jours <ArrowRight className="h-4 w-4" aria-hidden="true" />
       </Link>
-    </div>
-  );
-}
-
-function ExitIntentPopup() {
-  const [show, setShow] = useState(false);
-  const fired = useRef(false);
-  const [couverts, setCouverts] = useState(80);
-  const [prix, setPrix] = useState(18);
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (sessionStorage.getItem('exit_d') === '1') return;
-    const onLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && !fired.current) {
-        fired.current = true;
-        setShow(true);
-      }
-    };
-    document.addEventListener('mouseleave', onLeave);
-    return () => document.removeEventListener('mouseleave', onLeave);
-  }, []);
-  const close = () => { setShow(false); sessionStorage.setItem('exit_d', '1'); };
-  if (!show) return null;
-  const savings = Math.round(couverts * prix * 30 * 0.04);
-  return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-7 relative">
-        <button type="button" onClick={close} className="absolute top-3 right-3 inline-flex items-center justify-center w-11 h-11 hover:bg-[#F1F5F9] rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2" style={{ '--tw-ring-color': ACCENT } as React.CSSProperties} aria-label="Fermer">
-          <X className="w-5 h-5" />
-        </button>
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4" style={{ background: ACCENT_BG, color: ACCENT_DARK }}>
-          <Calculator className="w-6 h-6" />
-        </div>
-        <h3 className="text-2xl font-extrabold mb-2" style={{ color: TEXT }}>Avant de partir...</h3>
-        <p className="text-sm mb-6" style={{ color: TEXT_MUTED }}>Estimez ce que vous pourriez économiser :</p>
-        <div className="space-y-4 mb-5">
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: TEXT_MUTED }}>
-              Couverts/jour : <span style={{ color: TEXT }}>{couverts}</span>
-            </label>
-            <input type="range" min={20} max={300} value={couverts} onChange={(e) => setCouverts(parseInt(e.target.value))} className="w-full mt-1" style={{ accentColor: ACCENT }} />
-          </div>
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: TEXT_MUTED }}>
-              Prix moyen : <span style={{ color: TEXT }}>{prix}€</span>
-            </label>
-            <input type="range" min={8} max={45} value={prix} onChange={(e) => setPrix(parseInt(e.target.value))} className="w-full mt-1" style={{ accentColor: ACCENT }} />
-          </div>
-        </div>
-        <div className="rounded-2xl p-4 mb-5" style={{ background: ACCENT_BG, border: `1px solid ${ACCENT_LIGHT}` }}>
-          <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: ACCENT_DARK }}>Économies / mois</p>
-          <p className="text-3xl font-extrabold mt-1 tabular-nums" style={{ color: TEXT }}>{savings.toLocaleString('fr-FR')} €</p>
-        </div>
-        <Link to="/login?mode=register" className="block w-full text-center px-6 py-3.5 rounded-xl text-white font-bold shadow-lg transition-transform hover:scale-[1.02]" style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_DARK})` }}>
-          Démarrer l'essai gratuit
-        </Link>
-      </div>
     </div>
   );
 }
@@ -2367,128 +1463,44 @@ function StructuredData() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// GLOBAL KEYFRAMES (injected once per page)
-// ═══════════════════════════════════════════════════════════════════════════
-const LANDING_STYLES = `
-  @keyframes gradientDrift {
-    0%   { background-position: 20% 50%; }
-    100% { background-position: 80% 50%; }
-  }
-  @keyframes ctaGlow {
-    0%, 100% { box-shadow: 0 12px 30px rgba(16,185,129,0.25); }
-    50%       { box-shadow: 0 12px 40px rgba(16,185,129,0.50); }
-  }
-  @keyframes badgePulse {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.75; }
-  }
-  .animate-pulse-badge { animation: badgePulse 2s ease-in-out infinite; }
-  @keyframes floatY {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-6px); }
-  }
-  @keyframes waveBar {
-    0%   { transform: scaleY(0.4); }
-    100% { transform: scaleY(1); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-pulse-badge,
-    [style*="ctaGlow"],
-    [style*="gradientDrift"] {
-      animation: none !important;
-    }
-  }
-`;
-
-// ═══════════════════════════════════════════════════════════════════════════
-// BROWSER FRAME — Safari-style chrome wrapping the entire site (desktop only)
-// On mobile: the wrapper degrades to a flat white background, no frame.
-// ═══════════════════════════════════════════════════════════════════════════
-function BrowserChrome() {
-  return (
-    <div
-      className="hidden lg:flex items-center gap-2 px-5 py-3 border-b"
-      style={{ background: '#F8FAFC', borderColor: BORDER }}
-    >
-      <div className="flex gap-1.5">
-        <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
-        <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
-        <span className="w-3 h-3 rounded-full bg-[#28C840]" />
-      </div>
-      <div
-        className="flex-1 max-w-md mx-auto text-center text-xs px-4 py-1.5 rounded-md font-mono flex items-center justify-center gap-2"
-        style={{ background: 'white', border: `1px solid ${BORDER}`, color: TEXT_MUTED }}
-      >
-        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <rect x="3" y="11" width="18" height="11" rx="2" />
-          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-        </svg>
-        restaumargin.fr
-      </div>
-      <div className="w-12" aria-hidden />
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// MAIN PAGE
+// PAGE
 // ═══════════════════════════════════════════════════════════════════════════
 export default function Landing() {
+  // Numerotation continue : la section temoignages ne prend un numero (et ne
+  // decale les suivantes) que si elle s'affiche.
+  const decalage = testimonials.length > 0 ? 1 : 0;
+  const num = (i: number) => String(i).padStart(2, '0');
+
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: LANDING_STYLES }} />
       <SEOHead
         title="Logiciel marge restaurant + food cost IA | RestauMargin (29€/mois)"
         description="RestauMargin, logiciel SaaS pour calculer la marge de votre restaurant, optimiser le food cost et automatiser les fiches techniques. Essai gratuit 7 jours."
         path="/"
       />
-      {/* JetBrains Mono : seule page qui l'utilise (voir index.css, perf 2026-10-17) */}
-      <Helmet>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" />
-      </Helmet>
       <StructuredData />
-      <ScrollProgressBar />
-      <PHLaunchBanner />
 
-      {/* Animated paper-fold green WebGL2 wallpaper — fixed full-page, sits behind everything.
-          Visible on the sides and corners outside of the centred browser frame on lg+ viewports. */}
-      <div className="fixed inset-0 -z-10 pointer-events-none">
-        <ShaderBackground intensity={0.4} />
-      </div>
-
-      {/* Site shell — on lg+, max-w 1500 with browser frame; on mobile, full width white. */}
-      <div className="relative lg:max-w-[1500px] lg:mx-auto lg:px-6 xl:px-12 lg:py-8">
-        <div
-          className="relative bg-white lg:rounded-3xl lg:overflow-hidden lg:border"
-          style={{
-            borderColor: BORDER,
-            boxShadow: '0 50px 120px -20px rgba(15, 23, 42, 0.18), 0 20px 50px -20px rgba(15, 23, 42, 0.10)',
-          }}
-        >
-          <BrowserChrome />
-          <Navbar />
-          <main className="bg-white overflow-x-hidden">
-            <HeroSection />
-            <RoiCalculatorSection />
-            <section id="tarifs"><PricingSection /></section>
-            <section id="fonctionnalites"><FeaturesSection /></section>
-            <ProcessSection />
-            <section id="temoignages"><TestimonialsSection /></section>
-            <TutorialsSection />
-            <TrustBadgesSection />
-            <SeoNicheSection />
-            <SeoAlternativesSection />
-            <FinalCtaSection />
-            <NewsletterSection />
-            <ContactSection />
-          </main>
-          <Footer />
-        </div>
+      <div className="min-h-screen bg-white">
+        <PublicHeader />
+        <main>
+          <HeroSection />
+          <SimulationSection n={num(1)} />
+          <PricingSection n={num(2)} />
+          <FeaturesSection n={num(3)} />
+          <ProcessSection n={num(4)} />
+          <TestimonialsSection n={num(5)} />
+          <TutorialsSection n={num(5 + decalage)} />
+          <TrustSection n={num(6 + decalage)} />
+          <SeoNicheSection n={num(7 + decalage)} />
+          <SeoAlternativesSection n={num(8 + decalage)} />
+          <FinalCtaSection n={num(9 + decalage)} />
+          <NewsletterSection />
+          <ContactSection />
+        </main>
+        <PublicFooter />
       </div>
 
       <StickyCtaBar />
-      <ExitIntentPopup />
     </>
   );
 }

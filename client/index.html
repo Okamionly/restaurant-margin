@@ -33,8 +33,10 @@
     -->
     <link rel="preconnect" href="https://api.fontshare.com" />
     <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
-    <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" /></noscript>
+    <!-- 2026-11-04 : l'API Fontshare ne renvoie que la 1re police quand on en combine deux ; General Sans n'etait jamais chargee. -->
+    <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" /><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" /></noscript>
     <!--
       Perf 2026-08-22 : le titre H1 de Landing/Pricing/Blog utilise tous
       `font-extrabold` (Tailwind 800) sur Satoshi, qui n'a que les graisses

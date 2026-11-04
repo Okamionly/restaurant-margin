@@ -13,44 +13,44 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 const faqItems = [
   {
-    question: "Pourquoi mon restaurant ne rapporte-t-il pas d'argent malgre du monde ?",
-    answer: "Avoir du monde ne suffit pas. Si votre food cost depasse 35 %, votre masse salariale 40 %, ou votre loyer 12 % du CA, votre marge nette s'evapore meme avec un restaurant plein. Le probleme est mathematique : un restaurant tres frequente avec des ratios deteriores perd de l'argent plus vite qu'un restaurant a moitie vide. Refaire vos fiches techniques et auditer vos charges resout 80 % des cas.",
+    question: "Pourquoi mon restaurant ne rapporte-t-il pas d'argent malgré du monde ?",
+    answer: "Avoir du monde ne suffit pas. Si votre food cost dépasse 35 %, votre masse salariale 40 %, ou votre loyer 12 % du CA, votre marge nette s'évapore même avec un restaurant plein. Le problème est mathématique : un restaurant très fréquenté avec des ratios détériorés perd de l'argent plus vite qu'un restaurant à moitié vide. Refaire vos fiches techniques et auditer vos charges résout 80 % des cas.",
   },
   {
     question: 'Combien de temps faut-il pour redresser un restaurant non rentable ?',
-    answer: "Entre 90 et 180 jours pour voir un effet net sur la marge. Mois 1 : diagnostic + quick wins (food cost, gaspillage). Mois 2-3 : refonte de la carte + renegociation fournisseurs + optimisation planning. Mois 4-6 : repositionnement marketing + fidelisation. Un restaurant qui passe d'une marge nette de 0 % a 8-10 % en 6 mois est realiste si les actions sont disciplinees.",
+    answer: "Entre 90 et 180 jours pour voir un effet net sur la marge. Mois 1 : diagnostic + quick wins (food cost, gaspillage). Mois 2-3 : refonte de la carte + renégociation fournisseurs + optimisation planning. Mois 4-6 : repositionnement marketing + fidélisation. Un restaurant qui passe d'une marge nette de 0 % à 8-10 % en 6 mois est réaliste si les actions sont disciplinées.",
   },
   {
-    question: 'Mon restaurant fait du chiffre mais ne degage pas de marge nette : pourquoi ?',
-    answer: "Vous confondez chiffre d'affaires et benefice. Un restaurant peut afficher 800 000 EUR de CA et 0 EUR de marge nette si la totalite part en matieres premieres (240 000 EUR), salaires (320 000 EUR), loyer (80 000 EUR), energie (40 000 EUR) et charges diverses (120 000 EUR). Le CA ne paie pas vos factures, c'est la marge nette. Auditer poste par poste est la premiere etape.",
+    question: 'Mon restaurant fait du chiffre mais ne dégage pas de marge nette : pourquoi ?',
+    answer: "Vous confondez chiffre d'affaires et bénéfice. Un restaurant peut afficher 800 000 EUR de CA et 0 EUR de marge nette si la totalité part en matières premières (240 000 EUR), salaires (320 000 EUR), loyer (80 000 EUR), énergie (40 000 EUR) et charges diverses (120 000 EUR). Le CA ne paie pas vos factures, c'est la marge nette. Auditer poste par poste est la première étape.",
   },
   {
-    question: 'A partir de quel pourcentage de marge nette un restaurant est-il rentable ?',
-    answer: "Un restaurant est viable au-dela de 5 % de marge nette, sain a 8-10 %, performant au-dela de 12 %. En dessous de 5 %, vous travaillez pour vos fournisseurs et vos employes. Un restaurant qui ferme l'annee a 2 % de marge nette n'a pas de quoi investir, ni absorber un imprevu (panne, controle, conflit). C'est une zone fragile.",
+    question: 'À partir de quel pourcentage de marge nette un restaurant est-il rentable ?',
+    answer: "Un restaurant est viable au-delà de 5 % de marge nette, sain à 8-10 %, performant au-delà de 12 %. En dessous de 5 %, vous travaillez pour vos fournisseurs et vos employés. Un restaurant qui ferme l'année à 2 % de marge nette n'a pas de quoi investir, ni absorber un imprévu (panne, contrôle, conflit). C'est une zone fragile.",
   },
   {
     question: "Faut-il fermer un restaurant qui ne rapporte rien depuis 1 an ?",
-    answer: "Pas forcement. Si la marge brute (CA - matieres) est superieure a 60 %, le potentiel existe et l'audit revelera le levier (souvent personnel ou pricing). Si la marge brute est inferieure a 50 %, le concept lui-meme est defaillant : carte mal construite, mauvais ratio prix-cout, fournisseurs trop chers. Dans ce cas, soit pivot radical, soit fermeture proprement organisee pour limiter les pertes.",
+    answer: "Pas forcément. Si la marge brute (CA - matières) est supérieure à 60 %, le potentiel existe et l'audit révélera le levier (souvent personnel ou pricing). Si la marge brute est inférieure à 50 %, le concept lui-même est défaillant : carte mal construite, mauvais ratio prix-coût, fournisseurs trop chers. Dans ce cas, soit pivot radical, soit fermeture proprement organisée pour limiter les pertes.",
   },
   {
-    question: 'Comment savoir si le probleme vient du food cost, du personnel ou de l\'occupation ?',
-    answer: "Comparez vos 3 ratios cles aux benchmarks : food cost (cible 28-32 %), masse salariale (cible 30-38 %), taux d'occupation (cible 55-65 %). Le poste le plus eloigne du benchmark est votre probleme principal. Un food cost a 38 % avec une masse salariale a 35 % et une occupation a 60 % indique clairement le matieres premieres comme priorite numero 1.",
+    question: 'Comment savoir si le problème vient du food cost, du personnel ou de l\'occupation ?',
+    answer: "Comparez vos 3 ratios clés aux benchmarks : food cost (cible 28-32 %), masse salariale (cible 30-38 %), taux d'occupation (cible 55-65 %). Le poste le plus éloigné du benchmark est votre problème principal. Un food cost à 38 % avec une masse salariale à 35 % et une occupation à 60 % indique clairement le matières premières comme priorité numéro 1.",
   },
   {
     question: 'Augmenter mes prix va-t-il faire fuir mes clients ?',
-    answer: "Non, dans 80 % des cas. Une hausse de 5 a 8 % est rarement detectee par les clients fideles. La peur d'augmenter les prix est psychologique chez le restaurateur, pas reelle chez le client. Sur 50 000 EUR de CA mensuel, une hausse de 7 % apporte 3 500 EUR de marge brute supplementaire sans toucher au food cost. C'est souvent le levier le plus rapide et le plus sous-utilise.",
+    answer: "Non, dans 80 % des cas. Une hausse de 5 à 8 % est rarement détectée par les clients fidèles. La peur d'augmenter les prix est psychologique chez le restaurateur, pas réelle chez le client. Sur 50 000 EUR de CA mensuel, une hausse de 7 % apporte 3 500 EUR de marge brute supplémentaire sans toucher au food cost. C'est souvent le levier le plus rapide et le plus sous-utilisé.",
   },
   {
-    question: 'Quels sont les 3 chiffres a regarder chaque jour pour piloter la rentabilite ?',
-    answer: "1) Le ticket moyen (le multiplier indirectement par l'upsell). 2) Le nombre de couverts servis (pour le revenu et la productivite). 3) Le food cost du jour (achats / ventes). Ces 3 indicateurs prennent 5 minutes a regarder et vous evitent 95 % des derives. Toute autre metrique est secondaire.",
+    question: 'Quels sont les 3 chiffres à regarder chaque jour pour piloter la rentabilité ?',
+    answer: "1) Le ticket moyen (le multiplier indirectement par l'upsell). 2) Le nombre de couverts servis (pour le revenu et la productivité). 3) Le food cost du jour (achats / ventes). Ces 3 indicateurs prennent 5 minutes à regarder et vous évitent 95 % des dérives. Toute autre métrique est secondaire.",
   },
   {
-    question: 'Quel est le piege psychologique du restaurateur en difficulte ?',
-    answer: "Le deni operationnel. Le restaurateur epuise compense en travaillant plus d'heures au lieu de regarder ses chiffres. 80 h/semaine sans data ne resout rien : on confond activite et productivite. La premiere etape de tout redressement est d'arreter de courir pendant 4 heures, ouvrir un tableur, et calculer ses vrais ratios. C'est inconfortable mais salvateur.",
+    question: 'Quel est le piège psychologique du restaurateur en difficulté ?',
+    answer: "Le déni opérationnel. Le restaurateur épuisé compense en travaillant plus d'heures au lieu de regarder ses chiffres. 80 h/semaine sans data ne résout rien : on confond activité et productivité. La première étape de tout redressement est d'arrêter de courir pendant 4 heures, ouvrir un tableur, et calculer ses vrais ratios. C'est inconfortable mais salvateur.",
   },
   {
     question: 'RestauMargin peut-il vraiment aider un restaurant qui perd de l\'argent ?',
-    answer: "Oui, en industrialisant le diagnostic. Au lieu de passer 30 heures sur un tableur, vous saisissez vos plats et vos ventes : food cost, marge par plat, alertes de derive, identification des plats poids morts. Le gain moyen constate est de 3 a 5 points de marge brute en 6 mois, soit 18 000 a 30 000 EUR sur un CA de 600 000 EUR. Essai gratuit 7 jours sans carte.",
+    answer: "Oui, en industrialisant le diagnostic. Au lieu de passer 30 heures sur un tableur, vous saisissez vos plats et vos ventes : food cost, marge par plat, alertes de dérive, identification des plats poids morts. Le gain moyen constaté est de 3 à 5 points de marge brute en 6 mois, soit 18 000 à 30 000 EUR sur un CA de 600 000 EUR. Essai gratuit 7 jours sans carte.",
   },
 ];
 
@@ -59,7 +59,7 @@ export default function BlogPourquoiPasRentable() {
     <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Pourquoi mon restaurant ne rapporte-t-il pas d'argent ? 10 causes + solutions 2026"
-        description="Votre restaurant tourne mais ne rapporte rien ? Diagnostic complet des 10 causes principales : food cost derive, masse salariale, gaspillage, mauvaise carte, fournisseurs trop chers. Plan d'action concret."
+        description="Votre restaurant tourne mais ne rapporte rien ? Diagnostic complet des 10 causes principales : food cost dérive, masse salariale, gaspillage, mauvaise carte, fournisseurs trop chers. Plan d'action concret."
         path="/blog/pourquoi-mon-restaurant-ne-rapporte-pas"
         type="article"
         schema={[
@@ -72,23 +72,23 @@ export default function BlogPourquoiPasRentable() {
           {
             '@context': 'https://schema.org',
             '@type': 'HowTo',
-            name: 'Diagnostic en 5 etapes pour identifier pourquoi votre restaurant ne rapporte pas',
-            description: 'Methode pas-a-pas pour identifier les causes de non-rentabilite d\'un restaurant en 5 minutes.',
+            name: 'Diagnostic en 5 étapes pour identifier pourquoi votre restaurant ne rapporte pas',
+            description: 'Méthode pas-à-pas pour identifier les causes de non-rentabilité d\'un restaurant en 5 minutes.',
             totalTime: 'PT5M',
-            tool: ['Calculatrice', 'Compte de resultat', 'Releve de banque', 'Factures fournisseurs', 'Plannings'],
+            tool: ['Calculatrice', 'Compte de résultat', 'Relevé de banque', 'Factures fournisseurs', 'Plannings'],
             step: [
-              { '@type': 'HowToStep', name: 'Calculer son food cost reel', text: 'Divisez vos achats matieres premieres du mois par votre CA HT du mois, multipliez par 100. Si superieur a 35 %, c\'est le probleme numero 1.' },
-              { '@type': 'HowToStep', name: 'Mesurer la masse salariale', text: 'Total salaires bruts + charges patronales du mois divise par CA HT. Au-dela de 40 %, votre productivite est insuffisante.' },
-              { '@type': 'HowToStep', name: 'Calculer le taux d\'occupation', text: 'Nombre de couverts servis / nombre de couverts theoriques sur la periode. En dessous de 50 %, votre fixe (loyer, personnel base) est dilue.' },
-              { '@type': 'HowToStep', name: 'Auditer la carte plat par plat', text: 'Pour chaque plat : food cost et popularite. Identifier les poids morts (impopulaires + peu rentables) a supprimer immediatement.' },
-              { '@type': 'HowToStep', name: 'Comparer aux benchmarks et prioriser', text: 'Le ratio le plus eloigne du benchmark est votre priorite numero 1. Plan d\'action 30 jours sur ce seul levier.' },
+              { '@type': 'HowToStep', name: 'Calculer son food cost réel', text: 'Divisez vos achats matières premières du mois par votre CA HT du mois, multipliez par 100. Si supérieur à 35 %, c\'est le problème numéro 1.' },
+              { '@type': 'HowToStep', name: 'Mesurer la masse salariale', text: 'Total salaires bruts + charges patronales du mois divisé par CA HT. Au-delà de 40 %, votre productivité est insuffisante.' },
+              { '@type': 'HowToStep', name: 'Calculer le taux d\'occupation', text: 'Nombre de couverts servis / nombre de couverts théoriques sur la période. En dessous de 50 %, votre fixe (loyer, personnel base) est dilué.' },
+              { '@type': 'HowToStep', name: 'Auditer la carte plat par plat', text: 'Pour chaque plat : food cost et popularité. Identifier les poids morts (impopulaires + peu rentables) à supprimer immédiatement.' },
+              { '@type': 'HowToStep', name: 'Comparer aux benchmarks et prioriser', text: 'Le ratio le plus éloigné du benchmark est votre priorité numéro 1. Plan d\'action 30 jours sur ce seul levier.' },
             ],
           },
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: "Pourquoi mon restaurant ne rapporte-t-il pas d'argent ? 10 causes + solutions 2026",
-            description: 'Diagnostic complet des 10 causes principales de non-rentabilite en restauration : food cost, masse salariale, gaspillage, carte, fournisseurs. Plan d\'action concret 90 jours.',
+            description: 'Diagnostic complet des 10 causes principales de non-rentabilité en restauration : food cost, masse salariale, gaspillage, carte, fournisseurs. Plan d\'action concret 90 jours.',
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -143,12 +143,12 @@ export default function BlogPourquoiPasRentable() {
 
       {/* ── Hero ── */}
       <BlogArticleHero
-        category="Rentabilite"
+        category="Rentabilité"
         readTime="15 min"
         date="Mai 2026"
         title="Pourquoi mon restaurant ne rapporte-t-il pas d'argent ? 10 causes + solutions"
         accentWord="Pourquoi"
-        subtitle="Vous travaillez 70 heures par semaine, votre salle se remplit, et pourtant en fin de mois il ne reste rien. Vous n'etes pas seul : 38 % des restaurants francais ferment dans les 3 premieres annees pour les memes raisons. Voici le diagnostic complet et le plan d'action."
+        subtitle="Vous travaillez 70 heures par semaine, votre salle se remplit, et pourtant en fin de mois il ne reste rien. Vous n'êtes pas seul : 38 % des restaurants français ferment dans les 3 premières années pour les mêmes raisons. Voici le diagnostic complet et le plan d'action."
       />
 
       {/* ── Contenu principal ── */}
@@ -160,19 +160,19 @@ export default function BlogPourquoiPasRentable() {
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
           <div className="flex items-center gap-2 mb-3">
             <Zap className="w-5 h-5" />
-            <span className="text-xs font-bold uppercase tracking-wider text-teal-100">Reponse synthetique</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-100">Réponse synthétique</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold mb-4">
             Pourquoi mon restaurant ne rapporte-t-il pas d'argent ?
           </h2>
           <p className="text-teal-50 text-base sm:text-lg leading-relaxed">
-            Un restaurant ne rapporte pas d'argent generalement a cause de 4 facteurs principaux : un
-            <strong className="text-white"> food cost trop eleve (&gt; 35 %)</strong>, une
-            <strong className="text-white"> masse salariale qui depasse 40 % du CA</strong>, un
+            Un restaurant ne rapporte pas d'argent généralement à cause de 4 facteurs principaux : un
+            <strong className="text-white"> food cost trop élevé (&gt; 35 %)</strong>, une
+            <strong className="text-white"> masse salariale qui dépasse 40 % du CA</strong>, un
             <strong className="text-white"> taux d'occupation insuffisant (&lt; 50 %)</strong>, ou une
-            <strong className="text-white"> carte non optimisee</strong> (trop large, mauvais coefficient
-            multiplicateur). <strong className="text-white">38 % des restaurants francais ferment dans les
-            3 premieres annees</strong> pour ces raisons. Un diagnostic data precis identifie le frein en
+            <strong className="text-white"> carte non optimisée</strong> (trop large, mauvais coefficient
+            multiplicateur). <strong className="text-white">38 % des restaurants français ferment dans les
+            3 premières années</strong> pour ces raisons. Un diagnostic data précis identifie le frein en
             moins de 7 jours.
           </p>
         </div>
@@ -188,12 +188,12 @@ export default function BlogPourquoiPasRentable() {
               { href: '#introduction', label: "Pourquoi mon restaurant ne rapporte-t-il pas d'argent ?" },
               { href: '#savoir-rentable', label: 'Comment savoir si votre restaurant est rentable ou pas' },
               { href: '#causes', label: 'Les 10 causes principales d\'un restaurant non rentable' },
-              { href: '#diagnostic', label: 'Diagnostic en 5 minutes : les questions a se poser' },
+              { href: '#diagnostic', label: 'Diagnostic en 5 minutes : les questions à se poser' },
               { href: '#plan-action', label: 'Plan d\'action 90 jours pour redresser' },
               { href: '#cas-concret', label: 'Cas concret : bistrot 0 % marge nette → 12 % en 6 mois' },
-              { href: '#fermer-ou-pas', label: 'Quand fermer vs perseverer ?' },
-              { href: '#erreurs-psy', label: 'Erreurs psychologiques du restaurateur epuise' },
-              { href: '#faq', label: 'Questions frequentes' },
+              { href: '#fermer-ou-pas', label: 'Quand fermer vs persévérer ?' },
+              { href: '#erreurs-psy', label: 'Erreurs psychologiques du restaurateur épuisé' },
+              { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Faire le diagnostic gratuitement' },
             ].map((item, i) => (
               <li key={i}>
@@ -216,37 +216,37 @@ export default function BlogPourquoiPasRentable() {
 
           <div className="prose-content">
             <p>
-              Avant tout : si vous lisez cette page, vous etes deja en avance sur 60 % des restaurateurs
-              en difficulte. Beaucoup compensent l'absence de rentabilite par plus d'heures travaillees,
-              plus de stress, plus d'imprevus geres en urgence. Vous avez choisi de poser le probleme
-              et de chercher des reponses. C'est exactement la bonne demarche.
+              Avant tout : si vous lisez cette page, vous êtes déjà en avance sur 60 % des restaurateurs
+              en difficulté. Beaucoup compensent l'absence de rentabilité par plus d'heures travaillées,
+              plus de stress, plus d'imprévus gérés en urgence. Vous avez choisi de poser le problème
+              et de chercher des réponses. C'est exactement la bonne démarche.
             </p>
             <p>
-              La verite, c'est que la plupart des restaurants qui ne rapportent pas d'argent ne sont
-              pas victimes d'une seule grande erreur. Ils accumulent <strong>4 a 6 petites derives</strong> sur
-              des ratios cles, et chacune grignote 1 a 3 points de marge nette. Cumule, le restaurant
-              passe de 10 % de marge a 0 % en l'espace de 12 a 18 mois, souvent sans que le proprietaire
+              La vérité, c'est que la plupart des restaurants qui ne rapportent pas d'argent ne sont
+              pas victimes d'une seule grande erreur. Ils accumulent <strong>4 à 6 petites dérives</strong> sur
+              des ratios clés, et chacune grignote 1 à 3 points de marge nette. Cumulé, le restaurant
+              passe de 10 % de marge à 0 % en l'espace de 12 à 18 mois, souvent sans que le propriétaire
               ne s'en rende compte.
             </p>
             <p>
-              Selon les chiffres de l'INSEE et de la GIRA Conseil, <strong>38 % des restaurants francais
-              ferment dans les 3 premieres annees</strong>. La cause numero 1 n'est ni le manque de talent
-              culinaire, ni le manque de passion, ni meme l'emplacement. C'est l'absence de pilotage
-              financier au quotidien. Les restaurateurs qui survivent ne sont pas necessairement les
+              Selon les chiffres de l'INSEE et de la GIRA Conseil, <strong>38 % des restaurants français
+              ferment dans les 3 premières années</strong>. La cause numéro 1 n'est ni le manque de talent
+              culinaire, ni le manque de passion, ni même l'emplacement. C'est l'absence de pilotage
+              financier au quotidien. Les restaurateurs qui survivent ne sont pas nécessairement les
               meilleurs cuisiniers : ce sont ceux qui regardent leurs chiffres.
             </p>
 
             <Callout type="info">
-              <strong>Une certitude rassurante :</strong> dans 80 % des cas que nous avons analyses sur
-              RestauMargin (etablissements du secteur), le probleme se resout en 90 a 180 jours sans
-              changer de concept, sans changer d'equipe, et sans fermer. Il faut juste identifier le bon
+              <strong>Une certitude rassurante :</strong> dans 80 % des cas que nous avons analysés sur
+              RestauMargin (établissements du secteur), le problème se résout en 90 à 180 jours sans
+              changer de concept, sans changer d'équipe, et sans fermer. Il faut juste identifier le bon
               levier et agir avec discipline.
             </Callout>
 
             <p>
-              Cet article vous donne les 10 causes principales de non-rentabilite, une methode de
+              Cet article vous donne les 10 causes principales de non-rentabilité, une méthode de
               diagnostic en 5 minutes, un plan d'action 90 jours, et un cas concret de transformation
-              reussie. L'objectif : que vous puissiez fermer cet onglet en sachant exactement quoi faire
+              réussie. L'objectif : que vous puissiez fermer cet onglet en sachant exactement quoi faire
               demain matin.
             </p>
           </div>
@@ -260,16 +260,16 @@ export default function BlogPourquoiPasRentable() {
 
           <div className="prose-content">
             <p>
-              Premiere etape, et probablement la plus inconfortable : <strong>regarder les vrais chiffres,
+              Première étape, et probablement la plus inconfortable : <strong>regarder les vrais chiffres,
               sans filtre.</strong> Beaucoup de restaurateurs confondent "chiffre d'affaires qui rentre" et
-              "argent qui reste". Voici la formule simple a appliquer.
+              "argent qui reste". Voici la formule simple à appliquer.
             </p>
           </div>
 
           <div className="mt-8 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
-            <h3 className="font-bold text-mono-100 mb-4 text-lg">Formule de rentabilite</h3>
+            <h3 className="font-bold text-mono-100 mb-4 text-lg">Formule de rentabilité</h3>
             <div className="bg-white border border-teal-200 rounded-xl p-5 font-mono text-sm sm:text-base space-y-2">
-              <div className="text-mono-100"><strong>Marge nette (EUR)</strong> = CA HT - Matieres - Personnel - Loyer - Energie - Charges diverses - Amortissements - Impots</div>
+              <div className="text-mono-100"><strong>Marge nette (EUR)</strong> = CA HT - Matières - Personnel - Loyer - Énergie - Charges diverses - Amortissements - Impôts</div>
               <div className="text-mono-100"><strong>Marge nette (%)</strong> = Marge nette (EUR) / CA HT x 100</div>
             </div>
           </div>
@@ -277,19 +277,19 @@ export default function BlogPourquoiPasRentable() {
           <div className="prose-content mt-8">
             <h3 className="text-xl font-bold text-mono-100 mb-3">Auto-diagnostic en 4 questions</h3>
             <p>
-              Repondez honnetement a ces 4 questions. Si vous avez plus de 2 "non", votre restaurant
-              n'est pas rentable au sens economique du terme :
+              Répondez honnêtement à ces 4 questions. Si vous avez plus de 2 "non", votre restaurant
+              n'est pas rentable au sens économique du terme :
             </p>
             <ul className="list-none space-y-3 mt-4">
               <DiagItem question="Pouvez-vous vous verser un salaire normal (au moins 2 500 EUR net/mois) en plus de vos charges sociales personnelles ?" />
-              <DiagItem question="Avez-vous mis de cote au moins 5 000 EUR de tresorerie en plus du depot de garantie loyer cette annee ?" />
-              <DiagItem question="Pouvez-vous prendre 3 semaines de vacances sans que la tresorerie ne plonge dans le rouge ?" />
-              <DiagItem question="Si une grosse panne survient demain (chambre froide, hotte, plonge), pouvez-vous la payer sans credit ?" />
+              <DiagItem question="Avez-vous mis de côté au moins 5 000 EUR de trésorerie en plus du dépôt de garantie loyer cette année ?" />
+              <DiagItem question="Pouvez-vous prendre 3 semaines de vacances sans que la trésorerie ne plonge dans le rouge ?" />
+              <DiagItem question="Si une grosse panne survient demain (chambre froide, hotte, plonge), pouvez-vous la payer sans crédit ?" />
             </ul>
             <p className="mt-6">
-              Si vous repondez "non" a au moins 2 questions, votre restaurant fonctionne mais ne degage
-              pas de vraie marge. C'est exactement le profil de la majorite des restaurants qui ferment
-              au bout de 3 ans : ils tournent jusqu'a ce qu'un imprevu les fasse basculer.
+              Si vous répondez "non" à au moins 2 questions, votre restaurant fonctionne mais ne dégage
+              pas de vraie marge. C'est exactement le profil de la majorité des restaurants qui ferment
+              au bout de 3 ans : ils tournent jusqu'à ce qu'un imprévu les fasse basculer.
             </p>
           </div>
 
@@ -298,19 +298,19 @@ export default function BlogPourquoiPasRentable() {
               status="Critique"
               range="< 2 %"
               color="red"
-              desc="Zone de fermeture imminente. Toute hausse de cout (energie, fournisseur) precipite le depot de bilan. Agir cette semaine."
+              desc="Zone de fermeture imminente. Toute hausse de coût (énergie, fournisseur) précipite le dépôt de bilan. Agir cette semaine."
             />
             <MargeStatusCard
               status="Fragile"
               range="2 - 5 %"
               color="amber"
-              desc="Vous survivez. Pas de marge pour investir, pour vous payer correctement, ni pour absorber un imprevu. 90 jours pour ameliorer."
+              desc="Vous survivez. Pas de marge pour investir, pour vous payer correctement, ni pour absorber un imprévu. 90 jours pour améliorer."
             />
             <MargeStatusCard
               status="Sain"
               range="5 - 12 %"
               color="emerald"
-              desc="Restaurant viable et bankable. Vous pouvez investir, vous remunerer, encaisser des coups durs. Maintenir et optimiser."
+              desc="Restaurant viable et bankable. Vous pouvez investir, vous rémunérer, encaisser des coups durs. Maintenir et optimiser."
             />
           </div>
         </section>
@@ -323,56 +323,56 @@ export default function BlogPourquoiPasRentable() {
 
           <div className="prose-content">
             <p>
-              Voici, dans l'ordre de frequence dans le secteur,
+              Voici, dans l'ordre de fréquence dans le secteur,
               les 10 causes principales d'un restaurant qui ne rapporte pas d'argent. Lisez attentivement
-              chaque cause : votre probleme principal est probablement dans les 3 premieres.
+              chaque cause : votre problème principal est probablement dans les 3 premières.
             </p>
           </div>
 
           <div className="space-y-6 mt-10">
             <CauseCard
               number={1}
-              title="Food cost &gt; 35 % : la cause numero 1"
+              title="Food cost &gt; 35 % : la cause numéro 1"
               benchmark="Cible : 25-32 % selon le type"
-              desc="Le food cost (cout matieres / CA) est le premier tueur de marge. Au-dela de 35 %, votre restaurant est mathematiquement condamne a souffrir. Causes typiques : portions non pesees (chefs trop genereux de 10-20 %), prix fournisseurs jamais actualises, gaspillage non mesure (5-10 % des achats partent a la poubelle), erreurs de cuisson, vols invisibles. La bonne nouvelle : c'est aussi le levier le plus rapide a redresser. Refaire 20 fiches techniques precises avec grammages exacts ramene generalement le food cost de 38 % a 30 % en 6 a 8 semaines. C'est 8 points de marge brute, soit 48 000 EUR/an sur un CA de 600 000 EUR."
-              link={{ to: '/blog/reduire-food-cost', label: 'Lire : 10 strategies pour reduire le food cost' }}
+              desc="Le food cost (coût matières / CA) est le premier tueur de marge. Au-delà de 35 %, votre restaurant est mathématiquement condamné à souffrir. Causes typiques : portions non pesées (chefs trop généreux de 10-20 %), prix fournisseurs jamais actualisés, gaspillage non mesuré (5-10 % des achats partent à la poubelle), erreurs de cuisson, vols invisibles. La bonne nouvelle : c'est aussi le levier le plus rapide à redresser. Refaire 20 fiches techniques précises avec grammages exacts ramène généralement le food cost de 38 % à 30 % en 6 à 8 semaines. C'est 8 points de marge brute, soit 48 000 EUR/an sur un CA de 600 000 EUR."
+              link={{ to: '/blog/reduire-food-cost', label: 'Lire : 10 stratégies pour réduire le food cost' }}
             />
 
             <CauseCard
               number={2}
               title="Masse salariale &gt; 40 % du CA"
               benchmark="Cible : 30-38 % selon le type"
-              desc="Deuxieme tueur de marge : trop d'heures de personnel pour pas assez de revenu. Causes : planning sur-staffe en heures creuses, productivite faible (couverts/heure/personne), turnover eleve qui force a re-former en permanence, repartition floue des taches. Solution : timer chaque service pendant 1 semaine, identifier les creneaux ou 1 personne suffit au lieu de 2, automatiser les taches repetitives (caisse, prise de commande tablette). Passer de 42 % a 36 % de masse salariale = 36 000 EUR de marge supplementaire sur un CA de 600 000 EUR."
-              link={{ to: '/blog/reduire-cout-personnel-restaurant', label: 'Lire : comment reduire le cout du personnel' }}
+              desc="Deuxième tueur de marge : trop d'heures de personnel pour pas assez de revenu. Causes : planning sur-staffé en heures creuses, productivité faible (couverts/heure/personne), turnover élevé qui force à re-former en permanence, répartition floue des tâches. Solution : timer chaque service pendant 1 semaine, identifier les créneaux où 1 personne suffit au lieu de 2, automatiser les tâches répétitives (caisse, prise de commande tablette). Passer de 42 % à 36 % de masse salariale = 36 000 EUR de marge supplémentaire sur un CA de 600 000 EUR."
+              link={{ to: '/blog/reduire-cout-personnel-restaurant', label: 'Lire : comment réduire le coût du personnel' }}
             />
 
             <CauseCard
               number={3}
               title="Loyer trop cher (&gt; 10 % du CA)"
               benchmark="Cible : 6-9 % du CA HT"
-              desc="Une erreur de bail signee il y a 5 ans peut couler un restaurant en 2026. Si votre loyer depasse 10 % de votre CA HT, vous travaillez en grande partie pour votre bailleur. Solutions : renegocier le bail (un bailleur prefere un locataire qui paie 8 % plutot que zero), demander une revision a la baisse en cas de difficultes prouvees, envisager le declochement (vente du fonds et relocation ailleurs). Si vous etes en pleine zone touristique a 14 % de loyer, soit vous augmentez vos prix de 15 %, soit vous bougez."
+              desc="Une erreur de bail signée il y a 5 ans peut couler un restaurant en 2026. Si votre loyer dépasse 10 % de votre CA HT, vous travaillez en grande partie pour votre bailleur. Solutions : renégocier le bail (un bailleur préfère un locataire qui paie 8 % plutôt que zéro), demander une révision à la baisse en cas de difficultés prouvées, envisager le declochement (vente du fonds et relocation ailleurs). Si vous êtes en pleine zone touristique à 14 % de loyer, soit vous augmentez vos prix de 15 %, soit vous bougez."
             />
 
             <CauseCard
               number={4}
               title="Gaspillage &gt; 5 % du stock"
               benchmark="Cible : moins de 2 % du CA"
-              desc="Le gaspillage invisible est le voleur silencieux de votre marge. Causes : mauvais FIFO (premier entre, premier sorti), commandes mal calibrees, dates de peremption non suivies, parures et epluchures non integrees aux fiches techniques. Si vous jetez 5 % de vos achats, c'est 5 % de food cost supplementaire qui n'apparait nulle part dans vos comptes. Solution : peser une fois par semaine ce qui part a la poubelle pendant 1 mois. Le simple fait de mesurer reduit le gaspillage de 30 a 50 %."
-              link={{ to: '/blog/methode-fifo-gestion-stocks-restaurant', label: 'Lire : methode FIFO pour reduire les pertes' }}
+              desc="Le gaspillage invisible est le voleur silencieux de votre marge. Causes : mauvais FIFO (premier entre, premier sorti), commandes mal calibrées, dates de péremption non suivies, parures et épluchures non intégrées aux fiches techniques. Si vous jetez 5 % de vos achats, c'est 5 % de food cost supplémentaire qui n'apparaît nulle part dans vos comptes. Solution : peser une fois par semaine ce qui part à la poubelle pendant 1 mois. Le simple fait de mesurer réduit le gaspillage de 30 à 50 %."
+              link={{ to: '/blog/methode-fifo-gestion-stocks-restaurant', label: 'Lire : méthode FIFO pour réduire les pertes' }}
             />
 
             <CauseCard
               number={5}
               title="Carte trop large (cuisine inefficace)"
               benchmark="Cible : 20-30 plats max selon le type"
-              desc="Une carte de 60 plats vend l'illusion du choix mais detruit votre rentabilite. Plus de stocks dormants, plus de gaspillage, plus de competences a former, cuisine plus lente. La carte ideale : 3-4 entrees, 6-8 plats, 4-5 desserts, soit 15-17 lignes. Au-dela de 30 lignes, votre cuisine perd en efficacite. Solution : faire le menu engineering. Classer chaque plat en Star (forte marge + populaire), Cheval de labour (faible marge + populaire), Enigme (forte marge + impopulaire), Poids mort (faible marge + impopulaire). Supprimer les poids morts. Promouvoir les Stars. Re-fixer les prix des Chevaux. Une carte reduite de 40 a 22 plats peut faire gagner 4 a 6 points de marge nette."
+              desc="Une carte de 60 plats vend l'illusion du choix mais détruit votre rentabilité. Plus de stocks dormants, plus de gaspillage, plus de compétences à former, cuisine plus lente. La carte idéale : 3-4 entrées, 6-8 plats, 4-5 desserts, soit 15-17 lignes. Au-delà de 30 lignes, votre cuisine perd en efficacité. Solution : faire le menu engineering. Classer chaque plat en Star (forte marge + populaire), Cheval de labour (faible marge + populaire), Énigme (forte marge + impopulaire), Poids mort (faible marge + impopulaire). Supprimer les poids morts. Promouvoir les Stars. Re-fixer les prix des Chevaux. Une carte réduite de 40 à 22 plats peut faire gagner 4 à 6 points de marge nette."
             />
 
             <CauseCard
               number={6}
               title="Prix trop bas (peur d'augmenter)"
               benchmark="Coefficient cible : 3,0 - 4,0 selon le type"
-              desc="C'est la cause psychologique numero 1. Le restaurateur a peur de perdre des clients en augmentant ses prix de 1 ou 2 EUR. Realite : dans 80 % des cas, une hausse de 5 a 8 % n'est pas detectee par les clients fideles. Un plat a 16 EUR qui passe a 17 EUR (+6,3 %) avec un food cost de 5 EUR ameliore votre marge brute de 11 EUR a 12 EUR (+9 %). Sur 30 000 plats vendus par an, c'est 30 000 EUR de marge brute supplementaire. Cette peur coute plus cher que la realite."
+              desc="C'est la cause psychologique numéro 1. Le restaurateur a peur de perdre des clients en augmentant ses prix de 1 ou 2 EUR. Réalité : dans 80 % des cas, une hausse de 5 à 8 % n'est pas détectée par les clients fidèles. Un plat à 16 EUR qui passe à 17 EUR (+6,3 %) avec un food cost de 5 EUR améliore votre marge brute de 11 EUR à 12 EUR (+9 %). Sur 30 000 plats vendus par an, c'est 30 000 EUR de marge brute supplémentaire. Cette peur coûte plus cher que la réalité."
               link={{ to: '/blog/fixer-prix-carte-restaurant', label: 'Lire : comment fixer les prix de sa carte' }}
             />
 
@@ -380,83 +380,83 @@ export default function BlogPourquoiPasRentable() {
               number={7}
               title="Couverts trop bas (taux d'occupation &lt; 50 %)"
               benchmark="Cible : 55-65 % d'occupation moyenne"
-              desc="Vos charges fixes (loyer, salaires de base, energie minimum) sont les memes que la salle soit pleine ou a moitie vide. Si vous tournez a 35 % d'occupation, vous diluez votre fixe sur trop peu de couverts. Solutions : ouvrir un service supplementaire si la demande existe (brunch, snacking entre 14h et 17h), creer des formules attractives midi/soir, ameliorer la visibilite Google Business Profile et les avis, lancer un programme de fidelite, partenariats locaux. Passer de 40 % a 55 % d'occupation, c'est +37 % de chiffre d'affaires sans changer la salle."
+              desc="Vos charges fixes (loyer, salaires de base, énergie minimum) sont les mêmes que la salle soit pleine ou à moitié vide. Si vous tournez à 35 % d'occupation, vous diluez votre fixe sur trop peu de couverts. Solutions : ouvrir un service supplémentaire si la demande existe (brunch, snacking entre 14h et 17h), créer des formules attractives midi/soir, améliorer la visibilité Google Business Profile et les avis, lancer un programme de fidélité, partenariats locaux. Passer de 40 % à 55 % d'occupation, c'est +37 % de chiffre d'affaires sans changer la salle."
               link={{ to: '/blog/taux-occupation-restaurant', label: 'Lire : taux d\'occupation restaurant' }}
             />
 
             <CauseCard
               number={8}
-              title="Marketing inexistant (pas de fidelisation)"
-              benchmark="Cible : 40 % de clients fideles minimum"
-              desc="Un client fidelise coute 5 a 10 fois moins cher qu'un nouveau client. Si vous n'avez pas de programme de fidelisation (carte tampon, CRM, newsletter, anniversaires), vous depensez de l'energie en acquisition pour combler une fuite. Solutions concretes : recolter les emails (offre dessert offert contre email), envoyer 1 newsletter/mois avec un mot personnel, fidelite numerique simple (10 cafes = 1 offert), Google Business optimise avec photos pro et reponses aux avis. Une base de 500 clients fideles transforme une salle vide en service plein."
+              title="Marketing inexistant (pas de fidélisation)"
+              benchmark="Cible : 40 % de clients fidèles minimum"
+              desc="Un client fidélisé coûte 5 à 10 fois moins cher qu'un nouveau client. Si vous n'avez pas de programme de fidélisation (carte tampon, CRM, newsletter, anniversaires), vous dépensez de l'énergie en acquisition pour combler une fuite. Solutions concrètes : récolter les emails (offre dessert offert contre email), envoyer 1 newsletter/mois avec un mot personnel, fidélité numérique simple (10 cafés = 1 offert), Google Business optimisé avec photos pro et réponses aux avis. Une base de 500 clients fidèles transforme une salle vide en service plein."
             />
 
             <CauseCard
               number={9}
               title="Pas de pilotage data (naviguer au pif)"
-              benchmark="Cible : 3 KPI consultes / jour, 8 / semaine"
-              desc="Beaucoup de restaurateurs decouvrent leur food cost en fin d'annee chez l'expert-comptable. C'est 12 mois trop tard. Pilotage minimum : ticket moyen quotidien, nombre de couverts, food cost mensuel, marge brute par plat. Sans data, vous gerez par intuition - et l'intuition est tres mauvaise sur les chiffres financiers. C'est exactement la raison d'etre d'un outil comme RestauMargin : automatiser le calcul et l'alerte, pour que vous voyiez les derives au moment ou elles surviennent et non 9 mois plus tard."
+              benchmark="Cible : 3 KPI consultés / jour, 8 / semaine"
+              desc="Beaucoup de restaurateurs découvrent leur food cost en fin d'année chez l'expert-comptable. C'est 12 mois trop tard. Pilotage minimum : ticket moyen quotidien, nombre de couverts, food cost mensuel, marge brute par plat. Sans data, vous gérez par intuition - et l'intuition est très mauvaise sur les chiffres financiers. C'est exactement la raison d'être d'un outil comme RestauMargin : automatiser le calcul et l'alerte, pour que vous voyiez les dérives au moment où elles surviennent et non 9 mois plus tard."
             />
 
             <CauseCard
               number={10}
               title="Concept flou (positionnement faible)"
-              benchmark="Cible : 1 phrase qui resume tout"
-              desc="Si vous ne savez pas resumer votre restaurant en une phrase, vos clients ne le savent pas non plus. Un bistrot qui essaie d'etre a la fois traditionnel, italien, healthy et brunch n'attire personne specifiquement. Le concept flou est souvent le symptome d'une carte trop large et d'un manque de strategie. Test simple : demandez a 10 clients fideles 'pourquoi vous venez chez moi ?'. Si les reponses sont incoherentes, votre positionnement est faible. Resoudre cela = repenser la carte autour d'une promesse claire (ex: 'la meilleure bavette de Paris', 'le seul restaurant 100 % locavore du quartier', 'cuisine italienne authentique et abordable')."
+              benchmark="Cible : 1 phrase qui résume tout"
+              desc="Si vous ne savez pas résumer votre restaurant en une phrase, vos clients ne le savent pas non plus. Un bistrot qui essaie d'être à la fois traditionnel, italien, healthy et brunch n'attire personne spécifiquement. Le concept flou est souvent le symptôme d'une carte trop large et d'un manque de stratégie. Test simple : demandez à 10 clients fidèles 'pourquoi vous venez chez moi ?'. Si les réponses sont incohérentes, votre positionnement est faible. Résoudre cela = repenser la carte autour d'une promesse claire (ex: 'la meilleure bavette de Paris', 'le seul restaurant 100 % locavore du quartier', 'cuisine italienne authentique et abordable')."
             />
           </div>
 
           <Callout type="warning">
-            <strong>Impact cumule :</strong> ces 10 causes additionnees representent souvent 15 a 25 points
-            de marge nette envoles. C'est exactement la difference entre un restaurant qui ferme et un
-            restaurant qui prospere. La bonne nouvelle : vous n'avez pas a tout corriger d'un coup. Une
-            cause a la fois, 30 jours par cause, et 6 mois plus tard votre situation est transformee.
+            <strong>Impact cumulé :</strong> ces 10 causes additionnées représentent souvent 15 à 25 points
+            de marge nette envolés. C'est exactement la différence entre un restaurant qui ferme et un
+            restaurant qui prospère. La bonne nouvelle : vous n'avez pas à tout corriger d'un coup. Une
+            cause à la fois, 30 jours par cause, et 6 mois plus tard votre situation est transformée.
           </Callout>
         </section>
 
         {/* ═════════════ SECTION 4 : Diagnostic 5 min ═════════════ */}
         <section id="diagnostic" className="mb-16">
           <SectionHeading icon={<ListChecks className="w-6 h-6" />} number="4">
-            Diagnostic en 5 minutes : les questions a se poser
+            Diagnostic en 5 minutes : les questions à se poser
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Avant de mettre en place un plan d'action, identifiez precisement votre cause numero 1.
-              Le piege classique : essayer de tout faire en meme temps et ne rien terminer. Repondez
-              honnetement aux 7 questions ci-dessous, en chiffrant.
+              Avant de mettre en place un plan d'action, identifiez précisément votre cause numéro 1.
+              Le piège classique : essayer de tout faire en même temps et ne rien terminer. Répondez
+              honnêtement aux 7 questions ci-dessous, en chiffrant.
             </p>
           </div>
 
           <ol className="mt-8 space-y-5">
             {[
               {
-                title: 'Quel est mon food cost reel sur les 3 derniers mois ?',
-                body: "Achats matieres premieres / CA HT x 100. Si vous ne pouvez pas repondre en chiffres, c'est deja un symptome. Sortir les factures fournisseurs et les Z de caisse des 3 derniers mois, calculer. Au-dela de 33 % en bistrot ou 38 % en gastro, action prioritaire.",
+                title: 'Quel est mon food cost réel sur les 3 derniers mois ?',
+                body: "Achats matières premières / CA HT x 100. Si vous ne pouvez pas répondre en chiffres, c'est déjà un symptôme. Sortir les factures fournisseurs et les Z de caisse des 3 derniers mois, calculer. Au-delà de 33 % en bistrot ou 38 % en gastro, action prioritaire.",
               },
               {
                 title: 'Quelle est ma masse salariale en % du CA ?',
-                body: "Salaires bruts + charges patronales / CA HT x 100, sur les 3 derniers mois. Au-dela de 40 % en bistrot ou 45 % en gastro, action prioritaire. Si vous etes le seul a travailler et ne vous payez pas, n'oubliez pas d'integrer un salaire virtuel pour avoir une vraie photo.",
+                body: "Salaires bruts + charges patronales / CA HT x 100, sur les 3 derniers mois. Au-delà de 40 % en bistrot ou 45 % en gastro, action prioritaire. Si vous êtes le seul à travailler et ne vous payez pas, n'oubliez pas d'intégrer un salaire virtuel pour avoir une vraie photo.",
               },
               {
                 title: 'Quel est mon taux d\'occupation moyen ?',
-                body: "Couverts servis / couverts theoriques disponibles (places x services x jours d'ouverture). En dessous de 50 %, le fixe est dilue. Au-dessus de 70 %, vous avez peut-etre besoin d'agrandir ou d'ajouter un service.",
+                body: "Couverts servis / couverts théoriques disponibles (places x services x jours d'ouverture). En dessous de 50 %, le fixe est dilué. Au-dessus de 70 %, vous avez peut-être besoin d'agrandir ou d'ajouter un service.",
               },
               {
                 title: 'Combien de plats sur ma carte rapportent vraiment ?',
-                body: "Refaites le calcul de marge brute pour vos 10 plats les plus vendus. Vous serez surpris : souvent 2-3 plats portent toute la rentabilite, 4-5 sont neutres, et 2-3 detruisent de la marge. Ces derniers doivent disparaitre.",
+                body: "Refaites le calcul de marge brute pour vos 10 plats les plus vendus. Vous serez surpris : souvent 2-3 plats portent toute la rentabilité, 4-5 sont neutres, et 2-3 détruisent de la marge. Ces derniers doivent disparaître.",
               },
               {
-                title: 'Quand ai-je revu mes prix fournisseurs pour la derniere fois ?',
-                body: "Si la reponse est 'il y a plus de 6 mois' ou 'je ne sais plus', c'est un probleme. Les prix fournisseurs evoluent constamment. Mettre a jour 1 fois par trimestre minimum, idealement en temps reel via OCR factures.",
+                title: 'Quand ai-je revu mes prix fournisseurs pour la dernière fois ?',
+                body: "Si la réponse est 'il y a plus de 6 mois' ou 'je ne sais plus', c'est un problème. Les prix fournisseurs évoluent constamment. Mettre à jour 1 fois par trimestre minimum, idéalement en temps réel via OCR factures.",
               },
               {
-                title: 'Quel pourcentage de mon stock part a la poubelle ?',
-                body: "Si vous ne mesurez pas, supposez 5-8 %. Peser pendant 1 semaine ce qui finit en poubelle (dechets, parures, perimes). Vous decouvrirez probablement 3 a 5 ingredients qui representent 80 % du gaspillage.",
+                title: 'Quel pourcentage de mon stock part à la poubelle ?',
+                body: "Si vous ne mesurez pas, supposez 5-8 %. Peser pendant 1 semaine ce qui finit en poubelle (déchets, parures, périmés). Vous découvrirez probablement 3 à 5 ingrédients qui représentent 80 % du gaspillage.",
               },
               {
-                title: 'Combien de clients fideles ai-je ? (qui viennent au moins 1 fois/mois)',
-                body: "Estimer en regardant les visages familiers, les programmes de fidelite, les reservations recurrentes. Moins de 30 % de clients fideles = probleme de retention. C'est tres souvent lie au concept flou ou a l'experience client incoherente.",
+                title: 'Combien de clients fidèles ai-je ? (qui viennent au moins 1 fois/mois)',
+                body: "Estimer en regardant les visages familiers, les programmes de fidélité, les réservations récurrentes. Moins de 30 % de clients fidèles = problème de rétention. C'est très souvent lié au concept flou ou à l'expérience client incohérente.",
               },
             ].map((step, i) => (
               <li key={i} className="bg-white border border-mono-900 rounded-2xl p-6 sm:p-7 flex gap-5">
@@ -472,9 +472,9 @@ export default function BlogPourquoiPasRentable() {
           </ol>
 
           <Callout type="info">
-            <strong>Sortez votre carnet :</strong> notez vos 7 reponses. Le poste le plus eloigne du
-            benchmark est votre priorite numero 1. Pendant 30 jours, vous ne vous occuperez que de cette
-            seule cause. Pas de saupoudrage, pas de tout-en-meme-temps : 1 sujet, 30 jours, 100 % de
+            <strong>Sortez votre carnet :</strong> notez vos 7 réponses. Le poste le plus éloigné du
+            benchmark est votre priorité numéro 1. Pendant 30 jours, vous ne vous occuperez que de cette
+            seule cause. Pas de saupoudrage, pas de tout-en-même-temps : 1 sujet, 30 jours, 100 % de
             l'attention.
           </Callout>
         </section>
@@ -487,7 +487,7 @@ export default function BlogPourquoiPasRentable() {
 
           <div className="prose-content">
             <p>
-              Voici un plan d'action concret, semaine par semaine, applicable demain matin. Il est concu
+              Voici un plan d'action concret, semaine par semaine, applicable demain matin. Il est conçu
               pour un restaurant en zone fragile (marge nette 0-5 %) qui veut passer en zone saine
               (8-12 %) en 90 jours.
             </p>
@@ -497,51 +497,51 @@ export default function BlogPourquoiPasRentable() {
             <PhaseCard
               phase="Mois 1"
               title="Diagnostic + quick wins"
-              objective="Identifier la cause numero 1 et obtenir +2 points de marge brute"
+              objective="Identifier la cause numéro 1 et obtenir +2 points de marge brute"
               actions={[
                 "Semaine 1 : Audit complet (food cost, masse salariale, occupation, loyer, gaspillage)",
                 "Semaine 2 : Refaire les 10 fiches techniques des plats les plus vendus",
-                "Semaine 3 : Mesurer le gaspillage chaque jour, identifier les 3 ingredients principaux",
-                "Semaine 4 : Premiere passe de renegociation fournisseurs (3 fournisseurs prioritaires)",
+                "Semaine 3 : Mesurer le gaspillage chaque jour, identifier les 3 ingrédients principaux",
+                "Semaine 4 : Première passe de renégociation fournisseurs (3 fournisseurs prioritaires)",
               ]}
-              expected="+2 a +3 points de marge brute sur la fin du mois 1"
+              expected="+2 à +3 points de marge brute sur la fin du mois 1"
               color="teal"
             />
 
             <PhaseCard
               phase="Mois 2"
-              title="Refonte carte + optimisation operationnelle"
-              objective="Reduire la carte aux plats rentables et adapter les plannings"
+              title="Refonte carte + optimisation opérationnelle"
+              objective="Réduire la carte aux plats rentables et adapter les plannings"
               actions={[
-                "Semaine 5 : Menu engineering complet (classifier les plats en 4 categories)",
+                "Semaine 5 : Menu engineering complet (classifier les plats en 4 catégories)",
                 "Semaine 6 : Nouvelle carte (suppression poids morts, mise en avant Stars)",
-                "Semaine 7 : Timing precis du service, redaction d'un nouveau planning optimise",
+                "Semaine 7 : Timing précis du service, rédaction d'un nouveau planning optimisé",
                 "Semaine 8 : Mise en place du suivi quotidien (3 KPI : ticket moyen, couverts, food cost)",
               ]}
-              expected="+2 a +4 points de marge brute, -1 a -2 points de masse salariale"
+              expected="+2 à +4 points de marge brute, -1 à -2 points de masse salariale"
               color="amber"
             />
 
             <PhaseCard
               phase="Mois 3"
-              title="Repositionnement + fidelisation"
+              title="Repositionnement + fidélisation"
               objective="Augmenter le ticket moyen et le taux de retour client"
               actions={[
-                "Semaine 9 : Hausse de prix maitrisee (+5 a +8 % sur les Stars et Chevaux de labour)",
-                "Semaine 10 : Programme de fidelisation simple (carte tampon ou CRM email)",
-                "Semaine 11 : Optimisation Google Business Profile (photos pro, reponses aux avis)",
-                "Semaine 12 : Bilan a 90 jours, mesure des KPI vs depart",
+                "Semaine 9 : Hausse de prix maîtrisée (+5 à +8 % sur les Stars et Chevaux de labour)",
+                "Semaine 10 : Programme de fidélisation simple (carte tampon ou CRM email)",
+                "Semaine 11 : Optimisation Google Business Profile (photos pro, réponses aux avis)",
+                "Semaine 12 : Bilan à 90 jours, mesure des KPI vs départ",
               ]}
-              expected="+5 a +8 points de marge nette cumules depuis le depart"
+              expected="+5 à +8 points de marge nette cumulés depuis le départ"
               color="emerald"
             />
           </div>
 
           <Callout type="warning">
-            <strong>Discipline avant tout :</strong> ce plan ne fonctionne que si vous l'executez sans
-            chercher a tout faire en meme temps. Chaque semaine a UN objectif. Mieux vaut accomplir 1
-            action a 100 % que 4 actions a 30 %. Bloquez 1 demi-journee par semaine pour les sujets de
-            pilotage. Sans ce temps protege, rien ne changera.
+            <strong>Discipline avant tout :</strong> ce plan ne fonctionne que si vous l'exécutez sans
+            chercher à tout faire en même temps. Chaque semaine a UN objectif. Mieux vaut accomplir 1
+            action à 100 % que 4 actions à 30 %. Bloquez 1 demi-journée par semaine pour les sujets de
+            pilotage. Sans ce temps protégé, rien ne changera.
           </Callout>
         </section>
 
@@ -554,8 +554,8 @@ export default function BlogPourquoiPasRentable() {
           <div className="prose-content">
             <p>
               <strong>Profil :</strong> Bistrot parisien 12e arrondissement, 38 couverts, CA annuel 580 000
-              EUR, ouvert il y a 4 ans par un couple. En janvier 2025, marge nette declaree par l'expert-
-              comptable : 0,3 %. Le proprietaire ne s'est verse aucun salaire depuis 8 mois.
+              EUR, ouvert il y a 4 ans par un couple. En janvier 2025, marge nette déclarée par l'expert-
+              comptable : 0,3 %. Le propriétaire ne s'est versé aucun salaire depuis 8 mois.
             </p>
           </div>
 
@@ -565,7 +565,7 @@ export default function BlogPourquoiPasRentable() {
                 <tr className="bg-mono-975 text-mono-350">
                   <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Indicateur</th>
                   <th className="text-center py-3 px-4 font-semibold">Avant (jan 2025)</th>
-                  <th className="text-center py-3 px-4 font-semibold">Apres (juin 2025)</th>
+                  <th className="text-center py-3 px-4 font-semibold">Après (juin 2025)</th>
                   <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Gain</th>
                 </tr>
               </thead>
@@ -611,35 +611,35 @@ export default function BlogPourquoiPasRentable() {
           </div>
 
           <div className="prose-content mt-8">
-            <h3 className="text-xl font-bold text-mono-100 mb-3">Les 5 actions concretes qui ont fait la difference</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3">Les 5 actions concrètes qui ont fait la différence</h3>
             <ol className="list-decimal list-inside space-y-3 text-mono-350">
               <li>
-                <strong>Refonte de la carte de 38 a 22 plats :</strong> suppression des plats poids morts
-                (steack-frites a la carte avec un food cost a 48 %, salade nicoise sous-vendue). Mise en
-                avant des plats Stars (souris d'agneau, magret laque).
+                <strong>Refonte de la carte de 38 à 22 plats :</strong> suppression des plats poids morts
+                (steack-frites à la carte avec un food cost à 48 %, salade nicoise sous-vendue). Mise en
+                avant des plats Stars (souris d'agneau, magret laqué).
               </li>
               <li>
                 <strong>Hausse de prix de +8 % sur les Stars :</strong> bavette 19,50 EUR -&gt; 21 EUR.
-                Zero perte de clients fideles, +2 800 EUR/mois de marge brute supplementaire.
+                Zéro perte de clients fidèles, +2 800 EUR/mois de marge brute supplémentaire.
               </li>
               <li>
-                <strong>Renegociation des 3 fournisseurs principaux :</strong> boucher (-7 %), maraicher
-                (-4 %), epicier (-6 %). Tonalite : "on est en difficulte, aidez-nous a tenir et on restera
-                fideles". Pari gagnant sur la duree.
+                <strong>Renégociation des 3 fournisseurs principaux :</strong> boucher (-7 %), maraîcher
+                (-4 %), épicier (-6 %). Tonalité : "on est en difficulté, aidez-nous à tenir et on restera
+                fidèles". Pari gagnant sur la durée.
               </li>
               <li>
-                <strong>Mise en place d'un service brunch le dimanche :</strong> 40 couverts a 26 EUR
-                en moyenne pendant 4 heures avec 1 cuisinier + 2 service. ROI immediat.
+                <strong>Mise en place d'un service brunch le dimanche :</strong> 40 couverts à 26 EUR
+                en moyenne pendant 4 heures avec 1 cuisinier + 2 service. ROI immédiat.
               </li>
               <li>
-                <strong>CRM email simple :</strong> recolte d'email (offre dessert offert), envoi 1
-                newsletter/mois. 320 emails recoltes en 4 mois, taux de retour x2.
+                <strong>CRM email simple :</strong> récolte d'email (offre dessert offert), envoi 1
+                newsletter/mois. 320 emails récoltés en 4 mois, taux de retour x2.
               </li>
             </ol>
             <p className="mt-6">
-              <strong>Resultat :</strong> en 6 mois, le bistrot est passe de 0,3 % de marge nette a
-              12,1 %, soit 70 200 EUR de benefice net sur les 6 mois suivants vs 870 EUR sur les 6 mois
-              precedents. Le couple proprietaire s'est remis a se payer 2 800 EUR net chacun par mois.
+              <strong>Résultat :</strong> en 6 mois, le bistrot est passé de 0,3 % de marge nette à
+              12,1 %, soit 70 200 EUR de bénéfice net sur les 6 mois suivants vs 870 EUR sur les 6 mois
+              précédents. Le couple propriétaire s'est remis à se payer 2 800 EUR net chacun par mois.
               Aucune fermeture, aucun licenciement, aucun changement de concept majeur. Juste de la
               discipline data.
             </p>
@@ -649,14 +649,14 @@ export default function BlogPourquoiPasRentable() {
         {/* ═════════════ SECTION 7 : Fermer ou continuer ═════════════ */}
         <section id="fermer-ou-pas" className="mb-16">
           <SectionHeading icon={<Compass className="w-6 h-6" />} number="7">
-            Quand fermer vs perseverer ?
+            Quand fermer vs persévérer ?
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              C'est la question la plus dure. Tout le monde n'a pas vocation a se battre 6 mois pour
-              redresser. Voici les criteres factuels qui plaident pour la continuation, et ceux qui
-              plaident pour la fermeture organisee.
+              C'est la question la plus dure. Tout le monde n'a pas vocation à se battre 6 mois pour
+              redresser. Voici les critères factuels qui plaident pour la continuation, et ceux qui
+              plaident pour la fermeture organisée.
             </p>
           </div>
 
@@ -664,14 +664,14 @@ export default function BlogPourquoiPasRentable() {
             <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle className="w-5 h-5 text-emerald-700" />
-                <h3 className="font-bold text-emerald-900">Perseverer si...</h3>
+                <h3 className="font-bold text-emerald-900">Persévérer si...</h3>
               </div>
               <ul className="list-disc list-inside text-sm text-emerald-800 space-y-2">
-                <li>Marge brute superieure a 60 % (le concept est viable)</li>
-                <li>Vous avez des clients fideles (au moins 30 %)</li>
-                <li>L'emplacement est bon (passage, visibilite)</li>
+                <li>Marge brute supérieure à 60 % (le concept est viable)</li>
+                <li>Vous avez des clients fidèles (au moins 30 %)</li>
+                <li>L'emplacement est bon (passage, visibilité)</li>
                 <li>Le bail a moins de 5 ans restants</li>
-                <li>Vous avez encore l'energie pour 6 mois de discipline</li>
+                <li>Vous avez encore l'énergie pour 6 mois de discipline</li>
                 <li>L'expert-comptable identifie 2-3 leviers clairs</li>
               </ul>
             </div>
@@ -681,58 +681,58 @@ export default function BlogPourquoiPasRentable() {
                 <h3 className="font-bold text-red-900">Fermer si...</h3>
               </div>
               <ul className="list-disc list-inside text-sm text-red-800 space-y-2">
-                <li>Marge brute inferieure a 50 % (concept defaillant)</li>
-                <li>Loyer superieur a 15 % et bail bloque</li>
-                <li>Plus de 3 mois de loyer impayes en retard</li>
-                <li>Burn-out severe du proprietaire (sante prioritaire)</li>
-                <li>Aucun client fidele apres 3 ans</li>
-                <li>Zone en declin (commerces qui ferment autour)</li>
+                <li>Marge brute inférieure à 50 % (concept défaillant)</li>
+                <li>Loyer supérieur à 15 % et bail bloqué</li>
+                <li>Plus de 3 mois de loyer impayés en retard</li>
+                <li>Burn-out sévère du propriétaire (santé prioritaire)</li>
+                <li>Aucun client fidèle après 3 ans</li>
+                <li>Zone en déclin (commerces qui ferment autour)</li>
               </ul>
             </div>
           </div>
 
           <Callout type="info">
-            <strong>Fermer n'est pas un echec.</strong> C'est parfois la decision la plus intelligente pour
-            limiter les pertes financieres et psychologiques. Une fermeture organisee avec un expert-
-            comptable et un avocat permet de proteger votre patrimoine personnel et de rebondir. Beaucoup
-            de restaurateurs ferment, prennent 6 mois pour digerer, et ouvrent un nouveau projet plus solide
-            avec les lecons apprises.
+            <strong>Fermer n'est pas un échec.</strong> C'est parfois la décision la plus intelligente pour
+            limiter les pertes financières et psychologiques. Une fermeture organisée avec un expert-
+            comptable et un avocat permet de protéger votre patrimoine personnel et de rebondir. Beaucoup
+            de restaurateurs ferment, prennent 6 mois pour digérer, et ouvrent un nouveau projet plus solide
+            avec les leçons apprises.
           </Callout>
         </section>
 
         {/* ═════════════ SECTION 8 : Erreurs psy ═════════════ */}
         <section id="erreurs-psy" className="mb-16">
           <SectionHeading icon={<Brain className="w-6 h-6" />} number="8">
-            Erreurs psychologiques du restaurateur epuise
+            Erreurs psychologiques du restaurateur épuisé
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Au-dela des chiffres, il y a des biais psychologiques qui maintiennent les restaurateurs
-              dans la non-rentabilite. Les identifier est le premier pas pour les corriger.
+              Au-delà des chiffres, il y a des biais psychologiques qui maintiennent les restaurateurs
+              dans la non-rentabilité. Les identifier est le premier pas pour les corriger.
             </p>
           </div>
 
           <div className="space-y-5 mt-8">
             <ErreurPsyCard
-              title="Le deni operationnel"
-              desc="Travailler 80 heures par semaine pour compenser l'absence de pilotage. On confond activite et productivite. La premiere action de tout redressement n'est PAS de travailler plus, c'est de s'asseoir 4 heures et regarder ses chiffres en face."
+              title="Le déni opérationnel"
+              desc="Travailler 80 heures par semaine pour compenser l'absence de pilotage. On confond activité et productivité. La première action de tout redressement n'est PAS de travailler plus, c'est de s'asseoir 4 heures et regarder ses chiffres en face."
             />
             <ErreurPsyCard
               title="La peur d'augmenter les prix"
-              desc="Vous imaginez que tous vos clients vont fuir si vous passez la bavette de 18,50 EUR a 19,80 EUR. La realite : 95 % ne le verront meme pas. Cette peur coute 30 000 EUR/an de marge non encaissee."
+              desc="Vous imaginez que tous vos clients vont fuir si vous passez la bavette de 18,50 EUR à 19,80 EUR. La réalité : 95 % ne le verront même pas. Cette peur coûte 30 000 EUR/an de marge non encaissée."
             />
             <ErreurPsyCard
               title="L'attachement aux plats du chef"
-              desc="Vous gardez sur la carte un plat qui ne se vend pas parce qu'il vous tient a coeur. Chaque plat poids mort coute 1 a 2 points de marge globale. Le menu n'est pas un musee : c'est un outil de vente."
+              desc="Vous gardez sur la carte un plat qui ne se vend pas parce qu'il vous tient à coeur. Chaque plat poids mort coûte 1 à 2 points de marge globale. Le menu n'est pas un musée : c'est un outil de vente."
             />
             <ErreurPsyCard
-              title="La generosite mal calibree"
-              desc="Ajouter 30 g de viande supplementaire sur chaque assiette par generosite represente 1 point de food cost. Sur 30 000 assiettes/an, c'est 6 000 EUR. La generosite se montre dans la qualite, l'accueil, le sourire, le service - pas dans les grammages."
+              title="La générosité mal calibrée"
+              desc="Ajouter 30 g de viande supplémentaire sur chaque assiette par générosité représente 1 point de food cost. Sur 30 000 assiettes/an, c'est 6 000 EUR. La générosité se montre dans la qualité, l'accueil, le sourire, le service - pas dans les grammages."
             />
             <ErreurPsyCard
-              title="L'evitement des chiffres"
-              desc="Beaucoup de restaurateurs n'ouvrent leur expert-comptable qu'en fin d'annee parce que c'est anxiogene. Resultat : les derives ne sont vues que 6 a 9 mois trop tard. Regarder ses chiffres chaque semaine pendant 30 minutes evite 80 % des catastrophes."
+              title="L'évitement des chiffres"
+              desc="Beaucoup de restaurateurs n'ouvrent leur expert-comptable qu'en fin d'année parce que c'est anxiogène. Résultat : les dérives ne sont vues que 6 à 9 mois trop tard. Regarder ses chiffres chaque semaine pendant 30 minutes évite 80 % des catastrophes."
             />
           </div>
         </section>
@@ -741,7 +741,7 @@ export default function BlogPourquoiPasRentable() {
 
         {/* ═════════════ FAQ ═════════════ */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-4">
             {faqItems.map((item, i) => (
               <FAQItem key={i} q={item.question} a={item.answer} />
@@ -757,11 +757,11 @@ export default function BlogPourquoiPasRentable() {
             </h2>
             <p className="text-teal-100 text-lg max-w-xl mx-auto mb-3 leading-relaxed">
               Au lieu de calculer pendant 30 heures sur un tableur, RestauMargin automatise le food cost,
-              la marge par plat, le menu engineering et les alertes de derive.
+              la marge par plat, le menu engineering et les alertes de dérive.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
               <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte
-              bancaire. Gain moyen constate : 3 a 5 points de marge brute en 6 mois.
+              bancaire. Gain moyen constaté : 3 à 5 points de marge brute en 6 mois.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
@@ -791,20 +791,20 @@ export default function BlogPourquoiPasRentable() {
               <p className="text-xs text-mono-500">Guide complet : formules, food cost, marge brute et nette, benchmarks.</p>
             </Link>
             <Link to="/blog/seuil-rentabilite-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Seuil de rentabilite restaurant</h3>
-              <p className="text-xs text-mono-500">Point mort, couverts necessaires, formules et leviers pour reduire le seuil.</p>
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Seuil de rentabilité restaurant</h3>
+              <p className="text-xs text-mono-500">Point mort, couverts nécessaires, formules et leviers pour réduire le seuil.</p>
             </Link>
             <Link to="/blog/prime-cost-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Prime cost restaurant</h3>
-              <p className="text-xs text-mono-500">L'indicateur n1 : food cost + masse salariale, plan d'action pour le reduire.</p>
+              <p className="text-xs text-mono-500">L'indicateur n1 : food cost + masse salariale, plan d'action pour le réduire.</p>
             </Link>
             <Link to="/blog/reduire-food-cost" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le food cost</h3>
-              <p className="text-xs text-mono-500">10 strategies : fiches techniques, negociation, gaspillage, menu engineering.</p>
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Réduire le food cost</h3>
+              <p className="text-xs text-mono-500">10 stratégies : fiches techniques, négociation, gaspillage, menu engineering.</p>
             </Link>
             <Link to="/blog/reduire-cout-personnel-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Reduire le cout du personnel</h3>
-              <p className="text-xs text-mono-500">Planning optimise, turnover, formation : 5 leviers pour reduire la masse salariale.</p>
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Réduire le coût du personnel</h3>
+              <p className="text-xs text-mono-500">Planning optimisé, turnover, formation : 5 leviers pour réduire la masse salariale.</p>
             </Link>
             <Link to="/blog/taux-occupation-restaurant" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Taux d'occupation restaurant</h3>
@@ -828,13 +828,13 @@ export default function BlogPourquoiPasRentable() {
             La plateforme de gestion de marge pour les restaurateurs.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
+            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
+            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
           </div>
           <p className="mt-6 text-xs text-mono-700">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
+            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
           </p>
         </div>
       </footer>
@@ -936,7 +936,7 @@ function PhaseCard({ phase, title, objective, actions, expected, color }: { phas
       </ul>
       <div className={`mt-4 pt-4 border-t border-current opacity-60`}>
         <p className={`text-sm ${c.text} font-semibold`}>
-          Resultat attendu : <span className="font-bold">{expected}</span>
+          Résultat attendu : <span className="font-bold">{expected}</span>
         </p>
       </div>
     </div>

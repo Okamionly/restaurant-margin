@@ -32,54 +32,54 @@ import BlogAuthor from '../components/BlogAuthor';
 
 const faqItems = [
   {
-    question: "Combien d'historique faut-il pour des previsions de ventes fiables en restaurant ?",
+    question: "Combien d'historique faut-il pour des prévisions de ventes fiables en restaurant ?",
     answer:
-      "Comptez 3 mois minimum pour demarrer avec une moyenne mobile, 12 mois pour integrer la saisonnalite annuelle (vacances, jours feries, saisons), et 24 mois pour calibrer un modele de regression precis ou un algorithme de machine learning. Sans 12 mois de donnees, votre forecast couverts ne capturera ni le pic de la fete des meres, ni le creux d'aout, ni l'effet rentree de septembre.",
+      "Comptez 3 mois minimum pour démarrer avec une moyenne mobile, 12 mois pour intégrer la saisonnalité annuelle (vacances, jours fériés, saisons), et 24 mois pour calibrer un modèle de régression précis ou un algorithme de machine learning. Sans 12 mois de données, votre forecast couverts ne capturera ni le pic de la fête des mères, ni le creux d'août, ni l'effet rentrée de septembre.",
   },
   {
-    question: "Quelle est la difference entre prevision des ventes et forecast couverts ?",
+    question: "Quelle est la différence entre prévision des ventes et forecast couverts ?",
     answer:
-      "La prevision des ventes restaurant calcule le chiffre d'affaires futur en euros. Le forecast couverts predit le nombre de clients servis. Les deux sont lies par le ticket moyen : Prevision CA = Forecast couverts x Ticket moyen. On pilote la prevision CA pour la tresorerie et le forecast couverts pour le staffing et les commandes matieres.",
+      "La prévision des ventes restaurant calcule le chiffre d'affaires futur en euros. Le forecast couverts prédit le nombre de clients servis. Les deux sont liés par le ticket moyen : Prévision CA = Forecast couverts x Ticket moyen. On pilote la prévision CA pour la trésorerie et le forecast couverts pour le staffing et les commandes matières.",
   },
   {
-    question: "Quelle precision attendre d'une prevision de ventes restaurant ?",
+    question: "Quelle précision attendre d'une prévision de ventes restaurant ?",
     answer:
-      "Une precision de plus ou moins 10 % est consideree comme bonne, plus ou moins 20 % comme acceptable au demarrage. Les chaines avec algorithmes ML atteignent plus ou moins 5 %. L'indicateur de mesure standard est le MAPE (Mean Absolute Percentage Error). Visez 15 % au mois 3, 10 % au mois 12, 8 % apres 24 mois de pratique reguliere.",
+      "Une précision de plus ou moins 10 % est considérée comme bonne, plus ou moins 20 % comme acceptable au démarrage. Les chaînes avec algorithmes ML atteignent plus ou moins 5 %. L'indicateur de mesure standard est le MAPE (Mean Absolute Percentage Error). Visez 15 % au mois 3, 10 % au mois 12, 8 % après 24 mois de pratique régulière.",
   },
   {
-    question: "Quels outils utiliser pour prevoir les ventes d'un restaurant ?",
+    question: "Quels outils utiliser pour prévoir les ventes d'un restaurant ?",
     answer:
-      "Pour demarrer : Excel ou Google Sheets avec une moyenne mobile. Au-dela : RestauMargin integre forecast + commandes + marges, Lightspeed Restaurant fournit un module previsions natif, Square for Restaurants propose des reports avec saisonnalite. Pour le ML avance : Prophet (Facebook), scikit-learn, ou les plateformes cloud (AWS Forecast, Google Vertex AI).",
+      "Pour démarrer : Excel ou Google Sheets avec une moyenne mobile. Au-delà : RestauMargin intègre forecast + commandes + marges, Lightspeed Restaurant fournit un module prévisions natif, Square for Restaurants propose des reports avec saisonnalité. Pour le ML avancé : Prophet (Facebook), scikit-learn, ou les plateformes cloud (AWS Forecast, Google Vertex AI).",
   },
   {
     question: "Quels facteurs externes influencent le plus les ventes d'un restaurant ?",
     answer:
-      "Par ordre d'impact decroissant : jour de la semaine (variation de -50 a +60 pourcent), meteo si terrasse (-25 a +20 pourcent), vacances scolaires (-30 a +25 pourcent selon zone), jours feries (-40 a +35 pourcent), evenements locaux concert ou match (+10 a +50 pourcent), greves transport (-30 pourcent en zone bureau), campagnes marketing (+5 a +20 pourcent), concurrence ouverture proche (-10 a -15 pourcent les 3 premiers mois).",
+      "Par ordre d'impact décroissant : jour de la semaine (variation de -50 à +60 pourcent), météo si terrasse (-25 à +20 pourcent), vacances scolaires (-30 à +25 pourcent selon zone), jours fériés (-40 à +35 pourcent), événements locaux concert ou match (+10 à +50 pourcent), grèves transport (-30 pourcent en zone bureau), campagnes marketing (+5 à +20 pourcent), concurrence ouverture proche (-10 à -15 pourcent les 3 premiers mois).",
   },
   {
-    question: "Comment integrer la meteo dans une prevision de ventes restaurant ?",
+    question: "Comment intégrer la météo dans une prévision de ventes restaurant ?",
     answer:
-      "Recuperez les previsions Meteo France ou Open-Meteo a 4-5 jours d'horizon. Calculez un coefficient meteo a partir de l'historique : pour chaque tranche de temperature et type de ciel, mesurez l'ecart moyen vs jour normal. Exemple : terrasse + soleil + 22 a 26 degres = +18 pourcent. Pluie forte = -22 pourcent. Stockez ces coefficients dans un tableur et appliquez-les a votre forecast de base.",
+      "Récupérez les prévisions Météo France ou Open-Météo à 4-5 jours d'horizon. Calculez un coefficient météo à partir de l'historique : pour chaque tranche de température et type de ciel, mesurez l'écart moyen vs jour normal. Exemple : terrasse + soleil + 22 à 26 degrés = +18 pourcent. Pluie forte = -22 pourcent. Stockez ces coefficients dans un tableur et appliquez-les à votre forecast de base.",
   },
   {
-    question: "Faut-il prevoir par plat ou par couvert ?",
+    question: "Faut-il prévoir par plat ou par couvert ?",
     answer:
-      "Les deux, a des niveaux differents. Au niveau global, prevoyez en couverts pour piloter la salle et le staffing. Au niveau commandes matieres, deduisez la prevision par plat via le mix-vente moyen des 4 dernieres semaines equivalentes. Exemple : 200 couverts prevus, mix entrecote 18 pourcent = 36 entrecotes a commander, mix pizza margherita 12 pourcent = 24 pizzas, etc.",
+      "Les deux, à des niveaux différents. Au niveau global, prévoyez en couverts pour piloter la salle et le staffing. Au niveau commandes matières, déduisez la prévision par plat via le mix-vente moyen des 4 dernières semaines équivalentes. Exemple : 200 couverts prévus, mix entrecôte 18 pourcent = 36 entrecôtes à commander, mix pizza margherita 12 pourcent = 24 pizzas, etc.",
   },
   {
-    question: "Quelle est la meilleure methode de prevision pour un restaurant qui ouvre ?",
+    question: "Quelle est la meilleure méthode de prévision pour un restaurant qui ouvre ?",
     answer:
-      "Sans historique, utilisez 3 approches combinees : 1) Ratios sectoriels INSEE et GIRA Conseil pour votre format et zone, 2) Etude de concurrence (compter les couverts chez vos voisins sur 2-3 semaines), 3) Reservations + walk-in estime. A partir de 4 semaines de donnees, basculez en moyennes mobiles ponderees. A 12 semaines, vos propres patterns suffisent.",
+      "Sans historique, utilisez 3 approches combinées : 1) Ratios sectoriels INSEE et GIRA Conseil pour votre format et zone, 2) Étude de concurrence (compter les couverts chez vos voisins sur 2-3 semaines), 3) Réservations + walk-in estimé. À partir de 4 semaines de données, basculez en moyennes mobiles pondérées. À 12 semaines, vos propres patterns suffisent.",
   },
   {
-    question: "Le machine learning vaut-il vraiment le coup pour un restaurant independant ?",
+    question: "Le machine learning vaut-il vraiment le coup pour un restaurant indépendant ?",
     answer:
-      "En dessous de 2 ans de donnees ou 1 million d'euros de CA, le ML apporte rarement plus de 2-3 points de precision vs une bonne moyenne ponderee. Au-dela, les modeles type Prophet, ARIMA ou XGBoost peuvent gagner 5-8 points de MAPE en captant les interactions complexes (meteo x evenement x saison). Les chaines avec des restaurants tirent le plus grand benefice du ML grace au mutualisation des donnees.",
+      "En dessous de 2 ans de données ou 1 million d'euros de CA, le ML apporte rarement plus de 2-3 points de précision vs une bonne moyenne pondérée. Au-delà, les modèles type Prophet, ARIMA ou XGBoost peuvent gagner 5-8 points de MAPE en captant les interactions complexes (météo x événement x saison). Les chaînes avec des restaurants tirent le plus grand bénéfice du ML grâce au mutualisation des données.",
   },
   {
-    question: "Comment expliquer un ecart prevision/realise important ?",
+    question: "Comment expliquer un écart prévision/réalisé important ?",
     answer:
-      "Tout ecart superieur a 15 pourcent doit etre analyse en post-mortem. Checklist : 1) Evenement non pris en compte (manifestation, match, concert) ? 2) Meteo mal lue ou changement de derniere minute ? 3) Probleme operationnel (rupture, service lent, equipe reduite) ? 4) Concurrence (ouverture, promotion) ? 5) Saisonnalite atypique (pont, ramadan, championnat) ? Documentez chaque ecart dans un journal pour enrichir le modele.",
+      "Tout écart supérieur à 15 pourcent doit être analysé en post-mortem. Checklist : 1) Événement non pris en compte (manifestation, match, concert) ? 2) Météo mal lue ou changement de dernière minute ? 3) Problème opérationnel (rupture, service lent, équipe réduite) ? 4) Concurrence (ouverture, promotion) ? 5) Saisonnalité atypique (pont, ramadan, championnat) ? Documentez chaque écart dans un journal pour enrichir le modèle.",
   },
 ];
 
@@ -87,8 +87,8 @@ export default function BlogPrevisionVentes() {
   return (
     <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
-        title="Prevision ventes restaurant 2026 : forecast couverts, methodes et IA"
-        description="Guide complet du forecast couverts et prevision des ventes restaurant : moyenne mobile, regression, ML, saisonnalite, meteo. Methodes, outils, cas concret 4 semaines."
+        title="Prévision ventes restaurant 2026 : forecast couverts, méthodes et IA"
+        description="Guide complet du forecast couverts et prévision des ventes restaurant : moyenne mobile, régression, ML, saisonnalité, météo. Méthodes, outils, cas concret 4 semaines."
         path="/blog/prevision-ventes-restaurant"
         type="article"
         schema={[
@@ -96,30 +96,30 @@ export default function BlogPrevisionVentes() {
           buildBreadcrumbSchema([
             { name: 'Accueil', url: 'https://www.restaumargin.fr/' },
             { name: 'Blog', url: 'https://www.restaumargin.fr/blog' },
-            { name: 'Prevision ventes restaurant', url: 'https://www.restaumargin.fr/blog/prevision-ventes-restaurant' },
+            { name: 'Prévision ventes restaurant', url: 'https://www.restaumargin.fr/blog/prevision-ventes-restaurant' },
           ]),
           {
             '@context': 'https://schema.org',
             '@type': 'HowTo',
-            name: 'Comment etablir une prevision des ventes restaurant en 7 etapes',
-            description: 'Methode pas-a-pas pour calculer un forecast couverts hebdomadaire fiable, integrant meteo, saisonnalite et evenements.',
+            name: 'Comment établir une prévision des ventes restaurant en 7 étapes',
+            description: 'Méthode pas-à-pas pour calculer un forecast couverts hebdomadaire fiable, intégrant météo, saisonnalité et événements.',
             totalTime: 'PT45M',
-            tool: ['Excel ou Google Sheets', 'Historique caisse 3 mois minimum', 'Calendrier evenements locaux', 'Meteo a 4-5 jours', 'RestauMargin (optionnel)'],
+            tool: ['Excel ou Google Sheets', 'Historique caisse 3 mois minimum', 'Calendrier événements locaux', 'Météo à 4-5 jours', 'RestauMargin (optionnel)'],
             step: [
-              { '@type': 'HowToStep', name: 'Extraire historique caisse', text: 'Exportez les couverts et le CA HT par jour sur 3 a 12 mois depuis votre caisse (Lightspeed, Square, Tiller, Zelty).' },
-              { '@type': 'HowToStep', name: 'Calculer la moyenne mobile par jour de semaine', text: 'Pour chaque jour de la semaine, calculez la moyenne des 4 dernieres occurrences (ex: moyenne des 4 derniers vendredis).' },
-              { '@type': 'HowToStep', name: 'Appliquer les coefficients saisonniers', text: 'Multipliez par le coefficient mensuel issu de votre historique N-1 (ex: mai = 1.08, aout = 0.65).' },
-              { '@type': 'HowToStep', name: 'Integrer la meteo', text: 'Consultez Meteo France a 4-5 jours et appliquez le coefficient meteo (terrasse + soleil = +15 a +20 pourcent).' },
-              { '@type': 'HowToStep', name: 'Ajouter les evenements et jours feries', text: 'Verifiez le calendrier local : concerts, matchs, marche, manifestations, jours feries. Appliquez les coefficients correspondants.' },
-              { '@type': 'HowToStep', name: 'Deduire les commandes matieres par plat', text: 'Multipliez le forecast couverts par le mix-vente moyen pour obtenir la quantite par plat, puis par les grammages pour les matieres premieres.' },
-              { '@type': 'HowToStep', name: 'Mesurer le MAPE et ajuster', text: 'En fin de semaine, calculez le MAPE (Mean Absolute Percentage Error) et documentez les ecarts pour ameliorer la semaine suivante.' },
+              { '@type': 'HowToStep', name: 'Extraire historique caisse', text: 'Exportez les couverts et le CA HT par jour sur 3 à 12 mois depuis votre caisse (Lightspeed, Square, Tiller, Zelty).' },
+              { '@type': 'HowToStep', name: 'Calculer la moyenne mobile par jour de semaine', text: 'Pour chaque jour de la semaine, calculez la moyenne des 4 dernières occurrences (ex: moyenne des 4 derniers vendredis).' },
+              { '@type': 'HowToStep', name: 'Appliquer les coefficients saisonniers', text: 'Multipliez par le coefficient mensuel issu de votre historique N-1 (ex: mai = 1.08, août = 0.65).' },
+              { '@type': 'HowToStep', name: 'Intégrer la météo', text: 'Consultez Météo France à 4-5 jours et appliquez le coefficient météo (terrasse + soleil = +15 à +20 pourcent).' },
+              { '@type': 'HowToStep', name: 'Ajouter les événements et jours fériés', text: 'Vérifiez le calendrier local : concerts, matchs, marché, manifestations, jours fériés. Appliquez les coefficients correspondants.' },
+              { '@type': 'HowToStep', name: 'Déduire les commandes matières par plat', text: 'Multipliez le forecast couverts par le mix-vente moyen pour obtenir la quantité par plat, puis par les grammages pour les matières premières.' },
+              { '@type': 'HowToStep', name: 'Mesurer le MAPE et ajuster', text: 'En fin de semaine, calculez le MAPE (Mean Absolute Percentage Error) et documentez les écarts pour améliorer la semaine suivante.' },
             ],
           },
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
-            headline: 'Prevision ventes restaurant 2026 : forecast couverts, methodes et IA',
-            description: 'Guide complet 3200 mots : methodes de prevision (moyenne mobile, regression, ML), variables externes (meteo, evenements, saisonnalite), outils (Excel, RestauMargin, Lightspeed, Square), cas concret 4 semaines, FAQ 10 questions.',
+            headline: 'Prévision ventes restaurant 2026 : forecast couverts, méthodes et IA',
+            description: 'Guide complet 3200 mots : méthodes de prévision (moyenne mobile, régression, ML), variables externes (météo, événements, saisonnalité), outils (Excel, RestauMargin, Lightspeed, Square), cas concret 4 semaines, FAQ 10 questions.',
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -168,7 +168,7 @@ export default function BlogPrevisionVentes() {
           <span>/</span>
           <Link to="/blog" className="hover:text-teal-600">Blog</Link>
           <span>/</span>
-          <span className="text-mono-100 font-medium">Prevision ventes restaurant</span>
+          <span className="text-mono-100 font-medium">Prévision ventes restaurant</span>
         </div>
       </div>
 
@@ -177,9 +177,9 @@ export default function BlogPrevisionVentes() {
         category="Pilotage"
         readTime="16 min"
         date="Mai 2026"
-        title="Prevision des ventes restaurant : forecast couverts, methodes et IA"
-        accentWord="prevision"
-        subtitle="Combien de couverts vendredi prochain ? Si la reponse est &quot;ca depend&quot;, vous perdez de l'argent chaque semaine. Methodes, outils, cas concret 4 semaines de data."
+        title="Prévision des ventes restaurant : forecast couverts, méthodes et IA"
+        accentWord="prévision"
+        subtitle="Combien de couverts vendredi prochain ? Si la réponse est &quot;ça dépend&quot;, vous perdez de l'argent chaque semaine. Méthodes, outils, cas concret 4 semaines de data."
       />
 
       {/* ── Contenu principal ── */}
@@ -194,28 +194,28 @@ export default function BlogPrevisionVentes() {
             <span className="text-xs font-bold uppercase tracking-wider text-teal-100">Formules essentielles</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold mb-4">
-            Les 4 equations du forecast couverts
+            Les 4 équations du forecast couverts
           </h2>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 space-y-3 font-mono text-sm sm:text-base">
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">1.</span>
-              <span><strong className="text-white">Moyenne mobile</strong> = Somme (N derniers jours equivalents) / N</span>
+              <span><strong className="text-white">Moyenne mobile</strong> = Somme (N derniers jours équivalents) / N</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">2.</span>
-              <span><strong className="text-white">Moyenne ponderee</strong> = Sigma (poids_i x valeur_i) / Sigma (poids_i)</span>
+              <span><strong className="text-white">Moyenne pondérée</strong> = Sigma (poids_i x valeur_i) / Sigma (poids_i)</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">3.</span>
-              <span><strong className="text-white">Forecast multi-facteurs</strong> = Base x C_meteo x C_saison x C_evenement</span>
+              <span><strong className="text-white">Forecast multi-facteurs</strong> = Base x C_météo x C_saison x C_événement</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold">4.</span>
-              <span><strong className="text-white">MAPE</strong> = (1/N) x Sigma |Reel - Prevu| / Reel x 100</span>
+              <span><strong className="text-white">MAPE</strong> = (1/N) x Sigma |Réel - Prévu| / Réel x 100</span>
             </div>
           </div>
           <p className="mt-4 text-teal-100 text-sm">
-            Objectif standard : MAPE inferieur a 10 pourcent (bon), inferieur a 20 pourcent (acceptable). Les chaines avec ML atteignent 5 pourcent.
+            Objectif standard : MAPE inférieur à 10 pourcent (bon), inférieur à 20 pourcent (acceptable). Les chaînes avec ML atteignent 5 pourcent.
           </p>
         </div>
 
@@ -227,17 +227,17 @@ export default function BlogPrevisionVentes() {
           </h2>
           <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
-              { href: '#definition', label: 'Definition et utilite : pourquoi prevoir ses ventes' },
-              { href: '#methodes', label: 'Les 5 methodes de prevision des ventes restaurant' },
-              { href: '#tableau-methodes', label: 'Tableau comparatif des methodes' },
-              { href: '#variables', label: 'Variables externes : meteo, evenements, saisonnalite' },
+              { href: '#definition', label: 'Définition et utilité : pourquoi prévoir ses ventes' },
+              { href: '#methodes', label: 'Les 5 méthodes de prévision des ventes restaurant' },
+              { href: '#tableau-methodes', label: 'Tableau comparatif des méthodes' },
+              { href: '#variables', label: 'Variables externes : météo, événements, saisonnalité' },
               { href: '#outils', label: 'Outils : Excel, RestauMargin, Lightspeed, Square' },
-              { href: '#precision', label: 'Precision attendue : MAPE et benchmarks' },
+              { href: '#precision', label: 'Précision attendue : MAPE et benchmarks' },
               { href: '#cas-concret', label: 'Cas concret : 4 semaines de data, forecast complet' },
               { href: '#ia', label: 'IA et machine learning : Prophet, ARIMA, XGBoost' },
               { href: '#erreurs', label: 'Les 6 erreurs qui ruinent votre forecast couverts' },
               { href: '#workflow', label: 'Workflow hebdomadaire : checklist du dimanche soir' },
-              { href: '#faq', label: 'Questions frequentes' },
+              { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Automatiser avec RestauMargin' },
             ].map((item, i) => (
               <li key={i}>
@@ -255,24 +255,24 @@ export default function BlogPrevisionVentes() {
           {/* ═════════════ SECTION 1 : Definition ═════════════ */}
           <section id="definition" className="mb-16">
             <SectionHeading icon={<Target className="w-6 h-6" />} number="1">
-              Definition et utilite : pourquoi prevoir ses ventes
+              Définition et utilité : pourquoi prévoir ses ventes
             </SectionHeading>
 
             <div className="prose-content">
               <p>
-                La <strong>prevision des ventes en restauration</strong> est l'exercice qui consiste a estimer
-                le chiffre d'affaires et le nombre de couverts d'une periode future (jour, semaine, mois),
-                a partir de l'historique et des variables externes connues. On parle aussi de <strong>forecast
-                couverts</strong> quand l'unite est le nombre de clients servis plutot que les euros.
+                La <strong>prévision des ventes en restauration</strong> est l'exercice qui consiste à estimer
+                le chiffre d'affaires et le nombre de couverts d'une période future (jour, semaine, mois),
+                à partir de l'historique et des variables externes connues. On parle aussi de <strong>forecast
+                couverts</strong> quand l'unité est le nombre de clients servis plutôt que les euros.
               </p>
               <p>
-                Cette pratique n'a rien d'esoterique : c'est la base operationnelle de toute restauration
-                professionnelle. Pourtant, selon une etude GIRA Conseil 2025, seulement 38 pourcent des
-                restaurants independants francais pratiquent une prevision structuree hebdomadaire. Les 62 pourcent
-                restants improvisent leurs commandes et leur planning RH, avec les consequences que l'on imagine.
+                Cette pratique n'a rien d'ésotérique : c'est la base opérationnelle de toute restauration
+                professionnelle. Pourtant, selon une étude GIRA Conseil 2025, seulement 38 pourcent des
+                restaurants indépendants français pratiquent une prévision structurée hebdomadaire. Les 62 pourcent
+                restants improvisent leurs commandes et leur planning RH, avec les conséquences que l'on imagine.
               </p>
               <p>
-                Une bonne prevision des ventes restaurant impacte directement trois leviers cles :
+                Une bonne prévision des ventes restaurant impacte directement trois leviers clés :
               </p>
             </div>
 
@@ -281,10 +281,10 @@ export default function BlogPrevisionVentes() {
                 <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center mb-3">
                   <ChefHat className="w-5 h-5 text-emerald-700" />
                 </div>
-                <h3 className="font-bold text-emerald-900 mb-2">Commandes matieres</h3>
+                <h3 className="font-bold text-emerald-900 mb-2">Commandes matières</h3>
                 <p className="text-sm text-emerald-800 leading-relaxed">
-                  Une prevision precise reduit les pertes alimentaires de 4 a 8 pourcent du food cost. Sur 180 000 EUR
-                  d'achats annuels, cela represente entre 7 200 et 14 400 EUR economises.
+                  Une prévision précise réduit les pertes alimentaires de 4 à 8 pourcent du food cost. Sur 180 000 EUR
+                  d'achats annuels, cela représente entre 7 200 et 14 400 EUR économisés.
                 </p>
               </div>
               <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5">
@@ -293,8 +293,8 @@ export default function BlogPrevisionVentes() {
                 </div>
                 <h3 className="font-bold text-blue-900 mb-2">Planning RH</h3>
                 <p className="text-sm text-blue-800 leading-relaxed">
-                  Un extra appele pour 50 couverts au lieu de 80 = 110 EUR jetes. Sur 1 erreur de staffing par
-                  semaine, c'est plus de 5 500 EUR par an de masse salariale gaspillee.
+                  Un extra appelé pour 50 couverts au lieu de 80 = 110 EUR jetés. Sur 1 erreur de staffing par
+                  semaine, c'est plus de 5 500 EUR par an de masse salariale gaspillée.
                 </p>
               </div>
               <div className="bg-purple-50 border border-purple-200 rounded-2xl p-5">
@@ -304,29 +304,29 @@ export default function BlogPrevisionVentes() {
                 <h3 className="font-bold text-purple-900 mb-2">Cash flow</h3>
                 <p className="text-sm text-purple-800 leading-relaxed">
                   Un stock qui dort 10 jours immobilise du cash. La rotation des stocks (ratio CA / stock moyen)
-                  doit etre superieure a 26 fois par an, soit moins de 14 jours de stock.
+                  doit être supérieure à 26 fois par an, soit moins de 14 jours de stock.
                 </p>
               </div>
             </div>
 
             <Callout type="info">
-              <strong>Le saviez-vous ?</strong> Pour un restaurant de 50 couverts realisant 580 000 EUR de CA,
-              gagner 5 points de precision sur ses previsions represente entre 8 000 et 14 000 EUR de marge
-              brute recuperee par an, simplement en ajustant les commandes et le staffing.
+              <strong>Le saviez-vous ?</strong> Pour un restaurant de 50 couverts réalisant 580 000 EUR de CA,
+              gagner 5 points de précision sur ses prévisions représente entre 8 000 et 14 000 EUR de marge
+              brute récupérée par an, simplement en ajustant les commandes et le staffing.
             </Callout>
           </section>
 
           {/* ═════════════ SECTION 2 : Les 5 methodes ═════════════ */}
           <section id="methodes" className="mb-16">
             <SectionHeading icon={<BarChart3 className="w-6 h-6" />} number="2">
-              Les 5 methodes de prevision des ventes restaurant
+              Les 5 méthodes de prévision des ventes restaurant
             </SectionHeading>
 
             <div className="prose-content">
               <p>
-                Il existe cinq grandes familles de methodes pour etablir une prevision des ventes en
-                restauration, de la plus simple a la plus sophistiquee. Le choix depend de votre volume
-                d'historique, du temps disponible, et du niveau de precision recherche.
+                Il existe cinq grandes familles de méthodes pour établir une prévision des ventes en
+                restauration, de la plus simple à la plus sophistiquée. Le choix dépend de votre volume
+                d'historique, du temps disponible, et du niveau de précision recherché.
               </p>
             </div>
 
@@ -337,24 +337,24 @@ export default function BlogPrevisionVentes() {
                 <h3 className="font-bold text-mono-100 text-lg">Moyenne mobile (Simple Moving Average)</h3>
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-4">
-                Vous calculez la moyenne des N dernieres occurrences du meme jour de la semaine. Methode la
-                plus simple, ideale pour demarrer avec moins de 6 mois d'historique.
+                Vous calculez la moyenne des N dernières occurrences du même jour de la semaine. Méthode la
+                plus simple, idéale pour démarrer avec moins de 6 mois d'historique.
               </p>
               <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
-                Prevision vendredi = (CA 4 derniers vendredis) / 4
+                Prévision vendredi = (CA 4 derniers vendredis) / 4
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-2">
                 <strong className="text-mono-100">Exemple :</strong> CA des 4 derniers vendredis = 3 800 / 4 100 / 3 950 / 4 250 EUR.
-                Prevision vendredi prochain = (3 800 + 4 100 + 3 950 + 4 250) / 4 = <strong>4 025 EUR</strong>.
+                Prévision vendredi prochain = (3 800 + 4 100 + 3 950 + 4 250) / 4 = <strong>4 025 EUR</strong>.
               </p>
               <div className="grid sm:grid-cols-2 gap-4 mt-4">
                 <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs">
                   <p className="font-bold text-emerald-900 mb-1">Avantages</p>
-                  <p className="text-emerald-800">Simple, rapide, transparent, marche des 3 mois d'historique.</p>
+                  <p className="text-emerald-800">Simple, rapide, transparent, marche dès 3 mois d'historique.</p>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs">
                   <p className="font-bold text-amber-900 mb-1">Limites</p>
-                  <p className="text-amber-800">Ne capture ni saisonnalite annuelle, ni meteo, ni evenements. MAPE typique 15-22 pourcent.</p>
+                  <p className="text-amber-800">Ne capture ni saisonnalité annuelle, ni météo, ni événements. MAPE typique 15-22 pourcent.</p>
                 </div>
               </div>
             </div>
@@ -363,28 +363,28 @@ export default function BlogPrevisionVentes() {
             <div className="mt-6 bg-white border border-mono-900 rounded-2xl p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center text-teal-700 font-bold">2</div>
-                <h3 className="font-bold text-mono-100 text-lg">Moyenne ponderee (Weighted Moving Average)</h3>
+                <h3 className="font-bold text-mono-100 text-lg">Moyenne pondérée (Weighted Moving Average)</h3>
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-4">
-                Variante de la moyenne mobile ou les jours les plus recents pesent plus lourd. Utile car les
-                tendances recentes refletent mieux l'etat actuel (nouvelle carte, nouveau concurrent, evolution
+                Variante de la moyenne mobile où les jours les plus récents pèsent plus lourd. Utile car les
+                tendances récentes reflètent mieux l'état actuel (nouvelle carte, nouveau concurrent, évolution
                 de la zone).
               </p>
               <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
-                Prevision = (4 x J-1 + 3 x J-2 + 2 x J-3 + 1 x J-4) / 10
+                Prévision = (4 x J-1 + 3 x J-2 + 2 x J-3 + 1 x J-4) / 10
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-2">
                 <strong className="text-mono-100">Exemple :</strong> CA J-1 = 4 250, J-2 = 3 950, J-3 = 4 100, J-4 = 3 800.
-                Prevision = (4 x 4250 + 3 x 3950 + 2 x 4100 + 1 x 3800) / 10 = (17000 + 11850 + 8200 + 3800) / 10 = <strong>4 085 EUR</strong>.
+                Prévision = (4 x 4250 + 3 x 3950 + 2 x 4100 + 1 x 3800) / 10 = (17000 + 11850 + 8200 + 3800) / 10 = <strong>4 085 EUR</strong>.
               </p>
               <div className="grid sm:grid-cols-2 gap-4 mt-4">
                 <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs">
                   <p className="font-bold text-emerald-900 mb-1">Avantages</p>
-                  <p className="text-emerald-800">Capte mieux les tendances recentes, reactivite accrue, MAPE 12-18 pourcent.</p>
+                  <p className="text-emerald-800">Capte mieux les tendances récentes, réactivité accrue, MAPE 12-18 pourcent.</p>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs">
                   <p className="font-bold text-amber-900 mb-1">Limites</p>
-                  <p className="text-amber-800">Toujours pas de saisonnalite ni de meteo. Choix des poids arbitraire.</p>
+                  <p className="text-amber-800">Toujours pas de saisonnalité ni de météo. Choix des poids arbitraire.</p>
                 </div>
               </div>
             </div>
@@ -393,27 +393,27 @@ export default function BlogPrevisionVentes() {
             <div className="mt-6 bg-white border border-mono-900 rounded-2xl p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center text-teal-700 font-bold">3</div>
-                <h3 className="font-bold text-mono-100 text-lg">Regression multi-facteurs</h3>
+                <h3 className="font-bold text-mono-100 text-lg">Régression multi-facteurs</h3>
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-4">
-                Vous appliquez des coefficients multiplicatifs sur une base, pour chaque facteur identifie :
-                meteo, saisonnalite, evenement, jour ferie, vacances. Methode puissante des 12 mois d'historique.
+                Vous appliquez des coefficients multiplicatifs sur une base, pour chaque facteur identifié :
+                météo, saisonnalité, événement, jour férié, vacances. Méthode puissante dès 12 mois d'historique.
               </p>
               <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
-                CA prevu = CA base x C_meteo x C_saison x C_evenement x C_marketing
+                CA prévu = CA base x C_météo x C_saison x C_événement x C_marketing
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-2">
-                <strong className="text-mono-100">Exemple :</strong> base 3 800 EUR x 1.15 (soleil 23 degres) x 1.05 (mai)
+                <strong className="text-mono-100">Exemple :</strong> base 3 800 EUR x 1.15 (soleil 23 degrés) x 1.05 (mai)
                 x 1.08 (concert local) = <strong>4 957 EUR</strong>.
               </p>
               <div className="grid sm:grid-cols-2 gap-4 mt-4">
                 <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs">
                   <p className="font-bold text-emerald-900 mb-1">Avantages</p>
-                  <p className="text-emerald-800">Integre tous les facteurs explicatifs, MAPE 8-14 pourcent, pedagogique.</p>
+                  <p className="text-emerald-800">Intègre tous les facteurs explicatifs, MAPE 8-14 pourcent, pédagogique.</p>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs">
                   <p className="font-bold text-amber-900 mb-1">Limites</p>
-                  <p className="text-amber-800">Necessite calibration initiale (3-5 jours de travail), 12 mois d'historique mini.</p>
+                  <p className="text-amber-800">Nécessite calibration initiale (3-5 jours de travail), 12 mois d'historique mini.</p>
                 </div>
               </div>
             </div>
@@ -422,19 +422,19 @@ export default function BlogPrevisionVentes() {
             <div className="mt-6 bg-white border border-mono-900 rounded-2xl p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center text-teal-700 font-bold">4</div>
-                <h3 className="font-bold text-mono-100 text-lg">Decomposition saisonniere (Holt-Winters)</h3>
+                <h3 className="font-bold text-mono-100 text-lg">Décomposition saisonnière (Holt-Winters)</h3>
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-4">
-                Vous decomposez la serie en 3 composantes : tendance (croissance/decroissance long terme),
-                saisonnalite (cycles hebdomadaires et annuels), residu (alea). Methode statistique classique
-                utilisee dans Excel via le module Analysis ToolPak.
+                Vous décomposez la série en 3 composantes : tendance (croissance/décroissance long terme),
+                saisonnalité (cycles hebdomadaires et annuels), résidu (aléa). Méthode statistique classique
+                utilisée dans Excel via le module Analysis ToolPak.
               </p>
               <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
-                Prevision = Tendance x Saisonnalite + Erreur lissee
+                Prévision = Tendance x Saisonnalité + Erreur lissée
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-2">
-                <strong className="text-mono-100">Exemple :</strong> tendance +2 pourcent/an, saisonnalite mai = 1.08,
-                hebdomadaire vendredi = 1.32. Base annee = 3 600. Prevision = 3 600 x 1.02 x 1.08 x 1.32 = <strong>5 235 EUR</strong>.
+                <strong className="text-mono-100">Exemple :</strong> tendance +2 pourcent/an, saisonnalité mai = 1.08,
+                hebdomadaire vendredi = 1.32. Base année = 3 600. Prévision = 3 600 x 1.02 x 1.08 x 1.32 = <strong>5 235 EUR</strong>.
               </p>
               <div className="grid sm:grid-cols-2 gap-4 mt-4">
                 <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs">
@@ -443,7 +443,7 @@ export default function BlogPrevisionVentes() {
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs">
                   <p className="font-bold text-amber-900 mb-1">Limites</p>
-                  <p className="text-amber-800">Necessite 24 mois minimum, ne capture pas les facteurs externes (meteo, evenements).</p>
+                  <p className="text-amber-800">Nécessite 24 mois minimum, ne capture pas les facteurs externes (météo, événements).</p>
                 </div>
               </div>
             </div>
@@ -453,12 +453,12 @@ export default function BlogPrevisionVentes() {
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center text-white font-bold">5</div>
                 <h3 className="font-bold text-mono-100 text-lg">Machine Learning (Prophet, ARIMA, XGBoost)</h3>
-                <span className="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full font-semibold ml-auto">Avance</span>
+                <span className="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full font-semibold ml-auto">Avancé</span>
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-4">
                 Algorithmes auto-apprenants capables de capturer toutes les interactions complexes
-                (meteo x evenement x saison x tendance). Prophet (Facebook/Meta) est le plus accessible.
-                XGBoost et ARIMA sont les standards academiques.
+                (météo x événement x saison x tendance). Prophet (Facebook/Meta) est le plus accessible.
+                XGBoost et ARIMA sont les standards académiques.
               </p>
               <div className="bg-white border border-mono-900 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100">
                 {`from prophet import Prophet`}<br />
@@ -469,17 +469,17 @@ export default function BlogPrevisionVentes() {
                 {`forecast = model.predict(df_futur)`}
               </div>
               <p className="text-sm text-mono-400 leading-relaxed mb-2">
-                <strong className="text-mono-100">Resultat :</strong> sur 24+ mois d'historique avec variables externes,
-                MAPE de 4 a 8 pourcent. Detection automatique des changepoints et des outliers.
+                <strong className="text-mono-100">Résultat :</strong> sur 24+ mois d'historique avec variables externes,
+                MAPE de 4 à 8 pourcent. Détection automatique des changepoints et des outliers.
               </p>
               <div className="grid sm:grid-cols-2 gap-4 mt-4">
                 <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs">
                   <p className="font-bold text-emerald-900 mb-1">Avantages</p>
-                  <p className="text-emerald-800">Precision maximale, auto-apprentissage, capture interactions complexes.</p>
+                  <p className="text-emerald-800">Précision maximale, auto-apprentissage, capture interactions complexes.</p>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs">
                   <p className="font-bold text-amber-900 mb-1">Limites</p>
-                  <p className="text-amber-800">Necessite competences Python/data, 24+ mois de donnees, infrastructure cloud.</p>
+                  <p className="text-amber-800">Nécessite compétences Python/data, 24+ mois de données, infrastructure cloud.</p>
                 </div>
               </div>
             </div>
@@ -488,14 +488,14 @@ export default function BlogPrevisionVentes() {
           {/* ═════════════ SECTION 3 : Tableau comparatif methodes ═════════════ */}
           <section id="tableau-methodes" className="mb-16">
             <SectionHeading icon={<ListChecks className="w-6 h-6" />} number="3">
-              Tableau comparatif des methodes
+              Tableau comparatif des méthodes
             </SectionHeading>
 
             <div className="prose-content">
               <p>
-                Pour choisir la methode adaptee a votre contexte, voici un tableau de synthese
-                qui croise complexite, historique requis, precision attendue et type d'etablissement
-                recommande.
+                Pour choisir la méthode adaptée à votre contexte, voici un tableau de synthèse
+                qui croise complexité, historique requis, précision attendue et type d'établissement
+                recommandé.
               </p>
             </div>
 
@@ -503,20 +503,20 @@ export default function BlogPrevisionVentes() {
               <table className="w-full text-sm border-collapse">
                 <thead>
                   <tr className="bg-mono-975 text-mono-350">
-                    <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Methode</th>
+                    <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Méthode</th>
                     <th className="text-center py-3 px-4 font-semibold">Historique mini</th>
                     <th className="text-center py-3 px-4 font-semibold">MAPE typique</th>
-                    <th className="text-center py-3 px-4 font-semibold">Complexite</th>
+                    <th className="text-center py-3 px-4 font-semibold">Complexité</th>
                     <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Profil cible</th>
                   </tr>
                 </thead>
                 <tbody className="text-mono-350">
                   {[
-                    { m: 'Moyenne mobile', h: '3 mois', mape: '15-22 %', c: 'Tres faible', p: 'Restaurant qui ouvre' },
-                    { m: 'Moyenne ponderee', h: '3 mois', mape: '12-18 %', c: 'Faible', p: 'Independant solo' },
-                    { m: 'Regression multi-facteurs', h: '12 mois', mape: '8-14 %', c: 'Moyenne', p: 'Bistrot / brasserie' },
+                    { m: 'Moyenne mobile', h: '3 mois', mape: '15-22 %', c: 'Très faible', p: 'Restaurant qui ouvre' },
+                    { m: 'Moyenne pondérée', h: '3 mois', mape: '12-18 %', c: 'Faible', p: 'Indépendant solo' },
+                    { m: 'Régression multi-facteurs', h: '12 mois', mape: '8-14 %', c: 'Moyenne', p: 'Bistrot / brasserie' },
                     { m: 'Holt-Winters', h: '24 mois', mape: '7-12 %', c: 'Moyenne', p: 'Restaurant mature' },
-                    { m: 'ML (Prophet, ARIMA)', h: '24 mois', mape: '4-8 %', c: 'Elevee', p: 'Chaine des etablissements' },
+                    { m: 'ML (Prophet, ARIMA)', h: '24 mois', mape: '4-8 %', c: 'Élevée', p: 'Chaîne des établissements' },
                   ].map((row, i) => (
                     <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
                       <td className="py-3 px-4 font-medium text-mono-100">{row.m}</td>
@@ -531,23 +531,23 @@ export default function BlogPrevisionVentes() {
             </div>
 
             <Callout type="info">
-              <strong>Recommandation :</strong> commencez par la moyenne ponderee a la main dans un tableur.
-              Apres 6 mois de pratique, passez a la regression multi-facteurs. Le ML n'est rentable qu'au-dela
-              de 1.5 million EUR de CA ou pour les chaines.
+              <strong>Recommandation :</strong> commencez par la moyenne pondérée à la main dans un tableur.
+              Après 6 mois de pratique, passez à la régression multi-facteurs. Le ML n'est rentable qu'au-delà
+              de 1.5 million EUR de CA ou pour les chaînes.
             </Callout>
           </section>
 
           {/* ═════════════ SECTION 4 : Variables externes ═════════════ */}
           <section id="variables" className="mb-16">
             <SectionHeading icon={<CloudRain className="w-6 h-6" />} number="4">
-              Variables externes : meteo, evenements, saisonnalite
+              Variables externes : météo, événements, saisonnalité
             </SectionHeading>
 
             <div className="prose-content">
               <p>
-                La force d'une prevision de ventes restaurant ne tient pas a la sophistication de l'algorithme,
-                mais a la qualite des variables externes integrees. Voici les 7 facteurs externes les plus
-                impactants, classes par ordre d'effet decroissant.
+                La force d'une prévision de ventes restaurant ne tient pas à la sophistication de l'algorithme,
+                mais à la qualité des variables externes intégrées. Voici les 7 facteurs externes les plus
+                impactants, classés par ordre d'effet décroissant.
               </p>
             </div>
 
@@ -556,44 +556,44 @@ export default function BlogPrevisionVentes() {
                 {
                   icon: <Calendar className="w-5 h-5" />,
                   title: 'Jour de la semaine',
-                  impact: '-50 % a +60 %',
-                  desc: "Le facteur n°1. Variation enorme entre lundi (souvent ferme ou -50 pourcent) et samedi soir (+60 pourcent). Doit toujours etre traite par jour de semaine separement.",
+                  impact: '-50 % à +60 %',
+                  desc: "Le facteur n°1. Variation énorme entre lundi (souvent fermé ou -50 pourcent) et samedi soir (+60 pourcent). Doit toujours être traité par jour de semaine séparément.",
                 },
                 {
                   icon: <CloudRain className="w-5 h-5" />,
-                  title: 'Meteo (terrasse ou centre-ville)',
-                  impact: '-25 % a +20 %',
-                  desc: "Soleil + 22-26 degres = +18 pourcent pour une terrasse. Pluie forte = -22 pourcent. Vent fort = -10 a -15 pourcent. Recuperez les previsions Meteo France ou Open-Meteo a 4-5 jours.",
+                  title: 'Météo (terrasse ou centre-ville)',
+                  impact: '-25 % à +20 %',
+                  desc: "Soleil + 22-26 degrés = +18 pourcent pour une terrasse. Pluie forte = -22 pourcent. Vent fort = -10 à -15 pourcent. Récupérez les prévisions Météo France ou Open-Météo à 4-5 jours.",
                 },
                 {
                   icon: <Calendar className="w-5 h-5" />,
                   title: 'Vacances scolaires',
-                  impact: '-30 % a +25 %',
-                  desc: "Effet inverse selon zone : +15-25 pourcent en zone touristique (Annecy, Cote d'Azur), -10 a -30 pourcent en zone bureau (La Defense, Lyon Part-Dieu).",
+                  impact: '-30 % à +25 %',
+                  desc: "Effet inverse selon zone : +15-25 pourcent en zone touristique (Annecy, Côte d'Azur), -10 à -30 pourcent en zone bureau (La Défense, Lyon Part-Dieu).",
                 },
                 {
                   icon: <Calendar className="w-5 h-5" />,
-                  title: 'Jours feries',
-                  impact: '-40 % a +35 %',
-                  desc: "Fete des meres = +35 pourcent service du midi. 1er mai = -40 pourcent (commerce ferme). 14 juillet veille = +25 pourcent. Verifiez aussi le pont qui suit.",
+                  title: 'Jours fériés',
+                  impact: '-40 % à +35 %',
+                  desc: "Fête des mères = +35 pourcent service du midi. 1er mai = -40 pourcent (commerce fermé). 14 juillet veille = +25 pourcent. Vérifiez aussi le pont qui suit.",
                 },
                 {
                   icon: <Sparkles className="w-5 h-5" />,
-                  title: 'Evenements locaux',
-                  impact: '+10 % a +50 %',
-                  desc: "Concert salle voisine = +15-25 pourcent. Match football stade proche = +30-50 pourcent. Marche du dimanche matin = +10-15 pourcent. Consultez l'agenda mairie + Facebook events.",
+                  title: 'Événements locaux',
+                  impact: '+10 % à +50 %',
+                  desc: "Concert salle voisine = +15-25 pourcent. Match football stade proche = +30-50 pourcent. Marché du dimanche matin = +10-15 pourcent. Consultez l'agenda mairie + Facebook events.",
                 },
                 {
                   icon: <AlertTriangle className="w-5 h-5" />,
-                  title: 'Greves transport',
+                  title: 'Grèves transport',
                   impact: '-30 % zone bureau',
-                  desc: "Greve SNCF ou metro = -30 pourcent en zone bureau (clientele teletravail). Inverse en zone residentielle : -5 pourcent seulement.",
+                  desc: "Grève SNCF ou métro = -30 pourcent en zone bureau (clientèle télétravail). Inverse en zone résidentielle : -5 pourcent seulement.",
                 },
                 {
                   icon: <Sparkles className="w-5 h-5" />,
                   title: 'Marketing et concurrence',
-                  impact: '+5 % a +20 % / -10 % a -15 %',
-                  desc: "Campagne Instagram +5-10 pourcent. Promo plat du jour +15-20 pourcent. Ouverture concurrent direct dans un rayon de 500 m = -10 a -15 pourcent les 3 premiers mois.",
+                  impact: '+5 % à +20 % / -10 % à -15 %',
+                  desc: "Campagne Instagram +5-10 pourcent. Promo plat du jour +15-20 pourcent. Ouverture concurrent direct dans un rayon de 500 m = -10 à -15 pourcent les 3 premiers mois.",
                 },
               ].map((v, i) => (
                 <div key={i} className="bg-white border border-mono-900 rounded-xl p-5 flex gap-4">
@@ -612,8 +612,8 @@ export default function BlogPrevisionVentes() {
             </div>
 
             <Callout type="warning">
-              <strong>Erreur classique :</strong> se fier uniquement aux reservations. Sur un restaurant moyen,
-              elles representent 40-60 pourcent des couverts. Le reste est en walk-in et depend entierement
+              <strong>Erreur classique :</strong> se fier uniquement aux réservations. Sur un restaurant moyen,
+              elles représentent 40-60 pourcent des couverts. Le reste est en walk-in et dépend entièrement
               des facteurs externes ci-dessus.
             </Callout>
           </section>
@@ -626,8 +626,8 @@ export default function BlogPrevisionVentes() {
 
             <div className="prose-content">
               <p>
-                Le choix de l'outil doit etre proportionne a votre maturite analytique et a votre budget.
-                Voici un panorama des solutions du marche, de la plus accessible a la plus avancee.
+                Le choix de l'outil doit être proportionné à votre maturité analytique et à votre budget.
+                Voici un panorama des solutions du marché, de la plus accessible à la plus avancée.
               </p>
             </div>
 
@@ -637,43 +637,43 @@ export default function BlogPrevisionVentes() {
                   name: 'Excel / Google Sheets',
                   price: 'Gratuit / 6 EUR/mois',
                   pros: 'Universel, flexible, formules visibles, partage facile, Analysis ToolPak inclus.',
-                  cons: 'Manuel, erreurs frequentes, pas de mise a jour temps reel, pas de meteo automatique.',
-                  ideal: 'Demarrage, restaurants de moins de 500 K EUR de CA.',
+                  cons: 'Manuel, erreurs fréquentes, pas de mise à jour temps réel, pas de météo automatique.',
+                  ideal: 'Démarrage, restaurants de moins de 500 K EUR de CA.',
                 },
                 {
                   name: 'RestauMargin',
                   price: '29 EUR/mois',
-                  pros: 'Forecast integre + commandes + marges, alertes ecarts, mix-vente auto, meteo integree, IA Claude.',
-                  cons: 'Pas (encore) de ML avance type Prophet. Roadmap Q4 2026 : module forecast IA.',
-                  ideal: 'Independants 500 K - 2 M EUR de CA cherchant l\'all-in-one.',
+                  pros: 'Forecast intégré + commandes + marges, alertes écarts, mix-vente auto, météo intégrée, IA Claude.',
+                  cons: 'Pas (encore) de ML avancé type Prophet. Roadmap Q4 2026 : module forecast IA.',
+                  ideal: 'Indépendants 500 K - 2 M EUR de CA cherchant l\'all-in-one.',
                 },
                 {
                   name: 'Lightspeed Restaurant',
                   price: '69 EUR/mois',
-                  pros: 'Module forecast natif, integration caisse parfaite, KPI dashboard, multi-etablissements.',
-                  cons: 'Cher, courbe d\'apprentissage, forecast moins fin que solutions specialisees.',
-                  ideal: 'Brasseries et chaines 1-10 etablissements.',
+                  pros: 'Module forecast natif, intégration caisse parfaite, KPI dashboard, multi-établissements.',
+                  cons: 'Cher, courbe d\'apprentissage, forecast moins fin que solutions spécialisées.',
+                  ideal: 'Brasseries et chaînes 1-10 établissements.',
                 },
                 {
                   name: 'Square for Restaurants',
                   price: '60 EUR/mois',
-                  pros: 'Reports saisonnalite, integration paiement, ouvert API, app mobile.',
+                  pros: 'Reports saisonnalité, intégration paiement, ouvert API, app mobile.',
                   cons: 'Forecast basique (moyenne mobile uniquement), peu de variables externes.',
                   ideal: 'Coffee shops, food trucks, fast-casual.',
                 },
                 {
                   name: 'Prophet (Meta) + Python',
                   price: 'Gratuit',
-                  pros: 'Open source, ML state-of-the-art, regresseurs externes, detection changepoints auto.',
-                  cons: 'Necessite competences Python/data, infrastructure cloud, pas d\'UI.',
-                  ideal: 'Chaines des etablissements avec equipe data.',
+                  pros: 'Open source, ML state-of-the-art, régresseurs externes, détection changepoints auto.',
+                  cons: 'Nécessite compétences Python/data, infrastructure cloud, pas d\'UI.',
+                  ideal: 'Chaînes des établissements avec équipe data.',
                 },
                 {
                   name: 'AWS Forecast / Vertex AI',
                   price: '50-500 EUR/mois',
-                  pros: 'Cloud managed, ML automatique, scalable, integration ERP, MAPE 3-6 pourcent.',
-                  cons: 'Cout variable, configuration complexe, vendor lock-in.',
-                  ideal: 'Grandes chaines des etablissements.',
+                  pros: 'Cloud managed, ML automatique, scalable, intégration ERP, MAPE 3-6 pourcent.',
+                  cons: 'Coût variable, configuration complexe, vendor lock-in.',
+                  ideal: 'Grandes chaînes des établissements.',
                 },
               ].map((o, i) => (
                 <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5">
@@ -692,53 +692,53 @@ export default function BlogPrevisionVentes() {
           {/* ═════════════ SECTION 6 : Precision MAPE ═════════════ */}
           <section id="precision" className="mb-16">
             <SectionHeading icon={<TrendingUp className="w-6 h-6" />} number="6">
-              Precision attendue : MAPE et benchmarks
+              Précision attendue : MAPE et benchmarks
             </SectionHeading>
 
             <div className="prose-content">
               <p>
-                L'indicateur standard de precision d'une prevision est le <strong>MAPE</strong> (Mean
-                Absolute Percentage Error), qui mesure l'ecart moyen entre prevu et realise, en pourcentage.
-                Plus le MAPE est bas, plus la prevision est fiable.
+                L'indicateur standard de précision d'une prévision est le <strong>MAPE</strong> (Mean
+                Absolute Percentage Error), qui mesure l'écart moyen entre prévu et réalisé, en pourcentage.
+                Plus le MAPE est bas, plus la prévision est fiable.
               </p>
             </div>
 
             <div className="mt-8 bg-mono-1000 border border-mono-900 rounded-2xl p-6 sm:p-8">
               <h3 className="font-bold text-mono-100 mb-4 text-lg">Formule MAPE</h3>
               <div className="bg-white border border-mono-900 rounded-xl p-4 font-mono text-sm text-mono-100 mb-4">
-                MAPE = (1 / N) x Sigma | Reel_i - Prevu_i | / Reel_i x 100
+                MAPE = (1 / N) x Sigma | Réel_i - Prévu_i | / Réel_i x 100
               </div>
               <p className="text-sm text-mono-400 leading-relaxed">
-                Exemple : sur 7 jours, ecarts en valeur absolue = 8 %, 12 %, 5 %, 18 %, 3 %, 9 %, 15 %.
-                MAPE = (8 + 12 + 5 + 18 + 3 + 9 + 15) / 7 = <strong>10 pourcent</strong>. Resultat : bonne precision.
+                Exemple : sur 7 jours, écarts en valeur absolue = 8 %, 12 %, 5 %, 18 %, 3 %, 9 %, 15 %.
+                MAPE = (8 + 12 + 5 + 18 + 3 + 9 + 15) / 7 = <strong>10 pourcent</strong>. Résultat : bonne précision.
               </p>
             </div>
 
             <div className="mt-8 grid sm:grid-cols-3 gap-5">
               <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
                 <div className="text-3xl font-extrabold text-emerald-900 mb-2">{'<'} 10 %</div>
-                <p className="font-bold text-emerald-900 mb-1">Bonne precision</p>
-                <p className="text-xs text-emerald-800">Restaurant mature avec methode robuste. Permet un staffing fin et des commandes justes.</p>
+                <p className="font-bold text-emerald-900 mb-1">Bonne précision</p>
+                <p className="text-xs text-emerald-800">Restaurant mature avec méthode robuste. Permet un staffing fin et des commandes justes.</p>
               </div>
               <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
                 <div className="text-3xl font-extrabold text-amber-900 mb-2">10-20 %</div>
                 <p className="font-bold text-amber-900 mb-1">Acceptable</p>
-                <p className="text-xs text-amber-800">Niveau de demarrage. Suffisant pour eviter les ruptures majeures, perfectible.</p>
+                <p className="text-xs text-amber-800">Niveau de démarrage. Suffisant pour éviter les ruptures majeures, perfectible.</p>
               </div>
               <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
                 <div className="text-3xl font-extrabold text-red-900 mb-2">{'>'} 20 %</div>
-                <p className="font-bold text-red-900 mb-1">A ameliorer</p>
-                <p className="text-xs text-red-800">Methode trop simpliste ou variables manquantes. Revoyez votre approche.</p>
+                <p className="font-bold text-red-900 mb-1">À améliorer</p>
+                <p className="text-xs text-red-800">Méthode trop simpliste ou variables manquantes. Revoyez votre approche.</p>
               </div>
             </div>
 
             <div className="prose-content mt-8">
-              <h3 className="text-xl font-bold text-mono-100 mb-3">Objectifs realistes par anciennete</h3>
+              <h3 className="text-xl font-bold text-mono-100 mb-3">Objectifs réalistes par ancienneté</h3>
               <ul className="list-disc list-inside space-y-2 text-mono-350 mt-4">
                 <li><strong>Mois 1-3 :</strong> MAPE de 18-22 pourcent. Vous apprenez vos patterns.</li>
-                <li><strong>Mois 4-6 :</strong> MAPE de 12-15 pourcent. Vous integrez la meteo et les evenements.</li>
+                <li><strong>Mois 4-6 :</strong> MAPE de 12-15 pourcent. Vous intégrez la météo et les événements.</li>
                 <li><strong>Mois 7-12 :</strong> MAPE de 9-12 pourcent. Vous avez vu un cycle complet.</li>
-                <li><strong>An 2 :</strong> MAPE de 6-9 pourcent. Coefficients calibres, automatismes installes.</li>
+                <li><strong>An 2 :</strong> MAPE de 6-9 pourcent. Coefficients calibrés, automatismes installés.</li>
                 <li><strong>An 3+ :</strong> MAPE de 4-7 pourcent si vous ajoutez du ML. Plateau atteint sans ML : 8 pourcent.</li>
               </ul>
             </div>
@@ -752,8 +752,8 @@ export default function BlogPrevisionVentes() {
 
             <div className="prose-content">
               <p>
-                Mettons en pratique tout ce que nous avons vu sur un cas reel : <strong>Bistrot Le Marais</strong>,
-                50 couverts a Paris 4e, ouvert du mardi au dimanche, terrasse 20 places, ticket moyen 32 EUR HT.
+                Mettons en pratique tout ce que nous avons vu sur un cas réel : <strong>Bistrot Le Marais</strong>,
+                50 couverts à Paris 4e, ouvert du mardi au dimanche, terrasse 20 places, ticket moyen 32 EUR HT.
                 Voici 4 semaines de data (avril 2026) puis le forecast pour la semaine suivante.
               </p>
             </div>
@@ -799,9 +799,9 @@ export default function BlogPrevisionVentes() {
             </div>
 
             <div className="prose-content mt-8">
-              <h3 className="text-xl font-bold text-mono-100 mb-3">Calcul moyenne ponderee semaine 5</h3>
+              <h3 className="text-xl font-bold text-mono-100 mb-3">Calcul moyenne pondérée semaine 5</h3>
               <p>
-                Pour chaque jour, on applique : Prevision = (4 x S4 + 3 x S3 + 2 x S2 + 1 x S1) / 10.
+                Pour chaque jour, on applique : Prévision = (4 x S4 + 3 x S3 + 2 x S2 + 1 x S1) / 10.
                 Exemple vendredi soir : (4 x 110 + 3 x 88 + 2 x 102 + 1 x 95) / 10 = (440 + 264 + 204 + 95) / 10 = <strong>100 couverts</strong>.
               </p>
             </div>
@@ -811,10 +811,10 @@ export default function BlogPrevisionVentes() {
                 <thead>
                   <tr className="bg-mono-975 text-mono-350">
                     <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Service</th>
-                    <th className="text-center py-3 px-4 font-semibold">Base ponderee</th>
-                    <th className="text-center py-3 px-4 font-semibold">Coef meteo</th>
-                    <th className="text-center py-3 px-4 font-semibold">Coef evenement</th>
-                    <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Prevision finale</th>
+                    <th className="text-center py-3 px-4 font-semibold">Base pondérée</th>
+                    <th className="text-center py-3 px-4 font-semibold">Coef météo</th>
+                    <th className="text-center py-3 px-4 font-semibold">Coef événement</th>
+                    <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Prévision finale</th>
                   </tr>
                 </thead>
                 <tbody className="text-mono-350">
@@ -823,13 +823,13 @@ export default function BlogPrevisionVentes() {
                     { s: 'Mardi soir', b: 57, m: '0.95', e: '1.00', p: 54 },
                     { s: 'Mercredi midi', b: 49, m: '1.10 (soleil)', e: '1.00', p: 54 },
                     { s: 'Mercredi soir', b: 70, m: '1.15', e: '1.00', p: 81 },
-                    { s: 'Jeudi midi', b: 60, m: '1.15', e: '1.05 (ferie veille)', p: 72 },
+                    { s: 'Jeudi midi', b: 60, m: '1.15', e: '1.05 (férié veille)', p: 72 },
                     { s: 'Jeudi soir', b: 83, m: '1.20 (terrasse)', e: '1.10', p: 110 },
-                    { s: 'Vendredi midi (ferie)', b: 71, m: '1.10', e: '0.70 (1er mai)', p: 55 },
+                    { s: 'Vendredi midi (férié)', b: 71, m: '1.10', e: '0.70 (1er mai)', p: 55 },
                     { s: 'Vendredi soir', b: 100, m: '1.15', e: '1.05', p: 121 },
                     { s: 'Samedi midi', b: 76, m: '1.20', e: '1.00', p: 91 },
                     { s: 'Samedi soir', b: 124, m: '1.18', e: '1.15 (concert)', p: 168 },
-                    { s: 'Dimanche midi (fete meres)', b: 88, m: '1.10', e: '1.35', p: 131 },
+                    { s: 'Dimanche midi (fête mères)', b: 88, m: '1.10', e: '1.35', p: 131 },
                   ].map((row, i) => (
                     <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
                       <td className="py-3 px-4 font-medium text-mono-100">{row.s}</td>
@@ -852,18 +852,18 @@ export default function BlogPrevisionVentes() {
 
             <div className="prose-content mt-8">
               <p>
-                <strong>Conversion en CA :</strong> 976 couverts x 32 EUR ticket moyen = <strong>31 232 EUR de CA HT prevu</strong>.
+                <strong>Conversion en CA :</strong> 976 couverts x 32 EUR ticket moyen = <strong>31 232 EUR de CA HT prévu</strong>.
                 <br />
-                <strong>Commandes matieres :</strong> 976 couverts x food cost cible 30 pourcent x 32 EUR = <strong>9 370 EUR d'achats matieres</strong> pour la semaine.
+                <strong>Commandes matières :</strong> 976 couverts x food cost cible 30 pourcent x 32 EUR = <strong>9 370 EUR d'achats matières</strong> pour la semaine.
                 <br />
                 <strong>Staffing :</strong> avec un ratio de 1 cuisinier + 1 commis pour 50 couverts/service et 1 serveur pour 25 couverts/service.
               </p>
             </div>
 
             <Callout type="info">
-              <strong>Lecon du cas :</strong> sans les coefficients meteo + evenements, la prevision aurait
-              ete de 819 couverts (base ponderee). Avec, on monte a 976. L'ecart de 157 couverts representerait
-              5 024 EUR de CA non anticipe et probablement 30-40 ruptures ou clients perdus.
+              <strong>Leçon du cas :</strong> sans les coefficients météo + événements, la prévision aurait
+              été de 819 couverts (base pondérée). Avec, on monte à 976. L'écart de 157 couverts représenterait
+              5 024 EUR de CA non anticipé et probablement 30-40 ruptures ou clients perdus.
             </Callout>
           </section>
 
@@ -875,10 +875,10 @@ export default function BlogPrevisionVentes() {
 
             <div className="prose-content">
               <p>
-                Le machine learning a transforme la prevision dans la restauration ces 5 dernieres annees.
-                Les chaines (McDonald's, Starbucks, Burger King) utilisent depuis longtemps des modeles ML
-                pour optimiser le staffing au quart d'heure pres. Pour un independant, l'IA devient pertinente
-                au-dela de 1.5 million EUR de CA ou pour les groupes multi-etablissements. Pour aller plus
+                Le machine learning a transformé la prévision dans la restauration ces 5 dernières années.
+                Les chaînes (McDonald's, Starbucks, Burger King) utilisent depuis longtemps des modèles ML
+                pour optimiser le staffing au quart d'heure près. Pour un indépendant, l'IA devient pertinente
+                au-delà de 1.5 million EUR de CA ou pour les groupes multi-établissements. Pour aller plus
                 loin sur l'usage de l'intelligence artificielle en restauration, consultez notre dossier
                 <Link to="/blog/ia-restauration" className="text-teal-700 underline hover:text-teal-800 ml-1">IA restauration</Link>.
               </p>
@@ -891,10 +891,10 @@ export default function BlogPrevisionVentes() {
                 </div>
                 <h3 className="font-bold text-mono-100 mb-2">Prophet (Meta)</h3>
                 <p className="text-xs text-mono-400 leading-relaxed mb-3">
-                  Le plus accessible. Open source Python/R. Gere automatiquement saisonnalite, jours feries,
-                  regresseurs externes. MAPE typique 5-8 pourcent.
+                  Le plus accessible. Open source Python/R. Gère automatiquement saisonnalité, jours fériés,
+                  régresseurs externes. MAPE typique 5-8 pourcent.
                 </p>
-                <p className="text-xs text-emerald-700 font-semibold">+ Facile a installer, doc abondante</p>
+                <p className="text-xs text-emerald-700 font-semibold">+ Facile à installer, doc abondante</p>
                 <p className="text-xs text-amber-700 font-semibold">- Moins flexible que XGBoost</p>
               </div>
               <div className="bg-white border border-mono-900 rounded-2xl p-5">
@@ -903,10 +903,10 @@ export default function BlogPrevisionVentes() {
                 </div>
                 <h3 className="font-bold text-mono-100 mb-2">ARIMA / SARIMA</h3>
                 <p className="text-xs text-mono-400 leading-relaxed mb-3">
-                  Le standard statistique academique. Capture autoregression + moyenne mobile + saisonnalite.
-                  Adapte aux series stationnaires. MAPE 6-10 pourcent.
+                  Le standard statistique académique. Capture autoregression + moyenne mobile + saisonnalité.
+                  Adapté aux séries stationnaires. MAPE 6-10 pourcent.
                 </p>
-                <p className="text-xs text-emerald-700 font-semibold">+ Theoriquement robuste, interpretable</p>
+                <p className="text-xs text-emerald-700 font-semibold">+ Théoriquement robuste, interpretable</p>
                 <p className="text-xs text-amber-700 font-semibold">- Manuel sur identification ordres</p>
               </div>
               <div className="bg-white border border-mono-900 rounded-2xl p-5">
@@ -915,25 +915,25 @@ export default function BlogPrevisionVentes() {
                 </div>
                 <h3 className="font-bold text-mono-100 mb-2">XGBoost / LightGBM</h3>
                 <p className="text-xs text-mono-400 leading-relaxed mb-3">
-                  Gradient boosting tree-based. Champion des competitions Kaggle. Excellent avec beaucoup
+                  Gradient boosting tree-based. Champion des compétitions Kaggle. Excellent avec beaucoup
                   de features. MAPE 4-7 pourcent.
                 </p>
-                <p className="text-xs text-emerald-700 font-semibold">+ Precision maximale, feature engineering riche</p>
-                <p className="text-xs text-amber-700 font-semibold">- Boite noire, plus difficile a debugger</p>
+                <p className="text-xs text-emerald-700 font-semibold">+ Précision maximale, feature engineering riche</p>
+                <p className="text-xs text-amber-700 font-semibold">- Boîte noire, plus difficile à debugger</p>
               </div>
             </div>
 
             <div className="prose-content mt-8">
               <h3 className="text-xl font-bold text-mono-100 mb-3">Quand l'IA devient rentable ?</h3>
               <p>
-                Le ROI du machine learning depend de votre volume et de votre variabilite. Voici les seuils
-                observes en pratique :
+                Le ROI du machine learning dépend de votre volume et de votre variabilité. Voici les seuils
+                observés en pratique :
               </p>
               <ul className="list-disc list-inside space-y-2 text-mono-350 mt-4">
-                <li><strong>Moins de 500 K EUR de CA :</strong> ML non rentable, methode ponderee suffit.</li>
-                <li><strong>500 K - 1.5 M EUR de CA :</strong> Regression multi-facteurs Excel sufisante.</li>
-                <li><strong>1.5 - 5 M EUR de CA :</strong> Prophet recommande, ROI rapide (-2-3 points MAPE).</li>
-                <li><strong>5 M+ EUR de CA ou chaines :</strong> XGBoost ou plateforme cloud (AWS Forecast, Vertex AI).</li>
+                <li><strong>Moins de 500 K EUR de CA :</strong> ML non rentable, méthode pondérée suffit.</li>
+                <li><strong>500 K - 1.5 M EUR de CA :</strong> Régression multi-facteurs Excel sufisante.</li>
+                <li><strong>1.5 - 5 M EUR de CA :</strong> Prophet recommandé, ROI rapide (-2-3 points MAPE).</li>
+                <li><strong>5 M+ EUR de CA ou chaînes :</strong> XGBoost ou plateforme cloud (AWS Forecast, Vertex AI).</li>
               </ul>
             </div>
           </section>
@@ -947,40 +947,40 @@ export default function BlogPrevisionVentes() {
             <div className="space-y-6 mt-8">
               <ErreurCard
                 number={1}
-                title="Confondre prevision et reservations"
-                desc="Les reservations representent 40-60 pourcent des couverts d'un restaurant moyen. Si vous prevoyez uniquement sur la base des resas, vous sous-estimez systematiquement de 40-50 pourcent. Toujours appliquer un ratio resa/total issu de votre historique."
+                title="Confondre prévision et réservations"
+                desc="Les réservations représentent 40-60 pourcent des couverts d'un restaurant moyen. Si vous prévoyez uniquement sur la base des resas, vous sous-estimez systématiquement de 40-50 pourcent. Toujours appliquer un ratio resa/total issu de votre historique."
               />
               <ErreurCard
                 number={2}
-                title="Ignorer la meteo a 4-5 jours"
-                desc="Pour un restaurant avec terrasse, ne pas integrer la meteo vous fait perdre 15-20 pourcent de precision en moyenne sur la saison chaude. Configurez une alerte Open-Meteo gratuite et appliquez vos coefficients meteo systematiquement."
+                title="Ignorer la météo à 4-5 jours"
+                desc="Pour un restaurant avec terrasse, ne pas intégrer la météo vous fait perdre 15-20 pourcent de précision en moyenne sur la saison chaude. Configurez une alerte Open-Météo gratuite et appliquez vos coefficients météo systématiquement."
               />
               <ErreurCard
                 number={3}
-                title="Refaire la prevision a la main chaque semaine"
-                desc="Si chaque dimanche soir vous passez 2h sur Excel a refaire manuellement le calcul, vous tiendrez 3 mois maximum avant d'abandonner. Automatisez avec des formules ou un outil comme RestauMargin. L'objectif : 15 minutes maximum par semaine."
+                title="Refaire la prévision à la main chaque semaine"
+                desc="Si chaque dimanche soir vous passez 2h sur Excel à refaire manuellement le calcul, vous tiendrez 3 mois maximum avant d'abandonner. Automatisez avec des formules ou un outil comme RestauMargin. L'objectif : 15 minutes maximum par semaine."
               />
               <ErreurCard
                 number={4}
-                title="Oublier le post-mortem des ecarts"
-                desc="Sans analyse hebdomadaire des ecarts prevision/realise (le MAPE), votre modele ne s'ameliore jamais. Documentez chaque ecart superieur a 15 pourcent dans un journal avec hypothese de cause. Cette boucle d'apprentissage est ce qui fait baisser le MAPE annee apres annee."
+                title="Oublier le post-mortem des écarts"
+                desc="Sans analyse hebdomadaire des écarts prévision/réalisé (le MAPE), votre modèle ne s'améliore jamais. Documentez chaque écart supérieur à 15 pourcent dans un journal avec hypothèse de cause. Cette boucle d'apprentissage est ce qui fait baisser le MAPE année après année."
               />
               <ErreurCard
                 number={5}
-                title="Sous-estimer les evenements locaux"
-                desc="Un concert a 500 m peut vous amener +30 pourcent de couverts ou -20 pourcent si vos clients y vont. Sans veille active sur l'agenda local (mairie, Facebook events, Songkick, salle de sport, eglise), vous ratez 60 pourcent des evenements impactants."
+                title="Sous-estimer les événements locaux"
+                desc="Un concert à 500 m peut vous amener +30 pourcent de couverts ou -20 pourcent si vos clients y vont. Sans veille active sur l'agenda local (mairie, Facebook events, Songkick, salle de sport, église), vous ratez 60 pourcent des événements impactants."
               />
               <ErreurCard
                 number={6}
-                title="Vouloir trop de precision trop tot"
-                desc="Au mois 3, viser un MAPE de 5 pourcent est irrealiste et demotivant. Acceptez 18-22 pourcent au demarrage et focalisez-vous sur la regularite (faire la prevision chaque semaine sans exception). La precision viendra naturellement avec l'historique."
+                title="Vouloir trop de précision trop tôt"
+                desc="Au mois 3, viser un MAPE de 5 pourcent est irréaliste et démotivant. Acceptez 18-22 pourcent au démarrage et focalisez-vous sur la régularité (faire la prévision chaque semaine sans exception). La précision viendra naturellement avec l'historique."
               />
             </div>
 
             <Callout type="warning">
-              <strong>Impact cumule :</strong> ces 6 erreurs combinees representent souvent 10-15 points de
-              MAPE supplementaires. Sur un restaurant a 600 000 EUR de CA, cela equivaut a 8-15 K EUR de
-              marge brute perdue par an (commandes excedentaires + staffing mal calibre + clients perdus).
+              <strong>Impact cumulé :</strong> ces 6 erreurs combinées représentent souvent 10-15 points de
+              MAPE supplémentaires. Sur un restaurant à 600 000 EUR de CA, cela équivaut à 8-15 K EUR de
+              marge brute perdue par an (commandes excédentaires + staffing mal calibré + clients perdus).
             </Callout>
           </section>
 
@@ -992,40 +992,40 @@ export default function BlogPrevisionVentes() {
 
             <div className="prose-content">
               <p>
-                Pour transformer la theorie en pratique, voici le rituel hebdomadaire d'un restaurateur
-                qui pratique la prevision depuis 2 ans. Duree totale : 30-45 minutes le dimanche soir.
+                Pour transformer la théorie en pratique, voici le rituel hebdomadaire d'un restaurateur
+                qui pratique la prévision depuis 2 ans. Durée totale : 30-45 minutes le dimanche soir.
               </p>
             </div>
 
             <ol className="mt-8 space-y-5">
               {[
                 {
-                  title: 'Extraire les ventes de la semaine ecoulee (5 min)',
+                  title: 'Extraire les ventes de la semaine écoulée (5 min)',
                   body: 'Exportez le rapport ventes depuis votre caisse (Lightspeed, Square, Tiller, Zelty). Filtrez par service midi/soir et par jour.',
                 },
                 {
                   title: 'Calculer le MAPE de la semaine (5 min)',
-                  body: 'Pour chaque service, calculez |Reel - Prevu| / Reel x 100. Faites la moyenne. Reportez dans votre journal de bord.',
+                  body: 'Pour chaque service, calculez |Réel - Prévu| / Réel x 100. Faites la moyenne. Reportez dans votre journal de bord.',
                 },
                 {
-                  title: 'Documenter les ecarts > 15 % (10 min)',
-                  body: 'Pour chaque service avec ecart important, notez la cause hypothetique : meteo ratee, evenement non vu, probleme operationnel, etc.',
+                  title: 'Documenter les écarts > 15 % (10 min)',
+                  body: 'Pour chaque service avec écart important, notez la cause hypothétique : météo ratée, événement non vu, problème opérationnel, etc.',
                 },
                 {
-                  title: 'Recuperer la meteo a 5 jours (3 min)',
-                  body: 'Consultez Meteo France ou Open-Meteo. Notez temperature et type de ciel pour chaque jour de la semaine suivante.',
+                  title: 'Récupérer la météo à 5 jours (3 min)',
+                  body: 'Consultez Météo France ou Open-Météo. Notez température et type de ciel pour chaque jour de la semaine suivante.',
                 },
                 {
-                  title: 'Verifier l\'agenda local (5 min)',
-                  body: 'Site mairie, Facebook events, salle de concert voisine, stade, ecoles (fetes). Identifiez tout evenement dans un rayon de 1 km.',
+                  title: 'Vérifier l\'agenda local (5 min)',
+                  body: 'Site mairie, Facebook events, salle de concert voisine, stade, écoles (fêtes). Identifiez tout événement dans un rayon de 1 km.',
                 },
                 {
-                  title: 'Calculer la prevision semaine suivante (10 min)',
-                  body: 'Pour chaque service : base ponderee x coef meteo x coef evenement x coef saison. Reportez dans le tableau hebdomadaire.',
+                  title: 'Calculer la prévision semaine suivante (10 min)',
+                  body: 'Pour chaque service : base pondérée x coef météo x coef événement x coef saison. Reportez dans le tableau hebdomadaire.',
                 },
                 {
-                  title: 'Deduire commandes matieres et planning RH (10 min)',
-                  body: 'Multipliez le forecast couverts par le mix-vente pour les quantites par plat. Calez le planning sur les ratios cibles (1 cuisinier / 50 couverts).',
+                  title: 'Déduire commandes matières et planning RH (10 min)',
+                  body: 'Multipliez le forecast couverts par le mix-vente pour les quantités par plat. Calez le planning sur les ratios cibles (1 cuisinier / 50 couverts).',
                 },
               ].map((step, i) => (
                 <li key={i} className="bg-white border border-mono-900 rounded-2xl p-6 sm:p-7 flex gap-5">
@@ -1041,7 +1041,7 @@ export default function BlogPrevisionVentes() {
             </ol>
 
             <Callout type="info">
-              <strong>Astuce :</strong> creez un template Notion ou Excel reutilisable chaque semaine. Apres
+              <strong>Astuce :</strong> créez un template Notion ou Excel réutilisable chaque semaine. Après
               3 semaines, vous tiendrez le rythme en 20 minutes au lieu de 45. C'est l'investissement
               hebdomadaire le plus rentable de votre gestion.
             </Callout>
@@ -1050,7 +1050,7 @@ export default function BlogPrevisionVentes() {
           {/* ═════════════ FAQ ═════════════ */}
           <section id="faq" className="mb-16">
             <SectionHeading icon={<Lightbulb className="w-6 h-6" />} number="11">
-              Questions frequentes
+              Questions fréquentes
             </SectionHeading>
 
             <div className="space-y-4 mt-8">
@@ -1075,17 +1075,17 @@ export default function BlogPrevisionVentes() {
               <Link to="/blog/chiffre-affaires-restaurant-comment-calculer" className="bg-white border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all">
                 <div className="text-xs text-teal-600 font-semibold mb-2">Pilotage</div>
                 <h3 className="font-bold text-mono-100 mb-2">Chiffre d'affaires restaurant : comment le calculer</h3>
-                <p className="text-sm text-mono-400">Methode pas-a-pas pour calculer le CA HT/TTC, ticket moyen, taux de remplissage.</p>
+                <p className="text-sm text-mono-400">Méthode pas-à-pas pour calculer le CA HT/TTC, ticket moyen, taux de remplissage.</p>
               </Link>
               <Link to="/blog/taux-occupation-restaurant" className="bg-white border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all">
-                <div className="text-xs text-teal-600 font-semibold mb-2">Operations</div>
-                <h3 className="font-bold text-mono-100 mb-2">Taux d'occupation restaurant : le KPI cle</h3>
+                <div className="text-xs text-teal-600 font-semibold mb-2">Opérations</div>
+                <h3 className="font-bold text-mono-100 mb-2">Taux d'occupation restaurant : le KPI clé</h3>
                 <p className="text-sm text-mono-400">Mesurer et optimiser le taux de remplissage de votre salle, service par service.</p>
               </Link>
               <Link to="/blog/augmenter-ticket-moyen-restaurant" className="bg-white border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all">
                 <div className="text-xs text-teal-600 font-semibold mb-2">Revenue</div>
                 <h3 className="font-bold text-mono-100 mb-2">Augmenter le ticket moyen de votre restaurant</h3>
-                <p className="text-sm text-mono-400">7 leviers concrets pour faire passer le ticket moyen de 28 a 35 EUR.</p>
+                <p className="text-sm text-mono-400">7 leviers concrets pour faire passer le ticket moyen de 28 à 35 EUR.</p>
               </Link>
               <Link to="/blog/ia-restauration" className="bg-white border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all">
                 <div className="text-xs text-teal-600 font-semibold mb-2">Innovation</div>
@@ -1100,11 +1100,11 @@ export default function BlogPrevisionVentes() {
             <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 sm:p-10 text-center text-white shadow-xl">
               <Sparkles className="w-10 h-10 mx-auto mb-4 text-teal-100" />
               <h2 className="text-2xl sm:text-3xl font-extrabold mb-3">
-                Automatisez vos previsions de ventes
+                Automatisez vos prévisions de ventes
               </h2>
               <p className="text-teal-100 mb-6 text-sm sm:text-base leading-relaxed max-w-[560px] mx-auto">
-                RestauMargin integre forecast couverts, commandes matieres, marges et alertes ecarts dans
-                un seul outil. Connecte a votre caisse, integre la meteo, propulse par l'IA Claude.
+                RestauMargin intègre forecast couverts, commandes matières, marges et alertes écarts dans
+                un seul outil. Connecté à votre caisse, intègre la météo, propulsé par l'IA Claude.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <Link
@@ -1129,7 +1129,7 @@ export default function BlogPrevisionVentes() {
         {/* ── Nav bas de page ── */}
         <div className="mt-12 pt-8 border-t border-mono-900 flex justify-between items-center flex-wrap gap-3">
           <Link to="/blog" className="text-sm text-teal-600 hover:underline">{'<-'} Tous les articles</Link>
-          <Link to="/blog/budget-previsionnel-restaurant" className="text-sm text-teal-600 hover:underline">Budget previsionnel {'->'}</Link>
+          <Link to="/blog/budget-previsionnel-restaurant" className="text-sm text-teal-600 hover:underline">Budget prévisionnel {'->'}</Link>
         </div>
       </main>
     </div>

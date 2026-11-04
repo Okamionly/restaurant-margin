@@ -261,9 +261,11 @@ if (!JWT_SECRET) throw new Error('JWT_SECRET manquant');
   laissés, car *salarier* est un verbe : corrigés. Un témoin intégré le fait rougir si l'une de ses
   7 règles casse. **Branché dans le CI le 2026-11-04** (job `typecheck`, étape « Accents du texte
   visible ») : tout push sur `main` et toute PR le lancent, quelle que soit la routine qui a écrit
-  la page, y compris celles qui appellent `check-seo-coverage.cjs` directement. Le CI rouge ne
-  bloque pas la mise en ligne : **reste à décider (fondateur)** le branchement sur le
-  `buildCommand` Vercel, seul moyen d'empêcher une page sans accents d'être publiée.
+  la page, y compris celles qui appellent `check-seo-coverage.cjs` directement. **Branché aussi
+  sur le `buildCommand` Vercel le 2026-11-04** (oui du fondateur), en premier maillon : une page
+  sans accents fait échouer le déploiement, et la production reste sur le dernier déploiement
+  réussi. Revers assumé : tant que la faute n'est pas corrigée, tout autre déploiement est bloqué
+  aussi ; le message d'échec donne fichier:ligne et la forme correcte.
 - **Position sur « marge restaurant »** : 55 en moyenne sur 3 mois, 26-28 sur 28 jours (GSC). Le guide
   a ete recentre le 04/11 (commit `d401ff1`). A remesurer dans la Search Console vers le 25/11, meme
   filtre (requete exacte, onglet Pages). Le plafond restant est l'autorite du domaine : liens entrants,

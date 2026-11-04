@@ -266,6 +266,7 @@ const LogicielMargeCafeBar = lazyRetry(() => import('./pages/LogicielMargeCafeBa
 const GlossaireRestauration = lazyRetry(() => import('./pages/GlossaireRestauration'));
 const BlogPourquoiPasRentable = lazyRetry(() => import('./pages/BlogPourquoiPasRentable'));
 const CoutCouvert = lazyRetry(() => import('./pages/CoutCouvert'));
+const LivraisonRentabilite = lazyRetry(() => import('./pages/LivraisonRentabilite'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -610,6 +611,7 @@ function AppLayout() {
         { to: '/prime-saisonniere', icon: Gift, label: 'Prime saisonnière' },
         { to: '/roi-equipement', icon: TrendingUp, label: 'ROI Équipement' },
         { to: '/cout-couvert', icon: Utensils, label: 'Coût par couvert' },
+        { to: '/livraison-rentabilite', icon: Truck, label: 'Rentabilité livraison' },
         // Integrations masqué pour l'instant
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
         { to: '/abonnement', icon: CreditCard, label: 'Mon abonnement' },
@@ -1154,6 +1156,7 @@ function AppLayout() {
               <Route path="/saisonnalite" element={<SaisonnaliteIngredients />} />
               <Route path="/roi-equipement" element={<RoiEquipement />} />
               <Route path="/cout-couvert" element={<CoutCouvert />} />
+              <Route path="/livraison-rentabilite" element={<LivraisonRentabilite />} />
               <Route path="/bon-cadeau" element={<BonCadeau />} />
               <Route path="/restaurants" element={<TrialPaywallGuard feature="Multi-restaurant"><Restaurants /></TrialPaywallGuard>} />
               <Route path="/pricing" element={<Pricing />} />

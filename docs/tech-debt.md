@@ -244,8 +244,12 @@ if (!JWT_SECRET) throw new Error('JWT_SECRET manquant');
 - **Reste — code** : `NicheLanding` affiche le slug comme texte (« Les enjeux spécifiques de votre
   {slug} » donne « votre cafe coffee-shop », « votre creperie ») : prévoir un libellé accentué par
   niche.
-- **Reste — garde-fou** : `check-content-accents.cjs` ne lit que `Blog*`/`Logiciel*` ; les 31 pages
-  ci-dessus le passent (mesuré le 04/11) : ajouter leurs noms à `PAGES_DE_CONTENU`.
+- **Garde-fou étendu à ces pages — FAIT le 2026-11-04** : `PAGES_DE_CONTENU` couvre aussi
+  `Alternative*`, `Comparatif*`, `Fonctionnalite*` et 13 pages nommées (`NicheLanding`, `Demo`,
+  outils, station, lancement, pages légales) ; `content:check` lit 111 pages et passe. Il rougit
+  sur leurs versions d'avant les accents (6 pages testées, une par famille de motif). Les 5 autres
+  pages publiques prérendues (`Landing`, `Pricing`, `APropos`, `Login`,
+  `CalculateurMargeRestaurant`) le passent aussi (mesuré) mais n'y sont pas encore.
 - **Garde-fou accents — FAIT le 2026-11-04** : `npm run content:check`
   (`client/scripts/check-content-accents.cjs`), aussi lancé par `npm run seo:check`. Lit le texte
   visible des pages `Blog*`/`Logiciel*` par l'AST TypeScript (slugs, ancres, classes, arguments

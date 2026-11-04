@@ -11,7 +11,8 @@
  * français sans accents, et rien n'empêchait de le publier : `vite build` passe
  * au vert, Googlebot indexe « rentabilite » tel quel. Le 2026-11-04, il a fallu
  * remettre environ 30 300 accents sur les 81 pages Blog* et Logiciel* (commits
- * 4963a43 à 3f7517a). Ce contrôle empêche d'y revenir.
+ * 4963a43 à 3f7517a), puis 7 504 sur 21 des 30 autres pages publiques ajoutées
+ * ci-dessous (commit 1d55a52). Ce contrôle empêche d'y revenir.
  *
  * Ce qui est lu — et ce qui ne l'est pas
  * --------------------------------------
@@ -56,7 +57,26 @@ const SK = ts.SyntaxKind;
  * quelle suite de caractères dans le NOM du fichier. Toute nouvelle famille de
  * pages de contenu s'ajoute ici (ex. 'src/pages/Guide*.tsx').
  */
-const PAGES_DE_CONTENU = ['src/pages/Blog*.tsx', 'src/pages/Logiciel*.tsx'];
+const PAGES_DE_CONTENU = [
+  'src/pages/Blog*.tsx',
+  'src/pages/Logiciel*.tsx',
+  // 2026-11-04 : les 30 autres pages publiques dont les routes prerender.cjs ont été
+  // accentuées (1d55a52). Un motif « Préfixe* » ne doit désigner que des pages publiques.
+  'src/pages/Alternative*.tsx',
+  'src/pages/Comparatif*.tsx',
+  'src/pages/Fonctionnalite*.tsx', // 8 pages Fonctionnalite* + FonctionnalitesIndex
+  'src/pages/NicheLanding.tsx', // les 18 routes /guide-marge/*
+  'src/pages/Demo.tsx',
+  'src/pages/GlossaireRestauration.tsx',
+  'src/pages/FoodCostCalculator.tsx',
+  'src/pages/QRCodeGenerator.tsx',
+  'src/pages/StationLanding.tsx',
+  'src/pages/LaunchPH.tsx',
+  'src/pages/MentionsLegales.tsx',
+  'src/pages/CGV.tsx',
+  'src/pages/CGU.tsx',
+  'src/pages/PolitiqueConfidentialite.tsx',
+];
 
 /**
  * Mots témoins, écrits sous leur forme CORRECTE : le script en dérive toutes les

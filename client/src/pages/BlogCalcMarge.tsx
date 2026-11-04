@@ -174,29 +174,29 @@ export default function BlogCalcMarge() {
                 <tr className="bg-teal-600 text-white">
                   <th className="text-left p-3 font-bold">Indicateur</th>
                   <th className="text-left p-3 font-bold">Repère en restauration</th>
-                  <th className="text-left p-3 font-bold">Ce qu'il mesure</th>
+                  <th className="text-left p-3 font-bold hidden sm:table-cell">Ce qu'il mesure</th>
                 </tr>
               </thead>
               <tbody className="text-mono-200">
                 <tr className="border-b border-mono-900">
                   <td className="p-3 font-semibold">Taux de marge brute</td>
                   <td className="p-3">65 % à 75 %</td>
-                  <td className="p-3">Ce qui reste du prix de vente HT après les matières premières</td>
+                  <td className="p-3 hidden sm:table-cell">Ce qui reste du prix de vente HT après les matières premières</td>
                 </tr>
                 <tr className="border-b border-mono-900 bg-mono-1000/40">
                   <td className="p-3 font-semibold">Food cost</td>
                   <td className="p-3">25 % à 35 %</td>
-                  <td className="p-3">Part du prix de vente HT consacrée aux matières</td>
+                  <td className="p-3 hidden sm:table-cell">Part du prix de vente HT consacrée aux matières</td>
                 </tr>
                 <tr className="border-b border-mono-900">
                   <td className="p-3 font-semibold">Coefficient multiplicateur</td>
                   <td className="p-3">3 à 4</td>
-                  <td className="p-3">Prix de vente HT divisé par le coût matières</td>
+                  <td className="p-3 hidden sm:table-cell">Prix de vente HT divisé par le coût matières</td>
                 </tr>
                 <tr className="bg-mono-1000/40">
                   <td className="p-3 font-semibold">Marge nette</td>
                   <td className="p-3">4 % à 8 % (médiane)</td>
-                  <td className="p-3">Bénéfice restant après toutes les charges</td>
+                  <td className="p-3 hidden sm:table-cell">Bénéfice restant après toutes les charges</td>
                 </tr>
               </tbody>
             </table>

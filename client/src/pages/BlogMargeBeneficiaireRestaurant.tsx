@@ -30,44 +30,44 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 
 const faqItems = [
   {
-    question: 'Quelle est la marge beneficiaire ideale pour un restaurant ?',
+    question: 'Quelle est la marge bénéficiaire idéale pour un restaurant ?',
     answer:
-      "La marge beneficiaire ideale d'un restaurant en France 2026 se situe entre 8 % et 15 % en net pour un restaurant traditionnel, et entre 15 % et 25 % pour la restauration rapide. La marge brute (avant charges) atteint 65-75 % sur les solides et 85 % sur les boissons. Une marge nette inferieure a 5 % est consideree comme fragile, tandis qu'au-dela de 20 % le modele est exceptionnel.",
+      "La marge bénéficiaire idéale d'un restaurant en France 2026 se situe entre 8 % et 15 % en net pour un restaurant traditionnel, et entre 15 % et 25 % pour la restauration rapide. La marge brute (avant charges) atteint 65-75 % sur les solides et 85 % sur les boissons. Une marge nette inférieure à 5 % est considérée comme fragile, tandis qu'au-delà de 20 % le modèle est exceptionnel.",
   },
   {
-    question: 'Un benefice net de 4 % est-il bon pour un restaurant ?',
+    question: 'Un bénéfice net de 4 % est-il bon pour un restaurant ?',
     answer:
-      "Un benefice net de 4 % est en dessous de la cible ideale pour un restaurant en 2026 (8-15 %). Ce niveau indique soit un modele economique fragile, soit des charges non maitrisees. A 4 %, le restaurateur tire un revenu modeste et n'a aucune marge pour absorber un imprevu. Toutefois, 4 % est meilleur que la moyenne nationale reelle (3-5 %), car beaucoup de restaurants sont a l'equilibre ou en perte.",
+      "Un bénéfice net de 4 % est en dessous de la cible idéale pour un restaurant en 2026 (8-15 %). Ce niveau indique soit un modèle économique fragile, soit des charges non maîtrisées. À 4 %, le restaurateur tire un revenu modeste et n'a aucune marge pour absorber un imprévu. Toutefois, 4 % est meilleur que la moyenne nationale réelle (3-5 %), car beaucoup de restaurants sont à l'équilibre ou en perte.",
   },
   {
-    question: 'Une marge beneficiaire de 50 % est-elle excessive pour un restaurant ?',
+    question: 'Une marge bénéficiaire de 50 % est-elle excessive pour un restaurant ?',
     answer:
-      "Une marge beneficiaire de 50 % en NET est techniquement quasi-impossible dans la restauration traditionnelle francaise. En revanche, 50 % peut etre realiste sur certains plats individuels (marge brute 70-90 %) ou en restauration rapide specialisee. La confusion vient souvent du melange entre marge BRUTE (50 % oui) et marge NETTE (50 % impossible).",
+      "Une marge bénéficiaire de 50 % en NET est techniquement quasi-impossible dans la restauration traditionnelle française. En revanche, 50 % peut être réaliste sur certains plats individuels (marge brute 70-90 %) ou en restauration rapide spécialisée. La confusion vient souvent du mélange entre marge BRUTE (50 % oui) et marge NETTE (50 % impossible).",
   },
   {
     question: 'Que signifie 50% de marge en restauration ?',
     answer:
-      "50 % de marge signifie que sur chaque euro de vente, 50 centimes restent apres deduction des couts. La precision est cruciale : 50 % de marge brute signifie 50 cents restant apres le cout matieres (realiste, c'est meme bas pour la restauration), tandis que 50 % de marge nette signifie 50 cents apres TOUS les couts (tres rare hors restauration rapide ultra-specialisee).",
+      "50 % de marge signifie que sur chaque euro de vente, 50 centimes restent après déduction des coûts. La précision est cruciale : 50 % de marge brute signifie 50 cents restant après le coût matières (réaliste, c'est même bas pour la restauration), tandis que 50 % de marge nette signifie 50 cents après TOUS les coûts (très rare hors restauration rapide ultra-spécialisée).",
   },
   {
-    question: 'Quelle est la marge minimum ideale conseillee pour un restaurant ?',
+    question: 'Quelle est la marge minimum idéale conseillée pour un restaurant ?',
     answer:
-      "La marge nette minimum conseillee pour un restaurant viable a long terme est de 8 %. En dessous, le restaurateur n'a pas la capacite d'absorber les chocs externes (inflation matieres, panne equipement, baisse de frequentation). En dessous de 5 %, on parle de zone rouge : la moindre perturbation peut faire basculer l'etablissement en perte. Au-dessus de 12 %, le modele est solide.",
+      "La marge nette minimum conseillée pour un restaurant viable à long terme est de 8 %. En dessous, le restaurateur n'a pas la capacité d'absorber les chocs externes (inflation matières, panne équipement, baisse de fréquentation). En dessous de 5 %, on parle de zone rouge : la moindre perturbation peut faire basculer l'établissement en perte. Au-dessus de 12 %, le modèle est solide.",
   },
   {
-    question: 'Quel est le benefice net moyen d\'un restaurant en France ?',
+    question: 'Quel est le bénéfice net moyen d\'un restaurant en France ?',
     answer:
-      "D'apres les donnees INSEE 2026 et les fédérations professionnelles, le benefice net moyen d'un restaurant francais se situe autour de 3 a 5 % du chiffre d'affaires. Ce chiffre cache de fortes disparites : restauration rapide 8-12 %, restauration traditionnelle 4-8 %, gastronomie 2-5 %. Pres de 30 % des restaurants sont a l'equilibre ou en perte.",
+      "D'après les données INSEE 2026 et les fédérations professionnelles, le bénéfice net moyen d'un restaurant français se situe autour de 3 à 5 % du chiffre d'affaires. Ce chiffre cache de fortes disparités : restauration rapide 8-12 %, restauration traditionnelle 4-8 %, gastronomie 2-5 %. Près de 30 % des restaurants sont à l'équilibre ou en perte.",
   },
   {
-    question: 'Comment passer de 4 % a 12 % de marge nette ?',
+    question: 'Comment passer de 4 % à 12 % de marge nette ?',
     answer:
-      "Passer de 4 % a 12 % de marge nette demande d'attaquer 4 leviers simultanement : (1) reduire le food cost de 2-3 points via fiches techniques et pesee systematique, (2) optimiser la masse salariale via planning intelligent et polyvalence, (3) augmenter le ticket moyen via menu engineering et upsell, (4) negocier les charges fixes (loyer, energie, assurances). Comptez 6-12 mois pour un effet durable.",
+      "Passer de 4 % à 12 % de marge nette demande d'attaquer 4 leviers simultanément : (1) réduire le food cost de 2-3 points via fiches techniques et pesée systématique, (2) optimiser la masse salariale via planning intelligent et polyvalence, (3) augmenter le ticket moyen via menu engineering et upsell, (4) négocier les charges fixes (loyer, énergie, assurances). Comptez 6-12 mois pour un effet durable.",
   },
   {
     question: 'La marge restaurant est-elle meilleure que dans le commerce ?',
     answer:
-      "Non, la marge nette en restauration (5-15 %) est globalement plus faible que dans le commerce de detail (5-10 %), les services aux entreprises (10-25 %), ou le luxe (25-40 %). La restauration est un secteur dur : charges de personnel elevees (35-45 % du CA), couts fixes lourds (loyer, energie), saisonnalite. Mais c'est aussi un secteur avec barrieres a l'entree faibles et une vraie valeur ajoutee humaine.",
+      "Non, la marge nette en restauration (5-15 %) est globalement plus faible que dans le commerce de détail (5-10 %), les services aux entreprises (10-25 %), ou le luxe (25-40 %). La restauration est un secteur dur : charges de personnel élevées (35-45 % du CA), coûts fixes lourds (loyer, énergie), saisonnalité. Mais c'est aussi un secteur avec barrières à l'entrée faibles et une vraie valeur ajoutée humaine.",
   },
 ];
 
@@ -90,7 +90,7 @@ export default function BlogMargeBeneficiaireRestaurant() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: "Marge bénéficiaire restaurant : quel est l'idéal en 2026 ?",
-            description: "La marge beneficiaire ideale d'un restaurant en France 2026 : 5-15% en net selon segment. Un benefice de 4% est-il acceptable ? Une marge de 50% est-elle realiste ?",
+            description: "La marge bénéficiaire idéale d'un restaurant en France 2026 : 5-15% en net selon segment. Un bénéfice de 4% est-il acceptable ? Une marge de 50% est-elle réaliste ?",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -869,12 +869,12 @@ export default function BlogMargeBeneficiaireRestaurant() {
             <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
               <Landmark className="w-5 h-5" />
             </div>
-            <h2 id="sources-references" className="text-2xl font-bold text-mono-100">Sources &amp; references</h2>
+            <h2 id="sources-references" className="text-2xl font-bold text-mono-100">Sources &amp; références</h2>
           </div>
           <p className="text-sm text-mono-500 mb-6 max-w-3xl">
-            Les fourchettes de marge brute et nette, taux de TVA et seuils de rentabilite cites dans ce guide s'appuient
-            sur des sources officielles et professionnelles reconnues du secteur, recoupees avec les donnees agregees de
-            RestauMargin (des etablissements francais). Ces references sont verifiables et mises a jour pour 2026.
+            Les fourchettes de marge brute et nette, taux de TVA et seuils de rentabilité cités dans ce guide s'appuient
+            sur des sources officielles et professionnelles reconnues du secteur, recoupées avec les données agrégées de
+            RestauMargin (des établissements français). Ces références sont vérifiables et mises à jour pour 2026.
           </p>
 
           <ul className="grid sm:grid-cols-2 gap-4 mb-6">
@@ -888,7 +888,7 @@ export default function BlogMargeBeneficiaireRestaurant() {
                 <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
                 <span>
                   <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">economie.gouv.fr — Taux de TVA</span>
-                  <span className="block text-xs text-mono-500 mt-1">Source officielle des taux 5,5 % / 10 % / 20 % appliques en restauration, base du calcul de marge en HT.</span>
+                  <span className="block text-xs text-mono-500 mt-1">Source officielle des taux 5,5 % / 10 % / 20 % appliqués en restauration, base du calcul de marge en HT.</span>
                 </span>
               </a>
             </li>
@@ -902,7 +902,7 @@ export default function BlogMargeBeneficiaireRestaurant() {
                 <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
                 <span>
                   <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">INSEE</span>
-                  <span className="block text-xs text-mono-500 mt-1">Statistiques nationales sur la restauration, la demographie des entreprises et les taux de defaillance.</span>
+                  <span className="block text-xs text-mono-500 mt-1">Statistiques nationales sur la restauration, la démographie des entreprises et les taux de défaillance.</span>
                 </span>
               </a>
             </li>
@@ -916,7 +916,7 @@ export default function BlogMargeBeneficiaireRestaurant() {
                 <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
                 <span>
                   <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">UMIH</span>
-                  <span className="block text-xs text-mono-500 mt-1">Union des Metiers et des Industries de l'Hotellerie — reference des usages et ratios de rentabilite du secteur CHR.</span>
+                  <span className="block text-xs text-mono-500 mt-1">Union des Métiers et des Industries de l'Hôtellerie — référence des usages et ratios de rentabilité du secteur CHR.</span>
                 </span>
               </a>
             </li>
@@ -929,8 +929,8 @@ export default function BlogMargeBeneficiaireRestaurant() {
               >
                 <ExternalLink className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
                 <span>
-                  <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">L'Hotellerie-Restauration</span>
-                  <span className="block text-xs text-mono-500 mt-1">Presse professionnelle de reference (marges brutes et nettes, coefficients, seuils de rentabilite).</span>
+                  <span className="block font-semibold text-mono-100 group-hover:text-teal-700 transition-colors">L'Hôtellerie-Restauration</span>
+                  <span className="block text-xs text-mono-500 mt-1">Presse professionnelle de référence (marges brutes et nettes, coefficients, seuils de rentabilité).</span>
                 </span>
               </a>
             </li>
@@ -939,7 +939,7 @@ export default function BlogMargeBeneficiaireRestaurant() {
           <p className="text-xs text-mono-500 flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-teal-600 shrink-0" />
             <span>
-              Methodologie editoriale, sources internes et responsable de la publication detailles sur notre page{' '}
+              Méthodologie éditoriale, sources internes et responsable de la publication détaillés sur notre page{' '}
               <Link to="/a-propos" className="text-teal-600 hover:text-teal-700 font-semibold transition-colors">Qui sommes-nous</Link>.
             </span>
           </p>

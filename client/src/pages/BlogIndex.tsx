@@ -24,8 +24,8 @@ interface BlogPost {
 const posts: BlogPost[] = [
   {
     slug: 'taux-de-marque-taux-de-marge',
-    title: 'Taux de marque ou taux de marge : quelle difference ?',
-    excerpt: "Meme marge en euros, mais un denominateur different. Le taux de marque se calcule sur le prix de vente, le taux de marge sur le cout d'achat. Formules, exemple chiffre, tableau de conversion et lien avec le coefficient multiplicateur et le food cost.",
+    title: 'Taux de marque ou taux de marge : quelle différence ?',
+    excerpt: "Même marge en euros, mais un dénominateur différent. Le taux de marque se calcule sur le prix de vente, le taux de marge sur le coût d'achat. Formules, exemple chiffré, tableau de conversion et lien avec le coefficient multiplicateur et le food cost.",
     category: 'Marges',
     readTime: '16 min',
     date: '2026-07-13',
@@ -33,7 +33,7 @@ const posts: BlogPost[] = [
   {
     slug: 'marge-boissons-restaurant',
     title: 'Quelle marge sur les boissons au restaurant ? (guide 2026)',
-    excerpt: 'Cafe, softs, biere, vin, cocktails : la marge brute des boissons atteint 80 a 90 %. Coefficient et food cost cible par boisson, impact de la TVA a 20 % et 7 leviers pour maximiser votre marge liquide.',
+    excerpt: 'Café, softs, bière, vin, cocktails : la marge brute des boissons atteint 80 à 90 %. Coefficient et food cost cible par boisson, impact de la TVA à 20 % et 7 leviers pour maximiser votre marge liquide.',
     category: 'Marges',
     readTime: '16 min',
     date: '2026-07-06',
@@ -41,15 +41,15 @@ const posts: BlogPost[] = [
   {
     slug: 'prix-de-vente-restaurant',
     title: "Calculer le prix de vente d'un plat de restaurant en 2026",
-    excerpt: 'Methodes eprouvees pour fixer vos prix : coefficient multiplicateur, marge cible, pricing psychologique. Cas pratiques chiffres et outils gratuits.',
+    excerpt: 'Méthodes éprouvées pour fixer vos prix : coefficient multiplicateur, marge cible, pricing psychologique. Cas pratiques chiffrés et outils gratuits.',
     category: 'Pricing',
     readTime: '15 min',
     date: '2026-05-26',
   },
   {
     slug: 'prix-vente-menu-restaurant-methode',
-    title: "Calcul du prix de vente d'un menu restaurant : la methode rentable",
-    excerpt: "Comment calculer le prix d'une formule entree-plat-dessert avec le food cost pondere, la regle des trois contraintes et la psychologie du prix fixe. Methode pratique avec exemples chiffres.",
+    title: "Calcul du prix de vente d'un menu restaurant : la méthode rentable",
+    excerpt: "Comment calculer le prix d'une formule entrée-plat-dessert avec le food cost pondéré, la règle des trois contraintes et la psychologie du prix fixe. Méthode pratique avec exemples chiffrés.",
     category: 'Marges',
     readTime: '12 min',
     date: '2026-09-25',
@@ -57,31 +57,31 @@ const posts: BlogPost[] = [
   {
     slug: 'calcul-marge-restaurant',
     title: 'Comment calculer la marge de votre restaurant en 2026',
-    excerpt: 'Guide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs.',
+    excerpt: 'Guide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Méthodes et outils pour restaurateurs.',
     category: 'Marges',
     readTime: '15 min',
     date: '2026-04-14',
   },
   {
     slug: 'reduire-food-cost',
-    title: 'Reduire le food cost de votre restaurant : 10 strategies',
-    excerpt: 'Strategies concretes pour reduire le food cost : gestion des stocks, fiches techniques, negociation fournisseurs, reduction du gaspillage.',
+    title: 'Réduire le food cost de votre restaurant : 10 stratégies',
+    excerpt: 'Stratégies concrètes pour réduire le food cost : gestion des stocks, fiches techniques, négociation fournisseurs, réduction du gaspillage.',
     category: 'Food Cost',
     readTime: '10 min',
     date: '2026-04-14',
   },
   {
     slug: 'tva-restaurant',
-    title: 'TVA restaurant 2026 : taux 10%, 5,5% et 20% expliques',
-    excerpt: 'Quel taux de TVA en restauration ? 10 % sur place et consommation immediate, 5,5 % vente conditionnee, 20 % alcool. Regles, ventilation et impact sur la marge.',
-    category: 'Fiscalite',
+    title: 'TVA restaurant 2026 : taux 10%, 5,5% et 20% expliqués',
+    excerpt: 'Quel taux de TVA en restauration ? 10 % sur place et consommation immédiate, 5,5 % vente conditionnée, 20 % alcool. Règles, ventilation et impact sur la marge.',
+    category: 'Fiscalité',
     readTime: '16 min',
     date: '2026-06-01',
   },
   {
     slug: 'coefficient-multiplicateur',
     title: 'Le coefficient multiplicateur en restauration : guide complet',
-    excerpt: "Comprendre et appliquer le coefficient multiplicateur pour fixer vos prix de vente en restaurant. Formules, exemples et erreurs a eviter.",
+    excerpt: "Comprendre et appliquer le coefficient multiplicateur pour fixer vos prix de vente en restaurant. Formules, exemples et erreurs à éviter.",
     category: 'Pricing',
     readTime: '8 min',
     date: '2026-04-14',
@@ -89,23 +89,23 @@ const posts: BlogPost[] = [
   {
     slug: 'ia-restauration',
     title: "L'intelligence artificielle en restauration : guide 2026",
-    excerpt: "Comment l'IA transforme la restauration : gestion des marges, previsions de ventes, optimisation des menus, commandes automatisees.",
+    excerpt: "Comment l'IA transforme la restauration : gestion des marges, prévisions de ventes, optimisation des menus, commandes automatisées.",
     category: 'IA',
     readTime: '15 min',
     date: '2026-04-14',
   },
   {
     slug: 'gaspillage-alimentaire',
-    title: 'Reduire le gaspillage alimentaire en restaurant',
-    excerpt: 'Solutions concretes pour reduire le gaspillage alimentaire : FIFO, portionnement, valorisation des dechets, suivi des pertes.',
+    title: 'Réduire le gaspillage alimentaire en restaurant',
+    excerpt: 'Solutions concrètes pour réduire le gaspillage alimentaire : FIFO, portionnement, valorisation des déchets, suivi des pertes.',
     category: 'Gaspillage',
     readTime: '9 min',
     date: '2026-04-14',
   },
   {
     slug: 'haccp-restaurant',
-    title: "HACCP en restaurant : guide complet des normes d'hygiene",
-    excerpt: "Tout savoir sur la methode HACCP en restaurant : 7 principes, plan de maitrise sanitaire, temperatures, tracabilite, controles officiels.",
+    title: "HACCP en restaurant : guide complet des normes d'hygiène",
+    excerpt: "Tout savoir sur la méthode HACCP en restaurant : 7 principes, plan de maîtrise sanitaire, températures, traçabilité, contrôles officiels.",
     category: 'HACCP',
     readTime: '14 min',
     date: '2026-04-14',
@@ -113,7 +113,7 @@ const posts: BlogPost[] = [
   {
     slug: 'fiche-technique-restaurant',
     title: 'Fiche technique restaurant : le guide complet',
-    excerpt: 'Apprenez a creer des fiches techniques efficaces pour vos plats : grammages, couts matieres, allergenes, process de fabrication.',
+    excerpt: 'Apprenez à créer des fiches techniques efficaces pour vos plats : grammages, coûts matières, allergènes, process de fabrication.',
     category: 'Fiches techniques',
     readTime: '11 min',
     date: '2026-04-14',
@@ -121,7 +121,7 @@ const posts: BlogPost[] = [
   {
     slug: 'kpi-essentiels-restaurateur',
     title: 'Les 12 KPIs essentiels pour piloter votre restaurant',
-    excerpt: 'Food cost, marge brute, ticket moyen, productivite par couvert : les indicateurs incontournables pour un restaurant rentable.',
+    excerpt: 'Food cost, marge brute, ticket moyen, productivité par couvert : les indicateurs incontournables pour un restaurant rentable.',
     category: 'Marges',
     readTime: '13 min',
     date: '2026-04-20',
@@ -600,8 +600,8 @@ export default function BlogIndex() {
             Guides et conseils pour <span className="text-teal-600">restaurateurs</span>
           </h1>
           <p className="text-lg sm:text-xl text-mono-400 max-w-2xl leading-relaxed mb-8">
-            {posts.length} articles pratiques et retours d'experience pour optimiser vos marges, reduire votre food cost,
-            et gerer votre restaurant au quotidien.
+            {posts.length} articles pratiques et retours d'expérience pour optimiser vos marges, réduire votre food cost,
+            et gérer votre restaurant au quotidien.
           </p>
 
           {/* Stats badges */}
@@ -616,7 +616,7 @@ export default function BlogIndex() {
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur border border-mono-900 rounded-full">
               <Sparkles className="w-4 h-4 text-teal-600" />
-              Mis a jour <strong className="text-mono-100">mai 2026</strong>
+              Mis à jour <strong className="text-mono-100">mai 2026</strong>
             </span>
           </div>
         </div>
@@ -643,7 +643,7 @@ export default function BlogIndex() {
             <div className="relative">
               <div className="inline-flex items-center gap-2 px-3 py-1 mb-4 text-xs font-bold uppercase tracking-wider rounded-full bg-emerald-600 text-white">
                 <Sparkles className="w-3.5 h-3.5" />
-                Article a la une
+                Article à la une
               </div>
 
               <div className="flex items-center gap-3 mb-4">
@@ -734,7 +734,7 @@ export default function BlogIndex() {
             Prêt à optimiser votre restaurant ?
           </h3>
           <p className="text-white/70 mb-8 max-w-xl mx-auto">
-            Essayez RestauMargin gratuitement pendant 7 jours. Calculez vos marges, gerez vos fiches
+            Essayez RestauMargin gratuitement pendant 7 jours. Calculez vos marges, gérez vos fiches
             techniques et optimisez vos food cost automatiquement.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -760,12 +760,12 @@ export default function BlogIndex() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-mono-500">
           <div className="flex items-center gap-2">
             <ChefHat className="w-5 h-5 text-teal-600" />
-            <span>© 2026 RestauMargin — Tous droits reserves</span>
+            <span>© 2026 RestauMargin — Tous droits réservés</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
+            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
+            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
           </div>
         </div>
       </footer>

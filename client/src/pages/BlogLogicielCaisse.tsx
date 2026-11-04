@@ -14,51 +14,51 @@ import BlogArticleHero from '../components/blog/BlogArticleHero';
 const faqItems = [
   {
     question: "Quel est le meilleur logiciel de caisse pour restaurant en 2026 ?",
-    answer: "Il n'existe pas de meilleur logiciel de caisse pour restaurant en absolu : tout depend de votre format. Pour un restaurant indépendant traditionnel ou de bistronomie, Zelty offre le meilleur compromis prix-fonctionnalites-ecosysteme francais (49-89 €/mois). Pour un food truck ou un snack, SumUp POS suffit largement (39 €/mois). Pour une chaine ou du fast casual, Innovorder ou Lightspeed Restaurant sont incontournables. Pour la pilotage des marges en complement de la caisse, RestauMargin se branche sur n'importe quelle caisse via export CSV."
+    answer: "Il n'existe pas de meilleur logiciel de caisse pour restaurant en absolu : tout dépend de votre format. Pour un restaurant indépendant traditionnel ou de bistronomie, Zelty offre le meilleur compromis prix-fonctionnalités-écosystème français (49-89 €/mois). Pour un food truck ou un snack, SumUp POS suffit largement (39 €/mois). Pour une chaîne ou du fast casual, Innovorder ou Lightspeed Restaurant sont incontournables. Pour la pilotage des marges en complément de la caisse, RestauMargin se branche sur n'importe quelle caisse via export CSV."
   },
   {
-    question: "Faut-il acheter ou louer son materiel de caisse ?",
-    answer: "La location-financement (LOA ou LLD) est dominante en 2026 : 50 a 100 €/mois pour un kit complet (terminal iPad ou Android + tiroir-caisse + imprimante thermique + douchette code-barres). Achat direct possible chez SumUp, Zettle, Square ou Cashpad pour 250 a 450 € selon le kit. L'achat est plus rentable au-dela de 24 mois, mais la location inclut souvent maintenance et remplacement materiel."
+    question: "Faut-il acheter ou louer son matériel de caisse ?",
+    answer: "La location-financement (LOA ou LLD) est dominante en 2026 : 50 à 100 €/mois pour un kit complet (terminal iPad ou Android + tiroir-caisse + imprimante thermique + douchette code-barres). Achat direct possible chez SumUp, Zettle, Square ou Cashpad pour 250 à 450 € selon le kit. L'achat est plus rentable au-delà de 24 mois, mais la location inclut souvent maintenance et remplacement matériel."
   },
   {
-    question: "Une caisse iPad est-elle aussi fiable qu'un terminal dedie ?",
-    answer: "Oui, en 2026, la fiabilite est equivalente. La quasi-totalite des leaders du marche (Zelty, L'Addition, Lightspeed, Cashpad, Tiller/SumUp) tournent sur iPad ou tablette Android. La fiabilite depend surtout de trois facteurs : une connexion internet stable (fibre conseillee), une box 4G de secours, et un onduleur sur la caisse principale. Le terminal dedie type Casio TE-7000 reste plus robuste en cuisine mais moins flexible et plus cher a la migration."
+    question: "Une caisse iPad est-elle aussi fiable qu'un terminal dédié ?",
+    answer: "Oui, en 2026, la fiabilité est équivalente. La quasi-totalité des leaders du marché (Zelty, L'Addition, Lightspeed, Cashpad, Tiller/SumUp) tournent sur iPad ou tablette Android. La fiabilité dépend surtout de trois facteurs : une connexion internet stable (fibre conseillée), une box 4G de secours, et un onduleur sur la caisse principale. Le terminal dédié type Casio TE-7000 reste plus robuste en cuisine mais moins flexible et plus cher à la migration."
   },
   {
-    question: "Combien de temps pour migrer d'une caisse a une autre ?",
-    answer: "Comptez 2 a 4 semaines pour une migration propre : import du catalogue produits, parametrage TVA et categories, formation des equipes (2-4h par utilisateur), periode de test parallele (1 semaine), bascule definitive. La premiere semaine de fermeture estivale ou de conges hivernaux est le classique pour eviter les pertes d'exploitation. Prevoyez 500 a 1500 € de prestation d'integration selon l'editeur."
+    question: "Combien de temps pour migrer d'une caisse à une autre ?",
+    answer: "Comptez 2 à 4 semaines pour une migration propre : import du catalogue produits, paramétrage TVA et catégories, formation des équipes (2-4h par utilisateur), période de test parallèle (1 semaine), bascule définitive. La première semaine de fermeture estivale ou de congés hivernaux est le classique pour éviter les pertes d'exploitation. Prévoyez 500 à 1500 € de prestation d'intégration selon l'éditeur."
   },
   {
-    question: "Mon expert-comptable peut-il imposer un logiciel precis ?",
-    answer: "Non, votre expert-comptable n'a pas le droit d'imposer un logiciel de caisse. En revanche, il peut facturer plus cher si votre caisse n'exporte pas un Fichier des Ecritures Comptables (FEC) propre au format DGFiP. Verifiez systematiquement la compatibilite avant de signer : Pennylane, Tiime, Cegid Loop, ACD ou Sage accueillent l'export FEC de tous les leaders. Demandez un test d'export avant signature."
+    question: "Mon expert-comptable peut-il imposer un logiciel précis ?",
+    answer: "Non, votre expert-comptable n'a pas le droit d'imposer un logiciel de caisse. En revanche, il peut facturer plus cher si votre caisse n'exporte pas un Fichier des Écritures Comptables (FEC) propre au format DGFiP. Vérifiez systématiquement la compatibilité avant de signer : Pennylane, Tiime, Cegid Loop, ACD ou Sage accueillent l'export FEC de tous les leaders. Demandez un test d'export avant signature."
   },
   {
     question: "Qu'est-ce que la certification NF525 et est-elle obligatoire ?",
-    answer: "La norme NF525 est une certification AFNOR pour les logiciels de caisse, attestant des fonctions d'inalterabilite, de securisation, de conservation et d'archivage des donnees. Depuis le 1er janvier 2018 (article 88 de la LFI 2016), tout assujetti a la TVA qui utilise un logiciel de caisse doit detenir soit une attestation de l'editeur, soit un certificat NF525 delivre par un organisme accredite. Le defaut de conformite expose a une amende de 7 500 € par caisse non conforme."
+    answer: "La norme NF525 est une certification AFNOR pour les logiciels de caisse, attestant des fonctions d'inaltérabilité, de sécurisation, de conservation et d'archivage des données. Depuis le 1er janvier 2018 (article 88 de la LFI 2016), tout assujetti à la TVA qui utilise un logiciel de caisse doit détenir soit une attestation de l'éditeur, soit un certificat NF525 délivré par un organisme accrédité. Le défaut de conformité expose à une amende de 7 500 € par caisse non conforme."
   },
   {
     question: "Quelle caisse pour un restaurant qui ouvre en 2026 ?",
-    answer: "Pour un restaurant indépendant qui ouvre en 2026, trois choix tiennent la route : Zelty pour un bistronomie ou traditionnel (compromis prix-fonctionnalites optimal), SumUp POS pour un food truck ou un concept itinerant (cout d'entree le plus bas), Cashpad pour un restaurant qui veut une solution francaise avec une UX moderne. Evitez les solutions trop low-cost sans connecteur Deliveroo/Uber Eats : vous le payerez en double-saisie."
+    answer: "Pour un restaurant indépendant qui ouvre en 2026, trois choix tiennent la route : Zelty pour un bistronomie ou traditionnel (compromis prix-fonctionnalités optimal), SumUp POS pour un food truck ou un concept itinérant (coût d'entrée le plus bas), Cashpad pour un restaurant qui veut une solution française avec une UX moderne. Évitez les solutions trop low-cost sans connecteur Deliveroo/Uber Eats : vous le payerez en double-saisie."
   },
   {
-    question: "Combien coute un logiciel de caisse pour restaurant ?",
-    answer: "Les fourchettes en 2026 : entree de gamme 29-49 €/mois (SumUp, Zettle, Hiboutik), milieu de gamme 49-99 €/mois (Zelty, L'Addition, Cashpad, Square), haut de gamme 99-249 €/mois (Lightspeed Restaurant, Innovorder, Toast). A cela il faut ajouter le materiel (50-100 €/mois en location ou 1000-3000 € a l'achat), les frais de paiement carte bancaire (1,2 a 2,5 %), et eventuellement les modules complementaires (livraison, fidelite, reservation)."
+    question: "Combien coûte un logiciel de caisse pour restaurant ?",
+    answer: "Les fourchettes en 2026 : entrée de gamme 29-49 €/mois (SumUp, Zettle, Hiboutik), milieu de gamme 49-99 €/mois (Zelty, L'Addition, Cashpad, Square), haut de gamme 99-249 €/mois (Lightspeed Restaurant, Innovorder, Toast). À cela il faut ajouter le matériel (50-100 €/mois en location ou 1000-3000 € à l'achat), les frais de paiement carte bancaire (1,2 à 2,5 %), et éventuellement les modules complémentaires (livraison, fidélité, réservation)."
   },
   {
     question: "Toast et Square sont-ils disponibles en France ?",
-    answer: "Square Restaurant est disponible en France depuis 2021 avec une offre limitee (pas de NF525 native sur tous les modules — verifier au cas par cas). Toast reste principalement americain en 2026 et n'est pas adapte au marche francais (pas de NF525, pas d'integration Deliveroo France native, support en anglais). Pour la restauration francaise, privilegiez les editeurs francais (Zelty, L'Addition, Cashpad, Innovorder, Tiller/SumUp) ou europeens etablis (Lightspeed, Zettle)."
+    answer: "Square Restaurant est disponible en France depuis 2021 avec une offre limitée (pas de NF525 native sur tous les modules — vérifier au cas par cas). Toast reste principalement américain en 2026 et n'est pas adapté au marché français (pas de NF525, pas d'intégration Deliveroo France native, support en anglais). Pour la restauration française, privilégiez les éditeurs français (Zelty, L'Addition, Cashpad, Innovorder, Tiller/SumUp) ou européens établis (Lightspeed, Zettle)."
   },
   {
     question: "Un logiciel de caisse calcule-t-il les marges automatiquement ?",
-    answer: "Tres rarement de maniere complete. La caisse vous dit combien vous vendez : elle ne croise pas les ventes avec les couts d'achat des matieres premieres ni avec les fiches techniques precises. Pour piloter votre marge brute par plat et votre food cost reel, il faut soit un module marges integre (rare et basique chez les editeurs POS), soit un logiciel specialise comme RestauMargin qui se branche en aval de la caisse via import CSV. C'est la difference entre savoir ce qu'on vend et savoir ce qu'on gagne."
+    answer: "Très rarement de manière complète. La caisse vous dit combien vous vendez : elle ne croise pas les ventes avec les coûts d'achat des matières premières ni avec les fiches techniques précises. Pour piloter votre marge brute par plat et votre food cost réel, il faut soit un module marges intégré (rare et basique chez les éditeurs POS), soit un logiciel spécialisé comme RestauMargin qui se branche en aval de la caisse via import CSV. C'est la différence entre savoir ce qu'on vend et savoir ce qu'on gagne."
   },
   {
     question: "Que se passe-t-il en cas de coupure internet ?",
-    answer: "Les bonnes solutions disposent d'un mode offline (cache local) qui permet de continuer a prendre des commandes et a encaisser meme sans internet. La synchronisation se fait automatiquement au retour de la connexion. Verifiez ce point avant de signer — c'est critique en zone rurale ou pour les food trucks. Zelty, L'Addition, Lightspeed et Cashpad gerent le mode offline ; certaines solutions cloud uniquement (Square sur certains modules) bloquent en cas de coupure."
+    answer: "Les bonnes solutions disposent d'un mode offline (cache local) qui permet de continuer à prendre des commandes et à encaisser même sans internet. La synchronisation se fait automatiquement au retour de la connexion. Vérifiez ce point avant de signer — c'est critique en zone rurale ou pour les food trucks. Zelty, L'Addition, Lightspeed et Cashpad gèrent le mode offline ; certaines solutions cloud uniquement (Square sur certains modules) bloquent en cas de coupure."
   },
   {
-    question: "Comment integrer ma caisse a Deliveroo, Uber Eats et Just Eat ?",
-    answer: "Trois approches : (1) l'integration native incluse dans la caisse (Zelty, Innovorder, L'Addition la proposent en standard), (2) un middleware specialise comme Deliverect ou Otter qui consolide toutes les plateformes (49-149 €/mois), (3) le double-ecran manuel — a eviter, source d'erreurs et de pertes de temps. Le ROI de l'integration native ou via middleware est tres rapide des que vous depassez 30 commandes livraison par semaine."
+    question: "Comment intégrer ma caisse à Deliveroo, Uber Eats et Just Eat ?",
+    answer: "Trois approches : (1) l'intégration native incluse dans la caisse (Zelty, Innovorder, L'Addition la proposent en standard), (2) un middleware spécialisé comme Deliverect ou Otter qui consolide toutes les plateformes (49-149 €/mois), (3) le double-écran manuel — à éviter, source d'erreurs et de pertes de temps. Le ROI de l'intégration native ou via middleware est très rapide dès que vous dépassez 30 commandes livraison par semaine."
   }
 ];
 
@@ -71,18 +71,18 @@ const breadcrumbSchema = buildBreadcrumbSchema([
 const howToSchema = {
   '@context': 'https://schema.org',
   '@type': 'HowTo',
-  name: 'Comment choisir un logiciel de caisse pour restaurant en 7 etapes',
-  description: 'Methode structuree pour selectionner un logiciel de caisse conforme NF525 adapte a votre format de restaurant.',
+  name: 'Comment choisir un logiciel de caisse pour restaurant en 7 étapes',
+  description: 'Méthode structurée pour sélectionner un logiciel de caisse conforme NF525 adapté à votre format de restaurant.',
   totalTime: 'PT30M',
   tool: ['Cahier des charges', 'Comparatif fournisseurs', 'Tableau Excel ou Notion'],
   step: [
-    { '@type': 'HowToStep', name: 'Definir votre format et votre volume', text: 'Bistrot 30 couverts, brasserie 80 couverts, fast casual 200 commandes/jour ou multi-sites : chaque format appelle une categorie de solution. Le volume conditionne directement le tarif et les fonctionnalites requises.' },
-    { '@type': 'HowToStep', name: 'Lister les canaux de vente', text: 'Sur place uniquement ou + livraison Deliveroo/Uber Eats/Just Eat, click and collect, QR code a table, bornes self-service ? Plus vous avez de canaux, plus l integration native devient critique.' },
-    { '@type': 'HowToStep', name: 'Verifier la certification NF525', text: 'Exigez un certificat NF525 a jour ou une attestation editeur conforme article 286-I-3 bis du CGI. Sans, vous risquez 7 500 € d amende par caisse. Demandez le numero de certification.' },
-    { '@type': 'HowToStep', name: 'Verifier l export FEC et la compatibilite expert-comptable', text: 'Exigez un export Fichier des Ecritures Comptables (FEC) au format DGFiP. Verifiez aussi la compatibilite directe avec votre logiciel comptable (Pennylane, Tiime, Sage, Cegid).' },
-    { '@type': 'HowToStep', name: 'Tester en demo reelle avec votre carte', text: 'Refusez les demos pre-machees : demandez un acces test avec votre vraie carte (10-30 produits), votre vraie TVA, vos vrais menus. Vous decouvrirez les frictions reelles.' },
-    { '@type': 'HowToStep', name: 'Comparer le cout total (TCO) sur 3 ans', text: 'Additionnez : abonnement mensuel x 36 + materiel achete ou loue + frais de paiement (1,2 a 2,5 % du CA) + modules complementaires + cout de formation. Un logiciel a 49 €/mois peut couter plus cher qu un autre a 89 €/mois sur 3 ans.' },
-    { '@type': 'HowToStep', name: 'Lancer un test parallele avant la bascule', text: 'Pendant 1 semaine, faites tourner l ancienne caisse et la nouvelle en parallele sur un service. Vous detecterez les ecarts de ticket moyen, les bugs de menus complexes et les angles morts de la migration.' },
+    { '@type': 'HowToStep', name: 'Définir votre format et votre volume', text: 'Bistrot 30 couverts, brasserie 80 couverts, fast casual 200 commandes/jour ou multi-sites : chaque format appelle une catégorie de solution. Le volume conditionne directement le tarif et les fonctionnalités requises.' },
+    { '@type': 'HowToStep', name: 'Lister les canaux de vente', text: 'Sur place uniquement ou + livraison Deliveroo/Uber Eats/Just Eat, click and collect, QR code à table, bornes self-service ? Plus vous avez de canaux, plus l intégration native devient critique.' },
+    { '@type': 'HowToStep', name: 'Vérifier la certification NF525', text: 'Exigez un certificat NF525 à jour ou une attestation éditeur conforme article 286-I-3 bis du CGI. Sans, vous risquez 7 500 € d amende par caisse. Demandez le numéro de certification.' },
+    { '@type': 'HowToStep', name: 'Vérifier l export FEC et la compatibilité expert-comptable', text: 'Exigez un export Fichier des Écritures Comptables (FEC) au format DGFiP. Vérifiez aussi la compatibilité directe avec votre logiciel comptable (Pennylane, Tiime, Sage, Cegid).' },
+    { '@type': 'HowToStep', name: 'Tester en demo réelle avec votre carte', text: 'Refusez les demos pré-mâchées : demandez un accès test avec votre vraie carte (10-30 produits), votre vraie TVA, vos vrais menus. Vous découvrirez les frictions réelles.' },
+    { '@type': 'HowToStep', name: 'Comparer le coût total (TCO) sur 3 ans', text: 'Additionnez : abonnement mensuel x 36 + matériel acheté ou loué + frais de paiement (1,2 à 2,5 % du CA) + modules complémentaires + coût de formation. Un logiciel à 49 €/mois peut coûter plus cher qu un autre à 89 €/mois sur 3 ans.' },
+    { '@type': 'HowToStep', name: 'Lancer un test parallèle avant la bascule', text: 'Pendant 1 semaine, faites tourner l ancienne caisse et la nouvelle en parallèle sur un service. Vous détecterez les écarts de ticket moyen, les bugs de menus complexes et les angles morts de la migration.' },
   ],
 };
 
@@ -90,7 +90,7 @@ const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: 'RestauMargin',
-  description: 'Logiciel de pilotage des marges et du food cost pour restaurant. Se connecte a votre logiciel de caisse pour transformer vos donnees de ventes en marge nette pilotable.',
+  description: 'Logiciel de pilotage des marges et du food cost pour restaurant. Se connecte à votre logiciel de caisse pour transformer vos données de ventes en marge nette pilotable.',
   brand: { '@type': 'Brand', name: 'RestauMargin' },
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web, iOS, Android',
@@ -113,7 +113,7 @@ const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: 'Logiciel de caisse restaurant : comparatif 2026 (8 solutions, NF525, prix)',
-  description: 'Comparatif complet des meilleurs logiciels de caisse pour restaurant en 2026 : Toast, Square, Lightspeed, Zelty, L Addition, Cashpad, SumUp, Tiller. Prix, fonctionnalites, NF525, integrations.',
+  description: 'Comparatif complet des meilleurs logiciels de caisse pour restaurant en 2026 : Toast, Square, Lightspeed, Zelty, L Addition, Cashpad, SumUp, Tiller. Prix, fonctionnalités, NF525, intégrations.',
   image: 'https://www.restaumargin.fr/og-image.png',
   author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
   publisher: {
@@ -133,7 +133,7 @@ export default function BlogLogicielCaisse() {
     <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="Logiciel de caisse restaurant : comparatif 2026 (8 solutions, NF525, prix)"
-        description="Comparatif complet 2026 des logiciels de caisse pour restaurant : Toast, Square, Lightspeed, Zelty, L'Addition, Cashpad, SumUp, Tiller. Prix, fonctionnalites, NF525, integrations livraison."
+        description="Comparatif complet 2026 des logiciels de caisse pour restaurant : Toast, Square, Lightspeed, Zelty, L'Addition, Cashpad, SumUp, Tiller. Prix, fonctionnalités, NF525, intégrations livraison."
         path="/blog/logiciel-caisse-enregistreuse-restaurant"
         type="article"
         schema={[
@@ -185,7 +185,7 @@ export default function BlogLogicielCaisse() {
         date="Avril 2026"
         title="Logiciel de caisse restaurant : comparatif 2026 des 8 meilleures solutions"
         accentWord="logiciel de caisse"
-        subtitle="Toast, Square, Lightspeed, Zelty, L'Addition, Cashpad, SumUp, Tiller : le comparatif complet 2026. Prix, fonctionnalites, certification NF525, integrations livraison et pieges a eviter avant de signer."
+        subtitle="Toast, Square, Lightspeed, Zelty, L'Addition, Cashpad, SumUp, Tiller : le comparatif complet 2026. Prix, fonctionnalités, certification NF525, intégrations livraison et pièges à éviter avant de signer."
       />
 
       {/* Body */}
@@ -203,8 +203,8 @@ export default function BlogLogicielCaisse() {
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 space-y-3 font-mono text-sm sm:text-base">
             <div><strong className="text-white">Bistrot / bistronomie indépendant :</strong> Zelty (49-89 €/mois)</div>
             <div><strong className="text-white">Brasserie / restaurant traditionnel :</strong> L'Addition Pro (79 €) ou Cashpad (69 €)</div>
-            <div><strong className="text-white">Fast casual / chaine :</strong> Innovorder (89-249 €) ou Lightspeed Pro (149 €)</div>
-            <div><strong className="text-white">Food truck / snack itinerant :</strong> SumUp POS (39 €) ou Zettle (29 €)</div>
+            <div><strong className="text-white">Fast casual / chaîne :</strong> Innovorder (89-249 €) ou Lightspeed Pro (149 €)</div>
+            <div><strong className="text-white">Food truck / snack itinérant :</strong> SumUp POS (39 €) ou Zettle (29 €)</div>
             <div><strong className="text-white">Restaurant gastronomique multi-sites :</strong> Lightspeed Restaurant (149-189 €)</div>
           </div>
           <p className="mt-4 text-teal-100 text-sm">
@@ -220,19 +220,19 @@ export default function BlogLogicielCaisse() {
           </h2>
           <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
-              { href: '#strategique', label: 'Pourquoi la caisse est strategique en 2026' },
-              { href: '#nf525', label: 'NF525, loi anti-fraude TVA et obligations legales' },
-              { href: '#criteres', label: 'Les 9 criteres pour choisir un logiciel de caisse' },
-              { href: '#comparatif', label: 'Comparatif detaille de 8 solutions (Toast, Square, Lightspeed...)' },
-              { href: '#tableau-prix', label: 'Tableau comparatif prix et fonctionnalites' },
+              { href: '#strategique', label: 'Pourquoi la caisse est stratégique en 2026' },
+              { href: '#nf525', label: 'NF525, loi anti-fraude TVA et obligations légales' },
+              { href: '#criteres', label: 'Les 9 critères pour choisir un logiciel de caisse' },
+              { href: '#comparatif', label: 'Comparatif détaillé de 8 solutions (Toast, Square, Lightspeed...)' },
+              { href: '#tableau-prix', label: 'Tableau comparatif prix et fonctionnalités' },
               { href: '#leaders', label: 'Focus leaders FR : Zelty, L Addition, Cashpad' },
-              { href: '#chaines', label: 'Solutions chaines : Lightspeed Restaurant, Innovorder' },
+              { href: '#chaines', label: 'Solutions chaînes : Lightspeed Restaurant, Innovorder' },
               { href: '#nomades', label: 'Solutions nomades : SumUp, Zettle, Tiller' },
-              { href: '#int-livraison', label: 'Integrations Deliveroo / Uber Eats / Just Eat' },
-              { href: '#materiel', label: 'Materiel et hardware : achat ou location ?' },
-              { href: '#migration', label: 'Migrer d une caisse a une autre : checklist' },
+              { href: '#int-livraison', label: 'Intégrations Deliveroo / Uber Eats / Just Eat' },
+              { href: '#materiel', label: 'Matériel et hardware : achat ou location ?' },
+              { href: '#migration', label: 'Migrer d une caisse à une autre : checklist' },
               { href: '#integration', label: 'Connecter la caisse au calcul de marge' },
-              { href: '#faq', label: 'Questions frequentes' },
+              { href: '#faq', label: 'Questions fréquentes' },
             ].map((item, i) => (
               <li key={i}>
                 <a href={item.href} className="hover:text-teal-600 transition-colors flex items-start gap-2">
@@ -248,7 +248,7 @@ export default function BlogLogicielCaisse() {
 
           {/* Intro */}
           <p className="text-[#374151] text-lg leading-relaxed mb-10">
-            <strong>90 % des decisions de pilotage d un restaurant se prennent a partir de donnees issues de la caisse.</strong> Et pourtant, plus d un restaurateur francais sur trois utilise encore un systeme qui n exporte pas ses donnees, ne se synchronise pas avec sa comptabilite, ou n est pas en regle avec la norme NF525. Ce <strong>comparatif logiciel restaurant 2026</strong> passe au crible les 8 solutions les plus utilisees en France : Toast, Square, Lightspeed Restaurant, Zelty, L Addition, Cashpad, iZettle (PayPal), Tiller (SumUp). Vous y trouverez les prix reels, les fonctionnalites differenciantes, les certifications, les pieges a eviter et la matrice de decision adaptee a votre format.
+            <strong>90 % des décisions de pilotage d un restaurant se prennent à partir de données issues de la caisse.</strong> Et pourtant, plus d un restaurateur français sur trois utilise encore un système qui n exporte pas ses données, ne se synchronise pas avec sa comptabilité, ou n est pas en règle avec la norme NF525. Ce <strong>comparatif logiciel restaurant 2026</strong> passe au crible les 8 solutions les plus utilisées en France : Toast, Square, Lightspeed Restaurant, Zelty, L Addition, Cashpad, iZettle (PayPal), Tiller (SumUp). Vous y trouverez les prix réels, les fonctionnalités différenciantes, les certifications, les pièges à éviter et la matrice de décision adaptée à votre format.
           </p>
 
           {/* Section 1 */}
@@ -257,25 +257,25 @@ export default function BlogLogicielCaisse() {
               <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
                 <ShieldCheck className="w-5 h-5 text-amber-600" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">1. Pourquoi la caisse est strategique en 2026</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">1. Pourquoi la caisse est stratégique en 2026</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Le logiciel de caisse n est plus un simple outil d encaissement. C est devenu le <strong>systeme nerveux central de votre restaurant</strong>. Tout transite par lui : les ventes par plat, la performance des serveurs, la rotation par table, les modes de paiement, les remises, les annulations, les flux livraison. Sans ces donnees, vous pilotez a l aveugle.
+              Le logiciel de caisse n est plus un simple outil d encaissement. C est devenu le <strong>système nerveux central de votre restaurant</strong>. Tout transite par lui : les ventes par plat, la performance des serveurs, la rotation par table, les modes de paiement, les remises, les annulations, les flux livraison. Sans ces données, vous pilotez à l aveugle.
             </p>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Une etude G2 publiee en mars 2026 montre que les restaurants equipes d un POS moderne (Zelty, Lightspeed, Toast, Square) affichent en moyenne <strong>+12 % de ticket moyen</strong> et <strong>-23 % d erreurs de commande</strong> par rapport a ceux qui utilisent un terminal dedie ancien ou un systeme manuel. La difference vient des ventes additionnelles suggerees, des modificateurs precis (cuisson, allergenes) et de l envoi en cuisine fiabilise via KDS.
+              Une étude G2 publiée en mars 2026 montre que les restaurants équipés d un POS moderne (Zelty, Lightspeed, Toast, Square) affichent en moyenne <strong>+12 % de ticket moyen</strong> et <strong>-23 % d erreurs de commande</strong> par rapport à ceux qui utilisent un terminal dédié ancien ou un système manuel. La différence vient des ventes additionnelles suggérées, des modificateurs précis (cuisson, allergènes) et de l envoi en cuisine fiabilisé via KDS.
             </p>
-            <p className="text-[#374151] leading-relaxed mb-4">Au-dela de la conformite, votre logiciel de caisse est :</p>
+            <p className="text-[#374151] leading-relaxed mb-4">Au-delà de la conformité, votre logiciel de caisse est :</p>
             <ul className="space-y-2 text-[#374151] mb-6">
-              <li className="flex items-start gap-2"><CheckCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" /><span>La <strong>source unique de verite</strong> de vos ventes (par plat, par serveur, par service, par heure)</span></li>
-              <li className="flex items-start gap-2"><CheckCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" /><span>Le <strong>declencheur de votre comptabilite</strong> (export FEC, journaux de vente)</span></li>
+              <li className="flex items-start gap-2"><CheckCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" /><span>La <strong>source unique de vérité</strong> de vos ventes (par plat, par serveur, par service, par heure)</span></li>
+              <li className="flex items-start gap-2"><CheckCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" /><span>Le <strong>déclencheur de votre comptabilité</strong> (export FEC, journaux de vente)</span></li>
               <li className="flex items-start gap-2"><CheckCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" /><span>Le <strong>coeur de votre pilotage marges</strong> (food cost, marge brute par plat, mix-margin)</span></li>
-              <li className="flex items-start gap-2"><CheckCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" /><span>Le <strong>hub omnicanal</strong> (sur place, click and collect, livraison, QR a table)</span></li>
-              <li className="flex items-start gap-2"><CheckCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" /><span>Le <strong>cockpit RH</strong> (productivite serveurs, pourboires, plages horaires)</span></li>
+              <li className="flex items-start gap-2"><CheckCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" /><span>Le <strong>hub omnicanal</strong> (sur place, click and collect, livraison, QR à table)</span></li>
+              <li className="flex items-start gap-2"><CheckCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" /><span>Le <strong>cockpit RH</strong> (productivité serveurs, pourboires, plages horaires)</span></li>
             </ul>
             <div className="border-l-4 border-red-400 bg-red-50 rounded-r-xl p-5">
-              <p className="text-sm font-semibold text-red-700 mb-1">Sans certification NF525 ou attestation editeur</p>
-              <p className="text-sm text-red-700">Risque de 7 500 € d amende <strong>par caisse non conforme</strong> selon l article 1770 duodecies du Code general des impots. Le controle DGCCRF peut viser plusieurs caisses dans un meme etablissement.</p>
+              <p className="text-sm font-semibold text-red-700 mb-1">Sans certification NF525 ou attestation éditeur</p>
+              <p className="text-sm text-red-700">Risque de 7 500 € d amende <strong>par caisse non conforme</strong> selon l article 1770 duodecies du Code général des impôts. Le contrôle DGCCRF peut viser plusieurs caisses dans un même établissement.</p>
             </div>
           </section>
 
@@ -285,25 +285,25 @@ export default function BlogLogicielCaisse() {
               <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
                 <Award className="w-5 h-5 text-red-600" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">2. NF525, loi anti-fraude TVA et obligations legales</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">2. NF525, loi anti-fraude TVA et obligations légales</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              La norme NF525 a ete instauree par l <strong>article 88 de la Loi de Finances 2016</strong>, entree en vigueur au 1er janvier 2018, puis renforcee en 2024 par le decret n°2024-411 sur le controle DGCCRF. Elle impose a tout assujetti TVA utilisant un logiciel de caisse de detenir soit un <strong>certificat NF525 delivre par AFNOR</strong>, soit une <strong>attestation individuelle de l editeur</strong> conformement a l article 286-I-3 bis du CGI.
+              La norme NF525 a été instaurée par l <strong>article 88 de la Loi de Finances 2016</strong>, entrée en vigueur au 1er janvier 2018, puis renforcée en 2024 par le décret n°2024-411 sur le contrôle DGCCRF. Elle impose à tout assujetti TVA utilisant un logiciel de caisse de détenir soit un <strong>certificat NF525 délivré par AFNOR</strong>, soit une <strong>attestation individuelle de l éditeur</strong> conformément à l article 286-I-3 bis du CGI.
             </p>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Concretement, votre logiciel doit garantir quatre proprietes : <strong>inalterabilite</strong> (impossibilite de modifier une vente apres validation), <strong>securisation</strong> (chiffrement et tracabilite), <strong>conservation</strong> (archivage 6 ans minimum) et <strong>archivage</strong> (export FEC au format DGFiP).
+              Concrètement, votre logiciel doit garantir quatre propriétés : <strong>inaltérabilité</strong> (impossibilité de modifier une vente après validation), <strong>sécurisation</strong> (chiffrement et traçabilité), <strong>conservation</strong> (archivage 6 ans minimum) et <strong>archivage</strong> (export FEC au format DGFiP).
             </p>
             <p className="text-[#374151] leading-relaxed mb-4">
-              <strong>Sources reglementaires officielles :</strong>
+              <strong>Sources réglementaires officielles :</strong>
             </p>
             <ul className="space-y-2 text-[#374151] mb-4 text-sm">
               <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-red-400 mt-2 flex-shrink-0" /><span>DGFiP — Bulletin officiel des finances publiques (BOI-TVA-DECLA-30-10-30)</span></li>
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-red-400 mt-2 flex-shrink-0" /><span>AFNOR — Referentiel NF525 (Z 70-001)</span></li>
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-red-400 mt-2 flex-shrink-0" /><span>DGCCRF — Guide controle restaurants 2024</span></li>
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-red-400 mt-2 flex-shrink-0" /><span>Article 286-I-3 bis du Code general des impots (CGI)</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-red-400 mt-2 flex-shrink-0" /><span>AFNOR — Référentiel NF525 (Z 70-001)</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-red-400 mt-2 flex-shrink-0" /><span>DGCCRF — Guide contrôle restaurants 2024</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-red-400 mt-2 flex-shrink-0" /><span>Article 286-I-3 bis du Code général des impôts (CGI)</span></li>
             </ul>
             <p className="text-[#374151] leading-relaxed">
-              <strong>Astuce conformite :</strong> demandez systematiquement le <strong>numero de certificat NF525</strong> avant de signer. Verifiez-le sur le site AFNOR (nf-logiciel.afnor.org). Toutes les solutions du comparatif ci-dessous (Lightspeed, Zelty, L Addition, Cashpad, Innovorder, SumUp, Zettle, Square FR, Tiller) sont conformes. Toast US ne l est pas par defaut.
+              <strong>Astuce conformité :</strong> demandez systématiquement le <strong>numéro de certificat NF525</strong> avant de signer. Vérifiez-le sur le site AFNOR (nf-logiciel.afnor.org). Toutes les solutions du comparatif ci-dessous (Lightspeed, Zelty, L Addition, Cashpad, Innovorder, SumUp, Zettle, Square FR, Tiller) sont conformes. Toast US ne l est pas par défaut.
             </p>
           </section>
 
@@ -313,22 +313,22 @@ export default function BlogLogicielCaisse() {
               <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
                 <Cpu className="w-5 h-5 text-teal-600" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">3. Les 9 criteres pour choisir un logiciel de caisse</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">3. Les 9 critères pour choisir un logiciel de caisse</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-5">
-              Avant de comparer les solutions, formalisez vos exigences sur ces 9 criteres. Vous gagnerez 2 a 3 demonstrations inutiles.
+              Avant de comparer les solutions, formalisez vos exigences sur ces 9 critères. Vous gagnerez 2 à 3 démonstrations inutiles.
             </p>
             <div className="grid sm:grid-cols-2 gap-4 mb-4">
               {[
-                { num: '1', titre: 'Conformite NF525', desc: 'Certificat AFNOR ou attestation editeur. Non negociable.' },
+                { num: '1', titre: 'Conformité NF525', desc: 'Certificat AFNOR ou attestation éditeur. Non négociable.' },
                 { num: '2', titre: 'Export FEC + comptable', desc: 'Format DGFiP + connecteur Pennylane, Tiime, Sage, Cegid.' },
-                { num: '3', titre: 'Export CSV ventes detaillees', desc: 'Par plat, par jour, par service. Critique pour piloter les marges.' },
-                { num: '4', titre: 'Integrations livraison', desc: 'Deliveroo, Uber Eats, Just Eat natives ou via middleware.' },
-                { num: '5', titre: 'Mode offline', desc: 'Continuer a encaisser sans internet. Critique en zone rurale.' },
-                { num: '6', titre: 'Plan de salle + KDS', desc: 'Visualisation tables + ecran cuisine pour la chauffe.' },
-                { num: '7', titre: 'Gestion utilisateurs', desc: 'Droits differencies serveurs, managers, comptable. Cloisonnement caisse.' },
+                { num: '3', titre: 'Export CSV ventes détaillées', desc: 'Par plat, par jour, par service. Critique pour piloter les marges.' },
+                { num: '4', titre: 'Intégrations livraison', desc: 'Deliveroo, Uber Eats, Just Eat natives ou via middleware.' },
+                { num: '5', titre: 'Mode offline', desc: 'Continuer à encaisser sans internet. Critique en zone rurale.' },
+                { num: '6', titre: 'Plan de salle + KDS', desc: 'Visualisation tables + écran cuisine pour la chauffe.' },
+                { num: '7', titre: 'Gestion utilisateurs', desc: 'Droits différenciés serveurs, managers, comptable. Cloisonnement caisse.' },
                 { num: '8', titre: 'Reporting et analytics', desc: 'Ventes par heure, par produit, comparaison N-1, cohortes.' },
-                { num: '9', titre: 'API ouverte', desc: 'Connexions futures (RestauMargin, fidelite, RH). Webhook + REST.' },
+                { num: '9', titre: 'API ouverte', desc: 'Connexions futures (RestauMargin, fidélité, RH). Webhook + REST.' },
               ].map((c) => (
                 <div key={c.num} className="border border-mono-900 rounded-xl p-4 bg-white">
                   <div className="flex items-center gap-2 mb-1">
@@ -347,52 +347,52 @@ export default function BlogLogicielCaisse() {
               <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
                 <Layers className="w-5 h-5 text-blue-600" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">4. Comparatif detaille des 8 solutions</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">4. Comparatif détaillé des 8 solutions</h2>
             </div>
 
-            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Toast — non disponible serieusement en France</h3>
+            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Toast — non disponible sérieusement en France</h3>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Leader americain (60 % de parts de marche US), Toast n a pas franchi le pas francais en 2026. Pas de certification NF525, support uniquement anglais, integrations Deliveroo France absentes. <strong>A oublier pour la restauration FR.</strong> Reservez Toast a un projet aux Etats-Unis ou au Canada.
+              Leader américain (60 % de parts de marché US), Toast n a pas franchi le pas français en 2026. Pas de certification NF525, support uniquement anglais, intégrations Deliveroo France absentes. <strong>À oublier pour la restauration FR.</strong> Réservez Toast à un projet aux États-Unis ou au Canada.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Square Restaurant — 0 a 89 €/mois + commissions</h3>
+            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Square Restaurant — 0 à 89 €/mois + commissions</h3>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Disponible en France depuis 2021, Square Restaurant propose une offre gratuite (sans frais d abonnement, 1,75 % par transaction CB) et des plans Plus a 89 €/mois. Hardware compact, UX moderne. <strong>Limite</strong> : NF525 partielle selon modules, pas de connecteur Deliveroo France natif, support telephonique en horaires US. Bon choix pour un food truck ou un concept simple, pas pour un restaurant complexe.
+              Disponible en France depuis 2021, Square Restaurant propose une offre gratuite (sans frais d abonnement, 1,75 % par transaction CB) et des plans Plus à 89 €/mois. Hardware compact, UX moderne. <strong>Limite</strong> : NF525 partielle selon modules, pas de connecteur Deliveroo France natif, support téléphonique en horaires US. Bon choix pour un food truck ou un concept simple, pas pour un restaurant complexe.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Lightspeed Restaurant — 69 a 189 €/mois</h3>
+            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Lightspeed Restaurant — 69 à 189 €/mois</h3>
             <p className="text-[#374151] leading-relaxed mb-4">
-              La <strong>Rolls des caisses</strong> pour restaurant etabli ou multi-sites. Cloud natif, multi-etablissements en standard, module stocks solide, reporting avance (cohortes, ventes par heure, marge par plat basique). Integrations livraison via partenaire Lightspeed Delivery Connect. Plans : Essentials 69 €, Plus 149 €, Pro 189 €. <strong>Limite</strong> : cout eleve pour un independant, courbe d apprentissage de 2-3 semaines.
+              La <strong>Rolls des caisses</strong> pour restaurant établi ou multi-sites. Cloud natif, multi-établissements en standard, module stocks solide, reporting avancé (cohortes, ventes par heure, marge par plat basique). Intégrations livraison via partenaire Lightspeed Delivery Connect. Plans : Essentials 69 €, Plus 149 €, Pro 189 €. <strong>Limite</strong> : coût élevé pour un indépendant, courbe d apprentissage de 2-3 semaines.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Zelty — 49 a 89 €/mois</h3>
+            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Zelty — 49 à 89 €/mois</h3>
             <p className="text-[#374151] leading-relaxed mb-4">
-              <strong>Le meilleur compromis pour 80 % des restaurants francais indépendants en 2026.</strong> Editeur 100 % francais, support FR reactif (chat + telephone), click and collect natif inclus, connecteurs Deliveroo / Uber Eats / Just Eat / Frichti en standard, app iPad rapide. Plans : Light 49 €, Pro 79 €, Premium 89 €. <strong>Limite</strong> : hardware impose (iPad uniquement), pas de version Android.
+              <strong>Le meilleur compromis pour 80 % des restaurants français indépendants en 2026.</strong> Éditeur 100 % français, support FR réactif (chat + téléphone), click and collect natif inclus, connecteurs Deliveroo / Uber Eats / Just Eat / Frichti en standard, app iPad rapide. Plans : Light 49 €, Pro 79 €, Premium 89 €. <strong>Limite</strong> : hardware imposé (iPad uniquement), pas de version Android.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">L Addition — 39 a 89 €/mois</h3>
+            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">L Addition — 39 à 89 €/mois</h3>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Tres simple a prendre en main (30 minutes de formation suffisent pour un serveur), tarif d entree attractif. <strong>Rachete par Zelty en 2023</strong>, l avenir produit converge avec Zelty — les nouvelles fonctionnalites arrivent en priorite sur Zelty puis sont retroportees. Bon choix pour demarrer simple, surtout pour un repreneur qui veut un changement de caisse rapide sans formation lourde.
+              Très simple à prendre en main (30 minutes de formation suffisent pour un serveur), tarif d entrée attractif. <strong>Racheté par Zelty en 2023</strong>, l avenir produit converge avec Zelty — les nouvelles fonctionnalités arrivent en priorité sur Zelty puis sont rétroportées. Bon choix pour démarrer simple, surtout pour un repreneur qui veut un changement de caisse rapide sans formation lourde.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Cashpad — 39 a 79 €/mois</h3>
+            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Cashpad — 39 à 79 €/mois</h3>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Solution francaise montante en 2026. UX moderne, interface tactile fluide, plan de salle premium, gestion serveurs et pourboires native. Integrations Deliveroo et Uber Eats. Connecteurs Pennylane et Tiime directs. Tres bon rapport qualite-prix, surtout pour un brasserie / bistronomie de 50-120 couverts.
+              Solution française montante en 2026. UX moderne, interface tactile fluide, plan de salle premium, gestion serveurs et pourboires native. Intégrations Deliveroo et Uber Eats. Connecteurs Pennylane et Tiime directs. Très bon rapport qualité-prix, surtout pour un brasserie / bistronomie de 50-120 couverts.
             </p>
 
             <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">SumUp POS (ex-Tiller) — 39 €+/mois + commissions 1,49-2,75 %</h3>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Hardware tout-en-un (terminal de paiement + caisse + imprimante 80 mm integree), mise en route en 1 journee, pas d engagement long. <strong>Parfait pour demarrer ou pour un food truck.</strong> Tiller a ete rachete par SumUp en 2021 et integre dans la suite SumUp POS. <strong>Limite</strong> : a l etroit des qu on depasse 60 couverts/service ou des qu on a plus de 3 serveurs simultanes.
+              Hardware tout-en-un (terminal de paiement + caisse + imprimante 80 mm intégrée), mise en route en 1 journée, pas d engagement long. <strong>Parfait pour démarrer ou pour un food truck.</strong> Tiller a été racheté par SumUp en 2021 et intégré dans la suite SumUp POS. <strong>Limite</strong> : à l étroit dès qu on dépasse 60 couverts/service ou dès qu on a plus de 3 serveurs simultanés.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">iZettle Pro (PayPal) — 29 a 59 €/mois + 1,75 %</h3>
+            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">iZettle Pro (PayPal) — 29 à 59 €/mois + 1,75 %</h3>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Cout d entree le plus bas du marche. Hardware compact (terminal Zettle Reader 2), integration PayPal et Stripe natives, app iPad et Android. Excellent pour activites saisonnieres, marches estivaux, evenementiel. <strong>Limite</strong> : pas pour un restaurant traditionnel a 200 couverts par service, plan de salle limite, integrations livraison absentes.
+              Coût d entrée le plus bas du marché. Hardware compact (terminal Zettle Reader 2), intégration PayPal et Stripe natives, app iPad et Android. Excellent pour activités saisonnières, marchés estivaux, événementiel. <strong>Limite</strong> : pas pour un restaurant traditionnel à 200 couverts par service, plan de salle limité, intégrations livraison absentes.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Innovorder — 89 a 249 €/mois</h3>
+            <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Innovorder — 89 à 249 €/mois</h3>
             <p className="text-[#374151] leading-relaxed">
-              Specialiste de la <strong>restauration omnicanal et chaines</strong>. Bornes de commande self-service, kiosks digitaux, click and collect tres matures, module KDS (Kitchen Display System) puissant, integration Deliveroo et Uber Eats native. Tres utilise par les chaines de fast casual (Five Guys, Bagelstein, Big Fernand). <strong>Surdimensionne pour un independant traditionnel.</strong>
+              Spécialiste de la <strong>restauration omnicanal et chaînes</strong>. Bornes de commande self-service, kiosks digitaux, click and collect très matures, module KDS (Kitchen Display System) puissant, intégration Deliveroo et Uber Eats native. Très utilisé par les chaînes de fast casual (Five Guys, Bagelstein, Big Fernand). <strong>Surdimensionné pour un indépendant traditionnel.</strong>
             </p>
           </section>
 
@@ -402,10 +402,10 @@ export default function BlogLogicielCaisse() {
               <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
                 <BarChart3 className="w-5 h-5 text-purple-600" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">5. Tableau comparatif prix et fonctionnalites</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">5. Tableau comparatif prix et fonctionnalités</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-5">
-              Synthese des 8 solutions analysees. Prix indicatifs hors taxe pour 1 caisse, sans materiel. Sources : G2 (mars 2026), Capterra (avril 2026), demos editeurs.
+              Synthèse des 8 solutions analysées. Prix indicatifs hors taxe pour 1 caisse, sans matériel. Sources : G2 (mars 2026), Capterra (avril 2026), demos éditeurs.
             </p>
             <div className="overflow-x-auto rounded-2xl border border-mono-900 mb-6">
               <table className="w-full text-sm">
@@ -448,7 +448,7 @@ export default function BlogLogicielCaisse() {
               </table>
             </div>
             <p className="text-xs text-mono-400 italic">
-              Sources : <a href="https://www.g2.com/categories/restaurant-pos" target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:underline">G2 — Restaurant POS</a>, <a href="https://www.capterra.fr/directory/30900/restaurant-pos/software" target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:underline">Capterra France — Logiciels de caisse restaurant</a>, demos editeurs avril 2026.
+              Sources : <a href="https://www.g2.com/categories/restaurant-pos" target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:underline">G2 — Restaurant POS</a>, <a href="https://www.capterra.fr/directory/30900/restaurant-pos/software" target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:underline">Capterra France — Logiciels de caisse restaurant</a>, demos éditeurs avril 2026.
             </p>
           </section>
 
@@ -461,15 +461,15 @@ export default function BlogLogicielCaisse() {
               <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">6. Focus leaders FR : Zelty, L Addition, Cashpad</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Pour un restaurant indépendant francais traditionnel ou bistronomie, ce sont les trois solutions a court-lister. Toutes francaises, NF525 certifies, integrations Deliveroo natives, exports FEC propres, supports FR.
+              Pour un restaurant indépendant français traditionnel ou bistronomie, ce sont les trois solutions à court-lister. Toutes françaises, NF525 certifiés, intégrations Deliveroo natives, exports FEC propres, supports FR.
             </p>
             <ul className="space-y-3 text-[#374151] mb-4">
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 flex-shrink-0" /><span><strong>Zelty</strong> est le choix par defaut si vous voulez l ecosysteme le plus complet et le plus connecte. C est celui que recommandent le plus souvent les experts-comptables familiers de la restauration.</span></li>
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 flex-shrink-0" /><span><strong>L Addition</strong> est le choix de la simplicite et du tarif d entree (39 €/mois). Parfait pour un solo qui n a pas besoin de modules avances.</span></li>
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 flex-shrink-0" /><span><strong>Cashpad</strong> est l outsider montant, avec une UX moderne tres apprecie des restaurateurs moins de 40 ans. A surveiller, surtout pour ses futures integrations marges.</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 flex-shrink-0" /><span><strong>Zelty</strong> est le choix par défaut si vous voulez l écosystème le plus complet et le plus connecté. C est celui que recommandent le plus souvent les experts-comptables familiers de la restauration.</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 flex-shrink-0" /><span><strong>L Addition</strong> est le choix de la simplicité et du tarif d entrée (39 €/mois). Parfait pour un solo qui n a pas besoin de modules avancés.</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 flex-shrink-0" /><span><strong>Cashpad</strong> est l outsider montant, avec une UX moderne très apprécié des restaurateurs moins de 40 ans. À surveiller, surtout pour ses futures intégrations marges.</span></li>
             </ul>
             <p className="text-[#374151] leading-relaxed">
-              Pour piloter les marges en complement de l une de ces trois caisses, <Link to="/login" className="text-teal-600 hover:underline font-semibold">RestauMargin</Link> se branche via export CSV ou API. Le calcul food cost et marge brute par plat s effectue automatiquement chaque matin a partir des ventes de la veille — sans aucune ressaisie.
+              Pour piloter les marges en complément de l une de ces trois caisses, <Link to="/login" className="text-teal-600 hover:underline font-semibold">RestauMargin</Link> se branche via export CSV ou API. Le calcul food cost et marge brute par plat s effectue automatiquement chaque matin à partir des ventes de la veille — sans aucune ressaisie.
             </p>
           </section>
 
@@ -479,16 +479,16 @@ export default function BlogLogicielCaisse() {
               <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
                 <Layers className="w-5 h-5 text-indigo-600" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">7. Solutions chaines : Lightspeed Restaurant et Innovorder</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">7. Solutions chaînes : Lightspeed Restaurant et Innovorder</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Pour un groupe multi-sites ou un fast casual qui industrialise, deux options serieuses :
+              Pour un groupe multi-sites ou un fast casual qui industrialise, deux options sérieuses :
             </p>
             <p className="text-[#374151] leading-relaxed mb-4">
-              <strong>Lightspeed Restaurant Pro (149-189 €/mois)</strong> est la solution premium pour les groupes de 3 a 50 etablissements. Centralisation des menus, consolidation des reportings, gestion multi-TVA, pilotage par franchise. Excellent pour la bistronomie premium et les groupes restauration urbaine.
+              <strong>Lightspeed Restaurant Pro (149-189 €/mois)</strong> est la solution premium pour les groupes de 3 à 50 établissements. Centralisation des menus, consolidation des reportings, gestion multi-TVA, pilotage par franchise. Excellent pour la bistronomie premium et les groupes restauration urbaine.
             </p>
             <p className="text-[#374151] leading-relaxed">
-              <strong>Innovorder (89-249 €/mois)</strong> est la <strong>reference du fast casual omnicanal</strong>. Bornes self-service, kiosk digital, KDS cuisine puissant, click and collect mature. Utilise par les plus grandes chaines francaises (Five Guys, Big Fernand, Bagelstein, Eat Salad). Si vous industrialiser et que les bornes self-service sont au coeur de votre experience, Innovorder est le choix.
+              <strong>Innovorder (89-249 €/mois)</strong> est la <strong>référence du fast casual omnicanal</strong>. Bornes self-service, kiosk digital, KDS cuisine puissant, click and collect mature. Utilisé par les plus grandes chaînes françaises (Five Guys, Big Fernand, Bagelstein, Eat Salad). Si vous industrialiser et que les bornes self-service sont au coeur de votre expérience, Innovorder est le choix.
             </p>
           </section>
 
@@ -501,16 +501,16 @@ export default function BlogLogicielCaisse() {
               <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">8. Solutions nomades : SumUp, Zettle, Tiller</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Pour un food truck, un snack saisonnier, un concept itinerant ou un point de vente eveneementiel, trois solutions tiennent la route :
+              Pour un food truck, un snack saisonnier, un concept itinérant ou un point de vente eveneementiel, trois solutions tiennent la route :
             </p>
             <p className="text-[#374151] leading-relaxed mb-4">
-              <strong>SumUp POS (ex-Tiller)</strong> reste le standard. Hardware compact, batterie autonome, 4G integree sur certains modeles. Le kit Tiller Air (terminal + caisse + imprimante 80 mm + tiroir-caisse) sort autour de 550 € en achat, ou 39 €/mois en location.
+              <strong>SumUp POS (ex-Tiller)</strong> reste le standard. Hardware compact, batterie autonome, 4G intégrée sur certains modèles. Le kit Tiller Air (terminal + caisse + imprimante 80 mm + tiroir-caisse) sort autour de 550 € en achat, ou 39 €/mois en location.
             </p>
             <p className="text-[#374151] leading-relaxed mb-4">
-              <strong>Zettle by PayPal</strong> propose les commissions les plus basses du marche (1,75 % par transaction). Hardware Zettle Reader 2 a 79 € one-shot, app iPad ou Android gratuite. Parfait pour demarrer.
+              <strong>Zettle by PayPal</strong> propose les commissions les plus basses du marché (1,75 % par transaction). Hardware Zettle Reader 2 à 79 € one-shot, app iPad ou Android gratuite. Parfait pour démarrer.
             </p>
             <p className="text-[#374151] leading-relaxed">
-              <strong>Square Reader</strong> reste pertinent pour un solo qui encaisse moins de 5 000 €/mois (offre gratuite, commission 1,75 %). Au-dela, les editeurs francais reprennent l avantage par leurs integrations livraison et leur SAV en francais.
+              <strong>Square Reader</strong> reste pertinent pour un solo qui encaisse moins de 5 000 €/mois (offre gratuite, commission 1,75 %). Au-delà, les éditeurs français reprennent l avantage par leurs intégrations livraison et leur SAV en français.
             </p>
           </section>
 
@@ -520,19 +520,19 @@ export default function BlogLogicielCaisse() {
               <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center">
                 <Users className="w-5 h-5 text-pink-600" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">9. Integrations Deliveroo, Uber Eats et Just Eat</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">9. Intégrations Deliveroo, Uber Eats et Just Eat</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              En 2026, la <strong>livraison represente 15 a 35 % du CA</strong> selon les formats. Une integration native ou via middleware est devenue critique pour eviter la double-saisie (source d erreurs et de perte de temps).
+              En 2026, la <strong>livraison représente 15 à 35 % du CA</strong> selon les formats. Une intégration native ou via middleware est devenue critique pour éviter la double-saisie (source d erreurs et de perte de temps).
             </p>
             <p className="text-[#374151] leading-relaxed mb-4">
-              <strong>Solutions avec integration native</strong> (Deliveroo + Uber Eats + Just Eat) : Zelty, L Addition, Cashpad, Innovorder. Aucun middleware n est necessaire — les commandes arrivent directement dans la caisse.
+              <strong>Solutions avec intégration native</strong> (Deliveroo + Uber Eats + Just Eat) : Zelty, L Addition, Cashpad, Innovorder. Aucun middleware n est nécessaire — les commandes arrivent directement dans la caisse.
             </p>
             <p className="text-[#374151] leading-relaxed mb-4">
-              <strong>Solutions avec middleware</strong> : Lightspeed Restaurant (via Lightspeed Delivery Connect), Square (via Otter ou Deliverect), iZettle (via Deliverect). Comptez 49 a 149 €/mois supplementaires pour le middleware.
+              <strong>Solutions avec middleware</strong> : Lightspeed Restaurant (via Lightspeed Delivery Connect), Square (via Otter ou Deliverect), iZettle (via Deliverect). Comptez 49 à 149 €/mois supplémentaires pour le middleware.
             </p>
             <p className="text-[#374151] leading-relaxed">
-              Le ROI d une integration livraison est tres rapide : a partir de 30 commandes plateformes par semaine, vous economisez 8 a 12 heures par mois sur la double-saisie, soit 200 a 300 € de cout salarial.
+              Le ROI d une intégration livraison est très rapide : à partir de 30 commandes plateformes par semaine, vous économisez 8 à 12 heures par mois sur la double-saisie, soit 200 à 300 € de coût salarial.
             </p>
           </section>
 
@@ -542,22 +542,22 @@ export default function BlogLogicielCaisse() {
               <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
                 <Cpu className="w-5 h-5 text-blue-600" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">10. Materiel et hardware : achat ou location ?</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">10. Matériel et hardware : achat ou location ?</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Le hardware represente souvent un budget plus important que le logiciel sur les 3 premieres annees.
+              Le hardware représente souvent un budget plus important que le logiciel sur les 3 premières années.
             </p>
             <div className="bg-mono-1000 rounded-xl p-5 mb-4 text-sm space-y-2 text-[#374151]">
               <p><strong>Kit complet typique (iPad 10,2 + tiroir-caisse + imprimante 80 mm + douchette code-barres + support iPad)</strong></p>
-              <p>Achat one-shot : 900 a 1 800 € HT</p>
-              <p>Location-financement (LOA) 36 mois : 45 a 90 €/mois</p>
-              <p>Location longue duree (LLD) avec maintenance incluse : 60 a 120 €/mois</p>
+              <p>Achat one-shot : 900 à 1 800 € HT</p>
+              <p>Location-financement (LOA) 36 mois : 45 à 90 €/mois</p>
+              <p>Location longue durée (LLD) avec maintenance incluse : 60 à 120 €/mois</p>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              <strong>Recommandation 2026 :</strong> achat one-shot si vous prevoyez de garder le materiel 4+ ans (rentable des le mois 24). Location-financement si vous voulez preserver votre tresorerie et lisser la depense. LLD si vous voulez la tranquillite et le remplacement materiel inclus.
+              <strong>Recommandation 2026 :</strong> achat one-shot si vous prévoyez de garder le matériel 4+ ans (rentable dès le mois 24). Location-financement si vous voulez préserver votre trésorerie et lisser la dépense. LLD si vous voulez la tranquillité et le remplacement matériel inclus.
             </p>
             <p className="text-[#374151] leading-relaxed">
-              <strong>Hardware critique a ne pas negliger :</strong> onduleur (UPS) sur la caisse principale (50-150 €), box 4G de secours (20-40 €/mois), routeur Wi-Fi double-bande professionnel (200-400 €). Ces trois elements vous evitent les pertes d exploitation en cas de coupure.
+              <strong>Hardware critique à ne pas négliger :</strong> onduleur (UPS) sur la caisse principale (50-150 €), box 4G de secours (20-40 €/mois), routeur Wi-Fi double-bande professionnel (200-400 €). Ces trois éléments vous évitent les pertes d exploitation en cas de coupure.
             </p>
           </section>
 
@@ -567,21 +567,21 @@ export default function BlogLogicielCaisse() {
               <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
                 <AlertTriangle className="w-5 h-5 text-amber-600" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">11. Migrer d une caisse a une autre : checklist</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">11. Migrer d une caisse à une autre : checklist</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              La migration est souvent <strong>plus longue qu annonce</strong>. Comptez 2 a 4 semaines de bout en bout :
+              La migration est souvent <strong>plus longue qu annoncé</strong>. Comptez 2 à 4 semaines de bout en bout :
             </p>
             <ol className="space-y-3 text-[#374151] mb-4">
-              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span><span><strong>Export du catalogue de l ancienne caisse</strong> (CSV ou Excel). Verifiez la coherence des codes produits.</span></li>
-              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">2</span><span><strong>Import dans la nouvelle caisse</strong>. Allouez 4-8h selon la complexite du menu.</span></li>
-              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">3</span><span><strong>Parametrage TVA, modificateurs, menus complexes</strong>. C est ici que les pieges apparaissent.</span></li>
-              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">4</span><span><strong>Formation des equipes</strong> (2-4h par utilisateur). Designez un referent par site.</span></li>
-              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">5</span><span><strong>Test parallele sur 1 semaine</strong>. Comparez les tickets moyens, detectez les ecarts.</span></li>
-              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">6</span><span><strong>Bascule definitive</strong> souvent un lundi apres fermeture dimanche, ou pendant une semaine de fermeture estivale.</span></li>
+              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span><span><strong>Export du catalogue de l ancienne caisse</strong> (CSV ou Excel). Vérifiez la cohérence des codes produits.</span></li>
+              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">2</span><span><strong>Import dans la nouvelle caisse</strong>. Allouez 4-8h selon la complexité du menu.</span></li>
+              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">3</span><span><strong>Paramétrage TVA, modificateurs, menus complexes</strong>. C est ici que les pièges apparaissent.</span></li>
+              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">4</span><span><strong>Formation des équipes</strong> (2-4h par utilisateur). Désignez un référent par site.</span></li>
+              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">5</span><span><strong>Test parallèle sur 1 semaine</strong>. Comparez les tickets moyens, détectez les écarts.</span></li>
+              <li className="flex items-start gap-2"><span className="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">6</span><span><strong>Bascule définitive</strong> souvent un lundi après fermeture dimanche, ou pendant une semaine de fermeture estivale.</span></li>
             </ol>
             <p className="text-[#374151] leading-relaxed">
-              Prevoyez 500 a 1 500 € de prestation d integration si vous deleguez. La plupart des editeurs francais (Zelty, L Addition, Cashpad) incluent l onboarding dans le tarif d abonnement la premiere annee.
+              Prévoyez 500 à 1 500 € de prestation d intégration si vous déléguez. La plupart des éditeurs français (Zelty, L Addition, Cashpad) incluent l onboarding dans le tarif d abonnement la première année.
             </p>
           </section>
 
@@ -594,23 +594,23 @@ export default function BlogLogicielCaisse() {
               <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">12. Connecter la caisse au calcul de marge</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              <strong>Posseder une excellente caisse ne suffit pas.</strong> La caisse vous dit combien vous vendez ; elle ne vous dit <em>pas</em> combien vous gagnez. Pour passer du CA a la marge nette, il faut croiser les ventes avec :
+              <strong>Posséder une excellente caisse ne suffit pas.</strong> La caisse vous dit combien vous vendez ; elle ne vous dit <em>pas</em> combien vous gagnez. Pour passer du CA à la marge nette, il faut croiser les ventes avec :
             </p>
             <ul className="space-y-2 text-[#374151] mb-5">
               <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Les <Link to="/blog/fiche-technique-restaurant" className="text-teal-600 hover:underline">fiches techniques</Link> (composition exacte de chaque plat)</span></li>
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Les couts d achat actualises (factures fournisseurs)</span></li>
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Le <Link to="/blog/reduire-food-cost" className="text-teal-600 hover:underline">food cost</Link> reel (mesure du cout matieres)</span></li>
-              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Le <Link to="/blog/inventaire-restaurant-guide" className="text-teal-600 hover:underline">stock reel</Link> et les pertes (gaspillage, casse, offerts)</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Les coûts d achat actualisés (factures fournisseurs)</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Le <Link to="/blog/reduire-food-cost" className="text-teal-600 hover:underline">food cost</Link> réel (mesure du coût matières)</span></li>
+              <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-teal-500 mt-2 flex-shrink-0" /><span>Le <Link to="/blog/inventaire-restaurant-guide" className="text-teal-600 hover:underline">stock réel</Link> et les pertes (gaspillage, casse, offerts)</span></li>
             </ul>
             <p className="text-[#374151] leading-relaxed mb-4"><strong>Workflow type avec RestauMargin :</strong></p>
             <div className="bg-mono-1000 rounded-xl p-5 mb-4 font-mono text-sm text-mono-100 space-y-1">
-              <div>1. Soir → caisse exporte CSV ventes (ou API si supportee)</div>
+              <div>1. Soir → caisse exporte CSV ventes (ou API si supportée)</div>
               <div>2. RestauMargin importe + croise fiches techniques + factures</div>
-              <div>3. Matin → dashboard food cost veille + alertes derive prix</div>
-              <div>4. Decisions operationnelles sur donnees fiables, pas a la louche</div>
+              <div>3. Matin → dashboard food cost veille + alertes dérive prix</div>
+              <div>4. Décisions opérationnelles sur données fiables, pas à la louche</div>
             </div>
             <p className="text-[#374151] leading-relaxed">
-              <Link to="/blog/calcul-marge-restaurant" className="text-teal-600 hover:underline">Le guide complet du calcul de marge restaurant</Link> detaille la methode pas a pas, avec des exemples chiffres sur la pizza margherita, l entrecote grillee et le menu du jour.
+              <Link to="/blog/calcul-marge-restaurant" className="text-teal-600 hover:underline">Le guide complet du calcul de marge restaurant</Link> détaille la méthode pas à pas, avec des exemples chiffrés sur la pizza margherita, l entrecôte grillée et le menu du jour.
             </p>
           </section>
 
@@ -620,7 +620,7 @@ export default function BlogLogicielCaisse() {
               <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
                 <BookOpen className="w-5 h-5 text-blue-600" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">Questions frequentes — logiciel de caisse restaurant</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">Questions fréquentes — logiciel de caisse restaurant</h2>
             </div>
             <div className="space-y-4">
               {faqItems.map(({ question, answer }) => (
@@ -637,9 +637,9 @@ export default function BlogLogicielCaisse() {
 
           {/* CTA */}
           <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 sm:p-10 text-center text-white shadow-xl">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3">Vos donnees de caisse meritent un outil qui les transforme en marge</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3">Vos données de caisse méritent un outil qui les transforme en marge</h2>
             <p className="text-teal-100 mb-6 text-base leading-relaxed max-w-2xl mx-auto">
-              RestauMargin s integre avec votre logiciel de caisse pour calculer automatiquement food cost, marge brute par plat et alertes en temps reel. Version gratuite a vie pour les indépendants.
+              RestauMargin s intègre avec votre logiciel de caisse pour calculer automatiquement food cost, marge brute par plat et alertes en temps réel. Version gratuite à vie pour les indépendants.
             </p>
             <Link
               to="/login"
@@ -653,7 +653,7 @@ export default function BlogLogicielCaisse() {
 
           {/* Articles connexes */}
           <section className="mt-12">
-            <h3 className="text-lg font-bold text-mono-100 mb-4">A lire aussi</h3>
+            <h3 className="text-lg font-bold text-mono-100 mb-4">À lire aussi</h3>
             <div className="grid sm:grid-cols-2 gap-4">
               <Link to="/blog/logiciel-gestion-restaurant" className="block border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors">
                 <p className="text-xs font-semibold text-teal-600 uppercase mb-1">Comparatif</p>
@@ -669,7 +669,7 @@ export default function BlogLogicielCaisse() {
               </Link>
               <Link to="/blog/inventaire-restaurant-guide" className="block border border-mono-900 rounded-xl p-4 hover:border-teal-500 transition-colors">
                 <p className="text-xs font-semibold text-teal-600 uppercase mb-1">Stocks</p>
-                <p className="font-semibold text-mono-100">Inventaire restaurant : methode FIFO</p>
+                <p className="font-semibold text-mono-100">Inventaire restaurant : méthode FIFO</p>
               </Link>
             </div>
           </section>

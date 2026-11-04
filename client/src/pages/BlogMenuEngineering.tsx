@@ -262,7 +262,7 @@ export default function BlogMenuEngineering() {
           <ul className="space-y-3 text-[#374151] mb-4">
             <li className="flex items-start gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 flex-shrink-0" />
-              <span><strong>STARS (4 plats)</strong> — Filet de bœuf, Risotto truffe, Magret, Saint-Jacques. Marge totale : 4 138 € (27 %)</span>
+              <span><strong>STARS (4 plats)</strong> — Filet de bœuf, Risotto truffe, Magret, Saint-Jacqués. Marge totale : 4 138 € (27 %)</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="w-2 h-2 rounded-full bg-amber-500 mt-2 flex-shrink-0" />

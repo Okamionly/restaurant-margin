@@ -4,6 +4,8 @@ import {
   ArrowRight, CheckCircle2, Calculator, Scale, BarChart3, Sparkles,
 } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    À propos — Page AboutPage pour E-E-A-T
@@ -59,29 +61,7 @@ export default function APropos() {
       />
 
       {/* ═══ Navbar ═══ */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/outils/calculateur-food-cost"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
-            >
-              <Calculator className="w-4 h-4" />
-              Calculer ma marge
-            </Link>
-            <Link
-              to="/login"
-              className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors"
-            >
-              Connexion
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ═══ Hero ═══ */}
       <section className="pt-16 pb-12 px-4 sm:px-6 max-w-4xl mx-auto text-center">
@@ -391,20 +371,7 @@ export default function APropos() {
       </section>
 
       {/* ═══ Footer ═══ */}
-      <footer className="border-t border-mono-900 py-8">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-mono-500">
-          <div className="flex items-center gap-2">
-            <ChefHat className="w-5 h-5 text-teal-600" />
-            <span>© 2026 RestauMargin — Tous droits réservés</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
-            <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
-            <Link to="/blog" className="hover:text-teal-600 transition-colors">Blog</Link>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

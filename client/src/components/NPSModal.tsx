@@ -120,7 +120,7 @@ export default function NPSModal() {
                   Votre avis compte
                 </p>
                 <p className="text-sm font-semibold text-mono-100 dark:text-white leading-snug">
-                  Recommanderiez-vous RestauMargin a un collegue restaurateur ?
+                  Recommanderiez-vous RestauMargin à un collègue restaurateur ?
                 </p>
               </>
             )}
@@ -131,9 +131,9 @@ export default function NPSModal() {
                 </p>
                 <p className="text-sm font-semibold text-mono-100 dark:text-white leading-snug">
                   {score !== null && score >= 9
-                    ? "Qu'est-ce qui vous a le plus aide ?"
+                    ? "Qu'est-ce qui vous a le plus aidé ?"
                     : score !== null && score >= 7
-                    ? 'Que pourrait-on ameliorer pour vous ?'
+                    ? 'Que pourrait-on améliorer pour vous ?'
                     : "Qu'est-ce qui n'a pas repondu a vos attentes ?"}
                 </p>
               </>

@@ -6,8 +6,8 @@ import SEOHead from '../components/SEOHead';
 const quickLinks = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Tableau de bord' },
   { to: '/recipes', icon: ChefHat, label: 'Recettes' },
-  { to: '/ingredients', icon: ShoppingBasket, label: 'Ingredients' },
-  { to: '/weigh-station', icon: Scale, label: 'Station Balance' },
+  { to: '/ingredients', icon: ShoppingBasket, label: 'Ingrédients' },
+  { to: '/station', icon: Scale, label: 'Station Balance' },
 ];
 
 export default function NotFound() {
@@ -27,7 +27,7 @@ export default function NotFound() {
     <div className="min-h-[80vh] flex flex-col items-center justify-center text-center px-4 py-12">
       <SEOHead
         title="Page introuvable — RestauMargin"
-        description="La page que vous recherchez n'existe pas. Retournez a l'accueil pour explorer RestauMargin."
+        description="La page que vous recherchez n'existe pas. Retournez à l'accueil pour explorer RestauMargin."
         noindex={true}
       />
       {/* Large 404 with gradient */}
@@ -53,7 +53,7 @@ export default function NotFound() {
         Page introuvable
       </p>
       <p className="text-mono-500 dark:text-mono-700 mb-8 max-w-md">
-        La page que vous recherchez a peut-etre ete deplacee ou n'existe plus.
+        La page que vous recherchez a peut-être été déplacée ou n'existe plus.
         Essayez de rechercher ce que vous cherchez.
       </p>
 

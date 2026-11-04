@@ -21,6 +21,8 @@ import {
   Quote,
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Page fonctionnalité 03 — Fiches techniques en 10 secondes
@@ -148,31 +150,7 @@ export default function FonctionnaliteFichesTechniques() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b" style={{ borderColor: BORDER }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-extrabold tracking-tight text-lg" style={{ color: TEXT }}>
-            <ClipboardList className="w-7 h-7" style={{ color: ACCENT }} />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/blog/calcul-marge-restaurant"
-              className="hidden sm:inline-flex text-sm font-medium transition-colors hover:opacity-70"
-              style={{ color: TEXT_MUTED }}
-            >
-              Guides
-            </Link>
-            <Link
-              to="/login?mode=register"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-white text-sm font-semibold rounded-2xl transition-colors"
-              style={{ backgroundColor: ACCENT }}
-            >
-              Essai gratuit
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ── Breadcrumb ── */}
       <div className="border-b py-3 px-4" style={{ backgroundColor: '#FAFAFA', borderColor: BORDER }}>
@@ -768,38 +746,7 @@ export default function FonctionnaliteFichesTechniques() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t py-12 px-4" style={{ backgroundColor: '#FAFAFA', borderColor: BORDER }}>
-        <div className="max-w-6xl mx-auto text-center text-sm" style={{ color: TEXT_MUTED }}>
-          <Link
-            to="/"
-            className="flex items-center justify-center gap-2 font-extrabold tracking-tight text-lg mb-4"
-            style={{ color: TEXT }}
-          >
-            <ClipboardList className="w-6 h-6" style={{ color: ACCENT }} />
-            RestauMargin
-          </Link>
-          <p className="mb-4 max-w-xl mx-auto">
-            Le logiciel de fiche technique cuisine qui calcule food cost, marge et allergènes en temps réel.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
-            <Link to="/mentions-legales" className="hover:underline" style={{ color: TEXT_MUTED }}>
-              Mentions légales
-            </Link>
-            <Link to="/cgv" className="hover:underline" style={{ color: TEXT_MUTED }}>
-              CGV
-            </Link>
-            <Link to="/cgu" className="hover:underline" style={{ color: TEXT_MUTED }}>
-              CGU
-            </Link>
-            <Link to="/politique-confidentialite" className="hover:underline" style={{ color: TEXT_MUTED }}>
-              Confidentialité
-            </Link>
-          </div>
-          <p className="mt-6 text-xs" style={{ color: TEXT_MUTED }}>
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
-          </p>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

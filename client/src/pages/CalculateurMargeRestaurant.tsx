@@ -38,6 +38,8 @@ import {
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import { trackEvent } from '../utils/analytics';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ─────────────── Constants ─────────────── */
 
@@ -363,20 +365,7 @@ export default function CalculateurMargeRestaurant() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#e5e5e5]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-[#000000] font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-[#000000]" />
-            <span>RestauMargin</span>
-          </Link>
-          <Link
-            to="/login?mode=register"
-            className="hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#000000] hover:bg-[#222222] text-white text-sm font-semibold rounded-full transition-colors"
-          >
-            Essai gratuit <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ── Hero ── */}
       <header className="relative pt-12 pb-8 sm:pt-16 sm:pb-12 px-4">
@@ -1284,18 +1273,7 @@ export default function CalculateurMargeRestaurant() {
       </div>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-[#e5e5e5] bg-white py-6 text-center text-sm text-[#999999] mb-14">
-        <div className="max-w-6xl mx-auto px-4">
-          &copy; {new Date().getFullYear()} RestauMargin &middot;{' '}
-          <Link to="/mentions-legales" className="hover:text-[#000000] transition-colors">
-            Mentions légales
-          </Link>{' '}
-          &middot;{' '}
-          <Link to="/cgv" className="hover:text-[#000000] transition-colors">
-            CGV
-          </Link>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

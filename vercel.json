@@ -158,6 +158,11 @@
       "permanent": true
     },
     {
+      "source": "/launch",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/temoignages",
       "destination": "/",
       "permanent": true

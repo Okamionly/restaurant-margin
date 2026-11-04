@@ -27,6 +27,8 @@ import {
   ScanLine,
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Page Fonctionnalité 08 — "Menu Engineering"
@@ -129,66 +131,7 @@ export default function FonctionnaliteMenuEngineering() {
       />
 
       {/* ───────── Navbar sticky ───────── */}
-      <nav
-        className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b"
-        style={{ borderColor: BORDER }}
-      >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-extrabold text-lg tracking-tight" style={{ color: TEXT }}>
-            <span
-              className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: ACCENT_BG }}
-            >
-              <ChefHat className="w-5 h-5" style={{ color: ACCENT_DARK }} />
-            </span>
-            <span>RestauMargin</span>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-7 text-sm font-medium" style={{ color: TEXT_MUTED }}>
-            <Link to="/fonctionnalites/fiches-techniques" className="hover:text-emerald-700 transition-colors">
-              Fiches techniques
-            </Link>
-            <Link to="/blog/menu-engineering-boston-matrix" className="hover:text-emerald-700 transition-colors">
-              Guide
-            </Link>
-            <a
-              href="/login?mode=register"
-              className="px-4 py-2 rounded-xl font-semibold text-white transition-transform hover:scale-[1.03]"
-              style={{ backgroundColor: ACCENT }}
-            >
-              Essai gratuit
-            </a>
-          </div>
-
-          <button
-            type="button"
-            className="md:hidden p-2 rounded-lg"
-            style={{ color: TEXT }}
-            onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Menu"
-          >
-            {mobileOpen ? <X className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
-          </button>
-        </div>
-
-        {mobileOpen && (
-          <div className="md:hidden border-t px-4 py-4 space-y-3 bg-white" style={{ borderColor: BORDER }}>
-            <Link to="/fonctionnalites/fiches-techniques" className="block text-sm font-medium" style={{ color: TEXT_MUTED }}>
-              Fiches techniques
-            </Link>
-            <Link to="/blog/menu-engineering-boston-matrix" className="block text-sm font-medium" style={{ color: TEXT_MUTED }}>
-              Guide menu engineering
-            </Link>
-            <a
-              href="/login?mode=register"
-              className="block text-center px-4 py-2.5 rounded-xl font-semibold text-white"
-              style={{ backgroundColor: ACCENT }}
-            >
-              Essai gratuit
-            </a>
-          </div>
-        )}
-      </nav>
+      <PublicHeader />
 
       {/* ───────── Breadcrumb ───────── */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-5">
@@ -725,83 +668,7 @@ export default function FonctionnaliteMenuEngineering() {
       </section>
 
       {/* ───────── Footer ───────── */}
-      <footer className="border-t" style={{ borderColor: BORDER }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <Link to="/" className="flex items-center gap-2 font-extrabold tracking-tight" style={{ color: TEXT }}>
-                <span className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: ACCENT_BG }}>
-                  <ChefHat className="w-5 h-5" style={{ color: ACCENT_DARK }} />
-                </span>
-                RestauMargin
-              </Link>
-              <p className="mt-3 text-sm leading-relaxed" style={{ color: TEXT_MUTED }}>
-                Le logiciel de marge et de pilotage des restaurants. Food cost, fiches techniques et Menu Engineering
-                réunis.
-              </p>
-            </div>
-
-            <div>
-              <p className="text-sm font-bold mb-3" style={{ color: TEXT }}>
-                Fonctionnalités
-              </p>
-              <ul className="space-y-2 text-sm" style={{ color: TEXT_MUTED }}>
-                <li>
-                  <Link to="/fonctionnalites/menu-engineering" className="hover:text-emerald-700 transition-colors">
-                    Menu Engineering
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/fonctionnalites/fiches-techniques" className="hover:text-emerald-700 transition-colors">
-                    Fiches techniques
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <p className="text-sm font-bold mb-3" style={{ color: TEXT }}>
-                Ressources
-              </p>
-              <ul className="space-y-2 text-sm" style={{ color: TEXT_MUTED }}>
-                <li>
-                  <Link to="/blog/menu-engineering-boston-matrix" className="hover:text-emerald-700 transition-colors">
-                    Guide matrice BCG
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/blog/plat-le-plus-rentable-restaurant" className="hover:text-emerald-700 transition-colors">
-                    Le plat le plus rentable
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <p className="text-sm font-bold mb-3" style={{ color: TEXT }}>
-                Commencer
-              </p>
-              <ul className="space-y-2 text-sm" style={{ color: TEXT_MUTED }}>
-                <li>
-                  <a href="/login?mode=register" className="hover:text-emerald-700 transition-colors">
-                    Essai gratuit
-                  </a>
-                </li>
-                <li>
-                  <Link to="/login" className="hover:text-emerald-700 transition-colors">
-                    Connexion
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-10 pt-6 border-t text-xs flex flex-col sm:flex-row justify-between gap-2" style={{ borderColor: BORDER, color: TEXT_MUTED }}>
-            <span>© 2026 RestauMargin. Tous droits réservés.</span>
-            <span>Fait pour les restaurateurs qui pilotent leur marge.</span>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

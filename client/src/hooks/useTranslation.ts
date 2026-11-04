@@ -30,6 +30,11 @@ export const AVAILABLE_LOCALES: { code: string; label: string; flag: string }[] 
 ];
 
 function getNestedValue(obj: Record<string, unknown>, path: string): string {
+  // Cles « plates » contenant un point (ex. "tooltip.dashboard" dans fr.json) : sans
+  // ce test, la recherche imbriquee echouait et l'interface affichait la cle brute
+  // (bulle d'aide « tooltip.dashboard » vue le 2026-11-04).
+  const direct = obj[path];
+  if (typeof direct === 'string') return direct;
   const keys = path.split('.');
   let current: unknown = obj;
   for (const key of keys) {

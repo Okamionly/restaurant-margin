@@ -6,6 +6,8 @@ import {
   Table2, Plus, Minus, RotateCcw, Eye, Smartphone, Globe
 } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type ExportFormat = 'png' | 'svg' | 'pdf';
@@ -323,17 +325,7 @@ export default function QRCodeGenerator() {
         path="/outils/generateur-qr-menu"
       />
       {/* ── Navbar ── */}
-      <nav className="bg-white dark:bg-black border-b border-black/10 dark:border-white/10 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 h-14">
-          <Link to="/" className="flex items-center gap-2 text-black dark:text-white font-bold text-lg font-satoshi">
-            <ChefHat className="w-6 h-6" />
-            RestauMargin
-          </Link>
-          <Link to="/login" className="text-sm font-medium text-black dark:text-white hover:opacity-70 transition">
-            Connexion
-          </Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ── Hero ── */}
       <header className="py-12 sm:py-16 text-center px-4 border-b border-black/5 dark:border-white/5">
@@ -745,9 +737,7 @@ export default function QRCodeGenerator() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-black/5 dark:border-white/5 py-6 text-center text-xs text-black/30 dark:text-white/30">
-        &copy; {new Date().getFullYear()} RestauMargin &mdash; Tous droits reserves.
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

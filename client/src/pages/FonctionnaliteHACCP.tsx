@@ -32,6 +32,8 @@ import {
   PackageCheck,
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Page fonctionnalité — HACCP digital (Fonctionnalité 06)
@@ -132,31 +134,7 @@ export default function FonctionnaliteHACCP() {
       />
 
       {/* ── Navbar ── */}
-      <nav
-        className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b"
-        style={{ borderColor: BORDER }}
-      >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link
-            to="/"
-            className="flex items-center gap-2 font-extrabold tracking-tight text-lg"
-            style={{ color: TEXT }}
-          >
-            <ChefHat className="w-7 h-7" style={{ color: ACCENT }} />
-            <span>RestauMargin</span>
-          </Link>
-          <Link
-            to="/login?mode=register"
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-white text-sm font-semibold rounded-2xl transition-colors"
-            style={{ backgroundColor: ACCENT }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ACCENT_DARK)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ACCENT)}
-          >
-            Essai gratuit
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ── Breadcrumb ── */}
       <div className="border-b bg-white" style={{ borderColor: BORDER }}>
@@ -845,46 +823,7 @@ export default function FonctionnaliteHACCP() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t py-12 px-4 sm:px-6 bg-white" style={{ borderColor: BORDER }}>
-        <div className="max-w-6xl mx-auto text-center text-sm" style={{ color: TEXT_MUTED }}>
-          <Link
-            to="/"
-            className="flex items-center justify-center gap-2 font-extrabold tracking-tight text-lg mb-4"
-            style={{ color: TEXT }}
-          >
-            <ChefHat className="w-6 h-6" style={{ color: ACCENT }} />
-            RestauMargin
-          </Link>
-          <p className="mb-6 max-w-md mx-auto">
-            Le logiciel de gestion qui aide les restaurateurs français à maîtriser leurs marges et
-            leur hygiène, sans paperasse.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs">
-            <Link to="/fonctionnalites/haccp-digital" className="hover:underline" style={{ color: TEXT_MUTED }}>
-              HACCP digital
-            </Link>
-            <Link to="/blog/haccp-restaurant" className="hover:underline" style={{ color: TEXT_MUTED }}>
-              Guide HACCP
-            </Link>
-            <Link to="/mentions-legales" className="hover:underline" style={{ color: TEXT_MUTED }}>
-              Mentions légales
-            </Link>
-            <Link to="/cgv" className="hover:underline" style={{ color: TEXT_MUTED }}>
-              CGV
-            </Link>
-            <Link
-              to="/politique-confidentialite"
-              className="hover:underline"
-              style={{ color: TEXT_MUTED }}
-            >
-              Confidentialité
-            </Link>
-          </div>
-          <p className="mt-6 text-xs" style={{ color: TEXT_MUTED }}>
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
-          </p>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

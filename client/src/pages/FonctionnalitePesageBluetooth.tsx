@@ -25,6 +25,8 @@ import {
   ScanLine,
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Page fonctionnalite — "Pesage Bluetooth"
@@ -126,34 +128,7 @@ export default function FonctionnalitePesageBluetooth() {
       />
 
       {/* ───────────── Navbar sticky ───────────── */}
-      <nav
-        className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b"
-        style={{ borderColor: BORDER }}
-      >
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-extrabold text-lg tracking-tight">
-            <ChefHat className="w-7 h-7" style={{ color: ACCENT }} />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/login"
-              className="text-sm font-medium transition-colors hover:opacity-70"
-              style={{ color: TEXT_MUTED }}
-            >
-              Connexion
-            </Link>
-            <Link
-              to="/login?mode=register"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-white text-sm font-semibold rounded-full transition-transform hover:scale-[1.03]"
-              style={{ backgroundColor: ACCENT }}
-            >
-              <Sparkles className="w-4 h-4" />
-              Essai gratuit
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ───────────── Breadcrumb ───────────── */}
       <div className="border-b" style={{ borderColor: BORDER, backgroundColor: '#FFFFFF' }}>
@@ -702,42 +677,7 @@ export default function FonctionnalitePesageBluetooth() {
       </section>
 
       {/* ───────────── Footer ───────────── */}
-      <footer className="border-t" style={{ borderColor: BORDER }}>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-            <div>
-              <Link to="/" className="flex items-center gap-2 font-extrabold text-lg tracking-tight">
-                <ChefHat className="w-6 h-6" style={{ color: ACCENT }} />
-                <span>RestauMargin</span>
-              </Link>
-              <p className="mt-2 text-sm max-w-xs" style={{ color: TEXT_MUTED }}>
-                Le logiciel de marge qui pèse, calcule et pilote la rentabilité de votre cuisine.
-              </p>
-            </div>
-            <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm" style={{ color: TEXT_MUTED }}>
-              <Link to="/fonctionnalites/fiches-techniques" className="hover:opacity-70 transition-opacity">
-                Fiches techniques
-              </Link>
-              <Link to="/demo" className="hover:opacity-70 transition-opacity">
-                Démo
-              </Link>
-              <Link to="/login?mode=register" className="hover:opacity-70 transition-opacity">
-                Essai gratuit
-              </Link>
-              <Link to="/login" className="hover:opacity-70 transition-opacity">
-                Connexion
-              </Link>
-            </nav>
-          </div>
-          <div
-            className="mt-8 pt-6 border-t text-xs"
-            style={{ borderColor: BORDER, color: TEXT_MUTED }}
-          >
-            © {new Date().getFullYear()} RestauMargin · Pesage Bluetooth, balance connectée pour
-            restaurant.
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

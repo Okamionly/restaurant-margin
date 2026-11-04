@@ -4,6 +4,8 @@ import {
   Thermometer, Camera, TrendingUp, ArrowRight,
 } from 'lucide-react';
 import SEOHead, { buildBreadcrumbSchema } from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Page index Fonctionnalités — hub qui liste les 8 modules
@@ -55,21 +57,7 @@ export default function FonctionnalitesIndex() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md" style={{ borderBottom: `1px solid ${BORDER}` }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-bold text-lg" style={{ color: TEXT, textDecoration: 'none' }}>
-            <ChefHat className="w-7 h-7" style={{ color: ACCENT }} />
-            <span>RestauMargin</span>
-          </Link>
-          <Link
-            to="/login?mode=register"
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-white text-sm font-semibold rounded-full transition-colors"
-            style={{ background: ACCENT, textDecoration: 'none' }}
-          >
-            Essai gratuit 7 jours
-          </Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Breadcrumb */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6">
@@ -146,19 +134,7 @@ export default function FonctionnalitesIndex() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8" style={{ borderTop: `1px solid ${BORDER}` }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm" style={{ color: TEXT_MUTED }}>
-          <div className="flex items-center gap-2">
-            <ChefHat className="w-5 h-5" style={{ color: ACCENT }} />
-            <span>© 2026 RestauMargin</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/blog" style={{ color: TEXT_MUTED, textDecoration: 'none' }}>Blog</Link>
-            <Link to="/pricing" style={{ color: TEXT_MUTED, textDecoration: 'none' }}>Tarifs</Link>
-            <Link to="/mentions-legales" style={{ color: TEXT_MUTED, textDecoration: 'none' }}>Mentions légales</Link>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

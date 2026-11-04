@@ -1,11 +1,14 @@
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 export default function PolitiqueConfidentialite() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-mono-100 dark:text-white">
+      <PublicHeader />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
         {/* Back button */}
         <button
@@ -444,6 +447,7 @@ export default function PolitiqueConfidentialite() {
           <a href="/cgu" className="hover:text-teal-400 transition-colors">Conditions generales d'utilisation</a>
         </div>
       </div>
+      <PublicFooter />
     </div>
   );
 }

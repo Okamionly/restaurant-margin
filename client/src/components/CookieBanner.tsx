@@ -72,12 +72,12 @@ export default function CookieBanner() {
               <p className="text-mono-100 dark:text-white text-sm font-medium mb-1">Ce site utilise des cookies</p>
               <p className="text-mono-500 dark:text-mono-700 text-xs leading-relaxed">
                 Nous utilisons des cookies essentiels pour le fonctionnement du site et des cookies
-                analytiques pour ameliorer votre experience. Consultez notre{' '}
+                analytiques pour améliorer votre expérience. Consultez notre{' '}
                 <a
                   href="/politique-confidentialite"
                   className="text-teal-400 hover:text-teal-300 underline"
                 >
-                  politique de confidentialite
+                  politique de confidentialité
                 </a>{' '}
                 pour en savoir plus.
               </p>

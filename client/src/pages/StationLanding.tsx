@@ -7,6 +7,7 @@ import {
   ChevronDown, MessageSquare, HelpCircle, Phone, User, Send,
   Loader2,
 } from 'lucide-react';
+import PublicFooter from '../components/public/PublicFooter';
 
 const FEATURES = [
   { icon: Scale, title: 'Pesée BLE précise', desc: 'Balance intégrée 5kg, précision 0.5g, Bluetooth Low Energy connectée à la tablette en temps réel.' },
@@ -691,21 +692,7 @@ export default function StationLanding() {
       </section>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="border-t border-mono-200 py-10 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Scale className="w-5 h-5 text-emerald-400" />
-            <span className="font-semibold">RestauMargin Station</span>
-          </div>
-          <div className="text-xs text-mono-500 dark:text-mono-700">
-            © 2026 RestauMargin — Solution de gestion de marge pour la restauration
-          </div>
-          <div className="flex gap-6 text-xs text-mono-500 dark:text-mono-700">
-            <a href="#order-form" className="hover:text-mono-100 dark:hover:text-white transition">Contact</a>
-            <Link to="/" className="hover:text-mono-100 dark:hover:text-white transition">App RestauMargin</Link>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

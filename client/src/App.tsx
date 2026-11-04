@@ -47,6 +47,7 @@ function lazyRetry(importFn: () => Promise<any>) {
 
 // NotFound stays eager (tiny, it's the catch-all fallback).
 import NotFound from './pages/NotFound';
+import PublicNotFound from './pages/PublicNotFound';
 
 // Login is lazy-loaded: it renders only on /login, but was previously bundled
 // eagerly into the critical `index` chunk that EVERY public/SEO page (landing,
@@ -367,6 +368,37 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 
+// Premier segment des routes de l'application (bloc <Routes> d'AppLayout), releve le 2026-11-04.
+// A tenir a jour quand une page de l'application est ajoutee : sinon, un visiteur deconnecte
+// qui suit un lien vers elle verra « page introuvable » au lieu de la page de connexion.
+const SEGMENTS_APPLICATION = new Set([
+  'abonnement', 'actualites', 'admin', 'aide', 'allergen-matrix', 'analytics', 'assistant', 'bon-cadeau',
+  'calculateur-tva', 'checklist-service', 'chrono-preparation', 'clients', 'commandes', 'comptabilite',
+  'cout-couvert', 'cout-main-oeuvre', 'couverts-cible', 'dashboard', 'devis', 'dlc-tracker', 'email-marketing',
+  'feedback', 'financial-intelligence', 'fournisseur', 'gaspillage', 'haccp', 'ingredients', 'integrations',
+  'inventory', 'kitchen-mode', 'marketplace', 'menu', 'menu-calendar', 'menu-engineering', 'mercuriale',
+  'mes-parrainages', 'messagerie', 'mon-score', 'negociation-ia', 'planning', 'prime-saisonniere', 'qr-menu',
+  'reactivation', 'recettes-semaine', 'recipes', 'rentabilite', 'restaurants', 'rfqs', 'roi-equipement',
+  'saisonnalite', 'scanner-factures', 'seminaires', 'service-tracker', 'settings', 'simulateur-prix',
+  'suppliers', 'users',
+]);
+
+// Adresse inconnue et visiteur non connecte : vraie page « introuvable » (2026-11-04).
+// Avant, tout tombait dans la route protegee et renvoyait vers la page de connexion.
+function RouteApplicationOuIntrouvable() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const { pathname } = useLocation();
+  const segment = pathname.split('/')[1] || '';
+  if (!isLoading && !isAuthenticated && !SEGMENTS_APPLICATION.has(segment)) return <PublicNotFound />;
+  return (
+    <ProtectedRoute>
+      <CollaborationProvider>
+        <AppLayout />
+      </CollaborationProvider>
+    </ProtectedRoute>
+  );
+}
+
 function AppLayout() {
   const { user, logout } = useAuth();
   const { selectedRestaurant } = useRestaurant();
@@ -538,7 +570,7 @@ function AppLayout() {
       title: 'GESTION',
       items: [
         { to: '/recipes', icon: ClipboardList, label: 'Fiches techniques' },
-        { to: '/ingredients', icon: ShoppingBasket, label: 'Ingredients' },
+        { to: '/ingredients', icon: ShoppingBasket, label: 'Ingrédients' },
         { to: '/inventory', icon: Package, label: 'Inventaire' },
         { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },
         { to: '/suppliers', icon: Truck, label: 'Fournisseurs' },
@@ -565,7 +597,7 @@ function AppLayout() {
         { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
         { to: '/allergen-matrix', icon: Shield, label: 'Matrice allergenes' },
         { to: '/recettes-semaine', icon: ChefHat, label: 'Recettes semaine' },
-        { to: '/negociation-ia', icon: Handshake, label: 'Negociation IA' },
+        { to: '/negociation-ia', icon: Handshake, label: 'Négociation IA' },
         { to: '/simulateur-prix', icon: TrendingUp, label: 'Simulateur prix' },
         { to: '/saisonnalite', icon: Leaf, label: 'Saisonnalité' },
       ],
@@ -711,6 +743,10 @@ function AppLayout() {
 
       </div>
 
+      {/* A partir d'ici tout defile d'un seul tenant (2026-11-04) : sur telephone, les
+          blocs fixes du haut et du bas ne laissaient que 4 entrees visibles au milieu
+          (captures du fondateur). Seuls le logo et la ligne profil restent fixes. */}
+      <div className="flex-1 min-h-0 overflow-y-auto sidebar-scroll">
       {/* Restaurant selector */}
       {!collapsed && (
         <div className="pt-3">
@@ -727,36 +763,39 @@ function AppLayout() {
       {/* Gamification Level Badge */}
       {!collapsed && <Suspense fallback={null}><SidebarLevelBadge /></Suspense>}
 
-      {/* Station Balance + Cuisine KDS buttons */}
-      <div className={`px-3 mb-3 space-y-2 ${collapsed ? 'mt-4' : ''}`}>
+      {/* Stations : rangee compacte de trois tuiles (2026-11-04), empilees seulement en mode replie */}
+      <div className={collapsed ? 'px-3 mb-3 mt-4 space-y-2' : 'px-3 mb-3 grid grid-cols-3 gap-2'}>
         <NavLink
           to="/station"
-          title={collapsed ? 'Station Balance' : undefined}
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
+          title="Station Balance"
+          aria-label="Station Balance"
+          className={`${collapsed ? 'flex items-center justify-center px-3 py-2.5' : 'flex flex-col items-center justify-center gap-1 px-1 py-2 text-[11px] leading-tight text-center'} rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-colors w-full overflow-hidden`}
         >
           <Scale className="w-5 h-5 flex-shrink-0" />
-          {!collapsed && <span className="sidebar-label">Station Balance</span>}
+          {!collapsed && <span className="sidebar-label truncate max-w-full">Balance</span>}
         </NavLink>
         <NavLink
           to="/kitchen-mode"
-          title={collapsed ? 'Cuisine KDS' : undefined}
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-mono-100 text-sm font-semibold transition-colors active:scale-95 w-full overflow-hidden ${collapsed ? 'justify-center' : ''}`}
+          title="Cuisine KDS"
+          aria-label="Cuisine KDS"
+          className={`${collapsed ? 'flex items-center justify-center px-3 py-2.5' : 'flex flex-col items-center justify-center gap-1 px-1 py-2 text-[11px] leading-tight text-center'} rounded-lg bg-mono-100 dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-mono-100 font-semibold transition-colors w-full overflow-hidden`}
         >
           <ChefHat className="w-5 h-5 flex-shrink-0" />
-          {!collapsed && <span className="sidebar-label truncate">Cuisine KDS</span>}
+          {!collapsed && <span className="sidebar-label truncate max-w-full">Cuisine</span>}
         </NavLink>
         <NavLink
           to="/scanner-factures"
-          title={collapsed ? 'Station Factures' : undefined}
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold transition-colors active:scale-95 w-full overflow-hidden ${collapsed ? 'justify-center' : ''}`}
+          title="Station Factures"
+          aria-label="Station Factures"
+          className={`${collapsed ? 'flex items-center justify-center px-3 py-2.5' : 'flex flex-col items-center justify-center gap-1 px-1 py-2 text-[11px] leading-tight text-center'} rounded-lg bg-amber-500 hover:bg-amber-400 text-white font-semibold transition-colors w-full overflow-hidden`}
         >
           <Receipt className="w-5 h-5 flex-shrink-0" />
-          {!collapsed && <span className="sidebar-label truncate">Station Factures</span>}
+          {!collapsed && <span className="sidebar-label truncate max-w-full">Factures</span>}
         </NavLink>
       </div>
 
       {/* Nav sections - scrollable area */}
-      <nav aria-label="Navigation principale" className="flex-1 overflow-y-auto px-3 space-y-1.5 pb-4 sidebar-scroll">
+      <nav aria-label="Navigation principale" className="px-3 space-y-1.5 pb-4">
         {/* Essential sections — always visible */}
         {essentialSections.map((section, idx) => (
           <div key={section.title} className={idx > 0 ? 'pt-4' : ''}>
@@ -818,73 +857,60 @@ function AppLayout() {
             ))}
           </div>
         )}
-      </nav>
-
-      {/* Bottom section */}
-      {/* FIX 2026-09-24 : cette section (4 liens + mode sombre + install + statut +
-          profil, ~350 px) n'avait pas flex-shrink-0. En flexbox, flex-shrink vaut 1
-          par defaut : quand la hauteur manquait — le cas sur mobile — elle etait
-          compressee alors que ses enfants ont des hauteurs fixes, donc son contenu
-          debordait SANS pouvoir defiler, coupe en haut comme en bas.
-          flex-shrink-0 la rend incompressible : c'est le <nav> au-dessus, deja en
-          flex-1 overflow-y-auto, qui absorbe le manque de place. */}
-      <div className="flex-shrink-0 border-t border-mono-900/60 dark:border-white/5 px-3 py-3 space-y-1">
-        {/* Bottom nav items */}
-        {bottomNavItems.map((item) => renderNavItem(item, collapsed))}
-
-        {/* Dark mode toggle with rotation animation */}
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          title={darkMode ? 'Mode clair' : 'Mode sombre'}
-          aria-label={darkMode ? 'Activer le mode clair' : 'Activer le mode sombre'}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] hover:text-mono-100 dark:hover:text-white transition-colors w-full nav-item-premium ${collapsed ? 'justify-center' : ''}`}
-        >
-          <span className="dark-mode-icon flex-shrink-0" key={darkMode ? 'sun' : 'moon'}>
-            {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </span>
-          {!collapsed && <span className="sidebar-label">{darkMode ? 'Mode clair' : 'Mode sombre'}</span>}
-        </button>
-
-        {/* Install PWA button */}
-        {installPrompt && !isInstalled && (
-          <button
-            onClick={handleInstall}
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-semibold bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
-            title="Installer l'application"
-          >
-            <Download className="w-5 h-5 flex-shrink-0" />
-            {!collapsed && <span className="sidebar-label">Installer l'app</span>}
-          </button>
-        )}
-
-        {/* Status bar */}
-        {!collapsed && (
-          <div className="flex items-center gap-2 px-4 py-2 text-[10px] text-[#9CA3AF] dark:text-mono-400 font-medium tracking-wide">
-            <span className="status-dot-online flex-shrink-0" />
-            <span>Connecte</span>
-            <span className="mx-1 text-[#D1D5DB] dark:text-[#333333]">&middot;</span>
-            <span>v2.0</span>
+        {/* Compte : ces liens etaient epingles en bas et mangeaient la moitie de l'ecran sur telephone */}
+        <div className="pt-4">
+          {!collapsed && <div className="border-t border-mono-900/60 dark:border-white/5 mb-3" />}
+          {!collapsed && (
+            <div className="px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-[#9CA3AF] dark:text-mono-400 uppercase sidebar-label font-satoshi">
+              Compte
+            </div>
+          )}
+          <div className="space-y-0.5">
+            {bottomNavItems.map((item) => renderNavItem(item, collapsed))}
+            {installPrompt && !isInstalled && (
+              <button
+                onClick={handleInstall}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-semibold bg-mono-100 dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
+                title="Installer l'application"
+              >
+                <Download className="w-5 h-5 flex-shrink-0" />
+                {!collapsed && <span className="sidebar-label">Installer l'app</span>}
+              </button>
+            )}
           </div>
-        )}
+        </div>
+      </nav>
+      </div>
 
-        {/* User profile */}
-        <div className={`flex items-center gap-3 px-3 py-3 mt-1 rounded-xl bg-mono-950/80 dark:bg-[#171717]/80 border border-mono-900 dark:border-mono-200 backdrop-blur-sm ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-10 h-10 rounded-full bg-mono-100 dark:bg-white flex items-center justify-center text-white dark:text-black text-sm font-bold flex-shrink-0">
+      {/* Ligne profil, seule partie fixe en bas : profil, mode sombre, deconnexion */}
+      <div className="flex-shrink-0 border-t border-mono-900/60 dark:border-white/5 px-3 py-2.5">
+        <div className={`flex items-center gap-2 ${collapsed ? 'flex-col' : ''}`}>
+          <div className="w-9 h-9 rounded-full bg-mono-100 dark:bg-white flex items-center justify-center text-white dark:text-black text-xs font-bold flex-shrink-0">
             {userInitials}
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0 sidebar-label">
               <div className="text-sm font-semibold text-mono-100 dark:text-white truncate">{user?.name || user?.email}</div>
-              <div className="text-[11px] text-[#9CA3AF] dark:text-mono-500 truncate">
+              <div className="text-[11px] text-[#737373] dark:text-mono-500 truncate">
                 {user?.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
               </div>
             </div>
           )}
           <button
+            onClick={() => setDarkMode(!darkMode)}
+            title={darkMode ? 'Mode clair' : 'Mode sombre'}
+            aria-label={darkMode ? 'Activer le mode clair' : 'Activer le mode sombre'}
+            className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-[#6B7280] dark:text-mono-500 hover:bg-mono-950 dark:hover:bg-[#171717] hover:text-mono-100 dark:hover:text-white transition-colors flex-shrink-0"
+          >
+            <span className="dark-mode-icon" key={darkMode ? 'sun' : 'moon'}>
+              {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </span>
+          </button>
+          <button
             onClick={logout}
-            title="Deconnexion"
+            title="Déconnexion"
             aria-label="Déconnexion"
-            className="p-1.5 rounded-lg hover:bg-red-500/10 text-[#9CA3AF] dark:text-mono-500 hover:text-red-400 transition-all duration-200 flex-shrink-0"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-lg hover:bg-red-500/10 text-[#9CA3AF] dark:text-mono-500 hover:text-red-400 transition-colors flex-shrink-0"
           >
             <LogOut className="w-4 h-4" />
           </button>
@@ -910,7 +936,7 @@ function AppLayout() {
         <>
           {/* Backdrop */}
           <div
-            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[85]"
             onClick={() => setMobileMenuOpen(false)}
           />
           {/* Sidebar panel */}
@@ -919,7 +945,7 @@ function AppLayout() {
               du panneau (statut, profil, deconnexion) tombait donc hors de l'ecran.
               100dvh suit la hauteur REELLEMENT visible et se reajuste quand la barre
               se retracte. */}
-          <aside className="md:hidden fixed top-0 left-0 w-72 sidebar-glass z-50 no-print animate-slide-in" style={{ top: '2px', height: 'calc(100dvh - 2px)' }}>
+          <aside className="md:hidden fixed top-0 left-0 w-72 sidebar-glass z-[90] no-print animate-slide-in" style={{ top: '2px', height: 'calc(100dvh - 2px)' }}>
             <button
               onClick={() => setMobileMenuOpen(false)}
               aria-label="Fermer le menu"
@@ -940,7 +966,7 @@ function AppLayout() {
             descendait : il fallait remonter en haut de page pour naviguer. sticky top-0
             le garde accessible en permanence. z-30 le place sous le panneau (z-50) et
             son fond (z-40), pour qu'il ne passe pas par-dessus le menu ouvert. */}
-        <header className="md:hidden sticky top-0 z-30 bg-white/90 dark:bg-mono-50/90 backdrop-blur-lg border-b border-mono-900 dark:border-mono-200 px-4 py-3 flex items-center justify-between no-print">
+        <header className="md:hidden sticky top-0 z-30 bg-white dark:bg-mono-50 border-b border-mono-900 dark:border-mono-200 px-4 py-3 flex items-center justify-between no-print">
           <button
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Ouvrir le menu"
@@ -1418,16 +1444,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/*"
-            element={
-              <ProtectedRoute>
-                <CollaborationProvider>
-                  <AppLayout />
-                </CollaborationProvider>
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/*" element={<RouteApplicationOuIntrouvable />} />
           </Routes>
           <CookieBanner />
           {/* Assistant IA visiteurs : monte a cote du CookieBanner (hors <Routes>) pour couvrir

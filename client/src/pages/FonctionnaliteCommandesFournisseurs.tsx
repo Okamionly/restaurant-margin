@@ -29,6 +29,8 @@ import {
   Lightbulb,
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Page fonctionnalité — Commandes fournisseurs en 1 clic
@@ -235,41 +237,7 @@ export default function FonctionnaliteCommandesFournisseurs() {
       />
 
       {/* ── Navbar ── */}
-      <nav
-        className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b"
-        style={{ borderColor: BORDER }}
-      >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-extrabold text-lg" style={{ color: TEXT }}>
-            <ChefHat className="w-7 h-7" style={{ color: ACCENT }} />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/pricing"
-              className="hidden sm:inline-flex text-sm font-medium transition-colors hover:opacity-70"
-              style={{ color: TEXT_MUTED }}
-            >
-              Tarifs
-            </Link>
-            <Link
-              to="/demo"
-              className="hidden sm:inline-flex text-sm font-medium transition-colors hover:opacity-70"
-              style={{ color: TEXT_MUTED }}
-            >
-              Demo
-            </Link>
-            <Link
-              to="/login?mode=register"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-white text-sm font-semibold rounded-full transition-opacity hover:opacity-90"
-              style={{ backgroundColor: ACCENT }}
-            >
-              Essai gratuit
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ── Breadcrumbs ── */}
       <div className="border-b py-3 px-4" style={{ backgroundColor: '#FAFAFA', borderColor: BORDER }}>
@@ -780,40 +748,7 @@ export default function FonctionnaliteCommandesFournisseurs() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t py-12 px-4" style={{ backgroundColor: '#FAFAFA', borderColor: BORDER }}>
-        <div className="max-w-6xl mx-auto text-center text-sm" style={{ color: TEXT_MUTED }}>
-          <Link
-            to="/"
-            className="flex items-center justify-center gap-2 font-extrabold text-lg mb-4"
-            style={{ color: TEXT }}
-          >
-            <ChefHat className="w-6 h-6" style={{ color: ACCENT }} />
-            RestauMargin
-          </Link>
-          <p className="mb-4">Le logiciel de gestion et de marge restaurant le plus complet du marche francais.</p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
-            <Link to="/fonctionnalites/mercuriale-alertes-prix" className="transition-colors hover:opacity-70">
-              Mercuriale
-            </Link>
-            <Link to="/fonctionnalites/ocr-factures" className="transition-colors hover:opacity-70">
-              Scan OCR
-            </Link>
-            <Link to="/pricing" className="transition-colors hover:opacity-70">
-              Tarifs
-            </Link>
-            <Link to="/mentions-legales" className="transition-colors hover:opacity-70">
-              Mentions legales
-            </Link>
-            <Link to="/cgv" className="transition-colors hover:opacity-70">
-              CGV
-            </Link>
-            <Link to="/politique-confidentialite" className="transition-colors hover:opacity-70">
-              Confidentialite
-            </Link>
-          </div>
-          <p className="mt-6 text-xs">&copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.</p>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

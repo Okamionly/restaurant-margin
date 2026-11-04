@@ -4,6 +4,8 @@ import {
   TrendingUp, Scale, BarChart3, Star, Quote, Shield, Euro,
 } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Niche Landing Pages — Programmatic SEO
@@ -808,26 +810,7 @@ export default function NicheLanding() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/outils/calculateur-food-cost"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
-            >
-              <Calculator className="w-4 h-4" />
-              Calculer ma marge
-            </Link>
-            <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
-              Connexion
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Hero */}
       <section className="pt-16 pb-12 px-4 sm:px-6 max-w-5xl mx-auto">
@@ -1016,19 +999,7 @@ export default function NicheLanding() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-mono-900 py-8 mt-8">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-mono-500">
-          <div className="flex items-center gap-2">
-            <ChefHat className="w-5 h-5 text-teal-600" />
-            <span>© 2026 RestauMargin — Tous droits reserves</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/a-propos" className="hover:text-teal-600 transition-colors">A propos</Link>
-            <Link to="/blog" className="hover:text-teal-600 transition-colors">Blog</Link>
-            <Link to="/pricing" className="hover:text-teal-600 transition-colors">Tarifs</Link>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

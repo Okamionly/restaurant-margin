@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEOHead from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 interface FAQItem {
   question: string;
@@ -19,7 +21,7 @@ const faqs: FAQItem[] = [
   },
   {
     question: "Comment fonctionne la facturation annuelle ?",
-    answer: "En choisissant la facturation annuelle, vous economisez 20%. Vous etes facture une seule fois pour l'annee entiere.",
+    answer: "En choisissant la facturation annuelle, vous economisez 20%. Vous etes facturé une seule fois pour l'annee entiere.",
   },
   {
     question: "Puis-je changer de plan a tout moment ?",
@@ -30,20 +32,22 @@ const faqs: FAQItem[] = [
     answer: "Apres le paiement, vous recevez un code par email (ex: RM-A3F8K2XY). Entrez-le a la creation de votre compte et c'est parti.",
   },
   {
-    question: "C'est quoi les requetes IA ?",
-    answer: "Chaque fois que vous utilisez l'IA (creer une recette, scanner une facture, poser une question), ca consomme une requete. Le plan Pro inclut 500 requetes/mois, le Business 2000.",
+    question: "C'est quoi les requêtes IA ?",
+    answer: "Chaque fois que vous utilisez l'IA (creer une recette, scanner une facture, poser une question), ca consomme une requete. Le plan Pro inclut 500 requêtes/mois, le Business 2000.",
   },
   {
     question: "Quels moyens de paiement acceptez-vous ?",
     answer: "Cartes bancaires (Visa, Mastercard, Amex), virements SEPA et prelevements automatiques pour les plans annuels.",
   },
   {
-    question: "Y a-t-il une garantie satisfait ou rembourse ?",
-    answer: "Oui. Si vous n'etes pas satisfait dans les 30 premiers jours, nous vous remboursons integralement. Sans condition, sans question.",
+    // 2026-11-04 : promettait « remboursement integral sous 30 jours », que les CGV (art. 4.2)
+    // excluent. On ne promet que ce que les CGV disent.
+    question: "Puis-je essayer avant de payer ?",
+    answer: "Oui. L'essai est gratuit pendant 7 jours, sans carte bancaire. Ensuite l'abonnement est sans engagement : vous pouvez le résilier à tout moment depuis votre espace, la résiliation prend effet à la fin du mois en cours (CGV, article 4.2).",
   },
   {
-    question: "Mes donnees sont-elles securisees ?",
-    answer: "Absolument. Vos donnees sont hebergees en Europe (Supabase), chiffrees en transit et au repos. Nous sommes conformes au RGPD et ne partageons jamais vos donnees.",
+    question: "Mes données sont-elles securisees ?",
+    answer: "Absolument. Vos données sont hebergees en Europe (Supabase), chiffrees en transit et au repos. Nous sommes conformes au RGPD et ne partageons jamais vos données.",
   },
 ];
 
@@ -55,12 +59,12 @@ interface ComparisonRow {
 }
 
 const comparisonData: ComparisonRow[] = [
-  { feature: 'Fiches techniques illimitees', category: 'Gestion', pro: true, business: true },
+  { feature: 'Fiches techniques illimitées', category: 'Gestion', pro: true, business: true },
   { feature: 'Calcul automatique des marges', category: 'Gestion', pro: true, business: true },
   { feature: 'Gestion des ingredients', category: 'Gestion', pro: true, business: true },
   { feature: 'Commandes fournisseurs (email + WhatsApp)', category: 'Gestion', pro: true, business: true },
   { feature: 'Scanner de factures IA', category: 'IA', pro: true, business: true },
-  { feature: 'Requetes IA par mois', category: 'IA', pro: '500', business: '2 000' },
+  { feature: 'Requêtes IA par mois', category: 'IA', pro: '500', business: '2 000' },
   { feature: '19 actions IA (recettes, analyse, voix)', category: 'IA', pro: true, business: true },
   { feature: 'Rapport IA hebdomadaire', category: 'IA', pro: false, business: true },
   { feature: 'Analyse predictive des ventes', category: 'IA', pro: false, business: true },
@@ -68,7 +72,7 @@ const comparisonData: ComparisonRow[] = [
   { feature: 'Alertes prix fournisseurs', category: 'Fournisseurs', pro: true, business: true },
   { feature: 'Messagerie fournisseurs integree', category: 'Fournisseurs', pro: true, business: true },
   { feature: 'Gestion inventaire + alertes stock bas', category: 'Operations', pro: true, business: true },
-  { feature: 'HACCP digital (temperatures, nettoyage)', category: 'Operations', pro: true, business: true },
+  { feature: 'HACCP digital (températures, nettoyage)', category: 'Operations', pro: true, business: true },
   { feature: 'Multi-etablissements', category: 'Business', pro: false, business: true },
   { feature: 'Menu Engineering (matrice BCG)', category: 'Business', pro: false, business: true },
   { feature: 'Station Balance (tablette + Bluetooth)', category: 'Business', pro: false, business: true },
@@ -98,20 +102,20 @@ interface Plan {
 const plans: Plan[] = [
   {
     name: 'Pro',
-    description: 'Pour les independants qui veulent maitriser leurs marges',
+    description: 'Pour les indépendants qui veulent maîtriser leurs marges',
     priceMonthly: 29,
     popular: true,
     icon: <Sparkles className="w-6 h-6 text-black" />,
     features: [
-      { text: 'Fiches techniques illimitees avec calcul automatique des marges', included: true },
-      { text: '19 actions IA : creez vos recettes par chat ou commande vocale', included: true },
+      { text: 'Fiches techniques illimitées avec calcul automatique des marges', included: true },
+      { text: '19 actions IA : créez vos recettes par chat ou commande vocale', included: true },
       { text: 'Commandes fournisseurs par email et WhatsApp en 1 clic', included: true },
       { text: 'Scanner de factures IA : photographiez, les prix se mettent a jour', included: true },
       { text: 'Suivi des prix fournisseurs (Mercuriale) avec alertes', included: true },
       { text: 'Gestion de l\'inventaire avec alertes stock bas', included: true },
-      { text: 'HACCP digital : temperatures, nettoyage, conformite', included: true },
+      { text: 'HACCP digital : températures, nettoyage, conformite', included: true },
       { text: 'Messagerie integree avec vos fournisseurs', included: true },
-      { text: '500 requetes IA par mois', included: true },
+      { text: '500 requêtes IA par mois', included: true },
       { text: 'Essai gratuit 7 jours — sans carte bancaire', included: true },
       { text: 'Multi-etablissements', included: false },
       { text: 'Rapport IA hebdomadaire', included: false },
@@ -123,13 +127,13 @@ const plans: Plan[] = [
   },
   {
     name: 'Business',
-    description: 'Pour les groupes qui gerent plusieurs etablissements',
+    description: 'Pour les groupes qui gerent plusieurs établissements',
     priceMonthly: 79,
     icon: <Building2 className="w-6 h-6 text-black" />,
     features: [
       { text: 'Tout du plan Pro', included: true },
-      { text: 'Multi-restaurants : gerez tous vos etablissements', included: true },
-      { text: '2000 requetes IA par mois', included: true },
+      { text: 'Multi-restaurants : gerez tous vos établissements', included: true },
+      { text: '2000 requêtes IA par mois', included: true },
       { text: 'Rapport IA hebdomadaire automatique', included: true },
       { text: 'Menu Engineering : matrice BCG pour optimiser votre carte', included: true },
       { text: 'Analyse predictive : previsions de ventes et suggestions prix', included: true },
@@ -143,17 +147,17 @@ const plans: Plan[] = [
   },
   {
     name: 'Enterprise',
-    description: 'Pour les groupes de 3 sites ou plus — avec kit materiel inclus',
+    description: 'Pour les groupes de 3 sites ou plus — avec kit matériel inclus',
     priceMonthly: null,
     priceLabel: 'Sur devis',
     icon: <Users className="w-6 h-6 text-black" />,
     features: [
       { text: 'Tout du plan Business', included: true },
-      { text: 'Gestion illimitee d\'etablissements depuis une seule interface', included: true },
+      { text: 'Gestion illimitée d\'établissements depuis une seule interface', included: true },
       { text: 'Station Balance (tablette + balance Bluetooth) offerte', included: true },
-      { text: 'Requetes IA illimitees', included: true },
+      { text: 'Requêtes IA illimitées', included: true },
       { text: 'Tableau de bord consolidé multi-sites en temps reel', included: true },
-      { text: 'Onboarding dedie et formation de votre equipe', included: true },
+      { text: 'Onboarding dédié et formation de votre équipe', included: true },
       { text: 'Support telephonique prioritaire 6j/7', included: true },
       { text: 'Contrat sur mesure et facturation groupe', included: true },
     ],
@@ -439,31 +443,7 @@ export default function Pricing() {
         path="/pricing"
       />
       {/* Header */}
-      <header className="border-b border-mono-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center">
-              <ChefHat className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-lg font-bold text-black">RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/demo"
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#6B7280] hover:text-black transition-colors"
-            >
-              <Eye className="w-4 h-4" />
-              Demo
-            </Link>
-            <Link
-              to="/login"
-              className="px-5 py-2 bg-black hover:bg-[#333333] text-white text-sm font-semibold rounded-xl transition-colors"
-            >
-              Se connecter
-            </Link>
-          </div>
-        </div>
-      </header>
+      <PublicHeader />
 
       {/* Hero */}
       <section className="pt-20 pb-12 px-4 sm:px-6 text-center">
@@ -480,7 +460,7 @@ export default function Pricing() {
           </span>
         </h1>
         <p className="text-lg text-[#6B7280] max-w-2xl mx-auto mb-10">
-          Un seul objectif : vous aider a maitriser vos marges. Choisissez votre plan et commencez en 2 minutes.
+          Un seul objectif : vous aider a maîtriser vos marges. Choisissez votre plan et commencez en 2 minutes.
         </p>
 
         {/* Toggle mensuel / annuel */}
@@ -526,7 +506,7 @@ export default function Pricing() {
               {plan.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
                   <span className="px-4 py-1.5 bg-black text-white text-xs font-bold rounded-full uppercase tracking-wide">
-                    Populaire
+                    Recommandé
                   </span>
                 </div>
               )}
@@ -708,7 +688,7 @@ export default function Pricing() {
         <div className="mt-8 flex items-center justify-center gap-3 text-center">
           <ShieldCheck className="w-5 h-5 text-black flex-shrink-0" />
           <p className="text-sm text-[#6B7280]">
-            <span className="font-semibold text-black">Garantie 30 jours satisfait ou rembourse.</span>{' '}
+            <span className="font-semibold text-black">Essai gratuit 7 jours, sans carte bancaire, sans engagement.</span>{' '}
             Essayez sans risque.
           </p>
         </div>
@@ -788,14 +768,15 @@ export default function Pricing() {
             className="inline-flex items-center gap-2 px-8 py-3.5 border border-white/20 hover:border-white/40 text-white font-semibold rounded-xl transition-colors"
           >
             <Eye className="w-5 h-5" />
-            Voir la demo
+            Voir la démo
           </Link>
         </div>
         <div className="mt-6 flex items-center justify-center gap-2">
           <ShieldCheck className="w-4 h-4 text-white/40" />
-          <p className="text-xs text-white/40">Garantie 30 jours satisfait ou rembourse</p>
+          <p className="text-xs text-white/40">Essai gratuit 7 jours, sans carte bancaire, sans engagement</p>
         </div>
       </section>
+      <PublicFooter />
     </div>
   );
 }

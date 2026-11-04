@@ -15,6 +15,7 @@ import {
   ListChecks,
 } from 'lucide-react';
 import SEOHead, { buildBreadcrumbSchema } from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
 
 /* ═══════════════════════════════════════════════════════════════
    GlossaireRestauration — Glossaire 60+ termes restauration
@@ -698,29 +699,7 @@ export default function GlossaireRestauration() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/outils/calculateur-marge-restaurant"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-full transition-colors"
-            >
-              <Calculator className="w-4 h-4" />
-              Calculer ma marge
-            </Link>
-            <Link
-              to="/login"
-              className="text-sm font-medium text-[#737373] hover:text-teal-600 transition-colors"
-            >
-              Connexion
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ── Breadcrumbs ── */}
       <div className="bg-[#FAFAFA] border-b border-[#E5E7EB] py-3 px-4">

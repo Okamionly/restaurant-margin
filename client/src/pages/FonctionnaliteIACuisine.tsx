@@ -33,6 +33,8 @@ import {
   CircleHelp,
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Page fonctionnalité 02 — L'IA qui parle cuisine
@@ -226,30 +228,7 @@ export default function FonctionnaliteIACuisine() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b" style={{ borderColor: BORDER }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-extrabold text-lg tracking-tight" style={{ color: TEXT }}>
-            <ChefHat className="w-7 h-7" style={{ color: ACCENT }} />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link to="/fonctionnalites/fiches-techniques" className="hidden sm:inline-flex text-sm font-medium transition-colors hover:opacity-70" style={{ color: TEXT_MUTED }}>
-              Fiches techniques
-            </Link>
-            <Link to="/pricing" className="hidden sm:inline-flex text-sm font-medium transition-colors hover:opacity-70" style={{ color: TEXT_MUTED }}>
-              Tarifs
-            </Link>
-            <Link
-              to="/login?mode=register"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-white text-sm font-semibold rounded-full transition-opacity hover:opacity-90"
-              style={{ backgroundColor: ACCENT }}
-            >
-              Essai gratuit
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ── Breadcrumb ── */}
       <div className="border-b py-3 px-4" style={{ borderColor: BORDER, backgroundColor: '#FAFAFA' }}>
@@ -670,25 +649,7 @@ export default function FonctionnaliteIACuisine() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t py-12 px-4" style={{ borderColor: BORDER, backgroundColor: '#FAFAFA' }}>
-        <div className="max-w-6xl mx-auto text-center text-sm" style={{ color: TEXT_MUTED }}>
-          <Link to="/" className="flex items-center justify-center gap-2 font-extrabold text-lg mb-4 tracking-tight" style={{ color: TEXT }}>
-            <ChefHat className="w-6 h-6" style={{ color: ACCENT }} />
-            RestauMargin
-          </Link>
-          <p className="mb-4 max-w-md mx-auto">L'IA qui parle cuisine. Le logiciel de gestion de marge restaurant propulsé par l'intelligence artificielle.</p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
-            <Link to="/fonctionnalites/fiches-techniques" className="hover:underline">Fiches techniques</Link>
-            <Link to="/fonctionnalites/menu-engineering" className="hover:underline">Menu engineering</Link>
-            <Link to="/pricing" className="hover:underline">Tarifs</Link>
-            <Link to="/mentions-legales" className="hover:underline">Mentions légales</Link>
-            <Link to="/politique-confidentialite" className="hover:underline">Confidentialité</Link>
-          </div>
-          <p className="mt-6 text-xs" style={{ color: '#94A3B8' }}>
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés. IA propulsée par Claude (Anthropic).
-          </p>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

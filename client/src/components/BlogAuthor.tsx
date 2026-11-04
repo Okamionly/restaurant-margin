@@ -83,7 +83,7 @@ export default function BlogAuthor({
             'logo': 'https://www.restaumargin.fr/icon-512.png',
             'foundingDate': '2025',
             'description':
-              "Équipe éditoriale de RestauMargin, plateforme SaaS française de gestion de marge pour restaurateurs. Nous publions des guides sur le food cost, les fiches techniques et la rentabilité, mis à jour à partir de données réelles de centaines d'établissements.",
+              "Équipe éditoriale de RestauMargin, plateforme SaaS française de gestion de marge pour restaurateurs. Nous publions des guides sur le food cost, les fiches techniques et la rentabilité, relus et mis à jour régulièrement.",
             'areaServed': 'FR',
             'knowsAbout': [
               'Food cost restaurant',
@@ -128,8 +128,8 @@ export default function BlogAuthor({
           <p className="text-sm text-mono-400 leading-relaxed mb-3" itemProp="description">
             L'équipe <strong>RestauMargin</strong> conçoit depuis 2025 des outils de gestion pour les
             restaurateurs. Nos guides sur le <strong>food cost</strong>, les fiches techniques et la
-            rentabilité s'appuient sur l'analyse de données réelles de centaines d'établissements et sont
-            relus puis mis à jour régulièrement pour rester fidèles aux pratiques 2026.
+            rentabilité expliquent les méthodes de calcul avec des exemples chiffrés,
+            relus puis mis à jour régulièrement.
           </p>
 
           {/* Domaines d'expertise — E-E-A-T expertise signal */}

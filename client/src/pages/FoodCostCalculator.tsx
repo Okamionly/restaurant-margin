@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { Plus, Trash2, RotateCcw, ArrowRight, ChefHat, ChevronDown, TrendingUp, Users, Calendar, DollarSign, Target, AlertTriangle, CheckCircle, HelpCircle, Sparkles, Zap } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
 import SEOHead from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 // Curves shader (lignes emerald qui derivent — meme theme que la landing principale).
 // Lazy-loaded pour preserver le LCP.
@@ -150,20 +152,7 @@ export default function FoodCostCalculator() {
       <SEOHead title="Calculateur de Food Cost Restaurant Gratuit" description="Calculez gratuitement le food cost de vos plats. Outil en ligne pour restaurateurs : cout matiere, prix de vente, marge brute par recette." path="/outils/calculateur-food-cost" />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#e5e5e5]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-[#000000] font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-[#000000]" />
-            <span>RestauMargin</span>
-          </Link>
-          <Link
-            to="/login?mode=register"
-            className="hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#000000] hover:bg-[#222222] text-white text-sm font-semibold rounded-full transition-colors"
-          >
-            Essai gratuit <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ── Hero with PaperFold animated shader background ── */}
       <header className="relative pt-20 pb-16 sm:pt-24 sm:pb-20 px-4 overflow-hidden isolate">
@@ -672,13 +661,7 @@ export default function FoodCostCalculator() {
       </div>
 
       {/* ── Footer minimal ── */}
-      <footer className="border-t border-[#e5e5e5] bg-white py-6 text-center text-sm text-[#999999] mb-14">
-        <div className="max-w-6xl mx-auto px-4">
-          &copy; {new Date().getFullYear()} RestauMargin &middot;{' '}
-          <Link to="/mentions-legales" className="hover:text-[#000000] transition-colors">Mentions legales</Link> &middot;{' '}
-          <Link to="/cgv" className="hover:text-[#000000] transition-colors">CGV</Link>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

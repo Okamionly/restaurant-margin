@@ -212,6 +212,18 @@ if (!JWT_SECRET) throw new Error('JWT_SECRET manquant');
   cafe et coffee shop »). Aucun garde-fou n'empêche un agent de contenu de republier du texte sans
   accents : un contrôle du type `check-seo-coverage.cjs` sur les 8 mots témoins du texte visible
   le rattraperait.
+- **Garde-fou accents — FAIT le 2026-11-04** : `npm run content:check`
+  (`client/scripts/check-content-accents.cjs`), aussi lancé par `npm run seo:check`. Lit le texte
+  visible des pages `Blog*`/`Logiciel*` par l'AST TypeScript (slugs, ancres, classes, arguments
+  d'appels, comparaisons, `<code>`, commentaires et domaines cités jamais lus) ; exit 1 avec
+  fichier:ligne, mot → correction, sur 110 témoins sans accent, accents partiels compris. Mesuré
+  sur les 81 pages : une page entière réécrite sans accents donne au moins 27 signalements, un
+  passage de 41 à 100 mots est attrapé à 86 %, de 16 à 40 mots à 65 % (détecteur de passages, pas
+  correcteur). Il a trouvé deux « salarie » (`BlogPourboiresRestaurant`) que le lexique avait
+  laissés, car *salarier* est un verbe : corrigés. Un témoin intégré le fait rougir si l'une de ses
+  7 règles casse. **À décider (fondateur)** : le brancher sur le `buildCommand` Vercel ou dans le
+  CI (le job `typecheck` installe déjà `client/`). D'ici là il ne tourne que via `seo:check` : une
+  routine qui appelle `check-seo-coverage.cjs` directement ne le lance pas.
 - **Position sur « marge restaurant »** : 55 en moyenne sur 3 mois, 26-28 sur 28 jours (GSC). Le guide
   a ete recentre le 04/11 (commit `d401ff1`). A remesurer dans la Search Console vers le 25/11, meme
   filtre (requete exacte, onglet Pages). Le plafond restant est l'autorite du domaine : liens entrants,

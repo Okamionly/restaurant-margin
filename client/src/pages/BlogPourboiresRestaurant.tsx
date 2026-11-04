@@ -120,7 +120,7 @@ export default function BlogPourboiresRestaurant() {
             <h2 className="text-2xl font-bold text-mono-100">1. À qui appartiennent les pourboires ?</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
-            Le principe posé par le droit du travail est net : <strong>le pourboire appartient au salarie qui l'a reçu</strong>, et non à l'employeur. Qu'il soit glissé en espèces sur la table ou ajouté sur le terminal de paiement, l'employeur n'a aucun droit de rétention sur cette somme — il ne peut ni la conserver pour l'entreprise, ni la faire disparaître dans la trésorerie générale.
+            Le principe posé par le droit du travail est net : <strong>le pourboire appartient au salarié qui l'a reçu</strong>, et non à l'employeur. Qu'il soit glissé en espèces sur la table ou ajouté sur le terminal de paiement, l'employeur n'a aucun droit de rétention sur cette somme — il ne peut ni la conserver pour l'entreprise, ni la faire disparaître dans la trésorerie générale.
           </p>
           <p className="text-[#374151] leading-relaxed mb-4">Concrètement, deux circuits coexistent :</p>
           <ul className="space-y-2 text-[#374151] mb-4">
@@ -145,7 +145,7 @@ export default function BlogPourboiresRestaurant() {
           </p>
           <p className="text-[#374151] leading-relaxed mb-4">Concrètement, quand un pourboire respecte les conditions d'exonération, il échappe :</p>
           <ul className="space-y-2 text-[#374151] mb-4">
-            <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-emerald-400 mt-2 flex-shrink-0" /><span>à l'<strong>impôt sur le revenu</strong> pour le salarie qui le perçoit ;</span></li>
+            <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-emerald-400 mt-2 flex-shrink-0" /><span>à l'<strong>impôt sur le revenu</strong> pour le salarié qui le perçoit ;</span></li>
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-emerald-400 mt-2 flex-shrink-0" /><span>aux <strong>cotisations sociales salariales et patronales</strong> habituellement dues sur un élément de rémunération.</span></li>
           </ul>
           <p className="text-[#374151] leading-relaxed mb-4">

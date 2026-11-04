@@ -2105,6 +2105,7 @@ function Footer() {
         <div>
           <p className="text-white font-bold text-sm uppercase tracking-wider mb-4">Ressources</p>
           <ul className="space-y-2 text-sm">
+            <li><Link to="/blog/calcul-marge-restaurant" className="hover:text-white">Marge restaurant : taux moyen et calcul</Link></li>
             <li><Link to="/outils/calculateur-food-cost" className="hover:text-white">Calculateur food cost</Link></li>
             <li><Link to="/outils/generateur-qr-menu" className="hover:text-white">Générateur QR menu</Link></li>
             <li><a href="#contact" className="hover:text-white">Réserver une démo</a></li>

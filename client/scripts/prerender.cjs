@@ -201,10 +201,12 @@ const ROUTES = [
   },
   {
     path: '/blog/calcul-marge-restaurant',
-    title: 'Marge restaurant 2026 : calcul, formule, food cost (guide complet)',
-    description: 'Marge restaurant : tout savoir en 2026. Calcul, formule, food cost, coefficient multiplicateur, marge brute et nette. Methode pas a pas, exemples chiffres, benchmarks par type de restaurant et outils gratuits.',
+    title: 'Marge restaurant 2026 : taux moyen, calcul et formules',
+    description: 'Quelle marge pour un restaurant ? Taux de marge brute moyen, marge nette, food cost : formules de calcul, exemples chiffrés et repères par type d\'établissement.',
     type: 'article',
     seoBody: `
+        <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Quelle est la marge moyenne d'un restaurant ?</h2>
+        <p style="margin:0 0 16px 0;color:#333333">En restauration, le taux de marge brute (prix de vente HT moins le coût des matières premières) se situe le plus souvent entre 65 % et 75 %, soit un food cost de 25 à 35 % et un coefficient multiplicateur de 3 à 4. Une fois le personnel, le loyer et les autres charges payés, la marge nette médiane d'un restaurant en France tombe entre 4 % et 8 % du chiffre d'affaires. Ces repères varient selon le format : une pizzeria se situe plutôt entre 72 % et 85 % de marge brute, un restaurant gastronomique entre 60 % et 70 %.</p>
         <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Les 4 formules essentielles de la marge restaurant</h2>
         <p style="margin:0 0 16px 0;color:#333333"><strong>Food cost (%)</strong> = (Cout matieres / Prix de vente HT) x 100. <strong>Marge brute (%)</strong> = 100 - Food cost. <strong>Coefficient multiplicateur</strong> = Prix de vente HT / Cout matieres. <strong>Marge nette (%)</strong> = (Resultat net / Chiffre d'affaires) x 100. Objectif standard en restauration francaise 2026 : food cost entre 25 % et 35 %, marge brute entre 65 % et 75 %, marge nette entre 5 % et 15 %. Le calcul se fait toujours en HT : la TVA collectee (10 % sur place, 5,5 % a emporter, 20 % sur l'alcool) ne vous appartient pas, elle est reversee a l'Etat.</p>
         <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Marge brute vs marge nette : la difference qui piege les restaurateurs</h2>
@@ -1252,7 +1254,7 @@ function run() {
     // Article-related links vary by category to avoid showing identical "Articles connexes"
     const relatedLinks = {
       article: [
-        ['/blog/calcul-marge-restaurant', 'Marge restaurant 2026 : calcul, formule, food cost'],
+        ['/blog/calcul-marge-restaurant', 'Marge restaurant 2026 : taux moyen, calcul et formules'],
         ['/blog/coefficient-multiplicateur', 'Coefficient multiplicateur restaurant 2026'],
         ['/blog/reduire-food-cost', 'Réduire le food cost : 10 stratégies'],
         ['/blog/prime-cost-restaurant', 'Prime cost : l\'indicateur n°1 de rentabilité'],
@@ -1302,7 +1304,7 @@ function run() {
         ['/blog/fiche-technique-restaurant', 'Fiche technique restaurant'],
       ],
       'blog-index': [
-        ['/blog/calcul-marge-restaurant', 'Marge restaurant 2026 : calcul, formule, food cost'],
+        ['/blog/calcul-marge-restaurant', 'Marge restaurant 2026 : taux moyen, calcul et formules'],
         ['/blog/coefficient-multiplicateur', 'Coefficient multiplicateur restaurant 2026'],
         ['/blog/reduire-food-cost', 'Réduire le food cost : 10 stratégies'],
         ['/blog/prime-cost-restaurant', 'Prime cost : l\'indicateur n°1 de rentabilité'],

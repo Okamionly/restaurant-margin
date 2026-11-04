@@ -49,8 +49,8 @@ export default function BlogCalcMarge() {
   return (
     <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
-        title="Marge restaurant 2026 : calcul, formule, food cost (guide complet)"
-        description="Marge restaurant : tout savoir en 2026. Calcul, formule, food cost, coefficient multiplicateur, marge brute et nette. Methode pas a pas, exemples chiffres, benchmarks par type de restaurant et outils gratuits."
+        title="Marge restaurant 2026 : taux moyen, calcul et formules"
+        description="Quelle marge pour un restaurant ? Taux de marge brute moyen, marge nette, food cost : formules de calcul, exemples chiffrés et repères par type d'établissement."
         path="/blog/calcul-marge-restaurant"
         type="article"
         schema={[
@@ -78,8 +78,8 @@ export default function BlogCalcMarge() {
           {
             '@context': 'https://schema.org',
             '@type': 'Article',
-            headline: 'Marge restaurant 2026 : calcul, formule et guide complet',
-            description: 'Guide complet du calcul de marge restaurant : marge brute, marge nette, food cost. Formules, exemples chiffres et tableau par type de restaurant.',
+            headline: 'Marge restaurant 2026 : taux moyen, calcul et formules',
+            description: 'Taux de marge moyen d\'un restaurant et guide complet du calcul : marge brute, marge nette, food cost, formules, exemples chiffrés et repères par type d\'établissement.',
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -88,7 +88,7 @@ export default function BlogCalcMarge() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-04-14',
-            dateModified: '2026-07-05',
+            dateModified: '2026-11-04',
             wordCount: 4200,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/calcul-marge-restaurant' },
@@ -147,15 +147,67 @@ export default function BlogCalcMarge() {
         category="Marges"
         readTime="15 min"
         date="Mai 2026"
-        title="Marge restaurant 2026 : calcul, formule et guide complet"
+        title="Marge restaurant 2026 : taux moyen, calcul et formules"
         accentWord="Marge"
-        subtitle="Le calcul de la marge restaurant est la clef de voute de votre rentabilite. Decouvrez les formules, les benchmarks par type d'etablissement, les cas pratiques chiffres et les erreurs qui plombent vos benefices."
+        subtitle="Quelle marge fait un restaurant, et comment la calculer ? Taux de marge moyen, formules, cas pratiques chiffrés, repères par type d'établissement et erreurs qui plombent vos bénéfices."
       />
 
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
-        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-07-05" readTime="15 min" variant="header" />
+        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-11-04" readTime="15 min" variant="header" />
+
+        {/* ── Reponse directe : marge moyenne (intention dominante de la requete « marge restaurant », mesuree le 04/11) ── */}
+        <section id="marge-moyenne" className="mt-10 scroll-mt-24 bg-white border border-mono-900 rounded-2xl p-6 sm:p-8 shadow-sm">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 mb-4">
+            Quelle est la marge moyenne d'un restaurant ?
+          </h2>
+          <p className="text-base text-mono-200 leading-relaxed mb-6">
+            En restauration, le <strong>taux de marge brute</strong> (prix de vente HT moins le coût des matières
+            premières) se situe le plus souvent <strong>entre 65 % et 75 %</strong>, soit un food cost de 25 à 35 %.
+            Une fois le personnel, le loyer et les autres charges payés, la <strong>marge nette médiane</strong> d'un
+            restaurant en France tombe <strong>entre 4 % et 8 %</strong> du chiffre d'affaires.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-teal-600 text-white">
+                  <th className="text-left p-3 font-bold">Indicateur</th>
+                  <th className="text-left p-3 font-bold">Repère en restauration</th>
+                  <th className="text-left p-3 font-bold">Ce qu'il mesure</th>
+                </tr>
+              </thead>
+              <tbody className="text-mono-200">
+                <tr className="border-b border-mono-900">
+                  <td className="p-3 font-semibold">Taux de marge brute</td>
+                  <td className="p-3">65 % à 75 %</td>
+                  <td className="p-3">Ce qui reste du prix de vente HT après les matières premières</td>
+                </tr>
+                <tr className="border-b border-mono-900 bg-mono-1000/40">
+                  <td className="p-3 font-semibold">Food cost</td>
+                  <td className="p-3">25 % à 35 %</td>
+                  <td className="p-3">Part du prix de vente HT consacrée aux matières</td>
+                </tr>
+                <tr className="border-b border-mono-900">
+                  <td className="p-3 font-semibold">Coefficient multiplicateur</td>
+                  <td className="p-3">3 à 4</td>
+                  <td className="p-3">Prix de vente HT divisé par le coût matières</td>
+                </tr>
+                <tr className="bg-mono-1000/40">
+                  <td className="p-3 font-semibold">Marge nette</td>
+                  <td className="p-3">4 % à 8 % (médiane)</td>
+                  <td className="p-3">Bénéfice restant après toutes les charges</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-6 text-sm text-mono-400 leading-relaxed">
+            Ces repères varient selon le format : une pizzeria se situe plutôt entre 72 % et 85 % de marge brute,
+            un restaurant gastronomique entre 60 % et 70 % (<a href="#benchmarks" className="text-teal-700 underline hover:text-teal-800">repères par type de restaurant</a>).
+            Pour savoir quelle marge nette viser et si la vôtre est bonne, lisez notre guide sur la{' '}
+            <Link to="/blog/marge-beneficiaire-restaurant-ideal" className="text-teal-700 underline hover:text-teal-800">marge bénéficiaire idéale d'un restaurant</Link>.
+          </p>
+        </section>
 
         {/* ── Encadre formule rapide (featured snippet) ── */}
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
@@ -164,7 +216,7 @@ export default function BlogCalcMarge() {
             <span className="text-xs font-bold uppercase tracking-wider text-teal-100">Formule rapide marge restaurant</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold mb-4">
-            La formule essentielle a retenir
+            La formule essentielle à retenir
           </h2>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 space-y-3 font-mono text-sm sm:text-base">
             <div className="flex items-start gap-2">
@@ -192,11 +244,11 @@ export default function BlogCalcMarge() {
         {/* ── Tableau KPIs 2026 (bloc featured snippet table) ── */}
         <div className="mt-10 bg-white border border-mono-900 rounded-2xl p-6 sm:p-8 shadow-sm">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 mb-2">
-            Tableau des KPIs marge restaurant 2026 (cibles a viser)
+            Tableau des KPIs marge restaurant 2026 (cibles à viser)
           </h2>
           <p className="text-sm text-mono-400 mb-6">
-            Benchmarks chiffres a jour 2026 par indicateur, avec frequence de suivi recommandee.
-            Comparez chaque ligne a vos chiffres reels pour savoir ou agir en priorite.
+            Repères chiffrés à jour 2026 par indicateur, avec fréquence de suivi recommandée.
+            Comparez chaque ligne à vos chiffres réels pour savoir où agir en priorité.
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
@@ -277,14 +329,14 @@ export default function BlogCalcMarge() {
           </p>
         </div>
 
-        {/* ═════════════ Modele de tableau de calcul de marge (a copier) ═════════════ */}
+        {/* ═════════════ Modèle de tableau de calcul de marge (à copier) ═════════════ */}
         <section id="modele-tableau" className="mt-12 scroll-mt-24">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
               <TableIcon className="w-6 h-6" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100">
-              Modele de tableau de calcul de marge (a copier)
+              Modèle de tableau de calcul de marge (à copier)
             </h2>
           </div>
 
@@ -488,22 +540,23 @@ export default function BlogCalcMarge() {
           </h2>
           <ol className="space-y-2 text-sm sm:text-base text-mono-350">
             {[
-              { href: '#modele-tableau', label: 'Modele de tableau de calcul de marge (a copier)' },
+              { href: '#marge-moyenne', label: 'Quelle est la marge moyenne d\'un restaurant ?' },
+              { href: '#modele-tableau', label: 'Modèle de tableau de calcul de marge (à copier)' },
               { href: '#pourquoi', label: 'Pourquoi la marge est critique pour votre restaurant' },
-              { href: '#trois-marges', label: 'Les 3 types de marges a connaitre' },
-              { href: '#howto', label: 'Comment calculer la marge en 5 etapes' },
-              { href: '#brute-vs-nette', label: 'Marge brute vs marge nette : la difference' },
-              { href: '#formules', label: 'Formules de calcul avec exemples chiffres' },
-              { href: '#cas-pizza', label: 'Cas pratique chiffre : pizza margherita' },
-              { href: '#cas-entrecote', label: 'Cas pratique chiffre : entrecote grillee' },
+              { href: '#trois-marges', label: 'Les 3 types de marges à connaître' },
+              { href: '#howto', label: 'Comment calculer la marge en 5 étapes' },
+              { href: '#brute-vs-nette', label: 'Marge brute vs marge nette : la différence' },
+              { href: '#formules', label: 'Formules de calcul avec exemples chiffrés' },
+              { href: '#cas-pizza', label: 'Cas pratique chiffré : pizza margherita' },
+              { href: '#cas-entrecote', label: 'Cas pratique chiffré : entrecôte grillée' },
               { href: '#benchmarks', label: 'Benchmarks marge brute par type de restaurant' },
-              { href: '#comparatif-cards', label: 'Comparatif marge brute par type d\'etablissement' },
+              { href: '#comparatif-cards', label: 'Comparatif marge brute par type d\'établissement' },
               { href: '#france-vs-international', label: 'Marge restaurant France vs international' },
               { href: '#logiciel-automatique', label: 'Calcul marge automatique avec un logiciel' },
               { href: '#food-cost-tableau', label: 'Tableau du food cost par type de restaurant' },
-              { href: '#erreurs', label: 'Les 5 erreurs courantes qui detruisent votre marge' },
+              { href: '#erreurs', label: 'Les 5 erreurs courantes qui détruisent votre marge' },
               { href: '#automatiser', label: 'Comment RestauMargin automatise le calcul' },
-              { href: '#faq', label: 'Questions frequentes' },
+              { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Calculez votre marge gratuitement' },
             ].map((item, i) => (
               <li key={i}>
@@ -562,7 +615,7 @@ export default function BlogCalcMarge() {
         {/* ═════════════ SECTION 2 : Les 3 types de marges ═════════════ */}
         <section id="trois-marges" className="mb-16">
           <SectionHeading icon={<BarChart3 className="w-6 h-6" />} number="2">
-            Les 3 types de marges a connaitre
+            Les 3 types de marges à connaître
           </SectionHeading>
 
           <div className="prose-content">
@@ -618,7 +671,7 @@ export default function BlogCalcMarge() {
         {/* ═════════════ SECTION HOWTO : 5 etapes ═════════════ */}
         <section id="howto" className="mb-16">
           <SectionHeading icon={<ListChecks className="w-6 h-6" />} number="3">
-            Comment calculer la marge en 5 etapes
+            Comment calculer la marge en 5 étapes
           </SectionHeading>
 
           <div className="prose-content">
@@ -674,7 +727,7 @@ export default function BlogCalcMarge() {
         {/* ═════════════ SECTION : Marge brute vs marge nette ═════════════ */}
         <section id="brute-vs-nette" className="mb-16">
           <SectionHeading icon={<Award className="w-6 h-6" />} number="4">
-            Marge brute vs marge nette : la difference
+            Marge brute vs marge nette : la différence
           </SectionHeading>
 
           <div className="prose-content">
@@ -766,7 +819,7 @@ export default function BlogCalcMarge() {
         {/* ═════════════ SECTION 5 : Formules de calcul ═════════════ */}
         <section id="formules" className="mb-16">
           <SectionHeading icon={<Calculator className="w-6 h-6" />} number="5">
-            Formules de calcul avec exemples chiffres
+            Formules de calcul avec exemples chiffrés
           </SectionHeading>
 
           <div className="prose-content">
@@ -851,7 +904,7 @@ export default function BlogCalcMarge() {
         {/* ═════════════ SECTION : Cas pratique pizza ═════════════ */}
         <section id="cas-pizza" className="mb-16">
           <SectionHeading icon={<Pizza className="w-6 h-6" />} number="6">
-            Cas pratique chiffre : pizza margherita
+            Cas pratique chiffré : pizza margherita
           </SectionHeading>
 
           <div className="prose-content">
@@ -904,7 +957,7 @@ export default function BlogCalcMarge() {
         {/* ═════════════ SECTION : Cas pratique entrecote ═════════════ */}
         <section id="cas-entrecote" className="mb-16">
           <SectionHeading icon={<Beef className="w-6 h-6" />} number="7">
-            Cas pratique chiffre : entrecote grillee
+            Cas pratique chiffré : entrecôte grillée
           </SectionHeading>
 
           <div className="prose-content">
@@ -970,9 +1023,9 @@ export default function BlogCalcMarge() {
 
           <div className="prose-content">
             <p>
-              Voici les ratios de marge brute observes en France en 2026 sur 6 types d'etablissement.
-              Ces fourchettes sont issues des donnees agregees de la GIRA Conseil, du SNRC et de notre
-              propre analyse de terrain.
+              Voici les ratios de marge brute couramment observés en France sur 6 types d'établissement.
+              Ce sont des ordres de grandeur de la profession, à comparer à vos propres chiffres : ils
+              servent de repère, pas de norme.
             </p>
           </div>
 
@@ -1018,7 +1071,7 @@ export default function BlogCalcMarge() {
         {/* ═════════════ SECTION : Comparatif cards par type ═════════════ */}
         <section id="comparatif-cards" className="mb-16">
           <SectionHeading icon={<Users className="w-6 h-6" />} number="9">
-            Comparatif marge brute par type d'etablissement
+            Comparatif marge brute par type d'établissement
           </SectionHeading>
 
           <div className="prose-content">
@@ -1239,7 +1292,7 @@ export default function BlogCalcMarge() {
         {/* ═════════════ SECTION 13 : Erreurs courantes ═════════════ */}
         <section id="erreurs" className="mb-16">
           <SectionHeading icon={<AlertTriangle className="w-6 h-6" />} number="13">
-            Les 5 erreurs courantes qui detruisent votre marge
+            Les 5 erreurs courantes qui détruisent votre marge
           </SectionHeading>
 
           <div className="space-y-6 mt-8">
@@ -1362,11 +1415,11 @@ export default function BlogCalcMarge() {
           </div>
         </section>
 
-        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-07-05" readTime="15 min" variant="footer" />
+        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-11-04" readTime="15 min" variant="footer" />
 
         {/* ═════════════ FAQ visible ═════════════ */}
         <section id="faq" className="mb-16">
-          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions frequentes</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">Questions fréquentes</h2>
           <div className="space-y-4">
             {faqItems.map((item, i) => (
               <FAQItem key={i} q={item.question} a={item.answer} />
@@ -1408,9 +1461,9 @@ export default function BlogCalcMarge() {
 
         {/* ═════════════ Articles complementaires ═════════════ */}
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-mono-100 mb-6">A lire aussi</h2>
+          <h2 className="text-2xl font-bold text-mono-100 mb-6">À lire aussi</h2>
           <p className="text-sm text-mono-500 mb-6">
-            Ressources complementaires pour approfondir le calcul de marge et choisir le bon outil selon votre type d'etablissement.
+            Ressources complémentaires pour approfondir le calcul de marge et choisir le bon outil selon votre type d'établissement.
           </p>
 
           <h3 className="text-lg font-bold text-mono-100 mb-4">Approfondir le calcul de marge</h3>
@@ -1488,12 +1541,12 @@ export default function BlogCalcMarge() {
             <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
               <Landmark className="w-5 h-5" />
             </div>
-            <h2 id="sources-references" className="text-2xl font-bold text-mono-100">Sources &amp; references</h2>
+            <h2 id="sources-references" className="text-2xl font-bold text-mono-100">Sources &amp; références</h2>
           </div>
           <p className="text-sm text-mono-500 mb-6 max-w-3xl">
-            Les seuils de marge, taux de TVA et fourchettes de food cost cites dans ce guide s'appuient sur des
-            sources officielles et professionnelles reconnues du secteur, recoupees avec les donnees agregees de
-            RestauMargin (des etablissements francais). Ces references sont verifiables et mises a jour pour 2026.
+            Les taux de TVA cités dans ce guide viennent des sources officielles ci-dessous. Les seuils de marge
+            et fourchettes de food cost sont des ordres de grandeur de la profession, donnés comme repères :
+            comparez-les toujours à vos propres chiffres.
           </p>
 
           <ul className="grid sm:grid-cols-2 gap-4 mb-6">

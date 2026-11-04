@@ -901,7 +901,7 @@ export default function BlogChiffreAffaires() {
               services rentables, les jours creux à activer et les heures à fermer pour optimiser la marge.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mb-3">Analyse horaire (cas réel bistrot 50 cv)</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3">Analyse horaire (exemple illustratif, bistrot 50 cv)</h3>
             <div className="bg-mono-975 rounded-xl p-5 mb-6 font-mono text-xs sm:text-sm text-mono-100 space-y-1">
               <div>12h-13h : 28 cv, 728 € HT → service saturé, possibilité d'allonger horaires</div>
               <div>13h-14h : 18 cv, 468 € HT → bon</div>
@@ -975,7 +975,7 @@ export default function BlogChiffreAffaires() {
             </SectionHeading>
 
             <p className="text-[#374151] leading-relaxed mb-6">
-              Le CA n'est qu'une moitié de l'équation. Voici un cas réel comparant deux restaurants :
+              Le CA n'est qu'une moitié de l'équation. Voici un exemple illustratif comparant deux restaurants :
               le restaurant A fait 2,5× plus de CA que le restaurant B, mais B dégage 114 K€ de plus
               en marge nette.
             </p>

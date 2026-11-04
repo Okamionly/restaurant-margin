@@ -85,7 +85,7 @@ const faqItems = [
   {
     question: 'RestauMargin est-il adapté à un bistrot indépendant ?',
     answer:
-      "Oui, c\'est même notre coeur de cible. RestauMargin a été conçu pour les bistrots et brasseries indépendants (1 à 3 établissements). 70 % de nos clients sont des bistrots traditionnels. Le plan Pro à 29 EUR/mois couvre tous les besoins : fiches techniques illimitées, scan factures, alertes prix, menu engineering, gestion de la carte des vins. Essai gratuit 7 jours sans carte bancaire.",
+      "Oui, c\'est même notre coeur de cible. RestauMargin a été conçu pour les bistrots et brasseries indépendants (1 à 3 établissements). Le plan Pro à 29 EUR/mois couvre tous les besoins : fiches techniques illimitées, scan factures, alertes prix, menu engineering, gestion de la carte des vins. Essai gratuit 7 jours sans carte bancaire.",
   },
 ];
 
@@ -223,7 +223,7 @@ export default function LogicielMargeBistrot() {
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-mono-500">
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans carte bancaire</span>
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans engagement</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> 70 % de bistrots clients</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Fiches techniques illimitées</span>
           </div>
         </div>
       </header>
@@ -248,8 +248,8 @@ export default function LogicielMargeBistrot() {
             des prix matières, des fiches techniques et des fournisseurs.
           </p>
           <p className="text-lg text-mono-400 leading-relaxed">
-            <strong>RestauMargin</strong> a été pensé pour cette réalité. 70 % de nos clients sont des bistrots
-            et brasseries indépendantes. Découvrez comment notre logiciel automatise la gestion spécifique
+            <strong>RestauMargin</strong> a été pensé pour cette réalité, celle des bistrots
+            et brasseries indépendants. Découvrez comment notre logiciel automatise la gestion spécifique
             de la cuisine française.
           </p>
 
@@ -717,7 +717,7 @@ export default function LogicielMargeBistrot() {
         </div>
       </section>
 
-      {/* ── Section 9 : Cas concret bistrot Paris ── */}
+      {/* ── Section 9 : Exemple illustratif bistrot ── */}
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="bg-gradient-to-br from-amber-50 to-white border border-amber-200 rounded-3xl p-8 sm:p-12">
@@ -726,17 +726,17 @@ export default function LogicielMargeBistrot() {
                 <Store className="w-7 h-7" />
               </div>
               <div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-amber-700 mb-1">Cas concret client</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-amber-700 mb-1">Exemple illustratif</div>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100">
-                  Bistrot Paris 11e : de 11 % à 22 % de marge nette en 8 mois
+                  Un bistrot de quartier : de 11 % à 22 % de marge nette
                 </h2>
               </div>
             </div>
 
             <p className="text-lg text-mono-400 leading-relaxed mb-6">
-              Le <em>Bistrot des Vignes</em>, établissement de 38 couverts en plein 11e arrondissement parisien,
-              était au bord du dépôt de bilan en septembre 2025. Chef-propriétaire depuis 6 ans, gestion Excel,
-              marge nette descendue à <strong>11 %</strong> malgré un CA de 720 000 EUR.
+              Prenons un exemple fictif : un bistrot urbain de 38 couverts, tenu par un chef-propriétaire
+              qui gère tout sur Excel, voit sa marge nette descendre à <strong>11 %</strong> malgré un CA
+              de 720 000 EUR. Voici ce que pourrait donner l'application méthodique des leviers ci-dessus.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6 mb-6">
@@ -752,7 +752,7 @@ export default function LogicielMargeBistrot() {
               </div>
 
               <div className="bg-white border border-emerald-200 rounded-xl p-5">
-                <h3 className="font-bold text-emerald-800 mb-3 text-sm uppercase tracking-wider">Situation après 8 mois</h3>
+                <h3 className="font-bold text-emerald-800 mb-3 text-sm uppercase tracking-wider">Situation visée</h3>
                 <ul className="space-y-2 text-sm text-mono-400">
                   <li className="flex items-start gap-2"><span className="text-emerald-500 mt-1">●</span> Food cost <strong>29 %</strong></li>
                   <li className="flex items-start gap-2"><span className="text-emerald-500 mt-1">●</span> Prime cost <strong>64 %</strong></li>
@@ -763,10 +763,10 @@ export default function LogicielMargeBistrot() {
               </div>
             </div>
 
-            <h3 className="font-bold text-mono-100 mb-3 mt-6">Actions concrètes mises en place avec RestauMargin :</h3>
+            <h3 className="font-bold text-mono-100 mb-3 mt-6">Leviers à actionner :</h3>
             <ol className="space-y-2 text-sm text-mono-400 list-decimal list-inside ml-2">
-              <li>Numerisation de 47 fiches techniques avec calcul food cost automatique</li>
-              <li>Scan factures OCR : détection 8 hausses fournisseurs non répercutées (boucher +18 %, poissonnerie +12 %)</li>
+              <li>Numérisation des fiches techniques avec calcul food cost automatique</li>
+              <li>Scan factures OCR : repérer les hausses fournisseurs non répercutées (boucher, poissonnerie)</li>
               <li>Refonte carte des vins : passage de 8 à 14 références verre, marge moyenne portée à 76 %</li>
               <li>Menu du jour structure : 2 plats midi à 22 EUR, taux de prise 78 %, zéro gaspillage</li>
               <li>Négociation maraîcher (contrat hebdo) : -8 % sur les légumes, +5 % de fraîcheur</li>
@@ -776,9 +776,9 @@ export default function LogicielMargeBistrot() {
 
             <div className="mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
               <p className="text-sm text-emerald-900 leading-relaxed">
-                <strong>Résultat financier :</strong> CA quasi stable (720k à 750k EUR) mais marge nette
-                passée de 79 000 EUR à 165 000 EUR. <strong>+86 000 EUR de résultat net annuel</strong> pour
-                un investissement RestauMargin de 348 EUR/an. ROI : 247x.
+                <strong>Ordre de grandeur :</strong> à CA quasi stable (720k à 750k EUR), passer de 11 % à 22 %
+                de marge nette ferait passer le résultat net d'environ 79 000 EUR à 165 000 EUR par an.
+                Chiffres hypothétiques, à titre d'illustration : chaque établissement a ses propres contraintes.
               </p>
             </div>
           </div>
@@ -853,7 +853,7 @@ export default function LogicielMargeBistrot() {
             Prêt à doubler la marge nette de votre bistrot ?
           </h2>
           <p className="text-xl text-teal-100 max-w-2xl mx-auto mb-3">
-            Rejoignez les 350+ bistrots et brasseries qui ont structuré leur gestion avec RestauMargin.
+            Structurez la gestion de votre bistrot ou de votre brasserie avec RestauMargin.
           </p>
           <p className="text-teal-50 mb-10">
             Essai gratuit 7 jours - Sans carte bancaire - Modèles fiches techniques cuisine française inclus

@@ -130,7 +130,7 @@ export default function BlogFormationPersonnel() {
     <div className="min-h-screen">
       <SEOHead
         title="Formation du personnel en restauration : obligations, aides et meilleures pratiques 2026"
-        description="Financez la formation de vos équipes grâce à l'OPCO Mobilités et au CPF. Formations prioritaires en 2026, obligations légales HACCP, ROI mesuré et plan annuel chiffré."
+        description="Financez la formation de vos équipes grâce à l'OPCO Mobilités et au CPF. Formations prioritaires en 2026, obligations légales HACCP, ROI chiffré et plan annuel."
         path="/blog/formation-personnel-restauration"
         type="article"
         schema={[faqSchema, breadcrumbSchema, howToFormation, howToFormerApprenti, articleSchema]}
@@ -146,7 +146,7 @@ export default function BlogFormationPersonnel() {
         date="Mai 2026"
         title="Formation du personnel en restauration : obligations, aides et meilleures pratiques 2026"
         accentWord="formation"
-        subtitle="La formation n'est pas un coût mais un investissement qui se rentabilise sur 3 à 12 semaines. OPCO Mobilités, CPF, ROI mesuré, plan annuel chiffré."
+        subtitle="La formation n'est pas un coût mais un investissement qui se rentabilise sur 3 à 12 semaines. OPCO Mobilités, CPF, ROI chiffré, plan annuel."
       />
 
       {/* Body */}
@@ -155,7 +155,7 @@ export default function BlogFormationPersonnel() {
 
         {/* Intro */}
         <p className="text-[#374151] text-lg leading-relaxed mb-8">
-          Le coût d'un départ en restauration s'élève à 6-8 mois de salaire charge, soit <strong>18 000 à 25 000 EUR pour un commis</strong> selon les études INSEE 2025. Pourtant, 62% des restaurants français ne consacrent aucun budget formel à la formation. Cette équation absurde s'explique par une méconnaissance des dispositifs : OPCO Mobilités, CPF, POEI, AFPR. Les financements existent et couvrent <strong>80 à 100% des coûts</strong>. Ce guide 2026 dresse le mode d'emploi complet avec plan annuel chiffré, ROI mesuré et 12 réponses aux questions fréquentes.
+          Le coût d'un départ en restauration s'élève à 6-8 mois de salaire charge, soit <strong>18 000 à 25 000 EUR pour un commis</strong> selon les études INSEE 2025. Pourtant, 62% des restaurants français ne consacrent aucun budget formel à la formation. Cette équation absurde s'explique par une méconnaissance des dispositifs : OPCO Mobilités, CPF, POEI, AFPR. Les financements existent et couvrent <strong>80 à 100% des coûts</strong>. Ce guide 2026 dresse le mode d'emploi complet avec plan annuel chiffré, exemple de ROI et 12 réponses aux questions fréquentes.
         </p>
 
         {/* Table des matieres */}
@@ -166,7 +166,7 @@ export default function BlogFormationPersonnel() {
             <li><a href="#obligations" className="hover:text-teal-600 transition-colors">2. Obligations légales 2026</a></li>
             <li><a href="#financements" className="hover:text-teal-600 transition-colors">3. Financements OPCO Mobilités et CPF</a></li>
             <li><a href="#prioritaires" className="hover:text-teal-600 transition-colors">4. Formations prioritaires en 2026</a></li>
-            <li><a href="#roi" className="hover:text-teal-600 transition-colors">5. ROI mesuré : étude de cas chiffrée</a></li>
+            <li><a href="#roi" className="hover:text-teal-600 transition-colors">5. ROI : exemple illustratif chiffré</a></li>
             <li><a href="#plan" className="hover:text-teal-600 transition-colors">6. Plan de formation annuel type</a></li>
             <li><a href="#onboarding" className="hover:text-teal-600 transition-colors">7. Onboarding : les 30 premiers jours</a></li>
             <li><a href="#apprenti" className="hover:text-teal-600 transition-colors">8. Former un apprenti en restauration</a></li>
@@ -335,10 +335,10 @@ export default function BlogFormationPersonnel() {
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
               <Euro className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-mono-100">5. ROI mesuré : étude de cas chiffrée</h2>
+            <h2 className="text-2xl font-bold text-mono-100">5. ROI : exemple illustratif chiffré</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
-            Cas concret : <strong>brasserie 60 couverts, CA HT 580 000 EUR, équipe 8 salariés</strong>. Plan formation 2026 déployé :
+            Exemple illustratif (chiffres fictifs) : <strong>brasserie 60 couverts, CA HT 580 000 EUR, équipe 8 salariés</strong>. Plan formation envisagé :
           </p>
           <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-xs text-mono-100 space-y-1">
             <div>HACCP recyclage chef + sous-chef : 700 EUR &rarr; 100% pris en charge OPCO</div>
@@ -351,7 +351,7 @@ export default function BlogFormationPersonnel() {
           </div>
 
           <div className="border-l-4 border-emerald-400 bg-emerald-50 rounded-r-xl p-4 mb-4">
-            <p className="text-sm font-semibold text-emerald-700 mb-2">Bénéfices mesurés sur 12 mois</p>
+            <p className="text-sm font-semibold text-emerald-700 mb-2">Bénéfices estimés sur 12 mois</p>
             <ul className="text-sm text-emerald-600 space-y-1">
               <li>&bull; Turnover passe de 4 à 2 départs/an &rarr; <strong>28 000 EUR économisés</strong> (recrutement + onboarding évité)</li>
               <li>&bull; Ticket vin moyen +1,80 EUR x 18 000 couverts/an &rarr; <strong>+32 400 EUR CA</strong> (marge brute 75%)</li>
@@ -364,7 +364,7 @@ export default function BlogFormationPersonnel() {
             </p>
           </div>
           <p className="text-[#374151] leading-relaxed">
-            Cette étude reproduit fidèlement le retour d'un restaurant client suivi sur 18 mois. Les chiffres sont conservateurs : la moyenne sectorielle est <strong>ROI 35-45x</strong> sur les plans de formation correctement structurés.
+            Ces chiffres sont hypothétiques : ils illustrent la méthode de calcul du ROI d'un plan de formation, pas un résultat constaté ni garanti.
           </p>
         </section>
 

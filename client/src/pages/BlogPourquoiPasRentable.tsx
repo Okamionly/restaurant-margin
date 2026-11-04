@@ -52,7 +52,7 @@ const faqItems = [
   },
   {
     question: 'RestauMargin peut-il vraiment aider un restaurant qui perd de l\'argent ?',
-    answer: "Oui, en industrialisant le diagnostic. Au lieu de passer 30 heures sur un tableur, vous saisissez vos plats et vos ventes : food cost, marge par plat, alertes de dérive, identification des plats poids morts. Le gain moyen constaté est de 3 à 5 points de marge brute en 6 mois, soit 18 000 à 30 000 EUR sur un CA de 600 000 EUR. Essai gratuit 7 jours sans carte.",
+    answer: "Oui, en industrialisant le diagnostic. Au lieu de passer 30 heures sur un tableur, vous saisissez vos plats et vos ventes : food cost, marge par plat, alertes de dérive, identification des plats poids morts. L'outil ne corrige rien à votre place : il rend visibles les écarts, et ce sont les actions (fiches techniques, prix, achats, planning) qui font remonter la marge. Essai gratuit 7 jours sans carte.",
   },
 ];
 
@@ -170,7 +170,7 @@ export default function BlogPourquoiPasRentable() {
               { href: '#causes', label: 'Les 10 causes principales d\'un restaurant non rentable' },
               { href: '#diagnostic', label: 'Diagnostic en 5 minutes : les questions à se poser' },
               { href: '#plan-action', label: 'Plan d\'action 90 jours pour redresser' },
-              { href: '#cas-concret', label: 'Cas concret : bistrot 0 % marge nette → 12 % en 6 mois' },
+              { href: '#cas-concret', label: 'Exemple illustratif : un bistrot de 0 % à 12 % de marge nette' },
               { href: '#fermer-ou-pas', label: 'Quand fermer vs persévérer ?' },
               { href: '#erreurs-psy', label: 'Erreurs psychologiques du restaurateur épuisé' },
               { href: '#faq', label: 'Questions fréquentes' },
@@ -217,16 +217,15 @@ export default function BlogPourquoiPasRentable() {
             </p>
 
             <Callout type="info">
-              <strong>Une certitude rassurante :</strong> dans 80 % des cas que nous avons analysés sur
-              RestauMargin (établissements du secteur), le problème se résout en 90 à 180 jours sans
-              changer de concept, sans changer d'équipe, et sans fermer. Il faut juste identifier le bon
+              <strong>Une bonne nouvelle :</strong> une dérive de ratios se corrige souvent en 90 à 180 jours
+              sans changer de concept, sans changer d'équipe, et sans fermer. Il faut identifier le bon
               levier et agir avec discipline.
             </Callout>
 
             <p>
               Cet article vous donne les 10 causes principales de non-rentabilité, une méthode de
-              diagnostic en 5 minutes, un plan d'action 90 jours, et un cas concret de transformation
-              réussie. L'objectif : que vous puissiez fermer cet onglet en sachant exactement quoi faire
+              diagnostic en 5 minutes, un plan d'action 90 jours, et un exemple illustratif chiffré
+              de redressement. L'objectif : que vous puissiez fermer cet onglet en sachant exactement quoi faire
               demain matin.
             </p>
           </div>
@@ -528,14 +527,14 @@ export default function BlogPourquoiPasRentable() {
         {/* ═════════════ SECTION 6 : Cas concret ═════════════ */}
         <section id="cas-concret" className="mb-16">
           <SectionHeading icon={<TrendingUp className="w-6 h-6" />} number="6">
-            Cas concret : bistrot 0 % marge nette → 12 % en 6 mois
+            Exemple illustratif : un bistrot de 0 % à 12 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              <strong>Profil :</strong> Bistrot parisien 12e arrondissement, 38 couverts, CA annuel 580 000
-              EUR, ouvert il y a 4 ans par un couple. En janvier 2025, marge nette déclarée par l'expert-
-              comptable : 0,3 %. Le propriétaire ne s'est versé aucun salaire depuis 8 mois.
+              <strong>Exemple fictif, à titre d'illustration :</strong> un bistrot de 38 couverts, CA annuel
+              580 000 EUR, ouvert depuis 4 ans. Marge nette de départ : 0,3 %, et le gérant ne se verse
+              plus de salaire. Voici ce que les leviers décrits plus haut peuvent donner sur 6 mois.
             </p>
           </div>
 
@@ -544,8 +543,8 @@ export default function BlogPourquoiPasRentable() {
               <thead>
                 <tr className="bg-mono-975 text-mono-350">
                   <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Indicateur</th>
-                  <th className="text-center py-3 px-4 font-semibold">Avant (jan 2025)</th>
-                  <th className="text-center py-3 px-4 font-semibold">Après (juin 2025)</th>
+                  <th className="text-center py-3 px-4 font-semibold">Avant</th>
+                  <th className="text-center py-3 px-4 font-semibold">Après 6 mois</th>
                   <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Gain</th>
                 </tr>
               </thead>
@@ -591,7 +590,7 @@ export default function BlogPourquoiPasRentable() {
           </div>
 
           <div className="prose-content mt-8">
-            <h3 className="text-xl font-bold text-mono-100 mb-3">Les 5 actions concrètes qui ont fait la différence</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3">Les 5 actions de l'exemple</h3>
             <ol className="list-decimal list-inside space-y-3 text-mono-350">
               <li>
                 <strong>Refonte de la carte de 38 à 22 plats :</strong> suppression des plats poids morts
@@ -600,28 +599,27 @@ export default function BlogPourquoiPasRentable() {
               </li>
               <li>
                 <strong>Hausse de prix de +8 % sur les Stars :</strong> bavette 19,50 EUR -&gt; 21 EUR.
-                Zéro perte de clients fidèles, +2 800 EUR/mois de marge brute supplémentaire.
+                Si la fréquentation tient, c'est environ +2 800 EUR/mois de marge brute supplémentaire.
               </li>
               <li>
                 <strong>Renégociation des 3 fournisseurs principaux :</strong> boucher (-7 %), maraîcher
                 (-4 %), épicier (-6 %). Tonalité : "on est en difficulté, aidez-nous à tenir et on restera
-                fidèles". Pari gagnant sur la durée.
+                fidèles".
               </li>
               <li>
                 <strong>Mise en place d'un service brunch le dimanche :</strong> 40 couverts à 26 EUR
-                en moyenne pendant 4 heures avec 1 cuisinier + 2 service. ROI immédiat.
+                en moyenne pendant 4 heures avec 1 cuisinier + 2 service.
               </li>
               <li>
                 <strong>CRM email simple :</strong> récolte d'email (offre dessert offert), envoi 1
-                newsletter/mois. 320 emails récoltés en 4 mois, taux de retour x2.
+                newsletter/mois pour faire revenir les clients.
               </li>
             </ol>
             <p className="mt-6">
-              <strong>Résultat :</strong> en 6 mois, le bistrot est passé de 0,3 % de marge nette à
-              12,1 %, soit 70 200 EUR de bénéfice net sur les 6 mois suivants vs 870 EUR sur les 6 mois
-              précédents. Le couple propriétaire s'est remis à se payer 2 800 EUR net chacun par mois.
-              Aucune fermeture, aucun licenciement, aucun changement de concept majeur. Juste de la
-              discipline data.
+              <strong>Ce que montre l'exemple :</strong> cumulés, ces leviers peuvent faire passer un
+              établissement de ce profil de 0,3 % à environ 12 % de marge nette, soit de quoi rémunérer
+              à nouveau le gérant. Sans fermeture, sans licenciement, sans changement de concept majeur :
+              de la discipline sur les chiffres. Les résultats réels dépendent de chaque établissement.
             </p>
           </div>
         </section>
@@ -741,7 +739,7 @@ export default function BlogPourquoiPasRentable() {
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
               <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte
-              bancaire. Gain moyen constaté : 3 à 5 points de marge brute en 6 mois.
+              bancaire.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

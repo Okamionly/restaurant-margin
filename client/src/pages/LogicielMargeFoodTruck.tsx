@@ -34,8 +34,8 @@ import PublicFooter from '../components/public/PublicFooter';
    Mot-clé principal : logiciel marge food truck
    Différencié de BlogFoodTruck (guide créa) — focus produit/logiciel
    Sections : intro marché 700M€, 4 spécificités, food cost 28-33%,
-   décompo burger 11€, 8 plats types, charges spé, optim, KPI, cas
-   Lyon 18%→28%, 10 FAQ, CTA /signup.
+   décompo burger 11€, 8 plats types, charges spé, optim, KPI, exemple
+   illustratif anonyme 18%→28%, 10 FAQ, CTA /signup.
    Schemas : Article + FAQPage + BreadcrumbList + SoftwareApplication.
    ═══════════════════════════════════════════════════════════════ */
 
@@ -701,26 +701,26 @@ export default function LogicielMargeFoodTruck() {
         </div>
       </section>
 
-      {/* ── Cas concret Lyon ── */}
+      {/* ── Exemple illustratif ── */}
       <section className="py-16 px-4 bg-mono-1000">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <span className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
               <Sparkles className="w-3.5 h-3.5" />
-              Cas concret
+              Exemple illustratif
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-              Food truck Lyon : 18 % à 28 % de marge nette en 4 mois
+              Un food truck burger : de 18 % à 28 % de marge nette
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              Comment Burger Brothers Lyon a gagné 10 points de marge nette grâce au logiciel.
+              Exemple fictif : comment le pilotage par emplacement peut faire gagner 10 points de marge nette.
             </p>
           </div>
 
           <div className="bg-white border border-mono-900 rounded-2xl p-8 sm:p-10">
             <div className="grid sm:grid-cols-3 gap-6 mb-8 text-center">
               <div>
-                <div className="text-xs uppercase tracking-wider text-mono-500 mb-1">Avant RestauMargin</div>
+                <div className="text-xs uppercase tracking-wider text-mono-500 mb-1">Situation de départ</div>
                 <div className="text-4xl font-extrabold text-mono-100">18 %</div>
                 <div className="text-xs text-mono-500">marge nette</div>
               </div>
@@ -728,7 +728,7 @@ export default function LogicielMargeFoodTruck() {
                 <ArrowRight className="w-10 h-10 text-teal-600" />
               </div>
               <div>
-                <div className="text-xs uppercase tracking-wider text-emerald-700 mb-1">Après 4 mois</div>
+                <div className="text-xs uppercase tracking-wider text-emerald-700 mb-1">Situation visée</div>
                 <div className="text-4xl font-extrabold text-emerald-700">28 %</div>
                 <div className="text-xs text-emerald-700 font-semibold">marge nette</div>
               </div>
@@ -736,25 +736,25 @@ export default function LogicielMargeFoodTruck() {
 
             <div className="space-y-4 text-sm text-mono-400 leading-relaxed">
               <p>
-                <strong className="text-mono-100">Le diagnostic :</strong> Julien tournait sur 7
-                emplacements/semaine et pensait gagner correctement sa vie. Le logiciel a révélé
-                que 2 emplacements (jeudi soir Brotteaux + dimanche brunch Tête d'Or) étaient
-                déficitaires nets, plombant la rentabilité globale.
+                <strong className="text-mono-100">Le diagnostic :</strong> le gérant tourne sur 7
+                emplacements/semaine et pense gagner correctement sa vie. Le calcul de marge par lieu
+                montre que 2 emplacements (un jeudi soir et un dimanche brunch) sont
+                déficitaires nets et plombent la rentabilité globale.
               </p>
               <p>
                 <strong className="text-mono-100">Les actions :</strong>
               </p>
               <ul className="list-disc list-inside space-y-2 ml-2">
                 <li>Suppression de 2 emplacements déficitaires identifiés par la matrice rentabilité</li>
-                <li>Ajout 1 emplacement Confluence le vendredi midi (test 4 semaines validées)</li>
-                <li>Renégociation prix steak (-12 %) suite alerte hausse fournisseur</li>
+                <li>Ajout d'un emplacement bureaux le vendredi midi (test sur 4 semaines)</li>
+                <li>Renégociation du prix du steak après une alerte de hausse fournisseur</li>
                 <li>Carte réduite de 18 à 10 plats, focus sur 4 best-sellers</li>
-                <li>Mise en place mode événementiel B2B (3 mariages d'été réservés)</li>
+                <li>Développement de l'événementiel B2B (mariages d'été, séminaires)</li>
               </ul>
               <p>
-                <strong className="text-mono-100">Le résultat :</strong> +12 000 EUR de marge nette
-                annualisée, soit un ROI logiciel x35 dès le premier semestre. CA stable à 215 000
-                EUR/an, mais marge nette passée de 38 700 EUR à 60 200 EUR.
+                <strong className="text-mono-100">Ordre de grandeur :</strong> à CA stable de 215 000
+                EUR/an, passer de 18 % à 28 % de marge nette représente environ 38 700 EUR contre
+                60 200 EUR de résultat annuel. Chiffres hypothétiques, à titre d'illustration.
               </p>
             </div>
           </div>
@@ -861,8 +861,7 @@ export default function LogicielMargeFoodTruck() {
             Prêt à piloter la marge de votre food truck ?
           </h2>
           <p className="text-xl text-teal-100 max-w-2xl mx-auto mb-3">
-            Rejoignez les food truckeurs qui ont gagné en moyenne 8 points de marge nette
-            en 6 mois grâce au logiciel RestauMargin.
+            Calculez la marge réelle de chaque plat et de chaque emplacement avec RestauMargin.
           </p>
           <p className="text-teal-50 mb-10">
             Essai gratuit 7 jours - Sans carte bancaire - Mode hors-ligne dans le camion inclus

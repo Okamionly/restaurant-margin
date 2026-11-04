@@ -14,7 +14,7 @@ const VALUES = [
   {
     icon: Target,
     title: 'Impacte mesurable',
-    body: 'On construit des outils que des restaurateurs utilisent chaque jour pour sauver leur marge. Chaque ligne de code change quelque chose de concret dans leur vie.',
+    body: 'On construit des outils pensés pour que des restaurateurs sauvent leur marge au quotidien. Chaque ligne de code change quelque chose de concret dans leur vie.',
   },
   {
     icon: Zap,
@@ -256,7 +256,7 @@ export default function Careers() {
           </div>
           <blockquote className="text-mono-500 dark:text-mono-700 leading-relaxed">
             "J'ai construit RestauMargin parce que j'ai vu des restaurateurs fermer non pas parce que leur cuisine était mauvaise,
-            mais parce qu'ils ne savaient pas lire leurs marges. Le produit est en prod, on a des clients, et maintenant
+            mais parce qu'ils ne savaient pas lire leurs marges. Le produit est en prod, et maintenant
             j'ai besoin de renfort humain — pas de l'exécution, de la co-construction. Si tu partages cette conviction,
             on devrait se parler."
           </blockquote>

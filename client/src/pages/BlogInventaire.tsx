@@ -582,7 +582,7 @@ export default function BlogInventaire() {
 
           <div className="prose-content">
             <p>
-              Restaurant Le Marais (bistronomique 50 couverts, Paris 4e). CA mensuel : 65 000 EUR HT. Premier inventaire restaurant rigoureux après 8 mois sans contrôle. Voici ce que la direction découvre :
+              Exemple illustratif (chiffres fictifs) : un restaurant bistronomique de 50 couverts. CA mensuel : 65 000 EUR HT. Premier inventaire restaurant rigoureux après 8 mois sans contrôle. Voici ce que la direction découvre :
             </p>
           </div>
 
@@ -611,7 +611,7 @@ export default function BlogInventaire() {
               Food cost théorique = Achats / CA = 22 000 / 65 000 = 33,8 %. Food cost réel = Consommation réelle / CA = (4 500 + 22 000 - 2 800) / 65 000 = 23 700 / 65 000 = <strong>36,5 %</strong>. Différence : 2,7 points de food cost = 1 755 EUR de marge perdue ce mois-ci.
             </p>
             <p>
-              Sur l'année, sans intervention : 2 000 EUR x 12 = <strong>24 000 EUR de pertes annuelles</strong> non identifiées. Équivalent : 6 mois de loyer dans Paris intramuros, ou le salaire d'un commis de cuisine pendant 14 mois.
+              Sur l'année, sans intervention : 2 000 EUR x 12 = <strong>24 000 EUR de pertes annuelles</strong> non identifiées. Équivalent : plusieurs mois de loyer en centre-ville, ou le salaire d'un commis de cuisine pendant 14 mois.
             </p>
           </div>
 
@@ -632,7 +632,7 @@ export default function BlogInventaire() {
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="w-4 h-4 text-emerald-700 mt-0.5 flex-shrink-0" />
-                <span><strong>Résultat typique :</strong> -60 à -80 % de l'écart en 1 mois, soit 1 200 à 1 600 EUR récupérés mensuellement, 14 000 à 19 000 EUR par an.</span>
+                <span><strong>Résultat visé :</strong> -60 à -80 % de l'écart en 1 mois, soit 1 200 à 1 600 EUR récupérés mensuellement, 14 000 à 19 000 EUR par an.</span>
               </li>
             </ul>
           </div>
@@ -985,7 +985,7 @@ export default function BlogInventaire() {
 
           <div className="prose-content mt-8">
             <p>
-              Plus de 500 restaurants en France utilisent déjà RestauMargin pour piloter leurs stocks et leurs marges. Le gain moyen constaté est de 2 à 3 points de food cost dans les 6 premiers mois d'utilisation, principalement par détection précoce des dérives et automatisation de l'inventaire. Découvrez nos <Link to="/pricing" className="text-teal-700 underline hover:text-teal-800">tarifs</Link> ou commencez par le <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800">calculateur de food cost gratuit</Link>.
+              RestauMargin est un outil récent : il centralise stocks, fiches techniques et food cost pour détecter plus tôt les dérives et alléger l'inventaire. Essai 7 jours sans carte bancaire, sans engagement. Découvrez nos <Link to="/pricing" className="text-teal-700 underline hover:text-teal-800">tarifs</Link> ou commencez par le <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800">calculateur de food cost gratuit</Link>.
             </p>
           </div>
         </section>
@@ -1014,7 +1014,6 @@ export default function BlogInventaire() {
               <li>- GIRA Conseil — Étude annuelle de la profitabilité restaurants HCR France</li>
               <li>- Règlement (CE) n° 178/2002 — Traçabilité des denrées alimentaires (Paquet Hygiène)</li>
               <li>- Plan Comptable Général — Méthodes de valorisation des stocks (PEPS et CMUP autorisés)</li>
-              <li>- — établissements du secteur, données agrégées 2025-2026</li>
               <li>- Convention collective nationale HCR (IDCC 1979) — Procédures de traçabilité et responsabilité</li>
             </ul>
           </div>

@@ -8,12 +8,10 @@ import {
   Sparkles,
   Lightbulb,
   AlertTriangle,
-  Award,
   Target,
   Users,
   ListChecks,
   TrendingUp,
-  Star,
   Scale,
   Layers,
   CreditCard,
@@ -35,7 +33,7 @@ const faqItems = [
   {
     question: 'RestauMargin est-il vraiment une alternative a Innovorder ?',
     answer:
-      "Pas exactement, et c'est important de le dire honnetement. Innovorder est une suite POS / caisse / click & collect / commande en ligne pour restaurants. RestauMargin est specialise dans la gestion de marge : food cost, fiches techniques, mercuriale, menu engineering. Si vous cherchez une caisse + un site de commande, regardez Innovorder. Si vous cherchez a piloter votre rentabilite plat par plat, RestauMargin est la bonne solution. Beaucoup de restaurateurs utilisent les deux en parallele.",
+      "Pas exactement, et c'est important de le dire honnetement. Innovorder est une suite POS / caisse / click & collect / commande en ligne pour restaurants. RestauMargin est specialise dans la gestion de marge : food cost, fiches techniques, mercuriale, menu engineering. Si vous cherchez une caisse + un site de commande, regardez Innovorder. Si vous cherchez a piloter votre rentabilite plat par plat, RestauMargin est la bonne solution. Rien n'empeche d'utiliser les deux en parallele.",
   },
   {
     question: 'Combien coute Innovorder par rapport a RestauMargin ?',
@@ -60,7 +58,7 @@ const faqItems = [
   {
     question: 'Faut-il choisir entre Innovorder et RestauMargin ?',
     answer:
-      "Pas necessairement. Beaucoup de nos clients gardent leur caisse (Innovorder, Tiller, Zelty, Lightspeed) et ajoutent RestauMargin pour la partie marge. C'est 29 EUR de plus par mois, le retour sur investissement est rapide : 2 points de food cost gagnes sur 500 000 EUR de CA, c'est 10 000 EUR de marge nette en plus par an. Pour un debut d'activite serre, on peut tres bien attendre quelques mois avant de prendre une suite POS complete et commencer par RestauMargin + une caisse basique.",
+      "Pas necessairement. Vous pouvez tres bien garder votre caisse (Innovorder, Tiller, Zelty, Lightspeed) et ajouter RestauMargin pour la partie marge. C'est 29 EUR de plus par mois ; a titre d'illustration, 2 points de food cost gagnes sur 500 000 EUR de CA representent 10 000 EUR de marge en plus par an. Pour un debut d'activite serre, on peut tres bien attendre quelques mois avant de prendre une suite POS complete et commencer par RestauMargin + une caisse basique.",
   },
   {
     question: 'Quelle est la duree d\'engagement chez Innovorder vs RestauMargin ?',
@@ -186,7 +184,7 @@ export default function AlternativeInnovorder() {
               <span className="text-teal-200 font-bold">3.</span>
               <span>
                 <strong className="text-white">Les deux outils ne se concurrencent pas vraiment</strong> :
-                Innovorder vend, RestauMargin pilote la marge. Beaucoup les utilisent en parallele.
+                Innovorder vend, RestauMargin pilote la marge. Rien n'empeche de les utiliser en parallele.
               </span>
             </div>
             <div className="flex items-start gap-2">
@@ -217,7 +215,6 @@ export default function AlternativeInnovorder() {
               { href: '#tableau', label: 'Tableau comparatif complet (15 criteres)' },
               { href: '#cas-usage', label: 'Cas d\'usage : POS vs gestion de marge' },
               { href: '#pricing', label: 'Pricing : combien chacun coute sur 1 an' },
-              { href: '#temoignages', label: 'Temoignages clients' },
               { href: '#faq', label: 'FAQ : 10 questions frequentes' },
               { href: '#cta', label: 'Tester RestauMargin gratuitement' },
             ].map((item, i) => (
@@ -585,8 +582,7 @@ export default function AlternativeInnovorder() {
 
             <div className="prose-content space-y-4 text-base text-mono-400 leading-relaxed">
               <p>
-                Trois scenarios concrets pour vous aider a decider. Chacun reflete un profil reel
-                de restaurateur qu'on rencontre regulierement.
+                Trois exemples illustratifs (profils fictifs) pour vous aider a decider.
               </p>
             </div>
 
@@ -594,15 +590,15 @@ export default function AlternativeInnovorder() {
               <UseCaseCard
                 badge="Cas 1"
                 title="Bistrot independant 80 couverts, CA 450K EUR"
-                profile="Sophie, cheffe-proprietaire d'un bistrot a Lyon. Caisse enregistreuse Tiller deja en place, pas de click & collect. Marge nette tombee a 3 % a cause de la hausse des produits frais."
+                profile="Un bistrot independant. Caisse enregistreuse Tiller deja en place, pas de click & collect. Marge nette tombee a 3 % a cause de la hausse des produits frais."
                 besoin="Reprendre le controle sur le food cost, repercuter les hausses fournisseurs sur les prix de vente, identifier les plats sous-marges."
-                recommandation="RestauMargin seul (29 EUR/mois). Pas besoin d'Innovorder, la caisse existante fait deja le job. Investissement : 348 EUR/an. ROI attendu : 9 000 a 15 000 EUR de marge nette recuperee."
+                recommandation="RestauMargin seul (29 EUR/mois). Pas besoin d'Innovorder, la caisse existante fait deja le job. Investissement : 348 EUR/an. Ordre de grandeur : sur 450K EUR de CA, chaque point de food cost regagne represente environ 4 500 EUR de marge."
                 outil="RestauMargin"
               />
               <UseCaseCard
                 badge="Cas 2"
                 title="Chaine de 4 fast-casual, CA 2,5M EUR"
-                profile="Karim, fondateur d'une enseigne healthy en Ile-de-France. Click & collect represente 40 % du CA. Cherche a digitaliser la commande en kiosque pour fluidifier le rush midi."
+                profile="Une enseigne healthy de 4 restaurants. Click & collect represente 40 % du CA. Cherche a digitaliser la commande en kiosque pour fluidifier le rush midi."
                 besoin="Suite POS complete avec click & collect, livraison Uber Eats / Deliveroo, kiosques tactiles, gestion multi-site centralisee."
                 recommandation="Innovorder pour la partie front-office (caisse, kiosque, click & collect). RestauMargin en complement pour la marge multi-restaurants (29 EUR x 4 = 116 EUR/mois). Total : Innovorder + RestauMargin."
                 outil="Innovorder + RestauMargin"
@@ -610,7 +606,7 @@ export default function AlternativeInnovorder() {
               <UseCaseCard
                 badge="Cas 3"
                 title="Restaurant gastronomique 30 couverts, CA 600K EUR"
-                profile="Antoine, chef etoile, equipe restreinte. Pas de livraison ni click & collect, prise de commande au comptoir uniquement. Marge brute autour de 65 % qu'il veut pousser a 72 %."
+                profile="Un restaurant gastronomique, equipe restreinte. Pas de livraison ni click & collect, prise de commande au comptoir uniquement. Marge brute autour de 65 %, objectif 72 %."
                 besoin="Fiches techniques ultra precises, suivi des ingredients haut de gamme (truffe, foie gras), allergenes pour clientele exigeante, mercuriale fournisseurs Rungis."
                 recommandation="RestauMargin seul. Le module food cost + mercuriale + allergenes est exactement le besoin. Aucun interet a payer Innovorder 89 EUR de plus pour des fonctionnalites inutiles ici."
                 outil="RestauMargin"
@@ -696,39 +692,6 @@ export default function AlternativeInnovorder() {
             </div>
           </section>
 
-          {/* ═════════════ SECTION 7 : Temoignages ═════════════ */}
-          <section id="temoignages" className="mb-16">
-            <SectionHeading icon={<Award className="w-6 h-6" />} number="7">
-              Temoignages clients
-            </SectionHeading>
-
-            <div className="grid sm:grid-cols-2 gap-6 mt-8">
-              <TestimonialCard
-                name="Sophie M."
-                role="Cheffe-proprietaire, bistrot lyonnais"
-                stars={5}
-                quote="J'ai longtemps regarde Innovorder mais a 150 EUR/mois pour des fonctions que je n'utilisais pas, c'etait absurde. Avec RestauMargin a 29 EUR/mois, j'ai gagne 4 points de food cost en 3 mois. ROI immediat."
-              />
-              <TestimonialCard
-                name="Karim B."
-                role="Fondateur, chaine fast-casual 4 sites"
-                stars={5}
-                quote="Nous utilisons Innovorder pour la caisse et les bornes, RestauMargin pour la marge multi-restos. Les deux sont complementaires. RestauMargin a paye sa licence des le premier mois en alertes sur prix fournisseurs."
-              />
-              <TestimonialCard
-                name="Antoine R."
-                role="Chef etoile, restaurant gastronomique"
-                stars={5}
-                quote="La precision des fiches techniques RestauMargin est superieure a ce que j'avais teste chez Innovorder. Pour un restaurant gastronomique ou chaque gramme compte, c'est essentiel."
-              />
-              <TestimonialCard
-                name="Marie L."
-                role="Comptable, groupe 12 restaurants"
-                stars={4}
-                quote="Innovorder reste indispensable pour la partie caisse certifiee NF525. Mais sur la consolidation des marges et le reporting fournisseurs, RestauMargin est plus rapide et plus visuel. On utilise les deux."
-              />
-            </div>
-          </section>
 
           <BlogAuthor publishedDate="2026-05-26" readTime="12 min" variant="footer" />
 
@@ -926,36 +889,6 @@ function UseCaseCard({
         <p className="bg-teal-50 border border-teal-200 rounded-xl p-4 text-teal-900">
           <strong>Recommandation :</strong> {recommandation}
         </p>
-      </div>
-    </div>
-  );
-}
-
-function TestimonialCard({
-  name,
-  role,
-  stars,
-  quote,
-}: {
-  name: string;
-  role: string;
-  stars: number;
-  quote: string;
-}) {
-  return (
-    <div className="bg-mono-1000 border border-mono-900 rounded-2xl p-6">
-      <div className="flex items-center gap-1 mb-3">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Star
-            key={i}
-            className={`w-4 h-4 ${i < stars ? 'text-amber-500 fill-amber-500' : 'text-mono-700'}`}
-          />
-        ))}
-      </div>
-      <p className="text-sm text-mono-350 leading-relaxed italic mb-4">"{quote}"</p>
-      <div className="border-t border-mono-900 pt-3">
-        <div className="font-semibold text-mono-100 text-sm">{name}</div>
-        <div className="text-xs text-mono-500">{role}</div>
       </div>
     </div>
   );

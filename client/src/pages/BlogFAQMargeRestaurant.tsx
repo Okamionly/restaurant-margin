@@ -117,7 +117,7 @@ const faq = [
     answer:
       "La marge moyenne d'un restaurant en France est de 70-75 % de marge brute et 8-10 % de marge nette. Ces moyennes masquent de fortes disparités : un quartile bas a 3-5 % de marge nette, la médiane vers 7 %, et un quartile haut au-dessus de 12 %. La marge moyenne sur les boissons et vins atteint 85-90 %.",
     extra:
-      "Sur un panel de 1000 restaurants suivis par les organismes professionnels (UMIH, GNI, SNRC), 25 % affichent une marge nette négative en raison de loyers excessifs, de food cost mal maîtrisé ou de saisonnalité mal anticipée. La maîtrise du calcul de marge est donc le premier levier de survie.",
+      "Une part non négligeable des restaurants affiche une marge nette négative, le plus souvent en raison de loyers excessifs, de food cost mal maîtrisé ou de saisonnalité mal anticipée. La maîtrise du calcul de marge est donc le premier levier de survie.",
   },
   {
     question: 'Quelle est la marge de gain acceptable ?',
@@ -296,8 +296,8 @@ export default function BlogFAQMargeRestaurant() {
                 Les restaurateurs français se posent quotidiennement les mêmes questions sur la marge :
                 quel est le taux moyen ? Comment la calculer ? Est-ce qu'un food cost à 32 % est correct ?
                 Combien dois-je gagner ? Cette FAQ rassemble les <strong>25 questions essentielles</strong> que se
-                pose chaque restaurateur, avec des réponses concrètes, chiffrées et issues des données
-                terrain de plus de 500 restaurants utilisant RestauMargin.
+                pose chaque restaurateur, avec des réponses concrètes et chiffrées, fondées sur les ordres de
+                grandeur couramment cités dans la profession.
               </p>
               <p>
                 Chaque réponse commence par un paragraphe court et factuel pour aller à l'essentiel,

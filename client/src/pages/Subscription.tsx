@@ -197,6 +197,7 @@ export default function Subscription() {
 
   // Auto-rotate testimonials
   useEffect(() => {
+    if (TESTIMONIALS.length === 0) return;
     const timer = setInterval(() => {
       setTestimonialIndex((prev) => (prev + 1) % TESTIMONIALS.length);
     }, 5000);
@@ -252,7 +253,7 @@ export default function Subscription() {
   };
 
   // ROI Calculator logic
-  const roiFoodCostSavingsPercent = 0.06; // 6% food cost reduction on average
+  const roiFoodCostSavingsPercent = 0.06; // hypothese illustrative (pas une moyenne mesuree)
   const avgFoodCostPercent = 0.32;
   const dailyRevenue = roiCouverts * roiPrixMoyen;
   const monthlySavings = Math.round(dailyRevenue * 30 * avgFoodCostPercent * roiFoodCostSavingsPercent);
@@ -719,7 +720,7 @@ export default function Subscription() {
               Combien RestauMargin vous fait economiser ?
             </h2>
             <p className="mt-2 text-sm text-[#6B7280] dark:text-mono-700">
-              En moyenne, nos clients reduisent leur food cost de 6%
+              Simulation illustrative : hypothese d'une reduction de 6% du food cost
             </p>
           </div>
 
@@ -804,14 +805,17 @@ export default function Subscription() {
             </div>
 
             <p className="mt-4 text-center text-xs text-[#9CA3AF] dark:text-mono-500">
-              Estimation basee sur une reduction moyenne de 6% du food cost (32% moyen en restauration)
+              Simulation basee sur une hypothese de reduction de 6% du food cost (32% moyen en restauration). Resultat non garanti.
             </p>
           </div>
         </div>
 
         {/* ================================================================ */}
         {/* 5. TESTIMONIAL SLIDER                                            */}
+        {/* Rendu seulement s'il existe de vrais temoignages : avec le tableau  */}
+        {/* vide, TESTIMONIALS[0].rating plantait la page.                    */}
         {/* ================================================================ */}
+        {TESTIMONIALS.length > 0 && (
         <div className="mt-20">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold mb-3">
@@ -884,6 +888,7 @@ export default function Subscription() {
             </div>
           </div>
         </div>
+        )}
 
         {/* ================================================================ */}
         {/* 6. FAQ SECTION                                                   */}

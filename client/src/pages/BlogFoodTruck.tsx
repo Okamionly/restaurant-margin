@@ -254,8 +254,8 @@ export default function BlogFoodTruck() {
           <div className="prose-content">
             <p>
               Avant de se lancer, il faut comprendre les ordres de grandeur. Voici le modèle
-              économique type d'un food truck en France en 2026, basé sur les données agrégées
-              de 500+ exploitants suivis par RestauMargin et publiées par le SNRC.
+              économique type d'un food truck en France en 2026, sous forme d'ordres de grandeur
+              indicatifs.
             </p>
           </div>
 
@@ -690,7 +690,7 @@ export default function BlogFoodTruck() {
           <div className="prose-content">
             <p>
               Tous les concepts ne se valent pas. Voici les catégories qui surperforment en France
-              en 2026, avec leurs forces, faiblesses et marges typiques observées par RestauMargin.
+              en 2026, avec leurs forces, faiblesses et marges typiques indicatives.
             </p>
           </div>
 

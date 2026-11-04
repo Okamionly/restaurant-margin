@@ -222,14 +222,13 @@ export default function BlogGaspillage() {
             </Callout>
 
             <p>
-              <strong>Exemple concret :</strong> Le restaurant Le Petit Jardin à Lyon a réduit ses
-              pertes liées aux DLC dépassées de 68 % en trois mois simplement en instaurant un
+              <strong>Exemple illustratif :</strong> un restaurant peut réduire fortement ses
+              pertes liées aux DLC dépassées, par exemple de deux tiers en quelques mois, simplement en instaurant un
               code couleur sur les étiquettes : vert (plus de 3 jours), orange (1 à 3 jours),
               rouge (dernier jour). Les produits "orange" et "rouge" sont prioritaires en mise en place.
             </p>
             <p>
-              Le gain moyen constaté par les restaurants qui mettent en place un FIFO rigoureux est
-              de 3 000 à 6 000 EUR par an de pertes évitées, pour un investissement quasi nul
+              Un FIFO rigoureux peut éviter plusieurs milliers d'euros de pertes par an, pour un investissement quasi nul
               (étiquettes et un peu de discipline).
             </p>
           </div>
@@ -297,8 +296,7 @@ export default function BlogGaspillage() {
               retour d'assiette, surplus de production). En fin de semaine, analysez les données.
             </p>
             <p>
-              Les restaurants qui pratiquent la pesée des déchets constatent une réduction moyenne de
-              20 % du gaspillage dès le premier mois — simplement parce que l'équipe prend conscience
+              La pesée des déchets fait souvent baisser le gaspillage dès les premières semaines — simplement parce que l'équipe prend conscience
               des quantités jetées. C'est l'effet "miroir" : quand on sait qu'on est observé (ou
               qu'on s'observe soi-même), on fait naturellement plus attention.
             </p>
@@ -349,9 +347,8 @@ export default function BlogGaspillage() {
               matières premières.
             </p>
             <p>
-              <strong>Exemple :</strong> Le Bistrot du Marché à Bordeaux a réduit ses achats
-              excessifs de 18 % en installant un simple tableur de suivi des ventes par jour et par
-              plat. En 6 mois, le gain cumulé a dépassé 8 000 EUR. RestauMargin automatise cette
+              <strong>Exemple illustratif :</strong> un bistrot qui installe un simple tableur de suivi des ventes par jour et par
+              plat peut réduire ses achats excessifs, par exemple de 15 à 20 %, et économiser plusieurs milliers d'euros en 6 mois. RestauMargin automatise cette
               analyse avec ses outils de prévision intelligente.
             </p>
           </div>

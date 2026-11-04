@@ -18,7 +18,6 @@ import {
   Layers,
   TrendingUp,
   Clock,
-  Quote,
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import PublicHeader from '../components/public/PublicHeader';
@@ -555,7 +554,7 @@ export default function FonctionnaliteFichesTechniques() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4" style={{ color: TEXT }}>
-              Des bénéfices chiffrés, pas des promesses
+              Ce que change une fiche vivante
             </h2>
             <p className="text-lg max-w-2xl mx-auto" style={{ color: TEXT_MUTED }}>
               Ce que change concrètement le passage aux fiches techniques automatisées.
@@ -596,27 +595,6 @@ export default function FonctionnaliteFichesTechniques() {
             })}
           </div>
 
-          {/* Mini-témoignage */}
-          <div
-            className="rounded-2xl mt-10 p-7 sm:p-9 flex gap-5 max-w-3xl mx-auto"
-            style={{ backgroundColor: '#FAFAFA', border: `1px solid ${BORDER}` }}
-          >
-            <Quote className="w-8 h-8 shrink-0" style={{ color: ACCENT }} />
-            <div>
-              <p className="text-base leading-relaxed italic mb-3" style={{ color: TEXT }}>
-                « Avant, mes fiches techniques dormaient dans un classeur que je ressortais en panique avant les
-                contrôles. Aujourd'hui, je crée une fiche pendant que je parle au commis, le food cost s'affiche tout
-                seul, et j'exporte le PDF en deux secondes. J'ai arrêté de vendre à perte sur trois plats que je croyais
-                rentables. »
-              </p>
-              <div className="text-sm font-bold" style={{ color: TEXT }}>
-                Karim B. — Chef-propriétaire
-              </div>
-              <div className="text-xs" style={{ color: ACCENT_DARK }}>
-                Bistrot de quartier, Marseille
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 

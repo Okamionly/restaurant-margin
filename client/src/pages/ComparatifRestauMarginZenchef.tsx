@@ -14,8 +14,6 @@ import {
   Sparkles,
   Scale,
   XCircle,
-  Star,
-  Quote,
   Building2,
   Minus,
   Trophy,
@@ -46,11 +44,11 @@ const faqItems = [
   },
   {
     question: "Peut-on utiliser RestauMargin et Zenchef en parallele ?",
-    answer: "Oui, c'est meme la configuration la plus frequente chez les restaurants matures. RestauMargin gere votre back-office (food cost, fiches techniques, marges, fournisseurs) tandis que Zenchef gere votre front-office digital (reservations, marketing, site web). Aucune integration native n'existe entre les deux, mais ils n'ont pas besoin d'echanger de donnees pour coexister. Total combine : 118 EUR/mois (RestauMargin Pro + Zenchef Essential), soit moins cher qu'une formule Zenchef Standard seule.",
+    answer: "Oui, c'est une configuration courante. RestauMargin gere votre back-office (food cost, fiches techniques, marges, fournisseurs) tandis que Zenchef gere votre front-office digital (reservations, marketing, site web). Aucune integration native n'existe entre les deux, mais ils n'ont pas besoin d'echanger de donnees pour coexister. Total combine : 118 EUR/mois (RestauMargin Pro + Zenchef Essential), soit moins cher qu'une formule Zenchef Standard seule.",
   },
   {
     question: "Lequel a la meilleure interface ?",
-    answer: "Zenchef offre une interface mature et lechee, conçue pour la gestion clientele avec un focus marketing. RestauMargin propose une interface plus epuree et mobile-first, optimisee pour la saisie rapide en cuisine (mode kiosk, scan OCR, balance Bluetooth). Le choix depend de votre usage principal : Zenchef si vous gerez beaucoup de reservations depuis un ordinateur ; RestauMargin si vous travaillez en cuisine sur tablette ou telephone. Les deux sont en français et bien notes par leurs utilisateurs.",
+    answer: "Zenchef offre une interface mature et lechee, conçue pour la gestion clientele avec un focus marketing. RestauMargin propose une interface plus epuree et mobile-first, optimisee pour la saisie rapide en cuisine (mode kiosk, scan OCR, balance Bluetooth). Le choix depend de votre usage principal : Zenchef si vous gerez beaucoup de reservations depuis un ordinateur ; RestauMargin si vous travaillez en cuisine sur tablette ou telephone. Les deux sont en français.",
   },
   {
     question: "Lequel pour un food truck ?",
@@ -62,7 +60,7 @@ const faqItems = [
   },
   {
     question: "Migration de Zenchef vers RestauMargin est-elle possible ?",
-    answer: "La question de migration ne se pose pas vraiment, car les deux outils stockent des donnees totalement differentes. Zenchef garde vos reservations, votre base clients et votre historique marketing. RestauMargin gere vos ingredients, recettes, fiches techniques et factures fournisseurs. Vous pouvez quitter Zenchef sans rien perdre cote operations, et inversement. Beaucoup de restaurateurs ajoutent simplement RestauMargin par-dessus Zenchef plutot que de remplacer.",
+    answer: "La question de migration ne se pose pas vraiment, car les deux outils stockent des donnees totalement differentes. Zenchef garde vos reservations, votre base clients et votre historique marketing. RestauMargin gere vos ingredients, recettes, fiches techniques et factures fournisseurs. Vous pouvez quitter Zenchef sans rien perdre cote operations, et inversement. Il est possible d'ajouter simplement RestauMargin par-dessus Zenchef plutot que de remplacer l'un par l'autre.",
   },
   {
     question: "Lequel pour la gestion HACCP ?",
@@ -112,7 +110,7 @@ export default function ComparatifRestauMarginZenchef() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'RestauMargin vs Zenchef : comparatif complet 2026',
-            description: "Comparatif benchmark detaille entre RestauMargin et Zenchef en 2026. Tableau 25+ criteres, prix, cas d'usage, temoignages et FAQ.",
+            description: "Comparatif benchmark detaille entre RestauMargin et Zenchef en 2026. Tableau 25+ criteres, prix, cas d'usage et FAQ.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -267,7 +265,6 @@ export default function ComparatifRestauMarginZenchef() {
               { href: '#cas-usage', label: "Cas d'usage : qui choisir ?" },
               { href: '#combiner', label: 'Combiner les deux outils ?' },
               { href: '#pricing-12m', label: 'Pricing detaille sur 12 mois' },
-              { href: '#temoignages', label: 'Temoignages 6 restaurateurs' },
               { href: '#verdict-final', label: 'Verdict final par profil' },
               { href: '#faq', label: 'FAQ 12 questions' },
               { href: '#cta', label: 'Tester RestauMargin gratuitement' },
@@ -481,9 +478,8 @@ export default function ComparatifRestauMarginZenchef() {
             <p>
               <strong>Calcul ROI 12 mois RestauMargin :</strong> sur un restaurant qui realise 400 000 EUR
               de chiffre d'affaires annuel avec un food cost initial de 32 %, gagner 2 points de marge brute
-              represente 8 000 EUR par an. RestauMargin Pro a 348 EUR/an se rentabilise donc en moins de 16
-              jours d'utilisation serieuse. Tous nos clients atteignent cette amelioration en moins de 3
-              mois selon nos donnees internes 2026.
+              represente 8 000 EUR par an. RestauMargin Pro a 348 EUR/an se rentabiliserait donc en moins de 16
+              jours si ce gain est atteint (exemple illustratif, le resultat depend de votre situation).
             </p>
             <p>
               <strong>Calcul ROI 12 mois Zenchef :</strong> sur le meme restaurant, gagner 10 reservations
@@ -592,8 +588,8 @@ export default function ComparatifRestauMarginZenchef() {
 
           <div className="prose-content">
             <p>
-              Plutot qu'un verdict unique, voici les 4 scenarios les plus frequents que nous observons chez
-              nos prospects et clients. Identifiez le profil le plus proche du votre.
+              Plutot qu'un verdict unique, voici 4 profils types de
+              restaurants. Identifiez le profil le plus proche du votre.
             </p>
           </div>
 
@@ -656,16 +652,15 @@ export default function ComparatifRestauMarginZenchef() {
             <p>
               Le combo RestauMargin Pro + Zenchef Start coute 118 EUR/mois, soit 1 416 EUR/an. C'est moins
               cher qu'une formule Zenchef Plus seule (1 668 EUR/an) tout en couvrant un perimetre largement
-              plus complet. C'est pour cette raison que beaucoup de restaurateurs matures abandonnent l'idee
-              de "choisir entre les deux" et adoptent la combinaison.
+              plus complet. C'est pour cette raison qu'il est souvent plus pertinent de ne pas
+              "choisir entre les deux" et d'adopter la combinaison.
             </p>
           </div>
 
           <Callout type="info">
-            <strong>Le saviez-vous ?</strong> 43 % de nos clients RestauMargin utilisent aussi Zenchef ou
-            TheFork en parallele. C'est un signe que la complementarite fonctionne en realite, pas seulement
-            en theorie. Inversement, beaucoup de clients Zenchef nous decouvrent en cherchant un outil pour
-            piloter leurs marges, faute de fonctionnalite native chez Zenchef.
+            <strong>A retenir :</strong> RestauMargin et Zenchef ne se chevauchent sur aucune fonctionnalite
+            coeur : l'un pilote les marges, l'autre les reservations. Les utiliser ensemble n'entraine aucun
+            doublon de donnees.
           </Callout>
         </section>
 
@@ -744,69 +739,9 @@ export default function ComparatifRestauMarginZenchef() {
           </div>
         </section>
 
-        {/* ═════════════ SECTION 8 : Temoignages ═════════════ */}
-        <section id="temoignages" className="mb-16">
-          <SectionHeading icon={<Quote className="w-6 h-6" />} number="8">
-            Temoignages de 6 restaurateurs
-          </SectionHeading>
-
-          <div className="prose-content">
-            <p>
-              Voici 6 retours equilibres (3 cote RestauMargin, 3 cote Zenchef) issus de notre base
-              utilisateurs et de leurs avis Trustpilot / Capterra. Les prenoms ont ete modifies pour
-              preserver l'anonymat des etablissements.
-            </p>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 mt-8">
-            <TestimonialCard
-              quote="On utilisait Zenchef depuis 3 ans pour les reservations et on en etait contents. Mais on payait 139 EUR/mois sans avoir d'outil pour le food cost. On a ajoute RestauMargin il y a 6 mois et la marge brute est passee de 64 a 70 %. Pour 29 EUR de plus, c'est rentabilise en deux semaines."
-              author="Karim B."
-              role="Bistrot moderne, Lyon (combo RM + Zenchef)"
-              rating={5}
-              tool="rm"
-            />
-            <TestimonialCard
-              quote="Zenchef nous a fait passer de 50 a 120 reservations/semaine en 6 mois grace au site web + Google + marketing email. Pour notre restaurant gastronomique, c'est devenu indispensable. L'investissement de 189 EUR/mois est largement rentabilise."
-              author="Marie L."
-              role="Chef-proprio, Paris (Zenchef Premium)"
-              rating={5}
-              tool="zc"
-            />
-            <TestimonialCard
-              quote="J'avais regarde Zenchef pour notre nouveau restaurant. Trop cher et trop complexe pour ce que je voulais faire au demarrage. J'ai pris RestauMargin pour la gestion des marges et TheFork gratuit pour les reservations. Combinaison gagnante, total 29 EUR/mois."
-              author="Sophie M."
-              role="Restaurant independant, Bordeaux (RM seul)"
-              rating={5}
-              tool="rm"
-            />
-            <TestimonialCard
-              quote="Le plan de salle interactif de Zenchef est genial. On gere 90 couverts sur 2 services avec une vue temps reel des occupations. La newsletter integree fait revenir 15 % de clients par mois. Pour un restaurant de notre taille, c'est la reference."
-              author="Antoine R."
-              role="Brasserie, Nantes (Zenchef Plus)"
-              rating={4}
-              tool="zc"
-            />
-            <TestimonialCard
-              quote="Le scan de factures et la mercuriale RestauMargin m'ont fait gagner 4 heures par semaine. Aucun equivalent chez Zenchef. L'IA suggere meme quand un fournisseur a augmente ses prix de plus de 5 %. C'est vraiment un outil pense pour les operations."
-              author="Mehdi L."
-              role="Chef-proprietaire, Marseille (RM seul)"
-              rating={5}
-              tool="rm"
-            />
-            <TestimonialCard
-              quote="On utilise Zenchef depuis 5 ans. Le module reservation est mature, le support reactif. Critique honnete : le prix a augmente de 30 % en 3 ans et l'onboarding initial a ete long. Mais aujourd'hui je ne pourrais plus m'en passer pour la gestion clientele."
-              author="Caroline T."
-              role="Directrice, groupe IDF (Zenchef multi-site)"
-              rating={4}
-              tool="zc"
-            />
-          </div>
-        </section>
-
-        {/* ═════════════ SECTION 9 : Verdict final par profil ═════════════ */}
+        {/* ═════════════ SECTION 8 : Verdict final par profil ═════════════ */}
         <section id="verdict-final" className="mb-16">
-          <SectionHeading icon={<Target className="w-6 h-6" />} number="9">
+          <SectionHeading icon={<Target className="w-6 h-6" />} number="8">
             Verdict final par profil restaurateur
           </SectionHeading>
 
@@ -854,7 +789,7 @@ export default function ComparatifRestauMarginZenchef() {
 
         {/* ═════════════ FAQ visible ═════════════ */}
         <section id="faq" className="mb-16">
-          <SectionHeading icon={<HelpCircle className="w-6 h-6" />} number="10">
+          <SectionHeading icon={<HelpCircle className="w-6 h-6" />} number="9">
             FAQ 12 questions
           </SectionHeading>
 
@@ -1162,44 +1097,6 @@ function VerdictCard({
           Reco : {winner}
         </div>
         <p className="text-sm text-mono-400 leading-relaxed">{reasoning}</p>
-      </div>
-    </div>
-  );
-}
-
-function TestimonialCard({
-  quote,
-  author,
-  role,
-  rating,
-  tool,
-}: {
-  quote: string;
-  author: string;
-  role: string;
-  rating: number;
-  tool: 'rm' | 'zc';
-}) {
-  return (
-    <div className="bg-white border border-mono-900 rounded-3xl p-6 sm:p-7 relative">
-      <div className="absolute top-4 right-4">
-        {tool === 'rm' ? <BadgeR /> : <BadgeZ />}
-      </div>
-      <div className="flex items-center gap-1 mb-3">
-        {Array.from({ length: rating }).map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-        ))}
-      </div>
-      <Quote className="w-6 h-6 text-teal-600 mb-3 opacity-50" />
-      <p className="text-sm text-mono-350 leading-relaxed mb-4 italic">"{quote}"</p>
-      <div className="flex items-center gap-3 pt-3 border-t border-mono-900">
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${tool === 'rm' ? 'bg-gradient-to-br from-teal-500 to-teal-700' : 'bg-gradient-to-br from-violet-500 to-violet-700'}`}>
-          {author.split(' ').map((n) => n[0]).join('')}
-        </div>
-        <div>
-          <div className="font-bold text-mono-100 text-sm">{author}</div>
-          <div className="text-xs text-mono-500">{role}</div>
-        </div>
       </div>
     </div>
   );

@@ -78,7 +78,7 @@ export default function LogicielMargeIndien() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Logiciel de marge pour restaurant indien : food cost et rentabilité en 2026',
-            description: "Guide complet du calcul de marge pour restaurant indien : décomposition coût d'un curry, food cost cible 28-32 %, levier base gravy et boissons, menu mix végétarien/viande, KPI et cas concret.",
+            description: "Guide complet du calcul de marge pour restaurant indien : décomposition coût d'un curry, food cost cible 28-32 %, levier base gravy et boissons, menu mix végétarien/viande, KPI et exemple illustratif.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -205,7 +205,7 @@ export default function LogicielMargeIndien() {
               { href: '#boissons', label: 'Le levier boissons : bière, lassi, chai' },
               { href: '#menu-mix', label: 'Piloter le menu mix végétarien / viande / riz' },
               { href: '#kpi', label: 'Les 6 KPI à suivre en restaurant indien' },
-              { href: '#cas-lyon', label: 'Cas concret : restaurant indien Lyon, 8 % à 19 % en 8 mois' },
+              { href: '#cas-lyon', label: 'Exemple illustratif : un restaurant indien de quartier, de 8 % à 19 % de marge nette' },
               { href: '#logiciel', label: 'Comment RestauMargin automatise tout' },
               { href: '#faq', label: 'Questions fréquentes restaurant indien' },
               { href: '#cta', label: 'Essayer RestauMargin gratuitement' },
@@ -697,17 +697,16 @@ export default function LogicielMargeIndien() {
           </div>
         </section>
 
-        {/* ═════════════ SECTION 9 : Cas concret Lyon ═════════════ */}
+        {/* ═════════════ SECTION 9 : Exemple illustratif ═════════════ */}
         <section id="cas-lyon" className="mb-16">
           <SectionHeading icon={<Award className="w-6 h-6" />} number="9">
-            Cas concret : restaurant indien Lyon, 8 % à 19 % en 8 mois
+            Exemple illustratif : un restaurant indien de quartier, de 8 % à 19 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Restaurant indien à Lyon (7ème), 60 couverts. Reprise en octobre 2025 par Amir, chef
-              formé à Delhi, et sa compagne Sarah en salle. CA annuel constaté à la reprise :
-              380 000 EUR, marge nette 8 %. Bonne réputation, salle pleine le vendredi et samedi, mais
+              Prenons un exemple fictif : un restaurant indien de 60 couverts, repris par un chef et
+              son associé en salle. CA annuel de départ : 380 000 EUR, marge nette 8 %. Bonne réputation, salle pleine le vendredi et samedi, mais
               rentabilité décevante en semaine.
             </p>
 
@@ -726,7 +725,7 @@ export default function LogicielMargeIndien() {
                 phase="Phase 1 (mois 1-2)"
                 title="Standardiser la sauce de base et les fiches techniques"
                 actions={[
-                  'Fiche technique figée de la gravy de base via RestauMargin (coût 0,58 EUR/portion)',
+                  'Fiche technique figée de la gravy de base (coût 0,58 EUR/portion)',
                   'Création des fiches techniques des 48 plats, grammages standardisés (riz 130 g cru)',
                   'Identification des plats poids morts (food cost supérieur à 33 %, peu vendus)',
                   'Résultat : food cost passe de 35 % à 31 %',
@@ -756,7 +755,7 @@ export default function LogicielMargeIndien() {
                 phase="Phase 4 (mois 7-8)"
                 title="Pilotage en temps réel"
                 actions={[
-                  'Scan factures OCR via RestauMargin (agneau, riz basmati, gambas, épices)',
+                  'Suivi des factures fournisseurs (agneau, riz basmati, gambas, épices)',
                   'Tableau de bord vérifié 2x/semaine (food cost + menu mix + boissons)',
                   'Dimensionnement du riz et des naans selon prévisions, gaspillage à 3,5 %',
                   'Résultat final : marge nette 19 %',
@@ -767,7 +766,7 @@ export default function LogicielMargeIndien() {
             <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-3">
                 <CheckCircle className="w-6 h-6 text-emerald-700 flex-shrink-0 mt-0.5" />
-                <h3 className="font-bold text-emerald-900 text-lg">Résultats après 8 mois</h3>
+                <h3 className="font-bold text-emerald-900 text-lg">Résultats de l'exemple après 8 mois</h3>
               </div>
               <ul className="space-y-2 text-emerald-800 text-sm">
                 <li><strong>CA annuel :</strong> 380 000 EUR -- 418 000 EUR (+10 %)</li>
@@ -790,8 +789,7 @@ export default function LogicielMargeIndien() {
             <p>
               RestauMargin est conçu pour la réalité opérationnelle d'un restaurant indien : carte
               large, sauce de base à standardiser, food cost hétérogènes, levier boissons et menu mix à
-              piloter. Voici les 6 modules clés qui vous font gagner 8 à 15 heures par mois et 5 à 10
-              points de marge nette.
+              piloter. Voici les 6 modules clés.
             </p>
           </div>
 
@@ -816,10 +814,8 @@ export default function LogicielMargeIndien() {
 
           <div className="prose-content mt-8">
             <p>
-              Des dizaines de restaurants indiens en France utilisent déjà RestauMargin pour piloter
-              leur rentabilité. Gain moyen constaté : <strong>5 à 8 points de marge nette en 8 mois</strong>,
-              principalement grâce à la standardisation de la sauce de base, au rééquilibrage du menu mix
-              et à l'activation du levier boissons. Pour aller plus loin, lisez notre guide sur le <Link to="/blog/menu-engineering-boston-matrix" className="text-teal-700 underline hover:text-teal-800">menu engineering</Link>,
+              Les trois leviers les plus puissants restent la standardisation de la sauce de base, le
+              rééquilibrage du menu mix et l'activation du levier boissons. Pour aller plus loin, lisez notre guide sur le <Link to="/blog/menu-engineering-boston-matrix" className="text-teal-700 underline hover:text-teal-800">menu engineering</Link>,
               apprenez à <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">réduire votre food cost</Link>, comprenez le <Link to="/blog/coefficient-multiplicateur" className="text-teal-700 underline hover:text-teal-800">coefficient multiplicateur</Link>,
               comparez avec la page <Link to="/logiciel-marge-restaurant-italien" className="text-teal-700 underline hover:text-teal-800">logiciel de marge pour restaurant italien</Link> ou
               testez le <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800">calculateur de food cost gratuit</Link>.

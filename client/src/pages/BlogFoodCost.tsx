@@ -452,7 +452,7 @@ export default function BlogFoodCost() {
 
           <h3 className="text-xl font-bold text-mono-100 mt-8 mb-3">Exemple chiffré comparatif</h3>
           <p>
-            Bistrot Leon, mois d'avril 2026 :
+            Exemple illustratif (chiffres fictifs) : un bistrot, sur un mois d'avril :
           </p>
           <div className="overflow-x-auto my-4">
             <table className="w-full text-sm">
@@ -540,7 +540,7 @@ export default function BlogFoodCost() {
           </div>
 
           <p>
-            Plongeons dans un cas réel. Voici la fiche technique complète d'un plat phare : <strong>saumon grillé, riz basmati et haricots verts</strong>, vendu 19,90 EUR TTC (soit 18,09 EUR HT à 10 % de TVA).
+            Prenons un exemple illustratif. Voici la fiche technique complète d'un plat phare : <strong>saumon grillé, riz basmati et haricots verts</strong>, vendu 19,90 EUR TTC (soit 18,09 EUR HT à 10 % de TVA).
           </p>
 
           <h3 className="text-xl font-bold text-mono-100 mt-6 mb-3">Étape 1 : la fiche technique</h3>
@@ -894,7 +894,7 @@ export default function BlogFoodCost() {
           </div>
 
           <p>
-            <strong>Cas concret</strong> : Bistrot Leon a un food cost de 30 %, donc une marge brute de 70 %. Si sa masse salariale représente 35 % du CA, son prime cost est de 65 % (30 % + 35 %). Après loyer (8 %), énergie (4 %), assurances et autres (6 %), il reste 17 % avant impôts. Après impôts et amortissements, sa marge nette est probablement autour de 8 à 10 %. <Link to="/blog/prime-cost-restaurant" className="text-teal-700 font-semibold hover:underline">Voir notre guide complet sur le prime cost</Link>.
+            <strong>Exemple illustratif</strong> : un bistrot a un food cost de 30 %, donc une marge brute de 70 %. Si sa masse salariale représente 35 % du CA, son prime cost est de 65 % (30 % + 35 %). Après loyer (8 %), énergie (4 %), assurances et autres (6 %), il reste 17 % avant impôts. Après impôts et amortissements, sa marge nette est probablement autour de 8 à 10 %. <Link to="/blog/prime-cost-restaurant" className="text-teal-700 font-semibold hover:underline">Voir notre guide complet sur le prime cost</Link>.
           </p>
 
           <div className="bg-blue-50 border-l-4 border-blue-400 rounded-r-xl p-5 my-6">
@@ -1087,7 +1087,7 @@ export default function BlogFoodCost() {
             <li>- <strong>National Restaurant Association</strong> : Benchmark international du food cost (US data)</li>
           </ul>
           <p className="text-xs text-mono-500 mt-4 italic">
-            Article rédigé par la rédaction RestauMargin. Mis à jour le 26 mai 2026. Notre méthodologie : croisement des données publiques INSEE et Fiducial avec les retours terrain de des restaurateurs accompagnés par RestauMargin depuis 2025.
+            Article rédigé par la rédaction RestauMargin. Mis à jour le 26 mai 2026. Notre méthodologie : croisement des données publiques INSEE et Fiducial.
           </p>
         </section>
 

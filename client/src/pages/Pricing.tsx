@@ -330,7 +330,7 @@ function ROICalculator() {
           </div>
 
           <p className="text-xs text-white/30 mt-6">
-            * Estimation basee sur une reduction du food cost de 35% a 30%, moyenne constatee chez nos utilisateurs.
+            * Simulation illustrative basee sur une hypothese de reduction du food cost de 35% a 30%. Ce n'est pas un resultat garanti ni une moyenne mesuree.
           </p>
         </div>
       </div>

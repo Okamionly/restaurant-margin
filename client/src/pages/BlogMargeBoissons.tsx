@@ -562,7 +562,7 @@ export default function BlogMargeBoissons() {
               <li>- <strong>Code général des impôts</strong> : article 279 - taux de TVA applicable en restauration</li>
             </ul>
             <p className="text-xs text-mono-500 mt-4 italic">
-              Article rédigé par la rédaction RestauMargin. Publié le 6 juillet 2026. Notre méthodologie : croisement des référentiels de gestion du secteur CHR et des retours terrain de restaurateurs accompagnés par RestauMargin. Les valeurs chiffrées sont indicatives et ne remplacent pas le calcul de vos propres ratios à partir de vos factures.
+              Article rédigé par la rédaction RestauMargin. Publié le 6 juillet 2026. Notre méthodologie : croisement des référentiels de gestion du secteur CHR. Les valeurs chiffrées sont indicatives et ne remplacent pas le calcul de vos propres ratios à partir de vos factures.
             </p>
           </section>
 

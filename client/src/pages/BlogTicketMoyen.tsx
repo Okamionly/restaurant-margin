@@ -344,8 +344,8 @@ export default function BlogTicketMoyen() {
 
           <div className="prose-content">
             <p>
-              Mettons des chiffres réels sur la table avec un cas concret : <strong>Le Marais</strong>,
-              brasserie parisienne de 60 couverts, ouverte 6 jours sur 7, midi et soir.
+              Mettons des chiffres sur la table avec un exemple illustratif : une brasserie fictive
+              de 60 couverts, ouverte 6 jours sur 7, midi et soir.
             </p>
           </div>
 
@@ -542,7 +542,7 @@ export default function BlogTicketMoyen() {
           <div className="prose-content">
             <p>
               Voici les 10 techniques les plus efficaces, classées par impact moyen sur le ticket
-              (décroissant). Chacune indique l'impact typique observé sur.
+              (décroissant). Chacune indique un ordre de grandeur d'impact, à titre indicatif.
             </p>
           </div>
 
@@ -783,7 +783,6 @@ export default function BlogTicketMoyen() {
             <li>GIRA Conseil - Benchmarks opérationnels restauration 2025</li>
             <li>INSEE - Indicateurs de consommation hors domicile (2024-2025)</li>
             <li>Hospitality ON - Étude sur l'upselling et menu engineering 2025</li>
-            <li> : établissements du secteur, 1,2M+ couverts analysés</li>
             <li>Études académiques sur le menu engineering (Pavesic, Smith, Cornell University)</li>
           </ul>
         </section>

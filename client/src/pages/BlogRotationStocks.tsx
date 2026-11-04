@@ -85,7 +85,7 @@ const faqItems = [
   {
     question: "Comment un logiciel comme RestauMargin réduit le stock dormant ?",
     answer:
-      "RestauMargin scanne automatiquement vos factures fournisseurs (OCR), suit les ventes en temps réel et calcule en continu la rotation par référence. Un produit identifié comme dormant (rotation < 1x/mois sur 60 jours) déclenche une alerte avec 4 suggestions : recette anti-gaspi, promotion plat du jour, retour fournisseur si possible, ou don associatif. Résultat moyen constaté : -30 % de stock dormant en 90 jours.",
+      "RestauMargin scanne automatiquement vos factures fournisseurs (OCR), suit les ventes en temps réel et calcule en continu la rotation par référence. Un produit identifié comme dormant (rotation < 1x/mois sur 60 jours) déclenche une alerte avec 4 suggestions : recette anti-gaspi, promotion plat du jour, retour fournisseur si possible, ou don associatif.",
   },
 ];
 
@@ -344,8 +344,7 @@ export default function BlogRotationStocks() {
 
           <div className="prose-content mt-8">
             <p>
-              Selon les données agrégées de la GIRA Conseil (des restaurants
-              connectés), les établissements dans le top 25 % de leur catégorie ont une rotation moyenne
+              Selon les données agrégées de la GIRA Conseil, les établissements dans le top 25 % de leur catégorie ont une rotation moyenne
               <strong> 2,4x supérieure</strong> à la moyenne du marché. Ce n'est pas un hasard : ils ont
               compris que <strong>la rotation est un effet, pas une cause</strong>. C'est le reflet d'une
               chaîne de bonnes pratiques en amont.
@@ -951,9 +950,6 @@ export default function BlogRotationStocks() {
               fonctionnalités / prix pour le suivi de la rotation et de la marge.
             </p>
             <p>
-              Résultat moyen constaté sur les établissements du secteur à RestauMargin : <strong>-30 %
-              de stock dormant en 90 jours</strong>, <strong>+1,5 à 3 points de marge brute</strong>{' '}
-              récupérés, <strong>5-8 heures par semaine économisées</strong> sur la gestion des stocks.
               Pour découvrir l'outil, lancez le
               <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800 ml-1">
                 calculateur de food cost gratuit

@@ -74,7 +74,7 @@ export default function LogicielMargeCreperie() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Logiciel de marge pour crêperie en 2026',
-            description: "Guide complet du calcul de marge pour crêperie : décomposition coût galette sarrasin, food cost cible 22-26 %, levier cidre, KPI spécifiques et cas concret Nantes.",
+            description: "Guide complet du calcul de marge pour crêperie : décomposition coût galette sarrasin, food cost cible 22-26 %, levier cidre, KPI spécifiques et exemple illustratif chiffré.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -144,7 +144,7 @@ export default function LogicielMargeCreperie() {
         date="Mai 2026"
         title="Logiciel de marge pour crêperie en 2026"
         accentWord="crêperie"
-        subtitle="La crêperie est l'un des modèles à plus forte marge brute de la restauration française (74-78 %). Décomposition coût galette, levier cidre AOP, productivité billig, cas concret Nantes : tout pour piloter votre rentabilité."
+        subtitle="La crêperie est l'un des modèles à plus forte marge brute de la restauration française (74-78 %). Décomposition coût galette, levier cidre AOP, productivité billig, exemple illustratif chiffré : tout pour piloter votre rentabilité."
       />
 
       {/* ── Contenu principal ── */}
@@ -201,7 +201,7 @@ export default function LogicielMargeCreperie() {
               { href: '#operationnel', label: 'Spécificités : billig, productivité, gestes techniques' },
               { href: '#cidre', label: 'Le cidre : le levier #1 de rentabilité' },
               { href: '#optimisation', label: 'Optimisation : cidre maison, formules midi, mix' },
-              { href: '#cas-nantes', label: 'Cas concret : crêperie Nantes, 12 % à 26 % en 8 mois' },
+              { href: '#cas-nantes', label: 'Exemple illustratif : une crêperie, de 12 % à 26 % de marge nette' },
               { href: '#kpi', label: 'Les 6 KPI à suivre en crêperie' },
               { href: '#logiciel', label: 'Comment RestauMargin automatise tout' },
               { href: '#faq', label: 'Questions fréquentes crêperie' },
@@ -714,20 +714,20 @@ export default function LogicielMargeCreperie() {
           </Callout>
         </section>
 
-        {/* ═════════════ SECTION 9 : Cas concret Nantes ═════════════ */}
+        {/* ═════════════ SECTION 9 : Exemple illustratif ═════════════ */}
         <section id="cas-nantes" className="mb-16">
           <SectionHeading icon={<Award className="w-6 h-6" />} number="9">
-            Cas concret : crêperie Nantes, 12 % à 26 % en 8 mois
+            Exemple illustratif : une crêperie, de 12 % à 26 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Crêperie traditionnelle Nantes centre historique, 65 couverts. Reprise en septembre 2025
-              par Anne L., 42 ans, ancienne cheffe de partie en gastronomique. CA annuel constaté
-              à la reprise : 340 000 EUR, marge nette 12 %.
+              Prenons un exemple fictif : une crêperie traditionnelle de centre-ville, 65 couverts,
+              reprise par une nouvelle gérante. CA annuel de départ : 340 000 EUR, marge nette 12 %.
+              Les chiffres qui suivent sont hypothétiques et servent à illustrer l'enchaînement des leviers.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-8">Diagnostic initial (mois 1)</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-8">Diagnostic initial</h3>
             <ul className="list-disc list-inside space-y-2 text-mono-350 mt-4">
               <li>Food cost réel : 31 % (vs cible 24 %). Portions de garniture non standardisées, gaspillage 5 %.</li>
               <li>Ratio cidre / galette : 22 % (faible). Pas de proposition systématique en service.</li>
@@ -742,10 +742,10 @@ export default function LogicielMargeCreperie() {
                 phase="Phase 1 (mois 1-2)"
                 title="Stabilisation du food cost"
                 actions={[
-                  'Mise en place de fiches techniques précises pour 24 galettes + 16 crêpes via RestauMargin',
+                  'Mise en place de fiches techniques précises pour 24 galettes + 16 crêpes',
                   'Pesée systématique des portions garniture (balance comptoir + tablette)',
                   'Réduction carte à 18 galettes core + 4 saisonnières + 10 crêpes',
-                  'Résultat : food cost passe de 31 % à 25 %',
+                  'Objectif : food cost de 31 % à 25 %',
                 ]}
               />
               <PhaseCard
@@ -755,7 +755,7 @@ export default function LogicielMargeCreperie() {
                   'Formation équipe à la proposition systématique cidre en service',
                   'Lancement formule midi galette + crêpe + bolée de cidre à 15,90 EUR',
                   'Refonte carte cidres avec sélection 6 producteurs AOP / IGP',
-                  'Résultat : ratio cidre/galette de 22 % à 45 %, ticket moyen 17 EUR à 22 EUR',
+                  'Objectif : ratio cidre/galette de 22 % à 45 %, ticket moyen de 17 EUR à 22 EUR',
                 ]}
               />
               <PhaseCard
@@ -764,18 +764,18 @@ export default function LogicielMargeCreperie() {
                 actions={[
                   'Recrutement second crepier (CDI temps partiel, 24h)',
                   'Investissement 3e billig électrique (1 800 EUR amorti sur 5 ans)',
-                  'Mise en place scan factures OCR via RestauMargin',
-                  'Résultat : productivité 38 à 68 plats/heure, food cost à 23 %',
+                  'Mise en place du scan des factures fournisseurs',
+                  'Objectif : productivité de 38 à 68 plats/heure, food cost à 23 %',
                 ]}
               />
               <PhaseCard
                 phase="Phase 4 (mois 7-8)"
                 title="Pilotage en temps réel"
                 actions={[
-                  'Tableau de bord RestauMargin vérifié 2x/semaine (mardi + vendredi)',
+                  'Tableau de bord de marge vérifié 2x/semaine (mardi + vendredi)',
                   'Alertes prix fournisseurs activées sur sarrasin, beurre AOP, cidre, fromages',
                   'Ajustement carte selon menu engineering (12 plats stars identifiés)',
-                  'Résultat final : marge nette 26 %',
+                  'Objectif final : marge nette 26 %',
                 ]}
               />
             </div>
@@ -783,7 +783,7 @@ export default function LogicielMargeCreperie() {
             <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-3">
                 <CheckCircle className="w-6 h-6 text-emerald-700 flex-shrink-0 mt-0.5" />
-                <h3 className="font-bold text-emerald-900 text-lg">Résultats après 8 mois</h3>
+                <h3 className="font-bold text-emerald-900 text-lg">Situation visée (hypothétique)</h3>
               </div>
               <ul className="space-y-2 text-emerald-800 text-sm">
                 <li><strong>CA annuel :</strong> 340 000 EUR -- 425 000 EUR (+25 %)</li>
@@ -841,8 +841,8 @@ export default function LogicielMargeCreperie() {
             <p>
               RestauMargin est conçu pour la réalité opérationnelle d'une crêperie : saisonnalité,
               forte rotation, pression sur les marges, gestion mixte galettes + crêpes + cidre.
-              Voici les 6 modules clés qui vous font gagner 8 à 15 heures par mois et 5 à 10
-              points de marge nette.
+              Voici les 6 modules clés qui vous aident à gagner du temps de gestion et à
+              protéger votre marge nette.
             </p>
           </div>
 
@@ -867,10 +867,8 @@ export default function LogicielMargeCreperie() {
 
           <div className="prose-content mt-8">
             <p>
-              Plus de 45 crêperies en France utilisent déjà RestauMargin pour piloter leur
-              rentabilité, principalement en Bretagne, Pays de la Loire et Normandie. Gain moyen
-              constaté : <strong>5,4 points de marge brute en 6 mois</strong>, principalement
-              grâce aux alertes prix sarrasin et à l'optimisation du ratio cidre/galette. Pour
+              Les deux leviers qui pèsent le plus en crêperie restent <strong>les alertes prix
+              sarrasin</strong> et <strong>l'optimisation du ratio cidre/galette</strong>. Pour
               aller plus loin, lisez nos guides <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">food cost restaurant</Link>,
               <Link to="/blog/coefficient-multiplicateur" className="text-teal-700 underline hover:text-teal-800 ml-1">coefficient multiplicateur</Link> et
               <Link to="/blog/construire-carte-vins-restaurant" className="text-teal-700 underline hover:text-teal-800 ml-1">construire une carte des vins</Link>

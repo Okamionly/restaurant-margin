@@ -199,7 +199,7 @@ export default function BlogLivraisonRentabilite() {
               { href: '#strat-nego', label: 'Stratégie 5 : négocier les commissions plateformes' },
               { href: '#couts-caches', label: 'Les 7 coûts cachés que personne ne compte' },
               { href: '#dark-kitchen', label: 'Dark kitchen et delivery only : pour qui, pour quoi ?' },
-              { href: '#scenarios', label: 'Scénarios comparatifs : 3 modèles testés' },
+              { href: '#scenarios', label: 'Scénarios comparatifs : 3 modèles chiffrés' },
               { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Piloter votre marge livraison avec RestauMargin' },
             ].map((item, i) => (
@@ -575,9 +575,9 @@ export default function BlogLivraisonRentabilite() {
           </div>
 
           <Callout type="info">
-            <strong>Cas pratique :</strong> un bistrot lyonnais a sorti son carpaccio (note moyenne 3,1)
-            et son cabillaud grillé (note 2,8) de la carte Uber Eats. Note globale du restaurant passée
-            de 4,1 à 4,7 en 3 mois. Volume commandes +35 % grâce au boost algorithmique du ranking.
+            <strong>Exemple illustratif :</strong> un bistrot sort de sa carte Uber Eats ses deux plats les
+            moins bien notés (un carpaccio et un cabillaud grillé qui voyagent mal). Sa note globale peut
+            alors remonter, et le meilleur classement algorithmique peut se traduire par davantage de commandes.
           </Callout>
         </section>
 
@@ -837,12 +837,12 @@ export default function BlogLivraisonRentabilite() {
         {/* ═════════════ SECTION 12 : Scenarios comparatifs ═════════════ */}
         <section id="scenarios" className="mb-16">
           <SectionHeading icon={<BarChart3 className="w-6 h-6" />} number="12">
-            Scénarios comparatifs : 3 modèles testés
+            Scénarios comparatifs : 3 modèles chiffrés
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Comparons trois scénarios réels sur un restaurant qui réalise 25 000 EUR/mois en CA livraison.
+              Comparons trois scénarios théoriques sur un restaurant qui réalise 25 000 EUR/mois en CA livraison.
               Hypothèses constantes : 1 000 commandes/mois, ticket moyen 25 EUR HT, food cost 32 %, main
               d'oeuvre cuisine 8 min/commande, packaging 1,10 EUR.
             </p>

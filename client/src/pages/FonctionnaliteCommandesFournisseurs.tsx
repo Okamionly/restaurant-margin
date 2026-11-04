@@ -155,7 +155,7 @@ const benefits = [
   },
   {
     icon: <TrendingDown className="w-6 h-6" />,
-    stat: '-15 %',
+    stat: 'Moins',
     label: 'de ruptures de stock',
     desc:
       "Les suggestions IA basees sur vos ventes evitent les oublis et les commandes trop justes.",
@@ -445,8 +445,8 @@ export default function FonctionnaliteCommandesFournisseurs() {
               Ce que vous gagnez concretement
             </h2>
             <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: TEXT_MUTED }}>
-              Moins de temps perdu, plus de marge protegee. Des chiffres constates chez nos
-              restaurateurs.
+              Moins de temps perdu, plus de marge protegee. Des ordres de grandeur indicatifs,
+              pas des resultats mesures chez des clients.
             </p>
           </div>
 

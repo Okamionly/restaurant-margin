@@ -74,7 +74,7 @@ export default function LogicielMargeSushi() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Logiciel de marge pour restaurant sushi japonais en 2026',
-            description: "Guide complet du calcul de marge pour restaurant sushi : décomposition coût plateau saumon, food cost cible 30-35 %, gestion perte poisson, KPI spécifiques et cas concret Paris.",
+            description: "Guide complet du calcul de marge pour restaurant sushi : décomposition coût plateau saumon, food cost cible 30-35 %, gestion perte poisson, KPI spécifiques et exemple illustratif.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -143,7 +143,7 @@ export default function LogicielMargeSushi() {
         date="Mai 2026"
         title="Logiciel de marge pour restaurant sushi japonais en 2026"
         accentWord="sushi"
-        subtitle="Le sushi est un business haut de gamme avec un food cost structurellement plus élevé (30-35 %) que la moyenne, plombé par le coût des poissons crus et la perte 24h sur le sashimi. Méthode, décomposition, KPI et cas concret restaurant sushi Paris."
+        subtitle="Le sushi est un business haut de gamme avec un food cost structurellement plus élevé (30-35 %) que la moyenne, plombé par le coût des poissons crus et la perte 24h sur le sashimi. Méthode, décomposition, KPI et exemple illustratif de restaurant sushi."
       />
 
       {/* -- Contenu principal -- */}
@@ -200,7 +200,7 @@ export default function LogicielMargeSushi() {
               { href: '#optimisation', label: 'Optimisation : JAT, rotation 24h, omakase, plateaux familiaux' },
               { href: '#livraison', label: 'Livraison sushi : spécificités et pièges' },
               { href: '#kpi', label: 'Les KPI à suivre en restaurant sushi' },
-              { href: '#cas-paris', label: 'Cas concret : restaurant sushi Paris, 6 % à 18 % en 10 mois' },
+              { href: '#cas-paris', label: 'Exemple illustratif : un restaurant sushi indépendant, de 6 % à 18 % de marge nette' },
               { href: '#logiciel', label: 'Comment RestauMargin automatise tout' },
               { href: '#faq', label: 'Questions fréquentes restaurant sushi' },
               { href: '#cta', label: 'Essayer RestauMargin gratuitement' },
@@ -812,17 +812,17 @@ export default function LogicielMargeSushi() {
           </div>
         </section>
 
-        {/* ═════════════ SECTION 9 : Cas concret Paris ═════════════ */}
+        {/* ═════════════ SECTION 9 : Exemple illustratif ═════════════ */}
         <section id="cas-paris" className="mb-16">
           <SectionHeading icon={<Award className="w-6 h-6" />} number="9">
-            Cas concret : restaurant sushi Paris, 6 % à 18 % en 10 mois
+            Exemple illustratif : un restaurant sushi indépendant, de 6 % à 18 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Restaurant sushi indépendant Paris 11ème, 45 couverts. Reprise en juin 2025 par
-              Sophie L., 34 ans, ancienne consultante en hôtellerie. CA annuel constaté à la
-              reprise : 420 000 EUR, marge nette 6 %.
+              Prenons un exemple fictif : un restaurant sushi indépendant de 45 couverts, repris
+              par une gérante venue du conseil en hôtellerie. CA annuel de départ : 420 000 EUR,
+              marge nette 6 %.
             </p>
 
             <h3 className="text-xl font-bold text-mono-100 mb-3 mt-8">Diagnostic initial (mois 1)</h3>
@@ -841,7 +841,7 @@ export default function LogicielMargeSushi() {
                 phase="Phase 1 (mois 1-2)"
                 title="Maîtrise de la perte poisson"
                 actions={[
-                  'Mise en place de fiches techniques précises pour les 64 références via RestauMargin',
+                  'Mise en place de fiches techniques précises pour les 64 références',
                   'Étiquetage systématique des arrivages (date + heure découpe)',
                   'Réduction carte à 38 références core + 4 saisonnières',
                   'Résultat : perte poisson passe de 14 % à 8 %, food cost de 41 % à 35 %',
@@ -853,7 +853,7 @@ export default function LogicielMargeSushi() {
                 actions={[
                   'Négociation mareyeur direct Rungis pour saumon / thon (-15 % vs Metro)',
                   'Passage en JAT 4 livraisons/semaine sur volumes calibrés',
-                  'Scan factures OCR via RestauMargin (gain 2h/semaine)',
+                  'Suivi systématique des factures fournisseurs',
                   'Résultat : food cost passe de 35 % à 32 %',
                 ]}
               />
@@ -861,7 +861,7 @@ export default function LogicielMargeSushi() {
                 phase="Phase 3 (mois 5-7)"
                 title="Stratégie multi-canal"
                 actions={[
-                  'Lancement click & collect via site web RestauMargin (-2 EUR)',
+                  'Lancement d’un service de click & collect (-2 EUR)',
                   'Prix différencié : +18 % sur Uber Eats / Deliveroo',
                   'Recrutement livreur CDI temps partiel pour zone proche',
                   'Résultat : ratio livraison plateforme tombe de 72 % à 48 %',
@@ -871,7 +871,7 @@ export default function LogicielMargeSushi() {
                 phase="Phase 4 (mois 8-10)"
                 title="Pilotage en temps réel"
                 actions={[
-                  'Tableau de bord RestauMargin vérifié 3x/semaine',
+                  'Tableau de bord de marge vérifié 3x/semaine',
                   'Alertes prix saumon / thon / riz activées',
                   'Négociation packaging : -0,35 EUR par commande',
                   'Résultat final : marge nette 18 %',
@@ -882,7 +882,7 @@ export default function LogicielMargeSushi() {
             <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-3">
                 <CheckCircle className="w-6 h-6 text-emerald-700 flex-shrink-0 mt-0.5" />
-                <h3 className="font-bold text-emerald-900 text-lg">Résultats après 10 mois</h3>
+                <h3 className="font-bold text-emerald-900 text-lg">Résultats de l'exemple après 10 mois</h3>
               </div>
               <ul className="space-y-2 text-emerald-800 text-sm">
                 <li><strong>CA annuel :</strong> 420 000 EUR -- 510 000 EUR (+21 %)</li>
@@ -906,8 +906,7 @@ export default function LogicielMargeSushi() {
             <p>
               RestauMargin est conçu pour la réalité opérationnelle d'un restaurant sushi :
               poisson cher, perte structurelle, multi-canal, pression sur les marges. Voici
-              les 6 modules clés qui vous font gagner 10 à 18 heures par mois et 5 à 10 points
-              de marge nette.
+              les 6 modules clés.
             </p>
           </div>
 
@@ -932,9 +931,8 @@ export default function LogicielMargeSushi() {
 
           <div className="prose-content mt-8">
             <p>
-              Plus de 40 restaurants sushi en France utilisent déjà RestauMargin pour piloter
-              leur rentabilité. Gain moyen constaté : <strong>6,2 points de marge brute en 6 mois</strong>,
-              principalement grâce au suivi perte poisson et aux alertes prix mareyeur. Pour
+              Les deux leviers les plus puissants restent le suivi de la perte poisson et la
+              surveillance des prix mareyeur. Pour
               aller plus loin, lisez notre guide complet sur <Link to="/blog/reduire-food-cost" className="text-rose-700 underline hover:text-rose-800">la réduction du food cost en restauration</Link>,
               notre article sur <Link to="/blog/rotation-stocks-restaurant" className="text-rose-700 underline hover:text-rose-800">la rotation des stocks restaurant</Link> ou
               testez le <Link to="/outils/calculateur-food-cost" className="text-rose-700 underline hover:text-rose-800">calculateur de food cost gratuit</Link>.

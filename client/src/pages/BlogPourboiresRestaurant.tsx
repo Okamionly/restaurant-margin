@@ -258,7 +258,7 @@ export default function BlogPourboiresRestaurant() {
             <h2 className="text-2xl font-bold text-mono-100">7. Cas chiffré : un restaurant de 25 couverts/service</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
-            Un bistrot parisien réalise en moyenne 25 couverts par service, deux services par jour, 6 jours sur sept, ticket moyen 32 EUR. Chiffre d'affaires hebdomadaire : environ 9 600 EUR. Avec un taux de pourboire moyen de 3% de l'addition, la masse de pourboires hebdomadaire s'élève à environ <strong>288 EUR</strong>.
+            Prenons un exemple fictif : un bistrot qui réalise en moyenne 25 couverts par service, deux services par jour, 6 jours sur sept, ticket moyen 32 EUR. Chiffre d'affaires hebdomadaire : environ 9 600 EUR. Avec un taux de pourboire moyen de 3% de l'addition, la masse de pourboires hebdomadaire s'élève à environ <strong>288 EUR</strong>.
           </p>
           <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Pourboires hebdo (tronc collectif, 3 serveurs) : 288 EUR</div>

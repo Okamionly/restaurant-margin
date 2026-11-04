@@ -77,7 +77,7 @@ export default function LogicielMargeItalien() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Logiciel de marge pour restaurant italien : food cost et rentabilité en 2026',
-            description: "Guide complet du calcul de marge pour restaurant italien (trattoria) : décomposition coût d'un plat de pâtes, food cost cible 26-30 %, levier vins italiens, menu mix antipasti/pâtes/secondi, KPI et cas concret.",
+            description: "Guide complet du calcul de marge pour restaurant italien (trattoria) : décomposition coût d'un plat de pâtes, food cost cible 26-30 %, levier vins italiens, menu mix antipasti/pâtes/secondi, KPI et exemple illustratif.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -203,7 +203,7 @@ export default function LogicielMargeItalien() {
               { href: '#vins', label: 'Le levier vins italiens : doper la marge globale' },
               { href: '#menu-mix', label: 'Piloter le menu mix antipasti / primi / secondi' },
               { href: '#kpi', label: 'Les 6 KPI à suivre en restaurant italien' },
-              { href: '#cas-marseille', label: 'Cas concret : trattoria Marseille, 9 % à 21 % en 8 mois' },
+              { href: '#cas-marseille', label: 'Exemple illustratif : une trattoria de quartier, de 9 % à 21 % de marge nette' },
               { href: '#logiciel', label: 'Comment RestauMargin automatise tout' },
               { href: '#faq', label: 'Questions fréquentes restaurant italien' },
               { href: '#cta', label: 'Essayer RestauMargin gratuitement' },
@@ -690,16 +690,16 @@ export default function LogicielMargeItalien() {
           </div>
         </section>
 
-        {/* ═════════════ SECTION 9 : Cas concret Marseille ═════════════ */}
+        {/* ═════════════ SECTION 9 : Exemple illustratif ═════════════ */}
         <section id="cas-marseille" className="mb-16">
           <SectionHeading icon={<Award className="w-6 h-6" />} number="9">
-            Cas concret : trattoria Marseille, 9 % à 21 % en 8 mois
+            Exemple illustratif : une trattoria de quartier, de 9 % à 21 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Trattoria de quartier à Marseille (6ème), 70 couverts. Reprise en octobre 2025 par
-              Giulia et Paolo, couple de restaurateurs. CA annuel constaté à la reprise : 420 000 EUR,
+              Prenons un exemple fictif : une trattoria de quartier de 70 couverts, reprise par un
+              couple de restaurateurs. CA annuel de départ : 420 000 EUR,
               marge nette 9 %. Salle toujours pleine le soir, mais rentabilité décevante.
             </p>
 
@@ -718,7 +718,7 @@ export default function LogicielMargeItalien() {
                 phase="Phase 1 (mois 1-2)"
                 title="Fiches techniques et standardisation"
                 actions={[
-                  'Création des fiches techniques des 42 plats via RestauMargin',
+                  'Création des fiches techniques des 42 plats',
                   'Standardisation des grammages (pâtes 130 g, antipasti portionnés)',
                   'Identification des plats poids morts (food cost > 38 %, peu vendus)',
                   'Résultat : food cost passe de 34 % à 30 %',
@@ -748,7 +748,7 @@ export default function LogicielMargeItalien() {
                 phase="Phase 4 (mois 7-8)"
                 title="Pilotage en temps réel"
                 actions={[
-                  'Scan factures OCR via RestauMargin (parmesan, huile, charcuterie)',
+                  'Suivi des factures fournisseurs (parmesan, huile, charcuterie)',
                   'Tableau de bord vérifié 2x/semaine (food cost + menu mix + boissons)',
                   'Suivi DLC mozzarella et charcuterie, gaspillage ramené à 3,5 %',
                   'Résultat final : marge nette 21 %',
@@ -759,7 +759,7 @@ export default function LogicielMargeItalien() {
             <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-3">
                 <CheckCircle className="w-6 h-6 text-emerald-700 flex-shrink-0 mt-0.5" />
-                <h3 className="font-bold text-emerald-900 text-lg">Résultats après 8 mois</h3>
+                <h3 className="font-bold text-emerald-900 text-lg">Résultats de l'exemple après 8 mois</h3>
               </div>
               <ul className="space-y-2 text-emerald-800 text-sm">
                 <li><strong>CA annuel :</strong> 420 000 EUR -- 465 000 EUR (+11 %)</li>
@@ -781,8 +781,7 @@ export default function LogicielMargeItalien() {
           <div className="prose-content">
             <p>
               RestauMargin est conçu pour la réalité opérationnelle d'un restaurant italien : carte
-              large, food cost hétérogènes, levier vins et menu mix à piloter. Voici les 6 modules clés
-              qui vous font gagner 8 à 15 heures par mois et 5 à 10 points de marge nette.
+              large, food cost hétérogènes, levier vins et menu mix à piloter. Voici les 6 modules clés.
             </p>
           </div>
 
@@ -807,9 +806,8 @@ export default function LogicielMargeItalien() {
 
           <div className="prose-content mt-8">
             <p>
-              Des dizaines de restaurants italiens en France utilisent déjà RestauMargin pour piloter
-              leur rentabilité. Gain moyen constaté : <strong>5 à 8 points de marge nette en 8 mois</strong>,
-              principalement grâce au rééquilibrage du menu mix et à la valorisation de la carte des vins.
+              Les deux leviers les plus puissants restent le rééquilibrage du menu mix et la valorisation
+              de la carte des vins.
               Pour aller plus loin, lisez notre guide sur le <Link to="/blog/menu-engineering-boston-matrix" className="text-teal-700 underline hover:text-teal-800">menu engineering</Link>,
               comparez avec notre page <Link to="/logiciel-marge-pizzeria" className="text-teal-700 underline hover:text-teal-800">logiciel de marge pour pizzeria</Link> ou
               testez le <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800">calculateur de food cost gratuit</Link>.

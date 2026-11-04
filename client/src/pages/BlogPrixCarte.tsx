@@ -402,7 +402,7 @@ export default function BlogPrixCarte() {
               <li>Positionnez-vous : 5 à 15 % au-dessus si premium, dans la médiane si milieu de gamme, 5 à 10 % en-dessous si discount.</li>
             </ol>
 
-            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-8">Tableau benchmark type : brasserie parisienne 2026</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-8">Tableau benchmark illustratif : brasserie parisienne 2026</h3>
           </div>
 
           <div className="mt-4 overflow-x-auto">
@@ -438,8 +438,8 @@ export default function BlogPrixCarte() {
 
           <div className="prose-content mt-6">
             <p>
-              Source : relevé RestauMargin sur 47 brasseries du Grand Paris en avril 2026. Si votre
-              onglet-frites est à 24 EUR alors que la médiane est à 22,50 EUR, vous êtes positionné
+              Fourchettes indicatives, à titre d'illustration : refaites ce relevé sur vos propres
+              concurrents. Si votre onglet-frites est à 24 EUR alors que la médiane est à 22,50 EUR, vous êtes positionné
               +6,7 % au-dessus du marché. C'est acceptable si votre positionnement est premium ou
               si vous avez une différenciation produit claire (race, label, origine).
             </p>
@@ -670,11 +670,11 @@ export default function BlogPrixCarte() {
           </div>
 
           <Callout type="info">
-            <strong>Cas concret :</strong> un bistro lyonnais qui vendait son plat du jour à 12,50 EUR
-            (food cost 41 %, marge brute insuffisante) est passé à 14,90 EUR (food cost 33 %).
-            Résultat sur 6 mois : -8 % de couverts mais +22 % de marge brute totale, équipe moins
-            stressée, qualité remontée (budget matière par plat +30 %). Le client a accepté parce que
-            la présentation et le storytelling ont aussi été revus.
+            <strong>Exemple illustratif :</strong> un bistrot qui vend son plat du jour à 12,50 EUR
+            (food cost 41 %, marge brute insuffisante) le passe à 14,90 EUR (food cost 33 %).
+            Même avec 8 % de couverts en moins, la marge brute totale peut progresser d'environ 22 %,
+            avec un budget matière par plat plus confortable. La hausse passe mieux si la présentation
+            et le storytelling du plat sont revus en même temps.
           </Callout>
         </section>
 
@@ -820,12 +820,6 @@ export default function BlogPrixCarte() {
           </div>
 
           <div className="prose-content mt-8">
-            <p>
-              Plus de 500 restaurants en France utilisent RestauMargin pour piloter leur tarification.
-              Le gain moyen constaté sur les 6 premiers mois : <strong>+3,2 points de marge brute</strong>,
-              grâce à une meilleure allocation des coefficients par poste et à l'identification automatique
-              des dérives de prix matières.
-            </p>
             <p>
               Pour aller plus loin sur les fondamentaux du calcul, lisez également notre <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">guide du food cost</Link>, notre <Link to="/blog/prime-cost-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du prime cost</Link>, et notre <Link to="/blog/seuil-rentabilite-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du seuil de rentabilité</Link>.
             </p>

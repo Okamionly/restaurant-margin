@@ -19,7 +19,6 @@ import {
   Sparkles,
   Plus,
   Minus,
-  Quote,
   Layers,
   Utensils,
   ScanLine,
@@ -497,22 +496,6 @@ export default function FonctionnalitePesageBluetooth() {
           ))}
         </div>
 
-        <div
-          className="mt-8 rounded-2xl border bg-white p-6 sm:p-8 flex gap-4"
-          style={{ borderColor: BORDER }}
-        >
-          <Quote className="w-8 h-8 shrink-0" style={{ color: ACCENT }} />
-          <div>
-            <p className="text-lg leading-relaxed" style={{ color: TEXT }}>
-              « Avant, je notais mes pesées sur un carnet et je passais le dimanche à tout
-              ressaisir. La moitié du temps, je ne le faisais pas. Maintenant je pose sur la balance,
-              c'est dans la fiche, et je vois mon coût matière bouger en direct. »
-            </p>
-            <p className="mt-3 text-sm font-semibold" style={{ color: TEXT_MUTED }}>
-              — Chef de cuisine, bistrot 60 couverts
-            </p>
-          </div>
-        </div>
       </Section>
 
       {/* ───────────── Cas d'usage ───────────── */}
@@ -592,7 +575,7 @@ export default function FonctionnalitePesageBluetooth() {
       {/* ───────────── FAQ ───────────── */}
       <Section tint>
         <SectionLabel icon={<CheckCircle className="w-4 h-4" />}>Questions fréquentes</SectionLabel>
-        <H2>Tout ce qu'on nous demande sur le pesage Bluetooth</H2>
+        <H2>Questions fréquentes sur le pesage Bluetooth</H2>
 
         <div className="mt-8 space-y-3">
           {faqItems.map((item, i) => {

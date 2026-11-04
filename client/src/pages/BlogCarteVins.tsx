@@ -291,8 +291,8 @@ export default function BlogCarteVins() {
             <p>
               Le bon nombre de références dépend principalement de trois variables : la taille de
               votre établissement, votre positionnement, et la rotation possible de votre cave.
-              Voici les fourchettes recommandées observées chez les clients RestauMargin et confirmées
-              par les guides Hachette et Bettane et Desseauve.
+              Voici des fourchettes indicatives, cohérentes avec les recommandations des guides
+              Hachette et Bettane et Desseauve.
             </p>
           </div>
 
@@ -746,8 +746,8 @@ export default function BlogCarteVins() {
           <Callout type="info">
             <strong>Logiciel de gestion de cave :</strong> au-delà de 50 références, investissez
             dans un outil dédié (Cellar Tracker, Vinexpo Cellar Manager, ou module intégré RestauMargin).
-            ROI très rapide : -30 % de stocks morts en moyenne, gain de 800 à 2 500 EUR/an de cash
-            libéré. L'outil paie son coût dès le 2e mois.
+            Un suivi rigoureux de la rotation permet de repérer plus tôt les stocks morts et de
+            libérer du cash immobilisé.
           </Callout>
         </section>
 
@@ -816,13 +816,13 @@ export default function BlogCarteVins() {
         {/* ═════════════ SECTION 10 : Cas pratique ═════════════ */}
         <section id="cas" className="mb-16">
           <SectionHeading icon={<Target className="w-6 h-6" />} number="10">
-            Cas pratique chiffré : brasserie 80 couverts à Lille
+            Exemple illustratif : une brasserie de 80 couverts
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Décortiquons l'impact d'une carte des vins refondue sur une brasserie lilloise de
-              80 couverts. Ce cas est inspiré d'un client RestauMargin, anonymise.
+              Prenons un exemple fictif pour décortiquer l'impact d'une carte des vins refondue sur
+              une brasserie de 80 couverts. Les chiffres sont illustratifs, pas un cas client réel.
             </p>
           </div>
 

@@ -238,7 +238,7 @@ export default function BlogKpiRestaurateur() {
         <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 text-center text-white">
           <h2 className="text-2xl font-bold mb-3">Pilotez vos marges comme un chef étoilé</h2>
           <p className="text-teal-100 mb-6 text-sm leading-relaxed max-w-[480px] mx-auto">
-            RestauMargin calcule automatiquement vos food cost, prime cost et marges par plat. Des centaines de restaurateurs l'utilisent chaque semaine pour prendre de meilleures décisions.
+            RestauMargin calcule automatiquement vos food cost, prime cost et marges par plat.
           </p>
           <a
             href="https://www.restaumargin.fr/pricing"

@@ -209,7 +209,7 @@ export default function LogicielMargeGastronomique() {
           </h1>
           <p className="text-lg sm:text-xl text-mono-400 max-w-3xl mx-auto leading-relaxed mb-8">
             Le seul logiciel SaaS qui gère produits nobles, menus dégustation, cave premium et
-            brigades de cuisine étoilées. <strong>Food cost 32-40 % maîtrisé, +5 points de marge nette en 6 mois.</strong>
+            brigades de cuisine étoilées. <strong>Pour maîtriser un food cost de 32-40 %.</strong>
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -231,7 +231,7 @@ export default function LogicielMargeGastronomique() {
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-mono-500">
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans carte bancaire</span>
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans engagement</span>
-            <span className="flex items-center gap-1.5"><Star className="w-4 h-4 text-amber-500 fill-amber-500" /> Utilisé par chefs étoilés</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Menus dégustation et cave premium</span>
           </div>
         </div>
       </header>
@@ -274,8 +274,7 @@ export default function LogicielMargeGastronomique() {
               n'est pas un luxe : c'est une assurance vie financière.
             </p>
             <p>
-              RestauMargin a été conçu en collaboration avec plusieurs chefs étoilés français pour répondre
-              précisément à leurs enjeux : pilotage de produits nobles, gestion de menus dégustation multi-services,
+              RestauMargin a été conçu pour répondre précisément aux enjeux de la haute gastronomie : pilotage de produits nobles, gestion de menus dégustation multi-services,
               cave premium à millésimes, brigades importantes, saisonnalité extrême et KPI Michelin.
             </p>
           </div>
@@ -640,8 +639,8 @@ export default function LogicielMargeGastronomique() {
             <KpiCard
               icon={<Star className="w-6 h-6" />}
               title="Note plateformes"
-              value=">Essai 7 jours"
-              desc="Tripadvisor, La Fourchette, Google : note moyenne <Essai 7 jours = signal d'alerte. Le NPS interne RestauMargin permet de détecter avant que ça tombe sur les plateformes publiques."
+              value="À surveiller"
+              desc="Tripadvisor, La Fourchette, Google : note moyenne en baisse = signal d'alerte. Le NPS interne RestauMargin permet de détecter avant que ça tombe sur les plateformes publiques."
             />
           </div>
         </div>
@@ -655,7 +654,7 @@ export default function LogicielMargeGastronomique() {
           </h2>
           <p className="text-lg text-mono-400 mb-12 leading-relaxed">
             Le logiciel a été pensé pour les exigences spécifiques de la haute gastronomie. Voici les
-            fonctionnalités les plus utilisées par nos chefs étoilés.
+            fonctionnalités les plus utiles en restauration étoilée.
           </p>
 
           <div className="grid sm:grid-cols-2 gap-6">
@@ -703,20 +702,21 @@ export default function LogicielMargeGastronomique() {
         </div>
       </section>
 
-      {/* ── Cas concret 1 etoile ── */}
+      {/* ── Exemple illustratif 1 etoile ── */}
       <section className="py-16 px-4 bg-mono-1000">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-mono-100 mb-4">
-            Cas concret : restaurant 1 étoile à Lyon
+            Exemple illustratif : un restaurant 1 étoile
           </h2>
           <p className="text-lg text-mono-400 mb-8 leading-relaxed">
-            Anonyme par contrat de confidentialité. Restaurant 1 étoile Michelin à Lyon, 35 couverts par service,
-            ouvert 5 jours sur 7, équipe de 14 personnes (8 cuisine + 6 salle). CA annuel 1,8 million EUR HT.
+            Prenons un exemple fictif : un restaurant 1 étoile de 35 couverts par service, ouvert 5 jours sur 7,
+            équipe de 14 personnes (8 cuisine + 6 salle), CA annuel 1,8 million EUR HT. Chiffres hypothétiques,
+            à titre d'illustration.
           </p>
 
           <div className="grid sm:grid-cols-2 gap-6 mb-8">
             <div className="bg-white border-2 border-red-300 rounded-2xl p-6">
-              <div className="text-xs text-red-700 uppercase tracking-wider mb-3 font-bold">Avant RestauMargin (année N)</div>
+              <div className="text-xs text-red-700 uppercase tracking-wider mb-3 font-bold">Situation de départ</div>
               <div className="space-y-2 text-sm text-mono-350">
                 <div className="flex justify-between"><span>Food cost</span><span className="font-semibold">43 % (au-dessus cible)</span></div>
                 <div className="flex justify-between"><span>Personnel</span><span className="font-semibold">52 % du CA</span></div>
@@ -733,7 +733,7 @@ export default function LogicielMargeGastronomique() {
             </div>
 
             <div className="bg-white border-2 border-emerald-300 rounded-2xl p-6">
-              <div className="text-xs text-emerald-700 uppercase tracking-wider mb-3 font-bold">Après 12 mois (année N+1)</div>
+              <div className="text-xs text-emerald-700 uppercase tracking-wider mb-3 font-bold">Situation visée</div>
               <div className="space-y-2 text-sm text-mono-350">
                 <div className="flex justify-between"><span>Food cost</span><span className="font-semibold">37 % (-6 pts)</span></div>
                 <div className="flex justify-between"><span>Personnel</span><span className="font-semibold">46 % du CA</span></div>
@@ -751,11 +751,11 @@ export default function LogicielMargeGastronomique() {
           </div>
 
           <Callout type="info">
-            <strong>Les 5 leviers activés en 12 mois :</strong> (1) Fiches techniques refaites au gramme avec
+            <strong>Les 5 leviers à actionner :</strong> (1) Fiches techniques refaites au gramme avec
             rendements (-3 pts food cost), (2) Négociation fournisseurs via Mercuriale (-1,5 pts), (3) Planning
             cuisine optimisé avec scheduling brigade (-4 pts personnel), (4) Suivi cave avec alertes seuils
             (-14 k EUR gaspillage), (5) Repositionnement menu lunch à 75 EUR pour booster occupation (+12 pts
-            occupation). ROI du logiciel : 250 fois l'abonnement annuel.
+            occupation). Chaque établissement a ses propres contraintes : ces chiffres ne sont pas un résultat garanti.
           </Callout>
         </div>
       </section>
@@ -768,7 +768,7 @@ export default function LogicielMargeGastronomique() {
               FAQ logiciel marge restaurant gastronomique
             </h2>
             <p className="text-lg text-mono-400">
-              Les questions fréquentes des chefs étoilés avant de choisir.
+              Les questions fréquentes en restauration étoilée avant de choisir un logiciel.
             </p>
           </div>
 
@@ -781,7 +781,7 @@ export default function LogicielMargeGastronomique() {
           <Callout type="info">
             <strong>Une question spécifique sur votre établissement ?</strong> Contactez notre équipe via
             la <Link to="/demo" className="underline font-semibold hover:text-teal-700">page demo</Link> ou
-            écrivez à contact@restaumargin.fr. Nous avons des références de restaurants étoilés à vous partager.
+            écrivez à contact@restaumargin.fr.
           </Callout>
         </div>
       </section>
@@ -794,8 +794,7 @@ export default function LogicielMargeGastronomique() {
             Prêt à piloter vos marges comme un grand chef ?
           </h2>
           <p className="text-xl text-amber-100 max-w-2xl mx-auto mb-3">
-            Rejoignez les restaurants gastronomiques qui ont restauré leur rentabilité tout en préservant
-            l'excellence de leur cuisine.
+            Pilotez votre rentabilité tout en préservant l'excellence de votre cuisine.
           </p>
           <p className="text-amber-50 mb-10">
             Essai gratuit 7 jours - Sans carte bancaire - Sans engagement

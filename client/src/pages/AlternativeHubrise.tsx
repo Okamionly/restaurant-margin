@@ -37,7 +37,7 @@ const faqItems = [
   {
     question: "Hubrise et RestauMargin sont-ils en concurrence directe ?",
     answer:
-      "Non, ils servent des besoins differents et sont meme complementaires. Hubrise est un hub d'integrations qui connecte votre caisse a UberEats, Deliveroo, JustEat, Click&Collect, etc. RestauMargin pilote votre food cost, vos fiches techniques et votre marge brute. Beaucoup de restaurants multi-canaux utilisent les deux : Hubrise pour la connectivite commandes, RestauMargin pour la rentabilite reelle.",
+      "Non, ils servent des besoins differents et sont meme complementaires. Hubrise est un hub d'integrations qui connecte votre caisse a UberEats, Deliveroo, JustEat, Click&Collect, etc. RestauMargin pilote votre food cost, vos fiches techniques et votre marge brute. Un restaurant multi-canaux peut tout a fait utiliser les deux : Hubrise pour la connectivite commandes, RestauMargin pour la rentabilite reelle.",
   },
   {
     question: "Quel est le prix de Hubrise compare a RestauMargin ?",
@@ -183,8 +183,8 @@ export default function AlternativeHubrise() {
             <div className="flex items-start gap-2">
               <span className="text-teal-200 font-bold flex-shrink-0">3.</span>
               <span>
-                <strong className="text-white">Complementaires</strong>, pas concurrents. Beaucoup de
-                restaurants multi-canaux utilisent les deux : Hubrise pour l'operationnel, RestauMargin pour la marge.
+                <strong className="text-white">Complementaires</strong>, pas concurrents. Un
+                restaurant multi-canaux peut utiliser les deux : Hubrise pour l'operationnel, RestauMargin pour la marge.
               </span>
             </div>
             <div className="flex items-start gap-2">
@@ -553,7 +553,7 @@ export default function AlternativeHubrise() {
             <strong>Methode de decision rapide :</strong> Si plus de 30 % de votre chiffre d'affaires passe par
             des plateformes externes (UberEats, Deliveroo, JustEat, Click&Collect via site web), Hubrise se rentabilise
             via le gain de temps operationnel. Si moins de 30 %, l'investissement est discutable. Dans tous les cas,
-            RestauMargin se rentabilise des le premier mois via la simple identification des plats en perte.
+            RestauMargin peut se rentabiliser rapidement via la simple identification des plats en perte.
           </Callout>
         </section>
 
@@ -661,7 +661,7 @@ export default function AlternativeHubrise() {
               hubrise="960 EUR/an (80 EUR/mois)"
               restaumargin="348 EUR/an (29 EUR/mois)"
               total="1 308 EUR/an"
-              note="Stack equilibre. Le couple Hubrise + RestauMargin est l'option la plus frequente pour ce profil."
+              note="Stack equilibre. Le couple Hubrise + RestauMargin couvre les deux besoins de ce profil."
             />
             <PricingCard
               title="Dark kitchen 3-5 marques"

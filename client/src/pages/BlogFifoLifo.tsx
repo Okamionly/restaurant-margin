@@ -584,13 +584,13 @@ export default function BlogFifoLifo() {
           </div>
 
           <p className="text-sm text-mono-500 mt-3">
-            Estimations basées sur une réduction de 2 à 4 % du food cost après mise en place d'un FIFO restaurant structure. Sources :.
+            Estimations basées sur une réduction de 2 à 4 % du food cost après mise en place d'un FIFO restaurant structuré (ordres de grandeur indicatifs).
           </p>
 
           <div className="prose-content mt-8">
-            <h3 className="text-xl font-bold text-mono-100 mb-3">Cas chiffré détaillé : bistrot 30 000 EUR de CA</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3">Exemple illustratif chiffré : bistrot 30 000 EUR de CA</h3>
             <p>
-              Restaurant bistronomique à Lyon, 35 couverts, CA mensuel 30 000 EUR HT, food cost cible 32 %.
+              Exemple fictif : restaurant bistronomique de 35 couverts, CA mensuel 30 000 EUR HT, food cost cible 32 %.
             </p>
           </div>
 
@@ -747,7 +747,6 @@ export default function BlogFifoLifo() {
               <li>- Paquet Hygiène européen — Règlements (CE) 852/2004, 853/2004 et 854/2004</li>
               <li>- INSEE — Statistiques sectorielles de la restauration en France (données 2024-2026)</li>
               <li>- GIRA Conseil — Étude annuelle profitabilité restaurants HCR France 2026</li>
-              <li>- — établissements du secteur, données agrégées 2025-2026</li>
             </ul>
           </div>
         </section>

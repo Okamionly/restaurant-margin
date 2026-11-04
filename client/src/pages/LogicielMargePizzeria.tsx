@@ -74,7 +74,7 @@ export default function LogicielMargePizzeria() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Logiciel de marge pour pizzeria : food cost et rentabilité en 2026',
-            description: "Guide complet du calcul de marge pour pizzeria : décomposition coût pizza, food cost cible 22-25 %, piège commissions livraison, KPI spécifiques et cas concret Lyon.",
+            description: "Guide complet du calcul de marge pour pizzeria : décomposition coût pizza, food cost cible 22-25 %, piège commissions livraison, KPI spécifiques et exemple illustratif.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -143,7 +143,7 @@ export default function LogicielMargePizzeria() {
         date="Mai 2026"
         title="Logiciel de marge pour pizzeria : food cost et rentabilité en 2026"
         accentWord="pizzeria"
-        subtitle="La pizzeria est un business a très forte marge brute (75-80 %) mais avec un piège redoutable : les commissions livraison qui peuvent ramener la marge nette à zéro. Méthode, décomposition coût, KPI et cas concret."
+        subtitle="La pizzeria est un business a très forte marge brute (75-80 %) mais avec un piège redoutable : les commissions livraison qui peuvent ramener la marge nette à zéro. Méthode, décomposition coût, KPI et exemple illustratif."
       />
 
       {/* ── Contenu principal ── */}
@@ -199,7 +199,7 @@ export default function LogicielMargePizzeria() {
               { href: '#operationnel', label: 'Spécificités opérationnelles : pâte, four, pizzaiolo' },
               { href: '#livraison', label: 'Le piège mortel des plateformes de livraison' },
               { href: '#kpi', label: 'Les 6 KPI à suivre en pizzeria' },
-              { href: '#cas-lyon', label: 'Cas concret : pizzeria Lyon, 8 % à 24 % en 9 mois' },
+              { href: '#cas-lyon', label: 'Exemple illustratif : une pizzeria de quartier, de 8 % à 24 % de marge nette' },
               { href: '#logiciel', label: 'Comment RestauMargin automatise tout' },
               { href: '#faq', label: 'Questions fréquentes pizzeria' },
               { href: '#cta', label: 'Essayer RestauMargin gratuitement' },
@@ -675,16 +675,16 @@ export default function LogicielMargePizzeria() {
           </div>
         </section>
 
-        {/* ═════════════ SECTION 8 : Cas concret Lyon ═════════════ */}
+        {/* ═════════════ SECTION 8 : Exemple illustratif ═════════════ */}
         <section id="cas-lyon" className="mb-16">
           <SectionHeading icon={<Award className="w-6 h-6" />} number="8">
-            Cas concret : pizzeria Lyon, 8 % à 24 % en 9 mois
+            Exemple illustratif : une pizzeria de quartier, de 8 % à 24 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Pizzeria familiale Lyon 7ème arrondissement, 90 couverts. Reprise en septembre 2025
-              par Marco D., 38 ans, ancien chef de cuisine. CA annuel constaté à la reprise :
+              Prenons un exemple fictif : une pizzeria familiale de quartier, 90 couverts, reprise
+              par un ancien chef de cuisine. CA annuel de départ :
               280 000 EUR, marge nette 8 %.
             </p>
 
@@ -703,7 +703,7 @@ export default function LogicielMargePizzeria() {
                 phase="Phase 1 (mois 1-2)"
                 title="Stabilisation du food cost"
                 actions={[
-                  'Mise en place de fiches techniques précises pour les 38 pizzas via RestauMargin',
+                  'Mise en place de fiches techniques précises pour les 38 pizzas',
                   'Pesée systématique des portions (balance comptoir + tablette)',
                   'Réduction carte à 22 pizzas core + 4 saisonnières',
                   'Résultat : food cost passe de 32 % à 26 %',
@@ -713,7 +713,7 @@ export default function LogicielMargePizzeria() {
                 phase="Phase 2 (mois 3-4)"
                 title="Stratégie multi-canal"
                 actions={[
-                  'Lancement click & collect via site web RestauMargin',
+                  "Lancement d'un service de click & collect",
                   'Prix différencié : +18 % sur Uber Eats / Deliveroo',
                   'Campagne flyers locaux pour pousser le click & collect (-1 EUR)',
                   'Résultat : ratio livraison plateforme tombe de 65 % à 42 %',
@@ -725,7 +725,7 @@ export default function LogicielMargePizzeria() {
                 actions={[
                   'Recrutement aide-pizzaiolo pour pré-préparation pâtons',
                   'Investissement four à 4 sources (8 200 EUR)',
-                  'Mise en place scan factures OCR via RestauMargin',
+                  'Suivi systématique des factures fournisseurs',
                   'Résultat : productivité 28 à 52 pizzas/heure, food cost à 24 %',
                 ]}
               />
@@ -733,7 +733,7 @@ export default function LogicielMargePizzeria() {
                 phase="Phase 4 (mois 8-9)"
                 title="Pilotage en temps réel"
                 actions={[
-                  'Tableau de bord RestauMargin vérifié 2x/semaine (lundi + jeudi)',
+                  'Tableau de bord de marge vérifié 2x/semaine (lundi + jeudi)',
                   'Alertes prix fournisseurs activées sur farine, mozzarella, tomate',
                   'Ajustement carte trimestriel selon menu engineering',
                   'Résultat final : marge nette 24 %',
@@ -744,7 +744,7 @@ export default function LogicielMargePizzeria() {
             <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-3">
                 <CheckCircle className="w-6 h-6 text-emerald-700 flex-shrink-0 mt-0.5" />
-                <h3 className="font-bold text-emerald-900 text-lg">Résultats après 9 mois</h3>
+                <h3 className="font-bold text-emerald-900 text-lg">Résultats de l'exemple après 9 mois</h3>
               </div>
               <ul className="space-y-2 text-emerald-800 text-sm">
                 <li><strong>CA annuel :</strong> 280 000 EUR -- 365 000 EUR (+30 %)</li>
@@ -766,8 +766,7 @@ export default function LogicielMargePizzeria() {
           <div className="prose-content">
             <p>
               RestauMargin est conçu pour la réalité opérationnelle d'une pizzeria : multi-canal,
-              forte rotation, pression sur les marges. Voici les 6 modules clés qui vous font
-              gagner 8 à 15 heures par mois et 5 à 10 points de marge nette.
+              forte rotation, pression sur les marges. Voici les 6 modules clés.
             </p>
           </div>
 
@@ -792,9 +791,8 @@ export default function LogicielMargePizzeria() {
 
           <div className="prose-content mt-8">
             <p>
-              Plus de 80 pizzerias en France utilisent déjà RestauMargin pour piloter leur
-              rentabilité. Gain moyen constaté : <strong>5,8 points de marge brute en 6 mois</strong>,
-              principalement grâce aux alertes prix et à l'optimisation du mix canal. Pour aller
+              Les deux leviers les plus puissants restent le suivi des prix fournisseurs et
+              l'optimisation du mix canal. Pour aller
               plus loin, lisez notre guide complet sur <Link to="/blog/livraison-restaurant-rentabilite" className="text-teal-700 underline hover:text-teal-800">la rentabilité de la livraison en restauration</Link> ou
               testez le <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800">calculateur de food cost gratuit</Link>.
             </p>

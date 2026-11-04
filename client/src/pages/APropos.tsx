@@ -252,8 +252,8 @@ export default function APropos() {
         <div className="grid sm:grid-cols-2 gap-4 mb-10">
           {[
             {
-              title: 'Données réelles',
-              text: "Nos repères de food cost, coefficients et ratios s'appuient sur l'analyse agrégée et anonymisée de centaines de fiches techniques saisies dans RestauMargin.",
+              title: 'Repères sectoriels',
+              text: "Nos repères de food cost, coefficients et ratios sont des ordres de grandeur couramment admis dans le secteur, présentés comme tels, et jamais comme des statistiques issues de nos utilisateurs.",
             },
             {
               title: 'Sources vérifiées',
@@ -349,7 +349,7 @@ export default function APropos() {
             Prêt à maîtriser vos marges ?
           </h3>
           <p className="text-white/70 mb-8 max-w-xl mx-auto">
-            Rejoignez les restaurateurs qui utilisent RestauMargin pour optimiser leur rentabilité
+            Testez RestauMargin pour optimiser votre rentabilité
             au quotidien. Essai gratuit 7 jours, sans engagement.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

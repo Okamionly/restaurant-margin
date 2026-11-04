@@ -52,7 +52,7 @@ const faqItems = [
   },
   {
     question: 'Pourquoi un logiciel de marge est indispensable pour un restaurant burger ?',
-    answer: "Un restaurant burger gère 10-15 références burgers + frites + sauces + boissons, avec des prix matières très volatils (viande hachée fluctue +/- 20 % selon saisons). RestauMargin scanne les factures fournisseurs (Metro, Pomona, boucheries locales), met à jour les coûts en temps réel et alerte dès qu'un burger passe sous le seuil de marge. Gain moyen constaté : 4 à 8 points de marge nette en 6 mois.",
+    answer: "Un restaurant burger gère 10-15 références burgers + frites + sauces + boissons, avec des prix matières très volatils (viande hachée fluctue +/- 20 % selon saisons). RestauMargin scanne les factures fournisseurs (Metro, Pomona, boucheries locales), met à jour les coûts en temps réel et alerte dès qu'un burger passe sous le seuil de marge.",
   },
 ];
 
@@ -75,7 +75,7 @@ export default function LogicielMargeBurger() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Logiciel de marge pour restaurant burger en 2026',
-            description: "Guide complet du calcul de marge pour restaurant burger : décomposition coût smash burger, food cost cible 28-32 %, productivité flat top vs grill, KPI fast casual et cas concret Paris.",
+            description: "Guide complet du calcul de marge pour restaurant burger : décomposition coût smash burger, food cost cible 28-32 %, productivité flat top vs grill, KPI fast casual et exemple illustratif chiffré.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -201,7 +201,7 @@ export default function LogicielMargeBurger() {
               { href: '#optimisation', label: '5 leviers d\'optimisation : menu court, frites maison, sauces' },
               { href: '#livraison', label: 'Livraison burger : qualité, fenêtre de 20 minutes, marge' },
               { href: '#kpi', label: 'Les 5 KPI essentiels d\'un restaurant burger' },
-              { href: '#cas-paris', label: 'Cas concret : burger Paris 11e, 9 % à 22 % en 10 mois' },
+              { href: '#cas-paris', label: 'Exemple illustratif : un restaurant burger, de 9 % à 22 % de marge nette' },
               { href: '#faq', label: 'Questions fréquentes burger' },
               { href: '#cta', label: 'Essayer RestauMargin gratuitement' },
             ].map((item, i) => (
@@ -776,21 +776,21 @@ export default function LogicielMargeBurger() {
           </div>
         </section>
 
-        {/* SECTION 10 : Cas concret Paris */}
+        {/* SECTION 10 : Exemple illustratif */}
         <section id="cas-paris" className="mb-16">
           <SectionHeading icon={<Award className="w-6 h-6" />} number="10">
-            Cas concret : burger Paris 11e, 9 % à 22 % en 10 mois
+            Exemple illustratif : un restaurant burger, de 9 % à 22 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Restaurant burger fast casual, Paris 11e arrondissement, 55 couverts + comptoir
-              click & collect. Reprise en juillet 2025 par Sarah K., 32 ans, ex-marketing
-              manager passionnée de cuisine. CA annuel constaté à la reprise :
-              <strong> 420 000 EUR, marge nette 9 %</strong>.
+              Prenons un exemple fictif : un restaurant burger fast casual de centre-ville,
+              55 couverts + comptoir click & collect, repris par un nouveau gérant. CA annuel
+              de départ : <strong> 420 000 EUR, marge nette 9 %</strong>. Les chiffres qui suivent
+              sont hypothétiques et servent à illustrer l'enchaînement des leviers.
             </p>
 
-            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-8">Diagnostic initial (mois 1)</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-8">Diagnostic initial</h3>
             <ul className="list-disc list-inside space-y-2 text-mono-350 mt-4">
               <li>Food cost réel : 36 % (vs cible 30 %). Gaspillage viande hachée 7 %, portions non standardisées.</li>
               <li>Ratio livraison : 52 % du CA via Uber Eats + Deliveroo. Commission moyenne 29 %.</li>
@@ -805,10 +805,10 @@ export default function LogicielMargeBurger() {
                 phase="Phase 1 (mois 1-3)"
                 title="Stabilisation du food cost et carte courte"
                 actions={[
-                  'Mise en place fiches techniques précises pour les 16 burgers via RestauMargin',
+                  'Mise en place de fiches techniques précises pour les 16 burgers',
                   'Réduction carte à 9 burgers core + 3 saisonniers (suppression 7 burgers à faible rotation)',
                   'Hachage maison quotidien (commande muscle entier Charolais boucher local)',
-                  'Résultat : food cost passe de 36 % à 31 %',
+                  'Objectif : food cost de 36 % à 31 %',
                 ]}
               />
               <PhaseCard
@@ -818,7 +818,7 @@ export default function LogicielMargeBurger() {
                   'Prix différencié : +18 % sur Uber Eats / Deliveroo, -1 EUR en click & collect',
                   'Formation équipe upsell systématique (formule burger + frites + boisson 19 EUR)',
                   'Lancement sauces signature maison (4 sauces : burger, BBQ fumé, gribiche, mayo truffe)',
-                  'Résultat : ticket moyen passe de 14 EUR à 19 EUR, ratio livraison plateforme tombe à 38 %',
+                  'Objectif : ticket moyen de 14 EUR à 19 EUR, ratio livraison plateforme vers 38 %',
                 ]}
               />
               <PhaseCard
@@ -827,18 +827,18 @@ export default function LogicielMargeBurger() {
                 actions={[
                   'Recrutement 1 commis cuisine supplémentaire (renfort plancher rush)',
                   'Investissement éplucheuse industrielle 1 500 EUR + passage frites maison Bintje',
-                  'Mise en place scan factures OCR via RestauMargin (Metro + boucher local)',
-                  'Résultat : productivité 45 à 95 burgers/heure, food cost à 29 %',
+                  'Mise en place du scan des factures fournisseurs (Metro + boucher local)',
+                  'Objectif : productivité de 45 à 95 burgers/heure, food cost à 29 %',
                 ]}
               />
               <PhaseCard
                 phase="Phase 4 (mois 9-10)"
                 title="Pilotage en temps réel et fidélisation"
                 actions={[
-                  'Tableau de bord RestauMargin vérifié 2x/semaine (mardi + samedi)',
+                  'Tableau de bord de marge vérifié 2x/semaine (mardi + samedi)',
                   'Alertes prix activées sur viande hachée, cheddar AOP, pain brioche',
-                  'Lancement programme fidélité (10e burger offert) via QR code RestauMargin',
-                  'Résultat final : marge nette 22 %, taux de retour client +35 %',
+                  'Lancement d\'un programme fidélité (10e burger offert)',
+                  'Objectif final : marge nette 22 %',
                 ]}
               />
             </div>
@@ -846,7 +846,7 @@ export default function LogicielMargeBurger() {
             <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-3">
                 <CheckCircle className="w-6 h-6 text-emerald-700 flex-shrink-0 mt-0.5" />
-                <h3 className="font-bold text-emerald-900 text-lg">Résultats après 10 mois</h3>
+                <h3 className="font-bold text-emerald-900 text-lg">Situation visée (hypothétique)</h3>
               </div>
               <ul className="space-y-2 text-emerald-800 text-sm">
                 <li><strong>CA annuel :</strong> 420 000 EUR -- 580 000 EUR (+38 %)</li>
@@ -859,10 +859,10 @@ export default function LogicielMargeBurger() {
             </div>
 
             <p className="mt-6">
-              Sarah a triplé sa marge nette en 10 mois avec un investissement marginal
-              (éplucheuse + 1 commis + abonnement RestauMargin à 29 EUR/mois). Le levier le
-              plus puissant a été la combinaison <strong>carte courte + upsell systématique +
-              différenciation prix par canal</strong>. Pour creuser la partie livraison,
+              Dans cet exemple, l'essentiel de l'écart vient de la combinaison <strong>carte
+              courte + upsell systématique + différenciation prix par canal</strong>, pour un
+              investissement modeste (éplucheuse, un commis). Chaque établissement a ses propres
+              contraintes : ces chiffres ne sont pas un résultat garanti. Pour creuser la partie livraison,
               voir notre <Link to="/blog/livraison-restaurant-rentabilite" className="text-teal-700 underline hover:text-teal-800">guide rentabilité livraison restaurant</Link>.
             </p>
           </div>

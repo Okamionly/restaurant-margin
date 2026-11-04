@@ -195,7 +195,7 @@ export default function BlogPrimeCost() {
         date="Mai 2026"
         title="Prime cost en restauration : l'indicateur n 1 de rentabilité en 2026"
         accentWord="Prime cost"
-        subtitle="Si vous ne deviez suivre qu'un seul indicateur dans votre restaurant, ce serait celui-ci. Voici comment le calculer précisément, le benchmarker par type d'établissement et passer sous les 65 % en 90 jours, étude de cas chiffrée à l'appui."
+        subtitle="Si vous ne deviez suivre qu'un seul indicateur dans votre restaurant, ce serait celui-ci. Voici comment le calculer précisément, le benchmarker par type d'établissement et passer sous les 65 % en 90 jours, exemple chiffré à l'appui."
       />
 
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
@@ -257,7 +257,7 @@ export default function BlogPrimeCost() {
               { href: '#pourquoi', label: 'Pourquoi le prime cost est l\'indicateur n 1' },
               { href: '#formule', label: 'Formule détaillée et composantes' },
               { href: '#methode', label: 'Comment calculer le prime cost en 9 étapes' },
-              { href: '#exemple', label: 'Exemple chiffré complet : Bistrot Leon' },
+              { href: '#exemple', label: 'Exemple chiffré complet : un bistrot fictif' },
               { href: '#benchmarks', label: 'Benchmarks par type de restaurant' },
               { href: '#vs', label: 'Prime cost vs food cost vs marge brute' },
               { href: '#derives', label: 'Pourquoi mon prime cost dérive ?' },
@@ -570,17 +570,17 @@ export default function BlogPrimeCost() {
           </div>
         </section>
 
-        {/* ═════════ SECTION 5 : Exemple Bistrot Leon ═════════ */}
+        {/* ═════════ SECTION 5 : Exemple illustratif ═════════ */}
         <section id="exemple" className="mb-14">
           <div className="flex items-center gap-3 mb-5">
             <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center">
               <BarChart3 className="w-6 h-6 text-rose-700" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">5. Exemple chiffré complet : Bistrot Leon</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100 !mt-0 !mb-0">5. Exemple chiffré complet : un bistrot fictif</h2>
           </div>
 
           <p>
-            Plongeons dans un cas réel et chiffré. Le <strong>Bistrot Leon</strong> est un restaurant traditionnel parisien de 45 couverts, ouvert du mardi au samedi midi et soir. CA annuel HT : <strong>780 000 EUR</strong>. Analysons son prime cost du mois d'avril 2026.
+            Prenons un exemple fictif, à titre d'illustration : un bistrot traditionnel de 45 couverts, ouvert du mardi au samedi midi et soir. CA annuel HT : <strong>780 000 EUR</strong>. Analysons son prime cost sur un mois (avril).
           </p>
 
           <h3 className="text-xl font-bold text-mono-100 mt-6 mb-3">Données d'entrée</h3>
@@ -987,7 +987,7 @@ export default function BlogPrimeCost() {
           </div>
 
           <p>
-            Reprenons le <strong>Bistrot Leon</strong> en perte (-1 200 EUR/mois). Plan d'action 90 jours pour gagner 10 points de prime cost et redevenir rentable.
+            Reprenons le bistrot fictif de la section 5, en perte (-1 200 EUR/mois). Plan d'action 90 jours pour gagner 10 points de prime cost et redevenir rentable.
           </p>
 
           <div className="space-y-4 my-6">
@@ -1199,7 +1199,7 @@ export default function BlogPrimeCost() {
             <li>- <strong>URSSAF</strong> : Barème charges patronales 2026 secteur HCR</li>
           </ul>
           <p className="text-xs text-mono-500 mt-4 italic">
-            Article rédigé par la rédaction RestauMargin. Mis à jour le 26 mai 2026. Méthodologie : croisement des données publiques INSEE, Fiducial et NRA avec les retours terrain de des restaurateurs accompagnés depuis 2025.
+            Article rédigé par la rédaction RestauMargin. Mis à jour le 26 mai 2026. Méthodologie : croisement des données publiques INSEE, Fiducial et NRA. Les exemples chiffrés sont fictifs et servent d'illustration.
           </p>
         </section>
 

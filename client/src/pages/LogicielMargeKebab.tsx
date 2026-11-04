@@ -52,7 +52,7 @@ const faqItems = [
   },
   {
     question: 'Pourquoi un logiciel de marge est indispensable pour un kebab ?',
-    answer: "Un kebab gère 8-15 références (sandwich, assiette, tacos, durum, salade, menu enfant, frites, boissons), avec des prix viande très volatils (broche +/- 15 % selon saisons et certif halal). RestauMargin scanne les factures grossistes (Metro, Promocash, boucher halal), met à jour les coûts au gramme près et alerte dès qu'un kebab passe sous le seuil de marge. Gain moyen constaté : 4 à 7 points de marge nette en 6 mois sur un kebab de quartier.",
+    answer: "Un kebab gère 8-15 références (sandwich, assiette, tacos, durum, salade, menu enfant, frites, boissons), avec des prix viande très volatils (broche +/- 15 % selon saisons et certif halal). RestauMargin scanne les factures grossistes (Metro, Promocash, boucher halal), met à jour les coûts au gramme près et alerte dès qu'un kebab passe sous le seuil de marge.",
   },
 ];
 
@@ -75,7 +75,7 @@ export default function LogicielMargeKebab() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Logiciel de marge pour kebab et doner en 2026',
-            description: "Guide complet du calcul de marge pour kebab et sandwicherie : décomposition coût broche, food cost cible 25-30 %, productivité menus/heure, KPI sandwich shop et cas concret Lyon.",
+            description: "Guide complet du calcul de marge pour kebab et sandwicherie : décomposition coût broche, food cost cible 25-30 %, productivité menus/heure, KPI sandwich shop et exemple illustratif.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -201,7 +201,7 @@ export default function LogicielMargeKebab() {
               { href: '#boissons', label: 'Boissons et sides : la marge cachée' },
               { href: '#kpi', label: 'Les 5 KPI essentiels d\'un kebab' },
               { href: '#optimisation', label: '5 leviers d\'optimisation : menus combo, livraison, halal' },
-              { href: '#cas-lyon', label: 'Cas concret : kebab Lyon 7e, 6 % à 19 % en 9 mois' },
+              { href: '#cas-lyon', label: 'Exemple illustratif : un kebab de quartier, de 6 % à 19 % de marge nette' },
               { href: '#faq', label: 'Questions fréquentes kebab' },
               { href: '#cta', label: 'Essayer RestauMargin gratuitement' },
             ].map((item, i) => (
@@ -830,17 +830,17 @@ export default function LogicielMargeKebab() {
           </Callout>
         </section>
 
-        {/* SECTION 10 : Cas concret Lyon */}
+        {/* SECTION 10 : Exemple illustratif */}
         <section id="cas-lyon" className="mb-16">
           <SectionHeading icon={<Award className="w-6 h-6" />} number="10">
-            Cas concret : kebab Lyon 7e, 6 % à 19 % en 9 mois
+            Exemple illustratif : un kebab de quartier, de 6 % à 19 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Kebab sandwich shop, Lyon 7e arrondissement, 28 places assises + comptoir click
-              & collect intensif. Reprise en août 2025 par Mehmet K., 38 ans, ex-chef cuisine
-              passionné de tradition turque. CA annuel constaté à la reprise :
+              Prenons un exemple fictif : un kebab sandwich shop de quartier, 28 places assises +
+              comptoir click & collect intensif, repris par un ancien chef de cuisine. CA annuel
+              de départ :
               <strong> 510 000 EUR, marge nette 6 %</strong>.
             </p>
 
@@ -860,7 +860,7 @@ export default function LogicielMargeKebab() {
                 phase="Phase 1 (mois 1-3)"
                 title="Stabilisation broche et carte courte"
                 actions={[
-                  'Mise en place fiches techniques précises pour les 18 références via RestauMargin',
+                  'Mise en place fiches techniques précises pour les 18 références',
                   'Réduction carte à 11 références core (suppression pizzas, paninis, 2 burgers à faible rotation)',
                   'Passage à 1 broche veau-agneau 18 kg + 1 broche poulet 12 kg (gaspillage divisé par 3)',
                   'Résultat : food cost passe de 38 % à 32 %',
@@ -882,7 +882,7 @@ export default function LogicielMargeKebab() {
                 actions={[
                   'Obtention certification AVS Halal (480 EUR/an)',
                   'Ajout falafel sandwich vegan (coût 2,40 EUR / prix 9,50 EUR / marge 75 %)',
-                  'Mise en place scan factures OCR via RestauMargin (Metro + boucher halal)',
+                  'Suivi des factures fournisseurs (Metro + boucher halal)',
                   'Résultat : clientèle +28 %, food cost 30 %, taux d\'attache menu combo à 72 %',
                 ]}
               />
@@ -890,9 +890,9 @@ export default function LogicielMargeKebab() {
                 phase="Phase 4 (mois 9)"
                 title="Pilotage en temps réel et fidélisation"
                 actions={[
-                  'Tableau de bord RestauMargin vérifié 2x/semaine (mercredi + dimanche)',
+                  'Tableau de bord de marge vérifié 2x/semaine (mercredi + dimanche)',
                   'Alertes prix activées sur broche veau-agneau, pain pita, frites surgelés',
-                  'Lancement carte de fidélité (10e menu offert) via QR code RestauMargin',
+                  'Lancement carte de fidélité (10e menu offert)',
                   'Résultat final : marge nette 19 %, taux de retour client +42 %',
                 ]}
               />
@@ -901,7 +901,7 @@ export default function LogicielMargeKebab() {
             <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-3">
                 <CheckCircle className="w-6 h-6 text-emerald-700 flex-shrink-0 mt-0.5" />
-                <h3 className="font-bold text-emerald-900 text-lg">Résultats après 9 mois</h3>
+                <h3 className="font-bold text-emerald-900 text-lg">Résultats de l'exemple après 9 mois</h3>
               </div>
               <ul className="space-y-2 text-emerald-800 text-sm">
                 <li><strong>CA annuel :</strong> 510 000 EUR -- 685 000 EUR (+34 %)</li>
@@ -915,9 +915,8 @@ export default function LogicielMargeKebab() {
             </div>
 
             <p className="mt-6">
-              Mehmet a triplé sa marge nette en 9 mois avec un investissement marginal
-              (certification halal + 1 broche poulet + abonnement RestauMargin à 29 EUR/mois).
-              Le levier le plus puissant a été la combinaison <strong>carte courte + upsell
+              Dans cet exemple, la marge nette triple avec un investissement marginal
+              (certification halal + 1 broche poulet). Le levier le plus puissant est la combinaison <strong>carte courte + upsell
               menu combo systématique + différenciation prix par canal + certif halal</strong>.
               Pour creuser la partie livraison, voir notre <Link to="/blog/livraison-restaurant-rentabilite" className="text-teal-700 underline hover:text-teal-800">guide rentabilité livraison restaurant</Link>.
             </p>

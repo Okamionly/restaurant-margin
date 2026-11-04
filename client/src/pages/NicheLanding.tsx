@@ -59,7 +59,7 @@ const NICHES: Record<string, NicheConfig> = {
     h1: 'Optimisez la marge de votre pizzeria',
     tagline: 'Logiciel de gestion specialise pour pizzerias',
     description: 'Guide et outil pour calculer les marges de votre pizzeria. Food cost, coefficient multiplicateur, rentabilite par pizza, gestion pate, garnitures, et optimisation prix de vente.',
-    heroSubtitle: "Calculez precisement le cout de chaque pizza, optimisez vos garnitures et augmentez votre marge de 15 a 25% avec RestauMargin.",
+    heroSubtitle: "Calculez precisement le cout de chaque pizza, optimisez vos garnitures et pilotez votre marge plat par plat avec RestauMargin.",
     avgMargin: '65-75%',
     avgFoodCost: '28-32%',
     avgCoef: '3,5 a 4',
@@ -74,7 +74,7 @@ const NICHES: Record<string, NicheConfig> = {
       { label: 'Food cost moyen', value: '30%', color: 'teal' },
       { label: 'Marge brute cible', value: '70%', color: 'emerald' },
       { label: 'Coefficient type', value: '3,8x', color: 'amber' },
-      { label: 'Fiches techniques RestauMargin', value: '225+', color: 'rose' },
+      { label: 'Fiches techniques', value: 'Illimitees', color: 'rose' },
     ],
     faqs: [
       { q: 'Quelle est la marge moyenne d\'une pizzeria ?', a: 'La marge brute d\'une pizzeria tourne autour de 65-75%. Les pizzerias bien gerees atteignent 72-75% grace a un food cost maitrise (28-32%) et des garnitures standardisees.' },
@@ -405,7 +405,7 @@ const NICHES: Record<string, NicheConfig> = {
       },
       {
         q: "Comment gerer les invendus et pertes en fin de journee ?",
-        a: "Les invendus sont le principal poste de perte occulte en boulangerie. Un croissant non vendu en fin de journee n'est pas \"perdu\" dans les stocks, mais son cout est bien reel et alourdit le food cost de tous les croissants vendus. La bonne methode en 4 etapes : (1) tracker systematiquement les invendus par reference chaque soir (quantite non vendue vs quantite produite) — RestauMargin integre un module de saisie des pertes journalieres en 30 secondes, (2) calculer le taux de perte hebdomadaire par reference et ajuster les quantites produites par fournee, (3) valoriser les invendus de la veille : pain de la veille pour les croutons et sandwichs du midi, viennoiseries en pain perdu ou dans les preparations patisserie, (4) proposer un panier fin de journee a prix reduit (50-60% de remise) pour eviter le gaspillage total. L'IA RestauMargin analyse vos donnees de ventes sur 30 jours et predit les quantites optimales a produire par jour de la semaine et par saison, reduisant les invendus de 25 a 40% en moyenne sans impact sur la disponibilite produit en debut de journee.",
+        a: "Les invendus sont le principal poste de perte occulte en boulangerie. Un croissant non vendu en fin de journee n'est pas \"perdu\" dans les stocks, mais son cout est bien reel et alourdit le food cost de tous les croissants vendus. La bonne methode en 4 etapes : (1) tracker systematiquement les invendus par reference chaque soir (quantite non vendue vs quantite produite) — RestauMargin integre un module de saisie des pertes journalieres en 30 secondes, (2) calculer le taux de perte hebdomadaire par reference et ajuster les quantites produites par fournee, (3) valoriser les invendus de la veille : pain de la veille pour les croutons et sandwichs du midi, viennoiseries en pain perdu ou dans les preparations patisserie, (4) proposer un panier fin de journee a prix reduit (50-60% de remise) pour eviter le gaspillage total. L'IA RestauMargin analyse vos donnees de ventes sur 30 jours et predit les quantites optimales a produire par jour de la semaine et par saison, pour vous aider a reduire les invendus sans manquer de produit en debut de journee.",
       },
       {
         q: "RestauMargin convient-il aux boulangeries-patisseries avec espace snacking et salon de the ?",

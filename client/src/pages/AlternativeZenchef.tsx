@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, TrendingUp, AlertTriangle, CheckCircle, ArrowRight, DollarSign, Target, BookOpen, Lightbulb, Users, Zap, Sparkles, Scale, XCircle, Star, Quote, Building2 } from 'lucide-react';
+import { ChefHat, TrendingUp, AlertTriangle, CheckCircle, ArrowRight, DollarSign, Target, BookOpen, Lightbulb, Users, Zap, Sparkles, Scale, XCircle, Building2 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
@@ -16,7 +16,7 @@ import PublicFooter from '../components/public/PublicFooter';
 const faqItems = [
   {
     question: "Peut-on utiliser RestauMargin et Zenchef en parallele ?",
-    answer: "Oui, et c'est meme une combinaison frequente. Zenchef gere votre presence en ligne (reservations, marketing), tandis que RestauMargin pilote vos operations internes (food cost, fiches techniques, marges). Les deux outils sont complementaires : l'un capte les clients, l'autre garantit que chaque couvert servi est rentable. Aucune integration native n'existe entre les deux, mais ils n'ont pas besoin d'echanger de donnees pour coexister.",
+    answer: "Oui, les deux outils se combinent sans difficulte. Zenchef gere votre presence en ligne (reservations, marketing), tandis que RestauMargin pilote vos operations internes (food cost, fiches techniques, marges). Les deux outils sont complementaires : l'un capte les clients, l'autre garantit que chaque couvert servi est rentable. Aucune integration native n'existe entre les deux, mais ils n'ont pas besoin d'echanger de donnees pour coexister.",
   },
   {
     question: "Combien coute RestauMargin par rapport a Zenchef ?",
@@ -32,7 +32,7 @@ const faqItems = [
   },
   {
     question: "RestauMargin propose-t-il un module reservation en ligne ?",
-    answer: "Non, ce n'est pas dans notre scope. Nous nous concentrons sur la gestion operationnelle et la rentabilite (marges, food cost, fiches techniques, IA d'optimisation). Si vous avez besoin d'un module reservation, Zenchef, TheFork ou SevenRooms sont des choix solides. Beaucoup de nos clients utilisent l'un de ces outils en parallele de RestauMargin.",
+    answer: "Non, ce n'est pas dans notre scope. Nous nous concentrons sur la gestion operationnelle et la rentabilite (marges, food cost, fiches techniques, IA d'optimisation). Si vous avez besoin d'un module reservation, Zenchef, TheFork ou SevenRooms sont des choix solides. RestauMargin s'utilise sans difficulte en parallele de l'un de ces outils.",
   },
   {
     question: "Y a-t-il un essai gratuit chez RestauMargin et chez Zenchef ?",
@@ -40,7 +40,7 @@ const faqItems = [
   },
   {
     question: "Quelle alternative a Zenchef est la plus adaptee a un restaurant independant ?",
-    answer: "Pour un restaurant independant qui souhaite reprendre le controle de ses marges sans exploser son budget logiciel, RestauMargin est un excellent choix. Pour la partie reservation, TheFork (gratuit jusqu'a un certain volume) ou Resy (modele freemium) sont des alternatives plus accessibles que Zenchef. La combinaison RestauMargin + TheFork est tres frequente chez nos clients independants.",
+    answer: "Pour un restaurant independant qui souhaite reprendre le controle de ses marges sans exploser son budget logiciel, RestauMargin est un excellent choix. Pour la partie reservation, TheFork (gratuit jusqu'a un certain volume) ou Resy (modele freemium) sont des alternatives plus accessibles que Zenchef.",
   },
   {
     question: "Comment RestauMargin se compare-t-il a Zenchef sur la qualite du support ?",
@@ -52,7 +52,7 @@ const faqItems = [
   },
   {
     question: "Quel est le meilleur outil pour un groupe de plusieurs restaurants ?",
-    answer: "RestauMargin gere nativement les multi-restaurants avec une vue consolidee (food cost groupe, comparaison entre etablissements, alertes sur derive de marges). Zenchef propose aussi une vue groupe pour la partie reservation et marketing. Pour un groupe de 3 a 10 restaurants, beaucoup de gestionnaires combinent les deux : RestauMargin pour piloter les marges par etablissement, Zenchef pour centraliser la gestion clientele.",
+    answer: "RestauMargin gere nativement les multi-restaurants avec une vue consolidee (food cost groupe, comparaison entre etablissements, alertes sur derive de marges). Zenchef propose aussi une vue groupe pour la partie reservation et marketing. Pour un groupe de 3 a 10 restaurants, il est possible de combiner les deux : RestauMargin pour piloter les marges par etablissement, Zenchef pour centraliser la gestion clientele.",
   },
 ];
 
@@ -207,7 +207,6 @@ export default function AlternativeZenchef() {
               { href: '#restaumargin', label: "Vue d'ensemble : RestauMargin en 2026" },
               { href: '#tableau', label: 'Tableau comparatif détaillé (15 critères)' },
               { href: '#cas-usage', label: "Quel outil pour quel type de restaurateur ?" },
-              { href: '#temoignages', label: 'Témoignages de restaurateurs' },
               { href: '#prix', label: 'Comparaison de prix sur 12 mois' },
               { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Tester RestauMargin gratuitement' },
@@ -239,7 +238,7 @@ export default function AlternativeZenchef() {
               "alternative Zenchef" en 2026 ?
             </p>
             <p>
-              Trois raisons reviennent systématiquement dans les retours de nos utilisateurs :
+              Trois raisons expliquent en général cette recherche :
             </p>
           </div>
 
@@ -257,7 +256,7 @@ export default function AlternativeZenchef() {
             <ReasonCard
               icon={<AlertTriangle className="w-6 h-6" />}
               title="La complexité"
-              desc="Plusieurs restaurateurs trouvent l'interface chargée et l'onboarding long. Les fonctionnalités avancées (marketing automation, segmentation) demandent du temps de formation."
+              desc="L'interface peut sembler chargée et l'onboarding long. Les fonctionnalités avancées (marketing automation, segmentation) demandent du temps de formation."
             />
           </div>
 
@@ -461,8 +460,8 @@ export default function AlternativeZenchef() {
 
           <div className="prose-content">
             <p>
-              Plutôt qu'un verdict unique, voici les trois scénarios les plus fréquents que nous
-              observons chez nos prospects et clients. Identifiez le profil le plus proche du vôtre.
+              Plutôt qu'un verdict unique, voici trois scénarios types.
+              Identifiez le profil le plus proche du vôtre.
             </p>
           </div>
 
@@ -486,7 +485,7 @@ export default function AlternativeZenchef() {
               title="Vous êtes un groupe de 3 à 10 restaurants"
               recommendation="RestauMargin (Business) + Zenchef Premium"
               recoColor="purple"
-              desc="Vous avez besoin d'une vue consolidée des marges et d'un benchmarking entre établissements (RestauMargin Business à 79 EUR/mois multi-resto). Vous avez aussi besoin d'une gestion centralisée des réservations et d'une marque uniforme sur le web (Zenchef Premium). C'est la combinaison la plus puissante du marché pour cette taille."
+              desc="Vous avez besoin d'une vue consolidée des marges et d'un benchmarking entre établissements (RestauMargin Business à 79 EUR/mois multi-resto). Vous avez aussi besoin d'une gestion centralisée des réservations et d'une marque uniforme sur le web (Zenchef Premium)."
             />
           </div>
 
@@ -499,51 +498,10 @@ export default function AlternativeZenchef() {
           </Callout>
         </section>
 
-        {/* ═════════════ SECTION 6 : Témoignages ═════════════ */}
-        <section id="temoignages" className="mb-16">
-          <SectionHeading icon={<Quote className="w-6 h-6" />} number="6">
-            Témoignages de restaurateurs
-          </SectionHeading>
-
-          <div className="prose-content">
-            <p>
-              Voici quelques retours représentatifs de clients qui ont fait le choix de RestauMargin
-              après avoir évalué Zenchef ou en complément de Zenchef. Les prénoms ont été modifiés
-              pour préserver l'anonymat des établissements.
-            </p>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 mt-8">
-            <TestimonialCard
-              quote="On utilisait Zenchef depuis 3 ans pour les réservations et on en était contents. Mais on payait 139 EUR/mois sans avoir d'outil pour le food cost. On a ajouté RestauMargin il y a 6 mois et la marge brute est passée de 64 à 70 %. Pour 29 EUR de plus, c'est rentabilisé en deux semaines."
-              author="Karim B."
-              role="Bistrot moderne, Lyon"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="J'avais regardé Zenchef pour notre nouveau restaurant. Trop cher et trop complexe pour ce que je voulais faire au démarrage. J'ai pris RestauMargin pour la gestion des marges et TheFork pour les réservations. Combinaison gagnante, total 29 EUR/mois."
-              author="Sophie M."
-              role="Restaurant indépendant, Bordeaux"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="Le scan de factures et la mercuriale m'ont fait gagner 4 heures par semaine. Aucun équivalent chez Zenchef. L'IA suggère même quand un fournisseur a augmenté ses prix de plus de 5 %. C'est vraiment un outil pensé pour les opérations."
-              author="Mehdi L."
-              role="Chef-propriétaire, Marseille"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="Pour notre groupe de 4 brasseries, on utilise RestauMargin Business pour le pilotage des marges (vue consolidée) et Zenchef pour les réservations. Les deux outils répondent à des besoins très différents, on n'a jamais eu à choisir."
-              author="Caroline T."
-              role="Directrice d'exploitation, groupe Île-de-France"
-              rating={5}
-            />
-          </div>
-        </section>
 
         {/* ═════════════ SECTION 7 : Prix sur 12 mois ═════════════ */}
         <section id="prix" className="mb-16">
-          <SectionHeading icon={<DollarSign className="w-6 h-6" />} number="7">
+          <SectionHeading icon={<DollarSign className="w-6 h-6" />} number="6">
             Comparaison de prix sur 12 mois
           </SectionHeading>
 
@@ -792,34 +750,6 @@ function ScenarioCard({ badge, title, recommendation, recoColor, desc }: {
       </div>
       <h3 className={`font-bold text-lg ${c.text} mb-3`}>{title}</h3>
       <p className="text-sm text-mono-400 leading-relaxed">{desc}</p>
-    </div>
-  );
-}
-
-function TestimonialCard({ quote, author, role, rating }: {
-  quote: string;
-  author: string;
-  role: string;
-  rating: number;
-}) {
-  return (
-    <div className="bg-white border border-mono-900 rounded-3xl p-6 sm:p-7">
-      <div className="flex items-center gap-1 mb-3">
-        {Array.from({ length: rating }).map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-        ))}
-      </div>
-      <Quote className="w-6 h-6 text-teal-600 mb-3 opacity-50" />
-      <p className="text-sm text-mono-350 leading-relaxed mb-4 italic">"{quote}"</p>
-      <div className="flex items-center gap-3 pt-3 border-t border-mono-900">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-sm">
-          {author.split(' ').map((n) => n[0]).join('')}
-        </div>
-        <div>
-          <div className="font-bold text-mono-100 text-sm">{author}</div>
-          <div className="text-xs text-mono-500">{role}</div>
-        </div>
-      </div>
     </div>
   );
 }

@@ -142,9 +142,9 @@ export default function BlogPsychologiePrix() {
               L'ancrage de prix est le biais cognitif le plus puissant en restauration. Quand un client voit un plat à 42 € en haut de la carte, tous les autres plats à 22–28 € lui semblent raisonnables, voire bon marché.
             </p>
             <div className="bg-teal-50 dark:bg-teal-900/10 border border-teal-200 dark:border-teal-800 rounded-xl p-5 my-5">
-              <p className="font-semibold text-teal-700 dark:text-teal-400 text-sm mb-1">Exemple concret</p>
+              <p className="font-semibold text-teal-700 dark:text-teal-400 text-sm mb-1">Exemple illustratif</p>
               <p className="text-sm leading-relaxed text-[#737373] dark:text-[#A3A3A3]">
-                Un bistrot parisien a ajouté un "Wagyu A5 poêlé" à 68 €. Résultat : ses entrecôtes à 32 € sont passées de 18 % à 31 % des commandes en 6 semaines. Le plat à 68 € représentait moins de 3 % des ventes — mais son rôle était accompli.
+                Imaginons un bistrot qui ajoute un "Wagyu A5 poêlé" à 68 € en tête de carte. Ses entrecôtes à 32 € peuvent alors passer, par exemple, de 18 % à 31 % des commandes. Le plat à 68 € ne pèsera sans doute que quelques pourcents des ventes — mais son rôle d'ancre est rempli.
               </p>
             </div>
             <p className="leading-relaxed text-[#737373] dark:text-[#A3A3A3]">
@@ -189,7 +189,7 @@ export default function BlogPsychologiePrix() {
               <div className="flex justify-between text-sm"><span className="text-[#737373] dark:text-[#A3A3A3]">Assiette de mignardises du chef (min 2 pers.)</span><span>14,00</span></div>
             </div>
             <p className="mt-4 text-sm text-[#737373] dark:text-[#A3A3A3]">
-              Une chaîne de pizzerias a restructuré ses 7 formules en 3 niveaux. La formule milieu est passée de 31 % à 54 % des commandes, augmentant le ticket moyen de 2,40 € par couvert.
+              Exemple illustratif : une pizzeria qui ramène ses 7 formules à 3 niveaux peut voir la formule du milieu passer d'environ un tiers à plus de la moitié des commandes, ce qui relève mécaniquement le ticket moyen.
             </p>
           </section>
 

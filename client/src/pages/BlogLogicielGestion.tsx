@@ -31,7 +31,7 @@ const faqItems = [
   },
   {
     question: "Combien de temps pour amortir un logiciel à 200 €/mois ?",
-    answer: "Le ROI est presque toujours positif si l outil est correctement utilisé. Cas type : si un logiciel vous fait gagner 1 point de food cost sur 600 000 € de CA annuel, cela représente 6 000 €/an d économies — votre outil à 200 €/mois (2 400 €/an) est remboursé en 12 jours seulement. Sur les 3 outils les plus rentables (caisse, marges, RH), le ROI moyen calculé sur un échantillon G2 de 50 restaurants français est compris entre x4 et x12 sur 12 mois."
+    answer: "Le ROI est presque toujours positif si l outil est correctement utilisé. Cas type : si un logiciel vous fait gagner 1 point de food cost sur 600 000 € de CA annuel, cela représente 6 000 €/an d économies — votre outil à 200 €/mois (2 400 €/an) est remboursé en 12 jours seulement."
   },
   {
     question: "Faut-il intégrer ChatGPT ou IA dans son stack restaurant ?",
@@ -184,7 +184,7 @@ export default function BlogLogicielGestion() {
             <div><strong className="text-white">6. Livraison :</strong> Deliverect (49-99 €) si plus de 30 commandes/sem plateformes</div>
           </div>
           <p className="mt-4 text-teal-100 text-sm">
-            Budget moyen pour un indépendant : 200-400 €/mois. ROI moyen calcule : x4 à x12 sur 12 mois.
+            Budget moyen pour un indépendant : 200-400 €/mois.
           </p>
         </div>
 
@@ -584,7 +584,7 @@ export default function BlogLogicielGestion() {
               <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">11. ROI : exemple chiffré sur 12 mois</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Cas concret basé sur un panel de 50 restaurants français (G2 + interviews 2026) : restaurant indépendant, 80 couverts/jour, <strong>600 000 € CA annuel HT</strong>, 5 salariés.
+              Exemple illustratif (hypothèses fictives, pas un cas client) : restaurant indépendant, 80 couverts/jour, <strong>600 000 € CA annuel HT</strong>, 5 salariés.
             </p>
             <div className="bg-mono-1000 rounded-xl p-5 mb-4 font-mono text-sm text-mono-100 space-y-2">
               <div className="font-bold text-amber-400">AVANT (sans stack — Excel + caisse basique)</div>
@@ -604,7 +604,7 @@ export default function BlogLogicielGestion() {
               <div>Marge nette : passe de 4 % à 13,6 %</div>
             </div>
             <p className="text-[#374151] leading-relaxed">
-              Ces chiffres ne sont pas théoriques — ce sont les moyennes constatées sur le panel. Le gain le plus important n est pas les marges (21 000 €) mais le temps administratif libéré (31 200 €). C est ce qui permet au restaurateur de se reconcentrer sur la salle, la cuisine et la stratégie.
+              Ces chiffres sont une simulation : vos résultats dépendront de votre point de départ et de l usage réel des outils. Dans cet exemple, le gain le plus important n est pas les marges (21 000 €) mais le temps administratif libéré (31 200 €). C est ce qui permet au restaurateur de se reconcentrer sur la salle, la cuisine et la stratégie.
             </p>
           </section>
 

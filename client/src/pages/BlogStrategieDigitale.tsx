@@ -487,8 +487,8 @@ export default function BlogStrategieDigitale() {
             <p className="text-sm text-purple-700 leading-relaxed">
               Instagram + TikTok demandent <strong>5 à 8 heures par semaine</strong> en interne. La
               meilleure pratique : déléguer à un membre de l'équipe (souvent un serveur passionné par
-              la création de contenu), avec rémunération supplémentaire 200-400 EUR par mois. Plusieurs
-              restaurants français ont vu leur CA doubler grâce à 1-2 vidéos vues 1M+.
+              la création de contenu), avec rémunération supplémentaire 200-400 EUR par mois. Une ou deux
+              vidéos qui dépassent le million de vues peuvent suffire à changer durablement la fréquentation.
             </p>
           </div>
         </section>
@@ -631,8 +631,8 @@ export default function BlogStrategieDigitale() {
             <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">12. Tableau du ROI par canal marketing</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
-            Voici un benchmark des <strong>ROI moyens par canal marketing restaurant</strong> observés
-            sur des établissements français en 2025-2026. Ces chiffres vous aident à prioriser vos
+            Voici des <strong>ordres de grandeur indicatifs du ROI par canal marketing restaurant</strong>,
+            à vérifier sur vos propres chiffres. Ils vous aident à prioriser vos
             investissements selon votre maturité et votre cible.
           </p>
           <div className="mt-6 overflow-x-auto">

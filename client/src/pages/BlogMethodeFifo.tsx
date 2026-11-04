@@ -576,7 +576,7 @@ export default function BlogMethodeFifo() {
 
           <div className="prose-content mt-8">
             <p>
-              Ces chiffres sont conservateurs. Sur les restaurants qui n'avaient aucun FIFO et qui mettent en place une discipline rigoureuse, on observe régulièrement des gains de 30 000 à 50 000 EUR par an. Pour aller plus loin, consultez notre comparatif <Link to="/blog/fifo-lifo-stocks-restaurant" className="text-teal-700 underline hover:text-teal-800">FIFO vs LIFO en restauration</Link>.
+              Ces chiffres sont des estimations. Pour un restaurant qui n'avait aucun FIFO, une discipline rigoureuse peut représenter des gains plus importants encore, selon le volume d'achats. Pour aller plus loin, consultez notre comparatif <Link to="/blog/fifo-lifo-stocks-restaurant" className="text-teal-700 underline hover:text-teal-800">FIFO vs LIFO en restauration</Link>.
             </p>
           </div>
         </section>
@@ -769,7 +769,6 @@ export default function BlogMethodeFifo() {
               <li>- Plan Comptable Général — Article 213-1 et 214-1 (méthodes de valorisation)</li>
               <li>- INSEE — Statistiques sectorielles HCR France (données 2024-2026)</li>
               <li>- GIRA Conseil — Étude annuelle profitabilité restaurants HCR France 2026</li>
-              <li>- — établissements du secteur, données agrégées 2025-2026</li>
             </ul>
           </div>
         </section>

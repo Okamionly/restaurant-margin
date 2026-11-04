@@ -657,12 +657,12 @@ export default function BlogTauxOccupation() {
           </div>
 
           <p className="text-[#374151] leading-relaxed mb-6">
-            Pour rendre concrète la puissance du levier "taux d'occupation", voici un cas chiffré détaillé issu d'un bistrot réel suivi sur 12 mois.
+            Pour rendre concrète la puissance du levier "taux d'occupation", voici un exemple chiffré détaillé, fictif et construit à titre d'illustration, sur 12 mois.
           </p>
 
           <h3 className="text-xl font-bold text-mono-100 mb-4">Profil du restaurant</h3>
           <ul className="space-y-2 text-[#374151] mb-6 list-disc list-inside">
-            <li><strong>Type :</strong> bistrot traditionnel parisien, 11e arrondissement</li>
+            <li><strong>Type :</strong> bistrot traditionnel en zone urbaine dense</li>
             <li><strong>Capacité :</strong> 48 places en salle + 12 places terrasse (avril-octobre)</li>
             <li><strong>Services :</strong> déjeuner + dîner, 6 jours sur 7 (ferme lundi)</li>
             <li><strong>Rotation moyenne initiale :</strong> 1,2</li>
@@ -736,7 +736,7 @@ export default function BlogTauxOccupation() {
               Bilan de la transformation
             </h4>
             <p className="text-sm text-emerald-800 leading-relaxed">
-              Passer de 50 % à 75 % d'occupation (+25 points) sur ce bistrot a généré <strong>+283 296 EUR de marge nette additionnelle annuelle</strong>, malgré un CDD supplémentaire (+60 000 EUR de charges) et les commissions des plateformes (-44 224 EUR). C'est l'équivalent de 2,8 SMIC chargées gagnées chaque année, juste en optimisant un seul indicateur. Le ROI des outils mis en place (TheFork, SMS, formation équipe) est de l'ordre de 20-30x sur 12 mois.
+              Dans cet exemple, passer de 50 % à 75 % d'occupation (+25 points) génère <strong>+283 296 EUR de marge nette additionnelle annuelle</strong>, malgré un CDD supplémentaire (+60 000 EUR de charges) et les commissions des plateformes (-44 224 EUR). C'est l'équivalent de 2,8 SMIC chargés par an, en travaillant un seul indicateur. Dans ce scénario, le ROI des outils mis en place (TheFork, SMS, formation équipe) serait de l'ordre de 20-30x sur 12 mois.
             </p>
           </div>
         </section>

@@ -166,23 +166,23 @@ export default function BlogIA() {
         </ul>
 
         {/* ── Cas concrets ── */}
-        <h2>Exemples concrets avec RestauMargin</h2>
+        <h2>Exemples illustratifs (chiffres fictifs)</h2>
 
         <div className="space-y-6 my-6">
           <div className="bg-white border border-mono-900 rounded-xl p-5">
-            <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">Bistrot parisien : -7 points de food cost</h3>
+            <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">Bistrot : objectif -7 points de food cost</h3>
             <p className="text-sm !mb-1">Food cost estimé à 30 %, réel à 36 %. Causes : hausse du beurre non répercutée, portions de frites 40 % trop généreuses, entrecôte-frites à 42 % de food cost.</p>
-            <p className="text-sm font-semibold text-emerald-600 !mb-0">Résultat : food cost de 36 % à 29 % en 8 semaines. Gain : ~25 000 EUR/an.</p>
+            <p className="text-sm font-semibold text-emerald-600 !mb-0">Résultat visé : food cost de 36 % à 29 %, soit ~25 000 EUR/an de marge récupérée.</p>
           </div>
           <div className="bg-white border border-mono-900 rounded-xl p-5">
             <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">Traiteur : formule cocktail à 45 % de food cost</h3>
             <p className="text-sm !mb-1">Reformulation de 3 pièces coûteuses + augmentation de prix de 8 %.</p>
-            <p className="text-sm font-semibold text-emerald-600 !mb-0">Résultat : food cost de 45 % à 28 %. Marge par événement +35 %.</p>
+            <p className="text-sm font-semibold text-emerald-600 !mb-0">Résultat visé : food cost de 45 % à 28 %.</p>
           </div>
           <div className="bg-white border border-mono-900 rounded-xl p-5">
             <h3 className="text-base font-bold text-mono-100 !mt-0 mb-2">Dark kitchen : de 2 % à 11 % de marge nette</h3>
             <p className="text-sm !mb-1">4 plats déficitaires identifiés et remplacés par des plats à food cost &lt; 22 %.</p>
-            <p className="text-sm font-semibold text-emerald-600 !mb-0">Résultat : marge nette x5 sur le canal livraison en 6 semaines.</p>
+            <p className="text-sm font-semibold text-emerald-600 !mb-0">Résultat visé : marge nette multipliée sur le canal livraison.</p>
           </div>
         </div>
 
@@ -290,7 +290,7 @@ export default function BlogIA() {
             { q: 'L\'IA va-t-elle remplacer les cuisiniers ?', a: 'Non. L\'IA excelle dans le calcul, l\'analyse de données et la détection d\'anomalies. Elle ne peut pas goûter une sauce, créer une recette originale ou gérer un coup de feu. Son rôle est de libérer le restaurateur des tâches administratives pour qu\'il puisse se concentrer sur la cuisine et le service.' },
             { q: 'Comment l\'IA détecte-t-elle les anomalies dans les achats ?', a: 'L\'IA compare les achats réels avec les consommations théoriques (calculées à partir des ventes x fiches techniques). Un écart anormal (par exemple, achat de 50 kg de saumon pour 30 kg de consommation théorique) déclenche une alerte : gaspillage, sur-portions, vol ou erreur de commande.' },
             { q: 'Faut-il des compétences techniques pour utiliser l\'IA ?', a: 'Non. Les outils modernes comme RestauMargin sont conçus pour être utilisés par des restaurateurs, pas des informaticiens. L\'interface est simple : photographiez vos factures, dictez vos recettes, consultez vos tableaux de bord. L\'IA travaille en coulisses.' },
-            { q: 'Quels sont les résultats concrets de l\'IA en restauration ?', a: 'D\'après les cas clients de RestauMargin : réduction du food cost de 3 à 7 points, gain de 8 à 12 heures/semaine sur les tâches administratives, augmentation du ticket moyen de 3 à 8 %, réduction du gaspillage de 20 à 30 %. Le ROI est généralement atteint en 2-3 mois.' },
+            { q: 'Quels sont les résultats concrets de l\'IA en restauration ?', a: 'Les leviers que l\'IA automatise (fiches techniques à jour, suivi des prix fournisseurs, détection des écarts entre food cost théorique et réel) peuvent faire gagner plusieurs points de food cost et plusieurs heures par semaine sur les tâches administratives. Les résultats dépendent de la rigueur de l\'établissement : aucun outil ne peut les garantir.' },
           ].map((item) => (
             <details key={item.q} className="bg-mono-1000 border border-mono-900 rounded-xl group">
               <summary className="px-5 py-4 font-semibold text-mono-100 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors text-sm">
@@ -409,7 +409,7 @@ export default function BlogIA() {
                 name: "Quels sont les résultats concrets de l'IA en restauration ?",
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: "Réduction food cost 3-7 points, gain 8-12h/semaine, ticket moyen +3-8 %, gaspillage -20-30 %. ROI en 2-3 mois.",
+                  text: "Les leviers automatisés (fiches techniques à jour, suivi des prix fournisseurs, détection des écarts) peuvent faire gagner plusieurs points de food cost et plusieurs heures par semaine. Les résultats dépendent de l'établissement : aucun outil ne peut les garantir.",
                 },
               },
             ],

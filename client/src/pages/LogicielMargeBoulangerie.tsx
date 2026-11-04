@@ -86,7 +86,7 @@ const faqItems = [
   {
     question: 'Comment passer de 8 % à 18 % de marge nette en boulangerie ?',
     answer:
-      "Cas concret d'une boulangerie 450 000 EUR de CA : (1) Pesée systématique pâtes et garnitures = +3 points food cost, (2) Renégociation contrat farine annuel = -8 % coût matière, (3) Réduction invendus de 12 % à 4 % via don associations + flash sales = +4 points marge, (4) Snacking midi (sandwichs, pizzas) = +30 % CA sur les mêmes charges fixes, (5) Augmentation 0,10 EUR sur viennoiseries = +18 000 EUR/an. Total : passage 8 % à 18 % en 6 mois.",
+      "Exemple illustratif d'une boulangerie à 450 000 EUR de CA : (1) Pesée systématique pâtes et garnitures = +3 points food cost, (2) Renégociation contrat farine annuel = -8 % coût matière, (3) Réduction invendus de 12 % à 4 % via don associations + flash sales = +4 points marge, (4) Snacking midi (sandwichs, pizzas) = +30 % CA sur les mêmes charges fixes, (5) Augmentation 0,10 EUR sur viennoiseries = +18 000 EUR/an. Combinés, ces leviers peuvent permettre de passer de 8 % à 18 % de marge nette.",
   },
 ];
 
@@ -231,7 +231,7 @@ export default function LogicielMargeBoulangerie() {
               { href: '#exemples', label: 'Exemples chiffrés : baguette, croissant, mille-feuille, macaron' },
               { href: '#kpi', label: 'KPI quotidiens : invendus, casse, taux de retour' },
               { href: '#optimisation', label: 'Optimisation : invendus, snacking, second-day pricing' },
-              { href: '#cas', label: 'Cas concret : de 8 % à 18 % de marge nette en 6 mois' },
+              { href: '#cas', label: 'Exemple illustratif : de 8 % à 18 % de marge nette' },
               { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Essayer RestauMargin gratuitement' },
             ].map((item, i) => (
@@ -793,17 +793,17 @@ export default function LogicielMargeBoulangerie() {
           </Callout>
         </section>
 
-        {/* ═════════════ SECTION 7 : Cas concret ═════════════ */}
+        {/* ═════════════ SECTION 7 : Exemple illustratif ═════════════ */}
         <section id="cas" className="mb-16">
           <SectionHeading icon={<Sparkles className="w-6 h-6" />} number="7">
-            Cas concret : Boulangerie Le Pétrin (Nantes) — 8 % à 18 % de marge nette en 6 mois
+            Exemple illustratif : une boulangerie de quartier, de 8 % à 18 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              La Boulangerie Le Pétrin (nom modifié pour anonymat client), située en périphérie
-              nantaise, a adopté RestauMargin en janvier 2026. Voici la transformation chiffrée
-              sur 6 mois.
+              Prenons un exemple fictif : une boulangerie pâtisserie de quartier à 450 000 EUR de
+              chiffre d'affaires annuel. Voici ce que pourrait donner l'application des leviers
+              décrits plus haut. Chiffres hypothétiques, à titre d'illustration.
             </p>
           </div>
 
@@ -811,7 +811,7 @@ export default function LogicielMargeBoulangerie() {
             <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-3">
                 <AlertTriangle className="w-5 h-5 text-red-700" />
-                <h3 className="font-bold text-red-900">Avant RestauMargin (janvier 2026)</h3>
+                <h3 className="font-bold text-red-900">Situation de départ</h3>
               </div>
               <ul className="space-y-2 text-sm text-red-800">
                 <li>- Chiffre d'affaires annuel : <strong>450 000 EUR</strong></li>
@@ -825,7 +825,7 @@ export default function LogicielMargeBoulangerie() {
             <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle className="w-5 h-5 text-emerald-700" />
-                <h3 className="font-bold text-emerald-900">Après 6 mois (juillet 2026)</h3>
+                <h3 className="font-bold text-emerald-900">Situation visée</h3>
               </div>
               <ul className="space-y-2 text-sm text-emerald-800">
                 <li>- Chiffre d'affaires annuel : <strong>520 000 EUR</strong> (+15 %)</li>
@@ -839,7 +839,7 @@ export default function LogicielMargeBoulangerie() {
           </div>
 
           <div className="prose-content mt-8">
-            <h3 className="text-xl font-bold text-mono-100 mb-3">Les 5 actions clés mises en place</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3">Les 5 leviers à actionner</h3>
             <ol className="list-decimal list-inside space-y-2 text-mono-350">
               <li>
                 <strong>Pesée systématique des pâtes et garnitures</strong> avec balance connectée :
@@ -864,9 +864,9 @@ export default function LogicielMargeBoulangerie() {
             </ol>
 
             <p className="mt-6 text-mono-350">
-              Résultat global : <strong className="text-emerald-700">+57 600 EUR de bénéfice
-              net en 6 mois</strong>, soit un ROI de 198x sur l'abonnement RestauMargin
-              (29 EUR/mois x 6 mois = 174 EUR).
+              Ordre de grandeur : passer de 8 % de 450 000 EUR à 18 % de 520 000 EUR représenterait
+              <strong className="text-emerald-700">environ 57 600 EUR de résultat net annuel supplémentaire</strong>.
+              Chaque établissement a ses propres contraintes : ces chiffres ne sont pas un résultat garanti.
             </p>
           </div>
         </section>

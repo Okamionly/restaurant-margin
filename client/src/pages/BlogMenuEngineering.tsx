@@ -132,7 +132,7 @@ export default function BlogMenuEngineering() {
             <li><a href="#exemple" className="hover:text-teal-600 transition-colors">4. Exemple chiffré : 20 plats analysés</a></li>
             <li><a href="#actions" className="hover:text-teal-600 transition-colors">5. Actions concrètes par quadrant</a></li>
             <li><a href="#design-carte" className="hover:text-teal-600 transition-colors">6. Design de la carte : où placer les Stars</a></li>
-            <li><a href="#cas-concret" className="hover:text-teal-600 transition-colors">7. Cas concret : transformer un Puzzle en Star</a></li>
+            <li><a href="#cas-concret" className="hover:text-teal-600 transition-colors">7. Exemple illustratif : transformer un Puzzle en Star</a></li>
             <li><a href="#saisonnalite" className="hover:text-teal-600 transition-colors">8. Saisonnalité : adapter sa matrice</a></li>
             <li><a href="#erreurs" className="hover:text-teal-600 transition-colors">9. Les 6 erreurs à éviter</a></li>
             <li><a href="#automatiser" className="hover:text-teal-600 transition-colors">10. Excel, caisse ou logiciel : quand automatiser</a></li>
@@ -243,7 +243,7 @@ export default function BlogMenuEngineering() {
             <h2 className="text-2xl font-bold text-mono-100">4. Exemple chiffré : 20 plats</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
-            Restaurant "Le Comptoir" — 28 600 € de CA HT, 1 000 plats vendus sur 30 jours, 20 plats à la carte.
+            Exemple illustratif (chiffres fictifs) : un restaurant — 28 600 € de CA HT, 1 000 plats vendus sur 30 jours, 20 plats à la carte.
           </p>
           <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>Seuil popularité : (1000/20) × 0,7 = 35 ventes</div>
@@ -346,10 +346,10 @@ export default function BlogMenuEngineering() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Star className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-mono-100">7. Cas concret : transformer un Puzzle en Star</h2>
+            <h2 className="text-2xl font-bold text-mono-100">7. Exemple illustratif : transformer un Puzzle en Star</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
-            Reprenons "Le Comptoir" et sa <strong>Côte de bœuf 1 kg</strong> classée Puzzle : forte marge (28 € contribution) mais seulement 20 ventes sur 30 jours, sous le seuil de popularité de 35. Un plat qui rapporte gros mais que personne ne commande. Voici le protocole appliqué sur 3 mois.
+            Reprenons ce restaurant fictif et sa <strong>Côte de bœuf 1 kg</strong> classée Puzzle : forte marge (28 € contribution) mais seulement 20 ventes sur 30 jours, sous le seuil de popularité de 35. Un plat qui rapporte gros mais que personne ne commande. Voici le protocole possible sur 3 mois.
           </p>
           <div className="bg-mono-975 rounded-xl p-4 mb-4 font-mono text-sm text-mono-100 space-y-1">
             <div>AVANT — "Côte de bœuf 1 kg — 58"</div>
@@ -364,7 +364,7 @@ export default function BlogMenuEngineering() {
             <li className="flex items-start gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 flex-shrink-0" /><span><strong>Recommander</strong> : brief serveurs pour la suggérer aux tables de 2 et plus.</span></li>
           </ul>
           <p className="text-[#374151] leading-relaxed">
-            Résultat : <strong>+358 € de marge mensuelle</strong>, soit près de <strong>4 300 € par an</strong> sur un seul plat, à coût matières quasi constant. C'est exactement ce que le menu engineering vise : faire basculer les Puzzles vers les Stars. Pour aller plus loin sur ce raisonnement, lisez comment identifier <Link to="/blog/plat-le-plus-rentable-restaurant" className="text-teal-600 font-medium hover:underline">le plat le plus rentable de votre carte</Link> et comment <Link to="/blog/prix-de-vente-restaurant" className="text-teal-600 font-medium hover:underline">fixer le juste prix de vente</Link>.
+            Résultat dans cet exemple : <strong>+358 € de marge mensuelle</strong>, soit près de <strong>4 300 € par an</strong> sur un seul plat, à coût matières quasi constant. C'est exactement ce que le menu engineering vise : faire basculer les Puzzles vers les Stars. Pour aller plus loin sur ce raisonnement, lisez comment identifier <Link to="/blog/plat-le-plus-rentable-restaurant" className="text-teal-600 font-medium hover:underline">le plat le plus rentable de votre carte</Link> et comment <Link to="/blog/prix-de-vente-restaurant" className="text-teal-600 font-medium hover:underline">fixer le juste prix de vente</Link>.
           </p>
         </section>
 

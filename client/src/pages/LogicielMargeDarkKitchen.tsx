@@ -351,7 +351,7 @@ export default function LogicielMargeDarkKitchen() {
             </table>
           </div>
           <p className="text-xs text-[#737373] mt-4 text-center">
-            Benchmarks compilés à partir de 50+ dark kitchens françaises (UMIH, GIRA Conseil, Restauration & Tendances 2026).
+            Ordres de grandeur indicatifs issus de sources sectorielles (UMIH, GIRA Conseil, Restauration & Tendances 2026).
           </p>
         </div>
       </section>
@@ -520,7 +520,7 @@ export default function LogicielMargeDarkKitchen() {
         </div>
       </section>
 
-      {/* ── Section 10 : Cas concret ── */}
+      {/* ── Section 10 : Exemple illustratif ── */}
       <section className="py-16 px-4 bg-gradient-to-b from-teal-50 to-white">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white border border-teal-200 rounded-2xl p-8 shadow-lg shadow-teal-100/50">
@@ -529,33 +529,33 @@ export default function LogicielMargeDarkKitchen() {
                 <Building2 className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wider text-teal-700 font-semibold">Cas concret</p>
-                <h2 className="text-2xl font-extrabold text-[#111111]">Dark kitchen Paris 11e : 3 marques, 8 % à 19 % de marge nette</h2>
+                <p className="text-xs uppercase tracking-wider text-teal-700 font-semibold">Exemple illustratif</p>
+                <h2 className="text-2xl font-extrabold text-[#111111]">Une dark kitchen à 3 marques : de 8 % à 19 % de marge nette selon la marque</h2>
               </div>
             </div>
 
             <div className="prose prose-lg max-w-none text-[#404040] leading-relaxed space-y-4">
               <p>
-                <strong>Profil :</strong> dark kitchen de 75 m2 en rue d'Avron, ouverte en mars 2024 par 2 associés (1 chef + 1 entrepreneur digital). Investissement initial : 95 000 EUR. CA mensuel actuel : 32 000 EUR.
+                <strong>Profil (exemple fictif) :</strong> dark kitchen de 75 m2 en zone urbaine, tenue par 2 associés (1 chef + 1 profil digital). Investissement initial : 95 000 EUR. CA mensuel : 32 000 EUR. Chiffres hypothétiques, à titre d'illustration.
               </p>
               <p>
-                <strong>3 marques opérées :</strong> "Mama Bowl" (healthy poke), "Smashed" (smash burgers), "Pizzeti" (pizzas napolitaines).
+                <strong>3 marques opérées :</strong> une marque healthy poke, une marque smash burgers, une marque pizzas napolitaines.
               </p>
             </div>
 
             <div className="grid sm:grid-cols-3 gap-4 my-8">
-              <CaseCard brand="Mama Bowl" netMargin="19 %" detail="Ticket élevé 13,50 EUR, packaging optimisé, 45 % click & collect" color="emerald" />
-              <CaseCard brand="Smashed" netMargin="12 %" detail="Marque la plus visible Uber Eats, commission négociée à 27 %" color="teal" />
-              <CaseCard brand="Pizzeti" netMargin="8 %" detail="Forte concurrence, marge sous pression, en cours de repositionnement" color="amber" />
+              <CaseCard brand="Marque poke" netMargin="19 %" detail="Ticket élevé 13,50 EUR, packaging optimisé, 45 % click & collect" color="emerald" />
+              <CaseCard brand="Marque burger" netMargin="12 %" detail="Marque la plus visible Uber Eats, commission négociée à 27 %" color="teal" />
+              <CaseCard brand="Marque pizza" netMargin="8 %" detail="Forte concurrence, marge sous pression, en cours de repositionnement" color="amber" />
             </div>
 
             <div className="bg-[#F9FAFB] rounded-xl p-5 text-sm text-[#404040]">
-              <p className="font-semibold text-[#111111] mb-2">Leviers activés via RestauMargin :</p>
+              <p className="font-semibold text-[#111111] mb-2">Leviers à actionner :</p>
               <ul className="space-y-1.5">
-                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Tracking commissions par plateforme : détection de 1 200 EUR/mois "perdus" sur Just Eat (commission à 33 %)</li>
-                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Coût packaging intégré : suppression d'un sachet inutile sur Mama Bowl, -0,15 EUR/plat x 450 plats = 67 EUR/mois</li>
-                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Multi-marques consolidé : ingrédients partagés identifiés (avocat, poulet, mozzarella), stock optimisé -28 %</li>
-                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Marge nette globale passée de 9 % à 13 % en 4 mois (gain de 1280 EUR/mois)</li>
+                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Tracking commissions par plateforme : repérer une plateforme trop chère (par exemple une commission à 33 %)</li>
+                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Coût packaging intégré : supprimer un sachet inutile, -0,15 EUR/plat x 450 plats = 67 EUR/mois</li>
+                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Multi-marques consolidé : identifier les ingrédients partagés (avocat, poulet, mozzarella) pour réduire le stock</li>
+                <li><Check className="w-4 h-4 text-emerald-600 inline-block mr-2" /> Ordre de grandeur : passer de 9 % à 13 % de marge nette globale sur 32 000 EUR/mois = 1 280 EUR/mois</li>
               </ul>
             </div>
           </div>

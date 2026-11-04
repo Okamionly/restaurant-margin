@@ -1047,7 +1047,7 @@ export default function BlogCoutRevient() {
               Calculateur gratuit
             </Link>
           </div>
-          <p className="text-teal-200 text-xs mt-5">Sans carte bancaire — 14 jours gratuits — Sans engagement</p>
+          <p className="text-teal-200 text-xs mt-5">Sans carte bancaire — 7 jours gratuits — Sans engagement</p>
         </div>
 
         {/* Nav bas de page */}

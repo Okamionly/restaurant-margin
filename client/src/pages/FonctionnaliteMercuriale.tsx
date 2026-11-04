@@ -436,9 +436,9 @@ export default function FonctionnaliteMercuriale() {
               },
               {
                 icon: <Percent className="w-7 h-7" />,
-                stat: '-8 %',
+                stat: '↓',
                 title: 'Coût matière',
-                desc: "En renégociant à partir de l'historique et en arbitrant entre fournisseurs, les restaurants équipés réduisent en moyenne leur coût matière de 8 % sur les références suivies.",
+                desc: "En renégociant à partir de l'historique et en arbitrant entre fournisseurs, vous disposez des preuves datées pour faire baisser votre coût matière sur les références suivies.",
               },
               {
                 icon: <ShieldCheck className="w-7 h-7" />,

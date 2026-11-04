@@ -86,7 +86,7 @@ const faqItems = [
   {
     question: 'Comment passer de 12 % à 28 % de marge nette en glacerie ?',
     answer:
-      "Cas concret d'un glacier-salon de thé bordelais 280 000 EUR de CA : (1) Pesée précise des matières premières + standardisation des recettes = +3 points food cost, (2) Lancement d'une gamme signature 4 parfums vendus chez épiceries fines (wholesale BtoB) = +35 000 EUR/an de CA marge 32 %, (3) Café + thé haut de gamme intégrés au menu = +25 % de ticket moyen, (4) Réduction des pertes de 8 % à 2,5 % via production juste-à-temps, (5) Augmentation 0,30 EUR sur les coupes signature = +12 000 EUR/an. Total : passage 12 % à 28 % de marge nette en 8 mois.",
+      "Exemple illustratif d'un glacier-salon de thé à 280 000 EUR de CA : (1) Pesée précise des matières premières + standardisation des recettes = +3 points food cost, (2) Lancement d'une gamme signature 4 parfums vendus chez épiceries fines (wholesale BtoB) = +35 000 EUR/an de CA marge 32 %, (3) Café + thé haut de gamme intégrés au menu = +25 % de ticket moyen, (4) Réduction des pertes de 8 % à 2,5 % via production juste-à-temps, (5) Augmentation 0,30 EUR sur les coupes signature = +12 000 EUR/an. Combinés, ces leviers peuvent permettre de passer de 12 % à 28 % de marge nette.",
   },
 ];
 
@@ -234,7 +234,7 @@ export default function LogicielMargeGlacier() {
               { href: '#sides', label: 'Sides salon de thé : café, thé, pâtisseries (marge 60-75 %)' },
               { href: '#kpi', label: 'KPI glacier : ticket moyen, rotations rapides l\'été' },
               { href: '#optimisation', label: 'Optimisation : produit signature, BtoB, wholesale' },
-              { href: '#cas', label: 'Cas concret glacier Bordeaux : 12 % à 28 % marge nette' },
+              { href: '#cas', label: 'Exemple illustratif : un glacier, de 12 % à 28 % de marge nette' },
               { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Essayer RestauMargin gratuitement' },
             ].map((item, i) => (
@@ -842,18 +842,18 @@ export default function LogicielMargeGlacier() {
           </Callout>
         </section>
 
-        {/* ═════════════ SECTION 10 : Cas concret ═════════════ */}
+        {/* ═════════════ SECTION 10 : Exemple illustratif ═════════════ */}
         <section id="cas" className="mb-16">
           <SectionHeading icon={<Sparkles className="w-6 h-6" />} number="10">
-            Cas concret : Glacier La Sorbetière (Bordeaux) — 12 % à 28 % marge nette en 8 mois
+            Exemple illustratif : un glacier-salon de thé, de 12 % à 28 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              La Sorbetière (nom modifié pour anonymat client), glacier-salon de thé situé à
-              Bordeaux centre, a adopté RestauMargin en septembre 2025. Voici la transformation
-              chiffrée sur 8 mois (septembre 2025 à mai 2026, cycle complet intégrant 1 saison
-              haute et 1 hiver salon de thé).
+              Prenons un exemple fictif : un glacier-salon de thé de centre-ville à 280 000 EUR de
+              chiffre d'affaires annuel. Voici ce que pourrait donner l'application des leviers
+              décrits plus haut sur un cycle complet (une saison haute et un hiver salon de thé).
+              Chiffres hypothétiques, à titre d'illustration.
             </p>
           </div>
 
@@ -861,7 +861,7 @@ export default function LogicielMargeGlacier() {
             <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-3">
                 <AlertTriangle className="w-5 h-5 text-red-700" />
-                <h3 className="font-bold text-red-900">Avant RestauMargin (sept 2025)</h3>
+                <h3 className="font-bold text-red-900">Situation de départ</h3>
               </div>
               <ul className="space-y-2 text-sm text-red-800">
                 <li>- Chiffre d'affaires annuel : <strong>280 000 EUR</strong></li>
@@ -876,7 +876,7 @@ export default function LogicielMargeGlacier() {
             <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle className="w-5 h-5 text-emerald-700" />
-                <h3 className="font-bold text-emerald-900">Après 8 mois (mai 2026)</h3>
+                <h3 className="font-bold text-emerald-900">Situation visée</h3>
               </div>
               <ul className="space-y-2 text-sm text-emerald-800">
                 <li>- Chiffre d'affaires annuel : <strong>365 000 EUR</strong> (+30 %)</li>
@@ -891,7 +891,7 @@ export default function LogicielMargeGlacier() {
           </div>
 
           <div className="prose-content mt-8">
-            <h3 className="text-xl font-bold text-mono-100 mb-3">Les 5 actions clés mises en place</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3">Les 5 leviers à actionner</h3>
             <ol className="list-decimal list-inside space-y-2 text-mono-350">
               <li>
                 <strong>Standardisation des recettes glace</strong> avec balance numérique au gramme :
@@ -902,23 +902,23 @@ export default function LogicielMargeGlacier() {
                 réduction pertes de 8 % à 2,5 %.
               </li>
               <li>
-                <strong>Prospection wholesale BtoB</strong> (5 hôtels 4* + 3 restaurants gastronomiques
-                locaux) : +35 000 EUR/an de CA marge 60 %.
+                <strong>Prospection wholesale BtoB</strong> (hôtels et restaurants gastronomiques
+                locaux) : par exemple +35 000 EUR/an de CA à 60 % de marge.
               </li>
               <li>
                 <strong>Lancement offre salon de thé premium</strong> (afternoon tea 25 EUR + brunch
                 dimanche 28 EUR) : +45 % de CA hivernal.
               </li>
               <li>
-                <strong>Création d'un produit signature</strong> 'Sorbet Saint-Émilion' (sorbet
-                vinifié au merlot) : effet PR Instagram + +18 % de fréquentation week-end.
+                <strong>Création d'un produit signature</strong> (par exemple un sorbet vinifié
+                au vin rouge local) : effet PR Instagram et hausse de la fréquentation le week-end.
               </li>
             </ol>
 
             <p className="mt-6 text-mono-350">
-              Résultat global : <strong className="text-emerald-700">+68 600 EUR de bénéfice
-              net en 8 mois</strong>, soit un ROI de 296x sur l'abonnement RestauMargin
-              (29 EUR/mois x 8 mois = 232 EUR).
+              Ordre de grandeur : passer de 12 % de 280 000 EUR à 28 % de 365 000 EUR représenterait
+              <strong className="text-emerald-700">environ 68 600 EUR de résultat net annuel supplémentaire</strong>.
+              Chaque établissement a ses propres contraintes : ces chiffres ne sont pas un résultat garanti.
             </p>
           </div>
         </section>

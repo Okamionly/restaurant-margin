@@ -68,7 +68,7 @@ const faqItems: FaqItem[] = [
   {
     question: "Puis-je simuler l'impact d'un changement avant de toucher à ma carte ?",
     answer:
-      "Oui, c'est l'une des fonctions les plus utilisées. Avant de retirer un Dog, d'augmenter le prix d'une Vache à lait ou de repositionner un Puzzle, vous lancez une simulation. RestauMargin recalcule la marge globale projetée en supposant que le volume des plats supprimés se reporte sur les plats restants. Vous voyez immédiatement combien de points de marge vous gagnez (ou perdez) avant d'imprimer la nouvelle carte. Zéro pari à l'aveugle.",
+      "Oui. Avant de retirer un Dog, d'augmenter le prix d'une Vache à lait ou de repositionner un Puzzle, vous lancez une simulation. RestauMargin recalcule la marge globale projetée en supposant que le volume des plats supprimés se reporte sur les plats restants. Vous voyez immédiatement combien de points de marge vous gagnez (ou perdez) avant d'imprimer la nouvelle carte. Zéro pari à l'aveugle.",
   },
   {
     question: "Gère-t-il les cartes multiples (midi / soir, déjeuner / brunch) ?",

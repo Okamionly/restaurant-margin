@@ -156,7 +156,7 @@ export default function BlogSeuilRentabilite() {
         date="Mai 2026"
         title="Seuil de rentabilité restaurant : guide complet 2026"
         accentWord="seuil de rentabilité"
-        subtitle="60 % des restaurants ferment dans les 3 premières années. La cause N°1 : ne pas connaître son point mort. Voici la méthode complète, les formules, 3 cas réels chiffrés et le tableau de bord à mettre en place."
+        subtitle="60 % des restaurants ferment dans les 3 premières années. La cause N°1 : ne pas connaître son point mort. Voici la méthode complète, les formules, 3 exemples chiffrés et le tableau de bord à mettre en place."
       />
 
       {/* Body */}
@@ -207,7 +207,7 @@ export default function BlogSeuilRentabilite() {
               { href: '#composantes', label: 'Charges fixes vs charges variables : la classification' },
               { href: '#formule', label: 'La formule du seuil de rentabilité expliquée' },
               { href: '#howto', label: 'Comment calculer en 7 étapes' },
-              { href: '#cas-bistrot', label: "Cas pratique : bistrot parisien 40 couverts" },
+              { href: '#cas-bistrot', label: "Exemple illustratif : bistrot de 40 couverts" },
               { href: '#cas-pizzeria', label: "Cas pratique : pizzeria quartier" },
               { href: '#cas-gastronomique', label: "Cas pratique : restaurant gastronomique" },
               { href: '#benchmarks', label: "Benchmarks 2026 par type d'établissement" },
@@ -462,13 +462,13 @@ export default function BlogSeuilRentabilite() {
         {/* SECTION 6 : Cas bistrot */}
         <section id="cas-bistrot" className="mb-16">
           <SectionHeading icon={<Building2 className="w-6 h-6" />} number="6">
-            Cas pratique : bistrot parisien 40 couverts
+            Exemple illustratif : bistrot de 40 couverts
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Prenons le cas du <strong>"Comptoir des Halles"</strong>, un bistrot parisien de 40 couverts ouvert
-              6 jours/7, midi + soir. Données réelles d'un client RestauMargin (anonymisé).
+              Prenons un exemple fictif, à titre d'illustration : un bistrot de 40 couverts ouvert
+              6 jours/7, midi + soir. Les chiffres ci-dessous sont construits pour la démonstration.
             </p>
           </div>
 
@@ -700,7 +700,7 @@ export default function BlogSeuilRentabilite() {
             </ul>
             <p>
               <strong>Effet combiné :</strong> une optimisation 360° (food cost -3 pts + loyer -500 EUR + ticket moyen +2 EUR)
-              peut réduire votre seuil de <strong>12 à 18 %</strong>. Sur notre cas du Comptoir des Halles : passage de 24 929 EUR
+              peut réduire votre seuil de <strong>12 à 18 %</strong>. Sur notre bistrot fictif de 40 couverts : passage de 24 929 EUR
               à 20 500 EUR de seuil, soit 4 400 EUR/mois de marge brute supplémentaire (53 000 EUR/an).
             </p>
             <p>
@@ -840,8 +840,8 @@ export default function BlogSeuilRentabilite() {
           </div>
           <p className="text-sm text-mono-500 mb-6 max-w-3xl">
             Les seuils de rentabilité, taux de marge sur coût variable, ratios de charges et fourchettes de food cost cités
-            dans ce guide s'appuient sur des sources officielles et professionnelles reconnues du secteur CHR, recoupées avec
-            les données agrégées de RestauMargin (des établissements français). Ces références sont vérifiables et mises à jour pour 2026.
+            dans ce guide s'appuient sur des sources officielles et professionnelles reconnues du secteur CHR. Les exemples
+            chiffrés sont fictifs et servent d'illustration. Ces références sont vérifiables et mises à jour pour 2026.
           </p>
 
           <ul className="grid sm:grid-cols-2 gap-4 mb-6">

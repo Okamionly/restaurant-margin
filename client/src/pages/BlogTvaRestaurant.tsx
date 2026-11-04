@@ -573,7 +573,7 @@ export default function BlogTvaRestaurant() {
               <li>- <strong>GHR</strong> : Groupement des Hôtelleries et Restaurations - guides de gestion 2026</li>
             </ul>
             <p className="text-xs text-mono-500 mt-4 italic">
-              Article rédigé par la rédaction RestauMargin. Publié le 1er juin 2026. Notre méthodologie : croisement des textes fiscaux en vigueur et des retours terrain de restaurateurs accompagnés par RestauMargin. Ce contenu est informatif et ne se substitue pas à l'avis de votre expert-comptable.
+              Article rédigé par la rédaction RestauMargin. Publié le 1er juin 2026. Notre méthodologie : lecture des textes fiscaux en vigueur et de la doctrine administrative (BOFiP). Ce contenu est informatif et ne se substitue pas à l'avis de votre expert-comptable.
             </p>
           </section>
 

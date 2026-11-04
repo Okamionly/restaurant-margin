@@ -454,7 +454,7 @@ export default function BlogRegle30303010() {
 
           <div className="prose-content">
             <p>
-              Prenons un cas concret : une brasserie de 60 couverts en région, qui réalise
+              Prenons un exemple illustratif : une brasserie de 60 couverts en région, qui réalise
               500 000 EUR de CA HT annuel (soit environ 1 850 EUR de CA par jour, ouvert
               270 jours par an). Voici comment la règle 30/30/30/10 se décline en euros et
               quel est l'enjeu réel sur chaque poste.
@@ -673,7 +673,7 @@ export default function BlogRegle30303010() {
 
           <div className="prose-content">
             <p>
-              Voici les 5 erreurs les plus fréquentes que je rencontre chez les restaurateurs
+              Voici les 5 erreurs les plus fréquentes chez les restaurateurs
               qui essaient d'appliquer la règle 30/30/30/10 sans la maîtriser.
             </p>
           </div>

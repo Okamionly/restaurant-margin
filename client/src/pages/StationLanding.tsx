@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Scale, Tablet, Bluetooth, Wifi, ChefHat, Shield, Zap,
-  CheckCircle2, ArrowRight, Star, Package, Euro, Clock,
+  CheckCircle2, ArrowRight, Package, Euro, Clock,
   Smartphone, BarChart3, BookOpen, Award, Truck, Mail,
   ChevronDown, MessageSquare, HelpCircle, Phone, User, Send,
   Loader2,
@@ -37,11 +37,10 @@ const STEPS = [
   { num: '3', title: 'Pesez et cuisinez', desc: 'Sélectionnez un ingrédient, posez-le sur le plateau. Le poids et le coût s\'affichent en direct.' },
 ];
 
-const TESTIMONIALS = [
-  { name: 'Chef Laurent M.', role: 'Restaurant Le Bistrot, Lyon', text: 'On a réduit notre coût matière de 8% en 3 mois. La pesée en direct change tout.', stars: 5 },
-  { name: 'Sophie R.', role: 'Traiteur S&Co, Paris', text: 'Mes commis suivent les fiches techniques au gramme près. Fini le gaspillage.', stars: 5 },
-  { name: 'Karim B.', role: 'Brasserie du Port, Marseille', text: 'Le kit est robuste, l\'inox se nettoie en 2 secondes. Parfait pour le service.', stars: 4 },
-];
+// 2026-11-04 : trois temoignages nominatifs inventes (« Chef Laurent M. », « Sophie R. »,
+// « Karim B. ») et un bandeau « 150+ restaurants equipes / -8 % de cout matiere /
+// 50k pesees par mois » retires : aucune source pour ces chiffres, aucun avis n'existe
+// (regle « Aucune preuve sociale fabriquee » du CLAUDE.md).
 
 const PRICING = [
   {
@@ -107,7 +106,6 @@ const FAQ_ITEMS = [
 
 export default function StationLanding() {
   const [scrollY, setScrollY] = useState(0);
-  const [animatedStats, setAnimatedStats] = useState({ restaurants: 0, margin: 0, ingredients: 0 });
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [orderForm, setOrderForm] = useState({ name: '', email: '', phone: '', quantity: 1, message: '' });
   const [orderStatus, setOrderStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
@@ -143,24 +141,6 @@ export default function StationLanding() {
     const onScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  useEffect(() => {
-    const duration = 2000;
-    const start = Date.now();
-    const targets = { restaurants: 150, margin: 8, ingredients: 50000 };
-    const interval = setInterval(() => {
-      const elapsed = Date.now() - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      setAnimatedStats({
-        restaurants: Math.floor(targets.restaurants * ease),
-        margin: Math.round(targets.margin * ease * 10) / 10,
-        ingredients: Math.floor(targets.ingredients * ease),
-      });
-      if (progress >= 1) clearInterval(interval);
-    }, 30);
-    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -240,16 +220,16 @@ export default function StationLanding() {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-6">
                 <div>
-                  <div className="text-2xl font-bold text-emerald-400">{animatedStats.restaurants}+</div>
-                  <div className="text-xs text-mono-500 dark:text-mono-700">Restaurants équipés</div>
+                  <div className="text-2xl font-bold text-emerald-400">5 kg</div>
+                  <div className="text-xs text-mono-500 dark:text-mono-700">Capacité balance</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-blue-400">-{animatedStats.margin}%</div>
-                  <div className="text-xs text-mono-500 dark:text-mono-700">Coût matière moyen</div>
+                  <div className="text-2xl font-bold text-blue-400">0,5 g</div>
+                  <div className="text-xs text-mono-500 dark:text-mono-700">Précision</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-purple-400">{(animatedStats.ingredients / 1000).toFixed(0)}k</div>
-                  <div className="text-xs text-mono-500 dark:text-mono-700">Pesées par mois</div>
+                  <div className="text-2xl font-bold text-purple-400">~8 h</div>
+                  <div className="text-xs text-mono-500 dark:text-mono-700">Autonomie</div>
                 </div>
               </div>
             </div>
@@ -435,35 +415,12 @@ export default function StationLanding() {
         </div>
       </section>
 
-      {/* ═══ TESTIMONIALS ═══ */}
-      <section className="py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Ils l'utilisent au quotidien</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="p-6 bg-mono-1000 dark:bg-mono-50/50 border border-mono-900 dark:border-mono-200 rounded-2xl">
-                <div className="flex gap-0.5 mb-4">
-                  {Array.from({ length: 5 }).map((_, si) => (
-                    <Star key={si} className={`w-4 h-4 ${si < t.stars ? 'text-yellow-400 fill-yellow-400' : 'text-mono-500 dark:text-mono-700'}`} />
-                  ))}
-                </div>
-                <p className="text-sm text-mono-400 dark:text-mono-800 mb-4 italic">"{t.text}"</p>
-                <div>
-                  <div className="text-sm font-semibold">{t.name}</div>
-                  <div className="text-xs text-mono-500 dark:text-mono-700">{t.role}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ═══ PRICING ═══ */}
       <section id="pricing" className="py-20 px-6 bg-mono-1000 dark:bg-mono-50/30">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Tarifs transparents</h2>
-            <p className="text-mono-500 dark:text-mono-700">Rentabilisé dès le premier mois grâce aux économies sur vos coûts matière.</p>
+            <p className="text-mono-500 dark:text-mono-700">Un kit matériel et un abonnement logiciel, sans frais caché.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {PRICING.map((p, i) => (
@@ -641,7 +598,7 @@ export default function StationLanding() {
           <div className="p-12 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 rounded-3xl">
             <h2 className="text-3xl font-bold mb-4">Prêt à maîtriser vos marges ?</h2>
             <p className="text-mono-500 dark:text-mono-700 mb-8">
-              Commandez votre kit RestauMargin Station et commencez à économiser dès la première semaine.
+              Commandez votre kit RestauMargin Station et suivez vos coûts matière dès la première pesée.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a href="#pricing" className="px-8 py-3 bg-emerald-500 hover:bg-emerald-400 rounded-xl font-semibold transition flex items-center gap-2">

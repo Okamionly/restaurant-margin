@@ -314,8 +314,8 @@ export default function BlogPlatPlusRentable() {
           <div className="prose-content">
             <p>
               Voici notre classement détaillé des 15 plats les plus rentables à mettre à la carte
-              d'un restaurant en France en 2026. Données issues de notre base de des restaurants
-              utilisant RestauMargin, croisées avec les benchmarks GIRA Conseil et SNRC.
+              d'un restaurant en France en 2026. Fourchettes indicatives établies à partir des
+              benchmarks GIRA Conseil et SNRC et d'exemples de fiches techniques types.
             </p>
           </div>
 
@@ -665,7 +665,7 @@ export default function BlogPlatPlusRentable() {
           <div className="prose-content">
             <p>
               Vue d'ensemble synthétique des 15 plats avec exemple de prix de vente moyen TTC,
-              coût matière et marge brute en euros. Données observées en restaurant standard parisien 2026.
+              coût matière et marge brute en euros. Valeurs indicatives, calculées sur les exemples de fiches techniques ci-dessus.
             </p>
           </div>
 

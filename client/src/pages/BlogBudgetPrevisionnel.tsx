@@ -517,7 +517,7 @@ export default function BlogBudgetPrevisionnel() {
 
           <div className="prose-content">
             <p>
-              Restaurant 60 couverts, urbain (Lyon centre), bistronomie, ticket moyen 28€ HT. Hypothèses : food cost 30%, masse salariale 35%, loyer 4 000€/mois, autres charges fixes 9 500€/mois. Lecture détaillée mois par mois, intégrant la saisonnalité moyenne du secteur restauration urbaine.
+              Exemple illustratif : restaurant 60 couverts, urbain (centre-ville), bistronomie, ticket moyen 28€ HT. Hypothèses : food cost 30%, masse salariale 35%, loyer 4 000€/mois, autres charges fixes 9 500€/mois. Lecture détaillée mois par mois, intégrant la saisonnalité moyenne du secteur restauration urbaine.
             </p>
           </div>
 

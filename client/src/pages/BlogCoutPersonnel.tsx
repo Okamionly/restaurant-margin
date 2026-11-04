@@ -833,8 +833,7 @@ export default function BlogCoutPersonnel() {
           <div className="prose-content">
             <p>
               Voici les ratios coût personnel observés en France en 2026 sur 9 types d'établissement.
-              Données agrégées issues du GIRA Conseil, du SNRC, de la fédération UMIH et de notre
-              de la fédération UMIH.
+              Ordres de grandeur issus des publications du GIRA Conseil, du SNRC et de la fédération UMIH.
             </p>
           </div>
 

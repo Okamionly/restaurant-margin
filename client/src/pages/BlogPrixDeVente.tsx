@@ -724,12 +724,12 @@ export default function BlogPrixDeVente() {
           </div>
 
           <Callout type="info">
-            <strong>Cas concret 2025 :</strong> un bistrot lyonnais qui vendait son plat du jour à
-            12,50 EUR (food cost 41 %, marge insuffisante) est passé à 14,90 EUR (food cost 33 %).
-            Résultat sur 6 mois : -8 % de couverts mais +22 % de marge brute totale. La hausse a été
-            accompagnée d'une refonte de la présentation (assiette ronde 28 cm au lieu de carrée),
-            d'un changement de nom (Plat du chef au lieu de Plat du jour) et d'une mise en avant de
-            l'origine des produits.
+            <strong>Exemple illustratif :</strong> un bistrot qui vend son plat du jour à
+            12,50 EUR (food cost 41 %, marge insuffisante) le passe à 14,90 EUR (food cost 33 %).
+            Même avec 8 % de couverts en moins, la marge brute totale peut progresser d'environ 22 %.
+            La hausse passe mieux si elle s'accompagne d'une refonte de la présentation (assiette
+            ronde 28 cm au lieu de carrée), d'un changement de nom (Plat du chef au lieu de Plat du
+            jour) et d'une mise en avant de l'origine des produits.
           </Callout>
         </section>
 

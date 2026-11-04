@@ -1168,9 +1168,8 @@ export default function BlogCalcMarge() {
               alertes en cas de dérive.
             </p>
             <p>
-              Les bénéfices concrets observés sur établissements du secteur : <strong>gain de 3 à 5 points
-              de marge brute en 6 mois</strong>, réduction de 8 heures par semaine sur la gestion administrative,
-              détection automatique des hausses de prix fournisseurs. Les fiches techniques sont synchronisées
+              Concrètement, un tel outil vous fait gagner du temps sur la gestion administrative et
+              détecte automatiquement les hausses de prix fournisseurs. Les fiches techniques sont synchronisées
               avec les factures (OCR), ce qui élimine la double saisie. Pour comprendre comment choisir,
               consultez notre {' '}
               <Link to="/comparatif-logiciels-restaurant" className="text-teal-700 underline hover:text-teal-800">comparatif logiciels restaurant</Link>
@@ -1384,10 +1383,9 @@ export default function BlogCalcMarge() {
               en marge.
             </p>
             <p>
-              Plus de 500 restaurants en France utilisent déjà RestauMargin pour piloter leur
-              rentabilité. Le gain moyen constaté est de 3 à 5 points de marge brute dans les
-              6 premiers mois d'utilisation, grâce à une meilleure maîtrise des portions,
-              des achats et de la construction du menu. Découvrez nos
+              RestauMargin est un outil récent : il vous aide à mieux maîtriser vos portions, vos
+              achats et la construction de votre menu, trois leviers qui pèsent directement sur la
+              marge brute. Découvrez nos
               <Link to="/pricing" className="text-teal-700 underline hover:text-teal-800 ml-1">tarifs RestauMargin</Link>
               ou commencez tout de suite avec le
               <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800 ml-1">calculateur de food cost gratuit</Link>.

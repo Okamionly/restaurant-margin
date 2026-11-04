@@ -74,7 +74,7 @@ export default function LogicielMargeTraiteur() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Logiciel de marge pour traiteur : food cost, devis et rentabilité en 2026',
-            description: "Guide complet du calcul de marge pour traiteur événementiel : décomposition du coût d'une prestation, food cost cible 28-35 %, chiffrage de la main d'oeuvre, méthode de devis, KPI spécifiques et cas concret Bordeaux.",
+            description: "Guide complet du calcul de marge pour traiteur événementiel : décomposition du coût d'une prestation, food cost cible 28-35 %, chiffrage de la main d'oeuvre, méthode de devis, KPI spécifiques et exemple illustratif.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -143,7 +143,7 @@ export default function LogicielMargeTraiteur() {
         date="Mai 2026"
         title="Logiciel de marge pour traiteur : food cost, devis et rentabilité en 2026"
         accentWord="traiteur"
-        subtitle="Le métier de traiteur a une économie unique : forte marge brute apparente mais main d'oeuvre événementielle et logistique qui rongent la marge nette. Méthode de calcul, décomposition du coût d'une prestation, chiffrage de devis et cas concret."
+        subtitle="Le métier de traiteur a une économie unique : forte marge brute apparente mais main d'oeuvre événementielle et logistique qui rongent la marge nette. Méthode de calcul, décomposition du coût d'une prestation, chiffrage de devis et exemple illustratif."
       />
 
       {/* ── Contenu principal ── */}
@@ -199,7 +199,7 @@ export default function LogicielMargeTraiteur() {
               { href: '#main-oeuvre', label: 'Le piège de la main d\'oeuvre événementielle' },
               { href: '#devis', label: 'Le devis traiteur : chiffrer sans se tromper' },
               { href: '#kpi', label: 'Les 6 KPI à suivre en traiteur' },
-              { href: '#cas-bordeaux', label: 'Cas concret : traiteur Bordeaux, 6 % à 19 % en 12 mois' },
+              { href: '#cas-bordeaux', label: 'Exemple illustratif : un traiteur événementiel, de 6 % à 19 % de marge nette' },
               { href: '#logiciel', label: 'Comment RestauMargin automatise tout' },
               { href: '#faq', label: 'Questions fréquentes traiteur' },
               { href: '#cta', label: 'Essayer RestauMargin gratuitement' },
@@ -579,15 +579,15 @@ export default function LogicielMargeTraiteur() {
           </div>
         </section>
 
-        {/* ═════════════ SECTION 8 : Cas concret ═════════════ */}
+        {/* ═════════════ SECTION 8 : Exemple illustratif ═════════════ */}
         <section id="cas-bordeaux" className="mb-16">
           <SectionHeading icon={<TrendingUpIcon />} number="8">
-            Cas concret : traiteur Bordeaux, 6 % à 19 % en 12 mois
+            Exemple illustratif : un traiteur événementiel, de 6 % à 19 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Prenons le cas représentatif d'un traiteur événementiel de la région bordelaise,
+              Prenons un exemple fictif : un traiteur événementiel régional,
               35 prestations par mois en moyenne, 480 000 EUR de chiffre d'affaires annuel. À son
               point de départ, l'entreprise affichait une marge nette de seulement 6 %, malgré une
               marge brute apparente de 68 %.
@@ -646,7 +646,7 @@ export default function LogicielMargeTraiteur() {
 
           <div className="prose-content mt-8">
             <p>
-              Résultat au bout de 12 mois : la marge nette est passée de 6 % à 19 %, sans
+              Dans cet exemple, au bout de 12 mois, la marge nette passe de 6 % à 19 %, sans
               augmenter le chiffre d'affaires. Sur 480 000 EUR de CA, c'est un bénéfice net qui
               passe de 28 800 EUR à 91 200 EUR, soit <strong>62 400 EUR de profit supplémentaire
               annuel</strong>, uniquement en chiffrant correctement les coûts cachés et en

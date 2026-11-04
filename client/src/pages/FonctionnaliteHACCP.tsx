@@ -707,7 +707,7 @@ export default function FonctionnaliteHACCP() {
               Questions fréquentes
             </h2>
             <p className="text-lg leading-relaxed" style={{ color: TEXT_MUTED }}>
-              Tout ce que les restaurateurs nous demandent avant de digitaliser leur HACCP.
+              Les questions fréquentes avant de digitaliser son HACCP.
             </p>
           </div>
 

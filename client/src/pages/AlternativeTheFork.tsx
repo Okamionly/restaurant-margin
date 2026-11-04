@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, TrendingUp, AlertTriangle, CheckCircle, ArrowRight, DollarSign, Target, BookOpen, Lightbulb, Users, Zap, Sparkles, Scale, XCircle, Star, Quote, Building2 } from 'lucide-react';
+import { ChefHat, TrendingUp, AlertTriangle, CheckCircle, ArrowRight, DollarSign, Target, BookOpen, Lightbulb, Users, Zap, Sparkles, Scale, XCircle, Building2 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
@@ -16,7 +16,7 @@ import PublicFooter from '../components/public/PublicFooter';
 const faqItems = [
   {
     question: "Peut-on utiliser RestauMargin et TheFork Manager en parallele ?",
-    answer: "Oui, c'est meme la combinaison la plus frequente sur le marche francais. Pres de 90 % de nos clients qui utilisent un module reservation passent par TheFork (LaFourchette) pour le visible : reservations en ligne, fiche restaurant, marketing client. Ils utilisent ensuite RestauMargin pour la partie operationnelle : food cost, fiches techniques, mercuriale, marges par plat. Les deux outils n'ont pas besoin d'echanger de donnees, ils repondent a des besoins differents et coexistent sans probleme.",
+    answer: "Oui. TheFork (LaFourchette) couvre le visible : reservations en ligne, fiche restaurant, marketing client. RestauMargin couvre la partie operationnelle : food cost, fiches techniques, mercuriale, marges par plat. Les deux outils n'ont pas besoin d'echanger de donnees, ils repondent a des besoins differents et coexistent sans probleme.",
   },
   {
     question: "Combien coute RestauMargin par rapport a TheFork Manager ?",
@@ -36,7 +36,7 @@ const faqItems = [
   },
   {
     question: "RestauMargin propose-t-il un module reservation en ligne ?",
-    answer: "Non, ce n'est volontairement pas dans notre scope. Nous nous concentrons sur la gestion operationnelle et la rentabilite (marges, food cost, fiches techniques, IA d'optimisation, mercuriale). Pour la reservation, TheFork (largement repandu en France), Zenchef ou Resy sont des choix solides. La grande majorite de nos clients combinent TheFork (reservations) + RestauMargin (operations) et trouvent cette combinaison parfaitement complementaire.",
+    answer: "Non, ce n'est volontairement pas dans notre scope. Nous nous concentrons sur la gestion operationnelle et la rentabilite (marges, food cost, fiches techniques, IA d'optimisation, mercuriale). Pour la reservation, TheFork (largement repandu en France), Zenchef ou Resy sont des choix solides. TheFork (reservations) et RestauMargin (operations) se combinent sans difficulte.",
   },
   {
     question: "Y a-t-il un essai gratuit chez RestauMargin et chez TheFork Manager ?",
@@ -44,7 +44,7 @@ const faqItems = [
   },
   {
     question: "Quelle alternative a TheFork Manager est la plus adaptee a un restaurant independant ?",
-    answer: "Pour un restaurant independant, la verite est qu'il n'existe pas vraiment d'alternative a TheFork pour la partie reservation : leur reseau de 1.7 million d'utilisateurs en France constitue une vraie barriere a l'entree. Mais pour la partie gestion operationnelle, qui n'est pas le coeur de TheFork, RestauMargin est un excellent choix (29 EUR/mois, sans commission par couvert, gestion complete des marges). La combinaison TheFork + RestauMargin est la plus repandue sur le marche.",
+    answer: "Pour un restaurant independant, la verite est qu'il n'existe pas vraiment d'alternative a TheFork pour la partie reservation : leur reseau de 1.7 million d'utilisateurs en France constitue une vraie barriere a l'entree. Mais pour la partie gestion operationnelle, qui n'est pas le coeur de TheFork, RestauMargin est un excellent choix (29 EUR/mois, sans commission par couvert, gestion complete des marges).",
   },
   {
     question: "Comment RestauMargin se compare-t-il a TheFork sur la qualite du support ?",
@@ -165,7 +165,7 @@ export default function AlternativeTheFork() {
         date="Mai 2026"
         title="Alternative à TheFork Manager : RestauMargin pour gérer vos marges"
         accentWord="RestauMargin"
-        subtitle="TheFork Manager domine la réservation en ligne en France (1,7 million d'utilisateurs), mais ne gère ni votre food cost ni vos fiches techniques. Voici un comparatif honnête pour comprendre où TheFork excelle, ce que RestauMargin apporte en complément, et pourquoi 90 % des restaurateurs utilisent les deux."
+        subtitle="TheFork Manager domine la réservation en ligne en France (1,7 million d'utilisateurs), mais ne gère ni votre food cost ni vos fiches techniques. Voici un comparatif honnête pour comprendre où TheFork excelle, ce que RestauMargin apporte en complément, et pourquoi les deux outils se combinent naturellement."
       />
 
       {/* ── Contenu principal ── */}
@@ -190,7 +190,7 @@ export default function AlternativeTheFork() {
               <strong className="text-white">RestauMargin</strong> est l'outil complémentaire pour <strong>la gestion opérationnelle : food cost, marges, fiches techniques, mercuriale, IA</strong>, à 29 EUR/mois sans commission par couvert. Pas de module réservation.
             </p>
             <p className="leading-relaxed pt-2 border-t border-white/20">
-              <strong className="text-white">Verdict :</strong> les deux outils ne sont pas concurrents, ils sont complémentaires. 90 % de nos clients utilisent TheFork pour le front (réservations) et RestauMargin pour le back (pilotage des marges).
+              <strong className="text-white">Verdict :</strong> les deux outils ne sont pas concurrents, ils sont complémentaires. TheFork couvre le front (réservations), RestauMargin le back (pilotage des marges).
             </p>
           </div>
         </div>
@@ -209,7 +209,6 @@ export default function AlternativeTheFork() {
               { href: '#tableau', label: 'Tableau comparatif détaillé (18 critères)' },
               { href: '#cas-usage', label: "Quel outil pour quel besoin ?" },
               { href: '#prix', label: 'Comparaison de prix sur 12 mois' },
-              { href: '#temoignages', label: 'Témoignages de restaurateurs' },
               { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Tester RestauMargin gratuitement' },
             ].map((item, i) => (
@@ -465,8 +464,7 @@ export default function AlternativeTheFork() {
             la présence d'une fonctionnalité native, pas une note qualitative. TheFork gagne
             logiquement sur tous les critères "acquisition client" et "remplissage de salle" ;
             RestauMargin gagne sur tous les critères "gestion opérationnelle et rentabilité".
-            C'est précisément la complémentarité que la majorité des restaurateurs exploitent
-            au quotidien.
+            C'est précisément la complémentarité entre les deux outils.
           </Callout>
         </section>
 
@@ -478,8 +476,8 @@ export default function AlternativeTheFork() {
 
           <div className="prose-content">
             <p>
-              Plutôt qu'un verdict unique, voici les trois scénarios les plus fréquents observés
-              chez nos clients. Identifiez le profil le plus proche du vôtre pour faire le bon
+              Plutôt qu'un verdict unique, voici trois scénarios types.
+              Identifiez le profil le plus proche du vôtre pour faire le bon
               choix.
             </p>
           </div>
@@ -490,21 +488,21 @@ export default function AlternativeTheFork() {
               title="Vous avez besoin de réservations en ligne et de visibilité"
               recommendation="TheFork Manager uniquement (pour l'instant)"
               recoColor="blue"
-              desc="Vous démarrez ou votre priorité numéro un est de remplir votre salle. TheFork est légitime : 1,7 million d'utilisateurs en France et une présence forte sur Google. Démarrez avec TheFork Manager seul, puis ajoutez RestauMargin quand vous voudrez maîtriser vos marges (la majorité de nos clients franchissent ce cap au bout de 6-12 mois)."
+              desc="Vous démarrez ou votre priorité numéro un est de remplir votre salle. TheFork est légitime : 1,7 million d'utilisateurs en France et une présence forte sur Google. Démarrez avec TheFork Manager seul, puis ajoutez RestauMargin quand vous voudrez maîtriser vos marges."
             />
             <ScenarioCard
               badge="Profil 2"
               title="Vous avez TheFork mais vous ne maîtrisez pas vos marges"
               recommendation="TheFork + RestauMargin en complément"
               recoColor="emerald"
-              desc="C'est le cas le plus fréquent. Vous générez des couverts via TheFork, mais vous ne savez pas exactement combien rapporte chaque plat, comment vos coûts évoluent, où sont vos fuites de marge. Ajoutez RestauMargin (29 EUR/mois) en parallèle : aucune intégration à faire, les deux outils répondent à des besoins différents. ROI typique : récupération des 29 EUR en moins d'un mois grâce aux optimisations identifiées."
+              desc="Vous générez des couverts via TheFork, mais vous ne savez pas exactement combien rapporte chaque plat, comment vos coûts évoluent, où sont vos fuites de marge. Ajoutez RestauMargin (29 EUR/mois) en parallèle : aucune intégration à faire, les deux outils répondent à des besoins différents."
             />
             <ScenarioCard
               badge="Profil 3"
               title="Vous êtes un groupe de plusieurs restaurants"
               recommendation="RestauMargin Business + TheFork Premium"
               recoColor="purple"
-              desc="Vous avez besoin d'une vue consolidée des marges et d'un benchmarking entre établissements (RestauMargin Business à 79 EUR/mois). Vous avez aussi besoin de centraliser la gestion de salle et d'optimiser le remplissage sur tous vos sites (TheFork Premium). C'est la combinaison la plus puissante du marché pour cette taille, totalisant environ 170 EUR/mois pour un système complet acquisition + opération."
+              desc="Vous avez besoin d'une vue consolidée des marges et d'un benchmarking entre établissements (RestauMargin Business à 79 EUR/mois). Vous avez aussi besoin de centraliser la gestion de salle et d'optimiser le remplissage sur tous vos sites (TheFork Premium). Cette combinaison totalise environ 170 EUR/mois pour un système complet acquisition + opération."
             />
           </div>
 
@@ -590,14 +588,14 @@ export default function AlternativeTheFork() {
               En revanche, le tableau illustre <strong>pourquoi il est crucial d'optimiser ses
               marges quand on dépend fortement de TheFork</strong>. Plus la commission ronge votre
               marge brute, plus chaque point gagné sur le food cost compte. C'est exactement le
-              rôle de RestauMargin : pour 29 EUR/mois (soit 0,1 % d'un CA de 336 000 EUR), vous
-              récupérez en moyenne 2 à 4 points de marge brute, ce qui représente 6 720 à 13 440
-              EUR par an dans ce scénario.
+              rôle de RestauMargin : pour 29 EUR/mois (soit 0,1 % d'un CA de 336 000 EUR), chaque
+              point de marge brute regagné représente environ 3 360 EUR par an dans ce scénario
+              (6 720 EUR pour 2 points).
             </p>
             <p>
               Combinaison gagnante : <strong>TheFork (acquisition) + RestauMargin
-              (rentabilité)</strong>. Le ROI est mathématiquement positif dès le premier mois
-              d'utilisation sérieuse.
+              (rentabilité)</strong>. Un gain de marge, même faible, couvre largement
+              le coût de l'abonnement.
             </p>
           </div>
 
@@ -610,47 +608,6 @@ export default function AlternativeTheFork() {
           </Callout>
         </section>
 
-        {/* ═════════════ SECTION 7 : Témoignages ═════════════ */}
-        <section id="temoignages" className="mb-16">
-          <SectionHeading icon={<Quote className="w-6 h-6" />} number="7">
-            Témoignages de restaurateurs
-          </SectionHeading>
-
-          <div className="prose-content">
-            <p>
-              Voici quelques retours représentatifs de clients qui utilisent RestauMargin en
-              complément de TheFork Manager. Les prénoms ont été modifiés pour préserver
-              l'anonymat des établissements.
-            </p>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 mt-8">
-            <TestimonialCard
-              quote="On a TheFork depuis 5 ans et ça marche très bien pour le remplissage. Le problème, c'est qu'avec les commissions, on a vu notre marge fondre sans comprendre où ça fuyait. RestauMargin a tout révélé en 2 semaines : food cost, plats déficitaires, fournisseurs qui ont augmenté en douce. On a récupéré 6 points de marge."
-              author="Julien P."
-              role="Brasserie, Toulouse"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="Pour mon petit bistrot, je n'ai jamais pu me passer de TheFork (c'est 30 % de mes couverts). Mais j'avais besoin d'un outil de gestion en complément, pas d'un deuxième système de réservation à 90 EUR/mois. RestauMargin à 29 EUR/mois, c'est exactement ce qu'il me fallait, sans doublon."
-              author="Marie-Claire D."
-              role="Bistrot indépendant, Nantes"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="Le scan de factures et la mercuriale m'ont fait gagner 4 heures par semaine. Aucun équivalent chez TheFork qui n'a pas vocation à gérer mes fournisseurs. L'IA suggère même quand un fournisseur a augmenté ses prix de plus de 5 %. C'est complémentaire à 100 %, jamais un conflit avec TheFork."
-              author="Hadrien L."
-              role="Chef-propriétaire, Marseille"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="Pour notre groupe de 6 restaurants, on utilise RestauMargin Business pour le pilotage des marges (vue consolidée) et TheFork Premium pour les réservations sur tous les sites. Les deux outils n'ont jamais eu à dialoguer entre eux, et c'est très bien comme ça : chacun excelle dans son scope."
-              author="Antoine R."
-              role="Directeur d'exploitation, groupe Île-de-France"
-              rating={5}
-            />
-          </div>
-        </section>
 
         <BlogAuthor publishedDate="2026-05-26" readTime="11 min" variant="footer" />
 
@@ -821,34 +778,6 @@ function ScenarioCard({ badge, title, recommendation, recoColor, desc }: {
       </div>
       <h3 className={`font-bold text-lg ${c.text} mb-3`}>{title}</h3>
       <p className="text-sm text-mono-400 leading-relaxed">{desc}</p>
-    </div>
-  );
-}
-
-function TestimonialCard({ quote, author, role, rating }: {
-  quote: string;
-  author: string;
-  role: string;
-  rating: number;
-}) {
-  return (
-    <div className="bg-white border border-mono-900 rounded-3xl p-6 sm:p-7">
-      <div className="flex items-center gap-1 mb-3">
-        {Array.from({ length: rating }).map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-        ))}
-      </div>
-      <Quote className="w-6 h-6 text-teal-600 mb-3 opacity-50" />
-      <p className="text-sm text-mono-350 leading-relaxed mb-4 italic">"{quote}"</p>
-      <div className="flex items-center gap-3 pt-3 border-t border-mono-900">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-sm">
-          {author.split(' ').map((n) => n[0]).join('')}
-        </div>
-        <div>
-          <div className="font-bold text-mono-100 text-sm">{author}</div>
-          <div className="text-xs text-mono-500">{role}</div>
-        </div>
-      </div>
     </div>
   );
 }

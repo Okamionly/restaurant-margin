@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, TrendingUp, AlertTriangle, CheckCircle, ArrowRight, DollarSign, Target, BookOpen, Lightbulb, Users, Zap, Sparkles, Scale, XCircle, Star, Quote, Building2 } from 'lucide-react';
+import { ChefHat, TrendingUp, AlertTriangle, CheckCircle, ArrowRight, DollarSign, Target, BookOpen, Lightbulb, Users, Zap, Sparkles, Scale, XCircle, Building2 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
@@ -16,7 +16,7 @@ import PublicFooter from '../components/public/PublicFooter';
 const faqItems = [
   {
     question: "L'Addition et RestauMargin sont-ils concurrents ou complementaires ?",
-    answer: "Les deux outils sont avant tout complementaires. L'Addition est un logiciel de caisse (POS) qui prend la commande, encaisse, gere les tables et imprime les tickets. RestauMargin gere ce qui se passe avant et apres le service : fiches techniques, food cost, mercuriale fournisseurs, marges par plat. Beaucoup de restaurateurs utilisent L'Addition en caisse et RestauMargin pour le pilotage financier. Aucune integration native n'existe encore entre les deux, mais ils n'ont pas besoin d'echanger automatiquement pour coexister.",
+    answer: "Les deux outils sont avant tout complementaires. L'Addition est un logiciel de caisse (POS) qui prend la commande, encaisse, gere les tables et imprime les tickets. RestauMargin gere ce qui se passe avant et apres le service : fiches techniques, food cost, mercuriale fournisseurs, marges par plat. Rien n'empeche d'utiliser L'Addition en caisse et RestauMargin pour le pilotage financier. Aucune integration native n'existe encore entre les deux, mais ils n'ont pas besoin d'echanger automatiquement pour coexister.",
   },
   {
     question: "Combien coute L'Addition par rapport a RestauMargin ?",
@@ -32,7 +32,7 @@ const faqItems = [
   },
   {
     question: "L'Addition et RestauMargin peuvent-ils echanger les donnees automatiquement ?",
-    answer: "Une integration directe n'est pas encore disponible cote L'Addition cote API publique grand public, mais il est possible d'importer les ventes via export CSV hebdomadaire. RestauMargin sait lire ces fichiers et les rapprocher des fiches techniques pour calculer la marge reelle par plat vendu. C'est un setup utilise par plusieurs de nos clients qui tournent sur L'Addition en salle et RestauMargin en back-office.",
+    answer: "Une integration directe n'est pas encore disponible cote L'Addition cote API publique grand public, mais il est possible d'importer les ventes via export CSV hebdomadaire. RestauMargin sait lire ces fichiers et les rapprocher des fiches techniques pour calculer la marge reelle par plat vendu.",
   },
   {
     question: "L'Addition est-il certifie NF525 et conforme a la loi anti-fraude TVA ?",
@@ -40,7 +40,7 @@ const faqItems = [
   },
   {
     question: "Quel est le meilleur outil pour un restaurant qui ouvre en 2026 ?",
-    answer: "Pour ouvrir un restaurant en 2026, vous avez besoin de trois briques : un POS de caisse certifie NF525 (L'Addition, Tiller, Sumup, Lightspeed), un module reservation (TheFork, Zenchef ou Google), un outil de pilotage des marges (RestauMargin). Beaucoup de chefs commettent l'erreur de prendre seulement une caisse et de gerer leurs marges sur Excel. Le ROI de RestauMargin se paie en general en moins d'un mois grace au gain de food cost (1 a 3 points typiquement).",
+    answer: "Pour ouvrir un restaurant en 2026, vous avez besoin de trois briques : un POS de caisse certifie NF525 (L'Addition, Tiller, Sumup, Lightspeed), un module reservation (TheFork, Zenchef ou Google), un outil de pilotage des marges (RestauMargin). Beaucoup de chefs commettent l'erreur de prendre seulement une caisse et de gerer leurs marges sur Excel. A titre d'illustration, sur 300 000 EUR de CA, un seul point de food cost regagne represente 3 000 EUR par an, soit bien plus que les 348 EUR de l'abonnement RestauMargin.",
   },
   {
     question: "Y a-t-il un essai gratuit chez L'Addition et chez RestauMargin ?",
@@ -209,7 +209,6 @@ export default function AlternativeLAddition() {
               { href: '#tableau', label: 'Tableau comparatif détaillé (18 critères)' },
               { href: '#cas-usage', label: "Quel outil pour quel type de restaurateur ?" },
               { href: '#prix', label: 'Comparaison de prix sur 12 mois' },
-              { href: '#temoignages', label: 'Témoignages de restaurateurs' },
               { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Tester RestauMargin gratuitement' },
             ].map((item, i) => (
@@ -240,7 +239,7 @@ export default function AlternativeLAddition() {
               "alternative L'Addition" en 2026 ?
             </p>
             <p>
-              Trois raisons reviennent systématiquement dans les retours de nos utilisateurs :
+              Trois raisons expliquent en général cette recherche :
             </p>
           </div>
 
@@ -465,8 +464,8 @@ export default function AlternativeLAddition() {
 
           <div className="prose-content">
             <p>
-              Plutôt qu'un verdict unique, voici les trois scénarios les plus fréquents que nous
-              observons chez nos prospects et clients. Identifiez le profil le plus proche du vôtre.
+              Plutôt qu'un verdict unique, voici trois scénarios types.
+              Identifiez le profil le plus proche du vôtre.
             </p>
           </div>
 
@@ -476,7 +475,7 @@ export default function AlternativeLAddition() {
               title="Vous avez déjà L'Addition et vous voulez piloter vos marges"
               recommendation="Ajoutez RestauMargin par-dessus"
               recoColor="emerald"
-              desc="Vous tournez sur L'Addition depuis quelques mois ou quelques années, votre salle est bien gérée, mais vous ne savez pas vraiment quelle est votre marge réelle plat par plat. Vous exportez vos ventes en CSV depuis L'Addition et vous les rapprochez de vos fiches techniques dans RestauMargin. Coût supplémentaire : 29 EUR/mois. ROI typique : moins de 30 jours grâce au gain de food cost."
+              desc="Vous tournez sur L'Addition depuis quelques mois ou quelques années, votre salle est bien gérée, mais vous ne savez pas vraiment quelle est votre marge réelle plat par plat. Vous exportez vos ventes en CSV depuis L'Addition et vous les rapprochez de vos fiches techniques dans RestauMargin. Coût supplémentaire : 29 EUR/mois."
             />
             <ScenarioCard
               badge="Profil 2"
@@ -585,47 +584,6 @@ export default function AlternativeLAddition() {
           </Callout>
         </section>
 
-        {/* ═════════════ SECTION 7 : Témoignages ═════════════ */}
-        <section id="temoignages" className="mb-16">
-          <SectionHeading icon={<Quote className="w-6 h-6" />} number="7">
-            Témoignages de restaurateurs
-          </SectionHeading>
-
-          <div className="prose-content">
-            <p>
-              Voici quelques retours représentatifs de clients qui ont fait le choix de RestauMargin
-              en complément de L'Addition (ou en alternative à un autre POS). Les prénoms ont été
-              modifiés pour préserver l'anonymat des établissements.
-            </p>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 mt-8">
-            <TestimonialCard
-              quote="L'Addition est notre caisse depuis 2019, on en est très contents pour la salle et le service. Mais on ne savait jamais vraiment quelle était notre marge réelle sur les plats. Depuis qu'on a ajouté RestauMargin, on a gagné 3 points de food cost en 4 mois. Les deux outils se complètent parfaitement."
-              author="Antoine R."
-              role="Brasserie de centre-ville, Toulouse"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="On a ouvert il y a 6 mois avec L'Addition pour la caisse et RestauMargin pour les fiches techniques. C'est le combo qu'on nous avait recommandé en école hôtelière. Je passe environ 30 minutes par semaine sur RestauMargin et je sais exactement où je gagne et où je perds."
-              author="Léa S."
-              role="Restaurant bistronomique, Nantes"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="Pour notre groupe de 5 brasseries, on a la console centrale L'Addition pour suivre les ventes et RestauMargin Business pour suivre les marges site par site. Le benchmarking entre établissements nous a permis d'identifier deux restaurants en sous-performance qu'on a redressés en un trimestre."
-              author="Stéphane G."
-              role="Directeur d'exploitation, groupe Île-de-France"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="On envisageait L'Addition Premium à 159 EUR/mois pour avoir les statistiques avancées. Finalement on est resté sur L'Addition Essential à 89 EUR et on a pris RestauMargin à 29 EUR. Total 118 EUR au lieu de 159 EUR, avec en plus toutes les fonctionnalités food cost qu'on n'aurait pas eues même en Premium."
-              author="Inès B."
-              role="Gérante de bistrot, Lille"
-              rating={5}
-            />
-          </div>
-        </section>
 
         <BlogAuthor publishedDate="2026-05-26" readTime="11 min" variant="footer" />
 
@@ -796,34 +754,6 @@ function ScenarioCard({ badge, title, recommendation, recoColor, desc }: {
       </div>
       <h3 className={`font-bold text-lg ${c.text} mb-3`}>{title}</h3>
       <p className="text-sm text-mono-400 leading-relaxed">{desc}</p>
-    </div>
-  );
-}
-
-function TestimonialCard({ quote, author, role, rating }: {
-  quote: string;
-  author: string;
-  role: string;
-  rating: number;
-}) {
-  return (
-    <div className="bg-white border border-mono-900 rounded-3xl p-6 sm:p-7">
-      <div className="flex items-center gap-1 mb-3">
-        {Array.from({ length: rating }).map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-        ))}
-      </div>
-      <Quote className="w-6 h-6 text-teal-600 mb-3 opacity-50" />
-      <p className="text-sm text-mono-350 leading-relaxed mb-4 italic">"{quote}"</p>
-      <div className="flex items-center gap-3 pt-3 border-t border-mono-900">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-sm">
-          {author.split(' ').map((n) => n[0]).join('')}
-        </div>
-        <div>
-          <div className="font-bold text-mono-100 text-sm">{author}</div>
-          <div className="text-xs text-mono-500">{role}</div>
-        </div>
-      </div>
     </div>
   );
 }

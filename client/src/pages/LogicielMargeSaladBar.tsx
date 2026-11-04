@@ -74,7 +74,7 @@ export default function LogicielMargeSaladBar() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Logiciel de marge pour salad bar et restaurant healthy en 2026',
-            description: "Guide complet du calcul de marge pour salad bar et restaurant healthy : décomposition coût poke bowl saumon, food cost cible 30-35 %, gestion perte produits frais, KPI spécifiques et cas concret Paris.",
+            description: "Guide complet du calcul de marge pour salad bar et restaurant healthy : décomposition coût poke bowl saumon, food cost cible 30-35 %, gestion perte produits frais, KPI spécifiques et exemple illustratif.",
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -143,7 +143,7 @@ export default function LogicielMargeSaladBar() {
         date="Mai 2026"
         title="Logiciel de marge pour salad bar et restaurant healthy en 2026"
         accentWord="salad bar"
-        subtitle="Le healthy est un business porteur (+12 %/an) avec un food cost structurellement plus élevé (30-35 %) que la moyenne, plombé par le coût des produits frais premium (avocat, saumon, pousses) et la perte 24-48 h. Méthode, décomposition, KPI et cas concret salad bar Paris."
+        subtitle="Le healthy est un business porteur (+12 %/an) avec un food cost structurellement plus élevé (30-35 %) que la moyenne, plombé par le coût des produits frais premium (avocat, saumon, pousses) et la perte 24-48 h. Méthode, décomposition, KPI et exemple illustratif de salad bar."
       />
 
       {/* -- Contenu principal -- */}
@@ -201,7 +201,7 @@ export default function LogicielMargeSaladBar() {
               { href: '#avocat', label: 'Avocat : la volatilité cachée qui plombe votre marge' },
               { href: '#optimisation', label: 'Optimisation : menu signature, abonnement, livraison' },
               { href: '#kpi', label: 'Les KPI à suivre en salad bar healthy' },
-              { href: '#cas-paris', label: 'Cas concret : salad bar Paris, 5 % à 18 % de marge nette' },
+              { href: '#cas-paris', label: 'Exemple illustratif : un salad bar indépendant, de 5 % à 18 % de marge nette' },
               { href: '#logiciel', label: 'Comment RestauMargin automatise tout' },
               { href: '#faq', label: 'Questions fréquentes salad bar healthy' },
               { href: '#cta', label: 'Essayer RestauMargin gratuitement' },
@@ -919,17 +919,17 @@ export default function LogicielMargeSaladBar() {
           </div>
         </section>
 
-        {/* ═════════════ SECTION 10 : Cas concret Paris ═════════════ */}
+        {/* ═════════════ SECTION 10 : Exemple illustratif ═════════════ */}
         <section id="cas-paris" className="mb-16">
           <SectionHeading icon={<Award className="w-6 h-6" />} number="10">
-            Cas concret : salad bar Paris, 5 % à 18 % en 10 mois
+            Exemple illustratif : un salad bar indépendant, de 5 % à 18 % de marge nette
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Salad bar indépendant Paris 9ème, 32 couverts + comptoir take-away. Reprise en juillet
-              2025 par Marine D., 31 ans, ancienne directrice de boutique mode. CA annuel constaté
-              à la reprise : 380 000 EUR, marge nette 5 %.
+              Prenons un exemple fictif : un salad bar indépendant en centre-ville, 32 couverts +
+              comptoir take-away, repris par une gérante venue d'un autre secteur. CA annuel de
+              départ : 380 000 EUR, marge nette 5 %.
             </p>
 
             <h3 className="text-xl font-bold text-mono-100 mb-3 mt-8">Diagnostic initial (mois 1)</h3>
@@ -948,7 +948,7 @@ export default function LogicielMargeSaladBar() {
                 phase="Phase 1 (mois 1-2)"
                 title="Maîtrise de la perte produits frais"
                 actions={[
-                  'Mise en place de fiches techniques précises pour les 28 bowls via RestauMargin',
+                  'Mise en place de fiches techniques précises pour les 28 bowls',
                   'Étiquetage HACCP systématique des prep avec date + heure + DLC',
                   'Réduction carte à 12 bowls signatures + 6 salades + 4 smoothies + 2 saisonniers',
                   'Résultat : perte produits frais passe de 17 % à 10 %, food cost de 42 % à 36 %',
@@ -960,7 +960,7 @@ export default function LogicielMargeSaladBar() {
                 actions={[
                   'Négociation grossiste maraîcher direct Rungis (-12 % vs Metro sur feuilles/légumes)',
                   'Passage en JAT 4 livraisons/semaine sur volumes calibrés',
-                  'Scan factures OCR via RestauMargin (gain 2h/semaine)',
+                  'Suivi systématique des factures fournisseurs',
                   'Résultat : food cost passe de 36 % à 33 %',
                 ]}
               />
@@ -968,7 +968,7 @@ export default function LogicielMargeSaladBar() {
                 phase="Phase 3 (mois 5-7)"
                 title="Stratégie multi-canal et abonnement"
                 actions={[
-                  'Lancement click & collect via site web RestauMargin (-2 EUR)',
+                  'Lancement d’un service de click & collect (-2 EUR)',
                   'Prix différencié : +15 % sur Uber Eats / Deliveroo',
                   'Lancement abonnement mensuel 12 bowls 159 EUR -- 68 abonnés en 3 mois',
                   'Résultat : ratio livraison plateforme tombe de 68 % à 42 %',
@@ -978,7 +978,7 @@ export default function LogicielMargeSaladBar() {
                 phase="Phase 4 (mois 8-10)"
                 title="Pilotage en temps réel"
                 actions={[
-                  'Tableau de bord RestauMargin vérifié 3x/semaine',
+                  'Tableau de bord de marge vérifié 3x/semaine',
                   'Alertes prix avocat / saumon / pousses activées',
                   'Négociation packaging : -0,30 EUR par commande livraison',
                   'Résultat final : marge nette 18 %',
@@ -989,7 +989,7 @@ export default function LogicielMargeSaladBar() {
             <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-3">
                 <CheckCircle className="w-6 h-6 text-emerald-700 flex-shrink-0 mt-0.5" />
-                <h3 className="font-bold text-emerald-900 text-lg">Résultats après 10 mois</h3>
+                <h3 className="font-bold text-emerald-900 text-lg">Résultats de l'exemple après 10 mois</h3>
               </div>
               <ul className="space-y-2 text-emerald-800 text-sm">
                 <li><strong>CA annuel :</strong> 380 000 EUR -- 470 000 EUR (+24 %)</li>
@@ -1014,8 +1014,7 @@ export default function LogicielMargeSaladBar() {
             <p>
               RestauMargin est conçu pour la réalité opérationnelle d'un salad bar healthy :
               produits frais chers, perte structurelle, multi-canal, pression sur les marges. Voici
-              les 6 modules clés qui vous font gagner 10 à 18 heures par mois et 5 à 10 points de
-              marge nette.
+              les 6 modules clés.
             </p>
           </div>
 
@@ -1040,10 +1039,8 @@ export default function LogicielMargeSaladBar() {
 
           <div className="prose-content mt-8">
             <p>
-              Plus de 35 salad bars et restaurants healthy en France utilisent déjà RestauMargin
-              pour piloter leur rentabilité. Gain moyen constaté : <strong>6,8 points de marge brute
-              en 6 mois</strong>, principalement grâce au suivi perte produits frais et aux alertes
-              prix grossistes. Pour aller plus loin, lisez notre guide complet sur <Link to="/blog/reduire-food-cost" className="text-emerald-700 underline hover:text-emerald-800">la réduction du food cost en restauration</Link>,
+              Les deux leviers les plus puissants restent le suivi de la perte produits frais et la
+              surveillance des prix grossistes. Pour aller plus loin, lisez notre guide complet sur <Link to="/blog/reduire-food-cost" className="text-emerald-700 underline hover:text-emerald-800">la réduction du food cost en restauration</Link>,
               notre article sur <Link to="/blog/rotation-stocks-restaurant" className="text-emerald-700 underline hover:text-emerald-800">la rotation des stocks restaurant</Link> ou
               notre analyse sur <Link to="/blog/livraison-restaurant-rentabilite" className="text-emerald-700 underline hover:text-emerald-800">la rentabilité réelle de la livraison</Link>.
             </p>

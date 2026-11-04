@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, TrendingUp, AlertTriangle, CheckCircle, ArrowRight, DollarSign, Target, BookOpen, Lightbulb, Users, Zap, Sparkles, Scale, XCircle, Star, Quote, Building2, Package } from 'lucide-react';
+import { ChefHat, TrendingUp, AlertTriangle, CheckCircle, ArrowRight, DollarSign, Target, BookOpen, Lightbulb, Users, Zap, Sparkles, Scale, XCircle, Building2, Package } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
@@ -208,7 +208,6 @@ export default function AlternativeCosKitchen() {
               { href: '#restaumargin', label: "Vue d'ensemble : RestauMargin en 2026" },
               { href: '#tableau', label: 'Tableau comparatif détaillé (15 critères)' },
               { href: '#cas-usage', label: "Quel outil pour quel type de restaurateur ?" },
-              { href: '#temoignages', label: 'Témoignages de restaurateurs' },
               { href: '#prix', label: 'Comparaison de prix sur 12 mois' },
               { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Tester RestauMargin gratuitement' },
@@ -241,7 +240,7 @@ export default function AlternativeCosKitchen() {
             </p>
             <p>
               Mais un calculateur gratuit et une plateforme de gestion operationnelle repondent a des
-              besoins differents. Trois questions reviennent chez les restaurateurs qui hesitent entre
+              besoins differents. Trois questions se posent quand on hesite entre
               les deux :
             </p>
           </div>
@@ -457,7 +456,7 @@ export default function AlternativeCosKitchen() {
 
           <div className="prose-content">
             <p>
-              Plutot qu'un verdict unique, voici les trois profils les plus frequents que nous observons.
+              Plutot qu'un verdict unique, voici trois profils types.
               Identifiez celui qui ressemble le plus a votre situation.
             </p>
           </div>
@@ -494,51 +493,10 @@ export default function AlternativeCosKitchen() {
           </Callout>
         </section>
 
-        {/* ═════════════ SECTION 6 : Témoignages ═════════════ */}
-        <section id="temoignages" className="mb-16">
-          <SectionHeading icon={<Quote className="w-6 h-6" />} number="6">
-            Témoignages de restaurateurs
-          </SectionHeading>
-
-          <div className="prose-content">
-            <p>
-              Voici des retours representatifs de clients qui ont depasse le stade du calculateur gratuit
-              pour passer a une gestion complete de leurs marges. Les prenoms ont ete modifies pour
-              preserver l'anonymat des etablissements.
-            </p>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 mt-8">
-            <TestimonialCard
-              quote="J'avais commence avec un calculateur gratuit pour verifier mes prix. Ca marchait pour 5 plats, mais des que ma carte a atteint 25 references, je passais plus de temps a chercher mes fiches qu'a cuisiner. RestauMargin centralise tout avec les fournisseurs en plus."
-              author="Julien R."
-              role="Bistrot, Nantes"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="Le vrai declic, c'est l'alerte automatique quand un fournisseur augmente ses prix. Avant je le decouvrais un mois plus tard sur la facture. Maintenant je suis prevenu le jour meme et j'ajuste avant de perdre de la marge."
-              author="Amandine D."
-              role="Restaurant de quartier, Toulouse"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="On avait teste un outil gratuit au demarrage. Suffisant pour se lancer, mais des qu'on a ouvert notre deuxieme adresse, on avait besoin d'une vue consolidee. RestauMargin Business nous montre les deux restaurants cote a cote."
-              author="Thomas V."
-              role="Groupe de 2 restaurants, Lille"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="Le scan de factures m'a fait gagner un temps fou. Je prends la facture en photo et les prix se mettent a jour dans mes fiches techniques automatiquement. Aucun calculateur gratuit ne propose ca."
-              author="Fatima Z."
-              role="Cheffe-proprietaire, Strasbourg"
-              rating={5}
-            />
-          </div>
-        </section>
 
         {/* ═════════════ SECTION 7 : Prix sur 12 mois ═════════════ */}
         <section id="prix" className="mb-16">
-          <SectionHeading icon={<DollarSign className="w-6 h-6" />} number="7">
+          <SectionHeading icon={<DollarSign className="w-6 h-6" />} number="6">
             Comparaison de prix sur 12 mois
           </SectionHeading>
 
@@ -789,34 +747,6 @@ function ScenarioCard({ badge, title, recommendation, recoColor, desc }: {
       </div>
       <h3 className={`font-bold text-lg ${c.text} mb-3`}>{title}</h3>
       <p className="text-sm text-mono-400 leading-relaxed">{desc}</p>
-    </div>
-  );
-}
-
-function TestimonialCard({ quote, author, role, rating }: {
-  quote: string;
-  author: string;
-  role: string;
-  rating: number;
-}) {
-  return (
-    <div className="bg-white border border-mono-900 rounded-3xl p-6 sm:p-7">
-      <div className="flex items-center gap-1 mb-3">
-        {Array.from({ length: rating }).map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-        ))}
-      </div>
-      <Quote className="w-6 h-6 text-teal-600 mb-3 opacity-50" />
-      <p className="text-sm text-mono-350 leading-relaxed mb-4 italic">"{quote}"</p>
-      <div className="flex items-center gap-3 pt-3 border-t border-mono-900">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-sm">
-          {author.split(' ').map((n) => n[0]).join('')}
-        </div>
-        <div>
-          <div className="font-bold text-mono-100 text-sm">{author}</div>
-          <div className="text-xs text-mono-500">{role}</div>
-        </div>
-      </div>
     </div>
   );
 }

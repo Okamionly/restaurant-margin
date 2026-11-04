@@ -239,7 +239,7 @@ export default function BlogCoefficient() {
               { href: '#fr-vs-usa', label: 'Comparaison coefficient FR vs USA' },
               { href: '#inverse', label: 'Coefficient inverse : ajuster ses prix' },
               { href: '#cas-pratiques', label: 'Cas pratiques chiffrés (pizzeria, brasserie, gastro)' },
-              { href: '#cas-concrets-5', label: '5 cas concrets : Lyon, Marseille, Paris, Bordeaux, Lille' },
+              { href: '#cas-concrets-5', label: '5 exemples illustratifs par segment' },
               { href: '#menu-engineering', label: 'Coefficient et menu engineering : le duo gagnant' },
               { href: '#cas-menu', label: 'Cas pratique : menu complet à 35 EUR' },
               { href: '#erreurs', label: 'Les 7 erreurs courantes à éviter' },
@@ -552,8 +552,8 @@ export default function BlogCoefficient() {
           </div>
 
           <Callout type="info">
-            <strong>Source :</strong> benchmarks publics du secteur
-            connectées, croisé avec les données Fiducial Observatoire 2025 et GIRA Conseil.
+            <strong>Source :</strong> ordres de grandeur issus de benchmarks publics du secteur,
+            croisés avec les données Fiducial Observatoire 2025 et GIRA Conseil.
           </Callout>
         </section>
 
@@ -1135,21 +1135,20 @@ export default function BlogCoefficient() {
         {/* ═════════════ SECTION 7bis : 5 cas concrets chiffres ═════════════ */}
         <section id="cas-concrets-5" className="mb-16">
           <SectionHeading icon={<Sparkles className="w-6 h-6" />} number="7bis">
-            5 cas concrets chiffrés : Lyon, Marseille, Paris, Bordeaux, Lille
+            5 exemples illustratifs chiffrés par segment
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Cinq exemples réels d'application du coefficient multiplicateur dans différents segments
-              et villes françaises. Données issues de sources publiques du secteur
-              connectés), prix matière actualisés Q2 2026.
+              Cinq exemples illustratifs (fictifs) d'application du coefficient multiplicateur dans
+              différents segments, avec des prix matière de l'ordre de ceux observés au Q2 2026.
             </p>
           </div>
 
           <div className="space-y-6 mt-8">
             <CasCard
               icon={<Beef className="w-6 h-6" />}
-              title="Bistrot Lyon : carbonara, food cost 18 %, coefficient 3,3"
+              title="Bistrot : carbonara, food cost 18 %, coefficient 3,3"
               data={[
                 { label: 'Plat', value: 'Carbonara maison (250g)' },
                 { label: 'Coût matière (pâtes + guanciale + oeuf + pecorino)', value: '3,60 EUR' },
@@ -1160,12 +1159,12 @@ export default function BlogCoefficient() {
                 { label: 'Prix arrondi carte', value: '12,90 EUR' },
                 { label: 'Marge brute par plat', value: '8,13 EUR' },
               ]}
-              comment="Le bistrot lyonnais cible un food cost de 18 % sur les pâtes car la matière est ultra-bon marché. Avec un coefficient de 3,3, le plat reste accessible (12,90 EUR) et génère 8 EUR de marge brute. Volume cible : 35 carbonaras/jour x 26 jours = 7 410 EUR/mois de marge."
+              comment="Le bistrot cible un food cost de 18 % sur les pâtes car la matière est ultra-bon marché. Avec un coefficient de 3,3, le plat reste accessible (12,90 EUR) et génère 8 EUR de marge brute. Volume cible : 35 carbonaras/jour x 26 jours = 7 410 EUR/mois de marge."
             />
 
             <CasCard
               icon={<Pizza className="w-6 h-6" />}
-              title="Pizzeria Marseille : margherita, food cost 22 %, coefficient 3,5"
+              title="Pizzeria de quartier : margherita, food cost 22 %, coefficient 3,5"
               data={[
                 { label: 'Plat', value: 'Pizza margherita napolitaine (32 cm)' },
                 { label: 'Coût matière (pâte + mozzarella + tomate San Marzano + basilic + huile)', value: '2,50 EUR' },
@@ -1176,12 +1175,12 @@ export default function BlogCoefficient() {
                 { label: 'Prix arrondi carte', value: '9,50 EUR' },
                 { label: 'Marge brute par pizza', value: '6,06 EUR' },
               ]}
-              comment="La pizzeria marseillaise applique un coefficient modéré (3,5) car le marché local impose un plafond de 10-11 EUR sur une margherita. Compense par le volume : 80 pizzas/jour x 26 jours = 12 600 EUR/mois de marge brute pizza."
+              comment="La pizzeria applique un coefficient modéré (3,5) car le marché local impose un plafond de 10-11 EUR sur une margherita. Compense par le volume : 80 pizzas/jour x 26 jours = 12 600 EUR/mois de marge brute pizza."
             />
 
             <CasCard
               icon={<Award className="w-6 h-6" />}
-              title="Gastronomique Paris : pigeon, food cost 30 %, coefficient 4,5"
+              title="Gastronomique : pigeon, food cost 30 %, coefficient 4,5"
               data={[
                 { label: 'Plat', value: 'Pigeon de Racan, sauce salmis, betterave (240g)' },
                 { label: 'Coût matière (pigeon + sauce + accompagnement + dressage)', value: '12,00 EUR' },
@@ -1192,12 +1191,12 @@ export default function BlogCoefficient() {
                 { label: 'Prix arrondi carte', value: '58,00 EUR' },
                 { label: 'Marge brute par plat', value: '40,73 EUR' },
               ]}
-              comment="Le gastronomique parisien justifie son coefficient 4,5 par le storytelling produit (origine Racan), le travail technique (cuisson basse température + sauce réduite), et le ticket moyen élevé (80-120 EUR). 35 couverts/jour x 26 jours = >35 000 EUR/mois de marge brute."
+              comment="Le gastronomique justifie son coefficient 4,5 par le storytelling produit (origine Racan), le travail technique (cuisson basse température + sauce réduite), et le ticket moyen élevé (80-120 EUR). 35 couverts/jour x 26 jours = >35 000 EUR/mois de marge brute."
             />
 
             <CasCard
               icon={<Truck className="w-6 h-6" />}
-              title="Food truck Bordeaux : burger, food cost 28 %, coefficient 3,5"
+              title="Food truck : burger, food cost 28 %, coefficient 3,5"
               data={[
                 { label: 'Plat', value: 'Burger classic (steak 150g + bun + cheddar + sauce)' },
                 { label: 'Coût matière (steak haché + pain artisan + cheddar + sauce maison + frites)', value: '3,20 EUR' },
@@ -1208,12 +1207,12 @@ export default function BlogCoefficient() {
                 { label: 'Prix arrondi carte', value: '12,00 EUR' },
                 { label: 'Marge brute par burger', value: '7,71 EUR' },
               ]}
-              comment="Le food truck bordelais bénéficie de charges fixes basses (pas de loyer 'salle'). Coefficient 3,5 suffisant car volume élevé sur emplacements premium : 120 burgers/jour x 5 jours/semaine = 600 burgers x 7,71 EUR = 4 626 EUR/semaine de marge brute."
+              comment="Le food truck bénéficie de charges fixes basses (pas de loyer 'salle'). Coefficient 3,5 suffisant car volume élevé sur emplacements premium : 120 burgers/jour x 5 jours/semaine = 600 burgers x 7,71 EUR = 4 626 EUR/semaine de marge brute."
             />
 
             <CasCard
               icon={<Wine className="w-6 h-6" />}
-              title="Bar à vin Lille : verre 12 cl, food cost 12 %, coefficient 5,5"
+              title="Bar à vin : verre 12 cl, food cost 12 %, coefficient 5,5"
               data={[
                 { label: 'Produit', value: 'Verre de vin rouge 12 cl (Côtes-du-Rhone Village)' },
                 { label: 'Coût matière (bouteille 75 cl achetée 5,40 EUR -- 0,86 EUR par verre)', value: '0,86 EUR' },
@@ -1224,14 +1223,14 @@ export default function BlogCoefficient() {
                 { label: 'Prix arrondi carte', value: '5,80 EUR' },
                 { label: 'Marge brute par verre', value: '3,87 EUR' },
               ]}
-              comment="Le bar à vin lillois applique un coefficient élevé (5,5) sur le verre, classique pour ce segment. Le coefficient effectif est x 6,7 (5,80 / 0,86). Vendu 50 verres/jour x 26 jours = 5 031 EUR/mois de marge brute uniquement sur les verres de vin."
+              comment="Le bar à vin applique un coefficient élevé (5,5) sur le verre, classique pour ce segment. Le coefficient effectif est x 6,7 (5,80 / 0,86). Vendu 50 verres/jour x 26 jours = 5 031 EUR/mois de marge brute uniquement sur les verres de vin."
             />
           </div>
 
           <Callout type="info">
             <strong>Leçon transversale :</strong> ce ne sont pas les coefficients les plus élevés qui
             génèrent le plus de marge brute totale, mais la combinaison optimale entre coefficient,
-            volume et ticket moyen. Le gastronomique parisien a un coefficient comparable au bar à vin
+            volume et ticket moyen. Le gastronomique a un coefficient comparable au bar à vin
             (4,5 vs 5,5) mais génère 40 EUR de marge par plat (vs 3,87 EUR par verre). C'est le mix
             volume/marge qui compte.
           </Callout>
@@ -1421,10 +1420,8 @@ export default function BlogCoefficient() {
 
           <div className="prose-content mt-8">
             <p>
-              Plus de 500 restaurants utilisent RestauMargin pour piloter leur tarification. Le gain
-              moyen constaté sur les 6 premiers mois : <strong>+3,5 points de marge brute</strong>,
-              grâce à une meilleure allocation des coefficients par poste et à l'identification
-              automatique des dérives. Pour aller plus loin, lisez aussi notre <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">guide du food cost</Link>, notre <Link to="/blog/prime-cost-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du prime cost</Link>, et notre <Link to="/blog/seuil-rentabilite-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du seuil de rentabilité</Link>.
+              RestauMargin est un outil récent : il vous aide à mieux allouer vos coefficients par poste
+              et à identifier automatiquement les dérives. Pour aller plus loin, lisez aussi notre <Link to="/blog/reduire-food-cost" className="text-teal-700 underline hover:text-teal-800">guide du food cost</Link>, notre <Link to="/blog/prime-cost-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du prime cost</Link>, et notre <Link to="/blog/seuil-rentabilite-restaurant" className="text-teal-700 underline hover:text-teal-800">guide du seuil de rentabilité</Link>.
             </p>
           </div>
         </section>

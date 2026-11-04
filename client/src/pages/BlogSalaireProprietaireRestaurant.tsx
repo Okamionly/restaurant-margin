@@ -155,7 +155,7 @@ export default function BlogSalaireProprietaireRestaurant() {
               { href: '#salaire-vs-dividendes', label: 'Salaire vs Dividendes vs Revenus mixtes' },
               { href: '#par-segment', label: 'Salaires par segment de restauration (tableau complet)' },
               { href: '#variables', label: 'Variables qui impactent le salaire du propriétaire' },
-              { href: '#cas-concrets', label: 'Cas concrets chiffrés : bistrot, brasserie, étoilé' },
+              { href: '#cas-concrets', label: 'Exemples illustratifs chiffrés : bistrot, brasserie, étoilé' },
               { href: '#optimisation', label: 'Optimisation fiscale et sociale' },
               { href: '#comparaison', label: 'Comparaison avec la moyenne France (revenu médian 22 keur)' },
               { href: '#realite', label: 'Réalité vs fantasme : la majorité gagnent moins qu\'un cadre' },
@@ -185,14 +185,13 @@ export default function BlogSalaireProprietaireRestaurant() {
             <p>
               C'est l'une des questions les plus posées aux experts-comptables spécialisés CHR
               (cafés, hôtels, restaurants). La réponse honnête : <strong>c'est très variable</strong>.
-              Selon les chiffres consolidés de l'INSEE, du SNRC et de notre propre base de données
-              (établissements du secteur à RestauMargin), un propriétaire de restaurant en France
+              Selon les ordres de grandeur publiés (INSEE, SNRC), un propriétaire de restaurant en France
               gagne en moyenne <strong>entre 30 000 EUR et 60 000 EUR net par an en 2026</strong>.
             </p>
             <p>
               Mais ce chiffre cache des réalités très différentes selon le segment, le CA,
-              la localisation et l'ouverture (débutant vs établi). Voici la distribution
-              réelle observée :
+              la localisation et l'ouverture (débutant vs établi). Voici une distribution
+              indicative :
             </p>
           </div>
 
@@ -325,8 +324,8 @@ export default function BlogSalaireProprietaireRestaurant() {
           <div className="prose-content">
             <p>
               Le revenu d'un propriétaire varie énormément selon le type d'établissement.
-              Voici les fourchettes observées en France en 2026, issues des données agrégées
-              de la GIRA Conseil, de l'INSEE et des établissements du secteur à RestauMargin.
+              Voici des fourchettes indicatives pour la France en 2026, établies à partir des
+              publications de la GIRA Conseil et de l'INSEE.
             </p>
           </div>
 
@@ -451,7 +450,7 @@ export default function BlogSalaireProprietaireRestaurant() {
           <Callout type="info">
             <strong>Astuce RestauMargin :</strong> sur un même CA, l'écart de revenu entre un
             restaurateur qui pilote ses marges au quotidien et un restaurateur qui ne les contrôle
-            pas est en moyenne de <strong>15 000 à 25 000 EUR par an</strong>. Notre
+            pas peut représenter <strong>15 000 à 25 000 EUR par an</strong>. Notre
             <Link to="/outils/calculateur-marge-restaurant" className="underline font-semibold hover:text-teal-700 ml-1">calculateur de marge gratuit</Link>
             vous montre exactement où se cache cet écart.
           </Callout>
@@ -460,14 +459,14 @@ export default function BlogSalaireProprietaireRestaurant() {
         {/* ═════════════ SECTION 5 : Cas concrets ═════════════ */}
         <section id="cas-concrets" className="mb-16">
           <SectionHeading icon={<Calculator className="w-6 h-6" />} number="5">
-            Cas concrets chiffrés : 3 scénarios réels
+            Exemples illustratifs chiffrés : 3 scénarios types
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Passons aux cas réels. Trois propriétaires-types, trois profils, trois revenus très
-              différents. Tous les chiffres sont issus de comptes annuels réels (anonymises) issus
-              et de sources publiques du secteur.
+              Passons aux exemples. Trois propriétaires-types fictifs, trois profils, trois revenus très
+              différents. Les chiffres sont construits à titre d'illustration, à partir des ordres de
+              grandeur publics du secteur : ce ne sont pas des comptes d'établissements réels.
             </p>
           </div>
 
@@ -476,7 +475,7 @@ export default function BlogSalaireProprietaireRestaurant() {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center font-bold text-lg">A</div>
               <div>
-                <h3 className="font-bold text-mono-100 text-lg">Cas A : Bistrot Lyon — 500 keur CA</h3>
+                <h3 className="font-bold text-mono-100 text-lg">Cas A : Bistrot en région — 500 keur CA</h3>
                 <p className="text-sm text-mono-500">SARL gérant majoritaire, 6 salariés, 45 couverts</p>
               </div>
             </div>
@@ -507,7 +506,7 @@ export default function BlogSalaireProprietaireRestaurant() {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center font-bold text-lg">B</div>
               <div>
-                <h3 className="font-bold text-mono-100 text-lg">Cas B : Brasserie Marseille — 1,2 Meur CA</h3>
+                <h3 className="font-bold text-mono-100 text-lg">Cas B : Brasserie urbaine — 1,2 Meur CA</h3>
                 <p className="text-sm text-mono-500">SAS, 14 salariés, 90 couverts + terrasse, mix salaire / dividendes 60/40</p>
               </div>
             </div>
@@ -776,9 +775,8 @@ export default function BlogSalaireProprietaireRestaurant() {
           <Callout type="info">
             <strong>Impact cumulé :</strong> en activant 4 à 5 de ces leviers sur 12-18 mois,
             un propriétaire peut passer de 40 à 70 keur de revenu net annuel, sans investissement
-            supplémentaire majeur. C'est exactement ce que les des restaurateurs équipés RestauMargin
-            observent en moyenne (gain de 3 à 5 points de marge nette, soit 15-30 keur sur un
-            CA de 500-1 000 keur).
+            supplémentaire majeur : 3 à 5 points de marge nette représentent 15-30 keur sur un
+            CA de 500-1 000 keur.
           </Callout>
 
           <div className="prose-content mt-6">

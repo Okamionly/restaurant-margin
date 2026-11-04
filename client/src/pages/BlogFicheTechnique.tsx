@@ -268,7 +268,7 @@ export default function BlogFicheTechnique() {
               {
                 icon: <Users className="w-5 h-5 text-teal-600" />,
                 title: 'Formation du personnel',
-                desc: 'Un nouveau commis peut reproduire un plat fidèlement grâce à la fiche technique, même sans la présence du chef. Réduction du temps d\'onboarding de 50 % en moyenne, selon les retours terrain.',
+                desc: 'Un nouveau commis peut reproduire un plat fidèlement grâce à la fiche technique, même sans la présence du chef. L\'intégration des nouveaux arrivants s\'en trouve nettement accélérée.',
               },
               {
                 icon: <ClipboardList className="w-5 h-5 text-teal-600" />,
@@ -812,7 +812,7 @@ export default function BlogFicheTechnique() {
             <p>
               La structure d'une fiche technique est universelle, mais les ratios cibles
               (food cost, coefficient multiplicateur) varient selon le type d'établissement.
-              Voici les benchmarks 2026 issus de notre base de données de des restaurants.
+              Voici des ordres de grandeur 2026 couramment cités dans la profession, à comparer à vos propres chiffres.
             </p>
           </div>
 
@@ -1066,10 +1066,9 @@ export default function BlogFicheTechnique() {
 
           <div className="prose-content mt-8">
             <p>
-              Plus de 500 restaurants en France utilisent déjà RestauMargin pour digitaliser leurs
-              fiches techniques. Le gain moyen constaté est de <strong>3 à 5 points de food cost dans
-              les 6 premiers mois</strong> d'utilisation, grâce à une meilleure maîtrise des portions,
-              des achats et de la construction du menu. Découvrez nos
+              RestauMargin est un outil récent pour digitaliser vos fiches techniques : il vous aide
+              à mieux maîtriser vos portions, vos achats et la construction de votre menu, trois
+              leviers qui pèsent directement sur le food cost. Découvrez nos
               <Link to="/pricing" className="text-teal-700 underline hover:text-teal-800 ml-1">tarifs RestauMargin</Link>
               ou commencez tout de suite avec le
               <Link to="/outils/calculateur-food-cost" className="text-teal-700 underline hover:text-teal-800 ml-1">calculateur de food cost gratuit</Link>.
@@ -1102,7 +1101,6 @@ export default function BlogFicheTechnique() {
             <li>GIRA Conseil - Benchmarks opérationnels restauration 2025</li>
             <li>SNRC - Syndicat National de la Restauration Collective - guides nutritionnels</li>
             <li>DGCCRF - Recommandations sur la traceabilite et les fiches techniques HACCP</li>
-            <li> : établissements du secteur, 12 000+ fiches techniques analysées</li>
           </ul>
         </section>
 

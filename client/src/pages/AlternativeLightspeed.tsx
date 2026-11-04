@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChefHat, TrendingUp, AlertTriangle, CheckCircle, ArrowRight, DollarSign, Target, BookOpen, Lightbulb, Users, Zap, Sparkles, Scale, XCircle, Star, Quote, Building2 } from 'lucide-react';
+import { ChefHat, TrendingUp, AlertTriangle, CheckCircle, ArrowRight, DollarSign, Target, BookOpen, Lightbulb, Users, Zap, Sparkles, Scale, XCircle, Building2 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
@@ -16,7 +16,7 @@ import PublicFooter from '../components/public/PublicFooter';
 const faqItems = [
   {
     question: "Peut-on utiliser RestauMargin et Lightspeed Restaurant en parallele ?",
-    answer: "Oui, c'est meme la configuration la plus courante chez nos clients qui ont deja une caisse Lightspeed. Lightspeed Restaurant gere la prise de commande, l'encaissement et le plan de salle. RestauMargin recupere les ventes via integration ou export CSV et calcule la marge reelle par plat servi, le food cost global et l'evolution des couts ingredients. Les deux outils sont complementaires : l'un encaisse, l'autre garantit la rentabilite de chaque plat encaisse.",
+    answer: "Oui, les deux outils se combinent sans difficulte. Lightspeed Restaurant gere la prise de commande, l'encaissement et le plan de salle. RestauMargin recupere les ventes via integration ou export CSV et calcule la marge reelle par plat servi, le food cost global et l'evolution des couts ingredients. Les deux outils sont complementaires : l'un encaisse, l'autre garantit la rentabilite de chaque plat encaisse.",
   },
   {
     question: "Combien coute RestauMargin par rapport a Lightspeed Restaurant ?",
@@ -24,7 +24,7 @@ const faqItems = [
   },
   {
     question: "Lightspeed Restaurant calcule-t-il le food cost et les marges ?",
-    answer: "Lightspeed propose des rapports de ventes detailles et un module Inventory en option qui suit la consommation theorique des ingredients. C'est une bonne base, mais ce n'est pas un outil de pilotage de marge au sens strict : pas de fiches techniques pesees au gramme, pas de mercuriale fournisseurs avec historique de prix, pas d'IA d'optimisation, pas d'alerte sur derive de food cost en temps reel. Beaucoup de restaurateurs utilisent Lightspeed pour la caisse et ajoutent un outil dedie comme RestauMargin pour la marge.",
+    answer: "Lightspeed propose des rapports de ventes detailles et un module Inventory en option qui suit la consommation theorique des ingredients. C'est une bonne base, mais ce n'est pas un outil de pilotage de marge au sens strict : pas de fiches techniques pesees au gramme, pas de mercuriale fournisseurs avec historique de prix, pas d'IA d'optimisation, pas d'alerte sur derive de food cost en temps reel. Une approche courante consiste a garder Lightspeed pour la caisse et a ajouter un outil dedie au pilotage de la marge.",
   },
   {
     question: "Puis-je connecter RestauMargin a ma caisse Lightspeed ?",
@@ -32,7 +32,7 @@ const faqItems = [
   },
   {
     question: "RestauMargin propose-t-il un module de caisse / POS ?",
-    answer: "Non, ce n'est pas dans notre scope. Nous nous concentrons sur la gestion operationnelle et la rentabilite (marges, food cost, fiches techniques, IA d'optimisation). Si vous avez besoin d'une caisse complete avec encaissement, plan de salle et impression cuisine, Lightspeed Restaurant, Tiller, L'Addition ou Sumup POS sont des choix solides. Beaucoup de nos clients utilisent l'un de ces outils en parallele de RestauMargin.",
+    answer: "Non, ce n'est pas dans notre scope. Nous nous concentrons sur la gestion operationnelle et la rentabilite (marges, food cost, fiches techniques, IA d'optimisation). Si vous avez besoin d'une caisse complete avec encaissement, plan de salle et impression cuisine, Lightspeed Restaurant, Tiller, L'Addition ou Sumup POS sont des choix solides. RestauMargin s'utilise sans difficulte en parallele de l'un de ces outils.",
   },
   {
     question: "Y a-t-il un essai gratuit chez RestauMargin et chez Lightspeed ?",
@@ -48,11 +48,11 @@ const faqItems = [
   },
   {
     question: "Quelle est la difference entre l'Inventory de Lightspeed et RestauMargin ?",
-    answer: "Le module Inventory de Lightspeed suit la consommation theorique des ingredients via le mapping recette / produit vendu. C'est efficace pour les stocks. Mais il ne gere pas la mercuriale fournisseur (historique de prix par fournisseur), ne propose pas d'IA de suggestion de recettes, ne fait pas de menu engineering (Boston Matrix), et n'integre pas l'OCR de factures fournisseurs. RestauMargin va plus loin sur la gestion de la marge, du cout ingredient et de l'optimisation de carte. Beaucoup de restaurateurs utilisent l'Inventory Lightspeed pour le suivi stock et RestauMargin pour le pilotage marge.",
+    answer: "Le module Inventory de Lightspeed suit la consommation theorique des ingredients via le mapping recette / produit vendu. C'est efficace pour les stocks. Mais il ne gere pas la mercuriale fournisseur (historique de prix par fournisseur), ne propose pas d'IA de suggestion de recettes, ne fait pas de menu engineering (Boston Matrix), et n'integre pas l'OCR de factures fournisseurs. RestauMargin va plus loin sur la gestion de la marge, du cout ingredient et de l'optimisation de carte. Les deux peuvent coexister : l'Inventory Lightspeed pour le suivi stock, RestauMargin pour le pilotage marge.",
   },
   {
     question: "Quel est le meilleur outil pour un groupe de plusieurs restaurants ?",
-    answer: "Pour un groupe, la combinaison la plus efficace est : Lightspeed Restaurant Plus ou Premium pour la caisse multi-site avec consolidation des ventes, et RestauMargin Business (79 EUR/mois) pour la consolidation des marges, le benchmarking entre etablissements et les alertes sur derive de food cost. Les deux outils repondent a des besoins differents et peuvent etre branches sur la meme architecture sans conflit. C'est la configuration la plus puissante du marche pour un groupe de 3 a 10 restaurants.",
+    answer: "Pour un groupe, la combinaison la plus efficace est : Lightspeed Restaurant Plus ou Premium pour la caisse multi-site avec consolidation des ventes, et RestauMargin Business (79 EUR/mois) pour la consolidation des marges, le benchmarking entre etablissements et les alertes sur derive de food cost. Les deux outils repondent a des besoins differents et peuvent etre branches sur la meme architecture sans conflit.",
   },
 ];
 
@@ -207,7 +207,6 @@ export default function AlternativeLightspeed() {
               { href: '#restaumargin', label: "Vue d'ensemble : RestauMargin en 2026" },
               { href: '#tableau', label: 'Tableau comparatif détaillé (18 critères)' },
               { href: '#cas-usage', label: "Quel outil pour quel type de restaurateur ?" },
-              { href: '#temoignages', label: 'Témoignages de restaurateurs' },
               { href: '#prix', label: 'Comparaison de prix sur 12 mois' },
               { href: '#faq', label: 'Questions fréquentes' },
               { href: '#cta', label: 'Tester RestauMargin gratuitement' },
@@ -239,7 +238,7 @@ export default function AlternativeLightspeed() {
               tant de recherches autour du terme "alternative Lightspeed Restaurant" en 2026 ?
             </p>
             <p>
-              Trois raisons reviennent systématiquement dans les retours de nos utilisateurs :
+              Trois raisons expliquent en général cette recherche :
             </p>
           </div>
 
@@ -257,7 +256,7 @@ export default function AlternativeLightspeed() {
             <ReasonCard
               icon={<AlertTriangle className="w-6 h-6" />}
               title="La complexité"
-              desc="Plusieurs restaurateurs trouvent l'interface dense et l'onboarding long. Les modules avancés (advanced insights, inventory, KDS) sont en options payantes qui font monter la facture rapidement."
+              desc="L'interface peut sembler dense et l'onboarding long. Les modules avancés (advanced insights, inventory, KDS) sont en options payantes qui font monter la facture rapidement."
             />
           </div>
 
@@ -467,8 +466,8 @@ export default function AlternativeLightspeed() {
 
           <div className="prose-content">
             <p>
-              Plutôt qu'un verdict unique, voici les trois scénarios les plus fréquents que nous
-              observons chez nos prospects et clients. Identifiez le profil le plus proche du vôtre.
+              Plutôt qu'un verdict unique, voici trois scénarios types.
+              Identifiez le profil le plus proche du vôtre.
             </p>
           </div>
 
@@ -505,51 +504,10 @@ export default function AlternativeLightspeed() {
           </Callout>
         </section>
 
-        {/* ═════════════ SECTION 6 : Témoignages ═════════════ */}
-        <section id="temoignages" className="mb-16">
-          <SectionHeading icon={<Quote className="w-6 h-6" />} number="6">
-            Témoignages de restaurateurs
-          </SectionHeading>
-
-          <div className="prose-content">
-            <p>
-              Voici quelques retours représentatifs de clients qui ont fait le choix de RestauMargin
-              après avoir évalué Lightspeed ou en complément de Lightspeed. Les prénoms ont été modifiés
-              pour préserver l'anonymat des établissements.
-            </p>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 mt-8">
-            <TestimonialCard
-              quote="On a Lightspeed Restaurant Plus depuis 4 ans, on en est satisfait pour la caisse et le plan de salle. Mais l'Inventory ne nous suffisait pas pour piloter la marge. On a ajouté RestauMargin il y a 8 mois et le food cost est passé de 34 à 30 %. Les deux outils tournent en parallèle, RestauMargin récupère les ventes Lightspeed automatiquement."
-              author="Yann D."
-              role="Brasserie, Nantes"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="Pour notre food truck, Lightspeed était trop cher et trop lourd. On a pris Sumup POS pour encaisser et RestauMargin pour piloter la marge. Total 29 EUR/mois de logiciel au lieu de 130 EUR avec Lightspeed Plus. Et on a une visibilité bien meilleure sur quels plats sont rentables."
-              author="Imane R."
-              role="Food truck, Lille"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="Le scan de factures et la mercuriale m'ont fait gagner 5 heures par semaine. Aucun équivalent dans Lightspeed Inventory. L'IA suggère même quand un fournisseur a augmenté ses prix de plus de 5 %. Pour le pilotage marge, c'est sans équivalent dans les outils de caisse classiques."
-              author="Thibault G."
-              role="Chef-propriétaire, Bordeaux"
-              rating={5}
-            />
-            <TestimonialCard
-              quote="Pour notre groupe de 6 restaurants, on utilise Lightspeed Restaurant Plus pour les caisses (consolidation ventes) et RestauMargin Business pour le pilotage marge (consolidation food cost, benchmarking). Les deux outils répondent à des besoins très différents, on n'a jamais eu à choisir."
-              author="Claire V."
-              role="Directrice d'exploitation, groupe Ouest"
-              rating={5}
-            />
-          </div>
-        </section>
 
         {/* ═════════════ SECTION 7 : Prix sur 12 mois ═════════════ */}
         <section id="prix" className="mb-16">
-          <SectionHeading icon={<DollarSign className="w-6 h-6" />} number="7">
+          <SectionHeading icon={<DollarSign className="w-6 h-6" />} number="6">
             Comparaison de prix sur 12 mois
           </SectionHeading>
 
@@ -806,34 +764,6 @@ function ScenarioCard({ badge, title, recommendation, recoColor, desc }: {
       </div>
       <h3 className={`font-bold text-lg ${c.text} mb-3`}>{title}</h3>
       <p className="text-sm text-mono-400 leading-relaxed">{desc}</p>
-    </div>
-  );
-}
-
-function TestimonialCard({ quote, author, role, rating }: {
-  quote: string;
-  author: string;
-  role: string;
-  rating: number;
-}) {
-  return (
-    <div className="bg-white border border-mono-900 rounded-3xl p-6 sm:p-7">
-      <div className="flex items-center gap-1 mb-3">
-        {Array.from({ length: rating }).map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-        ))}
-      </div>
-      <Quote className="w-6 h-6 text-teal-600 mb-3 opacity-50" />
-      <p className="text-sm text-mono-350 leading-relaxed mb-4 italic">"{quote}"</p>
-      <div className="flex items-center gap-3 pt-3 border-t border-mono-900">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-sm">
-          {author.split(' ').map((n) => n[0]).join('')}
-        </div>
-        <div>
-          <div className="font-bold text-mono-100 text-sm">{author}</div>
-          <div className="text-xs text-mono-500">{role}</div>
-        </div>
-      </div>
     </div>
   );
 }

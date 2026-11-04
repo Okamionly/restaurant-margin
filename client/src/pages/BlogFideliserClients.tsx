@@ -327,7 +327,7 @@ export default function BlogFideliserClients() {
           </div>
 
           <div className="prose-content mt-8">
-            <h3 className="text-xl font-bold text-mono-100 mb-3">Exemple chiffré : bistrot 60 couverts à Bordeaux</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3">Exemple chiffré : un bistrot de 60 couverts</h3>
             <p>
               Prenons un bistrot avec un ticket moyen de 32 EUR HT. Un client occasionnel vient en
               moyenne 1,2 fois par an pendant 2 ans : LTV = 32 x 1,2 x 2 = <strong>76,80 EUR</strong>.
@@ -609,12 +609,12 @@ export default function BlogFideliserClients() {
               français en 2026 passe par l'éthique des données.
             </Callout>
 
-            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-8">Résultat concret : une étude de cas parisienne</h3>
+            <h3 className="text-xl font-bold text-mono-100 mb-3 mt-8">Exemple illustratif : l'effet d'un CRM basique</h3>
             <p>
-              Un bistrot parisien de 60 couverts utilisant un CRM basique (Tiller + Mailchimp) a
-              réduit son taux de churn de 35 % à 18 % en 6 mois, soit <strong>22 clients
+              Prenons un exemple fictif : un bistrot de 60 couverts équipé d'un CRM basique (Tiller + Mailchimp)
+              qui réduirait son taux de churn de 35 % à 18 % en 6 mois, soit <strong>22 clients
               supplémentaires retenus par mois</strong>. Sur un ticket moyen de 35 EUR et 6 visites
-              annuelles, ces 22 clients représentent 4 620 EUR de CA additionnel par mois, soit
+              annuelles, ces 22 clients représenteraient 4 620 EUR de CA additionnel par mois, soit
               55 440 EUR/an. Coût du CRM : 1 080 EUR/an. ROI : 51x.
             </p>
           </div>
@@ -892,13 +892,13 @@ export default function BlogFideliserClients() {
         {/* ═════════════ SECTION 10 : Cas chiffre ═════════════ */}
         <section id="cas" className="mb-16">
           <SectionHeading icon={<Calculator className="w-6 h-6" />} number="10">
-            Cas pratique chiffré : bistrot 60 couverts à Lyon
+            Exemple illustratif : un bistrot de quartier de 60 couverts
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              Décortiquons l'impact d'un programme de fidélité bien exécuté sur un bistrot lyonnais
-              de 60 couverts. Ce cas est inspiré d'un client RestauMargin réel, anonymise.
+              Prenons un exemple fictif pour décortiquer l'impact d'un programme de fidélité bien exécuté
+              sur un bistrot de 60 couverts. Les chiffres sont illustratifs, pas un cas client réel.
             </p>
           </div>
 

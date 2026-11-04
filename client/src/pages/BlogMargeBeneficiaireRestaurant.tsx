@@ -853,8 +853,7 @@ export default function BlogMargeBeneficiaireRestaurant() {
           </div>
           <p className="text-sm text-mono-500 mb-6 max-w-3xl">
             Les fourchettes de marge brute et nette, taux de TVA et seuils de rentabilité cités dans ce guide s'appuient
-            sur des sources officielles et professionnelles reconnues du secteur, recoupées avec les données agrégées de
-            RestauMargin (des établissements français). Ces références sont vérifiables et mises à jour pour 2026.
+            sur des sources officielles et professionnelles reconnues du secteur. Ces références sont vérifiables et mises à jour pour 2026.
           </p>
 
           <ul className="grid sm:grid-cols-2 gap-4 mb-6">

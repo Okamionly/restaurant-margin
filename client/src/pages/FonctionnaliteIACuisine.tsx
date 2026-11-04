@@ -27,7 +27,6 @@ import {
   BarChart3,
   Lock,
   Cpu,
-  Quote,
   ArrowLeftRight,
   Volume2,
   CircleHelp,
@@ -78,7 +77,7 @@ const faqItems = [
   {
     question: "Puis-je utiliser la commande vocale pendant le service ?",
     answer:
-      "Oui, c'est même un des usages les plus appréciés. La dictée vocale fonctionne via le micro de votre tablette ou smartphone (Web Speech API), idéale quand vous avez les mains dans la prep ou en plein coup de feu. Vous dictez « ajoute 80 grammes de parmesan à la fiche risotto », l'IA met à jour la fiche et recalcule le coût. L'interface est conçue pour rester utilisable même en cuisine, sans clavier.",
+      "Oui, c'est pensé pour ça. La dictée vocale fonctionne via le micro de votre tablette ou smartphone (Web Speech API), idéale quand vous avez les mains dans la prep ou en plein coup de feu. Vous dictez « ajoute 80 grammes de parmesan à la fiche risotto », l'IA met à jour la fiche et recalcule le coût. L'interface est conçue pour rester utilisable même en cuisine, sans clavier.",
   },
   {
     question: "Y a-t-il une limite au nombre de requêtes IA ?",
@@ -151,7 +150,7 @@ const benefits: { stat: string; label: string; desc: string; icon: React.ReactNo
   {
     stat: '+5 pts',
     label: 'de marge potentielle',
-    desc: "Les suggestions de substitution et l\'optimisation IA dégagent en moyenne plusieurs points de marge brute.",
+    desc: "Les suggestions de substitution et l\'optimisation IA peuvent dégager plusieurs points de marge brute selon votre carte (estimation, non garantie).",
     icon: <TrendingUp className="w-6 h-6" />,
   },
 ];
@@ -456,7 +455,7 @@ export default function FonctionnaliteIACuisine() {
               Des bénéfices qui se mesurent
             </h2>
             <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: '#94A3B8' }}>
-              L'IA n'est pas un gadget. Elle vous rend du temps et des points de marge, dès la première semaine.
+              L'IA n'est pas un gadget. Elle vous fait gagner du temps et vous aide à repérer des points de marge.
             </p>
           </div>
 
@@ -499,15 +498,6 @@ export default function FonctionnaliteIACuisine() {
             ))}
           </div>
 
-          {/* Citation chef */}
-          <div className="mt-12 max-w-3xl mx-auto rounded-2xl border p-8 text-center" style={{ borderColor: BORDER, backgroundColor: ACCENT_BG }}>
-            <Quote className="w-8 h-8 mx-auto mb-4" style={{ color: ACCENT }} />
-            <p className="text-lg sm:text-xl font-medium leading-relaxed mb-4" style={{ color: TEXT }}>
-              « Je dicte mes plats du jour entre le marché et le service. En deux minutes la fiche est faite, chiffrée,
-              les allergènes sont marqués. Avant, je remettais ça à plus tard — et plus tard, ça ne venait jamais. »
-            </p>
-            <div className="text-sm font-bold" style={{ color: ACCENT_DARK }}>Un chef-propriétaire utilisateur de RestauMargin</div>
-          </div>
         </div>
       </section>
 

@@ -85,7 +85,7 @@ const faqItems = [
   {
     question: 'RestauMargin est-il adapté à un bar de quartier indépendant ?',
     answer:
-      "Oui parfaitement. RestauMargin est utilisé par bars, cafés et coffee shops en France. Le plan Pro à 29 EUR/mois inclut : fiches techniques cocktails illimitées, scan factures fournisseurs (Pernod Ricard, Diageo, brasseurs locaux), suivi des pertes bière/spiritueux, gestion carte des vins au verre, alertes prix matières, KPI ticket moyen et rotations. Essai gratuit 7 jours sans carte bancaire. Modèles cocktails et planches inclus.",
+      "Oui parfaitement. RestauMargin est conçu pour les bars, cafés et coffee shops indépendants. Le plan Pro à 29 EUR/mois inclut : fiches techniques cocktails illimitées, scan factures fournisseurs (Pernod Ricard, Diageo, brasseurs locaux), suivi des pertes bière/spiritueux, gestion carte des vins au verre, alertes prix matières, KPI ticket moyen et rotations. Essai gratuit 7 jours sans carte bancaire. Modèles cocktails et planches inclus.",
   },
 ];
 
@@ -228,7 +228,7 @@ export default function LogicielMargeCafeBar() {
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-mono-500">
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans carte bancaire</span>
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans engagement</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> 200+ bars clients</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Fiches cocktails illimitées</span>
           </div>
         </div>
       </header>
@@ -254,7 +254,7 @@ export default function LogicielMargeCafeBar() {
             cette structure de coût matières aussi favorable.
           </p>
           <p className="text-lg text-mono-400 leading-relaxed">
-            <strong>RestauMargin</strong> est utilisé par cafés, bars et coffee shops en France pour
+            <strong>RestauMargin</strong> est conçu pour aider cafés, bars et coffee shops à
             piloter précisément coefficients, pertes au tirage, stocks alcool et carte cocktails.
             Découvrez comment maximiser une marge brute déjà excellente.
           </p>
@@ -768,7 +768,7 @@ export default function LogicielMargeCafeBar() {
         </div>
       </section>
 
-      {/* ── Section 10 : Cas concret bar Marseille ── */}
+      {/* ── Section 10 : Exemple illustratif bar de quartier ── */}
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="bg-gradient-to-br from-amber-50 to-white border border-amber-200 rounded-3xl p-8 sm:p-12">
@@ -777,17 +777,16 @@ export default function LogicielMargeCafeBar() {
                 <Store className="w-7 h-7" />
               </div>
               <div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-amber-700 mb-1">Cas concret client</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-amber-700 mb-1">Exemple illustratif</div>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-mono-100">
-                  Bar Marseille (Cours Julien) : de 8 % à 23 % de marge nette en 9 mois
+                  Un bar de quartier : de 8 % à 23 % de marge nette
                 </h2>
               </div>
             </div>
 
             <p className="text-lg text-mono-400 leading-relaxed mb-6">
-              Le <em>Comptoir du Cours</em>, bar de quartier de 65 places sur le Cours Julien à Marseille,
-              était en grave difficulté en août 2025. Reprise du fonds il y a 3 ans, gérant épuisé, gestion
-              papier, marge nette descendue à <strong>8 %</strong> malgré un CA de 580 000 EUR. Pertes au tirage
+              Prenons un exemple fictif : un bar de quartier de 65 places, repris depuis quelques années,
+              géré sur papier, dont la marge nette est descendue à <strong>8 %</strong> malgré un CA de 580 000 EUR. Pertes au tirage
               bière non contrôlées, stocks alcool défaillants, ticket moyen stagnant à 7,80 EUR.
             </p>
 
@@ -804,7 +803,7 @@ export default function LogicielMargeCafeBar() {
               </div>
 
               <div className="bg-white border border-emerald-200 rounded-xl p-5">
-                <h3 className="font-bold text-emerald-800 mb-3 text-sm uppercase tracking-wider">Situation après 9 mois</h3>
+                <h3 className="font-bold text-emerald-800 mb-3 text-sm uppercase tracking-wider">Situation visée</h3>
                 <ul className="space-y-2 text-sm text-mono-400">
                   <li className="flex items-start gap-2"><span className="text-emerald-500 mt-1">●</span> Marge brute boissons <strong>83 %</strong></li>
                   <li className="flex items-start gap-2"><span className="text-emerald-500 mt-1">●</span> Perte tirage bière <strong>4 %</strong></li>
@@ -815,24 +814,24 @@ export default function LogicielMargeCafeBar() {
               </div>
             </div>
 
-            <h3 className="font-bold text-mono-100 mb-3 mt-6">Actions concrètes mises en place avec RestauMargin :</h3>
+            <h3 className="font-bold text-mono-100 mb-3 mt-6">Leviers à actionner :</h3>
             <ol className="space-y-2 text-sm text-mono-400 list-decimal list-inside ml-2">
               <li>Calibrage installation bière pression : CO2 1,3 bar, serpentin -1 degré, formation tirage équipe</li>
-              <li>Suivi ratio volume vendu/volume acheté par fût : détection 4 fûts défaillants, retour brasseur 380 EUR</li>
-              <li>Inventaire spiritueux hebdomadaire par jaugeage : détection 1 800 EUR/mois d'écart inexpliqué (formation puis contrôle)</li>
+              <li>Suivi ratio volume vendu/volume acheté par fût, pour repérer les fûts défaillants et les retourner au brasseur</li>
+              <li>Inventaire spiritueux hebdomadaire par jaugeage, pour détecter les écarts inexpliqués (formation puis contrôle)</li>
               <li>Refonte carte : 5 cocktails signature maison (sirops infusion lavande, basilic, romarin) facturable 14-16 EUR</li>
               <li>Lancement Happy Hour cible 18h-19h30 : bière 25cl à 3 EUR, spritz à 6,50 EUR, volume x2,5</li>
               <li>Offre snacking : planche apéro 17 EUR (3 déclinaisons), croque-monsieur 8,50 EUR, sandwich club 11 EUR</li>
               <li>Formule petit-déj 4,80 EUR (café + jus + viennoiserie) : panier matin +75 %</li>
-              <li>Soirée blind test bière mensuelle 35 EUR/personne : 60 réservations / soir, 2 100 EUR de CA événement</li>
-              <li>Stock alcool réduit de 52k à 34k EUR : 18 000 EUR de trésorerie libérée, rotations passées de 8 à 16/an</li>
+              <li>Soirée blind test bière mensuelle à 35 EUR/personne (60 réservations = 2 100 EUR de CA événement)</li>
+              <li>Stock alcool ramené de 52k à 34k EUR : 18 000 EUR de trésorerie libérée, rotations de 8 à 16/an</li>
             </ol>
 
             <div className="mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
               <p className="text-sm text-emerald-900 leading-relaxed">
-                <strong>Résultat financier :</strong> CA en hausse modéré (580k à 640k EUR, +10 %) mais marge nette
-                passée de 46 400 EUR à 147 200 EUR. <strong>+100 800 EUR de résultat net annuel</strong> pour
-                un investissement RestauMargin de 348 EUR/an. ROI : 290x.
+                <strong>Ordre de grandeur :</strong> avec un CA en hausse modérée (580k à 640k EUR, +10 %), passer de
+                8 % à 23 % de marge nette ferait passer le résultat net d'environ 46 400 EUR à 147 200 EUR par an.
+                Chiffres hypothétiques, à titre d'illustration : chaque établissement a ses propres contraintes.
               </p>
             </div>
           </div>
@@ -907,7 +906,7 @@ export default function LogicielMargeCafeBar() {
             Prêt à maximiser la marge brute de votre café / bar ?
           </h2>
           <p className="text-xl text-teal-100 max-w-2xl mx-auto mb-3">
-            Rejoignez les 200+ cafés, bars et coffee shops qui ont structuré leur gestion avec RestauMargin.
+            Structurez la gestion de votre café, bar ou coffee shop avec RestauMargin.
           </p>
           <p className="text-teal-50 mb-10">
             Essai gratuit 7 jours - Sans carte bancaire - Modèles cocktails et planches inclus

@@ -212,7 +212,7 @@ export default function BlogPrevisionVentes() {
               { href: '#variables', label: 'Variables externes : météo, événements, saisonnalité' },
               { href: '#outils', label: 'Outils : Excel, RestauMargin, Lightspeed, Square' },
               { href: '#precision', label: 'Précision attendue : MAPE et benchmarks' },
-              { href: '#cas-concret', label: 'Cas concret : 4 semaines de data, forecast complet' },
+              { href: '#cas-concret', label: 'Exemple illustratif : 4 semaines de data, forecast complet' },
               { href: '#ia', label: 'IA et machine learning : Prophet, ARIMA, XGBoost' },
               { href: '#erreurs', label: 'Les 6 erreurs qui ruinent votre forecast couverts' },
               { href: '#workflow', label: 'Workflow hebdomadaire : checklist du dimanche soir' },
@@ -726,14 +726,14 @@ export default function BlogPrevisionVentes() {
           {/* ═════════════ SECTION 7 : Cas concret 4 semaines ═════════════ */}
           <section id="cas-concret" className="mb-16">
             <SectionHeading icon={<Calculator className="w-6 h-6" />} number="7">
-              Cas concret : 4 semaines de data, forecast complet
+              Exemple illustratif : 4 semaines de data, forecast complet
             </SectionHeading>
 
             <div className="prose-content">
               <p>
-                Mettons en pratique tout ce que nous avons vu sur un cas réel : <strong>Bistrot Le Marais</strong>,
-                50 couverts à Paris 4e, ouvert du mardi au dimanche, terrasse 20 places, ticket moyen 32 EUR HT.
-                Voici 4 semaines de data (avril 2026) puis le forecast pour la semaine suivante.
+                Mettons en pratique tout ce que nous avons vu sur un exemple fictif, construit pour l'illustration :
+                un bistrot de 50 couverts, ouvert du mardi au dimanche, terrasse 20 places, ticket moyen 32 EUR HT.
+                Voici 4 semaines de data (un mois d'avril) puis le forecast pour la semaine suivante.
               </p>
             </div>
 
@@ -840,7 +840,7 @@ export default function BlogPrevisionVentes() {
             </div>
 
             <Callout type="info">
-              <strong>Leçon du cas :</strong> sans les coefficients météo + événements, la prévision aurait
+              <strong>Leçon de l'exemple :</strong> sans les coefficients météo + événements, la prévision aurait
               été de 819 couverts (base pondérée). Avec, on monte à 976. L'écart de 157 couverts représenterait
               5 024 EUR de CA non anticipé et probablement 30-40 ruptures ou clients perdus.
             </Callout>

@@ -26,7 +26,7 @@ const faqItems = [
   },
   {
     question: "Quelle est la difference entre Marge Brut et RestauMargin ?",
-    answer: "Marge Brut est un outil jeune, gratuit pendant sa phase de developpement, avec un perimetre oriente pilotage financier : food cost, P&L, tresorerie, factures IA et gestion d'equipe. RestauMargin est une plateforme mature et payante des 29€/mois qui ajoute la mercuriale fournisseurs avec alertes de hausse de prix, la gestion de stock complete, le menu engineering (matrice Boston), le HACCP digital et 19 actions IA — des fonctionnalites que Marge Brut ne mentionne pas sur son site.",
+    answer: "Marge Brut est un outil jeune, gratuit pendant sa phase de developpement, avec un perimetre oriente pilotage financier : food cost, P&L, tresorerie, factures IA et gestion d'equipe. RestauMargin est une plateforme payante (29€/mois, tarif public fixe) qui ajoute la mercuriale fournisseurs avec alertes de hausse de prix, la gestion de stock complete, le menu engineering (matrice Boston), le HACCP digital et 19 actions IA — des fonctionnalites que Marge Brut ne mentionne pas sur son site.",
   },
   {
     question: "Marge Brut propose-t-il la gestion de stock et le menu engineering ?",
@@ -54,7 +54,7 @@ const faqItems = [
   },
   {
     question: "Quel outil choisir pour debuter sans budget ?",
-    answer: "Si votre priorite absolue est de ne rien depenser tant que votre activite se stabilise, Marge Brut est un choix legitime : c'est aujourd'hui un outil gratuit et fonctionnel pour le food cost, les factures et la tresorerie. Si vous geriez deja une carte complete avec fournisseurs multiples et que vous voulez aussi le stock, le menu engineering et le HACCP dans un seul outil eprouve, l'essai gratuit de 7 jours de RestauMargin vous permet de comparer sans engagement.",
+    answer: "Si votre priorite absolue est de ne rien depenser tant que votre activite se stabilise, Marge Brut est un choix legitime : c'est aujourd'hui un outil gratuit et fonctionnel pour le food cost, les factures et la tresorerie. Si vous geriez deja une carte complete avec fournisseurs multiples et que vous voulez aussi le stock, le menu engineering et le HACCP dans un seul outil, l'essai gratuit de 7 jours de RestauMargin vous permet de comparer sans engagement.",
   },
 ];
 
@@ -166,7 +166,7 @@ export default function AlternativeMargeBrut() {
         date="Septembre 2026"
         title="RestauMargin : la meilleure alternative à Marge Brut en 2026"
         accentWord="alternative à Marge Brut"
-        subtitle="Marge Brut propose un outil de pilotage financier entièrement gratuit pendant sa phase de développement. Voici un comparatif honnête pour savoir si cette gratuité suffit à votre restaurant, ou si une plateforme opérationnelle complète et éprouvée comme RestauMargin est le meilleur choix à long terme."
+        subtitle="Marge Brut propose un outil de pilotage financier entièrement gratuit pendant sa phase de développement. Voici un comparatif honnête pour savoir si cette gratuité suffit à votre restaurant, ou si une plateforme opérationnelle complète comme RestauMargin est le meilleur choix."
       />
 
       {/* ── Contenu principal ── */}
@@ -188,10 +188,10 @@ export default function AlternativeMargeBrut() {
               <strong className="text-white">Marge Brut</strong> est un <strong>outil gratuit de pilotage financier</strong> en phase de developpement active : food cost, factures lues par IA, P&L quotidien et tresorerie projetee, sans aucun cout ni carte bancaire.
             </p>
             <p className="leading-relaxed">
-              <strong className="text-white">RestauMargin</strong> est une <strong>plateforme operationnelle mature</strong> a 29€/mois : food cost, mercuriale fournisseurs avec alertes, gestion de stock, menu engineering, HACCP digital et 19 actions IA, tout inclus et deja en production.
+              <strong className="text-white">RestauMargin</strong> est une <strong>plateforme operationnelle complete</strong> a 29€/mois : food cost, mercuriale fournisseurs avec alertes, gestion de stock, menu engineering, HACCP digital et 19 actions IA, tout inclus.
             </p>
             <p className="leading-relaxed pt-2 border-t border-white/20">
-              <strong className="text-white">Verdict :</strong> pour tester le pilotage financier sans depenser un centime, Marge Brut est un excellent point d'entree. Pour piloter stock, fournisseurs, carte et hygiene dans un seul outil stable, RestauMargin couvre un perimetre plus large.
+              <strong className="text-white">Verdict :</strong> pour tester le pilotage financier sans depenser un centime, Marge Brut est un excellent point d'entree. Pour piloter stock, fournisseurs, carte et hygiene dans un seul outil, RestauMargin couvre un perimetre plus large.
             </p>
           </div>
         </div>
@@ -241,9 +241,9 @@ export default function AlternativeMargeBrut() {
               logiciel, c'est une offre seduisante.
             </p>
             <p>
-              Mais "gratuit pendant la phase de developpement" et "plateforme mature et payante" ne
+              Mais "gratuit pendant la phase de developpement" et "plateforme payante a tarif fixe" ne
               couvrent pas exactement le meme perimetre ni la meme promesse de perennite. Trois questions
-              reviennent chez les restaurateurs qui hesitent entre les deux :
+              se posent quand on hesite entre les deux :
             </p>
           </div>
 
@@ -277,7 +277,7 @@ export default function AlternativeMargeBrut() {
             <p>
               C'est cette difference de perimetre qui explique pourquoi nous nous presentons comme une
               <strong> alternative a Marge Brut</strong> pour les restaurateurs qui veulent une plateforme
-              operationnelle complete, deja en production depuis plusieurs annees. Voyons les deux
+              operationnelle complete. Voyons les deux
               approches en detail.
             </p>
           </div>
@@ -390,7 +390,7 @@ export default function AlternativeMargeBrut() {
             <strong>Notre conviction :</strong> si votre priorite est le pilotage financier pur
             (tresorerie, P&L, factures) sans budget logiciel, Marge Brut est un choix legitime et bien
             construit. RestauMargin est concu pour les restaurateurs qui veulent piloter aussi leur carte,
-            leur stock, leurs fournisseurs et leur conformite hygiene dans un seul outil eprouve.
+            leur stock, leurs fournisseurs et leur conformite hygiene dans un seul outil.
           </Callout>
         </section>
 
@@ -428,7 +428,7 @@ export default function AlternativeMargeBrut() {
               </thead>
               <tbody className="bg-white">
                 <ComparisonRow label="Prix actuel" rm="29€/mois" mb="0€ (phase de dev)" winner="mb" />
-                <ComparisonRow label="Perennite du prix" rm="Tarif stable, plateforme etablie" mb="Aucune date de bascule payante communiquee" winner="rm" />
+                <ComparisonRow label="Perennite du prix" rm="Tarif public fixe (29€/mois)" mb="Aucune date de bascule payante communiquee" winner="rm" />
                 <ComparisonRow label="Essai / accès complet sans CB" rm="7 jours, toutes fonctions" mb="Acces complet gratuit" winner="tie" />
                 <ComparisonRow label="Food cost temps reel" rm={true} mb={true} winner="tie" />
                 <ComparisonRow label="Lecture IA des factures" rm={true} mb={true} winner="tie" />
@@ -450,7 +450,7 @@ export default function AlternativeMargeBrut() {
             <strong>Lecture du tableau :</strong> Marge Brut gagne sur le prix immediat et sur des
             fonctionnalites de pilotage RH/tresorerie que RestauMargin ne propose pas. RestauMargin gagne
             sur la profondeur operationnelle (stock, mercuriale, menu engineering, HACCP, multi-restaurant)
-            et sur la perennite d'un modele payant deja etabli.
+            et sur la lisibilite d'un tarif payant deja fixe.
           </Callout>
         </section>
 
@@ -462,7 +462,7 @@ export default function AlternativeMargeBrut() {
 
           <div className="prose-content">
             <p>
-              Plutot qu'un verdict unique, voici les trois profils les plus frequents que nous observons.
+              Plutot qu'un verdict unique, voici trois profils types.
               Identifiez celui qui ressemble le plus a votre situation.
             </p>
           </div>
@@ -525,9 +525,8 @@ export default function AlternativeMargeBrut() {
               Ce n'est pas une critique de Marge Brut — c'est une realite a integrer dans votre decision.
               Si vous batissez votre gestion quotidienne exclusivement autour d'un outil gratuit sans
               modele economique stabilise, prevoyez un plan B (export de vos donnees, alternative connue)
-              au cas ou les conditions changeraient. RestauMargin, a l'inverse, fonctionne sur un modele
-              d'abonnement etabli depuis plusieurs annees : le prix de 29€/mois est stable et connu a
-              l'avance, sans surprise a anticiper.
+              au cas ou les conditions changeraient. RestauMargin, a l'inverse, fonctionne sur un abonnement
+              payant au tarif public : 29€/mois, connu a l'avance.
             </p>
           </div>
 

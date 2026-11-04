@@ -233,7 +233,7 @@ const PRODUCT_UPDATES: ProductUpdate[] = [
   {
     id: 'pu1',
     title: 'Nouveau : IA de prevision des commandes',
-    description: 'Notre algorithme analyse vos historiques de vente, la meteo et les evenements locaux pour predire vos besoins en ingredients. Reduisez le gaspillage de 30% en moyenne.',
+    description: 'Notre algorithme analyse vos historiques de vente, la meteo et les evenements locaux pour predire vos besoins en ingredients et vous aider a limiter le gaspillage.',
     date: '8 avr. 2026',
     category: 'feature',
     icon: Sparkles,

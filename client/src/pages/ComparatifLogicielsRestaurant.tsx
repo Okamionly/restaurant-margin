@@ -407,7 +407,7 @@ export default function ComparatifLogicielsRestaurant() {
               <strong className="text-white">Notre approche :</strong> combiner 2 à 3 outils spécialisés plutôt que chercher un tout-en-un médiocre. Budget réaliste : 60 à 250 EUR/mois selon la taille.
             </p>
             <p className="leading-relaxed pt-2 border-t border-white/20">
-              <strong className="text-white">RestauMargin</strong> (29 EUR/mois) excelle sur la gestion des marges et du food cost. Pour les réservations, la caisse et la livraison, d'autres outils sont meilleurs. Le combo le plus fréquent chez nos clients : <strong>RestauMargin + L'Addition + TheFork</strong>.
+              <strong className="text-white">RestauMargin</strong> (29 EUR/mois) excelle sur la gestion des marges et du food cost. Pour les réservations, la caisse et la livraison, d'autres outils sont meilleurs. Une combinaison possible pour un indépendant : <strong>RestauMargin + L'Addition + TheFork</strong>.
             </p>
           </div>
         </div>
@@ -669,9 +669,9 @@ export default function ComparatifLogicielsRestaurant() {
 
           <div className="prose-content">
             <p>
-              Voici les <strong>cinq profils de restaurateurs</strong> les plus fréquents et les
-              combinaisons de logiciels que nous observons chez nos clients et que nous recommandons
-              honnêtement. Ces combinaisons ne sont pas figées : adaptez selon vos volumes, votre
+              Voici <strong>cinq profils de restaurateurs</strong> courants et les
+              combinaisons de logiciels que nous recommandons
+              honnêtement pour chacun. Ces combinaisons ne sont pas figées : adaptez selon vos volumes, votre
               ticket moyen et votre marge actuelle.
             </p>
           </div>
@@ -682,7 +682,7 @@ export default function ComparatifLogicielsRestaurant() {
               title="Restaurant indépendant, 1 établissement, 30 à 80 couverts/jour"
               recommendation={"RestauMargin + L'Addition"}
               recoColor="emerald"
-              desc="Vous gérez seul ou à deux, votre priorité est la rentabilité quotidienne et un service fluide. RestauMargin Pro (29 EUR) pour les marges et le food cost, L'Addition (59 EUR) pour la caisse. Total : 88 EUR/mois. Réservations gérées par TheFork gratuit ou par téléphone. C'est le combo le plus fréquent chez nos clients indépendants."
+              desc="Vous gérez seul ou à deux, votre priorité est la rentabilité quotidienne et un service fluide. RestauMargin Pro (29 EUR) pour les marges et le food cost, L'Addition (59 EUR) pour la caisse. Total : 88 EUR/mois. Réservations gérées par TheFork gratuit ou par téléphone."
             />
             <ScenarioCard
               badge="Profil 2"
@@ -717,7 +717,7 @@ export default function ComparatifLogicielsRestaurant() {
           <Callout type="info">
             <strong>Notre engagement de transparence :</strong> aucun des éditeurs cités dans ce
             comparatif ne nous rémunère pour figurer dans ces recommandations. Nous citons les outils
-            que nous voyons effectivement utilisés et appréciés par nos clients, parfois en
+            que nous jugeons pertinents pour chaque profil, parfois en
             complément de RestauMargin, parfois sans nous. L'objectif est que vous ayez le bon stack
             pour votre activité, pas que vous payiez RestauMargin par défaut.
           </Callout>

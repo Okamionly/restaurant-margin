@@ -13,7 +13,7 @@ import PublicFooter from '../components/public/PublicFooter';
 const faqItems = [
   {
     question: 'Quel est le meilleur logiciel de marge restaurant en 2026 ?',
-    answer: "RestauMargin est le logiciel de marge restaurant le plus complet du marché français. Il combine fiches techniques automatisées, scan de factures par OCR, alertes en temps réel, intelligence artificielle (19 actions IA) et menu engineering. Tarif : 29 EUR/mois avec essai gratuit 7 jours.",
+    answer: "Le bon logiciel dépend de la taille de votre carte et de vos besoins. RestauMargin combine fiches techniques automatisées, scan de factures par OCR, alertes en temps réel, intelligence artificielle (19 actions IA) et menu engineering. Tarif : 29 EUR/mois avec essai gratuit 7 jours.",
   },
   {
     question: 'Combien coûte un logiciel de gestion de marge restaurant ?',
@@ -135,7 +135,7 @@ export default function LogicielMargeRestaurant() {
         <div className="max-w-6xl mx-auto text-center">
           <span className="inline-flex items-center gap-1.5 text-teal-700 bg-teal-100 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-6">
             <Sparkles className="w-3.5 h-3.5" />
-            #1 Logiciel marge restaurant France
+            Logiciel marge restaurant
           </span>
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-mono-100 leading-tight mb-6 max-w-4xl mx-auto">
             Logiciel de calcul de marge restaurant, 100 % automatique
@@ -143,7 +143,6 @@ export default function LogicielMargeRestaurant() {
           <p className="text-lg sm:text-xl text-mono-400 max-w-3xl mx-auto leading-relaxed mb-8">
             Le logiciel SaaS qui calcule la marge de votre restaurant automatiquement : fiches techniques,
             prix fournisseurs et food cost, sans Excel ni saisie manuelle.
-            <strong> +5 points de marge brute en 6 mois en moyenne.</strong>
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -165,8 +164,8 @@ export default function LogicielMargeRestaurant() {
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-mono-500">
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans carte bancaire</span>
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Sans engagement</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> des restaurants clients</span>
-            <span className="flex items-center gap-1.5"><Star className="w-4 h-4 text-amber-500 fill-amber-500" /> Essai 7 jours sans carte</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Fiches techniques illimitées</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-600" /> Essai 7 jours</span>
           </div>
         </div>
       </header>
@@ -391,7 +390,7 @@ export default function LogicielMargeRestaurant() {
               Fonctionnalités RestauMargin
             </h2>
             <p className="text-lg text-mono-400 max-w-2xl mx-auto">
-              Le logiciel le plus complet du marché, conçu par des restaurateurs pour des restaurateurs.
+              Les fonctionnalités incluses, pensées pour le quotidien d'un restaurant.
             </p>
           </div>
 
@@ -438,7 +437,7 @@ export default function LogicielMargeRestaurant() {
           <div className="grid sm:grid-cols-2 gap-6">
             <div className="bg-white border-2 border-teal-600 rounded-2xl p-8 text-left relative shadow-lg shadow-teal-600/10">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-teal-600 text-white text-xs font-bold px-4 py-1 rounded-full">
-                LE PLUS POPULAIRE
+                RECOMMANDÉ
               </div>
               <h3 className="font-extrabold text-mono-100 text-2xl mb-2">Pro</h3>
               <p className="text-sm text-mono-400 mb-4">Pour un restaurant indépendant</p>
@@ -496,7 +495,7 @@ export default function LogicielMargeRestaurant() {
               Ce que disent nos clients
             </h2>
             <p className="text-lg text-mono-400">
-              des restaurants utilisent RestauMargin au quotidien.
+              Avis publiés avec l'accord de leurs auteurs.
             </p>
           </div>
 
@@ -516,13 +515,6 @@ export default function LogicielMargeRestaurant() {
                 </div>
               </div>
             ))}
-          </div>
-
-          <div className="text-center mt-10">
-            <Link to="/temoignages" className="inline-flex items-center gap-2 text-teal-700 font-semibold hover:text-teal-800 transition-colors">
-              Lire tous les témoignages
-              <ArrowRight className="w-4 h-4" />
-            </Link>
           </div>
         </div>
       </section>
@@ -559,7 +551,7 @@ export default function LogicielMargeRestaurant() {
             Prêt à reprendre le contrôle de vos marges ?
           </h2>
           <p className="text-xl text-teal-100 max-w-2xl mx-auto mb-3">
-            Rejoignez les des restaurants qui ont gagné en moyenne 5 points de marge brute en 6 mois avec RestauMargin.
+            Food cost, marge et fiches techniques recalculés automatiquement à chaque changement de prix.
           </p>
           <p className="text-teal-50 mb-10">
             Essai gratuit 7 jours - Sans carte bancaire - Sans engagement

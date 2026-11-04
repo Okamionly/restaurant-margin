@@ -260,7 +260,7 @@ export default function BlogEnergieRestaurant() {
               <p>
                 Avant de chercher à économiser, il faut comprendre OÙ part votre énergie.
                 Voici la répartition moyenne pour un restaurant traditionnel 80 couverts en
-                France, basée sur les données ADEME et nos propres mesures.
+                France, ordre de grandeur établi à partir des données ADEME.
               </p>
             </div>
 

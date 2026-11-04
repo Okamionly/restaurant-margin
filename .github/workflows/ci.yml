@@ -82,6 +82,16 @@ jobs:
       - name: TypeScript check
         run: cd client && npx tsc --noEmit --skipLibCheck
 
+      # Les agents de contenu écrivent par défaut un français sans accents : le
+      # 2026-11-04, il a fallu remettre les accents de près de 38 000 mots sur 111
+      # pages publiques. Ce contrôle lit le texte VISIBLE par l'AST TypeScript (d'où
+      # sa place dans ce job, qui installe déjà client/) et rougit dès qu'un mot
+      # témoin sans accent réapparaît ; slugs, ancres et classes ne sont pas lus.
+      # `!cancelled()` : il tourne même si tsc a échoué, pour voir les deux d'un coup.
+      - name: Accents du texte visible des pages de contenu
+        if: ${{ !cancelled() }}
+        run: npm run content:check
+
   build:
     name: Vite Build
     runs-on: ubuntu-latest

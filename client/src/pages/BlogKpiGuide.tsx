@@ -3,6 +3,7 @@ import { ChefHat, BookOpen, BarChart3, TrendingUp, Clock, Star, Target, Users, A
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Les KPI essentiels pour piloter son restaurant en 2026"
@@ -116,7 +117,7 @@ const howToSchema = {
 
 export default function BlogKpiGuide() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="KPI restaurant 2026 : les 12 indicateurs essentiels (guide)"
         description="Food cost, prime cost, RevPASH, ticket moyen, NPS... Le guide complet des 12 KPI restaurant 2026 avec formules, benchmarks par type et tableau de bord."
@@ -135,29 +136,7 @@ export default function BlogKpiGuide() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/outils/calculateur-food-cost"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
-            >
-              <Calculator className="w-4 h-4" />
-              Calculer mes KPI
-            </Link>
-            <Link
-              to="/login"
-              className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors"
-            >
-              Connexion
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Breadcrumbs */}
       <div className="bg-mono-1000 border-b border-mono-900 py-3 px-4">

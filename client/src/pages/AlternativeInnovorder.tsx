@@ -86,7 +86,7 @@ const faqItems = [
 
 export default function AlternativeInnovorder() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead
         title="Alternative Innovorder | RestauMargin (29EUR/mois) | Comparatif 2026"
         description="Innovorder = POS et click & collect a 89-199 EUR/mois. RestauMargin = gestion de marge, food cost et IA a 29 EUR/mois. Comparatif complet, prix, fonctionnalites et cas d'usage 2026."

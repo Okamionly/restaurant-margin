@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 const faqItems = [
   {
@@ -67,6 +69,7 @@ export default function BlogPsychologiePrix() {
 
   return (
     <>
+      <PublicHeader />
       <SEOHead
         title={title}
         description={description}
@@ -305,6 +308,7 @@ export default function BlogPsychologiePrix() {
           </div>
         </div>
       </div>
+      <PublicFooter />
     </>
   );
 }

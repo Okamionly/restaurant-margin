@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, Calculator, ChevronRight, Star, MapPin, Camera, MessageSquare, TrendingUp, ArrowRight, ExternalLink } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
 
 const faqItems = [
   {
@@ -52,7 +53,7 @@ const SECTIONS = [
 
 export default function BlogGoogleMyBusiness() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead
         title="Google My Business pour restaurant : guide complet 2026"
         description="Comment créer, optimiser et exploiter votre fiche Google My Business pour remplir votre salle : photos, avis, posts, métriques et stratégie avancée 2026."
@@ -70,21 +71,7 @@ export default function BlogGoogleMyBusiness() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#E5E7EB]">
-        <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-bold text-[#111111]">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link to="/outils/calculateur-food-cost" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-full transition-colors">
-              <Calculator className="w-4 h-4" />
-              Calculer ma rentabilité
-            </Link>
-            <Link to="/login" className="text-sm font-medium text-[#737373] hover:text-teal-600 transition-colors">Connexion</Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Breadcrumb */}
       <div className="bg-[#F5F5F5] border-b border-[#E5E7EB] py-3 px-4">

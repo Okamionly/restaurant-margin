@@ -356,7 +356,7 @@ export default function CalculateurMargeRestaurant() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead
         title="Calculateur de marge restaurant gratuit | Food cost, coefficient, TVA"
         description="Calculez gratuitement la marge brute, le food cost, le coefficient multiplicateur et le prix de vente conseillé de vos plats. Avec calcul TVA et comparaison aux cibles par type de restaurant. Sans inscription."

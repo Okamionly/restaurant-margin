@@ -12,6 +12,8 @@ import {
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Avis Google negatifs au restaurant : la methode qui limite les degats"
@@ -82,6 +84,7 @@ export default function BlogAvisGoogleNegatifs() {
 
   return (
     <>
+      <PublicHeader />
       <SEOHead
         title={`${pageTitle} | RestauMargin`}
         description={pageDescription}
@@ -440,6 +443,7 @@ export default function BlogAvisGoogleNegatifs() {
           </div>
         </div>
       </div>
+      <PublicFooter />
     </>
   );
 }

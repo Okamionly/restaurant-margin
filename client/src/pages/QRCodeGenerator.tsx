@@ -318,7 +318,7 @@ export default function QRCodeGenerator() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black transition-colors" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white dark:bg-black transition-colors">
       <SEOHead
         title="Générateur QR Code Menu Restaurant Gratuit | RestauMargin"
         description="Créez gratuitement un QR Code menu restaurant : couleurs, logo, formats PNG/SVG/PDF, presets Instagram + Google. Sans compte, sans inscription."

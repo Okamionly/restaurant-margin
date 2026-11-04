@@ -1,5 +1,7 @@
 import React from 'react';
 import SEOHead from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -53,6 +55,7 @@ const faqJsonLd = {
 export default function BlogPrixVenteMenu() {
   return (
     <>
+      <PublicHeader />
       <SEOHead
         title="Calcul du prix de vente d'un menu restaurant : la méthode rentable | RestauMargin"
         description="Comment calculer le prix d'une formule entrée-plat-dessert avec le food cost pondéré, la règle des trois contraintes et la psychologie du prix fixe. Méthode pratique avec exemples chiffrés."
@@ -309,6 +312,7 @@ export default function BlogPrixVenteMenu() {
 
         </div>
       </main>
+      <PublicFooter />
     </>
   );
 }

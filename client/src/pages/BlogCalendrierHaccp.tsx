@@ -3,6 +3,8 @@ import { ChefHat, Calculator, ArrowRight, BookOpen, Calendar, ShieldCheck, Therm
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 export default function BlogCalendrierHaccp() {
   const faqSchema = buildFAQSchema([
@@ -34,7 +36,7 @@ export default function BlogCalendrierHaccp() {
   ]);
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Calendrier HACCP restaurant : modèle gratuit 2026 (téléchargeable)"
         description="Téléchargez votre calendrier HACCP 2026 gratuit. Toutes les fréquences de contrôle obligatoires, les températures réglementaires, les enregistrements DDPP — modèle prêt à imprimer."
@@ -59,21 +61,7 @@ export default function BlogCalendrierHaccp() {
         }}
       />
 
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link to="/outils/calculateur-food-cost" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors">
-              <Calculator className="w-4 h-4" />
-              Calculer mon food cost
-            </Link>
-            <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">Connexion</Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       <BlogArticleHero
         category="HACCP"
@@ -367,16 +355,7 @@ export default function BlogCalendrierHaccp() {
         </section>
       </main>
 
-      <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center text-sm text-mono-500">
-          <Link to="/" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
-            <ChefHat className="w-6 h-6 text-teal-600" />
-            RestauMargin
-          </Link>
-          <p className="mb-4">La plateforme de gestion de marge pour les restaurateurs.</p>
-          <p className="mt-6 text-xs text-mono-700">&copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.</p>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

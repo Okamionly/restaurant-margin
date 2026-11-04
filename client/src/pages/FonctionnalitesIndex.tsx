@@ -32,7 +32,7 @@ const FEATURES = [
 
 export default function FonctionnalitesIndex() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif", color: TEXT }}>
+    <div className="min-h-screen bg-white" style={{ color: TEXT }}>
       <SEOHead
         title="Fonctionnalités RestauMargin | 8 modules pour piloter une cuisine rentable"
         description="Les 8 modules RestauMargin : commandes fournisseurs, IA cuisine, fiches techniques, mercuriale & alertes prix, pesage Bluetooth, HACCP digital, OCR factures et Menu Engineering. Une suite intégrée pour restaurateurs."

@@ -148,7 +148,7 @@ export default function FoodCostCalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead title="Calculateur de Food Cost Restaurant Gratuit" description="Calculez gratuitement le food cost de vos plats. Outil en ligne pour restaurateurs : cout matiere, prix de vente, marge brute par recette." path="/outils/calculateur-food-cost" />
 
       {/* ── Navbar ── */}

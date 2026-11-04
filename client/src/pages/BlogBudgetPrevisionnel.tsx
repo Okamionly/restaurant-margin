@@ -3,6 +3,8 @@ import { ChefHat, BookOpen, Calculator, FileSpreadsheet, TrendingDown, Target, A
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Budget prévisionnel restaurant : guide complet 2026"
@@ -108,7 +110,7 @@ export default function BlogBudgetPrevisionnel() {
   };
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Budget prévisionnel restaurant : guide complet 2026 + tableau 12 mois"
         description="Construisez et pilotez votre budget prévisionnel restaurant : structure, méthode bottom-up, tableau 12 mois, ratios cibles, saisonnalité. Formules et exemples chiffrés."
@@ -118,23 +120,7 @@ export default function BlogBudgetPrevisionnel() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link to="/outils/calculateur-food-cost" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors">
-              <Calculator className="w-4 h-4" />
-              Calculateur food cost
-            </Link>
-            <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
-              Connexion
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Breadcrumbs visibles */}
       <div className="bg-mono-1000 border-b border-mono-900 py-3 px-4">
@@ -881,17 +867,7 @@ export default function BlogBudgetPrevisionnel() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center text-sm text-mono-500">
-          <Link to="/" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
-            <ChefHat className="w-6 h-6 text-teal-600" />
-            RestauMargin
-          </Link>
-          <p className="mt-6 text-xs text-mono-700">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
-          </p>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

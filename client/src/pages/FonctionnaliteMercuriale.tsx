@@ -76,7 +76,7 @@ const faqItems = [
 
 export default function FonctionnaliteMercuriale() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif", color: TEXT }}>
+    <div className="min-h-screen bg-white" style={{ color: TEXT }}>
       <SEOHead
         title="Mercuriale & alertes prix fournisseurs | RestauMargin"
         description="Suivi automatique des prix fournisseurs dans le temps. Alerte dès qu'un prix dérive. Détectez les hausses avant qu'elles grignotent vos marges. Historique tracé pour négocier."

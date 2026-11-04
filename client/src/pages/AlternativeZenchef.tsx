@@ -58,7 +58,7 @@ const faqItems = [
 
 export default function AlternativeZenchef() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Alternative Zenchef : RestauMargin (29€/mois) | Comparatif 2026"
         description="Vous cherchez une alternative à Zenchef plus abordable et plus complète ? RestauMargin offre gestion des marges + food cost + IA dès 29€/mois. Comparatif complet."

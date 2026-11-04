@@ -21,6 +21,8 @@ import {
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Carte des vins restaurant : maximiser la marge 2026"
@@ -83,7 +85,7 @@ const faqItems = [
 
 export default function BlogCarteVins() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Carte des vins restaurant : guide complet pour maximiser la marge 2026"
         description="Comment construire une carte des vins rentable : nombre de références, coefficients multiplicateurs, rotation cave, présentation. Tableaux par gamme, accords mets-vins, ROI."
@@ -135,22 +137,7 @@ export default function BlogCarteVins() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/login"
-              className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors"
-            >
-              Connexion
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Breadcrumbs visibles */}
       <div className="bg-mono-1000 border-b border-mono-900 py-3 px-4">
@@ -1025,26 +1012,7 @@ export default function BlogCarteVins() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center text-sm text-mono-500">
-          <Link to="/" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
-            <ChefHat className="w-6 h-6 text-teal-600" />
-            RestauMargin
-          </Link>
-          <p className="mb-4">
-            La plateforme de gestion de marge pour les restaurateurs.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
-            <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
-            <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
-          </div>
-          <p className="mt-6 text-xs text-mono-700">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
-          </p>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

@@ -88,7 +88,7 @@ const faqItems = [
 
 export default function AlternativeHubrise() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead
         title="Alternative Hubrise | RestauMargin food cost | Comparatif 2026"
         description="Hubrise = hub d'integrations livraison (UberEats, Deliveroo). RestauMargin = pilotage de marge (food cost, fiches techniques). Comparatif complet 2026, prix, cas d'usage et complementarite."

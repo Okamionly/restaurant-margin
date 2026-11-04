@@ -14,7 +14,7 @@ import PublicFooter from '../components/public/PublicFooter';
 
 export default function APropos() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead
         title="À propos — RestauMargin"
         description="Découvrez RestauMargin, la plateforme SaaS française de gestion de marge pour restaurateurs. Basée à Montpellier, notre mission est d'aider les chefs à maîtriser leur food cost et leurs marges."

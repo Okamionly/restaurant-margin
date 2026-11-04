@@ -82,7 +82,7 @@ export default function TrialReactivate() {
   }
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead
         title="Offre de reactivation — RestauMargin"
         description="Votre essai gratuit est termine. Profitez de -30% sur les 3 premiers mois pour reactiver votre compte RestauMargin."

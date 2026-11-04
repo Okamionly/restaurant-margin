@@ -14,6 +14,8 @@ import {
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Licence IV en restauration : l'obtenir, la transferer, l'exploiter"
@@ -85,6 +87,7 @@ export default function BlogLicenceIV() {
 
   return (
     <>
+      <PublicHeader />
       <SEOHead
         title={`${pageTitle} | RestauMargin`}
         description={pageDescription}
@@ -596,6 +599,7 @@ export default function BlogLicenceIV() {
           </div>
         </div>
       </div>
+      <PublicFooter />
     </>
   );
 }

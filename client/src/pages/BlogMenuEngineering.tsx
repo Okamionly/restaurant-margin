@@ -3,6 +3,7 @@ import { ChefHat, BookOpen, Star, TrendingUp, Puzzle, AlertCircle, Layout, Arrow
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
 import BlogAuthor from '../components/BlogAuthor';
+import PublicHeader from '../components/public/PublicHeader';
 
 export default function BlogMenuEngineering() {
   const faqSchema = buildFAQSchema([
@@ -66,7 +67,7 @@ export default function BlogMenuEngineering() {
   ]);
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Menu engineering : la méthode Boston Matrix pour optimiser votre carte"
         description="Classez vos plats en Stars, Vaches à lait, Puzzles et Chiens. La matrice Boston appliquée à la restauration pour maximiser vos marges."
@@ -101,17 +102,7 @@ export default function BlogMenuEngineering() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
-            Connexion
-          </Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Hero */}
       <BlogArticleHero

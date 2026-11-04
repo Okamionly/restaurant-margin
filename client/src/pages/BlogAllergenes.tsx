@@ -3,6 +3,8 @@ import { ChefHat, ArrowRight, ShieldAlert, ListChecks, Eye, Users, Utensils, Cof
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 export default function BlogAllergenes() {
   const faqSchema = buildFAQSchema([
@@ -24,15 +26,10 @@ export default function BlogAllergenes() {
   ]);
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead title="Allergènes en restauration : obligations légales et affichage 2026" description="Les 14 allergènes obligatoires INCO, modèle d'affichage, sanctions DDPP, allergie sévère vs intolérance, et bonnes pratiques en cuisine pour rester conforme." path="/blog/allergenes-restaurant-obligations-legales" type="article" schema={[faqSchema, breadcrumbSchema]} />
 
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg"><ChefHat className="w-7 h-7 text-teal-600" /><span>RestauMargin</span></Link>
-          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">Connexion</Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       <BlogArticleHero category="Réglementation" readTime="17 min" date="Mai 2026" title="Allergènes en restauration : obligations légales 2026" accentWord="Allergènes" subtitle="Les 14 allergènes obligatoires, modèle d'affichage, sanctions DDPP, bonnes pratiques en cuisine. Le réflexe métier non négociable." />
 
@@ -212,11 +209,6 @@ function CTABlock() {
 
 function SiteFooter() {
   return (
-    <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
-      <div className="max-w-4xl mx-auto text-center text-sm text-mono-500">
-        <Link to="/" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4"><ChefHat className="w-6 h-6 text-teal-600" />RestauMargin</Link>
-        <p className="mt-6 text-xs text-mono-700">&copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.</p>
-      </div>
-    </footer>
+    <PublicFooter />
   );
 }

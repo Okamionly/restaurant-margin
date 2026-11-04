@@ -192,7 +192,7 @@ const useCases: { icon: React.ReactNode; title: string; desc: string }[] = [
 
 export default function FonctionnaliteIACuisine() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif", color: TEXT }}>
+    <div className="min-h-screen bg-white" style={{ color: TEXT }}>
       <SEOHead
         title="L'IA qui parle cuisine | Intelligence artificielle restaurant | RestauMargin"
         description="Dictez votre recette, l'IA structure ingrédients, allergènes et coût automatiquement. 19 actions IA pour optimiser vos marges. Propulsé par Claude. Sans jargon SaaS."

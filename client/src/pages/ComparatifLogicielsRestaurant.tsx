@@ -343,7 +343,7 @@ const itemListSchema = {
 
 export default function ComparatifLogicielsRestaurant() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Comparatif logiciels restaurant 2026 | 12 outils analysés | RestauMargin"
         description="Comparatif honnête de 12 logiciels restaurant en 2026 : RestauMargin, Lightspeed, Zenchef, Innovorder, Hubrise, TheFork, L'Addition, etc. Prix, fonctionnalités, avis."

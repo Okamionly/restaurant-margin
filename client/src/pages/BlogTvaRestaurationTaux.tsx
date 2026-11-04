@@ -14,6 +14,8 @@ import {
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "TVA en restauration 2026 : 5,5 %, 10 % ou 20 %"
@@ -84,6 +86,7 @@ export default function BlogTvaRestaurationTaux() {
 
   return (
     <>
+      <PublicHeader />
       <SEOHead
         title={`${pageTitle} | RestauMargin`}
         description={pageDescription}
@@ -497,6 +500,7 @@ export default function BlogTvaRestaurationTaux() {
           </div>
         </div>
       </div>
+      <PublicFooter />
     </>
   );
 }

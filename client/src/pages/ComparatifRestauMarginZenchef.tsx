@@ -95,7 +95,7 @@ const faqItems = [
 
 export default function ComparatifRestauMarginZenchef() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="RestauMargin vs Zenchef : comparatif complet 2026 (prix, features, avis)"
         description="Comparatif benchmarks publics du secteurZenchef en 2026. Prix, fonctionnalites, food cost, reservations, gestion marge. Quelle solution choisir selon votre restaurant ? Verdict honnete."

@@ -24,6 +24,8 @@ import {
   Brain,
 } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Page niche SEO — Logiciel marge restaurant gastronomique
@@ -113,7 +115,7 @@ export default function LogicielMargeGastronomique() {
   const grossMargin = sellingPrice - totalCost;
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead
         title="Logiciel marge restaurant gastronomique étoilé | RestauMargin"
         description="Logiciel pour piloter marges restaurant gastronomique étoilé. Food cost 32-40 %, brigades importantes, produits nobles. Essai gratuit 7 jours."
@@ -182,29 +184,7 @@ export default function LogicielMargeGastronomique() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link to="/pricing" className="hidden sm:inline-flex text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
-              Tarifs
-            </Link>
-            <Link to="/demo" className="hidden sm:inline-flex text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
-              Demo
-            </Link>
-            <Link
-              to="/login?mode=register"
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
-            >
-              Essai gratuit
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ── Breadcrumbs ── */}
       <div className="bg-mono-1000 border-b border-mono-900 py-3 px-4">
@@ -868,24 +848,7 @@ export default function LogicielMargeGastronomique() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
-        <div className="max-w-6xl mx-auto text-center text-sm text-mono-500">
-          <Link to="/" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
-            <ChefHat className="w-6 h-6 text-teal-600" />
-            RestauMargin
-          </Link>
-          <p className="mb-4">Le logiciel de marge restaurant le plus complet du marché français.</p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-mono-700">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
-            <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
-            <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
-          </div>
-          <p className="mt-6 text-xs text-mono-700">
-            &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
-          </p>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

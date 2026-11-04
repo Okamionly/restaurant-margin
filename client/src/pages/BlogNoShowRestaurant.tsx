@@ -1,5 +1,7 @@
 import React from 'react';
 import SEOHead from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 export default function BlogNoShowRestaurant() {
   const jsonLd = {
@@ -16,6 +18,7 @@ export default function BlogNoShowRestaurant() {
 
   return (
     <>
+      <PublicHeader />
       <SEOHead
         title="No-show au restaurant : solutions pour réduire les réservations non honorées (2026)"
         description="Calculez le vrai coût d'un no-show, activez les SMS de rappel, l'empreinte bancaire et rédigez une politique d'annulation béton. Guide complet 2026."
@@ -295,6 +298,7 @@ export default function BlogNoShowRestaurant() {
           </div>
         </article>
       </main>
+      <PublicFooter />
     </>
   );
 }

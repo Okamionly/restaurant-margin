@@ -25,6 +25,7 @@ import {
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
 import BlogAuthor from '../components/BlogAuthor';
+import PublicHeader from '../components/public/PublicHeader';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Stratégie digitale restaurant : guide complet 2026"
@@ -126,7 +127,7 @@ export default function BlogStrategieDigitale() {
   };
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Stratégie digitale restaurant : guide marketing complet 2026"
         description="Guide ultime de la stratégie digitale restaurant en 2026 : 8 piliers (Google Business, SEO local, Instagram, TikTok, avis, email), ROI par canal, budget, checklist 30 actions."
@@ -136,26 +137,7 @@ export default function BlogStrategieDigitale() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/login?mode=register"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
-            >
-              <Sparkles className="w-4 h-4" />
-              Essayer gratuitement
-            </Link>
-            <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
-              Connexion
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Breadcrumbs visibles */}
       <div className="bg-mono-1000 border-b border-mono-900 py-3 px-4">

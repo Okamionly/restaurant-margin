@@ -106,7 +106,7 @@ export default function FonctionnalitePesageBluetooth() {
   return (
     <div
       className="min-h-screen bg-white"
-      style={{ fontFamily: "'Inter', system-ui, sans-serif", color: TEXT }}
+      style={{ color: TEXT }}
     >
       <SEOHead
         title="Pesage Bluetooth en cuisine | Balance connectée restaurant | RestauMargin"

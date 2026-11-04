@@ -680,7 +680,7 @@ export default function GlossaireRestauration() {
   };
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead
         title="Glossaire restauration 2026 | 50+ définitions food cost, marge, KPI"
         description="Glossaire complet de la restauration. 50+ termes définis : food cost, marge, prime cost, fiche technique, HACCP, GMP, RevPASH. Guide de référence 2026."

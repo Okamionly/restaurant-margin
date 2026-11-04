@@ -3,6 +3,7 @@ import { ChefHat, BookOpen, Users, GraduationCap, Euro, Calendar, ClipboardCheck
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Formation du personnel en restauration 2026"
@@ -126,7 +127,7 @@ export default function BlogFormationPersonnel() {
   const breadcrumbSchema = buildBreadcrumbSchema(breadcrumbItems);
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Formation du personnel en restauration : obligations, aides et meilleures pratiques 2026"
         description="Financez la formation de vos équipes grâce à l'OPCO Mobilités et au CPF. Formations prioritaires en 2026, obligations légales HACCP, ROI mesuré et plan annuel chiffré."
@@ -136,17 +137,7 @@ export default function BlogFormationPersonnel() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
-            Connexion
-          </Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Hero */}
       <BlogArticleHero

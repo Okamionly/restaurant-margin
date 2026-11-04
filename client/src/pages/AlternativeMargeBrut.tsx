@@ -60,7 +60,7 @@ const faqItems = [
 
 export default function AlternativeMargeBrut() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Alternative Marge Brut : RestauMargin, la gestion complète | 2026"
         description="Marge Brut est gratuit en phase de développement. RestauMargin ajoute mercuriale, stock, menu engineering et HACCP dès 29€/mois. Comparatif détaillé et honnête."

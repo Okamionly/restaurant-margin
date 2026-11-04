@@ -58,7 +58,7 @@ const faqItems = [
 
 export default function AlternativeTheFork() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Alternative TheFork Manager | RestauMargin food cost | 2026"
         description="TheFork Manager = réservations + marketing. RestauMargin = gestion food cost + marges + IA. Comparatif 2026 honnête : tableau 18 critères, pricing, cas d'usage."

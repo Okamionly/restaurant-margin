@@ -2,6 +2,8 @@ import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, Calculator, ArrowRight, Clock, BookOpen, Sparkles } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 // Curves shader (lignes emerald qui derivent — meme theme que la landing principale).
 // Lazy-loaded pour preserver le LCP.
@@ -553,7 +555,7 @@ const categoryColors: Record<string, string> = {
 
 export default function BlogIndex() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead
         title="Blog RestauMargin — Guides et conseils pour restaurateurs"
         description="Articles et guides pratiques pour restaurateurs : calcul de marge, food cost, HACCP, fiches techniques, IA en restauration. Conseils d'experts pour optimiser votre restaurant."
@@ -561,29 +563,7 @@ export default function BlogIndex() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/outils/calculateur-food-cost"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
-            >
-              <Calculator className="w-4 h-4" />
-              Calculer ma marge
-            </Link>
-            <Link
-              to="/login"
-              className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors"
-            >
-              Connexion
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Hero with PaperFold animated shader background */}
       <section className="relative pt-20 pb-20 sm:pb-28 px-4 sm:px-6 overflow-hidden isolate">
@@ -756,19 +736,7 @@ export default function BlogIndex() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-mono-900 py-8">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-mono-500">
-          <div className="flex items-center gap-2">
-            <ChefHat className="w-5 h-5 text-teal-600" />
-            <span>© 2026 RestauMargin — Tous droits réservés</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions légales</Link>
-            <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
-            <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialité</Link>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

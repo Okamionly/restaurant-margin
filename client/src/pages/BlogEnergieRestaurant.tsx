@@ -3,6 +3,8 @@ import { ChefHat, ArrowRight, Zap, Lightbulb, Snowflake, Wind, Power, Flame, Dro
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Cout energie restaurant 2026 : guide complet + 25 actions"
@@ -55,7 +57,7 @@ const faqItems = [
 
 export default function BlogEnergieRestaurant() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Coût énergie restaurant 2026 : budget, répartition et 25 actions d'économie"
         description="Guide complet du coût énergie en restauration 2026 : budget moyen 3-7 % du CA, répartition cuisine 60 %, tarifs élec/gaz/eau, 25 actions concrètes pour réduire la facture de 25 à 40 %, aides CEE et France 2030."
@@ -107,24 +109,7 @@ export default function BlogEnergieRestaurant() {
       />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/login?mode=register"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
-            >
-              <Zap className="w-4 h-4" />
-              Suivre mes charges
-            </Link>
-            <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">Connexion</Link>
-          </div>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* ── Breadcrumbs visibles ── */}
       <div className="bg-mono-1000 border-b border-mono-900 py-3 px-4">
@@ -823,14 +808,6 @@ function CTABlock() {
 
 function SiteFooter() {
   return (
-    <footer className="bg-mono-1000 border-t border-mono-900 py-12 px-4">
-      <div className="max-w-4xl mx-auto text-center text-sm text-mono-500">
-        <Link to="/" className="flex items-center justify-center gap-2 text-mono-100 font-bold text-lg mb-4">
-          <ChefHat className="w-6 h-6 text-teal-600" />
-          RestauMargin
-        </Link>
-        <p className="mt-6 text-xs text-mono-700">&copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.</p>
-      </div>
-    </footer>
+    <PublicFooter />
   );
 }

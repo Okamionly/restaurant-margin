@@ -110,7 +110,7 @@ export default function FonctionnaliteMenuEngineering() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif", color: TEXT }}>
+    <div className="min-h-screen bg-white" style={{ color: TEXT }}>
       <SEOHead
         title="Menu Engineering restaurant | Matrice Stars/Puzzles/Dogs | RestauMargin"
         description="Menu Engineering automatique : RestauMargin croise food cost et ventes pour classer vos plats (Stars, Puzzles, Plowhorses, Dogs). Savez quel plat retirer avant qu'il vous coûte cher."

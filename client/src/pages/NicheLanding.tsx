@@ -760,7 +760,7 @@ export default function NicheLanding() {
   }
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead
         title={config.title}
         description={config.description}

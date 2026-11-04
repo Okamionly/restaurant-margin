@@ -17,6 +17,8 @@ import {
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Négocier avec ses fournisseurs en restauration"
@@ -79,6 +81,7 @@ export default function BlogNegocierFournisseurs() {
 
   return (
     <>
+      <PublicHeader />
       <SEOHead
         title={`${title} | RestauMargin`}
         description={description}
@@ -320,6 +323,7 @@ export default function BlogNegocierFournisseurs() {
           <BlogAuthor publishedDate={publishDate} readTime="7 min" variant="footer" />
         </div>
       </div>
+      <PublicFooter />
     </>
   );
 }

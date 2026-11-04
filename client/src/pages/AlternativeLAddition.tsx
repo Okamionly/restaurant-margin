@@ -58,7 +58,7 @@ const faqItems = [
 
 export default function AlternativeLAddition() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Alternative L'Addition | RestauMargin food cost 29€/mois | 2026"
         description="L'Addition = POS français leader. RestauMargin = gestion food cost + marges. Comparatif honnête 2026."

@@ -1,6 +1,8 @@
 import React from 'react';
 import SEOHead from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 export default function BlogOuvrirTerrasseRestaurant() {
   const jsonLd = {
@@ -74,6 +76,7 @@ export default function BlogOuvrirTerrasseRestaurant() {
 
   return (
     <>
+      <PublicHeader />
       <SEOHead
         title="Terrasse de restaurant : autorisations, démarches et rentabilité 2026"
         description="Comment ouvrir une terrasse de restaurant en France ? Droit de terrasse, dossier mairie, équipement et calcul de rentabilité : le guide complet 2026."
@@ -355,6 +358,7 @@ export default function BlogOuvrirTerrasseRestaurant() {
           <BlogAuthor publishedDate="2026-07-10" updatedDate="2026-09-15" readTime="9 min" variant="footer" />
         </article>
       </main>
+      <PublicFooter />
     </>
   );
 }

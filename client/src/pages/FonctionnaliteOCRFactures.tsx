@@ -92,7 +92,7 @@ const extracted = [
 
 export default function FonctionnaliteOCRFactures() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif", color: TEXT }}>
+    <div className="min-h-screen bg-white" style={{ color: TEXT }}>
       <SEOHead
         title="OCR factures fournisseurs restaurant | Scan auto en 4s | RestauMargin"
         description="Photographiez votre facture fournisseur, l'OCR injecte les prix dans la mercuriale en 4 secondes. Zéro saisie manuelle, zéro erreur, mercuriale toujours à jour."

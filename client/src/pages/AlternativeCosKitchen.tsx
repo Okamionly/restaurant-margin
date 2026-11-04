@@ -59,7 +59,7 @@ const faqItems = [
 
 export default function AlternativeCosKitchen() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Alternative COS Kitchen : RestauMargin, la gestion complète | 2026"
         description="COS Kitchen calcule votre food cost. RestauMargin ajoute stock, mercuriale avec alertes, IA et multi-restaurant dès 29€/mois. Comparatif détaillé, prix et cas d'usage."

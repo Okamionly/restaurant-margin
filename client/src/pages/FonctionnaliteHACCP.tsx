@@ -112,7 +112,7 @@ export default function FonctionnaliteHACCP() {
   return (
     <div
       className="min-h-screen bg-white"
-      style={{ fontFamily: "'Inter', system-ui, sans-serif", color: TEXT }}
+      style={{ color: TEXT }}
     >
       <SEOHead
         title="HACCP digital restaurant | Plan de maîtrise sanitaire numérique | RestauMargin"

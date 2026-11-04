@@ -3,6 +3,7 @@ import { ChefHat, Users, ShieldCheck, Calculator, Scale, CreditCard, FileText, B
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Pourboires en restauration : legislation, fiscalite et repartition 2026"
@@ -64,7 +65,7 @@ export default function BlogPourboiresRestaurant() {
   const breadcrumbSchema = buildBreadcrumbSchema(breadcrumbItems);
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Pourboires en restauration : législation, fiscalité et répartition 2026"
         description="Pourboires au restaurant en 2026 : à qui ils appartiennent, comment les répartir sans perdre l'exonération, et jusqu'à quand l'exonération fiscale et sociale s'applique. Guide complet avec cas chiffré."
@@ -74,17 +75,7 @@ export default function BlogPourboiresRestaurant() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
-            Connexion
-          </Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Hero */}
       <BlogArticleHero

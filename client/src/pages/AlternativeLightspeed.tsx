@@ -58,7 +58,7 @@ const faqItems = [
 
 export default function AlternativeLightspeed() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Alternative Lightspeed Restaurant | RestauMargin food cost | 2026"
         description="Lightspeed = POS premium (89-200€/mois). RestauMargin = gestion marge + food cost (29€/mois). Comparatif 2026."

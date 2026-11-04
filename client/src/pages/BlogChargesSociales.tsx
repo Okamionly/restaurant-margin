@@ -3,6 +3,7 @@ import { ChefHat, BookOpen, Scale, Calculator, Users, AlertTriangle, FileText, T
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
+import PublicHeader from '../components/public/PublicHeader';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Charges sociales en restauration : guide 2026"
@@ -126,7 +127,7 @@ export default function BlogChargesSociales() {
   const breadcrumbSchema = buildBreadcrumbSchema(breadcrumbItems);
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Charges sociales en restauration : guide 2026 (taux, exonérations, URSSAF)"
         description="Maîtrisez vos cotisations sociales en restauration : taux 2026 URSSAF, CCN HCR, réduction Fillon, fiche de paie cuisinier au SMIC, comparatif CDI/CDD/extras/apprentis."
@@ -136,17 +137,7 @@ export default function BlogChargesSociales() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
-            Connexion
-          </Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Hero */}
       <BlogArticleHero

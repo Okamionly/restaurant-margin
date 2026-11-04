@@ -225,7 +225,7 @@ export default function Demo() {
   const couvertsAnim = useAnimatedNumber(1456);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white">
       <SEOHead
         title="Démo RestauMargin — Logiciel de calcul de marge restaurant"
         description="Découvrez RestauMargin en mode démo : dashboard live, food cost, fiches techniques IA, alertes prix fournisseurs. Sans inscription, sans carte bancaire."

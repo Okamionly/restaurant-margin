@@ -209,7 +209,7 @@ function JobCard({ role }: { role: typeof OPEN_ROLES[0] }) {
 
 export default function Careers() {
   return (
-    <div className="min-h-screen bg-white dark:bg-black" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white dark:bg-black">
       <SEOHead
         title="Rejoindre RestauMargin — Postes ouverts"
         description="RestauMargin recrute : Customer Success freelance et Dev Senior. Remote 100 %, cas pratique rémunéré, transparence totale sur les salaires et l'equity."

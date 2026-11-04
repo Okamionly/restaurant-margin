@@ -3,10 +3,11 @@ import { ChefHat, BookOpen, BarChart3, TrendingUp, Users, Star, ArrowRight } fro
 import SEOHead from '../components/SEOHead';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
 import BlogAuthor from '../components/BlogAuthor';
+import PublicHeader from '../components/public/PublicHeader';
 
 export default function BlogKpiRestaurateur() {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen">
       <SEOHead
         title="Les 10 KPI essentiels pour piloter votre restaurant en 2026"
         description="Food cost, prime cost, RevPASH, ticket moyen… Découvrez les indicateurs clés de performance indispensables pour gérer un restaurant rentable en 2026."
@@ -40,17 +41,7 @@ export default function BlogKpiRestaurateur() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-mono-900">
-        <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-mono-100 font-bold text-lg">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <Link to="/login" className="text-sm font-medium text-mono-400 hover:text-teal-600 transition-colors">
-            Connexion
-          </Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       {/* Hero */}
       <BlogArticleHero

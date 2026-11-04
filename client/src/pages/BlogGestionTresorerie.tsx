@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { ChefHat, Calculator, TrendingUp, Wallet, AlertTriangle, CheckCircle, ArrowRight } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import BlogAuthor from '../components/BlogAuthor';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 const faqItems = [
   {
@@ -49,7 +51,7 @@ const FALLBACK = (
 
 export default function BlogGestionTresorerie() {
   return (
-    <div className="min-h-screen bg-white dark:bg-black" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-white dark:bg-black">
       <SEOHead
         title="Gestion de la trésorerie restaurant : guide complet 2026 (plan 13 semaines)"
         description="Comment piloter la trésorerie de votre restaurant : plan prévisionnel 13 semaines, 8 leviers pour améliorer le cash, solutions d'urgence. Guide expert 2026."
@@ -67,21 +69,7 @@ export default function BlogGestionTresorerie() {
       />
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-bold text-lg text-[#111111] dark:text-white">
-            <ChefHat className="w-7 h-7 text-teal-600" />
-            <span>RestauMargin</span>
-          </Link>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition-colors"
-          >
-            <Calculator className="w-4 h-4" />
-            Essayer gratuitement
-          </Link>
-        </div>
-      </nav>
+      <PublicHeader />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
         {/* Breadcrumb */}
@@ -307,19 +295,7 @@ export default function BlogGestionTresorerie() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] mt-16 py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#737373] dark:text-[#A3A3A3]">
-          <Link to="/" className="flex items-center gap-2 font-bold text-[#111111] dark:text-white">
-            <ChefHat className="w-5 h-5 text-teal-600" />
-            RestauMargin
-          </Link>
-          <div className="flex gap-4">
-            <Link to="/blog" className="hover:text-teal-600">Blog</Link>
-            <Link to="/pricing" className="hover:text-teal-600">Tarifs</Link>
-            <Link to="/mentions-legales" className="hover:text-teal-600">Mentions légales</Link>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

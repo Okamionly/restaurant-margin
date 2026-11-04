@@ -99,7 +99,7 @@ const howToSteps = [
 
 export default function FonctionnaliteFichesTechniques() {
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif", color: TEXT }}>
+    <div className="min-h-screen bg-white" style={{ color: TEXT }}>
       <SEOHead
         title="Fiches techniques restaurant en 10s | Food cost auto | RestauMargin"
         description="Créez vos fiches techniques en 10 secondes : food cost, marge, coefficient et allergènes calculés en temps réel. Mise à jour auto quand les prix changent. Prêt pour l'inspection."

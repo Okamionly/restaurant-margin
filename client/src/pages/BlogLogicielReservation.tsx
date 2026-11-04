@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Calendar, CheckCircle, TrendingUp, DollarSign, ArrowRight, Star } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import PublicHeader from '../components/public/PublicHeader';
+import PublicFooter from '../components/public/PublicFooter';
 
 const faqItems = [
   {
@@ -86,6 +88,7 @@ const solutions = [
 export default function BlogLogicielReservation() {
   return (
     <>
+      <PublicHeader />
       <SEOHead
         title="Logiciel de réservation restaurant : comparatif 2026 | RestauMargin"
         description="Comparatif complet des logiciels de réservation pour restaurants en 2026 : TheFork, Zenchef, Sevenrooms, Google Reserve. Critères de choix, coûts réels et ROI."
@@ -381,6 +384,7 @@ export default function BlogLogicielReservation() {
           </div>
         </div>
       </div>
+      <PublicFooter />
     </>
   );
 }

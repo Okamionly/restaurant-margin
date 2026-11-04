@@ -182,12 +182,37 @@ if (!JWT_SECRET) throw new Error('JWT_SECRET manquant');
 
 ## Dette SEO — session du 2026-11-04 (« marge restaurant »)
 
-- **Accents absents sur les pages de contenu** : 68 fichiers sur 81 (`client/src/pages/Blog*`,
-  `Guide*`, `Logiciel*`) contiennent du francais sans accents (641 occurrences de 8 mots temoins :
-  etablissement, rentabilite, benefices...). Visible dans les extraits Google et pour le lecteur.
-  Correction a faire a la main ou par lots relus : un remplacement aveugle casserait les slugs
-  d'URL (`/blog/seuil-rentabilite-restaurant`), les `id` d'ancre et les noms de variables.
-  Fait sur `/blog/calcul-marge-restaurant` (titres et sommaire seulement).
+- **Accents sur les pages de contenu — FAIT le 2026-11-04** (7 lots : `4963a43` pour le lot 1,
+  embarqué par une session concurrente via l'index git partagé, puis `32d388f`, `dfed507`,
+  `040e612`, `4699bd4`, `c50302d`, `3f7517a`). Texte visible des 81 pages `client/src/pages/Blog*`
+  et `Logiciel*` (il n'existe pas de fichier `Guide*`) : texte JSX, FAQ, title/description
+  `SEOHead`, JSON-LD, alt. Les title, description et seoBody des mêmes routes ont été corrigés à
+  l'identique dans `client/scripts/prerender.cjs`. Environ 30 300 mots accentués : corrections
+  certaines par lexique (336 000 formes fléchies), cas ambigus (a/à, ou/où, participes, des/dès,
+  marche/marché) tranchés en contexte et contrôlés par motifs. Ajout d'accents uniquement,
+  vérifié par script contre HEAD à chaque lot : aucune URL, slug, ancre, `className`, clé ni
+  identifiant modifié, fins de ligne conservées. Seule exception : le libellé « Tres fort » de
+  `BlogSalaireProprietaireRestaurant` devient « Très fort » partout, y compris dans la comparaison
+  qui colore le badge. Mesure après coup : 0 mot témoin sans accent dans le texte visible ; les
+  101 occurrences brutes restantes sont des slugs, des ancres et des commentaires de code.
+  Vérifié en prod (Googlebot) : titres accentués, pages de 103 à 120 Ko servies en SSR complet.
+- **Reste — fautes que l'ajout d'accents ne pouvait pas corriger** (il faut ajouter ou retirer une
+  lettre) : « commission prélevé » ×2 → prélevée (`BlogTvaRestaurant`), « menus complètes » →
+  complets et « frites surgelés » → surgelées (`LogicielMargeKebab`), « degrees C » → degrés
+  (`LogicielMargeBurger`), « nobre » (`BlogCalcMarge`), « couttent » (`BlogChargesSociales`),
+  « conccue » et « imbatable » (`BlogFideliserClients`), « ideallement » (`BlogPrimeCost`,
+  `BlogPrixCarte`), « traceabilite » → traçabilité (`BlogFicheTechnique`, `BlogRotationStocks`),
+  « inoipines » → inopinées (`BlogHACCP`), « dédicacé » pour « dédié » (`BlogFoodCost`),
+  « Duplicater » (`BlogSalaireProprietaireRestaurant`). À corriger à la main.
+- **Reste — laissés sans accent exprès** : marques et noms propres (Metro le grossiste, Pret A
+  Manger, Phenix, Deliveroo Editions, Maitre'D, Neo-Restauration, Reels), anglicismes (email,
+  no-show, events), sigle CA, adresses citées (economie.gouv.fr, impots.gouv.fr,
+  france-renov.gouv.fr), code affiché (formules Excel, exemple Python Prophet).
+- **Reste — hors périmètre** : 15 routes de `prerender.cjs` qui ne correspondent pas à ces 81 pages
+  (`/guide-marge/*`, `/demo`…) gardent des title/description sans accents (ex. « Calcul de marge
+  cafe et coffee shop »). Aucun garde-fou n'empêche un agent de contenu de republier du texte sans
+  accents : un contrôle du type `check-seo-coverage.cjs` sur les 8 mots témoins du texte visible
+  le rattraperait.
 - **Position sur « marge restaurant »** : 55 en moyenne sur 3 mois, 26-28 sur 28 jours (GSC). Le guide
   a ete recentre le 04/11 (commit `d401ff1`). A remesurer dans la Search Console vers le 25/11, meme
   filtre (requete exacte, onglet Pages). Le plafond restant est l'autorite du domaine : liens entrants,

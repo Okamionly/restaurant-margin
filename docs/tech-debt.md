@@ -207,11 +207,45 @@ if (!JWT_SECRET) throw new Error('JWT_SECRET manquant');
   Manger, Phenix, Deliveroo Editions, Maitre'D, Neo-Restauration, Reels), anglicismes (email,
   no-show, events), sigle CA, adresses citées (economie.gouv.fr, impots.gouv.fr,
   france-renov.gouv.fr), code affiché (formules Excel, exemple Python Prophet).
-- **Reste — hors périmètre** : 15 routes de `prerender.cjs` qui ne correspondent pas à ces 81 pages
-  (`/guide-marge/*`, `/demo`…) gardent des title/description sans accents (ex. « Calcul de marge
-  cafe et coffee shop »). Aucun garde-fou n'empêche un agent de contenu de republier du texte sans
-  accents : un contrôle du type `check-seo-coverage.cjs` sur les 8 mots témoins du texte visible
-  le rattraperait.
+- **Accents des pages publiques hors `Blog*`/`Logiciel*` — FAIT le 2026-11-04** (`1d55a52`). Les
+  routes de `prerender.cjs` hors des 81 pages n'étaient pas 15 mais 39 : `/guide-marge/*` (12 sur
+  18, les 6 autres étaient déjà accentuées), `/demo`, `/fonctionnalites/*`, les 8
+  `/alternative-*`, les 2 `/comparatif-*`, `/glossaire-restauration`, `/outils/*`,
+  `/station-produit` et les 4 pages légales : 54 title/description accentués, accordés aux
+  composants. Composants identifiés par `App.tsx` : texte visible de 21 fichiers sur 31
+  (`NicheLanding`, `Demo`, 2 `Fonctionnalite*`, les 8 `Alternative*`, les 2 `Comparatif*`,
+  `GlossaireRestauration`, `FoodCostCalculator`, `QRCodeGenerator`, `MentionsLegales`, `CGV`,
+  `CGU`, `PolitiqueConfidentialite` ; les 10 autres étaient déjà accentués) : 7 504 mots, dont
+  environ 5 700 décisions de contexte tranchées par relecteurs. Repris à la main : `document.title`
+  de `Demo` et `QRCodeGenerator`, meta description et feuille imprimée des QR codes. Ajout
+  d'accents uniquement, vérifié contre HEAD par un vérificateur indépendant (texte identique sans
+  diacritiques ; URL, chemins, ancres, domaines et attributs techniques identiques). Relecture
+  indépendante de 250 phrases tirées au hasard : 1 faute trouvée et corrigée (« format
+  structuré »). `check-content-accents.cjs` lancé sur ces 31 pages : OK (1 515 signalements sur
+  leur version d'avant).
+- **Reste — laissés tels quels exprès (31 pages)** : marques et noms (Metro le grossiste, Pi
+  Electronique, Google Reservations, Yums, Saint-Jacques), anglais (email, Depreciation, « We're
+  live »), sigles (BLE, EPI, SIRENE, CA), adresse américaine (Lemon Ave), couleurs hexadécimales du
+  générateur de QR, ligature « oe » (oeuvre, oeufs).
+- **Reste — fautes qu'aucun accent ne corrige (31 pages)** : `NicheLanding` « les grammages sont
+  maîtrisé » ×2, « Food cost viande grillé » (aussi dans la description `prerender.cjs` de
+  `/guide-marge/kebab-fast-food`), « main-d'oeuvre renforcé », « la carte mélanges »,
+  « Ingrédients péris vite » (périssables ?), « frigos/conges » (laissé sans accent : « congés »
+  serait un contresens), « glagons », « ingredientsune » et « preparationsreutilisant » (espaces
+  manquantes) ; `ComparatifRestauMarginZenchef` « secteurZenchef » (description SEOHead) ;
+  `FonctionnaliteMenuEngineering` « Savez quel plat retirer » (Sachez, aussi dans
+  `prerender.cjs`) ; `CGV` « dénude d'ambiguïté » (dénuée), « pannes généralises » ;
+  `PolitiqueConfidentialite` « la licite du traitement » ×3 (licéité).
+- **Reste — title/description divergents entre `SEOHead` et `prerender.cjs` (antérieur)** : 19
+  champs sur 14 routes ne disent pas la même chose côté Google et côté navigateur (ex.
+  `/glossaire-restauration` « 60+ définitions » contre « 50+ », `/demo`, `/launch`, 6
+  `/alternative-*`, les 2 `/comparatif-*`, `/outils/generateur-qr-menu`). Accents posés des deux
+  côtés ; le texte reste à unifier (une seule source).
+- **Reste — code** : `NicheLanding` affiche le slug comme texte (« Les enjeux spécifiques de votre
+  {slug} » donne « votre cafe coffee-shop », « votre creperie ») : prévoir un libellé accentué par
+  niche.
+- **Reste — garde-fou** : `check-content-accents.cjs` ne lit que `Blog*`/`Logiciel*` ; les 31 pages
+  ci-dessus le passent (mesuré le 04/11) : ajouter leurs noms à `PAGES_DE_CONTENU`.
 - **Garde-fou accents — FAIT le 2026-11-04** : `npm run content:check`
   (`client/scripts/check-content-accents.cjs`), aussi lancé par `npm run seo:check`. Lit le texte
   visible des pages `Blog*`/`Logiciel*` par l'AST TypeScript (slugs, ancres, classes, arguments

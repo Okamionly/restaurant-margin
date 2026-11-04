@@ -13,11 +13,11 @@ import PublicFooter from '../components/public/PublicFooter';
 const faqItems = [
   {
     question: 'Quel est le meilleur logiciel de marge restaurant en 2026 ?',
-    answer: "Le bon logiciel dépend de la taille de votre carte et de vos besoins. RestauMargin combine fiches techniques automatisées, scan de factures par OCR, alertes en temps réel, intelligence artificielle (19 actions IA) et menu engineering. Tarif : 29 EUR/mois avec essai gratuit 7 jours.",
+    answer: "Le bon logiciel dépend de la taille de votre carte et de vos besoins. RestauMargin combine fiches techniques automatisées, scan de factures par OCR, alertes en temps réel, intelligence artificielle (19 actions IA) et menu engineering. Tarif : 19 EUR/mois, offre unique avec toutes les fonctionnalités, essai gratuit 7 jours.",
   },
   {
     question: 'Combien coûte un logiciel de gestion de marge restaurant ?',
-    answer: "Les prix varient de 0 EUR (Excel manuel) à 200 EUR/mois (solutions enterprise comme Yokitup ou Datameal). RestauMargin se positionne à 29 EUR/mois en plan Pro et 79 EUR/mois en plan Business multi-restaurants. C'est entre 5 et 10 fois moins cher que les solutions enterprise pour un périmètre fonctionnel comparable.",
+    answer: "Les prix varient de 0 EUR (Excel manuel) à 200 EUR/mois (solutions enterprise comme Yokitup ou Datameal). RestauMargin se positionne à 19 EUR/mois, offre unique avec toutes les fonctionnalités, multi-restaurants compris. C'est environ 10 fois moins cher que les solutions enterprise pour un périmètre fonctionnel comparable.",
   },
   {
     question: "Faut-il un logiciel ou Excel suffit ?",
@@ -58,8 +58,8 @@ export default function LogicielMargeRestaurant() {
   return (
     <div className="min-h-screen bg-white">
       <SEOHead
-        title="Logiciel de calcul de marge restaurant | RestauMargin 29 EUR/mois"
-        description="Logiciel de calcul de marge restaurant 100 % automatique : food cost, fiches techniques, scan factures OCR, alertes IA, menu engineering. Calcule votre marge sans Excel. Essai gratuit 7 jours, 29 EUR/mois."
+        title="Logiciel de calcul de marge restaurant | RestauMargin 19 EUR/mois"
+        description="Logiciel de calcul de marge restaurant 100 % automatique : food cost, fiches techniques, scan factures OCR, alertes IA, menu engineering. Calcule votre marge sans Excel. Essai gratuit 7 jours, 19 EUR/mois."
         path="/logiciel-marge-restaurant"
         type="website"
         schema={[
@@ -90,24 +90,12 @@ export default function LogicielMargeRestaurant() {
             offers: [
               {
                 '@type': 'Offer',
-                name: 'Pro',
-                price: '29',
+                name: 'RestauMargin',
+                price: '19',
                 priceCurrency: 'EUR',
                 priceSpecification: {
                   '@type': 'UnitPriceSpecification',
-                  price: '29',
-                  priceCurrency: 'EUR',
-                  unitText: 'MONTH',
-                },
-              },
-              {
-                '@type': 'Offer',
-                name: 'Business',
-                price: '79',
-                priceCurrency: 'EUR',
-                priceSpecification: {
-                  '@type': 'UnitPriceSpecification',
-                  price: '79',
+                  price: '19',
                   priceCurrency: 'EUR',
                   unitText: 'MONTH',
                 },
@@ -207,7 +195,7 @@ export default function LogicielMargeRestaurant() {
                   { f: 'HACCP intégré', r: true, ra: false, y: false, e: false },
                   { f: 'Négociation IA fournisseurs', r: true, ra: false, y: false, e: false },
                   { f: 'Hébergement Europe (RGPD)', r: true, ra: true, y: true, e: 'local' },
-                  { f: 'Tarif (par mois)', r: '29 EUR', ra: '49 EUR', y: '99 EUR', e: '0 EUR' },
+                  { f: 'Tarif (par mois)', r: '19 EUR', ra: '49 EUR', y: '99 EUR', e: '0 EUR' },
                   { f: 'Engagement', r: 'Aucun', ra: '12 mois', y: '12 mois', e: 'N/A' },
                   { f: 'Essai gratuit', r: '7 jours', ra: '14 jours', y: 'Demo seulement', e: 'N/A' },
                 ].map((row, i) => (
@@ -431,22 +419,22 @@ export default function LogicielMargeRestaurant() {
             Tarifs simples, sans engagement
           </h2>
           <p className="text-lg text-mono-400 mb-12">
-            Choisissez le plan qui correspond à votre établissement. Résiliable à tout moment.
+            Une seule offre, toutes les fonctionnalités incluses. Résiliable à tout moment.
           </p>
 
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="max-w-md mx-auto">
             <div className="bg-white border-2 border-teal-600 rounded-2xl p-8 text-left relative shadow-lg shadow-teal-600/10">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-teal-600 text-white text-xs font-bold px-4 py-1 rounded-full">
-                RECOMMANDÉ
+                OFFRE UNIQUE
               </div>
-              <h3 className="font-extrabold text-mono-100 text-2xl mb-2">Pro</h3>
-              <p className="text-sm text-mono-400 mb-4">Pour un restaurant indépendant</p>
+              <h3 className="font-extrabold text-mono-100 text-2xl mb-2">RestauMargin</h3>
+              <p className="text-sm text-mono-400 mb-4">Toutes les fonctionnalités, sans engagement</p>
               <div className="mb-6">
-                <span className="text-5xl font-extrabold text-mono-100">29 EUR</span>
+                <span className="text-5xl font-extrabold text-mono-100">19 EUR</span>
                 <span className="text-mono-500">/mois</span>
               </div>
               <ul className="space-y-2 text-sm mb-8">
-                {['Fiches techniques illimitées', 'Scan de factures OCR', '19 actions IA', 'Menu engineering', 'Alertes temps réel', 'Support email <24h'].map((f, i) => (
+                {['Fiches techniques illimitées', 'Scan de factures OCR', '19 actions IA', 'Menu engineering', 'Alertes temps réel', 'Multi-restaurants', 'Support par e-mail'].map((f, i) => (
                   <li key={i} className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0" />{f}</li>
                 ))}
               </ul>
@@ -458,29 +446,10 @@ export default function LogicielMargeRestaurant() {
               </Link>
             </div>
 
-            <div className="bg-white border border-mono-900 rounded-2xl p-8 text-left">
-              <h3 className="font-extrabold text-mono-100 text-2xl mb-2">Business</h3>
-              <p className="text-sm text-mono-400 mb-4">Pour les groupes multi-restaurants</p>
-              <div className="mb-6">
-                <span className="text-5xl font-extrabold text-mono-100">79 EUR</span>
-                <span className="text-mono-500">/mois</span>
-              </div>
-              <ul className="space-y-2 text-sm mb-8">
-                {['Tout le plan Pro', 'Multi-restaurants illimités', 'Reporting consolidé', 'API & intégrations', 'Onboarding personnalisé', 'Support prioritaire <2h'].map((f, i) => (
-                  <li key={i} className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0" />{f}</li>
-                ))}
-              </ul>
-              <Link
-                to="/login?mode=register"
-                className="block text-center w-full py-3 bg-mono-100 hover:bg-[#333] text-white font-bold rounded-full transition-colors"
-              >
-                Essai gratuit 7 jours
-              </Link>
-            </div>
           </div>
 
           <p className="text-sm text-mono-500 mt-8">
-            Voir le <Link to="/pricing" className="text-teal-700 underline hover:text-teal-800">détail complet des plans</Link> et la grille tarifaire.
+            Voir le <Link to="/pricing" className="text-teal-700 underline hover:text-teal-800">détail de l'offre</Link> et la FAQ tarifs.
           </p>
         </div>
       </section>
@@ -597,7 +566,7 @@ export default function LogicielMargeRestaurant() {
             <Link to="/pricing" className="bg-mono-1000 border border-mono-900 rounded-2xl p-6 hover:border-teal-300 hover:shadow-sm transition-all group">
               <Target className="w-8 h-8 text-teal-600 mb-3" />
               <h3 className="font-bold text-mono-100 mb-2 group-hover:text-teal-700 transition-colors">Tarifs RestauMargin</h3>
-              <p className="text-sm text-mono-500">Détail des plans Pro et Business. Voir l'essai gratuit 7 jours.</p>
+              <p className="text-sm text-mono-500">19 EUR/mois, toutes les fonctionnalités. Voir l'essai gratuit 7 jours.</p>
             </Link>
           </div>
         </div>

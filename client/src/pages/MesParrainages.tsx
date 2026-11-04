@@ -99,7 +99,7 @@ export default function MesParrainages() {
           Parrainez vos pairs, gagnez ensemble
         </h1>
         <p className="text-mono-500 dark:text-mono-700">
-          Pour chaque restaurateur que vous parrainez, vous gagnez <strong className="text-teal-600">1 mois Pro gratuit</strong> et il reçoit <strong className="text-teal-600">20% de réduction</strong> sur son premier mois.
+          Pour chaque restaurateur que vous parrainez, vous gagnez <strong className="text-teal-600">1 mois d'abonnement offert</strong> et il reçoit <strong className="text-teal-600">20% de réduction</strong> sur son premier mois.
         </p>
       </div>
 
@@ -196,7 +196,7 @@ export default function MesParrainages() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <Step number={1} title="Partagez votre lien" text="Envoyez votre code ou lien par email, WhatsApp ou SMS à vos pairs restaurateurs." />
           <Step number={2} title="Ils s'inscrivent" text="Vos filleuls reçoivent automatiquement 20% de réduction sur leur premier mois." />
-          <Step number={3} title="Vous gagnez" text="Quand ils passent en Pro ou Business, vous recevez 1 mois gratuit." />
+          <Step number={3} title="Vous gagnez" text="Quand ils s'abonnent, vous recevez 1 mois gratuit." />
         </div>
       </div>
 

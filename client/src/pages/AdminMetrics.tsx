@@ -76,7 +76,7 @@ export default function AdminMetrics() {
   // Computed business metrics (estimations)
   const paidUsers = stats.activeSubscriptions;
   const conversionRate = stats.totalUsers > 0 ? (paidUsers / stats.totalUsers) * 100 : 0;
-  const estimatedMRR = paidUsers * 29; // Assume average 29€ (mix of Pro/Business)
+  const estimatedMRR = paidUsers * 19; // Offre unique 19 €/mois depuis le 2026-11-04
   const trialsExpiringSoon = stats.recentSignups.filter((u) => {
     if (u.plan !== 'basic') return false;
     return true; // Backend would filter properly, here we show all basic recents

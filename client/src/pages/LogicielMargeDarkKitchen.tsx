@@ -78,7 +78,7 @@ const faqItems = [
   {
     question: "Comment RestauMargin aide une dark kitchen spécifiquement ?",
     answer:
-      "RestauMargin propose 4 fonctionnalités clés pour les dark kitchens : (1) Multi-marques sous un même compte cuisine, (2) Tracking commissions par plateforme avec calcul de la marge nette effective, (3) Intégration du coût packaging dans chaque fiche technique, (4) Comparatif rentabilité par canal de vente (Uber / Deliveroo / Just Eat / Click & Collect propre). Tarif Pro à 29 EUR/mois, essai gratuit 7 jours.",
+      "RestauMargin propose 4 fonctionnalités clés pour les dark kitchens : (1) Multi-marques sous un même compte cuisine, (2) Tracking commissions par plateforme avec calcul de la marge nette effective, (3) Intégration du coût packaging dans chaque fiche technique, (4) Comparatif rentabilité par canal de vente (Uber / Deliveroo / Just Eat / Click & Collect propre). Tarif : 19 EUR/mois, toutes fonctionnalités incluses, essai gratuit 7 jours.",
   },
 ];
 
@@ -137,12 +137,12 @@ export default function LogicielMargeDarkKitchen() {
             ],
             offers: {
               '@type': 'Offer',
-              name: 'Pro',
-              price: '29',
+              name: 'RestauMargin',
+              price: '19',
               priceCurrency: 'EUR',
               priceSpecification: {
                 '@type': 'UnitPriceSpecification',
-                price: '29',
+                price: '19',
                 priceCurrency: 'EUR',
                 unitText: 'MONTH',
               },

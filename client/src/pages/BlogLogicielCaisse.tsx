@@ -98,13 +98,11 @@ const productSchema = {
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'EUR',
-    lowPrice: '0',
-    highPrice: '49',
-    offerCount: '3',
+    lowPrice: '19',
+    highPrice: '19',
+    offerCount: '1',
     offers: [
-      { '@type': 'Offer', name: 'Gratuit', price: '0', priceCurrency: 'EUR' },
-      { '@type': 'Offer', name: 'Starter', price: '19', priceCurrency: 'EUR' },
-      { '@type': 'Offer', name: 'Pro', price: '49', priceCurrency: 'EUR' },
+      { '@type': 'Offer', name: 'RestauMargin', price: '19', priceCurrency: 'EUR' },
     ],
   },
 
@@ -621,7 +619,7 @@ export default function BlogLogicielCaisse() {
           <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 sm:p-10 text-center text-white shadow-xl">
             <h2 className="text-2xl sm:text-3xl font-bold mb-3">Vos données de caisse méritent un outil qui les transforme en marge</h2>
             <p className="text-teal-100 mb-6 text-base leading-relaxed max-w-2xl mx-auto">
-              RestauMargin s intègre avec votre logiciel de caisse pour calculer automatiquement food cost, marge brute par plat et alertes en temps réel. Essai gratuit 7 jours, puis 29 € par mois sans engagement.
+              RestauMargin s intègre avec votre logiciel de caisse pour calculer automatiquement food cost, marge brute par plat et alertes en temps réel. Essai gratuit 7 jours, puis 19 € par mois sans engagement.
             </p>
             <Link
               to="/login"

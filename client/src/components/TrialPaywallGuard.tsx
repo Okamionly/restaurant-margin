@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Lock, Crown, CreditCard, ChefHat, TrendingUp, Sparkles, Handshake, Building2 } from 'lucide-react';
+import { Lock, Crown, CreditCard, TrendingUp, Sparkles, Handshake, Building2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 interface TrialPaywallGuardProps {
@@ -19,14 +19,13 @@ const FEATURE_ICONS: Record<string, React.ComponentType<any>> = {
 };
 
 const PRO_FEATURES = [
-  'Ingredients & fiches techniques illimites',
+  'Ingrédients et fiches techniques illimités',
   'Tableau de bord complet',
   'Commandes fournisseurs',
-  'Assistant IA (illimite)',
-  'Intelligence financiere',
-  'Negociation IA',
+  'Assistant IA (500 requêtes par mois)',
+  'Intelligence financière',
+  'Négociation IA',
   'Multi-restaurant',
-  'Support prioritaire',
 ];
 
 /**
@@ -76,10 +75,10 @@ export default function TrialPaywallGuard({ feature, children, queryLimit, curre
             </div>
             <div>
               <h2 className="text-lg font-bold text-mono-100 dark:text-white">
-                Fonctionnalite reservee aux abonnes Pro
+                Fonctionnalité réservée aux abonnés
               </h2>
               <p className="text-sm text-mono-500 dark:text-mono-700 mt-0.5">
-                <span className="text-red-400 font-medium">{feature}</span> n'est plus disponible — votre essai est termine
+                <span className="text-red-400 font-medium">{feature}</span> n'est plus disponible — votre essai est terminé
               </p>
             </div>
           </div>
@@ -94,27 +93,17 @@ export default function TrialPaywallGuard({ feature, children, queryLimit, curre
             </div>
           </div>
 
-          {/* Pricing cards */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
-            <div className="rounded-xl border border-mono-900 dark:border-mono-200 p-4 text-center">
-              <p className="text-sm font-bold text-mono-100 dark:text-white">Pro</p>
-              <p className="text-2xl font-bold text-teal-500 mt-1">29<span className="text-sm font-normal text-mono-500">/mois</span></p>
-              <p className="text-xs text-mono-500 mt-1">1 restaurant</p>
-            </div>
-            <div className="rounded-xl border-2 border-teal-500/40 bg-teal-50/50 dark:bg-teal-900/10 p-4 text-center relative">
-              <span className="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-teal-500 text-[10px] font-bold text-white uppercase tracking-wider">
-                Populaire
-              </span>
-              <p className="text-sm font-bold text-mono-100 dark:text-white mt-1">Business</p>
-              <p className="text-2xl font-bold text-teal-500 mt-1">79<span className="text-sm font-normal text-teal-400/70">/mois</span></p>
-              <p className="text-xs text-mono-500 mt-1">Multi-sites</p>
-            </div>
+          {/* Offre unique */}
+          <div className="rounded-xl border-2 border-teal-500/40 bg-teal-50/50 dark:bg-teal-900/10 p-4 text-center mb-6">
+            <p className="text-sm font-bold text-mono-100 dark:text-white">RestauMargin</p>
+            <p className="text-2xl font-bold text-teal-500 mt-1">19 €<span className="text-sm font-normal text-mono-500"> par mois</span></p>
+            <p className="text-xs text-mono-500 mt-1">Toutes les fonctionnalités, sans engagement</p>
           </div>
 
           {/* Features list */}
           <div className="mb-6">
             <p className="text-xs font-semibold uppercase tracking-wider text-mono-500 mb-3">
-              Inclus dans l'abonnement Pro
+              Inclus dans l'abonnement RestauMargin
             </p>
             <div className="grid grid-cols-1 gap-1.5">
               {PRO_FEATURES.map((f) => (
@@ -132,10 +121,10 @@ export default function TrialPaywallGuard({ feature, children, queryLimit, curre
             className="w-full py-3.5 px-6 rounded-xl bg-teal-500 hover:bg-teal-400 text-white font-bold text-base transition-colors shadow-lg shadow-teal-500/20 flex items-center justify-center gap-2"
           >
             <CreditCard className="w-5 h-5" />
-            Passer au Pro — 29/mois
+            S'abonner — 19 € par mois
           </button>
           <p className="text-center text-xs text-mono-500 mt-3">
-            Vos donnees sont conservees 30 jours. Passez au Pro pour les retrouver.
+            Vos données sont conservées 30 jours. Abonnez-vous pour les retrouver.
           </p>
         </div>
       </div>

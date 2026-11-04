@@ -149,7 +149,7 @@ Toute formulation qui laisse entendre une adoption large est fausse.
 ### Ce qu'on écrit à la place
 
 Uniquement des faits vérifiables en un clic : essai 7 jours sans carte bancaire,
-sans engagement, tarif 29 €/mois, fiches techniques illimitées, périmètre
+sans engagement, tarif unique 19 €/mois (une seule offre, toutes les fonctionnalités), fiches techniques illimitées, périmètre
 fonctionnel réel. « Outil récent » est une formulation acceptable et honnête —
 elle se défend mieux qu'un chiffre inventé.
 

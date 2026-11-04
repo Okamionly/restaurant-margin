@@ -85,7 +85,7 @@ const faqItems = [
   {
     question: 'RestauMargin est-il adapté à un bistrot indépendant ?',
     answer:
-      "Oui, c\'est même notre coeur de cible. RestauMargin a été conçu pour les bistrots et brasseries indépendants (1 à 3 établissements). Le plan Pro à 29 EUR/mois couvre tous les besoins : fiches techniques illimitées, scan factures, alertes prix, menu engineering, gestion de la carte des vins. Essai gratuit 7 jours sans carte bancaire.",
+      "Oui, c\'est même notre coeur de cible. RestauMargin a été conçu pour les bistrots et brasseries indépendants (1 à 3 établissements). L'abonnement RestauMargin à 19 EUR/mois couvre tous les besoins : fiches techniques illimitées, scan factures, alertes prix, menu engineering, gestion de la carte des vins. Essai gratuit 7 jours sans carte bancaire.",
   },
 ];
 
@@ -162,12 +162,12 @@ export default function LogicielMargeBistrot() {
             offers: [
               {
                 '@type': 'Offer',
-                name: 'Pro',
-                price: '29',
+                name: 'RestauMargin',
+                price: '19',
                 priceCurrency: 'EUR',
                 priceSpecification: {
                   '@type': 'UnitPriceSpecification',
-                  price: '29',
+                  price: '19',
                   priceCurrency: 'EUR',
                   unitText: 'MONTH',
                 },
@@ -899,7 +899,7 @@ export default function LogicielMargeBistrot() {
             <Link to="/login?mode=register" className="bg-teal-600 text-white border border-teal-700 rounded-2xl p-6 hover:bg-teal-700 transition-all group">
               <Sparkles className="w-8 h-8 text-teal-100 mb-3" />
               <h3 className="font-bold mb-2">Essayer gratuitement</h3>
-              <p className="text-sm text-teal-100">7 jours d'essai sans carte bancaire. Tout RestauMargin Pro inclus.</p>
+              <p className="text-sm text-teal-100">7 jours d'essai sans carte bancaire. Toutes les fonctionnalités incluses.</p>
             </Link>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-import { X, Check, Lock, Crown, Zap, Building2, Mic, BarChart3, ShieldCheck, Headphones } from 'lucide-react';
+import { X, Check, Lock } from 'lucide-react';
 
 interface PaywallModalProps {
   feature: string;
@@ -7,26 +7,13 @@ interface PaywallModalProps {
   onUpgrade: () => void;
 }
 
-const businessAdvantages = [
-  { icon: Building2, label: 'Multi-restaurant illimite' },
-  { icon: Mic, label: 'Commande vocale IA' },
-  { icon: BarChart3, label: 'Mercuriale avancee + alertes prix' },
-  { icon: Zap, label: 'Automatisations & workflows' },
-  { icon: ShieldCheck, label: 'HACCP complet + audit trail' },
-  { icon: Headphones, label: 'Support prioritaire 24/7' },
-];
-
 const planFeatures = [
-  { name: 'Ingredients & recettes', pro: true, business: true },
-  { name: 'Fiches techniques', pro: true, business: true },
-  { name: 'Tableau de bord', pro: true, business: true },
-  { name: 'Commandes fournisseurs', pro: true, business: true },
-  { name: 'Multi-restaurant', pro: false, business: true },
-  { name: 'Commande vocale IA', pro: false, business: true },
-  { name: 'Mercuriale avancee', pro: false, business: true },
-  { name: 'Automatisations', pro: false, business: true },
-  { name: 'HACCP complet', pro: false, business: true },
-  { name: 'Support prioritaire', pro: false, business: true },
+  'Ingrédients et fiches techniques illimités',
+  'Tableau de bord et suivi des marges',
+  'Commandes fournisseurs',
+  'Mercuriale et alertes de prix',
+  'Multi-restaurant',
+  'Assistant IA (500 requêtes par mois)',
 ];
 
 export default function PaywallModal({ feature, onClose, onUpgrade }: PaywallModalProps) {
@@ -58,7 +45,7 @@ export default function PaywallModal({ feature, onClose, onUpgrade }: PaywallMod
 
       {/* Card */}
       <div
-        className="relative bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-300/80 rounded-2xl shadow-2xl w-full max-w-3xl animate-modal-in overflow-hidden"
+        className="relative bg-white dark:bg-mono-50 border border-mono-900 dark:border-mono-300/80 rounded-2xl shadow-2xl w-full max-w-lg animate-modal-in overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -69,10 +56,10 @@ export default function PaywallModal({ feature, onClose, onUpgrade }: PaywallMod
             </div>
             <div>
               <h3 className="text-lg font-bold text-mono-100 dark:text-white">
-                Fonctionnalite Business requise
+                Abonnement RestauMargin requis
               </h3>
               <p className="text-sm text-mono-700 mt-0.5">
-                <span className="text-amber-400 font-medium">{feature}</span> n'est pas disponible dans votre plan Pro
+                <span className="text-amber-400 font-medium">{feature}</span> est inclus dans l'abonnement RestauMargin
               </p>
             </div>
           </div>
@@ -85,90 +72,19 @@ export default function PaywallModal({ feature, onClose, onUpgrade }: PaywallMod
           </button>
         </div>
 
-        {/* Comparison */}
+        {/* Offre unique */}
         <div className="p-6">
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            {/* Pro column */}
-            <div className="rounded-xl border border-mono-900 dark:border-mono-300/60 bg-mono-975 dark:bg-mono-300/50 p-4">
-              <div className="text-center mb-4">
-                <span className="text-xs font-semibold uppercase tracking-wider text-mono-500">Votre plan</span>
-                <h4 className="text-xl font-bold text-mono-100 dark:text-white mt-1">Pro</h4>
-                <p className="text-2xl font-bold text-mono-700 mt-1">29<span className="text-sm font-normal">/mois</span></p>
-              </div>
-              <div className="space-y-2.5">
-                {planFeatures.map((f) => (
-                  <div key={f.name} className="flex items-center gap-2.5">
-                    {f.pro ? (
-                      <Check className="w-4 h-4 text-mono-500 flex-shrink-0" />
-                    ) : (
-                      <Lock className="w-4 h-4 text-red-400/60 flex-shrink-0" />
-                    )}
-                    <span
-                      className={`text-sm ${
-                        f.pro
-                          ? 'text-mono-700'
-                          : f.name === feature
-                            ? 'text-red-400 font-medium line-through'
-                            : 'text-mono-400 line-through'
-                      }`}
-                    >
-                      {f.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
+          <div className="rounded-xl border-2 border-teal-500/40 bg-gradient-to-b from-teal-100 dark:from-teal-900/20 to-mono-975 dark:to-mono-300/50 p-4 mb-6">
+            <div className="text-center mb-4">
+              <h4 className="text-xl font-bold text-mono-100 dark:text-white">RestauMargin</h4>
+              <p className="text-2xl font-bold text-teal-400 mt-1">19 €<span className="text-sm font-normal text-teal-400/70"> par mois</span></p>
+              <p className="text-xs text-mono-500 mt-1">Toutes les fonctionnalités, sans engagement</p>
             </div>
-
-            {/* Business column */}
-            <div className="rounded-xl border-2 border-teal-500/40 bg-gradient-to-b from-teal-100 dark:from-teal-900/20 to-mono-975 dark:to-mono-300/50 p-4 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="px-3 py-1 rounded-full bg-teal-500 text-xs font-bold text-white uppercase tracking-wider">
-                  Recommande
-                </span>
-              </div>
-              <div className="text-center mb-4 mt-1">
-                <div className="flex items-center justify-center gap-1.5">
-                  <Crown className="w-4 h-4 text-amber-400" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-teal-400">Upgrade</span>
-                </div>
-                <h4 className="text-xl font-bold text-mono-100 dark:text-white mt-1">Business</h4>
-                <p className="text-2xl font-bold text-teal-400 mt-1">79<span className="text-sm font-normal text-teal-400/70">/mois</span></p>
-              </div>
-              <div className="space-y-2.5">
-                {planFeatures.map((f) => (
-                  <div key={f.name} className="flex items-center gap-2.5">
-                    <Check
-                      className={`w-4 h-4 flex-shrink-0 ${
-                        f.business && !f.pro ? 'text-teal-400' : 'text-mono-500'
-                      }`}
-                    />
-                    <span
-                      className={`text-sm ${
-                        f.business && !f.pro
-                          ? f.name === feature
-                            ? 'text-teal-300 font-semibold'
-                            : 'text-teal-400 font-medium'
-                          : 'text-mono-700'
-                      }`}
-                    >
-                      {f.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Business advantages */}
-          <div className="bg-mono-300/40 rounded-xl p-4 mb-6 border border-mono-300/40">
-            <p className="text-xs font-semibold uppercase tracking-wider text-mono-500 mb-3">
-              Tout ce que Business inclut en plus
-            </p>
-            <div className="grid grid-cols-2 gap-2.5">
-              {businessAdvantages.map((adv) => (
-                <div key={adv.label} className="flex items-center gap-2.5">
-                  <adv.icon className="w-4 h-4 text-teal-400 flex-shrink-0" />
-                  <span className="text-sm text-mono-800">{adv.label}</span>
+            <div className="space-y-2.5">
+              {planFeatures.map((f) => (
+                <div key={f} className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                  <span className="text-sm text-mono-700">{f}</span>
                 </div>
               ))}
             </div>
@@ -180,13 +96,13 @@ export default function PaywallModal({ feature, onClose, onUpgrade }: PaywallMod
               onClick={onUpgrade}
               className="w-full py-3.5 px-6 rounded-xl bg-teal-500 hover:bg-teal-400 text-white font-bold text-base transition-colors shadow-lg shadow-teal-500/20"
             >
-              Passer a Business — 79/mois
+              S'abonner — 19 € par mois
             </button>
             <button
               onClick={onClose}
               className="text-sm text-mono-500 hover:text-mono-800 transition-colors py-1"
             >
-              Rester en Pro
+              Plus tard
             </button>
           </div>
         </div>

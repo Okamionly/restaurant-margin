@@ -85,7 +85,7 @@ const faqItems = [
   {
     question: 'RestauMargin est-il adapté à un bar de quartier indépendant ?',
     answer:
-      "Oui parfaitement. RestauMargin est conçu pour les bars, cafés et coffee shops indépendants. Le plan Pro à 29 EUR/mois inclut : fiches techniques cocktails illimitées, scan factures fournisseurs (Pernod Ricard, Diageo, brasseurs locaux), suivi des pertes bière/spiritueux, gestion carte des vins au verre, alertes prix matières, KPI ticket moyen et rotations. Essai gratuit 7 jours sans carte bancaire. Modèles cocktails et planches inclus.",
+      "Oui parfaitement. RestauMargin est conçu pour les bars, cafés et coffee shops indépendants. L'abonnement RestauMargin à 19 EUR/mois inclut : fiches techniques cocktails illimitées, scan factures fournisseurs (Pernod Ricard, Diageo, brasseurs locaux), suivi des pertes bière/spiritueux, gestion carte des vins au verre, alertes prix matières, KPI ticket moyen et rotations. Essai gratuit 7 jours sans carte bancaire. Modèles cocktails et planches inclus.",
   },
 ];
 
@@ -167,12 +167,12 @@ export default function LogicielMargeCafeBar() {
             offers: [
               {
                 '@type': 'Offer',
-                name: 'Pro',
-                price: '29',
+                name: 'RestauMargin',
+                price: '19',
                 priceCurrency: 'EUR',
                 priceSpecification: {
                   '@type': 'UnitPriceSpecification',
-                  price: '29',
+                  price: '19',
                   priceCurrency: 'EUR',
                   unitText: 'MONTH',
                 },
@@ -952,7 +952,7 @@ export default function LogicielMargeCafeBar() {
             <Link to="/login?mode=register" className="bg-teal-600 text-white border border-teal-700 rounded-2xl p-6 hover:bg-teal-700 transition-all group">
               <Sparkles className="w-8 h-8 text-teal-100 mb-3" />
               <h3 className="font-bold mb-2">Essayer gratuitement</h3>
-              <p className="text-sm text-teal-100">7 jours d'essai sans carte bancaire. Tout RestauMargin Pro inclus.</p>
+              <p className="text-sm text-teal-100">7 jours d'essai sans carte bancaire. Toutes les fonctionnalités incluses.</p>
             </Link>
           </div>
         </div>

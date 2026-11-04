@@ -148,7 +148,7 @@ export default function LogicielMargeBoulangerie() {
               'Logiciel de calcul de marge dédié aux boulangeries et pâtisseries. Gestion des rendements farine, coût four, main-d\'oeuvre de nuit, invendus.',
             offers: {
               '@type': 'Offer',
-              price: '29',
+              price: '19',
               priceCurrency: 'EUR',
               priceValidUntil: '2026-12-31',
             },
@@ -894,7 +894,7 @@ export default function LogicielMargeBoulangerie() {
               majoration nuit dans le calcul de marge boulangerie pâtisserie.
             </p>
             <p className="text-amber-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> — essai gratuit 7 jours, sans engagement, sans carte bancaire.
+              <strong>19 EUR/mois</strong> — essai gratuit 7 jours, sans engagement, sans carte bancaire.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

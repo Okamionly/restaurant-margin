@@ -886,7 +886,7 @@ export default function BlogInventaire() {
                 </tr>
               </thead>
               <tbody className="text-mono-350">
-                <tr className="bg-emerald-50"><td className="py-3 px-4 font-bold text-emerald-900">RestauMargin</td><td className="py-3 px-4 text-center">29 EUR/mois</td><td className="py-3 px-4 text-xs">Focus marges + stocks + scan factures OCR, IA intégrée</td></tr>
+                <tr className="bg-emerald-50"><td className="py-3 px-4 font-bold text-emerald-900">RestauMargin</td><td className="py-3 px-4 text-center">19 EUR/mois</td><td className="py-3 px-4 text-xs">Focus marges + stocks + scan factures OCR, IA intégrée</td></tr>
                 <tr className="bg-white"><td className="py-3 px-4 font-bold">Easilys</td><td className="py-3 px-4 text-center">80 EUR/mois</td><td className="py-3 px-4 text-xs">Multi-sites, robuste, orienté cuisines centrales</td></tr>
                 <tr className="bg-mono-1000"><td className="py-3 px-4 font-bold">Foodmeup</td><td className="py-3 px-4 text-center">50 EUR/mois</td><td className="py-3 px-4 text-xs">Pâtisseries et fiches techniques complexes</td></tr>
                 <tr className="bg-white"><td className="py-3 px-4 font-bold">Tablo</td><td className="py-3 px-4 text-center">39 EUR/mois</td><td className="py-3 px-4 text-xs">Bistrots et brasseries, interface simple</td></tr>
@@ -1029,7 +1029,7 @@ export default function BlogInventaire() {
               Inventaire digital sur tablette, scan code-barres, calcul automatique de l'écart et du food cost réel, alertes en cas de dérive. Le copilote qui détecte les 2 000 EUR que vous perdez chaque mois sans le savoir.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
+              <strong>19 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

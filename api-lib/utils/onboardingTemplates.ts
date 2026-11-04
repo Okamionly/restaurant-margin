@@ -198,45 +198,16 @@ ${header('RestauMargin', 'Vous êtes à mi-essai')}
   <p style="font-size:15px;color:${MUTED};margin:14px 0 0;line-height:1.7;">
     Il vous reste <strong style="color:${DARK};">7 jours</strong> sur votre essai gratuit.
   </p>
-  <p style="font-size:15px;color:${MUTED};margin:12px 0 0;line-height:1.7;">
-    Voici ce que d&eacute;tectent en moyenne nos utilisateurs &agrave; ce stade :
-  </p>
 </td></tr>
 
 <tr><td style="padding:0 25px 20px;">
-  <table width="100%" cellspacing="0" cellpadding="0" style="background:#f0fdfa;border:1px solid #99f6e4;border-radius:10px;">
-    <tr><td style="padding:24px;">
-      <table width="100%" cellspacing="0" cellpadding="0">
-        <tr>
-          <td style="text-align:center;padding:0 8px;">
-            <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:0;">7%</p>
-            <p style="color:${MUTED};font-size:11px;margin:4px 0 0;">Food cost moyen baisse en 30 jours</p>
-          </td>
-          <td style="text-align:center;padding:0 8px;border-left:1px solid #99f6e4;">
-            <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:0;">~3K&euro;</p>
-            <p style="color:${MUTED};font-size:11px;margin:4px 0 0;">Marge mensuelle r&eacute;cup&eacute;r&eacute;e</p>
-          </td>
-          <td style="text-align:center;padding:0 8px;border-left:1px solid #99f6e4;">
-            <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:0;">35h</p>
-            <p style="color:${MUTED};font-size:11px;margin:4px 0 0;">Temps gagn&eacute; / mois</p>
-          </td>
-        </tr>
-      </table>
-    </td></tr>
-  </table>
-  <p style="color:${MUTED};font-size:11px;margin:8px 0 0;text-align:center;font-style:italic;">
-    Source : moyenne 150+ restaurants utilisant RestauMargin Pro depuis 90j+
-  </p>
-</td></tr>
-
-<tr><td style="padding:0 25px 20px;">
-  <p style="color:${DARK};font-size:14px;font-weight:700;margin:0 0 12px;">Pour activer votre plan apr&egrave;s l'essai :</p>
+  <p style="color:${DARK};font-size:14px;font-weight:700;margin:0 0 12px;">Pour continuer apr&egrave;s l'essai :</p>
   <table width="100%" cellspacing="0" cellpadding="0" style="background:${BG_LIGHT};border-radius:10px;border:1px solid ${BORDER};">
     <tr><td style="padding:18px 20px;">
-      <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 4px;">Pro &mdash; <span style="color:${TEAL};">49&euro;/mois</span></p>
+      <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 4px;">RestauMargin &mdash; <span style="color:${TEAL};">19&nbsp;&euro; par mois</span>, sans engagement</p>
       <p style="color:${MUTED};font-size:12px;margin:0;line-height:1.6;">
         Fiches illimit&eacute;es, IA recettes (chat + vocal), commandes fournisseurs email/WhatsApp,
-        OCR factures, mercuriale, balance Bluetooth, HACCP digital, support 7j/7.
+        lecture des factures par IA, mercuriale, balance Bluetooth, HACCP num&eacute;rique, support par e-mail. Toutes les fonctionnalit&eacute;s, une seule offre.
       </p>
     </td></tr>
   </table>

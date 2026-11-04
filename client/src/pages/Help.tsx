@@ -201,7 +201,7 @@ const ARTICLES: Article[] = [
       'Accédez à **Mon abonnement** depuis la sidebar bas.',
       'Le bouton **Gérer via Stripe** ouvre le portail Stripe sécurisé.',
       'Depuis Stripe, vous pouvez : mettre à jour la CB, télécharger les factures, résilier.',
-      "Pour passer du plan Pro au plan Business, cliquez **Mettre à niveau** — l'upgrade est immédiat et la différence est calculée au prorata.",
+      "Une seule offre : 19 € par mois, toutes les fonctionnalités incluses, sans engagement. La résiliation prend effet à la fin du mois en cours.",
       "En cas de problème de paiement, vous recevez un email automatique avec un lien pour régulariser.",
     ],
   },

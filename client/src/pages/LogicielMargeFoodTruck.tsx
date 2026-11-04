@@ -63,7 +63,7 @@ const faqItems = [
   {
     question: "Combien coûte le logiciel pour un food truck indépendant ?",
     answer:
-      "RestauMargin Pro coûte 29 EUR/mois pour un food truck indépendant : illimité en plats, emplacements, fiches techniques et scans de factures. Essai gratuit 7 jours sans carte bancaire.",
+      "RestauMargin coûte 19 EUR/mois pour un food truck indépendant : illimité en plats, emplacements, fiches techniques et scans de factures. Essai gratuit 7 jours sans carte bancaire.",
   },
   {
     question: "Le logiciel fonctionne-t-il dans le camion sans Wi-Fi ?",
@@ -173,12 +173,12 @@ export default function LogicielMargeFoodTruck() {
             offers: [
               {
                 '@type': 'Offer',
-                name: 'Pro',
-                price: '29',
+                name: 'RestauMargin',
+                price: '19',
                 priceCurrency: 'EUR',
                 priceSpecification: {
                   '@type': 'UnitPriceSpecification',
-                  price: '29',
+                  price: '19',
                   priceCurrency: 'EUR',
                   unitText: 'MONTH',
                 },

@@ -109,11 +109,11 @@ export default function LogicielMargeSushi() {
             ],
             offers: {
               '@type': 'Offer',
-              price: '29',
+              price: '19',
               priceCurrency: 'EUR',
               priceSpecification: {
                 '@type': 'UnitPriceSpecification',
-                price: '29',
+                price: '19',
                 priceCurrency: 'EUR',
                 unitText: 'MONTH',
               },
@@ -963,7 +963,7 @@ export default function LogicielMargeSushi() {
               tout ce qu'il faut pour garder une marge nette supérieure à 15 %.
             </p>
             <p className="text-rose-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
+              <strong>19 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

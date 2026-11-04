@@ -81,7 +81,7 @@ const faqItems = [
   {
     question: "Combien coûte un logiciel pour restaurant gastronomique ?",
     answer:
-      "Les solutions enterprise dédiées au luxe (Yokitup, Datameal, Apicbase) tournent entre 100 et 400 EUR/mois. RestauMargin propose le plan Business multi-services et cave premium à 79 EUR/mois, soit 3 à 5 fois moins cher pour un périmètre fonctionnel comparable. Essai gratuit 7 jours sans carte bancaire.",
+      "Les solutions enterprise dédiées au luxe (Yokitup, Datameal, Apicbase) tournent entre 100 et 400 EUR/mois. RestauMargin propose une offre unique à 19 EUR/mois, multi-services et cave premium incluses, soit 5 à 20 fois moins cher pour un périmètre fonctionnel comparable. Essai gratuit 7 jours sans carte bancaire.",
   },
   {
     question: "Comment intégrer le travail des produits nobles (découpes, parures) ?",
@@ -169,12 +169,12 @@ export default function LogicielMargeGastronomique() {
             ],
             offers: {
               '@type': 'Offer',
-              name: 'Business',
-              price: '79',
+              name: 'RestauMargin',
+              price: '19',
               priceCurrency: 'EUR',
               priceSpecification: {
                 '@type': 'UnitPriceSpecification',
-                price: '79',
+                price: '19',
                 priceCurrency: 'EUR',
                 unitText: 'MONTH',
               },

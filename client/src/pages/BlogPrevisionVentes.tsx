@@ -621,7 +621,7 @@ export default function BlogPrevisionVentes() {
                 },
                 {
                   name: 'RestauMargin',
-                  price: '29 EUR/mois',
+                  price: '19 EUR/mois',
                   pros: 'Forecast intégré + commandes + marges, alertes écarts, mix-vente auto, météo intégrée, IA Claude.',
                   cons: 'Pas (encore) de ML avancé type Prophet. Roadmap Q4 2026 : module forecast IA.',
                   ideal: 'Indépendants 500 K - 2 M EUR de CA cherchant l\'all-in-one.',

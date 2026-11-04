@@ -81,7 +81,7 @@ const faqItems = [
   {
     question: 'Quel logiciel pour calculer la marge d\'un glacier ou salon de thé ?',
     answer:
-      "RestauMargin est spécialisé dans le calcul de marge pour glaciers et salons de thé : gestion des recettes glace (crème, lait, sucre, stabilisateurs), calcul du coût froid -18°C par produit, suivi de la saisonnalité avec budget prévisionnel mai-septembre, intégration des sides salon de thé (café, thé, pâtisseries), alertes sur invendus de fin de saison. Essai gratuit 7 jours sans CB. 29 EUR/mois.",
+      "RestauMargin est spécialisé dans le calcul de marge pour glaciers et salons de thé : gestion des recettes glace (crème, lait, sucre, stabilisateurs), calcul du coût froid -18°C par produit, suivi de la saisonnalité avec budget prévisionnel mai-septembre, intégration des sides salon de thé (café, thé, pâtisseries), alertes sur invendus de fin de saison. Essai gratuit 7 jours sans CB. 19 EUR/mois.",
   },
   {
     question: 'Comment passer de 12 % à 28 % de marge nette en glacerie ?',
@@ -148,7 +148,7 @@ export default function LogicielMargeGlacier() {
               'Logiciel de calcul de marge dédié aux glaciers et salons de thé. Gestion des recettes glace, coût froid -18C, saisonnalité, sides café thé pâtisseries.',
             offers: {
               '@type': 'Offer',
-              price: '29',
+              price: '19',
               priceCurrency: 'EUR',
               priceValidUntil: '2026-12-31',
             },
@@ -946,7 +946,7 @@ export default function LogicielMargeGlacier() {
               saisonnalité dans le calcul de marge glacier salon de thé.
             </p>
             <p className="text-pink-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> — essai gratuit 7 jours, sans engagement, sans carte bancaire.
+              <strong>19 EUR/mois</strong> — essai gratuit 7 jours, sans engagement, sans carte bancaire.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

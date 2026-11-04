@@ -1380,9 +1380,6 @@ export default function Restaurants() {
         <div>
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-bold text-mono-100 dark:text-white font-satoshi">Hub Multi-Restaurants</h2>
-            <span className="px-2.5 py-1 rounded-full bg-mono-100 dark:bg-white text-white dark:text-mono-100 text-[10px] font-bold uppercase tracking-wider">
-              Business
-            </span>
           </div>
           <p className="text-sm text-[#6B7280] dark:text-mono-500 mt-1">
             {hasMultiple

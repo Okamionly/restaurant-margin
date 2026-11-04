@@ -761,7 +761,7 @@ export default function BlogFifoLifo() {
               RestauMargin vous aide à appliquer le FIFO efficacement : alertes DLC, suggestion de plats du jour, food cost réel par plat et identification automatique des pertes avant qu'elles impactent votre résultat.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
+              <strong>19 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

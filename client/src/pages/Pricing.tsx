@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
-  Check, X, ChefHat, Sparkles, Building2, HelpCircle, ChevronDown, ChevronUp,
-  ArrowRight, CheckCircle2, Loader2, Eye, ShieldCheck, TrendingUp, Users,
-  Calculator, SlidersHorizontal, Star, BadgePercent
+  Check, ChefHat, HelpCircle, ChevronDown, ChevronUp,
+  ArrowRight, Eye, ShieldCheck, TrendingUp, BadgePercent
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEOHead from '../components/SEOHead';
@@ -14,30 +13,31 @@ interface FAQItem {
   answer: string;
 }
 
+// 2026-11-04 : offre unique (decision du fondateur). Plus de Pro / Business /
+// Enterprise, plus de facturation annuelle : un seul prix, 19 € par mois, toutes
+// les fonctionnalites, sans engagement. Meme prix que le checkout Stripe.
+const PRIX_MENSUEL = 19;
+
 const faqs: FAQItem[] = [
   {
     question: "Comment fonctionne l'abonnement ?",
-    answer: "Choisissez votre plan (Pro 29€ ou Business 79€/mois), payez par carte bancaire et recevez votre code d'activation par email. Sans engagement, vous annulez quand vous voulez.",
+    answer: "Il n'y a qu'une seule offre : RestauMargin à 19 € par mois, avec toutes les fonctionnalités. Vous commencez par 7 jours d'essai gratuit sans carte bancaire, puis vous vous abonnez depuis votre espace si l'outil vous convient.",
   },
   {
-    question: "Comment fonctionne la facturation annuelle ?",
-    answer: "En choisissant la facturation annuelle, vous economisez 20%. Vous etes facturé une seule fois pour l'annee entiere.",
+    question: "Y a-t-il plusieurs formules ?",
+    answer: "Non. Tout le monde a accès à la même offre complète, que vous ayez un ou plusieurs établissements. Pas d'option payante en plus, pas de facturation annuelle à avancer.",
   },
   {
-    question: "Puis-je changer de plan a tout moment ?",
-    answer: "Oui. Passez du Pro au Business (ou l'inverse) quand vous voulez. Le changement est immediat et le montant est ajuste au prorata.",
-  },
-  {
-    question: "Comment recevoir mon code d'activation ?",
-    answer: "Apres le paiement, vous recevez un code par email (ex: RM-A3F8K2XY). Entrez-le a la creation de votre compte et c'est parti.",
+    question: "Comment résilier ?",
+    answer: "L'abonnement est sans engagement : vous pouvez le résilier à tout moment depuis votre espace. La résiliation prend effet à la fin du mois en cours (CGV, article 4.2).",
   },
   {
     question: "C'est quoi les requêtes IA ?",
-    answer: "Chaque fois que vous utilisez l'IA (creer une recette, scanner une facture, poser une question), ca consomme une requete. Le plan Pro inclut 500 requêtes/mois, le Business 2000.",
+    answer: "Chaque fois que vous utilisez l'IA (créer une recette, lire une facture, poser une question), cela consomme une requête. L'abonnement inclut 500 requêtes par mois, remises à zéro le 1er de chaque mois.",
   },
   {
     question: "Quels moyens de paiement acceptez-vous ?",
-    answer: "Cartes bancaires (Visa, Mastercard, Amex), virements SEPA et prelevements automatiques pour les plans annuels.",
+    answer: "Le paiement se fait chaque mois par carte bancaire (Visa, Mastercard, American Express), via Stripe.",
   },
   {
     // 2026-11-04 : promettait « remboursement integral sous 30 jours », que les CGV (art. 4.2)
@@ -46,124 +46,25 @@ const faqs: FAQItem[] = [
     answer: "Oui. L'essai est gratuit pendant 7 jours, sans carte bancaire. Ensuite l'abonnement est sans engagement : vous pouvez le résilier à tout moment depuis votre espace, la résiliation prend effet à la fin du mois en cours (CGV, article 4.2).",
   },
   {
-    question: "Mes données sont-elles securisees ?",
-    answer: "Absolument. Vos données sont hebergees en Europe (Supabase), chiffrees en transit et au repos. Nous sommes conformes au RGPD et ne partageons jamais vos données.",
+    question: "Mes données sont-elles sécurisées ?",
+    answer: "Vos données sont hébergées en Europe (Supabase), chiffrées en transit et au repos. Nous respectons le RGPD et ne revendons pas vos données.",
   },
 ];
 
-interface ComparisonRow {
-  feature: string;
-  category: string;
-  pro: boolean | string;
-  business: boolean | string;
-}
-
-const comparisonData: ComparisonRow[] = [
-  { feature: 'Fiches techniques illimitées', category: 'Gestion', pro: true, business: true },
-  { feature: 'Calcul automatique des marges', category: 'Gestion', pro: true, business: true },
-  { feature: 'Gestion des ingredients', category: 'Gestion', pro: true, business: true },
-  { feature: 'Commandes fournisseurs (email + WhatsApp)', category: 'Gestion', pro: true, business: true },
-  { feature: 'Scanner de factures IA', category: 'IA', pro: true, business: true },
-  { feature: 'Requêtes IA par mois', category: 'IA', pro: '500', business: '2 000' },
-  { feature: '19 actions IA (recettes, analyse, voix)', category: 'IA', pro: true, business: true },
-  { feature: 'Rapport IA hebdomadaire', category: 'IA', pro: false, business: true },
-  { feature: 'Analyse predictive des ventes', category: 'IA', pro: false, business: true },
-  { feature: 'Suivi des prix fournisseurs (Mercuriale)', category: 'Fournisseurs', pro: true, business: true },
-  { feature: 'Alertes prix fournisseurs', category: 'Fournisseurs', pro: true, business: true },
-  { feature: 'Messagerie fournisseurs integree', category: 'Fournisseurs', pro: true, business: true },
-  { feature: 'Gestion inventaire + alertes stock bas', category: 'Operations', pro: true, business: true },
-  { feature: 'HACCP digital (températures, nettoyage)', category: 'Operations', pro: true, business: true },
-  { feature: 'Multi-etablissements', category: 'Business', pro: false, business: true },
-  { feature: 'Menu Engineering (matrice BCG)', category: 'Business', pro: false, business: true },
-  { feature: 'Station Balance (tablette + Bluetooth)', category: 'Business', pro: false, business: true },
-  { feature: 'Support prioritaire', category: 'Support', pro: false, business: true },
-  { feature: 'Support email standard', category: 'Support', pro: true, business: true },
-  { feature: 'Essai gratuit 7 jours', category: 'Support', pro: true, business: true },
-];
-
-interface PlanFeature {
-  text: string;
-  included: boolean;
-}
-
-interface Plan {
-  name: string;
-  description: string;
-  priceMonthly: number | null;
-  priceLabel?: string;
-  features: PlanFeature[];
-  cta: string;
-  ctaLink: string;
-  popular?: boolean;
-  external?: boolean;
-  icon: React.ReactNode;
-}
-
-const plans: Plan[] = [
-  {
-    name: 'Pro',
-    description: 'Pour les indépendants qui veulent maîtriser leurs marges',
-    priceMonthly: 29,
-    popular: true,
-    icon: <Sparkles className="w-6 h-6 text-black" />,
-    features: [
-      { text: 'Fiches techniques illimitées avec calcul automatique des marges', included: true },
-      { text: '19 actions IA : créez vos recettes par chat ou commande vocale', included: true },
-      { text: 'Commandes fournisseurs par email et WhatsApp en 1 clic', included: true },
-      { text: 'Scanner de factures IA : photographiez, les prix se mettent a jour', included: true },
-      { text: 'Suivi des prix fournisseurs (Mercuriale) avec alertes', included: true },
-      { text: 'Gestion de l\'inventaire avec alertes stock bas', included: true },
-      { text: 'HACCP digital : températures, nettoyage, conformite', included: true },
-      { text: 'Messagerie integree avec vos fournisseurs', included: true },
-      { text: '500 requêtes IA par mois', included: true },
-      { text: 'Essai gratuit 7 jours — sans carte bancaire', included: true },
-      { text: 'Multi-etablissements', included: false },
-      { text: 'Rapport IA hebdomadaire', included: false },
-      { text: 'Analyse predictive des ventes', included: false },
-    ],
-    cta: "S'abonner — 29€/mois",
-    ctaLink: 'https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04',
-    external: true,
-  },
-  {
-    name: 'Business',
-    description: 'Pour les groupes qui gerent plusieurs établissements',
-    priceMonthly: 79,
-    icon: <Building2 className="w-6 h-6 text-black" />,
-    features: [
-      { text: 'Tout du plan Pro', included: true },
-      { text: 'Multi-restaurants : gerez tous vos établissements', included: true },
-      { text: '2000 requêtes IA par mois', included: true },
-      { text: 'Rapport IA hebdomadaire automatique', included: true },
-      { text: 'Menu Engineering : matrice BCG pour optimiser votre carte', included: true },
-      { text: 'Analyse predictive : previsions de ventes et suggestions prix', included: true },
-      { text: 'Station Balance compatible (tablette + balance Bluetooth)', included: true },
-      { text: 'Support prioritaire', included: true },
-      { text: 'Essai gratuit 7 jours — sans carte bancaire', included: true },
-    ],
-    cta: "S'abonner — 79€/mois",
-    ctaLink: 'https://buy.stripe.com/4gMbIU5Ki4cAfbe1b187K05',
-    external: true,
-  },
-  {
-    name: 'Enterprise',
-    description: 'Pour les groupes de 3 sites ou plus — avec kit matériel inclus',
-    priceMonthly: null,
-    priceLabel: 'Sur devis',
-    icon: <Users className="w-6 h-6 text-black" />,
-    features: [
-      { text: 'Tout du plan Business', included: true },
-      { text: 'Gestion illimitée d\'établissements depuis une seule interface', included: true },
-      { text: 'Station Balance (tablette + balance Bluetooth) offerte', included: true },
-      { text: 'Requêtes IA illimitées', included: true },
-      { text: 'Tableau de bord consolidé multi-sites en temps reel', included: true },
-      { text: 'Onboarding dédié et formation de votre équipe', included: true },
-      { text: 'Support telephonique prioritaire 6j/7', included: true },
-      { text: 'Contrat sur mesure et facturation groupe', included: true },
-    ],
-    cta: 'Demander un devis',
-    ctaLink: '',
-  },
+// Ce qui etait dans Pro et Business, limite a ce qui existe reellement dans l'application.
+const fonctionnalites: string[] = [
+  'Fiches techniques illimitées avec calcul automatique des marges',
+  '19 actions IA : créez vos recettes par chat ou commande vocale',
+  '500 requêtes IA par mois',
+  'Lecture des factures par IA : les prix se mettent à jour',
+  'Commandes fournisseurs par e-mail et WhatsApp',
+  'Suivi des prix fournisseurs (Mercuriale) avec alertes',
+  'Inventaire avec alertes de stock bas',
+  'HACCP numérique : températures, nettoyage, traçabilité',
+  'Ingénierie de menu (matrice BCG)',
+  'Plusieurs établissements dans un seul compte',
+  'Station de pesée (tablette + balance Bluetooth)',
+  'Support par e-mail',
 ];
 
 function FAQSection() {
@@ -172,7 +73,7 @@ function FAQSection() {
   return (
     <div className="max-w-3xl mx-auto">
       <h2 className="text-3xl sm:text-4xl font-bold text-black text-center mb-4">
-        Questions frequentes
+        Questions fréquentes
       </h2>
       <p className="text-center text-[#6B7280] mb-10 max-w-lg mx-auto">
         Tout ce que vous devez savoir avant de commencer.
@@ -227,7 +128,7 @@ function ROICalculator() {
   const optimizedCost = monthlyRevenue * optimizedFoodCost;
   const monthlySaving = currentCost - optimizedCost;
   const annualSaving = monthlySaving * 12;
-  const roi = Math.round((annualSaving / (29 * 12)) * 100);
+  const roi = Math.round((annualSaving / (PRIX_MENSUEL * 12)) * 100);
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -236,7 +137,7 @@ function ROICalculator() {
           Calculez votre retour sur investissement
         </h2>
         <p className="text-[#6B7280] max-w-lg mx-auto">
-          Deplacez les curseurs pour estimer combien RestauMargin peut vous faire economiser.
+          Déplacez les curseurs pour estimer combien RestauMargin peut vous faire économiser.
         </p>
       </div>
 
@@ -245,7 +146,7 @@ function ROICalculator() {
         <div className="space-y-8 p-8 bg-white border border-mono-900 rounded-2xl">
           <div>
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-black">Nombre de plats a la carte</label>
+              <label className="text-sm font-medium text-black">Nombre de plats à la carte</label>
               <span className="text-sm font-bold text-black bg-mono-950 px-3 py-1 rounded-lg">{dishCount}</span>
             </div>
             <input
@@ -306,18 +207,18 @@ function ROICalculator() {
           <div>
             <div className="flex items-center gap-2 mb-6">
               <TrendingUp className="w-5 h-5" />
-              <span className="text-sm font-medium text-white/70">Vos economies estimees</span>
+              <span className="text-sm font-medium text-white/70">Vos économies estimées</span>
             </div>
 
             <div className="space-y-6">
               <div>
-                <p className="text-sm text-white/50 mb-1">Economie mensuelle</p>
+                <p className="text-sm text-white/50 mb-1">Économie mensuelle</p>
                 <p className="text-3xl font-extrabold">
                   {monthlySaving.toLocaleString('fr-FR', { maximumFractionDigits: 0 })}{'€'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-white/50 mb-1">Economie annuelle</p>
+                <p className="text-sm text-white/50 mb-1">Économie annuelle</p>
                 <p className="text-4xl font-extrabold text-white">
                   {annualSaving.toLocaleString('fr-FR', { maximumFractionDigits: 0 })}{'€'}
                 </p>
@@ -330,7 +231,7 @@ function ROICalculator() {
           </div>
 
           <p className="text-xs text-white/30 mt-6">
-            * Simulation illustrative basee sur une hypothese de reduction du food cost de 35% a 30%. Ce n'est pas un resultat garanti ni une moyenne mesuree.
+            * Simulation illustrative basée sur une hypothèse de réduction du food cost de 35 % à 30 %. Ce n'est pas un résultat garanti ni une moyenne mesurée.
           </p>
         </div>
       </div>
@@ -338,108 +239,12 @@ function ROICalculator() {
   );
 }
 
-function ComparisonTable() {
-  const categories = [...new Set(comparisonData.map(r => r.category))];
-
-  return (
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4">
-          Comparaison detaillee des plans
-        </h2>
-        <p className="text-[#6B7280] max-w-lg mx-auto">
-          Toutes les fonctionnalites incluses dans chaque plan.
-        </p>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b-2 border-black">
-              <th className="text-left py-4 pr-4 text-sm font-medium text-[#6B7280]">Fonctionnalite</th>
-              <th className="text-center py-4 px-4 w-32">
-                <div className="flex flex-col items-center gap-1">
-                  <Sparkles className="w-5 h-5 text-black" />
-                  <span className="text-sm font-bold text-black">Pro</span>
-                  <span className="text-xs text-[#6B7280]">29{'€'}/mois</span>
-                </div>
-              </th>
-              <th className="text-center py-4 pl-4 w-32">
-                <div className="flex flex-col items-center gap-1">
-                  <Building2 className="w-5 h-5 text-black" />
-                  <span className="text-sm font-bold text-black">Business</span>
-                  <span className="text-xs text-[#6B7280]">79{'€'}/mois</span>
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories.map((cat) => (
-              <>
-                <tr key={`cat-${cat}`}>
-                  <td colSpan={3} className="pt-6 pb-2">
-                    <span className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider">{cat}</span>
-                  </td>
-                </tr>
-                {comparisonData
-                  .filter(r => r.category === cat)
-                  .map((row, idx) => (
-                    <tr key={`${cat}-${idx}`} className="border-b border-mono-950 hover:bg-mono-1000 transition-colors">
-                      <td className="py-3.5 pr-4 text-sm text-[#374151]">{row.feature}</td>
-                      <td className="py-3.5 px-4 text-center">
-                        {typeof row.pro === 'boolean' ? (
-                          row.pro ? (
-                            <Check className="w-5 h-5 text-black mx-auto" />
-                          ) : (
-                            <X className="w-5 h-5 text-[#D1D5DB] mx-auto" />
-                          )
-                        ) : (
-                          <span className="text-sm font-semibold text-black">{row.pro}</span>
-                        )}
-                      </td>
-                      <td className="py-3.5 pl-4 text-center">
-                        {typeof row.business === 'boolean' ? (
-                          row.business ? (
-                            <Check className="w-5 h-5 text-black mx-auto" />
-                          ) : (
-                            <X className="w-5 h-5 text-[#D1D5DB] mx-auto" />
-                          )
-                        ) : (
-                          <span className="text-sm font-semibold text-black">{row.business}</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-              </>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
 export default function Pricing() {
-
-  const [annual, setAnnual] = useState(false);
-  const [showDevisForm, setShowDevisForm] = useState(false);
-  const [devisForm, setDevisForm] = useState({ name: '', email: '', phone: '', message: '' });
-  const [devisLoading, setDevisLoading] = useState(false);
-  const [devisSent, setDevisSent] = useState(false);
-  const [devisError, setDevisError] = useState('');
-
-  function getPrice(plan: Plan) {
-    if (plan.priceMonthly === null) return plan.priceLabel || 'Sur mesure';
-    if (plan.priceMonthly === 0) return 'Gratuit';
-    const price = annual ? Math.round(plan.priceMonthly * 0.8) : plan.priceMonthly;
-    return `${price}€`;
-  }
-
   return (
     <div className="min-h-screen bg-white text-black">
       <SEOHead
-        title="Tarifs RestauMargin — Pro 29€, Business 79€, Enterprise"
-        description="Plans Pro (29 EUR/mois), Business (79 EUR/mois) et Enterprise sur devis. Calculez vos marges restaurant, food cost et fiches techniques. Essai gratuit 7 jours sans carte bancaire."
+        title="Tarif RestauMargin — 19 € par mois, toutes les fonctionnalités"
+        description="Une seule offre : RestauMargin à 19 € par mois, toutes les fonctionnalités, sans engagement. Marges, food cost, fiches techniques et IA. Essai gratuit 7 jours sans carte bancaire."
         path="/pricing"
       />
       {/* Header */}
@@ -451,237 +256,56 @@ export default function Pricing() {
           <BadgePercent className="w-4 h-4 text-black" />
           {/* FIX 2026-09-24 : disait "des restaurants". Faux — une vingtaine de
               comptes, aucun abonne payant. On garde l'argument qui, lui, est vrai. */}
-          <span className="text-xs font-semibold text-black">Essai 7 jours — sans carte bancaire</span>
+          <span className="text-xs font-semibold text-black">Essai gratuit 7 jours, sans carte bancaire</span>
         </div>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-black">
-          Tarifs simples,{' '}
+          Un seul tarif,{' '}
           <span className="underline decoration-4 decoration-black/20 underline-offset-8">
             sans surprise
           </span>
         </h1>
-        <p className="text-lg text-[#6B7280] max-w-2xl mx-auto mb-10">
-          Un seul objectif : vous aider a maîtriser vos marges. Choisissez votre plan et commencez en 2 minutes.
+        <p className="text-lg text-[#6B7280] max-w-2xl mx-auto mb-12">
+          Une seule offre, toutes les fonctionnalités, sans engagement. Commencez en 2 minutes.
         </p>
-
-        {/* Toggle mensuel / annuel */}
-        <div className="flex items-center justify-center gap-4 mb-16">
-          <span className={`text-sm font-medium transition-colors ${!annual ? 'text-black' : 'text-[#9CA3AF]'}`}>
-            Mensuel
-          </span>
-          <button
-            onClick={() => setAnnual(!annual)}
-            className={`relative w-14 h-7 rounded-full transition-colors ${
-              annual ? 'bg-black' : 'bg-[#D1D5DB]'
-            }`}
-          >
-            <div
-              className={`absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full transition-transform shadow-md ${
-                annual ? 'translate-x-7' : 'translate-x-0'
-              }`}
-            />
-          </button>
-          <span className={`text-sm font-medium transition-colors ${annual ? 'text-black' : 'text-[#9CA3AF]'}`}>
-            Annuel
-          </span>
-          {annual && (
-            <span className="ml-1 px-3 py-1 bg-black text-white text-xs font-semibold rounded-full">
-              2 mois offerts
-            </span>
-          )}
-        </div>
       </section>
 
-      {/* Pricing Cards */}
+      {/* Carte unique */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`relative flex flex-col rounded-2xl border p-8 transition-all duration-200 hover:-translate-y-1 ${
-                plan.popular
-                  ? 'border-black shadow-[0_8px_40px_-12px_rgba(0,0,0,0.15)] bg-white'
-                  : 'border-mono-900 bg-white hover:border-[#9CA3AF]'
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="px-4 py-1.5 bg-black text-white text-xs font-bold rounded-full uppercase tracking-wide">
-                    Recommandé
-                  </span>
-                </div>
-              )}
-
-              {/* Plan header */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-mono-950 flex items-center justify-center">
-                  {plan.icon}
-                </div>
-                <h3 className="text-xl font-bold text-black">{plan.name}</h3>
+        <div className="mx-auto max-w-lg">
+          <div className="relative flex flex-col rounded-2xl border border-black p-8 bg-white shadow-[0_8px_40px_-12px_rgba(0,0,0,0.15)]">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-mono-950 flex items-center justify-center">
+                <ChefHat className="w-6 h-6 text-black" />
               </div>
-              <p className="text-[#6B7280] text-sm mb-6">{plan.description}</p>
-
-              {/* Price */}
-              <div className="mb-8">
-                {plan.priceMonthly !== null && plan.priceMonthly > 0 ? (
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-5xl font-extrabold text-black">{getPrice(plan)}</span>
-                    <span className="text-[#9CA3AF] text-sm">/mois</span>
-                  </div>
-                ) : plan.priceMonthly === 0 ? (
-                  <span className="text-5xl font-extrabold text-black">Gratuit</span>
-                ) : (
-                  <span className="text-3xl font-extrabold text-black">{plan.priceLabel}</span>
-                )}
-                {plan.priceMonthly !== null && plan.priceMonthly > 0 && annual && (
-                  <p className="text-black text-xs mt-2 font-medium">
-                    Facture {Math.round(plan.priceMonthly * 0.8 * 12)}{'€'}/an au lieu de <span className="line-through text-[#9CA3AF]">{plan.priceMonthly * 12}{'€'}</span>
-                  </p>
-                )}
-                {plan.priceMonthly !== null && plan.priceMonthly > 0 && !annual && (
-                  <p className="text-[#9CA3AF] text-xs mt-2">
-                    ou {Math.round(plan.priceMonthly * 0.8 * 12)}{'€'}/an (-20%)
-                  </p>
-                )}
-              </div>
-
-              {/* Features */}
-              <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    {feature.included ? (
-                      <Check className="w-5 h-5 text-black flex-shrink-0 mt-0.5" />
-                    ) : (
-                      <X className="w-5 h-5 text-[#D1D5DB] flex-shrink-0 mt-0.5" />
-                    )}
-                    <span className={feature.included ? 'text-[#374151] text-sm' : 'text-[#D1D5DB] text-sm'}>
-                      {feature.text}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA */}
-              {plan.name === 'Enterprise' ? (
-                devisSent ? (
-                  <div className="flex items-center justify-center gap-2 py-3.5 text-black text-sm font-semibold">
-                    <CheckCircle2 className="w-5 h-5" /> Demande envoyee !
-                  </div>
-                ) : showDevisForm ? (
-                  <form
-                    onSubmit={async (e) => {
-                      e.preventDefault();
-                      setDevisLoading(true);
-                      setDevisError('');
-                      try {
-                        const res = await fetch('/api/contact', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({
-                            name: devisForm.name,
-                            email: devisForm.email,
-                            phone: devisForm.phone,
-                            message: devisForm.message,
-                            source: 'enterprise-devis',
-                          }),
-                        });
-                        if (!res.ok) {
-                          const data = await res.json();
-                          throw new Error(data.error || 'Erreur lors de l\'envoi');
-                        }
-                        setDevisSent(true);
-                      } catch (err: unknown) {
-                        const message = err instanceof Error ? err.message : 'Erreur. Veuillez reessayer.';
-                        setDevisError(message);
-                      } finally {
-                        setDevisLoading(false);
-                      }
-                    }}
-                    className="space-y-3"
-                  >
-                    <input
-                      type="text"
-                      required
-                      value={devisForm.name}
-                      onChange={(e) => setDevisForm({ ...devisForm, name: e.target.value })}
-                      placeholder="Votre nom"
-                      className="w-full px-3 py-2 rounded-lg bg-mono-950 border border-mono-900 text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                    />
-                    <input
-                      type="email"
-                      required
-                      value={devisForm.email}
-                      onChange={(e) => setDevisForm({ ...devisForm, email: e.target.value })}
-                      placeholder="votre@email.com"
-                      className="w-full px-3 py-2 rounded-lg bg-mono-950 border border-mono-900 text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                    />
-                    <input
-                      type="tel"
-                      value={devisForm.phone}
-                      onChange={(e) => setDevisForm({ ...devisForm, phone: e.target.value })}
-                      placeholder="Telephone (optionnel)"
-                      className="w-full px-3 py-2 rounded-lg bg-mono-950 border border-mono-900 text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                    />
-                    <textarea
-                      rows={2}
-                      value={devisForm.message}
-                      onChange={(e) => setDevisForm({ ...devisForm, message: e.target.value })}
-                      placeholder="Votre besoin (nb. de sites, etc.)"
-                      className="w-full px-3 py-2 rounded-lg bg-mono-950 border border-mono-900 text-black text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent resize-none"
-                    />
-                    {devisError && (
-                      <p className="text-xs text-red-500">{devisError}</p>
-                    )}
-                    <button
-                      type="submit"
-                      disabled={devisLoading}
-                      className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-black hover:bg-[#333333] text-white text-sm font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                      {devisLoading ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" /> Envoi...
-                        </>
-                      ) : (
-                        <>
-                          Envoyer la demande
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
-                    </button>
-                  </form>
-                ) : (
-                  <button
-                    onClick={() => setShowDevisForm(true)}
-                    className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-mono-950 hover:bg-mono-900 text-black border border-mono-900"
-                  >
-                    {plan.cta}
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                )
-              ) : plan.external ? (
-                <a
-                  href={plan.ctaLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors ${
-                    plan.popular
-                      ? 'bg-black hover:bg-[#333333] text-white'
-                      : 'bg-white hover:bg-mono-950 text-black border-2 border-black'
-                  }`}
-                >
-                  {plan.cta}
-                  <ArrowRight className="w-4 h-4" />
-                </a>
-              ) : (
-                <Link
-                  to={plan.ctaLink}
-                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-mono-950 hover:bg-mono-900 text-black border border-mono-900"
-                >
-                  {plan.cta}
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              )}
+              <h2 className="text-xl font-bold text-black">RestauMargin</h2>
             </div>
-          ))}
+            <p className="text-[#6B7280] text-sm mb-6">Toutes les fonctionnalités, pour un ou plusieurs établissements.</p>
+
+            <div className="mb-8">
+              <div className="flex items-baseline gap-2">
+                <span className="text-5xl font-extrabold text-black">{PRIX_MENSUEL}{'\u00A0'}€</span>
+                <span className="text-[#6B7280] text-base">par mois</span>
+              </div>
+              <p className="text-[#6B7280] text-xs mt-2">Sans engagement, résiliable à tout moment.</p>
+            </div>
+
+            <ul className="space-y-3 mb-8 flex-1">
+              {fonctionnalites.map((f) => (
+                <li key={f} className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-black flex-shrink-0 mt-0.5" />
+                  <span className="text-[#374151] text-sm">{f}</span>
+                </li>
+              ))}
+            </ul>
+
+            <Link
+              to="/login?mode=register"
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-black hover:bg-[#333333] text-white"
+            >
+              Commencer l'essai gratuit
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
 
         {/* Money-back guarantee */}
@@ -711,23 +335,16 @@ export default function Pricing() {
           </div>
           <div>
             <p className="text-3xl font-extrabold text-black">Sans</p>
-            <p className="text-sm text-[#6B7280] mt-1">engagement ni frais cache</p>
+            <p className="text-sm text-[#6B7280] mt-1">engagement ni frais caché</p>
           </div>
           <div>
-            <p className="text-3xl font-extrabold text-black">Illimite</p>
+            <p className="text-3xl font-extrabold text-black">Illimitées</p>
             <p className="text-sm text-[#6B7280] mt-1">Fiches techniques et recettes</p>
           </div>
           <div>
             <p className="text-3xl font-extrabold text-black">2 min</p>
             <p className="text-sm text-[#6B7280] mt-1">Pour commencer</p>
           </div>
-        </div>
-      </section>
-
-      {/* Feature Comparison Table */}
-      <section className="py-24 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
-          <ComparisonTable />
         </div>
       </section>
 
@@ -748,21 +365,19 @@ export default function Pricing() {
       {/* Footer CTA */}
       <section className="border-t border-mono-900 bg-black py-20 px-4 sm:px-6 text-center">
         <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-          Pret a reprendre le controle de vos marges ?
+          Prêt à reprendre le contrôle de vos marges ?
         </h2>
         <p className="text-white/50 mb-8 max-w-lg mx-auto">
-          Essayez gratuitement pendant 7 jours. Sans carte bancaire, sans engagement.
+          Essayez gratuitement pendant 7 jours, sans carte bancaire. Ensuite 19 € par mois, sans engagement.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href="https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/login?mode=register"
             className="inline-flex items-center gap-2 px-8 py-3.5 bg-white hover:bg-mono-950 text-black font-semibold rounded-xl transition-colors"
           >
             Commencer l'essai gratuit
             <ArrowRight className="w-5 h-5" />
-          </a>
+          </Link>
           <Link
             to="/demo"
             className="inline-flex items-center gap-2 px-8 py-3.5 border border-white/20 hover:border-white/40 text-white font-semibold rounded-xl transition-colors"

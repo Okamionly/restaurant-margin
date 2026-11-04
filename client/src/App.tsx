@@ -1111,7 +1111,7 @@ function AppLayout() {
                       : 'bg-amber-500 hover:bg-amber-400 text-white'
                   }`}
                 >
-                  Passer au Pro
+                  S'abonner — 19 € par mois
                 </button>
                 {!isExpired && (
                   <button

@@ -123,7 +123,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
       // Determine plan from metadata (preferred) or fallback to amount
       let plan = session.metadata?.planType || 'pro';
       if (!session.metadata?.planType && amountTotal && amountTotal >= 7000) {
-        plan = 'business'; // 79€ = 7900 cents
+        plan = 'business'; // ancien prix Business (archive dans Stripe), conserve pour les anciennes sessions
       }
 
       // Update user subscription in database if userId is available
@@ -173,8 +173,8 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
         await resend.emails.send({
           from: 'RestauMargin <contact@restaumargin.fr>',
           to: customerEmail,
-          subject: `RestauMargin — Votre code d'activation ${plan.toUpperCase()}`,
-          html: buildActivationCodeEmail({ planName: plan === 'pro' ? 'Professionnel' : 'Business', activationCode: code }),
+          subject: `RestauMargin — Votre code d'activation`,
+          html: buildActivationCodeEmail({ planName: 'RestauMargin', activationCode: code }),
         });
         console.log(`[STRIPE WEBHOOK] Code ${code} (${plan}) envoyé à ${customerEmail}`);
       }
@@ -359,9 +359,9 @@ const STRIPE_PRICES = {
   // Offre unique (2026-11-04) : 19 EUR/mois, toutes les fonctions. Les autres prix sont
   // archives dans Stripe ; les cles restent pour ne pas casser d'anciens appels.
   PRO_MONTHLY: (process.env.STRIPE_PRICE_PRO_MONTHLY?.trim()) || 'price_1UY8oy3Y5IoWMA5kshk8nrxP', // 19€/mois
-  PRO_ANNUAL: (process.env.STRIPE_PRICE_PRO_ANNUAL?.trim()) || 'price_1TNJcy3Y5IoWMA5k7T7ZOyI9', // 278€/an (-20%)
-  BUSINESS_MONTHLY: (process.env.STRIPE_PRICE_BUSINESS_MONTHLY?.trim()) || 'price_1TGSSV3Y5IoWMA5k8Elzb9RU', // 79€/mois
-  BUSINESS_ANNUAL: (process.env.STRIPE_PRICE_BUSINESS_ANNUAL?.trim()) || 'price_1TNJd03Y5IoWMA5kMN2CPkNc', // 758€/an (-20%)
+  PRO_ANNUAL: (process.env.STRIPE_PRICE_PRO_ANNUAL?.trim()) || 'price_1TNJcy3Y5IoWMA5k7T7ZOyI9', // ancien prix annuel, archive
+  BUSINESS_MONTHLY: (process.env.STRIPE_PRICE_BUSINESS_MONTHLY?.trim()) || 'price_1TGSSV3Y5IoWMA5k8Elzb9RU', // ancien prix Business, archive
+  BUSINESS_ANNUAL: (process.env.STRIPE_PRICE_BUSINESS_ANNUAL?.trim()) || 'price_1TNJd03Y5IoWMA5kMN2CPkNc', // ancien prix annuel, archive
 } as const;
 
 // La cle Stripe stockee dans Vercel finissait par un « \n » litteral (constat du
@@ -689,7 +689,7 @@ Ce qu'il fait reellement :
 - Commandes fournisseurs, gestion des allergenes, HACCP, DLC, planning equipe
 - Mode cuisine (KDS) et station de pesee
 - Digest quotidien : cours des denrees, produits de saison, recette du jour
-Tarif : 29 EUR par mois. Essai gratuit de 7 jours, sans carte bancaire.
+Tarif : une seule offre, 19 EUR par mois, toutes les fonctionnalites, sans engagement. Essai gratuit de 7 jours, sans carte bancaire.
 Contact humain : contact@restaumargin.fr
 Le service est exploite par un entrepreneur individuel francais.
 

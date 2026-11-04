@@ -62,7 +62,7 @@ describe('le message', () => {
     expect(m.texte).toContain('offre=RM-ABCD1234');
     expect(m.texte).toContain(`/api/prospection/desinscription?t=${'a'.repeat(48)}`);
     expect(m.texte).toContain("l'adresse contact@lebistrot.fr est publiée sur https://www.lebistrot.fr");
-    expect(m.texte).toContain('29 € par mois si vous continuez, sans engagement');
+    expect(m.texte).toContain('19 € par mois si vous continuez, sans engagement');
     expect(m.html).toContain('Ne plus recevoir de message');
     // Charte de l'email de bienvenue : visuel produit et bouton d'offre.
     expect(m.html).toContain('og-image.png');

@@ -3,7 +3,7 @@
  *
  * Chaque utilisateur a un code unique qu'il peut partager.
  * Quand un filleul s'inscrit avec le code, une entrée Referral est créée.
- * Quand le filleul passe en Pro/Business, le parrain gagne une récompense.
+ * Quand le filleul s'abonne (offre unique 19 €/mois), le parrain gagne une récompense.
  *
  * Récompense : 1 mois Pro gratuit pour le parrain + 20% de réduction pour le filleul.
  */

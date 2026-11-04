@@ -943,7 +943,7 @@ export default function BlogRotationStocks() {
             <h3 className="text-xl font-bold text-mono-100 mb-3">Les solutions du marché</h3>
             <p>
               Plusieurs logiciels existent en France : <strong>RestauMargin</strong> (positionné sur
-              la marge brute + rotation + alertes IA, 29 EUR/mois), <strong>Easilys</strong> (gestion
+              la marge brute + rotation + alertes IA, 19 EUR/mois), <strong>Easilys</strong> (gestion
               de stocks + traçabilité HACCP, 89 EUR/mois), <strong>Marketman</strong> (américain
               traduit en français, 149 USD/mois), <strong>Foodics</strong> (POS complet + stocks).
               Pour un indépendant ou une petite chaîne, RestauMargin offre le meilleur ratio
@@ -985,7 +985,7 @@ export default function BlogRotationStocks() {
               temps réel et alerte automatiquement sur le stock dormant. Tout est automatique.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
+              <strong>19 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

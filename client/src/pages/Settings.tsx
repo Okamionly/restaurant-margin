@@ -137,7 +137,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   openingHours: DEFAULT_OPENING_HOURS,
 };
 
-const PLAN_LABELS: Record<string, string> = { basic: 'Basic -- 9€/mois', pro: 'Pro -- 29€/mois', business: 'Business -- 79€/mois' };
+const PLAN_LABELS: Record<string, string> = { basic: 'Essai gratuit', pro: 'RestauMargin — 19 €/mois', business: 'RestauMargin — 19 €/mois' };
 const APP_VERSION = '1.0.0';
 
 const CUISINE_TYPES = [
@@ -457,7 +457,7 @@ export default function Settings() {
   const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
 
   // Billing
-  const currentPlan = (user?.plan === 'business' ? 'business' : 'pro') as 'pro' | 'business';
+  const abonnementActif = user?.plan === 'pro' || user?.plan === 'business';
   const [billingHistory, setBillingHistory] = useState<BillingEntry[]>([]);
   const [usageStats, setUsageStats] = useState({ aiCalls: 0, aiLimit: 500, storageUsed: 0, storageLimit: 5 });
 
@@ -1684,41 +1684,22 @@ export default function Settings() {
             Plan actuel
           </h3>
           <div className="flex flex-col sm:flex-row gap-4">
-            {/* Pro plan */}
-            <div className={`flex-1 p-5 rounded-2xl border-2 transition-colors ${currentPlan === 'pro' ? 'border-mono-100 dark:border-white bg-mono-1000 dark:bg-mono-50' : 'border-mono-900 dark:border-mono-200'}`}>
+            {/* Offre unique */}
+            <div className={`flex-1 p-5 rounded-2xl border-2 transition-colors ${abonnementActif ? 'border-mono-100 dark:border-white bg-mono-1000 dark:bg-mono-50' : 'border-mono-900 dark:border-mono-200'}`}>
               <div className="flex items-center justify-between mb-2">
-                <h4 className="text-lg font-bold text-mono-100 dark:text-white">Pro</h4>
-                {currentPlan === 'pro' && (
+                <h4 className="text-lg font-bold text-mono-100 dark:text-white">RestauMargin</h4>
+                {abonnementActif && (
                   <span className="text-xs bg-mono-100 dark:bg-white text-white dark:text-black px-2.5 py-1 rounded-full font-medium">
                     Actuel
                   </span>
                 )}
               </div>
-              <p className="text-3xl font-bold text-mono-100 dark:text-white">29<span className="text-base font-normal text-[#9CA3AF]">€/mois</span></p>
+              <p className="text-3xl font-bold text-mono-100 dark:text-white">19<span className="text-base font-normal text-[#9CA3AF]"> €/mois</span></p>
               <ul className="mt-3 space-y-1 text-xs text-[#6B7280] dark:text-mono-700">
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />Recettes illimitees</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />2 000 appels IA/mois</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />5 Go stockage</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />5 membres equipe</li>
-              </ul>
-            </div>
-
-            {/* Business plan */}
-            <div className={`flex-1 p-5 rounded-2xl border-2 transition-colors ${currentPlan === 'business' ? 'border-mono-100 dark:border-white bg-mono-1000 dark:bg-mono-50' : 'border-mono-900 dark:border-mono-200'}`}>
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-lg font-bold text-mono-100 dark:text-white">Business</h4>
-                {currentPlan === 'business' && (
-                  <span className="text-xs bg-mono-100 dark:bg-white text-white dark:text-black px-2.5 py-1 rounded-full font-medium">
-                    Actuel
-                  </span>
-                )}
-              </div>
-              <p className="text-3xl font-bold text-mono-100 dark:text-white">79<span className="text-base font-normal text-[#9CA3AF]">€/mois</span></p>
-              <ul className="mt-3 space-y-1 text-xs text-[#6B7280] dark:text-mono-700">
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />Tout Pro +</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />10 000 appels IA/mois</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />50 Go stockage</li>
-                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />Equipe illimitee</li>
+                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />Toutes les fonctionnalités</li>
+                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />Recettes illimitées</li>
+                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />Assistant IA : 500 requêtes par mois</li>
+                <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />Sans engagement</li>
               </ul>
             </div>
           </div>

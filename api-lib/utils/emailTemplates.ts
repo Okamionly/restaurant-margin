@@ -480,7 +480,7 @@ ${header('RestauMargin', `3 mois offerts pour ${esc(d.nom)}`)}
     <a href="${esc(d.lienOffre)}" style="display:inline-block;background:linear-gradient(135deg,${TEAL},${TEAL_LIGHT});color:white;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
       Activer mes 3 mois offerts &#8594;
     </a>
-    <p style="color:#0f766e;font-size:12px;margin:12px 0 0;line-height:1.6;">Le code est d&eacute;j&agrave; rempli. Ensuite : 29&nbsp;&euro; par mois si vous continuez, sans engagement.</p>
+    <p style="color:#0f766e;font-size:12px;margin:12px 0 0;line-height:1.6;">Le code est d&eacute;j&agrave; rempli. Ensuite : 19&nbsp;&euro; par mois si vous continuez, sans engagement.</p>
   </div>
 </td></tr>
 
@@ -737,7 +737,7 @@ ${footer()}`;
 // ---------- Template H : Code d'activation (après paiement Stripe) ----------
 
 export interface ActivationCodeData {
-  planName: string; // 'Professionnel' or 'Business'
+  planName: string; // 'RestauMargin' (offre unique depuis le 2026-11-04)
   activationCode: string;
 }
 
@@ -825,21 +825,14 @@ ${(data.recipesCount > 0 || data.ingredientsCount > 0) ? `
 </td></tr>` : ''}
 
 <tr><td style="padding:20px 25px;">
-  <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 12px;">Nos offres :</p>
+  <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 12px;">Notre offre :</p>
   <table width="100%" cellspacing="0" cellpadding="0">
     <tr>
-      <td style="width:50%;padding:8px;">
-        <div style="background:${BG_LIGHT};border:1px solid ${BORDER};border-radius:10px;padding:20px;text-align:center;">
-          <p style="color:${DARK};font-size:16px;font-weight:bold;margin:0;">Pro</p>
-          <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:8px 0 4px;">29&euro;<span style="font-size:14px;color:${MUTED};font-weight:normal;">/mois</span></p>
-          <p style="color:${MUTED};font-size:12px;margin:0;">1 restaurant</p>
-        </div>
-      </td>
-      <td style="width:50%;padding:8px;">
+      <td style="padding:8px;">
         <div style="background:${BG_LIGHT};border:2px solid ${TEAL};border-radius:10px;padding:20px;text-align:center;">
-          <p style="color:${DARK};font-size:16px;font-weight:bold;margin:0;">Business</p>
-          <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:8px 0 4px;">79&euro;<span style="font-size:14px;color:${MUTED};font-weight:normal;">/mois</span></p>
-          <p style="color:${MUTED};font-size:12px;margin:0;">Multi-sites</p>
+          <p style="color:${DARK};font-size:16px;font-weight:bold;margin:0;">RestauMargin</p>
+          <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:8px 0 4px;">19&nbsp;&euro;<span style="font-size:14px;color:${MUTED};font-weight:normal;"> par mois</span></p>
+          <p style="color:${MUTED};font-size:12px;margin:0;">Toutes les fonctionnalit&eacute;s, sans engagement</p>
         </div>
       </td>
     </tr>
@@ -912,10 +905,10 @@ ${header('RestauMargin', 'Dernier jour d\'essai')}
 
 <tr><td style="padding:20px 25px;text-align:center;">
   <a href="${pricingUrl}" style="display:inline-block;background:linear-gradient(135deg,#dc2626,#ef4444);color:white;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(220,38,38,0.3);">
-    Ne perdez pas vos donn&eacute;es — Passez au Pro &#8594;
+    Ne perdez pas vos donn&eacute;es — Je m'abonne &#8594;
   </a>
   <p style="color:${MUTED};font-size:12px;margin:12px 0 0;">
-    A partir de 29&euro;/mois — Annulable &agrave; tout moment
+    19&nbsp;&euro; par mois — sans engagement, r&eacute;siliable &agrave; tout moment
   </p>
 </td></tr>
 
@@ -958,25 +951,18 @@ ${header('RestauMargin', 'Votre essai a expir&eacute;')}
 
 <tr><td style="padding:0 25px 10px;">
   <p style="color:${DARK};font-size:15px;line-height:1.6;margin:0;">
-    Pour r&eacute;activer votre compte et retrouver toutes vos donn&eacute;es, choisissez un plan :
+    Pour r&eacute;activer votre compte et retrouver toutes vos donn&eacute;es, abonnez-vous :
   </p>
 </td></tr>
 
 <tr><td style="padding:0 25px 20px;">
   <table width="100%" cellspacing="0" cellpadding="0">
     <tr>
-      <td style="width:50%;padding:8px;">
-        <div style="background:${BG_LIGHT};border:1px solid ${BORDER};border-radius:10px;padding:20px;text-align:center;">
-          <p style="color:${DARK};font-size:16px;font-weight:bold;margin:0;">Pro</p>
-          <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:8px 0 4px;">29&euro;<span style="font-size:14px;color:${MUTED};font-weight:normal;">/mois</span></p>
-          <p style="color:${MUTED};font-size:12px;margin:0;">Tout pour 1 restaurant</p>
-        </div>
-      </td>
-      <td style="width:50%;padding:8px;">
+      <td style="padding:8px;">
         <div style="background:${BG_LIGHT};border:2px solid ${TEAL};border-radius:10px;padding:20px;text-align:center;">
-          <p style="color:${DARK};font-size:16px;font-weight:bold;margin:0;">Business</p>
-          <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:8px 0 4px;">79&euro;<span style="font-size:14px;color:${MUTED};font-weight:normal;">/mois</span></p>
-          <p style="color:${MUTED};font-size:12px;margin:0;">Multi-sites + support prioritaire</p>
+          <p style="color:${DARK};font-size:16px;font-weight:bold;margin:0;">RestauMargin</p>
+          <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:8px 0 4px;">19&nbsp;&euro;<span style="font-size:14px;color:${MUTED};font-weight:normal;"> par mois</span></p>
+          <p style="color:${MUTED};font-size:12px;margin:0;">Toutes les fonctionnalit&eacute;s, sans engagement</p>
         </div>
       </td>
     </tr>
@@ -988,7 +974,7 @@ ${header('RestauMargin', 'Votre essai a expir&eacute;')}
     R&eacute;activer mon compte &#8594;
   </a>
   <p style="color:${MUTED};font-size:12px;margin:12px 0 0;">
-    29&euro;/mois, c'est moins de 1&euro; par jour. Si l'outil vous a permis de d&eacute;tecter
+    19&nbsp;&euro; par mois, c'est moins de 1&nbsp;&euro; par jour. Si l'outil vous a permis de d&eacute;tecter
     un seul plat mal pric&eacute;, il s'est d&eacute;j&agrave; rembours&eacute;.
   </p>
 </td></tr>
@@ -1495,7 +1481,7 @@ export function buildCampaignEmail(restaurant: CampaignRestaurant, cuisineType?:
     </td></tr>
     <tr><td align="center" style="padding:6px 0 0;">
       <p style="color:#9ca3af;font-family:'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;margin:0;">
-        Puis 29&euro;/mois &mdash; sans engagement
+        Puis 19&nbsp;&euro; par mois &mdash; sans engagement
       </p>
     </td></tr>
   </table>
@@ -1644,7 +1630,8 @@ function dunningHeader(title: string, emoji: string): string {
 }
 
 function dunningPaymentBlock(data: DunningEmailData): string {
-  const planLabel = data.plan === 'pro' ? 'Pro' : 'Business';
+  // Offre unique (2026-11-04) : un seul libelle, quel que soit le plan interne.
+  const planLabel = 'RestauMargin';
   return `
 <tr><td style="padding:16px 30px 0;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0"

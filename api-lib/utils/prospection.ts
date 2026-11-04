@@ -146,7 +146,7 @@ export function composerMessage(p: {
     '',
     `Votre code personnel (3 mois offerts) : ${p.code}`,
     `Pour l'activer (le code est déjà rempli) : ${lienOffre}`,
-    'Ensuite : 29 € par mois si vous continuez, sans engagement.',
+    'Ensuite : 19 € par mois si vous continuez, sans engagement.',
     '',
     "L'outil est récent : vos retours nous aident à l'améliorer. Une question ? Répondez simplement à cet email.",
     '',

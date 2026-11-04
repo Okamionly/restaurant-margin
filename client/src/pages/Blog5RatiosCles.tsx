@@ -818,7 +818,7 @@ export default function Blog5RatiosCles() {
               },
               {
                 title: 'Semaine 2 : Outillage',
-                body: 'Mettez en place le tracking automatisé. Soit un tableur partagé (gratuit mais chronophage), soit un outil dédié type RestauMargin (29 EUR/mois, automatisation totale). Connectez caisse + paie + factures fournisseurs.',
+                body: 'Mettez en place le tracking automatisé. Soit un tableur partagé (gratuit mais chronophage), soit un outil dédié type RestauMargin (19 EUR/mois, automatisation totale). Connectez caisse + paie + factures fournisseurs.',
               },
               {
                 title: 'Semaine 3 : Routine de pilotage',
@@ -873,7 +873,7 @@ export default function Blog5RatiosCles() {
               tous vos KPI en temps réel sur un dashboard unique.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
+              <strong>19 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

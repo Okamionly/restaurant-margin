@@ -42,7 +42,7 @@ const TESTIMONIALS: Testimonial[] = [
     savings: "2h/semaine gagnees",
   },
   {
-    quote: "Avec 3 restaurants a gerer, le plan Business est indispensable. Je vois les marges de chaque etablissement en un clin d'oeil. Le rapport IA hebdomadaire me donne des insights que je n'aurais jamais trouves seul.",
+    quote: "Avec 3 restaurants a gerer, RestauMargin est indispensable. Je vois les marges de chaque etablissement en un clin d'oeil. Le rapport IA hebdomadaire me donne des insights que je n'aurais jamais trouves seul.",
     name: "Karim Benali",
     role: "Directeur multi-sites",
     restaurant: "Groupe K&B",

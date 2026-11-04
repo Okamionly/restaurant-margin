@@ -737,7 +737,7 @@ export default function AIAssistant() {
       let errMsg: string;
       if (rawMsg.includes('Quota') || rawMsg.includes('429')) {
         setQuotaReached(true);
-        errMsg = '**Quota mensuel atteint.** Vous avez utilise toutes vos requetes IA pour ce mois. Passez au plan Business pour un acces illimite, ou attendez le 1er du mois prochain.';
+        errMsg = '**Quota mensuel atteint.** Vous avez utilisé vos 500 requêtes IA de ce mois. Le quota se renouvelle le 1er du mois ; écrivez à contact@restaumargin.fr si vous avez besoin de plus.';
       } else if (rawMsg.includes('503') || rawMsg.includes('indisponible')) {
         errMsg = '**Service IA temporairement indisponible.** Le serveur est en maintenance ou surcharge. Reessayez dans quelques minutes.';
       } else if (rawMsg.includes('401') || rawMsg.includes('Session')) {
@@ -1102,7 +1102,7 @@ export default function AIAssistant() {
             <span className="text-[10px] text-[#6B7280] whitespace-nowrap">{aiUsage.used}/{aiUsage.limit} requetes</span>
           </div>
           {quotaReached && (
-            <p className="text-[11px] text-red-500 mt-1 font-medium">Quota mensuel atteint. Passez au plan Business.</p>
+            <p className="text-[11px] text-red-500 mt-1 font-medium">Quota mensuel atteint. Il se renouvelle le 1er du mois.</p>
           )}
         </div>
       )}

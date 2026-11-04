@@ -109,8 +109,8 @@ export async function stripeWebhookHandler(req: any, res: any) {
         await resend.emails.send({
           from: 'RestauMargin <contact@restaumargin.fr>',
           to: customerEmail,
-          subject: `RestauMargin — Votre code d'activation ${plan.toUpperCase()}`,
-          html: buildActivationCodeEmail({ planName: plan === 'pro' ? 'Professionnel' : 'Business', activationCode: code }),
+          subject: `RestauMargin — Votre code d'activation`,
+          html: buildActivationCodeEmail({ planName: 'RestauMargin', activationCode: code }),
         });
         console.log(`[STRIPE WEBHOOK] Code ${code} (${plan}) envoyé à ${customerEmail}`);
       }

@@ -204,7 +204,8 @@ export function buildSaasInvoice(data: SaasInvoiceData): object {
   const tvaType: TvaType = isEuB2B ? 'eu_b2b_reverse_charge' : (isFR ? 'fr_b2b' : 'export');
   const tva = computeTva(data.amountHT, tvaType);
 
-  const planLabel = data.plan === 'pro' ? 'RestauMargin Pro' : 'RestauMargin Business';
+  // Offre unique (2026-11-04) : un seul libelle, quel que soit le plan interne.
+  const planLabel = 'RestauMargin';
   const planDesc = `Abonnement ${planLabel} — periode du ${data.periodStart} au ${data.periodEnd}`;
 
   return {

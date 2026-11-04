@@ -1496,7 +1496,7 @@ export default function BlogCoefficient() {
             </div>
             <p className="text-teal-100 text-xs mt-6">
               Vous préférerez l'intégration complète ? Testez RestauMargin gratuitement 7 jours --
-              <strong> 29 EUR/mois</strong>, sans engagement, sans carte bancaire.
+              <strong> 19 EUR/mois</strong>, sans engagement, sans carte bancaire.
             </p>
           </div>
         </section>

@@ -294,7 +294,7 @@ function ApercuProduit() {
 function FaitsProduit() {
   const faits = [
     { v: '7 jours', l: 'd’essai gratuit, sans carte bancaire' },
-    { v: `29${NBSP}€`, l: 'par mois, sans engagement' },
+    { v: `19${NBSP}€`, l: 'par mois, sans engagement' },
     { v: 'Illimitées', l: 'fiches techniques' },
     { v: 'Inventaire', l: 'et historique des prix fournisseurs' },
   ];
@@ -369,7 +369,7 @@ function HeroSection() {
 // n'entrait dans aucun calcul. Ici l'hypothese est CHOISIE par le visiteur, la
 // formule est affichee, et le rapport a l'abonnement dit ce qu'il compare.
 const JOURS_OUVERTURE = 26; // 6 jours sur 7 ; affiche dans la formule.
-const ABONNEMENT_PRO = 29; // € par mois, tarif public du plan Pro.
+const ABONNEMENT = 19; // € par mois, offre unique (2026-11-04), meme prix que le checkout Stripe.
 
 function SimulationSection({ n }: { n: string }) {
   const [couverts, setCouverts] = useState(80);
@@ -379,7 +379,7 @@ function SimulationSection({ n }: { n: string }) {
   const caMensuel = couverts * ticket * JOURS_OUVERTURE;
   const gainMensuel = Math.round((caMensuel * points) / 100);
   const gainAnnuel = gainMensuel * 12;
-  const rapport = gainMensuel / ABONNEMENT_PRO;
+  const rapport = gainMensuel / ABONNEMENT;
   const rapportTexte = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: rapport < 10 ? 1 : 0 }).format(rapport);
   const pointsTexte = `${points}${NBSP}point${points > 1 ? 's' : ''}`;
 
@@ -468,10 +468,10 @@ function SimulationSection({ n }: { n: string }) {
                 <dd className="mt-1 font-satoshi text-xl font-bold tabular-nums text-[#047857]">{euros(gainAnnuel)}</dd>
               </div>
               <div>
-                <dt className="text-xs font-medium text-[#737373]">Rapporté à l’abonnement Pro</dt>
+                <dt className="text-xs font-medium text-[#737373]">Rapporté à l’abonnement</dt>
                 <dd className="mt-1 font-satoshi text-xl font-bold tabular-nums text-[#111111]">{rapportTexte} fois</dd>
                 <dd className="mt-0.5 text-xs text-[#737373]">
-                  gain simulé ÷ {ABONNEMENT_PRO}{NBSP}€ d’abonnement mensuel
+                  gain simulé ÷ {ABONNEMENT}{NBSP}€ d’abonnement mensuel
                 </dd>
               </div>
             </dl>
@@ -504,23 +504,17 @@ function SimulationSection({ n }: { n: string }) {
 // TARIFS
 // ═══════════════════════════════════════════════════════════════════════════
 function PricingSection({ n }: { n: string }) {
-  const [annuel, setAnnuel] = useState(false);
-  // Memes prix que /pricing (annuel = mensuel × 0,8, arrondi) et que Stripe.
-  const offres = [
-    {
-      nom: 'Pro',
-      pour: 'Pour un restaurant indépendant',
-      mensuel: 29,
-      annuel: 23,
-      fonctions: ['Fiches techniques illimitées', '19 actions IA', 'Commandes fournisseurs', 'Lecture des factures par IA', '500 requêtes IA par mois'],
-    },
-    {
-      nom: 'Business',
-      pour: 'Pour plusieurs établissements',
-      mensuel: 79,
-      annuel: 63,
-      fonctions: ['Tout le plan Pro', 'Plusieurs établissements', '2 000 requêtes IA par mois', 'Rapport IA hebdomadaire', 'Ingénierie de menu', 'Support prioritaire'],
-    },
+  // Offre unique (decision du fondateur, 2026-11-04) : meme prix que /pricing et
+  // que le checkout Stripe. Uniquement des fonctions qui existent dans l'application.
+  const fonctions = [
+    'Fiches techniques illimitées',
+    '19 actions IA, 500 requêtes par mois',
+    'Lecture des factures par IA',
+    'Commandes fournisseurs et suivi des prix',
+    'Inventaire et HACCP numérique',
+    'Ingénierie de menu',
+    'Plusieurs établissements',
+    'Support par e-mail',
   ];
 
   return (
@@ -529,74 +523,40 @@ function PricingSection({ n }: { n: string }) {
         <EnTeteSection
           n={n}
           label="Tarifs"
-          titre={<>Des tarifs <Vert>simples</Vert> et <Vert>transparents.</Vert></>}
-          intro={`Sans engagement${NBSP}: vous arrêtez quand vous voulez. Chaque offre commence par 7${NBSP}jours d’essai gratuit, sans carte bancaire.`}
+          titre={<>Une seule offre, <Vert>tout compris.</Vert></>}
+          intro={`Sans engagement${NBSP}: vous arrêtez quand vous voulez. Toutes les fonctionnalités, après 7${NBSP}jours d’essai gratuit sans carte bancaire.`}
         />
 
-        <div className="mt-10 flex justify-center lg:mt-12">
-          <div role="group" aria-label="Période de facturation" className="inline-flex items-center gap-1 rounded-full bg-[#F5F5F5] p-1">
-            {[
-              { val: false, label: 'Mensuel' },
-              { val: true, label: 'Annuel' },
-            ].map((o) => {
-              const actif = annuel === o.val;
-              return (
-                <button
-                  key={o.label}
-                  type="button"
-                  aria-pressed={actif}
-                  onClick={() => setAnnuel(o.val)}
-                  className={`flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#047857] ${
-                    actif ? 'bg-white text-[#111111] shadow-sm' : 'text-[#525252] hover:text-[#111111]'
-                  }`}
-                >
-                  {o.label}
-                  {o.val && (
-                    <span className="rounded-full bg-[#ECFDF5] px-2 py-0.5 text-xs font-semibold text-[#047857]">
-                      −20{NBSP}%
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+        <div className="mx-auto mt-10 max-w-md lg:mt-12">
+          <div className={`${CARTE} flex flex-col rounded-3xl p-7 sm:p-8`}>
+            <span className="inline-flex w-fit rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#047857]">
+              Essai gratuit 7{NBSP}jours, sans carte bancaire
+            </span>
+            <h3 className="mt-4 font-satoshi text-2xl font-bold text-[#111111]">RestauMargin</h3>
+            <p className="mt-1 text-sm text-[#525252]">Toutes les fonctionnalités, pour un ou plusieurs établissements</p>
+            <div className="mt-6 flex items-baseline gap-2">
+              <span className="font-satoshi text-5xl font-extrabold tabular-nums text-[#111111]">{euros(ABONNEMENT)}</span>
+              <span className="text-base text-[#525252]">par mois</span>
+            </div>
+            <p className="mt-2 text-sm text-[#737373]">Sans engagement</p>
+            <ul className="mt-6 flex-1 space-y-3">
+              {fonctions.map((f) => (
+                <li key={f} className="flex items-start gap-3 text-sm text-[#111111]">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#047857]" strokeWidth={2.5} aria-hidden="true" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+            <Link to="/login?mode=register" className={`${BOUTON_PRINCIPAL} mt-8 w-full`}>
+              Commencer l’essai gratuit
+            </Link>
           </div>
         </div>
 
-        <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-2">
-          {offres.map((o) => {
-            const prix = annuel ? o.annuel : o.mensuel;
-            return (
-              <div key={o.nom} className={`${CARTE} flex flex-col rounded-3xl p-7 sm:p-8`}>
-                <h3 className="font-satoshi text-2xl font-bold text-[#111111]">{o.nom}</h3>
-                <p className="mt-1 text-sm text-[#525252]">{o.pour}</p>
-                <div className="mt-6 flex items-baseline gap-2">
-                  <span className="font-satoshi text-5xl font-extrabold tabular-nums text-[#111111]">{euros(prix)}</span>
-                  <span className="text-base text-[#525252]">par mois</span>
-                </div>
-                {/* Ligne toujours presente : le bloc ne saute pas quand on bascule. */}
-                <p className={`mt-2 min-h-[20px] text-sm ${annuel ? 'text-[#047857]' : 'text-[#737373]'}`}>
-                  {annuel ? `Soit ${euros(o.annuel * 12)} par an au lieu de ${euros(o.mensuel * 12)}` : 'Facturation mensuelle'}
-                </p>
-                <ul className="mt-6 flex-1 space-y-3">
-                  {o.fonctions.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-sm text-[#111111]">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#047857]" strokeWidth={2.5} aria-hidden="true" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link to="/login?mode=register" className={`${BOUTON_PRINCIPAL} mt-8 w-full`}>
-                  Commencer l’essai gratuit
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-
         <p className="mt-8 text-center text-sm text-[#525252]">
-          Plusieurs sites ou besoin d’un accompagnement{NBSP}?{' '}
+          Questions sur l’abonnement{NBSP}?{' '}
           <Link to="/pricing" className="font-semibold text-[#047857] hover:underline">
-            Voir toutes les offres
+            Voir le détail du tarif
           </Link>
         </p>
       </div>
@@ -1195,7 +1155,7 @@ function FinalCtaSection({ n }: { n: string }) {
     { l: 'Essai gratuit', v: '7 jours' },
     { l: 'Carte bancaire', v: 'Non demandée' },
     { l: 'Fiches techniques', v: 'Illimitées' },
-    { l: 'Ensuite', v: `${euros(ABONNEMENT_PRO)} par mois (Pro)` },
+    { l: 'Ensuite', v: `${euros(ABONNEMENT)} par mois` },
     { l: 'Engagement', v: 'Aucun' },
   ];
   return (
@@ -1456,7 +1416,7 @@ function StructuredData() {
     '@context': 'https://schema.org',
     '@graph': [
       { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr', logo: 'https://www.restaumargin.fr/og-image.png' },
-      { '@type': 'SoftwareApplication', name: 'RestauMargin', applicationCategory: 'BusinessApplication', operatingSystem: 'Web, iOS, Android', offers: { '@type': 'Offer', price: '29', priceCurrency: 'EUR' } },
+      { '@type': 'SoftwareApplication', name: 'RestauMargin', applicationCategory: 'BusinessApplication', operatingSystem: 'Web, iOS, Android', offers: { '@type': 'Offer', price: '19', priceCurrency: 'EUR' } },
     ],
   };
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
@@ -1474,7 +1434,7 @@ export default function Landing() {
   return (
     <>
       <SEOHead
-        title="Logiciel marge restaurant + food cost IA | RestauMargin (29€/mois)"
+        title="Logiciel marge restaurant + food cost IA | RestauMargin (19 €/mois)"
         description="RestauMargin, logiciel SaaS pour calculer la marge de votre restaurant, optimiser le food cost et automatiser les fiches techniques. Essai gratuit 7 jours."
         path="/"
       />

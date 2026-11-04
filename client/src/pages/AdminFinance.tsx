@@ -306,8 +306,8 @@ export default function AdminFinance() {
           <h3 className="text-sm font-semibold text-mono-100 dark:text-white mb-4">Repartition par plan</h3>
           <div className="space-y-3">
             <MiniBar label="Basic (gratuit)" value={data.totalBasic} max={data.totalUsers} color="bg-mono-900 dark:bg-mono-300" />
-            <MiniBar label="Pro (29€/mois)" value={data.totalPro} max={data.totalUsers} color="bg-teal-500" />
-            <MiniBar label="Business (79€/mois)" value={data.totalBusiness} max={data.totalUsers} color="bg-violet-500" />
+            <MiniBar label="Pro (19 €/mois)" value={data.totalPro} max={data.totalUsers} color="bg-teal-500" />
+            <MiniBar label="Business (historique, facturé 19 €/mois)" value={data.totalBusiness} max={data.totalUsers} color="bg-violet-500" />
             <MiniBar label="Trials actifs" value={data.trialUsersCount} max={data.totalUsers} color="bg-amber-400" />
           </div>
           <div className="mt-4 pt-4 border-t border-mono-900 dark:border-mono-200">

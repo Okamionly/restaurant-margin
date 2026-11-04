@@ -15,7 +15,7 @@ import PublicHeader from '../components/public/PublicHeader';
 const faqItems = [
   {
     question: "Quel est le meilleur logiciel de gestion pour restaurant en 2026 ?",
-    answer: "Il n'existe pas de meilleur logiciel de gestion restaurant unique : la bonne réponse est une stack composée de 3 à 5 outils spécialisés. Le combo le plus efficace en 2026 pour un indépendant : Zelty (caisse, 49-89 €/mois) + Pennylane (compta, 49-79 €/mois) + RestauMargin (pilotage marges, 0-49 €/mois) + Skello (RH si plus de 4 salariés, 6-8 €/salarié). Pour une chaîne, ajoutez Inpulse ou Foodics pour les stocks et un BI type Looker Studio."
+    answer: "Il n'existe pas de meilleur logiciel de gestion restaurant unique : la bonne réponse est une stack composée de 3 à 5 outils spécialisés. Le combo le plus efficace en 2026 pour un indépendant : Zelty (caisse, 49-89 €/mois) + Pennylane (compta, 49-79 €/mois) + RestauMargin (pilotage marges, 19 €/mois) + Skello (RH si plus de 4 salariés, 6-8 €/salarié). Pour une chaîne, ajoutez Inpulse ou Foodics pour les stocks et un BI type Looker Studio."
   },
   {
     question: "Puis-je tout faire avec Excel ?",
@@ -97,9 +97,9 @@ const productSchema = {
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'EUR',
-    lowPrice: '0',
-    highPrice: '49',
-    offerCount: '3',
+    lowPrice: '19',
+    highPrice: '19',
+    offerCount: '1',
   },
 };
 
@@ -178,7 +178,7 @@ export default function BlogLogicielGestion() {
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 space-y-2 font-mono text-sm sm:text-base">
             <div><strong className="text-white">1. Caisse POS :</strong> Zelty (49-89 €) ou Lightspeed (69-189 €)</div>
             <div><strong className="text-white">2. Comptabilité :</strong> Pennylane (49-99 €) ou Tiime (39-79 €)</div>
-            <div><strong className="text-white">3. Pilotage marges :</strong> RestauMargin (0-49 €)</div>
+            <div><strong className="text-white">3. Pilotage marges :</strong> RestauMargin (19 €)</div>
             <div><strong className="text-white">4. RH plannings :</strong> Skello (6-8 €/salarié) si plus de 4 salariés</div>
             <div><strong className="text-white">5. Stocks :</strong> Inpulse (129-249 €) si plus de 5 fournisseurs réguliers</div>
             <div><strong className="text-white">6. Livraison :</strong> Deliverect (49-99 €) si plus de 30 commandes/sem plateformes</div>
@@ -377,7 +377,7 @@ export default function BlogLogicielGestion() {
 
             <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Pilotage marges</h3>
             <p className="text-[#374151] leading-relaxed">
-              <strong>RestauMargin (0-49 €/mois)</strong> — spécialisé food cost, prime cost, marge brute par plat, simulation prix, import factures fournisseurs automatique, fiches techniques avec gestion perte au parage, kiosk mode + balance Bluetooth pour pesée live, 19 actions IA dont détection d anomalies. Essai gratuit 7 jours, puis 29 € par mois sans engagement.
+              <strong>RestauMargin (19 €/mois)</strong> — spécialisé food cost, prime cost, marge brute par plat, simulation prix, import factures fournisseurs automatique, fiches techniques avec gestion perte au parage, kiosk mode + balance Bluetooth pour pesée live, 19 actions IA dont détection d anomalies. Essai gratuit 7 jours, puis 19 € par mois sans engagement.
             </p>
           </section>
 
@@ -438,7 +438,7 @@ export default function BlogLogicielGestion() {
                     <td className="p-3"><strong>Deliverect</strong></td><td className="p-3">Livraison</td><td className="p-3">49-99 €</td><td className="p-3">4,6</td><td className="p-3">Multi-plateformes</td>
                   </tr>
                   <tr className="border-t border-mono-900 bg-teal-50/30">
-                    <td className="p-3"><strong>RestauMargin</strong></td><td className="p-3">Marges</td><td className="p-3">0-49 €</td><td className="p-3">4,8</td><td className="p-3">Indépendants + PME</td>
+                    <td className="p-3"><strong>RestauMargin</strong></td><td className="p-3">Marges</td><td className="p-3">19 €</td><td className="p-3">4,8</td><td className="p-3">Indépendants + PME</td>
                   </tr>
                 </tbody>
               </table>
@@ -462,10 +462,10 @@ export default function BlogLogicielGestion() {
             <div className="bg-mono-1000 rounded-xl p-5 mb-4 font-mono text-sm text-mono-100 space-y-1">
               <div>POS : L Addition (49 €) ou SumUp / Tiller (39 €)</div>
               <div>Compta : Pennylane Solo (49 €) ou Tiime Premier (39 €)</div>
-              <div>Marges : RestauMargin Gratuit (0 €) ou Starter (19 €)</div>
+              <div>Marges : RestauMargin (19 €)</div>
               <div>RH : Excel + DSN trimestrielle via expert-comptable</div>
               <div>Livraison : intégration native caisse (pas de middleware)</div>
-              <div>Total : 88 à 156 €/mois</div>
+              <div>Total : 97 à 156 €/mois</div>
             </div>
             <p className="text-[#374151] leading-relaxed">
               À ce niveau, la priorité est l <strong>intégration caisse-compta-marges</strong>. Les plannings restent manuels (Excel ou WhatsApp) tant que vous êtes moins de 4 salariés. <Link to="/blog/inventaire-restaurant-guide" className="text-teal-600 hover:underline">L inventaire</Link> peut se faire mensuel sur Excel ou directement dans RestauMargin.
@@ -486,10 +486,10 @@ export default function BlogLogicielGestion() {
             <div className="bg-mono-1000 rounded-xl p-5 mb-4 font-mono text-sm text-mono-100 space-y-1">
               <div>POS : Lightspeed (99 €) ou Zelty Pro (79 €) ou Cashpad Pro (69 €)</div>
               <div>Compta : Pennylane Premium (79 €) ou Tiime Pro (69 €)</div>
-              <div>Marges : RestauMargin Pro (49 €) ou Inpulse Light (129 €)</div>
+              <div>Marges : RestauMargin (19 €) ou Inpulse Light (129 €)</div>
               <div>Plannings : Skello (60-80 € pour 10-15 salariés)</div>
               <div>Livraison : Deliverect (49 €) si plus de 30 commandes plateformes/sem</div>
-              <div>Total : 306 à 487 €/mois</div>
+              <div>Total : 276 à 457 €/mois</div>
             </div>
             <p className="text-[#374151] leading-relaxed">
               C est le sweet spot du ROI. Avec une stack à 400 €/mois bien utilisée, vous économisez 8 à 15 heures par semaine en saisie et vous gagnez 1 à 2 points de food cost — soit 6 000 à 24 000 € de marge brute supplémentaire par an.
@@ -510,11 +510,11 @@ export default function BlogLogicielGestion() {
             <div className="bg-mono-1000 rounded-xl p-5 mb-4 font-mono text-sm text-mono-100 space-y-1">
               <div>POS : Lightspeed Pro (149-189 €) ou Innovorder (149-249 €)</div>
               <div>Compta : Pennylane Premium (99 €) ou Sage Multi (200 €)</div>
-              <div>Marges + Stocks : Inpulse Pro (249 €) + RestauMargin Pro (49 €)</div>
+              <div>Marges + Stocks : Inpulse Pro (249 €) + RestauMargin (19 €)</div>
               <div>RH complète : Skello + PayFit (90-150 € + 35 €/salarié)</div>
               <div>Livraison : Deliverect Pro (99 €)</div>
               <div>BI : Looker Studio gratuit ou Tableau (70 €/utilisateur)</div>
-              <div>Total : 836 à 1 850 €/mois</div>
+              <div>Total : 806 à 1 820 €/mois</div>
             </div>
             <p className="text-[#374151] leading-relaxed">
               À ce niveau, la <strong>centralisation des données</strong> devient critique. Vous avez besoin d un BI (Business Intelligence) qui consolide les ventes des 10 sites, les marges par site, les performances RH. Looker Studio (gratuit) suffit pour 80 % des besoins.
@@ -633,7 +633,7 @@ export default function BlogLogicielGestion() {
           <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 sm:p-10 text-center text-white shadow-xl">
             <h2 className="text-2xl sm:text-3xl font-bold mb-3">Testez RestauMargin sans engagement</h2>
             <p className="text-teal-100 mb-6 text-base leading-relaxed max-w-2xl mx-auto">
-              Connectez votre caisse, importez vos factures fournisseurs, calculez food cost et prime cost en temps réel. Essai gratuit 7 jours sans carte bancaire, puis 29 € par mois sans engagement.
+              Connectez votre caisse, importez vos factures fournisseurs, calculez food cost et prime cost en temps réel. Essai gratuit 7 jours sans carte bancaire, puis 19 € par mois sans engagement.
             </p>
             <Link
               to="/login"

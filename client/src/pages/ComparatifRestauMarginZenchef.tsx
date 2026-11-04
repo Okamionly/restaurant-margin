@@ -558,7 +558,7 @@ export default function ComparatifRestauMarginZenchef() {
                 <CategoryRow label="Plateforme et support" />
                 <ComparisonRow label="Multi-restaurant natif" rm="oui" zc="oui" />
                 <ComparisonRow label="Mobile / PWA" rm="oui" rmText="PWA + kiosk + balance BT" zc="oui" zcText="App mobile classique" />
-                <ComparisonRow label="Support FR (chat/email)" rm="oui" rmText="< 4h, formule Pro" zc="oui" zcText="Telephone Premium" />
+                <ComparisonRow label="Support FR (chat/email)" rm="oui" rmText="email et chat" zc="oui" zcText="Telephone Premium" />
                 <ComparisonRow label="Essai gratuit" rm="oui" rmText="7 jours sans CB" zc="non" zcText="Demo commerciale" />
                 <ComparisonRow label="Onboarding self-service" rm="oui" rmText="Wizard 5 min" zc="partiel" zcText="Onboarding accompagne" />
                 <ComparisonRow label="Donnees exportables (CSV)" rm="oui" zc="oui" />

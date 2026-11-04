@@ -454,7 +454,7 @@ export default function AlternativeTheFork() {
                 <ComparisonRow label="Multi-restaurant" rm={true} zc={true} winner="tie" />
                 <ComparisonRow label="Mobile / PWA kiosk" rm="PWA + mode kiosk balance" zc="App mobile classique" winner="rm" />
                 <ComparisonRow label="Scan de factures (OCR)" rm={true} zc={false} winner="rm" />
-                <ComparisonRow label="Support client" rm="Email + chat, < 4h" zc="Email + tel (premium)" winner="tie" />
+                <ComparisonRow label="Support client" rm="Email + chat" zc="Email + tel (premium)" winner="tie" />
               </tbody>
             </table>
           </div>

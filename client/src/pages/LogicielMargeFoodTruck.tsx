@@ -63,7 +63,7 @@ const faqItems = [
   {
     question: "Combien coûte le logiciel pour un food truck indépendant ?",
     answer:
-      "RestauMargin Pro coûte 29 EUR/mois pour un food truck indépendant : illimité en plats, emplacements, fiches techniques et scans de factures. L'investissement se rentabilise dès le premier mois en évitant ne serait-ce qu'un gaspillage par mauvaise estimation météo (15-30 EUR économisés par service). Essai gratuit 7 jours sans carte bancaire.",
+      "RestauMargin Pro coûte 29 EUR/mois pour un food truck indépendant : illimité en plats, emplacements, fiches techniques et scans de factures. Essai gratuit 7 jours sans carte bancaire.",
   },
   {
     question: "Le logiciel fonctionne-t-il dans le camion sans Wi-Fi ?",
@@ -212,7 +212,7 @@ export default function LogicielMargeFoodTruck() {
           </h1>
           <p className="text-lg sm:text-xl text-mono-400 max-w-3xl mx-auto leading-relaxed mb-8">
             Calculez le food cost réel de chaque plat, pilotez plusieurs emplacements,
-            ajustez vos prévisions à la météo. <strong>Le seul logiciel pensé pour la mobilité et la saisonnalité food truck.</strong>
+            ajustez vos prévisions à la météo. <strong>Un logiciel pensé pour la mobilité et la saisonnalité food truck.</strong>
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -849,7 +849,7 @@ export default function LogicielMargeFoodTruck() {
           <Callout type="info">
             <strong>Une question food truck spécifique ?</strong> Contactez l'équipe via la{' '}
             <Link to="/demo" className="underline font-semibold hover:text-teal-700">page demo</Link>{' '}
-            ou écrivez à contact@restaumargin.fr. Réponse sous 4h ouvrées.
+            ou écrivez à contact@restaumargin.fr.
           </Callout>
         </div>
       </section>

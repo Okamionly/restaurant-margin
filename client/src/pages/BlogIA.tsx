@@ -286,7 +286,7 @@ export default function BlogIA() {
         <div className="space-y-3 my-6">
           {[
             { q: 'L\'IA peut-elle vraiment aider un petit restaurant ?', a: 'Oui. L\'IA n\'est pas réservée aux grandes chaînes. Un petit restaurant avec 40-80 couverts/jour bénéficie énormément de l\'automatisation des tâches répétitives : saisie de factures, calcul de food cost, suivi des prix fournisseurs. Le gain de temps et la précision des calculs s\'appliquent quelle que soit la taille de l\'établissement.' },
-            { q: 'Combien coûte un outil de gestion IA pour restaurant ?', a: 'Les prix varient énormément. Certains outils comme RestauMargin proposent un essai gratuit et des formules accessibles dès le premier jour. Le retour sur investissement est généralement atteint en 1 à 3 mois grâce aux économies réalisées sur le food cost (3 à 5 points de marge en plus).' },
+            { q: 'Combien coûte un outil de gestion IA pour restaurant ?', a: 'Les prix varient énormément. Certains outils comme RestauMargin proposent un essai gratuit et des formules accessibles dès le premier jour. Le retour sur investissement dépend de vos volumes et des économies réalisées sur le food cost (3 à 5 points de marge en plus).' },
             { q: 'L\'IA va-t-elle remplacer les cuisiniers ?', a: 'Non. L\'IA excelle dans le calcul, l\'analyse de données et la détection d\'anomalies. Elle ne peut pas goûter une sauce, créer une recette originale ou gérer un coup de feu. Son rôle est de libérer le restaurateur des tâches administratives pour qu\'il puisse se concentrer sur la cuisine et le service.' },
             { q: 'Comment l\'IA détecte-t-elle les anomalies dans les achats ?', a: 'L\'IA compare les achats réels avec les consommations théoriques (calculées à partir des ventes x fiches techniques). Un écart anormal (par exemple, achat de 50 kg de saumon pour 30 kg de consommation théorique) déclenche une alerte : gaspillage, sur-portions, vol ou erreur de commande.' },
             { q: 'Faut-il des compétences techniques pour utiliser l\'IA ?', a: 'Non. Les outils modernes comme RestauMargin sont conçus pour être utilisés par des restaurateurs, pas des informaticiens. L\'interface est simple : photographiez vos factures, dictez vos recettes, consultez vos tableaux de bord. L\'IA travaille en coulisses.' },
@@ -377,7 +377,7 @@ export default function BlogIA() {
                 name: "Combien coûte un outil de gestion IA pour restaurant ?",
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: "Les prix varient. RestauMargin propose un essai gratuit. Le ROI est atteint en 1 à 3 mois grâce aux économies sur le food cost.",
+                  text: "Les prix varient. RestauMargin propose un essai gratuit. Le retour sur investissement dépend des économies sur le food cost.",
                 },
               },
               {

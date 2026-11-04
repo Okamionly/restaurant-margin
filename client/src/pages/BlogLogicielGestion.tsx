@@ -90,7 +90,7 @@ const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: 'RestauMargin',
-  description: 'Logiciel de gestion spécialisé dans le pilotage des marges et du food cost pour restaurant. Se connecte à votre caisse et à votre comptabilité pour automatiser le calcul de marge brute par plat.',
+  description: 'Logiciel de gestion spécialisé dans le pilotage des marges et du food cost pour restaurant. Calcule la marge brute par plat à partir de vos fiches techniques et de vos prix d’achat.',
   brand: { '@type': 'Brand', name: 'RestauMargin' },
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web, iOS, Android',
@@ -377,7 +377,7 @@ export default function BlogLogicielGestion() {
 
             <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Pilotage marges</h3>
             <p className="text-[#374151] leading-relaxed">
-              <strong>RestauMargin (0-49 €/mois)</strong> — spécialisé food cost, prime cost, marge brute par plat, simulation prix, import factures fournisseurs automatique, fiches techniques avec gestion perte au parage, kiosk mode + balance Bluetooth pour pesée live, 19 actions IA dont détection d anomalies. Version gratuite à vie pour les indépendants.
+              <strong>RestauMargin (0-49 €/mois)</strong> — spécialisé food cost, prime cost, marge brute par plat, simulation prix, import factures fournisseurs automatique, fiches techniques avec gestion perte au parage, kiosk mode + balance Bluetooth pour pesée live, 19 actions IA dont détection d anomalies. Essai gratuit 7 jours, puis 29 € par mois sans engagement.
             </p>
           </section>
 
@@ -633,7 +633,7 @@ export default function BlogLogicielGestion() {
           <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 sm:p-10 text-center text-white shadow-xl">
             <h2 className="text-2xl sm:text-3xl font-bold mb-3">Testez RestauMargin sans engagement</h2>
             <p className="text-teal-100 mb-6 text-base leading-relaxed max-w-2xl mx-auto">
-              Connectez votre caisse, importez vos factures fournisseurs, calculez food cost et prime cost en temps réel. Version gratuite à vie pour les indépendants, essai 7 jours sans CB pour les fonctions Pro.
+              Connectez votre caisse, importez vos factures fournisseurs, calculez food cost et prime cost en temps réel. Essai gratuit 7 jours sans carte bancaire, puis 29 € par mois sans engagement.
             </p>
             <Link
               to="/login"

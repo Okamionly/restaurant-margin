@@ -208,7 +208,7 @@ export default function LogicielMargeGastronomique() {
             Logiciel de marge pour restaurant gastronomique en 2026
           </h1>
           <p className="text-lg sm:text-xl text-mono-400 max-w-3xl mx-auto leading-relaxed mb-8">
-            Le seul logiciel SaaS qui gère produits nobles, menus dégustation, cave premium et
+            Un logiciel SaaS qui gère produits nobles, menus dégustation, cave premium et
             brigades de cuisine étoilées. <strong>Pour maîtriser un food cost de 32-40 %.</strong>
           </p>
 

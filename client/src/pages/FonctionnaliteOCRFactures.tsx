@@ -57,7 +57,7 @@ const faqItems = [
   {
     question: 'Quelle est la précision de l\'OCR sur une facture fournisseur ?',
     answer:
-      "Sur une facture imprimée nette (la grande majorité des factures fournisseurs en restauration), l'OCR atteint une précision supérieure à 98 % sur les libellés produits, les quantités et les prix. Le système est entraîné sur des milliers de bordereaux français : il reconnaît les abréviations (kg, L, U, cs pour caisse), les codes article et les formats de prix avec virgule. Sur une photo prise dans de mauvaises conditions, la précision baisse, mais l'étape de vérification rapide vous laisse corriger les rares lignes incertaines en un clic avant l'injection.",
+      "Sur une facture imprimée nette (la grande majorité des factures fournisseurs en restauration), l'OCR lit les libellés produits, les quantités et les prix ; vous vérifiez chaque ligne avant validation. Le système est entraîné sur des milliers de bordereaux français : il reconnaît les abréviations (kg, L, U, cs pour caisse), les codes article et les formats de prix avec virgule. Sur une photo prise dans de mauvaises conditions, la précision baisse, mais l'étape de vérification rapide vous laisse corriger les rares lignes incertaines en un clic avant l'injection.",
   },
   {
     question: 'Est-ce que ça lit les factures manuscrites ou les tickets de marché ?',

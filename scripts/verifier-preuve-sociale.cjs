@@ -72,6 +72,42 @@ const MOTIFS = [
     regex: /sur\s+\d+\s+avis/gi,
     pourquoi: "aucun avis client n'existe.",
   },
+  // ── Ajouts du 2026-11-04 : un nettoyage manuel a trouve 82 pages porteuses de
+  // preuves sociales que AUCUN des motifs ci-dessus ne voyait (« Plus de 500
+  // restaurants utilisent deja RestauMargin », <TestimonialCard name="Marie L.">,
+  // « inspire d'un client RestauMargin, anonymise », « panel de 50 restaurants »).
+  {
+    nom: 'adoption chiffree sans le signe +',
+    regex: /(plus de|deja|déjà)\s+\d[\d\s.]*\s*(restaurants?|restaurateurs?|bistrots?|brasseries?|bars?|etablissements?|établissements?|clients?|cuisines?|pizzerias?|boulangeries?)\b[^.]{0,60}?(utilisent|utilisant|font confiance|equipes|équipés|ont adopte|ont adopté|suivis|pilotent)/gi,
+    pourquoi: "revendique une adoption chiffree. Reel : une vingtaine de comptes, aucun abonne payant.",
+  },
+  {
+    nom: 'outil revendique comme deja utilise',
+    regex: /(utilisent|utilisant)\s+(deja|déjà)\s+RestauMargin/gi,
+    pourquoi: 'revendique des utilisateurs qui ne peuvent pas etre cites.',
+  },
+  {
+    nom: 'clients revendiques',
+    // « Ce que disent nos clients » est le titre des sections de VRAIS temoignages,
+    // qui ne s'affichent que si le tableau n'est pas vide : exclu.
+    regex: /(?<!disent )\bnos clients\b|client(s)?\s+(reel(s)?\s+|réel(s)?\s+)?RestauMargin|inspir[ée]+\s+d.un client/gi,
+    pourquoi: 'aucun client payant : « nos clients » et les cas clients sont invérifiables.',
+  },
+  {
+    nom: 'composant de temoignage',
+    regex: /<(TestimonialCard|Testimonial|TemoignageCard)\b/g,
+    pourquoi: "un temoignage ne s'ecrit pas dans le code : il vient d'un client reel qui l'a autorise.",
+  },
+  {
+    nom: 'source interne inventee',
+    regex: /panel de \d+\s+(restaurants?|restaurateurs?|etablissements?|établissements?)|(donnees|données|releve|relevé)s?\s+(agregees\s+|agrégées\s+)?(de\s+|sur\s+)?RestauMargin|(analyse|donnees|données)\s+(reelles|réelles)\s+de\s+(centaines|milliers|\d+)/gi,
+    pourquoi: "cite une etude ou une base de donnees que RestauMargin n'a pas.",
+  },
+  {
+    nom: 'personne nommee par prenom et initiale',
+    regex: /\b[A-ZÉ][a-zéèëï]{2,}\s+[A-Z]\.(?=[\s,»"'’)<])/g,
+    pourquoi: 'un prenom suivi d une initiale signe un temoignage ou un cas client invente.',
+  },
   {
     nom: 'label de popularite non mesure',
     regex: /plateforme\s+(n°?\s*1|#1)|logiciel\s+(n°?\s*1|#1)|le\s+plus\s+utilise/gi,
@@ -94,6 +130,10 @@ const IGNORES = [
   // Conservee telle quelle pour memoire ; la signaler a chaque run ferait rougir
   // le CI pour un contenu qui n'atteint plus personne.
   /Temoignages\.tsx$/,
+  // Voix du RESTAURATEUR envers SES clients (modeles d'e-mails du CRM) et offre
+  // d'emploi au futur : pas des allegations de RestauMargin (2026-11-04).
+  /\/Clients\.tsx$/,
+  /\/Careers\.tsx$/,
   // Comparatifs : les notes qui y figurent sont celles des CONCURRENTS (Skello,
   // Cashpad, Lightspeed...), relevees sur Capterra et G2. Ce sont des donnees
   // sur des tiers, pas des allegations sur RestauMargin — dont la note propre a
@@ -161,7 +201,9 @@ function lignesCommentees(lignes) {
 }
 
 const trouvailles = [];
-for (const f of listerFichiers(RACINE)) {
+// prerender.cjs porte le texte servi a Google (seoBody, FAQ) : meme regle (2026-11-04).
+const PRERENDER = path.join(__dirname, '..', 'client', 'scripts', 'prerender.cjs');
+for (const f of [...listerFichiers(RACINE), PRERENDER]) {
   const lignes = fs.readFileSync(f, 'utf8').split(/\r?\n/);
   const commentees = lignesCommentees(lignes);
   lignes.forEach((ligne, i) => {

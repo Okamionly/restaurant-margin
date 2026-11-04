@@ -791,7 +791,7 @@ export default function GlossaireRestauration() {
                 to="/login?mode=register"
                 className="block w-full text-center px-4 py-2.5 rounded-xl bg-[#111111] hover:bg-black text-white text-sm font-semibold transition-colors"
               >
-                Essai gratuit 14 jours
+                Essai gratuit 7 jours
               </Link>
             </div>
           </div>
@@ -954,7 +954,7 @@ export default function GlossaireRestauration() {
                 Les appliquer en automatique, c'est mieux.
               </h2>
               <p className="text-white/70 text-base sm:text-lg max-w-2xl mb-6">
-                RestauMargin calcule votre food cost, votre marge brute, votre prime cost et tous vos KPI en temps réel à partir de vos fiches techniques et de votre mercuriale. Essai gratuit 14 jours sans CB.
+                RestauMargin calcule votre food cost, votre marge brute, votre prime cost et tous vos KPI en temps réel à partir de vos fiches techniques et de votre mercuriale. Essai gratuit 7 jours sans CB.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link

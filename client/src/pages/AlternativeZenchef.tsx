@@ -44,7 +44,7 @@ const faqItems = [
   },
   {
     question: "Comment RestauMargin se compare-t-il a Zenchef sur la qualite du support ?",
-    answer: "Les deux outils proposent un support en francais par email et chat. RestauMargin inclut le support dans toutes les formules, y compris la formule Pro a 29 EUR. Zenchef reserve une partie de son accompagnement (formation, onboarding personnalise) aux formules superieures. Notre temps de reponse moyen est de moins de 4 heures en jours ouvres.",
+    answer: "Les deux outils proposent un support en francais par email et chat. RestauMargin inclut le support dans toutes les formules, y compris la formule Pro a 29 EUR. Zenchef reserve une partie de son accompagnement (formation, onboarding personnalise) aux formules superieures.",
   },
   {
     question: "Existe-t-il une integration entre RestauMargin et un logiciel de caisse ?",
@@ -438,7 +438,7 @@ export default function AlternativeZenchef() {
                 <ComparisonRow label="Mobile / PWA kiosk" rm="PWA + mode kiosk balance" zc="App mobile classique" winner="rm" />
                 <ComparisonRow label="Scan de factures (OCR)" rm={true} zc={false} winner="rm" />
                 <ComparisonRow label="Onboarding" rm="Self-service + wizard 5 min" zc="Onboarding accompagné" winner="zc" />
-                <ComparisonRow label="Support client" rm="Email + chat, < 4h" zc="Email + téléphone (formules premium)" winner="tie" />
+                <ComparisonRow label="Support client" rm="Email + chat" zc="Email + téléphone (formules premium)" winner="tie" />
               </tbody>
             </table>
           </div>

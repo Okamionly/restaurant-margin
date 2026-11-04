@@ -841,7 +841,7 @@ export default function LogicielMargeBistrot() {
           <Callout type="info">
             <strong>Une question spécifique sur votre bistrot ?</strong> Contactez notre équipe via la{' '}
             <Link to="/demo" className="underline font-semibold hover:text-teal-700">page demo</Link> ou écrivez à
-            contact@restaumargin.fr. Réponse sous 4h ouvrées, conseil personnalisé gratuit.
+            contact@restaumargin.fr. conseil personnalisé gratuit.
           </Callout>
         </div>
       </section>

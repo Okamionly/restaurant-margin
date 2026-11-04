@@ -621,7 +621,7 @@ export default function BlogLogicielCaisse() {
           <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 sm:p-10 text-center text-white shadow-xl">
             <h2 className="text-2xl sm:text-3xl font-bold mb-3">Vos données de caisse méritent un outil qui les transforme en marge</h2>
             <p className="text-teal-100 mb-6 text-base leading-relaxed max-w-2xl mx-auto">
-              RestauMargin s intègre avec votre logiciel de caisse pour calculer automatiquement food cost, marge brute par plat et alertes en temps réel. Version gratuite à vie pour les indépendants.
+              RestauMargin s intègre avec votre logiciel de caisse pour calculer automatiquement food cost, marge brute par plat et alertes en temps réel. Essai gratuit 7 jours, puis 29 € par mois sans engagement.
             </p>
             <Link
               to="/login"

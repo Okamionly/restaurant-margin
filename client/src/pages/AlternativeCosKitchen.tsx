@@ -234,8 +234,8 @@ export default function AlternativeCosKitchen() {
             <p>
               COS Kitchen s'est fait une place dans le paysage francais de la gestion de food cost avec
               une promesse simple : un calculateur gratuit, sans engagement, pour connaitre le cout et
-              la marge de chaque plat. Plus de 2 500 restaurateurs l'utilisent selon leur communication
-              officielle. C'est une porte d'entree accessible pour qui n'a jamais mis un chiffre precis
+              la marge de chaque plat. C'est un outil établi dans la restauration.
+              C'est une porte d'entree accessible pour qui n'a jamais mis un chiffre precis
               sur ses fiches techniques.
             </p>
             <p>

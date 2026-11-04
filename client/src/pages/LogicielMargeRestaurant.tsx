@@ -539,7 +539,7 @@ export default function LogicielMargeRestaurant() {
           </div>
 
           <Callout type="info">
-            <strong>Une question spécifique ?</strong> Contactez notre équipe via la <Link to="/demo" className="underline font-semibold hover:text-teal-700">page demo</Link> ou écrivez à contact@restaumargin.fr. Réponse sous 4h ouvrées.
+            <strong>Une question spécifique ?</strong> Contactez notre équipe via la <Link to="/demo" className="underline font-semibold hover:text-teal-700">page demo</Link> ou écrivez à contact@restaumargin.fr.
           </Callout>
         </div>
       </section>

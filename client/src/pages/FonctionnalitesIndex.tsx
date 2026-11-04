@@ -77,8 +77,8 @@ export default function FonctionnalitesIndex() {
           Tout ce qu'il faut pour piloter une <span style={{ color: ACCENT }}>cuisine rentable.</span>
         </h1>
         <p className="mt-6 text-lg max-w-2xl leading-relaxed" style={{ color: TEXT_MUTED }}>
-          Huit modules qui se parlent — pas une suite d'outils dispersés. Construits avec des chefs,
-          sur le pass, à 23 h. Chaque module est pensé pour faire gagner du temps et de la marge,
+          Huit modules qui se parlent — pas une suite d'outils dispersés.
+          Chaque module est pensé pour faire gagner du temps et de la marge,
           sans jargon SaaS.
         </p>
       </section>

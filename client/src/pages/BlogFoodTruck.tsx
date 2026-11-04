@@ -909,14 +909,14 @@ export default function BlogFoodTruck() {
               gestion saisonnalité. Suivi quotidien CA et marges en temps réel.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
-              <strong>29 EUR/mois</strong> &mdash; essai gratuit 14 jours, sans engagement, sans carte bancaire.
+              <strong>29 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/login?mode=register"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white text-teal-700 font-bold rounded-full hover:bg-teal-50 transition-colors text-lg shadow-lg"
               >
-                Essai gratuit 14 jours
+                Essai gratuit 7 jours
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link

@@ -1083,7 +1083,7 @@ export default function BlogPrevisionVentes() {
               </h2>
               <p className="text-teal-100 mb-6 text-sm sm:text-base leading-relaxed max-w-[560px] mx-auto">
                 RestauMargin intègre forecast couverts, commandes matières, marges et alertes écarts dans
-                un seul outil. Connecté à votre caisse, intègre la météo, propulsé par l'IA Claude.
+                un seul outil. Assistant IA intégré.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <Link

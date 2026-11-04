@@ -177,7 +177,7 @@ export default function LogicielMargeBoulangerie() {
         date="Mai 2026"
         title="Logiciel de marge pour boulangerie pâtisserie : calculez vos coûts en 2026"
         accentWord="boulangerie pâtisserie"
-        subtitle="Le seul logiciel SaaS français dédié aux boulangeries et pâtisseries. Calcul de marge, rendement farine, ventilation coût four et majoration nuit. Essai gratuit 7 jours sans carte bancaire."
+        subtitle="Un logiciel SaaS français dédié aux boulangeries et pâtisseries. Calcul de marge, rendement farine, ventilation coût four et majoration nuit. Essai gratuit 7 jours sans carte bancaire."
       />
 
       {/* ── Contenu principal ── */}
@@ -890,7 +890,7 @@ export default function LogicielMargeBoulangerie() {
               Essayez RestauMargin Boulangerie gratuitement
             </h2>
             <p className="text-amber-100 text-lg max-w-xl mx-auto mb-3 leading-relaxed">
-              Le seul logiciel SaaS français qui intègre rendement farine, coût four et
+              Un logiciel SaaS français qui intègre rendement farine, coût four et
               majoration nuit dans le calcul de marge boulangerie pâtisserie.
             </p>
             <p className="text-amber-50 text-base max-w-xl mx-auto mb-8">

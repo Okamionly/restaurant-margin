@@ -80,7 +80,7 @@ export default function BlogCalendrierHaccp() {
             Un contrôle DDPP qui débarque un mardi à 11h, c'est la hantise de tout restaurateur. Le contrôleur ne demande pas si vous <em>connaissez</em> la méthode HACCP — il demande à voir vos enregistrements. Et c'est là que beaucoup d'établissements se cassent les dents : la méthode est en place, le matériel suit, mais les relevés n'ont pas été tenus, ou pire, ont été remplis tous d'un coup la veille.
           </p>
           <p>
-            Ce guide donne le seul outil qui résout ce problème durablement : un <strong>calendrier HACCP</strong> structure, qui transforme une obligation réglementaire en routine d'équipe — quotidienne, hebdomadaire, mensuelle, annuelle. Vous trouverez à la fin un <strong>modèle gratuit 2026 prêt à imprimer</strong>, valide pour la restauration commerciale française.
+            Ce guide donne un outil qui résout ce problème durablement : un <strong>calendrier HACCP</strong> structure, qui transforme une obligation réglementaire en routine d'équipe — quotidienne, hebdomadaire, mensuelle, annuelle. Vous trouverez à la fin un <strong>modèle gratuit 2026 prêt à imprimer</strong>, valide pour la restauration commerciale française.
           </p>
         </div>
 

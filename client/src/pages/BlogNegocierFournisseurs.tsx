@@ -310,7 +310,7 @@ export default function BlogNegocierFournisseurs() {
               Centralisez tous vos prix fournisseurs avec RestauMargin
             </h2>
             <p className="text-[#A3A3A3] dark:text-[#737373] text-sm mb-6 max-w-md mx-auto">
-              Module Mercuriale inclus : comparaison automatique des devis, alertes dérive tarifaire, historique des prix sur 24 mois. Essai 14 jours gratuit, sans CB.
+              Module Mercuriale inclus : comparaison automatique des devis, alertes dérive tarifaire, historique des prix sur 24 mois. Essai 7 jours gratuit, sans CB.
             </p>
             <Link
               to="/pricing"

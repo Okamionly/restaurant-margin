@@ -478,7 +478,7 @@ export default function BlogGaspillage() {
           <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-8 sm:p-12 text-center text-white">
             <Leaf className="w-12 h-12 mx-auto mb-4 opacity-90" />
             <h2 className="text-2xl sm:text-3xl font-extrabold mb-4">
-              RestauMargin vous aide à réduire votre gaspillage de 30 %
+              RestauMargin vous aide à mesurer et réduire votre gaspillage
             </h2>
             <p className="text-emerald-100 max-w-xl mx-auto mb-8 leading-relaxed">
               Suivi des stocks en temps réel, alertes DLC, fiches techniques calibrées, prévisions

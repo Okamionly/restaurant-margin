@@ -444,7 +444,7 @@ export default function AlternativeLightspeed() {
                 <ComparisonRow label="Mobile / PWA kiosk" rm="PWA + mode kiosk balance" ls="iPad + iOS classique" winner="rm" />
                 <ComparisonRow label="Intégrations livraison" rm="Via connecteur caisse" ls="Native (Deliveroo, Uber Eats)" winner="ls" />
                 <ComparisonRow label="Onboarding" rm="Self-service + wizard 5 min" ls="Onboarding accompagné" winner="tie" />
-                <ComparisonRow label="Support client" rm="Email + chat, < 4h" ls="Email + téléphone (formules sup.)" winner="tie" />
+                <ComparisonRow label="Support client" rm="Email + chat" ls="Email + téléphone (formules sup.)" winner="tie" />
               </tbody>
             </table>
           </div>

@@ -301,7 +301,7 @@ export default function AlternativeLAddition() {
               </div>
               <ul className="space-y-2.5 text-sm text-emerald-800 leading-relaxed">
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>POS iPad robuste, certifié NF525, conforme loi anti-fraude TVA</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Plus de 5 000 restaurants équipés en France, marque établie</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Marque établie et largement diffusée en France</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Application mobile pour la prise de commande à table</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Ticket dématérialisé conforme loi du 1er août 2023</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Plan de salle digital, gestion des additions partagées</span></li>
@@ -442,7 +442,7 @@ export default function AlternativeLAddition() {
                 <ComparisonRow label="Encaissement TPE" rm={false} zc={true} winner="zc" />
                 <ComparisonRow label="Multi-restaurant" rm={true} zc={true} winner="tie" />
                 <ComparisonRow label="Mobile / PWA" rm="PWA tout device" zc="App iPad uniquement" winner="rm" />
-                <ComparisonRow label="Support" rm="Email + chat < 4h" zc="7j/7 + installation" winner="zc" />
+                <ComparisonRow label="Support" rm="Email + chat" zc="7j/7 + installation" winner="zc" />
               </tbody>
             </table>
           </div>

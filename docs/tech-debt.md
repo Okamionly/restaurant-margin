@@ -179,3 +179,16 @@ if (!JWT_SECRET) throw new Error('JWT_SECRET manquant');
   public), puis mettre a jour les variables Vercel.
 - Ajouter les secrets `E2E_DEMO_EMAIL` / `E2E_DEMO_PASSWORD` au depot (tests E2E).
 - Revoquer les jetons Vercel temporaires utilises pendant les sessions d'audit.
+
+## Dette SEO — session du 2026-11-04 (« marge restaurant »)
+
+- **Accents absents sur les pages de contenu** : 68 fichiers sur 81 (`client/src/pages/Blog*`,
+  `Guide*`, `Logiciel*`) contiennent du francais sans accents (641 occurrences de 8 mots temoins :
+  etablissement, rentabilite, benefices...). Visible dans les extraits Google et pour le lecteur.
+  Correction a faire a la main ou par lots relus : un remplacement aveugle casserait les slugs
+  d'URL (`/blog/seuil-rentabilite-restaurant`), les `id` d'ancre et les noms de variables.
+  Fait sur `/blog/calcul-marge-restaurant` (titres et sommaire seulement).
+- **Position sur « marge restaurant »** : 55 en moyenne sur 3 mois, 26-28 sur 28 jours (GSC). Le guide
+  a ete recentre le 04/11 (commit `d401ff1`). A remesurer dans la Search Console vers le 25/11, meme
+  filtre (requete exacte, onglet Pages). Le plafond restant est l'autorite du domaine : liens entrants,
+  action fondateur (annuaires logiciels, medias restauration).

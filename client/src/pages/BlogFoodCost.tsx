@@ -98,7 +98,7 @@ const faqItems = [
   {
     question: "Le food cost est-il différent pour la livraison et la salle ?",
     answer:
-      "Oui, et c'est un piège majeur. Le food cost livraison est généralement plus élevé à cause des commissions plateformes (UberEats, Deliveroo : 25-35 % du prix vente) et du packaging (0,30 à 0,80 EUR par commande). Beaucoup de restaurants pensent gagner sur la livraison alors qu'ils y perdent. Calculez un food cost dédicacé par canal de vente et adaptez vos prix livraison en conséquence (+15 à +20 % par rapport au prix salle).",
+      "Oui, et c'est un piège majeur. Le food cost livraison est généralement plus élevé à cause des commissions plateformes (UberEats, Deliveroo : 25-35 % du prix vente) et du packaging (0,30 à 0,80 EUR par commande). Beaucoup de restaurants pensent gagner sur la livraison alors qu'ils y perdent. Calculez un food cost dédié par canal de vente et adaptez vos prix livraison en conséquence (+15 à +20 % par rapport au prix salle).",
   },
   {
     question: "Comment automatiser le calcul du food cost ?",

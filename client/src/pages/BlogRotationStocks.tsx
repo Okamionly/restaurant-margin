@@ -944,7 +944,7 @@ export default function BlogRotationStocks() {
             <p>
               Plusieurs logiciels existent en France : <strong>RestauMargin</strong> (positionné sur
               la marge brute + rotation + alertes IA, 29 EUR/mois), <strong>Easilys</strong> (gestion
-              de stocks + traceabilite HACCP, 89 EUR/mois), <strong>Marketman</strong> (américain
+              de stocks + traçabilité HACCP, 89 EUR/mois), <strong>Marketman</strong> (américain
               traduit en français, 149 USD/mois), <strong>Foodics</strong> (POS complet + stocks).
               Pour un indépendant ou une petite chaîne, RestauMargin offre le meilleur ratio
               fonctionnalités / prix pour le suivi de la rotation et de la marge.
@@ -1024,7 +1024,7 @@ export default function BlogRotationStocks() {
             </Link>
             <Link to="/blog/gaspillage-alimentaire" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Réduire le gaspillage</h3>
-              <p className="text-xs text-mono-500">Levier complémentaire à la rotation : recettes anti-gaspi, dons, traceabilite.</p>
+              <p className="text-xs text-mono-500">Levier complémentaire à la rotation : recettes anti-gaspi, dons, traçabilité.</p>
             </Link>
           </div>
         </section>

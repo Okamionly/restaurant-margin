@@ -46,7 +46,7 @@ const faqItems = [
   {
     question: "Comment calculer le prime cost de mon restaurant ?",
     answer:
-      "Quatre étapes : 1) Calculer le food cost réel = (Stock initial + Achats - Stock final) / CA HT x 100. 2) Calculer le labour cost = (Salaires bruts + Charges patronales + Avantages) / CA HT x 100. Attention : utilisez le coût employeur total, pas seulement le brut. 3) Additionner les deux pourcentages. 4) Comparer aux benchmarks de votre type d'établissement. Le calcul doit être fait au minimum mensuellement, ideallement chaque semaine.",
+      "Quatre étapes : 1) Calculer le food cost réel = (Stock initial + Achats - Stock final) / CA HT x 100. 2) Calculer le labour cost = (Salaires bruts + Charges patronales + Avantages) / CA HT x 100. Attention : utilisez le coût employeur total, pas seulement le brut. 3) Additionner les deux pourcentages. 4) Comparer aux benchmarks de votre type d'établissement. Le calcul doit être fait au minimum mensuellement, idéalement chaque semaine.",
   },
   {
     question: "Différence entre prime cost et food cost ?",
@@ -91,7 +91,7 @@ const faqItems = [
   {
     question: "À quelle fréquence calculer le prime cost ?",
     answer:
-      "Le prime cost doit être calculé au minimum mensuel, ideallement hebdomadaire. Sans suivi rapproché, vous découvrez les dérives 30 à 60 jours trop tard, ce qui représente facilement 5 000 à 15 000 EUR de marge perdue. La méthode : food cost hebdo (via inventaires partiels), labour cost hebdo (via plannings), prime cost mensuel complet (via P&L). Un logiciel automatisé comme RestauMargin permet un suivi en temps réel.",
+      "Le prime cost doit être calculé au minimum mensuel, idéalement hebdomadaire. Sans suivi rapproché, vous découvrez les dérives 30 à 60 jours trop tard, ce qui représente facilement 5 000 à 15 000 EUR de marge perdue. La méthode : food cost hebdo (via inventaires partiels), labour cost hebdo (via plannings), prime cost mensuel complet (via P&L). Un logiciel automatisé comme RestauMargin permet un suivi en temps réel.",
   },
   {
     question: "Pourquoi le prime cost est-il plus important que la marge brute ?",

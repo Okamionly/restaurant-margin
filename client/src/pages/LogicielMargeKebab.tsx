@@ -799,7 +799,7 @@ export default function LogicielMargeKebab() {
             <LevierCard
               number={1}
               title="Menus combo systématiques (sandwich + frites + boisson)"
-              desc="Le levier #1 absolu. Sans upsell : ticket moyen 10 EUR. Avec menu proposé systématiquement à 12,50 EUR (+2,50 EUR) : +25 % de CA, +29 % de marge brute par commande. Sur 200 commandes/jour avec 70 % de menus complètes : +350 EUR de marge brute supplémentaire quotidienne, soit 10 500 EUR/mois."
+              desc="Le levier #1 absolu. Sans upsell : ticket moyen 10 EUR. Avec menu proposé systématiquement à 12,50 EUR (+2,50 EUR) : +25 % de CA, +29 % de marge brute par commande. Sur 200 commandes/jour avec 70 % de menus complets : +350 EUR de marge brute supplémentaire quotidienne, soit 10 500 EUR/mois."
             />
             <LevierCard
               number={2}
@@ -891,7 +891,7 @@ export default function LogicielMargeKebab() {
                 title="Pilotage en temps réel et fidélisation"
                 actions={[
                   'Tableau de bord de marge vérifié 2x/semaine (mercredi + dimanche)',
-                  'Alertes prix activées sur broche veau-agneau, pain pita, frites surgelés',
+                  'Alertes prix activées sur broche veau-agneau, pain pita, frites surgelées',
                   'Lancement carte de fidélité (10e menu offert)',
                   'Résultat final : marge nette 19 %, taux de retour client +42 %',
                 ]}

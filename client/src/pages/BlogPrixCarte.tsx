@@ -231,7 +231,7 @@ export default function BlogPrixCarte() {
             </ul>
             <p>
               La tarification n'est pas un calcul ponctuel : c'est un système qui doit être révisé
-              tous les 6 mois minimum, ideallement à chaque rotation de carte. Un restaurant qui ne
+              tous les 6 mois minimum, idéalement à chaque rotation de carte. Un restaurant qui ne
               touche pas à ses prix pendant 2 ans perd entre 8 et 15 points de marge brute, mécaniquement,
               par effet d'inflation des matières premières.
             </p>
@@ -644,7 +644,7 @@ export default function BlogPrixCarte() {
           <div className="prose-content">
             <p>
               L'augmentation de prix est un acte de gestion sensible. Bien faite, elle protège votre
-              marge sans érodes votre clientèle. Mal faite, elle plombe votre fréquentation et votre
+              marge sans éroder votre clientèle. Mal faite, elle plombe votre fréquentation et votre
               réputation. Voici les règles pour le faire correctement.
             </p>
 

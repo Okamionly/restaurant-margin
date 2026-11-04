@@ -483,7 +483,7 @@ export default function BlogLogicielCaisse() {
               <h2 className="text-2xl sm:text-3xl font-bold text-mono-100">8. Solutions nomades : SumUp, Zettle, Tiller</h2>
             </div>
             <p className="text-[#374151] leading-relaxed mb-4">
-              Pour un food truck, un snack saisonnier, un concept itinérant ou un point de vente eveneementiel, trois solutions tiennent la route :
+              Pour un food truck, un snack saisonnier, un concept itinérant ou un point de vente événementiel, trois solutions tiennent la route :
             </p>
             <p className="text-[#374151] leading-relaxed mb-4">
               <strong>SumUp POS (ex-Tiller)</strong> reste le standard. Hardware compact, batterie autonome, 4G intégrée sur certains modèles. Le kit Tiller Air (terminal + caisse + imprimante 80 mm + tiroir-caisse) sort autour de 550 € en achat, ou 39 €/mois en location.

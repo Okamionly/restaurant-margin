@@ -43,7 +43,7 @@ const faqItems = [
   },
   {
     question: "Les fiches techniques sont-elles obligatoires en France ?",
-    answer: "Aucune obligation légale stricto sensu, mais elles sont fortement recommandées par la DGCCRF dans le cadre du suivi de la traceabilite alimentaire et indispensables pour respecter le règlement INCO (information sur les allergènes). En cas de contrôle sanitaire, des fiches techniques structurées démontrent une bonne maîtrise HACCP de l'établissement.",
+    answer: "Aucune obligation légale stricto sensu, mais elles sont fortement recommandées par la DGCCRF dans le cadre du suivi de la traçabilité alimentaire et indispensables pour respecter le règlement INCO (information sur les allergènes). En cas de contrôle sanitaire, des fiches techniques structurées démontrent une bonne maîtrise HACCP de l'établissement.",
   },
   {
     question: "Quelle différence entre fiche technique et fiche recette ?",
@@ -247,7 +247,7 @@ export default function BlogFicheTechnique() {
               Historiquement, la fiche technique vient des cuisines de palaces et brigades d'Escoffier
               au début du XXe siècle. À l'époque, il s'agissait de garantir la reproductibilité des plats
               malgré les rotations de cuisiniers. Aujourd'hui, avec la complexification des réglementations
-              (INCO sur les allergènes, traceabilite HACCP) et la pression sur les marges, elle est devenue
+              (INCO sur les allergènes, traçabilité HACCP) et la pression sur les marges, elle est devenue
               indispensable dans tous les segments de la restauration commerciale.
             </p>
           </div>
@@ -1100,7 +1100,7 @@ export default function BlogFicheTechnique() {
             <li>Règlement (UE) n degrés 1169/2011 - INCO (information du consommateur sur les denrées alimentaires)</li>
             <li>GIRA Conseil - Benchmarks opérationnels restauration 2025</li>
             <li>SNRC - Syndicat National de la Restauration Collective - guides nutritionnels</li>
-            <li>DGCCRF - Recommandations sur la traceabilite et les fiches techniques HACCP</li>
+            <li>DGCCRF - Recommandations sur la traçabilité et les fiches techniques HACCP</li>
           </ul>
         </section>
 

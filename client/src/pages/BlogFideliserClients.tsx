@@ -489,7 +489,7 @@ export default function BlogFideliserClients() {
             <p>
               Voici la méthodologie opérationnelle pour lancer un programme de fidélité rentable.
               Comptez 30 jours entre le déclic stratégique et le lancement effectif. Saute aucune
-              étape : la séquence est conccue pour éviter les pièges qui font échouer 60 % des
+              étape : la séquence est conçue pour éviter les pièges qui font échouer 60 % des
               programmes restaurant (étude Como 2024).
             </p>
           </div>
@@ -535,7 +535,7 @@ export default function BlogFideliserClients() {
 
           <Callout type="info">
             <strong>Pilotage par la donnée :</strong> chaque levier de fidélisation s'analyse en
-            paralle de votre marge globale. Si votre programme augmente le CA mais érode votre marge
+            parallèle de votre marge globale. Si votre programme augmente le CA mais érode votre marge
             brute, vous perdez de l'argent. Vérifiez votre <Link to="/blog/calcul-marge-restaurant" className="underline font-semibold hover:text-teal-700">marge restaurant</Link> chaque mois pour valider le ROI net.
           </Callout>
         </section>
@@ -726,7 +726,7 @@ export default function BlogFideliserClients() {
             <p>
               Le SMS gère les moments clés (relance, anniversaire, offre flash). L'email gère
               l'engagement long terme (newsletter mensuelle, événements, contenus). La combinaison
-              est imbatable : taux d'engagement combiné 3,5x supérieur à chaque canal pris isolément.
+              est imbattable : taux d'engagement combiné 3,5x supérieur à chaque canal pris isolément.
             </p>
 
             <div className="mt-6 overflow-x-auto">

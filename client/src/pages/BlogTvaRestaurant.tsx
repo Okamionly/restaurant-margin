@@ -58,7 +58,7 @@ const faqItems = [
   {
     question: "Quelle TVA pour la livraison de repas (UberEats, Deliveroo) ?",
     answer:
-      "La TVA sur les repas livrés suit la même logique que la vente à emporter : 10 % pour un plat chaud destiné à une consommation immédiate, 5,5 % pour un produit conditionné à conserver, 20 % pour l'alcool. La commission prélevé par la plateforme (souvent 25 à 35 %) est, elle, soumise à 20 % de TVA, mais cette TVA est généralement déductible pour le restaurateur. Attention à bien distinguer la TVA sur la vente et la TVA sur la commission.",
+      "La TVA sur les repas livrés suit la même logique que la vente à emporter : 10 % pour un plat chaud destiné à une consommation immédiate, 5,5 % pour un produit conditionné à conserver, 20 % pour l'alcool. La commission prélevée par la plateforme (souvent 25 à 35 %) est, elle, soumise à 20 % de TVA, mais cette TVA est généralement déductible pour le restaurateur. Attention à bien distinguer la TVA sur la vente et la TVA sur la commission.",
   },
   {
     question: "La TVA payée sur mes achats est-elle récupérable ?",
@@ -379,7 +379,7 @@ export default function BlogTvaRestaurant() {
             </div>
             <h3 className="text-lg font-bold text-mono-100 mt-6 mb-2">La livraison de repas</h3>
             <p>
-              Les repas livrés via une plateforme (UberEats, Deliveroo) ou en propre suivent la logique de la vente à emporter : <strong>10 %</strong> pour un plat chaud à consommation immédiate, <strong>5,5 %</strong> pour un produit conditionné à conserver, <strong>20 %</strong> pour l'alcool. La commission prélevé par la plateforme est soumise à 20 %, mais cette TVA est en général déductible. Pensez à bien distinguer la TVA sur la vente au client de la TVA sur la commission. Voir notre guide sur la <Link to="/blog/livraison-restaurant-rentabilite" className="text-teal-700 font-semibold hover:underline">rentabilité de la livraison</Link>.
+              Les repas livrés via une plateforme (UberEats, Deliveroo) ou en propre suivent la logique de la vente à emporter : <strong>10 %</strong> pour un plat chaud à consommation immédiate, <strong>5,5 %</strong> pour un produit conditionné à conserver, <strong>20 %</strong> pour l'alcool. La commission prélevée par la plateforme est soumise à 20 %, mais cette TVA est en général déductible. Pensez à bien distinguer la TVA sur la vente au client de la TVA sur la commission. Voir notre guide sur la <Link to="/blog/livraison-restaurant-rentabilite" className="text-teal-700 font-semibold hover:underline">rentabilité de la livraison</Link>.
             </p>
             <h3 className="text-lg font-bold text-mono-100 mt-6 mb-2">Les menus à prix unique avec alcool</h3>
             <p>

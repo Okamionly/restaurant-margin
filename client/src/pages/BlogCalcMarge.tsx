@@ -943,7 +943,7 @@ export default function BlogCalcMarge() {
           <div className="prose-content">
             <p>
               Maintenant l'entrecôte grillée servie dans une brasserie à 28 EUR TTC, soit environ 25,45 EUR HT.
-              Cas opposé à la pizza : un produit nobre, cher au kilo, avec une marge plus serrée.
+              Cas opposé à la pizza : un produit noble, cher au kilo, avec une marge plus serrée.
             </p>
           </div>
 
@@ -1087,7 +1087,7 @@ export default function BlogCalcMarge() {
               Les ratios affichés sont des médianes sectorielles 2026. Un <strong>sushi</strong> à 65 % paraît
               faible mais s'explique par le coût du poisson frais (saumon, thon) et du riz japonais importé.
               Une <strong>pizzeria</strong> à 75 % bénéficie d'ingrédients peu chers (farine, tomate, mozzarella)
-              et de prix de vente élevés grâce au positionnement perpu.
+              et de prix de vente élevés grâce au positionnement perçu.
             </p>
             <p>
               Si vous êtes en-dessous de la médiane, le diagnostic doit être rapide : fiches techniques, pertes,

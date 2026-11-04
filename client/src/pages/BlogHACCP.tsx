@@ -348,7 +348,7 @@ export default function BlogHACCP() {
             <p>
               Les contrôles sanitaires sont effectués par la DDPP (Direction Départementale de la
               Protection des Populations), anciennement DSV (Direction des Services Vétérinaires).
-              Ils peuvent être programmés ou inoipines, et interviennent en moyenne tous les 2 à
+              Ils peuvent être programmés ou inopinés, et interviennent en moyenne tous les 2 à
               3 ans pour un restaurant classique. En cas de plainte d'un client ou d'intoxication
               alimentaire, le contrôle est immédiat.
             </p>

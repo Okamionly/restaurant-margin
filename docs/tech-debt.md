@@ -196,14 +196,13 @@ if (!JWT_SECRET) throw new Error('JWT_SECRET manquant');
   qui colore le badge. Mesure après coup : 0 mot témoin sans accent dans le texte visible ; les
   101 occurrences brutes restantes sont des slugs, des ancres et des commentaires de code.
   Vérifié en prod (Googlebot) : titres accentués, pages de 103 à 120 Ko servies en SSR complet.
-- **Reste — fautes que l'ajout d'accents ne pouvait pas corriger** (il faut ajouter ou retirer une
-  lettre) : « commission prélevé » ×2 → prélevée (`BlogTvaRestaurant`), « menus complètes » →
-  complets et « frites surgelés » → surgelées (`LogicielMargeKebab`), « degrees C » → degrés
-  (`LogicielMargeBurger`), « nobre » (`BlogCalcMarge`), « couttent » (`BlogChargesSociales`),
-  « conccue » et « imbatable » (`BlogFideliserClients`), « ideallement » (`BlogPrimeCost`,
-  `BlogPrixCarte`), « traceabilite » → traçabilité (`BlogFicheTechnique`, `BlogRotationStocks`),
-  « inoipines » → inopinées (`BlogHACCP`), « dédicacé » pour « dédié » (`BlogFoodCost`),
-  « Duplicater » (`BlogSalaireProprietaireRestaurant`). À corriger à la main.
+- **Fautes que l'ajout d'accents ne pouvait pas corriger — CORRIGÉES le 2026-11-04** (29
+  remplacements exacts sur 16 pages et dans le seoBody de `prerender.cjs`) : « commission
+  prélevée » ×2, « menus complets », « frites surgelées », « 0 et 4 degrés C », « produit noble »,
+  « positionnement perçu », « taux revalorisés », « ne coûtent rien », « conçue », « en parallèle »,
+  « imbattable », « idéalement » ×3, « sans éroder », « traçabilité » ×5, « inopinés », « food cost
+  dédié » ×2, « Dupliquer l'établissement », « variantes compliquées », « événementiel »,
+  « Exemples détaillés » ×2. Aucune URL, ancre ni identifiant touché (`#exemples-detail` intact).
 - **Reste — laissés sans accent exprès** : marques et noms propres (Metro le grossiste, Pret A
   Manger, Phenix, Deliveroo Editions, Maitre'D, Neo-Restauration, Reels), anglicismes (email,
   no-show, events), sigle CA, adresses citées (economie.gouv.fr, impots.gouv.fr,

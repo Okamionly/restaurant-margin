@@ -189,7 +189,7 @@ export default function BlogPrixDeVente() {
               { href: '#psychological', label: 'Méthode du pricing psychologique' },
               { href: '#cas-pratique', label: 'Cas pratique : plat à 5 EUR de food cost' },
               { href: '#par-type', label: 'Variation par type de restaurant' },
-              { href: '#exemples-detail', label: 'Exemples detaill par catégorie (pizza, viande, dessert)' },
+              { href: '#exemples-detail', label: 'Exemples détaillés par catégorie (pizza, viande, dessert)' },
               { href: '#tva', label: 'TVA en restauration et impact sur le prix' },
               { href: '#inflation', label: 'Gérer l\'inflation et augmenter les prix' },
               { href: '#erreurs', label: 'Les 5 erreurs de pricing à éviter' },
@@ -521,7 +521,7 @@ export default function BlogPrixDeVente() {
         {/* ═════════════ NEW : EXEMPLES DETAIL PAR CATEGORIE ═════════════ */}
         <section id="exemples-detail" className="mb-16">
           <SectionHeading icon={<ListChecks className="w-6 h-6" />} number="6b">
-            Exemples detaill par catégorie de plat
+            Exemples détaillés par catégorie de plat
           </SectionHeading>
 
           <div className="prose-content">

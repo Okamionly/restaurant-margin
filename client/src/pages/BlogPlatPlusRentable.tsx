@@ -967,7 +967,7 @@ export default function BlogPlatPlusRentable() {
               raison="Temps de prep élevé, peu de prises, charge cuisinier. Sauf si plat signature différenciant."
             />
             <PlatEviterCard
-              name="Trop de variantes végétariennes / vegan compliqués"
+              name="Trop de variantes végétariennes / vegan compliquées"
               raison="Une carte avec 5 plats vegan peu commandés = stocks dédiés, fiche techniques complexes. Mieux : 1-2 options végétariennes solides."
             />
             <PlatEviterCard

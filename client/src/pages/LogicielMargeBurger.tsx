@@ -532,7 +532,7 @@ export default function LogicielMargeBurger() {
               La viande hachée est l'ingrédient le plus délicat d'un restaurant burger.
               Réglementation française : <strong>DLC (date limite de consommation) de J+1
               maximum après hachage</strong> pour la viande hachée fraîche conservée entre
-              0 et 4 degrees C. Au-delà, vous êtes en infraction et risquez fermeture
+              0 et 4 degrés C. Au-delà, vous êtes en infraction et risquez fermeture
               administrative + amendes lourdes.
             </p>
             <p>

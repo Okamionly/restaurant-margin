@@ -249,7 +249,7 @@ export default function BlogChargesSociales() {
             </table>
           </div>
           <p className="text-[#374151] leading-relaxed">
-            Ces taux peuvent être revaloriees en cours d'année (LFSS, barèmes URSSAF). Vérifier toujours sur le bulletin officiel URSSAF (urssaf.fr) ou via votre expert-comptable.
+            Ces taux peuvent être revalorisés en cours d'année (LFSS, barèmes URSSAF). Vérifier toujours sur le bulletin officiel URSSAF (urssaf.fr) ou via votre expert-comptable.
           </p>
         </section>
 
@@ -262,7 +262,7 @@ export default function BlogChargesSociales() {
             <h2 className="text-2xl font-bold text-mono-100">3. Cotisations salariales : 22% du brut</h2>
           </div>
           <p className="text-[#374151] leading-relaxed mb-4">
-            Les cotisations salariales sont prélevées sur le salaire brut pour calculer le net imposable et le net à payer. Elles ne couttent rien à l'employeur (qui les prélève pour le compte de l'État et des organismes sociaux). Décomposition :
+            Les cotisations salariales sont prélevées sur le salaire brut pour calculer le net imposable et le net à payer. Elles ne coûtent rien à l'employeur (qui les prélève pour le compte de l'État et des organismes sociaux). Décomposition :
           </p>
           <div className="overflow-x-auto mb-4">
             <table className="min-w-full text-sm border border-mono-900 rounded-xl">

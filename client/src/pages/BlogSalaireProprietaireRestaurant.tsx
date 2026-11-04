@@ -757,7 +757,7 @@ export default function BlogSalaireProprietaireRestaurant() {
               { icon: <DollarSign className="w-5 h-5" />, title: 'Optimiser le statut fiscal', desc: 'Passer en SAS avec mix 60/40 vs SARL 100 % salaire = 10 à 15 keur économisés par an.', impact: 'Moyen' },
               { icon: <Building2 className="w-5 h-5" />, title: 'Diversifier les canaux', desc: 'Ajouter livraison click&collect (10-15 % du CA), traiteur événementiel, plats préparés = +25-40 keur/an.', impact: 'Fort' },
               { icon: <Award className="w-5 h-5" />, title: 'Activités annexes', desc: 'Conseil pour autres restaurants, formation, livre, partenariats marques = 10-50 keur/an avec marge très élevée.', impact: 'Moyen à fort' },
-              { icon: <Briefcase className="w-5 h-5" />, title: 'Duplicater l\'établissement', desc: 'Ouvrir un 2ème restaurant basé sur le concept gagnant. Risque accru mais revenu x 1,5 à 2 au bout de 18-24 mois.', impact: 'Très fort' },
+              { icon: <Briefcase className="w-5 h-5" />, title: 'Dupliquer l\'établissement', desc: 'Ouvrir un 2ème restaurant basé sur le concept gagnant. Risque accru mais revenu x 1,5 à 2 au bout de 18-24 mois.', impact: 'Très fort' },
             ].map((lev, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all">
                 <div className="flex items-center justify-between mb-2">

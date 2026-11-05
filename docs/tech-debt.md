@@ -270,3 +270,12 @@ if (!JWT_SECRET) throw new Error('JWT_SECRET manquant');
   a ete recentre le 04/11 (commit `d401ff1`). A remesurer dans la Search Console vers le 25/11, meme
   filtre (requete exacte, onglet Pages). Le plafond restant est l'autorite du domaine : liens entrants,
   action fondateur (annuaires logiciels, medias restauration).
+
+## Dette SEO — comparatifs (session du 2026-11-05)
+
+Relevé en écrivant `/alternative-inpulse`, non corrigé hors Inpulse :
+
+- **Connexion à la caisse annoncée à tort** : `AlternativeLightspeed.tsx` écrit que RestauMargin « se connecte » à Lightspeed (« intégration ou export CSV », « import API »). `api/index.ts` ne contient aucun connecteur de caisse ; seul existe le collage d'un CSV de ventes dans `MenuEngineering.tsx`. À vérifier sur les autres `Alternative*`.
+- **Prix concurrents sans source et contradictoires** : Easilys vaut 80 €/mois (`BlogInventaire`), 99-199 € (`BlogLogicielGestion`) et 149 € (`ComparatifLogicielsRestaurant`), alors qu'aucun tarif public n'a été trouvé. Les autres montants et notes G2 de `BlogLogicielGestion` (Skello 4,5 etc.) n'ont pas été vérifiés.
+- **Chiffres de gain sans source** : `BlogLogicielGestion` promet 8 à 15 heures par semaine et 1 à 2 points de food cost pour une « stack » type.
+- **Schema statique** : les pages `/alternative-*` n'ont que `BreadcrumbList` dans le HTML servi ; `FAQPage` et `Article` n'apparaissent qu'après exécution du JS (`SEOHead`). `prerender.cjs` ne les émet que pour `article` et `guide`, à partir d'un `seoBody`. Point sensible pour Bing.

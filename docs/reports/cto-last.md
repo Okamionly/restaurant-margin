@@ -1,66 +1,67 @@
-# Audit CTO — 2026-11-04
+# Audit CTO — 2026-11-05 13:22 UTC
 
-**Heure** : 13:20 UTC  
-**HEAD** : `cafe7a4` — mrr: rapport hebdo 2026-11-02 — API indisponible (Prisma timeout)
+## Santé globale : 🟢 VERT
 
----
+| Service    | Statut | Détail                   |
+|------------|--------|--------------------------|
+| database   | ✅ ok  | —                        |
+| ai         | ✅ ok  | claude-sonnet-4-6        |
+| api        | ✅ ok  | responseTime 1470ms      |
+| site       | ✅ ok  | restaumargin.fr joignable|
 
-## Santé : 🟢 VERT
+> ⚠️ responseTime 1470ms au health check — acceptable mais à surveiller (seuil d'alerte : 3000ms).
 
-| Service  | Statut | Détail                   |
-|----------|--------|--------------------------|
-| database | ✅ ok  | Supabase/Postgres         |
-| ai       | ✅ ok  | claude-sonnet-4-6         |
-| api      | ✅ ok  | uptime 13 s, 8 ms latence |
+## CI — 🟢 VERT
 
-Résultat confirmé par double appel (pas d'alerte nécessaire).
+| Run | Workflow | Conclusion | SHA     | Titre                        |
+|-----|----------|------------|---------|------------------------------|
+| 1382 | CI      | ✅ success | fcf4e93 | docs: bug-fixer log 2026-11-05 |
+| 1381 | CI      | ✅ success | 74de164 | fix(i18n): common.retry manquant ar/es/de |
+| 1380 | CI      | ✅ success | 41e4aa0 | coo: operations              |
+| 1379 | CI      | ✅ success | 57e1b1b | cmo: post + analyse          |
+| 1378 | CI      | ✅ success | c41e1be | ceo: digest quotidien        |
 
----
-
-## CI
-
-Workflow visible : **"Taches automatiques RestauMargin"** (`crons.yml`) — 10 dernières exécutions toutes en `success`.
-
-> ⚠️ Aucun pipeline CI dédié au type-check / build n'apparaît dans les 10 dernières exécutions GitHub Actions (branche `main`). Soit il n'existe pas, soit il n'a pas été déclenché récemment. À confirmer — sans lui, les régressions TypeScript ne sont pas détectées automatiquement sur chaque commit.
-
-**Pas d'alerte CI requise.**
-
----
+Dernier commit CI (`fcf4e93`) : **success**. Aucun job rouge.
 
 ## Métriques
 
-| Indicateur               | Valeur       |
-|--------------------------|-------------|
-| Pages React              | 185          |
-| LOC client (ts/tsx)      | ~213 000     |
-| LOC api/index.ts         | 7 817        |
-| Commits dans les 24 h    | 0            |
-| TODO / FIXME / HACK      | 0            |
+| Métrique          | Valeur  |
+|-------------------|---------|
+| Pages             | 187     |
+| LOC total (TS/TSX)| 228 027 |
+| LOC api/index.ts  | 7 819   |
+| Commits 24h       | 38      |
+| TODO/FIXME/HACK   | 0       |
 
----
+## Activité du jour (38 commits)
+
+Journée dense axée sur :
+- **Contenu / conformité** : retrait des preuves sociales fabriquées, correction des accents sur ~80 pages publiques, garde-fous CI pour les accents
+- **Tarifs** : offre unique 19 €/mois propagée partout (pages, prerender, CGV, Stripe)
+- **i18n** : clé `common.retry` manquante corrigée dans ar/es/de
+- **Feature** : comparateur de rentabilité des plateformes de livraison
+- **Agents** : logs CEO, CMO, COO, QA, bug-fixer
 
 ## Dette technique — Top 3
 
-### 1. 🔴 `api/index.ts` monolithique (7 817 LOC)
-Fichier critique, ingérable. Même si des sous-fichiers `api/routes/*.ts` existent, l'essentiel du code reste dans un seul fichier. Risque : merge conflicts constants, temps de lecture prohibitif, onboarding impossible.  
-**Priorité** : découpage en modules `api/routes/` + barril `api/index.ts` réduit à < 100 LOC.
+### 1. 🔴 `api/index.ts` : monolithe à 7 819 LOC
+Le fichier concentre la totalité des routes et middlewares Express. Un seul fichier de 7 800 lignes est un risque opérationnel (conflits Git, temps de review, debugging difficile). Priorité de refacto haute.
 
-### 2. 🟠 Absence de CI type-check/build sur `main`
-Un `tsc --noEmit` automatique sur chaque push éviterait les régressions silencieuses. Sans lui, la seule source de vérité TypeScript est le dev local.  
-**Priorité** : ajouter un job `ci.yml` simple (node install + tsc + vite build).
+**Refacto suggérée** : découper par domaine en modules `api/routes/` déjà existants, extraire les middlewares dans `api/middleware/`, viser < 200 LOC pour `index.ts`.
 
-### 3. 🟡 185 pages React — pas de structure de dossiers par domaine
-Avec autant de pages dans `client/src/pages/`, la navigation est difficile. Regrouper par domaine (`menu/`, `suppliers/`, `analytics/`, `public/`) réduirait le temps de recherche.  
-**Priorité** : refactoring organisationnel, sans impact fonctionnel.
+### 2. 🟡 Surface de 187 pages sans tests E2E automatisés
+La CI vérifie les types et les accents mais pas les routes utilisateur. Une régression sur une page critique (Accueil, Tarifs, Dashboard) peut passer en production sans signal.
 
----
+**Action** : ajouter 5–10 tests Playwright sur les parcours clés (login → dashboard, accueil → inscription, calculateur food cost).
+
+### 3. 🟡 Temps de réponse health check : 1 470ms
+Un health check qui met 1,47s à répondre indique soit une requête DB lourde, soit un cold start Vercel. En période de trafic, le premier visiteur après idle paye ce délai.
+
+**Action** : profiler l'endpoint `/api/health?deep=1`, isoler la requête DB, ajouter un cache court (5s) sur le résultat.
 
 ## Refacto prioritaire
 
-**Découper `api/index.ts`** : extraire les blocs de routes par domaine (auth, menu, recettes, ingrédients, mercuriale, IA, utilisateur, parrainage) vers `api/routes/<domaine>.ts`. Effort estimé : 2–3 sessions. Bénéfice immédiat sur la maintenabilité et les revues de code.
+**Découpage de `api/index.ts`** — doit être fait avant d'atteindre 10 000 LOC. Approche : extraire progressivement les blocs de routes par domaine (auth, ai, mercuriale, billing…) vers des fichiers déjà prévus dans `api/routes/`.
 
 ---
-
-## Résumé
-
-Pas d'incident à signaler. Services en ligne, CI crons verte, zéro dette marquée (TODO/FIXME/HACK). La dette principale est structurelle : `api/index.ts` à 7 817 lignes est un monolithe qui ralentit toute évolution backend.
+_Généré automatiquement — CTO audit quotidien_

@@ -494,5 +494,8 @@
     "errorAdding": "Fehler beim Hinzufügen des Rezepts",
     "orderCreated": "Bestellung erfolgreich erstellt!",
     "errorOrdering": "Fehler beim Erstellen der Bestellung"
+  },
+  "common": {
+    "retry": "Erneut versuchen"
   }
 }

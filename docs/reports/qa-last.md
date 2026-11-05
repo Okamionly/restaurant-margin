@@ -1,19 +1,9 @@
-# Rapport QA — 2026-11-04
+# QA RestauMargin — 2026-11-05
 
-## Résumé
-
-| Catégorie | Résultat |
-|-----------|----------|
-| Pages HTTP (200) | 15/15 |
-| H1 manquants | 0 |
-| API login (401) | ✅ |
-| Santé API | ✅ |
-| CI main | ✅ |
-
-## 1. Tests HTTP
+## Pages HTTP (15/15 OK)
 
 | Code | H1 | URL |
-|------|----|-----|
+|------|-----|-----|
 | 200 | 1 | / |
 | 200 | 1 | /pricing |
 | 200 | 1 | /login |
@@ -30,25 +20,30 @@
 | 200 | 1 | /guide-marge/pizzeria |
 | 200 | 1 | /guide-marge/brasserie |
 
-Toutes les pages prérendues contiennent un `<h1>`. Aucune régression de prérendu.
+**H1 manquants** : aucun
 
-## 2. Tests API
+## API
 
-- **POST /api/auth/login** (mauvais identifiants) → `401` ✅
-- **GET /api/health?deep=1** → `database: ok`, `ai: ok` (claude-sonnet-4-6), `api: ok` ✅
+| Test | Résultat | Attendu | Statut |
+|------|----------|---------|--------|
+| POST /api/auth/login (mauvais mdp) | 401 | 401 | ✅ |
+| GET /api/health?deep=1 → database | ok | ok | ✅ |
+| GET /api/health?deep=1 → ai | ok | ok | ✅ |
 
-## 3. CI — dernier passage sur main
+Détail health : `{"status":"ok","uptime":3s,"responseTime":"1237ms","services":{"database":"ok","ai":"ok","aiDetail":"claude-sonnet-4-6","api":"ok"}}`
 
-| Workflow | Conclusion | Commit | Titre |
-|----------|-----------|--------|-------|
-| CI | success | cf6aec9 | fix: prix sans HT, parrainage sans -20 % fictif… |
-| CI | success | a89d6ca | build(vercel): contrôle des accents… |
-| CI | success | 62947d1 | fix(accueil): prix 19 EUR dans le HTML statique… |
-| CI | success | d8c7c59 | fix(tarifs): offre unique 19 EUR/mois… |
-| CI | success | cbc0133 | feat(contenu): garde-fou des accents… |
+## CI GitHub (main)
 
-Dernier commit CI : **success** sur `cf6aec9`.
+| Workflow | Conclusion | SHA | Titre |
+|---------|-----------|-----|-------|
+| Taches automatiques RestauMargin | success | 1a71270 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 1a71270 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 1a71270 | Taches automatiques RestauMargin |
+| CI | success | 1a71270 | cfo: analyse quotidienne 2026-11-05 |
+| Taches automatiques RestauMargin | success | 25648e4 | Taches automatiques RestauMargin |
 
-## Conclusion
+**CI** : vert sur le dernier commit `1a71270`
 
-Aucune régression détectée. Tout est opérationnel.
+## Résumé
+
+**Aucune régression.** Toutes les 15 pages répondent 200 avec un `<h1>`. Les 13 pages pré-rendues contiennent un H1. API login et health OK. CI verte.

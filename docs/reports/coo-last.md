@@ -1,86 +1,60 @@
-# COO — Rapport opérationnel 2026-11-01
+# Rapport COO — 2026-11-05
 
-**Généré le** : 2026-11-01 10:14 UTC
+## Santé des services
+| Service    | Statut |
+|------------|--------|
+| database   | ✅ ok  |
+| ai         | ✅ ok (claude-sonnet-4-6) |
+| api        | ✅ ok  |
+| responseTime | 1419 ms |
 
----
+## Données produit
+- Utilisateurs total : 20
+- Nouvelles inscriptions 24h : 0
+- Abonnés Pro : 0 / Business : 0
+- Essai actif : 1
+- MRR estimé : 0 €
 
-## 1. Santé des services
+## CI (GitHub Actions — branche main)
+| Workflow | Conclusion | SHA |
+|----------|-----------|-----|
+| CI | ✅ success | 57e1b1b |
+| Taches automatiques | ✅ success | c41e1be |
+| Taches automatiques | ✅ success | c41e1be |
+| CI | ✅ success | c41e1be |
+| Taches automatiques | ✅ success | 25e545e |
 
-| Service  | Statut | Détail |
-|----------|--------|--------|
-| database | ✅ ok  | Supabase PostgreSQL |
-| ai       | ✅ ok  | claude-sonnet-4-6 |
-| api      | ✅ ok  | responseTime ~1309 ms |
+## Tâches GitHub Actions (crons.yml)
+| Date | Événement | Conclusion |
+|------|-----------|-----------|
+| 2026-11-05T07:08:30Z | schedule | ✅ success |
+| 2026-11-05T06:49:40Z | schedule | ✅ success |
+| 2026-11-04T23:40:51Z | schedule | ✅ success |
+| 2026-11-04T19:56:38Z | schedule | ✅ success |
+| 2026-11-04T17:53:58Z | schedule | ✅ success |
+| 2026-11-04T17:52:15Z | schedule | ✅ success |
 
-Temps de réponse API : 1 309 ms (correct, pic acceptable).
+## Agents (dernier rapport)
+| Agent | Âge rapport | Statut |
+|-------|-------------|--------|
+| cto   | ~20h        | ✅ OK  |
+| cmo   | ~3h         | ✅ OK  |
+| cfo   | ~17h        | ✅ OK  |
+| qa    | ~14h        | ✅ OK  |
 
----
+Aucun agent en panne.
 
-## 2. CI (GitHub Actions — ci.yml)
+## Commits récents
+- `57e1b1b` cmo: post + analyse
+- `c41e1be` ceo: digest quotidien
+- `25e545e` qa: tests quotidiens
+- `cf6aec9` fix: prix sans HT, parrainage sans -20 % fictif, e-mail J+7 juste, consommation simulee retiree
+- `a89d6ca` build(vercel): le contrôle des accents bloque le déploiement d'une page sans accents
 
-| Run | Commit | Statut |
-|-----|--------|--------|
-| #1337 | `1418fb4` docs: bug-fixer log 2026-11-01 | ⏳ in_progress |
-| #1336 | `c57baca` fix: alert() → showToast() AppLayout | ⏳ in_progress |
-| #1335 | `54b37a8` ceo: digest quotidien | ✅ success |
-
-2 runs déclenchés au moment du rapport (push récents). Dernier run **terminé** : **success**.  
-Aucun CI rouge confirmé.
-
----
-
-## 3. Tâches crons.yml (6 derniers passages)
-
-| Heure (UTC) | Évènement | Résultat |
-|-------------|-----------|---------|
-| 2026-11-01 06:34 | schedule | ✅ success |
-| 2026-11-01 06:08 | schedule | ✅ success |
-| 2026-10-31 23:24 | schedule | ✅ success |
-| 2026-10-31 21:46 | schedule | ✅ success |
-| 2026-10-31 18:34 | schedule | ✅ success |
-| 2026-10-31 15:40 | schedule | ✅ success |
-
-**6/6 success.** Aucune tâche en échec.
-
----
-
-## 4. Agents — état des rapports (par date de commit git)
-
-| Agent | Dernier rapport | Âge | Statut |
-|-------|----------------|-----|--------|
-| qa    | ~14 h          | OK  | ✅ actif |
-| cto   | ~21 h          | OK  | ✅ actif |
-| cmo   | ~27 h          | OK  | ✅ actif |
-| cfo   | ~41 h          | OK  | ✅ actif (proche limite) |
-
-**Aucun agent en panne.** CFO à 41 h — prochain rapport attendu dans ~7 h.
-
----
-
-## 5. Données produit
-
-| Métrique | Valeur |
-|----------|--------|
-| Utilisateurs totaux | 20 |
-| Recettes | 63 |
-| Ingrédients | 439 |
-| Nouveaux utilisateurs 24 h | 0 |
-| Nouveaux utilisateurs 48 h | 1 |
-| Essais actifs | 1 |
-| Abonnés payants (Pro + Business) | 0 |
-| MRR estimé | 0 € |
+## 3 actions du jour
+1. **Conversion trial → payant** : 1 utilisateur en essai actif — surveiller la conversion en fin de période.
+2. **Acquisition** : 0 nouvelles inscriptions sur 24h, 20 utilisateurs en tout — relancer les campagnes acquisition.
+3. **Performance API** : temps de réponse à 1419 ms — surveiller la tendance, optimiser si > 2 s.
 
 ---
-
-## 6. Trois actions du jour
-
-1. **Surveiller les 2 CI en cours** (#1336 `fix: alert() → showToast()` et #1337 `bug-fixer log`) — vérifier qu'ils passent en success dans les 10 prochaines minutes.
-2. **Anticipation rapport CFO** — à 41 h, CFO frôle la limite 48 h ; si aucun commit `cfo-last.md` d'ici ce soir, investiguer quota Claude.
-3. **Suivi conversion essai actif** — 1 trial en cours, 0 abonné payant ; pas d'action immédiate mais à monitorer quotidiennement.
-
----
-
-## 7. Alertes
-
-**Aucune alerte déclenchée.**  
-Critères vérifiés : santé KO → non, CI rouge → non, crons échec → non, agents ≥ 3 en panne → non (0 en panne).
+*Généré automatiquement le 2026-11-05 à 10:14 UTC*

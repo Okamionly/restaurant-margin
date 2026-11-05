@@ -862,6 +862,11 @@ const ROUTES = [
     description: 'Hubrise = hub intégrations livraison. RestauMargin = gestion food cost + marges (19€/mois). Comparaison et complémentarité 2026.',
   },
   {
+    path: '/alternative-inpulse',
+    title: 'Alternative à Inpulse pour restaurant indépendant | Comparatif 2026',
+    description: 'Inpulse vise les chaînes, sur devis. RestauMargin suit marges et food cost à 19 €/mois, sans prévision ni connecteur de caisse. Comparatif factuel 2026.',
+  },
+  {
     path: '/alternative-lightspeed',
     title: 'Alternative Lightspeed Restaurant | RestauMargin food cost | 2026',
     description: 'Lightspeed = POS premium (89-200€/mois). RestauMargin = gestion marge + food cost (19€/mois). Comparatif honnête 2026.',
@@ -1271,6 +1276,7 @@ function run() {
         ['/comparatif-logiciels-restaurant', 'Comparatif 12 logiciels restaurant 2026'],
         ['/alternative-zenchef', 'Alternative Zenchef'],
         ['/alternative-lightspeed', 'Alternative Lightspeed Restaurant'],
+        ['/alternative-inpulse', 'Alternative à Inpulse'],
         ['/blog/logiciel-gestion-restaurant', 'Logiciel gestion restaurant : guide d\'achat'],
         ['/pricing', 'Tarifs RestauMargin'],
       ],

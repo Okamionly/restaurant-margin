@@ -896,6 +896,15 @@ export default function ComparatifLogicielsRestaurant() {
               <p className="text-xs text-mono-500">RestauMargin vs Innovorder : POS, click & collect, gestion des marges.</p>
             </Link>
             <Link
+              to="/alternative-inpulse"
+              className="bg-mono-1000 border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group"
+            >
+              <h3 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">
+                Alternative à Inpulse
+              </h3>
+              <p className="text-xs text-mono-500">Inpulse vs RestauMargin : stocks et prévision pour chaînes, ou marge plat par plat.</p>
+            </Link>
+            <Link
               to="/alternative-hubrise"
               className="bg-mono-1000 border border-mono-900 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group"
             >

@@ -23,7 +23,7 @@ const faqItems = [
   },
   {
     question: "Quelle est la durée d engagement habituelle ?",
-    answer: "La plupart des SaaS de gestion restaurant (Lightspeed, Skello, Pennylane, RestauMargin, Cashpad) sont sans engagement ou en mensuel. Quelques éditeurs (Inpulse, Foodics, Innovorder) imposent encore un engagement 12 ou 24 mois. Évitez les contrats supérieurs à 12 mois sauf forte remise (50 % minimum), car le marché évolue très vite et un outil leader aujourd'hui peut être dépassé dans 18 mois."
+    answer: "La plupart des SaaS de gestion restaurant (Lightspeed, Skello, Pennylane, RestauMargin, Cashpad) sont sans engagement ou en mensuel. Quelques éditeurs (Foodics, Innovorder) imposent encore un engagement 12 ou 24 mois. Évitez les contrats supérieurs à 12 mois sauf forte remise (50 % minimum), car le marché évolue très vite et un outil leader aujourd'hui peut être dépassé dans 18 mois."
   },
   {
     question: "Les solutions cloud sont-elles fiables en cas de coupure internet ?",
@@ -43,7 +43,7 @@ const faqItems = [
   },
   {
     question: "Quel logiciel de stock pour un restaurant ?",
-    answer: "Trois options principales : (1) Inpulse — leader français du pilotage stocks restauration, 129-249 €/mois, fiches techniques avancées, FIFO, alertes seuils, recommandé pour 80 % des restaurants. (2) Easilys — alternative française, 99-199 €/mois, très orientée chaîne et collectivités. (3) Foodics — solution moyen-orient en expansion europe, 99-249 €/mois, multi-site mature. Pour un solo, un module stock intégré à votre caisse (Zelty, Lightspeed) suffit souvent."
+    answer: "Trois options principales : (1) Inpulse — plateforme de stocks et de prévision pensée pour les chaînes, tarif sur demande, fiches recettes, inventaires et analyse des écarts de consommation. (2) Easilys — alternative française, 99-199 €/mois, très orientée chaîne et collectivités. (3) Foodics — solution moyen-orient en expansion europe, 99-249 €/mois, multi-site mature. Pour un solo, un module stock intégré à votre caisse (Zelty, Lightspeed) suffit souvent."
   },
   {
     question: "Faut-il un logiciel séparé pour les plannings ?",
@@ -180,7 +180,7 @@ export default function BlogLogicielGestion() {
             <div><strong className="text-white">2. Comptabilité :</strong> Pennylane (49-99 €) ou Tiime (39-79 €)</div>
             <div><strong className="text-white">3. Pilotage marges :</strong> RestauMargin (19 €)</div>
             <div><strong className="text-white">4. RH plannings :</strong> Skello (6-8 €/salarié) si plus de 4 salariés</div>
-            <div><strong className="text-white">5. Stocks :</strong> Inpulse (129-249 €) si plus de 5 fournisseurs réguliers</div>
+            <div><strong className="text-white">5. Stocks :</strong> Inpulse (sur devis) si plus de 5 fournisseurs réguliers</div>
             <div><strong className="text-white">6. Livraison :</strong> Deliverect (49-99 €) si plus de 30 commandes/sem plateformes</div>
           </div>
           <p className="mt-4 text-teal-100 text-sm">
@@ -367,7 +367,7 @@ export default function BlogLogicielGestion() {
 
             <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Stocks et achats</h3>
             <p className="text-[#374151] leading-relaxed mb-3">
-              <strong>Inpulse (129-249 €/mois)</strong> — leader français du stock restauration, fiches techniques avancées, gestion FIFO automatique. Note G2 : 4,4/5.
+              <strong>Inpulse (sur devis)</strong> — stocks, prévision et production pour les chaînes, connecté à la caisse. Voir notre <Link to="/alternative-inpulse" className="text-teal-700 underline hover:text-teal-600">comparatif Inpulse et RestauMargin</Link>.
             </p>
 
             <h3 className="text-xl font-bold text-mono-100 mt-6 mb-2">Livraison consolidée</h3>
@@ -432,7 +432,7 @@ export default function BlogLogicielGestion() {
                     <td className="p-3"><strong>Skello</strong></td><td className="p-3">RH</td><td className="p-3">6-8 €/sal</td><td className="p-3">4,5</td><td className="p-3">CCN HCR native</td>
                   </tr>
                   <tr className="border-t border-mono-900">
-                    <td className="p-3"><strong>Inpulse</strong></td><td className="p-3">Stocks</td><td className="p-3">129-249 €</td><td className="p-3">4,4</td><td className="p-3">PME / chaînes</td>
+                    <td className="p-3"><strong>Inpulse</strong></td><td className="p-3">Stocks</td><td className="p-3">Sur devis</td><td className="p-3">n.c.</td><td className="p-3">PME / chaînes</td>
                   </tr>
                   <tr className="border-t border-mono-900">
                     <td className="p-3"><strong>Deliverect</strong></td><td className="p-3">Livraison</td><td className="p-3">49-99 €</td><td className="p-3">4,6</td><td className="p-3">Multi-plateformes</td>
@@ -486,13 +486,13 @@ export default function BlogLogicielGestion() {
             <div className="bg-mono-1000 rounded-xl p-5 mb-4 font-mono text-sm text-mono-100 space-y-1">
               <div>POS : Lightspeed (99 €) ou Zelty Pro (79 €) ou Cashpad Pro (69 €)</div>
               <div>Compta : Pennylane Premium (79 €) ou Tiime Pro (69 €)</div>
-              <div>Marges : RestauMargin (19 €) ou Inpulse Light (129 €)</div>
+              <div>Marges : RestauMargin (19 €) ou Inpulse (sur devis)</div>
               <div>Plannings : Skello (60-80 € pour 10-15 salariés)</div>
               <div>Livraison : Deliverect (49 €) si plus de 30 commandes plateformes/sem</div>
-              <div>Total : 276 à 457 €/mois</div>
+              <div>Total : 266 à 326 €/mois avec RestauMargin</div>
             </div>
             <p className="text-[#374151] leading-relaxed">
-              C est le sweet spot du ROI. Avec une stack à 400 €/mois bien utilisée, vous économisez 8 à 15 heures par semaine en saisie et vous gagnez 1 à 2 points de food cost — soit 6 000 à 24 000 € de marge brute supplémentaire par an.
+              C est le sweet spot du ROI. Avec une stack de ce type bien utilisée, vous économisez 8 à 15 heures par semaine en saisie et vous gagnez 1 à 2 points de food cost — soit 6 000 à 24 000 € de marge brute supplémentaire par an.
             </p>
           </section>
 
@@ -510,11 +510,11 @@ export default function BlogLogicielGestion() {
             <div className="bg-mono-1000 rounded-xl p-5 mb-4 font-mono text-sm text-mono-100 space-y-1">
               <div>POS : Lightspeed Pro (149-189 €) ou Innovorder (149-249 €)</div>
               <div>Compta : Pennylane Premium (99 €) ou Sage Multi (200 €)</div>
-              <div>Marges + Stocks : Inpulse Pro (249 €) + RestauMargin (19 €)</div>
+              <div>Marges + Stocks : Inpulse (sur devis) + RestauMargin (19 €)</div>
               <div>RH complète : Skello + PayFit (90-150 € + 35 €/salarié)</div>
               <div>Livraison : Deliverect Pro (99 €)</div>
               <div>BI : Looker Studio gratuit ou Tableau (70 €/utilisateur)</div>
-              <div>Total : 806 à 1 820 €/mois</div>
+              <div>Total : 557 à 1 571 €/mois, hors devis Inpulse</div>
             </div>
             <p className="text-[#374151] leading-relaxed">
               À ce niveau, la <strong>centralisation des données</strong> devient critique. Vous avez besoin d un BI (Business Intelligence) qui consolide les ventes des 10 sites, les marges par site, les performances RH. Looker Studio (gratuit) suffit pour 80 % des besoins.

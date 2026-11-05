@@ -256,6 +256,7 @@ const AlternativeHubrise = lazyRetry(() => import('./pages/AlternativeHubrise'))
 const AlternativeZenchef = lazyRetry(() => import('./pages/AlternativeZenchef'));
 const AlternativeLAddition = lazyRetry(() => import('./pages/AlternativeLAddition'));
 const AlternativeLightspeed = lazyRetry(() => import('./pages/AlternativeLightspeed'));
+const AlternativeInpulse = lazyRetry(() => import('./pages/AlternativeInpulse'));
 const AlternativeTheFork = lazyRetry(() => import('./pages/AlternativeTheFork'));
 const AlternativeCosKitchen = lazyRetry(() => import('./pages/AlternativeCosKitchen'));
 const AlternativeMargeBrut = lazyRetry(() => import('./pages/AlternativeMargeBrut'));
@@ -1423,6 +1424,7 @@ function App() {
           {/* Pages comparatives (alternatives) */}
           <Route path="/alternative-hubrise" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeHubrise /></Suspense>} />
           <Route path="/alternative-lightspeed" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeLightspeed /></Suspense>} />
+          <Route path="/alternative-inpulse" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeInpulse /></Suspense>} />
           <Route path="/alternative-thefork" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeTheFork /></Suspense>} />
           <Route path="/alternative-cos-kitchen" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeCosKitchen /></Suspense>} />
           <Route path="/alternative-marge-brut" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AlternativeMargeBrut /></Suspense>} />

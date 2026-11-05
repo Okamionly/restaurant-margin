@@ -890,7 +890,7 @@ export default function BlogInventaire() {
                 <tr className="bg-white"><td className="py-3 px-4 font-bold">Easilys</td><td className="py-3 px-4 text-center">80 EUR/mois</td><td className="py-3 px-4 text-xs">Multi-sites, robuste, orienté cuisines centrales</td></tr>
                 <tr className="bg-mono-1000"><td className="py-3 px-4 font-bold">Foodmeup</td><td className="py-3 px-4 text-center">50 EUR/mois</td><td className="py-3 px-4 text-xs">Pâtisseries et fiches techniques complexes</td></tr>
                 <tr className="bg-white"><td className="py-3 px-4 font-bold">Tablo</td><td className="py-3 px-4 text-center">39 EUR/mois</td><td className="py-3 px-4 text-xs">Bistrots et brasseries, interface simple</td></tr>
-                <tr className="bg-mono-1000"><td className="py-3 px-4 font-bold">Inpulse</td><td className="py-3 px-4 text-center">59 EUR/mois</td><td className="py-3 px-4 text-xs">Cloud, intégration POS, multi-sites</td></tr>
+                <tr className="bg-mono-1000"><td className="py-3 px-4 font-bold">Inpulse</td><td className="py-3 px-4 text-center">Sur devis</td><td className="py-3 px-4 text-xs">Cloud, intégration POS, multi-sites</td></tr>
               </tbody>
             </table>
           </div>

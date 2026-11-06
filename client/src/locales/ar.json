@@ -1,5 +1,27 @@
 {
   "Erreur lors de la création": "خطأ أثناء الإنشاء",
+  "common": {
+    "add": "أضف",
+    "all": "الكل",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "loading": "جارٍ التحميل...",
+    "notFound": "غير موجود",
+    "save": "حفظ",
+    "search": "بحث",
+    "select": "اختيار",
+    "send": "إرسال",
+    "total": "الإجمالي",
+    "error": "خطأ",
+    "or": "أو",
+    "deleteError": "خطأ أثناء الحذف",
+    "elementDeleted": "تم الحذف",
+    "itemDeleted": "محذوف",
+    "restoreSuccess": "تمت الاستعادة بنجاح",
+    "restoreError": "خطأ أثناء الاستعادة",
+    "retry": "إعادة المحاولة"
+  },
   "analytics": {
     "errorLoading": "خطأ في تحميل التقرير",
     "reportDownloaded": "تم تنزيل التقرير!",
@@ -484,8 +506,5 @@
     "errorAdding": "خطأ عند إضافة الوصفة",
     "orderCreated": "تم إنشاء الطلب بنجاح!",
     "errorOrdering": "خطأ عند إنشاء الطلب"
-  },
-  "common": {
-    "retry": "إعادة المحاولة"
   }
 }

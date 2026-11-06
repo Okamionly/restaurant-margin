@@ -1,5 +1,27 @@
 {
   "Erreur lors de la création": "Fehler beim Erstellen",
+  "common": {
+    "add": "Hinzufügen",
+    "all": "Alle",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "loading": "Wird geladen...",
+    "notFound": "Nicht gefunden",
+    "save": "Speichern",
+    "search": "Suchen",
+    "select": "Auswählen",
+    "send": "Senden",
+    "total": "Gesamt",
+    "error": "Fehler",
+    "or": "oder",
+    "deleteError": "Fehler beim Löschen",
+    "elementDeleted": "Element gelöscht",
+    "itemDeleted": "gelöscht",
+    "restoreSuccess": "Erfolgreich wiederhergestellt",
+    "restoreError": "Fehler beim Wiederherstellen",
+    "retry": "Erneut versuchen"
+  },
   "analytics": {
     "errorLoading": "Fehler beim Laden des Berichts",
     "reportDownloaded": "Bericht heruntergeladen!",
@@ -494,8 +516,5 @@
     "errorAdding": "Fehler beim Hinzufügen des Rezepts",
     "orderCreated": "Bestellung erfolgreich erstellt!",
     "errorOrdering": "Fehler beim Erstellen der Bestellung"
-  },
-  "common": {
-    "retry": "Erneut versuchen"
   }
 }

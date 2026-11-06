@@ -1,9 +1,21 @@
-# QA RestauMargin — 2026-11-05
+# Rapport QA — 2026-11-06
 
-## Pages HTTP (15/15 OK)
+## Résumé
+
+**Statut global : ✅ TOUT OK**
+
+- Pages OK : 15/15
+- H1 manquants : 0
+- API login 401 : ✅
+- Santé base/IA : ✅
+- CI : ✅ (success sur dernier commit)
+
+---
+
+## 1. Tests HTTP (15 pages)
 
 | Code | H1 | URL |
-|------|-----|-----|
+|------|----|-----|
 | 200 | 1 | / |
 | 200 | 1 | /pricing |
 | 200 | 1 | /login |
@@ -20,30 +32,37 @@
 | 200 | 1 | /guide-marge/pizzeria |
 | 200 | 1 | /guide-marge/brasserie |
 
-**H1 manquants** : aucun
+Toutes les pages prerendues contiennent un `<h1>`. Aucune régression de prerendu.
 
-## API
+---
 
-| Test | Résultat | Attendu | Statut |
-|------|----------|---------|--------|
-| POST /api/auth/login (mauvais mdp) | 401 | 401 | ✅ |
-| GET /api/health?deep=1 → database | ok | ok | ✅ |
-| GET /api/health?deep=1 → ai | ok | ok | ✅ |
+## 2. Tests API
 
-Détail health : `{"status":"ok","uptime":3s,"responseTime":"1237ms","services":{"database":"ok","ai":"ok","aiDetail":"claude-sonnet-4-6","api":"ok"}}`
+| Test | Attendu | Résultat |
+|------|---------|----------|
+| POST /api/auth/login (mauvais creds) | 401 | ✅ 401 |
+| GET /api/health?deep=1 — database | ok | ✅ ok |
+| GET /api/health?deep=1 — ai | ok | ✅ ok (claude-sonnet-4-6) |
 
-## CI GitHub (main)
+Uptime : 3 s au moment du test, temps de réponse health : 1242 ms.
 
-| Workflow | Conclusion | SHA | Titre |
-|---------|-----------|-----|-------|
-| Taches automatiques RestauMargin | success | 1a71270 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 1a71270 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 1a71270 | Taches automatiques RestauMargin |
-| CI | success | 1a71270 | cfo: analyse quotidienne 2026-11-05 |
-| Taches automatiques RestauMargin | success | 25648e4 | Taches automatiques RestauMargin |
+---
 
-**CI** : vert sur le dernier commit `1a71270`
+## 3. CI GitHub (branch main)
 
-## Résumé
+| Workflow | Conclusion | Commit | Titre |
+|----------|------------|--------|-------|
+| Taches automatiques RestauMargin | success | 6e17c2e | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 6e17c2e | Taches automatiques RestauMargin |
+| CI | success | 6e17c2e | cfo: analyse quotidienne |
+| Taches automatiques RestauMargin | success | 10cab00 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 10cab00 | Taches automatiques RestauMargin |
 
-**Aucune régression.** Toutes les 15 pages répondent 200 avec un `<h1>`. Les 13 pages pré-rendues contiennent un H1. API login et health OK. CI verte.
+Aucun workflow en échec sur les 5 derniers passages.
+
+---
+
+## Notes
+
+- `/temoignages` non testé (redirige 308 → accueil, dés-routé depuis 2026-09-25, conforme CLAUDE.md).
+- Aucune notification envoyée (zéro régression détectée).

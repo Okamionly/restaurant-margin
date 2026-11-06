@@ -1,83 +1,63 @@
-# CFO Analyse — 2026-11-05
+# CFO Analyse — 2026-11-06
 
-> **Période couverte :** analyse du 2026-11-05. Données issues de `/api/agents/data`.
-> **⚠️ INDISPONIBILITÉ API :** L'endpoint `/api/agents/data` a retourné une erreur ce jour :
-> `{"error":"agents_data_failed","message":"Timed out fetching a new connection from the connection pool (timeout: 20s, limit: 5)"}`
-> Les métriques du jour sont donc indisponibles. Rapport basé sur les dernières valeurs connues (2026-11-04).
+> **Période couverte :** analyse du 2026-11-06. Données issues de `/api/agents/data`.
+> **API :** Endpoint opérationnel — données fraîches (cached: false, timestamp: 2026-11-06T16:20:08Z).
 
 ---
 
-## Métriques Clés (dernières valeurs connues — 2026-11-04)
+## Métriques Clés
 
-| Indicateur | Dernière valeur connue | Source |
-|---|---|---|
-| **MRR** | 0 € (Pro 0 + Biz 0) | Rapport 2026-11-04 |
-| **ARR** | 0 € | Rapport 2026-11-04 |
-| **Utilisateurs totaux** | 20 | Rapport 2026-11-04 |
-| **Trials actifs** | 1 | Rapport 2026-11-04 |
-| **Leads qualifiés (7j)** | 0 | Rapport 2026-11-04 |
-
-> Les métriques du 2026-11-05 ne peuvent pas être calculées en raison du timeout du pool de connexions Prisma. Aucune variation ne peut être établie pour ce jour.
-
----
-
-## Statut API
-
-- **Endpoint :** `https://www.restaumargin.fr/api/agents/data`
-- **Erreur :** `Timed out fetching a new connection from the connection pool`
-- **Pool timeout :** 20 secondes
-- **Connection limit :** 5
-- **Impact :** Indisponibilité complète des métriques temps réel.
-- **Action recommandée :** Vérifier la santé de la base de données Supabase / Prisma et l'état du pool de connexions.
+| Indicateur | Valeur J (2026-11-06) | Valeur J-1 (2026-11-05) | Variation |
+|---|---|---|---|
+| **MRR** | 0 € (Pro 0 + Biz 0) | 0 € (indisponible J-1, 0 € J-2) | = |
+| **ARR** | 0 € | 0 € | = |
+| **Abonnés Pro** | 0 | 0 | = |
+| **Abonnés Business** | 0 | 0 | = |
+| **Utilisateurs totaux** | 21 | 20 (dernière valeur connue) | +1 |
+| **Trials actifs** | 1 | 1 | = |
+| **Leads qualifiés (7j)** | 0 | 0 | = |
+| **Recettes créées** | 64 | — | — |
+| **Ingrédients enregistrés** | 442 | — | — |
+| **Nouveaux inscrits 24h** | 1 | — | — |
 
 ---
 
-## Variation MRR
-
-- MRR J-1 (2026-11-04) : **0 €**
-- MRR J (2026-11-05) : **indisponible** (erreur API)
-- Variation calculable : **impossible**
-- Note : Aucune baisse confirmée — les données ne sont pas récupérables, non nulles.
-
----
-
-## Alertes (3 actives sur 3 — basées sur les dernières données connues)
+## Alertes (3 actives sur 3)
 
 ### 🔴 Alerte 1 — Phase amorçage, focus acquisition
 - **Condition :** MRR < 100 €
-- **Constat :** Dernière valeur MRR connue = 0 €. Stagnation depuis J+40 post-correction mesure (rupture 2026-09-25).
+- **Constat :** MRR = 0 €. Aucun abonnement Stripe actif (Pro = 0, Biz = 0). Stagnation depuis la correction de mesure du 2026-09-25 (J+42 sans abonné payant).
 
 ### 🔴 Alerte 2 — Investiguer acquisition
 - **Condition :** LEADS = 0 sur 7 jours
-- **Constat :** Dernière valeur realLeadsCount = 0. Non vérifiable ce jour.
+- **Constat :** realLeadsCount = 0. Aucun lead qualifié enregistré. 1 nouvel inscrit en 24h (total 21 utilisateurs), mais sans qualification comme lead.
 
 ### 🟡 Alerte 3 — Conversion lente
 - **Condition :** TRIAL > 5× payants
-- **Constat :** Dernière valeur : 1 trial, 0 payants → condition vérifiée.
+- **Constat :** 1 trial actif, 0 payants. Ratio mathématiquement indéfini (division par zéro). Condition vérifiée : toute valeur > 0 trial avec 0 payant satisfait l'alerte.
 
 ---
 
 ## 3 Recommandations Chiffrées
 
-### Recommandation 1 — Résoudre le timeout Prisma (Impact cible : disponibilité du monitoring)
-- **Action :** Le pool de connexions Prisma est saturé ou la base Supabase est en mode veille (cold start > 20s). Vérifier dans le dashboard Supabase l'état de la DB (active/paused), augmenter le `connection_limit` dans `DATABASE_URL` si nécessaire, ou configurer un keepalive. Vérifier également si un process tient des connexions ouvertes.
-- **Effort :** 30 min
-- **Objectif mesurable :** `/api/agents/data` retourne 200 avec données valides dans les 24h
-- **ROI :** Restauration du monitoring CFO automatisé.
-
-### Recommandation 2 — Vérifier l'état du trial actif et agir avant expiration (Impact cible : MRR 29 €)
-- **Action :** Le trial actif (1 utilisateur, présent depuis ≥ J+6) est probablement expiré ou très proche. Contact direct dans les 24h si encore actif. Analyser la raison d'abandon si expiré.
+### Recommandation 1 — Convertir le trial actif avant expiration (Impact cible : MRR 29 €)
+- **Action :** 1 trial actif présent — durée standard 7 jours. Contacter l'utilisateur directement dans les 24h : identifier l'usage effectué (recettes créées ? ingrédients saisis ?), lever les blocages à la conversion, proposer un accompagnement onboarding personnalisé.
 - **Effort :** 1–2h
-- **Objectif mesurable :** 1 abonné payant Pro = 29 €/mois ou identification du blocage conversion
-- **ROI :** MRR passe de 0 € à 29 €. Brise 41+ jours de stagnation.
+- **Objectif mesurable :** 1 abonné Pro = 29 €/mois → MRR passe de 0 € à 29 €
+- **ROI :** Première conversion après 42 jours de stagnation
 
-### Recommandation 3 — Valider le flux Stripe complet (Impact cible : éliminer blocage technique silencieux)
-- **Action :** 41 jours sans abonné sur 20 inscrits est statistiquement anormal. Tester un paiement Pro complet (29 €/mois) en conditions réelles pour confirmer l'absence de blocage technique (checkout, webhook, activation compte).
+### Recommandation 2 — Qualifier le nouvel inscrit en 24h (Impact cible : pipeline leads)
+- **Action :** 1 nouvel inscrit dans les 24h (realLeadsCount reste 0). Vérifier la définition du lead dans `api/routes/` : si les nouveaux inscrits ne sont pas qualifiés par défaut, analyser l'écart. Contacter manuellement cet inscrit pour comprendre le besoin et l'orienter.
 - **Effort :** 30 min
-- **Objectif mesurable :** Flux Stripe validé end-to-end ou identification d'un bug bloquant
-- **ROI :** Coût = 29 € (remboursable). Risque écarté : blocage silencieux prolongé.
+- **Objectif mesurable :** 1 lead qualifié dans le pipeline → realLeadsCount passe à 1
+- **ROI :** Amélioration du taux de qualification et des données d'acquisition
+
+### Recommandation 3 — Valider le flux Stripe end-to-end (Impact cible : élimination d'un blocage silencieux potentiel)
+- **Action :** 42 jours sans aucun abonné parmi 21 inscrits est statistiquement anormal (taux de conversion = 0 %). Tester un paiement Pro complet en conditions réelles (29 €/mois) : checkout → paiement Stripe → webhook → activation compte. Confirmer que le flow fonctionne ou identifier le blocage.
+- **Effort :** 30 min
+- **Objectif mesurable :** Flux Stripe validé ou bug identifié
+- **ROI :** Coût max = 29 € (remboursable). Risque écarté : conversion impossible depuis 42 jours sans que personne ne le sache.
 
 ---
 
-*Rapport généré automatiquement le 2026-11-05 — CFO Agent RestauMargin*
-*Note : Métriques indisponibles ce jour — erreur pool de connexions Prisma. Dernières valeurs connues utilisées.*
+*Rapport généré automatiquement le 2026-11-06 — CFO Agent RestauMargin*

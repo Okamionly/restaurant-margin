@@ -275,7 +275,7 @@ if (!JWT_SECRET) throw new Error('JWT_SECRET manquant');
 
 Relevé en écrivant `/alternative-inpulse`, non corrigé hors Inpulse :
 
-- **Connexion à la caisse annoncée à tort** : `AlternativeLightspeed.tsx` écrit que RestauMargin « se connecte » à Lightspeed (« intégration ou export CSV », « import API »). `api/index.ts` ne contient aucun connecteur de caisse ; seul existe le collage d'un CSV de ventes dans `MenuEngineering.tsx`. À vérifier sur les autres `Alternative*`.
+- **Connexion à la caisse annoncée à tort** : corrigé le 2026-11-06 sur 13 pages. Le code n'a aucun connecteur de caisse (`api/`, `api-lib/`, `server/src`) ; seul existe le collage CSV de `MenuEngineering.tsx` (nom du plat, quantité, date). Metro et Transgourmet n'y servent que d'exemples, sans liaison directe.
 - **Prix concurrents sans source et contradictoires** : Easilys vaut 80 €/mois (`BlogInventaire`), 99-199 € (`BlogLogicielGestion`) et 149 € (`ComparatifLogicielsRestaurant`), alors qu'aucun tarif public n'a été trouvé. Les autres montants et notes G2 de `BlogLogicielGestion` (Skello 4,5 etc.) n'ont pas été vérifiés.
 - **Chiffres de gain sans source** : `BlogLogicielGestion` promet 8 à 15 heures par semaine et 1 à 2 points de food cost pour une « stack » type.
 - **Schema statique** : les pages `/alternative-*` n'ont que `BreadcrumbList` dans le HTML servi ; `FAQPage` et `Article` n'apparaissent qu'après exécution du JS (`SEOHead`). `prerender.cjs` ne les émet que pour `article` et `guide`, à partir d'un `seoBody`. Point sensible pour Bing.

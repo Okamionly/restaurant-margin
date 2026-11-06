@@ -115,7 +115,7 @@ export default function Blog5RatiosCles() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-05-26',
-            dateModified: '2026-05-26',
+            dateModified: '2026-11-06',
             wordCount: 3200,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/5-ratios-cles-restaurant' },
@@ -818,7 +818,7 @@ export default function Blog5RatiosCles() {
               },
               {
                 title: 'Semaine 2 : Outillage',
-                body: 'Mettez en place le tracking automatisé. Soit un tableur partagé (gratuit mais chronophage), soit un outil dédié type RestauMargin (19 EUR/mois, automatisation totale). Connectez caisse + paie + factures fournisseurs.',
+                body: 'Mettez en place le tracking automatisé. Soit un tableur partagé (gratuit mais chronophage), soit un outil dédié type RestauMargin (19 EUR/mois). Saisissez ou importez vos ventes, scannez vos factures fournisseurs, et reportez vos charges de paie à part.',
               },
               {
                 title: 'Semaine 3 : Routine de pilotage',

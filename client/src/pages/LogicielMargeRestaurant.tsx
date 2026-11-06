@@ -41,7 +41,7 @@ const faqItems = [
   },
   {
     question: "Le logiciel se connecte-t-il à ma caisse et à mes fournisseurs ?",
-    answer: "RestauMargin propose des intégrations pour les caisses (Lightspeed, Sumup, Square, Tiller) et les principaux fournisseurs alimentaires français (Metro, Transgourmet, Sysco). Le module Mercuriale suit automatiquement vos prix fournisseurs et alerte sur les variations.",
+    answer: "Pas directement. RestauMargin n'a pas de connecteur de caisse ni de liaison directe avec les fournisseurs : les ventes s'importent en collant un export CSV, et les prix d'achat arrivent par le scan de vos factures ou par saisie. Le module Mercuriale suit ensuite ces prix et alerte sur les variations.",
   },
 ];
 

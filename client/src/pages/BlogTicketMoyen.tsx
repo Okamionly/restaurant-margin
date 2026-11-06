@@ -99,7 +99,7 @@ export default function BlogTicketMoyen() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-04-27',
-            dateModified: '2026-05-26',
+            dateModified: '2026-11-06',
             wordCount: 3100,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/augmenter-ticket-moyen-restaurant' },
@@ -134,7 +134,7 @@ export default function BlogTicketMoyen() {
       {/* Body */}
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
-        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-05-26" readTime="14 min" variant="header" />
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-11-06" readTime="14 min" variant="header" />
 
         {/* Encadre formule rapide */}
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
@@ -733,10 +733,10 @@ export default function BlogTicketMoyen() {
 
           <div className="prose-content">
             <p>
-              Le pilotage manuel a ses limites. Un outil de gestion automatisé comme RestauMargin
-              connecté à votre POS calcule en temps réel votre ticket moyen, vos taux de prise par
-              catégorie, et vous alerte sur les dérives. C'est un copilote indispensable pour
-              progresser sur la durée.
+              Le pilotage manuel a ses limites. Les rapports de votre caisse donnent votre ticket moyen et vos taux de prise par
+              catégorie. RestauMargin n'y est pas connecté directement : il complète ces chiffres
+              avec la marge de chaque plat, à partir d'un import CSV de vos ventes, pour progresser
+              sur la durée.
             </p>
           </div>
 
@@ -760,7 +760,7 @@ export default function BlogTicketMoyen() {
           </div>
         </section>
 
-        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-05-26" readTime="14 min" variant="footer" />
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-11-06" readTime="14 min" variant="footer" />
 
         {/* FAQ visible */}
         <section id="faq" className="mb-16">

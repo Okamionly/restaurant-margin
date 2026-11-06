@@ -16,7 +16,7 @@ import PublicFooter from '../components/public/PublicFooter';
 const faqItems = [
   {
     question: "Peut-on utiliser RestauMargin et Lightspeed Restaurant en parallèle ?",
-    answer: "Oui, les deux outils se combinent sans difficulté. Lightspeed Restaurant gère la prise de commande, l'encaissement et le plan de salle. RestauMargin récupère les ventes via intégration ou export CSV et calcule la marge réelle par plat servi, le food cost global et l'évolution des coûts ingrédients. Les deux outils sont complémentaires : l'un encaisse, l'autre garantit la rentabilité de chaque plat encaissé.",
+    answer: "Oui, les deux outils se combinent sans difficulté. Lightspeed Restaurant gère la prise de commande, l'encaissement et le plan de salle. Vous importez vos ventes dans RestauMargin en collant un export CSV, et il calcule la marge par plat vendu, le food cost et l'évolution des coûts ingrédients. Les deux outils sont complémentaires : l'un encaisse, l'autre garantit la rentabilité de chaque plat encaissé.",
   },
   {
     question: "Combien coûte RestauMargin par rapport à Lightspeed Restaurant ?",
@@ -28,7 +28,7 @@ const faqItems = [
   },
   {
     question: "Puis-je connecter RestauMargin à ma caisse Lightspeed ?",
-    answer: "Oui. RestauMargin se connecte aux principaux logiciels de caisse français et internationaux dont Lightspeed Restaurant via export CSV des ventes ou import API selon la formule Lightspeed que vous avez. Les ventes par produit sont rapatriées automatiquement, ce qui permet de calculer la marge réelle par plat en croisant prix de vente Lightspeed et coût matière RestauMargin. L'intégration prend en général 10 à 20 minutes à configurer.",
+    answer: "Pas directement : RestauMargin n'a pas de connecteur de caisse ni d'import API. Vous exportez vos ventes par produit depuis Lightspeed, vous les mettez au format attendu (nom du plat, quantité, date), puis vous les collez dans le module Menu Engineering. Les noms doivent correspondre à ceux de vos fiches techniques. L'opération est à refaire à chaque période analysée.",
   },
   {
     question: "RestauMargin propose-t-il un module de caisse / POS ?",
@@ -84,7 +84,7 @@ export default function AlternativeLightspeed() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-05-26',
-            dateModified: '2026-05-26',
+            dateModified: '2026-11-06',
             wordCount: 2600,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/alternative-lightspeed' },
@@ -266,7 +266,7 @@ export default function AlternativeLightspeed() {
               simplement qu'il ne correspond pas à tous les besoins ni à tous les budgets. Une brasserie
               parisienne avec un fort volume couverts et plusieurs serveurs y trouvera une valeur énorme.
               Un bistrot de quartier ou un food truck qui veut surtout reprendre le contrôle de sa marge
-              sur chaque plat aura davantage besoin d'un outil comme RestauMargin, branché ou non sur une
+              sur chaque plat aura davantage besoin d'un outil comme RestauMargin, utilisé à côté d'une
               caisse plus légère.
             </p>
             <p>
@@ -362,7 +362,7 @@ export default function AlternativeLightspeed() {
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>19 actions IA pour suggérer recettes, optimiser marges, détecter anomalies</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Multi-restaurant natif avec vue consolidée et benchmarking</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>PWA mobile + mode kiosk balance + scan de factures par OCR</span></li>
-                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Connecteur Lightspeed Restaurant pour rapatrier les ventes</span></li>
+                <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>Import des ventes par collage d'un export CSV de votre caisse</span></li>
                 <li className="flex gap-2"><span className="font-bold mt-0.5">+</span><span>19 EUR/mois, essai 7 jours sans carte bancaire</span></li>
               </ul>
             </div>
@@ -442,7 +442,7 @@ export default function AlternativeLightspeed() {
                 <ComparisonRow label="Scan de factures (OCR)" rm={true} ls={false} winner="rm" />
                 <ComparisonRow label="Multi-restaurant" rm={true} ls={true} winner="tie" />
                 <ComparisonRow label="Mobile / PWA kiosk" rm="PWA + mode kiosk balance" ls="iPad + iOS classique" winner="rm" />
-                <ComparisonRow label="Intégrations livraison" rm="Via connecteur caisse" ls="Native (Deliveroo, Uber Eats)" winner="ls" />
+                <ComparisonRow label="Intégrations livraison" rm="Aucune" ls="Native (Deliveroo, Uber Eats)" winner="ls" />
                 <ComparisonRow label="Onboarding" rm="Self-service + wizard 5 min" ls="Onboarding accompagné" winner="tie" />
                 <ComparisonRow label="Support client" rm="Email + chat" ls="Email + téléphone (formules sup.)" winner="tie" />
               </tbody>
@@ -484,7 +484,7 @@ export default function AlternativeLightspeed() {
               title="Vous êtes une brasserie avec gros volume et beaucoup de serveurs"
               recommendation="Lightspeed + RestauMargin en complément"
               recoColor="blue"
-              desc="Vos opérations dépendent fortement de la caisse et du plan de salle (rotation rapide des couverts, gestion serveurs, encaissement fluide). Lightspeed est légitime pour piloter cette partie. Mais vous voulez aussi suivre vos marges plat par plat et anticiper les hausses fournisseurs. Ajoutez RestauMargin (19 EUR/mois) en parallèle : les ventes sont rapatriées via le connecteur et la marge réelle est calculée automatiquement."
+              desc="Vos opérations dépendent fortement de la caisse et du plan de salle (rotation rapide des couverts, gestion serveurs, encaissement fluide). Lightspeed est légitime pour piloter cette partie. Mais vous voulez aussi suivre vos marges plat par plat et anticiper les hausses fournisseurs. Ajoutez RestauMargin (19 EUR/mois) en parallèle : vous importez vos ventes par export CSV, sans connexion directe entre les deux outils, et RestauMargin en déduit la marge par plat."
             />
             <ScenarioCard
               badge="Profil 3"

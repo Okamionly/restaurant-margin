@@ -32,7 +32,7 @@ const faqItems = [
   },
   {
     question: "L'Addition et RestauMargin peuvent-ils échanger les données automatiquement ?",
-    answer: "Une intégration directe n'est pas encore disponible côté L'Addition côté API publique grand public, mais il est possible d'importer les ventes via export CSV hebdomadaire. RestauMargin sait lire ces fichiers et les rapprocher des fiches techniques pour calculer la marge réelle par plat vendu.",
+    answer: "Il n'y a pas d'intégration directe : RestauMargin n'a pas de connecteur de caisse. Vous pouvez exporter vos ventes depuis L'Addition, puis les coller au format CSV (nom du plat, quantité, date). Les lignes sont rapprochées de vos fiches techniques par nom de plat pour calculer la marge par plat vendu.",
   },
   {
     question: "L'Addition est-il certifié NF525 et conforme à la loi anti-fraude TVA ?",
@@ -84,7 +84,7 @@ export default function AlternativeLAddition() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-05-26',
-            dateModified: '2026-05-26',
+            dateModified: '2026-11-06',
             wordCount: 2600,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/alternative-laddition' },

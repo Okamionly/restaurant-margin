@@ -119,7 +119,7 @@ export default function ComparatifRestauMarginZenchef() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-05-27',
-            dateModified: '2026-05-27',
+            dateModified: '2026-11-06',
             wordCount: 3500,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/comparatif-restaumargin-vs-zenchef' },
@@ -547,7 +547,7 @@ export default function ComparatifRestauMarginZenchef() {
                 <ComparisonRow label="Newsletter intégrée" rm="non" zc="oui" />
                 <ComparisonRow label="Programme fidélité" rm="non" zc="partiel" zcText="Premium uniquement" />
                 <ComparisonRow label="Click & collect" rm="non" zc="partiel" zcText="Module supplémentaire" />
-                <ComparisonRow label="Couverts par jour (tracking)" rm="oui" rmText="Via intégration POS" zc="oui" />
+                <ComparisonRow label="Couverts par jour (tracking)" rm="partiel" rmText="Moyenne saisie dans le profil" zc="oui" />
 
                 <CategoryRow label="Plateforme et support" />
                 <ComparisonRow label="Multi-restaurant natif" rm="oui" zc="oui" />

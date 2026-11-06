@@ -48,7 +48,7 @@ const faqItems = [
   },
   {
     question: "Existe-t-il une intégration entre RestauMargin et un logiciel de caisse ?",
-    answer: "RestauMargin se connecte aux principaux logiciels de caisse français (Tiller, L'Addition, Lightspeed Restaurant, Sumup) pour importer automatiquement les ventes et calculer les marges réelles par plat vendu. Zenchef, lui, s'intègre principalement avec les systèmes de réservation et les CRM marketing. Les deux outils répondent à des besoins différents et peuvent être branchés sur la même caisse sans conflit.",
+    answer: "Non : RestauMargin n'a pas de connecteur de caisse. Vous exportez vos ventes depuis votre caisse, puis vous les collez au format CSV (nom du plat, quantité, date) pour obtenir la marge par plat vendu. Zenchef, lui, s'intègre principalement avec les systèmes de réservation et les CRM marketing. Les deux outils répondent à des besoins différents et s'utilisent en parallèle sans conflit.",
   },
   {
     question: "Quel est le meilleur outil pour un groupe de plusieurs restaurants ?",
@@ -84,7 +84,7 @@ export default function AlternativeZenchef() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-05-26',
-            dateModified: '2026-05-26',
+            dateModified: '2026-11-06',
             wordCount: 2800,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/alternative-zenchef' },

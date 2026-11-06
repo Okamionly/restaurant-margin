@@ -53,7 +53,7 @@ export default function BlogMenuEngineering() {
     },
     {
       question: "Quelle différence entre un tableur Excel et un logiciel dédié pour le menu engineering ?",
-      answer: "Un tableur exige une saisie manuelle des ventes et des coûts matières à chaque cycle — fastidieux au-delà de 20 plats et vite obsolète si un prix fournisseur bouge. Un logiciel connecté à la caisse et aux fiches techniques recalcule la matrice en continu, sans ressaisie, et alerte dès qu'un plat change de quadrant."
+      answer: "Un tableur exige une saisie manuelle des ventes et des coûts matières à chaque cycle — fastidieux au-delà de 20 plats et vite obsolète si un prix fournisseur bouge. Un logiciel relié aux fiches techniques recalcule la matrice à chaque import de ventes, sans ressaisir les coûts, et montre dans quel quadrant se trouve chaque plat."
     },
     {
       question: "À partir de combien de plats faut-il automatiser le menu engineering ?",
@@ -83,7 +83,7 @@ export default function BlogMenuEngineering() {
             "@type": "Article",
             "headline": "Menu engineering : la méthode Boston Matrix pour optimiser votre carte",
             "datePublished": "2026-04-27",
-            "dateModified": "2026-08-25",
+            "dateModified": "2026-11-06",
             "author": {
               "@type": "Organization",
               "name": "La rédaction RestauMargin",
@@ -116,7 +116,7 @@ export default function BlogMenuEngineering() {
 
       {/* Body */}
       <main className="max-w-[720px] mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
-        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-08-25" readTime="16 min" variant="header" />
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-11-06" readTime="16 min" variant="header" />
 
         <p className="text-[#374151] text-lg leading-relaxed mb-8">
           <strong>Sur une carte typique de 25 plats, seuls 4 à 6 plats génèrent 80 % de la marge brute totale.</strong> Le menu engineering, formalisé par Donald Smith et Michael Kasavana à l'Université du Michigan en 1982, est la science qui permet d'identifier ces dynamiques et de transformer chaque plat en levier de rentabilité.
@@ -513,7 +513,7 @@ export default function BlogMenuEngineering() {
               },
               {
                 q: "Quelle différence entre un tableur Excel et un logiciel dédié pour le menu engineering ?",
-                a: "Un tableur exige une saisie manuelle des ventes et des coûts matières à chaque cycle — fastidieux au-delà de 20 plats et vite obsolète si un prix fournisseur bouge. Un logiciel connecté à la caisse et aux fiches techniques recalcule la matrice en continu, sans ressaisie, et alerte dès qu'un plat change de quadrant."
+                a: "Un tableur exige une saisie manuelle des ventes et des coûts matières à chaque cycle — fastidieux au-delà de 20 plats et vite obsolète si un prix fournisseur bouge. Un logiciel relié aux fiches techniques recalcule la matrice à chaque import de ventes, sans ressaisir les coûts, et montre dans quel quadrant se trouve chaque plat."
               },
               {
                 q: "À partir de combien de plats faut-il automatiser le menu engineering ?",
@@ -548,7 +548,7 @@ export default function BlogMenuEngineering() {
           <Link to="/outils/calculateur-food-cost" className="text-sm text-teal-600 hover:underline">Calculateur food cost gratuit →</Link>
         </div>
 
-        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-08-25" readTime="16 min" variant="footer" />
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-11-06" readTime="16 min" variant="footer" />
       </main>
     </div>
   );

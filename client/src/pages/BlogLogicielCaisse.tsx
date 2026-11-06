@@ -91,7 +91,7 @@ const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: 'RestauMargin',
-  description: 'Logiciel de pilotage des marges et du food cost pour restaurant. Se connecte à votre logiciel de caisse pour transformer vos données de ventes en marge nette pilotable.',
+  description: 'Logiciel de pilotage des marges et du food cost pour restaurant. Transforme les ventes exportées de votre caisse en CSV en marge par plat.',
   brand: { '@type': 'Brand', name: 'RestauMargin' },
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web, iOS, Android',
@@ -121,7 +121,7 @@ const articleSchema = {
     logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
   },
   datePublished: '2026-04-27',
-  dateModified: '2026-05-26',
+  dateModified: '2026-11-06',
   wordCount: 3200,
   inLanguage: 'fr-FR',
   mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/logiciel-caisse-enregistreuse-restaurant' },
@@ -171,7 +171,7 @@ export default function BlogLogicielCaisse() {
       {/* Body */}
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
-        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-05-26" readTime="15 min" variant="header" />
+        <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-11-06" readTime="15 min" variant="header" />
 
         {/* Encadre formule rapide / TL;DR */}
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
@@ -629,7 +629,7 @@ export default function BlogLogicielCaisse() {
             </Link>
           </div>
 
-          <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-05-26" readTime="15 min" variant="footer" />
+          <BlogAuthor publishedDate="2026-04-27" updatedDate="2026-11-06" readTime="15 min" variant="footer" />
 
           {/* Articles connexes */}
           <section className="mt-12">

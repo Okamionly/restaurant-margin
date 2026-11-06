@@ -90,7 +90,7 @@ export default function BlogRegle30303010() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-05-26',
-            dateModified: '2026-05-26',
+            dateModified: '2026-11-06',
             wordCount: 3200,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/regle-30-30-30-10-restaurant' },
@@ -730,12 +730,12 @@ export default function BlogRegle30303010() {
         <section id="cta" className="mb-16">
           <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 sm:p-12 text-center">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-4">
-              Pilotez votre règle 30/30/30/10 en temps réel
+              Pilotez la part matières de votre règle 30/30/30/10
             </h2>
             <p className="text-teal-100 text-lg max-w-xl mx-auto mb-3 leading-relaxed">
-              RestauMargin connecte vos achats, votre caisse et votre paie pour calculer
-              automatiquement vos quatre ratios. Vous voyez si vous respectez la règle,
-              quels postes dérivent et quels leviers activer en priorité.
+              RestauMargin calcule votre coût matière à partir de vos fiches techniques et de
+              vos factures. Vous voyez quels plats dérivent et quels leviers activer en
+              priorité. Les charges de paie et les frais fixes se suivent à part.
             </p>
             <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
               <strong>19 EUR/mois</strong> &mdash; essai gratuit 7 jours, sans engagement, sans carte bancaire.

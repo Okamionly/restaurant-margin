@@ -53,7 +53,7 @@ const faqItems: FaqItem[] = [
   {
     question: "D'où viennent les données de vente utilisées pour le Menu Engineering ?",
     answer:
-      "RestauMargin récupère les volumes vendus de deux façons. Soit par connexion à votre logiciel de caisse (POS) compatible : les ventes remontent automatiquement chaque nuit, plat par plat. Soit par saisie manuelle ou import d'un export CSV de votre caisse, ce qui prend moins de cinq minutes par mois. Côté coût, les food cost proviennent de vos fiches techniques déjà renseignées dans l'application. Le croisement coût × volume se fait ensuite tout seul, sans tableur ni calcul manuel.",
+      "RestauMargin récupère les volumes vendus de deux façons : par saisie manuelle, ou en collant un export CSV de votre caisse au format nom du plat, quantité, date. Il n'y a pas de connexion directe aux logiciels de caisse. Côté coût, les food cost proviennent de vos fiches techniques déjà renseignées dans l'application. Le croisement coût × volume se fait ensuite tout seul, sans tableur ni calcul manuel.",
   },
   {
     question: "À quelle fréquence faut-il lancer une analyse de la matrice ?",
@@ -96,7 +96,7 @@ const articleSchema = {
     logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
   },
   datePublished: '2026-05-28',
-  dateModified: '2026-05-28',
+  dateModified: '2026-11-06',
   wordCount: 1850,
   inLanguage: 'fr-FR',
   mainEntityOfPage: {
@@ -417,7 +417,7 @@ export default function FonctionnaliteMenuEngineering() {
                 Icon: ScanLine,
                 title: 'On croise coûts et ventes',
                 desc:
-                  "RestauMargin récupère le food cost de chaque plat via vos fiches techniques et les volumes vendus via votre POS ou un import de caisse.",
+                  "RestauMargin récupère le food cost de chaque plat via vos fiches techniques et les volumes vendus par saisie ou par import CSV de votre caisse.",
               },
               {
                 step: '02',

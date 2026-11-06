@@ -48,7 +48,7 @@ const faqItems = [
   {
     question: "Combien d'outils différents faut-il pour gérer un restaurant ?",
     answer:
-      "En général 3 à 5 outils suffisent : un POS (caisse), un outil de gestion des marges, un système de réservation et une connexion livraison si applicable. Aucun outil unique sur le marché ne couvre tout sérieusement. La tendance 2026 est l'intégration via API : tous les bons logiciels se branchent entre eux (Lightspeed dialogue avec Hubrise, RestauMargin importe les ventes de Tiller, etc.).",
+      "En général 3 à 5 outils suffisent : un POS (caisse), un outil de gestion des marges, un système de réservation et une connexion livraison si applicable. Aucun outil unique sur le marché ne couvre tout sérieusement. La tendance 2026 est l'intégration via API : tous les bons logiciels se branchent entre eux (Lightspeed dialogue avec Hubrise, par exemple). RestauMargin fait exception : pas de connecteur de caisse, les ventes s'importent par export CSV.",
   },
   {
     question: "Quel est le meilleur logiciel restaurant en 2026 ?",
@@ -63,7 +63,7 @@ const faqItems = [
   {
     question: "Les intégrations entre logiciels fonctionnent-elles vraiment ?",
     answer:
-      "Cela dépend des éditeurs. Les meilleurs (Lightspeed, Hubrise, Deliverect) ont des API documentées et des connecteurs natifs. D'autres (notamment certains POS français anciens) demandent encore des intégrations sur-mesure. RestauMargin importe les ventes depuis Tiller, L'Addition, Lightspeed et Sumup. Avant d'acheter, vérifiez toujours la liste officielle des intégrations sur le site de chaque éditeur.",
+      "Cela dépend des éditeurs. Les meilleurs (Lightspeed, Hubrise, Deliverect) ont des API documentées et des connecteurs natifs. D'autres (notamment certains POS français anciens) demandent encore des intégrations sur-mesure. RestauMargin n'a pas de connecteur de caisse : ses ventes s'importent en collant un export CSV. Avant d'acheter, vérifiez toujours la liste officielle des intégrations sur le site de chaque éditeur.",
   },
   {
     question: "Quelle est la différence entre un POS et un logiciel de gestion ?",
@@ -310,7 +310,7 @@ const articleSchema = {
     logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
   },
   datePublished: '2026-05-26',
-  dateModified: '2026-05-26',
+  dateModified: '2026-11-06',
   wordCount: 3600,
   inLanguage: 'fr-FR',
   mainEntityOfPage: {

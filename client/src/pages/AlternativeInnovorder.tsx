@@ -43,7 +43,7 @@ const faqItems = [
   {
     question: 'Peut-on remplacer entièrement Innovorder par RestauMargin ?',
     answer:
-      "Non. RestauMargin ne fait pas caisse enregistreuse, pas de prise de commande client, pas de click & collect. Si vous avez besoin d'un POS, gardez Innovorder ou un autre logiciel de caisse (Tiller, Zelty, Lightspeed). RestauMargin se branche en complément pour piloter la marge que la caisse ne suit pas. À l'inverse, vous pouvez très bien lancer un restaurant uniquement avec RestauMargin si vous tenez votre caisse autrement (TPE, caisse classique, tableur).",
+      "Non. RestauMargin ne fait pas caisse enregistreuse, pas de prise de commande client, pas de click & collect. Si vous avez besoin d'un POS, gardez Innovorder ou un autre logiciel de caisse (Tiller, Zelty, Lightspeed). RestauMargin s'utilise en complément, sans connexion directe à la caisse, pour piloter la marge qu'elle ne suit pas. À l'inverse, vous pouvez très bien lancer un restaurant uniquement avec RestauMargin si vous tenez votre caisse autrement (TPE, caisse classique, tableur).",
   },
   {
     question: 'Quels sont les avantages clés de RestauMargin sur Innovorder ?',
@@ -111,7 +111,7 @@ export default function AlternativeInnovorder() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-05-26',
-            dateModified: '2026-05-26',
+            dateModified: '2026-11-06',
             wordCount: 2700,
             inLanguage: 'fr-FR',
             mainEntityOfPage: {
@@ -718,7 +718,7 @@ export default function AlternativeInnovorder() {
               </p>
               <p className="text-teal-50 text-base max-w-xl mx-auto mb-8">
                 <strong>19 EUR/mois</strong> &mdash; essai gratuit 7 jours, gardez Innovorder ou
-                votre caisse actuelle, RestauMargin se branche en complément en 5 minutes.
+                votre caisse actuelle, RestauMargin s'utilise en complément.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link

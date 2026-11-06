@@ -1,60 +1,79 @@
-# Rapport COO — 2026-11-05
+# COO — Rapport opérationnel 2026-11-06
 
-## Santé des services
-| Service    | Statut |
-|------------|--------|
-| database   | ✅ ok  |
-| ai         | ✅ ok (claude-sonnet-4-6) |
-| api        | ✅ ok  |
-| responseTime | 1419 ms |
+**Généré le** : 2026-11-06 10:15 UTC
 
-## Données produit
-- Utilisateurs total : 20
-- Nouvelles inscriptions 24h : 0
-- Abonnés Pro : 0 / Business : 0
-- Essai actif : 1
-- MRR estimé : 0 €
+---
 
-## CI (GitHub Actions — branche main)
-| Workflow | Conclusion | SHA |
-|----------|-----------|-----|
-| CI | ✅ success | 57e1b1b |
-| Taches automatiques | ✅ success | c41e1be |
-| Taches automatiques | ✅ success | c41e1be |
-| CI | ✅ success | c41e1be |
-| Taches automatiques | ✅ success | 25e545e |
+## 1. Santé des services
 
-## Tâches GitHub Actions (crons.yml)
-| Date | Événement | Conclusion |
-|------|-----------|-----------|
-| 2026-11-05T07:08:30Z | schedule | ✅ success |
-| 2026-11-05T06:49:40Z | schedule | ✅ success |
-| 2026-11-04T23:40:51Z | schedule | ✅ success |
-| 2026-11-04T19:56:38Z | schedule | ✅ success |
-| 2026-11-04T17:53:58Z | schedule | ✅ success |
-| 2026-11-04T17:52:15Z | schedule | ✅ success |
+| Service  | Statut | Détail |
+|----------|--------|--------|
+| API      | ✅ ok  | —      |
+| Database | ✅ ok  | —      |
+| AI       | ✅ ok  | claude-sonnet-4-6 |
+| Uptime   | ✅ 1   | —      |
 
-## Agents (dernier rapport)
-| Agent | Âge rapport | Statut |
-|-------|-------------|--------|
-| cto   | ~20h        | ✅ OK  |
-| cmo   | ~3h         | ✅ OK  |
-| cfo   | ~17h        | ✅ OK  |
-| qa    | ~14h        | ✅ OK  |
+Temps de réponse : **1141 ms** (acceptable)
+
+---
+
+## 2. Métriques produit
+
+- Utilisateurs totaux : **20**
+- Recettes : 63 | Ingrédients : 439
+- Nouveaux users 24h : **0** | 48h : **0**
+- Abonnés payants : **0** | Trial actif : **1** | MRR : **0 €**
+
+---
+
+## 3. CI — Derniers runs (branche main)
+
+| Commit  | Message | Statut |
+|---------|---------|--------|
+| 52a519b | docs: bug-fixer log 2026-11-06 | 🔄 in_progress |
+| 46e5e09 | fix(i18n): 19 clés common.* manquantes ar/es/de | 🔄 in_progress |
+| 21351d3 | docs: blog-writer log 2026-11-06 | ✅ success |
+| 6830a9c | cmo: post + analyse 2026-11-06 | ✅ success |
+| 22f2393 | ceo: digest quotidien | — (crons) |
+
+> Les 2 CI en cours sont normaux (runs récents démarrés à 10:14 UTC).
+
+---
+
+## 4. Tâches GitHub Actions (crons.yml)
+
+6 derniers runs — **tous success** ✅
+
+| Heure UTC       | Conclusion |
+|-----------------|------------|
+| 2026-11-06 07:08 | success   |
+| 2026-11-06 06:50 | success   |
+| 2026-11-05 23:39 | success   |
+| 2026-11-05 20:10 | success   |
+| 2026-11-05 17:56 | success   |
+| 2026-11-05 17:55 | success   |
+
+---
+
+## 5. Agents — Âge du dernier rapport
+
+| Agent | Dernier commit | Âge | Statut |
+|-------|---------------|-----|--------|
+| CTO   | ~20h          | 20h | ✅ OK  |
+| CMO   | ~3h           | 3h  | ✅ OK  |
+| CFO   | ~17h          | 17h | ✅ OK  |
+| QA    | ~14h          | 14h | ✅ OK  |
 
 Aucun agent en panne.
 
-## Commits récents
-- `57e1b1b` cmo: post + analyse
-- `c41e1be` ceo: digest quotidien
-- `25e545e` qa: tests quotidiens
-- `cf6aec9` fix: prix sans HT, parrainage sans -20 % fictif, e-mail J+7 juste, consommation simulee retiree
-- `a89d6ca` build(vercel): le contrôle des accents bloque le déploiement d'une page sans accents
+---
 
-## 3 actions du jour
-1. **Conversion trial → payant** : 1 utilisateur en essai actif — surveiller la conversion en fin de période.
-2. **Acquisition** : 0 nouvelles inscriptions sur 24h, 20 utilisateurs en tout — relancer les campagnes acquisition.
-3. **Performance API** : temps de réponse à 1419 ms — surveiller la tendance, optimiser si > 2 s.
+## 6. 3 actions du jour
+
+1. **Surveiller la CI** sur les 2 runs in_progress (52a519b, 46e5e09) — ils devraient passer au vert d'ici quelques minutes.
+2. **Fix i18n en prod** : 19 clés `common.*` désormais présentes en arabe, espagnol et allemand — vérifier l'affichage sur les pages concernées.
+3. **Acquisition prioritaire** : 0 nouveaux inscrits en 24h, 1 trial actif. Relancer la stratégie d'acquisition (CMO) et vérifier le funnel d'onboarding du trial en cours.
 
 ---
-*Généré automatiquement le 2026-11-05 à 10:14 UTC*
+
+*Rapport généré automatiquement par la routine COO RestauMargin.*

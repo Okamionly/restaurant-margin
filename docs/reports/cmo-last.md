@@ -1,34 +1,47 @@
-# Rapport CMO — 5 novembre 2026
+# Rapport CMO — 6 novembre 2026
 
-## Métriques (source : /api/agents/data, 07:12 UTC)
+**Généré :** 2026-11-06 07:13 UTC
+
+---
+
+## Métriques
 
 | Indicateur | Valeur |
 |---|---|
-| Utilisateurs totaux | 20 |
-| Nouveaux users (24h) | 0 |
-| Leads qualifiés | 0 |
+| Utilisateurs total | 20 |
+| Nouveaux utilisateurs (24h) | 0 |
+| Leads réels | 0 |
 | MRR estimé | 0 € |
 | Abonnés pro | 0 |
 | Abonnés business | 0 |
-| Utilisateurs en trial | 1 |
-| Articles de blog (Blog*.tsx) | 64 |
+| Utilisateurs en essai | 1 |
+| Articles de blog | 64 |
+
+---
 
 ## Contenu publié
 
-**Post social** : `docs/marketing/social-posts/2026-11-05.md`
-- Thème : Food cost et contrôle des marges
-- Format : 5 conseils concrets, ~260 mots
-- CTA : calculateur food cost + pricing
-- Conforme CLAUDE.md (aucune preuve sociale fabriquée)
+**Post social :** `docs/marketing/social-posts/2026-11-06.md`
+**Thème :** Maîtriser le food cost — 5 leviers concrets
+**Plateformes cibles :** LinkedIn, Instagram
+**CTA principal :** https://www.restaumargin.fr/outils/calculateur-food-cost
 
-## Analyse
+---
 
-La base utilisateurs reste stable à 20 comptes (aucun nouveau en 24h). Le seul trial actif est à surveiller pour conversion. Le MRR est à 0, ce qui confirme le stade early-stage du produit.
+## Analyse et actions
 
-Le contenu éditorial (64 pages blog) est en place. L'axe SEO organique est le principal levier d'acquisition à ce stade.
+### Situation
 
-## Action recommandée
+- Aucun nouvel utilisateur en 24h, croissance à l'arrêt.
+- 1 utilisateur en essai, 0 abonné payant : conversion à 0 %.
+- 64 articles de blog en place — bon capital SEO, à maintenir.
 
-- Suivi du trial actif : identifier si un onboarding peut être déclenché.
-- Maintenir la cadence de posts sociaux pour construire l'audience organique.
-- Pas de modification de contenu nécessaire aujourd'hui (aucun incident détecté).
+### Priorité immédiate
+
+Le produit a des utilisateurs (20 comptes, 63 recettes créées, 439 ingrédients saisis) : il y a de l'usage réel. La conversion vers l'abonnement est le blocage n°1. Les actions marketing (posts, SEO) n'auront d'impact que si l'onboarding du trial pousse vers la valeur perçue.
+
+### Actions recommandées
+
+1. **Email onboarding pour le trial en cours** : envoyer un email personnalisé à l'utilisateur en essai avec un cas d'usage concret (créer sa première fiche technique complète).
+2. **Suivi hebdomadaire des recettes créées** : indicateur de rétention précoce plus fiable que les logins.
+3. **Post social publié aujourd'hui** : focus food cost, à poster manuellement sur LinkedIn et Instagram.

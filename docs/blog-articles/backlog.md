@@ -1,6 +1,6 @@
 # Backlog articles blog RestauMargin
 
-Mise à jour : 2026-09-25
+Mise à jour : 2026-11-06
 
 ## Articles publiés / rédigés (40 total)
 
@@ -48,6 +48,7 @@ Mise à jour : 2026-09-25
 | brigade-cuisine-organisation-postes | Brigade de cuisine : organisation, postes et gestion du stress | **Publié** (2 527 mots) | 2026-09-07 |
 | pourboires-restaurant-legislation-fiscalite | Pourboires en restauration : législation, fiscalité et répartition | **Publié** (commit bd301b3) | 2026-09-12 |
 | prix-vente-menu-restaurant-methode | Prix d'un menu entrée-plat-dessert : formule rentable | **Publié** (run cloud, b579d90, 1 346 mots — sous la cible ; version enrichie 2 971 mots en brouillon : `prix-vente-menu-restaurant-methode.enrichi.md`) | 2026-09-25 |
+| contrat-saisonnier-restauration | Contrat saisonnier en restauration : règles, coût et pièges | **Rédigé, à publier** (composant, route, sitemap, prerender et BlogIndex à faire) | 2026-11-06 |
 
 > ⚠️ **`no-show-restaurant-solutions` retiré de cette table par erreur lors d'une passe antérieure** : vérifié `grep` le 2026-09-12, la route existe dans `App.tsx` et l'URL dans `sitemap.xml` — l'article est **déjà publié**, il n'apparaissait juste pas dans ce tableau de suivi (qui n'était pas exhaustif sur les 57+ `.md` du dossier).
 
@@ -69,30 +70,32 @@ Mise à jour : 2026-09-25
 
 > **2026-09-25** : `prix-vente-menu-restaurant-methode` publié par le run cloud (1 346 mots) ; le run local a produit en parallèle une version de 2 971 mots, conservée en `.enrichi.md` pour remplacer le contenu de `BlogPrixVenteMenu.tsx`. Liste renouvelée à 5 sujets, vérifiés non couverts (`grep` App.tsx + dossier `.md`).
 
-### 1. Emploi saisonnier en restauration
-- **Slug** : `contrat-saisonnier-restauration`
-- **Angle** : complète `contrat-travail-restauration-guide` (extras, CDD saisonnier, heures supplémentaires, logement, spécificités montagne/littoral)
-- **Mots-clés** : "contrat saisonnier restauration", "CDD saisonnier restaurant", "extra restauration contrat"
+> **2026-11-06** : `contrat-saisonnier-restauration` rédigé (ex-slot #1). Liste complétée pour revenir à 5 sujets, vérifiés non couverts par `ls docs/blog-articles` + `grep` App.tsx.
 
-### 2. Contrôle de la DDPP / hygiène : déroulé, grille, sanctions
+### 1. Contrôle de la DDPP / hygiène : déroulé, grille, sanctions
 - **Slug** : `controle-hygiene-restaurant-ddpp`
 - **Angle** : déroulé d'un contrôle, grille d'évaluation, suites (avertissement / mise en demeure / fermeture), Alim'confiance. Croiser avec `guide-haccp-2026-restaurant` pour éviter le doublon.
 - **Mots-clés** : "contrôle DDPP restaurant", "contrôle hygiène restaurant", "Alim'confiance restaurant"
 
-### 3. Affichages obligatoires d'un restaurant : la liste 2026
+### 2. Affichages obligatoires d'un restaurant : la liste 2026
 - **Slug** : `affichages-obligatoires-restaurant`
 - **Angle** : prix (arrêté 27/03/1987), origine des viandes, allergènes, licence, protection des mineurs, tabac, affichages salariés ; tableau de contrôle imprimable. Aucun article existant sur ce sujet (vérifié 2026-09-25).
 - **Mots-clés** : "affichage obligatoire restaurant", "affichage prix restaurant", "panneau obligatoire bar"
 
-### 4. Vente à emporter et click & collect : la rentabiliser
+### 3. Vente à emporter et click & collect : la rentabiliser
 - **Slug** : `vente-a-emporter-restaurant-rentabilite`
 - **Angle** : complète `livraison-restaurant-rentabilite` sans commission plateforme — coût packaging, TVA à emporter, organisation du passe, prix différenciés sur place / à emporter
 - **Mots-clés** : "vente à emporter restaurant", "click and collect restaurant", "prix à emporter restaurant"
 
-### 5. Assurances d'un restaurant : lesquelles sont obligatoires
+### 4. Assurances d'un restaurant : lesquelles sont obligatoires
 - **Slug** : `assurance-restaurant-obligatoire`
 - **Angle** : RC exploitation, multirisque, perte d'exploitation, prévoyance ; ce qui est obligatoire vs recommandé ; postes qui pèsent dans le budget
 - **Mots-clés** : "assurance restaurant", "assurance obligatoire restaurant", "perte d'exploitation restaurant"
+
+### 5. Rupture anticipée d'un CDD saisonnier : cas permis et coût
+- **Slug** : `rupture-cdd-saisonnier-restaurant`
+- **Angle** : suite directe de `contrat-saisonnier-restauration` : accord commun, faute grave, inaptitude, force majeure, embauche en CDI ailleurs ; ce que coûte une rupture hors cas légal
+- **Mots-clés** : "rupture CDD saisonnier", "abandon de poste saisonnier", "fin anticipée contrat saisonnier"
 
 ---
 

@@ -516,5 +516,9 @@
     "errorAdding": "Error al añadir la receta",
     "orderCreated": "¡Pedido creado con éxito!",
     "errorOrdering": "Error al crear el pedido"
-  }
+  },
+  "voiceBubble.browserNotSupported": "Navegador no compatible. Usa Chrome.",
+  "voiceBubble.listening": "Escuchando...",
+  "voiceBubble.speakNow": "Habla ahora",
+  "voiceBubble.stop": "Detener"
 }

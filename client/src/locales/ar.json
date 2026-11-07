@@ -506,5 +506,9 @@
     "errorAdding": "خطأ عند إضافة الوصفة",
     "orderCreated": "تم إنشاء الطلب بنجاح!",
     "errorOrdering": "خطأ عند إنشاء الطلب"
-  }
+  },
+  "voiceBubble.browserNotSupported": "المتصفح غير مدعوم. استخدم Chrome.",
+  "voiceBubble.listening": "جارٍ الاستماع...",
+  "voiceBubble.speakNow": "تحدث الآن",
+  "voiceBubble.stop": "إيقاف"
 }

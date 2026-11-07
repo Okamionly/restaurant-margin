@@ -516,5 +516,9 @@
     "errorAdding": "Fehler beim Hinzufügen des Rezepts",
     "orderCreated": "Bestellung erfolgreich erstellt!",
     "errorOrdering": "Fehler beim Erstellen der Bestellung"
-  }
+  },
+  "voiceBubble.browserNotSupported": "Browser nicht unterstützt. Verwende Chrome.",
+  "voiceBubble.listening": "Höre zu...",
+  "voiceBubble.speakNow": "Jetzt sprechen",
+  "voiceBubble.stop": "Stoppen"
 }

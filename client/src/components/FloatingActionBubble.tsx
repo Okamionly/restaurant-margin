@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AnimatedTutorial from './AnimatedTutorial';
 import { useToast } from '../hooks/useToast';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   Plus, X, Mic, Timer, HelpCircle, Brain, Scale, FileText,
   ShoppingCart, BarChart3, Keyboard, MessageSquare, Play
@@ -28,6 +29,7 @@ export default function FloatingActionBubble() {
   const navigate = useNavigate();
   const recognitionRef = useRef<any>(null);
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   // Close on outside click
   useEffect(() => {
@@ -54,7 +56,7 @@ export default function FloatingActionBubble() {
 
   function startListening() {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) { showToast('Navigateur non supporté. Utilisez Chrome.', 'error'); return; }
+    if (!SpeechRecognition) { showToast(t('voiceBubble.browserNotSupported'), 'error'); return; }
     const recognition = new SpeechRecognition();
     recognition.lang = 'fr-FR';
     recognition.continuous = false;
@@ -168,15 +170,15 @@ export default function FloatingActionBubble() {
               <Mic className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="text-sm font-bold text-mono-100 dark:text-white">Ecoute en cours...</p>
-              <p className="text-[11px] text-[#9CA3AF]">Parlez maintenant</p>
+              <p className="text-sm font-bold text-mono-100 dark:text-white">{t('voiceBubble.listening')}</p>
+              <p className="text-[11px] text-[#9CA3AF]">{t('voiceBubble.speakNow')}</p>
             </div>
           </div>
           {transcript && (
             <p className="text-sm text-mono-100 dark:text-white bg-mono-950 dark:bg-[#171717] rounded-lg p-2 italic">"{transcript}"</p>
           )}
           <button onClick={stopListening} className="mt-2 w-full py-2 text-xs font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
-            Arreter
+            {t('voiceBubble.stop')}
           </button>
         </div>
       )}

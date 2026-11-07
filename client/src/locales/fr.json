@@ -2716,5 +2716,9 @@
   },
   "www.restaumargin.fr/pricing": "www.restaumargin.fr/pricing",
   "Événement créé avec succès": "Événement créé avec succès",
-  "Événement supprimé": "Événement supprimé"
+  "Événement supprimé": "Événement supprimé",
+  "voiceBubble.browserNotSupported": "Navigateur non supporté. Utilisez Chrome.",
+  "voiceBubble.listening": "Écoute en cours...",
+  "voiceBubble.speakNow": "Parlez maintenant",
+  "voiceBubble.stop": "Arrêter"
 }

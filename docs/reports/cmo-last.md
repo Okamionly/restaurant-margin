@@ -1,47 +1,31 @@
-# Rapport CMO — 6 novembre 2026
+# Rapport CMO — 2026-11-07
 
-**Généré :** 2026-11-06 07:13 UTC
-
----
-
-## Métriques
+## Métriques du jour (source : /api/agents/data, 07h11 UTC)
 
 | Indicateur | Valeur |
 |---|---|
-| Utilisateurs total | 20 |
-| Nouveaux utilisateurs (24h) | 0 |
-| Leads réels | 0 |
+| Utilisateurs totaux | 21 |
+| Nouveaux utilisateurs 24h | 1 |
+| Leads qualifiés | 0 |
 | MRR estimé | 0 € |
-| Abonnés pro | 0 |
-| Abonnés business | 0 |
-| Utilisateurs en essai | 1 |
+| Abonnés trial actifs | 1 |
 | Articles de blog | 64 |
 
----
+## Tendance
 
-## Contenu publié
+- +1 inscrit en 24h, aucun lead qualifié, aucun abonné payant.
+- 1 utilisateur en trial : conversion à surveiller dans les 7 prochains jours.
+- MRR à 0 € — la priorité reste l'activation des essais.
 
-**Post social :** `docs/marketing/social-posts/2026-11-06.md`
-**Thème :** Maîtriser le food cost — 5 leviers concrets
-**Plateformes cibles :** LinkedIn, Instagram
-**CTA principal :** https://www.restaumargin.fr/outils/calculateur-food-cost
+## Action du jour
 
----
+**Post social rédigé :** `docs/marketing/social-posts/2026-11-07.md`
+- Format : LinkedIn / Instagram, ~260 mots
+- Angle : reprendre le contrôle du food cost, 4 conseils opérationnels
+- CTA : calculateur food cost (outil public, sans friction)
+- Conforme CLAUDE.md § "Aucune preuve sociale fabriquée" : aucun témoignage, aucun chiffre d'adoption, aucune note
 
-## Analyse et actions
+## Recommandation
 
-### Situation
-
-- Aucun nouvel utilisateur en 24h, croissance à l'arrêt.
-- 1 utilisateur en essai, 0 abonné payant : conversion à 0 %.
-- 64 articles de blog en place — bon capital SEO, à maintenir.
-
-### Priorité immédiate
-
-Le produit a des utilisateurs (20 comptes, 63 recettes créées, 439 ingrédients saisis) : il y a de l'usage réel. La conversion vers l'abonnement est le blocage n°1. Les actions marketing (posts, SEO) n'auront d'impact que si l'onboarding du trial pousse vers la valeur perçue.
-
-### Actions recommandées
-
-1. **Email onboarding pour le trial en cours** : envoyer un email personnalisé à l'utilisateur en essai avec un cas d'usage concret (créer sa première fiche technique complète).
-2. **Suivi hebdomadaire des recettes créées** : indicateur de rétention précoce plus fiable que les logins.
-3. **Post social publié aujourd'hui** : focus food cost, à poster manuellement sur LinkedIn et Instagram.
+Tant que le trial actuel n'est pas converti, l'activation prime sur l'acquisition.
+Envisager un email de suivi J+3 du trial (si séquence onboarding non active) avant d'intensifier les posts sociaux.

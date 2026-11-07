@@ -212,7 +212,9 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-charts': ['recharts'],
-          'vendor-icons': ['lucide-react'],
+          // Perf 2026-11-07 : plus de chunk 'vendor-icons'. Il forcait 134 Ko bruts
+          // (25 Ko gzip) d'icones sur chaque page, en concurrence avec le CSS pendant
+          // la fenetre critique. Sans lui : FCP environ -100 ms (A/B mobile bride).
         },
         // Stable chunk names for better long-term caching
         chunkFileNames: 'assets/[name]-[hash].js',

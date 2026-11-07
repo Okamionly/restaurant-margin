@@ -1,79 +1,56 @@
-# COO — Rapport opérationnel 2026-11-06
+# Rapport COO — 2026-11-07
 
-**Généré le** : 2026-11-06 10:15 UTC
+## Santé des services
 
----
+| Service  | Statut |
+|----------|--------|
+| database | ✅ ok  |
+| ai       | ✅ ok (claude-sonnet-4-6) |
+| api      | ✅ ok  |
 
-## 1. Santé des services
+Uptime : 1 j — Temps de réponse santé : 1156 ms
 
-| Service  | Statut | Détail |
-|----------|--------|--------|
-| API      | ✅ ok  | —      |
-| Database | ✅ ok  | —      |
-| AI       | ✅ ok  | claude-sonnet-4-6 |
-| Uptime   | ✅ 1   | —      |
+## Données produit (24 h)
 
-Temps de réponse : **1141 ms** (acceptable)
+- Utilisateurs totaux : 21 (↑1 nouvel utilisateur)
+- Recettes : 64 | Ingrédients : 442
+- Abonnés Pro : 0 | Trial actif : 1 | MRR : 0 €
 
----
+## CI (derniers commits main)
 
-## 2. Métriques produit
+| Commit | Titre | Statut |
+|--------|-------|--------|
+| bb98456 | docs: bug-fixer log 2026-11-07 | ⏳ in_progress |
+| 888b0df | fix(i18n): FloatingActionBubble | ⏳ in_progress |
+| 441d40f | cmo: post + analyse 2026-11-07 | ✅ success |
+| c03f060 | ceo: digest quotidien | ✅ success |
+| f84e57e | qa: tests quotidiens 2026-11-06 | ✅ success |
 
-- Utilisateurs totaux : **20**
-- Recettes : 63 | Ingrédients : 439
-- Nouveaux users 24h : **0** | 48h : **0**
-- Abonnés payants : **0** | Trial actif : **1** | MRR : **0 €**
+> Deux runs en cours au moment du rapport (push récent) — pas d'échec.
 
----
+## Tâches GitHub Actions (crons.yml)
 
-## 3. CI — Derniers runs (branche main)
+| Run | Événement | Conclusion |
+|-----|-----------|------------|
+| #540 (2026-11-07 08:48) | schedule | ✅ success |
+| #539 (2026-11-07 06:19) | schedule | ✅ success |
 
-| Commit  | Message | Statut |
-|---------|---------|--------|
-| 52a519b | docs: bug-fixer log 2026-11-06 | 🔄 in_progress |
-| 46e5e09 | fix(i18n): 19 clés common.* manquantes ar/es/de | 🔄 in_progress |
-| 21351d3 | docs: blog-writer log 2026-11-06 | ✅ success |
-| 6830a9c | cmo: post + analyse 2026-11-06 | ✅ success |
-| 22f2393 | ceo: digest quotidien | — (crons) |
+## Agents (état des rapports)
 
-> Les 2 CI en cours sont normaux (runs récents démarrés à 10:14 UTC).
+| Agent | Dernier rapport | Statut |
+|-------|----------------|--------|
+| CTO   | il y a ~20 h   | ✅ ok  |
+| CMO   | il y a ~3 h    | ✅ ok  |
+| CFO   | il y a ~17 h   | ✅ ok  |
+| QA    | il y a ~14 h   | ✅ ok  |
 
----
+Aucun agent en panne (seuil : > 48 h sans rapport).
 
-## 4. Tâches GitHub Actions (crons.yml)
+## 3 actions du jour
 
-6 derniers runs — **tous success** ✅
-
-| Heure UTC       | Conclusion |
-|-----------------|------------|
-| 2026-11-06 07:08 | success   |
-| 2026-11-06 06:50 | success   |
-| 2026-11-05 23:39 | success   |
-| 2026-11-05 20:10 | success   |
-| 2026-11-05 17:56 | success   |
-| 2026-11-05 17:55 | success   |
-
----
-
-## 5. Agents — Âge du dernier rapport
-
-| Agent | Dernier commit | Âge | Statut |
-|-------|---------------|-----|--------|
-| CTO   | ~20h          | 20h | ✅ OK  |
-| CMO   | ~3h           | 3h  | ✅ OK  |
-| CFO   | ~17h          | 17h | ✅ OK  |
-| QA    | ~14h          | 14h | ✅ OK  |
-
-Aucun agent en panne.
+1. **Conversion trial → payant** : 1 utilisateur en trial actif — vérifier s'il approche de la fin d'essai et si l'onboarding email a été envoyé.
+2. **Performance API** : temps de réponse santé à 1156 ms — surveiller la tendance, seuil d'alerte conseillé à 2000 ms.
+3. **Acquisition** : 1 nouveau compte en 24 h — vérifier la provenance (organique / CMO) pour calibrer les prochaines actions marketing.
 
 ---
-
-## 6. 3 actions du jour
-
-1. **Surveiller la CI** sur les 2 runs in_progress (52a519b, 46e5e09) — ils devraient passer au vert d'ici quelques minutes.
-2. **Fix i18n en prod** : 19 clés `common.*` désormais présentes en arabe, espagnol et allemand — vérifier l'affichage sur les pages concernées.
-3. **Acquisition prioritaire** : 0 nouveaux inscrits en 24h, 1 trial actif. Relancer la stratégie d'acquisition (CMO) et vérifier le funnel d'onboarding du trial en cours.
-
----
-
-*Rapport généré automatiquement par la routine COO RestauMargin.*
+_Généré automatiquement — COO RestauMargin_

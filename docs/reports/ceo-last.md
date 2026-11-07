@@ -1,56 +1,78 @@
-# Digest RestauMargin — 2026-11-06
+# Digest RestauMargin — 2026-11-07
 
-## Santé — site, base, IA, CI
+**Généré le :** 2026-11-07T05:08 UTC
 
-| Service      | Statut | Détail                      |
-|--------------|--------|-----------------------------|
-| Site         | ✅ ok  | restaumargin.fr joignable   |
-| Database     | ✅ ok  | —                           |
-| IA           | ✅ ok  | claude-sonnet-4-6           |
-| API          | ✅ ok  | responseTime 1267 ms        |
-| CI (main)    | ✅ vert | Dernier run : success (fcf4e93) |
+---
+
+## Santé
+
+| Service    | Statut | Détail                            |
+|------------|--------|-----------------------------------|
+| API        | ✅ ok  | restaumargin.fr joignable         |
+| Database   | ✅ ok  | Supabase/PostgreSQL               |
+| AI         | ✅ ok  | claude-sonnet-4-6                 |
+| CI (main)  | ✅ ok  | Taches automatiques — success f84e57e |
+
+Temps de réponse API : 993 ms (acceptable).
+
+---
 
 ## Chiffres
 
-| Indicateur          | Valeur |
-|---------------------|--------|
-| MRR                 | 0 €    |
-| Inscriptions 24 h   | 0      |
-| Utilisateurs totaux | 20     |
-| Essais en cours     | 1      |
-| Leads qualifiés     | 0      |
-| Commits 24 h        | 10     |
+| Indicateur            | Valeur     |
+|-----------------------|------------|
+| MRR                   | 0 €        |
+| ARR                   | 0 €        |
+| Abonnés payants       | 0          |
+| Trials actifs         | 1          |
+| Nouveaux inscrits 24h | 1          |
+| Total utilisateurs    | 21         |
+| Leads qualifiés       | 0          |
+| Recettes enregistrées | 64         |
+| Ingrédients           | 442        |
+| Commits (24 h)        | 12         |
+
+---
 
 ## Rapports C-suite
 
-| Agent | Date rapport | Statut    |
-|-------|-------------|-----------|
-| CTO   | 2026-11-05  | ✅ < 48 h |
-| CMO   | 2026-11-05  | ✅ < 48 h |
-| CFO   | 2026-11-05  | ✅ < 48 h (timeout pool Prisma noté mais corrigé le lendemain) |
-| COO   | 2026-11-05  | ✅ < 48 h |
-| QA    | 2026-11-05  | ✅ < 48 h |
+| Agent | Date rapport | Statut     |
+|-------|-------------|------------|
+| CTO   | 2026-11-06  | ✅ < 48 h  |
+| CMO   | 2026-11-06  | ✅ < 48 h  |
+| CFO   | 2026-11-06  | ✅ < 48 h  |
+| COO   | 2026-11-06  | ✅ < 48 h  |
+| QA    | 2026-11-06  | ✅ < 48 h  |
 
-Tous les agents ont rendu leur rapport hier. Aucun agent en panne.
+Tous les agents ont rapporté hier. Aucune panne détectée.
+
+---
 
 ## Actions des agents (24 h)
 
-- **Bug fixer** : corrigé `common.retry` manquant dans ar/es/de — le bouton « Réessayer » s'affichait en français pour les utilisateurs arabophones, hispanophones et germanophones.
-- **SEO** : nouvelle page comparatif « Alternative Inpulse » publiée (`f1dbe69`).
-- **Bug fixer (veille)** : `alert()` → `showToast()` dans la sidebar AppLayout — dernier `alert()` bloquant éliminé.
-- **10 commits** pushés sur main, CI vert sur tous.
+Les 12 commits sur main depuis hier couvrent :
+- Rapports quotidiens automatiques (CTO, CMO, CFO, COO, QA, CEO) du 2026-11-06
+- Corrections i18n : 19 clés `common.*` manquantes dans ar/es/de ajoutées
+- SEO freshness : retrait d'une mention caisse inexistante
+- COO : rapport opérationnel
+
+Dernière action blog loguée : article `google-my-business-restaurant` publié le 2026-08-21.
+
+---
 
 ## Top 3 actions du jour
 
-1. **Fix i18n ar/es/de** (`74de164`) — `common.retry` ajouté dans trois fichiers de locale ; utilisateurs multilingues ne verront plus de fallback français sur l'écran d'erreur Analytics.
-2. **Page SEO comparatif Inpulse** (`f1dbe69`) — contenu organique supplémentaire ciblant les utilisateurs en recherche d'alternative.
-3. **CI 100 % vert** — 10 commits, 0 run rouge ; stabilité de la pipeline confirmée.
+1. **i18n** — 19 clés de traduction ajoutées en arabe, espagnol et allemand (commit `46e5e09`). Couverture multilingue améliorée.
+2. **SEO freshness** — retrait d'une référence à une intégration caisse non disponible (commit `d4474f4`). Conformité contenu ↑.
+3. **CI** — Pipeline "Tâches automatiques" stable, 3 derniers runs : success. Infrastructure saine.
+
+---
 
 ## Risques
 
-| Risque | Niveau | Note |
-|--------|--------|------|
-| 0 nouvel inscrit en 24 h | 🟡 moyen | Stagnation de la base (20 comptes). Levier SEO organique à renforcer. |
-| 1 trial actif | 🟡 moyen | Aucune conversion pro/business. Suivi de conversion nécessaire. |
-| MRR = 0 € | 🔴 prioritaire | Stade early-stage confirmé. Aucun abonné payant. |
-| responseTime 1267 ms | 🟢 faible | Sous le seuil d'alerte (3000 ms). À surveiller. |
+| Risque                                | Niveau | Commentaire                                              |
+|---------------------------------------|--------|----------------------------------------------------------|
+| MRR = 0 € (J+43 sans abonné payant)  | 🔴 Élevé | Produit opérationnel, acquisition bloquée en amont       |
+| Leads = 0                            | 🔴 Élevé | Aucune conversion en cours. Funnel à alimenter           |
+| 1 seul trial actif                   | 🟡 Moyen | 1 prospect en cours ; aucune visibilité sur la conversion |
+| Agents CMO/contenu en veille blog    | 🟡 Moyen | Dernier article blog loggé le 2026-08-21 (2,5 mois)      |

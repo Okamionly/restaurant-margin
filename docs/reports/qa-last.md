@@ -1,18 +1,6 @@
-# Rapport QA — 2026-11-06
+# QA — 2026-11-07
 
-## Résumé
-
-**Statut global : ✅ TOUT OK**
-
-- Pages OK : 15/15
-- H1 manquants : 0
-- API login 401 : ✅
-- Santé base/IA : ✅
-- CI : ✅ (success sur dernier commit)
-
----
-
-## 1. Tests HTTP (15 pages)
+## Pages HTTP (15/15 OK)
 
 | Code | H1 | URL |
 |------|----|-----|
@@ -32,37 +20,33 @@
 | 200 | 1 | /guide-marge/pizzeria |
 | 200 | 1 | /guide-marge/brasserie |
 
-Toutes les pages prerendues contiennent un `<h1>`. Aucune régression de prerendu.
+**H1 manquants** : aucun
 
----
-
-## 2. Tests API
+## API
 
 | Test | Attendu | Résultat |
-|------|---------|----------|
-| POST /api/auth/login (mauvais creds) | 401 | ✅ 401 |
-| GET /api/health?deep=1 — database | ok | ✅ ok |
-| GET /api/health?deep=1 — ai | ok | ✅ ok (claude-sonnet-4-6) |
+|------|---------|---------|
+| POST /api/auth/login (mauvais mdp) | 401 | ✅ 401 |
+| GET /api/health?deep=1 database | ok | ✅ ok |
+| GET /api/health?deep=1 ai | ok | ✅ ok (claude-sonnet-4-6) |
 
-Uptime : 3 s au moment du test, temps de réponse health : 1242 ms.
+## CI (5 derniers runs sur main)
 
----
+| Workflow | Conclusion | SHA | Titre |
+|---------|-----------|-----|-------|
+| Taches automatiques RestauMargin | success | b82dc73 | Taches automatiques RestauMargin |
+| CI | success | b82dc73 | cfo: analyse quotidienne |
+| Taches automatiques RestauMargin | success | 9579e97 | Taches automatiques RestauMargin |
+| CI | success | 9579e97 | docs(seo): rapport quotidien 2026-11-07 |
+| CI | success | 2f0f8ee | perf(seo): retire le chunk vendor-icons charge sur toutes les pages |
 
-## 3. CI GitHub (branch main)
+## Résumé
 
-| Workflow | Conclusion | Commit | Titre |
-|----------|------------|--------|-------|
-| Taches automatiques RestauMargin | success | 6e17c2e | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 6e17c2e | Taches automatiques RestauMargin |
-| CI | success | 6e17c2e | cfo: analyse quotidienne |
-| Taches automatiques RestauMargin | success | 10cab00 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 10cab00 | Taches automatiques RestauMargin |
+**Statut global : ✅ OK — aucune régression détectée**
 
-Aucun workflow en échec sur les 5 derniers passages.
-
----
-
-## Notes
-
-- `/temoignages` non testé (redirige 308 → accueil, dés-routé depuis 2026-09-25, conforme CLAUDE.md).
-- Aucune notification envoyée (zéro régression détectée).
+- Pages OK : 15/15
+- Prérendu H1 : 15/15
+- Login 401 : ✅
+- Santé base : ✅
+- Santé IA : ✅
+- Dernier CI : ✅ success

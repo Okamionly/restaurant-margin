@@ -1,31 +1,38 @@
-# Rapport CMO — 2026-11-07
+# Rapport CMO — 2026-11-08
 
-## Métriques du jour (source : /api/agents/data, 07h11 UTC)
+## Métriques produit (source : /api/agents/data, 07:12 UTC)
 
-| Indicateur | Valeur |
-|---|---|
-| Utilisateurs totaux | 21 |
-| Nouveaux utilisateurs 24h | 1 |
-| Leads qualifiés | 0 |
-| MRR estimé | 0 € |
-| Abonnés trial actifs | 1 |
-| Articles de blog | 64 |
+| Indicateur         | Valeur |
+|--------------------|--------|
+| Utilisateurs total | 21     |
+| Nouveaux (24h)     | 0      |
+| Nouveaux (48h)     | 1      |
+| Leads qualifiés    | 0      |
+| Abonnés Pro        | 0      |
+| Abonnés Business   | 0      |
+| Trials actifs      | 1      |
+| MRR estimé         | 0 €    |
+| ARR estimé         | 0 €    |
+| Recettes créées    | 64     |
+| Ingrédients créés  | 442    |
 
-## Tendance
+## Contenu
 
-- +1 inscrit en 24h, aucun lead qualifié, aucun abonné payant.
-- 1 utilisateur en trial : conversion à surveiller dans les 7 prochains jours.
-- MRR à 0 € — la priorité reste l'activation des essais.
+| Type        | Détail                                      |
+|-------------|---------------------------------------------|
+| Pages blog  | 64 fichiers `Blog*.tsx`                     |
+| Post rédigé | docs/marketing/social-posts/2026-11-08.md   |
+| Thème post  | Food cost caché : 4 postes sous-estimés     |
+| CTA 1       | /outils/calculateur-food-cost (gratuit)     |
+| CTA 2       | /pricing (19 €/mois, essai 7j sans CB)      |
 
-## Action du jour
+## Analyse
 
-**Post social rédigé :** `docs/marketing/social-posts/2026-11-07.md`
-- Format : LinkedIn / Instagram, ~260 mots
-- Angle : reprendre le contrôle du food cost, 4 conseils opérationnels
-- CTA : calculateur food cost (outil public, sans friction)
-- Conforme CLAUDE.md § "Aucune preuve sociale fabriquée" : aucun témoignage, aucun chiffre d'adoption, aucune note
+- **Acquisition** : 0 nouvel utilisateur sur 24h. 1 sur 48h. La base reste à 21. L'effort d'acquisition reste prioritaire.
+- **Conversion** : 1 trial actif, aucun abonné payant. Le parcours d'activation du trial mérite attention.
+- **Contenu** : 64 pages blog constituent une base SEO solide. Maintenir la cadence pour l'indexation.
+- **Leads** : 0 lead qualifié. À surveiller après diffusion des posts sociaux.
 
-## Recommandation
+## Action recommandée
 
-Tant que le trial actuel n'est pas converti, l'activation prime sur l'acquisition.
-Envisager un email de suivi J+3 du trial (si séquence onboarding non active) avant d'intensifier les posts sociaux.
+Diffuser le post social de ce jour sur LinkedIn et Instagram. Vérifier l'état du trial actif dans 48h pour proposer un onboarding si nécessaire.

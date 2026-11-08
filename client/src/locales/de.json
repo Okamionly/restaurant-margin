@@ -520,5 +520,15 @@
   "voiceBubble.browserNotSupported": "Browser nicht unterstützt. Verwende Chrome.",
   "voiceBubble.listening": "Höre zu...",
   "voiceBubble.speakNow": "Jetzt sprechen",
-  "voiceBubble.stop": "Stoppen"
+  "voiceBubble.stop": "Stoppen",
+  "voiceCmd.commandExecuted": "Befehl ausgeführt",
+  "voiceCmd.error": "Fehler",
+  "voiceCmd.transcription": "Transkription",
+  "voiceCmd.cancel": "Abbrechen",
+  "voiceCmd.actionCancelled": "Aktion abgebrochen",
+  "voiceCmd.history": "Verlauf",
+  "voiceCmd.micError": "Mikrofon-Fehler",
+  "voiceCmd.micNotAllowed": "Mikrofon nicht erlaubt",
+  "voiceCmd.startError": "Spracherkennung konnte nicht gestartet werden.",
+  "voiceCmd.undoError": "Diese Aktion konnte nicht rückgängig gemacht werden."
 }

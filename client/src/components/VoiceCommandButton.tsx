@@ -4,6 +4,7 @@ import { Mic, MicOff, X, Undo2, ChevronDown, ChevronUp, Check, AlertTriangle, Lo
 import { useNavigate } from 'react-router-dom';
 import { parseVoiceCommand, describeAction, type VoiceAction } from '../utils/voiceParser';
 import { fetchInventory, fetchRecipes, fetchIngredients, restockInventoryItem } from '../services/api';
+import { useTranslation } from '../hooks/useTranslation';
 
 // --- Types ---
 
@@ -71,6 +72,7 @@ function getActionIcon(type: string) {
 
 export default function VoiceCommandButton() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isListening, setIsListening] = useState(false);
   const [liveTranscript, setLiveTranscript] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -330,7 +332,7 @@ export default function VoiceCommandButton() {
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       if (event.error !== 'aborted') {
-        setError(`Erreur micro: ${event.error === 'not-allowed' ? 'Microphone non autorise' : event.error}`);
+        setError(`${t('voiceCmd.micError')}: ${event.error === 'not-allowed' ? t('voiceCmd.micNotAllowed') : event.error}`);
       }
       setIsListening(false);
     };
@@ -347,7 +349,7 @@ export default function VoiceCommandButton() {
       recognition.start();
       setIsListening(true);
     } catch (err: any) {
-      setError('Impossible de demarrer la reconnaissance vocale.');
+      setError(t('voiceCmd.startError'));
     }
   }, [isListening, isProcessing, processTranscript]);
 
@@ -369,9 +371,9 @@ export default function VoiceCommandButton() {
             await restockInventoryItem(invItem.id, -lastResult.action.params.quantity);
           }
         }
-        setLastResult(prev => prev ? { ...prev, undone: true, result: prev.result + '\n(Action annulee)' } : null);
+        setLastResult(prev => prev ? { ...prev, undone: true, result: prev.result + `\n(${t('voiceCmd.actionCancelled')})` } : null);
       } catch {
-        setError('Impossible d\'annuler cette action.');
+        setError(t('voiceCmd.undoError'));
       }
     }
   }, [lastResult]);
@@ -474,7 +476,7 @@ export default function VoiceCommandButton() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium text-[#6B7280] dark:text-mono-700">
-                  {lastResult.success ? 'Commande executee' : 'Erreur'}
+                  {lastResult.success ? t('voiceCmd.commandExecuted') : t('voiceCmd.error')}
                 </p>
                 <p className="text-sm font-semibold text-mono-100 dark:text-white truncate">
                   {describeAction(lastResult.action)}
@@ -490,7 +492,7 @@ export default function VoiceCommandButton() {
 
             {/* Transcript */}
             <div className="px-4 py-3 border-b border-mono-950 dark:border-mono-200">
-              <p className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">Transcription</p>
+              <p className="text-xs font-medium text-[#9CA3AF] dark:text-mono-500 mb-1">{t('voiceCmd.transcription')}</p>
               <p className="text-sm text-[#374151] dark:text-mono-800 italic">"{lastResult.transcript}"</p>
             </div>
 
@@ -510,18 +512,18 @@ export default function VoiceCommandButton() {
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#6B7280] dark:text-mono-700 bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-lg hover:bg-mono-950 dark:hover:bg-mono-300 transition-colors"
                 >
                   <Undo2 className="w-3 h-3" />
-                  Annuler
+                  {t('voiceCmd.cancel')}
                 </button>
               )}
               {lastResult.undone && (
-                <span className="text-xs text-[#9CA3AF] dark:text-mono-500 italic">Action annulee</span>
+                <span className="text-xs text-[#9CA3AF] dark:text-mono-500 italic">{t('voiceCmd.actionCancelled')}</span>
               )}
               <button
                 onClick={() => setShowHistory(!showHistory)}
                 className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#6B7280] dark:text-mono-700 bg-white dark:bg-[#171717] border border-mono-900 dark:border-mono-300 rounded-lg hover:bg-mono-950 dark:hover:bg-mono-300 transition-colors"
               >
                 {showHistory ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                Historique
+                {t('voiceCmd.history')}
               </button>
             </div>
 

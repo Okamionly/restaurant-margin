@@ -510,5 +510,15 @@
   "voiceBubble.browserNotSupported": "المتصفح غير مدعوم. استخدم Chrome.",
   "voiceBubble.listening": "جارٍ الاستماع...",
   "voiceBubble.speakNow": "تحدث الآن",
-  "voiceBubble.stop": "إيقاف"
+  "voiceBubble.stop": "إيقاف",
+  "voiceCmd.commandExecuted": "تم تنفيذ الأمر",
+  "voiceCmd.error": "خطأ",
+  "voiceCmd.transcription": "النص",
+  "voiceCmd.cancel": "إلغاء",
+  "voiceCmd.actionCancelled": "تم إلغاء الإجراء",
+  "voiceCmd.history": "السجل",
+  "voiceCmd.micError": "خطأ في الميكروفون",
+  "voiceCmd.micNotAllowed": "الميكروفون غير مسموح",
+  "voiceCmd.startError": "تعذر بدء التعرف على الصوت.",
+  "voiceCmd.undoError": "تعذر التراجع عن هذا الإجراء."
 }

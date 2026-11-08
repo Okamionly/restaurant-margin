@@ -2720,5 +2720,15 @@
   "voiceBubble.browserNotSupported": "Navigateur non supporté. Utilisez Chrome.",
   "voiceBubble.listening": "Écoute en cours...",
   "voiceBubble.speakNow": "Parlez maintenant",
-  "voiceBubble.stop": "Arrêter"
+  "voiceBubble.stop": "Arrêter",
+  "voiceCmd.commandExecuted": "Commande exécutée",
+  "voiceCmd.error": "Erreur",
+  "voiceCmd.transcription": "Transcription",
+  "voiceCmd.cancel": "Annuler",
+  "voiceCmd.actionCancelled": "Action annulée",
+  "voiceCmd.history": "Historique",
+  "voiceCmd.micError": "Erreur micro",
+  "voiceCmd.micNotAllowed": "Microphone non autorisé",
+  "voiceCmd.startError": "Impossible de démarrer la reconnaissance vocale.",
+  "voiceCmd.undoError": "Impossible d'annuler cette action."
 }

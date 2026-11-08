@@ -2720,5 +2720,15 @@
   "voiceBubble.browserNotSupported": "Browser not supported. Use Chrome.",
   "voiceBubble.listening": "Listening...",
   "voiceBubble.speakNow": "Speak now",
-  "voiceBubble.stop": "Stop"
+  "voiceBubble.stop": "Stop",
+  "voiceCmd.commandExecuted": "Command executed",
+  "voiceCmd.error": "Error",
+  "voiceCmd.transcription": "Transcription",
+  "voiceCmd.cancel": "Cancel",
+  "voiceCmd.actionCancelled": "Action cancelled",
+  "voiceCmd.history": "History",
+  "voiceCmd.micError": "Mic error",
+  "voiceCmd.micNotAllowed": "Microphone not allowed",
+  "voiceCmd.startError": "Could not start voice recognition.",
+  "voiceCmd.undoError": "Could not undo this action."
 }

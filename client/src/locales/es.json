@@ -520,5 +520,15 @@
   "voiceBubble.browserNotSupported": "Navegador no compatible. Usa Chrome.",
   "voiceBubble.listening": "Escuchando...",
   "voiceBubble.speakNow": "Habla ahora",
-  "voiceBubble.stop": "Detener"
+  "voiceBubble.stop": "Detener",
+  "voiceCmd.commandExecuted": "Comando ejecutado",
+  "voiceCmd.error": "Error",
+  "voiceCmd.transcription": "Transcripción",
+  "voiceCmd.cancel": "Cancelar",
+  "voiceCmd.actionCancelled": "Acción cancelada",
+  "voiceCmd.history": "Historial",
+  "voiceCmd.micError": "Error micrófono",
+  "voiceCmd.micNotAllowed": "Micrófono no permitido",
+  "voiceCmd.startError": "No se pudo iniciar el reconocimiento de voz.",
+  "voiceCmd.undoError": "No se pudo deshacer esta acción."
 }

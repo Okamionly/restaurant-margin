@@ -1,6 +1,7 @@
 import React from 'react';
 import SEOHead from '../components/SEOHead';
 import PublicHeader from '../components/public/PublicHeader';
+import BlogAuthor from '../components/BlogAuthor';
 import PublicFooter from '../components/public/PublicFooter';
 
 const jsonLd = {
@@ -310,6 +311,7 @@ export default function BlogPrixVenteMenu() {
             </a>
           </div>
 
+          <BlogAuthor publishedDate="2026-09-25" readTime="8 min" variant="footer" />
         </div>
       </main>
       <PublicFooter />

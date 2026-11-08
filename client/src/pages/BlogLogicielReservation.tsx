@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, CheckCircle, TrendingUp, DollarSign, ArrowRight, Star } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import PublicHeader from '../components/public/PublicHeader';
+import BlogAuthor from '../components/BlogAuthor';
 import PublicFooter from '../components/public/PublicFooter';
 
 const faqItems = [
@@ -372,6 +373,8 @@ export default function BlogLogicielReservation() {
               <ArrowRight className="w-4 h-4" />
             </a>
           </div>
+
+          <BlogAuthor publishedDate="2026-09-12" readTime="8 min" variant="footer" />
 
           {/* Retour blog */}
           <div className="pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">

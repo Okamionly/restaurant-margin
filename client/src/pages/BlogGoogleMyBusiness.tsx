@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChefHat, Calculator, ChevronRight, Star, MapPin, Camera, MessageSquare, TrendingUp, ArrowRight, ExternalLink } from 'lucide-react';
 import SEOHead, { buildFAQSchema, buildBreadcrumbSchema } from '../components/SEOHead';
 import PublicHeader from '../components/public/PublicHeader';
+import BlogAuthor from '../components/BlogAuthor';
 
 const faqItems = [
   {
@@ -293,6 +294,7 @@ export default function BlogGoogleMyBusiness() {
             </div>
           </section>
 
+          <BlogAuthor publishedDate="2026-08-21" readTime="8 min" variant="footer" />
         </article>
 
         {/* CTA */}

@@ -1,6 +1,7 @@
 import React from 'react';
 import SEOHead from '../components/SEOHead';
 import PublicHeader from '../components/public/PublicHeader';
+import BlogAuthor from '../components/BlogAuthor';
 import PublicFooter from '../components/public/PublicFooter';
 
 export default function BlogNoShowRestaurant() {
@@ -296,6 +297,7 @@ export default function BlogNoShowRestaurant() {
               ))}
             </ul>
           </div>
+          <BlogAuthor publishedDate="2026-09-04" readTime="8 min" variant="footer" />
         </article>
       </main>
       <PublicFooter />

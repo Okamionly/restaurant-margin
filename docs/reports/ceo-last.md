@@ -1,78 +1,62 @@
-# Digest RestauMargin — 2026-11-07
+# Digest RestauMargin — 2026-11-08
 
-**Généré le :** 2026-11-07T05:08 UTC
+## Santé — site, base, IA, CI
 
----
-
-## Santé
-
-| Service    | Statut | Détail                            |
-|------------|--------|-----------------------------------|
-| API        | ✅ ok  | restaumargin.fr joignable         |
-| Database   | ✅ ok  | Supabase/PostgreSQL               |
-| AI         | ✅ ok  | claude-sonnet-4-6                 |
-| CI (main)  | ✅ ok  | Taches automatiques — success f84e57e |
-
-Temps de réponse API : 993 ms (acceptable).
-
----
+| Service    | Statut | Détail                      |
+|------------|--------|-----------------------------|
+| Site       | ✅ ok  | restaumargin.fr joignable    |
+| Database   | ✅ ok  | PostgreSQL Supabase          |
+| IA         | ✅ ok  | claude-sonnet-4-6            |
+| API        | ✅ ok  | responseTime 1160ms          |
+| CI main    | ✅ vert| 10 commits poussés en 24h    |
 
 ## Chiffres
 
-| Indicateur            | Valeur     |
-|-----------------------|------------|
-| MRR                   | 0 €        |
-| ARR                   | 0 €        |
-| Abonnés payants       | 0          |
-| Trials actifs         | 1          |
-| Nouveaux inscrits 24h | 1          |
-| Total utilisateurs    | 21         |
-| Leads qualifiés       | 0          |
-| Recettes enregistrées | 64         |
-| Ingrédients           | 442        |
-| Commits (24 h)        | 12         |
+| Indicateur          | Valeur  |
+|---------------------|---------|
+| MRR                 | 0 €     |
+| Nouveaux inscrits 24h | 0     |
+| Utilisateurs totaux | 21      |
+| Essais actifs       | 1       |
+| Leads qualifiés     | 0       |
+| Commits 24h         | 10      |
+| Recettes créées     | 64      |
+| Ingrédients enregistrés | 442 |
 
----
+> MRR à 0 € depuis la correction de mesure du 2026-09-25 (J+44). Aucun abonné Stripe actif.
 
 ## Rapports C-suite
 
-| Agent | Date rapport | Statut     |
-|-------|-------------|------------|
-| CTO   | 2026-11-06  | ✅ < 48 h  |
-| CMO   | 2026-11-06  | ✅ < 48 h  |
-| CFO   | 2026-11-06  | ✅ < 48 h  |
-| COO   | 2026-11-06  | ✅ < 48 h  |
-| QA    | 2026-11-06  | ✅ < 48 h  |
+| Agent | Rapport du    | Statut           |
+|-------|---------------|------------------|
+| CTO   | 2026-11-07    | ✅ < 48h          |
+| CMO   | 2026-11-07    | ✅ < 48h          |
+| CFO   | 2026-11-07    | ✅ < 48h          |
+| COO   | 2026-11-07    | ✅ < 48h          |
+| QA    | 2026-11-07    | ✅ < 48h          |
 
-Tous les agents ont rapporté hier. Aucune panne détectée.
+Tous les agents ont rapporté hier. Aucune panne de quota détectée.
 
----
+## Actions des agents (24h)
 
-## Actions des agents (24 h)
-
-Les 12 commits sur main depuis hier couvrent :
-- Rapports quotidiens automatiques (CTO, CMO, CFO, COO, QA, CEO) du 2026-11-06
-- Corrections i18n : 19 clés `common.*` manquantes dans ar/es/de ajoutées
-- SEO freshness : retrait d'une mention caisse inexistante
-- COO : rapport opérationnel
-
-Dernière action blog loguée : article `google-my-business-restaurant` publié le 2026-08-21.
-
----
+- **bug-fixer** (2026-11-07) : Correction i18n `FloatingActionBubble` — 4 chaînes hardcodées en français remplacées par des clés `useTranslation` dans les 5 locales (fr/en/ar/es/de). Build Vite + TypeScript validés. Commit `888b0df`.
+- **CMO** (2026-11-07) : Post social LinkedIn/Instagram rédigé — angle food cost, CTA calculateur public. Conforme règle anti-preuve-sociale.
+- **QA** (2026-11-07) : 15/15 pages HTTP 200, aucun H1 manquant, login 401 OK.
+- **COO** (2026-11-07) : Rapport opérations quotidien.
+- **CFO** (2026-11-07) : Analyse financière — 3 alertes actives (MRR=0, 0 lead, 0 conversion trial).
 
 ## Top 3 actions du jour
 
-1. **i18n** — 19 clés de traduction ajoutées en arabe, espagnol et allemand (commit `46e5e09`). Couverture multilingue améliorée.
-2. **SEO freshness** — retrait d'une référence à une intégration caisse non disponible (commit `d4474f4`). Conformité contenu ↑.
-3. **CI** — Pipeline "Tâches automatiques" stable, 3 derniers runs : success. Infrastructure saine.
-
----
+1. **Fix i18n FloatingActionBubble** — correction qualité produit, les utilisateurs non-francophones voient désormais les bonnes traductions sur la bulle vocale.
+2. **Post CMO LinkedIn** — contenu marketing prêt à publier, sans preuve sociale inventée.
+3. **QA 15/15 OK** — aucune régression détectée sur les pages publiques.
 
 ## Risques
 
-| Risque                                | Niveau | Commentaire                                              |
-|---------------------------------------|--------|----------------------------------------------------------|
-| MRR = 0 € (J+43 sans abonné payant)  | 🔴 Élevé | Produit opérationnel, acquisition bloquée en amont       |
-| Leads = 0                            | 🔴 Élevé | Aucune conversion en cours. Funnel à alimenter           |
-| 1 seul trial actif                   | 🟡 Moyen | 1 prospect en cours ; aucune visibilité sur la conversion |
-| Agents CMO/contenu en veille blog    | 🟡 Moyen | Dernier article blog loggé le 2026-08-21 (2,5 mois)      |
+| Risque | Niveau | Note |
+|--------|--------|------|
+| MRR à 0 € — J+44 sans abonné payant | 🔴 Élevé | Aucun revenu Stripe depuis le 2026-09-25 |
+| 1 trial actif, non converti | 🟡 Moyen | Conversion à relancer manuellement |
+| 0 nouvel inscrit en 24h | 🟡 Moyen | Stagnation acquisition |
+| Aucun lead qualifié | 🟡 Moyen | Tunnel de conversion non activé |
+| Response time API 1160ms | 🟡 Faible | Acceptable, à surveiller si > 2s |

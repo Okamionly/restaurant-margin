@@ -961,7 +961,7 @@ export default function BlogTauxOccupation() {
             >
               Essayer gratuitement <ArrowRight className="w-4 h-4" />
             </Link>
-            <p className="text-xs text-teal-200 mt-4">Sans CB, sans engagement. 14 jours d'essai complet.</p>
+            <p className="text-xs text-teal-200 mt-4">Sans CB, sans engagement. 7 jours d'essai complet.</p>
           </div>
         </section>
 

@@ -369,7 +369,7 @@ export default function BlogLogicielReservation() {
               href="https://www.restaumargin.fr/pricing"
               className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
             >
-              Essayer gratuitement 14 jours
+              Essayer gratuitement 7 jours
               <ArrowRight className="w-4 h-4" />
             </a>
           </div>

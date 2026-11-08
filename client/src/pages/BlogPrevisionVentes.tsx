@@ -1099,7 +1099,7 @@ export default function BlogPrevisionVentes() {
                   <Calculator className="w-4 h-4" /> Calculateur food cost
                 </Link>
               </div>
-              <p className="text-xs text-teal-200 mt-4">Sans CB, sans engagement. 14 jours d'essai complet.</p>
+              <p className="text-xs text-teal-200 mt-4">Sans CB, sans engagement. 7 jours d'essai complet.</p>
             </div>
           </section>
 

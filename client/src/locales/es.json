@@ -530,5 +530,9 @@
   "voiceCmd.micError": "Error micrófono",
   "voiceCmd.micNotAllowed": "Micrófono no permitido",
   "voiceCmd.startError": "No se pudo iniciar el reconocimiento de voz.",
-  "voiceCmd.undoError": "No se pudo deshacer esta acción."
+  "voiceCmd.undoError": "No se pudo deshacer esta acción.",
+  "dashboard.reportCopied": "Informe copiado al portapapeles",
+  "dashboard.reportCopyError": "No se pudo copiar el informe. Inténtalo de nuevo.",
+  "dashboard.reportEmailSent": "Informe enviado por email",
+  "dashboard.reportEmailError": "Error al enviar el email. Comprueba tu conexión e inténtalo de nuevo."
 }

@@ -2730,5 +2730,9 @@
   "voiceCmd.micError": "Erreur micro",
   "voiceCmd.micNotAllowed": "Microphone non autorisé",
   "voiceCmd.startError": "Impossible de démarrer la reconnaissance vocale.",
-  "voiceCmd.undoError": "Impossible d'annuler cette action."
+  "voiceCmd.undoError": "Impossible d'annuler cette action.",
+  "dashboard.reportCopied": "Rapport copié dans le presse-papier",
+  "dashboard.reportCopyError": "Impossible de copier le rapport. Réessayez.",
+  "dashboard.reportEmailSent": "Rapport envoyé par email",
+  "dashboard.reportEmailError": "Erreur envoi email. Vérifiez votre connexion, puis réessayez."
 }

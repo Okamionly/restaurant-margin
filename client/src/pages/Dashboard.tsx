@@ -693,11 +693,11 @@ export default function Dashboard() {
     navigator.clipboard.writeText(reportData.report).then(() => {
       setReportCopied(true);
       setTimeout(() => setReportCopied(false), 2000);
-      showToast('Rapport copie dans le presse-papier', 'success');
+      showToast(t('dashboard.reportCopied'), 'success');
     }).catch(() => {
-      showToast('Impossible de copier le rapport. Reessayez.', 'error');
+      showToast(t('dashboard.reportCopyError'), 'error');
     });
-  }, [reportData, showToast]);
+  }, [reportData, showToast, t]);
 
   const sendReportByEmail = useCallback(async () => {
     if (!reportData) return;
@@ -720,13 +720,13 @@ export default function Dashboard() {
       }
       setReportEmailSent(true);
       setTimeout(() => setReportEmailSent(false), 3000);
-      showToast('Rapport envoye par email', 'success');
+      showToast(t('dashboard.reportEmailSent'), 'success');
     } catch (err: any) {
-      showToast(err.message || 'Erreur envoi email. Verifiez votre connexion, puis reessayez.', 'error');
+      showToast(err.message || t('dashboard.reportEmailError'), 'error');
     } finally {
       setReportEmailSending(false);
     }
-  }, [reportData, showToast]);
+  }, [reportData, showToast, t]);
 
   // ── Tab definitions ────────────────────────────────────────────────────
   const TABS: { key: TabKey; label: string }[] = [

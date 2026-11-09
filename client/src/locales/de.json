@@ -530,5 +530,9 @@
   "voiceCmd.micError": "Mikrofon-Fehler",
   "voiceCmd.micNotAllowed": "Mikrofon nicht erlaubt",
   "voiceCmd.startError": "Spracherkennung konnte nicht gestartet werden.",
-  "voiceCmd.undoError": "Diese Aktion konnte nicht rückgängig gemacht werden."
+  "voiceCmd.undoError": "Diese Aktion konnte nicht rückgängig gemacht werden.",
+  "dashboard.reportCopied": "Bericht in die Zwischenablage kopiert",
+  "dashboard.reportCopyError": "Bericht konnte nicht kopiert werden. Bitte erneut versuchen.",
+  "dashboard.reportEmailSent": "Bericht per E-Mail gesendet",
+  "dashboard.reportEmailError": "E-Mail-Fehler. Verbindung prüfen und erneut versuchen."
 }

@@ -520,5 +520,9 @@
   "voiceCmd.micError": "خطأ في الميكروفون",
   "voiceCmd.micNotAllowed": "الميكروفون غير مسموح",
   "voiceCmd.startError": "تعذر بدء التعرف على الصوت.",
-  "voiceCmd.undoError": "تعذر التراجع عن هذا الإجراء."
+  "voiceCmd.undoError": "تعذر التراجع عن هذا الإجراء.",
+  "dashboard.reportCopied": "تم نسخ التقرير إلى الحافظة",
+  "dashboard.reportCopyError": "تعذر نسخ التقرير. يرجى المحاولة مرة أخرى.",
+  "dashboard.reportEmailSent": "تم إرسال التقرير بالبريد الإلكتروني",
+  "dashboard.reportEmailError": "خطأ في إرسال البريد الإلكتروني. تحقق من اتصالك وحاول مجدداً."
 }

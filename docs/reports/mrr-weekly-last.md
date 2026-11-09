@@ -1,67 +1,66 @@
-# Rapport MRR Hebdo — 2026-11-02
+# Rapport MRR Hebdo — 2026-11-09
 
-> Source : `/api/agents/data` — 2026-11-02 07:14 UTC  
-> **ERREUR API** : `agents_data_failed` — Prisma connection pool timeout (20 s, limite 5 connexions)
+> Source : `/api/agents/data` — 2026-11-09 07:03 UTC  
+> API disponible (réponse directe, pas de cache)
 
 ---
 
-## ⚠️ ALERTE DOUBLE — API INDISPONIBLE · Dernier MRR connu : 0 €
+## ⚠️ ALERTE — MRR = 0 € · Aucun nouvel inscrit sur 48 h
 
 ---
 
 ## Métriques clés
 
-| Indicateur             | Valeur (dernier rapport 09-28) | Variation 7 j |
-|------------------------|-------------------------------|----------------|
-| MRR                    | **0 €**                       | Indisponible — API en erreur |
-| → Pro (29 €/mois)      | 0 abonné                      | —              |
-| → Business             | 0 abonné                      | —              |
-| ARR projeté            | 0 €                           | —              |
-| Essais actifs          | 1 (09-28)                     | Indisponible   |
-| Nouveaux inscrits 48h  | —                             | Indisponible   |
-| Comptes totaux         | **18** (09-28)                | Indisponible   |
-| Leads qualifiés        | 1 (09-28)                     | Indisponible   |
+| Indicateur             | Valeur aujourd'hui | Variation 7 j |
+|------------------------|--------------------|----------------|
+| MRR                    | **0 €**            | = 0 € (inchangé) |
+| → Pro (29 €/mois)      | 0 abonné           | —              |
+| → Business             | 0 abonné           | —              |
+| ARR projeté            | **0 €**            | —              |
+| Essais actifs          | **1**              | = (inchangé vs 09-28¹) |
+| Nouveaux inscrits 48 h | **0**              | —              |
+| Comptes totaux         | **21**             | +3 vs 09-28¹ (variation 7 j indisponible²) |
+| Leads qualifiés        | **0**              | −1 vs 09-28¹   |
 
-*Dernier rapport MRR disponible : 2026-09-28 (il y a 35 jours).  
-Rupture de série 09-25 : le MRR ne comptabilise que les abonnements Stripe réels.*
+¹ Dernier point de référence valide : rapport 09-28. L'API était hors ligne le 2026-11-02.  
+² La variation strictement hebdomadaire est indisponible (API down semaine dernière).
 
 ---
 
 ## Analyse
 
-L'API `/api/agents/data` a renvoyé une erreur `agents_data_failed` au moment de
-l'exécution de ce rapport (07:14 UTC) : timeout du pool de connexions Prisma
-(délai 20 s, limite 5 connexions). Aucune métrique en temps réel n'est disponible
-ce lundi.
+L'API est à nouveau opérationnelle après la panne du 02-11. Les métriques
+sont fiables.
 
-Le dernier rapport MRR disponible date du 28 septembre 2026, soit **35 jours sans
-rapport hebdomadaire**. Les données commerciales (MRR, comptes, essais) sont
-donc inconnues depuis plus d'un mois.
+Le produit reste à **0 abonné payant** et **0 MRR**. Sur les ~6 semaines
+depuis le 09-28, 3 nouveaux comptes se sont créés (18 → 21), soit un rythme
+très faible (~2 comptes/mois). Un seul essai actif est en cours ; aucun
+lead qualifié n'est enregistré (contre 1 au 09-28).
 
-L'indisponibilité de l'API est elle-même un signal de fragilité infrastructure à
-corriger en priorité.
+Le point positif : la résolution de la panne API permet de reprendre le
+suivi hebdomadaire avec des données fiables.
 
 ---
 
 ## Recommandations actionnables
 
-1. **Corriger le timeout Prisma en urgence.** L'erreur indique une saturation du
-   pool (5 connexions, 20 s). Vérifier : (a) que la connexion Supabase est active
-   (`DATABASE_URL` en production) ; (b) qu'aucune requête longue ne bloque les
-   connexions ; (c) augmenter temporairement `connection_limit` dans le schema
-   Prisma si le pool est sous-dimensionné.
+1. **Contacter l'essai actif dans les 24 h.** Un seul utilisateur est en
+   période d'essai. Un message personnalisé (aide à la prise en main,
+   réponse à des blocages) augmente significativement la probabilité de
+   conversion. C'est l'action à fort levier la plus immédiate.
 
-2. **Relancer manuellement l'API et rejouer le rapport.** Une fois l'API rétablie,
-   exécuter à nouveau la routine `restaumargin-mrr-weekly` pour obtenir les vraies
-   métriques du jour. Le dernier rapport date de 09-28 : 35 jours sans données est
-   un angle mort trop large pour piloter la conversion.
+2. **Identifier les 3 comptes créés depuis le 09-28.** Comprendre par quel
+   canal ils sont arrivés (SEO, bouche-à-oreille, réseaux) oriente les
+   efforts d'acquisition. Consulter directement la table `users` en
+   production pour trouver leur date et source d'inscription.
 
-3. **Enquêter sur la situation commerciale depuis le 09-28.** Avec 0 abonné payant
-   au 09-28, toute conversion réalisée depuis est non tracée. Accéder directement
-   au dashboard Stripe pour vérifier si un abonnement a été créé entre le 28/09 et
-   aujourd'hui, indépendamment de l'API.
+3. **Relancer un canal d'acquisition minimal.** Avec 0 lead qualifié actif
+   et ~0,5 inscription/semaine, le flux entrant est insuffisant pour
+   convertir statistiquement. Une action concrète testable cette semaine :
+   publier un contenu SEO sur une requête à fort intent (ex. « calculateur
+   food cost restaurant ») ou activer une campagne d'essai ciblée sur les
+   groupes LinkedIn de restaurateurs.
 
 ---
 
-*Rapport généré automatiquement — données issues du dernier rapport valide (09-28),
-API indisponible au moment de l'exécution.*
+*Rapport généré automatiquement — données temps réel, API disponible.*

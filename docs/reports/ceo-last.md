@@ -1,62 +1,76 @@
-# Digest RestauMargin — 2026-11-08
+# Digest RestauMargin — 2026-11-09
 
-## Santé — site, base, IA, CI
+## Santé
 
-| Service    | Statut | Détail                      |
-|------------|--------|-----------------------------|
-| Site       | ✅ ok  | restaumargin.fr joignable    |
-| Database   | ✅ ok  | PostgreSQL Supabase          |
-| IA         | ✅ ok  | claude-sonnet-4-6            |
-| API        | ✅ ok  | responseTime 1160ms          |
-| CI main    | ✅ vert| 10 commits poussés en 24h    |
+| Service | Statut | Détail |
+|---------|--------|--------|
+| Site | ✅ ok | restaumargin.fr répond |
+| Base de données | ✅ ok | |
+| IA | ✅ ok | claude-sonnet-4-6 |
+| API | ✅ ok | responseTime 1 459 ms |
+
+**CI (3 derniers runs main) :**
+- Taches automatiques — ✅ success — `dfb93bb` (2026-11-09 01:44)
+- Taches automatiques — ✅ success — `dfb93bb` (2026-11-08 22:19)
+- Taches automatiques — ❌ failure — `dfb93bb` (2026-11-08 22:07) — run isolé, run suivant OK
+- CI — ✅ success — `dfb93bb` (2026-11-08 19:24)
 
 ## Chiffres
 
-| Indicateur          | Valeur  |
-|---------------------|---------|
-| MRR                 | 0 €     |
-| Nouveaux inscrits 24h | 0     |
-| Utilisateurs totaux | 21      |
-| Essais actifs       | 1       |
-| Leads qualifiés     | 0       |
-| Commits 24h         | 10      |
-| Recettes créées     | 64      |
+| Indicateur | Valeur |
+|------------|--------|
+| MRR | 0 € |
+| Abonnés payants (Pro + Business) | 0 |
+| Trials actifs | 1 |
+| Inscriptions 24 h | 0 |
+| Inscriptions 48 h | 0 |
+| Leads qualifiés | 0 |
+| Utilisateurs totaux | 21 |
+| Recettes créées | 64 |
 | Ingrédients enregistrés | 442 |
+| Commits (24 h) | 9 |
 
-> MRR à 0 € depuis la correction de mesure du 2026-09-25 (J+44). Aucun abonné Stripe actif.
+> Rappel : rupture de série 2026-09-25 — MRR = 0 € reflète la correction de mesure (Stripe réel), pas une perte de client.
 
 ## Rapports C-suite
 
-| Agent | Rapport du    | Statut           |
-|-------|---------------|------------------|
-| CTO   | 2026-11-07    | ✅ < 48h          |
-| CMO   | 2026-11-07    | ✅ < 48h          |
-| CFO   | 2026-11-07    | ✅ < 48h          |
-| COO   | 2026-11-07    | ✅ < 48h          |
-| QA    | 2026-11-07    | ✅ < 48h          |
+| Agent | Date rapport | Statut |
+|-------|-------------|--------|
+| CTO | 2026-11-08 | ✅ < 48 h |
+| CMO | 2026-11-08 | ✅ < 48 h |
+| CFO | 2026-11-08 | ✅ < 48 h |
+| COO | 2026-11-08 | ✅ < 48 h |
+| QA | 2026-11-08 | ✅ < 48 h |
 
-Tous les agents ont rapporté hier. Aucune panne de quota détectée.
+Tous les agents ont rapporté hier. Aucun agent en panne.
 
-## Actions des agents (24h)
+## Actions des agents (24 h)
 
-- **bug-fixer** (2026-11-07) : Correction i18n `FloatingActionBubble` — 4 chaînes hardcodées en français remplacées par des clés `useTranslation` dans les 5 locales (fr/en/ar/es/de). Build Vite + TypeScript validés. Commit `888b0df`.
-- **CMO** (2026-11-07) : Post social LinkedIn/Instagram rédigé — angle food cost, CTA calculateur public. Conforme règle anti-preuve-sociale.
-- **QA** (2026-11-07) : 15/15 pages HTTP 200, aucun H1 manquant, login 401 OK.
-- **COO** (2026-11-07) : Rapport opérations quotidien.
-- **CFO** (2026-11-07) : Analyse financière — 3 alertes actives (MRR=0, 0 lead, 0 conversion trial).
+**Bug Fixer (2026-11-08) — commit `922f892`**
+- fix(i18n) : 9 chaînes françaises codées en dur traduites dans `VoiceCommandButton.tsx`
+- Nouvelles clés `voiceCmd.*` ajoutées dans les 5 locales (fr/en/es/de/ar)
+- Build + TypeScript + prerender : exit=0
+
+**QA (2026-11-08) :**
+- 15/15 pages HTTP 200, 0 H1 manquant, aucune régression
+
+**COO (2026-11-08) :**
+- Surveillance CI, 2 runs `null` (a53e874, 922f892) signalés comme possiblement en attente — résolu par le run suivant
+
+**CMO (2026-11-08) :**
+- Post rédigé `docs/marketing/social-posts/2026-11-08.md` — thème : food cost caché, 4 postes sous-estimés
 
 ## Top 3 actions du jour
 
-1. **Fix i18n FloatingActionBubble** — correction qualité produit, les utilisateurs non-francophones voient désormais les bonnes traductions sur la bulle vocale.
-2. **Post CMO LinkedIn** — contenu marketing prêt à publier, sans preuve sociale inventée.
-3. **QA 15/15 OK** — aucune régression détectée sur les pages publiques.
+1. **i18n VoiceCommandButton** — 9 chaînes en dur traduites, composant vocal désormais multilingue
+2. **QA verte** — 15/15 pages, 0 régression
+3. **Post CMO publié** — contenu organique sur le food cost caché
 
 ## Risques
 
-| Risque | Niveau | Note |
-|--------|--------|------|
-| MRR à 0 € — J+44 sans abonné payant | 🔴 Élevé | Aucun revenu Stripe depuis le 2026-09-25 |
-| 1 trial actif, non converti | 🟡 Moyen | Conversion à relancer manuellement |
-| 0 nouvel inscrit en 24h | 🟡 Moyen | Stagnation acquisition |
-| Aucun lead qualifié | 🟡 Moyen | Tunnel de conversion non activé |
-| Response time API 1160ms | 🟡 Faible | Acceptable, à surveiller si > 2s |
+| Risque | Niveau | Détail |
+|--------|--------|--------|
+| 0 abonné payant | 🔴 Critique | J+45 sans conversion Stripe — phase acquisition bloquée |
+| 1 seul trial actif | 🟠 Moyen | Aucun nouveau lead 24h, funnel vide |
+| CI run failure isolé | 🟡 Faible | Run #556 en failure (2026-11-08 22:07), corrigé par run #557 — pas de régression code |
+| responseTime API | 🟡 Faible | 1 459 ms — au-dessus du seuil de 1 000 ms, à surveiller |

@@ -1,15 +1,9 @@
-# Rapport QA — 2026-11-08
+# Rapport QA — 2026-11-11
 
-**Date** : 2026-11-08  
-**Heure** : ~19:23 UTC  
-**Statut global** : ✅ TOUT OK — aucune régression détectée
-
----
-
-## 1. Tests HTTP (15/15 pages)
+## Pages HTTP (15/15 OK)
 
 | Code | H1 | URL |
-|------|----|-----|
+|------|-----|-----|
 | 200 | 1 | / |
 | 200 | 1 | /pricing |
 | 200 | 1 | /login |
@@ -26,46 +20,33 @@
 | 200 | 1 | /guide-marge/pizzeria |
 | 200 | 1 | /guide-marge/brasserie |
 
-**Pages OK : 15/15** — H1 manquants : 0
+**H1 manquants** : aucun
 
----
-
-## 2. Tests API
+## API
 
 | Test | Attendu | Résultat |
-|------|---------|---------|
-| POST /api/auth/login (mauvais identifiants) | 401 | ✅ 401 |
-| GET /api/health?deep=1 — database | "ok" | ✅ ok |
-| GET /api/health?deep=1 — ai | "ok" | ✅ ok (claude-sonnet-4-6) |
+|------|---------|----------|
+| POST /api/auth/login (mauvais mdp) | 401 | ✅ 401 |
+| GET /api/health?deep=1 — database | ok | ✅ ok |
+| GET /api/health?deep=1 — ai | ok | ✅ ok (claude-sonnet-4-6) |
 
-Réponse health complète :
-```json
-{"status":"ok","timestamp":"2026-11-08T19:23:44.621Z","uptime":2,"responseTime":"1089ms","services":{"database":"ok","ai":"ok","aiDetail":"claude-sonnet-4-6","api":"ok"}}
-```
+## CI — derniers passages sur main
 
----
+| Workflow | Conclusion | SHA | Titre |
+|----------|-----------|-----|-------|
+| Taches automatiques RestauMargin | success | ae1899a | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | ae1899a | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | ae1899a | Taches automatiques RestauMargin |
+| CI | success | ae1899a | cfo: analyse quotidienne |
+| Taches automatiques RestauMargin | success | 46a030e | Taches automatiques RestauMargin |
 
-## 3. CI — Derniers passages sur main
+## Synthèse
 
-| Workflow | Conclusion | Commit | Titre |
-|----------|-----------|--------|-------|
-| Taches automatiques RestauMargin | success | 567f810 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 567f810 | Taches automatiques RestauMargin |
-| CI | success | 567f810 | cfo: analyse quotidienne |
-| Taches automatiques RestauMargin | success | 9831c4e | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 9831c4e | Taches automatiques RestauMargin |
+**Statut global : ✅ TOUT OK**
 
-**CI sur dernier commit (567f810) : ✅ success**
-
----
-
-## Résumé
-
-- Pages OK : **15/15**
-- H1 manquants : **0**
-- Login 401 : **✅**
-- Santé BDD : **✅ ok**
-- Santé IA : **✅ ok**
-- CI main : **✅ success**
-
-Aucune notification envoyée.
+- Pages 200 : 15/15
+- H1 présents : 15/15 (13 pré-rendues + 2 SPA)
+- API login 401 : OK
+- Santé DB + IA : OK
+- CI main : tous success
+- Régressions : **aucune**

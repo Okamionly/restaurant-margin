@@ -1419,7 +1419,13 @@
     "deleteLine": "Delete line",
     "deleteTooltip": "Delete",
     "invoiceAdded": "Invoice added successfully",
-    "invoiceDeleted": "Invoice deleted"
+    "invoiceDeleted": "Invoice deleted",
+    "loadError": "Unable to load your invoices. Please reload the page.",
+    "saveError": "The invoice could not be saved. Check your connection and try again.",
+    "deleteError": "The invoice could not be deleted. Please try again.",
+    "unsupportedFormat": "Unsupported format. Use image, PDF, Markdown, text or CSV.",
+    "importError": "Import error",
+    "importSuccess": "Invoice imported: {prices} prices updated, {created} ingredient(s) created."
   },
   "invoiceScanner.add": "Add",
   "invoiceScanner.addInfo": "Add an invoice",

@@ -400,7 +400,7 @@ export default function InvoiceScanner() {
         setInvoices(mapped);
       })
       // FIX 2026-09-25 : un echec affichait une liste vide, comme s'il n'y avait aucune facture.
-      .catch(() => showToast('Impossible de charger vos factures. Rechargez la page.', 'error'))
+      .catch(() => showToast(t('invoiceScanner.loadError'), 'error'))
       .finally(() => setLoadingInvoices(false));
   }, [selectedRestaurant, restaurantLoading]);
 
@@ -551,7 +551,7 @@ export default function InvoiceScanner() {
     // formulaire reste ouvert pour reessayer.
     if (!dbId) {
       if (url) URL.revokeObjectURL(url);
-      showToast("La facture n'a pas pu être enregistrée. Vérifiez la connexion et réessayez.", 'error');
+      showToast(t('invoiceScanner.saveError'), 'error');
       return;
     }
 
@@ -630,7 +630,7 @@ export default function InvoiceScanner() {
         const res = await fetch(`/api/invoices/${inv.dbId}`, { method: 'DELETE', headers: authHeaders() });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
       } catch {
-        showToast("La facture n'a pas pu être supprimée. Réessayez.", 'error');
+        showToast(t('invoiceScanner.deleteError'), 'error');
         return;
       }
     }
@@ -752,7 +752,7 @@ export default function InvoiceScanner() {
     const okType = (f: File) => f.type.startsWith('image/') || f.type === 'application/pdf' || f.type.startsWith('text/') || /\.(pdf|md|markdown|txt|csv|webp|jpe?g|png)$/i.test(f.name);
     const valid = files.find(okType);
     if (valid) handleScanFile(valid);
-    else showToast('Format non supporte. Utilisez image, PDF, Markdown, texte ou CSV.', 'error');
+    else showToast(t('invoiceScanner.unsupportedFormat'), 'error');
   }, [handleScanFile, showToast]);
 
   const handleScanDragOver = useCallback((e: React.DragEvent) => {
@@ -906,7 +906,7 @@ export default function InvoiceScanner() {
         body: JSON.stringify({ supplierName, invoiceNumber, invoiceDate, totalHT, totalTTC, lines, inflationThreshold: INFLATION_THRESHOLD }),
       });
       const data = await res.json();
-      if (!res.ok) { showToast(data.error || 'Erreur import', 'error'); setScanImporting(false); return; }
+      if (!res.ok) { showToast(data.error || t('invoiceScanner.importError'), 'error'); setScanImporting(false); return; }
 
       try { setIngredientsList(await fetchIngredients()); } catch { /* */ }
       try {
@@ -937,9 +937,9 @@ export default function InvoiceScanner() {
       setImportResult({ pricesUpdated: data.pricesUpdated || 0, created: data.created || 0, alerts: data.alerts || [] });
       setScanImported(true);
       updateOnboardingStep('invoiceScanned', true);
-      showToast(`Facture importee : ${data.pricesUpdated || 0} prix mis a jour, ${data.created || 0} ingredient(s) cree(s).`, 'success');
+      showToast(t('invoiceScanner.importSuccess').replace('{prices}', String(data.pricesUpdated || 0)).replace('{created}', String(data.created || 0)), 'success');
     } catch (err: any) {
-      showToast(err?.message || 'Erreur import', 'error');
+      showToast(err?.message || t('invoiceScanner.importError'), 'error');
     } finally {
       setScanImporting(false);
     }

@@ -1419,7 +1419,13 @@
     "deleteLine": "Supprimer la ligne",
     "deleteTooltip": "Supprimer",
     "invoiceAdded": "Facture ajoutée avec succès",
-    "invoiceDeleted": "Facture supprimée"
+    "invoiceDeleted": "Facture supprimée",
+    "loadError": "Impossible de charger vos factures. Rechargez la page.",
+    "saveError": "La facture n'a pas pu être enregistrée. Vérifiez la connexion et réessayez.",
+    "deleteError": "La facture n'a pas pu être supprimée. Réessayez.",
+    "unsupportedFormat": "Format non supporté. Utilisez image, PDF, Markdown, texte ou CSV.",
+    "importError": "Erreur lors de l'import",
+    "importSuccess": "Facture importée : {prices} prix mis à jour, {created} ingrédient(s) créé(s)."
   },
   "invoiceScanner.add": "Ajouter",
   "invoiceScanner.addInfo": "Ajouter une facture",

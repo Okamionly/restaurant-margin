@@ -1,35 +1,39 @@
-# Rapport CMO — 9 novembre 2026
+# Rapport CMO — 12 novembre 2026
 
-## Métriques (source : /api/agents/data — 07:19 UTC)
+## Métriques du jour (07:13 UTC)
 
 | Indicateur | Valeur |
 |---|---|
 | Utilisateurs totaux | 21 |
-| Nouveaux utilisateurs (24h) | 0 |
+| Nouveaux inscrits (24h) | 0 |
 | Leads qualifiés | 0 |
 | MRR estimé | 0 € |
 | Abonnés Pro | 0 |
 | Abonnés Business | 0 |
-| Utilisateurs en essai | 1 |
+| Utilisateurs en trial | 1 |
 | Recettes créées | 64 |
 | Ingrédients référencés | 442 |
-| Pages Blog (Blog*.tsx) | 64 |
+| Pages blog (Blog*.tsx) | 64 |
 
-## Post social publié
+## Contenu publié
 
-Fichier : `docs/marketing/social-posts/2026-11-09.md`
+**Post social** : `docs/marketing/social-posts/2026-11-12.md`
 
-**Thème :** Maîtriser ses coûts matières avant les fêtes de fin d'année
-**CTA principal :** https://www.restaumargin.fr/outils/calculateur-food-cost
-**CTA secondaire :** https://www.restaumargin.fr/pricing
+**Thème** : Anticipation food cost période des fêtes (novembre–décembre)
 
-## Analyse
+**Format** : LinkedIn / Instagram, 5 conseils concrets, ~290 mots
 
-- **Acquisition** : Aucun nouvel inscrit en 24h. La base stagne à 21 comptes depuis plusieurs jours.
-- **Activation** : 1 utilisateur en essai actif. Aucun abonné payant à ce jour.
-- **Contenu** : 64 pages Blog générées — volume SEO potentiellement utile mais aucune conversion mesurable pour l'instant.
-- **Priorité immédiate** : augmenter le trafic organique sur les pages outils publics (calculateur food cost, générateur QR), qui sont les points d'entrée gratuits les plus susceptibles de générer des inscriptions.
+**CTA** : Calculateur food cost gratuit + pricing RestauMargin
+
+## Observations
+
+- Aucune inscription nouvelle en 24h — trafic organique ou direct insuffisant pour convertir.
+- 1 utilisateur en trial actif : moment critique pour l'engagement (relance onboarding à prévoir).
+- 64 recettes créées par 21 utilisateurs : engagement moyen de ~3 recettes/utilisateur — le produit est utilisé mais la base reste très faible.
+- MRR à 0 € : priorité absolue à la conversion du trial en cours et à l'acquisition de leads qualifiés.
 
 ## Action recommandée
 
-Publier le post LinkedIn/Instagram sur le compte de l'équipe. Cibler les restaurateurs indépendants et les gérants de brigade en période pré-fêtes (novembre = décision d'équipement avant décembre).
+1. **Conversion trial** : vérifier si l'utilisateur en trial a reçu un email d'onboarding J+3 ou J+7. S'il n'est pas engagé, envoyer une séquence manuelle ciblée.
+2. **SEO** : avec 64 pages blog, s'assurer que les articles récents sont indexés et que les meta descriptions sont à jour.
+3. **Post social** : publier sur LinkedIn et/ou Instagram le post de ce jour — thème saisonnier (fêtes), timing optimal pour les restaurateurs qui planifient leur mois de décembre.

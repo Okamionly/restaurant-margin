@@ -1,9 +1,13 @@
-# Rapport QA — 2026-11-11
+# Rapport QA — 2026-11-12
 
-## Pages HTTP (15/15 OK)
+## Résumé
+
+**Pages OK : 15/15 — H1 manquants : 0 — API : OK — CI : OK**
+
+## 1. Tests HTTP (15 pages)
 
 | Code | H1 | URL |
-|------|-----|-----|
+|------|----|-----|
 | 200 | 1 | / |
 | 200 | 1 | /pricing |
 | 200 | 1 | /login |
@@ -20,33 +24,28 @@
 | 200 | 1 | /guide-marge/pizzeria |
 | 200 | 1 | /guide-marge/brasserie |
 
-**H1 manquants** : aucun
+Toutes les pages prerendues contiennent au moins un `<h1>`.
 
-## API
+## 2. Tests API
 
-| Test | Attendu | Résultat |
-|------|---------|----------|
-| POST /api/auth/login (mauvais mdp) | 401 | ✅ 401 |
-| GET /api/health?deep=1 — database | ok | ✅ ok |
-| GET /api/health?deep=1 — ai | ok | ✅ ok (claude-sonnet-4-6) |
+| Endpoint | Attendu | Obtenu | Statut |
+|----------|---------|--------|--------|
+| POST /api/auth/login (mauvais mdp) | 401 | 401 | ✓ |
+| GET /api/health?deep=1 → database | ok | ok | ✓ |
+| GET /api/health?deep=1 → ai | ok | ok (claude-sonnet-4-6) | ✓ |
 
-## CI — derniers passages sur main
+## 3. CI — derniers passages sur main
 
 | Workflow | Conclusion | SHA | Titre |
 |----------|-----------|-----|-------|
-| Taches automatiques RestauMargin | success | ae1899a | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | ae1899a | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | ae1899a | Taches automatiques RestauMargin |
-| CI | success | ae1899a | cfo: analyse quotidienne |
-| Taches automatiques RestauMargin | success | 46a030e | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | e94f408 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | e94f408 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | e94f408 | Taches automatiques RestauMargin |
+| CI | success | e94f408 | cfo: analyse quotidienne 2026-11-12 |
+| Taches automatiques RestauMargin | success | 063e443 | Taches automatiques RestauMargin |
 
-## Synthèse
+Dernier passage CI : **success** sur `e94f408`.
 
-**Statut global : ✅ TOUT OK**
+## Conclusion
 
-- Pages 200 : 15/15
-- H1 présents : 15/15 (13 pré-rendues + 2 SPA)
-- API login 401 : OK
-- Santé DB + IA : OK
-- CI main : tous success
-- Régressions : **aucune**
+Aucune régression détectée. Pas de notification envoyée.

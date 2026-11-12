@@ -44,7 +44,7 @@ const faqItems = [
   },
   {
     question: "Quel coefficient pour une pizzeria, brasserie ou gastronomique ?",
-    answer: "Pizzeria : x 4,0 à 6,5 (food cost 15-25 %). Brasserie : x 3,3 à 4,0 (food cost 25-30 %). Bistrot traditionnel : x 3,0 à 3,3 (food cost 30-33 %). Restaurant gastronomique : x 2,5 à 3,3 (food cost 30-40 %). Coffee shop : x 5,0 à 10,0 (food cost 10-20 %).",
+    answer: "Pizzeria : x 3,5 à 5,5 (food cost 18-28 %, le bas de fourchette pour les ingrédients DOP). Brasserie : x 3,2 à 3,7 (food cost 27-31 %). Bistrot traditionnel : x 3,0 à 3,5 (food cost 29-33 %). Restaurant gastronomique : x 4,0 à 5,0 (food cost 20-25 %). Coffee shop : x 5,0 à 10,0 (food cost 10-20 %).",
   },
   {
     question: "Comment recalculer son coefficient quand les prix fournisseurs augmentent ?",
@@ -76,7 +76,7 @@ const faqItems = [
   },
   {
     question: "Mon coefficient est de 2,5, est-ce suffisant ?",
-    answer: "Non, sauf cas très spécifique. Un coefficient de 2,5 correspond à un food cost de 40 %, ce qui est viable UNIQUEMENT en restaurant gastronomique étoilé (avec ticket moyen >80 EUR) ou sur une catégorie isolée (vins premium). Pour un restaurant traditionnel, bistrot ou brasserie, un coefficient de 2,5 vous met en danger immédiat : avec 60 % de marge brute, vous ne pouvez pas couvrir 30 % de salaires + 20 % de charges fixes + 10 % de marge cible. Visez minimum 3,3 (food cost 30 %), idéalement 3,5-4,0.",
+    answer: "Non, sauf cas très spécifique. Un coefficient de 2,5 correspond à un food cost de 40 %, ce qui n'est viable que sur une catégorie isolée (vins en bouteille premium, poisson noble), jamais comme moyenne de la carte. Pour un restaurant traditionnel, bistrot ou brasserie, un coefficient de 2,5 vous met en danger immédiat : avec 60 % de marge brute, vous ne pouvez pas couvrir 30 % de salaires + 20 % de charges fixes + 10 % de marge cible. Visez minimum 3,3 (food cost 30 %), idéalement 3,5-4,0.",
   },
   {
     question: "Comment expliquer un prix élevé à un client ?",
@@ -93,7 +93,7 @@ export default function BlogCoefficient() {
     <div className="min-h-screen">
       <SEOHead
         title="Coefficient multiplicateur restaurant 2026 : calcul + formule + exemples (guide complet)"
-        description="Coefficient multiplicateur restaurant : formule, calcul pas à pas, valeurs cibles par segment (bistrot 3.5, gastro 4.5, pizzeria 3.0). Exemples chiffrés, erreurs courantes et calculateur gratuit."
+        description="Coefficient multiplicateur restaurant : formule, calcul pas à pas, valeurs cibles par segment (bistrot 3,5, gastro 4,5, pizzeria 4,0). Exemples chiffrés, erreurs courantes et calculateur gratuit."
         path="/blog/coefficient-multiplicateur"
         type="article"
         schema={[
@@ -111,7 +111,7 @@ export default function BlogCoefficient() {
             totalTime: 'PT15M',
             tool: ['Fiche technique', 'Calculatrice', 'Logiciel RestauMargin'],
             step: [
-              { '@type': 'HowToStep', name: 'Déterminer le food cost cible', text: 'Fixez votre food cost cible selon votre type d\'établissement (15 à 40 % selon brasserie, pizzeria, gastronomique).' },
+              { '@type': 'HowToStep', name: 'Déterminer le food cost cible', text: 'Fixez votre food cost cible selon votre type d\'établissement (de 18 à 33 % selon pizzeria, gastronomique, brasserie ou bistrot).' },
               { '@type': 'HowToStep', name: 'Calculer le coefficient théorique', text: 'Coefficient = 1 / Food cost cible. Pour 30 %, coefficient = 3,33.' },
               { '@type': 'HowToStep', name: 'Calculer le coût matière net', text: 'À partir de la fiche technique, intégrez les rendements (épluchage, parage, cuisson) pour obtenir le coût matière réel net.' },
               { '@type': 'HowToStep', name: 'Appliquer le coefficient', text: 'Prix de vente HT = Coût matière net x Coefficient. Exemple : 5 EUR x 3,33 = 16,65 EUR HT.' },
@@ -129,7 +129,7 @@ export default function BlogCoefficient() {
             tool: ['Fiche technique', 'Calculatrice'],
             step: [
               { '@type': 'HowToStep', position: 1, name: 'Calculer le coût matière HT du plat', text: 'Additionnez le coût HT de chaque ingrédient après rendement (épluchage, parage). Exemple : carbonara = 1,80 EUR de pâtes + 0,90 EUR de guanciale + 0,40 EUR d\'oeuf + 0,30 EUR de pecorino = 3,40 EUR HT.' },
-              { '@type': 'HowToStep', position: 2, name: 'Définir le food cost cible', text: 'Choisissez votre food cost cible selon votre segment : pizzeria 18-25 %, bistrot 28-32 %, gastronomique 30-35 %. Généralement 28-32 % pour un restaurant traditionnel.' },
+              { '@type': 'HowToStep', position: 2, name: 'Définir le food cost cible', text: 'Choisissez votre food cost cible selon votre segment : pizzeria 18-28 %, bistrot 29-33 %, gastronomique 20-25 %. Généralement 28-32 % pour un restaurant traditionnel.' },
               { '@type': 'HowToStep', position: 3, name: 'Calculer le coefficient', text: 'Coefficient = 1 / Food cost cible. Pour 30 % : 1 / 0,30 = 3,33. Pour 25 % : 1 / 0,25 = 4,0. Pour 33 % : 1 / 0,33 = 3,03.' },
               { '@type': 'HowToStep', position: 4, name: 'Calculer le prix de vente HT', text: 'Prix vente HT = Coût matière x Coefficient. Exemple : 3,40 EUR x 3,33 = 11,32 EUR HT.' },
               { '@type': 'HowToStep', position: 5, name: 'Calculer le prix de vente TTC', text: 'Prix vente TTC = Prix HT x (1 + TVA). En restauration sur place : 11,32 x 1,10 = 12,45 EUR TTC, arrondi à 12,50 EUR sur la carte.' },
@@ -139,7 +139,7 @@ export default function BlogCoefficient() {
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Coefficient multiplicateur restaurant 2026 : calcul + formule + exemples (guide complet)',
-            description: 'Coefficient multiplicateur restaurant : formule, calcul pas à pas, valeurs cibles par segment (bistrot 3.5, gastro 4.5, pizzeria 3.0). Exemples chiffrés, erreurs courantes et calculateur gratuit.',
+            description: 'Coefficient multiplicateur restaurant : formule, calcul pas à pas, valeurs cibles par segment (bistrot 3,5, gastro 4,5, pizzeria 4,0). Exemples chiffrés, erreurs courantes et calculateur gratuit.',
             image: 'https://www.restaumargin.fr/og-image.png',
             author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
             publisher: {
@@ -148,7 +148,7 @@ export default function BlogCoefficient() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-03-20',
-            dateModified: '2026-05-27',
+            dateModified: '2026-11-12',
             wordCount: 5100,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/coefficient-multiplicateur' },
@@ -174,10 +174,10 @@ export default function BlogCoefficient() {
       <BlogArticleHero
         category="Pricing"
         readTime="22 min"
-        date="Mai 2026"
+        date="Novembre 2026"
         title="Coefficient multiplicateur restaurant 2026 : calcul, formule et exemples"
         accentWord="coefficient"
-        subtitle="Fixer le prix de vente de vos plats au hasard est la première cause de faillite en restauration. Le coefficient multiplicateur est l'outil qui transforme un coût matière en prix juste, rentable et cohérent avec le marché. Guide complet 2026 avec formule, 5 étapes de calcul, valeurs cibles par segment (bistrot 3,5 / gastro 4,5 / pizzeria 3,0), 5 cas concrets chiffrés et calculateur gratuit."
+        subtitle="Fixer le prix de vente de vos plats au hasard est la première cause de faillite en restauration. Le coefficient multiplicateur est l'outil qui transforme un coût matière en prix juste, rentable et cohérent avec le marché. Guide complet 2026 avec formule, 5 étapes de calcul, valeurs cibles par segment (bistrot 3,5 / gastro 4,5 / pizzeria 4,0), 5 cas concrets chiffrés et calculateur gratuit."
       />
 
       {/* ── Contenu principal ── */}
@@ -356,7 +356,7 @@ export default function BlogCoefficient() {
 
           <ol className="mt-8 space-y-5">
             {[
-              { title: 'Déterminer le food cost cible', body: 'Selon votre type de restaurant : 15-22 % pour une pizzeria, 25-30 % pour une brasserie, 28-33 % pour un bistrot, 30-40 % pour un gastronomique. Cette cible est votre boussole.' },
+              { title: 'Déterminer le food cost cible', body: 'Selon votre type de restaurant : 18-28 % pour une pizzeria, 27-31 % pour une brasserie, 29-33 % pour un bistrot, 20-25 % pour un gastronomique. Cette cible est votre boussole.' },
               { title: 'Calculer le coefficient théorique', body: 'Coefficient = 1 / Food cost cible. Exemple : pour un food cost cible de 30 %, coefficient = 1 / 0,30 = 3,33.' },
               { title: 'Calculer le coût matière net du plat', body: 'À partir de la fiche technique précise (grammages, prix fournisseurs), additionnez le coût de chaque ingrédient. INTÉGREZ les rendements : un kilo de carottes brutes ne donne que 800 g utilisables, donc le coût réel est 1,25 x le coût brut.' },
               { title: 'Appliquer le coefficient', body: 'Prix de vente HT = Coût matière net x Coefficient. Exemple : 5,00 EUR x 3,33 = 16,65 EUR HT.' },
@@ -408,7 +408,7 @@ export default function BlogCoefficient() {
               },
               {
                 title: 'Définir le food cost cible',
-                body: 'Choisissez votre food cost cible selon votre segment. Généralement 28-32 % pour un restaurant traditionnel rentable. Pizzeria : 18-25 %. Bistrot : 28-32 %. Brasserie : 25-30 %. Gastronomique : 30-35 %. Coffee shop : 10-20 %. Cette cible est votre garde-fou : descendre en dessous met votre marge nette en danger.',
+                body: 'Choisissez votre food cost cible selon votre segment. Généralement 28-32 % pour un restaurant traditionnel rentable. Pizzeria : 18-28 %. Bistrot : 29-33 %. Brasserie : 27-31 %. Gastronomique : 20-25 %. Coffee shop : 10-20 %. Cette cible est votre garde-fou : descendre en dessous met votre marge nette en danger.',
               },
               {
                 title: 'Coefficient = 1 / food cost cible',
@@ -532,7 +532,7 @@ export default function BlogCoefficient() {
                   { t: 'Bistrot français', c: 'x 3,0 à 3,5', fc: '29-33 %', w: 'Produits de marché, viandes' },
                   { t: 'Brasserie traditionnelle', c: 'x 3,3 à 4,0', fc: '25-30 %', w: 'Carte large, volume élevé, prix accessible' },
                   { t: 'Cuisine de la mer', c: 'x 2,8 à 3,5', fc: '29-36 %', w: 'Poissons et fruits de mer coûteux' },
-                  { t: 'Gastronomique', c: 'x 2,5 à 3,3', fc: '30-40 %', w: 'Produits premium, travail technique' },
+                  { t: 'Gastronomique', c: 'x 4,0 à 5,0', fc: '20-25 %', w: 'Valeur perçue, travail technique, masse salariale élevée' },
                   { t: 'Burger gourmet', c: 'x 3,5 à 4,5', fc: '22-29 %', w: 'Coût viande modéré, vente additionnelle' },
                   { t: 'Cuisine végétarienne / vegan', c: 'x 4,0 à 5,0', fc: '20-25 %', w: 'Légumes, légumineuses accessibles' },
                   { t: 'Sushi / Japonais traditionnel', c: 'x 3,0 à 4,0', fc: '25-33 %', w: 'Poisson cru de qualité, riz peu coûteux' },
@@ -588,10 +588,10 @@ export default function BlogCoefficient() {
                   { t: 'Brasserie', c: 'x 3,2 à 3,7', fc: '27-31 %', f: 'Carte large, volume élevé, mix viande/poisson/salade' },
                   { t: 'Restaurant gastronomique', c: 'x 4,0 à 5,0', fc: '20-25 %', f: 'Storytelling fort, valeur perçue élevée, ticket 60-90 EUR' },
                   { t: 'Restaurant étoilé', c: 'x 4,5 à 6,0', fc: '17-22 %', f: 'Prestige étoilé Michelin, produits nobles, ticket 120-300 EUR' },
-                  { t: 'Pizzeria', c: 'x 2,8 à 3,2', fc: '31-36 %', f: 'Food cost ultra-bas mais perception prix figée (10-15 EUR pizza)' },
+                  { t: 'Pizzeria', c: 'x 3,5 à 5,5', fc: '18-28 %', f: 'Matière peu chère, mais prix plafonné par le marché (10-15 EUR la pizza)' },
                   { t: 'Burger restaurant', c: 'x 3,0 à 3,5', fc: '29-33 %', f: 'Viande hachée coûteuse, sides marges fortes (frites, sodas)' },
                   { t: 'Sushi restaurant', c: 'x 3,5 à 4,0', fc: '25-29 %', f: 'Poisson cru qualité, riz peu coûteux, formules plateau' },
-                  { t: 'Crêperie / galettes', c: 'x 3,0 à 3,5', fc: '29-33 %', f: 'Farine et garnitures accessibles, ticket modéré 12-18 EUR' },
+                  { t: 'Crêperie / galettes', c: 'x 4,5 à 6,0', fc: '17-22 %', f: 'Farine, oeufs, lait : coût minimal, ticket modéré 12-18 EUR' },
                   { t: 'Food truck', c: 'x 3,2 à 3,8', fc: '26-31 %', f: 'Charges fixes faibles, volume limité, sourcing optimisé' },
                   { t: 'Boulangerie', c: 'x 2,5 à 3,5', fc: '29-40 %', f: 'Varie selon produit : pain x 2,5 / pâtisserie x 3,5 / sandwich x 3,0' },
                   { t: 'Bar / café', c: 'x 4,0 à 6,0', fc: '17-25 %', f: 'Boissons à très faible coût matière, marge alcool élevée' },
@@ -655,7 +655,7 @@ export default function BlogCoefficient() {
                 {[
                   { c: 'x 1,5', fc: '66,7 %', mb: '33,3 %', ex: '7,50 EUR HT', v: 'Très insuffisant', col: 'text-red-600' },
                   { c: 'x 2,0', fc: '50,0 %', mb: '50,0 %', ex: '10,00 EUR HT', v: 'Insuffisant', col: 'text-red-600' },
-                  { c: 'x 2,5', fc: '40,0 %', mb: '60,0 %', ex: '12,50 EUR HT', v: 'Gastro premium', col: 'text-amber-600' },
+                  { c: 'x 2,5', fc: '40,0 %', mb: '60,0 %', ex: '12,50 EUR HT', v: 'Plat noble isolé', col: 'text-amber-600' },
                   { c: 'x 3,0', fc: '33,3 %', mb: '66,7 %', ex: '15,00 EUR HT', v: 'Acceptable', col: 'text-amber-600' },
                   { c: 'x 3,33', fc: '30,0 %', mb: '70,0 %', ex: '16,65 EUR HT', v: 'Optimal bistrot', col: 'text-emerald-600' },
                   { c: 'x 3,5', fc: '28,6 %', mb: '71,4 %', ex: '17,50 EUR HT', v: 'Optimal brasserie', col: 'text-emerald-600' },
@@ -757,6 +757,10 @@ export default function BlogCoefficient() {
             <p>
               Contrairement à une idée très répandue, le restaurant gastronomique applique un coefficient
               <strong> supérieur </strong>au restaurant traditionnel, et non l'inverse. Voici pourquoi.
+              Certaines sources donnent pourtant un coefficient plus bas (2,5 à 3,3) au gastronomique :
+              elles raisonnent plat par plat sur les produits les plus chers (homard, boeuf maturé).
+              À l'échelle de la carte entière, amuse-bouche, desserts et boissons compris, la moyenne
+              se situe plutôt entre 4,0 et 5,0.
             </p>
           </div>
 
@@ -811,25 +815,26 @@ export default function BlogCoefficient() {
         {/* ═════════════ SECTION 6quater : Pizzeria ═════════════ */}
         <section id="pizzeria" className="mb-16">
           <SectionHeading icon={<Pizza className="w-6 h-6" />} number="6quater">
-            Coefficient multiplicateur pizzeria : pourquoi est-il bas ?
+            Coefficient multiplicateur pizzeria : pourquoi est-il moins élevé qu'on le croit ?
           </SectionHeading>
 
           <div className="prose-content">
             <p>
-              On entend souvent que la pizzeria a des coefficients "ultra-élevés" parce que le coût
-              matière d'une pizza est très bas. <strong>C'est partiellement faux</strong>. Si l'on
-              regarde le coefficient effectif (prix de vente / coût matière réel), il se situe entre
-              2,8 et 3,2 dans la majorité des pizzerias françaises. Inférieur au coefficient bistrot.
+              On entend souvent que la pizzeria applique des coefficients de x 8 ou x 10 parce que le
+              coût matière d'une pizza serait de 0,80 EUR. <strong>C'est faux</strong>. Une fois le coût
+              matière réel compté (1,60 à 3,50 EUR selon la qualité des ingrédients), le coefficient
+              effectif se situe entre 3,5 et 5,5 : élevé, mais loin des chiffres qui circulent. Plus les
+              ingrédients sont nobles (DOP), plus il descend vers 3,5.
             </p>
           </div>
 
           <div className="bg-gradient-to-br from-red-50 to-white border border-red-200 rounded-2xl p-6 my-6">
             <h3 className="font-bold text-mono-100 mb-3 flex items-center gap-2">
-              <Pizza className="w-5 h-5 text-red-600" /> Pourquoi le coefficient pizzeria est-il bas ?
+              <Pizza className="w-5 h-5 text-red-600" /> Pourquoi le coefficient pizzeria plafonne
             </h3>
             <ol className="space-y-3 text-sm text-mono-400 list-decimal list-inside">
               <li><strong>Plafond psychologique de prix :</strong> une margherita ne peut pas être vendue plus de 12-13 EUR en pizzeria de quartier, même avec un coût de 1,80 EUR. Le prix est figé par le marché, pas par le coefficient théorique.</li>
-              <li><strong>Concurrence intense :</strong> 12 000 pizzerias en France (Pizza Hut, Domino's, Del Arte, indépendants) imposent une grille de prix homogène.</li>
+              <li><strong>Concurrence intense :</strong> chaînes et indépendants imposent une grille de prix homogène dans chaque quartier.</li>
               <li><strong>Coût matière réel sous-estimé :</strong> la mozzarella di bufala DOP coûte 12-14 EUR/kg, l'huile d'olive AOP 8 EUR/L, la farine type 00 1,80 EUR/kg. Une pizza authentique coûte 2,50-3,50 EUR de matière, pas 0,80 EUR.</li>
               <li><strong>Pertes élevées :</strong> 5-8 % de pertes (pâtes trop fermentées, garnitures périmées, erreurs cuisson) réduisent le coefficient effectif.</li>
               <li><strong>Compensation par le volume :</strong> 80-120 pizzas/jour servies en 2 services = compensation par la rotation, pas par le coefficient unitaire.</li>
@@ -838,10 +843,11 @@ export default function BlogCoefficient() {
 
           <div className="prose-content">
             <p>
-              <strong>Stratégie gagnante en pizzeria :</strong> visez un coefficient de 3,0-3,2 sur les
-              pizzas (food cost 31-33 %) et compensez avec des coefficients élevés sur les boissons
-              (x 6-8), les desserts maison (x 5-6) et les antipasti (x 4-5). Le coefficient pondéré
-              de la carte doit converger vers 3,5-3,8 pour assurer la rentabilité.
+              <strong>Stratégie gagnante en pizzeria :</strong> visez un coefficient de 4,0 à 4,5 sur les
+              pizzas (food cost 22-25 %), acceptez 3,5 sur les recettes premium à ingrédients DOP, et
+              compensez avec des coefficients élevés sur les boissons (x 6-8), les desserts maison
+              (x 5-6) et les antipasti (x 4-5). Le coefficient pondéré de la carte doit converger vers
+              4,0-4,5 pour assurer la rentabilité.
             </p>
           </div>
         </section>
@@ -1089,7 +1095,7 @@ export default function BlogCoefficient() {
               title="Pizza margherita en pizzeria parisienne"
               data={[
                 { label: 'Coût matière total (pâte + tomate + mozzarella + huile)', value: '1,58 EUR' },
-                { label: 'Coefficient cible pizzeria', value: 'x 6,33' },
+                { label: 'Coefficient appliqué', value: 'x 6,33' },
                 { label: 'Prix de vente HT', value: '10,00 EUR' },
                 { label: 'Prix TTC (TVA 10 %)', value: '11,00 EUR' },
                 { label: 'Prix arrondi carte', value: '10,90 EUR' },
@@ -1097,7 +1103,7 @@ export default function BlogCoefficient() {
                 { label: 'Marge brute par pizza', value: '8,32 EUR' },
                 { label: 'Food cost effectif', value: '16,0 %' },
               ]}
-              comment="Coefficient très élevé typique de la pizzeria. Le défi n'est pas le food cost mais le volume. À 60 pizzas/jour : 8,32 x 60 = 499 EUR de marge brute quotidienne uniquement sur les margheritas."
+              comment="Haut de fourchette, possible avec des ingrédients standard (fior di latte, farine courante). Avec des ingrédients DOP, le coût monte vers 2,50 EUR et le coefficient retombe vers 3,5 à 4 (voir l'exemple plus bas). Le défi n'est pas le food cost mais le volume. À 60 pizzas/jour : 8,32 x 60 = 499 EUR de marge brute quotidienne uniquement sur les margheritas."
             />
             <CasCard
               icon={<Beef className="w-6 h-6" />}
@@ -1148,50 +1154,50 @@ export default function BlogCoefficient() {
           <div className="space-y-6 mt-8">
             <CasCard
               icon={<Beef className="w-6 h-6" />}
-              title="Bistrot : carbonara, food cost 18 %, coefficient 3,3"
+              title="Bistrot : carbonara, food cost 30 %, coefficient 3,3"
               data={[
                 { label: 'Plat', value: 'Carbonara maison (250g)' },
                 { label: 'Coût matière (pâtes + guanciale + oeuf + pecorino)', value: '3,60 EUR' },
-                { label: 'Food cost cible', value: '18 %' },
-                { label: 'Coefficient appliqué', value: 'x 3,3 (food cost effectif 30 %)' },
+                { label: 'Food cost cible', value: '30 %' },
+                { label: 'Coefficient appliqué', value: 'x 3,3 (1 / 0,30)' },
                 { label: 'Prix de vente HT', value: '11,88 EUR' },
                 { label: 'Prix TTC (TVA 10 %)', value: '13,07 EUR' },
                 { label: 'Prix arrondi carte', value: '12,90 EUR' },
                 { label: 'Marge brute par plat', value: '8,13 EUR' },
               ]}
-              comment="Le bistrot cible un food cost de 18 % sur les pâtes car la matière est ultra-bon marché. Avec un coefficient de 3,3, le plat reste accessible (12,90 EUR) et génère 8 EUR de marge brute. Volume cible : 35 carbonaras/jour x 26 jours = 7 410 EUR/mois de marge."
+              comment="Le bistrot reste à 30 % de food cost sur un plat de pâtes pour garder un prix accessible (12,90 EUR) : il génère 8,13 EUR de marge brute. Volume cible : 35 carbonaras/jour x 26 jours = environ 7 400 EUR/mois de marge."
             />
 
             <CasCard
               icon={<Pizza className="w-6 h-6" />}
-              title="Pizzeria de quartier : margherita, food cost 22 %, coefficient 3,5"
+              title="Pizzeria de quartier : margherita DOP, food cost 28 %, coefficient 3,5"
               data={[
                 { label: 'Plat', value: 'Pizza margherita napolitaine (32 cm)' },
                 { label: 'Coût matière (pâte + mozzarella + tomate San Marzano + basilic + huile)', value: '2,50 EUR' },
-                { label: 'Food cost cible', value: '22 %' },
-                { label: 'Coefficient appliqué', value: 'x 3,5 (food cost effectif 28 %)' },
+                { label: 'Food cost cible', value: '28 %' },
+                { label: 'Coefficient appliqué', value: 'x 3,5 (1 / 0,28 = 3,57, arrondi)' },
                 { label: 'Prix de vente HT', value: '8,75 EUR' },
                 { label: 'Prix TTC (TVA 10 %)', value: '9,63 EUR' },
                 { label: 'Prix arrondi carte', value: '9,50 EUR' },
-                { label: 'Marge brute par pizza', value: '6,06 EUR' },
+                { label: 'Marge brute par pizza', value: '6,14 EUR' },
               ]}
-              comment="La pizzeria applique un coefficient modéré (3,5) car le marché local impose un plafond de 10-11 EUR sur une margherita. Compense par le volume : 80 pizzas/jour x 26 jours = 12 600 EUR/mois de marge brute pizza."
+              comment="Avec des ingrédients DOP, le coefficient tombe à 3,5 car le marché local impose un plafond de 10-11 EUR sur une margherita. Compense par le volume : 80 pizzas/jour x 26 jours = environ 12 770 EUR/mois de marge brute pizza."
             />
 
             <CasCard
               icon={<Award className="w-6 h-6" />}
-              title="Gastronomique : pigeon, food cost 30 %, coefficient 4,5"
+              title="Gastronomique : pigeon, food cost 22 %, coefficient 4,5"
               data={[
                 { label: 'Plat', value: 'Pigeon de Racan, sauce salmis, betterave (240g)' },
                 { label: 'Coût matière (pigeon + sauce + accompagnement + dressage)', value: '12,00 EUR' },
-                { label: 'Food cost cible', value: '30 %' },
-                { label: 'Coefficient appliqué', value: 'x 4,5 (food cost effectif 22 %)' },
+                { label: 'Food cost cible', value: '22 %' },
+                { label: 'Coefficient appliqué', value: 'x 4,5 (1 / 0,22 = 4,55, arrondi)' },
                 { label: 'Prix de vente HT', value: '54,00 EUR' },
                 { label: 'Prix TTC (TVA 10 %)', value: '59,40 EUR' },
                 { label: 'Prix arrondi carte', value: '58,00 EUR' },
                 { label: 'Marge brute par plat', value: '40,73 EUR' },
               ]}
-              comment="Le gastronomique justifie son coefficient 4,5 par le storytelling produit (origine Racan), le travail technique (cuisson basse température + sauce réduite), et le ticket moyen élevé (80-120 EUR). 35 couverts/jour x 26 jours = >35 000 EUR/mois de marge brute."
+              comment="Le gastronomique justifie son coefficient 4,5 par le storytelling produit (origine Racan), le travail technique (cuisson basse température + sauce réduite), et le ticket moyen élevé (80-120 EUR). Si chacun des 35 couverts/jour le commande, 26 jours = plus de 35 000 EUR/mois de marge brute."
             />
 
             <CasCard
@@ -1438,7 +1444,7 @@ export default function BlogCoefficient() {
             <li>1. Le coefficient multiplicateur convertit le coût matière en prix de vente HT.</li>
             <li>2. <strong>Coefficient = 1 / Food cost cible</strong> (formule fondamentale).</li>
             <li>3. N'appliquez jamais un coefficient unique à toute la carte.</li>
-            <li>4. Coefficients par segment : bistrot 3,5 -- gastro 4,5 -- pizzeria 3,0 -- glacier 5-8.</li>
+            <li>4. Coefficients par segment : bistrot 3,5 -- gastro 4,5 -- pizzeria 4,0 (3,5 à 5,5) -- glacier 5-8.</li>
             <li>5. Boissons : marge brute 85-90 % vs solides 65-75 % (clé de la rentabilité).</li>
             <li>6. Les desserts et boissons méritent les coefficients les plus élevés (x 4 à x 12).</li>
             <li>7. Les plats nobles (viande, poisson) ont les coefficients les plus bas (x 2,5 à x 3,5).</li>

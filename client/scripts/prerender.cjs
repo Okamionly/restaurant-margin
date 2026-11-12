@@ -366,7 +366,7 @@ const ROUTES = [
   {
     path: '/blog/coefficient-multiplicateur',
     title: 'Coefficient multiplicateur restaurant 2026 : calcul + formule + exemples (guide complet)',
-    description: 'Coefficient multiplicateur restaurant : formule, calcul pas à pas, valeurs cibles par segment (bistrot 3.5, gastro 4.5, pizzeria 3.0). Exemples chiffrés, erreurs courantes et calculateur gratuit.',
+    description: 'Coefficient multiplicateur restaurant : formule, calcul pas à pas, valeurs cibles par segment (bistrot 3,5, gastro 4,5, pizzeria 4,0). Exemples chiffrés, erreurs courantes et calculateur gratuit.',
     seoBody: `
         <h2 style="font-size:24px;font-weight:700;margin:40px 0 16px 0;color:#111111">Formule du coefficient multiplicateur</h2>
         <p style="margin:0 0 16px 0;color:#333333">Le coefficient multiplicateur convertit un coût matière en prix de vente : <strong>Coefficient = Prix de vente HT / Coût matière</strong>. Il est l'inverse exact du food cost. Un coefficient de 4 correspond à un food cost de 25 % (100 / 4), un coefficient de 3,33 à un food cost de 30 %, un coefficient de 5 à un food cost de 20 %. Pour retrouver le prix de vente à partir d'un food cost cible, on applique la formule inverse : Prix de vente HT = Coût matière / (Food cost cible / 100).</p>
@@ -395,7 +395,7 @@ const ROUTES = [
         <h3 style="font-size:18px;font-weight:600;margin:24px 0 8px 0;color:#111111">Coefficient multiplicateur : avec ou sans TVA ?</h3>
         <p style="margin:0 0 16px 0;color:#333333">Le coefficient s'applique au coût matière HT pour donner un prix de vente HT. La TVA est ajoutée ensuite (10 % en restauration sur place, 5,5 % en vente à emporter froide, 20 % sur les boissons alcoolisées). Si votre calcul donne 15,00 EUR HT, le prix TTC sera 16,50 EUR pour la restauration sur place.</p>
         <h3 style="font-size:18px;font-weight:600;margin:24px 0 8px 0;color:#111111">Quel coefficient pour une pizzeria, brasserie ou gastronomique ?</h3>
-        <p style="margin:0 0 16px 0;color:#333333">Pizzeria : x 4,0 à 6,5 (food cost 15-25 %). Brasserie : x 3,3 à 4,0 (food cost 25-30 %). Bistrot traditionnel : x 3,0 à 3,3 (food cost 30-33 %). Restaurant gastronomique : x 2,5 à 3,3 (food cost 30-40 %). Coffee shop : x 5,0 à 10,0 (food cost 10-20 %).</p>
+        <p style="margin:0 0 16px 0;color:#333333">Pizzeria : x 3,5 à 5,5 (food cost 18-28 %, le bas de fourchette pour les ingrédients DOP). Brasserie : x 3,2 à 3,7 (food cost 27-31 %). Bistrot traditionnel : x 3,0 à 3,5 (food cost 29-33 %). Restaurant gastronomique : x 4,0 à 5,0 (food cost 20-25 %). Coffee shop : x 5,0 à 10,0 (food cost 10-20 %).</p>
         <h3 style="font-size:18px;font-weight:600;margin:24px 0 8px 0;color:#111111">Quelle est la différence entre coefficient et marge brute ?</h3>
         <p style="margin:0 0 16px 0;color:#333333">Le coefficient est un multiplicateur (3,33), la marge brute est un pourcentage (70 %). Ils sont équivalents mathématiquement : Marge brute (%) = 1 - 1/Coefficient. Coefficient 3,33 = marge brute 70 %. Coefficient 4 = marge brute 75 %. Coefficient 5 = marge brute 80 %. Le coefficient est utilisé pour calculer un prix, la marge brute pour analyser une rentabilité.</p>
         <h3 style="font-size:18px;font-weight:600;margin:24px 0 8px 0;color:#111111">Faut-il intégrer les pertes (épluchure, casse) dans le calcul du coefficient ?</h3>

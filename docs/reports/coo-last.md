@@ -1,6 +1,6 @@
-# COO — Rapport opérationnel — 2026-11-09
+# Rapport COO — 2026-11-12
 
-## 1. Santé des services
+## Santé des services
 
 | Service  | Statut |
 |----------|--------|
@@ -8,54 +8,63 @@
 | ai       | ✅ ok (claude-sonnet-4-6) |
 | api      | ✅ ok  |
 | uptime   | 2 s (redémarrage récent) |
-| responseTime | 1 292 ms |
+| responseTime | 1 253 ms |
 
-## 2. Métriques produit
+## Données produit
 
 - Utilisateurs totaux : 21
-- Essais actifs : 1
-- Abonnés payants : 0 (Pro : 0, Business : 0)
+- Recettes : 64
+- Ingrédients : 442
+- Nouveaux utilisateurs (24h) : 0
+- Utilisateurs en essai : 1
+- Abonnés payants (Pro) : 0
 - MRR estimé : 0 €
-- Nouveaux utilisateurs 24 h : 0
-- Recettes enregistrées : 64
-- Ingrédients enregistrés : 442
 
-## 3. CI (dernier commit `0c3c17c`)
+## CI / Derniers commits
 
-| Workflow | Résultat |
-|----------|----------|
-| CI (push) | ✅ success |
-| Tâches automatiques (crons.yml) | ✅ success |
+| Run | Résultat | SHA |
+|-----|----------|-----|
+| CI | ⚪ en cours / null | 287b998 |
+| Taches automatiques | ✅ success | 70d6ce9 |
+| CI | ✅ success | 70d6ce9 |
+| CI | ✅ success | 892b965 |
+| Taches automatiques | ✅ success | f0b1ec9 |
 
-Derniers 5 commits :
-- `0c3c17c` cmo: post + analyse 2026-11-09
-- `f9f68c9` mrr: rapport hebdo
-- `09be4d4` ceo: digest quotidien
-- `dfb93bb` qa: tests quotidiens
-- `567f810` cfo: analyse quotidienne
+Derniers commits :
+- `70d6ce9` docs(seo): rapport quotidien 2026-11-12
+- `892b965` seo(boost): coefficient multiplicateur
+- `f0b1ec9` cmo: post + analyse 2026-11-12
+- `ac8edf5` ceo: digest quotidien
+- `45474f9` qa: tests quotidiens 2026-11-11 — 15/15 OK
 
-## 4. GitHub Actions — crons.yml (6 derniers passages)
+## Tâches GitHub Actions (crons.yml)
 
-| Date (UTC) | Événement | Résultat |
-|------------|-----------|----------|
-| 2026-11-09 09:49 | schedule | ✅ success |
-| 2026-11-09 06:58 | schedule | ✅ success |
+| Heure | Événement | Résultat |
+|-------|-----------|----------|
+| 2026-11-12T09:51 | schedule | ✅ success |
+| 2026-11-12T07:29 | schedule | ✅ success |
+| 2026-11-12T00:45 | schedule | ✅ success |
+| 2026-11-11T19:46 | schedule | ✅ success |
+| 2026-11-11T17:54 | schedule | ✅ success |
+| 2026-11-11T17:49 | schedule | ✅ success |
 
-Aucun échec détecté sur crons.yml.
+Toutes les tâches cron sont en bon état.
 
-## 5. Agents — état
+## Agents — État
 
-| Agent | Dernier rapport | Âge | État |
-|-------|----------------|-----|------|
-| CTO   | 2026-11-08 13:18 | 20 h | ✅ OK |
-| CMO   | 2026-11-09 07:20 | 2 h  | ✅ OK |
-| CFO   | 2026-11-08 16:20 | 17 h | ✅ OK |
-| QA    | 2026-11-08 19:24 | 14 h | ✅ OK |
+| Agent | État |
+|-------|------|
+| cto   | ⚠️ EN PANNE — dernier rapport il y a 92 h |
+| cmo   | ✅ actif (commit du jour) |
+| cfo   | ✅ actif |
+| qa    | ✅ actif (rapport 2026-11-11) |
 
-Aucun agent en panne (seuil 48 h).
+**1 agent en panne** (seuil d'alerte : 3). Pas de notification envoyée.
 
-## 6. Actions du jour
+Le CTO n'a pas déposé de rapport depuis ~92h. Cause probable : quota hebdomadaire Claude épuisé.
 
-1. **Conversion essai → payant** : 1 essai actif en cours — vérifier la date d'expiration et s'assurer que l'email de fin d'essai part bien (crons.yml).
-2. **Performance API** : responseTime à 1 292 ms — surveiller la tendance ; investiguer si ça dépasse 2 s demain.
-3. **Acquisition** : 0 nouveaux utilisateurs depuis 48 h — signaler au CMO pour relance de campagne ou ajustement SEO.
+## Actions du jour
+
+1. **Surveiller le CTO** : vérifier si le quota Claude est rechargé aujourd'hui, relancer manuellement si nécessaire.
+2. **Acquisition** : 0 nouveaux utilisateurs depuis 24h — vérifier l'état des campagnes SEO/CMO.
+3. **Performance API** : responseTime à 1 253 ms (élevée) — surveiller l'évolution, investiguer si ça dépasse 2 s demain.

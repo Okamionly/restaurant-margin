@@ -1,76 +1,64 @@
-# Digest RestauMargin — 2026-11-09
+# Digest RestauMargin — 2026-11-12
 
-## Santé
+## Santé — site, base, IA, CI
 
-| Service | Statut | Détail |
-|---------|--------|--------|
-| Site | ✅ ok | restaumargin.fr répond |
-| Base de données | ✅ ok | |
-| IA | ✅ ok | claude-sonnet-4-6 |
-| API | ✅ ok | responseTime 1 459 ms |
+| Service    | Statut |
+|------------|--------|
+| Site       | ✅ OK  |
+| Database   | ✅ OK  |
+| IA         | ✅ OK (claude-sonnet-4-6) |
+| API        | ✅ OK  |
+| CI main    | ✅ success (`45474f9`) |
 
-**CI (3 derniers runs main) :**
-- Taches automatiques — ✅ success — `dfb93bb` (2026-11-09 01:44)
-- Taches automatiques — ✅ success — `dfb93bb` (2026-11-08 22:19)
-- Taches automatiques — ❌ failure — `dfb93bb` (2026-11-08 22:07) — run isolé, run suivant OK
-- CI — ✅ success — `dfb93bb` (2026-11-08 19:24)
+Uptime : 2 s (redémarrage récent — comportement normal du conteneur cloud).
+Aucune panne technique détectée.
 
 ## Chiffres
 
-| Indicateur | Valeur |
-|------------|--------|
-| MRR | 0 € |
-| Abonnés payants (Pro + Business) | 0 |
-| Trials actifs | 1 |
-| Inscriptions 24 h | 0 |
-| Inscriptions 48 h | 0 |
-| Leads qualifiés | 0 |
-| Utilisateurs totaux | 21 |
-| Recettes créées | 64 |
-| Ingrédients enregistrés | 442 |
-| Commits (24 h) | 9 |
+| Indicateur            | Valeur  |
+|-----------------------|---------|
+| MRR                   | 0 €     |
+| Abonnés payants       | 0 (Pro 0 + Biz 0) |
+| Utilisateurs en essai | 1       |
+| Utilisateurs totaux   | 21      |
+| Nouveaux inscrits 24h | 0       |
+| Leads qualifiés       | 0       |
+| Recettes créées       | 64      |
+| Ingrédients référencés| 442     |
+| Commits 24h           | 2       |
 
-> Rappel : rupture de série 2026-09-25 — MRR = 0 € reflète la correction de mesure (Stripe réel), pas une perte de client.
+Stagnation totale : J+47 sans abonné payant depuis la correction de mesure du 2026-09-25.
 
 ## Rapports C-suite
 
-| Agent | Date rapport | Statut |
-|-------|-------------|--------|
-| CTO | 2026-11-08 | ✅ < 48 h |
-| CMO | 2026-11-08 | ✅ < 48 h |
-| CFO | 2026-11-08 | ✅ < 48 h |
-| COO | 2026-11-08 | ✅ < 48 h |
-| QA | 2026-11-08 | ✅ < 48 h |
+| Agent | Dernier rapport  | Statut       |
+|-------|------------------|--------------|
+| CTO   | 2026-11-08       | ⚠️ EN PANNE (4 j) |
+| CMO   | 2026-11-09       | ⚠️ EN PANNE (3 j) |
+| CFO   | 2026-11-11       | ✅ OK        |
+| COO   | 2026-11-09       | ⚠️ EN PANNE (3 j) |
+| QA    | 2026-11-11       | ✅ OK        |
 
-Tous les agents ont rapporté hier. Aucun agent en panne.
+3 agents muets depuis >48 h (CTO, CMO, COO). Cause habituelle : quota hebdomadaire Claude épuisé.
 
-## Actions des agents (24 h)
+## Actions des agents (24h)
 
-**Bug Fixer (2026-11-08) — commit `922f892`**
-- fix(i18n) : 9 chaînes françaises codées en dur traduites dans `VoiceCommandButton.tsx`
-- Nouvelles clés `voiceCmd.*` ajoutées dans les 5 locales (fr/en/es/de/ar)
-- Build + TypeScript + prerender : exit=0
-
-**QA (2026-11-08) :**
-- 15/15 pages HTTP 200, 0 H1 manquant, aucune régression
-
-**COO (2026-11-08) :**
-- Surveillance CI, 2 runs `null` (a53e874, 922f892) signalés comme possiblement en attente — résolu par le run suivant
-
-**CMO (2026-11-08) :**
-- Post rédigé `docs/marketing/social-posts/2026-11-08.md` — thème : food cost caché, 4 postes sous-estimés
+- **QA** (2026-11-11) : 15/15 pages HTTP 200, 0 H1 manquant, API auth ✅ — aucune régression.
+- **CFO** (2026-11-11) : Analyse quotidienne — MRR 0 €, stagnation confirmée J+47.
+- **Bug Fixer** : dernier journal le 2026-11-09 (i18n VoiceCommandButton) — aucune action aujourd'hui.
 
 ## Top 3 actions du jour
 
-1. **i18n VoiceCommandButton** — 9 chaînes en dur traduites, composant vocal désormais multilingue
-2. **QA verte** — 15/15 pages, 0 régression
-3. **Post CMO publié** — contenu organique sur le food cost caché
+1. **QA** — Validation complète 15 pages + API : tout vert.
+2. **CFO** — Analyse financière quotidienne publiée.
+3. **Aucune action de développement** — 0 commit de feature ou fix aujourd'hui.
 
 ## Risques
 
-| Risque | Niveau | Détail |
-|--------|--------|--------|
-| 0 abonné payant | 🔴 Critique | J+45 sans conversion Stripe — phase acquisition bloquée |
-| 1 seul trial actif | 🟠 Moyen | Aucun nouveau lead 24h, funnel vide |
-| CI run failure isolé | 🟡 Faible | Run #556 en failure (2026-11-08 22:07), corrigé par run #557 — pas de régression code |
-| responseTime API | 🟡 Faible | 1 459 ms — au-dessus du seuil de 1 000 ms, à surveiller |
+| # | Risque | Sévérité |
+|---|--------|----------|
+| 1 | 3 agents C-suite hors-service (CTO, CMO, COO) — quota Claude probablement épuisé | 🔴 Élevé |
+| 2 | 0 nouvel inscrit depuis plusieurs jours — stagnation de l'acquisition | 🔴 Élevé |
+| 3 | J+47 sans abonné payant — viabilité économique non prouvée | 🔴 Élevé |
+| 4 | 0 lead qualifié — aucun signal d'intention d'achat | 🟡 Moyen |
+| 5 | Uptime court (2 s) — redémarrages fréquents du serveur | 🟡 Moyen (normal cloud) |

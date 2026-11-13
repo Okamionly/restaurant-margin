@@ -1,10 +1,6 @@
-# Rapport QA — 2026-11-12
+# Rapport QA — 2026-11-13
 
-## Résumé
-
-**Pages OK : 15/15 — H1 manquants : 0 — API : OK — CI : OK**
-
-## 1. Tests HTTP (15 pages)
+## Pages HTTP — 15/15 OK
 
 | Code | H1 | URL |
 |------|----|-----|
@@ -24,28 +20,28 @@
 | 200 | 1 | /guide-marge/pizzeria |
 | 200 | 1 | /guide-marge/brasserie |
 
-Toutes les pages prerendues contiennent au moins un `<h1>`.
+**H1 manquants** : aucun
 
-## 2. Tests API
+## API
 
-| Endpoint | Attendu | Obtenu | Statut |
-|----------|---------|--------|--------|
-| POST /api/auth/login (mauvais mdp) | 401 | 401 | ✓ |
-| GET /api/health?deep=1 → database | ok | ok | ✓ |
-| GET /api/health?deep=1 → ai | ok | ok (claude-sonnet-4-6) | ✓ |
+| Test | Attendu | Résultat |
+|------|---------|----------|
+| POST /api/auth/login (mauvais mdp) | 401 | ✅ 401 |
+| GET /api/health?deep=1 — database | ok | ✅ ok |
+| GET /api/health?deep=1 — ai | ok | ✅ ok (claude-sonnet-4-6) |
 
-## 3. CI — derniers passages sur main
+## CI — GitHub Actions (branche main)
 
-| Workflow | Conclusion | SHA | Titre |
-|----------|-----------|-----|-------|
-| Taches automatiques RestauMargin | success | e94f408 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | e94f408 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | e94f408 | Taches automatiques RestauMargin |
-| CI | success | e94f408 | cfo: analyse quotidienne 2026-11-12 |
-| Taches automatiques RestauMargin | success | 063e443 | Taches automatiques RestauMargin |
+| Workflow | Conclusion | Commit | Titre |
+|----------|-----------|--------|-------|
+| Taches automatiques RestauMargin | success | 2c9ae20 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 2c9ae20 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 2c9ae20 | Taches automatiques RestauMargin |
+| CI | success | 2c9ae20 | cfo: analyse quotidienne |
+| Taches automatiques RestauMargin | success | 7fb5203 | Taches automatiques RestauMargin |
 
-Dernier passage CI : **success** sur `e94f408`.
+**CI rouge** : aucun
 
-## Conclusion
+## Résumé
 
-Aucune régression détectée. Pas de notification envoyée.
+**Aucune régression détectée.** Tous les indicateurs sont verts.

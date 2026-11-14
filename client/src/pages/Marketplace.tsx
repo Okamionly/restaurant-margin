@@ -1142,6 +1142,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
 // ── Price Alert Setup ───────────────────────────────────────────────────────
 
 function PriceAlertSetup() {
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const [alerts, setAlerts] = useState<PriceAlert[]>([
     { id: '1', ingredientName: 'Saumon frais', threshold: 15, unit: 'kg', active: true, createdAt: '2026-04-08' },
@@ -1164,7 +1165,7 @@ function PriceAlertSetup() {
     setAlerts(prev => [alert, ...prev]);
     setNewAlert({ ingredientName: '', threshold: '', unit: 'kg' });
     setShowForm(false);
-    showToast('Alerte prix creee', 'success');
+    showToast(t('marketplace.alertCreated'), 'success');
   }
 
   function toggleAlert(id: string) {
@@ -1173,7 +1174,7 @@ function PriceAlertSetup() {
 
   function removeAlert(id: string) {
     setAlerts(prev => prev.filter(a => a.id !== id));
-    showToast('Alerte supprimee', 'info');
+    showToast(t('marketplace.alertDeleted'), 'info');
   }
 
   return (

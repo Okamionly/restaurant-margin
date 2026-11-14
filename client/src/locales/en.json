@@ -1726,6 +1726,8 @@
   },
   "marketplace.addToCart": "Add to cart",
   "marketplace.addedToCart": "Added to cart",
+  "marketplace.alertCreated": "Price alert created",
+  "marketplace.alertDeleted": "Alert deleted",
   "marketplace.bestPrice": "Best price",
   "marketplace.cart": "Cart",
   "marketplace.clearCart": "Clear cart",

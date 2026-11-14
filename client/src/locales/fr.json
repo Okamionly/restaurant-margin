@@ -1726,6 +1726,8 @@
   },
   "marketplace.addToCart": "Ajouter au panier",
   "marketplace.addedToCart": "Ajouté au panier",
+  "marketplace.alertCreated": "Alerte prix créée",
+  "marketplace.alertDeleted": "Alerte supprimée",
   "marketplace.bestPrice": "Meilleur prix",
   "marketplace.cart": "Panier",
   "marketplace.clearCart": "Vider le panier",

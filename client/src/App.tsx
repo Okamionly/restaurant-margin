@@ -4,11 +4,9 @@ import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, M
 import ErrorBoundary from './components/ErrorBoundary';
 import { isOnboardingCompleted } from './utils/onboardingFlags';
 import CookieBanner from './components/CookieBanner';
-import AssistantWidget from './components/AssistantWidget';
 import Breadcrumbs from './components/Breadcrumbs';
 import { trackPageVisit } from './utils/recentPages';
 import { captureLandingSource } from './utils/signupSource';
-import NotificationCenter from './components/NotificationCenter';
 import ActiveUsers, { ConnectedBadge, PageActivityDot } from './components/ActiveUsers';
 import TrialPaywallGuard from './components/TrialPaywallGuard';
 // NOTE (perf/SEO) : les overlays/bandeaux/modales de l'app-shell (ConnectivityBar,
@@ -44,6 +42,12 @@ function lazyRetry(importFn: () => Promise<any>) {
     } } as any;
   }));
 }
+
+// Perf 2026-11-14 : sortis du chunk d'entree (~66 Ko de source) que paie chaque visiteur
+// d'article. NotificationCenter ne sert qu'a l'espace connecte (AppLayout) ; AssistantWidget
+// est un bouton en position fixe, son arrivee differee ne decale rien (CLS nul).
+const AssistantWidget = lazyRetry(() => import('./components/AssistantWidget'));
+const NotificationCenter = lazyRetry(() => import('./components/NotificationCenter'));
 
 // NotFound stays eager (tiny, it's the catch-all fallback).
 import NotFound from './pages/NotFound';
@@ -740,7 +744,7 @@ function AppLayout() {
       <div className={`flex items-center gap-3 px-4 py-5 border-b border-white/10 dark:border-white/5 ${collapsed ? 'justify-center px-2' : ''}`}>
         <ChefHat className="w-8 h-8 text-mono-100 dark:text-white flex-shrink-0" />
         {!collapsed && <span className="text-lg font-bold logo-shimmer sidebar-label font-satoshi tracking-tight flex-1">RestauMargin</span>}
-        <NotificationCenter />
+        <Suspense fallback={null}><NotificationCenter /></Suspense>
 
       </div>
 
@@ -981,7 +985,7 @@ function AppLayout() {
           </div>
           <div className="flex items-center gap-1">
               <button onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", ctrlKey: true }); window.dispatchEvent(e); }} aria-label="Rechercher" className="inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-mono-950 dark:hover:bg-[#171717] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"><Search className="w-5 h-5 text-[#6B7280] dark:text-mono-500" /></button>
-              <NotificationCenter />
+              <Suspense fallback={null}><NotificationCenter /></Suspense>
             </div>
         </header>
 
@@ -1453,7 +1457,7 @@ function App() {
               toutes les pages publiques (landing, SEO, blog, outils) sans toucher au routing.
               Le composant se masque lui-meme quand l'utilisateur est connecte, ce qui evite
               tout recouvrement de la MobileBottomNav (rendue uniquement dans AppLayout). */}
-          <AssistantWidget />
+          <Suspense fallback={null}><AssistantWidget /></Suspense>
         </RestaurantProvider>
       </ToastProvider>
     </AuthProvider>

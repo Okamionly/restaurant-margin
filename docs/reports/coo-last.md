@@ -1,70 +1,65 @@
-# Rapport COO — 2026-11-12
+# COO — Rapport opérationnel du 2026-11-14
 
-## Santé des services
+Généré le 2026-11-14 à 10:15 UTC
 
-| Service  | Statut |
-|----------|--------|
-| database | ✅ ok  |
-| ai       | ✅ ok (claude-sonnet-4-6) |
-| api      | ✅ ok  |
-| uptime   | 2 s (redémarrage récent) |
-| responseTime | 1 253 ms |
+---
 
-## Données produit
+## 1. Santé des services
 
-- Utilisateurs totaux : 21
-- Recettes : 64
-- Ingrédients : 442
-- Nouveaux utilisateurs (24h) : 0
-- Utilisateurs en essai : 1
-- Abonnés payants (Pro) : 0
-- MRR estimé : 0 €
+| Service   | Statut | Détail                      |
+|-----------|--------|-----------------------------|
+| database  | ✅ ok  |                             |
+| ai        | ✅ ok  | claude-sonnet-4-6           |
+| api       | ✅ ok  | responseTime 1 230 ms       |
 
-## CI / Derniers commits
+**Données produit :** 21 utilisateurs · 64 recettes · 442 ingrédients · 0 nouveaux (24 h) · MRR 0 €
 
-| Run | Résultat | SHA |
-|-----|----------|-----|
-| CI | ⚪ en cours / null | 287b998 |
-| Taches automatiques | ✅ success | 70d6ce9 |
-| CI | ✅ success | 70d6ce9 |
-| CI | ✅ success | 892b965 |
-| Taches automatiques | ✅ success | f0b1ec9 |
+---
 
-Derniers commits :
-- `70d6ce9` docs(seo): rapport quotidien 2026-11-12
-- `892b965` seo(boost): coefficient multiplicateur
-- `f0b1ec9` cmo: post + analyse 2026-11-12
-- `ac8edf5` ceo: digest quotidien
-- `45474f9` qa: tests quotidiens 2026-11-11 — 15/15 OK
+## 2. CI (derniers commits — main)
 
-## Tâches GitHub Actions (crons.yml)
+| SHA      | Message                                            | Statut      |
+|----------|----------------------------------------------------|-------------|
+| 9af85c6  | docs: bug-fixer log 2026-11-14                    | in_progress |
+| 95208d7  | fix(i18n): traduire 2 toasts PriceAlertSetup       | in_progress |
+| baa28fe  | docs(seo): rapport 2026-11-14 — chunk -16 % gzip  | ✅ success  |
+| 4236fb9  | perf(seo): sort NotificationCenter + AssistantWidget| ✅ success  |
+| b31222b  | cmo: post + analyse                               | ✅ success  |
 
-| Heure | Événement | Résultat |
-|-------|-----------|----------|
-| 2026-11-12T09:51 | schedule | ✅ success |
-| 2026-11-12T07:29 | schedule | ✅ success |
-| 2026-11-12T00:45 | schedule | ✅ success |
-| 2026-11-11T19:46 | schedule | ✅ success |
-| 2026-11-11T17:54 | schedule | ✅ success |
-| 2026-11-11T17:49 | schedule | ✅ success |
+Les 2 derniers runs (in_progress) viennent d'être déclenchés par ce passage COO ; les 3 précédents sont verts.
 
-Toutes les tâches cron sont en bon état.
+---
 
-## Agents — État
+## 3. GitHub Actions — crons.yml (6 dernières exécutions)
 
-| Agent | État |
-|-------|------|
-| cto   | ⚠️ EN PANNE — dernier rapport il y a 92 h |
-| cmo   | ✅ actif (commit du jour) |
-| cfo   | ✅ actif |
-| qa    | ✅ actif (rapport 2026-11-11) |
+| Date             | Évènement | Résultat   |
+|------------------|-----------|------------|
+| 2026-11-14 06:50 | schedule  | ✅ success |
+| 2026-11-14 06:26 | schedule  | ✅ success |
+| 2026-11-13 23:35 | schedule  | ✅ success |
+| 2026-11-13 19:55 | schedule  | ✅ success |
+| 2026-11-13 17:45 | schedule  | ✅ success |
+| 2026-11-13 17:36 | schedule  | ✅ success |
 
-**1 agent en panne** (seuil d'alerte : 3). Pas de notification envoyée.
+Toutes les tâches automatiques (import emails, digest, onboarding, fin d'essai, santé) sont vertes.
 
-Le CTO n'a pas déposé de rapport depuis ~92h. Cause probable : quota hebdomadaire Claude épuisé.
+---
 
-## Actions du jour
+## 4. Agents — état des rapports
 
-1. **Surveiller le CTO** : vérifier si le quota Claude est rechargé aujourd'hui, relancer manuellement si nécessaire.
-2. **Acquisition** : 0 nouveaux utilisateurs depuis 24h — vérifier l'état des campagnes SEO/CMO.
-3. **Performance API** : responseTime à 1 253 ms (élevée) — surveiller l'évolution, investiguer si ça dépasse 2 s demain.
+| Agent | Dernier rapport | Statut         |
+|-------|-----------------|----------------|
+| CMO   | il y a ~3 h     | ✅ ok          |
+| QA    | il y a ~15 h    | ✅ ok          |
+| CFO   | il y a ~18 h    | ✅ ok          |
+| CTO   | il y a ~45 h    | ⚠️ proche seuil (seuil 48 h) |
+
+Aucun agent en panne (seuil >48 h). CTO à surveiller : rapport attendu dans les ~3 h.
+
+---
+
+## 5. Actions du jour
+
+1. **Perf frontend confirmée** — chunk d'entrée 60,5 → 50,8 Ko gzip (-16 %) grâce à la mise en lazy de NotificationCenter et AssistantWidget ; vérifié en prod ce matin.
+2. **i18n** — 2 toasts PriceAlertSetup et Marketplace traduits (fix 95208d7) ; il reste probablement d'autres strings codées en dur.
+3. **Surveiller CTO** — rapport `cto-last.md` vieux de ~45 h, seuil d'alerte à 48 h ; si absent ce soir, l'agent est en panne.

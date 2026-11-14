@@ -1,39 +1,47 @@
-# Rapport CMO — 12 novembre 2026
+# Rapport CMO — 14 novembre 2026
 
-## Métriques du jour (07:13 UTC)
+## Métriques du jour
 
 | Indicateur | Valeur |
 |---|---|
-| Utilisateurs totaux | 21 |
-| Nouveaux inscrits (24h) | 0 |
+| Utilisateurs total | 21 |
+| Nouveaux utilisateurs (24h) | 0 |
 | Leads qualifiés | 0 |
 | MRR estimé | 0 € |
-| Abonnés Pro | 0 |
-| Abonnés Business | 0 |
-| Utilisateurs en trial | 1 |
-| Recettes créées | 64 |
-| Ingrédients référencés | 442 |
-| Pages blog (Blog*.tsx) | 64 |
+| Pages blog | 64 |
+| Abonnés pro | 0 |
+| Abonnés business | 0 |
+| Utilisateurs en essai | 0 |
+
+*Source : https://www.restaumargin.fr/api/agents/data — 2026-11-14T07:11:50Z*
+
+---
 
 ## Contenu publié
 
-**Post social** : `docs/marketing/social-posts/2026-11-12.md`
+**Post social** : `docs/marketing/social-posts/2026-11-14.md`
+- Thème : Identifier les causes d'un food cost élevé (5 zones d'inspection)
+- Format : LinkedIn / Instagram, ~270 mots
+- CTA 1 : calculateur food cost gratuit
+- CTA 2 : pricing / essai 7 jours
+- Conformité CLAUDE.md : aucun témoignage, aucun chiffre d'adoption, aucun résultat client attribué
 
-**Thème** : Anticipation food cost période des fêtes (novembre–décembre)
+---
 
-**Format** : LinkedIn / Instagram, 5 conseils concrets, ~290 mots
+## Analyse et actions
 
-**CTA** : Calculateur food cost gratuit + pricing RestauMargin
+**Situation** : croissance utilisateurs à l'arrêt (0 inscriptions sur 24h). MRR à zéro, aucun abonné.
 
-## Observations
+**Priorités à court terme** :
+1. **Conversion essai** : mettre en avant l'essai 7 jours sans carte bancaire dans les prochains posts — l'obstacle principal est probablement la barrière d'engagement initial.
+2. **SEO blog** : 64 pages blog constituent un actif de trafic organique ; vérifier lesquelles génèrent des impressions dans Google Search Console et renforcer les 5 meilleures avec des liens internes vers le calculateur.
+3. **Activation** : les 21 comptes existants ne convertissent pas — creuser s'il y a un obstacle fonctionnel ou un manque d'accompagnement onboarding.
 
-- Aucune inscription nouvelle en 24h — trafic organique ou direct insuffisant pour convertir.
-- 1 utilisateur en trial actif : moment critique pour l'engagement (relance onboarding à prévoir).
-- 64 recettes créées par 21 utilisateurs : engagement moyen de ~3 recettes/utilisateur — le produit est utilisé mais la base reste très faible.
-- MRR à 0 € : priorité absolue à la conversion du trial en cours et à l'acquisition de leads qualifiés.
+**Thèmes posts à venir** :
+- Gestion des achats fournisseurs et impact mercuriale
+- Différence entre marge brute et marge nette en restauration
+- Comment construire une fiche technique en 10 minutes
 
-## Action recommandée
+---
 
-1. **Conversion trial** : vérifier si l'utilisateur en trial a reçu un email d'onboarding J+3 ou J+7. S'il n'est pas engagé, envoyer une séquence manuelle ciblée.
-2. **SEO** : avec 64 pages blog, s'assurer que les articles récents sont indexés et que les meta descriptions sont à jour.
-3. **Post social** : publier sur LinkedIn et/ou Instagram le post de ce jour — thème saisonnier (fêtes), timing optimal pour les restaurateurs qui planifient leur mois de décembre.
+*Rapport généré automatiquement — session CMO quotidienne*

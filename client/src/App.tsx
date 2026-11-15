@@ -18,6 +18,7 @@ import TrialPaywallGuard from './components/TrialPaywallGuard';
 // HelpButton, KitchenTimer, VoiceCommand merged into FloatingActionBubble
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider, useToast } from './hooks/useToast';
+import { useTranslation } from './hooks/useTranslation';
 import { CollaborationProvider } from './hooks/useCollaboration';
 import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
 import { getToken, fetchRecipes } from './services/api';
@@ -408,6 +409,7 @@ function AppLayout() {
   const { user, logout } = useAuth();
   const { selectedRestaurant } = useRestaurant();
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
@@ -679,9 +681,9 @@ function AppLayout() {
         <button
           key={item.to}
           type="button"
-          title={collapsed ? item.label : 'Cette fonctionnalité sera disponible prochainement'}
+          title={collapsed ? item.label : t('common.comingSoon')}
           data-tooltip={collapsed ? item.label : undefined}
-          onClick={() => showToast('Cette fonctionnalité sera disponible prochainement', 'info')}
+          onClick={() => showToast(t('common.comingSoon'), 'info')}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group w-full opacity-50 cursor-not-allowed ${
             collapsed ? 'justify-center nav-tooltip-premium' : ''
           } text-[#9CA3AF] dark:text-mono-500`}

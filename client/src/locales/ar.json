@@ -20,7 +20,8 @@
     "itemDeleted": "محذوف",
     "restoreSuccess": "تمت الاستعادة بنجاح",
     "restoreError": "خطأ أثناء الاستعادة",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "comingSoon": "ستتوفر هذه الميزة قريباً"
   },
   "analytics": {
     "errorLoading": "خطأ في تحميل التقرير",

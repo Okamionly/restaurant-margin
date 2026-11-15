@@ -20,7 +20,8 @@
     "itemDeleted": "eliminado",
     "restoreSuccess": "Restaurado con éxito",
     "restoreError": "Error al restaurar",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "comingSoon": "Esta funcionalidad estará disponible pronto"
   },
   "analytics": {
     "errorLoading": "Error al cargar el informe",

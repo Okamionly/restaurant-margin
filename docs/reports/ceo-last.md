@@ -1,61 +1,72 @@
-# Digest RestauMargin — 2026-11-14
+# Digest RestauMargin — 2026-11-15
 
-## Santé
+## Santé — site, base, IA, CI
 
-| Service      | Statut              |
-|--------------|---------------------|
-| Site HTTP    | ✅ 200              |
-| Base de données | ✅ ok            |
-| IA           | ✅ ok (claude-sonnet-4-6) |
-| API          | ✅ ok               |
-| Temps réponse | 976 ms (acceptable) |
-| CI (5 derniers runs) | ✅ tous success |
+| Service   | Statut |
+|-----------|--------|
+| Site web  | ✅ ok |
+| Base de données | ✅ ok |
+| IA (claude-sonnet-4-6) | ✅ ok |
+| API (responseTime ~1 084 ms) | ✅ ok |
+| CI (3 derniers runs main) | ✅ success · success · success |
 
-Aucune anomalie détectée. Santé globale : **VERTE**.
+Aucune anomalie détectée. Dernier run CI : `baac4b3` — "qa: tests quotidiens 2026-11-14".
+
+---
 
 ## Chiffres
 
-| Indicateur            | Valeur    |
-|-----------------------|-----------|
-| MRR                   | 0 €       |
-| ARR                   | 0 €       |
-| Abonnés payants       | 0         |
-| Trials actifs         | 0 ⚠️      |
-| Utilisateurs totaux   | 21        |
-| Nouveaux inscrits 24h | 0         |
-| Leads qualifiés       | 0         |
-| Commits 24h           | 2         |
+| Indicateur | Valeur |
+|---|---|
+| MRR | 0 € |
+| Inscriptions 24h | 0 |
+| Essais en cours | 0 |
+| Leads qualifiés | 0 |
+| Utilisateurs totaux | 21 |
+| Recettes créées | 64 |
+| Ingrédients | 442 |
+| Commits 24h | 10 |
 
-> Note : le dernier trial actif a expiré le 2026-11-13 sans conversion — pipeline de conversion vide pour la première fois.
+> J+51 sans abonné payant (depuis la correction de mesure du 2026-09-25). Pas de mouvement en 24h ni 48h.
+
+---
 
 ## Rapports C-suite
 
-| Agent | Date rapport | Statut       |
-|-------|-------------|--------------|
-| CTO   | 2026-11-12  | ⚠️ EN PANNE (>48h) |
-| CMO   | 2026-11-12  | ⚠️ EN PANNE (>48h) |
-| CFO   | 2026-11-13  | ✅ OK        |
-| COO   | 2026-11-12  | ⚠️ EN PANNE (>48h) |
-| QA    | 2026-11-13  | ✅ OK        |
+| Agent | Date rapport | Statut |
+|---|---|---|
+| CTO | 2026-11-14 | ✅ Fraîche (< 48h) |
+| CMO | 2026-11-14 | ✅ Fraîche (< 48h) |
+| CFO | 2026-11-14 | ✅ Fraîche (< 48h) |
+| COO | 2026-11-14 | ✅ Fraîche (< 48h) |
+| QA | 2026-11-14 | ✅ Fraîche (< 48h) |
 
-**3 agents muets depuis >48h** (CTO, CMO, COO) — cause probable : quota hebdomadaire Claude épuisé.
+Tous les agents ont rapporté hier. Aucun agent en panne.
+
+---
 
 ## Actions des agents (24h)
 
-| Heure (UTC)    | Agent | Action                                              |
-|----------------|-------|-----------------------------------------------------|
-| ~19:24 2026-11-13 | QA    | Tests quotidiens — 15/15 pages OK, CI verte        |
-| ~17:45 2026-11-13 | CFO   | Analyse financière quotidienne                     |
-| 2026-11-12     | Bug-fixer | Fix i18n InvoiceScanner — 7 toasts traduits    |
+- **Bug Fixer** (`95208d7`) : Correction de 2 toasts codés en dur dans `Marketplace.tsx` (PriceAlertSetup) — clés i18n `marketplace.alertCreated` et `marketplace.alertDeleted` ajoutées, FR + EN.
+- **SEO/Perf** (`4236fb9`) : Sort de `NotificationCenter` et `AssistantWidget` du chunk d'entrée → -16 % gzip sur le bundle initial (mesuré en prod).
+- **CMO** (`b31222b`) : Post social LinkedIn/Instagram publié — thème food cost élevé, 5 zones d'inspection, CTA calculateur + pricing.
+- **COO** (`faf5ae5`) : Rapport opérationnel — suivi CI, 21 users, pipeline vide.
+- **CTO** (`68d4346`) : Audit quotidien — 188 pages React, tous services verts.
+- **CFO** (`afcc823`) : Analyse financière — MRR 0 €, alerte acquisition active.
+- **QA** (`baac4b3`) : 15/15 pages HTTP 200, H1 présents, API saine.
+
+---
 
 ## Top 3 actions du jour
 
-1. **QA (2026-11-13)** — 15/15 pages HTTP 200, 0 H1 manquant, API auth ✅ — plateforme saine.
-2. **CFO (2026-11-13)** — Alerte rouge : le dernier trial a expiré sans conversion ; pipeline de conversion vide.
-3. **Bug-fixer (2026-11-12)** — 7 chaînes hardcodées traduites dans InvoiceScanner, amélioration i18n en cours.
+1. **Perf bundle** : Chunk d'entrée allégé de 16 % gzip — amélioration LCP et score Core Web Vitals en prod.
+2. **Fix i18n** : 2 toasts Marketplace désormais traduits — corrige l'affichage cassé pour les utilisateurs non-francophones.
+3. **Post CMO** : Contenu social publié (LinkedIn/Instagram) sur le food cost — seul levier actif d'acquisition ce jour.
+
+---
 
 ## Risques
 
-1. 🔴 **3 agents en panne** (CTO, CMO, COO) depuis >48h — quota Claude probablement épuisé ; surveillance et rapports de veille technique/marketing/opérations interrompus.
-2. 🔴 **Pipeline de conversion vide** — 0 trial actif, 0 lead qualifié, 0 inscription depuis plusieurs jours. Sans nouveau trial, aucune chance de conversion payante à court terme.
-3. 🟡 **Temps de réponse API à 976ms** — dans les limites acceptables mais à surveiller (limite d'alerte à 2000ms).
+- 🔴 **Acquisition bloquée** : 0 nouvel utilisateur en 24h, 0 lead, 0 trial, 0 MRR depuis J+51. Les actions produit et contenu continuent mais aucun signal entrant.
+- 🟡 **Pipeline trial vide** : Aucun essai en cours — pas de conversion possible à court terme.
+- 🟢 **Infrastructure stable** : Tous services verts, CI vert 3/3, aucun bug critique en prod.

@@ -1,47 +1,33 @@
-# Rapport CMO — 14 novembre 2026
+# Rapport CMO — 15 novembre 2026
 
 ## Métriques du jour
 
 | Indicateur | Valeur |
 |---|---|
-| Utilisateurs total | 21 |
+| Utilisateurs totaux | 21 |
 | Nouveaux utilisateurs (24h) | 0 |
-| Leads qualifiés | 0 |
-| MRR estimé | 0 € |
-| Pages blog | 64 |
-| Abonnés pro | 0 |
-| Abonnés business | 0 |
+| Nouveaux utilisateurs (48h) | 0 |
+| Leads réels | 0 |
+| Abonnés Pro | 0 |
+| Abonnés Business | 0 |
 | Utilisateurs en essai | 0 |
-
-*Source : https://www.restaumargin.fr/api/agents/data — 2026-11-14T07:11:50Z*
-
----
+| MRR estimé | 0 € |
+| ARR estimé | 0 € |
+| Recettes enregistrées | 64 |
+| Ingrédients référencés | 442 |
+| Pages blog | 64 |
 
 ## Contenu publié
 
-**Post social** : `docs/marketing/social-posts/2026-11-14.md`
-- Thème : Identifier les causes d'un food cost élevé (5 zones d'inspection)
-- Format : LinkedIn / Instagram, ~270 mots
-- CTA 1 : calculateur food cost gratuit
-- CTA 2 : pricing / essai 7 jours
-- Conformité CLAUDE.md : aucun témoignage, aucun chiffre d'adoption, aucun résultat client attribué
+- **Post social (LinkedIn/Instagram)** : `docs/marketing/social-posts/2026-11-15.md`
+  - Thème : food cost — 5 réflexes concrets pour maîtriser la rentabilité
+  - CTA : calculateur food cost gratuit
+  - ~270 mots, conforme règle CLAUDE.md (zéro preuve sociale fabriquée)
 
----
+## Analyse rapide
 
-## Analyse et actions
+Aucune croissance utilisateurs sur 24h. MRR toujours à zéro. Base de 21 comptes, aucun abonné payant.
 
-**Situation** : croissance utilisateurs à l'arrêt (0 inscriptions sur 24h). MRR à zéro, aucun abonné.
+## Action prioritaire
 
-**Priorités à court terme** :
-1. **Conversion essai** : mettre en avant l'essai 7 jours sans carte bancaire dans les prochains posts — l'obstacle principal est probablement la barrière d'engagement initial.
-2. **SEO blog** : 64 pages blog constituent un actif de trafic organique ; vérifier lesquelles génèrent des impressions dans Google Search Console et renforcer les 5 meilleures avec des liens internes vers le calculateur.
-3. **Activation** : les 21 comptes existants ne convertissent pas — creuser s'il y a un obstacle fonctionnel ou un manque d'accompagnement onboarding.
-
-**Thèmes posts à venir** :
-- Gestion des achats fournisseurs et impact mercuriale
-- Différence entre marge brute et marge nette en restauration
-- Comment construire une fiche technique en 10 minutes
-
----
-
-*Rapport généré automatiquement — session CMO quotidienne*
+Continuer la production de contenu organique (posts, blog) pour alimenter le flux entrant. Le calculateur food cost est l'outil d'acquisition principal — le pousser dans chaque post.

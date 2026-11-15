@@ -1,65 +1,53 @@
-# COO — Rapport opérationnel du 2026-11-14
+# Rapport COO — 2026-11-15
 
-Généré le 2026-11-14 à 10:15 UTC
+## Santé des services
 
----
+| Service  | Statut |
+|----------|--------|
+| database | ✅ ok  |
+| ai       | ✅ ok (claude-sonnet-4-6) |
+| api      | ✅ ok  |
 
-## 1. Santé des services
+Uptime : 11 s au moment du check | Temps de réponse : 1316 ms
 
-| Service   | Statut | Détail                      |
-|-----------|--------|-----------------------------|
-| database  | ✅ ok  |                             |
-| ai        | ✅ ok  | claude-sonnet-4-6           |
-| api       | ✅ ok  | responseTime 1 230 ms       |
+## Données produit
+- Utilisateurs total : 21 (+0 en 24h)
+- Recettes : 64 | Ingrédients : 442
+- Abonnés Pro : 0 | MRR estimé : 0 €
 
-**Données produit :** 21 utilisateurs · 64 recettes · 442 ingrédients · 0 nouveaux (24 h) · MRR 0 €
+## CI (5 derniers runs main)
+| Workflow | Conclusion | SHA |
+|----------|-----------|-----|
+| Taches automatiques RestauMargin | ✅ success | 6602447 |
+| CI | ✅ success | 6602447 |
+| Taches automatiques RestauMargin | ✅ success | 8a00bea |
+| CI | ✅ success | 8a00bea |
+| Taches automatiques RestauMargin | ✅ success | baac4b3 |
 
----
+## GitHub Actions — crons.yml (6 derniers passages)
+Tous les passages récents : **success**. Dernier déclenchement : 2026-11-15T09:28:41Z
 
-## 2. CI (derniers commits — main)
+## Agents (rapport > 48h = panne)
+| Agent | Dernier commit | Âge |
+|-------|---------------|-----|
+| CTO   | ~20 h         | ✅  |
+| CMO   | ~3 h          | ✅  |
+| CFO   | ~17 h         | ✅  |
+| QA    | ~14 h         | ✅  |
 
-| SHA      | Message                                            | Statut      |
-|----------|----------------------------------------------------|-------------|
-| 9af85c6  | docs: bug-fixer log 2026-11-14                    | in_progress |
-| 95208d7  | fix(i18n): traduire 2 toasts PriceAlertSetup       | in_progress |
-| baa28fe  | docs(seo): rapport 2026-11-14 — chunk -16 % gzip  | ✅ success  |
-| 4236fb9  | perf(seo): sort NotificationCenter + AssistantWidget| ✅ success  |
-| b31222b  | cmo: post + analyse                               | ✅ success  |
+Aucun agent en panne.
 
-Les 2 derniers runs (in_progress) viennent d'être déclenchés par ce passage COO ; les 3 précédents sont verts.
+## Git log (5 derniers commits)
+```
+6602447 cmo: post + analyse 2026-11-15
+8a00bea ceo: digest quotidien 2026-11-15
+baac4b3 qa: tests quotidiens 2026-11-14
+afcc823 cfo: analyse quotidienne
+68d4346 cto: audit quotidien
+```
 
----
+## 3 actions du jour
 
-## 3. GitHub Actions — crons.yml (6 dernières exécutions)
-
-| Date             | Évènement | Résultat   |
-|------------------|-----------|------------|
-| 2026-11-14 06:50 | schedule  | ✅ success |
-| 2026-11-14 06:26 | schedule  | ✅ success |
-| 2026-11-13 23:35 | schedule  | ✅ success |
-| 2026-11-13 19:55 | schedule  | ✅ success |
-| 2026-11-13 17:45 | schedule  | ✅ success |
-| 2026-11-13 17:36 | schedule  | ✅ success |
-
-Toutes les tâches automatiques (import emails, digest, onboarding, fin d'essai, santé) sont vertes.
-
----
-
-## 4. Agents — état des rapports
-
-| Agent | Dernier rapport | Statut         |
-|-------|-----------------|----------------|
-| CMO   | il y a ~3 h     | ✅ ok          |
-| QA    | il y a ~15 h    | ✅ ok          |
-| CFO   | il y a ~18 h    | ✅ ok          |
-| CTO   | il y a ~45 h    | ⚠️ proche seuil (seuil 48 h) |
-
-Aucun agent en panne (seuil >48 h). CTO à surveiller : rapport attendu dans les ~3 h.
-
----
-
-## 5. Actions du jour
-
-1. **Perf frontend confirmée** — chunk d'entrée 60,5 → 50,8 Ko gzip (-16 %) grâce à la mise en lazy de NotificationCenter et AssistantWidget ; vérifié en prod ce matin.
-2. **i18n** — 2 toasts PriceAlertSetup et Marketplace traduits (fix 95208d7) ; il reste probablement d'autres strings codées en dur.
-3. **Surveiller CTO** — rapport `cto-last.md` vieux de ~45 h, seuil d'alerte à 48 h ; si absent ce soir, l'agent est en panne.
+1. **Surveiller la première inscription payante** — 21 utilisateurs, 0 abonné payant ; pipeline de conversion à activer si un utilisateur atteint J+6 d'essai.
+2. **Vérifier le temps de réponse API** — 1316 ms au premier check (uptime 11 s). À surveiller : si ça dépasse 2 s à froid, investiguer la connexion DB Supabase.
+3. **Préparer le prochain cycle builder** — CI vert, tous agents actifs, bon état pour lancer un sprint d'amélioration produit (agent restaumargin-builder).

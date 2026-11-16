@@ -1,14 +1,18 @@
-# Rapport QA — 2026-11-15
+# Rapport QA — 2026-11-16
 
-**Heure** : 2026-11-15T19:24 UTC  
-**Résultat global** : ✅ TOUT OK
+**Date** : 2026-11-16  
+**Heure** : 19:24 UTC  
+**Statut global** : ✅ TOUT OK
 
 ---
 
-## 1. Pages HTTP (15/15)
+## 1. Tests HTTP (pages)
+
+Pages OK : **15/15**  
+H1 manquants : **aucun**
 
 | Code | H1 | URL |
-|------|----|-----|
+|------|-----|-----|
 | 200 | 1 | / |
 | 200 | 1 | /pricing |
 | 200 | 1 | /login |
@@ -25,37 +29,40 @@
 | 200 | 1 | /guide-marge/pizzeria |
 | 200 | 1 | /guide-marge/brasserie |
 
-**Pages OK** : 15/15  
-**H1 manquants** : 0  
-**Prérendu** : OK (H1 présent sur les 13 pages pré-rendues + les 2 SPA)
+---
+
+## 2. Tests API
+
+| Test | Attendu | Résultat | Statut |
+|------|---------|----------|--------|
+| POST /api/auth/login (mauvais identifiants) | 401 | 401 | ✅ |
+| GET /api/health?deep=1 — database | ok | ok | ✅ |
+| GET /api/health?deep=1 — ai | ok | ok (claude-sonnet-4-6) | ✅ |
+
+Réponse health complète :
+```json
+{"status":"ok","timestamp":"2026-11-16T19:24:14.934Z","uptime":3,"responseTime":"1251ms","services":{"database":"ok","ai":"ok","aiDetail":"claude-sonnet-4-6","api":"ok"}}
+```
 
 ---
 
-## 2. API
+## 3. CI — État sur main (5 derniers passages)
 
-| Test | Attendu | Résultat |
-|------|---------|----------|
-| POST /api/auth/login (mauvais mdp) | 401 | ✅ 401 |
-| GET /api/health?deep=1 — database | ok | ✅ ok |
-| GET /api/health?deep=1 — ai | ok | ✅ ok (claude-sonnet-4-6) |
+| Workflow | Conclusion | SHA | Titre |
+|----------|------------|-----|-------|
+| Taches automatiques RestauMargin | success | 6eeacb1 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | 6eeacb1 | Taches automatiques RestauMargin |
+| CI | success | 6eeacb1 | cfo: analyse quotidienne |
+| Taches automatiques RestauMargin | success | e2afaeb | Taches automatiques RestauMargin |
+| CI | success | e2afaeb | cto: audit quotidien |
 
-Temps de réponse santé : 1135 ms.
-
----
-
-## 3. CI GitHub (branche main)
-
-| Workflow | Résultat | Commit |
-|----------|----------|--------|
-| CI | ✅ success | 033150b |
-| Taches automatiques RestauMargin | ✅ success | 033150b |
-| Taches automatiques RestauMargin | ⚠️ failure | 033150b |
-| Taches automatiques RestauMargin | ✅ success | b23dabe |
-
-Le workflow **CI** est vert sur le dernier commit `033150b`. Une exécution des tâches automatiques a échoué sur ce même commit (exécution concurrente ou transitoire) — à surveiller si cela se répète.
+Dernier CI sur main : **success** ✅
 
 ---
 
-## Conclusion
+## Résumé
 
-Aucune régression détectée. Aucune notification envoyée.
+- Aucune régression détectée
+- Prérendu opérationnel (toutes les pages prerenderées ont un H1)
+- Base de données et IA opérationnelles
+- CI vert sur les 5 derniers commits

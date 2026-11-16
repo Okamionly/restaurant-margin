@@ -1,53 +1,51 @@
-# Rapport COO — 2026-11-15
+# Rapport COO — 2026-11-16
 
 ## Santé des services
-
-| Service  | Statut |
-|----------|--------|
-| database | ✅ ok  |
-| ai       | ✅ ok (claude-sonnet-4-6) |
-| api      | ✅ ok  |
-
-Uptime : 11 s au moment du check | Temps de réponse : 1316 ms
+- **API** : ok
+- **Base de données** : ok
+- **IA** : ok (claude-sonnet-4-6)
+- **Uptime** : 2 s (redémarrage récent)
+- Réponse health : 1 471 ms → parallélisation DB/IA mergée ce matin, amélioration attendue ~700 ms
 
 ## Données produit
-- Utilisateurs total : 21 (+0 en 24h)
+- Utilisateurs total : 21
 - Recettes : 64 | Ingrédients : 442
-- Abonnés Pro : 0 | MRR estimé : 0 €
+- Nouveaux inscrits 24 h : 0
+- Abonnés Pro : 0 | MRR : 0 €
 
-## CI (5 derniers runs main)
-| Workflow | Conclusion | SHA |
-|----------|-----------|-----|
-| Taches automatiques RestauMargin | ✅ success | 6602447 |
-| CI | ✅ success | 6602447 |
-| Taches automatiques RestauMargin | ✅ success | 8a00bea |
-| CI | ✅ success | 8a00bea |
-| Taches automatiques RestauMargin | ✅ success | baac4b3 |
+## CI (derniers runs)
+| Run | Commit | Statut |
+|-----|--------|--------|
+| #1463 | docs: bug-fixer log 2026-11-16 | in_progress |
+| #1462 | fix(health): paralleliser sondes DB et IA | in_progress |
+| #1461 | cmo: post + analyse 2026-11-16 | ✅ success |
+| #1460 | mrr: rapport hebdo 2026-11-16 | ✅ success |
 
-## GitHub Actions — crons.yml (6 derniers passages)
-Tous les passages récents : **success**. Dernier déclenchement : 2026-11-15T09:28:41Z
+Dernier CI complété : **success**. Deux runs in_progress au moment du rapport.
 
-## Agents (rapport > 48h = panne)
-| Agent | Dernier commit | Âge |
-|-------|---------------|-----|
-| CTO   | ~20 h         | ✅  |
-| CMO   | ~3 h          | ✅  |
-| CFO   | ~17 h         | ✅  |
-| QA    | ~14 h         | ✅  |
+## Tâches GitHub Actions (crons.yml)
+| Run | Date | Évènement | Résultat |
+|-----|------|-----------|----------|
+| #624 | 2026-11-16 07:00 | schedule | ✅ success |
+| #623 | 2026-11-16 06:32 | schedule | ✅ success |
+| #622 | 2026-11-15 22:50 | schedule | ✅ success |
+| #621 | 2026-11-15 19:01 | schedule | ✅ success |
+| #620 | 2026-11-15 17:12 | schedule | ❌ failure |
+| #619 | 2026-11-15 16:54 | schedule | ✅ success |
+
+Dernier passage : **success**. Un échec isolé hier (17 h 12) suivi d'une reprise immédiate — pas d'alerte.
+
+## Agents (rapport > 48 h = panne)
+| Agent | Dernier rapport | État |
+|-------|----------------|------|
+| cto   | il y a 20 h    | ✅ OK |
+| cmo   | il y a 2 h     | ✅ OK |
+| cfo   | il y a 17 h    | ✅ OK |
+| qa    | il y a 14 h    | ✅ OK |
 
 Aucun agent en panne.
 
-## Git log (5 derniers commits)
-```
-6602447 cmo: post + analyse 2026-11-15
-8a00bea ceo: digest quotidien 2026-11-15
-baac4b3 qa: tests quotidiens 2026-11-14
-afcc823 cfo: analyse quotidienne
-68d4346 cto: audit quotidien
-```
-
 ## 3 actions du jour
-
-1. **Surveiller la première inscription payante** — 21 utilisateurs, 0 abonné payant ; pipeline de conversion à activer si un utilisateur atteint J+6 d'essai.
-2. **Vérifier le temps de réponse API** — 1316 ms au premier check (uptime 11 s). À surveiller : si ça dépasse 2 s à froid, investiguer la connexion DB Supabase.
-3. **Préparer le prochain cycle builder** — CI vert, tous agents actifs, bon état pour lancer un sprint d'amélioration produit (agent restaumargin-builder).
+1. **Surveiller les deux CI in_progress** — fix(health) et bug-fixer log engagés ce matin ; vérifier qu'ils passent au vert avant midi.
+2. **Investiguer le pool timeout BDD** — le CMO a signalé des métriques indisponibles ce matin à cause d'un pool timeout ; surveiller `api/health?deep=1` et les logs Supabase pour identifier si c'est ponctuel ou récurrent.
+3. **Plan d'activation abonnés** — 21 utilisateurs, 0 payant ; préparer un parcours d'upsell ciblé sur les inscrits les plus actifs (recettes > 5) pour déclencher la première conversion.

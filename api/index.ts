@@ -565,13 +565,48 @@ app.get('/api/health', async (req: any, res) => {
   const start = Date.now();
   const deep = !!req.query?.deep;
   let dbStatus: string;
+  // Shallow = presence de la cle. Deep (?deep=1) = vrai appel modele, pour
+  // qu'un modele retire ou une cle revoquee soit detecte tout de suite (les deux
+  // sont passes ~1 mois sous le radar car ce check ne verifiait que la presence).
+  let aiStatus = process.env.ANTHROPIC_API_KEY ? 'ok' : 'missing_key';
+  let aiDetail: string | undefined;
+
   if (deep || dbHealthCache.cachedAt === 0) {
-    // Mesure SYNCHRONE pour la sonde de supervision (deep) et pour le premier
-    // appel d'une instance : le cache demarre a 'ok' sans avoir rien mesure, et
-    // une instance neuve repondait donc « base ok » sans l'avoir verifiee.
-    dbStatus = await verifierBase();
-    dbHealthCache.status = dbStatus;
+    // DB et IA s'executent en parallele pour reduire la latence (deep : DB + IA
+    // etaient sequentiels, soit ~1 400 ms ; en parallele : max(db, ai) ~700 ms).
+    const aiCacheHit = deep && process.env.ANTHROPIC_API_KEY &&
+      aiProbeCache.status === 'ok' && Date.now() - aiProbeCache.at < AI_PROBE_TTL_MS;
+
+    const aiProbe: Promise<{ status: string; detail?: string }> =
+      deep && process.env.ANTHROPIC_API_KEY && !aiCacheHit
+        ? anthropic.messages.create({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 5,
+            messages: [{ role: 'user', content: 'ping' }],
+          // Un appel qui NE JETTE PAS = modele joignable + cle valide.
+          // On teste r.id, pas content.length (max_tokens bas peut renvoyer content vide).
+          }).then((r) => ({
+            status: r?.id ? 'ok' : 'error',
+            detail: 'claude-sonnet-4-6' as string | undefined,
+          })).catch((e: any) => ({
+            status: 'error',
+            detail: `${e?.status || ''} ${(e?.error?.error?.message || e?.message || 'unknown').slice(0, 120)}`.trim() as string | undefined,
+          }))
+        : Promise.resolve({ status: aiStatus, detail: aiCacheHit ? aiProbeCache.detail : undefined });
+
+    const [db, ai] = await Promise.all([verifierBase(), aiProbe]);
+    dbStatus = db;
+    dbHealthCache.status = db;
     dbHealthCache.cachedAt = Date.now();
+    if (deep && process.env.ANTHROPIC_API_KEY) {
+      aiStatus = ai.status;
+      aiDetail = ai.detail;
+      if (!aiCacheHit) {
+        aiProbeCache.status = ai.status;
+        aiProbeCache.detail = ai.detail;
+        aiProbeCache.at = Date.now();
+      }
+    }
   } else {
     // Sondes legeres (disponibilite) : valeur en cache servie tout de suite,
     // rafraichie en arriere-plan quand elle a expire.
@@ -581,35 +616,6 @@ app.get('/api/health', async (req: any, res) => {
         dbHealthCache.status = s;
         dbHealthCache.cachedAt = Date.now();
       });
-    }
-  }
-  // Shallow = presence de la cle. Deep (?deep=1) = vrai appel modele, pour
-  // qu'un modele retire ou une cle revoquee soit detecte tout de suite (les deux
-  // sont passes ~1 mois sous le radar car ce check ne verifiait que la presence).
-  let aiStatus = process.env.ANTHROPIC_API_KEY ? 'ok' : 'missing_key';
-  let aiDetail: string | undefined;
-  if (deep && process.env.ANTHROPIC_API_KEY) {
-    if (aiProbeCache.status === 'ok' && Date.now() - aiProbeCache.at < AI_PROBE_TTL_MS) {
-      aiStatus = aiProbeCache.status;
-      aiDetail = aiProbeCache.detail;
-    } else {
-      try {
-        const r = await anthropic.messages.create({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 5,
-          messages: [{ role: 'user', content: 'ping' }],
-        });
-        // Un appel qui NE JETTE PAS = modele joignable + cle valide (le but du check).
-        // On teste r.id, pas content.length (max_tokens bas peut renvoyer un content vide).
-        aiStatus = r?.id ? 'ok' : 'error';
-        aiDetail = 'claude-sonnet-4-6';
-      } catch (e: any) {
-        aiStatus = 'error';
-        aiDetail = `${e?.status || ''} ${(e?.error?.error?.message || e?.message || 'unknown').slice(0, 120)}`.trim();
-      }
-      aiProbeCache.status = aiStatus;
-      aiProbeCache.detail = aiDetail;
-      aiProbeCache.at = Date.now();
     }
   }
   const responseTime = Date.now() - start;

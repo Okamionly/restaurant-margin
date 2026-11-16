@@ -5,6 +5,21 @@ import BlogAuthor from '../components/BlogAuthor';
 import BlogArticleHero from '../components/blog/BlogArticleHero';
 import PublicHeader from '../components/public/PublicHeader';
 import PublicFooter from '../components/public/PublicFooter';
+import grille from '../data/segmentsMarge.json';
+
+/* Grille unique des segments (src/data/segmentsMarge.json, partagée avec le prerender).
+   Seul le food cost est saisi : marge brute = 100 - food cost, coefficient = 100 / food cost.
+   Les trois tableaux de la page en dérivent et ne peuvent plus se contredire. */
+type Fc = [number, number];
+type Segment = { type: string; court?: string; fc: number[]; mn: string; carte: boolean; notes?: string };
+const SEGMENTS = grille.segments as Segment[];
+const CARTES = SEGMENTS.filter((s) => s.carte);
+const fr1 = (n: number) => n.toFixed(1).replace('.', ',');
+const fcLabel = (fc: number[]) => `${fc[0]} - ${fc[1]} %`;
+const mbLabel = (fc: number[]) => `${100 - fc[1]} - ${100 - fc[0]} %`;
+const coefLabel = (fc: number[]) => `${fr1(100 / fc[1])} - ${fr1(100 / fc[0])}`;
+const mbMedian = (fc: number[]) => Math.round(100 - (fc[0] + fc[1]) / 2);
+const seg = (type: string) => SEGMENTS.find((s) => s.type === type) as Segment;
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Comment calculer la marge de votre restaurant en 2026"
@@ -15,7 +30,7 @@ import PublicFooter from '../components/public/PublicFooter';
 const faqItems = [
   {
     question: 'Quel est le food cost idéal pour un restaurant ?',
-    answer: "Le food cost idéal dépend de votre type de restaurant. En règle générale, il se situe entre 25 % et 35 %. Une pizzeria peut viser 22-25 %, un restaurant gastronomique acceptera 35-40 %. L'essentiel est qu'il soit cohérent avec votre structure de charges globale.",
+    answer: "Le food cost idéal dépend de votre type de restaurant. En règle générale, il se situe entre 25 % et 35 %. Une pizzeria vise 18-28 %, une brasserie 27-31 %, un bistrot 29-33 %, un restaurant gastronomique 20-25 % (le prix y rémunère la technique et la valeur perçue plus que la matière). L'essentiel est qu'il soit cohérent avec votre structure de charges globale.",
   },
   {
     question: "Comment calculer la marge brute d'un plat ?",
@@ -90,7 +105,7 @@ export default function BlogCalcMarge() {
               logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
             },
             datePublished: '2026-04-14',
-            dateModified: '2026-11-04',
+            dateModified: '2026-11-16',
             wordCount: 4200,
             inLanguage: 'fr-FR',
             mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/calcul-marge-restaurant' },
@@ -135,7 +150,7 @@ export default function BlogCalcMarge() {
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 pb-24 pt-8 bg-white relative z-10 rounded-t-3xl shadow-xl">
 
-        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-11-04" readTime="15 min" variant="header" />
+        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-11-16" readTime="15 min" variant="header" />
 
         {/* ── Reponse directe : marge moyenne (intention dominante de la requete « marge restaurant », mesuree le 04/11) ── */}
         <section id="marge-moyenne" className="mt-10 scroll-mt-24 bg-white border border-mono-900 rounded-2xl p-6 sm:p-8 shadow-sm">
@@ -979,7 +994,7 @@ export default function BlogCalcMarge() {
               <li>Coefficient multiplicateur = 25,45 / 8,05 = <strong>3,16</strong></li>
             </ul>
             <p className="mt-4">
-              Food cost de 31,6 %, marge brute de 68,4 % : conforme aux benchmarks brasserie (28-33 % de food cost).
+              Food cost de 31,6 %, marge brute de 68,4 % : légèrement au-dessus de la fourchette brasserie (27-31 % de food cost), dans celle du bistrot (29-33 %). Une hausse de 50 centimes du prix de vente suffirait à la ramener dans la cible brasserie.
               La marge brute en valeur absolue (17,40 EUR) est supérieure à celle de la pizza (8,42 EUR), mais
               le coefficient multiplicateur est presque deux fois plus faible. Conclusion : ne jugez jamais
               la rentabilité d'un plat sur un seul indicateur. Un plat haut de gamme avec coefficient bas peut
@@ -1003,27 +1018,23 @@ export default function BlogCalcMarge() {
 
           <div className="prose-content">
             <p>
-              Voici les ratios de marge brute couramment observés en France sur 6 types d'établissement.
+              Voici les ratios de marge brute couramment observés en France sur {CARTES.length} types d'établissement.
               Ce sont des ordres de grandeur de la profession, à comparer à vos propres chiffres : ils
-              servent de repère, pas de norme.
+              servent de repère, pas de norme. C'est la même grille que celle de notre{' '}
+              <Link to="/blog/coefficient-multiplicateur" className="text-teal-700 underline hover:text-teal-800">guide du coefficient multiplicateur par segment</Link> :
+              seule la fourchette de food cost est fixée, la marge brute (100 moins le food cost) et le coefficient
+              (100 divisé par le food cost) s'en déduisent.
             </p>
           </div>
 
           <div className="mt-8 grid sm:grid-cols-2 gap-5">
-            {[
-              { type: 'Pizzeria', mb: '72 - 85 %', fc: '15 - 28 %', notes: 'Marge la plus forte. Ingrédients peu coûteux, ticket moyen 12-18 EUR.' },
-              { type: 'Brasserie', mb: '67 - 72 %', fc: '28 - 33 %', notes: 'Standard de la profession. Carte large, food cost moyen, volume important.' },
-              { type: 'Restaurant gastronomique', mb: '60 - 70 %', fc: '30 - 40 %', notes: 'Produits premium (truffe, foie gras, poisson noble). Marge nette fragile.' },
-              { type: 'Food truck', mb: '70 - 78 %', fc: '22 - 30 %', notes: 'Faibles charges fixes mais volume contraint par la mobilité et les emplacements.' },
-              { type: 'Coffee shop', mb: '78 - 88 %', fc: '12 - 22 %', notes: 'Boisson + snacking. Marge très élevée mais ticket moyen bas (4-8 EUR).' },
-              { type: 'Bistrot', mb: '65 - 72 %', fc: '28 - 35 %', notes: 'Cuisine traditionnelle. Carte courte, ticket moyen 18-30 EUR.' },
-            ].map((b, i) => (
+            {CARTES.map((b, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5 hover:border-teal-300 transition-colors">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-bold text-mono-100">{b.type}</h3>
-                  <span className="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full font-semibold">{b.mb}</span>
+                  <span className="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full font-semibold">{mbLabel(b.fc)}</span>
                 </div>
-                <div className="text-xs text-mono-500 mb-2"><strong>Food cost cible :</strong> {b.fc}</div>
+                <div className="text-xs text-mono-500 mb-2"><strong>Food cost cible :</strong> {fcLabel(b.fc)} · <strong>coefficient</strong> {coefLabel(b.fc)}</div>
                 <p className="text-sm text-mono-400 leading-relaxed">{b.notes}</p>
               </div>
             ))}
@@ -1031,9 +1042,9 @@ export default function BlogCalcMarge() {
 
           <div className="prose-content mt-8">
             <p>
-              <strong>Interprétation :</strong> ces fourchettes ne sont pas des vérités absolues. Un restaurant
-              gastronomique parisien avec un excellent menu engineering peut dépasser 75 % de marge brute. Une
-              brasserie en zone touristique peut tomber à 60 % si elle ne maîtrise pas ses approvisionnements.
+              <strong>Interprétation :</strong> ces fourchettes ne sont pas des vérités absolues. Un bistrot
+              avec un excellent menu engineering peut dépasser 72 % de marge brute. Une brasserie en zone
+              touristique peut tomber à 60 % si elle ne maîtrise pas ses approvisionnements.
               L'objectif n'est pas d'être dans la moyenne mais d'être dans le top tier de votre catégorie.
             </p>
             <p>
@@ -1062,21 +1073,12 @@ export default function BlogCalcMarge() {
           </div>
 
           <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-            {[
-              { type: 'Bistrot', mb: 70, color: 'bg-teal-600' },
-              { type: 'Brasserie', mb: 73, color: 'bg-teal-700' },
-              { type: 'Gastronomique', mb: 65, color: 'bg-amber-600' },
-              { type: 'Pizzeria', mb: 75, color: 'bg-emerald-600' },
-              { type: 'Fast-food', mb: 68, color: 'bg-teal-600' },
-              { type: 'Burger', mb: 70, color: 'bg-teal-700' },
-              { type: 'Sushi', mb: 65, color: 'bg-amber-600' },
-              { type: 'Food truck', mb: 70, color: 'bg-emerald-600' },
-            ].map((c, i) => (
+            {CARTES.map((c, i) => (
               <div key={i} className="bg-white border border-mono-900 rounded-2xl p-5 text-center hover:border-teal-300 transition-colors">
-                <div className={`w-14 h-14 ${c.color} text-white rounded-full mx-auto flex items-center justify-center font-extrabold text-lg shadow-md mb-3`}>
-                  {c.mb}%
+                <div className={`w-14 h-14 ${mbMedian(c.fc) >= 75 ? 'bg-emerald-600' : mbMedian(c.fc) >= 71 ? 'bg-teal-700' : 'bg-teal-600'} text-white rounded-full mx-auto flex items-center justify-center font-extrabold text-lg shadow-md mb-3`}>
+                  {mbMedian(c.fc)}%
                 </div>
-                <h3 className="font-bold text-mono-100 text-sm sm:text-base">{c.type}</h3>
+                <h3 className="font-bold text-mono-100 text-sm sm:text-base">{c.court ?? c.type}</h3>
                 <p className="text-xs text-mono-500 mt-1">Marge brute médiane</p>
               </div>
             ))}
@@ -1084,10 +1086,11 @@ export default function BlogCalcMarge() {
 
           <div className="prose-content mt-8">
             <p>
-              Les ratios affichés sont des médianes sectorielles 2026. Un <strong>sushi</strong> à 65 % paraît
-              faible mais s'explique par le coût du poisson frais (saumon, thon) et du riz japonais importé.
-              Une <strong>pizzeria</strong> à 75 % bénéficie d'ingrédients peu chers (farine, tomate, mozzarella)
-              et de prix de vente élevés grâce au positionnement perçu.
+              Chaque médiane est le milieu de la fourchette de food cost du segment. Le <strong>sushi</strong> à
+              {' '}{mbMedian(seg('Sushi').fc)} % reste sous la <strong>pizzeria</strong> à {mbMedian(seg('Pizzeria').fc)} % à cause
+              du poisson frais (saumon, thon). Le <strong>gastronomique</strong> à {mbMedian(seg('Restaurant gastronomique').fc)} % surprend :
+              son food cost est bas parce que le prix rémunère la technique et la valeur perçue, pas la matière.
+              La contrepartie est une masse salariale qui écrase la marge nette (3 à 10 %).
             </p>
             <p>
               Si vous êtes en-dessous de la médiane, le diagnostic doit être rapide : fiches techniques, pertes,
@@ -1220,22 +1223,12 @@ export default function BlogCalcMarge() {
                 </tr>
               </thead>
               <tbody className="text-mono-350">
-                {[
-                  { type: 'Restauration rapide / Fast-food', fc: '25 - 30 %', mb: '70 - 75 %', coef: '3,3 - 4,0', mn: '8 - 15 %' },
-                  { type: 'Bistrot / Brasserie', fc: '28 - 33 %', mb: '67 - 72 %', coef: '3,0 - 3,6', mn: '5 - 12 %' },
-                  { type: 'Restaurant traditionnel', fc: '30 - 35 %', mb: '65 - 70 %', coef: '2,9 - 3,3', mn: '5 - 10 %' },
-                  { type: 'Pizzeria / Crêperie', fc: '15 - 28 %', mb: '72 - 85 %', coef: '3,6 - 6,5', mn: '10 - 18 %' },
-                  { type: 'Coffee shop', fc: '12 - 22 %', mb: '78 - 88 %', coef: '4,5 - 8,0', mn: '8 - 16 %' },
-                  { type: 'Restaurant gastronomique', fc: '30 - 40 %', mb: '60 - 70 %', coef: '2,5 - 3,3', mn: '3 - 10 %' },
-                  { type: 'Food truck', fc: '22 - 30 %', mb: '70 - 78 %', coef: '3,3 - 4,5', mn: '8 - 18 %' },
-                  { type: 'Dark kitchen / Livraison', fc: '28 - 35 %', mb: '65 - 72 %', coef: '2,9 - 3,6', mn: '5 - 12 %' },
-                  { type: 'Traiteur / Banquet', fc: '30 - 38 %', mb: '62 - 70 %', coef: '2,6 - 3,3', mn: '8 - 15 %' },
-                ].map((row, i) => (
+                {SEGMENTS.map((row, i) => (
                   <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-mono-1000'}>
                     <td className="py-3 px-4 font-medium text-mono-100">{row.type}</td>
-                    <td className="py-3 px-4 text-center">{row.fc}</td>
-                    <td className="py-3 px-4 text-center">{row.mb}</td>
-                    <td className="py-3 px-4 text-center">{row.coef}</td>
+                    <td className="py-3 px-4 text-center">{fcLabel(row.fc)}</td>
+                    <td className="py-3 px-4 text-center">{mbLabel(row.fc)}</td>
+                    <td className="py-3 px-4 text-center">{coefLabel(row.fc)}</td>
                     <td className="py-3 px-4 text-center">{row.mn}</td>
                   </tr>
                 ))}
@@ -1253,8 +1246,8 @@ export default function BlogCalcMarge() {
                 moyens bas. Le défi est le volume.
               </li>
               <li>
-                <strong>Le gastronomique</strong> a un food cost plus élevé (produits premium) mais
-                compensé par des prix de vente élevés. Marge nette fragile (charges personnel à 40-50 %).
+                <strong>Le gastronomique</strong> a un food cost bas (20-25 %) malgré des produits premium :
+                le prix de vente rémunère la technique et la valeur perçue. Marge nette fragile (charges personnel à 40-50 %).
               </li>
               <li>
                 <strong>Les dark kitchens</strong> économisent sur le loyer et le service mais cèdent
@@ -1393,7 +1386,7 @@ export default function BlogCalcMarge() {
           </div>
         </section>
 
-        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-11-04" readTime="15 min" variant="footer" />
+        <BlogAuthor publishedDate="2026-04-14" updatedDate="2026-11-16" readTime="15 min" variant="footer" />
 
         {/* ═════════════ FAQ visible ═════════════ */}
         <section id="faq" className="mb-16">
@@ -1484,7 +1477,7 @@ export default function BlogCalcMarge() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             <Link to="/logiciel-marge-bistrot" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Logiciel marge bistrot</h4>
-              <p className="text-xs text-mono-500">Cible food cost 28-33 %, optimisé pour cartes courtes traditionnelles.</p>
+              <p className="text-xs text-mono-500">Cible food cost 29-33 %, optimisé pour cartes courtes traditionnelles.</p>
             </Link>
             <Link to="/logiciel-marge-pizzeria" className="bg-mono-1000 border border-mono-900 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
               <h4 className="font-semibold text-mono-100 mb-1.5 group-hover:text-teal-700 transition-colors">Logiciel marge pizzeria</h4>

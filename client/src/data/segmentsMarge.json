@@ -1,0 +1,18 @@
+{
+  "_lisezMoi": "Grille UNIQUE des segments du site. Seule la fourchette de food cost (fc, en %) est saisie : marge brute (100 - fc) et coefficient (100 / fc) sont calculés à l'affichage, jamais recopiés. Même grille que /blog/coefficient-multiplicateur (tableau de référence par type d'établissement). Lue par BlogCalcMarge.tsx ET par scripts/prerender.cjs : modifier ici, nulle part ailleurs.",
+  "segments": [
+    { "type": "Pizzeria", "fc": [18, 28], "mn": "10 - 18 %", "carte": true, "notes": "Farine, tomate, mozzarella : matière peu chère, mais prix plafonné par le marché (10-15 EUR la pizza)." },
+    { "type": "Brasserie", "fc": [27, 31], "mn": "5 - 12 %", "carte": true, "notes": "Carte large, volume élevé, mix viande / poisson / salade." },
+    { "type": "Bistrot", "fc": [29, 33], "mn": "5 - 12 %", "carte": true, "notes": "Cuisine traditionnelle, produits de marché. Carte courte, ticket moyen 18-25 EUR." },
+    { "type": "Restaurant gastronomique", "court": "Gastronomique", "fc": [20, 25], "mn": "3 - 10 %", "carte": true, "notes": "Le prix rémunère la technique et la valeur perçue plus que la matière. Marge nette fragile : masse salariale élevée." },
+    { "type": "Burger", "fc": [29, 33], "mn": "8 - 15 %", "carte": true, "notes": "Viande hachée coûteuse, compensée par les accompagnements à forte marge (frites, sodas)." },
+    { "type": "Sushi", "fc": [25, 29], "mn": "6 - 12 %", "carte": true, "notes": "Poisson cru de qualité, riz peu coûteux, formules plateau." },
+    { "type": "Food truck", "fc": [26, 31], "mn": "8 - 18 %", "carte": true, "notes": "Faibles charges fixes mais volume contraint par la mobilité et les emplacements." },
+    { "type": "Coffee shop", "fc": [10, 20], "mn": "8 - 16 %", "carte": true, "notes": "Boisson + snacking. Marge très élevée mais ticket moyen bas (4-8 EUR)." },
+    { "type": "Crêperie", "fc": [17, 22], "mn": "10 - 18 %", "carte": false },
+    { "type": "Restauration rapide / Fast-food", "fc": [25, 30], "mn": "8 - 15 %", "carte": false },
+    { "type": "Restaurant traditionnel", "fc": [30, 35], "mn": "5 - 10 %", "carte": false },
+    { "type": "Dark kitchen / Livraison", "fc": [28, 35], "mn": "5 - 12 %", "carte": false },
+    { "type": "Traiteur / Banquet", "fc": [30, 38], "mn": "8 - 15 %", "carte": false }
+  ]
+}

@@ -197,8 +197,8 @@ export default function BlogCalcMarge() {
             </table>
           </div>
           <p className="mt-6 text-sm text-mono-400 leading-relaxed">
-            Ces repères varient selon le format : une pizzeria se situe plutôt entre 72 % et 85 % de marge brute,
-            un restaurant gastronomique entre 60 % et 70 % (<a href="#benchmarks" className="text-teal-700 underline hover:text-teal-800">repères par type de restaurant</a>).
+            Ces repères varient selon le format : une pizzeria se situe plutôt entre {mbLabel(seg('Pizzeria').fc)} de marge brute,
+            un bistrot entre {mbLabel(seg('Bistrot').fc)} (<a href="#benchmarks" className="text-teal-700 underline hover:text-teal-800">repères par type de restaurant</a>).
             Pour savoir quelle marge nette viser et si la vôtre est bonne, lisez notre guide sur la{' '}
             <Link to="/blog/marge-beneficiaire-restaurant-ideal" className="text-teal-700 underline hover:text-teal-800">marge bénéficiaire idéale d'un restaurant</Link>.
           </p>

@@ -1,33 +1,28 @@
-# Rapport CMO — 15 novembre 2026
+# Rapport CMO — 2026-11-16
 
-## Métriques du jour
+## Métriques
 
 | Indicateur | Valeur |
 |---|---|
-| Utilisateurs totaux | 21 |
-| Nouveaux utilisateurs (24h) | 0 |
-| Nouveaux utilisateurs (48h) | 0 |
-| Leads réels | 0 |
-| Abonnés Pro | 0 |
-| Abonnés Business | 0 |
-| Utilisateurs en essai | 0 |
-| MRR estimé | 0 € |
-| ARR estimé | 0 € |
-| Recettes enregistrées | 64 |
-| Ingrédients référencés | 442 |
-| Pages blog | 64 |
+| Total users | N/D (erreur BDD) |
+| Nouveaux users 24h | N/D |
+| Leads réels | N/D |
+| MRR estimé | N/D |
+| Pages blog (Blog*.tsx) | 64 |
 
-## Contenu publié
+**Note** : L'endpoint `/api/agents/data` a retourné une erreur de connexion PostgreSQL (connection pool timeout). Les métriques seront disponibles lors de la prochaine fenêtre stable.
 
-- **Post social (LinkedIn/Instagram)** : `docs/marketing/social-posts/2026-11-15.md`
-  - Thème : food cost — 5 réflexes concrets pour maîtriser la rentabilité
-  - CTA : calculateur food cost gratuit
-  - ~270 mots, conforme règle CLAUDE.md (zéro preuve sociale fabriquée)
+## Post publié
 
-## Analyse rapide
+Fichier : `docs/marketing/social-posts/2026-11-16.md`
 
-Aucune croissance utilisateurs sur 24h. MRR toujours à zéro. Base de 21 comptes, aucun abonné payant.
+**Thème** : Food cost — 4 réflexes pour garder le contrôle de ses marges.
 
-## Action prioritaire
+**CTA** : https://www.restaumargin.fr/outils/calculateur-food-cost
 
-Continuer la production de contenu organique (posts, blog) pour alimenter le flux entrant. Le calculateur food cost est l'outil d'acquisition principal — le pousser dans chaque post.
+**Format** : LinkedIn / Instagram, ~270 mots. Conforme CLAUDE.md (aucune preuve sociale fabriquée, aucun témoignage, aucun chiffre d'adoption).
+
+## Action recommandée
+
+- Investiguer la stabilité du pool de connexions Prisma (timeout à 20s, limite 5) — plusieurs runs matinaux ont échoué sur ce point.
+- Envisager d'augmenter `connection_limit` ou de mettre en place un retry côté endpoint `/api/agents/data`.

@@ -1,67 +1,61 @@
-# Digest RestauMargin — 2026-11-16
+# Digest RestauMargin — 2026-11-17
 
-## Santé — site, base, IA, CI
+## Santé
 
-| Service  | Statut |
-|----------|--------|
-| database | ✅ ok  |
-| ai       | ✅ ok (claude-sonnet-4-6) |
-| api      | ✅ ok  |
-| site     | ✅ joignable |
-
-- Temps de réponse API : **1089 ms** (lent — seuil acceptable ≤ 800 ms, à surveiller)
-- Uptime au check : 2 s — redémarrage serveur très récent, à surveiller
-- CI : ✅ VERT — derniers runs `success` sur `6d8c409` (qa 2026-11-15) et `033150bc` (cfo)
+| Service     | Statut | Détail                    |
+|-------------|--------|---------------------------|
+| Site        | ✅ ok  | —                         |
+| Base de données | ✅ ok | —                      |
+| IA          | ✅ ok  | claude-sonnet-4-6         |
+| API         | ✅ ok  | —                         |
+| Temps de réponse | ⚠️ | 1 565 ms (cible < 500 ms) |
+| CI (crons.yml) | ✅ | 3 derniers runs : success  |
 
 ## Chiffres
 
-| Indicateur | Valeur |
-|---|---|
-| MRR | 0 € |
-| Inscriptions 24 h | 0 |
-| Essais en cours | 0 |
-| Leads réels | 0 |
-| Utilisateurs totaux | 21 |
-| Recettes / Ingrédients | 64 / 442 |
-| Commits 24 h | 9 |
+| Indicateur            | Valeur     |
+|-----------------------|------------|
+| MRR                   | 0 €        |
+| Nouveaux inscrits 24h | 0          |
+| Essais actifs         | 0          |
+| Leads réels           | 0          |
+| Utilisateurs totaux   | 21         |
+| Recettes / Ingrédients | 64 / 442  |
+| Commits 24h           | 11         |
 
-> J+52 sans abonné payant depuis la correction de mesure du 2026-09-25.
+> J+53 sans abonné payant depuis la correction de mesure du 2026-09-25.
 
 ## Rapports C-suite
 
-| Agent | Dernière date | Statut |
-|-------|--------------|--------|
-| CTO   | 2026-11-15   | ✅ < 48 h |
-| CMO   | 2026-11-15   | ✅ < 48 h |
-| CFO   | 2026-11-15   | ✅ < 48 h |
-| COO   | 2026-11-15   | ✅ < 48 h |
-| QA    | 2026-11-15   | ✅ < 48 h |
+| Agent | Date       | Statut        | Résumé |
+|-------|------------|---------------|--------|
+| CTO   | 2026-11-16 | ✅ OK         | Santé verte, CI verte, temps réponse 1 118 ms (au-dessus cible) |
+| CMO   | 2026-11-16 | ✅ OK         | Post LinkedIn/Instagram publié (food cost), métriques N/D en raison d'un timeout pool Prisma passager |
+| CFO   | 2026-11-16 | ✅ OK         | MRR 0 €, pipeline trial vide 4ème jour consécutif, alerte acquisition active |
+| COO   | 2026-11-16 | ✅ OK         | Services opérationnels, parallélisation sondes health déployée |
+| QA    | 2026-11-16 | ✅ OK         | 15/15 pages HTTP 200, aucun H1 manquant, aucune régression |
 
-Tous les agents ont rendu leur rapport hier — aucune panne détectée.
+Tous les agents ont rapporté hier (< 48 h) → aucun agent en panne.
 
-## Actions des agents (24 h)
+## Actions des agents (dernières 24–72 h)
 
-1. **Bug Fixer (2026-11-15)** — `fix: i18n toast sidebar` — remplacement de la chaîne FR codée en dur `'Cette fonctionnalité sera disponible prochainement'` par `t('common.comingSoon')` dans `App.tsx`, clé ajoutée dans les 5 locales (fr/en/es/de/ar). Commit `959297d`.
-
-2. **QA (2026-11-15)** — `qa: tests quotidiens 2026-11-15` — 15/15 pages OK, API OK, CI vert. Commit `6d8c409`.
-
-3. **CFO (2026-11-15)** — `cfo: analyse quotidienne` — rapport financier J+51, stagnation totale confirmée (0 inscriptions 24h, 0 essais, MRR = 0 €).
-
-4. **CMO (2026-11-15)** — post social LinkedIn/Instagram publié — thème food cost, CTA calculateur gratuit.
-
-5. **COO (2026-11-15)** — rapport opérations — CI et services nominaux.
+| Date       | Agent      | Action |
+|------------|------------|--------|
+| 2026-11-16 | Bug Fixer  | Parallélisation sondes DB/IA dans `/api/health` → amélioration ~700 ms attendue |
+| 2026-11-15 | Bug Fixer  | i18n toast sidebar `App.tsx` — `t('common.comingSoon')` dans les 5 locales |
+| 2026-11-14 | Bug Fixer  | i18n 2 toasts `PriceAlertSetup` dans `Marketplace.tsx` |
 
 ## Top 3 actions du jour
 
-1. **i18n sidebar toast traduit en 5 langues** — couverture i18n quasi-complète après 2 correctifs consécutifs (Marketplace + App.tsx). Pattern systémique résolu.
-2. **QA 15/15 pages OK** — couverture de test solide, aucune régression HTTP détectée.
-3. **9 commits en 24 h** — cadence de livraison active (SEO semaine 46 + correctifs i18n + rapports C-suite).
+1. **Réduire le temps de réponse** : 1 565 ms actuel, cible < 500 ms. La parallélisation déployée hier devrait porter ses fruits ; surveiller l'évolution.
+2. **Acquisition** : 0 inscrit en 24h, pipeline trial vide. Capitaliser sur le post CMO d'hier pour générer du trafic vers le calculateur food cost.
+3. **Pool Prisma** : le CMO a eu un timeout sur `/api/agents/data` hier. Augmenter `connection_limit` ou ajouter un retry pour éviter des métriques manquantes.
 
 ## Risques
 
-| Risque | Niveau | Détail |
-|--------|--------|--------|
-| Acquisition nulle | 🔴 Critique | 0 nouvel utilisateur / 24 h, 0 essai, 0 lead — pipeline complètement vide |
-| Temps de réponse API | 🟡 Modéré | 1089 ms (seuil 800 ms), tendance stable mais lente depuis plusieurs jours |
-| Redémarrage serveur récent | 🟡 Modéré | Uptime = 2 s au moment du check — cause non identifiée, à surveiller |
-| MRR = 0 € J+52 | 🔴 Critique | Aucun abonné payant depuis la correction du 2026-09-25 |
+| Risque                          | Niveau | Commentaire |
+|---------------------------------|--------|-------------|
+| Zéro acquisition 24h            | 🔴     | Aucun nouvel inscrit, aucun trial — J+53 sans abonné |
+| Temps de réponse élevé          | 🟡     | 1 565 ms ; dégradation UX potentielle sur mobile |
+| Pool connexions Prisma instable | 🟡     | Timeout occasionnel sur `/api/agents/data` |
+| CI entièrement verte            | 🟢     | Aucun risque technique immédiat |

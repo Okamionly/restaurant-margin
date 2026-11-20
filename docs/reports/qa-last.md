@@ -1,18 +1,11 @@
-# Rapport QA — 2026-11-16
+# Rapport QA — 2026-11-20
 
-**Date** : 2026-11-16  
-**Heure** : 19:24 UTC  
-**Statut global** : ✅ TOUT OK
+Généré le : 2026-11-20T19:24 UTC
 
----
-
-## 1. Tests HTTP (pages)
-
-Pages OK : **15/15**  
-H1 manquants : **aucun**
+## 1. Pages HTTP (15/15 OK)
 
 | Code | H1 | URL |
-|------|-----|-----|
+|------|----|-----|
 | 200 | 1 | / |
 | 200 | 1 | /pricing |
 | 200 | 1 | /login |
@@ -29,40 +22,34 @@ H1 manquants : **aucun**
 | 200 | 1 | /guide-marge/pizzeria |
 | 200 | 1 | /guide-marge/brasserie |
 
----
+**H1 manquants : aucun**
 
-## 2. Tests API
+## 2. API
 
-| Test | Attendu | Résultat | Statut |
-|------|---------|----------|--------|
-| POST /api/auth/login (mauvais identifiants) | 401 | 401 | ✅ |
-| GET /api/health?deep=1 — database | ok | ok | ✅ |
-| GET /api/health?deep=1 — ai | ok | ok (claude-sonnet-4-6) | ✅ |
+| Test | Attendu | Résultat |
+|------|---------|----------|
+| POST /api/auth/login (mauvais identifiants) | 401 | ✅ 401 |
+| GET /api/health?deep=1 — database | "ok" | ✅ ok |
+| GET /api/health?deep=1 — ai | "ok" | ✅ ok (claude-sonnet-4-6) |
 
-Réponse health complète :
-```json
-{"status":"ok","timestamp":"2026-11-16T19:24:14.934Z","uptime":3,"responseTime":"1251ms","services":{"database":"ok","ai":"ok","aiDetail":"claude-sonnet-4-6","api":"ok"}}
-```
-
----
-
-## 3. CI — État sur main (5 derniers passages)
+## 3. CI (main)
 
 | Workflow | Conclusion | SHA | Titre |
-|----------|------------|-----|-------|
-| Taches automatiques RestauMargin | success | 6eeacb1 | Taches automatiques RestauMargin |
-| Taches automatiques RestauMargin | success | 6eeacb1 | Taches automatiques RestauMargin |
-| CI | success | 6eeacb1 | cfo: analyse quotidienne |
-| Taches automatiques RestauMargin | success | e2afaeb | Taches automatiques RestauMargin |
-| CI | success | e2afaeb | cto: audit quotidien |
+|----------|-----------|-----|-------|
+| Taches automatiques RestauMargin | success | fa89f0b | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | fa89f0b | Taches automatiques RestauMargin |
+| CI | success | fa89f0b | cfo: analyse quotidienne |
+| Taches automatiques RestauMargin | success | fef5eb1 | Taches automatiques RestauMargin |
+| Taches automatiques RestauMargin | success | fef5eb1 | Taches automatiques RestauMargin |
 
-Dernier CI sur main : **success** ✅
-
----
+**CI : ✅ Aucune régression détectée**
 
 ## Résumé
 
-- Aucune régression détectée
-- Prérendu opérationnel (toutes les pages prerenderées ont un H1)
-- Base de données et IA opérationnelles
-- CI vert sur les 5 derniers commits
+- Pages OK : **15/15**
+- H1 manquants : **0**
+- API login 401 : **✅**
+- Santé base + IA : **✅**
+- CI main : **✅ success**
+
+**Statut global : TOUT OK — Aucune notification envoyée**

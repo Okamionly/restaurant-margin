@@ -1,28 +1,34 @@
-# Rapport CMO — 2026-11-16
+# Rapport CMO — 2026-11-21
 
-## Métriques
+## Métriques du jour
 
 | Indicateur | Valeur |
 |---|---|
-| Total users | N/D (erreur BDD) |
-| Nouveaux users 24h | N/D |
-| Leads réels | N/D |
-| MRR estimé | N/D |
-| Pages blog (Blog*.tsx) | 64 |
+| Utilisateurs total | 21 |
+| Nouveaux utilisateurs (24h) | 0 |
+| Leads réels | 0 |
+| MRR estimé | 0 € |
+| Abonnés Pro | 0 |
+| Abonnés Business | 0 |
+| Utilisateurs en essai | 0 |
+| Pages Blog | 64 |
+| Total recettes | 64 |
+| Total ingrédients | 442 |
 
-**Note** : L'endpoint `/api/agents/data` a retourné une erreur de connexion PostgreSQL (connection pool timeout). Les métriques seront disponibles lors de la prochaine fenêtre stable.
+## Action du jour
 
-## Post publié
+- **Post social rédigé** : `docs/marketing/social-posts/2026-11-21.md`
+  - Format : LinkedIn / Instagram
+  - Thème : 5 réflexes food cost
+  - CTA : calculateur food cost gratuit
+  - Conformité CLAUDE.md : aucune preuve sociale, aucun témoignage, aucun chiffre d'adoption
 
-Fichier : `docs/marketing/social-posts/2026-11-16.md`
+## Observations
 
-**Thème** : Food cost — 4 réflexes pour garder le contrôle de ses marges.
+- Pas de nouveaux utilisateurs en 24h — pas de signal de croissance ce jour.
+- MRR toujours à 0 : la conversion en abonnés payants reste l'enjeu principal.
+- 64 recettes et 442 ingrédients : la base de données produit grossit, ce qui est un signal positif pour la rétention des utilisateurs existants.
 
-**CTA** : https://www.restaumargin.fr/outils/calculateur-food-cost
+## Recommandation prioritaire
 
-**Format** : LinkedIn / Instagram, ~270 mots. Conforme CLAUDE.md (aucune preuve sociale fabriquée, aucun témoignage, aucun chiffre d'adoption).
-
-## Action recommandée
-
-- Investiguer la stabilité du pool de connexions Prisma (timeout à 20s, limite 5) — plusieurs runs matinaux ont échoué sur ce point.
-- Envisager d'augmenter `connection_limit` ou de mettre en place un retry côté endpoint `/api/agents/data`.
+La base est saine côté fonctionnel. L'enjeu est l'acquisition. Priorité : augmenter la visibilité des outils gratuits (calculateur food cost, générateur QR) via SEO et posts réguliers pour générer du trafic organique qualifié.

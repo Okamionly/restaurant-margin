@@ -1,11 +1,13 @@
 import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Bell, Package, TrendingUp, AlertTriangle, Check, X, Loader2,
   Volume2, VolumeX, Settings, Users, Sparkles, Shield,
   Zap, Clock, CheckCheck, ShoppingCart, DollarSign, BarChart3, Trophy, AlertCircle
 } from 'lucide-react';
 import { useApiClient } from '../hooks/useApiClient';
+import { useTranslation } from '../hooks/useTranslation';
 
 // ── Types ──────────────────────────────────────────────────────────
 interface Notification {
@@ -142,6 +144,8 @@ const severityStyles: Record<string, { pulse: string; dot: string; label: string
 
 // ── Component ──────────────────────────────────────────────────────
 export default function NotificationCenter() {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -822,11 +826,11 @@ export default function NotificationCenter() {
         {/* ── Footer ── */}
         <div className="border-t border-mono-900 dark:border-mono-200 px-4 py-3 flex items-center justify-between flex-shrink-0">
           <button
-            onClick={() => { setOpen(false); window.location.href = '/settings'; }}
+            onClick={() => { setOpen(false); navigate('/settings'); }}
             className="flex items-center gap-1.5 text-xs font-medium text-[#9CA3AF] dark:text-mono-500 hover:text-mono-100 dark:hover:text-white transition-colors"
           >
             <Settings className="w-3.5 h-3.5" />
-            Preferences
+            {t('notifications.preferences')}
           </button>
           {unreadCount > 0 && (
             <button
@@ -834,7 +838,7 @@ export default function NotificationCenter() {
               className="flex items-center gap-1.5 text-xs font-medium text-mono-100 dark:text-white hover:text-[#6B7280] dark:hover:text-mono-700 transition-colors px-3 py-1.5 rounded-lg bg-mono-950 dark:bg-[#171717] hover:bg-mono-900 dark:hover:bg-mono-200"
             >
               <CheckCheck className="w-3.5 h-3.5" />
-              Tout marquer comme lu
+              {t('notifications.markAllRead')}
             </button>
           )}
         </div>

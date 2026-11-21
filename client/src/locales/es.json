@@ -535,5 +535,7 @@
   "dashboard.reportCopied": "Informe copiado al portapapeles",
   "dashboard.reportCopyError": "No se pudo copiar el informe. Inténtalo de nuevo.",
   "dashboard.reportEmailSent": "Informe enviado por email",
-  "dashboard.reportEmailError": "Error al enviar el email. Comprueba tu conexión e inténtalo de nuevo."
+  "dashboard.reportEmailError": "Error al enviar el email. Comprueba tu conexión e inténtalo de nuevo.",
+  "notifications.preferences": "Preferencias",
+  "notifications.markAllRead": "Marcar todo como leído"
 }

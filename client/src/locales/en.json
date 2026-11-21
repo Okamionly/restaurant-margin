@@ -2743,5 +2743,7 @@
   "dashboard.reportCopied": "Report copied to clipboard",
   "dashboard.reportCopyError": "Unable to copy the report. Please try again.",
   "dashboard.reportEmailSent": "Report sent by email",
-  "dashboard.reportEmailError": "Email send error. Check your connection, then try again."
+  "dashboard.reportEmailError": "Email send error. Check your connection, then try again.",
+  "notifications.preferences": "Preferences",
+  "notifications.markAllRead": "Mark all as read"
 }

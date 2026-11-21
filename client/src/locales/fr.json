@@ -2743,5 +2743,7 @@
   "dashboard.reportCopied": "Rapport copié dans le presse-papier",
   "dashboard.reportCopyError": "Impossible de copier le rapport. Réessayez.",
   "dashboard.reportEmailSent": "Rapport envoyé par email",
-  "dashboard.reportEmailError": "Erreur envoi email. Vérifiez votre connexion, puis réessayez."
+  "dashboard.reportEmailError": "Erreur envoi email. Vérifiez votre connexion, puis réessayez.",
+  "notifications.preferences": "Préférences",
+  "notifications.markAllRead": "Tout marquer comme lu"
 }

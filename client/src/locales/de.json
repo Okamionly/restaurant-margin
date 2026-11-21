@@ -535,5 +535,7 @@
   "dashboard.reportCopied": "Bericht in die Zwischenablage kopiert",
   "dashboard.reportCopyError": "Bericht konnte nicht kopiert werden. Bitte erneut versuchen.",
   "dashboard.reportEmailSent": "Bericht per E-Mail gesendet",
-  "dashboard.reportEmailError": "E-Mail-Fehler. Verbindung prüfen und erneut versuchen."
+  "dashboard.reportEmailError": "E-Mail-Fehler. Verbindung prüfen und erneut versuchen.",
+  "notifications.preferences": "Einstellungen",
+  "notifications.markAllRead": "Alles als gelesen markieren"
 }

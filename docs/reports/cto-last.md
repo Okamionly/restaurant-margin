@@ -1,70 +1,80 @@
-# Audit CTO — 2026-11-16
+# Audit CTO — 2026-11-21
 
 ## Santé globale : 🟢 VERT
 
 | Service    | Statut | Détail                   |
 |------------|--------|--------------------------|
-| database   | ✅ ok  | —                        |
+| database   | ✅ ok  |                          |
 | ai         | ✅ ok  | claude-sonnet-4-6        |
-| api        | ✅ ok  | —                        |
-| uptime     | ✅     | 611 s à l'instant        |
-| responseTime | ⚠️   | 1118 ms (seuil cible <500ms) |
+| api        | ✅ ok  |                          |
+| Site web   | ✅ ok  | restaumargin.fr joignable |
 
-## CI — Dernier commit main
+## CI (source de vérité)
 
-| Run ID       | Workflow | Résultat   | SHA     |
-|--------------|----------|------------|---------|
-| 43869021875  | CI       | ✅ success | 87fa285 |
-| 43867622630  | CI       | ✅ success | 28b2a66 |
-| 43847114224  | CI       | ✅ success | 32d6fc9 |
+Derniers 10 runs sur `main` : **tous SUCCESS**
 
-10 derniers runs main : tous **success**. CI verte.
+| Run ID      | Workflow                        | Résultat | SHA     |
+|-------------|---------------------------------|----------|---------|
+| 44905108459 | Taches automatiques RestauMargin | success  | 87df9fb |
+| 44893411419 | CI                              | success  | 87df9fb |
+| 44893399699 | CI                              | success  | 3fbd9e9 |
+| 44893382069 | CI                              | success  | c15363d |
+| 44880660866 | Taches automatiques RestauMargin | success  | 034986e |
+| 44879132015 | CI                              | success  | 034986e |
+| 44869482506 | CI                              | success  | 87a4ba4 |
+| 44860002645 | Taches automatiques RestauMargin | success  | e8cfa80 |
+| 44823710970 | Taches automatiques RestauMargin | success  | e8cfa80 |
+| 44813089612 | Taches automatiques RestauMargin | success  | e8cfa80 |
 
 ## Métriques
 
-| Indicateur         | Valeur  |
-|--------------------|---------|
-| Pages (TSX)        | 188     |
-| LOC total TS/TSX   | ~216 317|
-| LOC api/index.ts   | 7 825   |
-| LOC App.tsx        | 1 470   |
-| Commits (24 h)     | 10      |
-| TODO/FIXME/HACK    | 0       |
+| Indicateur              | Valeur       |
+|-------------------------|--------------|
+| Pages React             | 188          |
+| LOC client/src (tsx)    | ~181 600     |
+| LOC api/index.ts        | 7 825        |
+| LOC api-lib/            | 12 165       |
+| LOC total TypeScript    | ~216 300     |
+| Commits dernières 24h   | 7            |
+| TODO/FIXME/HACK         | 0            |
+
+## Commits 24h
+
+```
+87df9fb docs: bug-fixer log 2026-11-21
+3fbd9e9 coo: operations
+c15363d fix(notifications): remplacer window.location.href par navigate() + traduire labels footer
+034986e cmo: post + analyse
+87a4ba4 ceo: digest quotidien
+e8cfa80 qa: tests quotidiens 2026-11-20
+fa89f0b cfo: analyse quotidienne
+```
 
 ## Dette technique — Top 3
 
-### 1. 🔴 `api/index.ts` monolithique (7 825 LOC)
-Le backend tient dans un seul fichier. Toute lecture ou modification est coûteuse. Risque de conflits en cas de contributions parallèles.  
-**Action** : découper en modules `api/routes/`, `api/middleware/`, `api/services/` — déjà amorcé partiellement (routes auth, ai, mercuriale existent).
+### 1. `api/index.ts` : monolithe 7 825 LOC (critique)
+Toutes les routes, middlewares et logique métier sont concentrés dans un seul fichier. `api-lib/routes/` existe déjà avec une structure modulaire (ai.ts, auth.ts, admin.ts, mercuriale.ts, inventory.ts…) mais `api/index.ts` n'est pas migré. Risque : impossible à maintenir, conflits de merge fréquents entre agents.
 
-### 2. 🟠 `App.tsx` trop chargé (1 470 LOC)
-Routing + sidebar + providers dans un seul fichier. Ralentit l'édition et nuit à la lisibilité.  
-**Action** : extraire la sidebar dans `components/Sidebar.tsx` et regrouper les routes par domaine.
+### 2. Pages client géantes (lourd)
+Quatre pages dépassent 3 000 LOC :
+- `Recipes.tsx` : 4 497 LOC
+- `Suppliers.tsx` : 3 767 LOC
+- `Clients.tsx` : 3 348 LOC
+- `HACCP.tsx` : 3 270 LOC
 
-### 3. 🟡 Duplication pages `Alternative*.tsx` (16 fichiers)
-16 pages de comparaison concurrents suivent le même template. Toute modification UX doit être répercutée 16 fois.  
-**Action** : créer un composant générique `AlternativePage` paramétré par les données concurrentes.
+Ces fichiers devraient être découpés en sous-composants dans `client/src/components/`.
+
+### 3. `api-lib/routes/ai.ts` : 2 919 LOC (modéré)
+Route IA très volumineuse regroupant ~19 actions hétérogènes. Candidat à une organisation par domaine fonctionnel (suggestions, analyse, voice, optimisation).
 
 ## Refacto prioritaire
 
-**Découpage `api/index.ts`** — rapport bénéfice/risque le plus élevé. Un fichier de 7 825 LOC non découpé est le principal risque de régresssion future. Proposer une branche `refacto/api-split` avec migration progressive des routes métier.
+**Migrer `api/index.ts` → `api-lib/routes/`**
 
-## Commits 24 h (10)
+Plan :
+1. Identifier les routes non encore présentes dans `api-lib/routes/` (export, referrals, subscriptions…)
+2. Créer les fichiers manquants dans `api-lib/routes/`
+3. Faire pointer `api/index.ts` vers `api-lib/` en mode façade (< 100 LOC)
+4. Valider CI avant suppression du code migré
 
-```
-87fa285 seo(boost): intro du hub dérivée de la grille unique
-28b2a66 seo(boost): calcul marge restaurant
-32d6fc9 coo: operations
-acccad1 docs: bug-fixer log 2026-11-16
-3ba9a45 fix(health): paralleliser sondes DB et IA dans /api/health?deep=1
-9d743e7 cmo: post + analyse 2026-11-16
-238f8ee mrr: rapport hebdo 2026-11-16
-36e6c7f ceo: digest quotidien
-6d8c409 qa: tests quotidiens 2026-11-15 — 15/15 OK, API OK, CI vert
-033150b cfo: analyse quotidienne
-```
-
-Cadence soutenue. Fix health check parallélisé ce matin — pertinent (responseTime encore à 1118 ms, à surveiller).
-
----
-*Généré automatiquement — 2026-11-16 13:24 UTC*
+Impact estimé : réduction de 90 % du monolithe, meilleure parallélisation des agents.

@@ -442,6 +442,7 @@
   "common.select": "Sélectionner",
   "common.send": "Envoyer",
   "common.comingSoon": "Cette fonctionnalité sera disponible prochainement",
+  "common.serverError": "Erreur serveur",
   "common.total": "Total",
   "comptabilite": {
     "title": "Comptabilité",

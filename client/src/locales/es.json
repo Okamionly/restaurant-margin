@@ -21,7 +21,8 @@
     "restoreSuccess": "Restaurado con éxito",
     "restoreError": "Error al restaurar",
     "retry": "Reintentar",
-    "comingSoon": "Esta funcionalidad estará disponible pronto"
+    "comingSoon": "Esta funcionalidad estará disponible pronto",
+    "serverError": "Error del servidor"
   },
   "analytics": {
     "errorLoading": "Error al cargar el informe",

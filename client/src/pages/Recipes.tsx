@@ -2368,8 +2368,8 @@ export default function Recipes() {
     try {
       const res = await fetch(`/api/mercuriale/suggest?q=${encodeURIComponent(form.name.trim())}`, { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}`, 'X-Restaurant-Id': localStorage.getItem('activeRestaurantId') || '1' } });
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({ error: `Erreur ${res.status}` }));
-        showToast(errData.error || `Erreur ${res.status}`, 'error');
+        const errData = await res.json().catch(() => ({ error: null }));
+        showToast(errData.error || t('common.serverError'), 'error');
         return;
       }
       const data = await res.json();
@@ -2382,7 +2382,7 @@ export default function Recipes() {
         showToast(t('recipes.aiNoSuggestions'), 'info');
       }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Erreur connexion serveur';
+      const msg = err instanceof Error ? err.message : t('common.serverError');
       showToast(t('recipes.aiError').replace('{msg}', msg), 'error');
     } finally {
       setAiSuggestionsLoading(false);

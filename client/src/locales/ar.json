@@ -21,7 +21,8 @@
     "restoreSuccess": "تمت الاستعادة بنجاح",
     "restoreError": "خطأ أثناء الاستعادة",
     "retry": "إعادة المحاولة",
-    "comingSoon": "ستتوفر هذه الميزة قريباً"
+    "comingSoon": "ستتوفر هذه الميزة قريباً",
+    "serverError": "خطأ في الخادم"
   },
   "analytics": {
     "errorLoading": "خطأ في تحميل التقرير",

@@ -21,7 +21,8 @@
     "restoreSuccess": "Erfolgreich wiederhergestellt",
     "restoreError": "Fehler beim Wiederherstellen",
     "retry": "Erneut versuchen",
-    "comingSoon": "Diese Funktion wird bald verfügbar sein"
+    "comingSoon": "Diese Funktion wird bald verfügbar sein",
+    "serverError": "Serverfehler"
   },
   "analytics": {
     "errorLoading": "Fehler beim Laden des Berichts",

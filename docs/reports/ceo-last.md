@@ -1,73 +1,71 @@
-# Digest RestauMargin — 2026-11-21
+# Digest RestauMargin — 2026-11-22
 
 ## Santé — site, base, IA, CI
 
-| Service        | Statut | Détail                      |
-|----------------|--------|-----------------------------|
-| Site           | ✅ ok  | restaumargin.fr opérationnel |
-| Base de données| ✅ ok  | PostgreSQL/Supabase up       |
-| IA             | ✅ ok  | claude-sonnet-4-6            |
-| API            | ✅ ok  | —                            |
-| Response time  | ⚠️     | 1 240 ms (cible < 500 ms)   |
-| CI (crons.yml) | ✅ vert | 3 derniers runs : success   |
+| Service    | Statut | Détail                   |
+|------------|--------|--------------------------|
+| database   | ✅ ok  |                          |
+| ai         | ✅ ok  | claude-sonnet-4-6        |
+| api        | ✅ ok  |                          |
+| Temps réponse | ⚠️ 1223 ms | Acceptable, à surveiller |
 
-> Problème persistant : réponse > 1 s depuis plusieurs jours. Aucune panne franche.
+CI — tous les derniers runs sur `main` : **SUCCESS** (source : rapport CTO 2026-11-21)
 
 ---
 
 ## Chiffres
 
-| Indicateur          | Valeur        |
-|---------------------|---------------|
-| MRR                 | 0 € (J+57 sans abonné payant) |
-| Nouveaux inscrits 24h | 0           |
-| Essais actifs       | 0             |
-| Total utilisateurs  | 21            |
-| Recettes créées     | 64            |
-| Ingrédients         | 442           |
-| Commits 24h         | 2             |
+| Indicateur | Valeur |
+|---|---|
+| MRR | 0 € |
+| Inscriptions 24 h | 0 |
+| Essais actifs | 0 |
+| Leads qualifiés | 0 |
+| Utilisateurs totaux | 21 |
+| Recettes | 64 |
+| Ingrédients | 442 |
+| Commits 24 h | 8 |
+
+> J+58 sans abonné payant depuis la correction de mesure du 2026-09-25.
 
 ---
 
 ## Rapports C-suite
 
-| Agent | Dernier rapport | Statut         |
-|-------|-----------------|----------------|
-| CTO   | 2026-11-16      | 🔴 EN PANNE — 5 jours sans rapport (quota probable) |
-| CMO   | 2026-11-16      | 🔴 EN PANNE — 5 jours sans rapport (quota probable) |
-| CFO   | 2026-11-20      | ✅ OK — hier     |
-| COO   | 2026-11-16      | 🔴 EN PANNE — 5 jours sans rapport (quota probable) |
-| QA    | 2026-11-20      | ✅ OK — hier     |
+| Agent | Rapport du | Statut |
+|-------|-----------|--------|
+| CTO   | 2026-11-21 | ✅ Frais (< 48 h) |
+| CMO   | 2026-11-21 | ✅ Frais (< 48 h) |
+| CFO   | 2026-11-21 | ✅ Frais (< 48 h) |
+| COO   | 2026-11-21 | ✅ Frais (< 48 h) |
+| QA    | 2026-11-21 | ✅ Frais (< 48 h) — 15/15 pages OK |
 
-> CTO, CMO et COO silencieux depuis le 16-11. Cause habituelle : quota hebdomadaire Claude épuisé.
+Tous les agents ont rendu leur rapport hier. Quota Claude non épuisé.
 
 ---
 
-## Actions des agents (24h)
+## Actions des agents (24 h)
 
-| Heure UTC       | Agent | Action                                |
-|-----------------|-------|---------------------------------------|
-| ~2026-11-20 16h | CFO   | Analyse quotidienne — stagnation confirmée J+56 |
-| ~2026-11-20 ~19h| QA    | Tests quotidiens 2026-11-20 — 15/15 pages OK    |
-
-Dernière action de code : bug-fixer du 2026-11-16 (i18n sidebar App.tsx).  
-Aucune nouvelle feature ni correction de code depuis 5 jours.
+- **Bug Fixer** (`c15363d`) : `NotificationCenter.tsx` — remplacement de `window.location.href` par `navigate()` pour éviter le rechargement complet de page ; ajout des clés i18n `notifications.preferences` et `notifications.markAllRead` dans les 5 fichiers de locales.
+- **CMO** (`034986e`) : post social LinkedIn/Instagram rédigé — thème food cost, CTA calculateur gratuit, conforme CLAUDE.md.
+- **COO** (`3fbd9e9`), **CTO** (`0b0ccc6`), **CFO** (`a35579a`), **QA** (`bb4bdf3`) : rapports quotidiens normaux.
 
 ---
 
 ## Top 3 actions du jour
 
-1. **QA vert** — 15/15 pages HTTP 200, 0 H1 manquant, API auth OK (2026-11-20)
-2. **CFO alerte stagnation** — base figée à 21 users, 0 inscrit, 0 trial, 0 MRR depuis J+57
-3. **CI stable** — 3 derniers runs crons.yml en success
+1. **Corriger le rechargement de page dans NotificationCenter** (fait hier, `c15363d`) — fix UX SPA critique.
+2. **Ouvrir un canal d'acquisition** — 0 inscription en 24 h depuis plusieurs semaines ; sans utilisateur entrant, aucune conversion possible.
+3. **Activer une trial ou démo guidée** — 0 essai actif, pipeline vide : priorité absolue avant toute fonctionnalité supplémentaire.
 
 ---
 
 ## Risques
 
-| Niveau | Risque                                                    |
-|--------|-----------------------------------------------------------|
-| 🔴 Critique | **CTO / CMO / COO en panne** — quota épuisé probable, 3 agents silencieux depuis 5 jours |
-| 🔴 Critique | **Stagnation acquisition** — 0 inscrit en 24h, 0 trial actif, 0 MRR (J+57) |
-| 🟠 Élevé    | **Response time 1 240 ms** — dépasse le seuil cible (500 ms) depuis plusieurs jours |
-| 🟡 Modéré   | **Aucune livraison code depuis 5 jours** — dernier commit de code le 2026-11-16 |
+| Risque | Niveau | Note |
+|--------|--------|------|
+| 0 inscription 24 h | 🔴 CRITIQUE | Pas de trafic converti depuis des semaines |
+| MRR = 0 € (J+58) | 🔴 CRITIQUE | Aucun abonné payant depuis la correction de mesure |
+| Pipeline trial vide | 🔴 CRITIQUE | 0 essai actif, aucune conversion possible |
+| Temps réponse 1 200+ ms | 🟡 MOYEN | Acceptable mais à surveiller |
+| Quota Claude | 🟢 OK | Tous les agents actifs hier |

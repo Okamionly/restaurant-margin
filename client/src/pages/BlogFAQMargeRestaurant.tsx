@@ -303,7 +303,7 @@ export default function BlogFAQMargeRestaurant() {
                 Chaque réponse commence par un paragraphe court et factuel pour aller à l'essentiel,
                 suivi d'un contexte avec des exemples chiffrés concrets. Vous y trouverez les ratios
                 à viser, les benchmarks par segment, les leviers d'optimisation et les pièges à éviter.
-                Si vous voulez aller plus loin, consultez notre <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800">guide complet du calcul de marge</Link>.
+                Si vous voulez aller plus loin, consultez notre <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800">guide marge restaurant 2026</Link>.
               </p>
             </section>
 

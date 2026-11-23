@@ -208,6 +208,9 @@ export default function BlogTauxMarque() {
             Le <strong>taux de marque</strong> et le <strong>taux de marge</strong> partent de la même marge en euros (Prix de vente HT moins Coût d'achat HT), mais divisent par un nombre différent. Le <strong>taux de marque = Marge / Prix de vente HT</strong> (base : le prix de vente). Le <strong>taux de marge = Marge / Coût d'achat HT</strong> (base : le coût). Pour un plat coûtant 4 EUR vendu 16 EUR HT : taux de marque de <strong>75 %</strong>, taux de marge de <strong>300 %</strong>. En restauration, la "marge brute" dont tout le monde parle est en réalité un taux de marque.
           </p>
         </div>
+        <p className="text-sm text-mono-400 leading-relaxed -mt-4 mb-8">
+          Pour situer ces deux taux face aux repères de <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800">marge restaurant</Link> par type d'établissement (taux moyen, marge brute, marge nette), voir notre guide dédié.
+        </p>
 
         {/* ── Encadre formules ── */}
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">

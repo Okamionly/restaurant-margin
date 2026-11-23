@@ -208,6 +208,9 @@ export default function BlogFoodCost() {
             Le <strong>food cost</strong> est le ratio entre le coût des matières premières consommées et le chiffre d'affaires hors taxes du restaurant, exprimé en pourcentage. <strong>Formule : Food cost (%) = (Coût matières / Prix de vente HT) x 100</strong>. En restauration française, la cible se situe entre 25 % et 35 % selon le type d'établissement. C'est l'indicateur numéro un de pilotage de la rentabilité opérationnelle.
           </p>
         </div>
+        <p className="text-sm text-mono-400 leading-relaxed -mt-4 mb-8">
+          Le food cost n'est que le premier étage de la <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800">marge restaurant</Link> : pour passer du coût matière à la marge brute, puis à la marge nette, suivez notre guide de calcul complet.
+        </p>
 
         {/* ── Encadre formule visible ── */}
         <div className="mt-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">

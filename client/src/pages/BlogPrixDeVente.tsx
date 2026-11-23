@@ -311,7 +311,7 @@ export default function BlogPrixDeVente() {
             </ul>
 
             <p className="mt-4">
-              Pour aller plus loin sur cette méthode, lisez notre <Link to="/blog/coefficient-multiplicateur" className="text-teal-700 underline hover:text-teal-800">guide complet du coefficient multiplicateur</Link>.
+              Pour aller plus loin sur cette méthode, lisez notre <Link to="/blog/coefficient-multiplicateur" className="text-teal-700 underline hover:text-teal-800">guide complet du coefficient multiplicateur</Link>. Le prix fixe la marge brute de chaque plat ; pour la relier au résultat de l'établissement, voir notre guide <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 underline hover:text-teal-800">marge restaurant : taux moyen, calcul et formules</Link>.
             </p>
           </div>
         </section>

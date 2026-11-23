@@ -815,7 +815,7 @@ export default function BlogPrimeCost() {
           </div>
 
           <p>
-            <strong>Pourquoi le prime cost est plus important que la marge brute</strong> ? Parce qu'un restaurant peut avoir une marge brute superbe (72 %) mais une marge nette catastrophique (-2 %) si la masse salariale est démesurée. Le prime cost est le seul indicateur qui intègre les deux postes opérationnels et donne une vision réaliste. <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 font-semibold hover:underline">Voir notre guide complet sur le calcul de marge</Link>.
+            <strong>Pourquoi le prime cost est plus important que la marge brute</strong> ? Parce qu'un restaurant peut avoir une marge brute superbe (72 %) mais une marge nette catastrophique (-2 %) si la masse salariale est démesurée. Le prime cost est le seul indicateur qui intègre les deux postes opérationnels et donne une vision réaliste. Voir notre guide <Link to="/blog/calcul-marge-restaurant" className="text-teal-700 font-semibold hover:underline">marge restaurant : calcul de la marge brute à la marge nette</Link>.
           </p>
         </section>
 

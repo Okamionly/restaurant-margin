@@ -432,10 +432,13 @@ router.delete('/users/:id', authMiddleware, async (req: any, res) => {
     if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin requis' });
     const targetId = parseInt(req.params.id);
     if (targetId === req.user.userId) return res.status(400).json({ error: 'Impossible de supprimer votre propre compte' });
-    // Soft delete: deactivate user instead of hard delete (foreign key constraints)
+    // Soft delete: deactivate user instead of hard delete (foreign key constraints).
+    // Use a random bcrypt hash (not the literal 'DELETED') so bcrypt.compare never
+    // throws on an invalid hash string if this email is ever looked up at login.
+    const scrambledHash = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12);
     await prisma.user.update({
       where: { id: targetId },
-      data: { email: `deleted_${targetId}_${Date.now()}@deleted.local`, passwordHash: 'DELETED', role: 'deleted' },
+      data: { email: `deleted_${targetId}_${Date.now()}@deleted.local`, passwordHash: scrambledHash, role: 'deleted' },
     });
     res.status(204).send();
   } catch (e: any) {

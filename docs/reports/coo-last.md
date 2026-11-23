@@ -1,82 +1,90 @@
-# COO — Rapport opérationnel — 2026-11-22
+# Rapport COO — 2026-11-23
 
-Généré le : 2026-11-22T10:14 UTC
+**Exécuté le** : 2026-11-23 10:14 UTC  
+**Statut global** : ⚠️ RÉGRESSION API (login 500 → 401)
 
 ---
 
 ## 1. Santé des services
 
-| Service  | Statut |
+| Service | Statut | Détail |
+|---------|--------|--------|
+| API | ✅ ok | responseTime 1178ms |
+| Base de données | ✅ ok | PostgreSQL (Supabase) |
+| IA | ✅ ok | claude-sonnet-4-6 |
+
+---
+
+## 2. Données produit (snapshot)
+
+| Métrique | Valeur |
 |----------|--------|
-| database | ✅ ok  |
-| ai       | ✅ ok (claude-sonnet-4-6) |
-| api      | ✅ ok  |
-
-Temps de réponse health check : **1381 ms** (lent — à surveiller)
-Uptime process : 2 s (redémarrage récent possible)
-
----
-
-## 2. Données produit
-
-| Indicateur          | Valeur |
-|---------------------|--------|
-| Utilisateurs totaux | 21     |
-| Recettes            | 64     |
-| Ingrédients         | 442    |
-| Nouveaux 24h/48h    | 0 / 0  |
-| Abonnés pro         | 0      |
-| Abonnés business    | 0      |
-| Utilisateurs essai  | 0      |
-| MRR estimé          | 0 €    |
+| Utilisateurs totaux | 21 |
+| Nouveaux 24h | 0 |
+| Nouveaux 48h | 0 |
+| Recettes créées | 64 |
+| Ingrédients | 442 |
+| Abonnés pro | 0 |
+| Abonnés business | 0 |
+| MRR estimé | 0 € |
 
 ---
 
-## 3. CI / Déploiements (branche main)
+## 3. CI — Derniers commits sur `main`
 
-| Run                            | Conclusion | Commit  |
-|--------------------------------|-----------|---------|
-| CI (en cours)                  | in_progress | b29050a |
-| CI                             | ✅ success  | 6c49c42 |
-| Taches automatiques            | ✅ success  | 66e9f58 |
-| CI                             | ✅ success  | 66e9f58 |
-| Taches automatiques            | ✅ success  | bb4bdf3 |
-
-Dernier commit : `b29050a fix(i18n): remplacer strings françaises hardcodées dans handleAiSuggest`
-CI démarré à 10:13:44 UTC — pas encore de conclusion.
+| SHA | Message | CI |
+|-----|---------|-----|
+| 26b1af1 | cmo: post + analyse | ✅ success |
+| b3a6d45 | mrr: rapport hebdo | ✅ success |
+| 942fbf9 | ceo: digest quotidien | ✅ success |
+| 0a4ce9e | qa: tests quotidiens 2026-11-22 | ✅ success |
+| f8c6804 | cfo: analyse quotidienne | ✅ success |
 
 ---
 
-## 4. Tâches GitHub Actions (crons.yml)
+## 4. GitHub Actions — crons.yml (6 derniers)
 
-| Heure              | Événement | Résultat     |
-|--------------------|-----------|--------------|
-| 2026-11-22 07:13   | schedule  | ✅ success   |
-| 2026-11-22 02:15   | schedule  | ✅ success   |
-| 2026-11-21 20:32   | schedule  | ✅ success   |
-| 2026-11-21 19:36   | schedule  | ✅ success   |
-| 2026-11-21 17:16   | schedule  | ✅ success   |
-| 2026-11-21 14:59   | schedule  | ✅ success   |
+| Date | Événement | Conclusion |
+|------|-----------|-----------|
+| 2026-11-23T07:58Z | schedule | ✅ success |
+| 2026-11-23T02:46Z | schedule | ✅ success |
+| 2026-11-22T20:43Z | schedule | ✅ success |
+| 2026-11-22T19:53Z | schedule | ✅ success |
+| 2026-11-22T17:42Z | schedule | ✅ success |
+| 2026-11-22T14:57Z | schedule | ✅ success |
 
-Dernier passage : il y a ~3h — **toutes les exécutions success**.
-
----
-
-## 5. Agents (dernier rapport — âge via git commit)
-
-| Agent | Âge dernier rapport | Statut |
-|-------|---------------------|--------|
-| CTO   | ~20h                | ✅ OK  |
-| CMO   | ~27h                | ✅ OK  |
-| CFO   | ~17h                | ✅ OK  |
-| QA    | ~14h                | ✅ OK  |
-
-**Aucun agent en panne.**
+**Résultat** : ✅ 6/6 passages réussis
 
 ---
 
-## 6. Actions du jour
+## 5. Agents — État des rapports
 
-1. **Surveiller la fin du CI b29050a** — fix i18n en cours, vérifier que le déploiement passe sans régression.
-2. **Investiguer le temps de réponse** — health check à 1381 ms est anormalement lent ; vérifier les requêtes Prisma et la latence Supabase.
-3. **Activation d'essai** — 21 comptes, 0 abonné payant, 0 en essai actif ; prioriser l'onboarding in-app pour convertir les inscrits existants.
+| Agent | Dernier rapport | Statut |
+|-------|----------------|--------|
+| CTO | il y a ~20h | ✅ OK |
+| CMO | il y a ~2h | ✅ OK |
+| CFO | il y a ~17h | ✅ OK |
+| QA | il y a ~14h | ✅ OK |
+
+Aucun agent en panne.
+
+---
+
+## 6. Régression active (signalée par QA le 2026-11-22)
+
+**POST /api/auth/login** avec identifiants incorrects retourne **500** au lieu de **401**.
+
+- Comportement attendu : `401 Unauthorized`
+- Comportement actuel : `500 Internal Server Error`
+- Impact : UX dégradée (message d'erreur générique), potentiel masquage d'une erreur serveur dans le handler d'authentification
+- Priorité : HAUTE — à corriger aujourd'hui
+
+---
+
+## 7. Actions du jour
+
+1. **[URGENT] Corriger la régression login** — Le endpoint `POST /api/auth/login` lève une erreur serveur au lieu de retourner 401 sur mauvais credentials. Vérifier le handler dans `api/routes/auth.ts`, vraisemblablement un try/catch manquant ou une exception non gérée sur la comparaison bcrypt/token.
+
+2. **[SUIVI] Temps de réponse API** — 1178ms au health check, légèrement élevé. Pas critique mais à surveiller. Si la tendance monte, investiguer les queries Prisma.
+
+3. **[CROISSANCE] Zéro nouvel utilisateur en 24h** — 21 utilisateurs totaux, 0 payant. Coordonner avec CMO pour relancer une action d'acquisition (SEO, contenu, outreach) ; l'essai 7 jours sans CB est l'entrée de funnel à activer.

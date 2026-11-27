@@ -1,13 +1,13 @@
-# CFO Analyse — 2026-11-23
+# CFO Analyse — 2026-11-27
 
-> **Période couverte :** analyse du 2026-11-23. Données issues de `/api/agents/data`.
-> **API :** Endpoint opérationnel — données fraîches (cached: false, timestamp: 2026-11-23T16:19:56Z).
+> **Période couverte :** analyse du 2026-11-27. Données issues de `/api/agents/data`.
+> **API :** Endpoint opérationnel — données fraîches (cached: false, timestamp: 2026-11-27T16:19:28Z).
 
 ---
 
 ## Métriques Clés
 
-| Indicateur | Valeur J (2026-11-23) | Valeur J-1 (2026-11-22) | Variation |
+| Indicateur | Valeur J (2026-11-27) | Valeur J-1 (2026-11-23) | Variation |
 |---|---|---|---|
 | **MRR** | 0 € (Pro 0 + Biz 0) | 0 € | = |
 | **ARR** | 0 € | 0 € | = |
@@ -20,7 +20,7 @@
 | **Recettes créées** | 64 | 64 | = |
 | **Ingrédients enregistrés** | 442 | 442 | = |
 
-> **Événement notable :** J+59 sans abonné payant depuis la correction de mesure du 2026-09-25. Stagnation totale : aucune activité enregistrée en 24h ni en 48h. Base figée à 21 utilisateurs, pipeline trial vide. Aucune variation sur aucun indicateur par rapport à J-1.
+> **Événement notable :** J+63 sans abonné payant depuis la correction de mesure du 2026-09-25. Stagnation totale confirmée : aucune activité enregistrée. Base figée à 21 utilisateurs, pipeline trial vide. Aucune variation sur aucun indicateur.
 
 ---
 
@@ -28,7 +28,7 @@
 
 ### 🔴 Alerte 1 — Phase amorçage, focus acquisition
 - **Condition :** MRR < 100 €
-- **Constat :** MRR = 0 €. Aucun abonnement Stripe actif (Pro = 0, Biz = 0). J+59 sans abonné payant.
+- **Constat :** MRR = 0 €. Aucun abonnement Stripe actif (Pro = 0, Biz = 0). J+63 sans abonné payant.
 
 ### 🔴 Alerte 2 — Investiguer acquisition
 - **Condition :** LEADS = 0 sur 7 jours
@@ -43,7 +43,7 @@
 ## 3 Recommandations Chiffrées
 
 ### Recommandation 1 — Vérifier les webhooks Stripe et tester un paiement bout-en-bout (Impact cible : débloquer le premier paiement)
-- **Action :** 59 jours sans conversion parmi 21 inscrits. Effectuer un paiement test Pro (19 €/mois) en mode Stripe test : checkout → paiement → webhook → activation compte. Vérifier les logs Stripe Dashboard pour des événements `payment_intent.succeeded` non reçus côté serveur. Si le webhook échoue silencieusement, corriger l'URL de webhook dans Stripe Dashboard et vérifier la variable d'environnement `STRIPE_WEBHOOK_SECRET`.
+- **Action :** 63 jours sans conversion parmi 21 inscrits. Effectuer un paiement test Pro (19 €/mois) en mode Stripe test : checkout → paiement → webhook → activation compte. Vérifier les logs Stripe Dashboard pour des événements `payment_intent.succeeded` non reçus côté serveur. Si le webhook échoue silencieusement, corriger l'URL de webhook dans Stripe Dashboard et vérifier la variable d'environnement `STRIPE_WEBHOOK_SECRET`.
 - **Effort :** 1–2h
 - **Objectif mesurable :** Flux Stripe validé end-to-end dans les 24h
 - **ROI :** Chaque semaine supplémentaire de blocage = 19 €/mois de MRR Pro non encaissé par abonné potentiel bloqué
@@ -62,4 +62,4 @@
 
 ---
 
-*Rapport généré automatiquement le 2026-11-23 — CFO Agent RestauMargin*
+*Rapport généré automatiquement le 2026-11-27 — CFO Agent RestauMargin*

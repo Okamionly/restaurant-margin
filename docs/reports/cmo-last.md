@@ -1,32 +1,40 @@
-# Rapport CMO — 23 novembre 2026
+# Rapport CMO — 28 novembre 2026
 
-## Métriques (07:14 UTC)
+## Métriques du jour
 
 | Indicateur | Valeur |
 |---|---|
-| Utilisateurs total | 21 |
+| Utilisateurs totaux | 21 |
 | Nouveaux utilisateurs (24h) | 0 |
-| Nouveaux utilisateurs (48h) | 0 |
 | Leads réels | 0 |
+| MRR estimé | 0 € |
 | Abonnés Pro | 0 |
 | Abonnés Business | 0 |
 | Utilisateurs en essai | 0 |
-| MRR estimé | 0 € |
-| ARR estimé | 0 € |
-| Pages blog | 64 |
+| Recettes créées | 64 |
+| Ingrédients référencés | 442 |
+| Articles de blog | 64 |
+
+Source : https://www.restaumargin.fr/api/agents/data — 2026-11-28T07:11:32Z
 
 ## Contenu publié
 
-- **Post social** : `docs/marketing/social-posts/2026-11-23.md`
-  - Thème : food cost et fiches techniques
-  - Canal cible : LinkedIn / Instagram
-  - CTA : calculateur food cost gratuit
-  - Conformité CLAUDE.md (aucune preuve sociale fabriquée) : ✅
+**Post social** : `docs/marketing/social-posts/2026-11-28.md`
+**Thème** : Gestion du food cost pour les fêtes de fin d'année (décembre)
+**Format** : LinkedIn / Instagram — 4 conseils opérationnels
+**CTAs** : calculateur food cost (gratuit) + pricing (essai 7j)
 
 ## Analyse
 
-La base utilisateurs reste stable à 21 comptes (0 nouveaux en 24h). Aucun abonné payant à ce jour. Le produit est en phase d'amorçage early-access.
+**Utilisateurs** : Base stable à 21 comptes. Zéro inscription sur 24h, zéro abonné payant.
+L'enjeu prioritaire reste l'activation — transformer les visiteurs en inscrits, et les inscrits en essayeurs.
 
-## Action recommandée
+**Contenu** : 64 articles de blog constituent un capital SEO solide. Vérifier que les articles les plus récents sont bien indexés (Search Console) et que les liens internes vers l'outil calculateur et la page pricing sont en place.
 
-Activation SEO : 64 pages blog sont en place — vérifier l'indexation et le trafic organique vers les pages `/outils/` pour convertir le trafic gratuit en inscriptions. Aucune action urgente côté acquisition payante tant que le funnel gratuit n'est pas mesuré.
+**Saisonnalité** : Fin novembre / début décembre = période d'achat critique pour les restaurateurs qui préparent leur carte de fêtes. Le post du jour cible ce moment de décision. Opportunité de doublage : un article de blog spécifique "food cost menu fêtes" pourrait capter du trafic organique sur cette requête.
+
+## Action recommandée (CEO)
+
+1. Vérifier que le calculateur food cost fonctionne correctement (charge, calcul, CTA vers inscription).
+2. Envisager une campagne email vers les 21 inscrits avec le contenu du post — faible volume, coût nul.
+3. Vérifier l'indexation des derniers articles blog dans Google Search Console.

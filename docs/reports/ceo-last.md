@@ -1,78 +1,72 @@
-# Digest RestauMargin — 2026-11-23
+# Digest RestauMargin — 2026-11-28
 
 ## Santé — site, base, IA, CI
 
-| Service    | Statut | Détail                        |
-|------------|--------|-------------------------------|
-| database   | ✅ ok  | —                             |
-| ai         | ✅ ok  | claude-sonnet-4-6             |
-| api        | ✅ ok  | responseTime: 1352 ms (élevé) |
-| site       | ✅ ok  | restaumargin.fr joignable     |
-| CI main    | ✅ success | 3 derniers runs success (682, 681, 680) |
+| Service | Statut | Détail |
+|---------|--------|--------|
+| Site | ✅ OK | restaumargin.fr joignable |
+| Base de données | ✅ OK | PostgreSQL (Supabase) |
+| IA | ✅ OK | claude-sonnet-4-6 |
+| API | ✅ OK | responseTime 1137ms |
+| CI | ✅ OK | 3 derniers runs success (Taches automatiques, runs 722-724) |
 
-> ⚠️ responseTime 1352 ms — légèrement élevé (seuil d'alerte : 2000 ms). À surveiller.
-
----
-
-## Chiffres — MRR, inscriptions 24 h, essais en cours, commits 24 h
-
-| Indicateur             | Valeur       |
-|------------------------|--------------|
-| MRR                    | 0 €          |
-| ARR                    | 0 €          |
-| Abonnés Pro            | 0            |
-| Abonnés Business       | 0            |
-| Utilisateurs totaux    | 21           |
-| Nouveaux inscrits 24h  | 0            |
-| Essais actifs          | 0            |
-| Leads qualifiés        | 0            |
-| Commits (24h)          | 8            |
-
-> J+58 sans abonné payant depuis la correction de mesure du 2026-09-25.
+Aucune anomalie détectée. Dernier run CI : 2026-11-28 02:42 UTC — succès.
 
 ---
 
-## Rapports C-suite — une ligne par agent, avec la date de son rapport
+## Chiffres
 
-| Agent | Dernier rapport | Statut    | Résumé                                            |
-|-------|-----------------|-----------|---------------------------------------------------|
-| CTO   | 2026-11-22      | ✅ Actif  | Santé verte, CI verte, responseTime à surveiller  |
-| CMO   | 2026-11-21      | ⚠️ Panne ? | Rapport > 48h — quota Claude potentiellement épuisé |
-| CFO   | 2026-11-22      | ✅ Actif  | MRR 0 €, stagnation totale, pipeline vide         |
-| COO   | 2026-11-22      | ✅ Actif  | Services opérationnels, uptime faible (2s)        |
-| QA    | 2026-11-22      | ✅ Actif  | 15/15 pages OK — **régression auth login 500**    |
+| Indicateur | Valeur |
+|------------|--------|
+| MRR | 0 € |
+| Inscriptions 24h | 0 |
+| Essais actifs | 0 |
+| Utilisateurs totaux | 21 |
+| Leads qualifiés | 0 |
+| Recettes créées | 64 |
+| Ingrédients | 442 |
+| Commits 24h | 2 |
+
+> J+64 sans abonné payant depuis la correction de mesure du 2026-09-25. Base figée à 21 comptes. Pipeline trial vide.
 
 ---
 
-## Actions des agents (24 h)
+## Rapports C-suite
 
-| Commit         | Action                                                                            |
-|----------------|-----------------------------------------------------------------------------------|
-| `0a4ce9e`      | qa: tests quotidiens — régression POST /api/auth/login 500 détectée              |
-| `f8c6804`      | cfo: analyse quotidienne                                                          |
-| `fa7766e`      | cto: audit quotidien                                                              |
-| `5d3cdf0`      | coo: opérations quotidiennes                                                      |
-| `17f94e1`      | bug-fixer: log 2026-11-22 — i18n toasts d'erreur                                 |
-| `b29050a`      | fix(i18n): strings françaises hardcodées dans handleAiSuggest corrigées           |
-| `6c49c42`      | seo(weekly): bilan semaine 47 — marge restaurant #8 top 10, EAT fictif refusé    |
-| `66e9f58`      | ceo: digest quotidien                                                             |
+| Agent | Date rapport | Statut |
+|-------|-------------|--------|
+| CTO | 2026-11-23 | ⚠️ EN PANNE — rapport > 48h (5 jours) |
+| CMO | 2026-11-23 | ⚠️ EN PANNE — rapport > 48h (5 jours) |
+| CFO | 2026-11-27 | ✅ OK — rapport d'hier |
+| COO | 2026-11-23 | ⚠️ EN PANNE — rapport > 48h (5 jours) |
+| QA | 2026-11-27 | ✅ OK — 15/15 pages OK, aucune régression |
+
+**3 agents en panne (CTO, CMO, COO)** — cause probable : quota hebdomadaire Claude épuisé.
+
+---
+
+## Actions des agents (24h)
+
+- `qa` — Tests quotidiens 2026-11-27 : 15/15 pages OK, aucune régression
+- `cfo` — Analyse financière 2026-11-27 : stagnation confirmée (MRR 0 €, J+63)
+
+Aucune action produit ou marketing dans les 24 dernières heures.
 
 ---
 
 ## Top 3 actions du jour
 
-1. **Fix i18n handleAiSuggest** (`b29050a`) — strings françaises hardcodées remplacées par `t("key")`, conformité i18n restaurée.
-2. **SEO hebdomadaire** (`6c49c42`) — première entrée top 10 Google sur "marge restaurant", contradiction food cost gastronomique signalée, aucun EAT fictif ajouté.
-3. **Bug-fixer i18n toasts** (`17f94e1`) — toasts d'erreur traduits, cohérence i18n améliorée.
+1. **Surveiller le redémarrage CTO/CMO/COO** — 3 agents muets depuis 5 jours, probablement bloqués par le quota Claude. À relancer manuellement si nécessaire.
+2. **Vérifier la santé CI** — les 3 derniers runs sont des tâches automatiques (crons), pas de code livré. Dernier push produit date du 2026-11-27.
+3. **Pipeline acquisition** — 0 nouvel utilisateur depuis plusieurs jours. Le produit est opérationnel mais invisible. Activation du canal marketing prioritaire.
 
 ---
 
 ## Risques
 
-| Priorité | Risque                                             | Source         |
-|----------|----------------------------------------------------|----------------|
-| 🔴 Haut  | POST /api/auth/login retourne 500 au lieu de 401 — régression non corrigée | QA 2026-11-22 |
-| 🟡 Moyen | CMO agent muet depuis 48h — quota Claude épuisé probable | Rapport 2026-11-21 |
-| 🟡 Moyen | MRR = 0 €, J+58 sans abonné payant — conversion bloquée | CFO 2026-11-22 |
-| 🟡 Moyen | responseTime API à 1352 ms — tendance à surveiller | Health check   |
-| 🟢 Bas   | 0 nouveaux inscrits en 24h — pas de signal d'acquisition | agents/data    |
+| Risque | Niveau | Détail |
+|--------|--------|--------|
+| Agents CTO/CMO/COO muets | 🔴 Élevé | 5 jours sans rapport — quota Claude probablement épuisé |
+| Acquisition figée | 🟠 Moyen | 0 inscription sur 24h, 0 lead, 0 trial — pipeline à sec |
+| Pas de revenu | 🟠 Moyen | J+64 sans abonné payant — runway conditionné au financement personnel |
+| Dépendance mono-modèle | 🟡 Faible | IA = uniquement claude-sonnet-4-6, aucun fallback documenté |

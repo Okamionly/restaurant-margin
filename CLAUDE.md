@@ -34,14 +34,13 @@
 - Clés en camelCase groupées par page : `"ingredients.title"`, `"dashboard.margin"`
 
 ## Routing
-- Fichier : `client/src/App.tsx`
-- Routes publiques : directement dans `<Routes>`
-- Routes protégées : dans `<ProtectedRoute>` avec `<Suspense>`
-- Lazy loading : `const Page = lazy(() => import('./pages/Page'))`
-- Toujours ajouter la route dans App.tsx après création d'une page
+- Routes publiques (SEO, blog, outils, landing) : `client/src/App.tsx`, directement dans `<Routes>`
+- Routes de l'espace connecté : `client/src/AppLayout.tsx` (bloc `<Routes>` d'AppLayout) ; ajouter aussi le 1er segment dans `SEGMENTS_APPLICATION` (App.tsx)
+- Lazy loading : `const Page = lazyRetry(() => import('./pages/Page'))` (`lazyRetry` depuis `./utils/lazyRetry`)
+- ⚠️ Perf/SEO : `App.tsx` est dans le chunk d'entrée que télécharge CHAQUE visiteur. N'y importer AUCUN hook ni composant de l'espace connecté (`useTranslation` y a tiré 127 Ko de fr.json le 15/11). Tout ça va dans `AppLayout.tsx`, chargé à la demande.
 
 ## Sidebar
-- Dans `App.tsx` (pas de fichier séparé)
+- Dans `client/src/AppLayout.tsx` (sorti d'App.tsx le 2026-11-28)
 - Ajouter le lien dans la section appropriée (PRINCIPAL, GESTION, INTELLIGENCE, OPERATIONS, COMMUNICATION, BUSINESS)
 - Format : `{ to: '/path', icon: IconName, label: 'Label' }`
 

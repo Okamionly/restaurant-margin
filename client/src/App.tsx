@@ -192,7 +192,7 @@ const SEGMENTS_APPLICATION = new Set([
   'calculateur-tva', 'checklist-service', 'chrono-preparation', 'clients', 'commandes', 'comptabilite',
   'cout-couvert', 'cout-main-oeuvre', 'couverts-cible', 'dashboard', 'devis', 'dlc-tracker', 'email-marketing',
   'feedback', 'financial-intelligence', 'fournisseur', 'gaspillage', 'haccp', 'ingredients', 'integrations',
-  'inventory', 'kitchen-mode', 'marketplace', 'menu', 'menu-calendar', 'menu-engineering', 'mercuriale',
+  'inventory', 'kitchen-mode', 'livraison-rentabilite', 'marketplace', 'menu', 'menu-calendar', 'menu-engineering', 'mercuriale',
   'mes-parrainages', 'messagerie', 'mon-score', 'negociation-ia', 'planning', 'prime-saisonniere', 'qr-menu',
   'reactivation', 'recettes-semaine', 'recipes', 'rentabilite', 'restaurants', 'rfqs', 'roi-equipement',
   'saisonnalite', 'scanner-factures', 'seminaires', 'service-tracker', 'settings', 'simulateur-prix',
